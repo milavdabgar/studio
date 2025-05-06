@@ -6,7 +6,7 @@ import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
-import { Home, BarChart3, Users, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UsersCog } from 'lucide-react';
+import { Home, BarChart3, Users, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -42,7 +42,7 @@ const navItemsConfig: Record<UserRole, Array<{ href: string; icon: React.Element
   admin: [
     { href: '/dashboard', icon: Home, label: 'Dashboard' },
     { href: '/admin/users', icon: Users, label: 'User Management' },
-    { href: '/admin/roles', icon: UsersCog, label: 'Role Management' },
+    { href: '/admin/roles', icon: UserCog, label: 'Role Management' },
     { href: '/admin/departments', icon: Briefcase, label: 'Departments' },
     { href: '/admin/faculty', icon: Users, label: 'Faculty Mgt.' },
     { href: '/admin/students', icon: Users, label: 'Student Mgt.' },
@@ -133,12 +133,12 @@ export default function RootLayout({
   const currentNavItems = navItemsConfig[currentUser.role] || [];
 
   // Hide sidebar for login, signup, and landing pages OR before client has mounted
-  const hideSidebar = ['/login', '/signup', '/'].includes(pathname) || !isMounted;
+  const hideSidebar = ['/login', '/signup', '/'].includes(pathname);
 
 
-  if (hideSidebar && (pathname === '/login' || pathname === '/signup' || pathname === '/')) {
+  if (hideSidebar) {
     return (
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en" suppressHydrationWarning={true}>
         <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           {children}
           <Toaster />
@@ -147,9 +147,9 @@ export default function RootLayout({
     );
   }
 
-  if (!isMounted) {
+  if (!isMounted) { // Show loader if not yet mounted and not on a public no-sidebar page
     return (
-       <html lang="en" suppressHydrationWarning>
+       <html lang="en" suppressHydrationWarning={true}>
         <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           <div className="flex items-center justify-center min-h-screen">
             <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -162,7 +162,7 @@ export default function RootLayout({
 
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning={true}>
       <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
         <SidebarProvider>
           <Sidebar>

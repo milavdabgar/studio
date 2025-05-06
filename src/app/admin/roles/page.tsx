@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
-import { PlusCircle, Edit, Trash2, UsersCog, Loader2 } from "lucide-react";
+import { PlusCircle, Edit, Trash2, UserCog, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Role {
@@ -128,7 +128,7 @@ export default function RoleManagementPage() {
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
-              <UsersCog className="h-6 w-6" />
+              <UserCog className="h-6 w-6" />
               Role Management
             </CardTitle>
             <CardDescription>
