@@ -519,6 +519,10 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
   const isAllSelectedOnPage = paginatedCourses.length > 0 && paginatedCourses.every(c => selectedCourseIds.includes(c.id));
   const isSomeSelectedOnPage = paginatedCourses.some(c => selectedCourseIds.includes(c.id)) && !isAllSelectedOnPage;
 
+  const programsForFilter = useMemo(() => {
+    if(filterDepartmentVal === 'all') return programs;
+    return programs.filter(p => p.departmentId === filterDepartmentVal);
+  }, [filterDepartmentVal, programs]);
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
@@ -534,10 +538,6 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
     </TableHead>
   );
 
-  const programsForFilter = useMemo(() => {
-    if(filterDepartmentVal === 'all') return programs;
-    return programs.filter(p => p.departmentId === filterDepartmentVal);
-  }, [filterDepartmentVal, programs]);
 
   return (
     <div className="space-y-8">
