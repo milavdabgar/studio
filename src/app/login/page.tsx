@@ -25,13 +25,15 @@ export default function LoginPage() {
     // Mock API call
     await new Promise(resolve => setTimeout(resolve, 1500));
 
-    if (email === "admin@example.com" && password === "password") {
+    if (email === "admin@gppalanpur.in" && password === "Admin@123") {
       toast({
         title: "Login Successful",
         description: "Welcome back!",
       });
       // TODO: Implement actual session management with NextAuth.js
       // For now, redirect to dashboard
+      // Set a mock auth cookie for middleware to pick up
+      document.cookie = "auth_token=mock_admin_token;path=/;max-age=" + (60 * 60 * 24 * 7); // 7 days
       router.push("/dashboard");
     } else {
       toast({
@@ -60,7 +62,7 @@ export default function LoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="m@example.com"
+                placeholder="admin@gppalanpur.in"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
