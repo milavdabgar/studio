@@ -108,10 +108,13 @@ const parseGtuFacultyName = (gtuNameInput: string | undefined): { title?: string
     let gtuName = gtuNameInput.trim();
     let title: string | undefined;
 
+    // Check and remove title from the beginning of gtuName
     for (const t of TITLE_OPTIONS) {
-        if (gtuName.toLowerCase().startsWith(t.toLowerCase())) {
+        const lowerT = t.toLowerCase();
+        if (gtuName.toLowerCase().startsWith(lowerT + " ") || gtuName.toLowerCase().startsWith(lowerT + ".")) {
             title = gtuName.substring(0, t.length);
             gtuName = gtuName.substring(t.length).trim();
+            if(gtuName.startsWith(".")) gtuName = gtuName.substring(1).trim(); // Remove period if present after title
             break;
         }
     }
@@ -119,8 +122,8 @@ const parseGtuFacultyName = (gtuNameInput: string | undefined): { title?: string
     const parts = gtuName.split(/\s+/).filter(p => p);
     if (parts.length === 0) return { title };
     if (parts.length === 1) return { title, firstName: parts[0] };
- if (parts.length === 2) return { title, firstName: parts[0], lastName: parts[1] }; // Common: NAME SURNAME
-    // Common: SURNAME NAME FATHER_NAME/HUSBAND_NAME 
+    if (parts.length === 2) return { title, firstName: parts[0], lastName: parts[1] }; // Common: NAME SURNAME
+    // Common: SURNAME NAME FATHER_NAME/HUSBAND_NAME or SURNAME NAME MIDDLE_NAME
     return { title, lastName: parts[0], firstName: parts[1], middleName: parts.slice(2).join(' ') }; 
 };
 
@@ -328,7 +331,6 @@ export default function FacultyManagementPage() {
         panCardNumber: formPan.trim() || undefined,
       };
       
-      // Use personal email if available for institute email, otherwise staffcode@gppalanpur.ac.in
       facultyData.instituteEmail = facultyData.personalEmail || `${facultyData.staffCode}@gppalanpur.ac.in`;
 
       if (currentFaculty && currentFaculty.id) {
@@ -342,7 +344,9 @@ export default function FacultyManagementPage() {
         };
         setFacultyList(prevList => [...prevList, newFaculty]);
         
-        const systemUserName = newFaculty.title ? `${newFaculty.title} ${newFaculty.gtuName}` : (newFaculty.gtuName || `${newFaculty.firstName || ''} ${newFaculty.lastName || ''}`.trim());
+        // Use gtuName if available and title is not explicitly set or parsed for system user name. Otherwise construct from parts.
+        const systemUserName = newFaculty.gtuName ? newFaculty.gtuName : (newFaculty.title ? `${newFaculty.title} ${newFaculty.firstName || ''} ${newFaculty.lastName || ''}` : `${newFaculty.firstName || ''} ${newFaculty.lastName || ''}`).trim();
+        
         const newUserForSystem: SystemUser = {
           id: `user_fac_${newFaculty.id}`, 
           name: systemUserName || newFaculty.staffCode,
@@ -480,7 +484,7 @@ export default function FacultyManagementPage() {
             facultyToUpdate.push(newFaculty);
             newFacultyCount++;
 
-            const systemUserName = newFaculty.gtuName ? (newFaculty.title ? `${newFaculty.title} ${newFaculty.gtuName}` : newFaculty.gtuName) : newFaculty.staffCode;
+            const systemUserName = newFaculty.gtuName ? newFaculty.gtuName : (newFaculty.title ? `${newFaculty.title} ${newFaculty.firstName || ''} ${newFaculty.lastName || ''}` : `${newFaculty.firstName || ''} ${newFaculty.lastName || ''}`).trim();
            addUserToLocalStorage({
               id: `user_fac_${newFaculty.id}`,
               name: systemUserName || newFaculty.staffCode,
@@ -579,17 +583,17 @@ faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@examp
           const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
 
           const staffCode = data[hMap['staffcode']];
-          const gtuName = data[hMap['name']];
+          const gtuNameFromCsv = data[hMap['name']];
           const department = data[hMap['department']];
           const designation = data[hMap['designation']];
 
-          if (!staffCode || !gtuName || !department || !designation) {
+          if (!staffCode || !gtuNameFromCsv || !department || !designation) {
             console.warn(`Skipping GTU row ${i+1}: Staff Code, Name, Department, or Designation is missing.`);
             skippedCount++;
             continue;
           }
 
-          const { firstName, middleName, lastName, title } = parseGtuFacultyName(gtuName);
+          const { firstName, middleName, lastName, title } = parseGtuFacultyName(gtuNameFromCsv);
           const personalEmail = data[hMap['emailaddress']];
           const contactNumber = data[hMap['mobileno']];
           const jobType = data[hMap['jobtype']] as JobType;
@@ -598,11 +602,11 @@ faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@examp
 
           const facultyData: Omit<Faculty, 'id'> = {
             staffCode,
-            gtuName,
-            title,
-            firstName,
-            middleName,
-            lastName,
+            gtuName: gtuNameFromCsv, // Store the full name as from GTU
+            title, // Parsed title
+            firstName, // Parsed first name
+            middleName, // Parsed middle name
+            lastName, // Parsed last name
             personalEmail: personalEmail || undefined,
             instituteEmail: personalEmail || `${staffCode}@gppalanpur.ac.in`,
             contactNumber: contactNumber || undefined,
@@ -621,8 +625,8 @@ faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@examp
             const newFaculty = { id: generateClientId(), ...facultyData };
             facultyToUpdate.push(newFaculty);
             newFacultyCount++;
-
-            const systemUserName = newFaculty.gtuName ? (newFaculty.title ? `${newFaculty.title} ${newFaculty.gtuName}` : newFaculty.gtuName) : newFaculty.staffCode;             addUserToLocalStorage({
+             const systemUserName = newFaculty.gtuName ? newFaculty.gtuName : (newFaculty.title ? `${newFaculty.title} ${newFaculty.firstName || ''} ${newFaculty.lastName || ''}` : `${newFaculty.firstName || ''} ${newFaculty.lastName || ''}`).trim();
+            addUserToLocalStorage({
               id: `user_fac_${newFaculty.id}`,
               name: systemUserName || newFaculty.staffCode,
               email: newFaculty.instituteEmail,
@@ -1067,8 +1071,8 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
               <TableRow>
                 <TableHead className="w-[50px]">
                     <Checkbox 
-                        checked={isAllSelectedOnPage || isSomeSelectedOnPage}
-                        onCheckedChange={handleSelectAll}
+                        checked={isAllSelectedOnPage ? true : (isSomeSelectedOnPage ? 'indeterminate' : false)}
+                        onCheckedChange={(checked) => handleSelectAll(checked)}
                         aria-label="Select all faculty on this page"
                     />
                 </TableHead>
@@ -1093,7 +1097,9 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                   </TableCell>
                   <TableCell id={`faculty-name-${faculty.id}`} className="font-medium">
                     <div className="flex flex-col">
-                        <span className="font-semibold">{faculty.title ? `${faculty.title} ${faculty.gtuName}` : (faculty.gtuName || `${faculty.firstName || ''} ${faculty.lastName || ''}`.trim())}</span>
+                        <span className="font-semibold">
+                          {faculty.gtuName || `${faculty.title || ''} ${faculty.firstName || ''} ${faculty.middleName || ''} ${faculty.lastName || ''}`.trim()}
+                        </span>
                         <span className="text-xs text-muted-foreground">{faculty.instituteEmail}</span>
                         {faculty.personalEmail && <span className="text-xs text-muted-foreground">P: {faculty.personalEmail}</span>}
                     </div>
@@ -1234,3 +1240,5 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
   );
 }
 
+
+  
