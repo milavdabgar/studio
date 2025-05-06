@@ -64,9 +64,10 @@ const PUBLIC_ROUTES = [
 
 // Role access is now based on the *activeRole*
 const ROLE_ACCESS_CONTROL: Record<string, UserRole[]> = {
-  '/admin': ['admin', 'hod'], 
   '/admin/users': ['admin'],
   '/admin/roles': ['admin'],
+  '/admin/students': ['admin', 'hod'],
+  '/admin': ['admin', 'hod'], 
   '/project-fair/admin': ['admin', 'hod'],
   '/project-fair/jury': ['jury', 'faculty', 'admin', 'hod'],
   '/faculty': ['faculty', 'hod', 'admin'],
@@ -105,7 +106,10 @@ export function middleware(request: NextRequest) {
     }
 
     // Check against specific rules in ROLE_ACCESS_CONTROL
-    for (const routePrefix in ROLE_ACCESS_CONTROL) {
+    // Iterate in a way that more specific paths are checked first
+    const sortedRoutePrefixes = Object.keys(ROLE_ACCESS_CONTROL).sort((a, b) => b.length - a.length);
+
+    for (const routePrefix of sortedRoutePrefixes) {
         if (pathname.startsWith(routePrefix)) {
             hasAccess = ROLE_ACCESS_CONTROL[routePrefix].includes(activeRole);
             break; 

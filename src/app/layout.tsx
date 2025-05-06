@@ -1,12 +1,11 @@
 
 "use client"; 
 
-import type { Metadata } from 'next';
 import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
-import { Home, BarChart3, Users as UsersIcon, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, Replace } from 'lucide-react';
+import { Home, BarChart3, Users as UsersIcon, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -14,6 +13,7 @@ import { AppLogo } from '@/components/app-logo';
 import React, { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 
 type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown';
@@ -40,9 +40,9 @@ const baseNavItems: Record<UserRole, Array<{ href: string; icon: React.ElementTy
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard' },
     { href: '/admin/users', icon: UsersIcon, label: 'User Management', id: 'admin-users' },
     { href: '/admin/roles', icon: UserCog, label: 'Role Management', id: 'admin-roles' },
+    { href: '/admin/students', icon: BookUser, label: 'Student Mgt.', id: 'admin-students' },
     { href: '/admin/departments', icon: Briefcase, label: 'Departments', id: 'admin-departments' },
     { href: '/admin/faculty', icon: UsersIcon, label: 'Faculty Mgt.', id: 'admin-faculty' },
-    { href: '/admin/students', icon: UsersIcon, label: 'Student Mgt.', id: 'admin-students' },
     { href: '/admin/results', icon: Award, label: 'Results Admin', id: 'admin-results' },
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback' },
     { href: '/project-fair/admin', icon: FileText, label: 'Project Fair Admin', id: 'admin-project-fair' },
@@ -65,7 +65,7 @@ const baseNavItems: Record<UserRole, Array<{ href: string; icon: React.ElementTy
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'hod-dashboard' },
     { href: '/admin/departments', icon: Briefcase, label: 'My Department', id: 'hod-department' }, 
     { href: '/admin/faculty', icon: UsersIcon, label: 'Faculty (Dept)', id: 'hod-faculty' },
-    { href: '/admin/students', icon: UsersIcon, label: 'Students (Dept)', id: 'hod-students' },
+    { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'hod-students' },
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'hod-feedback' },
     { href: '/project-fair/admin', icon: FileText, label: 'Project Fair Admin', id: 'hod-project-fair' },
   ],
@@ -161,8 +161,7 @@ export default function RootLayout({
         const encodedUserPayload = encodeURIComponent(JSON.stringify(updatedUserPayload));
         document.cookie = `auth_user=${encodedUserPayload};path=/;max-age=${60 * 60 * 24 * 7}`; // 7 days
         setCurrentUser(prev => ({...prev, activeRole: newRole}));
-        // Potentially force a re-render or redirect to ensure layout updates based on new role
-        router.push(pathname); // Re-navigate to current page to trigger layout update
+        router.push('/dashboard'); 
     }
   };
 
@@ -264,9 +263,11 @@ export default function RootLayout({
                 </div>
               )}
               <div className="flex items-center justify-between">
-                <Button variant="ghost" size="icon" className="text-sidebar-foreground hover:bg-sidebar-accent">
-                  <Settings />
-                </Button>
+                <Link href="/admin/settings" passHref>
+                  <Button variant="ghost" size="icon" className="text-sidebar-foreground hover:bg-sidebar-accent">
+                    <Settings />
+                  </Button>
+                </Link>
                 <ThemeToggle />
                 <Button 
                     variant="ghost" 

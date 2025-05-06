@@ -3,7 +3,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BarChart, Users as UsersIcon, Briefcase, CheckCircle, FileText, BookOpen, CalendarDays, Award, Users2, BotMessageSquare, CalendarCheck, Settings, UserCog, GitFork } from "lucide-react";
+import { BarChart, Users as UsersIcon, Briefcase, CheckCircle, FileText, BookOpen, CalendarDays, Award, Users2, BotMessageSquare, CalendarCheck, Settings, UserCog, GitFork, BookUser } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState } from 'react';
@@ -35,6 +35,7 @@ interface DashboardCardItem {
 const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
   admin: [
     { id: "admin-total-users", title: "Total Users", value: "1,250", icon: UsersIcon, color: "text-primary", href: "/admin/users" },
+    { id: "admin-total-students", title: "Total Students", value: "850", icon: BookUser, color: "text-green-500", href: "/admin/students"},
     { id: "admin-active-projects", title: "Active Projects", value: "78", icon: Briefcase, color: "text-accent", href: "/project-fair/admin" },
     { id: "admin-pending-approvals", title: "Pending Approvals", value: "12", icon: CheckCircle, color: "text-yellow-500", href: "/admin/approvals" },
     { id: "admin-feedback-reports", title: "Feedback Reports", value: "5", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
@@ -48,13 +49,13 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
   ],
   faculty: [
     { id: "faculty-assigned-courses", title: "Assigned Courses", value: "3", icon: BookOpen, color: "text-primary", href: "/faculty/courses" },
-    { id: "faculty-students-enrolled", title: "Students Enrolled", value: "120", icon: UsersIcon, color: "text-accent", href: "/faculty/students" },
-    { id: "faculty-pending-evaluations", title: "Pending Evaluations", value: "8", icon: CheckCircle, color: "text-yellow-500", href: "/project-fair/jury" }, // Assuming faculty can also be jury
+    { id: "faculty-students-enrolled", title: "Students Enrolled", value: "120", icon: UsersIcon, color: "text-accent", href: "/faculty/students" }, // This might link to a faculty specific student view
+    { id: "faculty-pending-evaluations", title: "Pending Evaluations", value: "8", icon: CheckCircle, color: "text-yellow-500", href: "/project-fair/jury" }, 
     { id: "faculty-feedback-reports", title: "Feedback Reports", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
   ],
   hod: [
     { id: "hod-department-staff", title: "Department Staff", value: "15", icon: Users2, color: "text-primary", href: "/admin/faculty" }, 
-    { id: "hod-department-students", title: "Department Students", value: "250", icon: UsersIcon, color: "text-accent", href: "/admin/students" }, 
+    { id: "hod-department-students", title: "Department Students", value: "250", icon: BookUser, color: "text-accent", href: "/admin/students" }, 
     { id: "hod-department-projects", title: "Department Projects", value: "25", icon: Briefcase, color: "text-yellow-500", href: "/project-fair/admin" }, 
     { id: "hod-department-feedback", title: "Department Feedback", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" }, 
   ],
@@ -233,6 +234,11 @@ export default function DashboardPage() {
               <Link href="/admin/users" passHref>
                 <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
                   <UsersIcon className="h-5 w-5" /> Manage Users
+                </Button>
+              </Link>
+               <Link href="/admin/students" passHref>
+                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
+                  <BookUser className="h-5 w-5" /> Manage Students
                 </Button>
               </Link>
               <Link href="/project-fair/admin/new-event" passHref>
