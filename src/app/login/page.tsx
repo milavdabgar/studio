@@ -1,49 +1,83 @@
+
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from "next/link";
 import { AppLogo } from "@/components/app-logo";
 import { Loader2, LogIn } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation"; // For redirection
+import { useRouter } from "next/navigation";
+
+const USER_ROLES = [
+  { value: "admin", label: "Admin" },
+  { value: "student", label: "Student" },
+  { value: "faculty", label: "Faculty" },
+  { value: "hod", label: "HOD" },
+  { value: "jury", label: "Jury" },
+];
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("admin@gppalanpur.in"); // Pre-fill for convenience
+  const [password, setPassword] = useState("Admin@123"); // Pre-fill for convenience
+  const [role, setRole] = useState("admin"); // Pre-fill for convenience
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
 
     // Mock API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-    if (email === "admin@gppalanpur.in" && password === "Admin@123") {
+    // Mock authentication logic - adjust as needed for more roles/users
+    let loginSuccess = false;
+    if (email === "admin@gppalanpur.in" && password === "Admin@123" && role === "admin") {
+      loginSuccess = true;
+    } else if (email === "student@example.com" && password === "password" && role === "student") {
+      loginSuccess = true;
+    } else if (email === "faculty@example.com" && password === "password" && role === "faculty") {
+      loginSuccess = true;
+    }
+    // Add more mock users for other roles if necessary
+
+    if (loginSuccess) {
       toast({
         title: "Login Successful",
-        description: "Welcome back!",
+        description: `Welcome back, ${role}!`,
       });
-      // TODO: Implement actual session management with NextAuth.js
-      // For now, redirect to dashboard
-      // Set a mock auth cookie for middleware to pick up
-      document.cookie = "auth_token=mock_admin_token;path=/;max-age=" + (60 * 60 * 24 * 7); // 7 days
+      
+      const userPayload = { email, role };
+      // Encode the cookie value to handle special characters in JSON
+      const encodedUserPayload = encodeURIComponent(JSON.stringify(userPayload));
+      document.cookie = `auth_user=${encodedUserPayload};path=/;max-age=${60 * 60 * 24 * 7}`; // 7 days
+      
       router.push("/dashboard");
     } else {
       toast({
         variant: "destructive",
         title: "Login Failed",
-        description: "Invalid email or password. Please try again.",
+        description: "Invalid email, password, or role. Please try again.",
       });
     }
     setIsLoading(false);
   };
+
+  if (!isMounted) {
+    return null; // Or a loading spinner
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-background to-secondary/20 p-4">
@@ -81,7 +115,20 @@ export default function LoginPage() {
                 disabled={isLoading}
               />
             </div>
-            <Button type="submit" className="w-full text-lg py-6" disabled={isLoading}>
+             <div className="space-y-2">
+              <Label htmlFor="role">Role</Label>
+              <Select value={role} onValueChange={setRole} required disabled={isLoading}>
+                <SelectTrigger id="role">
+                  <SelectValue placeholder="Select your role" />
+                </SelectTrigger>
+                <SelectContent>
+                  {USER_ROLES.map((r) => (
+                    <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Button type="submit" className="w-full text-lg py-6" disabled={isLoading || !role}>
               {isLoading ? (
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
               ) : (
