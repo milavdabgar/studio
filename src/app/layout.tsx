@@ -6,7 +6,7 @@ import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
-import { Home, BarChart3, Users, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2 } from 'lucide-react';
+import { Home, BarChart3, Users, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UsersCog } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -42,6 +42,7 @@ const navItemsConfig: Record<UserRole, Array<{ href: string; icon: React.Element
   admin: [
     { href: '/dashboard', icon: Home, label: 'Dashboard' },
     { href: '/admin/users', icon: Users, label: 'User Management' },
+    { href: '/admin/roles', icon: UsersCog, label: 'Role Management' },
     { href: '/admin/departments', icon: Briefcase, label: 'Departments' },
     { href: '/admin/faculty', icon: Users, label: 'Faculty Mgt.' },
     { href: '/admin/students', icon: Users, label: 'Student Mgt.' },
@@ -83,7 +84,12 @@ function getCookie(name: string): string | undefined {
   if (typeof document === 'undefined') return undefined;
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(';').shift();
+  if (parts.length === 2) {
+    const cookiePart = parts.pop();
+    if (cookiePart) {
+      return cookiePart.split(';').shift();
+    }
+  }
   return undefined;
 }
 
@@ -114,7 +120,9 @@ export default function RootLayout({
       } catch (error) {
         console.error("Failed to parse auth_user cookie:", error);
         // Fallback to default user or clear cookie if invalid
-        document.cookie = 'auth_user=;path=/;max-age=0'; // Clear invalid cookie
+        if (typeof document !== 'undefined') {
+            document.cookie = 'auth_user=;path=/;max-age=0'; // Clear invalid cookie
+        }
         setCurrentUser(DEFAULT_USER);
       }
     } else {
@@ -124,28 +132,14 @@ export default function RootLayout({
 
   const currentNavItems = navItemsConfig[currentUser.role] || [];
 
-  if (!isMounted && (pathname !== '/login' && pathname !== '/signup' && pathname !== '/')) {
-     // Avoid rendering layout for auth pages before mount to prevent flicker or incorrect user state
-     // Or show a global loading spinner
-    return (
-      <html lang="en" suppressHydrationWarning>
-        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning>
-          <div className="flex items-center justify-center min-h-screen">
-            <Loader2 className="h-12 w-12 animate-spin text-primary" />
-          </div>
-          <Toaster />
-        </body>
-      </html>
-    );
-  }
-  
-  // Hide sidebar for login, signup, and landing pages
-  const hideSidebar = ['/login', '/signup', '/'].includes(pathname);
+  // Hide sidebar for login, signup, and landing pages OR before client has mounted
+  const hideSidebar = ['/login', '/signup', '/'].includes(pathname) || !isMounted;
 
-  if (hideSidebar) {
+
+  if (hideSidebar && (pathname === '/login' || pathname === '/signup' || pathname === '/')) {
     return (
       <html lang="en" suppressHydrationWarning>
-        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning>
+        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           {children}
           <Toaster />
         </body>
@@ -153,10 +147,23 @@ export default function RootLayout({
     );
   }
 
+  if (!isMounted) {
+    return (
+       <html lang="en" suppressHydrationWarning>
+        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
+          <div className="flex items-center justify-center min-h-screen">
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          </div>
+          <Toaster />
+        </body>
+      </html>
+    )
+  }
+
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning>
+      <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
         <SidebarProvider>
           <Sidebar>
             <SidebarHeader className="p-4 border-b border-sidebar-border">
@@ -202,7 +209,9 @@ export default function RootLayout({
                     size="icon" 
                     className="text-sidebar-foreground hover:bg-sidebar-accent"
                     onClick={() => {
-                      document.cookie = 'auth_user=;path=/;max-age=0'; // Clear auth cookie on logout
+                       if (typeof document !== 'undefined') {
+                        document.cookie = 'auth_user=;path=/;max-age=0'; // Clear auth cookie on logout
+                       }
                     }}
                   >
                     <LogOut />
