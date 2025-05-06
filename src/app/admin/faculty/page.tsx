@@ -135,9 +135,14 @@ const addUserToLocalStorage = (newUser: SystemUser) => {
     const storedUsers = localStorage.getItem(LOCAL_STORAGE_KEY_USERS);
     let users: SystemUser[] = storedUsers ? JSON.parse(storedUsers) : [];
     
+    // Check if a user with the same email already exists
     const existingUserIndex = users.findIndex(u => u.email === newUser.email);
     if (existingUserIndex !== -1) {
-      console.log(`User ${newUser.email} already exists in system users.`);
+      toast({
+        variant: "warning",
+        title: "User Exists",
+        description: `A system user with email ${newUser.email} already exists. Skipped adding user.`,
+ });
       return; // User already exists
     }
     

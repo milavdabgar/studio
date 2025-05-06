@@ -6,7 +6,7 @@ import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
-import { Home, BarChart3, Users as UsersIconLucide, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser, UsersRound, Building2 } from 'lucide-react'; // Added UsersRound, Building2
+import { Home, BarChart3, Users as UsersIconLucide, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser, UsersRound, Building2, BookCopy } from 'lucide-react'; // Added BookCopy
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -44,6 +44,7 @@ const baseNavItems: Record<UserRole, Array<{ href: string; icon: React.ElementTy
     { href: '/admin/students', icon: BookUser, label: 'Student Mgt.', id: 'admin-students' },
     { href: '/admin/faculty', icon: UsersRound, label: 'Faculty Mgt.', id: 'admin-faculty' }, 
     { href: '/admin/departments', icon: Building2, label: 'Departments', id: 'admin-departments' },
+    { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs' },
     // { href: '/admin/results', icon: Award, label: 'Results Admin', id: 'admin-results' }, // Example
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback' },
     // { href: '/project-fair/admin', icon: FileText, label: 'Project Fair Admin', id: 'admin-project-fair' }, // Example
@@ -65,6 +66,7 @@ const baseNavItems: Record<UserRole, Array<{ href: string; icon: React.ElementTy
   hod: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'hod-dashboard' },
     { href: '/admin/departments', icon: Building2, label: 'My Department', id: 'hod-department' }, 
+    { href: '/admin/programs', icon: BookCopy, label: 'Programs (Dept)', id: 'hod-programs' },
     { href: '/admin/faculty', icon: UsersRound, label: 'Faculty (Dept)', id: 'hod-faculty' },
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'hod-students' },
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'hod-feedback' },
@@ -310,6 +312,7 @@ export default function RootLayout({
     </html>
   );
 }
+
 
 
 
