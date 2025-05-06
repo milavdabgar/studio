@@ -1,15 +1,17 @@
 
 "use client";
 
-import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
+import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
-import { PlusCircle, Edit, Trash2, UserCog, Loader2, UploadCloud, Download, FileSpreadsheet } from "lucide-react";
+import { PlusCircle, Edit, Trash2, UserCog, Loader2, UploadCloud, Download, FileSpreadsheet, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Role {
   id: string;
@@ -28,7 +30,6 @@ const initialRoles: Role[] = [
 
 const LOCAL_STORAGE_KEY_ROLES = 'managedRoles';
 
-// Mock permissions list
 const allPermissions = [
   "manage_users", "manage_roles", "manage_settings", "view_courses", 
   "submit_assignments", "manage_courses", "grade_assignments", 
@@ -36,6 +37,7 @@ const allPermissions = [
   "view_feedback", "generate_reports"
 ];
 
+const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
 
 export default function RoleManagementPage() {
   const [roles, setRoles] = useState<Role[]>([]);
@@ -47,6 +49,11 @@ export default function RoleManagementPage() {
   const [formRoleDescription, setFormRoleDescription] = useState('');
   const [formRolePermissions, setFormRolePermissions] = useState<string[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedRoleIds, setSelectedRoleIds] = useState<string[]>([]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[1]);
+
 
   const { toast } = useToast();
 
@@ -67,7 +74,7 @@ export default function RoleManagementPage() {
   }, []);
 
   useEffect(() => {
-    if(!isLoading) { // Only save if initial load is complete
+    if(!isLoading) { 
         try {
             localStorage.setItem(LOCAL_STORAGE_KEY_ROLES, JSON.stringify(roles));
         } catch (error) {
@@ -80,6 +87,18 @@ export default function RoleManagementPage() {
         }
     }
   }, [roles, isLoading, toast]);
+
+  const paginatedRoles = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return roles.slice(startIndex, startIndex + itemsPerPage);
+  }, [roles, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(roles.length / itemsPerPage);
+
+  useEffect(() => {
+    setCurrentPage(1); // Reset to page 1 when itemsPerPage changes
+  }, [itemsPerPage]);
+
 
   const handleEdit = (role: Role) => {
     setCurrentRole(role);
@@ -99,9 +118,9 @@ export default function RoleManagementPage() {
 
   const handleDelete = (roleId: string) => {
     setIsSubmitting(true);
-    // Simulate API call
     setTimeout(() => { 
       setRoles(prevRoles => prevRoles.filter(role => role.id !== roleId));
+      setSelectedRoleIds(prev => prev.filter(id => id !== roleId));
       toast({ title: "Role Deleted", description: "The role has been successfully deleted." });
       setIsSubmitting(false);
     }, 500);
@@ -123,7 +142,6 @@ export default function RoleManagementPage() {
     }
     setIsSubmitting(true);
     
-    // Simulate API call
     setTimeout(() => { 
       if (currentRole && currentRole.id) {
         setRoles(prevRoles => prevRoles.map(r => r.id === currentRole.id ? { ...r, name: formRoleName, description: formRoleDescription, permissions: formRolePermissions } : r));
@@ -177,7 +195,7 @@ export default function RoleManagementPage() {
         const permissionsIndex = header.indexOf('permissions');
 
         const importedRolesBatch: Role[] = [];
-        const currentRolesCopy = [...roles]; // Work on a copy
+        const currentRolesCopy = [...roles]; 
         let newRolesCount = 0;
         let updatedRolesCount = 0;
 
@@ -281,6 +299,43 @@ role_002,Viewer,Can only view published content,"view_content"
     toast({ title: "Sample CSV Downloaded", description: "sample_roles_import.csv downloaded." });
   };
 
+  const handleSelectAll = (checked: boolean | 'indeterminate') => {
+    if (checked === true) {
+      setSelectedRoleIds(paginatedRoles.map(role => role.id));
+    } else {
+      setSelectedRoleIds([]);
+    }
+  };
+
+  const handleSelectRole = (roleId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedRoleIds(prev => [...prev, roleId]);
+    } else {
+      setSelectedRoleIds(prev => prev.filter(id => id !== roleId));
+    }
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedRoleIds.length === 0) {
+      toast({ variant: "destructive", title: "No Roles Selected", description: "Please select roles to delete." });
+      return;
+    }
+    setIsSubmitting(true);
+    setTimeout(() => {
+      setRoles(prevRoles => prevRoles.filter(role => !selectedRoleIds.includes(role.id) || role.name === 'Admin'));
+      const adminSelected = selectedRoleIds.some(id => roles.find(r => r.id === id)?.name === 'Admin');
+      if (adminSelected) {
+          toast({ variant: "destructive", title: "Admin Role Protected", description: "The 'Admin' role cannot be deleted." });
+      }
+      setSelectedRoleIds([]);
+      toast({ title: "Roles Deleted", description: `${selectedRoleIds.filter(id => roles.find(r => r.id === id)?.name !== 'Admin').length} roles have been successfully deleted.` });
+      setIsSubmitting(false);
+    }, 500);
+  };
+
+  const isAllSelectedOnPage = paginatedRoles.length > 0 && paginatedRoles.every(role => selectedRoleIds.includes(role.id));
+  const isSomeSelectedOnPage = paginatedRoles.some(role => selectedRoleIds.includes(role.id)) && !isAllSelectedOnPage;
+
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
@@ -339,13 +394,11 @@ role_002,Viewer,Can only view published content,"view_content"
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-60 overflow-y-auto p-2 border rounded-md">
                       {allPermissions.map(permission => (
                         <div key={permission} className="flex items-center space-x-2">
-                          <input
-                            type="checkbox"
+                          <Checkbox
                             id={`perm-${permission}`}
                             checked={formRolePermissions.includes(permission)}
-                            onChange={() => handlePermissionChange(permission)}
+                            onCheckedChange={() => handlePermissionChange(permission)}
                             disabled={isSubmitting}
-                            className="form-checkbox h-4 w-4 text-primary border-muted-foreground focus:ring-primary rounded"
                           />
                           <Label htmlFor={`perm-${permission}`} className="text-sm font-normal cursor-pointer">
                             {permission.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
@@ -391,9 +444,27 @@ role_002,Viewer,Can only view published content,"view_content"
             </p>
           </div>
 
+          {selectedRoleIds.length > 0 && (
+             <div className="mb-4 flex items-center gap-2">
+                <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
+                    <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedRoleIds.length})
+                </Button>
+                <span className="text-sm text-muted-foreground">
+                    {selectedRoleIds.length} role(s) selected.
+                </span>
+            </div>
+          )}
+
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-[50px]">
+                    <Checkbox 
+                        checked={isAllSelectedOnPage || isSomeSelectedOnPage}
+                        onCheckedChange={handleSelectAll}
+                        aria-label="Select all roles on this page"
+                    />
+                </TableHead>
                 <TableHead>Role Name</TableHead>
                 <TableHead>Description</TableHead>
                 <TableHead>Permissions</TableHead>
@@ -401,9 +472,17 @@ role_002,Viewer,Can only view published content,"view_content"
               </TableRow>
             </TableHeader>
             <TableBody>
-              {roles.map((role) => (
-                <TableRow key={role.id}>
-                  <TableCell className="font-medium">{role.name}</TableCell>
+              {paginatedRoles.map((role) => (
+                <TableRow key={role.id} data-state={selectedRoleIds.includes(role.id) ? "selected" : undefined}>
+                  <TableCell>
+                      <Checkbox
+                        checked={selectedRoleIds.includes(role.id)}
+                        onCheckedChange={(checked) => handleSelectRole(role.id, !!checked)}
+                        aria-labelledby={`role-name-${role.id}`}
+                        disabled={role.name === 'Admin'}
+                       />
+                  </TableCell>
+                  <TableCell id={`role-name-${role.id}`} className="font-medium">{role.name}</TableCell>
                   <TableCell>{role.description}</TableCell>
                   <TableCell className="max-w-xs truncate">
                     {role.permissions.map(p => p.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ') || '-'}
@@ -413,16 +492,16 @@ role_002,Viewer,Can only view published content,"view_content"
                       <Edit className="h-4 w-4" />
                       <span className="sr-only">Edit Role</span>
                     </Button>
-                    <Button variant="destructive" size="icon" onClick={() => handleDelete(role.id)} disabled={isSubmitting || role.name === 'Admin' /* Prevent Admin role deletion */}>
+                    <Button variant="destructive" size="icon" onClick={() => handleDelete(role.id)} disabled={isSubmitting || role.name === 'Admin'}>
                       <Trash2 className="h-4 w-4" />
                       <span className="sr-only">Delete Role</span>
                     </Button>
                   </TableCell>
                 </TableRow>
               ))}
-              {roles.length === 0 && (
+              {paginatedRoles.length === 0 && (
                  <TableRow>
-                    <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
                         No roles found. Click "Add New Role" or import a CSV file to create roles.
                     </TableCell>
                  </TableRow>
@@ -430,9 +509,77 @@ role_002,Viewer,Can only view published content,"view_content"
             </TableBody>
           </Table>
         </CardContent>
+        <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
+            <div className="text-sm text-muted-foreground">
+                Showing {Math.min((currentPage -1) * itemsPerPage + 1, roles.length)} to {Math.min(currentPage * itemsPerPage, roles.length)} of {roles.length} roles.
+            </div>
+            <div className="flex items-center gap-2">
+                 <Select
+                    value={String(itemsPerPage)}
+                    onValueChange={(value) => {
+                        setItemsPerPage(Number(value));
+                        setCurrentPage(1);
+                    }}
+                    >
+                    <SelectTrigger className="w-[70px] h-8 text-xs">
+                        <SelectValue placeholder={itemsPerPage} />
+                    </SelectTrigger>
+                    <SelectContent side="top">
+                        {ITEMS_PER_PAGE_OPTIONS.map((pageSize) => (
+                        <SelectItem key={pageSize} value={String(pageSize)} className="text-xs">
+                            {pageSize}
+                        </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                <span className="text-sm text-muted-foreground">
+                Page {currentPage} of {totalPages > 0 ? totalPages : 1}
+                </span>
+                <div className="flex items-center gap-1">
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => setCurrentPage(1)}
+                        disabled={currentPage === 1}
+                        >
+                        <ChevronsLeft className="h-4 w-4" />
+                        <span className="sr-only">First page</span>
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                        disabled={currentPage === 1}
+                        >
+                        <ChevronLeft className="h-4 w-4" />
+                        <span className="sr-only">Previous page</span>
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                        disabled={currentPage === totalPages || totalPages === 0}
+                        >
+                        <ChevronRight className="h-4 w-4" />
+                        <span className="sr-only">Next page</span>
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => setCurrentPage(totalPages)}
+                        disabled={currentPage === totalPages || totalPages === 0}
+                        >
+                        <ChevronsRight className="h-4 w-4" />
+                        <span className="sr-only">Last page</span>
+                    </Button>
+                </div>
+            </div>
+        </CardFooter>
       </Card>
     </div>
   );
 }
-
-    

@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
-import { PlusCircle, Edit, Trash2, Users, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Users, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown';
@@ -52,6 +52,9 @@ const LOCAL_STORAGE_KEY_USERS = 'managedUsers';
 type SortField = keyof Omit<User, 'roles'> | 'roles' | 'none'; 
 type SortDirection = 'asc' | 'desc';
 
+const ITEMS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
+
+
 export default function UserManagementPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -59,7 +62,6 @@ export default function UserManagementPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<Partial<User> & { password?: string; confirmPassword?: string } | null>(null);
 
-  // Form state for Dialog
   const [formUserName, setFormUserName] = useState('');
   const [formUserEmail, setFormUserEmail] = useState('');
   const [formUserRoles, setFormUserRoles] = useState<UserRole[]>(['student']); 
@@ -74,6 +76,11 @@ export default function UserManagementPage() {
   const [filterStatus, setFilterStatus] = useState<'active' | 'inactive' | 'all'>('all');
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
+
 
   const { toast } = useToast();
 
@@ -94,7 +101,7 @@ export default function UserManagementPage() {
   }, []);
 
   useEffect(() => {
-    if(!isLoading) { // Only save if initial load is complete
+    if(!isLoading) { 
         try {
             localStorage.setItem(LOCAL_STORAGE_KEY_USERS, JSON.stringify(users));
         } catch (error) {
@@ -142,9 +149,9 @@ export default function UserManagementPage() {
         return;
     }
     setIsSubmitting(true);
-    // Simulate API call
     setTimeout(() => { 
       setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
+      setSelectedUserIds(prev => prev.filter(id => id !== userId));
       toast({ title: "User Deleted", description: "The user has been successfully deleted." });
       setIsSubmitting(false);
     }, 500);
@@ -183,7 +190,6 @@ export default function UserManagementPage() {
 
     setIsSubmitting(true);
     
-    // Simulate API call
     setTimeout(() => { 
       const userData: Omit<User, 'id'> = { 
         name: formUserName, 
@@ -351,6 +357,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
       setSortField(field);
       setSortDirection('asc');
     }
+    setCurrentPage(1); 
   };
   
   const filteredAndSortedUsers = useMemo(() => {
@@ -396,6 +403,63 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
     return result;
   }, [users, searchTerm, filterRole, filterStatus, sortField, sortDirection]);
 
+  const totalPages = Math.ceil(filteredAndSortedUsers.length / itemsPerPage);
+  const paginatedUsers = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredAndSortedUsers.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredAndSortedUsers, currentPage, itemsPerPage]);
+
+  useEffect(() => {
+    setCurrentPage(1); 
+  }, [searchTerm, filterRole, filterStatus, itemsPerPage]);
+
+
+  const handleSelectAll = (checked: boolean | 'indeterminate') => {
+    if (checked === true) {
+      setSelectedUserIds(paginatedUsers.map(user => user.id));
+    } else {
+      setSelectedUserIds([]);
+    }
+  };
+
+  const handleSelectUser = (userId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedUserIds(prev => [...prev, userId]);
+    } else {
+      setSelectedUserIds(prev => prev.filter(id => id !== userId));
+    }
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedUserIds.length === 0) {
+      toast({ variant: "destructive", title: "No Users Selected", description: "Please select users to delete." });
+      return;
+    }
+    setIsSubmitting(true);
+    setTimeout(() => {
+      const nonAdminSelectedIds = selectedUserIds.filter(id => {
+        const user = users.find(u => u.id === id);
+        return !(user?.id === "u1" && user?.email === "admin@gppalanpur.in");
+      });
+
+      const adminAttempted = selectedUserIds.length !== nonAdminSelectedIds.length;
+
+      setUsers(prevUsers => prevUsers.filter(user => !nonAdminSelectedIds.includes(user.id)));
+      setSelectedUserIds([]);
+      
+      let description = `${nonAdminSelectedIds.length} user(s) have been successfully deleted.`;
+      if(adminAttempted){
+        toast({ variant: "destructive", title: "Admin User Protected", description: "The primary admin user (admin@gppalanpur.in) cannot be deleted." });
+      }
+      toast({ title: "Users Deleted", description });
+      setIsSubmitting(false);
+    }, 500);
+  };
+  
+  const isAllSelectedOnPage = paginatedUsers.length > 0 && paginatedUsers.every(user => selectedUserIds.includes(user.id));
+  const isSomeSelectedOnPage = paginatedUsers.some(user => selectedUserIds.includes(user.id)) && !isAllSelectedOnPage;
+
+
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
   }
@@ -425,7 +489,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
             </CardDescription>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+             <Dialog open={isDialogOpen} onOpenChange={(isOpen) => { setIsDialogOpen(isOpen); if (!isOpen) resetForm(); }}>
               <DialogTrigger asChild>
                 <Button onClick={handleAddNew} className="w-full sm:w-auto">
                   <PlusCircle className="mr-2 h-5 w-5" /> Add New User
@@ -552,9 +616,27 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
             </div>
           </div>
 
+          {selectedUserIds.length > 0 && (
+             <div className="mb-4 flex items-center gap-2">
+                <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
+                    <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedUserIds.length})
+                </Button>
+                <span className="text-sm text-muted-foreground">
+                    {selectedUserIds.length} user(s) selected.
+                </span>
+            </div>
+          )}
+
           <Table>
             <TableHeader>
               <TableRow>
+                 <TableHead className="w-[50px]">
+                    <Checkbox 
+                        checked={isAllSelectedOnPage || isSomeSelectedOnPage}
+                        onCheckedChange={handleSelectAll}
+                        aria-label="Select all users on this page"
+                    />
+                </TableHead>
                 <SortableTableHeader field="name" label="Name" />
                 <SortableTableHeader field="email" label="Email" />
                 <SortableTableHeader field="roles" label="Roles" />
@@ -564,9 +646,17 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredAndSortedUsers.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell className="font-medium">{user.name}</TableCell>
+              {paginatedUsers.map((user) => (
+                <TableRow key={user.id} data-state={selectedUserIds.includes(user.id) ? "selected" : undefined}>
+                  <TableCell>
+                      <Checkbox
+                        checked={selectedUserIds.includes(user.id)}
+                        onCheckedChange={(checked) => handleSelectUser(user.id, !!checked)}
+                        aria-labelledby={`user-name-${user.id}`}
+                        disabled={user.email === "admin@gppalanpur.in"}
+                       />
+                  </TableCell>
+                  <TableCell id={`user-name-${user.id}`} className="font-medium">{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell className="max-w-xs truncate">
                     {user.roles.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join(', ')}
@@ -594,9 +684,9 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
                   </TableCell>
                 </TableRow>
               ))}
-              {filteredAndSortedUsers.length === 0 && (
+              {paginatedUsers.length === 0 && (
                  <TableRow>
-                    <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
                         No users found. Try adjusting your search or filters, or add a new user.
                     </TableCell>
                  </TableRow>
@@ -604,10 +694,75 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
             </TableBody>
           </Table>
         </CardContent>
-         <CardFooter className="justify-end">
-            <p className="text-sm text-muted-foreground">
-                Showing {filteredAndSortedUsers.length} of {users.length} users.
-            </p>
+         <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
+            <div className="text-sm text-muted-foreground">
+                Showing {Math.min((currentPage -1) * itemsPerPage + 1, filteredAndSortedUsers.length)} to {Math.min(currentPage * itemsPerPage, filteredAndSortedUsers.length)} of {filteredAndSortedUsers.length} users.
+            </div>
+            <div className="flex items-center gap-2">
+                 <Select
+                    value={String(itemsPerPage)}
+                    onValueChange={(value) => {
+                        setItemsPerPage(Number(value));
+                        setCurrentPage(1);
+                    }}
+                    >
+                    <SelectTrigger className="w-[70px] h-8 text-xs">
+                        <SelectValue placeholder={itemsPerPage} />
+                    </SelectTrigger>
+                    <SelectContent side="top">
+                        {ITEMS_PER_PAGE_OPTIONS.map((pageSize) => (
+                        <SelectItem key={pageSize} value={String(pageSize)} className="text-xs">
+                            {pageSize}
+                        </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                <span className="text-sm text-muted-foreground">
+                Page {currentPage} of {totalPages > 0 ? totalPages : 1}
+                </span>
+                <div className="flex items-center gap-1">
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => setCurrentPage(1)}
+                        disabled={currentPage === 1}
+                        >
+                        <ChevronsLeft className="h-4 w-4" />
+                        <span className="sr-only">First page</span>
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                        disabled={currentPage === 1}
+                        >
+                        <ChevronLeft className="h-4 w-4" />
+                        <span className="sr-only">Previous page</span>
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                        disabled={currentPage === totalPages || totalPages === 0}
+                        >
+                        <ChevronRight className="h-4 w-4" />
+                        <span className="sr-only">Next page</span>
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => setCurrentPage(totalPages)}
+                        disabled={currentPage === totalPages || totalPages === 0}
+                        >
+                        <ChevronsRight className="h-4 w-4" />
+                        <span className="sr-only">Last page</span>
+                    </Button>
+                </div>
+            </div>
         </CardFooter>
       </Card>
     </div>

@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
@@ -16,6 +17,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { format, parseISO, isValid } from 'date-fns';
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown';
 interface SystemUser {
@@ -31,22 +33,22 @@ type StudentStatus = 'active' | 'inactive' | 'graduated' | 'dropped';
 type SemesterStatus = 'Passed' | 'Pending' | 'Not Appeared' | 'N/A';
 
 interface Student {
-  id: string; // Internal ID
-  enrollmentNumber: string; // map_number from GTU CSV
-  gtuName?: string; // Name as per GTU records (Surname Name FatherName)
+  id: string; 
+  enrollmentNumber: string; 
+  gtuName?: string; 
   firstName?: string;
   middleName?: string;
   lastName?: string;
-  personalEmail?: string; // Email from GTU CSV
-  instituteEmail: string; // enrollmentNumber@gppalanpur.in
+  personalEmail?: string; 
+  instituteEmail: string; 
   department: string;
-  branchCode?: string; // BR_CODE from GTU CSV
+  branchCode?: string; 
   currentSemester: number;
   status: StudentStatus;
-  contactNumber?: string; // Mobile from GTU CSV
+  contactNumber?: string; 
   address?: string;
-  dateOfBirth?: string; // Store as ISO string e.g., "2000-01-01"
-  admissionDate?: string; // Store as ISO string e.g., "2020-07-15"
+  dateOfBirth?: string; 
+  admissionDate?: string; 
   gender?: 'Male' | 'Female' | 'Other';
   convocationYear?: number;
   sem1Status?: SemesterStatus;
@@ -94,13 +96,6 @@ const SEMESTER_STATUS_OPTIONS: { value: SemesterStatus; label: string }[] = [
 const GENDER_OPTIONS = ["Male", "Female", "Other"];
 const SHIFT_OPTIONS = ["Morning", "Afternoon"];
 
-
-const initialStudents: Student[] = [
-  { id: "s1", enrollmentNumber: "GPPLN20001", gtuName: "KUMAR RAJESH SHANTILAL", firstName: "RAJESH", middleName: "SHANTILAL", lastName: "KUMAR", personalEmail: "rajesh.k@example.com", instituteEmail: "GPPLN20001@gppalanpur.in", department: "Computer Engineering", branchCode: "CE", currentSemester: 4, status: "active", contactNumber: "9876543210", address: "123 Tech Park, Palanpur", dateOfBirth: "2002-05-15", admissionDate: "2020-07-01", gender: "Male", convocationYear: 2024, sem1Status: "Passed", sem2Status: "Passed", sem3Status: "Passed", category: "OPEN", shift: "Morning", isPassAll: false },
-  { id: "s2", enrollmentNumber: "GPPLN20002", gtuName: "SHARMA PRIYA MOHAN", firstName: "PRIYA", middleName: "MOHAN", lastName: "SHARMA", personalEmail: "priya.s@example.com", instituteEmail: "GPPLN20002@gppalanpur.in", department: "Mechanical Engineering", branchCode: "ME", currentSemester: 6, status: "active", contactNumber: "9876543211", dateOfBirth: "2001-11-20", gender: "Female", sem1Status: "Passed", sem2Status: "Passed", sem3Status: "Passed", sem4Status: "Passed", sem5Status: "Passed", shift: "Afternoon", isComplete: false },
-  { id: "s3", enrollmentNumber: "GPPLN19005", gtuName: "PATEL AMIT DINESHBHAI", firstName: "AMIT", middleName: "DINESHBHAI", lastName: "PATEL", instituteEmail: "GPPLN19005@gppalanpur.in", department: "Electrical Engineering", branchCode: "EE", currentSemester: 6, status: "graduated", address: "456 Power House, Deesa", admissionDate: "2019-06-20", gender: "Male", convocationYear: 2023, sem1Status: "Passed", sem2Status: "Passed", sem3Status: "Passed", sem4Status: "Passed", sem5Status: "Passed", sem6Status: "Passed", isPassAll: true, isComplete: true, termClose: true },
-];
-
 const LOCAL_STORAGE_KEY_STUDENTS = 'managedStudentsPMP';
 const LOCAL_STORAGE_KEY_USERS = 'managedUsers';
 
@@ -146,6 +141,7 @@ const normalizeShift = (shift: string | undefined): Student['shift'] | undefined
 };
 
 const addUserToLocalStorage = (newUser: SystemUser) => {
+  if (typeof window === 'undefined') return;
   try {
     const storedUsers = localStorage.getItem(LOCAL_STORAGE_KEY_USERS);
     let users: SystemUser[] = storedUsers ? JSON.parse(storedUsers) : [];
@@ -188,14 +184,11 @@ export default function StudentManagementPage() {
   const [formConvocationYear, setFormConvocationYear] = useState<number | undefined>(undefined);
   const [formShift, setFormShift] = useState<Student['shift'] | undefined>(undefined);
 
-  const [formSem1Status, setFormSem1Status] = useState<SemesterStatus>('N/A');
-  const [formSem2Status, setFormSem2Status] = useState<SemesterStatus>('N/A');
-  const [formSem3Status, setFormSem3Status] = useState<SemesterStatus>('N/A');
-  const [formSem4Status, setFormSem4Status] = useState<SemesterStatus>('N/A');
-  const [formSem5Status, setFormSem5Status] = useState<SemesterStatus>('N/A');
-  const [formSem6Status, setFormSem6Status] = useState<SemesterStatus>('N/A');
-  const [formSem7Status, setFormSem7Status] = useState<SemesterStatus>('N/A');
-  const [formSem8Status, setFormSem8Status] = useState<SemesterStatus>('N/A');
+  const semesterStatusGetters: { [key: number]: SemesterStatus } = {
+    1: 'N/A', 2: 'N/A', 3: 'N/A', 4: 'N/A',
+    5: 'N/A', 6: 'N/A', 7: 'N/A', 8: 'N/A',
+  };
+  const [formSemesterStatuses, setFormSemesterStatuses] = useState<typeof semesterStatusGetters>(semesterStatusGetters);
 
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -206,6 +199,8 @@ export default function StudentManagementPage() {
   const [filterStatus, setFilterStatus] = useState<StudentStatus | 'all'>('all');
   const [sortField, setSortField] = useState<SortField>('gtuName');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>([]);
+
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
@@ -214,28 +209,27 @@ export default function StudentManagementPage() {
   const { toast } = useToast();
 
   useEffect(() => {
-    setIsLoading(true);
-    try {
-      const storedStudents = localStorage.getItem(LOCAL_STORAGE_KEY_STUDENTS);
-      if (storedStudents) {
-        setStudents(JSON.parse(storedStudents));
-      } else {
-        // setStudents(initialStudents); // No longer setting initial students from hardcoded list
+    if (typeof window !== 'undefined') {
+      setIsLoading(true);
+      try {
+        const storedStudents = localStorage.getItem(LOCAL_STORAGE_KEY_STUDENTS);
+        if (storedStudents) {
+          setStudents(JSON.parse(storedStudents));
+        }
+      } catch (error) {
+        console.error("Failed to load students from localStorage", error);
       }
-    } catch (error) {
-      console.error("Failed to load students from localStorage", error);
-      // setStudents(initialStudents);
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && typeof window !== 'undefined') {
         try {
             localStorage.setItem(LOCAL_STORAGE_KEY_STUDENTS, JSON.stringify(students));
         } catch (error) {
             console.error("Failed to save students to localStorage", error);
-             setTimeout(() => {
+             setTimeout(() => { // setTimeout to avoid issues with rendering
                 toast({
                     variant: "destructive",
                     title: "Storage Error",
@@ -265,14 +259,7 @@ export default function StudentManagementPage() {
     setFormGender(undefined);
     setFormConvocationYear(undefined);
     setFormShift(undefined);
-    setFormSem1Status('N/A');
-    setFormSem2Status('N/A');
-    setFormSem3Status('N/A');
-    setFormSem4Status('N/A');
-    setFormSem5Status('N/A');
-    setFormSem6Status('N/A');
-    setFormSem7Status('N/A');
-    setFormSem8Status('N/A');
+    setFormSemesterStatuses(semesterStatusGetters);
     setCurrentStudent(null);
   };
 
@@ -295,14 +282,12 @@ export default function StudentManagementPage() {
     setFormGender(student.gender);
     setFormConvocationYear(student.convocationYear);
     setFormShift(student.shift);
-    setFormSem1Status(student.sem1Status || 'N/A');
-    setFormSem2Status(student.sem2Status || 'N/A');
-    setFormSem3Status(student.sem3Status || 'N/A');
-    setFormSem4Status(student.sem4Status || 'N/A');
-    setFormSem5Status(student.sem5Status || 'N/A');
-    setFormSem6Status(student.sem6Status || 'N/A');
-    setFormSem7Status(student.sem7Status || 'N/A');
-    setFormSem8Status(student.sem8Status || 'N/A');
+    
+    const newSemesterStatuses = {...semesterStatusGetters};
+    SEMESTER_OPTIONS.forEach(semNum => {
+        newSemesterStatuses[semNum] = student[`sem${semNum}Status` as keyof Student] as SemesterStatus || 'N/A';
+    });
+    setFormSemesterStatuses(newSemesterStatuses);
     setIsDialogOpen(true);
   };
 
@@ -315,6 +300,7 @@ export default function StudentManagementPage() {
     setIsSubmitting(true);
     setTimeout(() => {
       setStudents(prevStudents => prevStudents.filter(student => student.id !== studentId));
+      setSelectedStudentIds(prev => prev.filter(id => id !== studentId));
       toast({ title: "Student Deleted", description: "The student record has been successfully deleted." });
       setIsSubmitting(false);
     }, 500);
@@ -367,14 +353,14 @@ export default function StudentManagementPage() {
         gender: formGender,
         convocationYear: formConvocationYear ? Number(formConvocationYear) : undefined,
         shift: formShift,
-        sem1Status: formSem1Status,
-        sem2Status: formSem2Status,
-        sem3Status: formSem3Status,
-        sem4Status: formSem4Status,
-        sem5Status: formSem5Status,
-        sem6Status: formSem6Status,
-        sem7Status: formSem7Status,
-        sem8Status: formSem8Status,
+        sem1Status: formSemesterStatuses[1],
+        sem2Status: formSemesterStatuses[2],
+        sem3Status: formSemesterStatuses[3],
+        sem4Status: formSemesterStatuses[4],
+        sem5Status: formSemesterStatuses[5],
+        sem6Status: formSemesterStatuses[6],
+        sem7Status: formSemesterStatuses[7],
+        sem8Status: formSemesterStatuses[8],
       };
       
       studentData.instituteEmail = `${studentData.enrollmentNumber}@gppalanpur.in`;
@@ -521,11 +507,10 @@ export default function StudentManagementPage() {
           if (idFromCsv) {
             existingStudentIndex = studentsToUpdate.findIndex(s => s.id === idFromCsv);
             if (existingStudentIndex !== -1 && studentsToUpdate[existingStudentIndex].enrollmentNumber !== enrollmentNumber) {
-              // ID matches, but enrollment number differs. Check if new enrollment number already exists.
               const conflictIndex = studentsToUpdate.findIndex(s => s.enrollmentNumber === enrollmentNumber && s.id !== idFromCsv);
               if (conflictIndex !== -1) {
                 console.warn(`Skipping update for ID ${idFromCsv}: Enrollment number ${enrollmentNumber} from CSV conflicts with an existing different student (ID: ${studentsToUpdate[conflictIndex].id}). Student with this enrollment will be updated if found by enrollment number directly.`);
-                existingStudentIndex = -1; // Force search by enrollment number
+                existingStudentIndex = -1; 
               }
             }
           }
@@ -578,7 +563,7 @@ export default function StudentManagementPage() {
     const header = ["id", "enrollmentNumber", "gtuName", "firstName", "middleName", "lastName", "personalEmail", "instituteEmail", "department", "branchCode", "currentSemester", "status", "contactNumber", "address", "dateOfBirth", "admissionDate", "gender", "convocationYear", "shift", "sem1Status", "sem2Status", "sem3Status", "sem4Status", "sem5Status", "sem6Status", "sem7Status", "sem8Status", "category", "isComplete", "termClose", "isCancel", "isPassAll", "aadharNumber"];
     const csvRows = [
       header.join(','),
-      ...filteredStudents.map(student => [ // Use filteredStudents here
+      ...filteredStudents.map(student => [ 
         student.id,
         student.enrollmentNumber,
         `"${(student.gtuName || "").replace(/"/g, '""')}"`,
@@ -682,11 +667,10 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                 currentSemester = Math.min(sem + 1, 8);
                 break;
             } else if (mapSemesterCodeToStatus(data[hMap[`sem${sem}` as keyof typeof hMap]]) === 'Pending') {
-                currentSemester = sem; // If pending, they are in that semester
+                currentSemester = sem; 
                 break;
             }
           }
-           // If all passed or completed, they are effectively in or beyond sem 8 (graduated)
            if (data[hMap['ispassall']]?.toLowerCase() === 'true' || data[hMap['iscomplete']]?.toLowerCase() === 'true'){
             currentSemester = 8; 
           }
@@ -784,7 +768,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
       setSortField(field);
       setSortDirection('asc');
     }
-    setCurrentPage(1); // Reset to first page on sort
+    setCurrentPage(1); 
   };
 
   const filteredStudents = useMemo(() => {
@@ -844,8 +828,41 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
   }, [filteredStudents, currentPage, itemsPerPage]);
 
   useEffect(() => {
-    setCurrentPage(1); // Reset to page 1 when filters change
+    setCurrentPage(1); 
   }, [searchTerm, filterDepartment, filterSemester, filterStatus, itemsPerPage]);
+
+  const handleSelectAll = (checked: boolean | 'indeterminate') => {
+    if (checked === true) {
+      setSelectedStudentIds(paginatedStudents.map(student => student.id));
+    } else {
+      setSelectedStudentIds([]);
+    }
+  };
+
+  const handleSelectStudent = (studentId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedStudentIds(prev => [...prev, studentId]);
+    } else {
+      setSelectedStudentIds(prev => prev.filter(id => id !== studentId));
+    }
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedStudentIds.length === 0) {
+      toast({ variant: "destructive", title: "No Students Selected", description: "Please select students to delete." });
+      return;
+    }
+    setIsSubmitting(true);
+    setTimeout(() => {
+      setStudents(prevStudents => prevStudents.filter(student => !selectedStudentIds.includes(student.id)));
+      setSelectedStudentIds([]);
+      toast({ title: "Students Deleted", description: `${selectedStudentIds.length} student(s) have been successfully deleted.` });
+      setIsSubmitting(false);
+    }, 500);
+  };
+  
+  const isAllSelectedOnPage = paginatedStudents.length > 0 && paginatedStudents.every(student => selectedStudentIds.includes(student.id));
+  const isSomeSelectedOnPage = paginatedStudents.some(student => selectedStudentIds.includes(student.id)) && !isAllSelectedOnPage;
 
 
   if (isLoading && !students.length) { 
@@ -861,17 +878,6 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
       </div>
     </TableHead>
   );
-
-  const semesterStatusGetters: { [key: number]: SemesterStatus | undefined } = {
-    1: formSem1Status, 2: formSem2Status, 3: formSem3Status, 4: formSem4Status,
-    5: formSem5Status, 6: formSem6Status, 7: formSem7Status, 8: formSem8Status,
-  };
-
-  const semesterStatusSetters: { [key: number]: React.Dispatch<React.SetStateAction<SemesterStatus>> } = {
-    1: setFormSem1Status, 2: setFormSem2Status, 3: setFormSem3Status, 4: setFormSem4Status,
-    5: setFormSem5Status, 6: setFormSem6Status, 7: setFormSem7Status, 8: setFormSem8Status,
-  };
-
 
   return (
     <div className="space-y-8">
@@ -1036,8 +1042,8 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                         <div key={`sem-${semNum}-status-form`}>
                             <Label htmlFor={`sem${semNum}StatusForm`}>Sem {semNum}</Label>
                             <Select
-                                value={semesterStatusGetters[semNum] || "N/A"}
-                                onValueChange={(val) => semesterStatusSetters[semNum](val as SemesterStatus)}
+                                value={formSemesterStatuses[semNum] || "N/A"}
+                                onValueChange={(val) => setFormSemesterStatuses(prev => ({...prev, [semNum]: val as SemesterStatus}))}
                                 disabled={isSubmitting}
                             >
                                 <SelectTrigger id={`sem${semNum}StatusForm`}><SelectValue placeholder="Status" /></SelectTrigger>
@@ -1151,10 +1157,28 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
               </Select>
             </div>
           </div>
+          
+          {selectedStudentIds.length > 0 && (
+             <div className="mb-4 flex items-center gap-2">
+                <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
+                    <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedStudentIds.length})
+                </Button>
+                <span className="text-sm text-muted-foreground">
+                    {selectedStudentIds.length} student(s) selected.
+                </span>
+            </div>
+          )}
 
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-[50px]">
+                    <Checkbox 
+                        checked={isAllSelectedOnPage || isSomeSelectedOnPage}
+                        onCheckedChange={handleSelectAll}
+                        aria-label="Select all students on this page"
+                    />
+                </TableHead>
                 <SortableTableHeader field="gtuName" label="Name (GTU)" />
                 <SortableTableHeader field="enrollmentNumber" label="Enrollment No." />
                 <SortableTableHeader field="department" label="Department" />
@@ -1166,8 +1190,15 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
             </TableHeader>
             <TableBody>
               {paginatedStudents.map((student) => (
-                <TableRow key={student.id}>
-                  <TableCell className="font-medium">
+                <TableRow key={student.id} data-state={selectedStudentIds.includes(student.id) ? "selected" : undefined}>
+                   <TableCell>
+                      <Checkbox
+                        checked={selectedStudentIds.includes(student.id)}
+                        onCheckedChange={(checked) => handleSelectStudent(student.id, !!checked)}
+                        aria-labelledby={`student-name-${student.id}`}
+                       />
+                  </TableCell>
+                  <TableCell id={`student-name-${student.id}`} className="font-medium">
                     <div className="flex flex-col">
                         <span className="font-semibold">{student.gtuName || `${student.firstName || ''} ${student.lastName || ''}`.trim()}</span>
                         <span className="text-xs text-muted-foreground">{student.instituteEmail}</span>
@@ -1240,7 +1271,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
               ))}
               {paginatedStudents.length === 0 && (
                  <TableRow>
-                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
                         No students found. Try adjusting your search or filters, or add a new student.
                     </TableCell>
                  </TableRow>
