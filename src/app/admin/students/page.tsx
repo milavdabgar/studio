@@ -112,6 +112,10 @@ const mapSemesterCodeToStatus = (code: string | undefined | null): SemesterStatu
     return null; // Should not happen with clean data
 };
 
+const generateClientId = (): string => {
+  return `client_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+};
+
 
 export default function StudentManagementPage() {
   const [students, setStudents] = useState<Student[]>([]);
@@ -304,7 +308,7 @@ export default function StudentManagementPage() {
         toast({ title: "Student Updated", description: "The student record has been successfully updated." });
       } else {
         const newStudent: Student = {
-          id: String(Date.now()),
+          id: generateClientId(),
           ...studentData,
           instituteEmail: studentData.instituteEmail!,
         };
@@ -333,7 +337,7 @@ export default function StudentManagementPage() {
   };
 
   // Standard CSV import/export (existing functionality)
-  const handleImportStudents = () => { /* ... existing code for standard import ... */ 
+  const handleImportStudents = () => { 
     if (!selectedFile) {
       toast({ variant: "destructive", title: "Import Error", description: "Please select a CSV file to import." });
       return;
@@ -402,7 +406,12 @@ export default function StudentManagementPage() {
             shift: data[hMap['shift']] as Student['shift'] || undefined,
             sem1Status: data[hMap['sem1status']] as SemesterStatus || null,
             sem2Status: data[hMap['sem2status']] as SemesterStatus || null,
-            // ... map other semester statuses and boolean fields similarly
+            sem3Status: data[hMap['sem3status']] as SemesterStatus || null,
+            sem4Status: data[hMap['sem4status']] as SemesterStatus || null,
+            sem5Status: data[hMap['sem5status']] as SemesterStatus || null,
+            sem6Status: data[hMap['sem6status']] as SemesterStatus || null,
+            sem7Status: data[hMap['sem7status']] as SemesterStatus || null,
+            sem8Status: data[hMap['sem8status']] as SemesterStatus || null,
             category: data[hMap['category']] || undefined,
             isComplete: data[hMap['iscomplete']] ? data[hMap['iscomplete']].toLowerCase() === 'true' : undefined,
             termClose: data[hMap['termclose']] ? data[hMap['termclose']].toLowerCase() === 'true' : undefined,
@@ -435,7 +444,7 @@ export default function StudentManagementPage() {
              updatedStudentsList[existingByEnrollmentIndex] = { ...updatedStudentsList[existingByEnrollmentIndex], ...studentData };
              updatedStudentsCount++;
           }else { // New student
-            importedStudents.push({ id: String(Date.now() + Math.random()), ...studentData });
+            importedStudents.push({ id: generateClientId(), ...studentData });
             newStudentsCount++;
              // Simulate user account creation
             console.log(`Creating user account for ${studentData.enrollmentNumber}: Email: ${studentData.instituteEmail}, Password: ${studentData.enrollmentNumber}`);
@@ -457,7 +466,7 @@ export default function StudentManagementPage() {
     };
     reader.readAsText(selectedFile);
   };
-  const handleExportStudents = () => { /* ... existing code for standard export ... */
+  const handleExportStudents = () => { 
     if (filteredAndSortedStudents.length === 0) {
       toast({ title: "Export Canceled", description: "No students to export (check filters)." });
       return;
@@ -504,7 +513,7 @@ export default function StudentManagementPage() {
     document.body.removeChild(link);
     toast({ title: "Export Successful", description: "Students exported to students_export.csv" });
   };
-  const handleDownloadSampleCsv = () => { /* ... existing code for standard sample ... */ 
+  const handleDownloadSampleCsv = () => { 
     const sampleCsvContent = `id,enrollmentNumber,gtuName,firstName,middleName,lastName,personalEmail,instituteEmail,department,branchCode,currentSemester,status,contactNumber,address,dateOfBirth,admissionDate,gender,convocationYear,shift,sem1Status,sem2Status,sem3Status,sem4Status,sem5Status,sem6Status,sem7Status,sem8Status,category,isComplete,termClose,isCancel,isPassAll,aadharNumber
 s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN22001@gppalanpur.in,Computer Engineering,CE,3,active,9988776655,"123 Cyber Lane, Palanpur",2003-08-15,2022-07-01,Male,2025,Morning,Passed,Passed,Pending,,,,,,,OPEN,false,false,false,false,123456789012
 ,GPPLN21005,PATEL BHAVNA MAHESH,BHAVNA,MAHESH,PATEL,bhavna.p@example.com,GPPLN21005@gppalanpur.in,Mechanical Engineering,ME,5,active,9988776650,"Plot 45, Industrial Area, Mehsana",2002-01-20,2021-06-15,Female,2024,Afternoon,Passed,Passed,Passed,Passed,Passed,,,,SEBC,false,false,false,false,
@@ -617,7 +626,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
             updatedStudentsList[existingStudentIndex] = { ...updatedStudentsList[existingStudentIndex], ...studentData };
             updatedStudentsCount++;
           } else {
-            importedStudents.push({ id: String(Date.now() + Math.random()), ...studentData });
+            importedStudents.push({ id: generateClientId(), ...studentData });
             newStudentsCount++;
             // Simulate user account creation for new students from GTU data
             console.log(`Creating user account for ${studentData.enrollmentNumber} (GTU Import): Email: ${studentData.instituteEmail}, Password: ${studentData.enrollmentNumber}`);
@@ -890,25 +899,30 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                     <Textarea id="studentAddress" value={formAddress} onChange={(e) => setFormAddress(e.target.value)} placeholder="e.g., 123 Main St, City" disabled={isSubmitting} rows={2} />
                   </div>
 
-                  {/* Semester Statuses - Example for Sem 1 & 2, repeat for others */}
+                  {/* Semester Statuses */}
                   <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-4 border p-3 rounded-md">
                     <h4 className="md:col-span-full text-sm font-medium mb-1">Semester Statuses</h4>
-                    {[1,2,3,4,5,6,7,8].map(semNum => (
+                    {[1,2,3,4,5,6,7,8].map(semNum => {
+                      const statusKey = `formSem${semNum}Status` as keyof typeof self;
+                      const setStatusKey = `setFormSem${semNum}Status` as keyof typeof self;
+
+                      return (
                         <div key={`sem-${semNum}-status-form`}>
                             <Label htmlFor={`sem${semNum}Status`}>Sem {semNum}</Label>
                             <Select 
-                                value={eval(`formSem${semNum}Status`) || ""} 
-                                onValueChange={(val) => eval(`setFormSem${semNum}Status(val as SemesterStatus | null)`)} 
+                                value={ (this as any)[statusKey] || ""} 
+                                onValueChange={(val) => (this as any)[setStatusKey](val as SemesterStatus | null)} 
                                 disabled={isSubmitting}
                             >
                                 <SelectTrigger id={`sem${semNum}Status`}><SelectValue placeholder="Status" /></SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="">N/A</SelectItem>
-                                    {SEMESTER_STATUS_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value || ""}>{opt.label}</SelectItem>)}
+                                    {SEMESTER_STATUS_OPTIONS.map(opt => <SelectItem key={opt.value || `na-${semNum}`} value={opt.value || ""}>{opt.label}</SelectItem>)}
                                 </SelectContent>
                             </Select>
                         </div>
-                    ))}
+                      );
+                    })}
                   </div>
                   
                   <DialogFooter className="md:col-span-3 mt-4">
@@ -1046,10 +1060,10 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                   <TableCell className="text-center">{student.currentSemester}</TableCell>
                   <TableCell>
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                        student.status === 'active' ? 'bg-success/20 text-success-foreground' 
-                        : student.status === 'graduated' ? 'bg-primary/20 text-primary-foreground'
-                        : student.status === 'dropped' ? 'bg-destructive/20 text-destructive-foreground'
-                        : 'bg-warning/20 text-warning-foreground' // inactive
+                        student.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' // More specific than success/primary
+                        : student.status === 'graduated' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' // More specific
+                        : student.status === 'dropped' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' // More specific
+                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' // inactive, more specific
                     }`}>
                       {student.status.charAt(0).toUpperCase() + student.status.slice(1)}
                     </span>
@@ -1064,18 +1078,21 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                             </TooltipTrigger>
                             <TooltipContent className="w-64 p-2 text-xs">
                                 <p><strong>Gender:</strong> {student.gender || 'N/A'}</p>
-                                <p><strong>DOB:</strong> {student.dateOfBirth ? format(parseISO(student.dateOfBirth), 'dd MMM yyyy') : 'N/A'}</p>
-                                <p><strong>Admission:</strong> {student.admissionDate ? format(parseISO(student.admissionDate), 'dd MMM yyyy') : 'N/A'}</p>
+                                <p><strong>DOB:</strong> {student.dateOfBirth && isValid(parseISO(student.dateOfBirth)) ? format(parseISO(student.dateOfBirth), 'dd MMM yyyy') : 'N/A'}</p>
+                                <p><strong>Admission:</strong> {student.admissionDate && isValid(parseISO(student.admissionDate)) ? format(parseISO(student.admissionDate), 'dd MMM yyyy') : 'N/A'}</p>
                                 <p><strong>Convocation:</strong> {student.convocationYear || 'N/A'}</p>
                                 <p><strong>Shift:</strong> {student.shift || 'N/A'}</p>
                                 <p><strong>Category:</strong> {student.category || 'N/A'}</p>
                                 <p><strong>All Pass:</strong> {student.isPassAll ? 'Yes' : 'No'}</p>
                                 <div className="mt-1 pt-1 border-t">
                                     Semesters:
-                                    {[1,2,3,4,5,6,7,8].map(s => (
-                                        student[`sem${s}Status` as keyof Student] && 
-                                        <span key={s} className="ml-1 text-muted-foreground">S{s}: {student[`sem${s}Status` as keyof Student]}</span>
-                                    ))}
+                                    {[1,2,3,4,5,6,7,8].map(s => {
+                                        const statusKey = `sem${s}Status` as keyof Student;
+                                        return (
+                                          student[statusKey] && 
+                                          <span key={s} className="ml-1 text-muted-foreground">S{s}: {student[statusKey]}</span>
+                                        )
+                                    })}
                                 </div>
                             </TooltipContent>
                         </Tooltip>
