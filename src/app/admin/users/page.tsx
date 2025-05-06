@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { PlusCircle, Edit, Trash2, Users, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -19,7 +20,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  role: UserRole;
+  roles: UserRole[]; // Changed from role: UserRole to roles: UserRole[]
   status: 'active' | 'inactive';
   department?: string; // Optional
   // Password is not stored in this client-side state for security, handled in form
@@ -39,15 +40,15 @@ const STATUS_OPTIONS: { value: 'active' | 'inactive'; label: string }[] = [
 ];
 
 const initialUsers: User[] = [
-  { id: "u1", name: "Super Admin", email: "admin@gppalanpur.in", role: "admin", status: "active", department: "Administration" },
-  { id: "u2", name: "Alice Wonderland", email: "alice.wonder@example.com", role: "student", status: "active", department: "Computer Science" },
-  { id: "u3", name: "Bob The Builder", email: "bob.builder@example.com", role: "faculty", status: "active", department: "Civil Engineering" },
-  { id: "u4", name: "Charlie Chaplin", email: "charlie.c@example.com", role: "hod", status: "active", department: "Mechanical Engineering" },
-  { id: "u5", name: "Diana Prince", email: "diana.p@example.com", role: "jury", status: "inactive", department: "General" },
-  { id: "u6", name: "Edward Scissorhands", email: "ed.hands@example.com", role: "student", status: "active", department: "Computer Science" },
+  { id: "u1", name: "Super Admin", email: "admin@gppalanpur.in", roles: ["admin"], status: "active", department: "Administration" },
+  { id: "u2", name: "Alice Wonderland", email: "alice.wonder@example.com", roles: ["student"], status: "active", department: "Computer Science" },
+  { id: "u3", name: "Bob The Builder", email: "bob.builder@example.com", roles: ["faculty", "jury"], status: "active", department: "Civil Engineering" },
+  { id: "u4", name: "Charlie Chaplin", email: "charlie.c@example.com", roles: ["hod", "faculty"], status: "active", department: "Mechanical Engineering" },
+  { id: "u5", name: "Diana Prince", email: "diana.p@example.com", roles: ["jury"], status: "inactive", department: "General" },
+  { id: "u6", name: "Edward Scissorhands", email: "ed.hands@example.com", roles: ["student"], status: "active", department: "Computer Science" },
 ];
 
-type SortField = keyof User | 'none';
+type SortField = keyof Omit<User, 'roles'> | 'roles' | 'none'; // Adjusted for roles array
 type SortDirection = 'asc' | 'desc';
 
 export default function UserManagementPage() {
@@ -60,7 +61,7 @@ export default function UserManagementPage() {
   // Form state for Dialog
   const [formUserName, setFormUserName] = useState('');
   const [formUserEmail, setFormUserEmail] = useState('');
-  const [formUserRole, setFormUserRole] = useState<UserRole>('student');
+  const [formUserRoles, setFormUserRoles] = useState<UserRole[]>(['student']); // Changed from formUserRole
   const [formUserStatus, setFormUserStatus] = useState<'active' | 'inactive'>('active');
   const [formUserDepartment, setFormUserDepartment] = useState('');
   const [formUserPassword, setFormUserPassword] = useState('');
@@ -76,7 +77,6 @@ export default function UserManagementPage() {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Simulate fetching users
     setTimeout(() => {
       setUsers(initialUsers);
       setIsLoading(false);
@@ -86,7 +86,7 @@ export default function UserManagementPage() {
   const resetForm = () => {
     setFormUserName('');
     setFormUserEmail('');
-    setFormUserRole('student');
+    setFormUserRoles(['student']);
     setFormUserStatus('active');
     setFormUserDepartment('');
     setFormUserPassword('');
@@ -98,10 +98,9 @@ export default function UserManagementPage() {
     setCurrentUser(user);
     setFormUserName(user.name);
     setFormUserEmail(user.email);
-    setFormUserRole(user.role);
+    setFormUserRoles(user.roles);
     setFormUserStatus(user.status);
     setFormUserDepartment(user.department || '');
-    // Password fields remain empty for editing (security best practice)
     setFormUserPassword('');
     setFormUserConfirmPassword('');
     setIsDialogOpen(true);
@@ -113,7 +112,6 @@ export default function UserManagementPage() {
   };
 
   const handleDelete = (userId: string) => {
-    // Prevent deleting the main admin user as a safeguard
     if (userId === "u1" && users.find(u => u.id === userId)?.email === "admin@gppalanpur.in") {
         toast({ variant: "destructive", title: "Action Forbidden", description: "Cannot delete the primary admin user." });
         return;
@@ -126,13 +124,27 @@ export default function UserManagementPage() {
     }, 500);
   };
 
+  const handleRoleCheckboxChange = (roleValue: UserRole) => {
+    setFormUserRoles(prevRoles => {
+      if (prevRoles.includes(roleValue)) {
+        return prevRoles.filter(r => r !== roleValue);
+      } else {
+        return [...prevRoles, roleValue];
+      }
+    });
+  };
+
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     if (!formUserName.trim() || !formUserEmail.trim()) {
       toast({ variant: "destructive", title: "Validation Error", description: "Name and Email cannot be empty."});
       return;
     }
-    if (!currentUser) { // Adding new user, password is required
+    if (formUserRoles.length === 0) {
+      toast({ variant: "destructive", title: "Validation Error", description: "User must have at least one role."});
+      return;
+    }
+    if (!currentUser) {
         if (!formUserPassword || formUserPassword.length < 6) {
             toast({ variant: "destructive", title: "Validation Error", description: "Password must be at least 6 characters long for new users." });
             return;
@@ -149,7 +161,7 @@ export default function UserManagementPage() {
       const userData: Omit<User, 'id'> = { 
         name: formUserName, 
         email: formUserEmail, 
-        role: formUserRole, 
+        roles: formUserRoles, 
         status: formUserStatus,
         department: formUserDepartment,
       };
@@ -193,8 +205,8 @@ export default function UserManagementPage() {
         if (lines.length <= 1) throw new Error("CSV file is empty or has only a header.");
         
         const header = lines[0].split(',').map(h => h.trim().toLowerCase());
-        const expectedHeaders = ['id', 'name', 'email', 'role', 'status', 'department']; // Password is not imported for security
-        const requiredHeaders = ['name', 'email', 'role', 'status'];
+        const expectedHeaders = ['id', 'name', 'email', 'roles', 'status', 'department']; // 'roles' instead of 'role'
+        const requiredHeaders = ['name', 'email', 'roles', 'status'];
 
         if (!requiredHeaders.every(rh => header.includes(rh))) {
             throw new Error(`CSV header is missing required columns. Expected at least: ${requiredHeaders.join(', ')}`);
@@ -208,21 +220,22 @@ export default function UserManagementPage() {
         let updatedUsersCount = 0;
 
         for (let i = 1; i < lines.length; i++) {
-          const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, '')); // Basic CSV parsing
+          const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
           
           const name = data[hMap['name']];
           const email = data[hMap['email']];
-          const role = data[hMap['role']] as UserRole;
+          const rolesString = data[hMap['roles']];
+          const roles = rolesString ? rolesString.split(';').map(r => r.trim() as UserRole).filter(r => USER_ROLE_OPTIONS.find(opt => opt.value === r)) : [];
           const status = data[hMap['status']] as 'active' | 'inactive';
           const department = data[hMap['department']];
           const id = data[hMap['id']];
 
-          if (!name || !email || !USER_ROLE_OPTIONS.find(r => r.value === role) || !STATUS_OPTIONS.find(s => s.value === status)) {
-            console.warn(`Skipping row ${i+1}: Missing or invalid required data (name, email, role, status).`);
+          if (!name || !email || roles.length === 0 || !STATUS_OPTIONS.find(s => s.value === status)) {
+            console.warn(`Skipping row ${i+1}: Missing or invalid required data (name, email, roles, status). Roles: ${rolesString}`);
             continue;
           }
 
-          const userData: Omit<User, 'id'> = { name, email, role, status, department: department || "" };
+          const userData: Omit<User, 'id'> = { name, email, roles, status, department: department || "" };
           
           if (id) {
             const existingUserIndex = updatedUsersList.findIndex(u => u.id === id);
@@ -233,16 +246,15 @@ export default function UserManagementPage() {
               importedUsers.push({ id, ...userData });
               newUsersCount++;
             }
-          } else { // New user, generate ID
+          } else {
             importedUsers.push({ id: String(Date.now() + Math.random()), ...userData });
             newUsersCount++;
           }
         }
         
-        // Combine existing users not in import, updated users, and new users
         const finalUsers = [
-            ...updatedUsersList.filter(u => !importedUsers.find(iu => iu.id === u.id)), // Keep existing users not touched by ID match
-            ...importedUsers // Add new and ID-matched (updated) users
+            ...updatedUsersList.filter(u => !importedUsers.find(iu => iu.id === u.id)),
+            ...importedUsers
         ];
 
         setUsers(finalUsers);
@@ -266,14 +278,14 @@ export default function UserManagementPage() {
       toast({ title: "Export Canceled", description: "No users to export (check filters)." });
       return;
     }
-    const header = ["id", "name", "email", "role", "status", "department"];
+    const header = ["id", "name", "email", "roles", "status", "department"];
     const csvRows = [
       header.join(','),
       ...filteredAndSortedUsers.map(user => [
         user.id,
         `"${user.name.replace(/"/g, '""')}"`,
         `"${user.email.replace(/"/g, '""')}"`,
-        user.role,
+        `"${user.roles.join(';')}"`, // Roles joined by semicolon
         user.status,
         `"${(user.department || "").replace(/"/g, '""')}"`
       ].join(','))
@@ -290,11 +302,11 @@ export default function UserManagementPage() {
   };
 
   const handleDownloadSampleCsv = () => {
-    const sampleCsvContent = `id,name,email,role,status,department
+    const sampleCsvContent = `id,name,email,roles,status,department
 u_001,John Doe,john.doe@example.com,student,active,Computer Science
-u_002,Jane Smith,jane.smith@example.com,faculty,active,Electrical Engineering
+u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineering
 ,New User,new.user@example.com,jury,inactive,General
-`; // Last user has no ID to demonstrate auto-ID generation
+`; // Roles are semicolon-separated
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -317,26 +329,33 @@ u_002,Jane Smith,jane.smith@example.com,faculty,active,Electrical Engineering
   const filteredAndSortedUsers = useMemo(() => {
     let result = [...users];
 
-    // Filter
     if (searchTerm) {
       result = result.filter(user => 
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (user.department && user.department.toLowerCase().includes(searchTerm.toLowerCase()))
+        (user.department && user.department.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        user.roles.some(role => role.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
     if (filterRole !== 'all') {
-      result = result.filter(user => user.role === filterRole);
+      result = result.filter(user => user.roles.includes(filterRole));
     }
     if (filterStatus !== 'all') {
       result = result.filter(user => user.status === filterStatus);
     }
 
-    // Sort
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        const valA = a[sortField as keyof User];
-        const valB = b[sortField as keyof User];
+        let valA: any;
+        let valB: any;
+
+        if (sortField === 'roles') {
+          valA = a.roles.join(', '); // Sort by string representation of roles
+          valB = b.roles.join(', ');
+        } else {
+          valA = a[sortField as keyof Omit<User, 'roles'>];
+          valB = b[sortField as keyof Omit<User, 'roles'>];
+        }
 
         if (valA === undefined || valA === null) return sortDirection === 'asc' ? 1 : -1;
         if (valB === undefined || valB === null) return sortDirection === 'asc' ? -1 : 1;
@@ -344,7 +363,6 @@ u_002,Jane Smith,jane.smith@example.com,faculty,active,Electrical Engineering
         if (typeof valA === 'string' && typeof valB === 'string') {
           return sortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
         }
-        // Add more type checks if needed (e.g. for numbers)
         return 0;
       });
     }
@@ -403,13 +421,20 @@ u_002,Jane Smith,jane.smith@example.com,faculty,active,Electrical Engineering
                     <Input id="userEmail" type="email" value={formUserEmail} onChange={(e) => setFormUserEmail(e.target.value)} placeholder="e.g., john.doe@example.com" disabled={isSubmitting} />
                   </div>
                   <div>
-                    <Label htmlFor="userRole">Role</Label>
-                    <Select value={formUserRole} onValueChange={(value) => setFormUserRole(value as UserRole)} disabled={isSubmitting}>
-                      <SelectTrigger id="userRole"><SelectValue placeholder="Select a role" /></SelectTrigger>
-                      <SelectContent>
-                        {USER_ROLE_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
+                    <Label>Roles</Label>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-2 border rounded-md max-h-40 overflow-y-auto">
+                      {USER_ROLE_OPTIONS.map(opt => (
+                        <div key={opt.value} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`role-${opt.value}`}
+                            checked={formUserRoles.includes(opt.value)}
+                            onCheckedChange={() => handleRoleCheckboxChange(opt.value)}
+                            disabled={isSubmitting}
+                          />
+                          <Label htmlFor={`role-${opt.value}`} className="text-sm font-normal cursor-pointer">{opt.label}</Label>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                   <div>
                     <Label htmlFor="userDepartment">Department (Optional)</Label>
@@ -459,7 +484,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty,active,Electrical Engineering
                     <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  CSV format: id (optional), name, email, role, status, department. Password is not imported/exported.
+                  CSV format: id (optional), name, email, roles (semicolon-separated), status, department.
                 </p>
             </div>
           </div>
@@ -470,7 +495,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty,active,Electrical Engineering
               <div className="relative">
                  <Input 
                     id="searchUser" 
-                    placeholder="Search by name, email, department..." 
+                    placeholder="Search by name, email, dept, role..." 
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pr-8"
@@ -505,7 +530,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty,active,Electrical Engineering
               <TableRow>
                 <SortableTableHeader field="name" label="Name" />
                 <SortableTableHeader field="email" label="Email" />
-                <SortableTableHeader field="role" label="Role" />
+                <SortableTableHeader field="roles" label="Roles" />
                 <SortableTableHeader field="department" label="Department" />
                 <SortableTableHeader field="status" label="Status" />
                 <TableHead className="text-right">Actions</TableHead>
@@ -516,7 +541,9 @@ u_002,Jane Smith,jane.smith@example.com,faculty,active,Electrical Engineering
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
-                  <TableCell className="capitalize">{user.role}</TableCell>
+                  <TableCell className="max-w-xs truncate">
+                    {user.roles.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join(', ')}
+                  </TableCell>
                   <TableCell>{user.department || '-'}</TableCell>
                   <TableCell>
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${user.status === 'active' ? 'bg-success/20 text-success-foreground' : 'bg-destructive/20 text-destructive-foreground'}`}>
@@ -532,7 +559,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty,active,Electrical Engineering
                         variant="destructive" 
                         size="icon" 
                         onClick={() => handleDelete(user.id)} 
-                        disabled={isSubmitting || user.email === "admin@gppalanpur.in"} // Prevent admin deletion
+                        disabled={isSubmitting || user.email === "admin@gppalanpur.in"}
                     >
                       <Trash2 className="h-4 w-4" />
                       <span className="sr-only">Delete User</span>
@@ -559,5 +586,3 @@ u_002,Jane Smith,jane.smith@example.com,faculty,active,Electrical Engineering
     </div>
   );
 }
-
-    

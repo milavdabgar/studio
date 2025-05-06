@@ -2,27 +2,39 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
+type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown';
+
 interface AuthUser {
   email: string;
-  role: string;
+  roles: UserRole[]; // Changed from role: string to roles: UserRole[]
 }
 
-// This is a placeholder for actual authentication logic.
-// In a real application, you would use NextAuth.js or a similar library
-// to check for a valid session and user roles.
 const isAuthenticated = (request: NextRequest): AuthUser | null => {
   const authUserCookie = request.cookies.get('auth_user')?.value;
   if (authUserCookie) {
     try {
       const decodedCookie = decodeURIComponent(authUserCookie);
-      const parsedUser = JSON.parse(decodedCookie) as AuthUser;
-      // Add more validation if needed (e.g., check for specific properties)
-      if (parsedUser && parsedUser.email && parsedUser.role) {
-        return parsedUser;
+      const parsedUser = JSON.parse(decodedCookie) as { email: string; roles: UserRole[] | UserRole }; // Allow single role for backward compatibility during transition
+      
+      if (parsedUser && parsedUser.email) {
+        let rolesArray: UserRole[];
+        if (Array.isArray(parsedUser.roles)) {
+          rolesArray = parsedUser.roles;
+        } else if (typeof parsedUser.roles === 'string') { // Handle old single role format
+          rolesArray = [parsedUser.roles];
+        } else {
+          rolesArray = ['unknown']; // Default if roles format is unexpected
+        }
+        
+        // Ensure roles are valid UserRole types
+        const validRoles = rolesArray.filter(role => 
+          ['admin', 'student', 'faculty', 'hod', 'jury', 'unknown'].includes(role)
+        );
+
+        return { email: parsedUser.email, roles: validRoles.length > 0 ? validRoles : ['unknown'] };
       }
     } catch (error) {
       console.error("Error parsing auth_user cookie in middleware:", error);
-      // Invalid cookie, treat as unauthenticated
       return null;
     }
   }
@@ -39,24 +51,31 @@ const PROTECTED_ROUTES_PREFIXES = [
   '/faculty',
   '/courses',
   '/assignments',
-  // Note: '/results' itself is not listed, so /results/some-public-report might be allowed if not caught by other logic.
-  // If /results/* needs protection, consider adding '/results' to this list or be more specific.
 ];
 
 const PUBLIC_ROUTES = [
-  '/', // Landing page
+  '/', 
   '/login',
   '/signup',
 ];
+
+// Example: Define which roles can access which prefixes
+const ROLE_ACCESS: Record<string, UserRole[]> = {
+  '/admin': ['admin', 'hod'], // Only admin and hod can access /admin/*
+  '/project-fair/admin': ['admin', 'hod'],
+  '/project-fair/jury': ['jury', 'faculty', 'admin', 'hod'], // Jury, faculty, admin, hod can access jury pages
+  '/faculty': ['faculty', 'hod', 'admin'],
+  // Add more specific rules as needed
+};
+
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const authenticatedUser = isAuthenticated(request);
 
-  // Allow requests for API routes, static files, and image optimization
   if (pathname.startsWith('/api/') || 
       pathname.startsWith('/_next/') || 
-      pathname.includes('.')) { // commonly used for static assets like .png, .jpg
+      pathname.includes('.')) { 
     return NextResponse.next();
   }
 
@@ -64,18 +83,39 @@ export function middleware(request: NextRequest) {
   
   if (isProtectedRoute) {
     if (!authenticatedUser) {
-      // Redirect to login page if not authenticated and trying to access a protected route
       const loginUrl = new URL('/login', request.url);
       loginUrl.searchParams.set('redirectedFrom', pathname); 
       return NextResponse.redirect(loginUrl);
     }
-    // TODO: Add role-based access control here based on authenticatedUser.role
-    // For example:
-    // if (pathname.startsWith('/admin') && authenticatedUser.role !== 'admin') {
-    //   return NextResponse.redirect(new URL('/unauthorized', request.url)); // Or redirect to dashboard
-    // }
+
+    // Role-based access control
+    let hasAccess = false;
+    // Default: if no specific rule, allow if any role is not 'unknown'
+    if (authenticatedUser.roles.length > 0 && !authenticatedUser.roles.includes('unknown')) {
+        hasAccess = true; 
+    }
+
+    for (const routePrefix in ROLE_ACCESS) {
+        if (pathname.startsWith(routePrefix)) {
+            // User has access if any of their roles are in the allowed list for this prefix
+            hasAccess = authenticatedUser.roles.some(userRole => ROLE_ACCESS[routePrefix].includes(userRole));
+            break; // Found the most specific rule, stop checking
+        }
+    }
+    // Special handling for /dashboard - any authenticated user can access it
+    if (pathname.startsWith('/dashboard')) {
+        hasAccess = true;
+    }
+
+
+    if (!hasAccess) {
+        // Redirect to dashboard or an unauthorized page if user doesn't have the right role
+        // For simplicity, redirecting to dashboard. An '/unauthorized' page would be better.
+        console.warn(`User ${authenticatedUser.email} with roles [${authenticatedUser.roles.join(', ')}] tried to access ${pathname} without permission.`);
+        return NextResponse.redirect(new URL('/dashboard', request.url)); 
+    }
+
   } else if (PUBLIC_ROUTES.includes(pathname)) {
-    // If authenticated and trying to access login/signup, redirect to dashboard
     if ((pathname === '/login' || pathname === '/signup') && authenticatedUser) {
        return NextResponse.redirect(new URL('/dashboard', request.url));
     }
@@ -83,17 +123,3 @@ export function middleware(request: NextRequest) {
   
   return NextResponse.next();
 }
-
-// Config to specify paths for middleware execution (optional but recommended for performance)
-// export const config = {
-//   matcher: [
-//     /*
-//      * Match all request paths except for the ones starting with:
-//      * - api (API routes)
-//      * - _next/static (static files)
-//      * - _next/image (image optimization files)
-//      * - favicon.ico (favicon file)
-//      */
-//     '/((?!api|_next/static|_next/image|favicon.ico).*)',
-//   ],
-// }

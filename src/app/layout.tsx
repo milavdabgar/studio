@@ -6,7 +6,7 @@ import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
-import { Home, BarChart3, Users as UsersIcon, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog } from 'lucide-react'; // Renamed Users to UsersIcon
+import { Home, BarChart3, Users as UsersIcon, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -14,17 +14,12 @@ import { AppLogo } from '@/components/app-logo';
 import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 
-// export const metadata: Metadata = { // Metadata should be defined in a server component or static export
-//   title: 'PolyManager',
-//   description: 'College Management System for Government Polytechnic Palanpur',
-// };
-
 
 type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown';
 
 interface User {
   name: string;
-  role: UserRole;
+  roles: UserRole[]; // Changed from role: UserRole to roles: UserRole[]
   email?: string;
   avatarUrl?: string;
   dataAiHint?: string;
@@ -32,51 +27,74 @@ interface User {
 
 const DEFAULT_USER: User = {
   name: 'Guest User',
-  role: 'unknown',
+  roles: ['unknown'],
   avatarUrl: 'https://picsum.photos/seed/guest/40/40',
   dataAiHint: 'user avatar'
 };
 
 
-const navItemsConfig: Record<UserRole, Array<{ href: string; icon: React.ElementType; label: string }>> = {
+// Nav items can be a union of all items accessible by any of the user's roles
+const baseNavItems: Record<UserRole, Array<{ href: string; icon: React.ElementType; label: string; id: string }>> = {
   admin: [
-    { href: '/dashboard', icon: Home, label: 'Dashboard' },
-    { href: '/admin/users', icon: UsersIcon, label: 'User Management' }, // Used UsersIcon
-    { href: '/admin/roles', icon: UserCog, label: 'Role Management' },
-    { href: '/admin/departments', icon: Briefcase, label: 'Departments' },
-    { href: '/admin/faculty', icon: UsersIcon, label: 'Faculty Mgt.' }, // Used UsersIcon
-    { href: '/admin/students', icon: UsersIcon, label: 'Student Mgt.' }, // Used UsersIcon
-    { href: '/admin/results', icon: Award, label: 'Results Admin' },
-    { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis' },
-    { href: '/project-fair/admin', icon: FileText, label: 'Project Fair Admin' },
+    { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard' },
+    { href: '/admin/users', icon: UsersIcon, label: 'User Management', id: 'admin-users' },
+    { href: '/admin/roles', icon: UserCog, label: 'Role Management', id: 'admin-roles' },
+    { href: '/admin/departments', icon: Briefcase, label: 'Departments', id: 'admin-departments' },
+    { href: '/admin/faculty', icon: UsersIcon, label: 'Faculty Mgt.', id: 'admin-faculty' },
+    { href: '/admin/students', icon: UsersIcon, label: 'Student Mgt.', id: 'admin-students' },
+    { href: '/admin/results', icon: Award, label: 'Results Admin', id: 'admin-results' },
+    { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback' },
+    { href: '/project-fair/admin', icon: FileText, label: 'Project Fair Admin', id: 'admin-project-fair' },
   ],
   student: [
-    { href: '/dashboard', icon: Home, label: 'Dashboard' },
-    { href: '/courses', icon: BookOpen, label: 'My Courses' },
-    { href: '/assignments', icon: CalendarCheck, label: 'Assignments'},
-    { href: '/results/history/me', icon: Award, label: 'My Results' },
-    { href: '/project-fair/student', icon: FileText, label: 'My Project' },
+    { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'student-dashboard' },
+    { href: '/courses', icon: BookOpen, label: 'My Courses', id: 'student-courses' },
+    { href: '/assignments', icon: CalendarCheck, label: 'Assignments', id: 'student-assignments'},
+    { href: '/results/history/me', icon: Award, label: 'My Results', id: 'student-results' },
+    { href: '/project-fair/student', icon: FileText, label: 'My Project', id: 'student-project' },
   ],
   faculty: [
-    { href: '/dashboard', icon: Home, label: 'Dashboard' },
-    { href: '/faculty/courses', icon: BookOpen, label: 'My Courses' },
-    { href: '/faculty/students', icon: UsersIcon, label: 'My Students'}, // Used UsersIcon
-    { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects' },
-    { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis' },
+    { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'faculty-dashboard' },
+    { href: '/faculty/courses', icon: BookOpen, label: 'My Courses', id: 'faculty-courses' },
+    { href: '/faculty/students', icon: UsersIcon, label: 'My Students', id: 'faculty-students'},
+    { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'faculty-evaluate' },
+    { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'faculty-feedback' },
   ],
   hod: [
-    { href: '/dashboard', icon: Home, label: 'Dashboard' },
-    { href: '/admin/departments', icon: Briefcase, label: 'My Department' }, 
-    { href: '/admin/faculty', icon: UsersIcon, label: 'Faculty (Dept)' }, // Used UsersIcon
-    { href: '/admin/students', icon: UsersIcon, label: 'Students (Dept)' }, // Used UsersIcon
-    { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis' },
-    { href: '/project-fair/admin', icon: FileText, label: 'Project Fair Admin' },
+    { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'hod-dashboard' },
+    { href: '/admin/departments', icon: Briefcase, label: 'My Department', id: 'hod-department' }, 
+    { href: '/admin/faculty', icon: UsersIcon, label: 'Faculty (Dept)', id: 'hod-faculty' },
+    { href: '/admin/students', icon: UsersIcon, label: 'Students (Dept)', id: 'hod-students' },
+    { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'hod-feedback' },
+    { href: '/project-fair/admin', icon: FileText, label: 'Project Fair Admin', id: 'hod-project-fair' },
   ],
   jury: [
-    { href: '/dashboard', icon: Home, label: 'Dashboard' },
-    { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects' },
+    { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'jury-dashboard' },
+    { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'jury-evaluate' },
   ],
   unknown: [], 
+};
+
+const getCombinedNavItems = (roles: UserRole[]): Array<{ href: string; icon: React.ElementType; label: string; id: string }> => {
+  const combinedItems: Array<{ href: string; icon: React.ElementType; label: string; id: string }> = [];
+  const addedItemIds = new Set<string>();
+
+  roles.forEach(role => {
+    const itemsForRole = baseNavItems[role] || [];
+    itemsForRole.forEach(item => {
+      if (!addedItemIds.has(item.id)) {
+        combinedItems.push(item);
+        addedItemIds.add(item.id);
+      }
+    });
+  });
+  // Ensure Dashboard is always first if present
+  combinedItems.sort((a, b) => {
+    if (a.label === 'Dashboard') return -1;
+    if (b.label === 'Dashboard') return 1;
+    return a.label.localeCompare(b.label);
+  });
+  return combinedItems;
 };
 
 
@@ -109,10 +127,16 @@ export default function RootLayout({
     if (authUserCookie) {
       try {
         const decodedCookie = decodeURIComponent(authUserCookie);
-        const parsedUser = JSON.parse(decodedCookie) as { email: string; role: UserRole };
+        const parsedUser = JSON.parse(decodedCookie) as { email: string; roles: UserRole[] }; // Expect roles as array
+        
+        let userRoles = parsedUser.roles || ['unknown'];
+        if (!Array.isArray(userRoles)) { // Backward compatibility for single role string
+          userRoles = [userRoles as unknown as UserRole];
+        }
+        
         setCurrentUser({
           name: parsedUser.email || 'User', 
-          role: parsedUser.role || 'unknown',
+          roles: userRoles.length > 0 ? userRoles : ['unknown'],
           email: parsedUser.email,
           avatarUrl: `https://picsum.photos/seed/${parsedUser.email}/40/40`, 
           dataAiHint: 'user avatar'
@@ -129,7 +153,7 @@ export default function RootLayout({
     }
   }, [pathname]); 
 
-  const currentNavItems = navItemsConfig[currentUser.role] || [];
+  const currentNavItems = getCombinedNavItems(currentUser.roles);
   const hideSidebar = ['/login', '/signup', '/'].includes(pathname);
 
 
@@ -184,7 +208,7 @@ export default function RootLayout({
             <SidebarContent className="p-2">
               <SidebarMenu>
                 {currentNavItems.map((item) => (
-                  <SidebarMenuItem key={item.href}>
+                  <SidebarMenuItem key={item.id}>
                     <Link href={item.href} passHref legacyBehavior>
                       <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href}>
                         <item.icon />
@@ -204,7 +228,7 @@ export default function RootLayout({
                 )}
                 <div>
                   <p className="font-semibold text-sm text-sidebar-foreground">{currentUser.name}</p>
-                  <p className="text-xs text-sidebar-foreground/70 capitalize">{currentUser.role}</p>
+                  <p className="text-xs text-sidebar-foreground/70 capitalize">{currentUser.roles.join(', ')}</p>
                 </div>
               </div>
               <div className="flex items-center justify-between">
@@ -246,5 +270,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-    

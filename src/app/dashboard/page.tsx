@@ -3,7 +3,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BarChart, LineChartIcon, PieChartIcon, Users as UsersIcon, Briefcase, CheckCircle, FileText, BookOpen, CalendarDays, Award, Users2, Building, GitFork, BotMessageSquare, CalendarCheck } from "lucide-react";
+import { BarChart, Users as UsersIcon, Briefcase, CheckCircle, FileText, BookOpen, CalendarDays, Award, Users2, BotMessageSquare, CalendarCheck, Settings, UserCog, GitFork } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState } from 'react';
@@ -12,61 +12,74 @@ type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown';
 
 interface User {
   name: string;
-  role: UserRole;
+  roles: UserRole[]; // Changed from role to roles
   email?: string;
 }
 
 const DEFAULT_USER: User = {
   name: 'Guest User',
-  role: 'unknown',
+  roles: ['unknown'],
 };
 
-// Mock data for dashboard cards - replace with actual data fetching
-const adminDashboardData = [
-  { title: "Total Users", value: "1,250", icon: UsersIcon, color: "text-primary", href: "/admin/users" },
-  { title: "Active Projects", value: "78", icon: Briefcase, color: "text-accent", href: "/project-fair/admin" },
-  { title: "Pending Approvals", value: "12", icon: CheckCircle, color: "text-yellow-500", href: "/admin/approvals" },
-  { title: "Feedback Reports", value: "5", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
-];
+interface DashboardCardItem {
+  title: string;
+  value: string;
+  icon: React.ElementType;
+  color: string;
+  href?: string;
+  id: string; // Unique ID for deduplication
+}
 
-const studentDashboardData = [
-  { title: "My Courses", value: "6", icon: BookOpen, color: "text-primary", href: "/courses" },
-  { title: "Upcoming Assignments", value: "3", icon: CalendarCheck, color: "text-accent", href: "/assignments" },
-  { title: "Latest Grades", value: "A-", icon: Award, color: "text-green-500", href: "/results/history/me" },
-  { title: "Project Status", value: "Submitted", icon: FileText, color: "text-yellow-500", href: "/project-fair/student" },
-];
+const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
+  admin: [
+    { id: "admin-total-users", title: "Total Users", value: "1,250", icon: UsersIcon, color: "text-primary", href: "/admin/users" },
+    { id: "admin-active-projects", title: "Active Projects", value: "78", icon: Briefcase, color: "text-accent", href: "/project-fair/admin" },
+    { id: "admin-pending-approvals", title: "Pending Approvals", value: "12", icon: CheckCircle, color: "text-yellow-500", href: "/admin/approvals" },
+    { id: "admin-feedback-reports", title: "Feedback Reports", value: "5", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
+    { id: "admin-role-management", title: "Role Management", value: "Configure", icon: UserCog, color: "text-indigo-500", href: "/admin/roles" },
+  ],
+  student: [
+    { id: "student-my-courses", title: "My Courses", value: "6", icon: BookOpen, color: "text-primary", href: "/courses" },
+    { id: "student-upcoming-assignments", title: "Upcoming Assignments", value: "3", icon: CalendarCheck, color: "text-accent", href: "/assignments" },
+    { id: "student-latest-grades", title: "Latest Grades", value: "A-", icon: Award, color: "text-green-500", href: "/results/history/me" },
+    { id: "student-project-status", title: "Project Status", value: "Submitted", icon: FileText, color: "text-yellow-500", href: "/project-fair/student" },
+  ],
+  faculty: [
+    { id: "faculty-assigned-courses", title: "Assigned Courses", value: "3", icon: BookOpen, color: "text-primary", href: "/faculty/courses" },
+    { id: "faculty-students-enrolled", title: "Students Enrolled", value: "120", icon: UsersIcon, color: "text-accent", href: "/faculty/students" },
+    { id: "faculty-pending-evaluations", title: "Pending Evaluations", value: "8", icon: CheckCircle, color: "text-yellow-500", href: "/project-fair/jury" }, // Assuming faculty can also be jury
+    { id: "faculty-feedback-reports", title: "Feedback Reports", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
+  ],
+  hod: [
+    { id: "hod-department-staff", title: "Department Staff", value: "15", icon: Users2, color: "text-primary", href: "/admin/faculty" }, 
+    { id: "hod-department-students", title: "Department Students", value: "250", icon: UsersIcon, color: "text-accent", href: "/admin/students" }, 
+    { id: "hod-department-projects", title: "Department Projects", value: "25", icon: Briefcase, color: "text-yellow-500", href: "/project-fair/admin" }, 
+    { id: "hod-department-feedback", title: "Department Feedback", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" }, 
+  ],
+  jury: [
+    { id: "jury-projects-to-evaluate", title: "Projects to Evaluate", value: "10", icon: FileText, color: "text-primary", href: "/project-fair/jury" },
+    { id: "jury-evaluation-criteria", title: "Evaluation Criteria", value: "View", icon: CheckCircle, color: "text-accent", href: "/project-fair/jury/criteria" },
+    { id: "jury-submitted-evaluations", title: "Submitted Evaluations", value: "5", icon: GitFork, color: "text-green-500", href: "/project-fair/jury/submissions" },
+    { id: "jury-evaluation-schedule", title: "Evaluation Schedule", value: "Today", icon: CalendarDays, color: "text-yellow-500", href: "/project-fair/jury/schedule" },
+  ],
+  unknown: [],
+};
 
-const facultyDashboardData = [
-  { title: "Assigned Courses", value: "3", icon: BookOpen, color: "text-primary", href: "/faculty/courses" },
-  { title: "Students Enrolled", value: "120", icon: UsersIcon, color: "text-accent", href: "/faculty/students" },
-  { title: "Pending Evaluations", value: "8", icon: CheckCircle, color: "text-yellow-500", href: "/project-fair/jury" },
-  { title: "Feedback Reports", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
-];
 
-const hodDashboardData = [
-  { title: "Department Staff", value: "15", icon: Users2, color: "text-primary", href: "/admin/faculty" }, 
-  { title: "Department Students", value: "250", icon: UsersIcon, color: "text-accent", href: "/admin/students" }, 
-  { title: "Department Projects", value: "25", icon: Briefcase, color: "text-yellow-500", href: "/project-fair/admin" }, 
-  { title: "Department Feedback", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" }, 
-];
+const getCombinedDashboardData = (roles: UserRole[]): DashboardCardItem[] => {
+  const combinedCards: DashboardCardItem[] = [];
+  const addedCardIds = new Set<string>();
 
-const juryDashboardData = [
-  { title: "Projects to Evaluate", value: "10", icon: FileText, color: "text-primary", href: "/project-fair/jury" },
-  { title: "Evaluation Criteria", value: "View", icon: CheckCircle, color: "text-accent", href: "/project-fair/jury/criteria" },
-  { title: "Submitted Evaluations", value: "5", icon: GitFork, color: "text-green-500", href: "/project-fair/jury/submissions" },
-  { title: "Evaluation Schedule", value: "Today", icon: CalendarDays, color: "text-yellow-500", href: "/project-fair/jury/schedule" },
-];
-
-
-const getDashboardData = (role: UserRole) => {
-  switch (role) {
-    case "admin": return adminDashboardData;
-    case "student": return studentDashboardData;
-    case "faculty": return facultyDashboardData;
-    case "hod": return hodDashboardData;
-    case "jury": return juryDashboardData;
-    default: return [];
-  }
+  roles.forEach(role => {
+    const cardsForRole = baseDashboardData[role] || [];
+    cardsForRole.forEach(card => {
+      if (!addedCardIds.has(card.id)) {
+        combinedCards.push(card);
+        addedCardIds.add(card.id);
+      }
+    });
+  });
+  return combinedCards;
 };
 
 function getCookie(name: string): string | undefined {
@@ -88,10 +101,16 @@ export default function DashboardPage() {
     if (authUserCookie) {
       try {
         const decodedCookie = decodeURIComponent(authUserCookie);
-        const parsedUser = JSON.parse(decodedCookie) as { email: string; role: UserRole };
+        const parsedUser = JSON.parse(decodedCookie) as { email: string; roles: UserRole[] }; // Expect roles as array
+        
+        let userRoles = parsedUser.roles || ['unknown'];
+        if (!Array.isArray(userRoles)) { // Backward compatibility for single role string
+          userRoles = [userRoles as unknown as UserRole];
+        }
+
         setCurrentUser({
           name: parsedUser.email || 'User',
-          role: parsedUser.role || 'unknown',
+          roles: userRoles.length > 0 ? userRoles : ['unknown'],
           email: parsedUser.email,
         });
       } catch (error) {
@@ -103,7 +122,8 @@ export default function DashboardPage() {
     }
   }, []);
 
-  const dashboardCards = getDashboardData(currentUser.role);
+  const dashboardCards = getCombinedDashboardData(currentUser.roles);
+  const displayRoles = currentUser.roles.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join(', ');
 
   if (!isMounted) {
     return <div className="flex justify-center items-center h-screen"><UsersIcon className="h-10 w-10 animate-spin" /></div>;
@@ -113,12 +133,12 @@ export default function DashboardPage() {
     <div className="space-y-8">
       <section>
         <h1 className="text-3xl font-bold tracking-tight text-primary mb-2">Welcome to your Dashboard, {currentUser.name}!</h1>
-        <p className="text-muted-foreground">Here&apos;s a quick overview of your activities and key metrics. Your role: <span className="font-semibold capitalize">{currentUser.role}</span></p>
+        <p className="text-muted-foreground">Here&apos;s a quick overview of your activities and key metrics. Your roles: <span className="font-semibold">{displayRoles}</span></p>
       </section>
 
       <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {dashboardCards.map((card) => (
-          <Card key={card.title} className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <Card key={card.id} className="shadow-lg hover:shadow-xl transition-shadow duration-300">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
               <card.icon className={`h-5 w-5 ${card.color}`} />
@@ -135,6 +155,16 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         ))}
+         {dashboardCards.length === 0 && currentUser.roles.includes('unknown') && (
+            <Card className="md:col-span-2 lg:col-span-4 shadow-lg">
+                <CardHeader>
+                    <CardTitle>No Specific Role Assigned</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-muted-foreground">You currently do not have a specific role assigned. Please contact an administrator if you believe this is an error.</p>
+                </CardContent>
+            </Card>
+        )}
       </section>
 
       <section className="grid gap-6 md:grid-cols-2">
@@ -188,7 +218,7 @@ export default function DashboardPage() {
         </Card>
       </section>
 
-      {currentUser.role === 'admin' && (
+      {currentUser.roles.includes('admin') && ( // Show quick actions if user is an admin
         <section>
           <Card className="shadow-lg">
             <CardHeader>
@@ -216,6 +246,16 @@ export default function DashboardPage() {
                   <BotMessageSquare className="h-5 w-5" /> Analyze Feedback
                 </Button>
               </Link>
+                <Link href="/admin/roles" passHref>
+                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
+                  <UserCog className="h-5 w-5" /> Manage Roles
+                </Button>
+              </Link>
+                <Link href="/admin/settings" passHref>
+                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
+                  <Settings className="h-5 w-5" /> System Settings
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         </section>
@@ -223,5 +263,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-    
