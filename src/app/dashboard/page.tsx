@@ -1,8 +1,9 @@
+
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BarChart, Users as UsersIcon, Briefcase, CheckCircle, FileText, BookOpen, CalendarDays, Award, Users2, BotMessageSquare, CalendarCheck, Settings, UserCog, GitFork, BookUser, UsersRound, Building2, BookCopy, ClipboardList, Landmark } from "lucide-react"; // Added Landmark
+import { BarChart, Users as UsersIcon, Briefcase, CheckCircle, FileText, BookOpen, CalendarDays, Award, Users2, BotMessageSquare, CalendarCheck, Settings, UserCog, GitFork, BookUser, UsersRound, Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState } from 'react';
@@ -37,6 +38,8 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "admin-total-students", title: "Total Students", value: "850", icon: BookUser, color: "text-green-500", href: "/admin/students"},
     { id: "admin-total-faculty", title: "Total Faculty", value: "75", icon: UsersRound, color: "text-indigo-500", href: "/admin/faculty"},
     { id: "admin-total-institutes", title: "Total Institutes", value: "1", icon: Landmark, color: "text-red-500", href: "/admin/institutes"},
+    { id: "admin-total-buildings", title: "Total Buildings", value: "3", icon: Building, color: "text-blue-500", href: "/admin/buildings"},
+    { id: "admin-total-rooms", title: "Total Rooms", value: "150", icon: DoorOpen, color: "text-cyan-500", href: "/admin/rooms"},
     { id: "admin-total-departments", title: "Total Departments", value: "7", icon: Building2, color: "text-orange-500", href: "/admin/departments"},
     { id: "admin-total-programs", title: "Total Programs", value: "5", icon: BookCopy, color: "text-purple-500", href: "/admin/programs"},
     { id: "admin-total-courses", title: "Total Courses", value: "50", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses"},
@@ -61,6 +64,8 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "hod-department-staff", title: "Department Staff", value: "15", icon: UsersRound, color: "text-primary", href: "/admin/faculty" }, 
     { id: "hod-department-students", title: "Department Students", value: "250", icon: BookUser, color: "text-accent", href: "/admin/students" }, 
     { id: "hod-my-institute", title: "My Institute", value: "Manage", icon: Landmark, color: "text-red-500", href: "/admin/institutes"},
+    { id: "hod-my-buildings", title: "Institute Buildings", value: "Manage", icon: Building, color: "text-blue-500", href: "/admin/buildings"},
+    { id: "hod-my-rooms", title: "Institute Rooms", value: "Manage", icon: DoorOpen, color: "text-cyan-500", href: "/admin/rooms"},
     { id: "hod-my-department", title: "My Department", value: "Manage", icon: Building2, color: "text-orange-500", href: "/admin/departments" },
     { id: "hod-my-programs", title: "Department Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs" },
     { id: "hod-my-courses", title: "Department Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses" },
@@ -264,6 +269,16 @@ export default function DashboardPage() {
                   <Landmark className="h-5 w-5" /> Manage Institutes
                 </Button>
               </Link>
+              <Link href="/admin/buildings" passHref>
+                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
+                  <Building className="h-5 w-5" /> Manage Buildings
+                </Button>
+              </Link>
+              <Link href="/admin/rooms" passHref>
+                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
+                  <DoorOpen className="h-5 w-5" /> Manage Rooms
+                </Button>
+              </Link>
               <Link href="/admin/departments" passHref>
                 <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
                   <Building2 className="h-5 w-5" /> Manage Departments
@@ -311,3 +326,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+
