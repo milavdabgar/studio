@@ -3,7 +3,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BarChart, LineChartIcon, PieChartIcon, Users, Briefcase, CheckCircle, FileText, BookOpen, CalendarDays, Award, Users2, Building, GitFork, BotMessageSquare, CalendarCheck } from "lucide-react";
+import { BarChart, LineChartIcon, PieChartIcon, Users as UsersIcon, Briefcase, CheckCircle, FileText, BookOpen, CalendarDays, Award, Users2, Building, GitFork, BotMessageSquare, CalendarCheck } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState } from 'react';
@@ -23,7 +23,7 @@ const DEFAULT_USER: User = {
 
 // Mock data for dashboard cards - replace with actual data fetching
 const adminDashboardData = [
-  { title: "Total Users", value: "1,250", icon: Users, color: "text-primary", href: "/admin/users" },
+  { title: "Total Users", value: "1,250", icon: UsersIcon, color: "text-primary", href: "/admin/users" },
   { title: "Active Projects", value: "78", icon: Briefcase, color: "text-accent", href: "/project-fair/admin" },
   { title: "Pending Approvals", value: "12", icon: CheckCircle, color: "text-yellow-500", href: "/admin/approvals" },
   { title: "Feedback Reports", value: "5", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
@@ -38,16 +38,16 @@ const studentDashboardData = [
 
 const facultyDashboardData = [
   { title: "Assigned Courses", value: "3", icon: BookOpen, color: "text-primary", href: "/faculty/courses" },
-  { title: "Students Enrolled", value: "120", icon: Users, color: "text-accent", href: "/faculty/students" },
+  { title: "Students Enrolled", value: "120", icon: UsersIcon, color: "text-accent", href: "/faculty/students" },
   { title: "Pending Evaluations", value: "8", icon: CheckCircle, color: "text-yellow-500", href: "/project-fair/jury" },
   { title: "Feedback Reports", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
 ];
 
 const hodDashboardData = [
-  { title: "Department Staff", value: "15", icon: Users2, color: "text-primary", href: "/admin/faculty" }, // Link to faculty filtered by department
-  { title: "Department Students", value: "250", icon: Users, color: "text-accent", href: "/admin/students" }, // Link to students filtered by department
-  { title: "Department Projects", value: "25", icon: Briefcase, color: "text-yellow-500", href: "/project-fair/admin" }, // Link to projects filtered by department
-  { title: "Department Feedback", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" }, // Link to feedback filtered
+  { title: "Department Staff", value: "15", icon: Users2, color: "text-primary", href: "/admin/faculty" }, 
+  { title: "Department Students", value: "250", icon: UsersIcon, color: "text-accent", href: "/admin/students" }, 
+  { title: "Department Projects", value: "25", icon: Briefcase, color: "text-yellow-500", href: "/project-fair/admin" }, 
+  { title: "Department Feedback", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" }, 
 ];
 
 const juryDashboardData = [
@@ -106,8 +106,7 @@ export default function DashboardPage() {
   const dashboardCards = getDashboardData(currentUser.role);
 
   if (!isMounted) {
-    // You can return a loading spinner here
-    return <div className="flex justify-center items-center h-screen"><Users className="h-10 w-10 animate-spin" /></div>;
+    return <div className="flex justify-center items-center h-screen"><UsersIcon className="h-10 w-10 animate-spin" /></div>;
   }
 
   return (
@@ -197,9 +196,9 @@ export default function DashboardPage() {
               <CardDescription>Access common administrative tasks quickly.</CardDescription>
             </CardHeader>
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              <Link href="/admin/users/new" passHref>
+              <Link href="/admin/users" passHref>
                 <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <Users className="h-5 w-5" /> Add New User
+                  <UsersIcon className="h-5 w-5" /> Manage Users
                 </Button>
               </Link>
               <Link href="/project-fair/admin/new-event" passHref>
@@ -224,3 +223,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    

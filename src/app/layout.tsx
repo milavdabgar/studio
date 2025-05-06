@@ -1,12 +1,12 @@
 
-"use client"; // This needs to be a client component to access cookies
+"use client"; 
 
 import type { Metadata } from 'next';
 import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
-import { Home, BarChart3, Users, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog } from 'lucide-react';
+import { Home, BarChart3, Users as UsersIcon, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog } from 'lucide-react'; // Renamed Users to UsersIcon
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -41,11 +41,11 @@ const DEFAULT_USER: User = {
 const navItemsConfig: Record<UserRole, Array<{ href: string; icon: React.ElementType; label: string }>> = {
   admin: [
     { href: '/dashboard', icon: Home, label: 'Dashboard' },
-    { href: '/admin/users', icon: Users, label: 'User Management' },
+    { href: '/admin/users', icon: UsersIcon, label: 'User Management' }, // Used UsersIcon
     { href: '/admin/roles', icon: UserCog, label: 'Role Management' },
     { href: '/admin/departments', icon: Briefcase, label: 'Departments' },
-    { href: '/admin/faculty', icon: Users, label: 'Faculty Mgt.' },
-    { href: '/admin/students', icon: Users, label: 'Student Mgt.' },
+    { href: '/admin/faculty', icon: UsersIcon, label: 'Faculty Mgt.' }, // Used UsersIcon
+    { href: '/admin/students', icon: UsersIcon, label: 'Student Mgt.' }, // Used UsersIcon
     { href: '/admin/results', icon: Award, label: 'Results Admin' },
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis' },
     { href: '/project-fair/admin', icon: FileText, label: 'Project Fair Admin' },
@@ -60,15 +60,15 @@ const navItemsConfig: Record<UserRole, Array<{ href: string; icon: React.Element
   faculty: [
     { href: '/dashboard', icon: Home, label: 'Dashboard' },
     { href: '/faculty/courses', icon: BookOpen, label: 'My Courses' },
-    { href: '/faculty/students', icon: Users, label: 'My Students'},
+    { href: '/faculty/students', icon: UsersIcon, label: 'My Students'}, // Used UsersIcon
     { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects' },
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis' },
   ],
   hod: [
     { href: '/dashboard', icon: Home, label: 'Dashboard' },
-    { href: '/admin/departments', icon: Briefcase, label: 'My Department' }, // Assuming HOD manages their department
-    { href: '/admin/faculty', icon: Users, label: 'Faculty (Dept)' },
-    { href: '/admin/students', icon: Users, label: 'Students (Dept)' },
+    { href: '/admin/departments', icon: Briefcase, label: 'My Department' }, 
+    { href: '/admin/faculty', icon: UsersIcon, label: 'Faculty (Dept)' }, // Used UsersIcon
+    { href: '/admin/students', icon: UsersIcon, label: 'Students (Dept)' }, // Used UsersIcon
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis' },
     { href: '/project-fair/admin', icon: FileText, label: 'Project Fair Admin' },
   ],
@@ -76,7 +76,7 @@ const navItemsConfig: Record<UserRole, Array<{ href: string; icon: React.Element
     { href: '/dashboard', icon: Home, label: 'Dashboard' },
     { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects' },
   ],
-  unknown: [], // No items for unknown role
+  unknown: [], 
 };
 
 
@@ -111,34 +111,35 @@ export default function RootLayout({
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as { email: string; role: UserRole };
         setCurrentUser({
-          name: parsedUser.email || 'User', // Use email as name or a default
+          name: parsedUser.email || 'User', 
           role: parsedUser.role || 'unknown',
           email: parsedUser.email,
-          avatarUrl: `https://picsum.photos/seed/${parsedUser.email}/40/40`, // Generate avatar based on email
+          avatarUrl: `https://picsum.photos/seed/${parsedUser.email}/40/40`, 
           dataAiHint: 'user avatar'
         });
       } catch (error) {
         console.error("Failed to parse auth_user cookie:", error);
-        // Fallback to default user or clear cookie if invalid
         if (typeof document !== 'undefined') {
-            document.cookie = 'auth_user=;path=/;max-age=0'; // Clear invalid cookie
+            document.cookie = 'auth_user=;path=/;max-age=0'; 
         }
         setCurrentUser(DEFAULT_USER);
       }
     } else {
       setCurrentUser(DEFAULT_USER);
     }
-  }, [pathname]); // Rerun on pathname change to ensure user is updated after login/logout
+  }, [pathname]); 
 
   const currentNavItems = navItemsConfig[currentUser.role] || [];
-
-  // Hide sidebar for login, signup, and landing pages OR before client has mounted
   const hideSidebar = ['/login', '/signup', '/'].includes(pathname);
 
 
   if (hideSidebar) {
     return (
       <html lang="en" suppressHydrationWarning={true}>
+        <head>
+            <title>PolyManager</title>
+            <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
+        </head>
         <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           {children}
           <Toaster />
@@ -147,9 +148,13 @@ export default function RootLayout({
     );
   }
 
-  if (!isMounted) { // Show loader if not yet mounted and not on a public no-sidebar page
+  if (!isMounted) { 
     return (
        <html lang="en" suppressHydrationWarning={true}>
+         <head>
+            <title>PolyManager - Loading...</title>
+            <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
+        </head>
         <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           <div className="flex items-center justify-center min-h-screen">
             <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -163,6 +168,10 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning={true}>
+       <head>
+            <title>PolyManager</title>
+            <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
+        </head>
       <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
         <SidebarProvider>
           <Sidebar>
@@ -210,7 +219,7 @@ export default function RootLayout({
                     className="text-sidebar-foreground hover:bg-sidebar-accent"
                     onClick={() => {
                        if (typeof document !== 'undefined') {
-                        document.cookie = 'auth_user=;path=/;max-age=0'; // Clear auth cookie on logout
+                        document.cookie = 'auth_user=;path=/;max-age=0'; 
                        }
                     }}
                   >
@@ -238,3 +247,4 @@ export default function RootLayout({
   );
 }
 
+    
