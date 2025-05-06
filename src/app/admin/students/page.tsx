@@ -21,7 +21,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 
 
 type StudentStatus = 'active' | 'inactive' | 'graduated' | 'dropped';
-type SemesterStatus = 'Passed' | 'Pending' | 'Not Appeared' | 'N/A'; // Added N/A as a valid status
+type SemesterStatus = 'Passed' | 'Pending' | 'Not Appeared' | 'N/A'; 
 
 interface Student {
   id: string; // Internal ID
@@ -78,7 +78,7 @@ const STATUS_OPTIONS: { value: StudentStatus; label: string }[] = [
 ];
 
 const SEMESTER_STATUS_OPTIONS: { value: SemesterStatus; label: string }[] = [
-    { value: "N/A", label: "N/A" }, // Ensure N/A has a non-empty value
+    { value: "N/A", label: "N/A" },
     { value: "Passed", label: "Passed" },
     { value: "Pending", label: "Pending" },
     { value: "Not Appeared", label: "Not Appeared" },
@@ -94,7 +94,7 @@ const initialStudents: Student[] = [
   { id: "s3", enrollmentNumber: "GPPLN19005", gtuName: "PATEL AMIT DINESHBHAI", firstName: "AMIT", middleName: "DINESHBHAI", lastName: "PATEL", instituteEmail: "GPPLN19005@gppalanpur.in", department: "Electrical Engineering", branchCode: "EE", currentSemester: 6, status: "graduated", address: "456 Power House, Deesa", admissionDate: "2019-06-20", gender: "Male", convocationYear: 2023, sem1Status: "Passed", sem2Status: "Passed", sem3Status: "Passed", sem4Status: "Passed", sem5Status: "Passed", sem6Status: "Passed", isPassAll: true, isComplete: true, termClose: true },
 ];
 
-const LOCAL_STORAGE_KEY_STUDENTS = 'managedStudentsPMP'; // Unique key
+const LOCAL_STORAGE_KEY_STUDENTS = 'managedStudentsPMP'; 
 
 type SortField = keyof Student | 'none';
 type SortDirection = 'asc' | 'desc';
@@ -189,11 +189,14 @@ export default function StudentManagementPage() {
             localStorage.setItem(LOCAL_STORAGE_KEY_STUDENTS, JSON.stringify(students));
         } catch (error) {
             console.error("Failed to save students to localStorage", error);
-            toast({
-                variant: "destructive",
-                title: "Storage Error",
-                description: "Could not save student data locally. Changes might be lost.",
-            });
+            // Defer toast to avoid "setState in render" error
+            setTimeout(() => {
+                toast({
+                    variant: "destructive",
+                    title: "Storage Error",
+                    description: "Could not save student data locally. Changes might be lost.",
+                });
+            }, 0);
         }
     }
   }, [students, isLoading, toast]);
@@ -389,8 +392,6 @@ export default function StudentManagementPage() {
         }
         
         const hMap = Object.fromEntries(expectedHeaders.map(eh => [eh, header.indexOf(eh)]));
-
-        const importedOrUpdatedStudents: Student[] = [];
         
         setStudents(prevStudents => {
             const currentStudentsMap = new Map(prevStudents.map(s => [s.enrollmentNumber, s]));
@@ -1131,7 +1132,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                                     Semesters:
                                     {SEMESTER_OPTIONS.map(s => {
                                         const statusKey = `sem${s}Status` as keyof Student;
-                                        const statusValue = student[statusKey];
+                                        const statusValue = student[statusKey] as SemesterStatus | undefined;
                                         return (
                                           statusValue && statusValue !== 'N/A' &&
                                           <span key={s} className="ml-1 text-muted-foreground">S{s}: {statusValue}</span>
