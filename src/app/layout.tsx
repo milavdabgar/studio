@@ -6,7 +6,7 @@ import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
-import { Home, BarChart3, Users, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck } from 'lucide-react';
+import { Home, BarChart3, Users, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -129,7 +129,7 @@ export default function RootLayout({
      // Or show a global loading spinner
     return (
       <html lang="en" suppressHydrationWarning>
-        <body className={`${GeistSans.variable} antialiased`}>
+        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning>
           <div className="flex items-center justify-center min-h-screen">
             <Loader2 className="h-12 w-12 animate-spin text-primary" />
           </div>
@@ -145,7 +145,7 @@ export default function RootLayout({
   if (hideSidebar) {
     return (
       <html lang="en" suppressHydrationWarning>
-        <body className={`${GeistSans.variable} antialiased`}>
+        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning>
           {children}
           <Toaster />
         </body>
@@ -156,7 +156,7 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={typeof window === 'undefined' ? undefined : true}>
+      <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning>
         <SidebarProvider>
           <Sidebar>
             <SidebarHeader className="p-4 border-b border-sidebar-border">
@@ -228,3 +228,4 @@ export default function RootLayout({
     </html>
   );
 }
+
