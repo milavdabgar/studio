@@ -68,7 +68,8 @@ const ROLE_ACCESS_CONTROL: Record<string, UserRole[]> = {
   '/admin/users': ['admin'],
   '/admin/roles': ['admin'],
   '/admin/students': ['admin', 'hod'],
-  '/admin/faculty': ['admin', 'hod'], // Added faculty management access
+  '/admin/faculty': ['admin', 'hod'],
+  '/admin/departments': ['admin', 'hod'],
   '/admin': ['admin', 'hod'], 
   '/project-fair/admin': ['admin', 'hod'],
   '/project-fair/jury': ['jury', 'faculty', 'admin', 'hod'],
