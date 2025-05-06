@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { PlusCircle, Edit, Trash2, Users, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, BookUser, CalendarIcon, Info } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Users, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, BookUser, CalendarDays as CalendarIcon, Info } from "lucide-react"; // Renamed CalendarDays to CalendarIcon
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -738,6 +738,18 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
     </TableHead>
   );
 
+  // A map for form state semester status getters
+  const semesterStatusGetters: { [key: number]: SemesterStatus } = {
+    1: formSem1Status, 2: formSem2Status, 3: formSem3Status, 4: formSem4Status,
+    5: formSem5Status, 6: formSem6Status, 7: formSem7Status, 8: formSem8Status,
+  };
+
+  // A map for form state semester status setters
+  const semesterStatusSetters: { [key: number]: React.Dispatch<React.SetStateAction<SemesterStatus>> } = {
+    1: setFormSem1Status, 2: setFormSem2Status, 3: setFormSem3Status, 4: setFormSem4Status,
+    5: setFormSem5Status, 6: setFormSem6Status, 7: setFormSem7Status, 8: setFormSem8Status,
+  };
+
 
   return (
     <div className="space-y-8">
@@ -902,27 +914,22 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                   {/* Semester Statuses */}
                   <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-4 border p-3 rounded-md">
                     <h4 className="md:col-span-full text-sm font-medium mb-1">Semester Statuses</h4>
-                    {[1,2,3,4,5,6,7,8].map(semNum => {
-                      const statusKey = `formSem${semNum}Status` as keyof typeof self;
-                      const setStatusKey = `setFormSem${semNum}Status` as keyof typeof self;
-
-                      return (
+                    {[1,2,3,4,5,6,7,8].map(semNum => (
                         <div key={`sem-${semNum}-status-form`}>
-                            <Label htmlFor={`sem${semNum}Status`}>Sem {semNum}</Label>
+                            <Label htmlFor={`sem${semNum}StatusForm`}>Sem {semNum}</Label>
                             <Select 
-                                value={ (this as any)[statusKey] || ""} 
-                                onValueChange={(val) => (this as any)[setStatusKey](val as SemesterStatus | null)} 
+                                value={semesterStatusGetters[semNum] || ""} 
+                                onValueChange={(val) => semesterStatusSetters[semNum](val as SemesterStatus | null)} 
                                 disabled={isSubmitting}
                             >
-                                <SelectTrigger id={`sem${semNum}Status`}><SelectValue placeholder="Status" /></SelectTrigger>
+                                <SelectTrigger id={`sem${semNum}StatusForm`}><SelectValue placeholder="Status" /></SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="">N/A</SelectItem>
-                                    {SEMESTER_STATUS_OPTIONS.map(opt => <SelectItem key={opt.value || `na-${semNum}`} value={opt.value || ""}>{opt.label}</SelectItem>)}
+                                    {SEMESTER_STATUS_OPTIONS.map(opt => <SelectItem key={`${opt.value || 'na'}-${semNum}`} value={opt.value || ""}>{opt.label}</SelectItem>)}
                                 </SelectContent>
                             </Select>
                         </div>
-                      );
-                    })}
+                      ))}
                   </div>
                   
                   <DialogFooter className="md:col-span-3 mt-4">
