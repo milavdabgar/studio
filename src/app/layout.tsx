@@ -5,7 +5,7 @@ import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
-import { Home, BarChart3, Users as UsersIcon, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser } from 'lucide-react';
+import { Home, BarChart3, Users as UsersIconLucide, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser } from 'lucide-react'; // Renamed Users to UsersIconLucide
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -38,14 +38,14 @@ const DEFAULT_USER: User = {
 const baseNavItems: Record<UserRole, Array<{ href: string; icon: React.ElementType; label: string; id: string }>> = {
   admin: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard' },
-    { href: '/admin/users', icon: UsersIcon, label: 'User Management', id: 'admin-users' },
+    { href: '/admin/users', icon: UsersIconLucide, label: 'User Management', id: 'admin-users' },
     { href: '/admin/roles', icon: UserCog, label: 'Role Management', id: 'admin-roles' },
     { href: '/admin/students', icon: BookUser, label: 'Student Mgt.', id: 'admin-students' },
-    { href: '/admin/departments', icon: Briefcase, label: 'Departments', id: 'admin-departments' },
-    { href: '/admin/faculty', icon: UsersIcon, label: 'Faculty Mgt.', id: 'admin-faculty' },
-    { href: '/admin/results', icon: Award, label: 'Results Admin', id: 'admin-results' },
+    // { href: '/admin/departments', icon: Briefcase, label: 'Departments', id: 'admin-departments' }, // Example, can be uncommented
+    // { href: '/admin/faculty', icon: UsersIconLucide, label: 'Faculty Mgt.', id: 'admin-faculty' }, // Example
+    // { href: '/admin/results', icon: Award, label: 'Results Admin', id: 'admin-results' }, // Example
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback' },
-    { href: '/project-fair/admin', icon: FileText, label: 'Project Fair Admin', id: 'admin-project-fair' },
+    // { href: '/project-fair/admin', icon: FileText, label: 'Project Fair Admin', id: 'admin-project-fair' }, // Example
   ],
   student: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'student-dashboard' },
@@ -57,14 +57,14 @@ const baseNavItems: Record<UserRole, Array<{ href: string; icon: React.ElementTy
   faculty: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'faculty-dashboard' },
     { href: '/faculty/courses', icon: BookOpen, label: 'My Courses', id: 'faculty-courses' },
-    { href: '/faculty/students', icon: UsersIcon, label: 'My Students', id: 'faculty-students'},
+    { href: '/faculty/students', icon: UsersIconLucide, label: 'My Students', id: 'faculty-students'},
     { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'faculty-evaluate' },
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'faculty-feedback' },
   ],
   hod: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'hod-dashboard' },
-    { href: '/admin/departments', icon: Briefcase, label: 'My Department', id: 'hod-department' }, 
-    { href: '/admin/faculty', icon: UsersIcon, label: 'Faculty (Dept)', id: 'hod-faculty' },
+    // { href: '/admin/departments', icon: Briefcase, label: 'My Department', id: 'hod-department' }, 
+    { href: '/admin/faculty', icon: UsersIconLucide, label: 'Faculty (Dept)', id: 'hod-faculty' },
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'hod-students' },
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'hod-feedback' },
     { href: '/project-fair/admin', icon: FileText, label: 'Project Fair Admin', id: 'hod-project-fair' },
@@ -302,3 +302,4 @@ export default function RootLayout({
     </html>
   );
 }
+
