@@ -26,6 +26,8 @@ const initialRoles: Role[] = [
   { id: "5", name: "Jury", description: "Project fair jury access.", permissions: ["evaluate_projects"] },
 ];
 
+const LOCAL_STORAGE_KEY_ROLES = 'managedRoles';
+
 // Mock permissions list
 const allPermissions = [
   "manage_users", "manage_roles", "manage_settings", "view_courses", 
@@ -48,13 +50,36 @@ export default function RoleManagementPage() {
 
   const { toast } = useToast();
 
-  useEffect(() => {
-    // Simulate fetching roles
-    setTimeout(() => {
+ useEffect(() => {
+    setIsLoading(true);
+    try {
+      const storedRoles = localStorage.getItem(LOCAL_STORAGE_KEY_ROLES);
+      if (storedRoles) {
+        setRoles(JSON.parse(storedRoles));
+      } else {
+        setRoles(initialRoles);
+      }
+    } catch (error) {
+      console.error("Failed to load roles from localStorage", error);
       setRoles(initialRoles);
-      setIsLoading(false);
-    }, 500);
+    }
+    setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    if(!isLoading) { // Only save if initial load is complete
+        try {
+            localStorage.setItem(LOCAL_STORAGE_KEY_ROLES, JSON.stringify(roles));
+        } catch (error) {
+            console.error("Failed to save roles to localStorage", error);
+            toast({
+                variant: "destructive",
+                title: "Storage Error",
+                description: "Could not save role data locally. Changes might be lost.",
+            });
+        }
+    }
+  }, [roles, isLoading, toast]);
 
   const handleEdit = (role: Role) => {
     setCurrentRole(role);
@@ -74,8 +99,9 @@ export default function RoleManagementPage() {
 
   const handleDelete = (roleId: string) => {
     setIsSubmitting(true);
+    // Simulate API call
     setTimeout(() => { 
-      setRoles(roles.filter(role => role.id !== roleId));
+      setRoles(prevRoles => prevRoles.filter(role => role.id !== roleId));
       toast({ title: "Role Deleted", description: "The role has been successfully deleted." });
       setIsSubmitting(false);
     }, 500);
@@ -97,9 +123,10 @@ export default function RoleManagementPage() {
     }
     setIsSubmitting(true);
     
+    // Simulate API call
     setTimeout(() => { 
       if (currentRole && currentRole.id) {
-        setRoles(roles.map(r => r.id === currentRole.id ? { ...r, name: formRoleName, description: formRoleDescription, permissions: formRolePermissions } : r));
+        setRoles(prevRoles => prevRoles.map(r => r.id === currentRole.id ? { ...r, name: formRoleName, description: formRoleDescription, permissions: formRolePermissions } : r));
         toast({ title: "Role Updated", description: "The role has been successfully updated." });
       } else {
         const newRole: Role = { 
@@ -108,7 +135,7 @@ export default function RoleManagementPage() {
           description: formRoleDescription, 
           permissions: formRolePermissions 
         };
-        setRoles([...roles, newRole]);
+        setRoles(prevRoles => [...prevRoles, newRole]);
         toast({ title: "Role Created", description: "The new role has been successfully created." });
       }
       setIsSubmitting(false);
@@ -149,8 +176,8 @@ export default function RoleManagementPage() {
         const descriptionIndex = header.indexOf('description');
         const permissionsIndex = header.indexOf('permissions');
 
-        const importedRoles: Role[] = [];
-        const updatedRoles = [...roles];
+        const importedRolesBatch: Role[] = [];
+        const currentRolesCopy = [...roles]; // Work on a copy
         let newRolesCount = 0;
         let updatedRolesCount = 0;
 
@@ -159,9 +186,7 @@ export default function RoleManagementPage() {
           const id = data[idIndex]?.trim();
           const name = data[nameIndex]?.trim();
           const description = data[descriptionIndex]?.trim();
-          // Permissions can be enclosed in quotes if they contain commas, handle basic case.
-          // For robust CSV, a proper parser is needed. This assumes simple comma-separated permissions without internal commas or quotes.
-          const permissionsString = data[permissionsIndex]?.trim().replace(/^"|"$/g, ''); // Remove surrounding quotes
+          const permissionsString = data[permissionsIndex]?.trim().replace(/^"|"$/g, ''); 
           const permissions = permissionsString ? permissionsString.split(';').map(p => p.trim()).filter(p => p) : [];
 
 
@@ -173,21 +198,26 @@ export default function RoleManagementPage() {
           const roleData = { name, description: description || "", permissions };
           
           if (id) {
-            const existingRoleIndex = updatedRoles.findIndex(r => r.id === id);
+            const existingRoleIndex = currentRolesCopy.findIndex(r => r.id === id);
             if (existingRoleIndex !== -1) {
-              updatedRoles[existingRoleIndex] = { ...updatedRoles[existingRoleIndex], ...roleData };
+              currentRolesCopy[existingRoleIndex] = { ...currentRolesCopy[existingRoleIndex], ...roleData };
               updatedRolesCount++;
             } else {
-              importedRoles.push({ id, ...roleData });
+              importedRolesBatch.push({ id, ...roleData });
               newRolesCount++;
             }
           } else {
-            importedRoles.push({ id: String(Date.now() + Math.random()), ...roleData });
+            importedRolesBatch.push({ id: String(Date.now() + Math.random()), ...roleData });
             newRolesCount++;
           }
         }
         
-        setRoles([...updatedRoles.filter(r => !importedRoles.find(ir => ir.id === r.id)), ...importedRoles]);
+        const finalRolesList = [
+          ...currentRolesCopy.filter(r => !importedRolesBatch.find(ir => ir.id === r.id)), 
+          ...importedRolesBatch
+        ];
+        setRoles(finalRolesList);
+
         toast({ title: "Import Successful", description: `${newRolesCount} roles added, ${updatedRolesCount} roles updated.` });
 
       } catch (error: any) {
@@ -196,7 +226,6 @@ export default function RoleManagementPage() {
       } finally {
         setIsSubmitting(false);
         setSelectedFile(null); 
-        // Reset file input
         const fileInput = document.getElementById('csvImport') as HTMLInputElement;
         if (fileInput) fileInput.value = '';
       }
@@ -214,9 +243,9 @@ export default function RoleManagementPage() {
       header.join(','),
       ...roles.map(role => [
         role.id,
-        `"${role.name.replace(/"/g, '""')}"`, // Escape quotes in name
-        `"${role.description.replace(/"/g, '""')}"`, // Escape quotes in description
-        `"${role.permissions.join(';')}"` // Join permissions with semicolon, then quote
+        `"${role.name.replace(/"/g, '""')}"`, 
+        `"${role.description.replace(/"/g, '""')}"`, 
+        `"${role.permissions.join(';')}"` 
       ].join(','))
     ];
     const csvString = csvRows.join('\r\n');
@@ -241,7 +270,7 @@ export default function RoleManagementPage() {
 role_001,Editor,Can edit content but not publish,"manage_content;view_content"
 role_002,Viewer,Can only view published content,"view_content"
 ,Moderator,Can moderate comments and user interactions,"moderate_comments;manage_users_basic" 
-`; // Last role has no ID to demonstrate auto-ID generation
+`; 
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);

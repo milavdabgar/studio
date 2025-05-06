@@ -20,10 +20,9 @@ interface User {
   id: string;
   name: string;
   email: string;
-  roles: UserRole[]; // Changed from role: UserRole to roles: UserRole[]
+  roles: UserRole[]; 
   status: 'active' | 'inactive';
-  department?: string; // Optional
-  // Password is not stored in this client-side state for security, handled in form
+  department?: string; 
 }
 
 const USER_ROLE_OPTIONS: { value: UserRole; label: string }[] = [
@@ -48,7 +47,9 @@ const initialUsers: User[] = [
   { id: "u6", name: "Edward Scissorhands", email: "ed.hands@example.com", roles: ["student"], status: "active", department: "Computer Science" },
 ];
 
-type SortField = keyof Omit<User, 'roles'> | 'roles' | 'none'; // Adjusted for roles array
+const LOCAL_STORAGE_KEY_USERS = 'managedUsers';
+
+type SortField = keyof Omit<User, 'roles'> | 'roles' | 'none'; 
 type SortDirection = 'asc' | 'desc';
 
 export default function UserManagementPage() {
@@ -61,7 +62,7 @@ export default function UserManagementPage() {
   // Form state for Dialog
   const [formUserName, setFormUserName] = useState('');
   const [formUserEmail, setFormUserEmail] = useState('');
-  const [formUserRoles, setFormUserRoles] = useState<UserRole[]>(['student']); // Changed from formUserRole
+  const [formUserRoles, setFormUserRoles] = useState<UserRole[]>(['student']); 
   const [formUserStatus, setFormUserStatus] = useState<'active' | 'inactive'>('active');
   const [formUserDepartment, setFormUserDepartment] = useState('');
   const [formUserPassword, setFormUserPassword] = useState('');
@@ -77,11 +78,35 @@ export default function UserManagementPage() {
   const { toast } = useToast();
 
   useEffect(() => {
-    setTimeout(() => {
-      setUsers(initialUsers);
-      setIsLoading(false);
-    }, 500);
+    setIsLoading(true);
+    try {
+      const storedUsers = localStorage.getItem(LOCAL_STORAGE_KEY_USERS);
+      if (storedUsers) {
+        setUsers(JSON.parse(storedUsers));
+      } else {
+        setUsers(initialUsers);
+      }
+    } catch (error) {
+        console.error("Failed to load users from localStorage", error);
+        setUsers(initialUsers);
+    }
+    setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    if(!isLoading) { // Only save if initial load is complete
+        try {
+            localStorage.setItem(LOCAL_STORAGE_KEY_USERS, JSON.stringify(users));
+        } catch (error) {
+            console.error("Failed to save users to localStorage", error);
+            toast({
+                variant: "destructive",
+                title: "Storage Error",
+                description: "Could not save user data locally. Changes might be lost.",
+            });
+        }
+    }
+  }, [users, isLoading, toast]);
 
   const resetForm = () => {
     setFormUserName('');
@@ -117,8 +142,9 @@ export default function UserManagementPage() {
         return;
     }
     setIsSubmitting(true);
+    // Simulate API call
     setTimeout(() => { 
-      setUsers(users.filter(user => user.id !== userId));
+      setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
       toast({ title: "User Deleted", description: "The user has been successfully deleted." });
       setIsSubmitting(false);
     }, 500);
@@ -157,6 +183,7 @@ export default function UserManagementPage() {
 
     setIsSubmitting(true);
     
+    // Simulate API call
     setTimeout(() => { 
       const userData: Omit<User, 'id'> = { 
         name: formUserName, 
@@ -167,14 +194,14 @@ export default function UserManagementPage() {
       };
 
       if (currentUser && currentUser.id) {
-        setUsers(users.map(u => u.id === currentUser.id ? { ...u, ...userData } : u));
+        setUsers(prevUsers => prevUsers.map(u => u.id === currentUser.id ? { ...u, ...userData } : u));
         toast({ title: "User Updated", description: "The user has been successfully updated." });
       } else {
         const newUser: User = { 
           id: String(Date.now()), 
           ...userData
         };
-        setUsers([...users, newUser]);
+        setUsers(prevUsers => [...prevUsers, newUser]);
         toast({ title: "User Created", description: "The new user has been successfully created." });
       }
       setIsSubmitting(false);
@@ -205,7 +232,7 @@ export default function UserManagementPage() {
         if (lines.length <= 1) throw new Error("CSV file is empty or has only a header.");
         
         const header = lines[0].split(',').map(h => h.trim().toLowerCase());
-        const expectedHeaders = ['id', 'name', 'email', 'roles', 'status', 'department']; // 'roles' instead of 'role'
+        const expectedHeaders = ['id', 'name', 'email', 'roles', 'status', 'department']; 
         const requiredHeaders = ['name', 'email', 'roles', 'status'];
 
         if (!requiredHeaders.every(rh => header.includes(rh))) {
@@ -214,8 +241,8 @@ export default function UserManagementPage() {
         
         const hMap = Object.fromEntries(expectedHeaders.map(eh => [eh, header.indexOf(eh)]));
 
-        const importedUsers: User[] = [];
-        const updatedUsersList = [...users];
+        const importedUsersBatch: User[] = [];
+        const currentUsersCopy = [...users];
         let newUsersCount = 0;
         let updatedUsersCount = 0;
 
@@ -238,23 +265,23 @@ export default function UserManagementPage() {
           const userData: Omit<User, 'id'> = { name, email, roles, status, department: department || "" };
           
           if (id) {
-            const existingUserIndex = updatedUsersList.findIndex(u => u.id === id);
+            const existingUserIndex = currentUsersCopy.findIndex(u => u.id === id);
             if (existingUserIndex !== -1) {
-              updatedUsersList[existingUserIndex] = { ...updatedUsersList[existingUserIndex], ...userData };
+              currentUsersCopy[existingUserIndex] = { ...currentUsersCopy[existingUserIndex], ...userData };
               updatedUsersCount++;
             } else {
-              importedUsers.push({ id, ...userData });
+              importedUsersBatch.push({ id, ...userData });
               newUsersCount++;
             }
           } else {
-            importedUsers.push({ id: String(Date.now() + Math.random()), ...userData });
+            importedUsersBatch.push({ id: String(Date.now() + Math.random()), ...userData });
             newUsersCount++;
           }
         }
         
         const finalUsers = [
-            ...updatedUsersList.filter(u => !importedUsers.find(iu => iu.id === u.id)),
-            ...importedUsers
+            ...currentUsersCopy.filter(u => !importedUsersBatch.find(iu => iu.id === u.id)),
+            ...importedUsersBatch
         ];
 
         setUsers(finalUsers);
@@ -285,7 +312,7 @@ export default function UserManagementPage() {
         user.id,
         `"${user.name.replace(/"/g, '""')}"`,
         `"${user.email.replace(/"/g, '""')}"`,
-        `"${user.roles.join(';')}"`, // Roles joined by semicolon
+        `"${user.roles.join(';')}"`, 
         user.status,
         `"${(user.department || "").replace(/"/g, '""')}"`
       ].join(','))
@@ -306,7 +333,7 @@ export default function UserManagementPage() {
 u_001,John Doe,john.doe@example.com,student,active,Computer Science
 u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineering
 ,New User,new.user@example.com,jury,inactive,General
-`; // Roles are semicolon-separated
+`; 
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -350,7 +377,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
         let valB: any;
 
         if (sortField === 'roles') {
-          valA = a.roles.join(', '); // Sort by string representation of roles
+          valA = a.roles.join(', '); 
           valB = b.roles.join(', ');
         } else {
           valA = a[sortField as keyof Omit<User, 'roles'>];

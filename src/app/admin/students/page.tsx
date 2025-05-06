@@ -93,6 +93,8 @@ const initialStudents: Student[] = [
   { id: "s3", enrollmentNumber: "GPPLN19005", gtuName: "PATEL AMIT DINESHBHAI", firstName: "AMIT", middleName: "DINESHBHAI", lastName: "PATEL", instituteEmail: "GPPLN19005@gppalanpur.in", department: "Electrical Engineering", branchCode: "EE", currentSemester: 6, status: "graduated", address: "456 Power House, Deesa", admissionDate: "2019-06-20", gender: "Male", convocationYear: 2023, sem1Status: "Passed", sem2Status: "Passed", sem3Status: "Passed", sem4Status: "Passed", sem5Status: "Passed", sem6Status: "Passed", isPassAll: true, isComplete: true, termClose: true },
 ];
 
+const LOCAL_STORAGE_KEY_STUDENTS = 'managedStudents';
+
 type SortField = keyof Student | 'none';
 type SortDirection = 'asc' | 'desc';
 
@@ -165,11 +167,36 @@ export default function StudentManagementPage() {
   const { toast } = useToast();
 
   useEffect(() => {
-    setTimeout(() => {
+    setIsLoading(true);
+    try {
+      const storedStudents = localStorage.getItem(LOCAL_STORAGE_KEY_STUDENTS);
+      if (storedStudents) {
+        setStudents(JSON.parse(storedStudents));
+      } else {
+        setStudents(initialStudents); 
+      }
+    } catch (error) {
+      console.error("Failed to load students from localStorage", error);
       setStudents(initialStudents);
-      setIsLoading(false);
-    }, 500);
+    }
+    setIsLoading(false);
   }, []);
+
+  useEffect(() => {
+    if (!isLoading) { // Only save if initial load is complete
+        try {
+            localStorage.setItem(LOCAL_STORAGE_KEY_STUDENTS, JSON.stringify(students));
+        } catch (error) {
+            console.error("Failed to save students to localStorage", error);
+            toast({
+                variant: "destructive",
+                title: "Storage Error",
+                description: "Could not save student data locally. Changes might be lost.",
+            });
+        }
+    }
+  }, [students, isLoading, toast]);
+
 
   const resetForm = () => {
     setFormEnrollment('');
@@ -237,8 +264,9 @@ export default function StudentManagementPage() {
 
   const handleDelete = (studentId: string) => {
     setIsSubmitting(true);
+    // Simulate API call
     setTimeout(() => {
-      setStudents(students.filter(student => student.id !== studentId));
+      setStudents(prevStudents => prevStudents.filter(student => student.id !== studentId));
       toast({ title: "Student Deleted", description: "The student record has been successfully deleted." });
       setIsSubmitting(false);
     }, 500);
@@ -270,6 +298,7 @@ export default function StudentManagementPage() {
 
     setIsSubmitting(true);
 
+    // Simulate API Call
     setTimeout(() => {
       const { firstName, middleName, lastName } = parseGtuName(formGtuName);
 
@@ -304,7 +333,7 @@ export default function StudentManagementPage() {
       studentData.instituteEmail = `${studentData.enrollmentNumber}@gppalanpur.in`;
 
       if (currentStudent && currentStudent.id) {
-        setStudents(students.map(s => s.id === currentStudent.id ? { ...s, ...studentData, instituteEmail: studentData.instituteEmail! } : s));
+        setStudents(prevStudents => prevStudents.map(s => s.id === currentStudent.id ? { ...s, ...studentData, instituteEmail: studentData.instituteEmail! } : s));
         toast({ title: "Student Updated", description: "The student record has been successfully updated." });
       } else {
         const newStudent: Student = {
@@ -312,7 +341,7 @@ export default function StudentManagementPage() {
           ...studentData,
           instituteEmail: studentData.instituteEmail!,
         };
-        setStudents([...students, newStudent]);
+        setStudents(prevStudents => [...prevStudents, newStudent]);
         toast({ title: "Student Added", description: `Student ${newStudent.gtuName || `${newStudent.firstName} ${newStudent.lastName}`} added. Institute Email: ${newStudent.instituteEmail}, Default Password: ${newStudent.enrollmentNumber}` });
       }
       setIsSubmitting(false);
@@ -360,8 +389,8 @@ export default function StudentManagementPage() {
         
         const hMap = Object.fromEntries(expectedHeaders.map(eh => [eh, header.indexOf(eh)]));
 
-        const importedStudents: Student[] = [];
-        const updatedStudentsList = [...students];
+        const importedStudentsBatch: Student[] = [];
+        const currentStudentsCopy = [...students];
         let newStudentsCount = 0;
         let updatedStudentsCount = 0;
 
@@ -430,28 +459,32 @@ export default function StudentManagementPage() {
           };
 
           const id = data[hMap['id']];
-          const existingByIdIndex = id ? updatedStudentsList.findIndex(u => u.id === id) : -1;
-          const existingByEnrollmentIndex = updatedStudentsList.findIndex(u => u.enrollmentNumber === enrollmentNumber);
+          const existingByIdIndex = id ? currentStudentsCopy.findIndex(u => u.id === id) : -1;
+          const existingByEnrollmentIndex = currentStudentsCopy.findIndex(u => u.enrollmentNumber === enrollmentNumber);
 
           if (id && existingByIdIndex !== -1) { // Update by ID
-            if (existingByEnrollmentIndex !== -1 && updatedStudentsList[existingByEnrollmentIndex].id !== id) {
+            if (existingByEnrollmentIndex !== -1 && currentStudentsCopy[existingByEnrollmentIndex].id !== id) {
                  console.warn(`Skipping update for ID ${id}: Enrollment number ${enrollmentNumber} already exists for another student.`);
                  continue;
             }
-            updatedStudentsList[existingByIdIndex] = { ...updatedStudentsList[existingByIdIndex], ...studentData };
+            currentStudentsCopy[existingByIdIndex] = { ...currentStudentsCopy[existingByIdIndex], ...studentData };
             updatedStudentsCount++;
           } else if (existingByEnrollmentIndex !== -1) { // Update by enrollment number if no ID or ID not found
-             updatedStudentsList[existingByEnrollmentIndex] = { ...updatedStudentsList[existingByEnrollmentIndex], ...studentData };
+             currentStudentsCopy[existingByEnrollmentIndex] = { ...currentStudentsCopy[existingByEnrollmentIndex], ...studentData };
              updatedStudentsCount++;
           }else { // New student
-            importedStudents.push({ id: generateClientId(), ...studentData });
+            importedStudentsBatch.push({ id: generateClientId(), ...studentData });
             newStudentsCount++;
              // Simulate user account creation
             console.log(`Creating user account for ${studentData.enrollmentNumber}: Email: ${studentData.instituteEmail}, Password: ${studentData.enrollmentNumber}`);
           }
         }
         
-        setStudents([...updatedStudentsList.filter(s => !importedStudents.find(is => is.id === s.id || is.enrollmentNumber === s.enrollmentNumber)), ...importedStudents]);
+        const finalStudentList = [
+            ...currentStudentsCopy.filter(s => !importedStudentsBatch.find(is => is.id === s.id || is.enrollmentNumber === s.enrollmentNumber)), 
+            ...importedStudentsBatch
+        ];
+        setStudents(finalStudentList);
         toast({ title: "Import Successful", description: `${newStudentsCount} students added, ${updatedStudentsCount} students updated.` });
 
       } catch (error: any) {
@@ -553,8 +586,8 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
         
         const hMap = Object.fromEntries(gtuHeaders.map(eh => [eh, header.indexOf(eh)]));
 
-        const importedStudents: Student[] = [];
-        const updatedStudentsList = [...students];
+        const importedStudentsBatch: Student[] = [];
+        const currentStudentsCopy = [...students];
         let newStudentsCount = 0;
         let updatedStudentsCount = 0;
         let skippedCount = 0;
@@ -621,12 +654,12 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
             shift: data[hMap['shift']] || undefined,
           };
 
-          const existingStudentIndex = updatedStudentsList.findIndex(s => s.enrollmentNumber === enrollmentNumber);
+          const existingStudentIndex = currentStudentsCopy.findIndex(s => s.enrollmentNumber === enrollmentNumber);
           if (existingStudentIndex !== -1) {
-            updatedStudentsList[existingStudentIndex] = { ...updatedStudentsList[existingStudentIndex], ...studentData };
+            currentStudentsCopy[existingStudentIndex] = { ...currentStudentsCopy[existingStudentIndex], ...studentData };
             updatedStudentsCount++;
           } else {
-            importedStudents.push({ id: generateClientId(), ...studentData });
+            importedStudentsBatch.push({ id: generateClientId(), ...studentData });
             newStudentsCount++;
             // Simulate user account creation for new students from GTU data
             console.log(`Creating user account for ${studentData.enrollmentNumber} (GTU Import): Email: ${studentData.instituteEmail}, Password: ${studentData.enrollmentNumber}`);
@@ -634,7 +667,11 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
           }
         }
         
-        setStudents([...updatedStudentsList.filter(s => !importedStudents.find(is => is.enrollmentNumber === s.enrollmentNumber)), ...importedStudents]);
+        const finalStudentList = [
+            ...currentStudentsCopy.filter(s => !importedStudentsBatch.find(is => is.enrollmentNumber === s.enrollmentNumber)), 
+            ...importedStudentsBatch
+        ];
+        setStudents(finalStudentList);
         toast({ title: "GTU Import Successful", description: `${newStudentsCount} students added, ${updatedStudentsCount} students updated. ${skippedCount} rows skipped.` });
 
       } catch (error: any) {
@@ -739,7 +776,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
   );
 
   // A map for form state semester status getters
-  const semesterStatusGetters: { [key: number]: SemesterStatus } = {
+  const semesterStatusGetters: { [key: number]: SemesterStatus | undefined } = {
     1: formSem1Status, 2: formSem2Status, 3: formSem3Status, 4: formSem4Status,
     5: formSem5Status, 6: formSem6Status, 7: formSem7Status, 8: formSem8Status,
   };
@@ -914,7 +951,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                   {/* Semester Statuses */}
                   <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-4 border p-3 rounded-md">
                     <h4 className="md:col-span-full text-sm font-medium mb-1">Semester Statuses</h4>
-                    {[1,2,3,4,5,6,7,8].map(semNum => (
+                    {SEMESTER_OPTIONS.map(semNum => (
                         <div key={`sem-${semNum}-status-form`}>
                             <Label htmlFor={`sem${semNum}StatusForm`}>Sem {semNum}</Label>
                             <Select 
@@ -1093,7 +1130,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                                 <p><strong>All Pass:</strong> {student.isPassAll ? 'Yes' : 'No'}</p>
                                 <div className="mt-1 pt-1 border-t">
                                     Semesters:
-                                    {[1,2,3,4,5,6,7,8].map(s => {
+                                    {SEMESTER_OPTIONS.map(s => {
                                         const statusKey = `sem${s}Status` as keyof Student;
                                         return (
                                           student[statusKey] && 
