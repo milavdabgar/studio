@@ -1,12 +1,10 @@
-
-
 "use client"; 
 
 import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
-import { Home, BarChart3, Users as UsersIconLucide, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser, UsersRound, Building2, BookCopy, ClipboardList } from 'lucide-react';
+import { Home, BarChart3, Users as UsersIconLucide, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser, UsersRound, Building2, BookCopy, ClipboardList, Landmark } from 'lucide-react'; // Added Landmark
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -41,6 +39,7 @@ const baseNavItems: Record<UserRole, Array<{ href: string; icon: React.ElementTy
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard' },
     { href: '/admin/users', icon: UsersIconLucide, label: 'User Management', id: 'admin-users' },
     { href: '/admin/roles', icon: UserCog, label: 'Role Management', id: 'admin-roles' },
+    { href: '/admin/institutes', icon: Landmark, label: 'Institutes', id: 'admin-institutes'},
     { href: '/admin/students', icon: BookUser, label: 'Student Mgt.', id: 'admin-students' },
     { href: '/admin/faculty', icon: UsersRound, label: 'Faculty Mgt.', id: 'admin-faculty' }, 
     { href: '/admin/departments', icon: Building2, label: 'Departments', id: 'admin-departments' },
@@ -66,6 +65,7 @@ const baseNavItems: Record<UserRole, Array<{ href: string; icon: React.ElementTy
   ],
   hod: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'hod-dashboard' },
+    { href: '/admin/institutes', icon: Landmark, label: 'Institutes', id: 'hod-institutes'},
     { href: '/admin/departments', icon: Building2, label: 'My Department', id: 'hod-department' }, 
     { href: '/admin/programs', icon: BookCopy, label: 'Programs (Dept)', id: 'hod-programs' },
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'hod-courses' },
@@ -187,7 +187,7 @@ export default function RootLayout({
             <title>PolyManager</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
         </head>
-        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
+        <body className={`${GeistSans.className} antialiased`} suppressHydrationWarning={true}>
           {children}
           <Toaster />
         </body>
@@ -202,7 +202,7 @@ export default function RootLayout({
             <title>PolyManager - Loading...</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
         </head>
-        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
+        <body className={`${GeistSans.className} antialiased`} suppressHydrationWarning={true}>
           <div className="flex items-center justify-center min-h-screen">
             <Loader2 className="h-12 w-12 animate-spin text-primary" />
           </div>
@@ -219,7 +219,7 @@ export default function RootLayout({
             <title>PolyManager</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
         </head>
-      <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
+      <body className={`${GeistSans.className} antialiased`} suppressHydrationWarning={true}>
         <SidebarProvider>
           <Sidebar>
             <SidebarHeader className="p-4 border-b border-sidebar-border">
@@ -314,8 +314,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-
-
-
-

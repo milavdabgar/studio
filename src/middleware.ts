@@ -1,5 +1,4 @@
 
-
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
@@ -67,6 +66,7 @@ const PUBLIC_ROUTES = [
 const ROLE_ACCESS_CONTROL: Record<string, UserRole[]> = {
   '/admin/users': ['admin'],
   '/admin/roles': ['admin'],
+  '/admin/institutes': ['admin', 'hod'],
   '/admin/students': ['admin', 'hod'],
   '/admin/faculty': ['admin', 'hod'],
   '/admin/departments': ['admin', 'hod'],
@@ -141,6 +141,3 @@ export function middleware(request: NextRequest) {
   
   return NextResponse.next();
 }
-
-
-
