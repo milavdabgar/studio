@@ -1,14 +1,14 @@
 
 "use client";
 
-import React, { useState, useEffect, FormEvent } from 'react';
+import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
-import { PlusCircle, Edit, Trash2, UserCog, Loader2 } from "lucide-react";
+import { PlusCircle, Edit, Trash2, UserCog, Loader2, UploadCloud, Download, FileSpreadsheet } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Role {
@@ -44,6 +44,7 @@ export default function RoleManagementPage() {
   const [formRoleName, setFormRoleName] = useState('');
   const [formRoleDescription, setFormRoleDescription] = useState('');
   const [formRolePermissions, setFormRolePermissions] = useState<string[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const { toast } = useToast();
 
@@ -72,9 +73,8 @@ export default function RoleManagementPage() {
   };
 
   const handleDelete = (roleId: string) => {
-    // In a real app, show a confirmation dialog first
     setIsSubmitting(true);
-    setTimeout(() => { // Simulate API call
+    setTimeout(() => { 
       setRoles(roles.filter(role => role.id !== roleId));
       toast({ title: "Role Deleted", description: "The role has been successfully deleted." });
       setIsSubmitting(false);
@@ -97,15 +97,13 @@ export default function RoleManagementPage() {
     }
     setIsSubmitting(true);
     
-    setTimeout(() => { // Simulate API call
+    setTimeout(() => { 
       if (currentRole && currentRole.id) {
-        // Update existing role
         setRoles(roles.map(r => r.id === currentRole.id ? { ...r, name: formRoleName, description: formRoleDescription, permissions: formRolePermissions } : r));
         toast({ title: "Role Updated", description: "The role has been successfully updated." });
       } else {
-        // Add new role
         const newRole: Role = { 
-          id: String(Date.now()), // Simple ID generation for mock
+          id: String(Date.now()), 
           name: formRoleName, 
           description: formRoleDescription, 
           permissions: formRolePermissions 
@@ -118,6 +116,143 @@ export default function RoleManagementPage() {
     }, 1000);
   };
 
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setSelectedFile(event.target.files[0]);
+    } else {
+      setSelectedFile(null);
+    }
+  };
+
+  const handleImportRoles = () => {
+    if (!selectedFile) {
+      toast({ variant: "destructive", title: "Import Error", description: "Please select a CSV file to import." });
+      return;
+    }
+    setIsSubmitting(true);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const text = e.target?.result as string;
+        const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
+        if (lines.length <= 1) {
+          throw new Error("CSV file is empty or has only a header.");
+        }
+        const header = lines[0].split(',').map(h => h.trim().toLowerCase());
+        const expectedHeaders = ['id', 'name', 'description', 'permissions'];
+        if (!expectedHeaders.every(eh => header.includes(eh))) {
+            throw new Error(`CSV header is missing some_expected columns. Expected: ${expectedHeaders.join(', ')} Got: ${header.join(', ')}`);
+        }
+        
+        const idIndex = header.indexOf('id');
+        const nameIndex = header.indexOf('name');
+        const descriptionIndex = header.indexOf('description');
+        const permissionsIndex = header.indexOf('permissions');
+
+        const importedRoles: Role[] = [];
+        const updatedRoles = [...roles];
+        let newRolesCount = 0;
+        let updatedRolesCount = 0;
+
+        for (let i = 1; i < lines.length; i++) {
+          const data = lines[i].split(',');
+          const id = data[idIndex]?.trim();
+          const name = data[nameIndex]?.trim();
+          const description = data[descriptionIndex]?.trim();
+          // Permissions can be enclosed in quotes if they contain commas, handle basic case.
+          // For robust CSV, a proper parser is needed. This assumes simple comma-separated permissions without internal commas or quotes.
+          const permissionsString = data[permissionsIndex]?.trim().replace(/^"|"$/g, ''); // Remove surrounding quotes
+          const permissions = permissionsString ? permissionsString.split(';').map(p => p.trim()).filter(p => p) : [];
+
+
+          if (!name) {
+            console.warn(`Skipping row ${i+1}: Name is missing.`);
+            continue;
+          }
+
+          const roleData = { name, description: description || "", permissions };
+          
+          if (id) {
+            const existingRoleIndex = updatedRoles.findIndex(r => r.id === id);
+            if (existingRoleIndex !== -1) {
+              updatedRoles[existingRoleIndex] = { ...updatedRoles[existingRoleIndex], ...roleData };
+              updatedRolesCount++;
+            } else {
+              importedRoles.push({ id, ...roleData });
+              newRolesCount++;
+            }
+          } else {
+            importedRoles.push({ id: String(Date.now() + Math.random()), ...roleData });
+            newRolesCount++;
+          }
+        }
+        
+        setRoles([...updatedRoles.filter(r => !importedRoles.find(ir => ir.id === r.id)), ...importedRoles]);
+        toast({ title: "Import Successful", description: `${newRolesCount} roles added, ${updatedRolesCount} roles updated.` });
+
+      } catch (error: any) {
+        console.error("Error processing CSV file:", error);
+        toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
+      } finally {
+        setIsSubmitting(false);
+        setSelectedFile(null); 
+        // Reset file input
+        const fileInput = document.getElementById('csvImport') as HTMLInputElement;
+        if (fileInput) fileInput.value = '';
+      }
+    };
+    reader.readAsText(selectedFile);
+  };
+
+  const handleExportRoles = () => {
+    if (roles.length === 0) {
+      toast({ title: "Export Canceled", description: "No roles to export." });
+      return;
+    }
+    const header = ["id", "name", "description", "permissions"];
+    const csvRows = [
+      header.join(','),
+      ...roles.map(role => [
+        role.id,
+        `"${role.name.replace(/"/g, '""')}"`, // Escape quotes in name
+        `"${role.description.replace(/"/g, '""')}"`, // Escape quotes in description
+        `"${role.permissions.join(';')}"` // Join permissions with semicolon, then quote
+      ].join(','))
+    ];
+    const csvString = csvRows.join('\r\n');
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", "roles_export.csv");
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast({ title: "Export Successful", description: "Roles exported to roles_export.csv" });
+    } else {
+       toast({ variant: "destructive", title: "Export Failed", description: "Your browser does not support this feature." });
+    }
+  };
+
+  const handleDownloadSampleCsv = () => {
+    const sampleCsvContent = `id,name,description,permissions
+role_001,Editor,Can edit content but not publish,"manage_content;view_content"
+role_002,Viewer,Can only view published content,"view_content"
+,Moderator,Can moderate comments and user interactions,"moderate_comments;manage_users_basic" 
+`; // Last role has no ID to demonstrate auto-ID generation
+    const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "sample_roles_import.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast({ title: "Sample CSV Downloaded", description: "sample_roles_import.csv downloaded." });
+  };
+
+
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
   }
@@ -125,7 +260,7 @@ export default function RoleManagementPage() {
   return (
     <div className="space-y-8">
       <Card className="shadow-xl">
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
               <UserCog className="h-6 w-6" />
@@ -135,82 +270,104 @@ export default function RoleManagementPage() {
               Manage user roles and their permissions within the system.
             </CardDescription>
           </div>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={handleAddNew}>
-                <PlusCircle className="mr-2 h-5 w-5" /> Add New Role
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[625px]">
-              <DialogHeader>
-                <DialogTitle>{currentRole ? "Edit Role" : "Add New Role"}</DialogTitle>
-                <DialogDescription>
-                  {currentRole ? "Modify the details of this role." : "Create a new role and assign permissions."}
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4 py-4">
-                <div>
-                  <Label htmlFor="roleName">Role Name</Label>
-                  <Input 
-                    id="roleName" 
-                    value={formRoleName} 
-                    onChange={(e) => setFormRoleName(e.target.value)} 
-                    placeholder="e.g., Administrator" 
-                    disabled={isSubmitting}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="roleDescription">Description</Label>
-                  <Input 
-                    id="roleDescription" 
-                    value={formRoleDescription} 
-                    onChange={(e) => setFormRoleDescription(e.target.value)} 
-                    placeholder="Brief description of the role" 
-                    disabled={isSubmitting}
-                  />
-                </div>
-                <div>
-                  <Label>Permissions</Label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-60 overflow-y-auto p-2 border rounded-md">
-                    {allPermissions.map(permission => (
-                      <div key={permission} className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          id={`perm-${permission}`}
-                          checked={formRolePermissions.includes(permission)}
-                          onChange={() => handlePermissionChange(permission)}
-                          disabled={isSubmitting}
-                          className="form-checkbox h-4 w-4 text-primary border-muted-foreground focus:ring-primary"
-                        />
-                        <Label htmlFor={`perm-${permission}`} className="text-sm font-normal cursor-pointer">
-                          {permission.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                        </Label>
-                      </div>
-                    ))}
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button onClick={handleAddNew} className="w-full sm:w-auto">
+                  <PlusCircle className="mr-2 h-5 w-5" /> Add New Role
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[625px]">
+                <DialogHeader>
+                  <DialogTitle>{currentRole ? "Edit Role" : "Add New Role"}</DialogTitle>
+                  <DialogDescription>
+                    {currentRole ? "Modify the details of this role." : "Create a new role and assign permissions."}
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmit} className="space-y-4 py-4">
+                  <div>
+                    <Label htmlFor="roleName">Role Name</Label>
+                    <Input 
+                      id="roleName" 
+                      value={formRoleName} 
+                      onChange={(e) => setFormRoleName(e.target.value)} 
+                      placeholder="e.g., Administrator" 
+                      disabled={isSubmitting}
+                    />
                   </div>
-                </div>
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button type="button" variant="outline" disabled={isSubmitting}>
-                      Cancel
+                  <div>
+                    <Label htmlFor="roleDescription">Description</Label>
+                    <Input 
+                      id="roleDescription" 
+                      value={formRoleDescription} 
+                      onChange={(e) => setFormRoleDescription(e.target.value)} 
+                      placeholder="Brief description of the role" 
+                      disabled={isSubmitting}
+                    />
+                  </div>
+                  <div>
+                    <Label>Permissions</Label>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-60 overflow-y-auto p-2 border rounded-md">
+                      {allPermissions.map(permission => (
+                        <div key={permission} className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            id={`perm-${permission}`}
+                            checked={formRolePermissions.includes(permission)}
+                            onChange={() => handlePermissionChange(permission)}
+                            disabled={isSubmitting}
+                            className="form-checkbox h-4 w-4 text-primary border-muted-foreground focus:ring-primary rounded"
+                          />
+                          <Label htmlFor={`perm-${permission}`} className="text-sm font-normal cursor-pointer">
+                            {permission.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button type="button" variant="outline" disabled={isSubmitting}>
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                    <Button type="submit" disabled={isSubmitting}>
+                      {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      {currentRole ? "Save Changes" : "Create Role"}
                     </Button>
-                  </DialogClose>
-                  <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    {currentRole ? "Save Changes" : "Create Role"}
-                  </Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+            <Button onClick={handleExportRoles} variant="outline" className="w-full sm:w-auto">
+              <Download className="mr-2 h-5 w-5" /> Export CSV
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
+          <div className="mb-6 p-4 border rounded-lg">
+            <h3 className="text-lg font-medium mb-2 flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Roles from CSV</h3>
+            <div className="flex flex-col sm:flex-row gap-2 items-center">
+              <Input type="file" id="csvImport" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
+              <Button onClick={handleImportRoles} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto">
+                {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>}
+                Import
+              </Button>
+            </div>
+             <Button onClick={handleDownloadSampleCsv} variant="link" size="sm" className="mt-2 px-0 text-primary">
+                <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
+            </Button>
+            <p className="text-xs text-muted-foreground mt-2">
+              CSV format: id (optional, for updates), name, description, permissions (semicolon-separated, e.g., "perm1;perm2").
+            </p>
+          </div>
+
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Role Name</TableHead>
                 <TableHead>Description</TableHead>
-                <TableHead>Permissions Count</TableHead>
+                <TableHead>Permissions</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -219,7 +376,9 @@ export default function RoleManagementPage() {
                 <TableRow key={role.id}>
                   <TableCell className="font-medium">{role.name}</TableCell>
                   <TableCell>{role.description}</TableCell>
-                  <TableCell>{role.permissions.length}</TableCell>
+                  <TableCell className="max-w-xs truncate">
+                    {role.permissions.map(p => p.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ') || '-'}
+                  </TableCell>
                   <TableCell className="text-right space-x-2">
                     <Button variant="outline" size="icon" onClick={() => handleEdit(role)} disabled={isSubmitting}>
                       <Edit className="h-4 w-4" />
@@ -234,8 +393,8 @@ export default function RoleManagementPage() {
               ))}
               {roles.length === 0 && (
                  <TableRow>
-                    <TableCell colSpan={4} className="text-center text-muted-foreground">
-                        No roles found. Click "Add New Role" to create one.
+                    <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                        No roles found. Click "Add New Role" or import a CSV file to create roles.
                     </TableCell>
                  </TableRow>
               )}
@@ -246,3 +405,5 @@ export default function RoleManagementPage() {
     </div>
   );
 }
+
+    
