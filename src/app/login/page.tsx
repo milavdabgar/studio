@@ -248,6 +248,13 @@ export default function LoginPage() {
               Login
             </Button>
           </form>
+          <Button
+            variant="outline"
+            className="w-full text-lg py-6 mt-4"
+            onClick={() => {
+              localStorage.removeItem('managedUsers');
+              alert('Local storage cleared');
+            }}>Clear Local Storage</Button>
         </CardContent>
         <CardFooter className="flex flex-col items-center gap-4">
            <Link href="#" className="text-sm text-primary hover:underline">
