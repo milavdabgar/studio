@@ -107,13 +107,19 @@ const parseGtuFacultyName = (gtuNameInput: string | undefined): { title?: string
     if (!gtuNameInput) return {};
     let gtuName = gtuNameInput.trim();
     let title: string | undefined;
-
+    const titles = ["Dr.", "Prof.", "Mr.", "Ms.", "Mrs."]; // Order matters for matching
+    
     // Check and remove title from the beginning of gtuName
-    for (const t of TITLE_OPTIONS) {
+    for (const t of titles) {
         const lowerT = t.toLowerCase();
         if (gtuName.toLowerCase().startsWith(lowerT + " ") || gtuName.toLowerCase().startsWith(lowerT + ".")) {
             title = gtuName.substring(0, t.length);
             gtuName = gtuName.substring(t.length).trim();
+             // Handle cases like "Dr. Prof. Name" - remove only the first title
+             for (const innerT of titles) {
+                 const lowerInnerT = innerT.toLowerCase();
+                 if (gtuName.toLowerCase().startsWith(lowerInnerT + " ") || gtuName.toLowerCase().startsWith(lowerInnerT + ".")) continue; // Don't remove the second title in a sequence
+             }
             if(gtuName.startsWith(".")) gtuName = gtuName.substring(1).trim(); // Remove period if present after title
             break;
         }
@@ -121,9 +127,13 @@ const parseGtuFacultyName = (gtuNameInput: string | undefined): { title?: string
     
     const parts = gtuName.split(/\s+/).filter(p => p);
     if (parts.length === 0) return { title };
-    if (parts.length === 1) return { title, firstName: parts[0] };
-    if (parts.length === 2) return { title, firstName: parts[0], lastName: parts[1] }; // Common: NAME SURNAME
+    if (parts.length === 1) return { title, firstName: parts[0], lastName: 'SURNAME' }; // Handle cases with only one name part (assume it's the name, add placeholder surname)
+ if (parts.length === 2) return { title, lastName: parts[0], firstName: parts[1] }; // Common GTU format: SURNAME NAME
     // Common: SURNAME NAME FATHER_NAME/HUSBAND_NAME or SURNAME NAME MIDDLE_NAME
+ // If GTU format is SURNAME FATHER_NAME NAME or similar, adjust parsing
+ // Assuming the format is generally SURNAME NAME MIDDLE_NAME...
+ // Let's stick to the most common observed GTU pattern: SURNAME NAME (FATHER/MIDDLE)
+ // If there are more than 2 parts, the first is likely SURNAME, the second NAME, and the rest MIDDLE NAME(s)
     return { title, lastName: parts[0], firstName: parts[1], middleName: parts.slice(2).join(' ') }; 
 };
 
@@ -233,9 +243,12 @@ export default function FacultyManagementPage() {
     setFormFirstName('');
     setFormMiddleName('');
     setFormLastName('');
-    setFormPersonalEmail('');
-    setFormDepartment(DEPARTMENT_OPTIONS[0]);
-    setFormDesignation(DESIGNATION_OPTIONS[0]);
+ setFormDepartment(DEPARTMENT_OPTIONS[0]); // Explicitly set to first option
+    setFormDesignation(''); // Explicitly set to empty string
+    if (document.getElementById('facultyDepartment')) {
+ document.getElementById('facultyDepartment')?.setAttribute('value', DEPARTMENT_OPTIONS[0]);
+ }
+
     setFormJobType('Regular');
     setFormContact('');
     setFormDob(undefined);
@@ -250,22 +263,27 @@ export default function FacultyManagementPage() {
 
   const handleEdit = (faculty: Faculty) => {
     setCurrentFaculty(faculty);
-    setFormStaffCode(faculty.staffCode);
- setFormGtuName(faculty.gtuName || '');
+ setFormStaffCode(faculty.staffCode);
+ // Set gtuName without title if present, otherwise empty string
+    const { title, firstName, middleName, lastName } = parseGtuFacultyName(faculty.gtuName);
+    const nameWithoutTitle = [firstName, middleName, lastName].filter(Boolean).join(' ');
+    setFormGtuName(nameWithoutTitle); // Use parsed name without title for form
+
     setFormTitle(faculty.title || '');
+ // Prefer individual name parts if available in the data
     setFormFirstName(faculty.firstName || '');
     setFormMiddleName(faculty.middleName || '');
     setFormLastName(faculty.lastName || '');
-    setFormPersonalEmail(faculty.personalEmail || '');
-    setFormDepartment(faculty.department);
+    setFormPersonalEmail(faculty.personalEmail || ''); // Ensure empty string if null/undefined
+ setFormDepartment(faculty.department || DEPARTMENT_OPTIONS[0]); // Fix: Prefill department, default to first option if not present
     setFormDesignation(faculty.designation || '');
-    setFormJobType(faculty.jobType || 'Regular');
-    setFormContact(faculty.contactNumber || '');
+ setFormJobType(faculty.jobType ?? 'Regular'); // Ensure a default for the select
+    setFormContact(faculty.contactNumber ?? '');
     setFormDob(faculty.dateOfBirth && isValid(parseISO(faculty.dateOfBirth)) ? parseISO(faculty.dateOfBirth) : undefined);
     setFormJoiningDate(faculty.joiningDate && isValid(parseISO(faculty.joiningDate)) ? parseISO(faculty.joiningDate) : undefined);
- setFormGender(faculty.gender || undefined);
- setFormMaritalStatus(faculty.maritalStatus || undefined);
-    setFormStatus(faculty.status);
+ setFormGender(faculty.gender ?? undefined);
+ setFormMaritalStatus(faculty.maritalStatus ?? undefined);
+ setFormStatus(faculty.status);
     setFormAadhar(faculty.aadharNumber || '');
     setFormPan(faculty.panCardNumber || '');
     setIsDialogOpen(true);
@@ -313,13 +331,13 @@ export default function FacultyManagementPage() {
       const facultyData: Omit<Faculty, 'id' | 'instituteEmail'> & { instituteEmail?: string; } = {
         staffCode: formStaffCode.trim(),
         gtuName: formGtuName.trim() || undefined,
-        title: formTitle.trim() || parsedTitle || undefined,
-        firstName: formFirstName.trim() || parsedFN || undefined,
-        middleName: formMiddleName.trim() || parsedMN || undefined,
-        lastName: formLastName.trim() || parsedLN || undefined,
-        personalEmail: formPersonalEmail.trim() || undefined,
+        title: formTitle.trim() || undefined,
+        firstName: formFirstName.trim() || undefined,
+        middleName: formMiddleName.trim() || undefined,
+        lastName: formLastName.trim() || undefined,
+        personalEmail: formPersonalEmail.trim() || undefined, // Ensure undefined if empty
         department: formDepartment,
-        designation: formDesignation || undefined,
+ designation: formDesignation.trim() || undefined,
         jobType: formJobType,
         contactNumber: formContact.trim() || undefined,
         dateOfBirth: formDob ? format(formDob, "yyyy-MM-dd") : undefined,
@@ -333,6 +351,16 @@ export default function FacultyManagementPage() {
       
       facultyData.instituteEmail = facultyData.personalEmail || `${facultyData.staffCode}@gppalanpur.ac.in`;
 
+       // Determine the name parts for the system user based on form input
+        let systemUserNameParts: string[] = [];
+        if (formGtuName.trim()) {
+            const parsed = parseGtuFacultyName(formGtuName.trim());
+            systemUserNameParts = [parsed.firstName, parsed.middleName, parsed.lastName].filter(Boolean).map(name => name!);
+        } else {
+            systemUserNameParts = [formFirstName.trim(), formMiddleName.trim(), formLastName.trim()].filter(Boolean);
+        }
+        const systemUserName = systemUserNameParts.join(' ') || facultyData.staffCode;
+
       if (currentFaculty && currentFaculty.id) {
         setFacultyList(prevList => prevList.map(f => f.id === currentFaculty.id ? { ...f, ...facultyData, instituteEmail: facultyData.instituteEmail! } : f));
         toast({ title: "Faculty Updated", description: "The faculty record has been successfully updated." });
@@ -343,9 +371,6 @@ export default function FacultyManagementPage() {
           instituteEmail: facultyData.instituteEmail!,
         };
         setFacultyList(prevList => [...prevList, newFaculty]);
-        
-        // Use gtuName if available and title is not explicitly set or parsed for system user name. Otherwise construct from parts.
-        const systemUserName = newFaculty.gtuName ? newFaculty.gtuName : (newFaculty.title ? `${newFaculty.title} ${newFaculty.firstName || ''} ${newFaculty.lastName || ''}` : `${newFaculty.firstName || ''} ${newFaculty.lastName || ''}`).trim();
         
         const newUserForSystem: SystemUser = {
           id: `user_fac_${newFaculty.id}`, 
@@ -368,14 +393,18 @@ export default function FacultyManagementPage() {
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      setSelectedFile(event.target.files[0]);
+      setSelectedFile(event.target.files[0]); 
     } else {
       setSelectedFile(null);
     }
-    const fileInput = document.getElementById('csvImportFaculty') as HTMLInputElement;
-    if (fileInput) fileInput.value = '';
+     // Clear the input display value if file is removed
+     const inputElement = event.target as HTMLInputElement;
+     if (!event.target.files || event.target.files.length === 0) {
+       inputElement.value = '';
+     }
 
   };
+  
   const handleGtuFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       setSelectedGtuFile(event.target.files[0]);
@@ -383,8 +412,11 @@ export default function FacultyManagementPage() {
       setSelectedGtuFile(null);
     }
     const fileInput = document.getElementById('gtuCsvImportFaculty') as HTMLInputElement;
-    if (fileInput) fileInput.value = '';
-
+    // Clear the input display value if file is removed
+     const inputElement = event.target as HTMLInputElement;
+     if (!event.target.files || event.target.files.length === 0) {
+       inputElement.value = '';
+     }
   };
 
   const handleImportFaculty = () => {
@@ -399,7 +431,7 @@ export default function FacultyManagementPage() {
       let updatedFacultyCount = 0;
       try {
         const text = e.target?.result as string;
-        const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
+ const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '').map(line => line.endsWith(',') ? line + ' ' : line); // Handle trailing commas
         if (lines.length <= 1) throw new Error("CSV file is empty or has only a header.");
 
         const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
@@ -413,7 +445,7 @@ export default function FacultyManagementPage() {
         const hMap = Object.fromEntries(expectedHeaders.map(eh => [eh, header.indexOf(eh)]));
         let facultyToUpdate = [...facultyList];
 
-        for (let i = 1; i < lines.length; i++) {
+ for (let i = 1; i < lines.length; i++) {
           const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
 
           const staffCode = data[hMap['staffcode']];
@@ -430,17 +462,23 @@ export default function FacultyManagementPage() {
           }
 
           const gtuName = data[hMap['gtuname']];
-          const parsedNames = parseGtuFacultyName(gtuName || '');
+          const titleFromCsv = data[hMap['title']];
+          const firstNameFromCsv = data[hMap['firstname']];
+          const middleNameFromCsv = data[hMap['middlename']];
+          const lastNameFromCsv = data[hMap['lastname']];
+          
+          // Parse name from gtuName ONLY if individual name parts are NOT provided in CSV
+          const parsedNames = (!titleFromCsv && !firstNameFromCsv && !middleNameFromCsv && !lastNameFromCsv && gtuName) ? parseGtuFacultyName(gtuName) : {};
 
-          const facultyDataPartial: Omit<Faculty, 'id' | 'instituteEmail'| 'staffCode' | 'department' | 'status'> & {instituteEmail?: string} = {
-            gtuName: gtuName || undefined,
-            title: data[hMap['title']] || parsedNames.title || undefined,
-            firstName: data[hMap['firstname']] || parsedNames.firstName || undefined,
-            middleName: data[hMap['middlename']] || parsedNames.middleName || undefined,
-            lastName: data[hMap['lastname']] || parsedNames.lastName || undefined,
+ const facultyDataPartial: Omit<Faculty, 'id' | 'instituteEmail'| 'staffCode' | 'department' | 'status'> = {
+ gtuName: (gtuName ? [parsedNames.firstName, parsedNames.middleName, parsedNames.lastName].filter(Boolean).join(' ') : undefined) || undefined, // Use parsed name without title for gtuName
+            title: (data[hMap['title']]?.trim() || undefined) || parsedNames.title, // Use CSV title if present, else parsed title
+            firstName: (data[hMap['firstname']]?.trim() || undefined) || parsedNames.firstName, // Use CSV first name if present, else parsed first name
+            middleName: (data[hMap['middlename']]?.trim() || undefined) || parsedNames.middleName, // Use CSV middle name if present, else parsed middle name
+            lastName: (data[hMap['lastname']]?.trim() || undefined) || parsedNames.lastName, // Use CSV last name if present, else parsed last name
             personalEmail: data[hMap['personalemail']] || undefined,
             designation: data[hMap['designation']] || undefined,
-            jobType: data[hMap['jobtype']] as JobType || 'Regular',
+            jobType: (data[hMap['jobtype']] && JOB_TYPE_OPTIONS.includes(data[hMap['jobtype']] as JobType)) ? data[hMap['jobtype']] as JobType : 'Regular',
             contactNumber: data[hMap['contactnumber']] || undefined,
             dateOfBirth: data[hMap['dateofbirth']] || undefined, // Assuming YYYY-MM-DD
             joiningDate: data[hMap['joiningdate']] || undefined, // Assuming YYYY-MM-DD
@@ -453,12 +491,13 @@ export default function FacultyManagementPage() {
           const facultyData: Omit<Faculty, 'id'> = {
             staffCode,
             department,
-            status,
-            instituteEmail: facultyDataPartial.personalEmail || `${staffCode}@gppalanpur.ac.in`,
+ status,
+ instituteEmail: facultyDataPartial.personalEmail || `${staffCode}@gppalanpur.ac.in`, // Use personalEmail if provided, else generate
             ...facultyDataPartial
           };
 
           const idFromCsv = data[hMap['id']];
+ // Find existing faculty by ID (if provided) or by Staff Code
           let existingFacultyIndex = -1;
 
           if (idFromCsv) {
@@ -480,15 +519,23 @@ export default function FacultyManagementPage() {
             facultyToUpdate[existingFacultyIndex] = { ...facultyToUpdate[existingFacultyIndex], ...facultyData };
             updatedFacultyCount++;
           } else {
+ // Determine the name for the system user based on the *most complete* name data
+ const systemUserNameParts: string[] = [
+ facultyData.title,
+ facultyData.firstName,
+ facultyData.middleName,
+ facultyData.lastName
+ ].filter(Boolean).map(name => name!);
+ const systemUserName = systemUserNameParts.join(' ') || facultyData.gtuName || facultyData.staffCode;
+
             const newFaculty = { id: generateClientId(), ...facultyData };
             facultyToUpdate.push(newFaculty);
             newFacultyCount++;
-
-            const systemUserName = newFaculty.gtuName ? newFaculty.gtuName : (newFaculty.title ? `${newFaculty.title} ${newFaculty.firstName || ''} ${newFaculty.lastName || ''}` : `${newFaculty.firstName || ''} ${newFaculty.lastName || ''}`).trim();
-           addUserToLocalStorage({
+            
+            addUserToLocalStorage({
               id: `user_fac_${newFaculty.id}`,
-              name: systemUserName || newFaculty.staffCode,
-              email: newFaculty.instituteEmail,
+ name: systemUserName,
+ email: newFaculty.instituteEmail, // Use generated or personal email for system user
               roles: ['faculty'], 
               status: 'active',
               department: newFaculty.department,
@@ -566,7 +613,7 @@ faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@examp
       let skippedCount = 0;
       try {
         const text = e.target?.result as string;
-        const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
+ const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '').map(line => line.endsWith(',') ? line + ' ' : line); // Handle trailing commas
         if (lines.length <= 1) throw new Error("GTU CSV file is empty or has only a header.");
 
         const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, '')); // staffcode,name,insttype,department,designation,jobtype,mobileno,emailaddress
@@ -579,7 +626,7 @@ faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@examp
         const hMap = Object.fromEntries(gtuExpectedHeaders.map(eh => [eh, header.indexOf(eh)]));
         let facultyToUpdate = [...facultyList];
 
-        for (let i = 1; i < lines.length; i++) {
+ for (let i = 1; i < lines.length; i++) { // Start from 1 to skip header
           const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
 
           const staffCode = data[hMap['staffcode']];
@@ -592,29 +639,31 @@ faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@examp
             skippedCount++;
             continue;
           }
-
-          const { firstName, middleName, lastName, title } = parseGtuFacultyName(gtuNameFromCsv);
+ // Always parse the GTU Name for potentially separate name parts and title
+          const parsedNames = parseGtuFacultyName(gtuNameFromCsv);
+          
           const personalEmail = data[hMap['emailaddress']];
           const contactNumber = data[hMap['mobileno']];
-          const jobType = data[hMap['jobtype']] as JobType;
+          // Ensure jobType is one of the allowed values
+          const jobType = (data[hMap['jobtype']]?.trim() && JOB_TYPE_OPTIONS.includes(data[hMap['jobtype']].trim() as JobType)) ? data[hMap['jobtype']].trim() as JobType : 'Other';
           const instType = data[hMap['insttype']];
 
 
           const facultyData: Omit<Faculty, 'id'> = {
             staffCode,
             gtuName: gtuNameFromCsv, // Store the full name as from GTU
-            title, // Parsed title
-            firstName, // Parsed first name
-            middleName, // Parsed middle name
-            lastName, // Parsed last name
-            personalEmail: personalEmail || undefined,
+            title: parsedNames.title, // Parsed title
+            firstName: parsedNames.firstName ?? undefined, // Parsed first name
+            middleName: parsedNames.middleName ?? undefined, // Parsed middle name
+            lastName: parsedNames.lastName ?? undefined, // Parsed last name
+            personalEmail: personalEmail?.trim() || undefined,
             instituteEmail: personalEmail || `${staffCode}@gppalanpur.ac.in`,
             contactNumber: contactNumber || undefined,
             department,
             designation,
             jobType: JOB_TYPE_OPTIONS.includes(jobType) ? jobType : 'Other',
             instType: instType || undefined,
-            status: 'active', // Default status for GTU import
+            status: 'active', // Default status for GTU import unless CSV has it (which GTU CSV doesn't usually)
           };
 
           const existingFacultyIndex = facultyToUpdate.findIndex(f => f.staffCode === staffCode);
@@ -625,7 +674,16 @@ faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@examp
             const newFaculty = { id: generateClientId(), ...facultyData };
             facultyToUpdate.push(newFaculty);
             newFacultyCount++;
-             const systemUserName = newFaculty.gtuName ? newFaculty.gtuName : (newFaculty.title ? `${newFaculty.title} ${newFaculty.firstName || ''} ${newFaculty.lastName || ''}` : `${newFaculty.firstName || ''} ${newFaculty.lastName || ''}`).trim();
+
+             // Determine the name for the system user
+            const namePartsForSystemUser = [
+                newFaculty.title, 
+                newFaculty.firstName, 
+                newFaculty.middleName, 
+                newFaculty.lastName].filter(Boolean);
+            const systemUserName = namePartsForSystemUser.join(' ') || newFaculty.gtuName || newFaculty.staffCode;
+
+
             addUserToLocalStorage({
               id: `user_fac_${newFaculty.id}`,
               name: systemUserName || newFaculty.staffCode,
@@ -823,7 +881,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                     <Label htmlFor="facultyTitle">Title</Label>
                      <Select value={formTitle} onValueChange={(value) => setFormTitle(value)} disabled={isSubmitting}>
                         <SelectTrigger id="facultyTitle"><SelectValue placeholder="Select Title" /></SelectTrigger>
-                        <SelectContent>
+                        <SelectContent >
                             {TITLE_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
                         </SelectContent>
                     </Select>
@@ -852,7 +910,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                     <Label htmlFor="facultyGender">Gender</Label>
                      <Select value={formGender || ""} onValueChange={(value) => setFormGender(value as Gender || undefined)} disabled={isSubmitting}>
                         <SelectTrigger id="facultyGender"><SelectValue placeholder="Select Gender" /></SelectTrigger>
-                        <SelectContent>
+                        <SelectContent >
 
                             {GENDER_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
                         </SelectContent>
@@ -880,7 +938,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                     <Label htmlFor="facultyMaritalStatus">Marital Status</Label>
                      <Select value={formMaritalStatus || ""} onValueChange={(value) => setFormMaritalStatus(value || undefined)} disabled={isSubmitting}>
                         <SelectTrigger id="facultyMaritalStatus"><SelectValue placeholder="Select Status" /></SelectTrigger>
-                        <SelectContent>
+                        <SelectContent >
 
                             {MARITAL_STATUS_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
                         </SelectContent>
@@ -891,7 +949,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                   <div className="md:col-span-1">
                     <Label htmlFor="facultyDepartment">Department *</Label>
                     <Select value={formDepartment} onValueChange={(value) => setFormDepartment(value)} disabled={isSubmitting} required>
-                        <SelectTrigger id="facultyDepartment"><SelectValue /></SelectTrigger>
+                        <SelectTrigger id="facultyDepartment"><SelectValue placeholder="Select Department"/></SelectTrigger>
                         <SelectContent>
                             {DEPARTMENT_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
                         </SelectContent>
@@ -900,7 +958,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                   <div className="md:col-span-1">
                     <Label htmlFor="facultyDesignation">Designation</Label>
                     <Select value={formDesignation} onValueChange={(value) => setFormDesignation(value)} disabled={isSubmitting}>
-                        <SelectTrigger id="facultyDesignation"><SelectValue placeholder="Select Designation" /></SelectTrigger>
+                        <SelectTrigger id="facultyDesignation"><SelectValue placeholder="Select Designation"/></SelectTrigger>
                         <SelectContent>
                             {DESIGNATION_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
                         </SelectContent>
@@ -909,7 +967,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                   <div className="md:col-span-1">
                     <Label htmlFor="facultyJobType">Job Type</Label>
                     <Select value={formJobType} onValueChange={(value) => setFormJobType(value as JobType)} disabled={isSubmitting}>
-                        <SelectTrigger id="facultyJobType"><SelectValue /></SelectTrigger>
+                        <SelectTrigger id="facultyJobType"><SelectValue placeholder="Select Job Type"/></SelectTrigger>
                         <SelectContent>
                             {JOB_TYPE_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
                         </SelectContent>
@@ -936,7 +994,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                   <div className="md:col-span-1">
                     <Label htmlFor="facultyStatus">Status *</Label>
                      <Select value={formStatus} onValueChange={(value) => setFormStatus(value as FacultyStatus)} disabled={isSubmitting} required>
-                        <SelectTrigger id="facultyStatus"><SelectValue /></SelectTrigger>
+                        <SelectTrigger id="facultyStatus"><SelectValue placeholder="Select Status"/></SelectTrigger>
                         <SelectContent>
                             {FACULTY_STATUS_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
                         </SelectContent>
@@ -1026,7 +1084,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
             <div>
               <Label htmlFor="filterFacultyDepartment">Filter by Department</Label>
               <Select value={filterDepartment} onValueChange={(value) => setFilterDepartment(value)}>
-                <SelectTrigger id="filterFacultyDepartment"><SelectValue /></SelectTrigger>
+                <SelectTrigger id="filterFacultyDepartment"><SelectValue placeholder="All Departments"/></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Departments</SelectItem>
                   {DEPARTMENT_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
@@ -1036,7 +1094,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
             <div>
               <Label htmlFor="filterFacultyDesignation">Filter by Designation</Label>
               <Select value={filterDesignation} onValueChange={(value) => setFilterDesignation(value)}>
-                <SelectTrigger id="filterFacultyDesignation"><SelectValue /></SelectTrigger>
+                <SelectTrigger id="filterFacultyDesignation"><SelectValue placeholder="All Designations"/></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Designations</SelectItem>
                   {DESIGNATION_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
@@ -1046,7 +1104,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
             <div>
               <Label htmlFor="filterFacultyStatus">Filter by Status</Label>
               <Select value={filterStatus} onValueChange={(value) => setFilterStatus(value as FacultyStatus | 'all')}>
-                <SelectTrigger id="filterFacultyStatus"><SelectValue /></SelectTrigger>
+                <SelectTrigger id="filterFacultyStatus"><SelectValue placeholder="All Statuses"/></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Statuses</SelectItem>
                   {FACULTY_STATUS_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}

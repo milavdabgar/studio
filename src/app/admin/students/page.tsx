@@ -256,8 +256,8 @@ export default function StudentManagementPage() {
     setFormAddress('');
     setFormDob(undefined);
     setFormAdmissionDate(undefined);
-    setFormGender(undefined);
-    setFormConvocationYear(undefined);
+    setFormGender(undefined); // Ensure undefined for select placeholder
+    setFormConvocationYear(undefined); // Ensure undefined for empty input
     setFormShift(undefined);
     setFormSemesterStatuses(semesterStatusGetters);
     setCurrentStudent(null);
@@ -279,9 +279,9 @@ export default function StudentManagementPage() {
     setFormAddress(student.address || '');
     setFormDob(student.dateOfBirth && isValid(parseISO(student.dateOfBirth)) ? parseISO(student.dateOfBirth) : undefined);
     setFormAdmissionDate(student.admissionDate && isValid(parseISO(student.admissionDate)) ? parseISO(student.admissionDate) : undefined);
-    setFormGender(student.gender);
-    setFormConvocationYear(student.convocationYear);
-    setFormShift(student.shift);
+ setFormGender(student.gender === '' ? undefined : student.gender); // Set undefined if empty string
+ setFormConvocationYear(student.convocationYear === null ? undefined : student.convocationYear); // Set undefined if null
+ setFormShift(student.shift === '' ? undefined : student.shift); // Set undefined if empty string
     
     const newSemesterStatuses = {...semesterStatusGetters};
     SEMESTER_OPTIONS.forEach(semNum => {
@@ -940,7 +940,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                   <div className="md:col-span-1">
                     <Label htmlFor="studentDepartment">Department *</Label>
                     <Select value={formDepartment} onValueChange={(value) => setFormDepartment(value)} disabled={isSubmitting} required>
-                        <SelectTrigger id="studentDepartment"><SelectValue /></SelectTrigger>
+ <SelectTrigger id="studentDepartment"><SelectValue placeholder="Select Department" /></SelectTrigger>
                         <SelectContent>
                             {DEPARTMENT_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
                         </SelectContent>
@@ -953,7 +953,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                   <div className="md:col-span-1">
                     <Label htmlFor="studentSemester">Current Semester *</Label>
                      <Select value={String(formSemester)} onValueChange={(value) => setFormSemester(parseInt(value))} disabled={isSubmitting} required>
-                        <SelectTrigger id="studentSemester"><SelectValue /></SelectTrigger>
+ <SelectTrigger id="studentSemester"><SelectValue placeholder="Select Semester" /></SelectTrigger>
                         <SelectContent>
                             {SEMESTER_OPTIONS.map(opt => <SelectItem key={opt} value={String(opt)}>{opt}</SelectItem>)}
                         </SelectContent>
@@ -962,19 +962,18 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                   <div className="md:col-span-1">
                     <Label htmlFor="studentStatus">Status *</Label>
                      <Select value={formStatus} onValueChange={(value) => setFormStatus(value as StudentStatus)} disabled={isSubmitting} required>
-                        <SelectTrigger id="studentStatus"><SelectValue /></SelectTrigger>
+ <SelectTrigger id="studentStatus"><SelectValue placeholder="Select Status" /></SelectTrigger>
                         <SelectContent>
                             {STATUS_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
                         </SelectContent>
                     </Select>
                   </div>
                    <div className="md:col-span-1">
-                    <Label htmlFor="studentGender">Gender</Label>
-                     <Select value={formGender || ""} onValueChange={(value) => setFormGender(value as Student['gender'] || undefined)} disabled={isSubmitting}>
+ <Label htmlFor="studentGender">Gender</Label>
+                     <Select value={formGender} onValueChange={(value) => setFormGender(value as Student['gender'] || undefined)} disabled={isSubmitting}>
                         <SelectTrigger id="studentGender"><SelectValue placeholder="Select Gender" /></SelectTrigger>
                         <SelectContent>
-                           <SelectItem value="">Select Gender</SelectItem>
-                            {GENDER_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
+ {GENDER_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
                         </SelectContent>
                     </Select>
                   </div>
@@ -982,9 +981,8 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                     <Label htmlFor="studentShift">Shift</Label>
                      <Select value={formShift || ""} onValueChange={(value) => setFormShift(value as Student['shift'] || undefined)} disabled={isSubmitting}>
                         <SelectTrigger id="studentShift"><SelectValue placeholder="Select Shift" /></SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="">Select Shift</SelectItem>
-                            {SHIFT_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
+ <SelectContent>
+ {SHIFT_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
                         </SelectContent>
                     </Select>
                   </div>
@@ -1046,7 +1044,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                                 onValueChange={(val) => setFormSemesterStatuses(prev => ({...prev, [semNum]: val as SemesterStatus}))}
                                 disabled={isSubmitting}
                             >
-                                <SelectTrigger id={`sem${semNum}StatusForm`}><SelectValue placeholder="Status" /></SelectTrigger>
+ <SelectTrigger id={`sem${semNum}StatusForm`}><SelectValue placeholder="Select Status" /></SelectTrigger>
                                 <SelectContent>
                                     {SEMESTER_STATUS_OPTIONS.map(opt => <SelectItem key={`${opt.value}-${semNum}`} value={opt.value}>{opt.label}</SelectItem>)}
                                 </SelectContent>
@@ -1129,7 +1127,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
             <div>
               <Label htmlFor="filterDepartment">Filter by Department</Label>
               <Select value={filterDepartment} onValueChange={(value) => setFilterDepartment(value)}>
-                <SelectTrigger id="filterDepartment"><SelectValue /></SelectTrigger>
+ <SelectTrigger id="filterDepartment"><SelectValue placeholder="All Departments" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Departments</SelectItem>
                   {DEPARTMENT_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
@@ -1139,7 +1137,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
             <div>
               <Label htmlFor="filterSemester">Filter by Semester</Label>
               <Select value={filterSemester} onValueChange={(value) => setFilterSemester(value)}>
-                <SelectTrigger id="filterSemester"><SelectValue /></SelectTrigger>
+ <SelectTrigger id="filterSemester"><SelectValue placeholder="All Semesters" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Semesters</SelectItem>
                   {SEMESTER_OPTIONS.map(opt => <SelectItem key={opt} value={String(opt)}>{`Semester ${opt}`}</SelectItem>)}
@@ -1149,7 +1147,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
             <div>
               <Label htmlFor="filterStatusStudent">Filter by Status</Label>
               <Select value={filterStatus} onValueChange={(value) => setFilterStatus(value as StudentStatus | 'all')}>
-                <SelectTrigger id="filterStatusStudent"><SelectValue /></SelectTrigger>
+ <SelectTrigger id="filterStatusStudent"><SelectValue placeholder="All Statuses" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Statuses</SelectItem>
                   {STATUS_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
