@@ -21,7 +21,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 
 
 type StudentStatus = 'active' | 'inactive' | 'graduated' | 'dropped';
-type SemesterStatus = 'Passed' | 'Pending' | 'Not Appeared' | null;
+type SemesterStatus = 'Passed' | 'Pending' | 'Not Appeared' | 'N/A'; // Added N/A as a valid status
 
 interface Student {
   id: string; // Internal ID
@@ -78,6 +78,7 @@ const STATUS_OPTIONS: { value: StudentStatus; label: string }[] = [
 ];
 
 const SEMESTER_STATUS_OPTIONS: { value: SemesterStatus; label: string }[] = [
+    { value: "N/A", label: "N/A" }, // Ensure N/A has a non-empty value
     { value: "Passed", label: "Passed" },
     { value: "Pending", label: "Pending" },
     { value: "Not Appeared", label: "Not Appeared" },
@@ -93,7 +94,7 @@ const initialStudents: Student[] = [
   { id: "s3", enrollmentNumber: "GPPLN19005", gtuName: "PATEL AMIT DINESHBHAI", firstName: "AMIT", middleName: "DINESHBHAI", lastName: "PATEL", instituteEmail: "GPPLN19005@gppalanpur.in", department: "Electrical Engineering", branchCode: "EE", currentSemester: 6, status: "graduated", address: "456 Power House, Deesa", admissionDate: "2019-06-20", gender: "Male", convocationYear: 2023, sem1Status: "Passed", sem2Status: "Passed", sem3Status: "Passed", sem4Status: "Passed", sem5Status: "Passed", sem6Status: "Passed", isPassAll: true, isComplete: true, termClose: true },
 ];
 
-const LOCAL_STORAGE_KEY_STUDENTS = 'managedStudents';
+const LOCAL_STORAGE_KEY_STUDENTS = 'managedStudentsPMP'; // Unique key
 
 type SortField = keyof Student | 'none';
 type SortDirection = 'asc' | 'desc';
@@ -111,7 +112,7 @@ const mapSemesterCodeToStatus = (code: string | undefined | null): SemesterStatu
     if (code === '2') return 'Passed';
     if (code === '1') return 'Pending';
     if (code === '' || code === undefined || code === null) return 'Not Appeared';
-    return null; // Should not happen with clean data
+    return 'N/A'; 
 };
 
 const generateClientId = (): string => {
@@ -145,14 +146,14 @@ export default function StudentManagementPage() {
   const [formConvocationYear, setFormConvocationYear] = useState<number | undefined>(undefined);
   const [formShift, setFormShift] = useState<Student['shift'] | undefined>(undefined);
   // Semester statuses
-  const [formSem1Status, setFormSem1Status] = useState<SemesterStatus>(null);
-  const [formSem2Status, setFormSem2Status] = useState<SemesterStatus>(null);
-  const [formSem3Status, setFormSem3Status] = useState<SemesterStatus>(null);
-  const [formSem4Status, setFormSem4Status] = useState<SemesterStatus>(null);
-  const [formSem5Status, setFormSem5Status] = useState<SemesterStatus>(null);
-  const [formSem6Status, setFormSem6Status] = useState<SemesterStatus>(null);
-  const [formSem7Status, setFormSem7Status] = useState<SemesterStatus>(null);
-  const [formSem8Status, setFormSem8Status] = useState<SemesterStatus>(null);
+  const [formSem1Status, setFormSem1Status] = useState<SemesterStatus>('N/A');
+  const [formSem2Status, setFormSem2Status] = useState<SemesterStatus>('N/A');
+  const [formSem3Status, setFormSem3Status] = useState<SemesterStatus>('N/A');
+  const [formSem4Status, setFormSem4Status] = useState<SemesterStatus>('N/A');
+  const [formSem5Status, setFormSem5Status] = useState<SemesterStatus>('N/A');
+  const [formSem6Status, setFormSem6Status] = useState<SemesterStatus>('N/A');
+  const [formSem7Status, setFormSem7Status] = useState<SemesterStatus>('N/A');
+  const [formSem8Status, setFormSem8Status] = useState<SemesterStatus>('N/A');
 
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -183,7 +184,7 @@ export default function StudentManagementPage() {
   }, []);
 
   useEffect(() => {
-    if (!isLoading) { // Only save if initial load is complete
+    if (!isLoading) { 
         try {
             localStorage.setItem(LOCAL_STORAGE_KEY_STUDENTS, JSON.stringify(students));
         } catch (error) {
@@ -216,14 +217,14 @@ export default function StudentManagementPage() {
     setFormGender(undefined);
     setFormConvocationYear(undefined);
     setFormShift(undefined);
-    setFormSem1Status(null);
-    setFormSem2Status(null);
-    setFormSem3Status(null);
-    setFormSem4Status(null);
-    setFormSem5Status(null);
-    setFormSem6Status(null);
-    setFormSem7Status(null);
-    setFormSem8Status(null);
+    setFormSem1Status('N/A');
+    setFormSem2Status('N/A');
+    setFormSem3Status('N/A');
+    setFormSem4Status('N/A');
+    setFormSem5Status('N/A');
+    setFormSem6Status('N/A');
+    setFormSem7Status('N/A');
+    setFormSem8Status('N/A');
     setCurrentStudent(null);
   };
 
@@ -246,14 +247,14 @@ export default function StudentManagementPage() {
     setFormGender(student.gender);
     setFormConvocationYear(student.convocationYear);
     setFormShift(student.shift);
-    setFormSem1Status(student.sem1Status || null);
-    setFormSem2Status(student.sem2Status || null);
-    setFormSem3Status(student.sem3Status || null);
-    setFormSem4Status(student.sem4Status || null);
-    setFormSem5Status(student.sem5Status || null);
-    setFormSem6Status(student.sem6Status || null);
-    setFormSem7Status(student.sem7Status || null);
-    setFormSem8Status(student.sem8Status || null);
+    setFormSem1Status(student.sem1Status || 'N/A');
+    setFormSem2Status(student.sem2Status || 'N/A');
+    setFormSem3Status(student.sem3Status || 'N/A');
+    setFormSem4Status(student.sem4Status || 'N/A');
+    setFormSem5Status(student.sem5Status || 'N/A');
+    setFormSem6Status(student.sem6Status || 'N/A');
+    setFormSem7Status(student.sem7Status || 'N/A');
+    setFormSem8Status(student.sem8Status || 'N/A');
     setIsDialogOpen(true);
   };
 
@@ -264,7 +265,6 @@ export default function StudentManagementPage() {
 
   const handleDelete = (studentId: string) => {
     setIsSubmitting(true);
-    // Simulate API call
     setTimeout(() => {
       setStudents(prevStudents => prevStudents.filter(student => student.id !== studentId));
       toast({ title: "Student Deleted", description: "The student record has been successfully deleted." });
@@ -298,7 +298,6 @@ export default function StudentManagementPage() {
 
     setIsSubmitting(true);
 
-    // Simulate API Call
     setTimeout(() => {
       const { firstName, middleName, lastName } = parseGtuName(formGtuName);
 
@@ -374,6 +373,8 @@ export default function StudentManagementPage() {
     setIsSubmitting(true);
     const reader = new FileReader();
     reader.onload = (e) => {
+      let newStudentsCount = 0;
+      let updatedStudentsCount = 0;
       try {
         const text = e.target?.result as string;
         const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
@@ -381,7 +382,7 @@ export default function StudentManagementPage() {
         
         const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, '')); // normalize header
         const expectedHeaders = ['id', 'enrollmentnumber', 'gtuname', 'firstname', 'middlename', 'lastname', 'personalemail', 'department', 'branchcode', 'currentsemester', 'status', 'contactnumber', 'address', 'dateofbirth', 'admissiondate', 'gender', 'convocationyear', 'shift', 'sem1status', 'sem2status', 'sem3status', 'sem4status', 'sem5status', 'sem6status', 'sem7status', 'sem8status', 'category', 'iscomplete', 'termclose', 'iscancel', 'ispassall', 'aadharnumber'];
-        const requiredHeaders = ['enrollmentnumber', 'department', 'currentsemester', 'status']; // GTUName or F/M/L names are also implicitly required by form validation
+        const requiredHeaders = ['enrollmentnumber', 'department', 'currentsemester', 'status']; 
 
         if (!requiredHeaders.every(rh => header.includes(rh))) {
             throw new Error(`CSV header is missing required columns. Expected at least: ${requiredHeaders.join(', ')}. Found: ${header.join(', ')}`);
@@ -389,102 +390,109 @@ export default function StudentManagementPage() {
         
         const hMap = Object.fromEntries(expectedHeaders.map(eh => [eh, header.indexOf(eh)]));
 
-        const importedStudentsBatch: Student[] = [];
-        const currentStudentsCopy = [...students];
-        let newStudentsCount = 0;
-        let updatedStudentsCount = 0;
-
-        for (let i = 1; i < lines.length; i++) {
-          const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
-          
-          const enrollmentNumber = data[hMap['enrollmentnumber']];
-          if (!enrollmentNumber) {
-            console.warn(`Skipping row ${i+1}: Enrollment number is missing.`);
-            continue;
-          }
-          const department = data[hMap['department']];
-          const currentSemesterStr = data[hMap['currentsemester']];
-          const status = data[hMap['status']] as StudentStatus;
-
-          if (!department || !currentSemesterStr || !STATUS_OPTIONS.find(s => s.value === status)) {
-            console.warn(`Skipping row ${i+1} for ${enrollmentNumber}: Missing or invalid department, current semester, or status.`);
-            continue;
-          }
-          const currentSemester = parseInt(currentSemesterStr, 10);
-          if (isNaN(currentSemester) || !SEMESTER_OPTIONS.includes(currentSemester)) {
-             console.warn(`Skipping row ${i+1} for ${enrollmentNumber}: Invalid semester value.`);
-             continue;
-          }
-
-          const gtuName = data[hMap['gtuname']];
-          const parsedNames = parseGtuName(gtuName || '');
-          
-          const studentDataPartial: Omit<Student, 'id' | 'instituteEmail'| 'enrollmentNumber' | 'department' | 'currentSemester' | 'status'> & {instituteEmail?: string} = {
-            gtuName: gtuName || undefined,
-            firstName: data[hMap['firstname']] || parsedNames.firstName || undefined,
-            middleName: data[hMap['middlename']] || parsedNames.middleName || undefined,
-            lastName: data[hMap['lastname']] || parsedNames.lastName || undefined,
-            personalEmail: data[hMap['personalemail']] || undefined,
-            branchCode: data[hMap['branchcode']] || undefined,
-            contactNumber: data[hMap['contactnumber']] || undefined,
-            address: data[hMap['address']] || undefined,
-            dateOfBirth: data[hMap['dateofbirth']] || undefined,
-            admissionDate: data[hMap['admissiondate']] || undefined,
-            gender: data[hMap['gender']] as Student['gender'] || undefined,
-            convocationYear: data[hMap['convocationyear']] ? parseInt(data[hMap['convocationyear']], 10) : undefined,
-            shift: data[hMap['shift']] as Student['shift'] || undefined,
-            sem1Status: data[hMap['sem1status']] as SemesterStatus || null,
-            sem2Status: data[hMap['sem2status']] as SemesterStatus || null,
-            sem3Status: data[hMap['sem3status']] as SemesterStatus || null,
-            sem4Status: data[hMap['sem4status']] as SemesterStatus || null,
-            sem5Status: data[hMap['sem5status']] as SemesterStatus || null,
-            sem6Status: data[hMap['sem6status']] as SemesterStatus || null,
-            sem7Status: data[hMap['sem7status']] as SemesterStatus || null,
-            sem8Status: data[hMap['sem8status']] as SemesterStatus || null,
-            category: data[hMap['category']] || undefined,
-            isComplete: data[hMap['iscomplete']] ? data[hMap['iscomplete']].toLowerCase() === 'true' : undefined,
-            termClose: data[hMap['termclose']] ? data[hMap['termclose']].toLowerCase() === 'true' : undefined,
-            isCancel: data[hMap['iscancel']] ? data[hMap['iscancel']].toLowerCase() === 'true' : undefined,
-            isPassAll: data[hMap['ispassall']] ? data[hMap['ispassall']].toLowerCase() === 'true' : undefined,
-            aadharNumber: data[hMap['aadharnumber']] || undefined,
-          };
-          
-          const studentData: Omit<Student, 'id'> = {
-            enrollmentNumber,
-            department,
-            currentSemester,
-            status,
-            instituteEmail: `${enrollmentNumber}@gppalanpur.in`,
-            ...studentDataPartial
-          };
-
-          const id = data[hMap['id']];
-          const existingByIdIndex = id ? currentStudentsCopy.findIndex(u => u.id === id) : -1;
-          const existingByEnrollmentIndex = currentStudentsCopy.findIndex(u => u.enrollmentNumber === enrollmentNumber);
-
-          if (id && existingByIdIndex !== -1) { // Update by ID
-            if (existingByEnrollmentIndex !== -1 && currentStudentsCopy[existingByEnrollmentIndex].id !== id) {
-                 console.warn(`Skipping update for ID ${id}: Enrollment number ${enrollmentNumber} already exists for another student.`);
-                 continue;
-            }
-            currentStudentsCopy[existingByIdIndex] = { ...currentStudentsCopy[existingByIdIndex], ...studentData };
-            updatedStudentsCount++;
-          } else if (existingByEnrollmentIndex !== -1) { // Update by enrollment number if no ID or ID not found
-             currentStudentsCopy[existingByEnrollmentIndex] = { ...currentStudentsCopy[existingByEnrollmentIndex], ...studentData };
-             updatedStudentsCount++;
-          }else { // New student
-            importedStudentsBatch.push({ id: generateClientId(), ...studentData });
-            newStudentsCount++;
-             // Simulate user account creation
-            console.log(`Creating user account for ${studentData.enrollmentNumber}: Email: ${studentData.instituteEmail}, Password: ${studentData.enrollmentNumber}`);
-          }
-        }
+        const importedOrUpdatedStudents: Student[] = [];
         
-        const finalStudentList = [
-            ...currentStudentsCopy.filter(s => !importedStudentsBatch.find(is => is.id === s.id || is.enrollmentNumber === s.enrollmentNumber)), 
-            ...importedStudentsBatch
-        ];
-        setStudents(finalStudentList);
+        setStudents(prevStudents => {
+            const currentStudentsMap = new Map(prevStudents.map(s => [s.enrollmentNumber, s]));
+            const currentStudentsByIdMap = new Map(prevStudents.map(s => [s.id, s]));
+
+
+            for (let i = 1; i < lines.length; i++) {
+              const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
+              
+              const enrollmentNumber = data[hMap['enrollmentnumber']];
+              if (!enrollmentNumber) {
+                console.warn(`Skipping row ${i+1}: Enrollment number is missing.`);
+                continue;
+              }
+              const department = data[hMap['department']];
+              const currentSemesterStr = data[hMap['currentsemester']];
+              const status = data[hMap['status']] as StudentStatus;
+
+              if (!department || !currentSemesterStr || !STATUS_OPTIONS.find(s => s.value === status)) {
+                console.warn(`Skipping row ${i+1} for ${enrollmentNumber}: Missing or invalid department, current semester, or status.`);
+                continue;
+              }
+              const currentSemester = parseInt(currentSemesterStr, 10);
+              if (isNaN(currentSemester) || !SEMESTER_OPTIONS.includes(currentSemester)) {
+                 console.warn(`Skipping row ${i+1} for ${enrollmentNumber}: Invalid semester value.`);
+                 continue;
+              }
+
+              const gtuName = data[hMap['gtuname']];
+              const parsedNames = parseGtuName(gtuName || '');
+              
+              const studentDataPartial: Omit<Student, 'id' | 'instituteEmail'| 'enrollmentNumber' | 'department' | 'currentSemester' | 'status'> & {instituteEmail?: string} = {
+                gtuName: gtuName || undefined,
+                firstName: data[hMap['firstname']] || parsedNames.firstName || undefined,
+                middleName: data[hMap['middlename']] || parsedNames.middleName || undefined,
+                lastName: data[hMap['lastname']] || parsedNames.lastName || undefined,
+                personalEmail: data[hMap['personalemail']] || undefined,
+                branchCode: data[hMap['branchcode']] || undefined,
+                contactNumber: data[hMap['contactnumber']] || undefined,
+                address: data[hMap['address']] || undefined,
+                dateOfBirth: data[hMap['dateofbirth']] || undefined,
+                admissionDate: data[hMap['admissiondate']] || undefined,
+                gender: data[hMap['gender']] as Student['gender'] || undefined,
+                convocationYear: data[hMap['convocationyear']] ? parseInt(data[hMap['convocationyear']], 10) : undefined,
+                shift: data[hMap['shift']] as Student['shift'] || undefined,
+                sem1Status: (data[hMap['sem1status']] as SemesterStatus) || 'N/A',
+                sem2Status: (data[hMap['sem2status']] as SemesterStatus) || 'N/A',
+                sem3Status: (data[hMap['sem3status']] as SemesterStatus) || 'N/A',
+                sem4Status: (data[hMap['sem4status']] as SemesterStatus) || 'N/A',
+                sem5Status: (data[hMap['sem5status']] as SemesterStatus) || 'N/A',
+                sem6Status: (data[hMap['sem6status']] as SemesterStatus) || 'N/A',
+                sem7Status: (data[hMap['sem7status']] as SemesterStatus) || 'N/A',
+                sem8Status: (data[hMap['sem8status']] as SemesterStatus) || 'N/A',
+                category: data[hMap['category']] || undefined,
+                isComplete: data[hMap['iscomplete']] ? data[hMap['iscomplete']].toLowerCase() === 'true' : undefined,
+                termClose: data[hMap['termclose']] ? data[hMap['termclose']].toLowerCase() === 'true' : undefined,
+                isCancel: data[hMap['iscancel']] ? data[hMap['iscancel']].toLowerCase() === 'true' : undefined,
+                isPassAll: data[hMap['ispassall']] ? data[hMap['ispassall']].toLowerCase() === 'true' : undefined,
+                aadharNumber: data[hMap['aadharnumber']] || undefined,
+              };
+              
+              const studentData: Omit<Student, 'id'> = {
+                enrollmentNumber,
+                department,
+                currentSemester,
+                status,
+                instituteEmail: `${enrollmentNumber}@gppalanpur.in`,
+                ...studentDataPartial
+              };
+
+              const idFromCsv = data[hMap['id']];
+              let existingStudent: Student | undefined = undefined;
+
+              if (idFromCsv) {
+                existingStudent = currentStudentsByIdMap.get(idFromCsv);
+                 if (existingStudent && existingStudent.enrollmentNumber !== enrollmentNumber && currentStudentsMap.has(enrollmentNumber)) {
+                     console.warn(`Skipping update for ID ${idFromCsv}: Enrollment number ${enrollmentNumber} from CSV conflicts with an existing different student. Student with this enrollment will be updated instead if no other ID matches.`);
+                     existingStudent = undefined; // Force check by enrollment number
+                 }
+              }
+              
+              if(!existingStudent){
+                 existingStudent = currentStudentsMap.get(enrollmentNumber);
+              }
+
+
+              if (existingStudent) { 
+                const updatedStudent = { ...existingStudent, ...studentData };
+                currentStudentsMap.set(enrollmentNumber, updatedStudent);
+                if (idFromCsv && existingStudent.id === idFromCsv) currentStudentsByIdMap.set(idFromCsv, updatedStudent);
+                updatedStudentsCount++;
+              } else { 
+                const newStudent = { id: generateClientId(), ...studentData };
+                currentStudentsMap.set(enrollmentNumber, newStudent);
+                currentStudentsByIdMap.set(newStudent.id, newStudent);
+                newStudentsCount++;
+                console.log(`Creating user account for ${studentData.enrollmentNumber}: Email: ${studentData.instituteEmail}, Password: ${studentData.enrollmentNumber}`);
+              }
+            }
+            return Array.from(currentStudentsMap.values());
+        });
+        
         toast({ title: "Import Successful", description: `${newStudentsCount} students added, ${updatedStudentsCount} students updated.` });
 
       } catch (error: any) {
@@ -527,7 +535,7 @@ export default function StudentManagementPage() {
         student.gender || "",
         student.convocationYear || "",
         student.shift || "",
-        student.sem1Status || "", student.sem2Status || "", student.sem3Status || "", student.sem4Status || "", student.sem5Status || "", student.sem6Status || "", student.sem7Status || "", student.sem8Status || "",
+        student.sem1Status || "N/A", student.sem2Status || "N/A", student.sem3Status || "N/A", student.sem4Status || "N/A", student.sem5Status || "N/A", student.sem6Status || "N/A", student.sem7Status || "N/A", student.sem8Status || "N/A",
         student.category || "",
         student.isComplete ? "true" : "false",
         student.termClose ? "true" : "false",
@@ -548,8 +556,8 @@ export default function StudentManagementPage() {
   };
   const handleDownloadSampleCsv = () => { 
     const sampleCsvContent = `id,enrollmentNumber,gtuName,firstName,middleName,lastName,personalEmail,instituteEmail,department,branchCode,currentSemester,status,contactNumber,address,dateOfBirth,admissionDate,gender,convocationYear,shift,sem1Status,sem2Status,sem3Status,sem4Status,sem5Status,sem6Status,sem7Status,sem8Status,category,isComplete,termClose,isCancel,isPassAll,aadharNumber
-s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN22001@gppalanpur.in,Computer Engineering,CE,3,active,9988776655,"123 Cyber Lane, Palanpur",2003-08-15,2022-07-01,Male,2025,Morning,Passed,Passed,Pending,,,,,,,OPEN,false,false,false,false,123456789012
-,GPPLN21005,PATEL BHAVNA MAHESH,BHAVNA,MAHESH,PATEL,bhavna.p@example.com,GPPLN21005@gppalanpur.in,Mechanical Engineering,ME,5,active,9988776650,"Plot 45, Industrial Area, Mehsana",2002-01-20,2021-06-15,Female,2024,Afternoon,Passed,Passed,Passed,Passed,Passed,,,,SEBC,false,false,false,false,
+s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN22001@gppalanpur.in,Computer Engineering,CE,3,active,9988776655,"123 Cyber Lane, Palanpur",2003-08-15,2022-07-01,Male,2025,Morning,Passed,Passed,Pending,N/A,N/A,N/A,N/A,N/A,OPEN,false,false,false,false,123456789012
+,GPPLN21005,PATEL BHAVNA MAHESH,BHAVNA,MAHESH,PATEL,bhavna.p@example.com,GPPLN21005@gppalanpur.in,Mechanical Engineering,ME,5,active,9988776650,"Plot 45, Industrial Area, Mehsana",2002-01-20,2021-06-15,Female,2024,Afternoon,Passed,Passed,Passed,Passed,Passed,N/A,N/A,N/A,SEBC,false,false,false,false,
 `; 
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -571,6 +579,9 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
     setIsSubmitting(true);
     const reader = new FileReader();
     reader.onload = (e) => {
+      let newStudentsCount = 0;
+      let updatedStudentsCount = 0;
+      let skippedCount = 0;
       try {
         const text = e.target?.result as string;
         const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
@@ -578,100 +589,91 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
         
         const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, '')); // normalize header
         const gtuHeaders = ['s.no','map_number','br_code','name','email','mobile','gender','convoyear','sem1','sem2','sem3','sem4','sem5','sem6','sem7','sem8','category','iscomplete','termclose','iscancel','ispassall','aadhar','shift'];
-        const requiredGtuHeaders = ['map_number', 'name']; // br_code can determine department
+        const requiredGtuHeaders = ['map_number', 'name']; 
 
         if (!requiredGtuHeaders.every(rh => header.includes(rh))) {
             throw new Error(`GTU CSV header is missing required columns. Expected at least: ${requiredGtuHeaders.join(', ')}. Found: ${header.join(', ')}`);
         }
         
         const hMap = Object.fromEntries(gtuHeaders.map(eh => [eh, header.indexOf(eh)]));
-
-        const importedStudentsBatch: Student[] = [];
-        const currentStudentsCopy = [...students];
-        let newStudentsCount = 0;
-        let updatedStudentsCount = 0;
-        let skippedCount = 0;
-
-        for (let i = 1; i < lines.length; i++) {
-          const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
-          
-          const enrollmentNumber = data[hMap['map_number']];
-          const gtuName = data[hMap['name']];
-
-          if (!enrollmentNumber || !gtuName) {
-            console.warn(`Skipping GTU row ${i+1}: Enrollment number or GTU Name is missing.`);
-            skippedCount++;
-            continue;
-          }
-
-          const { firstName, middleName, lastName } = parseGtuName(gtuName);
-          const branchCode = data[hMap['br_code']];
-          // Simplified department mapping for example, needs to be robust
-          const department = DEPARTMENT_OPTIONS.find(d => d.toLowerCase().includes((branchCode || "").toLowerCase().substring(0,2))) || "General"; 
-          
-          // Determine current semester based on highest passed semester or other logic
-          let currentSemester = 1;
-          for (let sem = 8; sem >= 1; sem--) {
-            if (mapSemesterCodeToStatus(data[hMap[`sem${sem}` as keyof typeof hMap]]) === 'Passed') {
-                currentSemester = Math.min(sem + 1, 8); // Assuming next sem if previous passed, capped at 8
-                break;
-            }
-          }
-          if (data[hMap['ispassall']]?.toLowerCase() === 'true' || data[hMap['iscomplete']]?.toLowerCase() === 'true'){
-            currentSemester = 8; // Or a "graduated" indicator
-          }
-
-
-          const studentData: Omit<Student, 'id'> = {
-            enrollmentNumber,
-            gtuName,
-            firstName,
-            middleName,
-            lastName,
-            personalEmail: data[hMap['email']] || undefined,
-            instituteEmail: `${enrollmentNumber}@gppalanpur.in`,
-            department,
-            branchCode: branchCode || undefined,
-            currentSemester: currentSemester, // Needs logic based on SEM statuses
-            status: data[hMap['iscancel']]?.toLowerCase() === 'true' ? 'dropped' : (data[hMap['iscomplete']]?.toLowerCase() === 'true' || data[hMap['ispassall']]?.toLowerCase() === 'true' ? 'graduated' : 'active'),
-            contactNumber: data[hMap['mobile']] || undefined,
-            gender: data[hMap['gender']] as Student['gender'] || undefined,
-            convocationYear: data[hMap['convoyear']] ? parseInt(data[hMap['convoyear']], 10) : undefined,
-            sem1Status: mapSemesterCodeToStatus(data[hMap['sem1']]),
-            sem2Status: mapSemesterCodeToStatus(data[hMap['sem2']]),
-            sem3Status: mapSemesterCodeToStatus(data[hMap['sem3']]),
-            sem4Status: mapSemesterCodeToStatus(data[hMap['sem4']]),
-            sem5Status: mapSemesterCodeToStatus(data[hMap['sem5']]),
-            sem6Status: mapSemesterCodeToStatus(data[hMap['sem6']]),
-            sem7Status: mapSemesterCodeToStatus(data[hMap['sem7']]),
-            sem8Status: mapSemesterCodeToStatus(data[hMap['sem8']]),
-            category: data[hMap['category']] || undefined,
-            isComplete: data[hMap['iscomplete']]?.toLowerCase() === 'true',
-            termClose: data[hMap['termclose']]?.toLowerCase() === 'true',
-            isCancel: data[hMap['iscancel']]?.toLowerCase() === 'true',
-            isPassAll: data[hMap['ispassall']]?.toLowerCase() === 'true',
-            aadharNumber: data[hMap['aadhar']] || undefined,
-            shift: data[hMap['shift']] || undefined,
-          };
-
-          const existingStudentIndex = currentStudentsCopy.findIndex(s => s.enrollmentNumber === enrollmentNumber);
-          if (existingStudentIndex !== -1) {
-            currentStudentsCopy[existingStudentIndex] = { ...currentStudentsCopy[existingStudentIndex], ...studentData };
-            updatedStudentsCount++;
-          } else {
-            importedStudentsBatch.push({ id: generateClientId(), ...studentData });
-            newStudentsCount++;
-            // Simulate user account creation for new students from GTU data
-            console.log(`Creating user account for ${studentData.enrollmentNumber} (GTU Import): Email: ${studentData.instituteEmail}, Password: ${studentData.enrollmentNumber}`);
-            toast({ title: `User Account (Simulated)`, description: `Account for ${studentData.enrollmentNumber} would be created. Email: ${studentData.instituteEmail}, Pass: ${studentData.enrollmentNumber}`});
-          }
-        }
         
-        const finalStudentList = [
-            ...currentStudentsCopy.filter(s => !importedStudentsBatch.find(is => is.enrollmentNumber === s.enrollmentNumber)), 
-            ...importedStudentsBatch
-        ];
-        setStudents(finalStudentList);
+        setStudents(prevStudents => {
+            const currentStudentsMap = new Map(prevStudents.map(s => [s.enrollmentNumber, s]));
+
+            for (let i = 1; i < lines.length; i++) {
+              const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
+              
+              const enrollmentNumber = data[hMap['map_number']];
+              const gtuName = data[hMap['name']];
+
+              if (!enrollmentNumber || !gtuName) {
+                console.warn(`Skipping GTU row ${i+1}: Enrollment number or GTU Name is missing.`);
+                skippedCount++;
+                continue;
+              }
+
+              const { firstName, middleName, lastName } = parseGtuName(gtuName);
+              const branchCode = data[hMap['br_code']];
+              const department = DEPARTMENT_OPTIONS.find(d => d.toLowerCase().includes((branchCode || "").toLowerCase().substring(0,2))) || "General"; 
+              
+              let currentSemester = 1;
+              for (let sem = 8; sem >= 1; sem--) {
+                if (mapSemesterCodeToStatus(data[hMap[`sem${sem}` as keyof typeof hMap]]) === 'Passed') {
+                    currentSemester = Math.min(sem + 1, 8); 
+                    break;
+                }
+              }
+              if (data[hMap['ispassall']]?.toLowerCase() === 'true' || data[hMap['iscomplete']]?.toLowerCase() === 'true'){
+                currentSemester = 8; 
+              }
+
+
+              const studentData: Omit<Student, 'id'> = {
+                enrollmentNumber,
+                gtuName,
+                firstName,
+                middleName,
+                lastName,
+                personalEmail: data[hMap['email']] || undefined,
+                instituteEmail: `${enrollmentNumber}@gppalanpur.in`,
+                department,
+                branchCode: branchCode || undefined,
+                currentSemester: currentSemester, 
+                status: data[hMap['iscancel']]?.toLowerCase() === 'true' ? 'dropped' : (data[hMap['iscomplete']]?.toLowerCase() === 'true' || data[hMap['ispassall']]?.toLowerCase() === 'true' ? 'graduated' : 'active'),
+                contactNumber: data[hMap['mobile']] || undefined,
+                gender: data[hMap['gender']] as Student['gender'] || undefined,
+                convocationYear: data[hMap['convoyear']] ? parseInt(data[hMap['convoyear']], 10) : undefined,
+                sem1Status: mapSemesterCodeToStatus(data[hMap['sem1']]),
+                sem2Status: mapSemesterCodeToStatus(data[hMap['sem2']]),
+                sem3Status: mapSemesterCodeToStatus(data[hMap['sem3']]),
+                sem4Status: mapSemesterCodeToStatus(data[hMap['sem4']]),
+                sem5Status: mapSemesterCodeToStatus(data[hMap['sem5']]),
+                sem6Status: mapSemesterCodeToStatus(data[hMap['sem6']]),
+                sem7Status: mapSemesterCodeToStatus(data[hMap['sem7']]),
+                sem8Status: mapSemesterCodeToStatus(data[hMap['sem8']]),
+                category: data[hMap['category']] || undefined,
+                isComplete: data[hMap['iscomplete']]?.toLowerCase() === 'true',
+                termClose: data[hMap['termclose']]?.toLowerCase() === 'true',
+                isCancel: data[hMap['iscancel']]?.toLowerCase() === 'true',
+                isPassAll: data[hMap['ispassall']]?.toLowerCase() === 'true',
+                aadharNumber: data[hMap['aadhar']] || undefined,
+                shift: data[hMap['shift']] || undefined,
+              };
+
+              const existingStudent = currentStudentsMap.get(enrollmentNumber);
+              if (existingStudent) {
+                currentStudentsMap.set(enrollmentNumber, { ...existingStudent, ...studentData });
+                updatedStudentsCount++;
+              } else {
+                currentStudentsMap.set(enrollmentNumber, { id: generateClientId(), ...studentData });
+                newStudentsCount++;
+                console.log(`Creating user account for ${studentData.enrollmentNumber} (GTU Import): Email: ${studentData.instituteEmail}, Password: ${studentData.enrollmentNumber}`);
+                toast({ title: `User Account (Simulated)`, description: `Account for ${studentData.enrollmentNumber} would be created. Email: ${studentData.instituteEmail}, Pass: ${studentData.enrollmentNumber}`});
+              }
+            }
+            return Array.from(currentStudentsMap.values());
+        });
+        
         toast({ title: "GTU Import Successful", description: `${newStudentsCount} students added, ${updatedStudentsCount} students updated. ${skippedCount} rows skipped.` });
 
       } catch (error: any) {
@@ -742,7 +744,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
         let valB: any = b[sortField];
         
         if (sortField === 'currentSemester' || sortField === 'convocationYear') {
-            valA = Number(valA) || 0; // Handle undefined or NaN for numeric sorts
+            valA = Number(valA) || 0; 
             valB = Number(valB) || 0;
         }
 
@@ -775,13 +777,11 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
     </TableHead>
   );
 
-  // A map for form state semester status getters
-  const semesterStatusGetters: { [key: number]: SemesterStatus | undefined } = {
+  const semesterStatusGetters: { [key: number]: SemesterStatus } = {
     1: formSem1Status, 2: formSem2Status, 3: formSem3Status, 4: formSem4Status,
     5: formSem5Status, 6: formSem6Status, 7: formSem7Status, 8: formSem8Status,
   };
 
-  // A map for form state semester status setters
   const semesterStatusSetters: { [key: number]: React.Dispatch<React.SetStateAction<SemesterStatus>> } = {
     1: setFormSem1Status, 2: setFormSem2Status, 3: setFormSem3Status, 4: setFormSem4Status,
     5: setFormSem5Status, 6: setFormSem6Status, 7: setFormSem7Status, 8: setFormSem8Status,
@@ -955,14 +955,13 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                         <div key={`sem-${semNum}-status-form`}>
                             <Label htmlFor={`sem${semNum}StatusForm`}>Sem {semNum}</Label>
                             <Select 
-                                value={semesterStatusGetters[semNum] || ""} 
-                                onValueChange={(val) => semesterStatusSetters[semNum](val as SemesterStatus | null)} 
+                                value={semesterStatusGetters[semNum]} 
+                                onValueChange={(val) => semesterStatusSetters[semNum](val as SemesterStatus)} 
                                 disabled={isSubmitting}
                             >
                                 <SelectTrigger id={`sem${semNum}StatusForm`}><SelectValue placeholder="Status" /></SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="">N/A</SelectItem>
-                                    {SEMESTER_STATUS_OPTIONS.map(opt => <SelectItem key={`${opt.value || 'na'}-${semNum}`} value={opt.value || ""}>{opt.label}</SelectItem>)}
+                                    {SEMESTER_STATUS_OPTIONS.map(opt => <SelectItem key={`${opt.value}-${semNum}`} value={opt.value}>{opt.label}</SelectItem>)}
                                 </SelectContent>
                             </Select>
                         </div>
@@ -1104,10 +1103,10 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                   <TableCell className="text-center">{student.currentSemester}</TableCell>
                   <TableCell>
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                        student.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' // More specific than success/primary
-                        : student.status === 'graduated' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' // More specific
-                        : student.status === 'dropped' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' // More specific
-                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' // inactive, more specific
+                        student.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
+                        : student.status === 'graduated' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' 
+                        : student.status === 'dropped' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' 
+                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' 
                     }`}>
                       {student.status.charAt(0).toUpperCase() + student.status.slice(1)}
                     </span>
@@ -1132,9 +1131,10 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                                     Semesters:
                                     {SEMESTER_OPTIONS.map(s => {
                                         const statusKey = `sem${s}Status` as keyof Student;
+                                        const statusValue = student[statusKey];
                                         return (
-                                          student[statusKey] && 
-                                          <span key={s} className="ml-1 text-muted-foreground">S{s}: {student[statusKey]}</span>
+                                          statusValue && statusValue !== 'N/A' &&
+                                          <span key={s} className="ml-1 text-muted-foreground">S{s}: {statusValue}</span>
                                         )
                                     })}
                                 </div>
