@@ -1,11 +1,12 @@
 
+
 "use client"; 
 
 import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
-import { Home, BarChart3, Users as UsersIconLucide, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser } from 'lucide-react'; // Renamed Users to UsersIconLucide
+import { Home, BarChart3, Users as UsersIconLucide, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser, UsersRound } from 'lucide-react'; // Added UsersRound
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -41,8 +42,8 @@ const baseNavItems: Record<UserRole, Array<{ href: string; icon: React.ElementTy
     { href: '/admin/users', icon: UsersIconLucide, label: 'User Management', id: 'admin-users' },
     { href: '/admin/roles', icon: UserCog, label: 'Role Management', id: 'admin-roles' },
     { href: '/admin/students', icon: BookUser, label: 'Student Mgt.', id: 'admin-students' },
+    { href: '/admin/faculty', icon: UsersRound, label: 'Faculty Mgt.', id: 'admin-faculty' }, 
     // { href: '/admin/departments', icon: Briefcase, label: 'Departments', id: 'admin-departments' }, // Example, can be uncommented
-    // { href: '/admin/faculty', icon: UsersIconLucide, label: 'Faculty Mgt.', id: 'admin-faculty' }, // Example
     // { href: '/admin/results', icon: Award, label: 'Results Admin', id: 'admin-results' }, // Example
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback' },
     // { href: '/project-fair/admin', icon: FileText, label: 'Project Fair Admin', id: 'admin-project-fair' }, // Example
@@ -64,7 +65,7 @@ const baseNavItems: Record<UserRole, Array<{ href: string; icon: React.ElementTy
   hod: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'hod-dashboard' },
     // { href: '/admin/departments', icon: Briefcase, label: 'My Department', id: 'hod-department' }, 
-    { href: '/admin/faculty', icon: UsersIconLucide, label: 'Faculty (Dept)', id: 'hod-faculty' },
+    { href: '/admin/faculty', icon: UsersRound, label: 'Faculty (Dept)', id: 'hod-faculty' },
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'hod-students' },
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'hod-feedback' },
     { href: '/project-fair/admin', icon: FileText, label: 'Project Fair Admin', id: 'hod-project-fair' },
@@ -151,15 +152,21 @@ export default function RootLayout({
       });
     } else {
       setCurrentUser(DEFAULT_USER);
+       if (!['/login', '/signup', '/'].includes(pathname)) {
+         router.push('/login');
+       }
     }
-  }, [pathname]); 
+  }, [pathname, router]); // Added router to dependency array
+
 
   const handleRoleChange = (newRole: UserRole) => {
     const parsedUser = parseUserCookie();
     if (parsedUser && parsedUser.availableRoles.includes(newRole)) {
         const updatedUserPayload = { ...parsedUser, activeRole: newRole };
         const encodedUserPayload = encodeURIComponent(JSON.stringify(updatedUserPayload));
-        document.cookie = `auth_user=${encodedUserPayload};path=/;max-age=${60 * 60 * 24 * 7}`; // 7 days
+        if (typeof document !== 'undefined') {
+          document.cookie = `auth_user=${encodedUserPayload};path=/;max-age=${60 * 60 * 24 * 7}`; // 7 days
+        }
         setCurrentUser(prev => ({...prev, activeRole: newRole}));
         router.push('/dashboard'); 
     }
@@ -234,6 +241,7 @@ export default function RootLayout({
             <SidebarFooter className="p-4 border-t border-sidebar-border">
               <div className="flex items-center gap-3 mb-4">
                 {currentUser.avatarUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img src={currentUser.avatarUrl} alt={currentUser.name} data-ai-hint={currentUser.dataAiHint} className="h-10 w-10 rounded-full" />
                 ) : (
                   <UserCircle className="h-10 w-10 rounded-full text-sidebar-foreground" />
@@ -302,4 +310,5 @@ export default function RootLayout({
     </html>
   );
 }
+
 

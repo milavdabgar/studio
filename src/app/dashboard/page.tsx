@@ -1,9 +1,10 @@
 
+
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BarChart, Users as UsersIcon, Briefcase, CheckCircle, FileText, BookOpen, CalendarDays, Award, Users2, BotMessageSquare, CalendarCheck, Settings, UserCog, GitFork, BookUser } from "lucide-react";
+import { BarChart, Users as UsersIcon, Briefcase, CheckCircle, FileText, BookOpen, CalendarDays, Award, Users2, BotMessageSquare, CalendarCheck, Settings, UserCog, GitFork, BookUser, UsersRound } from "lucide-react"; // Added UsersRound
 import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState } from 'react';
@@ -36,6 +37,7 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
   admin: [
     { id: "admin-total-users", title: "Total Users", value: "1,250", icon: UsersIcon, color: "text-primary", href: "/admin/users" },
     { id: "admin-total-students", title: "Total Students", value: "850", icon: BookUser, color: "text-green-500", href: "/admin/students"},
+    { id: "admin-total-faculty", title: "Total Faculty", value: "75", icon: UsersRound, color: "text-indigo-500", href: "/admin/faculty"},
     { id: "admin-active-projects", title: "Active Projects", value: "78", icon: Briefcase, color: "text-accent", href: "/project-fair/admin" },
     { id: "admin-pending-approvals", title: "Pending Approvals", value: "12", icon: CheckCircle, color: "text-yellow-500", href: "/admin/approvals" },
     { id: "admin-feedback-reports", title: "Feedback Reports", value: "5", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
@@ -54,7 +56,7 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "faculty-feedback-reports", title: "Feedback Reports", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
   ],
   hod: [
-    { id: "hod-department-staff", title: "Department Staff", value: "15", icon: Users2, color: "text-primary", href: "/admin/faculty" }, 
+    { id: "hod-department-staff", title: "Department Staff", value: "15", icon: UsersRound, color: "text-primary", href: "/admin/faculty" }, 
     { id: "hod-department-students", title: "Department Students", value: "250", icon: BookUser, color: "text-accent", href: "/admin/students" }, 
     { id: "hod-department-projects", title: "Department Projects", value: "25", icon: Briefcase, color: "text-yellow-500", href: "/project-fair/admin" }, 
     { id: "hod-department-feedback", title: "Department Feedback", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" }, 
@@ -78,7 +80,12 @@ function getCookie(name: string): string | undefined {
   if (typeof document === 'undefined') return undefined;
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(';').shift();
+  if (parts.length === 2) {
+    const cookiePart = parts.pop();
+    if (cookiePart) {
+        return cookiePart.split(';').shift();
+    }
+  }
   return undefined;
 }
 
@@ -241,6 +248,11 @@ export default function DashboardPage() {
                   <BookUser className="h-5 w-5" /> Manage Students
                 </Button>
               </Link>
+              <Link href="/admin/faculty" passHref>
+                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
+                  <UsersRound className="h-5 w-5" /> Manage Faculty
+                </Button>
+              </Link>
               <Link href="/project-fair/admin/new-event" passHref>
                  <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
                   <Briefcase className="h-5 w-5" /> Create Project Event
@@ -273,3 +285,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+

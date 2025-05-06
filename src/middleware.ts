@@ -1,4 +1,5 @@
 
+
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
@@ -51,7 +52,7 @@ const PROTECTED_ROUTES_PREFIXES = [
   '/project-fair/jury',
   '/project-fair/student',
   '/results/history', 
-  '/faculty',
+  '/faculty', // This is a general prefix, more specific /faculty/... routes below
   '/courses',
   '/assignments',
 ];
@@ -67,10 +68,12 @@ const ROLE_ACCESS_CONTROL: Record<string, UserRole[]> = {
   '/admin/users': ['admin'],
   '/admin/roles': ['admin'],
   '/admin/students': ['admin', 'hod'],
+  '/admin/faculty': ['admin', 'hod'], // Added faculty management access
   '/admin': ['admin', 'hod'], 
   '/project-fair/admin': ['admin', 'hod'],
   '/project-fair/jury': ['jury', 'faculty', 'admin', 'hod'],
-  '/faculty': ['faculty', 'hod', 'admin'],
+  '/faculty/courses': ['faculty', 'hod', 'admin'], // Example more specific route
+  '/faculty/students': ['faculty', 'hod', 'admin'], // Example
   // Add more specific rules as needed. Routes not listed here but starting with a protected prefix
   // will be accessible if the user has any role other than 'unknown' for their activeRole.
 };
@@ -135,3 +138,4 @@ export function middleware(request: NextRequest) {
   
   return NextResponse.next();
 }
+
