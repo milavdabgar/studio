@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-// Select component is removed as role is no longer selected at login
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from "next/link";
 import { AppLogo } from "@/components/app-logo";
 import { Loader2, LogIn } from "lucide-react";
@@ -15,19 +15,35 @@ import { useRouter } from "next/navigation";
 
 type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown';
 
+interface MockUser {
+  email: string;
+  password: string;
+  roles: UserRole[];
+  name?: string;
+}
+
 // Mock user data - in a real app, this would come from a database
-const MOCK_USERS = [
-  { email: "admin@gppalanpur.in", password: "Admin@123", roles: ["admin"] as UserRole[] },
-  { email: "student@example.com", password: "password", roles: ["student"] as UserRole[] },
-  { email: "faculty@example.com", password: "password", roles: ["faculty"] as UserRole[] },
-  { email: "hod@example.com", password: "password", roles: ["hod", "faculty"] as UserRole[] },
-  { email: "jury@example.com", password: "password", roles: ["jury", "faculty"] as UserRole[] },
+const MOCK_USERS: MockUser[] = [
+  { email: "admin@gppalanpur.in", password: "Admin@123", roles: ["admin"], name: "Super Admin" },
+  { email: "student@example.com", password: "password", roles: ["student"], name: "Alice Student" },
+  { email: "faculty@example.com", password: "password", roles: ["faculty"], name: "Bob Faculty" },
+  { email: "hod@example.com", password: "password", roles: ["hod", "faculty"], name: "Charlie HOD" },
+  { email: "jury@example.com", password: "password", roles: ["jury", "faculty"], name: "Diana Jury" },
+  { email: "multi@example.com", password: "password", roles: ["student", "jury"], name: "Multi Role User" },
+];
+
+const USER_ROLE_OPTIONS: { value: UserRole; label: string }[] = [
+  { value: "admin", label: "Admin" },
+  { value: "student", label: "Student" },
+  { value: "faculty", label: "Faculty" },
+  { value: "hod", label: "HOD" },
+  { value: "jury", label: "Jury" },
 ];
 
 export default function LoginPage() {
   const [email, setEmail] = useState("admin@gppalanpur.in");
   const [password, setPassword] = useState("Admin@123");
-  // Role state is removed as it's no longer selected at login
+  const [selectedRole, setSelectedRole] = useState<UserRole>("admin");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
@@ -35,28 +51,54 @@ export default function LoginPage() {
 
   useEffect(() => {
     setIsMounted(true);
+     // Clear any existing auth cookie on login page load
+    if (typeof document !== 'undefined') {
+        document.cookie = 'auth_user=;path=/;max-age=0';
+    }
   }, []);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
 
+    if (!selectedRole || selectedRole === 'unknown') {
+        toast({
+            variant: "destructive",
+            title: "Login Failed",
+            description: "Please select a valid role.",
+        });
+        setIsLoading(false);
+        return;
+    }
+
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     const foundUser = MOCK_USERS.find(user => user.email === email && user.password === password);
 
     if (foundUser) {
-      toast({
-        title: "Login Successful",
-        description: `Welcome back! Your roles: ${foundUser.roles.join(', ')}`,
-      });
-      
-      // Store email and roles (as an array) in the cookie
-      const userPayload = { email: foundUser.email, roles: foundUser.roles };
-      const encodedUserPayload = encodeURIComponent(JSON.stringify(userPayload));
-      document.cookie = `auth_user=${encodedUserPayload};path=/;max-age=${60 * 60 * 24 * 7}`; // 7 days
-      
-      router.push("/dashboard");
+      if (foundUser.roles.includes(selectedRole)) {
+        toast({
+          title: "Login Successful",
+          description: `Welcome back, ${foundUser.name || foundUser.email}! You are logged in as ${selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}.`,
+        });
+        
+        const userPayload = { 
+          email: foundUser.email, 
+          name: foundUser.name || foundUser.email,
+          availableRoles: foundUser.roles, 
+          activeRole: selectedRole 
+        };
+        const encodedUserPayload = encodeURIComponent(JSON.stringify(userPayload));
+        document.cookie = `auth_user=${encodedUserPayload};path=/;max-age=${60 * 60 * 24 * 7}`; // 7 days
+        
+        router.push("/dashboard");
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: `The role '${selectedRole}' is not assigned to this user.`,
+        });
+      }
     } else {
       toast({
         variant: "destructive",
@@ -68,7 +110,7 @@ export default function LoginPage() {
   };
 
   if (!isMounted) {
-    return null;
+    return <div className="flex items-center justify-center min-h-screen"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
   }
 
   return (
@@ -79,7 +121,7 @@ export default function LoginPage() {
             <AppLogo className="h-12 w-auto text-primary" />
           </div>
           <CardTitle className="text-3xl font-bold text-primary">Welcome Back!</CardTitle>
-          <CardDescription>Enter your credentials to access PolyManager.</CardDescription>
+          <CardDescription>Enter your credentials and select your role to access PolyManager.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -107,7 +149,19 @@ export default function LoginPage() {
                 disabled={isLoading}
               />
             </div>
-            {/* Role Select dropdown is removed */}
+            <div className="space-y-2">
+              <Label htmlFor="role">Login as</Label>
+              <Select value={selectedRole} onValueChange={(value) => setSelectedRole(value as UserRole)} required disabled={isLoading}>
+                <SelectTrigger id="role">
+                  <SelectValue placeholder="Select your role" />
+                </SelectTrigger>
+                <SelectContent>
+                  {USER_ROLE_OPTIONS.map(opt => (
+                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <Button type="submit" className="w-full text-lg py-6" disabled={isLoading}>
               {isLoading ? (
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />

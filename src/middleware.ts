@@ -6,7 +6,9 @@ type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown';
 
 interface AuthUser {
   email: string;
-  roles: UserRole[]; // Changed from role: string to roles: UserRole[]
+  name: string;
+  activeRole: UserRole;
+  availableRoles: UserRole[];
 }
 
 const isAuthenticated = (request: NextRequest): AuthUser | null => {
@@ -14,27 +16,28 @@ const isAuthenticated = (request: NextRequest): AuthUser | null => {
   if (authUserCookie) {
     try {
       const decodedCookie = decodeURIComponent(authUserCookie);
-      const parsedUser = JSON.parse(decodedCookie) as { email: string; roles: UserRole[] | UserRole }; // Allow single role for backward compatibility during transition
+      const parsedUser = JSON.parse(decodedCookie) as AuthUser;
       
-      if (parsedUser && parsedUser.email) {
-        let rolesArray: UserRole[];
-        if (Array.isArray(parsedUser.roles)) {
-          rolesArray = parsedUser.roles;
-        } else if (typeof parsedUser.roles === 'string') { // Handle old single role format
-          rolesArray = [parsedUser.roles];
-        } else {
-          rolesArray = ['unknown']; // Default if roles format is unexpected
-        }
-        
-        // Ensure roles are valid UserRole types
-        const validRoles = rolesArray.filter(role => 
+      if (parsedUser && parsedUser.email && parsedUser.activeRole && parsedUser.availableRoles) {
+        // Validate activeRole and availableRoles
+        const validActiveRole = ['admin', 'student', 'faculty', 'hod', 'jury', 'unknown'].includes(parsedUser.activeRole) ? parsedUser.activeRole : 'unknown';
+        const validAvailableRoles = parsedUser.availableRoles.filter(role => 
           ['admin', 'student', 'faculty', 'hod', 'jury', 'unknown'].includes(role)
         );
 
-        return { email: parsedUser.email, roles: validRoles.length > 0 ? validRoles : ['unknown'] };
+        return { 
+          email: parsedUser.email, 
+          name: parsedUser.name || parsedUser.email,
+          activeRole: validActiveRole, 
+          availableRoles: validAvailableRoles.length > 0 ? validAvailableRoles : ['unknown'] 
+        };
       }
     } catch (error) {
       console.error("Error parsing auth_user cookie in middleware:", error);
+      // Invalidate cookie if parsing fails
+      const response = NextResponse.next();
+      response.cookies.set('auth_user', '', { path: '/', maxAge: 0 });
+      // It's tricky to return this response directly from here, so for now, just log and return null
       return null;
     }
   }
@@ -59,13 +62,16 @@ const PUBLIC_ROUTES = [
   '/signup',
 ];
 
-// Example: Define which roles can access which prefixes
-const ROLE_ACCESS: Record<string, UserRole[]> = {
-  '/admin': ['admin', 'hod'], // Only admin and hod can access /admin/*
+// Role access is now based on the *activeRole*
+const ROLE_ACCESS_CONTROL: Record<string, UserRole[]> = {
+  '/admin': ['admin', 'hod'], 
+  '/admin/users': ['admin'],
+  '/admin/roles': ['admin'],
   '/project-fair/admin': ['admin', 'hod'],
-  '/project-fair/jury': ['jury', 'faculty', 'admin', 'hod'], // Jury, faculty, admin, hod can access jury pages
+  '/project-fair/jury': ['jury', 'faculty', 'admin', 'hod'],
   '/faculty': ['faculty', 'hod', 'admin'],
-  // Add more specific rules as needed
+  // Add more specific rules as needed. Routes not listed here but starting with a protected prefix
+  // will be accessible if the user has any role other than 'unknown' for their activeRole.
 };
 
 
@@ -73,9 +79,10 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const authenticatedUser = isAuthenticated(request);
 
-  if (pathname.startsWith('/api/') || 
-      pathname.startsWith('/_next/') || 
-      pathname.includes('.')) { 
+  // Allow Next.js internals and static assets
+  if (pathname.startsWith('/_next/') || 
+      pathname.startsWith('/api/') || // Assuming API routes might have their own auth
+      pathname.includes('.')) { // asset files like .png, .css
     return NextResponse.next();
   }
 
@@ -88,34 +95,35 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
 
-    // Role-based access control
+    // Role-based access control based on activeRole
     let hasAccess = false;
-    // Default: if no specific rule, allow if any role is not 'unknown'
-    if (authenticatedUser.roles.length > 0 && !authenticatedUser.roles.includes('unknown')) {
+    const activeRole = authenticatedUser.activeRole;
+
+    // Default for protected routes: if no specific rule, allow if activeRole is not 'unknown'
+    if (activeRole !== 'unknown') {
         hasAccess = true; 
     }
 
-    for (const routePrefix in ROLE_ACCESS) {
+    // Check against specific rules in ROLE_ACCESS_CONTROL
+    for (const routePrefix in ROLE_ACCESS_CONTROL) {
         if (pathname.startsWith(routePrefix)) {
-            // User has access if any of their roles are in the allowed list for this prefix
-            hasAccess = authenticatedUser.roles.some(userRole => ROLE_ACCESS[routePrefix].includes(userRole));
-            break; // Found the most specific rule, stop checking
+            hasAccess = ROLE_ACCESS_CONTROL[routePrefix].includes(activeRole);
+            break; 
         }
     }
-    // Special handling for /dashboard - any authenticated user can access it
-    if (pathname.startsWith('/dashboard')) {
-        hasAccess = true;
-    }
-
+    
+    // Special handling for /dashboard - any authenticated user (with a non-'unknown' active role) can access it.
+    // This is already covered by the default access rule above.
 
     if (!hasAccess) {
-        // Redirect to dashboard or an unauthorized page if user doesn't have the right role
-        // For simplicity, redirecting to dashboard. An '/unauthorized' page would be better.
-        console.warn(`User ${authenticatedUser.email} with roles [${authenticatedUser.roles.join(', ')}] tried to access ${pathname} without permission.`);
+        console.warn(`User ${authenticatedUser.email} with active role [${activeRole}] tried to access ${pathname} without permission.`);
+        // Redirect to dashboard, which should always be accessible if logged in.
+        // If dashboard itself is restricted, this might loop. Consider an 'unauthorized' page.
         return NextResponse.redirect(new URL('/dashboard', request.url)); 
     }
 
   } else if (PUBLIC_ROUTES.includes(pathname)) {
+    // If user is authenticated and tries to access login/signup, redirect to dashboard
     if ((pathname === '/login' || pathname === '/signup') && authenticatedUser) {
        return NextResponse.redirect(new URL('/dashboard', request.url));
     }

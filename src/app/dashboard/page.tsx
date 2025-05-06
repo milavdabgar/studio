@@ -12,13 +12,15 @@ type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown';
 
 interface User {
   name: string;
-  roles: UserRole[]; // Changed from role to roles
+  activeRole: UserRole; 
+  availableRoles: UserRole[];
   email?: string;
 }
 
 const DEFAULT_USER: User = {
   name: 'Guest User',
-  roles: ['unknown'],
+  activeRole: 'unknown',
+  availableRoles: ['unknown'],
 };
 
 interface DashboardCardItem {
@@ -66,20 +68,9 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
 };
 
 
-const getCombinedDashboardData = (roles: UserRole[]): DashboardCardItem[] => {
-  const combinedCards: DashboardCardItem[] = [];
-  const addedCardIds = new Set<string>();
-
-  roles.forEach(role => {
-    const cardsForRole = baseDashboardData[role] || [];
-    cardsForRole.forEach(card => {
-      if (!addedCardIds.has(card.id)) {
-        combinedCards.push(card);
-        addedCardIds.add(card.id);
-      }
-    });
-  });
-  return combinedCards;
+// This function will now return cards for the *active* role only.
+const getDashboardDataForActiveRole = (activeRole: UserRole): DashboardCardItem[] => {
+  return baseDashboardData[activeRole] || [];
 };
 
 function getCookie(name: string): string | undefined {
@@ -88,6 +79,13 @@ function getCookie(name: string): string | undefined {
   const parts = value.split(`; ${name}=`);
   if (parts.length === 2) return parts.pop()?.split(';').shift();
   return undefined;
+}
+
+interface ParsedUserCookie {
+  email: string;
+  name: string;
+  availableRoles: UserRole[];
+  activeRole: UserRole;
 }
 
 
@@ -101,16 +99,12 @@ export default function DashboardPage() {
     if (authUserCookie) {
       try {
         const decodedCookie = decodeURIComponent(authUserCookie);
-        const parsedUser = JSON.parse(decodedCookie) as { email: string; roles: UserRole[] }; // Expect roles as array
+        const parsedUser = JSON.parse(decodedCookie) as ParsedUserCookie;
         
-        let userRoles = parsedUser.roles || ['unknown'];
-        if (!Array.isArray(userRoles)) { // Backward compatibility for single role string
-          userRoles = [userRoles as unknown as UserRole];
-        }
-
         setCurrentUser({
-          name: parsedUser.email || 'User',
-          roles: userRoles.length > 0 ? userRoles : ['unknown'],
+          name: parsedUser.name || parsedUser.email,
+          activeRole: parsedUser.activeRole || 'unknown',
+          availableRoles: parsedUser.availableRoles && parsedUser.availableRoles.length > 0 ? parsedUser.availableRoles : ['unknown'],
           email: parsedUser.email,
         });
       } catch (error) {
@@ -122,8 +116,8 @@ export default function DashboardPage() {
     }
   }, []);
 
-  const dashboardCards = getCombinedDashboardData(currentUser.roles);
-  const displayRoles = currentUser.roles.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join(', ');
+  const dashboardCards = getDashboardDataForActiveRole(currentUser.activeRole);
+  const displayActiveRole = currentUser.activeRole.charAt(0).toUpperCase() + currentUser.activeRole.slice(1);
 
   if (!isMounted) {
     return <div className="flex justify-center items-center h-screen"><UsersIcon className="h-10 w-10 animate-spin" /></div>;
@@ -133,7 +127,7 @@ export default function DashboardPage() {
     <div className="space-y-8">
       <section>
         <h1 className="text-3xl font-bold tracking-tight text-primary mb-2">Welcome to your Dashboard, {currentUser.name}!</h1>
-        <p className="text-muted-foreground">Here&apos;s a quick overview of your activities and key metrics. Your roles: <span className="font-semibold">{displayRoles}</span></p>
+        <p className="text-muted-foreground">You are currently viewing as: <span className="font-semibold">{displayActiveRole}</span>. Here&apos;s a quick overview of your activities and key metrics.</p>
       </section>
 
       <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -155,13 +149,23 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         ))}
-         {dashboardCards.length === 0 && currentUser.roles.includes('unknown') && (
+         {dashboardCards.length === 0 && currentUser.activeRole === 'unknown' && (
             <Card className="md:col-span-2 lg:col-span-4 shadow-lg">
                 <CardHeader>
-                    <CardTitle>No Specific Role Assigned</CardTitle>
+                    <CardTitle>No Specific Role Active</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-muted-foreground">You currently do not have a specific role assigned. Please contact an administrator if you believe this is an error.</p>
+                    <p className="text-muted-foreground">You currently do not have a specific role active or assigned. Please contact an administrator or switch your role via the sidebar if you have multiple roles.</p>
+                </CardContent>
+            </Card>
+        )}
+        {dashboardCards.length === 0 && currentUser.activeRole !== 'unknown' && (
+             <Card className="md:col-span-2 lg:col-span-4 shadow-lg">
+                <CardHeader>
+                    <CardTitle>No Dashboard Items for {displayActiveRole}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-muted-foreground">There are no specific dashboard items configured for the {displayActiveRole} role at the moment.</p>
                 </CardContent>
             </Card>
         )}
@@ -171,7 +175,7 @@ export default function DashboardPage() {
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>A log of recent important actions and notifications.</CardDescription>
+            <CardDescription>A log of recent important actions and notifications relevant to your active role.</CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="space-y-3">
@@ -206,7 +210,7 @@ export default function DashboardPage() {
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle>Performance Overview</CardTitle>
-            <CardDescription>Visual representation of key performance indicators.</CardDescription>
+            <CardDescription>Visual representation of key performance indicators for {displayActiveRole}.</CardDescription>
           </CardHeader>
           <CardContent className="flex items-center justify-center h-[250px] bg-muted/30 rounded-md">
             <div className="text-center text-muted-foreground">
@@ -218,11 +222,11 @@ export default function DashboardPage() {
         </Card>
       </section>
 
-      {currentUser.roles.includes('admin') && ( // Show quick actions if user is an admin
+      {currentUser.activeRole === 'admin' && ( 
         <section>
           <Card className="shadow-lg">
             <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
+              <CardTitle>Quick Actions (Admin)</CardTitle>
               <CardDescription>Access common administrative tasks quickly.</CardDescription>
             </CardHeader>
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
