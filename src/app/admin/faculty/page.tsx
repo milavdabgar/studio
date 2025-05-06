@@ -107,33 +107,24 @@ const parseGtuFacultyName = (gtuNameInput: string | undefined): { title?: string
     if (!gtuNameInput) return {};
     let gtuName = gtuNameInput.trim();
     let title: string | undefined;
-    const titles = ["Dr.", "Prof.", "Mr.", "Ms.", "Mrs."]; // Order matters for matching
+    // Prioritize longer titles first to avoid partial matches like "Prof." matching "Pr." if that were a title
+    const titles = ["Dr. Prof.", "Dr.", "Prof.", "Mr.", "Ms.", "Mrs."];
     
-    // Check and remove title from the beginning of gtuName
     for (const t of titles) {
-        const lowerT = t.toLowerCase();
-        if (gtuName.toLowerCase().startsWith(lowerT + " ") || gtuName.toLowerCase().startsWith(lowerT + ".")) {
-            title = gtuName.substring(0, t.length);
-            gtuName = gtuName.substring(t.length).trim();
-             // Handle cases like "Dr. Prof. Name" - remove only the first title
-             for (const innerT of titles) {
-                 const lowerInnerT = innerT.toLowerCase();
-                 if (gtuName.toLowerCase().startsWith(lowerInnerT + " ") || gtuName.toLowerCase().startsWith(lowerInnerT + ".")) continue; // Don't remove the second title in a sequence
-             }
-            if(gtuName.startsWith(".")) gtuName = gtuName.substring(1).trim(); // Remove period if present after title
-            break;
-        }
+      const tLower = t.toLowerCase();
+      // Check if gtuName starts with title followed by a space or just the title if it ends with a period
+      if (gtuName.toLowerCase().startsWith(tLower + " ") || (t.endsWith(".") && gtuName.toLowerCase().startsWith(tLower))) {
+        title = gtuName.substring(0, t.length); // Capture the exact casing of the title
+        gtuName = gtuName.substring(t.length).trim();
+        if (gtuName.startsWith(".")) gtuName = gtuName.substring(1).trim(); // Remove period if present after title
+        break; 
+      }
     }
     
     const parts = gtuName.split(/\s+/).filter(p => p);
     if (parts.length === 0) return { title };
-    if (parts.length === 1) return { title, firstName: parts[0], lastName: 'SURNAME' }; // Handle cases with only one name part (assume it's the name, add placeholder surname)
- if (parts.length === 2) return { title, lastName: parts[0], firstName: parts[1] }; // Common GTU format: SURNAME NAME
-    // Common: SURNAME NAME FATHER_NAME/HUSBAND_NAME or SURNAME NAME MIDDLE_NAME
- // If GTU format is SURNAME FATHER_NAME NAME or similar, adjust parsing
- // Assuming the format is generally SURNAME NAME MIDDLE_NAME...
- // Let's stick to the most common observed GTU pattern: SURNAME NAME (FATHER/MIDDLE)
- // If there are more than 2 parts, the first is likely SURNAME, the second NAME, and the rest MIDDLE NAME(s)
+    if (parts.length === 1) return { title, firstName: parts[0], lastName: 'SURNAME' }; 
+    if (parts.length === 2) return { title, lastName: parts[0], firstName: parts[1] }; 
     return { title, lastName: parts[0], firstName: parts[1], middleName: parts.slice(2).join(' ') }; 
 };
 
@@ -155,6 +146,18 @@ const addUserToLocalStorage = (newUser: SystemUser) => {
   } catch (error) {
     console.error("Failed to add user to localStorage", error);
   }
+};
+
+const generateInstituteEmail = (firstName?: string, lastName?: string, staffCode?: string): string => {
+  const fn = (firstName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
+  const ln = (lastName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (fn && ln) {
+    return `${fn}.${ln}@gppalanpur.ac.in`;
+  }
+  if (staffCode) {
+    return `${staffCode.toLowerCase()}@gppalanpur.ac.in`;
+  }
+  return `faculty_${Date.now()}@gppalanpur.ac.in`; // Fallback, should ideally not happen
 };
 
 
@@ -243,11 +246,12 @@ export default function FacultyManagementPage() {
     setFormFirstName('');
     setFormMiddleName('');
     setFormLastName('');
- setFormDepartment(DEPARTMENT_OPTIONS[0]); // Explicitly set to first option
-    setFormDesignation(''); // Explicitly set to empty string
+    setFormPersonalEmail('');
+    setFormDepartment(DEPARTMENT_OPTIONS[0]); 
+    setFormDesignation(''); 
     if (document.getElementById('facultyDepartment')) {
- document.getElementById('facultyDepartment')?.setAttribute('value', DEPARTMENT_OPTIONS[0]);
- }
+        document.getElementById('facultyDepartment')?.setAttribute('value', DEPARTMENT_OPTIONS[0]);
+    }
 
     setFormJobType('Regular');
     setFormContact('');
@@ -263,27 +267,34 @@ export default function FacultyManagementPage() {
 
   const handleEdit = (faculty: Faculty) => {
     setCurrentFaculty(faculty);
- setFormStaffCode(faculty.staffCode);
- // Set gtuName without title if present, otherwise empty string
-    const { title, firstName, middleName, lastName } = parseGtuFacultyName(faculty.gtuName);
-    const nameWithoutTitle = [firstName, middleName, lastName].filter(Boolean).join(' ');
-    setFormGtuName(nameWithoutTitle); // Use parsed name without title for form
+    setFormStaffCode(faculty.staffCode);
+    
+    // When editing, prefer the individual name parts if they exist, otherwise parse gtuName
+    if (faculty.firstName || faculty.lastName) {
+        setFormGtuName(faculty.gtuName || ''); // Keep gtuName if it was there
+        setFormTitle(faculty.title || '');
+        setFormFirstName(faculty.firstName || '');
+        setFormMiddleName(faculty.middleName || '');
+        setFormLastName(faculty.lastName || '');
+    } else {
+        const { title, firstName, middleName, lastName } = parseGtuFacultyName(faculty.gtuName);
+        setFormGtuName(faculty.gtuName || ''); // Keep original GTU name
+        setFormTitle(title || faculty.title || '');
+        setFormFirstName(firstName || '');
+        setFormMiddleName(middleName || '');
+        setFormLastName(lastName || '');
+    }
 
-    setFormTitle(faculty.title || '');
- // Prefer individual name parts if available in the data
-    setFormFirstName(faculty.firstName || '');
-    setFormMiddleName(faculty.middleName || '');
-    setFormLastName(faculty.lastName || '');
-    setFormPersonalEmail(faculty.personalEmail || ''); // Ensure empty string if null/undefined
- setFormDepartment(faculty.department || DEPARTMENT_OPTIONS[0]); // Fix: Prefill department, default to first option if not present
+    setFormPersonalEmail(faculty.personalEmail || ''); 
+    setFormDepartment(faculty.department || DEPARTMENT_OPTIONS[0]); 
     setFormDesignation(faculty.designation || '');
- setFormJobType(faculty.jobType ?? 'Regular'); // Ensure a default for the select
+    setFormJobType(faculty.jobType ?? 'Regular'); 
     setFormContact(faculty.contactNumber ?? '');
     setFormDob(faculty.dateOfBirth && isValid(parseISO(faculty.dateOfBirth)) ? parseISO(faculty.dateOfBirth) : undefined);
     setFormJoiningDate(faculty.joiningDate && isValid(parseISO(faculty.joiningDate)) ? parseISO(faculty.joiningDate) : undefined);
- setFormGender(faculty.gender ?? undefined);
- setFormMaritalStatus(faculty.maritalStatus ?? undefined);
- setFormStatus(faculty.status);
+    setFormGender(faculty.gender ?? undefined);
+    setFormMaritalStatus(faculty.maritalStatus ?? undefined);
+    setFormStatus(faculty.status);
     setFormAadhar(faculty.aadharNumber || '');
     setFormPan(faculty.panCardNumber || '');
     setIsDialogOpen(true);
@@ -306,8 +317,8 @@ export default function FacultyManagementPage() {
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    if (!formStaffCode.trim() || (!formGtuName.trim() && (!formFirstName.trim() || !formLastName.trim()))) {
-      toast({ variant: "destructive", title: "Validation Error", description: "Staff Code and Name (GTU Name or First/Last Name) are required." });
+    if (!formStaffCode.trim() || (!formFirstName.trim() || !formLastName.trim())) {
+      toast({ variant: "destructive", title: "Validation Error", description: "Staff Code, First Name and Last Name are required." });
       return;
     }
     if (formPersonalEmail.trim() && !/\S+@\S+\.\S+/.test(formPersonalEmail)) {
@@ -326,18 +337,19 @@ export default function FacultyManagementPage() {
     setIsSubmitting(true);
 
     setTimeout(() => {
-      const { firstName: parsedFN, middleName: parsedMN, lastName: parsedLN, title: parsedTitle } = formGtuName.trim() ? parseGtuFacultyName(formGtuName) : {};
-
+      const facultyFirstName = formFirstName.trim();
+      const facultyLastName = formLastName.trim();
+      
       const facultyData: Omit<Faculty, 'id' | 'instituteEmail'> & { instituteEmail?: string; } = {
         staffCode: formStaffCode.trim(),
-        gtuName: formGtuName.trim() || undefined,
+        gtuName: formGtuName.trim() || [formTitle.trim(), facultyFirstName, formMiddleName.trim(), facultyLastName].filter(Boolean).join(' ') || undefined,
         title: formTitle.trim() || undefined,
-        firstName: formFirstName.trim() || undefined,
+        firstName: facultyFirstName || undefined,
         middleName: formMiddleName.trim() || undefined,
-        lastName: formLastName.trim() || undefined,
-        personalEmail: formPersonalEmail.trim() || undefined, // Ensure undefined if empty
+        lastName: facultyLastName || undefined,
+        personalEmail: formPersonalEmail.trim() || undefined, 
         department: formDepartment,
- designation: formDesignation.trim() || undefined,
+        designation: formDesignation.trim() || undefined,
         jobType: formJobType,
         contactNumber: formContact.trim() || undefined,
         dateOfBirth: formDob ? format(formDob, "yyyy-MM-dd") : undefined,
@@ -349,17 +361,9 @@ export default function FacultyManagementPage() {
         panCardNumber: formPan.trim() || undefined,
       };
       
-      facultyData.instituteEmail = facultyData.personalEmail || `${facultyData.staffCode}@gppalanpur.ac.in`;
+      facultyData.instituteEmail = generateInstituteEmail(facultyData.firstName, facultyData.lastName, facultyData.staffCode);
 
-       // Determine the name parts for the system user based on form input
-        let systemUserNameParts: string[] = [];
-        if (formGtuName.trim()) {
-            const parsed = parseGtuFacultyName(formGtuName.trim());
-            systemUserNameParts = [parsed.firstName, parsed.middleName, parsed.lastName].filter(Boolean).map(name => name!);
-        } else {
-            systemUserNameParts = [formFirstName.trim(), formMiddleName.trim(), formLastName.trim()].filter(Boolean);
-        }
-        const systemUserName = systemUserNameParts.join(' ') || facultyData.staffCode;
+      const systemUserName = [facultyData.title, facultyData.firstName, facultyData.middleName, facultyData.lastName].filter(Boolean).join(' ') || facultyData.gtuName || facultyData.staffCode;
 
       if (currentFaculty && currentFaculty.id) {
         setFacultyList(prevList => prevList.map(f => f.id === currentFaculty.id ? { ...f, ...facultyData, instituteEmail: facultyData.instituteEmail! } : f));
@@ -374,9 +378,9 @@ export default function FacultyManagementPage() {
         
         const newUserForSystem: SystemUser = {
           id: `user_fac_${newFaculty.id}`, 
-          name: systemUserName || newFaculty.staffCode,
+          name: systemUserName,
           email: newFaculty.instituteEmail,
-          roles: ['faculty'], // Default role
+          roles: ['faculty'], 
           status: 'active',
           department: newFaculty.department,
         };
@@ -397,12 +401,10 @@ export default function FacultyManagementPage() {
     } else {
       setSelectedFile(null);
     }
-     // Clear the input display value if file is removed
      const inputElement = event.target as HTMLInputElement;
      if (!event.target.files || event.target.files.length === 0) {
        inputElement.value = '';
      }
-
   };
   
   const handleGtuFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -411,8 +413,6 @@ export default function FacultyManagementPage() {
     } else {
       setSelectedGtuFile(null);
     }
-    const fileInput = document.getElementById('gtuCsvImportFaculty') as HTMLInputElement;
-    // Clear the input display value if file is removed
      const inputElement = event.target as HTMLInputElement;
      if (!event.target.files || event.target.files.length === 0) {
        inputElement.value = '';
@@ -431,12 +431,12 @@ export default function FacultyManagementPage() {
       let updatedFacultyCount = 0;
       try {
         const text = e.target?.result as string;
- const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '').map(line => line.endsWith(',') ? line + ' ' : line); // Handle trailing commas
+        const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '').map(line => line.endsWith(',') ? line + ' ' : line); 
         if (lines.length <= 1) throw new Error("CSV file is empty or has only a header.");
 
         const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
         const expectedHeaders = ['id', 'staffcode', 'gtuname', 'title', 'firstname', 'middlename', 'lastname', 'personalemail', 'department', 'designation', 'jobtype', 'contactnumber', 'dateofbirth', 'joiningdate', 'gender', 'maritalstatus', 'status', 'aadharnumber', 'pancardnumber'];
-        const requiredHeaders = ['staffcode', 'department', 'status'];
+        const requiredHeaders = ['staffcode', 'firstname', 'lastname', 'department', 'status'];
 
         if (!requiredHeaders.every(rh => header.includes(rh))) {
             throw new Error(`CSV header is missing required columns. Expected at least: ${requiredHeaders.join(', ')}. Found: ${header.join(', ')}`);
@@ -445,12 +445,15 @@ export default function FacultyManagementPage() {
         const hMap = Object.fromEntries(expectedHeaders.map(eh => [eh, header.indexOf(eh)]));
         let facultyToUpdate = [...facultyList];
 
- for (let i = 1; i < lines.length; i++) {
+        for (let i = 1; i < lines.length; i++) {
           const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
 
           const staffCode = data[hMap['staffcode']];
-          if (!staffCode) {
-            console.warn(`Skipping row ${i+1}: Staff code is missing.`);
+          const firstNameFromCsv = data[hMap['firstname']];
+          const lastNameFromCsv = data[hMap['lastname']];
+
+          if (!staffCode || !firstNameFromCsv || !lastNameFromCsv) {
+            console.warn(`Skipping row ${i+1}: Staff code, First Name or Last Name is missing.`);
             continue;
           }
           const department = data[hMap['department']];
@@ -461,27 +464,23 @@ export default function FacultyManagementPage() {
             continue;
           }
 
-          const gtuName = data[hMap['gtuname']];
+          const gtuNameFromCsv = data[hMap['gtuname']];
           const titleFromCsv = data[hMap['title']];
-          const firstNameFromCsv = data[hMap['firstname']];
           const middleNameFromCsv = data[hMap['middlename']];
-          const lastNameFromCsv = data[hMap['lastname']];
           
-          // Parse name from gtuName ONLY if individual name parts are NOT provided in CSV
-          const parsedNames = (!titleFromCsv && !firstNameFromCsv && !middleNameFromCsv && !lastNameFromCsv && gtuName) ? parseGtuFacultyName(gtuName) : {};
+          // If individual name parts are not directly in CSV but gtuName is, parse it
+          const parsedFromGtuName = gtuNameFromCsv ? parseGtuFacultyName(gtuNameFromCsv) : {};
 
- const facultyDataPartial: Omit<Faculty, 'id' | 'instituteEmail'| 'staffCode' | 'department' | 'status'> = {
- gtuName: (gtuName ? [parsedNames.firstName, parsedNames.middleName, parsedNames.lastName].filter(Boolean).join(' ') : undefined) || undefined, // Use parsed name without title for gtuName
-            title: (data[hMap['title']]?.trim() || undefined) || parsedNames.title, // Use CSV title if present, else parsed title
-            firstName: (data[hMap['firstname']]?.trim() || undefined) || parsedNames.firstName, // Use CSV first name if present, else parsed first name
-            middleName: (data[hMap['middlename']]?.trim() || undefined) || parsedNames.middleName, // Use CSV middle name if present, else parsed middle name
-            lastName: (data[hMap['lastname']]?.trim() || undefined) || parsedNames.lastName, // Use CSV last name if present, else parsed last name
+          const facultyDataPartial: Omit<Faculty, 'id' | 'instituteEmail'| 'staffCode' | 'firstName' | 'lastName' | 'department' | 'status'> = {
+            gtuName: gtuNameFromCsv || [titleFromCsv || parsedFromGtuName.title, firstNameFromCsv, middleNameFromCsv || parsedFromGtuName.middleName, lastNameFromCsv].filter(Boolean).join(' ') || undefined,
+            title: titleFromCsv || parsedFromGtuName.title || undefined,
+            middleName: middleNameFromCsv || parsedFromGtuName.middleName || undefined,
             personalEmail: data[hMap['personalemail']] || undefined,
             designation: data[hMap['designation']] || undefined,
             jobType: (data[hMap['jobtype']] && JOB_TYPE_OPTIONS.includes(data[hMap['jobtype']] as JobType)) ? data[hMap['jobtype']] as JobType : 'Regular',
             contactNumber: data[hMap['contactnumber']] || undefined,
-            dateOfBirth: data[hMap['dateofbirth']] || undefined, // Assuming YYYY-MM-DD
-            joiningDate: data[hMap['joiningdate']] || undefined, // Assuming YYYY-MM-DD
+            dateOfBirth: data[hMap['dateofbirth']] || undefined, 
+            joiningDate: data[hMap['joiningdate']] || undefined, 
             gender: data[hMap['gender']] as Gender || undefined,
             maritalStatus: data[hMap['maritalstatus']] || undefined,
             aadharNumber: data[hMap['aadharnumber']] || undefined,
@@ -490,14 +489,15 @@ export default function FacultyManagementPage() {
           
           const facultyData: Omit<Faculty, 'id'> = {
             staffCode,
+            firstName: firstNameFromCsv,
+            lastName: lastNameFromCsv,
             department,
- status,
- instituteEmail: facultyDataPartial.personalEmail || `${staffCode}@gppalanpur.ac.in`, // Use personalEmail if provided, else generate
+            status,
+            instituteEmail: generateInstituteEmail(firstNameFromCsv, lastNameFromCsv, staffCode),
             ...facultyDataPartial
           };
 
           const idFromCsv = data[hMap['id']];
- // Find existing faculty by ID (if provided) or by Staff Code
           let existingFacultyIndex = -1;
 
           if (idFromCsv) {
@@ -514,28 +514,19 @@ export default function FacultyManagementPage() {
             existingFacultyIndex = facultyToUpdate.findIndex(f => f.staffCode === staffCode);
           }
 
-
           if (existingFacultyIndex !== -1) {
             facultyToUpdate[existingFacultyIndex] = { ...facultyToUpdate[existingFacultyIndex], ...facultyData };
             updatedFacultyCount++;
           } else {
- // Determine the name for the system user based on the *most complete* name data
- const systemUserNameParts: string[] = [
- facultyData.title,
- facultyData.firstName,
- facultyData.middleName,
- facultyData.lastName
- ].filter(Boolean).map(name => name!);
- const systemUserName = systemUserNameParts.join(' ') || facultyData.gtuName || facultyData.staffCode;
-
+            const systemUserName = [facultyData.title, facultyData.firstName, facultyData.middleName, facultyData.lastName].filter(Boolean).join(' ') || facultyData.gtuName || facultyData.staffCode;
             const newFaculty = { id: generateClientId(), ...facultyData };
             facultyToUpdate.push(newFaculty);
             newFacultyCount++;
             
             addUserToLocalStorage({
               id: `user_fac_${newFaculty.id}`,
- name: systemUserName,
- email: newFaculty.instituteEmail, // Use generated or personal email for system user
+              name: systemUserName,
+              email: newFaculty.instituteEmail, 
               roles: ['faculty'], 
               status: 'active',
               department: newFaculty.department,
@@ -586,8 +577,8 @@ export default function FacultyManagementPage() {
 
   const handleDownloadSampleCsv = () => {
     const sampleCsvContent = `id,staffCode,gtuName,title,firstName,middleName,lastName,personalEmail,instituteEmail,contactNumber,department,designation,jobType,dateOfBirth,joiningDate,gender,maritalStatus,status,aadharNumber,panCardNumber
-faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@example.com,S001@gppalanpur.ac.in,9876543210,Computer Engineering,Professor,Regular,1975-05-15,2005-08-01,Male,Married,active,123456789012,ABCDE1234F
-,S002,"Ms. PATEL PRIYA RAJESH",Ms.,PRIYA,RAJESH,PATEL,priya.patel@example.com,,9876543211,Mechanical Engineering,Lecturer,Adhoc,1988-11-20,2015-06-10,Female,Single,active,,
+faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@example.com,anil.sharma@gppalanpur.ac.in,9876543210,Computer Engineering,Professor,Regular,1975-05-15,2005-08-01,Male,Married,active,123456789012,ABCDE1234F
+,S002,"Ms. PATEL PRIYA RAJESH",Ms.,PRIYA,RAJESH,PATEL,priya.patel@example.com,priya.patel@gppalanpur.ac.in,9876543211,Mechanical Engineering,Lecturer,Adhoc,1988-11-20,2015-06-10,Female,Single,active,,
 `;
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -613,10 +604,10 @@ faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@examp
       let skippedCount = 0;
       try {
         const text = e.target?.result as string;
- const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '').map(line => line.endsWith(',') ? line + ' ' : line); // Handle trailing commas
+        const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '').map(line => line.endsWith(',') ? line + ' ' : line); 
         if (lines.length <= 1) throw new Error("GTU CSV file is empty or has only a header.");
 
-        const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, '')); // staffcode,name,insttype,department,designation,jobtype,mobileno,emailaddress
+        const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, '')); 
         const gtuExpectedHeaders = ['staffcode','name','insttype','department','designation','jobtype','mobileno','emailaddress'];
         const requiredGtuHeaders = ['staffcode', 'name', 'department', 'designation'];
 
@@ -626,7 +617,7 @@ faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@examp
         const hMap = Object.fromEntries(gtuExpectedHeaders.map(eh => [eh, header.indexOf(eh)]));
         let facultyToUpdate = [...facultyList];
 
- for (let i = 1; i < lines.length; i++) { // Start from 1 to skip header
+        for (let i = 1; i < lines.length; i++) { 
           const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
 
           const staffCode = data[hMap['staffcode']];
@@ -639,31 +630,28 @@ faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@examp
             skippedCount++;
             continue;
           }
- // Always parse the GTU Name for potentially separate name parts and title
           const parsedNames = parseGtuFacultyName(gtuNameFromCsv);
           
           const personalEmail = data[hMap['emailaddress']];
           const contactNumber = data[hMap['mobileno']];
-          // Ensure jobType is one of the allowed values
           const jobType = (data[hMap['jobtype']]?.trim() && JOB_TYPE_OPTIONS.includes(data[hMap['jobtype']].trim() as JobType)) ? data[hMap['jobtype']].trim() as JobType : 'Other';
           const instType = data[hMap['insttype']];
 
-
           const facultyData: Omit<Faculty, 'id'> = {
             staffCode,
-            gtuName: gtuNameFromCsv, // Store the full name as from GTU
-            title: parsedNames.title, // Parsed title
-            firstName: parsedNames.firstName ?? undefined, // Parsed first name
-            middleName: parsedNames.middleName ?? undefined, // Parsed middle name
-            lastName: parsedNames.lastName ?? undefined, // Parsed last name
+            gtuName: gtuNameFromCsv, 
+            title: parsedNames.title, 
+            firstName: parsedNames.firstName ?? undefined, 
+            middleName: parsedNames.middleName ?? undefined, 
+            lastName: parsedNames.lastName ?? undefined, 
             personalEmail: personalEmail?.trim() || undefined,
-            instituteEmail: personalEmail || `${staffCode}@gppalanpur.ac.in`,
+            instituteEmail: generateInstituteEmail(parsedNames.firstName, parsedNames.lastName, staffCode),
             contactNumber: contactNumber || undefined,
             department,
             designation,
             jobType: JOB_TYPE_OPTIONS.includes(jobType) ? jobType : 'Other',
             instType: instType || undefined,
-            status: 'active', // Default status for GTU import unless CSV has it (which GTU CSV doesn't usually)
+            status: 'active', 
           };
 
           const existingFacultyIndex = facultyToUpdate.findIndex(f => f.staffCode === staffCode);
@@ -675,18 +663,11 @@ faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@examp
             facultyToUpdate.push(newFaculty);
             newFacultyCount++;
 
-             // Determine the name for the system user
-            const namePartsForSystemUser = [
-                newFaculty.title, 
-                newFaculty.firstName, 
-                newFaculty.middleName, 
-                newFaculty.lastName].filter(Boolean);
-            const systemUserName = namePartsForSystemUser.join(' ') || newFaculty.gtuName || newFaculty.staffCode;
-
+            const systemUserName = [newFaculty.title, newFaculty.firstName, newFaculty.middleName, newFaculty.lastName].filter(Boolean).join(' ') || newFaculty.gtuName || newFaculty.staffCode;
 
             addUserToLocalStorage({
               id: `user_fac_${newFaculty.id}`,
-              name: systemUserName || newFaculty.staffCode,
+              name: systemUserName,
               email: newFaculty.instituteEmail,
               roles: ['faculty'],
               status: 'active',
@@ -875,7 +856,20 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                   </div>
                   <div className="md:col-span-2">
                     <Label htmlFor="facultyGtuName">Full Name (GTU Format)</Label>
-                    <Input id="facultyGtuName" value={formGtuName} onChange={(e) => {setFormGtuName(e.target.value); const {title, firstName, middleName, lastName} = parseGtuFacultyName(e.target.value); setFormTitle(title||''); setFormFirstName(firstName || ''); setFormMiddleName(middleName||''); setFormLastName(lastName||'');}} placeholder="e.g., Mr. SURNAME NAME FATHERNAME" disabled={isSubmitting} />
+                    <Input 
+                      id="facultyGtuName" 
+                      value={formGtuName} 
+                      onChange={(e) => {
+                        setFormGtuName(e.target.value); 
+                        const {title, firstName, middleName, lastName} = parseGtuFacultyName(e.target.value); 
+                        if (!formTitle) setFormTitle(title||''); 
+                        if (!formFirstName) setFormFirstName(firstName || ''); 
+                        if (!formMiddleName) setFormMiddleName(middleName||''); 
+                        if (!formLastName) setFormLastName(lastName||'');
+                      }} 
+                      placeholder="e.g., Mr. SURNAME NAME FATHERNAME" 
+                      disabled={isSubmitting} 
+                    />
                   </div>
                   <div className="md:col-span-1">
                     <Label htmlFor="facultyTitle">Title</Label>
@@ -1043,7 +1037,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                     <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample (Standard)
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  Use for general faculty data import/update.
+                  Use for general faculty data import/update. Requires staffCode, firstName, lastName, department, status.
                 </p>
             </div>
           </div>
@@ -1156,7 +1150,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                   <TableCell id={`faculty-name-${faculty.id}`} className="font-medium">
                     <div className="flex flex-col">
                         <span className="font-semibold">
-                          {faculty.gtuName || `${faculty.title || ''} ${faculty.firstName || ''} ${faculty.middleName || ''} ${faculty.lastName || ''}`.trim()}
+                          {[faculty.title, faculty.firstName, faculty.middleName, faculty.lastName].filter(Boolean).join(' ') || faculty.gtuName || faculty.staffCode}
                         </span>
                         <span className="text-xs text-muted-foreground">{faculty.instituteEmail}</span>
                         {faculty.personalEmail && <span className="text-xs text-muted-foreground">P: {faculty.personalEmail}</span>}
@@ -1298,5 +1292,4 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
   );
 }
 
-
-  
+    
