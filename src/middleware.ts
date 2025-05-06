@@ -71,6 +71,7 @@ const ROLE_ACCESS_CONTROL: Record<string, UserRole[]> = {
   '/admin/faculty': ['admin', 'hod'],
   '/admin/departments': ['admin', 'hod'],
   '/admin/programs': ['admin', 'hod'],
+  '/admin/courses': ['admin', 'hod'],
   '/admin': ['admin', 'hod'], 
   '/project-fair/admin': ['admin', 'hod'],
   '/project-fair/jury': ['jury', 'faculty', 'admin', 'hod'],
@@ -140,5 +141,6 @@ export function middleware(request: NextRequest) {
   
   return NextResponse.next();
 }
+
 
 

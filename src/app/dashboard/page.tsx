@@ -4,7 +4,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BarChart, Users as UsersIcon, Briefcase, CheckCircle, FileText, BookOpen, CalendarDays, Award, Users2, BotMessageSquare, CalendarCheck, Settings, UserCog, GitFork, BookUser, UsersRound, Building2, BookCopy } from "lucide-react"; // Added UsersRound, Building2, BookCopy
+import { BarChart, Users as UsersIcon, Briefcase, CheckCircle, FileText, BookOpen, CalendarDays, Award, Users2, BotMessageSquare, CalendarCheck, Settings, UserCog, GitFork, BookUser, UsersRound, Building2, BookCopy, ClipboardList } from "lucide-react"; // Added ClipboardList
 import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState } from 'react';
@@ -40,6 +40,7 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "admin-total-faculty", title: "Total Faculty", value: "75", icon: UsersRound, color: "text-indigo-500", href: "/admin/faculty"},
     { id: "admin-total-departments", title: "Total Departments", value: "7", icon: Building2, color: "text-orange-500", href: "/admin/departments"},
     { id: "admin-total-programs", title: "Total Programs", value: "5", icon: BookCopy, color: "text-purple-500", href: "/admin/programs"},
+    { id: "admin-total-courses", title: "Total Courses", value: "50", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses"},
     { id: "admin-active-projects", title: "Active Projects", value: "78", icon: Briefcase, color: "text-accent", href: "/project-fair/admin" },
     { id: "admin-pending-approvals", title: "Pending Approvals", value: "12", icon: CheckCircle, color: "text-yellow-500", href: "/admin/approvals" },
     { id: "admin-feedback-reports", title: "Feedback Reports", value: "5", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
@@ -62,6 +63,7 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "hod-department-students", title: "Department Students", value: "250", icon: BookUser, color: "text-accent", href: "/admin/students" }, 
     { id: "hod-my-department", title: "My Department", value: "Manage", icon: Building2, color: "text-orange-500", href: "/admin/departments" },
     { id: "hod-my-programs", title: "Department Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs" },
+    { id: "hod-my-courses", title: "Department Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses" },
     { id: "hod-department-projects", title: "Department Projects", value: "25", icon: Briefcase, color: "text-yellow-500", href: "/project-fair/admin" }, 
     { id: "hod-department-feedback", title: "Department Feedback", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" }, 
   ],
@@ -267,6 +269,11 @@ export default function DashboardPage() {
                   <BookCopy className="h-5 w-5" /> Manage Programs
                 </Button>
               </Link>
+              <Link href="/admin/courses" passHref>
+                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
+                  <ClipboardList className="h-5 w-5" /> Manage Courses
+                </Button>
+              </Link>
               <Link href="/project-fair/admin/new-event" passHref>
                  <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
                   <Briefcase className="h-5 w-5" /> Create Project Event
@@ -299,5 +306,6 @@ export default function DashboardPage() {
     </div>
   );
 }
+
 
 
