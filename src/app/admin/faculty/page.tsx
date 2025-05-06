@@ -119,8 +119,8 @@ const parseGtuFacultyName = (gtuNameInput: string | undefined): { title?: string
     const parts = gtuName.split(/\s+/).filter(p => p);
     if (parts.length === 0) return { title };
     if (parts.length === 1) return { title, firstName: parts[0] };
-    if (parts.length === 2) return { title, lastName: parts[0], firstName: parts[1] }; // Common: SURNAME NAME
-    // Common: SURNAME NAME FATHER_NAME/HUSBAND_NAME
+ if (parts.length === 2) return { title, firstName: parts[0], lastName: parts[1] }; // Common: NAME SURNAME
+    // Common: SURNAME NAME FATHER_NAME/HUSBAND_NAME 
     return { title, lastName: parts[0], firstName: parts[1], middleName: parts.slice(2).join(' ') }; 
 };
 
@@ -248,7 +248,7 @@ export default function FacultyManagementPage() {
   const handleEdit = (faculty: Faculty) => {
     setCurrentFaculty(faculty);
     setFormStaffCode(faculty.staffCode);
-    setFormGtuName(faculty.gtuName || '');
+ setFormGtuName(faculty.gtuName || '');
     setFormTitle(faculty.title || '');
     setFormFirstName(faculty.firstName || '');
     setFormMiddleName(faculty.middleName || '');
@@ -260,8 +260,8 @@ export default function FacultyManagementPage() {
     setFormContact(faculty.contactNumber || '');
     setFormDob(faculty.dateOfBirth && isValid(parseISO(faculty.dateOfBirth)) ? parseISO(faculty.dateOfBirth) : undefined);
     setFormJoiningDate(faculty.joiningDate && isValid(parseISO(faculty.joiningDate)) ? parseISO(faculty.joiningDate) : undefined);
-    setFormGender(faculty.gender);
-    setFormMaritalStatus(faculty.maritalStatus);
+ setFormGender(faculty.gender || undefined);
+ setFormMaritalStatus(faculty.maritalStatus || undefined);
     setFormStatus(faculty.status);
     setFormAadhar(faculty.aadharNumber || '');
     setFormPan(faculty.panCardNumber || '');
@@ -305,9 +305,9 @@ export default function FacultyManagementPage() {
     setIsSubmitting(true);
 
     setTimeout(() => {
-      const { firstName: parsedFN, middleName: parsedMN, lastName: parsedLN, title: parsedTitle } = parseGtuFacultyName(formGtuName);
+      const { firstName: parsedFN, middleName: parsedMN, lastName: parsedLN, title: parsedTitle } = formGtuName.trim() ? parseGtuFacultyName(formGtuName) : {};
 
-      const facultyData: Omit<Faculty, 'id' | 'instituteEmail'> & { instituteEmail?: string } = {
+      const facultyData: Omit<Faculty, 'id' | 'instituteEmail'> & { instituteEmail?: string; } = {
         staffCode: formStaffCode.trim(),
         gtuName: formGtuName.trim() || undefined,
         title: formTitle.trim() || parsedTitle || undefined,
@@ -368,6 +368,9 @@ export default function FacultyManagementPage() {
     } else {
       setSelectedFile(null);
     }
+    const fileInput = document.getElementById('csvImportFaculty') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
+
   };
   const handleGtuFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -375,6 +378,9 @@ export default function FacultyManagementPage() {
     } else {
       setSelectedGtuFile(null);
     }
+    const fileInput = document.getElementById('gtuCsvImportFaculty') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
+
   };
 
   const handleImportFaculty = () => {
@@ -474,8 +480,8 @@ export default function FacultyManagementPage() {
             facultyToUpdate.push(newFaculty);
             newFacultyCount++;
 
-            const systemUserName = newFaculty.title ? `${newFaculty.title} ${newFaculty.gtuName}` : (newFaculty.gtuName || `${newFaculty.firstName || ''} ${newFaculty.lastName || ''}`.trim());
-            addUserToLocalStorage({
+            const systemUserName = newFaculty.gtuName ? (newFaculty.title ? `${newFaculty.title} ${newFaculty.gtuName}` : newFaculty.gtuName) : newFaculty.staffCode;
+           addUserToLocalStorage({
               id: `user_fac_${newFaculty.id}`,
               name: systemUserName || newFaculty.staffCode,
               email: newFaculty.instituteEmail,
@@ -616,8 +622,7 @@ faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@examp
             facultyToUpdate.push(newFaculty);
             newFacultyCount++;
 
-            const systemUserName = newFaculty.title ? `${newFaculty.title} ${newFaculty.gtuName}` : (newFaculty.gtuName || `${newFaculty.firstName || ''} ${newFaculty.lastName || ''}`.trim());
-             addUserToLocalStorage({
+            const systemUserName = newFaculty.gtuName ? (newFaculty.title ? `${newFaculty.title} ${newFaculty.gtuName}` : newFaculty.gtuName) : newFaculty.staffCode;             addUserToLocalStorage({
               id: `user_fac_${newFaculty.id}`,
               name: systemUserName || newFaculty.staffCode,
               email: newFaculty.instituteEmail,
@@ -844,7 +849,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                      <Select value={formGender || ""} onValueChange={(value) => setFormGender(value as Gender || undefined)} disabled={isSubmitting}>
                         <SelectTrigger id="facultyGender"><SelectValue placeholder="Select Gender" /></SelectTrigger>
                         <SelectContent>
-                           <SelectItem value="" disabled>Select Gender</SelectItem>
+
                             {GENDER_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
                         </SelectContent>
                     </Select>
@@ -872,7 +877,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                      <Select value={formMaritalStatus || ""} onValueChange={(value) => setFormMaritalStatus(value || undefined)} disabled={isSubmitting}>
                         <SelectTrigger id="facultyMaritalStatus"><SelectValue placeholder="Select Status" /></SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="" disabled>Select Status</SelectItem>
+
                             {MARITAL_STATUS_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
                         </SelectContent>
                     </Select>
