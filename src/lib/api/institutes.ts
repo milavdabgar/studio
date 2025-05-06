@@ -1,0 +1,77 @@
+
+import type { Institute } from '@/types/entities';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
+
+export const instituteService = {
+  async getAllInstitutes(): Promise<Institute[]> {
+    const response = await fetch(`${API_BASE_URL}/institutes`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch institutes');
+    }
+    return response.json();
+  },
+
+  async getInstituteById(id: string): Promise<Institute> {
+    const response = await fetch(`${API_BASE_URL}/institutes/${id}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch institute with id ${id}`);
+    }
+    return response.json();
+  },
+
+  async createInstitute(instituteData: Omit<Institute, 'id'>): Promise<Institute> {
+    const response = await fetch(`${API_BASE_URL}/institutes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(instituteData),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to create institute' }));
+      throw new Error(errorData.message || 'Failed to create institute');
+    }
+    return response.json();
+  },
+
+  async updateInstitute(id: string, instituteData: Partial<Omit<Institute, 'id'>>): Promise<Institute> {
+    const response = await fetch(`${API_BASE_URL}/institutes/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(instituteData),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to update institute' }));
+      throw new Error(errorData.message || 'Failed to update institute');
+    }
+    return response.json();
+  },
+
+  async deleteInstitute(id: string): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/institutes/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to delete institute with id ${id}`);
+    }
+  },
+
+  async importInstitutes(file: File): Promise<{ newCount: number; updatedCount: number }> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch(`${API_BASE_URL}/institutes/import`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to import institutes' }));
+      throw new Error(errorData.message || 'Failed to import institutes');
+    }
+    return response.json();
+  }
+};

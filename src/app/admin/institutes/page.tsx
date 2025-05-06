@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
@@ -12,31 +13,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { PlusCircle, Edit, Trash2, Landmark, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
+import type { Institute } from '@/types/entities';
+import { instituteService } from '@/lib/api/institutes';
 
-interface Institute {
-  id: string;
-  name: string;
-  code: string;
-  address?: string;
-  contactEmail?: string;
-  contactPhone?: string;
-  website?: string;
-  status: 'active' | 'inactive';
-  establishmentYear?: number;
-}
-
-const initialInstitutes: Institute[] = [
-  { id: "inst1", name: "Government Polytechnic Palanpur", code: "GPP", address: "Jagana, Palanpur, Gujarat 385011", contactEmail: "gp-palanpur-dte@gujarat.gov.in", contactPhone: "02742-280126", website: "http://www.gppalanpur.ac.in", status: "active", establishmentYear: 1964 },
-];
-
-const LOCAL_STORAGE_KEY_INSTITUTES = 'managedInstitutesPMP';
 
 type SortField = keyof Institute | 'none';
 type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
-
-const generateClientId = (): string => `inst_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export default function InstituteManagementPage() {
   const [institutes, setInstitutes] = useState<Institute[]>([]);
@@ -67,32 +51,24 @@ export default function InstituteManagementPage() {
 
   const { toast } = useToast();
 
-  useEffect(() => {
+  const fetchInstitutes = async () => {
     setIsLoading(true);
     try {
-      const storedInstitutes = localStorage.getItem(LOCAL_STORAGE_KEY_INSTITUTES);
-      setInstitutes(storedInstitutes ? JSON.parse(storedInstitutes) : initialInstitutes);
+      const data = await instituteService.getAllInstitutes();
+      setInstitutes(data);
     } catch (error) {
-      console.error("Failed to load institutes from localStorage", error);
-      setInstitutes(initialInstitutes);
+      console.error("Failed to load institutes", error);
+      toast({ variant: "destructive", title: "Error", description: (error as Error).message || "Could not load institutes." });
+      // Keep existing data if fetch fails, or set to empty array
+      // setInstitutes([]); 
     }
     setIsLoading(false);
-  }, []);
+  };
 
   useEffect(() => {
-    if(!isLoading) { 
-        try {
-            localStorage.setItem(LOCAL_STORAGE_KEY_INSTITUTES, JSON.stringify(institutes));
-        } catch (error) {
-            console.error("Failed to save institutes to localStorage", error);
-            toast({
-                variant: "destructive",
-                title: "Storage Error",
-                description: "Could not save institute data locally. Changes might be lost.",
-            });
-        }
-    }
-  }, [institutes, isLoading, toast]);
+    fetchInstitutes();
+  }, []);
+
 
   const resetForm = () => {
     setFormName(''); setFormCode(''); setFormAddress('');
@@ -119,17 +95,20 @@ export default function InstituteManagementPage() {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (instituteId: string) => {
+  const handleDelete = async (instituteId: string) => {
     setIsSubmitting(true);
-    setTimeout(() => { 
-      setInstitutes(prev => prev.filter(i => i.id !== instituteId));
+    try {
+      await instituteService.deleteInstitute(instituteId);
+      await fetchInstitutes(); // Refetch after delete
       setSelectedInstituteIds(prev => prev.filter(id => id !== instituteId));
       toast({ title: "Institute Deleted", description: "The institute has been successfully deleted." });
-      setIsSubmitting(false);
-    }, 500);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message || "Could not delete institute."});
+    }
+    setIsSubmitting(false);
   };
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!formName.trim() || !formCode.trim()) {
       toast({ variant: "destructive", title: "Validation Error", description: "Institute Name and Code are required."});
@@ -144,122 +123,60 @@ export default function InstituteManagementPage() {
         return;
     }
 
-
     setIsSubmitting(true);
     
-    setTimeout(() => { 
-      const instituteData: Omit<Institute, 'id'> = { 
-        name: formName.trim(), code: formCode.trim().toUpperCase(),
-        address: formAddress.trim() || undefined,
-        contactEmail: formContactEmail.trim() || undefined,
-        contactPhone: formContactPhone.trim() || undefined,
-        website: formWebsite.trim() || undefined,
-        status: formStatus,
-        establishmentYear: formEstablishmentYear ? Number(formEstablishmentYear) : undefined,
-      };
+    const instituteData: Omit<Institute, 'id'> = { 
+      name: formName.trim(), code: formCode.trim().toUpperCase(),
+      address: formAddress.trim() || undefined,
+      contactEmail: formContactEmail.trim() || undefined,
+      contactPhone: formContactPhone.trim() || undefined,
+      website: formWebsite.trim() || undefined,
+      status: formStatus,
+      establishmentYear: formEstablishmentYear ? Number(formEstablishmentYear) : undefined,
+    };
 
+    try {
       if (currentInstitute && currentInstitute.id) {
-        setInstitutes(prev => prev.map(i => i.id === currentInstitute.id ? { ...i, ...instituteData } : i));
+        await instituteService.updateInstitute(currentInstitute.id, instituteData);
         toast({ title: "Institute Updated", description: "The institute has been successfully updated." });
       } else {
-        const newInstitute: Institute = { 
-          id: generateClientId(), 
-          ...instituteData
-        };
-        setInstitutes(prev => [...prev, newInstitute]);
+        await instituteService.createInstitute(instituteData);
         toast({ title: "Institute Created", description: "The new institute has been successfully created." });
       }
-      setIsSubmitting(false);
+      await fetchInstitutes(); // Refetch list
       setIsDialogOpen(false);
       resetForm();
-    }, 1000);
+    } catch (error) {
+       toast({ variant: "destructive", title: "Save Failed", description: (error as Error).message || "Could not save institute."});
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectedFile(event.target.files && event.target.files[0] ? event.target.files[0] : null);
   };
 
-  const handleImportInstitutes = () => {
+  const handleImportInstitutes = async () => {
     if (!selectedFile) {
       toast({ variant: "destructive", title: "Import Error", description: "Please select a CSV file to import." });
       return;
     }
 
     setIsSubmitting(true);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const text = e.target?.result as string;
-        const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
-        if (lines.length <= 1) throw new Error("CSV file is empty or has only a header.");
-        
-        const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
-        const expectedHeaders = ['id', 'name', 'code', 'address', 'contactemail', 'contactphone', 'website', 'status', 'establishmentyear'];
-        const requiredHeaders = ['name', 'code', 'status'];
-
-        if (!requiredHeaders.every(rh => header.includes(rh))) {
-            throw new Error(`CSV header is missing required columns. Expected at least: ${requiredHeaders.join(', ')}. Found: ${header.join(', ')}`);
-        }
-        
-        const hMap = Object.fromEntries(expectedHeaders.map(eh => [eh, header.indexOf(eh)]));
-
-        const importedBatch: Institute[] = [];
-        const currentCopy = [...institutes];
-        let newCount = 0, updatedCount = 0;
-
-        for (let i = 1; i < lines.length; i++) {
-          const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
-          
-          const name = data[hMap['name']];
-          const code = data[hMap['code']];
-          const status = data[hMap['status']] as 'active' | 'inactive';
-
-          if (!name || !code || !['active', 'inactive'].includes(status)) {
-            console.warn(`Skipping row ${i+1}: Missing or invalid required data (name, code, status).`);
-            continue;
-          }
-
-          const id = data[hMap['id']];
-          const estYearStr = data[hMap['establishmentyear']];
-          const instituteData: Omit<Institute, 'id'> = {
-            name, code: code.toUpperCase(),
-            address: data[hMap['address']] || undefined,
-            contactEmail: data[hMap['contactemail']] || undefined,
-            contactPhone: data[hMap['contactphone']] || undefined,
-            website: data[hMap['website']] || undefined,
-            status,
-            establishmentYear: estYearStr && !isNaN(parseInt(estYearStr)) ? parseInt(estYearStr) : undefined,
-          };
-          
-          if (id) {
-            const existingIdx = currentCopy.findIndex(c => c.id === id);
-            if (existingIdx !== -1) {
-              currentCopy[existingIdx] = { ...currentCopy[existingIdx], ...instituteData };
-              updatedCount++;
-            } else {
-              importedBatch.push({ id, ...instituteData });
-              newCount++;
-            }
-          } else {
-            importedBatch.push({ id: generateClientId(), ...instituteData });
-            newCount++;
-          }
-        }
-        
-        const finalInstitutes = [...currentCopy.filter(c => !importedBatch.find(ic => ic.id === c.id)), ...importedBatch];
-        setInstitutes(finalInstitutes);
-        toast({ title: "Import Successful", description: `${newCount} institutes added, ${updatedCount} institutes updated.` });
-
-      } catch (error: any) {
-        console.error("Error processing CSV file:", error);
-        toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
-      } finally {
-        setIsSubmitting(false); setSelectedFile(null); 
-        const fileInput = document.getElementById('csvImportInstitute') as HTMLInputElement;
-        if (fileInput) fileInput.value = '';
-      }
-    };
-    reader.readAsText(selectedFile);
+    try {
+      const result = await instituteService.importInstitutes(selectedFile);
+      await fetchInstitutes(); // Refetch list
+      toast({ title: "Import Successful", description: `${result.newCount} institutes added, ${result.updatedCount} institutes updated.` });
+    } catch (error: any) {
+      console.error("Error processing CSV file:", error);
+      toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
+    } finally {
+      setIsSubmitting(false); 
+      setSelectedFile(null); 
+      const fileInput = document.getElementById('csvImportInstitute') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+    }
   };
 
   const handleExportInstitutes = () => {
@@ -366,18 +283,21 @@ inst_sample_1,Another Polytechnic,AP,123 Sample Street,contact@ap.edu,123-456-78
     setSelectedInstituteIds(prev => checked ? [...prev, instituteId] : prev.filter(id => id !== instituteId));
   };
 
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = async () => {
     if (selectedInstituteIds.length === 0) {
       toast({ variant: "destructive", title: "No Institutes Selected", description: "Please select institutes to delete." });
       return;
     }
     setIsSubmitting(true);
-    setTimeout(() => {
-      setInstitutes(prev => prev.filter(i => !selectedInstituteIds.includes(i.id)));
-      setSelectedInstituteIds([]);
+    try {
+      await Promise.all(selectedInstituteIds.map(id => instituteService.deleteInstitute(id)));
+      await fetchInstitutes(); // Refetch list
       toast({ title: "Institutes Deleted", description: `${selectedInstituteIds.length} institute(s) have been successfully deleted.` });
-      setIsSubmitting(false);
-    }, 500);
+      setSelectedInstituteIds([]);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message || "Could not delete selected institutes."});
+    }
+    setIsSubmitting(false);
   };
   
   const isAllSelectedOnPage = paginatedInstitutes.length > 0 && paginatedInstitutes.every(i => selectedInstituteIds.includes(i.id));
@@ -427,7 +347,7 @@ inst_sample_1,Another Polytechnic,AP,123 Sample Street,contact@ap.edu,123-456-78
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4 py-4 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                   <div className="md:col-span-1"><Label htmlFor="name">Institute Name *</Label><Input id="name" value={formName} onChange={e => setFormName(e.target.value)} placeholder="e.g., Government Polytechnic Palanpur" disabled={isSubmitting} required /></div>
-                  <div className="md:col-span-1"><Label htmlFor="code">Institute Code *</Label><Input id="code" value={formCode} onChange={e => setFormCode(e.target.value)} placeholder="e.g., GPP" disabled={isSubmitting} required /></div>
+                  <div className="md:col-span-1"><Label htmlFor="code">Institute Code *</Label><Input id="code" value={formCode} onChange={e => setFormCode(e.target.value.toUpperCase())} placeholder="e.g., GPP" disabled={isSubmitting} required /></div>
                   
                   <div className="md:col-span-2"><Label htmlFor="address">Address</Label><Textarea id="address" value={formAddress} onChange={e => setFormAddress(e.target.value)} placeholder="e.g., Jagana, Palanpur, Gujarat 385011" disabled={isSubmitting} rows={2}/></div>
                   
@@ -489,7 +409,7 @@ inst_sample_1,Another Polytechnic,AP,123 Sample Street,contact@ap.edu,123-456-78
             </div>
              <div>
               <Label htmlFor="filterStatus">Filter by Status</Label>
-              <Select value={filterStatusVal} onValueChange={setFilterStatusVal}>
+              <Select value={filterStatusVal} onValueChange={(value) => setFilterStatusVal(value as 'active' | 'inactive' | 'all')}>
                 <SelectTrigger id="filterStatus"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Statuses</SelectItem>
@@ -552,7 +472,7 @@ inst_sample_1,Another Polytechnic,AP,123 Sample Street,contact@ap.edu,123-456-78
         </CardContent>
          <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
             <div className="text-sm text-muted-foreground">
-                Showing {Math.min((currentPage -1) * itemsPerPage + 1, filteredAndSortedInstitutes.length)} to {Math.min(currentPage * itemsPerPage, filteredAndSortedInstitutes.length)} of {filteredAndSortedInstitutes.length} institutes.
+                Showing {paginatedInstitutes.length > 0 ? Math.min((currentPage -1) * itemsPerPage + 1, filteredAndSortedInstitutes.length) : 0} to {Math.min(currentPage * itemsPerPage, filteredAndSortedInstitutes.length)} of {filteredAndSortedInstitutes.length} institutes.
             </div>
             <div className="flex items-center gap-2">
                  <Select value={String(itemsPerPage)} onValueChange={(value) => {setItemsPerPage(Number(value)); setCurrentPage(1);}}>
