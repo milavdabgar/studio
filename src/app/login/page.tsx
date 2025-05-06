@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, type FormEvent, useEffect } from "react";
@@ -16,21 +15,54 @@ import { useRouter } from "next/navigation";
 type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown';
 
 interface MockUser {
+  id?: string; // Added id to align with SystemUser from student page
   email: string;
-  password: string;
+  password?: string; // Make password optional if it's set by enrollment number
   roles: UserRole[];
   name?: string;
+  status?: 'active' | 'inactive';
+  department?: string;
 }
 
-// Mock user data - in a real app, this would come from a database
-const MOCK_USERS: MockUser[] = [
-  { email: "admin@gppalanpur.in", password: "Admin@123", roles: ["admin"], name: "Super Admin" },
-  { email: "student@example.com", password: "password", roles: ["student"], name: "Alice Student" },
-  { email: "faculty@example.com", password: "password", roles: ["faculty"], name: "Bob Faculty" },
-  { email: "hod@example.com", password: "password", roles: ["hod", "faculty"], name: "Charlie HOD" },
-  { email: "jury@example.com", password: "password", roles: ["jury", "faculty"], name: "Diana Jury" },
-  { email: "multi@example.com", password: "password", roles: ["student", "jury"], name: "Multi Role User" },
-];
+// Merged MOCK_USERS and a function to get users from localStorage
+const getMockUsers = (): MockUser[] => {
+  const baseUsers: MockUser[] = [
+    { id: "u1", email: "admin@gppalanpur.in", password: "Admin@123", roles: ["admin"], name: "Super Admin", status: "active" },
+    { id: "u2", email: "student@example.com", password: "password", roles: ["student"], name: "Alice Student", status: "active" },
+    { id: "u3", email: "faculty@example.com", password: "password", roles: ["faculty"], name: "Bob Faculty", status: "active" },
+    { id: "u4", email: "hod@example.com", password: "password", roles: ["hod", "faculty"], name: "Charlie HOD", status: "active" },
+    { id: "u5", email: "jury@example.com", password: "password", roles: ["jury", "faculty"], name: "Diana Jury", status: "inactive" },
+    { id: "u6", email: "multi@example.com", password: "password", roles: ["student", "jury"], name: "Multi Role User", status: "active" },
+    // Example of imported student, password would be enrollment number
+    { email: "086260306003@gppalanpur.in", roles: ["student"], name: "DOE JOHN MICHAEL (from import)", status: "active", department: "Computer Engineering"},
+  ];
+
+  if (typeof window !== 'undefined') {
+    try {
+      const storedUsersRaw = localStorage.getItem('managedUsers');
+      if (storedUsersRaw) {
+        const storedUsers: MockUser[] = JSON.parse(storedUsersRaw);
+        // Merge baseUsers with storedUsers, giving preference to storedUsers by email
+        const combinedUsers = new Map<string, MockUser>();
+        baseUsers.forEach(user => combinedUsers.set(user.email, user));
+        storedUsers.forEach(user => {
+          // For students, password is their enrollment number if not explicitly set
+          if (user.roles.includes('student') && !user.password && user.email.includes('@gppalanpur.in')) {
+            const enrollmentNumber = user.email.split('@')[0];
+            combinedUsers.set(user.email, { ...user, password: enrollmentNumber });
+          } else {
+            combinedUsers.set(user.email, user);
+          }
+        });
+        return Array.from(combinedUsers.values());
+      }
+    } catch (e) {
+      console.error("Error reading users from localStorage for login:", e);
+    }
+  }
+  return baseUsers;
+};
+
 
 const USER_ROLE_OPTIONS: { value: UserRole; label: string }[] = [
   { value: "admin", label: "Admin" },
@@ -44,18 +76,38 @@ export default function LoginPage() {
   const [email, setEmail] = useState("admin@gppalanpur.in");
   const [password, setPassword] = useState("Admin@123");
   const [selectedRole, setSelectedRole] = useState<UserRole>("admin");
+  const [availableRolesForUser, setAvailableRolesForUser] = useState<UserRole[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
+  const [MOCK_USERS, setMockUsersState] = useState<MockUser[]>([]);
 
   useEffect(() => {
     setIsMounted(true);
-     // Clear any existing auth cookie on login page load
     if (typeof document !== 'undefined') {
         document.cookie = 'auth_user=;path=/;max-age=0';
     }
+    setMockUsersState(getMockUsers()); // Load users when component mounts
   }, []);
+
+  useEffect(() => {
+    const user = MOCK_USERS.find(u => u.email === email);
+    if (user && user.roles) {
+      setAvailableRolesForUser(user.roles);
+      // Auto-select first available role if current selection is not valid for this user
+      if (!user.roles.includes(selectedRole) && user.roles.length > 0) {
+        setSelectedRole(user.roles[0]);
+      } else if (user.roles.length === 0) {
+        setSelectedRole('unknown'); // Should not happen if user has roles
+      }
+    } else {
+      setAvailableRolesForUser([]);
+       // If user not found or no roles, reset role or set to a default/first option
+      if(USER_ROLE_OPTIONS.length > 0) setSelectedRole(USER_ROLE_OPTIONS[0].value);
+    }
+  }, [email, MOCK_USERS, selectedRole]); // Added selectedRole to dependencies
+
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -73,7 +125,12 @@ export default function LoginPage() {
 
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    const foundUser = MOCK_USERS.find(user => user.email === email && user.password === password);
+    const foundUser = MOCK_USERS.find(user => {
+        if (user.email !== email) return false;
+        // If user.password is set, check it. Otherwise (e.g. imported student), use enrollment number.
+        const expectedPassword = user.password || (user.roles.includes('student') && user.email.includes('@gppalanpur.in') ? user.email.split('@')[0] : undefined);
+        return expectedPassword === password;
+    });
 
     if (foundUser) {
       if (foundUser.roles.includes(selectedRole)) {
@@ -81,16 +138,19 @@ export default function LoginPage() {
           title: "Login Successful",
           description: `Welcome back, ${foundUser.name || foundUser.email}! You are logged in as ${selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}.`,
         });
-        
-        const userPayload = { 
-          email: foundUser.email, 
+
+        const userPayload = {
+          email: foundUser.email,
           name: foundUser.name || foundUser.email,
-          availableRoles: foundUser.roles, 
-          activeRole: selectedRole 
+          availableRoles: foundUser.roles,
+          activeRole: selectedRole
         };
         const encodedUserPayload = encodeURIComponent(JSON.stringify(userPayload));
-        document.cookie = `auth_user=${encodedUserPayload};path=/;max-age=${60 * 60 * 24 * 7}`; // 7 days
-        
+
+        if (typeof document !== 'undefined') {
+          document.cookie = `auth_user=${encodedUserPayload};path=/;max-age=${60 * 60 * 24 * 7}`; // 7 days
+        }
+
         router.push("/dashboard");
       } else {
         toast({
@@ -112,6 +172,11 @@ export default function LoginPage() {
   if (!isMounted) {
     return <div className="flex items-center justify-center min-h-screen"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
   }
+
+  const roleOptionsToDisplay = email && availableRolesForUser.length > 0
+    ? USER_ROLE_OPTIONS.filter(opt => availableRolesForUser.includes(opt.value))
+    : USER_ROLE_OPTIONS;
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-background to-secondary/20 p-4">
@@ -151,14 +216,26 @@ export default function LoginPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="role">Login as</Label>
-              <Select value={selectedRole} onValueChange={(value) => setSelectedRole(value as UserRole)} required disabled={isLoading}>
+              <Select 
+                value={selectedRole} 
+                onValueChange={(value) => setSelectedRole(value as UserRole)} 
+                required 
+                disabled={isLoading || roleOptionsToDisplay.length === 0}
+              >
                 <SelectTrigger id="role">
-                  <SelectValue placeholder="Select your role" />
+                  <SelectValue placeholder={roleOptionsToDisplay.length === 0 && email ? "No roles for this user" : "Select your role"} />
                 </SelectTrigger>
                 <SelectContent>
-                  {USER_ROLE_OPTIONS.map(opt => (
-                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                  ))}
+                  {roleOptionsToDisplay.length > 0 ? (
+                    roleOptionsToDisplay.map(opt => (
+                      <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                    ))
+                  ) : (
+                     email ? <SelectItem value="unknown" disabled>No roles available</SelectItem> 
+                           : USER_ROLE_OPTIONS.map(opt => ( // Fallback if email is empty
+                                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                              ))
+                  )}
                 </SelectContent>
               </Select>
             </div>
@@ -187,3 +264,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
@@ -9,8 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { PlusCircle, Edit, Trash2, Users, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, BookUser, CalendarDays as CalendarIcon, Info } from "lucide-react"; // Renamed CalendarDays to CalendarIcon
+// import { Switch } from "@/components/ui/switch"; // Not used currently, can be removed if not planned
+import { PlusCircle, Edit, Trash2, Users, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, BookUser, CalendarDays as CalendarIcon, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -19,9 +18,18 @@ import { format, parseISO, isValid } from 'date-fns';
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
+type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown';
+interface SystemUser {
+  id: string;
+  name: string;
+  email: string;
+  roles: UserRole[];
+  status: 'active' | 'inactive';
+  department?: string;
+}
 
 type StudentStatus = 'active' | 'inactive' | 'graduated' | 'dropped';
-type SemesterStatus = 'Passed' | 'Pending' | 'Not Appeared' | 'N/A'; 
+type SemesterStatus = 'Passed' | 'Pending' | 'Not Appeared' | 'N/A';
 
 interface Student {
   id: string; // Internal ID
@@ -56,7 +64,7 @@ interface Student {
   isCancel?: boolean;
   isPassAll?: boolean;
   aadharNumber?: string;
-  shift?: 'Morning' | 'Afternoon' | string; // Or string for flexibility
+  shift?: 'Morning' | 'Afternoon' | string;
 }
 
 const DEPARTMENT_OPTIONS = [
@@ -68,7 +76,7 @@ const DEPARTMENT_OPTIONS = [
   "General",
 ];
 
-const SEMESTER_OPTIONS = Array.from({ length: 8 }, (_, i) => i + 1); // Semesters 1-8 for GTU data
+const SEMESTER_OPTIONS = Array.from({ length: 8 }, (_, i) => i + 1);
 
 const STATUS_OPTIONS: { value: StudentStatus; label: string }[] = [
   { value: "active", label: "Active" },
@@ -94,7 +102,8 @@ const initialStudents: Student[] = [
   { id: "s3", enrollmentNumber: "GPPLN19005", gtuName: "PATEL AMIT DINESHBHAI", firstName: "AMIT", middleName: "DINESHBHAI", lastName: "PATEL", instituteEmail: "GPPLN19005@gppalanpur.in", department: "Electrical Engineering", branchCode: "EE", currentSemester: 6, status: "graduated", address: "456 Power House, Deesa", admissionDate: "2019-06-20", gender: "Male", convocationYear: 2023, sem1Status: "Passed", sem2Status: "Passed", sem3Status: "Passed", sem4Status: "Passed", sem5Status: "Passed", sem6Status: "Passed", isPassAll: true, isComplete: true, termClose: true },
 ];
 
-const LOCAL_STORAGE_KEY_STUDENTS = 'managedStudentsPMP'; 
+const LOCAL_STORAGE_KEY_STUDENTS = 'managedStudentsPMP';
+const LOCAL_STORAGE_KEY_USERS = 'managedUsers';
 
 type SortField = keyof Student | 'none';
 type SortDirection = 'asc' | 'desc';
@@ -104,7 +113,6 @@ const parseGtuName = (gtuName: string): { firstName?: string, middleName?: strin
     const parts = gtuName.trim().split(/\s+/);
     if (parts.length === 1) return { firstName: parts[0] };
     if (parts.length === 2) return { lastName: parts[0], firstName: parts[1] };
-    // Assumes Surname FirstName MiddleName format for 3+ parts
     return { lastName: parts[0], firstName: parts[1], middleName: parts.slice(2).join(' ') };
 };
 
@@ -112,11 +120,49 @@ const mapSemesterCodeToStatus = (code: string | undefined | null): SemesterStatu
     if (code === '2') return 'Passed';
     if (code === '1') return 'Pending';
     if (code === '' || code === undefined || code === null) return 'Not Appeared';
-    return 'N/A'; 
+    return 'N/A';
 };
 
 const generateClientId = (): string => {
   return `client_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+};
+
+const normalizeGender = (gender: string | undefined): Student['gender'] | undefined => {
+    if (!gender) return undefined;
+    const lowerGender = gender.toLowerCase();
+    if (lowerGender.startsWith('m')) return 'Male';
+    if (lowerGender.startsWith('f')) return 'Female';
+    if (lowerGender.startsWith('o')) return 'Other';
+    return undefined;
+};
+
+const normalizeShift = (shift: string | undefined): Student['shift'] | undefined => {
+    if (!shift) return undefined;
+    const lowerShift = shift.toLowerCase();
+    if (lowerShift.startsWith('m')) return 'Morning';
+    if (lowerShift.startsWith('a')) return 'Afternoon';
+    return shift; // Return original if not matched
+};
+
+const addUserToLocalStorage = (newUser: SystemUser) => {
+  try {
+    const storedUsers = localStorage.getItem(LOCAL_STORAGE_KEY_USERS);
+    let users: SystemUser[] = storedUsers ? JSON.parse(storedUsers) : [];
+    
+    // Check if user with this email already exists
+    const existingUserIndex = users.findIndex(u => u.email === newUser.email);
+    if (existingUserIndex !== -1) {
+      // Optionally update existing user's roles or other details
+      // For now, we'll assume we don't overwrite if they exist, or we could merge roles.
+      // console.log(`User with email ${newUser.email} already exists. Not adding again from student import.`);
+      return;
+    }
+    
+    users.push(newUser);
+    localStorage.setItem(LOCAL_STORAGE_KEY_USERS, JSON.stringify(users));
+  } catch (error) {
+    console.error("Failed to add user to localStorage", error);
+  }
 };
 
 
@@ -127,7 +173,6 @@ export default function StudentManagementPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentStudent, setCurrentStudent] = useState<Partial<Student> | null>(null);
 
-  // Form state for Dialog
   const [formEnrollment, setFormEnrollment] = useState('');
   const [formGtuName, setFormGtuName] = useState('');
   const [formFirstName, setFormFirstName] = useState('');
@@ -145,7 +190,7 @@ export default function StudentManagementPage() {
   const [formGender, setFormGender] = useState<Student['gender'] | undefined>(undefined);
   const [formConvocationYear, setFormConvocationYear] = useState<number | undefined>(undefined);
   const [formShift, setFormShift] = useState<Student['shift'] | undefined>(undefined);
-  // Semester statuses
+
   const [formSem1Status, setFormSem1Status] = useState<SemesterStatus>('N/A');
   const [formSem2Status, setFormSem2Status] = useState<SemesterStatus>('N/A');
   const [formSem3Status, setFormSem3Status] = useState<SemesterStatus>('N/A');
@@ -160,7 +205,7 @@ export default function StudentManagementPage() {
   const [selectedGtuFile, setSelectedGtuFile] = useState<File | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterDepartment, setFilterDepartment] = useState<string>('all');
-  const [filterSemester, setFilterSemester] = useState<string>('all'); 
+  const [filterSemester, setFilterSemester] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<StudentStatus | 'all'>('all');
   const [sortField, setSortField] = useState<SortField>('gtuName');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
@@ -174,7 +219,7 @@ export default function StudentManagementPage() {
       if (storedStudents) {
         setStudents(JSON.parse(storedStudents));
       } else {
-        setStudents(initialStudents); 
+        setStudents(initialStudents);
       }
     } catch (error) {
       console.error("Failed to load students from localStorage", error);
@@ -184,13 +229,12 @@ export default function StudentManagementPage() {
   }, []);
 
   useEffect(() => {
-    if (!isLoading) { 
+    if (!isLoading) {
         try {
             localStorage.setItem(LOCAL_STORAGE_KEY_STUDENTS, JSON.stringify(students));
         } catch (error) {
             console.error("Failed to save students to localStorage", error);
-            // Defer toast to avoid "setState in render" error
-            setTimeout(() => {
+             setTimeout(() => {
                 toast({
                     variant: "destructive",
                     title: "Storage Error",
@@ -302,14 +346,14 @@ export default function StudentManagementPage() {
     setIsSubmitting(true);
 
     setTimeout(() => {
-      const { firstName, middleName, lastName } = parseGtuName(formGtuName);
+      const { firstName: parsedFN, middleName: parsedMN, lastName: parsedLN } = parseGtuName(formGtuName);
 
       const studentData: Omit<Student, 'id' | 'instituteEmail'> & { instituteEmail?: string } = {
         enrollmentNumber: formEnrollment.trim(),
         gtuName: formGtuName.trim() || undefined,
-        firstName: formFirstName.trim() || firstName || undefined,
-        middleName: formMiddleName.trim() || middleName || undefined,
-        lastName: formLastName.trim() || lastName || undefined,
+        firstName: formFirstName.trim() || parsedFN || undefined,
+        middleName: formMiddleName.trim() || parsedMN || undefined,
+        lastName: formLastName.trim() || parsedLN || undefined,
         personalEmail: formPersonalEmail.trim() || undefined,
         department: formDepartment,
         branchCode: formBranchCode.trim() || undefined,
@@ -344,7 +388,20 @@ export default function StudentManagementPage() {
           instituteEmail: studentData.instituteEmail!,
         };
         setStudents(prevStudents => [...prevStudents, newStudent]);
-        toast({ title: "Student Added", description: `Student ${newStudent.gtuName || `${newStudent.firstName} ${newStudent.lastName}`} added. Institute Email: ${newStudent.instituteEmail}, Default Password: ${newStudent.enrollmentNumber}` });
+        
+        // Create user account
+        const systemUserName = newStudent.gtuName || `${newStudent.firstName || ''} ${newStudent.lastName || ''}`.trim();
+        const newUserForSystem: SystemUser = {
+          id: `user_${newStudent.id}`, // Link user ID to student ID
+          name: systemUserName || newStudent.enrollmentNumber,
+          email: newStudent.instituteEmail,
+          roles: ['student'],
+          status: 'active',
+          department: newStudent.department,
+        };
+        addUserToLocalStorage(newUserForSystem);
+
+        toast({ title: "Student Added", description: `Student ${systemUserName} added. Institute Email: ${newStudent.instituteEmail}, Default Password: ${newStudent.enrollmentNumber}` });
       }
       setIsSubmitting(false);
       setIsDialogOpen(false);
@@ -367,8 +424,7 @@ export default function StudentManagementPage() {
     }
   };
 
-  // Standard CSV import/export (existing functionality)
-  const handleImportStudents = () => { 
+  const handleImportStudents = () => {
     if (!selectedFile) {
       toast({ variant: "destructive", title: "Import Error", description: "Please select a CSV file to import." });
       return;
@@ -382,25 +438,25 @@ export default function StudentManagementPage() {
         const text = e.target?.result as string;
         const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
         if (lines.length <= 1) throw new Error("CSV file is empty or has only a header.");
-        
-        const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, '')); // normalize header
+
+        const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
         const expectedHeaders = ['id', 'enrollmentnumber', 'gtuname', 'firstname', 'middlename', 'lastname', 'personalemail', 'department', 'branchcode', 'currentsemester', 'status', 'contactnumber', 'address', 'dateofbirth', 'admissiondate', 'gender', 'convocationyear', 'shift', 'sem1status', 'sem2status', 'sem3status', 'sem4status', 'sem5status', 'sem6status', 'sem7status', 'sem8status', 'category', 'iscomplete', 'termclose', 'iscancel', 'ispassall', 'aadharnumber'];
-        const requiredHeaders = ['enrollmentnumber', 'department', 'currentsemester', 'status']; 
+        const requiredHeaders = ['enrollmentnumber', 'department', 'currentsemester', 'status'];
 
         if (!requiredHeaders.every(rh => header.includes(rh))) {
             throw new Error(`CSV header is missing required columns. Expected at least: ${requiredHeaders.join(', ')}. Found: ${header.join(', ')}`);
         }
-        
+
         const hMap = Object.fromEntries(expectedHeaders.map(eh => [eh, header.indexOf(eh)]));
-        
+        let updatedStudentsList: Student[] = [];
+
         setStudents(prevStudents => {
             const currentStudentsMap = new Map(prevStudents.map(s => [s.enrollmentNumber, s]));
             const currentStudentsByIdMap = new Map(prevStudents.map(s => [s.id, s]));
 
-
             for (let i = 1; i < lines.length; i++) {
               const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
-              
+
               const enrollmentNumber = data[hMap['enrollmentnumber']];
               if (!enrollmentNumber) {
                 console.warn(`Skipping row ${i+1}: Enrollment number is missing.`);
@@ -422,7 +478,7 @@ export default function StudentManagementPage() {
 
               const gtuName = data[hMap['gtuname']];
               const parsedNames = parseGtuName(gtuName || '');
-              
+
               const studentDataPartial: Omit<Student, 'id' | 'instituteEmail'| 'enrollmentNumber' | 'department' | 'currentSemester' | 'status'> & {instituteEmail?: string} = {
                 gtuName: gtuName || undefined,
                 firstName: data[hMap['firstname']] || parsedNames.firstName || undefined,
@@ -434,9 +490,9 @@ export default function StudentManagementPage() {
                 address: data[hMap['address']] || undefined,
                 dateOfBirth: data[hMap['dateofbirth']] || undefined,
                 admissionDate: data[hMap['admissiondate']] || undefined,
-                gender: data[hMap['gender']] as Student['gender'] || undefined,
+                gender: normalizeGender(data[hMap['gender']]),
                 convocationYear: data[hMap['convocationyear']] ? parseInt(data[hMap['convocationyear']], 10) : undefined,
-                shift: data[hMap['shift']] as Student['shift'] || undefined,
+                shift: normalizeShift(data[hMap['shift']]),
                 sem1Status: (data[hMap['sem1status']] as SemesterStatus) || 'N/A',
                 sem2Status: (data[hMap['sem2status']] as SemesterStatus) || 'N/A',
                 sem3Status: (data[hMap['sem3status']] as SemesterStatus) || 'N/A',
@@ -452,7 +508,7 @@ export default function StudentManagementPage() {
                 isPassAll: data[hMap['ispassall']] ? data[hMap['ispassall']].toLowerCase() === 'true' : undefined,
                 aadharNumber: data[hMap['aadharnumber']] || undefined,
               };
-              
+
               const studentData: Omit<Student, 'id'> = {
                 enrollmentNumber,
                 department,
@@ -469,31 +525,42 @@ export default function StudentManagementPage() {
                 existingStudent = currentStudentsByIdMap.get(idFromCsv);
                  if (existingStudent && existingStudent.enrollmentNumber !== enrollmentNumber && currentStudentsMap.has(enrollmentNumber)) {
                      console.warn(`Skipping update for ID ${idFromCsv}: Enrollment number ${enrollmentNumber} from CSV conflicts with an existing different student. Student with this enrollment will be updated instead if no other ID matches.`);
-                     existingStudent = undefined; // Force check by enrollment number
+                     existingStudent = undefined;
                  }
               }
-              
+
               if(!existingStudent){
                  existingStudent = currentStudentsMap.get(enrollmentNumber);
               }
 
-
-              if (existingStudent) { 
+              if (existingStudent) {
                 const updatedStudent = { ...existingStudent, ...studentData };
                 currentStudentsMap.set(enrollmentNumber, updatedStudent);
                 if (idFromCsv && existingStudent.id === idFromCsv) currentStudentsByIdMap.set(idFromCsv, updatedStudent);
                 updatedStudentsCount++;
-              } else { 
+              } else {
                 const newStudent = { id: generateClientId(), ...studentData };
                 currentStudentsMap.set(enrollmentNumber, newStudent);
                 currentStudentsByIdMap.set(newStudent.id, newStudent);
                 newStudentsCount++;
-                console.log(`Creating user account for ${studentData.enrollmentNumber}: Email: ${studentData.instituteEmail}, Password: ${studentData.enrollmentNumber}`);
+
+                const systemUserName = newStudent.gtuName || `${newStudent.firstName || ''} ${newStudent.lastName || ''}`.trim();
+                const newUserForSystem: SystemUser = {
+                  id: `user_${newStudent.id}`,
+                  name: systemUserName || newStudent.enrollmentNumber,
+                  email: newStudent.instituteEmail,
+                  roles: ['student'],
+                  status: 'active',
+                  department: newStudent.department,
+                };
+                addUserToLocalStorage(newUserForSystem);
+                console.log(`User account for ${newStudent.enrollmentNumber} processed. Email: ${newStudent.instituteEmail}, Default Password: ${newStudent.enrollmentNumber}`);
               }
             }
-            return Array.from(currentStudentsMap.values());
+            updatedStudentsList = Array.from(currentStudentsMap.values());
+            return updatedStudentsList;
         });
-        
+
         toast({ title: "Import Successful", description: `${newStudentsCount} students added, ${updatedStudentsCount} students updated.` });
 
       } catch (error: any) {
@@ -501,14 +568,14 @@ export default function StudentManagementPage() {
         toast({ variant: "destructive", title: "Standard Import Failed", description: error.message || "Could not process the CSV file." });
       } finally {
         setIsSubmitting(false);
-        setSelectedFile(null); 
+        setSelectedFile(null);
         const fileInput = document.getElementById('csvImportStudent') as HTMLInputElement;
         if (fileInput) fileInput.value = '';
       }
     };
     reader.readAsText(selectedFile);
   };
-  const handleExportStudents = () => { 
+  const handleExportStudents = () => {
     if (filteredAndSortedStudents.length === 0) {
       toast({ title: "Export Canceled", description: "No students to export (check filters)." });
       return;
@@ -555,11 +622,11 @@ export default function StudentManagementPage() {
     document.body.removeChild(link);
     toast({ title: "Export Successful", description: "Students exported to students_export.csv" });
   };
-  const handleDownloadSampleCsv = () => { 
+  const handleDownloadSampleCsv = () => {
     const sampleCsvContent = `id,enrollmentNumber,gtuName,firstName,middleName,lastName,personalEmail,instituteEmail,department,branchCode,currentSemester,status,contactNumber,address,dateOfBirth,admissionDate,gender,convocationYear,shift,sem1Status,sem2Status,sem3Status,sem4Status,sem5Status,sem6Status,sem7Status,sem8Status,category,isComplete,termClose,isCancel,isPassAll,aadharNumber
 s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN22001@gppalanpur.in,Computer Engineering,CE,3,active,9988776655,"123 Cyber Lane, Palanpur",2003-08-15,2022-07-01,Male,2025,Morning,Passed,Passed,Pending,N/A,N/A,N/A,N/A,N/A,OPEN,false,false,false,false,123456789012
 ,GPPLN21005,PATEL BHAVNA MAHESH,BHAVNA,MAHESH,PATEL,bhavna.p@example.com,GPPLN21005@gppalanpur.in,Mechanical Engineering,ME,5,active,9988776650,"Plot 45, Industrial Area, Mehsana",2002-01-20,2021-06-15,Female,2024,Afternoon,Passed,Passed,Passed,Passed,Passed,N/A,N/A,N/A,SEBC,false,false,false,false,
-`; 
+`;
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -571,7 +638,6 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
   };
 
 
-  // GTU CSV import
   const handleImportGtuStudents = () => {
     if (!selectedGtuFile) {
       toast({ variant: "destructive", title: "GTU Import Error", description: "Please select a GTU CSV file to import." });
@@ -587,23 +653,24 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
         const text = e.target?.result as string;
         const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
         if (lines.length <= 1) throw new Error("GTU CSV file is empty or has only a header.");
-        
-        const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, '')); // normalize header
+
+        const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
         const gtuHeaders = ['s.no','map_number','br_code','name','email','mobile','gender','convoyear','sem1','sem2','sem3','sem4','sem5','sem6','sem7','sem8','category','iscomplete','termclose','iscancel','ispassall','aadhar','shift'];
-        const requiredGtuHeaders = ['map_number', 'name']; 
+        const requiredGtuHeaders = ['map_number', 'name'];
 
         if (!requiredGtuHeaders.every(rh => header.includes(rh))) {
             throw new Error(`GTU CSV header is missing required columns. Expected at least: ${requiredGtuHeaders.join(', ')}. Found: ${header.join(', ')}`);
         }
-        
+
         const hMap = Object.fromEntries(gtuHeaders.map(eh => [eh, header.indexOf(eh)]));
-        
+        let updatedStudentsList: Student[] = [];
+
         setStudents(prevStudents => {
             const currentStudentsMap = new Map(prevStudents.map(s => [s.enrollmentNumber, s]));
 
             for (let i = 1; i < lines.length; i++) {
               const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
-              
+
               const enrollmentNumber = data[hMap['map_number']];
               const gtuName = data[hMap['name']];
 
@@ -615,17 +682,17 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
 
               const { firstName, middleName, lastName } = parseGtuName(gtuName);
               const branchCode = data[hMap['br_code']];
-              const department = DEPARTMENT_OPTIONS.find(d => d.toLowerCase().includes((branchCode || "").toLowerCase().substring(0,2))) || "General"; 
-              
+              const department = DEPARTMENT_OPTIONS.find(d => d.toLowerCase().includes((branchCode || "").toLowerCase().substring(0,2))) || "General";
+
               let currentSemester = 1;
               for (let sem = 8; sem >= 1; sem--) {
                 if (mapSemesterCodeToStatus(data[hMap[`sem${sem}` as keyof typeof hMap]]) === 'Passed') {
-                    currentSemester = Math.min(sem + 1, 8); 
+                    currentSemester = Math.min(sem + 1, 8);
                     break;
                 }
               }
               if (data[hMap['ispassall']]?.toLowerCase() === 'true' || data[hMap['iscomplete']]?.toLowerCase() === 'true'){
-                currentSemester = 8; 
+                currentSemester = 8;
               }
 
 
@@ -639,10 +706,10 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                 instituteEmail: `${enrollmentNumber}@gppalanpur.in`,
                 department,
                 branchCode: branchCode || undefined,
-                currentSemester: currentSemester, 
+                currentSemester: currentSemester,
                 status: data[hMap['iscancel']]?.toLowerCase() === 'true' ? 'dropped' : (data[hMap['iscomplete']]?.toLowerCase() === 'true' || data[hMap['ispassall']]?.toLowerCase() === 'true' ? 'graduated' : 'active'),
                 contactNumber: data[hMap['mobile']] || undefined,
-                gender: data[hMap['gender']] as Student['gender'] || undefined,
+                gender: normalizeGender(data[hMap['gender']]),
                 convocationYear: data[hMap['convoyear']] ? parseInt(data[hMap['convoyear']], 10) : undefined,
                 sem1Status: mapSemesterCodeToStatus(data[hMap['sem1']]),
                 sem2Status: mapSemesterCodeToStatus(data[hMap['sem2']]),
@@ -658,7 +725,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                 isCancel: data[hMap['iscancel']]?.toLowerCase() === 'true',
                 isPassAll: data[hMap['ispassall']]?.toLowerCase() === 'true',
                 aadharNumber: data[hMap['aadhar']] || undefined,
-                shift: data[hMap['shift']] || undefined,
+                shift: normalizeShift(data[hMap['shift']]),
               };
 
               const existingStudent = currentStudentsMap.get(enrollmentNumber);
@@ -666,15 +733,27 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                 currentStudentsMap.set(enrollmentNumber, { ...existingStudent, ...studentData });
                 updatedStudentsCount++;
               } else {
-                currentStudentsMap.set(enrollmentNumber, { id: generateClientId(), ...studentData });
+                const newStudentForList = { id: generateClientId(), ...studentData };
+                currentStudentsMap.set(enrollmentNumber, newStudentForList);
                 newStudentsCount++;
-                console.log(`Creating user account for ${studentData.enrollmentNumber} (GTU Import): Email: ${studentData.instituteEmail}, Password: ${studentData.enrollmentNumber}`);
-                toast({ title: `User Account (Simulated)`, description: `Account for ${studentData.enrollmentNumber} would be created. Email: ${studentData.instituteEmail}, Pass: ${studentData.enrollmentNumber}`});
+
+                const systemUserName = newStudentForList.gtuName || `${newStudentForList.firstName || ''} ${newStudentForList.lastName || ''}`.trim();
+                const newUserForSystem: SystemUser = {
+                  id: `user_gtu_${newStudentForList.id}`, // Unique ID for user system
+                  name: systemUserName || newStudentForList.enrollmentNumber,
+                  email: newStudentForList.instituteEmail,
+                  roles: ['student'],
+                  status: 'active',
+                  department: newStudentForList.department,
+                };
+                addUserToLocalStorage(newUserForSystem);
+                console.log(`User account for ${newStudentForList.enrollmentNumber} (GTU Import) processed. Email: ${newStudentForList.instituteEmail}, Default Password: ${newStudentForList.enrollmentNumber}`);
               }
             }
-            return Array.from(currentStudentsMap.values());
+            updatedStudentsList = Array.from(currentStudentsMap.values());
+            return updatedStudentsList;
         });
-        
+
         toast({ title: "GTU Import Successful", description: `${newStudentsCount} students added, ${updatedStudentsCount} students updated. ${skippedCount} rows skipped.` });
 
       } catch (error: any) {
@@ -682,7 +761,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
         toast({ variant: "destructive", title: "GTU Import Failed", description: error.message || "Could not process the GTU CSV file." });
       } finally {
         setIsSubmitting(false);
-        setSelectedGtuFile(null); 
+        setSelectedGtuFile(null);
         const fileInput = document.getElementById('gtuCsvImportStudent') as HTMLInputElement;
         if (fileInput) fileInput.value = '';
       }
@@ -694,7 +773,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
 1,190010107001,CE,DOE JOHN MICHAEL,john.doe@example.com,9876500001,Male,2023,2,2,2,2,1,,,GENERAL,FALSE,FALSE,FALSE,FALSE,123456789012,Morning
 2,190010107002,ME,SMITH JANE ANNA,jane.smith@example.com,9876500002,Female,,2,2,1,,,,,,SC,FALSE,FALSE,FALSE,FALSE,,Afternoon
 3,200010107003,EE,PATEL RAJ KUMAR,raj.patel@example.com,9876500003,Male,2024,2,2,2,2,2,2,,ST,TRUE,TRUE,FALSE,TRUE,987654321098,Morning
-`; 
+`;
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -713,13 +792,13 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
       setSortDirection('asc');
     }
   };
-  
+
   const filteredAndSortedStudents = useMemo(() => {
     let result = [...students];
 
     if (searchTerm) {
       const termLower = searchTerm.toLowerCase();
-      result = result.filter(student => 
+      result = result.filter(student =>
         (student.gtuName && student.gtuName.toLowerCase().includes(termLower)) ||
         (student.firstName && student.firstName.toLowerCase().includes(termLower)) ||
         (student.lastName && student.lastName.toLowerCase().includes(termLower)) ||
@@ -741,17 +820,17 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA: any = a[sortField];
-        let valB: any = b[sortField];
-        
+        let valA: any = a[sortField as keyof Student]; // Type assertion
+        let valB: any = b[sortField as keyof Student]; // Type assertion
+
         if (sortField === 'currentSemester' || sortField === 'convocationYear') {
-            valA = Number(valA) || 0; 
+            valA = Number(valA) || 0;
             valB = Number(valB) || 0;
         }
 
         if (valA === undefined || valA === null) return sortDirection === 'asc' ? 1 : -1;
         if (valB === undefined || valB === null) return sortDirection === 'asc' ? -1 : 1;
-        
+
         if (typeof valA === 'string' && typeof valB === 'string') {
           return sortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
         }
@@ -764,7 +843,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
     return result;
   }, [students, searchTerm, filterDepartment, filterSemester, filterStatus, sortField, sortDirection]);
 
-  if (isLoading) {
+  if (isLoading && !students.length) { // Show loader only on initial load if no students
     return <div className="flex justify-center items-center h-screen"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
   }
 
@@ -778,7 +857,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
     </TableHead>
   );
 
-  const semesterStatusGetters: { [key: number]: SemesterStatus } = {
+  const semesterStatusGetters: { [key: number]: SemesterStatus | undefined } = { // Allow undefined
     1: formSem1Status, 2: formSem2Status, 3: formSem3Status, 4: formSem4Status,
     5: formSem5Status, 6: formSem6Status, 7: formSem7Status, 8: formSem8Status,
   };
@@ -817,7 +896,6 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                   </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4 py-4 max-h-[75vh] overflow-y-auto pr-2 grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
-                  {/* Enrollment & Name */}
                   <div className="md:col-span-1">
                     <Label htmlFor="studentEnrollment">Enrollment Number *</Label>
                     <Input id="studentEnrollment" value={formEnrollment} onChange={(e) => setFormEnrollment(e.target.value)} placeholder="e.g., GPPLN20001" disabled={isSubmitting} required />
@@ -838,8 +916,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                     <Label htmlFor="studentLastName">Last Name</Label>
                     <Input id="studentLastName" value={formLastName} onChange={(e) => setFormLastName(e.target.value)} placeholder="e.g., Doe" disabled={isSubmitting} />
                   </div>
-                  
-                  {/* Email and Contact */}
+
                   <div className="md:col-span-2">
                     <Label htmlFor="studentPersonalEmail">Personal Email</Label>
                     <Input id="studentPersonalEmail" type="email" value={formPersonalEmail} onChange={(e) => setFormPersonalEmail(e.target.value)} placeholder="e.g., john.doe@example.com" disabled={isSubmitting} />
@@ -849,7 +926,6 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                     <Input id="studentContact" type="tel" value={formContact} onChange={(e) => setFormContact(e.target.value)} placeholder="e.g., 9876543210" disabled={isSubmitting} />
                   </div>
 
-                  {/* Department & Academics */}
                   <div className="md:col-span-1">
                     <Label htmlFor="studentDepartment">Department *</Label>
                     <Select value={formDepartment} onValueChange={(value) => setFormDepartment(value)} disabled={isSubmitting} required>
@@ -883,7 +959,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                   </div>
                    <div className="md:col-span-1">
                     <Label htmlFor="studentGender">Gender</Label>
-                     <Select value={formGender} onValueChange={(value) => setFormGender(value as Student['gender'])} disabled={isSubmitting}>
+                     <Select value={formGender || ""} onValueChange={(value) => setFormGender(value as Student['gender'] || undefined)} disabled={isSubmitting}>
                         <SelectTrigger id="studentGender"><SelectValue placeholder="Select Gender" /></SelectTrigger>
                         <SelectContent>
                             {GENDER_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
@@ -892,7 +968,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                   </div>
                   <div className="md:col-span-1">
                     <Label htmlFor="studentShift">Shift</Label>
-                     <Select value={formShift} onValueChange={(value) => setFormShift(value as Student['shift'])} disabled={isSubmitting}>
+                     <Select value={formShift || ""} onValueChange={(value) => setFormShift(value as Student['shift'] || undefined)} disabled={isSubmitting}>
                         <SelectTrigger id="studentShift"><SelectValue placeholder="Select Shift" /></SelectTrigger>
                         <SelectContent>
                             {SHIFT_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
@@ -901,7 +977,6 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                   </div>
 
 
-                  {/* Dates */}
                    <div className="md:col-span-1">
                     <Label htmlFor="studentDob">Date of Birth</Label>
                     <Popover>
@@ -943,21 +1018,19 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                     <Input id="studentConvocationYear" type="number" value={formConvocationYear || ''} onChange={(e) => setFormConvocationYear(e.target.value ? parseInt(e.target.value) : undefined)} placeholder="e.g., 2025" disabled={isSubmitting} />
                   </div>
 
-                  {/* Address */}
                   <div className="md:col-span-3">
                     <Label htmlFor="studentAddress">Address</Label>
                     <Textarea id="studentAddress" value={formAddress} onChange={(e) => setFormAddress(e.target.value)} placeholder="e.g., 123 Main St, City" disabled={isSubmitting} rows={2} />
                   </div>
 
-                  {/* Semester Statuses */}
                   <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-4 border p-3 rounded-md">
                     <h4 className="md:col-span-full text-sm font-medium mb-1">Semester Statuses</h4>
                     {SEMESTER_OPTIONS.map(semNum => (
                         <div key={`sem-${semNum}-status-form`}>
                             <Label htmlFor={`sem${semNum}StatusForm`}>Sem {semNum}</Label>
-                            <Select 
-                                value={semesterStatusGetters[semNum]} 
-                                onValueChange={(val) => semesterStatusSetters[semNum](val as SemesterStatus)} 
+                            <Select
+                                value={semesterStatusGetters[semNum] || "N/A"}
+                                onValueChange={(val) => semesterStatusSetters[semNum](val as SemesterStatus)}
                                 disabled={isSubmitting}
                             >
                                 <SelectTrigger id={`sem${semNum}StatusForm`}><SelectValue placeholder="Status" /></SelectTrigger>
@@ -968,7 +1041,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                         </div>
                       ))}
                   </div>
-                  
+
                   <DialogFooter className="md:col-span-3 mt-4">
                     <DialogClose asChild>
                       <Button type="button" variant="outline" disabled={isSubmitting}>Cancel</Button>
@@ -987,7 +1060,6 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
           </div>
         </CardHeader>
         <CardContent>
-          {/* Standard CSV Import */}
           <div className="mb-6 p-4 border rounded-lg space-y-4">
             <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Students (Standard Format)</h3>
             <div className="flex flex-col sm:flex-row gap-2 items-center">
@@ -1007,7 +1079,6 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
             </div>
           </div>
 
-           {/* GTU CSV Import */}
           <div className="mb-6 p-4 border rounded-lg space-y-4">
             <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-accent"/>Import GTU Student Data</h3>
             <div className="flex flex-col sm:flex-row gap-2 items-center">
@@ -1032,9 +1103,9 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
             <div>
               <Label htmlFor="searchStudent">Search Students</Label>
               <div className="relative">
-                 <Input 
-                    id="searchStudent" 
-                    placeholder="Name, email, enrollment..." 
+                 <Input
+                    id="searchStudent"
+                    placeholder="Name, email, enrollment..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pr-8"
@@ -1104,10 +1175,10 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                   <TableCell className="text-center">{student.currentSemester}</TableCell>
                   <TableCell>
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                        student.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
-                        : student.status === 'graduated' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' 
-                        : student.status === 'dropped' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' 
-                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' 
+                        student.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                        : student.status === 'graduated' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+                        : student.status === 'dropped' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
                     }`}>
                       {student.status.charAt(0).toUpperCase() + student.status.slice(1)}
                     </span>
@@ -1148,10 +1219,10 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                       <Edit className="h-4 w-4" />
                       <span className="sr-only">Edit Student</span>
                     </Button>
-                    <Button 
-                        variant="destructive" 
-                        size="icon" 
-                        onClick={() => handleDelete(student.id)} 
+                    <Button
+                        variant="destructive"
+                        size="icon"
+                        onClick={() => handleDelete(student.id)}
                         disabled={isSubmitting}
                     >
                       <Trash2 className="h-4 w-4" />
