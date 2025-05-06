@@ -68,7 +68,7 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${GeistSans.variable} antialiased`}>
+      <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning>
         <SidebarProvider>
           <Sidebar>
             <SidebarHeader className="p-4 border-b border-sidebar-border">
