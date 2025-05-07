@@ -216,7 +216,7 @@ export interface Student {
 
 export type FacultyStatus = 'active' | 'inactive' | 'retired' | 'resigned' | 'on_leave';
 export type JobType = 'Regular' | 'Adhoc' | 'Contractual' | 'Visiting' | 'Other';
-// Gender type already defined for Student, can be reused
+export type Gender = 'Male' | 'Female' | 'Other'; // Re-defined Gender for consistency
 
 export interface Faculty {
   id: string;
@@ -269,13 +269,9 @@ export interface Committee {
   description?: string;
   purpose: string;
   instituteId: string; 
-  formationDate: string; // ISO string
-  dissolutionDate?: string; // ISO string
+  formationDate: string; // ISO string YYYY-MM-DD
+  dissolutionDate?: string; // ISO string YYYY-MM-DD
   status: CommitteeStatus;
-  // For simplicity, members might be a list of user IDs or more detailed CommitteeMember objects later
-  // memberIds?: string[]; // User IDs of members
-  // chairpersonId?: string; // User ID of chairperson
-  // secretaryId?: string; // User ID of secretary
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
@@ -285,8 +281,8 @@ export interface CommitteeMember {
   committeeId: string;
   userId: string; // Link to User
   role: CommitteeMemberRole;
-  assignmentDate: string; // ISO string
-  endDate?: string; // ISO string
+  assignmentDate: string; // ISO string YYYY-MM-DD
+  endDate?: string; // ISO string YYYY-MM-DD
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
@@ -294,3 +290,4 @@ export interface CommitteeMember {
 
 // Timestamp placeholder type
 export type Timestamp = string; // For ISO date strings, or use Firebase's Timestamp type if integrating
+
