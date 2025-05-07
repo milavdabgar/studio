@@ -1,17 +1,19 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Role } from '@/types/entities';
-import { allPermissions } from '@/lib/api/roles'; // Import allPermissions
+import { allPermissions } from '@/lib/api/roles'; 
 
-// In-memory store for roles (replace with actual DB interaction)
-let rolesStore: Role[] = (global as any).roles || [
-  { id: "1", name: "Admin", description: "Full access to all system features.", permissions: ["manage_users", "manage_roles", "manage_settings", "manage_institutes", "manage_buildings", "manage_rooms", "manage_departments", "manage_programs", "manage_courses"] },
-  { id: "2", name: "Student", description: "Access to student-specific features.", permissions: ["view_courses", "submit_assignments"] },
-  { id: "3", name: "Faculty", description: "Access to faculty-specific features.", permissions: ["manage_courses", "grade_assignments", "evaluate_projects"] },
-  { id: "4", name: "HOD", description: "Head of Department access.", permissions: ["manage_faculty", "view_department_reports", "manage_courses", "evaluate_projects"] },
-  { id: "5", name: "Jury", description: "Project fair jury access.", permissions: ["evaluate_projects"] },
-];
-(global as any).roles = rolesStore;
+declare global {
+  var __API_ROLES_STORE__: Role[] | undefined;
+}
+// Ensure rolesStore is initialized from global or with defaults
+if (!global.__API_ROLES_STORE__) {
+  global.__API_ROLES_STORE__ = [
+    { id: "1", name: "Admin", code: "admin", description: "Full access to all system features.", permissions: allPermissions, isSystemRole: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+    { id: "2", name: "Student", code: "student", description: "Access to student-specific features.", permissions: ["view_courses", "submit_assignments"], isSystemRole: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  ];
+}
+let rolesStore: Role[] = global.__API_ROLES_STORE__;
 
 interface RouteParams {
   params: {
@@ -31,7 +33,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
   try {
-    const roleData = await request.json() as Partial<Omit<Role, 'id'>>;
+    const roleData = await request.json() as Partial<Omit<Role, 'id' | 'createdAt' | 'updatedAt'>>;
     const roleIndex = rolesStore.findIndex(r => r.id === id);
 
     if (roleIndex === -1) {
@@ -39,24 +41,46 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
 
     const existingRole = rolesStore[roleIndex];
-    if (existingRole.name.toLowerCase() === 'admin' && roleData.name && roleData.name.toLowerCase() !== 'admin') {
-        return NextResponse.json({ message: 'Cannot change the name of the Admin role.' }, { status: 400 });
+    if (existingRole.isSystemRole && roleData.name && roleData.name.toLowerCase() !== existingRole.name.toLowerCase()) {
+        return NextResponse.json({ message: `Cannot change the name of the system role '${existingRole.name}'.` }, { status: 400 });
+    }
+    if (existingRole.isSystemRole && roleData.code && roleData.code.toLowerCase() !== existingRole.code.toLowerCase()) {
+        return NextResponse.json({ message: `Cannot change the code of the system role '${existingRole.name}'.` }, { status: 400 });
     }
 
-    if (roleData.name === '') {
+    if (roleData.name !== undefined && !roleData.name.trim()) {
         return NextResponse.json({ message: 'Role Name cannot be empty.' }, { status: 400 });
     }
+    if (roleData.code !== undefined && !roleData.code.trim()) {
+        return NextResponse.json({ message: 'Role Code cannot be empty.' }, { status: 400 });
+    }
+    if (roleData.code && roleData.code.trim().toLowerCase() !== existingRole.code.toLowerCase() && rolesStore.some(r => r.id !== id && r.code.toLowerCase() === roleData.code!.trim().toLowerCase())) {
+      return NextResponse.json({ message: `Role with code '${roleData.code.trim()}' already exists.` }, { status: 409 });
+    }
+    if (roleData.name && roleData.name.trim().toLowerCase() !== existingRole.name.toLowerCase() && rolesStore.some(r => r.id !== id && r.name.toLowerCase() === roleData.name!.trim().toLowerCase())) {
+        return NextResponse.json({ message: `Role with name '${roleData.name.trim()}' already exists.` }, { status: 409 });
+    }
+
+
     if(roleData.permissions){
         roleData.permissions = roleData.permissions.filter(p => allPermissions.includes(p));
     }
 
+    const updatedRole = { 
+      ...existingRole, 
+      ...roleData,
+      name: roleData.name ? roleData.name.trim() : existingRole.name,
+      code: roleData.code ? roleData.code.trim().toLowerCase() : existingRole.code,
+      description: roleData.description !== undefined ? roleData.description.trim() : existingRole.description,
+      updatedAt: new Date().toISOString()
+    };
 
-    rolesStore[roleIndex] = { ...existingRole, ...roleData };
-    (global as any).roles = rolesStore; 
-    return NextResponse.json(rolesStore[roleIndex]);
+    rolesStore[roleIndex] = updatedRole;
+    global.__API_ROLES_STORE__ = rolesStore; 
+    return NextResponse.json(updatedRole);
   } catch (error) {
     console.error(`Error updating role ${id}:`, error);
-    return NextResponse.json({ message: `Error updating role ${id}` }, { status: 500 });
+    return NextResponse.json({ message: `Error updating role ${id}`, error: (error as Error).message }, { status: 500 });
   }
 }
 
@@ -68,12 +92,18 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Role not found' }, { status: 404 });
   }
   
-  if (rolesStore[roleIndex].name.toLowerCase() === 'admin') {
-      return NextResponse.json({ message: 'Cannot delete the Admin role.' }, { status: 403 });
+  const roleToDelete = rolesStore[roleIndex];
+  if (roleToDelete.isSystemRole) {
+      return NextResponse.json({ message: `Cannot delete the system role '${roleToDelete.name}'.` }, { status: 403 });
+  }
+  if (roleToDelete.isCommitteeRole) {
+      // Optionally, add logic here to prevent deletion if users are assigned, or unassign first.
+      // For now, we'll allow deletion, but this could be refined.
+      // Also, consider if deleting a committee should trigger role deletion.
   }
 
+
   rolesStore.splice(roleIndex, 1);
-  (global as any).roles = rolesStore;
+  global.__API_ROLES_STORE__ = rolesStore;
   return NextResponse.json({ message: 'Role deleted successfully' }, { status: 200 });
 }
-

@@ -14,26 +14,9 @@ import React, { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-
-
-type UserRole = 
-  | 'admin' 
-  | 'student' 
-  | 'faculty' 
-  | 'hod' 
-  | 'jury' 
-  | 'unknown' 
-  | 'super_admin' 
-  | 'dte_admin' 
-  | 'gtu_admin' 
-  | 'institute_admin' 
-  | 'department_admin' 
-  | 'committee_admin'
-  | 'committee_convener'
-  | 'committee_co_convener'
-  | 'committee_member'
-  | 'lab_assistant' 
-  | 'clerical_staff';
+import type { UserRole as UserRoleType, Role } from '@/types/entities'; // Use UserRoleType to avoid naming conflict
+import { roleService } from '@/lib/api/roles';
+import { useToast } from '@/hooks/use-toast';
 
 
 interface User {
@@ -41,8 +24,8 @@ interface User {
   email?: string;
   avatarUrl?: string;
   dataAiHint?: string;
-  activeRole: UserRole;
-  availableRoles: UserRole[];
+  activeRole: UserRoleType;
+  availableRoles: UserRoleType[];
 }
 
 const DEFAULT_USER: User = {
@@ -53,28 +36,13 @@ const DEFAULT_USER: User = {
   dataAiHint: 'user avatar'
 };
 
-const USER_ROLE_OPTIONS_DISPLAY: { value: UserRole; label: string }[] = [
-  { value: "admin", label: "Admin" },
-  { value: "student", label: "Student" },
-  { value: "faculty", label: "Faculty" },
-  { value: "hod", label: "HOD" },
-  { value: "jury", label: "Jury" },
-  { value: "committee_convener", label: "Committee Convener"},
-  { value: "committee_co_convener", label: "Committee Co-Convener"},
-  { value: "committee_member", label: "Committee Member"},
-  { value: "super_admin", label: "Super Admin" },
-  { value: "dte_admin", label: "DTE Admin" },
-  { value: "gtu_admin", label: "GTU Admin" },
-  { value: "institute_admin", label: "Institute Admin" },
-  { value: "department_admin", label: "Department Admin" },
-  { value: "committee_admin", label: "Committee Admin" },
-  { value: "lab_assistant", label: "Lab Assistant" },
-  { value: "clerical_staff", label: "Clerical Staff" },
+// This will be dynamically populated by API call later
+let USER_ROLE_OPTIONS_DISPLAY: { value: UserRoleType; label: string }[] = [
   { value: "unknown", label: "Unknown" },
 ];
 
 
-const baseNavItems: Record<UserRole, Array<{ href: string; icon: React.ElementType; label: string; id: string }>> = {
+const baseNavItems: Record<UserRoleType, Array<{ href: string; icon: React.ElementType; label: string; id: string }>> = {
   admin: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard' },
     { href: '/admin/users', icon: UsersIconLucide, label: 'User Management', id: 'admin-users' },
@@ -124,17 +92,17 @@ const baseNavItems: Record<UserRole, Array<{ href: string; icon: React.ElementTy
   ],
   committee_convener: [ 
     { href: '/dashboard', icon: Home, label: 'Convener Dashboard', id: 'convener-dashboard' },
-    { href: '/committee/my-committee', icon: CommitteeIcon, label: 'My Committee', id: 'convener-my-committee'},
+    { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'convener-my-committee'}, // Generic committee dashboard
     { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'convener-meetings'},
   ],
   committee_co_convener: [
     { href: '/dashboard', icon: Home, label: 'Co-Convener Dashboard', id: 'co-convener-dashboard' },
-    { href: '/committee/my-committee', icon: CommitteeIcon, label: 'My Committee', id: 'co-convener-my-committee'},
+    { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'co-convener-my-committee'},
     { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'co-convener-meetings'},
   ],
   committee_member: [
     { href: '/dashboard', icon: Home, label: 'Member Dashboard', id: 'member-dashboard' },
-    { href: '/committee/my-committee', icon: CommitteeIcon, label: 'My Committee', id: 'member-my-committee'},
+    { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'member-my-committee'},
   ],
   super_admin: [{ href: '/dashboard', icon: Home, label: 'Super Admin Dashboard', id: 'super-admin-dashboard' }],
   dte_admin: [{ href: '/dashboard', icon: Home, label: 'DTE Dashboard', id: 'dte-admin-dashboard' }],
@@ -147,7 +115,7 @@ const baseNavItems: Record<UserRole, Array<{ href: string; icon: React.ElementTy
   unknown: [], 
 };
 
-const getNavItemsForRole = (role: UserRole): Array<{ href: string; icon: React.ElementType; label: string; id: string }> => {
+const getNavItemsForRole = (role: UserRoleType): Array<{ href: string; icon: React.ElementType; label: string; id: string }> => {
   const items = baseNavItems[role] || baseNavItems['unknown']; 
   items.sort((a, b) => {
     if (a.label.includes('Dashboard')) return -1;
@@ -174,8 +142,8 @@ function getCookie(name: string): string | undefined {
 interface ParsedUserCookie {
   email: string;
   name: string;
-  availableRoles: UserRole[];
-  activeRole: UserRole;
+  availableRoles: UserRoleType[];
+  activeRole: UserRoleType;
 }
 
 
@@ -185,9 +153,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const [currentUser, setCurrentUser] = useState<User>(DEFAULT_USER);
+  const [allSystemRoles, setAllSystemRoles] = useState<Role[]>([]);
   const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const { toast } = useToast();
 
   const parseUserCookie = (): ParsedUserCookie | null => {
     const authUserCookie = getCookie('auth_user');
@@ -224,23 +194,47 @@ export default function RootLayout({
          router.push('/login');
        }
     }
-  }, [pathname, router]); 
+    
+    const fetchRoles = async () => {
+        try {
+            const roles = await roleService.getAllRoles();
+            setAllSystemRoles(roles);
+            USER_ROLE_OPTIONS_DISPLAY = roles.map(r => ({ value: r.name, label: r.name })); // Store by name for display
+        } catch (error) {
+            toast({ variant: "destructive", title: "Error loading roles", description: (error as Error).message });
+        }
+    };
+    fetchRoles();
+
+  }, [pathname, router, toast]); 
 
 
-  const handleRoleChange = (newRole: UserRole) => {
+  const handleRoleChange = (newRoleName: UserRoleType) => {
     const parsedUser = parseUserCookie();
-    if (parsedUser && parsedUser.availableRoles.includes(newRole)) {
-        const updatedUserPayload = { ...parsedUser, activeRole: newRole };
+    // Find the role object from allSystemRoles to ensure it's a valid system role name
+    const roleToActivate = allSystemRoles.find(r => r.name === newRoleName);
+
+    if (parsedUser && roleToActivate && parsedUser.availableRoles.some(ar => allSystemRoles.find(sysR => sysR.name === ar)?.code === roleToActivate.code || ar === roleToActivate.name)) {
+        const updatedUserPayload = { ...parsedUser, activeRole: roleToActivate.name }; // Store active role by name
         const encodedUserPayload = encodeURIComponent(JSON.stringify(updatedUserPayload));
         if (typeof document !== 'undefined') {
           document.cookie = `auth_user=${encodedUserPayload};path=/;max-age=${60 * 60 * 24 * 7}`; // 7 days
         }
-        setCurrentUser(prev => ({...prev, activeRole: newRole}));
-        router.push('/dashboard'); 
+        setCurrentUser(prev => ({...prev, activeRole: roleToActivate.name}));
+        
+        // Redirect to a generic committee dashboard if a committee role is selected and exists
+        if(roleToActivate.isCommitteeRole){
+            router.push('/dashboard/committee');
+        } else {
+            router.push('/dashboard'); 
+        }
+    } else {
+        toast({ variant: "destructive", title: "Role Switch Failed", description: "Selected role is not available for your account or is invalid."})
     }
   };
-
-  const currentNavItems = getNavItemsForRole(currentUser.activeRole);
+  
+  const activeRoleObject = allSystemRoles.find(r => r.name === currentUser.activeRole);
+  const currentNavItems = getNavItemsForRole(activeRoleObject?.code as UserRoleType || currentUser.activeRole);
   const hideSidebar = ['/login', '/signup', '/'].includes(pathname);
 
 
@@ -297,7 +291,7 @@ export default function RootLayout({
                 {currentNavItems.map((item) => (
                   <SidebarMenuItem key={item.id}>
                     <Link href={item.href} passHref legacyBehavior>
-                      <SidebarMenuButton tooltip={item.label} isActive={pathname.startsWith(item.href) && (item.href !== '/dashboard' || pathname === '/dashboard')}>
+                      <SidebarMenuButton tooltip={item.label} isActive={pathname.startsWith(item.href) && (item.href !== '/dashboard' || pathname === '/dashboard' || (item.href.startsWith('/dashboard/') && pathname.startsWith(item.href)) )}>
                         <item.icon />
                         <span>{item.label}</span>
                       </SidebarMenuButton>
@@ -317,11 +311,11 @@ export default function RootLayout({
                 <div>
                   <p className="font-semibold text-sm text-sidebar-foreground">{currentUser.name}</p>
                   <p className="text-xs text-sidebar-foreground/70 capitalize">
-                    Active: {currentUser.activeRole.charAt(0).toUpperCase() + currentUser.activeRole.slice(1)}
+                    Active: {activeRoleObject?.name || currentUser.activeRole}
                   </p>
                 </div>
               </div>
-              {currentUser.availableRoles.length > 1 && (
+              {currentUser.availableRoles.length > 1 && allSystemRoles.length > 0 && (
                 <div className="mb-4">
                   <Label htmlFor="role-switcher" className="text-xs text-sidebar-foreground/70 mb-1 block">Switch Role:</Label>
                   <Select value={currentUser.activeRole} onValueChange={handleRoleChange}>
@@ -329,13 +323,13 @@ export default function RootLayout({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-sidebar text-sidebar-foreground border-sidebar-border">
-                      {currentUser.availableRoles.map(role => {
-                        const roleDisplay = USER_ROLE_OPTIONS_DISPLAY.find(opt => opt.value === role);
-                        return (
-                        <SelectItem key={role} value={role} className="text-xs focus:bg-sidebar-primary focus:text-sidebar-primary-foreground">
-                          {roleDisplay ? roleDisplay.label : (role.charAt(0).toUpperCase() + role.slice(1))}
-                        </SelectItem>
-                        );
+                      {currentUser.availableRoles.map(roleNameOrCode => {
+                        const roleObj = allSystemRoles.find(sysR => sysR.name === roleNameOrCode || sysR.code === roleNameOrCode);
+                        return roleObj ? (
+                          <SelectItem key={roleObj.id} value={roleObj.name} className="text-xs focus:bg-sidebar-primary focus:text-sidebar-primary-foreground">
+                            {roleObj.name}
+                          </SelectItem>
+                        ) : null;
                       })}
                     </SelectContent>
                   </Select>
@@ -368,7 +362,7 @@ export default function RootLayout({
             <header className="sticky top-0 z-50 flex items-center justify-between h-16 px-4 border-b bg-background/80 backdrop-blur-sm">
               <SidebarTrigger />
               <div className="flex items-center gap-4">
-                <span className="font-semibold">Welcome, {currentUser.name}! (Role: {USER_ROLE_OPTIONS_DISPLAY.find(r => r.value === currentUser.activeRole)?.label || currentUser.activeRole})</span>
+                <span className="font-semibold">Welcome, {currentUser.name}! (Role: {activeRoleObject?.name || currentUser.activeRole})</span>
               </div>
             </header>
             <main className="flex-1 p-4 md:p-6 lg:p-8">

@@ -107,24 +107,8 @@ export interface Room {
   updatedAt?: Timestamp;
 }
 
-export type UserRole = 
-  | 'admin' 
-  | 'student' 
-  | 'faculty' 
-  | 'hod' 
-  | 'jury' 
-  | 'unknown' 
-  | 'super_admin' 
-  | 'dte_admin' 
-  | 'gtu_admin' 
-  | 'institute_admin' 
-  | 'department_admin' 
-  | 'committee_admin'
-  | 'committee_convener' // New role
-  | 'committee_co_convener' // New role
-  | 'committee_member' // New role
-  | 'lab_assistant' 
-  | 'clerical_staff';
+// UserRole is now a string to accommodate dynamic committee roles
+export type UserRole = string;
 
 export interface User {
   id: string;
@@ -162,6 +146,9 @@ export interface User {
   instituteEmail?: string; 
   password?: string; 
   fullName?: string; // GTU Format Name
+  firstName?: string;
+  middleName?: string;
+  lastName?: string;
 }
 
 // Renamed original User to SystemUser to avoid conflict with User from next-auth if used later
@@ -170,11 +157,13 @@ export type SystemUser = User;
 
 export interface Role {
   id: string;
-  name: string; 
+  name: string; // Display name, can be dynamic e.g., "CWAN Convener"
+  code: string; // Unique machine-readable identifier, e.g., "cwan_convener" or "admin"
   description: string;
   permissions: string[]; 
-  code?: string; // Should map to UserRole values if we want to enforce consistency
-  isSystemRole?: boolean; 
+  isSystemRole?: boolean; // For predefined essential roles like Admin, Student
+  isCommitteeRole?: boolean; // True if this role was auto-generated for a committee
+  committeeId?: string; // ID of the committee this role is associated with, if any
   createdAt?: string; 
   updatedAt?: string; 
 }
@@ -282,6 +271,7 @@ export type CommitteeMemberRole = 'convener' | 'co_convener' | 'member';
 export interface Committee {
   id: string;
   name: string;
+  code: string; // Added code for committee
   description?: string;
   purpose: string;
   instituteId: string; 
@@ -289,6 +279,8 @@ export interface Committee {
   dissolutionDate?: string; // ISO string YYYY-MM-DD
   status: CommitteeStatus;
   convenerId?: string; // User ID of the convener
+  // coConvenerIds?: string[]; // User IDs of co-conveners - simplify to single convener for now
+  // memberIds?: string[]; // User IDs of members - roles will handle this
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
@@ -297,7 +289,7 @@ export interface CommitteeMember {
   id: string;
   committeeId: string;
   userId: string; // Link to User
-  role: CommitteeMemberRole;
+  role: CommitteeMemberRole; // This is specific to their function within the committee instance
   assignmentDate: string; // ISO string YYYY-MM-DD
   endDate?: string; // ISO string YYYY-MM-DD
   createdAt?: Timestamp;

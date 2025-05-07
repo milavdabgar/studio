@@ -13,30 +13,10 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from "@/components/ui/switch";
 import { PlusCircle, Edit, Trash2, Users as UsersIcon, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Landmark } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { SystemUser, UserRole, Institute } from '@/types/entities';
+import type { SystemUser, UserRole, Institute, Role } from '@/types/entities'; // Import Role
 import { userService } from '@/lib/api/users';
 import { instituteService } from '@/lib/api/institutes';
-
-const USER_ROLE_OPTIONS: { value: UserRole; label: string }[] = [
-  { value: "admin", label: "Admin" },
-  { value: "student", label: "Student" },
-  { value: "faculty", label: "Faculty" },
-  { value: "hod", label: "HOD" },
-  { value: "jury", label: "Jury" },
-  { value: "committee_convener", label: "Committee Convener"},
-  { value: "committee_co_convener", label: "Committee Co-Convener"},
-  { value: "committee_member", label: "Committee Member"},
-  { value: "super_admin", label: "Super Admin"},
-  { value: "dte_admin", label: "DTE Admin"},
-  { value: "gtu_admin", label: "GTU Admin"},
-  { value: "institute_admin", label: "Institute Admin"},
-  { value: "department_admin", label: "Department Admin"},
-  { value: "committee_admin", label: "Committee Admin"},
-  { value: "lab_assistant", label: "Lab Assistant"},
-  { value: "clerical_staff", label: "Clerical Staff"},
-  { value: "unknown", label: "Unknown" },
-];
-
+import { roleService } from '@/lib/api/roles'; // Import roleService
 
 const STATUS_OPTIONS: { value: 'active' | 'inactive'; label: string }[] = [
   { value: "active", label: "Active" },
@@ -53,6 +33,7 @@ const NO_INSTITUTE_VALUE = "__NO_INSTITUTE__";
 export default function UserManagementPage() {
   const [users, setUsers] = useState<SystemUser[]>([]);
   const [institutes, setInstitutes] = useState<Institute[]>([]);
+  const [allSystemRoles, setAllSystemRoles] = useState<Role[]>([]); // Store all roles
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -63,7 +44,7 @@ export default function UserManagementPage() {
   const [formMiddleName, setFormMiddleName] = useState('');
   const [formLastName, setFormLastName] = useState('');
   const [formUserEmail, setFormUserEmail] = useState('');
-  const [formUserRoles, setFormUserRoles] = useState<UserRole[]>(['student']); 
+  const [formUserRoles, setFormUserRoles] = useState<UserRole[]>([]); 
   const [formUserStatus, setFormUserStatus] = useState<'active' | 'inactive'>('active');
   const [formUserPassword, setFormUserPassword] = useState('');
   const [formUserConfirmPassword, setFormUserConfirmPassword] = useState('');
@@ -87,30 +68,39 @@ export default function UserManagementPage() {
   const parseGtuNameToComponents = (gtuName: string | undefined): { firstName?: string, middleName?: string, lastName?: string } => {
     if (!gtuName) return {};
     const parts = gtuName.trim().split(/\s+/);
-    if (parts.length === 1) return { firstName: parts[0], lastName: "SURNAME_PLACEHOLDER" }; // Or however you handle single names
-    if (parts.length === 2) return { lastName: parts[0], firstName: parts[1] }; // Assuming SURNAME NAME
+    if (parts.length === 1) return { firstName: parts[0], lastName: "SURNAME_PLACEHOLDER" };
+    if (parts.length === 2) return { lastName: parts[0], firstName: parts[1] }; 
     return { lastName: parts[0], firstName: parts[1], middleName: parts.slice(2).join(' ') };
   };
 
 
-  const fetchUsersAndInstitutes = async () => {
+  const fetchInitialData = async () => {
     setIsLoading(true);
     try {
-      const [userData, instituteData] = await Promise.all([
+      const [userData, instituteData, rolesData] = await Promise.all([
         userService.getAllUsers(),
-        instituteService.getAllInstitutes()
+        instituteService.getAllInstitutes(),
+        roleService.getAllRoles() // Fetch all roles
       ]);
       setUsers(userData as SystemUser[]); 
       setInstitutes(instituteData);
+      setAllSystemRoles(rolesData); // Store fetched roles
+
+      // Set default role if formUserRoles is empty and roles are available
+      if (rolesData.length > 0 && formUserRoles.length === 0) {
+        const defaultRole = rolesData.find(r => r.code === 'student') || rolesData[0];
+        setFormUserRoles([defaultRole.name]); // Use role name for user's roles array
+      }
+
     } catch (error) {
-      console.error("Failed to load users or institutes", error);
+      console.error("Failed to load users, institutes, or roles", error);
       toast({ variant: "destructive", title: "Error", description: (error as Error).message || "Could not load data." });
     }
     setIsLoading(false);
   };
 
   useEffect(() => {
-    fetchUsersAndInstitutes();
+    fetchInitialData();
   }, []);
 
   const resetForm = () => {
@@ -119,7 +109,13 @@ export default function UserManagementPage() {
     setFormMiddleName('');
     setFormLastName('');
     setFormUserEmail('');
-    setFormUserRoles(['student']);
+    // Set default role if roles are available
+    if (allSystemRoles.length > 0) {
+        const defaultRole = allSystemRoles.find(r => r.code === 'student') || allSystemRoles[0];
+        setFormUserRoles([defaultRole.name]); // Use role name
+    } else {
+        setFormUserRoles([]);
+    }
     setFormUserStatus('active');
     setFormUserPassword('');
     setFormUserConfirmPassword('');
@@ -134,7 +130,7 @@ export default function UserManagementPage() {
     setFormMiddleName(user.middleName || '');
     setFormLastName(user.lastName || '');
     setFormUserEmail(user.email);
-    setFormUserRoles(user.roles || []);
+    setFormUserRoles(user.roles || []); // User roles are stored by name
     setFormUserStatus(user.isActive ? 'active' : 'inactive');
     setFormInstituteId(user.instituteId || undefined);
     setFormUserPassword('');
@@ -156,7 +152,7 @@ export default function UserManagementPage() {
     setIsSubmitting(true);
     try {
       await userService.deleteUser(userId);
-      await fetchUsersAndInstitutes();
+      await fetchInitialData();
       setSelectedUserIds(prev => prev.filter(id => id !== userId));
       toast({ title: "User Deleted", description: "The user has been successfully deleted." });
     } catch (error) {
@@ -165,12 +161,12 @@ export default function UserManagementPage() {
     setIsSubmitting(false);
   };
 
-  const handleRoleCheckboxChange = (roleValue: UserRole) => {
+  const handleRoleCheckboxChange = (roleName: UserRole) => { // Parameter is role name
     setFormUserRoles(prevRoles => {
-      if (prevRoles.includes(roleValue)) {
-        return prevRoles.filter(r => r !== roleValue);
+      if (prevRoles.includes(roleName)) {
+        return prevRoles.filter(r => r !== roleName);
       } else {
-        return [...prevRoles, roleValue];
+        return [...prevRoles, roleName];
       }
     });
   };
@@ -205,7 +201,7 @@ export default function UserManagementPage() {
       middleName: formMiddleName.trim() || undefined,
       lastName: formLastName.trim(),
       email: formUserEmail.trim(), 
-      roles: formUserRoles, 
+      roles: formUserRoles, // Send role names
       isActive: formUserStatus === 'active',
       instituteId: formInstituteId === NO_INSTITUTE_VALUE ? undefined : formInstituteId,
     };
@@ -218,10 +214,10 @@ export default function UserManagementPage() {
         await userService.updateUser(currentUser.id, userData);
         toast({ title: "User Updated", description: "The user has been successfully updated." });
       } else {
-        await userService.createUser(userData as any); // Cast needed due to Omit differences
+        await userService.createUser(userData as any); 
         toast({ title: "User Created", description: "The new user has been successfully created." });
       }
-      await fetchUsersAndInstitutes();
+      await fetchInitialData();
       setIsDialogOpen(false);
       resetForm();
     } catch (error) {
@@ -246,8 +242,8 @@ export default function UserManagementPage() {
     }
     setIsSubmitting(true);
     try {
-      const result = await userService.importUsers(selectedFile, institutes); 
-      await fetchUsersAndInstitutes();
+      const result = await userService.importUsers(selectedFile, institutes, allSystemRoles); 
+      await fetchInitialData();
       toast({ title: "Import Successful", description: `${result.newCount} users added, ${result.updatedCount} users updated. Skipped: ${result.skippedCount}` });
       if(result.errors && result.errors.length > 0){
           result.errors.slice(0,3).forEach((err:any) => {
@@ -256,7 +252,7 @@ export default function UserManagementPage() {
       }
     } catch (error: any) {
       console.error("Error processing CSV file for User Import:", error);
-      toast({ variant: "destructive", title: "Import Failed", description: error.message || error.data?.message || "Could not process the CSV file." });
+      toast({ variant: "destructive", title: "Import Failed", description: error.data?.message || error.message || "Could not process the CSV file." });
     } finally {
       setIsSubmitting(false);
       setSelectedFile(null); 
@@ -284,7 +280,7 @@ export default function UserManagementPage() {
           `"${(user.lastName || "").replace(/"/g, '""')}"`,
           `"${user.email.replace(/"/g, '""')}"`,
           `"${(user.instituteEmail || "").replace(/"/g, '""')}"`,
-          `"${user.roles.join(';')}"`, 
+          `"${user.roles.join(';')}"`, // Roles are stored as names
           user.isActive,
           user.instituteId || "",
           `"${(inst?.name || "").replace(/"/g, '""')}"`,
@@ -342,7 +338,7 @@ export default function UserManagementPage() {
       );
     }
     if (filterRole !== 'all') {
-      result = result.filter(user => user.roles.includes(filterRole));
+      result = result.filter(user => user.roles.includes(filterRole)); // Filter by role name
     }
     if (filterStatus !== 'all') {
       result = result.filter(user => (user.isActive ? 'active' : 'inactive') === filterStatus);
@@ -433,7 +429,7 @@ export default function UserManagementPage() {
         }
     }
     
-    await fetchUsersAndInstitutes();
+    await fetchInitialData();
     setSelectedUserIds([]);
     let description = `${deletedCount} user(s) have been successfully deleted.`;
     if(adminSkipped){
@@ -516,10 +512,10 @@ export default function UserManagementPage() {
 
                   <div className="md:col-span-2">
                     <Label htmlFor="userInstitute">Institute (Optional)</Label>
-                     <Select value={formInstituteId || NO_INSTITUTE_VALUE} onValueChange={(value) => setFormInstituteId(value === NO_INSTITUTE_VALUE ? undefined : value)} disabled={isSubmitting || institutes.length === 0}>
+                     <Select value={formInstituteId || NO_INSTITUTE_VALUE} onValueChange={(value) => setFormInstituteId(value === NO_INSTITUTE_VALUE ? undefined : value)} disabled={isSubmitting}>
                         <SelectTrigger id="userInstitute"><SelectValue placeholder="Select Institute (Optional)" /></SelectTrigger>
                         <SelectContent>
-                            <SelectItem value={NO_INSTITUTE_VALUE}>None</SelectItem>
+                            <SelectItem value={NO_INSTITUTE_VALUE}>None / Not Applicable</SelectItem>
                             {institutes.map(inst => <SelectItem key={inst.id} value={inst.id}>{inst.name} ({inst.code})</SelectItem>)}
                         </SelectContent>
                     </Select>
@@ -528,15 +524,15 @@ export default function UserManagementPage() {
                   <div className="md:col-span-2">
                     <Label>Roles *</Label>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-2 border rounded-md max-h-40 overflow-y-auto">
-                      {USER_ROLE_OPTIONS.filter(opt => opt.value !== 'unknown').map(opt => (
-                        <div key={opt.value} className="flex items-center space-x-2">
+                      {allSystemRoles.filter(role => !role.isSystemRole || ['admin', 'student', 'faculty', 'hod', 'jury', 'super_admin'].includes(role.code) || role.isCommitteeRole).map(role => ( // Show common system roles and committee roles
+                        <div key={role.id} className="flex items-center space-x-2">
                           <Checkbox
-                            id={`role-${opt.value}`}
-                            checked={formUserRoles.includes(opt.value)}
-                            onCheckedChange={() => handleRoleCheckboxChange(opt.value)}
+                            id={`role-${role.id}`}
+                            checked={formUserRoles.includes(role.name)} // Check against role name
+                            onCheckedChange={() => handleRoleCheckboxChange(role.name)} // Pass role name
                             disabled={isSubmitting}
                           />
-                          <Label htmlFor={`role-${opt.value}`} className="text-sm font-normal cursor-pointer">{opt.label}</Label>
+                          <Label htmlFor={`role-${role.id}`} className="text-sm font-normal cursor-pointer">{role.name}</Label>
                         </div>
                       ))}
                     </div>
@@ -611,7 +607,7 @@ export default function UserManagementPage() {
                 <SelectTrigger id="filterRole"><SelectValue placeholder="All Roles" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Roles</SelectItem>
-                  {USER_ROLE_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                  {allSystemRoles.map(opt => <SelectItem key={opt.id} value={opt.name}>{opt.name}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -627,7 +623,7 @@ export default function UserManagementPage() {
             </div>
              <div>
               <Label htmlFor="filterUserInstitute">Filter by Institute</Label>
-              <Select value={filterInstitute} onValueChange={(value) => setFilterInstitute(value as string | 'all')} disabled={institutes.length === 0}>
+              <Select value={filterInstitute} onValueChange={(value) => setFilterInstitute(value as string | 'all')} >
                 <SelectTrigger id="filterUserInstitute"><SelectValue placeholder="All Institutes" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Institutes</SelectItem>
@@ -682,7 +678,7 @@ export default function UserManagementPage() {
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.instituteEmail || '-'}</TableCell>
                   <TableCell className="max-w-xs truncate">
-                    {user.roles.map(r => USER_ROLE_OPTIONS.find(opt => opt.value ===r)?.label || r).join(', ')}
+                    {user.roles.join(', ')}
                   </TableCell>
                   <TableCell>{institutes.find(i => i.id === user.instituteId)?.code || '-'}</TableCell>
                   <TableCell>

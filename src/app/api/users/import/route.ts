@@ -1,8 +1,8 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { User, UserRole, Institute } from '@/types/entities'; 
+import type { User, UserRole, Institute, Role } from '@/types/entities'; 
 import { parse, type ParseError } from 'papaparse';
-// Removed instituteService import as clientInstitutes are passed in
+
 
 declare global {
   var __API_USERS_STORE__: User[] | undefined;
@@ -16,7 +16,7 @@ if (!global.__API_USERS_STORE__) {
       email: "admin@example.com", 
       instituteEmail: "admin@gppalanpur.in",
       password: "Admin@123", 
-      roles: ["admin", "super_admin"], 
+      roles: ["Admin", "Super Admin"], // Store role names
       isActive: true, 
       instituteId: "inst1",
       authProviders: ['password'],
@@ -30,7 +30,6 @@ if (!global.__API_USERS_STORE__) {
 const usersStore: User[] = global.__API_USERS_STORE__;
 
 const generateIdForImport = (): string => `user_imp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-const USER_ROLE_OPTIONS_VALUES: UserRole[] = ["admin", "student", "faculty", "hod", "jury", "unknown", "super_admin", "dte_admin", "gtu_admin", "institute_admin", "department_admin", "committee_admin", "committee_convener", "committee_co_convener", "committee_member", "lab_assistant", "clerical_staff"];
 
 
 const parseGtuNameToComponents = (gtuName: string | undefined): { firstName?: string, middleName?: string, lastName?: string } => {
@@ -47,13 +46,14 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const institutesJson = formData.get('institutes') as string | null;
+    const allSystemRolesJson = formData.get('allSystemRoles') as string | null;
 
 
     if (!file) {
       return NextResponse.json({ message: 'No file uploaded.' }, { status: 400 });
     }
-    // Institutes data is now optional for import, will use default domain if not provided
     const clientInstitutes: Institute[] = institutesJson ? JSON.parse(institutesJson) : [];
+    const clientSystemRoles: Role[] = allSystemRolesJson ? JSON.parse(allSystemRolesJson) : [];
 
 
     const fileText = await file.text();
@@ -89,7 +89,19 @@ export async function POST(request: NextRequest) {
 
       const personalEmail = row.email?.toString().trim().toLowerCase();
       const rolesString = row.roles?.toString().trim().replace(/^"|"$/g, '');
-      const roles = rolesString ? rolesString.split(';').map((r: string) => r.trim().toLowerCase() as UserRole).filter(r => USER_ROLE_OPTIONS_VALUES.includes(r)) : [];
+      // Validate role names against fetched system roles
+      const rolesInputArray = rolesString ? rolesString.split(';').map((r: string) => r.trim()) : [];
+      const validRoles: UserRole[] = [];
+      for (const roleNameOrCode of rolesInputArray) {
+          const foundRole = clientSystemRoles.find(sr => sr.name.toLowerCase() === roleNameOrCode.toLowerCase() || sr.code.toLowerCase() === roleNameOrCode.toLowerCase());
+          if (foundRole) {
+              validRoles.push(foundRole.name); // Store the canonical role name
+          } else {
+              console.warn(`Role '${roleNameOrCode}' not found in system roles for row ${rowIndex}. Skipping this role for user.`);
+          }
+      }
+
+
       const isActiveRaw = row.isactive?.toString().trim().toLowerCase();
       const isActive = isActiveRaw === 'true' || isActiveRaw === '1' || isActiveRaw === 'active';
       
@@ -104,7 +116,7 @@ export async function POST(request: NextRequest) {
       if (instituteId) {
         currentInstitute = clientInstitutes.find(inst => inst.id === instituteId);
         if (!currentInstitute) {
-            importErrors.push({ row: rowIndex, message: `Provided instituteId '${instituteId}' does not exist. Cannot determine institute domain.`, data: row });
+            importErrors.push({ row: rowIndex, message: `Provided instituteId '${instituteId}' does not exist.`, data: row });
             skippedCount++; continue;
         }
       } else if (row.institutename || row.institutecode) {
@@ -113,14 +125,12 @@ export async function POST(request: NextRequest) {
           currentInstitute = clientInstitutes.find(inst => (instName && inst.name.toLowerCase() === instName.toLowerCase()) || (instCode && inst.code.toUpperCase() === instCode));
           if (currentInstitute) {
             instituteId = currentInstitute.id;
-          } else {
-            // Institute not found by name/code, but instituteId is optional, proceed with default domain
           }
       }
 
 
-      if (!personalEmail || roles.length === 0 ) {
-        importErrors.push({ row: rowIndex, message: "Missing required fields: email, roles.", data: row });
+      if (!personalEmail || validRoles.length === 0 ) {
+        importErrors.push({ row: rowIndex, message: "Missing required fields: email, or no valid roles found.", data: row });
         skippedCount++; continue;
       }
       if (!displayNameFromCSV && !fullNameFromCSV && (!firstNameFromCSV || !lastNameFromCSV)) {
@@ -135,7 +145,7 @@ export async function POST(request: NextRequest) {
       const displayName = displayNameFromCSV || `${firstName || ''} ${lastName || ''}`.trim() || personalEmail;
 
 
-      let instituteDomain = 'gpp.ac.in'; // Default domain
+      let instituteDomain = 'gpp.ac.in'; 
       if (currentInstitute && currentInstitute.domain) {
           instituteDomain = currentInstitute.domain;
       } else if (currentInstitute) {
@@ -149,13 +159,12 @@ export async function POST(request: NextRequest) {
       let baseInstituteEmail = `${firstNameForEmail}.${lastNameForEmail}`;
       if (!firstNameForEmail || !lastNameForEmail) { 
           baseInstituteEmail = personalEmail.split('@')[0].replace(/[^a-z0-9]/g, '');
-          if (!baseInstituteEmail) baseInstituteEmail = `user${generateIdForImport().substring(9,14)}`; // Shorter random string
+          if (!baseInstituteEmail) baseInstituteEmail = `user${generateIdForImport().substring(9,14)}`;
       }
       
       let tempInstituteEmail = `${baseInstituteEmail}@${instituteDomain}`;
       let emailSuffix = 1;
       const originalBase = baseInstituteEmail;
-
 
       const userData: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'authProviders' | 'isEmailVerified' | 'preferences'> & { password?: string } = {
         displayName,
@@ -166,7 +175,8 @@ export async function POST(request: NextRequest) {
         instituteEmail: tempInstituteEmail, 
         photoURL: row.photourl?.toString().trim() || undefined,
         phoneNumber: row.phonenumber?.toString().trim() || undefined,
-        roles, isActive, instituteId: instituteId || undefined,
+        roles: validRoles, // Use validated role names
+        isActive, instituteId: instituteId || undefined,
         preferences: { theme: 'system', language: 'en' }
       };
 
@@ -184,7 +194,6 @@ export async function POST(request: NextRequest) {
         existingUserIndex = usersStore.findIndex(u => u.email === personalEmail);
       }
 
-      // Check and resolve institute email conflict before assigning to userData
       const isEmailConflict = (emailToCheck: string) => usersStore.some(u => 
           (existingUserIndex !== -1 ? u.id !== usersStore[existingUserIndex].id : true) && 
           u.instituteEmail?.toLowerCase() === emailToCheck.toLowerCase()
@@ -217,9 +226,7 @@ export async function POST(request: NextRequest) {
              skippedCount++; continue;
         }
         if (!userData.password) { 
-            // Generate a default password if not provided for new users
             userData.password = `${(firstName || 'user').toLowerCase()}${new Date().getFullYear()}!`;
-            console.warn(`Password not provided for new user ${displayName} (${personalEmail}). Generated default: ${userData.password}`);
         }
         const newUser: User = {
           id: idFromCsv || generateIdForImport(), 
@@ -235,7 +242,7 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    (global as any).__API_USERS_STORE__ = usersStore;
+    global.__API_USERS_STORE__ = usersStore;
     
     if (importErrors.length > 0) {
         return NextResponse.json({ 
