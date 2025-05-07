@@ -13,39 +13,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { PlusCircle, Edit, Trash2, BookCopy, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
-
-interface Program {
-  id: string;
-  name: string; // e.g., Diploma in Engineering, Bachelor of Engineering
-  code: string; // e.g., DIP, BE, ME, CERT
-  description?: string;
-  departmentId: string; // ID of the department offering this program
-  durationYears?: number; // e.g., 3 years for Diploma, 4 for BE
-  totalSemesters?: number; // e.g., 6 for Diploma, 8 for BE
-  status: 'active' | 'inactive';
-}
-
-interface Department {
-  id: string;
-  name: string;
-  code: string;
-}
-
-const initialPrograms: Program[] = [
-  { id: "prog1", name: "Diploma in Computer Engineering", code: "DCE", departmentId: "dept1", durationYears: 3, totalSemesters: 6, status: "active", description: "Focuses on foundational computer engineering principles." },
-  { id: "prog2", name: "Diploma in Mechanical Engineering", code: "DME", departmentId: "dept2", durationYears: 3, totalSemesters: 6, status: "active", description: "Covers mechanics, thermodynamics, and materials." },
-  { id: "prog3", name: "Certificate in CAD/CAM", code: "CCC", departmentId: "dept2", durationYears: 1, totalSemesters: 2, status: "inactive", description: "Short-term course on CAD/CAM software." },
-];
-
-const LOCAL_STORAGE_KEY_PROGRAMS = 'managedProgramsPMP';
-const LOCAL_STORAGE_KEY_DEPARTMENTS = 'managedDepartmentsPMP';
+import type { Program, Department } from '@/types/entities';
+import { programService } from '@/lib/api/programs';
+import { departmentService } from '@/lib/api/departments';
 
 type SortField = keyof Program | 'none';
 type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
-
-const generateClientId = (): string => `prog_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export default function ProgramManagementPage() {
   const [programs, setPrograms] = useState<Program[]>([]);
@@ -77,45 +52,28 @@ export default function ProgramManagementPage() {
 
   const { toast } = useToast();
 
-  useEffect(() => {
+  const fetchProgramsAndDepartments = async () => {
     setIsLoading(true);
     try {
-      const storedPrograms = localStorage.getItem(LOCAL_STORAGE_KEY_PROGRAMS);
-      if (storedPrograms) {
-        setPrograms(JSON.parse(storedPrograms));
-      } else {
-        setPrograms(initialPrograms); 
+      const [progData, deptData] = await Promise.all([
+        programService.getAllPrograms(),
+        departmentService.getAllDepartments()
+      ]);
+      setPrograms(progData);
+      setDepartments(deptData);
+      if (deptData.length > 0 && !formDepartmentId) {
+        setFormDepartmentId(deptData[0].id);
       }
-
-      const storedDepartments = localStorage.getItem(LOCAL_STORAGE_KEY_DEPARTMENTS);
-      if (storedDepartments) {
-        setDepartments(JSON.parse(storedDepartments));
-      } else {
-        // Fallback or error if no departments are found, as they are crucial for programs
-        toast({ variant: "destructive", title: "Data Error", description: "Departments data not found. Please manage departments first." });
-      }
-
     } catch (error) {
-      console.error("Failed to load data from localStorage", error);
-      setPrograms(initialPrograms);
+      console.error("Failed to load data", error);
+      toast({ variant: "destructive", title: "Error", description: "Could not load programs or departments data." });
     }
     setIsLoading(false);
-  }, [toast]);
+  };
 
   useEffect(() => {
-    if(!isLoading) { 
-        try {
-            localStorage.setItem(LOCAL_STORAGE_KEY_PROGRAMS, JSON.stringify(programs));
-        } catch (error) {
-            console.error("Failed to save programs to localStorage", error);
-            toast({
-                variant: "destructive",
-                title: "Storage Error",
-                description: "Could not save program data locally. Changes might be lost.",
-            });
-        }
-    }
-  }, [programs, isLoading, toast]);
+    fetchProgramsAndDepartments();
+  }, []);
 
   const resetForm = () => {
     setFormProgramName('');
@@ -149,17 +107,20 @@ export default function ProgramManagementPage() {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (programId: string) => {
+  const handleDelete = async (programId: string) => {
     setIsSubmitting(true);
-    setTimeout(() => { 
-      setPrograms(prevProgs => prevProgs.filter(prog => prog.id !== programId));
+    try {
+      await programService.deleteProgram(programId);
+      await fetchProgramsAndDepartments();
       setSelectedProgramIds(prev => prev.filter(id => id !== programId));
       toast({ title: "Program Deleted", description: "The program has been successfully deleted." });
-      setIsSubmitting(false);
-    }, 500);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message || "Could not delete program." });
+    }
+    setIsSubmitting(false);
   };
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!formProgramName.trim() || !formProgramCode.trim() || !formDepartmentId) {
       toast({ variant: "destructive", title: "Validation Error", description: "Program Name, Code, and Department are required."});
@@ -173,32 +134,32 @@ export default function ProgramManagementPage() {
 
     setIsSubmitting(true);
     
-    setTimeout(() => { 
-      const programData: Omit<Program, 'id'> = { 
-        name: formProgramName.trim(), 
-        code: formProgramCode.trim().toUpperCase(), 
-        description: formProgramDescription.trim() || undefined, 
-        departmentId: formDepartmentId,
-        durationYears: formDurationYears ? Number(formDurationYears) : undefined,
-        totalSemesters: formTotalSemesters ? Number(formTotalSemesters) : undefined,
-        status: formStatus,
-      };
+    const programData: Omit<Program, 'id'> = { 
+      name: formProgramName.trim(), 
+      code: formProgramCode.trim().toUpperCase(), 
+      description: formProgramDescription.trim() || undefined, 
+      departmentId: formDepartmentId,
+      durationYears: formDurationYears ? Number(formDurationYears) : undefined,
+      totalSemesters: formTotalSemesters ? Number(formTotalSemesters) : undefined,
+      status: formStatus,
+    };
 
+    try {
       if (currentProgram && currentProgram.id) {
-        setPrograms(prevProgs => prevProgs.map(p => p.id === currentProgram.id ? { ...p, ...programData } : p));
+        await programService.updateProgram(currentProgram.id, programData);
         toast({ title: "Program Updated", description: "The program has been successfully updated." });
       } else {
-        const newProgram: Program = { 
-          id: generateClientId(), 
-          ...programData
-        };
-        setPrograms(prevProgs => [...prevProgs, newProgram]);
+        await programService.createProgram(programData);
         toast({ title: "Program Created", description: "The new program has been successfully created." });
       }
-      setIsSubmitting(false);
+      await fetchProgramsAndDepartments();
       setIsDialogOpen(false);
       resetForm();
-    }, 1000);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Save Failed", description: (error as Error).message || "Could not save program." });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -209,7 +170,7 @@ export default function ProgramManagementPage() {
     }
   };
 
-  const handleImportPrograms = () => {
+  const handleImportPrograms = async () => {
     if (!selectedFile) {
       toast({ variant: "destructive", title: "Import Error", description: "Please select a CSV file to import." });
       return;
@@ -219,96 +180,19 @@ export default function ProgramManagementPage() {
       return;
     }
     setIsSubmitting(true);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const text = e.target?.result as string;
-        const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
-        if (lines.length <= 1) throw new Error("CSV file is empty or has only a header.");
-        
-        const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
-        const expectedHeaders = ['id', 'name', 'code', 'description', 'departmentid', 'durationyears', 'totalsemesters', 'status']; 
-        const requiredHeaders = ['name', 'code', 'departmentid', 'status'];
-
-        if (!requiredHeaders.every(rh => header.includes(rh))) {
-            throw new Error(`CSV header is missing required columns. Expected at least: ${requiredHeaders.join(', ')}. Found: ${header.join(', ')}`);
-        }
-        
-        const hMap = Object.fromEntries(expectedHeaders.map(eh => [eh, header.indexOf(eh)]));
-
-        const importedProgramsBatch: Program[] = [];
-        const currentProgramsCopy = [...programs];
-        let newProgramsCount = 0;
-        let updatedProgramsCount = 0;
-
-        for (let i = 1; i < lines.length; i++) {
-          const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
-          
-          const name = data[hMap['name']];
-          const code = data[hMap['code']];
-          const departmentId = data[hMap['departmentid']];
-          const status = data[hMap['status']] as 'active' | 'inactive';
-          
-          if (!name || !code || !departmentId || !['active', 'inactive'].includes(status)) {
-            console.warn(`Skipping row ${i+1}: Missing or invalid required data (name, code, departmentId, status).`);
-            continue;
-          }
-          if (!departments.find(d => d.id === departmentId)) {
-            console.warn(`Skipping row ${i+1}: Department ID '${departmentId}' not found.`);
-            continue;
-          }
-
-          const id = data[hMap['id']];
-          const description = data[hMap['description']];
-          const durationYearsStr = data[hMap['durationyears']];
-          const durationYears = durationYearsStr && !isNaN(parseInt(durationYearsStr)) ? parseInt(durationYearsStr) : undefined;
-          const totalSemestersStr = data[hMap['totalsemesters']];
-          const totalSemesters = totalSemestersStr && !isNaN(parseInt(totalSemestersStr)) ? parseInt(totalSemestersStr) : undefined;
-
-          const programData: Omit<Program, 'id'> = { 
-            name, 
-            code: code.toUpperCase(), 
-            description: description || undefined, 
-            departmentId, 
-            durationYears, 
-            totalSemesters,
-            status 
-          };
-          
-          if (id) {
-            const existingProgIndex = currentProgramsCopy.findIndex(p => p.id === id);
-            if (existingProgIndex !== -1) {
-              currentProgramsCopy[existingProgIndex] = { ...currentProgramsCopy[existingProgIndex], ...programData };
-              updatedProgramsCount++;
-            } else {
-              importedProgramsBatch.push({ id, ...programData });
-              newProgramsCount++;
-            }
-          } else {
-            importedProgramsBatch.push({ id: generateClientId(), ...programData });
-            newProgramsCount++;
-          }
-        }
-        
-        const finalPrograms = [
-            ...currentProgramsCopy.filter(p => !importedProgramsBatch.find(ip => ip.id === p.id)),
-            ...importedProgramsBatch
-        ];
-
-        setPrograms(finalPrograms);
-        toast({ title: "Import Successful", description: `${newProgramsCount} programs added, ${updatedProgramsCount} programs updated.` });
-
-      } catch (error: any) {
-        console.error("Error processing CSV file:", error);
-        toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
-      } finally {
-        setIsSubmitting(false);
-        setSelectedFile(null); 
-        const fileInput = document.getElementById('csvImportProgram') as HTMLInputElement;
-        if (fileInput) fileInput.value = '';
-      }
-    };
-    reader.readAsText(selectedFile);
+    try {
+      const result = await programService.importPrograms(selectedFile, departments); // Pass departments for mapping
+      await fetchProgramsAndDepartments();
+      toast({ title: "Import Successful", description: `${result.newCount} programs added, ${result.updatedCount} programs updated. Skipped: ${result.skippedCount}` });
+    } catch (error: any) {
+      console.error("Error processing CSV file:", error);
+      toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
+    } finally {
+      setIsSubmitting(false);
+      setSelectedFile(null); 
+      const fileInput = document.getElementById('csvImportProgram') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+    }
   };
 
   const handleExportPrograms = () => {
@@ -316,19 +200,24 @@ export default function ProgramManagementPage() {
       toast({ title: "Export Canceled", description: "No programs to export (check filters)." });
       return;
     }
-    const header = ["id", "name", "code", "description", "departmentId", "durationYears", "totalSemesters", "status"];
+    const header = ["id", "name", "code", "description", "departmentId", "departmentName", "departmentCode", "durationYears", "totalSemesters", "status"];
     const csvRows = [
       header.join(','),
-      ...filteredPrograms.map(prog => [
-        prog.id,
-        `"${prog.name.replace(/"/g, '""')}"`,
-        `"${prog.code.replace(/"/g, '""')}"`,
-        `"${(prog.description || "").replace(/"/g, '""')}"`,
-        prog.departmentId,
-        prog.durationYears || "",
-        prog.totalSemesters || "",
-        prog.status
-      ].join(','))
+      ...filteredPrograms.map(prog => {
+        const dept = departments.find(d => d.id === prog.departmentId);
+        return [
+          prog.id,
+          `"${prog.name.replace(/"/g, '""')}"`,
+          `"${prog.code.replace(/"/g, '""')}"`,
+          `"${(prog.description || "").replace(/"/g, '""')}"`,
+          prog.departmentId,
+          `"${(dept?.name || "").replace(/"/g, '""')}"`,
+          `"${(dept?.code || "").replace(/"/g, '""')}"`,
+          prog.durationYears || "",
+          prog.totalSemesters || "",
+          prog.status
+        ].join(',')
+      })
     ];
     const csvString = csvRows.join('\r\n');
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
@@ -342,9 +231,9 @@ export default function ProgramManagementPage() {
   };
 
   const handleDownloadSampleCsv = () => {
-    const sampleCsvContent = `id,name,code,description,departmentId,durationYears,totalSemesters,status
-prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1,3,6,active
-,Bachelor of Science in Physics,BSPHYS,"Physics major",dept_gen,4,8,inactive
+    const sampleCsvContent = `id,name,code,description,departmentId,departmentName,departmentCode,durationYears,totalSemesters,status
+prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1,"Computer Engineering","CE",3,6,active
+,Bachelor of Science in Physics,BSPHYS,"Physics major",dept_gen,"General Department","GEN",4,8,inactive
 `; 
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -435,18 +324,23 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
     }
   };
 
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = async () => {
     if (selectedProgramIds.length === 0) {
       toast({ variant: "destructive", title: "No Programs Selected", description: "Please select programs to delete." });
       return;
     }
     setIsSubmitting(true);
-    setTimeout(() => {
-      setPrograms(prevProgs => prevProgs.filter(prog => !selectedProgramIds.includes(prog.id)));
-      setSelectedProgramIds([]);
+    try {
+      for (const id of selectedProgramIds) {
+        await programService.deleteProgram(id);
+      }
+      await fetchProgramsAndDepartments();
       toast({ title: "Programs Deleted", description: `${selectedProgramIds.length} program(s) have been successfully deleted.` });
-      setIsSubmitting(false);
-    }, 500);
+      setSelectedProgramIds([]);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message || "Could not delete selected programs." });
+    }
+    setIsSubmitting(false);
   };
   
   const isAllSelectedOnPage = paginatedPrograms.length > 0 && paginatedPrograms.every(prog => selectedProgramIds.includes(prog.id));
@@ -510,7 +404,7 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
                   </div>
                   <div>
                     <Label htmlFor="progDepartment">Department *</Label>
-                    <Select value={formDepartmentId} onValueChange={setFormDepartmentId} disabled={isSubmitting} required>
+                    <Select value={formDepartmentId} onValueChange={setFormDepartmentId} disabled={isSubmitting || departments.length === 0} required>
                       <SelectTrigger id="progDepartment"><SelectValue placeholder="Select Department" /></SelectTrigger>
                       <SelectContent>
                         {departments.map(dept => (
@@ -571,7 +465,7 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
                     <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  CSV format: id (optional), name, code, description, departmentId, durationYears, totalSemesters, status.
+                  CSV format: id (optional), name, code, description, departmentId OR (departmentName and departmentCode), durationYears, totalSemesters, status.
                 </p>
             </div>
           </div>
@@ -603,7 +497,7 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
             </div>
             <div>
               <Label htmlFor="filterProgDepartment">Filter by Department</Label>
-              <Select value={filterDepartment} onValueChange={(value) => setFilterDepartment(value as string)}>
+              <Select value={filterDepartment} onValueChange={(value) => setFilterDepartment(value as string)} disabled={departments.length === 0}>
                 <SelectTrigger id="filterProgDepartment"><SelectValue placeholder="All Departments" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Departments</SelectItem>
@@ -632,7 +526,7 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
                  <TableHead className="w-[50px]">
                     <Checkbox 
                         checked={isAllSelectedOnPage || (paginatedPrograms.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)}
-                        onCheckedChange={(checkedState) => handleSelectAll(checkedState)}
+                        onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)}
                         aria-label="Select all programs on this page"
                     />
                 </TableHead>
@@ -766,3 +660,4 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
     </div>
   );
 }
+

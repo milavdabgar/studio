@@ -59,8 +59,6 @@ export default function InstituteManagementPage() {
     } catch (error) {
       console.error("Failed to load institutes", error);
       toast({ variant: "destructive", title: "Error", description: (error as Error).message || "Could not load institutes." });
-      // Keep existing data if fetch fails, or set to empty array
-      // setInstitutes([]); 
     }
     setIsLoading(false);
   };
@@ -99,7 +97,7 @@ export default function InstituteManagementPage() {
     setIsSubmitting(true);
     try {
       await instituteService.deleteInstitute(instituteId);
-      await fetchInstitutes(); // Refetch after delete
+      await fetchInstitutes(); 
       setSelectedInstituteIds(prev => prev.filter(id => id !== instituteId));
       toast({ title: "Institute Deleted", description: "The institute has been successfully deleted." });
     } catch (error) {
@@ -143,7 +141,7 @@ export default function InstituteManagementPage() {
         await instituteService.createInstitute(instituteData);
         toast({ title: "Institute Created", description: "The new institute has been successfully created." });
       }
-      await fetchInstitutes(); // Refetch list
+      await fetchInstitutes(); 
       setIsDialogOpen(false);
       resetForm();
     } catch (error) {
@@ -166,7 +164,7 @@ export default function InstituteManagementPage() {
     setIsSubmitting(true);
     try {
       const result = await instituteService.importInstitutes(selectedFile);
-      await fetchInstitutes(); // Refetch list
+      await fetchInstitutes(); 
       toast({ title: "Import Successful", description: `${result.newCount} institutes added, ${result.updatedCount} institutes updated.` });
     } catch (error: any) {
       console.error("Error processing CSV file:", error);
@@ -290,8 +288,12 @@ inst_sample_1,Another Polytechnic,AP,123 Sample Street,contact@ap.edu,123-456-78
     }
     setIsSubmitting(true);
     try {
-      await Promise.all(selectedInstituteIds.map(id => instituteService.deleteInstitute(id)));
-      await fetchInstitutes(); // Refetch list
+      // This will make one API call per selected institute.
+      // For better performance with many selections, a batch delete endpoint would be preferable.
+      for (const id of selectedInstituteIds) {
+        await instituteService.deleteInstitute(id);
+      }
+      await fetchInstitutes(); 
       toast({ title: "Institutes Deleted", description: `${selectedInstituteIds.length} institute(s) have been successfully deleted.` });
       setSelectedInstituteIds([]);
     } catch (error) {
@@ -492,3 +494,4 @@ inst_sample_1,Another Polytechnic,AP,123 Sample Street,contact@ap.edu,123-456-78
     </div>
   );
 }
+

@@ -12,30 +12,8 @@ import { PlusCircle, Edit, Trash2, UserCog, Loader2, UploadCloud, Download, File
 import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
-interface Role {
-  id: string;
-  name: string;
-  description: string;
-  permissions: string[];
-}
-
-const initialRoles: Role[] = [
-  { id: "1", name: "Admin", description: "Full access to all system features.", permissions: ["manage_users", "manage_roles", "manage_settings"] },
-  { id: "2", name: "Student", description: "Access to student-specific features.", permissions: ["view_courses", "submit_assignments"] },
-  { id: "3", name: "Faculty", description: "Access to faculty-specific features.", permissions: ["manage_courses", "grade_assignments"] },
-  { id: "4", name: "HOD", description: "Head of Department access.", permissions: ["manage_faculty", "view_department_reports"] },
-  { id: "5", name: "Jury", description: "Project fair jury access.", permissions: ["evaluate_projects"] },
-];
-
-const LOCAL_STORAGE_KEY_ROLES = 'managedRoles';
-
-const allPermissions = [
-  "manage_users", "manage_roles", "manage_settings", "view_courses", 
-  "submit_assignments", "manage_courses", "grade_assignments", 
-  "manage_faculty", "view_department_reports", "evaluate_projects",
-  "view_feedback", "generate_reports"
-];
+import type { Role } from '@/types/entities';
+import { roleService, allPermissions } from '@/lib/api/roles';
 
 const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
 
@@ -54,39 +32,23 @@ export default function RoleManagementPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[1]);
 
-
   const { toast } = useToast();
 
- useEffect(() => {
+  const fetchRoles = async () => {
     setIsLoading(true);
     try {
-      const storedRoles = localStorage.getItem(LOCAL_STORAGE_KEY_ROLES);
-      if (storedRoles) {
-        setRoles(JSON.parse(storedRoles));
-      } else {
-        setRoles(initialRoles);
-      }
+      const data = await roleService.getAllRoles();
+      setRoles(data);
     } catch (error) {
-      console.error("Failed to load roles from localStorage", error);
-      setRoles(initialRoles);
+      console.error("Failed to load roles", error);
+      toast({ variant: "destructive", title: "Error", description: (error as Error).message || "Could not load roles." });
     }
     setIsLoading(false);
-  }, []);
+  };
 
-  useEffect(() => {
-    if(!isLoading) { 
-        try {
-            localStorage.setItem(LOCAL_STORAGE_KEY_ROLES, JSON.stringify(roles));
-        } catch (error) {
-            console.error("Failed to save roles to localStorage", error);
-            toast({
-                variant: "destructive",
-                title: "Storage Error",
-                description: "Could not save role data locally. Changes might be lost.",
-            });
-        }
-    }
-  }, [roles, isLoading, toast]);
+ useEffect(() => {
+    fetchRoles();
+  }, []);
 
   const paginatedRoles = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -96,7 +58,7 @@ export default function RoleManagementPage() {
   const totalPages = Math.ceil(roles.length / itemsPerPage);
 
   useEffect(() => {
-    setCurrentPage(1); // Reset to page 1 when itemsPerPage changes
+    setCurrentPage(1);
   }, [itemsPerPage]);
 
 
@@ -116,14 +78,17 @@ export default function RoleManagementPage() {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (roleId: string) => {
+  const handleDelete = async (roleId: string) => {
     setIsSubmitting(true);
-    setTimeout(() => { 
-      setRoles(prevRoles => prevRoles.filter(role => role.id !== roleId));
+    try {
+      await roleService.deleteRole(roleId);
+      await fetchRoles();
       setSelectedRoleIds(prev => prev.filter(id => id !== roleId));
       toast({ title: "Role Deleted", description: "The role has been successfully deleted." });
-      setIsSubmitting(false);
-    }, 500);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message || "Could not delete role." });
+    }
+    setIsSubmitting(false);
   };
 
   const handlePermissionChange = (permission: string) => {
@@ -134,7 +99,7 @@ export default function RoleManagementPage() {
     );
   };
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!formRoleName.trim()) {
       toast({ variant: "destructive", title: "Validation Error", description: "Role name cannot be empty."});
@@ -142,23 +107,27 @@ export default function RoleManagementPage() {
     }
     setIsSubmitting(true);
     
-    setTimeout(() => { 
+    const roleData: Omit<Role, 'id'> = { 
+      name: formRoleName, 
+      description: formRoleDescription, 
+      permissions: formRolePermissions 
+    };
+    
+    try {
       if (currentRole && currentRole.id) {
-        setRoles(prevRoles => prevRoles.map(r => r.id === currentRole.id ? { ...r, name: formRoleName, description: formRoleDescription, permissions: formRolePermissions } : r));
+        await roleService.updateRole(currentRole.id, roleData);
         toast({ title: "Role Updated", description: "The role has been successfully updated." });
       } else {
-        const newRole: Role = { 
-          id: String(Date.now()), 
-          name: formRoleName, 
-          description: formRoleDescription, 
-          permissions: formRolePermissions 
-        };
-        setRoles(prevRoles => [...prevRoles, newRole]);
+        await roleService.createRole(roleData);
         toast({ title: "Role Created", description: "The new role has been successfully created." });
       }
-      setIsSubmitting(false);
+      await fetchRoles();
       setIsDialogOpen(false);
-    }, 1000);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Save Failed", description: (error as Error).message || "Could not save role." });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -169,86 +138,25 @@ export default function RoleManagementPage() {
     }
   };
 
-  const handleImportRoles = () => {
+  const handleImportRoles = async () => {
     if (!selectedFile) {
       toast({ variant: "destructive", title: "Import Error", description: "Please select a CSV file to import." });
       return;
     }
     setIsSubmitting(true);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const text = e.target?.result as string;
-        const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
-        if (lines.length <= 1) {
-          throw new Error("CSV file is empty or has only a header.");
-        }
-        const header = lines[0].split(',').map(h => h.trim().toLowerCase());
-        const expectedHeaders = ['id', 'name', 'description', 'permissions'];
-        if (!expectedHeaders.every(eh => header.includes(eh))) {
-            throw new Error(`CSV header is missing some_expected columns. Expected: ${expectedHeaders.join(', ')} Got: ${header.join(', ')}`);
-        }
-        
-        const idIndex = header.indexOf('id');
-        const nameIndex = header.indexOf('name');
-        const descriptionIndex = header.indexOf('description');
-        const permissionsIndex = header.indexOf('permissions');
-
-        const importedRolesBatch: Role[] = [];
-        const currentRolesCopy = [...roles]; 
-        let newRolesCount = 0;
-        let updatedRolesCount = 0;
-
-        for (let i = 1; i < lines.length; i++) {
-          const data = lines[i].split(',');
-          const id = data[idIndex]?.trim();
-          const name = data[nameIndex]?.trim();
-          const description = data[descriptionIndex]?.trim();
-          const permissionsString = data[permissionsIndex]?.trim().replace(/^"|"$/g, ''); 
-          const permissions = permissionsString ? permissionsString.split(';').map(p => p.trim()).filter(p => p) : [];
-
-
-          if (!name) {
-            console.warn(`Skipping row ${i+1}: Name is missing.`);
-            continue;
-          }
-
-          const roleData = { name, description: description || "", permissions };
-          
-          if (id) {
-            const existingRoleIndex = currentRolesCopy.findIndex(r => r.id === id);
-            if (existingRoleIndex !== -1) {
-              currentRolesCopy[existingRoleIndex] = { ...currentRolesCopy[existingRoleIndex], ...roleData };
-              updatedRolesCount++;
-            } else {
-              importedRolesBatch.push({ id, ...roleData });
-              newRolesCount++;
-            }
-          } else {
-            importedRolesBatch.push({ id: String(Date.now() + Math.random()), ...roleData });
-            newRolesCount++;
-          }
-        }
-        
-        const finalRolesList = [
-          ...currentRolesCopy.filter(r => !importedRolesBatch.find(ir => ir.id === r.id)), 
-          ...importedRolesBatch
-        ];
-        setRoles(finalRolesList);
-
-        toast({ title: "Import Successful", description: `${newRolesCount} roles added, ${updatedRolesCount} roles updated.` });
-
-      } catch (error: any) {
-        console.error("Error processing CSV file:", error);
-        toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
-      } finally {
-        setIsSubmitting(false);
-        setSelectedFile(null); 
-        const fileInput = document.getElementById('csvImport') as HTMLInputElement;
-        if (fileInput) fileInput.value = '';
-      }
-    };
-    reader.readAsText(selectedFile);
+    try {
+      const result = await roleService.importRoles(selectedFile);
+      await fetchRoles();
+      toast({ title: "Import Successful", description: `${result.newCount} roles added, ${result.updatedCount} roles updated. Skipped: ${result.skippedCount}` });
+    } catch (error: any) {
+      console.error("Error processing CSV file:", error);
+      toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
+    } finally {
+      setIsSubmitting(false);
+      setSelectedFile(null); 
+      const fileInput = document.getElementById('csvImport') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+    }
   };
 
   const handleExportRoles = () => {
@@ -285,9 +193,9 @@ export default function RoleManagementPage() {
 
   const handleDownloadSampleCsv = () => {
     const sampleCsvContent = `id,name,description,permissions
-role_001,Editor,Can edit content but not publish,"manage_content;view_content"
-role_002,Viewer,Can only view published content,"view_content"
-,Moderator,Can moderate comments and user interactions,"moderate_comments;manage_users_basic" 
+role_001,Editor,"Can edit content but not publish","manage_content;view_content"
+role_002,Viewer,"Can only view published content","view_content"
+,Moderator,"Can moderate comments and user interactions","moderate_comments;manage_users_basic" 
 `; 
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -315,22 +223,39 @@ role_002,Viewer,Can only view published content,"view_content"
     }
   };
 
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = async () => {
     if (selectedRoleIds.length === 0) {
       toast({ variant: "destructive", title: "No Roles Selected", description: "Please select roles to delete." });
       return;
     }
     setIsSubmitting(true);
-    setTimeout(() => {
-      setRoles(prevRoles => prevRoles.filter(role => !selectedRoleIds.includes(role.id) || role.name === 'Admin'));
-      const adminSelected = selectedRoleIds.some(id => roles.find(r => r.id === id)?.name === 'Admin');
-      if (adminSelected) {
-          toast({ variant: "destructive", title: "Admin Role Protected", description: "The 'Admin' role cannot be deleted." });
+    let deletedCount = 0;
+    let adminSkipped = false;
+
+    for (const id of selectedRoleIds) {
+      const role = roles.find(r => r.id === id);
+      if (role?.name === 'Admin') {
+        adminSkipped = true;
+        continue;
       }
-      setSelectedRoleIds([]);
-      toast({ title: "Roles Deleted", description: `${selectedRoleIds.filter(id => roles.find(r => r.id === id)?.name !== 'Admin').length} roles have been successfully deleted.` });
-      setIsSubmitting(false);
-    }, 500);
+      try {
+        await roleService.deleteRole(id);
+        deletedCount++;
+      } catch (error) {
+        toast({ variant: "destructive", title: "Delete Failed", description: `Could not delete role ${role?.name || id}.` });
+      }
+    }
+    
+    await fetchRoles();
+    setSelectedRoleIds([]);
+    let description = `${deletedCount} role(s) have been successfully deleted.`;
+    if (adminSkipped) {
+        toast({ variant: "warning", title: "Admin Role Protected", description: "The 'Admin' role cannot be deleted." });
+    }
+    if(deletedCount > 0) {
+        toast({ title: "Roles Deleted", description });
+    }
+    setIsSubmitting(false);
   };
 
   const isAllSelectedOnPage = paginatedRoles.length > 0 && paginatedRoles.every(role => selectedRoleIds.includes(role.id));
@@ -460,8 +385,8 @@ role_002,Viewer,Can only view published content,"view_content"
               <TableRow>
                 <TableHead className="w-[50px]">
                     <Checkbox 
-                        checked={isAllSelectedOnPage || isSomeSelectedOnPage}
-                        onCheckedChange={handleSelectAll}
+                        checked={isAllSelectedOnPage || (paginatedRoles.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)}
+                        onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)}
                         aria-label="Select all roles on this page"
                     />
                 </TableHead>
@@ -522,7 +447,7 @@ role_002,Viewer,Can only view published content,"view_content"
                     }}
                     >
                     <SelectTrigger className="w-[70px] h-8 text-xs">
-                        <SelectValue placeholder={itemsPerPage} />
+                        <SelectValue placeholder={String(itemsPerPage)} />
                     </SelectTrigger>
                     <SelectContent side="top">
                         {ITEMS_PER_PAGE_OPTIONS.map((pageSize) => (
@@ -583,3 +508,4 @@ role_002,Viewer,Can only view published content,"view_content"
     </div>
   );
 }
+

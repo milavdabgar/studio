@@ -13,54 +13,18 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { PlusCircle, Edit, Trash2, Building2, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
-
-interface Department {
-  id: string;
-  name: string;
-  code: string; // e.g., CE, ME, EC
-  description?: string;
-  hodId?: string; // User ID of the HOD
-  establishmentYear?: number;
-  status: 'active' | 'inactive';
-}
-
-interface User {
-  id: string;
-  name: string;
-  roles: string[]; // Simplified for example
-}
-
-const initialDepartments: Department[] = [
-  { id: "dept1", name: "Computer Engineering", code: "CE", hodId: "u4", establishmentYear: 1984, status: "active", description: "Focuses on computation, algorithms, and software." },
-  { id: "dept2", name: "Mechanical Engineering", code: "ME", establishmentYear: 1965, status: "active", description: "Deals with machinery and mechanical systems." },
-  { id: "dept3", name: "Electrical Engineering", code: "EE", status: "active", description: "Covers electricity, electronics, and electromagnetism." },
-  { id: "dept4", name: "Civil Engineering", code: "CIVIL", status: "active", description: "Design and construction of public works." },
-  { id: "dept5", name: "Electronics & Communication Engg.", code: "EC", status: "active", description: "Communication systems and electronic devices." },
-  { id: "dept6", name: "General Department", code: "GEN", status: "active", description: "Physics, Maths, English and other common subjects." },
-  { id: "dept7", name: "Applied Mechanics", code: "AM", status: "inactive", description: "Mechanics of materials and structures." },
-];
-
-// Mock faculty users who can be HODs
-const mockFacultyUsers: User[] = [
-    { id: "u3", name: "Bob The Builder", roles: ["faculty", "jury"]},
-    { id: "u4", name: "Charlie Chaplin", roles: ["hod", "faculty"]},
-    // Add more faculty/HOD users as needed from your users list
-];
-
-
-const LOCAL_STORAGE_KEY_DEPARTMENTS = 'managedDepartmentsPMP';
-const LOCAL_STORAGE_KEY_USERS = 'managedUsers'; // To fetch HOD candidates
+import type { Department, SystemUser as User } from '@/types/entities'; // Renamed SystemUser to User to avoid conflict
+import { departmentService } from '@/lib/api/departments';
+import { userService } from '@/lib/api/users'; // Assuming userService exists for fetching HODs
 
 type SortField = keyof Department | 'none';
 type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
 
-const generateClientId = (): string => `dept_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-
 export default function DepartmentManagementPage() {
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [facultyUsers, setFacultyUsers] = useState<User[]>([]);
+  const [facultyUsers, setFacultyUsers] = useState<User[]>([]); // For HOD selection
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -84,49 +48,27 @@ export default function DepartmentManagementPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[1]);
 
-
   const { toast } = useToast();
 
-  useEffect(() => {
+  const fetchDepartmentsAndFaculty = async () => {
     setIsLoading(true);
     try {
-      const storedDepartments = localStorage.getItem(LOCAL_STORAGE_KEY_DEPARTMENTS);
-      if (storedDepartments) {
-        setDepartments(JSON.parse(storedDepartments));
-      } else {
-        setDepartments(initialDepartments); 
-      }
-
-      const storedUsers = localStorage.getItem(LOCAL_STORAGE_KEY_USERS);
-      if (storedUsers) {
-          const allUsers: User[] = JSON.parse(storedUsers);
-          setFacultyUsers(allUsers.filter(u => u.roles.includes('faculty') || u.roles.includes('hod')));
-      } else {
-          setFacultyUsers(mockFacultyUsers); // Fallback if no users in local storage
-      }
-
+      const [deptData, usersData] = await Promise.all([
+        departmentService.getAllDepartments(),
+        userService.getAllUsers() 
+      ]);
+      setDepartments(deptData);
+      setFacultyUsers(usersData.filter(u => u.roles.includes('faculty') || u.roles.includes('hod')));
     } catch (error) {
-      console.error("Failed to load data from localStorage", error);
-      setDepartments(initialDepartments);
-      setFacultyUsers(mockFacultyUsers);
+      console.error("Failed to load data", error);
+      toast({ variant: "destructive", title: "Error", description: "Could not load departments or faculty data." });
     }
     setIsLoading(false);
-  }, []);
+  };
 
   useEffect(() => {
-    if(!isLoading) { 
-        try {
-            localStorage.setItem(LOCAL_STORAGE_KEY_DEPARTMENTS, JSON.stringify(departments));
-        } catch (error) {
-            console.error("Failed to save departments to localStorage", error);
-            toast({
-                variant: "destructive",
-                title: "Storage Error",
-                description: "Could not save department data locally. Changes might be lost.",
-            });
-        }
-    }
-  }, [departments, isLoading, toast]);
+    fetchDepartmentsAndFaculty();
+  }, []);
 
   const resetForm = () => {
     setFormDeptName('');
@@ -154,17 +96,20 @@ export default function DepartmentManagementPage() {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (departmentId: string) => {
+  const handleDelete = async (departmentId: string) => {
     setIsSubmitting(true);
-    setTimeout(() => { 
-      setDepartments(prevDepts => prevDepts.filter(dept => dept.id !== departmentId));
+    try {
+      await departmentService.deleteDepartment(departmentId);
+      await fetchDepartmentsAndFaculty();
       setSelectedDepartmentIds(prev => prev.filter(id => id !== departmentId));
       toast({ title: "Department Deleted", description: "The department has been successfully deleted." });
-      setIsSubmitting(false);
-    }, 500);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message || "Could not delete department." });
+    }
+    setIsSubmitting(false);
   };
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!formDeptName.trim() || !formDeptCode.trim()) {
       toast({ variant: "destructive", title: "Validation Error", description: "Department Name and Code cannot be empty."});
@@ -177,31 +122,31 @@ export default function DepartmentManagementPage() {
 
     setIsSubmitting(true);
     
-    setTimeout(() => { 
-      const departmentData: Omit<Department, 'id'> = { 
-        name: formDeptName.trim(), 
-        code: formDeptCode.trim().toUpperCase(), 
-        description: formDeptDescription.trim() || undefined, 
-        hodId: formHodId || undefined,
-        establishmentYear: formEstablishmentYear ? Number(formEstablishmentYear) : undefined,
-        status: formStatus,
-      };
+    const departmentData: Omit<Department, 'id'> = { 
+      name: formDeptName.trim(), 
+      code: formDeptCode.trim().toUpperCase(), 
+      description: formDeptDescription.trim() || undefined, 
+      hodId: formHodId || undefined,
+      establishmentYear: formEstablishmentYear ? Number(formEstablishmentYear) : undefined,
+      status: formStatus,
+    };
 
+    try {
       if (currentDepartment && currentDepartment.id) {
-        setDepartments(prevDepts => prevDepts.map(d => d.id === currentDepartment.id ? { ...d, ...departmentData } : d));
+        await departmentService.updateDepartment(currentDepartment.id, departmentData);
         toast({ title: "Department Updated", description: "The department has been successfully updated." });
       } else {
-        const newDepartment: Department = { 
-          id: generateClientId(), 
-          ...departmentData
-        };
-        setDepartments(prevDepts => [...prevDepts, newDepartment]);
+        await departmentService.createDepartment(departmentData);
         toast({ title: "Department Created", description: "The new department has been successfully created." });
       }
-      setIsSubmitting(false);
+      await fetchDepartmentsAndFaculty();
       setIsDialogOpen(false);
       resetForm();
-    }, 1000);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Save Failed", description: (error as Error).message || "Could not save department." });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -212,96 +157,25 @@ export default function DepartmentManagementPage() {
     }
   };
 
-  const handleImportDepartments = () => {
+  const handleImportDepartments = async () => {
     if (!selectedFile) {
       toast({ variant: "destructive", title: "Import Error", description: "Please select a CSV file to import." });
       return;
     }
     setIsSubmitting(true);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const text = e.target?.result as string;
-        const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
-        if (lines.length <= 1) throw new Error("CSV file is empty or has only a header.");
-        
-        const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
-        const expectedHeaders = ['id', 'name', 'code', 'description', 'hodid', 'establishmentyear', 'status']; 
-        const requiredHeaders = ['name', 'code', 'status'];
-
-        if (!requiredHeaders.every(rh => header.includes(rh))) {
-            throw new Error(`CSV header is missing required columns. Expected at least: ${requiredHeaders.join(', ')}. Found: ${header.join(', ')}`);
-        }
-        
-        const hMap = Object.fromEntries(expectedHeaders.map(eh => [eh, header.indexOf(eh)]));
-
-        const importedDepartmentsBatch: Department[] = [];
-        const currentDepartmentsCopy = [...departments];
-        let newDepartmentsCount = 0;
-        let updatedDepartmentsCount = 0;
-
-        for (let i = 1; i < lines.length; i++) {
-          const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
-          
-          const name = data[hMap['name']];
-          const code = data[hMap['code']];
-          const status = data[hMap['status']] as 'active' | 'inactive';
-          
-          if (!name || !code || !['active', 'inactive'].includes(status)) {
-            console.warn(`Skipping row ${i+1}: Missing or invalid required data (name, code, status).`);
-            continue;
-          }
-
-          const id = data[hMap['id']];
-          const description = data[hMap['description']];
-          const hodId = data[hMap['hodid']];
-          const establishmentYearStr = data[hMap['establishmentyear']];
-          const establishmentYear = establishmentYearStr && !isNaN(parseInt(establishmentYearStr)) ? parseInt(establishmentYearStr) : undefined;
-
-
-          const departmentData: Omit<Department, 'id'> = { 
-            name, 
-            code: code.toUpperCase(), 
-            description: description || undefined, 
-            hodId: hodId || undefined, 
-            establishmentYear, 
-            status 
-          };
-          
-          if (id) {
-            const existingDeptIndex = currentDepartmentsCopy.findIndex(d => d.id === id);
-            if (existingDeptIndex !== -1) {
-              currentDepartmentsCopy[existingDeptIndex] = { ...currentDepartmentsCopy[existingDeptIndex], ...departmentData };
-              updatedDepartmentsCount++;
-            } else {
-              importedDepartmentsBatch.push({ id, ...departmentData });
-              newDepartmentsCount++;
-            }
-          } else {
-            importedDepartmentsBatch.push({ id: generateClientId(), ...departmentData });
-            newDepartmentsCount++;
-          }
-        }
-        
-        const finalDepartments = [
-            ...currentDepartmentsCopy.filter(d => !importedDepartmentsBatch.find(id => id.id === d.id)),
-            ...importedDepartmentsBatch
-        ];
-
-        setDepartments(finalDepartments);
-        toast({ title: "Import Successful", description: `${newDepartmentsCount} departments added, ${updatedDepartmentsCount} departments updated.` });
-
-      } catch (error: any) {
-        console.error("Error processing CSV file:", error);
-        toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
-      } finally {
-        setIsSubmitting(false);
-        setSelectedFile(null); 
-        const fileInput = document.getElementById('csvImportDepartment') as HTMLInputElement;
-        if (fileInput) fileInput.value = '';
-      }
-    };
-    reader.readAsText(selectedFile);
+    try {
+      const result = await departmentService.importDepartments(selectedFile);
+      await fetchDepartmentsAndFaculty();
+      toast({ title: "Import Successful", description: `${result.newCount} departments added, ${result.updatedCount} departments updated.` });
+    } catch (error: any) {
+      console.error("Error processing CSV file:", error);
+      toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
+    } finally {
+      setIsSubmitting(false);
+      setSelectedFile(null); 
+      const fileInput = document.getElementById('csvImportDepartment') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+    }
   };
 
   const handleExportDepartments = () => {
@@ -424,18 +298,23 @@ dept_sample_1,Information Technology,IT,"Handles all IT related courses and infr
     }
   };
 
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = async () => {
     if (selectedDepartmentIds.length === 0) {
       toast({ variant: "destructive", title: "No Departments Selected", description: "Please select departments to delete." });
       return;
     }
     setIsSubmitting(true);
-    setTimeout(() => {
-      setDepartments(prevDepts => prevDepts.filter(dept => !selectedDepartmentIds.includes(dept.id)));
-      setSelectedDepartmentIds([]);
+    try {
+      for (const id of selectedDepartmentIds) {
+        await departmentService.deleteDepartment(id);
+      }
+      await fetchDepartmentsAndFaculty();
       toast({ title: "Departments Deleted", description: `${selectedDepartmentIds.length} department(s) have been successfully deleted.` });
-      setIsSubmitting(false);
-    }, 500);
+      setSelectedDepartmentIds([]);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message || "Could not delete selected departments." });
+    }
+    setIsSubmitting(false);
   };
   
   const isAllSelectedOnPage = paginatedDepartments.length > 0 && paginatedDepartments.every(dept => selectedDepartmentIds.includes(dept.id));
@@ -604,7 +483,7 @@ dept_sample_1,Information Technology,IT,"Handles all IT related courses and infr
                  <TableHead className="w-[50px]">
                     <Checkbox 
                         checked={isAllSelectedOnPage || (paginatedDepartments.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)}
-                        onCheckedChange={(checkedState) => handleSelectAll(checkedState)}
+                        onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)}
                         aria-label="Select all departments on this page"
                     />
                 </TableHead>
@@ -736,3 +615,4 @@ dept_sample_1,Information Technology,IT,"Handles all IT related courses and infr
     </div>
   );
 }
+

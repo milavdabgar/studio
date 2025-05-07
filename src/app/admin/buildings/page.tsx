@@ -13,33 +13,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { PlusCircle, Edit, Trash2, Building, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
-
-interface Building {
-  id: string;
-  name: string;
-  code?: string;
-  description?: string;
-  instituteId: string;
-  status: 'active' | 'inactive' | 'under_maintenance';
-  constructionYear?: number;
-  numberOfFloors?: number;
-  totalAreaSqFt?: number;
-}
-
-interface Institute {
-  id: string;
-  name: string;
-  code: string;
-}
-
-const initialBuildings: Building[] = [
-  { id: "bldg1", name: "Main Administrative Block", code: "MAIN", instituteId: "inst1", status: "active", constructionYear: 1964, numberOfFloors: 3, totalAreaSqFt: 50000, description: "Houses administrative offices and principal's office." },
-  { id: "bldg2", name: "New Academic Complex", code: "NAC", instituteId: "inst1", status: "active", constructionYear: 2010, numberOfFloors: 4, totalAreaSqFt: 75000, description: "Modern classrooms and labs for various departments." },
-  { id: "bldg3", name: "Workshop Building", code: "WRKSHP", instituteId: "inst1", status: "under_maintenance", constructionYear: 1970, numberOfFloors: 1, totalAreaSqFt: 30000, description: "Mechanical and Civil engineering workshops." },
-];
-
-const LOCAL_STORAGE_KEY_BUILDINGS = 'managedBuildingsPMP';
-const LOCAL_STORAGE_KEY_INSTITUTES = 'managedInstitutesPMP';
+import type { Building as BuildingType, Institute } from '@/types/entities'; // Renamed Building to BuildingType
+import { buildingService } from '@/lib/api/buildings';
+import { instituteService } from '@/lib/api/institutes';
 
 type BuildingStatus = 'active' | 'inactive' | 'under_maintenance';
 const BUILDING_STATUS_OPTIONS: { value: BuildingStatus, label: string }[] = [
@@ -49,20 +25,18 @@ const BUILDING_STATUS_OPTIONS: { value: BuildingStatus, label: string }[] = [
 ];
 
 
-type SortField = keyof Building | 'none';
+type SortField = keyof BuildingType | 'none';
 type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
 
-const generateClientId = (): string => `bldg_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-
 export default function BuildingManagementPage() {
-  const [buildings, setBuildings] = useState<Building[]>([]);
+  const [buildings, setBuildings] = useState<BuildingType[]>([]);
   const [institutes, setInstitutes] = useState<Institute[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [currentBuilding, setCurrentBuilding] = useState<Partial<Building> | null>(null);
+  const [currentBuilding, setCurrentBuilding] = useState<Partial<BuildingType> | null>(null);
 
   // Form state
   const [formName, setFormName] = useState('');
@@ -87,37 +61,29 @@ export default function BuildingManagementPage() {
 
   const { toast } = useToast();
 
-  useEffect(() => {
+  const fetchBuildingsAndInstitutes = async () => {
     setIsLoading(true);
     try {
-      const storedBuildings = localStorage.getItem(LOCAL_STORAGE_KEY_BUILDINGS);
-      setBuildings(storedBuildings ? JSON.parse(storedBuildings) : initialBuildings);
-
-      const storedInstitutes = localStorage.getItem(LOCAL_STORAGE_KEY_INSTITUTES);
-      setInstitutes(storedInstitutes ? JSON.parse(storedInstitutes) : []);
-
+      const [buildingData, instituteData] = await Promise.all([
+        buildingService.getAllBuildings(),
+        instituteService.getAllInstitutes()
+      ]);
+      setBuildings(buildingData);
+      setInstitutes(instituteData);
+      if (instituteData.length > 0 && !formInstituteId) {
+        setFormInstituteId(instituteData[0].id);
+      }
     } catch (error) {
-      console.error("Failed to load data from localStorage", error);
-      setBuildings(initialBuildings);
-      setInstitutes([]);
+      console.error("Failed to load data", error);
+      toast({ variant: "destructive", title: "Error", description: "Could not load buildings or institutes data." });
     }
     setIsLoading(false);
-  }, []);
+  };
 
   useEffect(() => {
-    if(!isLoading) { 
-        try {
-            localStorage.setItem(LOCAL_STORAGE_KEY_BUILDINGS, JSON.stringify(buildings));
-        } catch (error) {
-            console.error("Failed to save buildings to localStorage", error);
-            toast({
-                variant: "destructive",
-                title: "Storage Error",
-                description: "Could not save building data locally. Changes might be lost.",
-            });
-        }
-    }
-  }, [buildings, isLoading, toast]);
+    fetchBuildingsAndInstitutes();
+  }, []);
+
 
   const resetForm = () => {
     setFormName(''); setFormCode(''); setFormDescription('');
@@ -127,7 +93,7 @@ export default function BuildingManagementPage() {
     setCurrentBuilding(null);
   };
 
-  const handleEdit = (building: Building) => {
+  const handleEdit = (building: BuildingType) => {
     setCurrentBuilding(building);
     setFormName(building.name);
     setFormCode(building.code || '');
@@ -149,17 +115,20 @@ export default function BuildingManagementPage() {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (buildingId: string) => {
+  const handleDelete = async (buildingId: string) => {
     setIsSubmitting(true);
-    setTimeout(() => { 
-      setBuildings(prev => prev.filter(b => b.id !== buildingId));
+    try {
+      await buildingService.deleteBuilding(buildingId);
+      await fetchBuildingsAndInstitutes();
       setSelectedBuildingIds(prev => prev.filter(id => id !== buildingId));
       toast({ title: "Building Deleted", description: "The building has been successfully deleted." });
-      setIsSubmitting(false);
-    }, 500);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message || "Could not delete building." });
+    }
+    setIsSubmitting(false);
   };
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!formName.trim() || !formInstituteId) {
       toast({ variant: "destructive", title: "Validation Error", description: "Building Name and Institute are required."});
@@ -175,39 +144,39 @@ export default function BuildingManagementPage() {
 
     setIsSubmitting(true);
     
-    setTimeout(() => { 
-      const buildingData: Omit<Building, 'id'> = { 
-        name: formName.trim(), code: formCode.trim() || undefined,
-        description: formDescription.trim() || undefined,
-        instituteId: formInstituteId,
-        status: formStatus,
-        constructionYear: formConstructionYear ? Number(formConstructionYear) : undefined,
-        numberOfFloors: formNumberOfFloors ? Number(formNumberOfFloors) : undefined,
-        totalAreaSqFt: formTotalAreaSqFt ? Number(formTotalAreaSqFt) : undefined,
-      };
+    const buildingData: Omit<BuildingType, 'id'> = { 
+      name: formName.trim(), code: formCode.trim() || undefined,
+      description: formDescription.trim() || undefined,
+      instituteId: formInstituteId,
+      status: formStatus,
+      constructionYear: formConstructionYear ? Number(formConstructionYear) : undefined,
+      numberOfFloors: formNumberOfFloors ? Number(formNumberOfFloors) : undefined,
+      totalAreaSqFt: formTotalAreaSqFt ? Number(formTotalAreaSqFt) : undefined,
+    };
 
+    try {
       if (currentBuilding && currentBuilding.id) {
-        setBuildings(prev => prev.map(b => b.id === currentBuilding.id ? { ...b, ...buildingData } : b));
+        await buildingService.updateBuilding(currentBuilding.id, buildingData);
         toast({ title: "Building Updated", description: "The building has been successfully updated." });
       } else {
-        const newBuilding: Building = { 
-          id: generateClientId(), 
-          ...buildingData
-        };
-        setBuildings(prev => [...prev, newBuilding]);
+        await buildingService.createBuilding(buildingData);
         toast({ title: "Building Created", description: "The new building has been successfully created." });
       }
-      setIsSubmitting(false);
+      await fetchBuildingsAndInstitutes();
       setIsDialogOpen(false);
       resetForm();
-    }, 1000);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Save Failed", description: (error as Error).message || "Could not save building." });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectedFile(event.target.files && event.target.files[0] ? event.target.files[0] : null);
   };
 
-  const handleImportBuildings = () => {
+  const handleImportBuildings = async () => {
     if (!selectedFile) {
       toast({ variant: "destructive", title: "Import Error", description: "Please select a CSV file to import." });
       return;
@@ -218,82 +187,18 @@ export default function BuildingManagementPage() {
     }
 
     setIsSubmitting(true);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const text = e.target?.result as string;
-        const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
-        if (lines.length <= 1) throw new Error("CSV file is empty or has only a header.");
-        
-        const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
-        const expectedHeaders = ['id', 'name', 'code', 'description', 'instituteid', 'status', 'constructionyear', 'numberoffloors', 'totalareasqft'];
-        const requiredHeaders = ['name', 'instituteid', 'status'];
-
-        if (!requiredHeaders.every(rh => header.includes(rh))) {
-            throw new Error(`CSV header is missing required columns. Expected at least: ${requiredHeaders.join(', ')}. Found: ${header.join(', ')}`);
-        }
-        
-        const hMap = Object.fromEntries(expectedHeaders.map(eh => [eh, header.indexOf(eh)]));
-
-        const importedBatch: Building[] = [];
-        const currentCopy = [...buildings];
-        let newCount = 0, updatedCount = 0;
-
-        for (let i = 1; i < lines.length; i++) {
-          const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
-          
-          const name = data[hMap['name']];
-          const instituteId = data[hMap['instituteid']];
-          const status = data[hMap['status']] as BuildingStatus;
-
-          if (!name || !instituteId || !BUILDING_STATUS_OPTIONS.find(s => s.value === status)) {
-            console.warn(`Skipping row ${i+1}: Missing or invalid required data (name, instituteId, status).`);
-            continue;
-          }
-          if (!institutes.find(inst => inst.id === instituteId)) {
-            console.warn(`Skipping row ${i+1}: Institute ID '${instituteId}' not found.`);
-            continue;
-          }
-
-          const id = data[hMap['id']];
-          const buildingData: Omit<Building, 'id'> = {
-            name, code: data[hMap['code']] || undefined,
-            description: data[hMap['description']] || undefined,
-            instituteId, status,
-            constructionYear: data[hMap['constructionyear']] ? parseInt(data[hMap['constructionyear']]) : undefined,
-            numberOfFloors: data[hMap['numberoffloors']] ? parseInt(data[hMap['numberoffloors']]) : undefined,
-            totalAreaSqFt: data[hMap['totalareasqft']] ? parseFloat(data[hMap['totalareasqft']]) : undefined,
-          };
-          
-          if (id) {
-            const existingIdx = currentCopy.findIndex(c => c.id === id);
-            if (existingIdx !== -1) {
-              currentCopy[existingIdx] = { ...currentCopy[existingIdx], ...buildingData };
-              updatedCount++;
-            } else {
-              importedBatch.push({ id, ...buildingData });
-              newCount++;
-            }
-          } else {
-            importedBatch.push({ id: generateClientId(), ...buildingData });
-            newCount++;
-          }
-        }
-        
-        const finalBuildings = [...currentCopy.filter(c => !importedBatch.find(ic => ic.id === c.id)), ...importedBatch];
-        setBuildings(finalBuildings);
-        toast({ title: "Import Successful", description: `${newCount} buildings added, ${updatedCount} buildings updated.` });
-
-      } catch (error: any) {
+    try {
+        const result = await buildingService.importBuildings(selectedFile, institutes);
+        await fetchBuildingsAndInstitutes();
+        toast({ title: "Import Successful", description: `${result.newCount} buildings added, ${result.updatedCount} updated. Skipped: ${result.skippedCount}`});
+    } catch (error: any) {
         console.error("Error processing CSV file:", error);
         toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
-      } finally {
+    } finally {
         setIsSubmitting(false); setSelectedFile(null); 
         const fileInput = document.getElementById('csvImportBuilding') as HTMLInputElement;
         if (fileInput) fileInput.value = '';
-      }
-    };
-    reader.readAsText(selectedFile);
+    }
   };
 
   const handleExportBuildings = () => {
@@ -301,15 +206,21 @@ export default function BuildingManagementPage() {
       toast({ title: "Export Canceled", description: "No buildings to export (check filters)." });
       return;
     }
-    const header = ['id', 'name', 'code', 'description', 'instituteId', 'status', 'constructionYear', 'numberOfFloors', 'totalAreaSqFt'];
+    const header = ['id', 'name', 'code', 'description', 'instituteId', 'instituteName', 'instituteCode', 'status', 'constructionYear', 'numberOfFloors', 'totalAreaSqFt'];
     const csvRows = [
       header.join(','),
-      ...filteredAndSortedBuildings.map(b => [
-        b.id, `"${b.name.replace(/"/g, '""')}"`, b.code || "", 
-        `"${(b.description || "").replace(/"/g, '""')}"`,
-        b.instituteId, b.status, b.constructionYear || "", 
-        b.numberOfFloors || "", b.totalAreaSqFt || ""
-      ].join(','))
+      ...filteredAndSortedBuildings.map(b => {
+        const inst = institutes.find(i => i.id === b.instituteId);
+        return [
+          b.id, `"${b.name.replace(/"/g, '""')}"`, b.code || "", 
+          `"${(b.description || "").replace(/"/g, '""')}"`,
+          b.instituteId, 
+          `"${(inst?.name || "").replace(/"/g, '""')}"`,
+          `"${(inst?.code || "").replace(/"/g, '""')}"`,
+          b.status, b.constructionYear || "", 
+          b.numberOfFloors || "", b.totalAreaSqFt || ""
+        ].join(',')
+      })
     ];
     const csvString = csvRows.join('\r\n');
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
@@ -321,9 +232,9 @@ export default function BuildingManagementPage() {
   };
 
   const handleDownloadSampleCsv = () => {
-    const sampleCsvContent = `id,name,code,description,instituteId,status,constructionYear,numberOfFloors,totalAreaSqFt
-bldg_sample_1,Science Block,SCI,"Labs for Physics and Chemistry",inst1,active,2005,2,20000
-,Library Building,LIB,,inst1,inactive,1980,1,15000
+    const sampleCsvContent = `id,name,code,description,instituteId,instituteName,instituteCode,status,constructionYear,numberOfFloors,totalAreaSqFt
+bldg_sample_1,Science Block,SCI,"Labs for Physics and Chemistry",inst1,"Government Polytechnic Palanpur","GPP",active,2005,2,20000
+,Library Building,LIB,,inst1,"Government Polytechnic Palanpur","GPP",inactive,1980,1,15000
 `; 
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -361,11 +272,11 @@ bldg_sample_1,Science Block,SCI,"Labs for Physics and Chemistry",inst1,active,20
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA: any = a[sortField as keyof Building];
-        let valB: any = b[sortField as keyof Building];
+        let valA: any = a[sortField as keyof BuildingType];
+        let valB: any = b[sortField as keyof BuildingType];
         
-        const numericFields: (keyof Building)[] = ['constructionYear', 'numberOfFloors', 'totalAreaSqFt'];
-        if (numericFields.includes(sortField as keyof Building)) {
+        const numericFields: (keyof BuildingType)[] = ['constructionYear', 'numberOfFloors', 'totalAreaSqFt'];
+        if (numericFields.includes(sortField as keyof BuildingType)) {
             valA = Number(valA) || 0; valB = Number(valB) || 0;
         }
         
@@ -403,18 +314,23 @@ bldg_sample_1,Science Block,SCI,"Labs for Physics and Chemistry",inst1,active,20
     setSelectedBuildingIds(prev => checked ? [...prev, buildingId] : prev.filter(id => id !== buildingId));
   };
 
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = async () => {
     if (selectedBuildingIds.length === 0) {
       toast({ variant: "destructive", title: "No Buildings Selected", description: "Please select buildings to delete." });
       return;
     }
     setIsSubmitting(true);
-    setTimeout(() => {
-      setBuildings(prev => prev.filter(b => !selectedBuildingIds.includes(b.id)));
-      setSelectedBuildingIds([]);
-      toast({ title: "Buildings Deleted", description: `${selectedBuildingIds.length} building(s) have been successfully deleted.` });
-      setIsSubmitting(false);
-    }, 500);
+    try {
+        for(const id of selectedBuildingIds) {
+            await buildingService.deleteBuilding(id);
+        }
+        await fetchBuildingsAndInstitutes();
+        toast({ title: "Buildings Deleted", description: `${selectedBuildingIds.length} building(s) have been successfully deleted.` });
+        setSelectedBuildingIds([]);
+    } catch (error) {
+        toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message || "Could not delete selected buildings."});
+    }
+    setIsSubmitting(false);
   };
   
   const isAllSelectedOnPage = paginatedBuildings.length > 0 && paginatedBuildings.every(b => selectedBuildingIds.includes(b.id));
@@ -470,7 +386,7 @@ bldg_sample_1,Science Block,SCI,"Labs for Physics and Chemistry",inst1,active,20
                   
                   <div className="md:col-span-1">
                     <Label htmlFor="instituteId">Institute *</Label>
-                    <Select value={formInstituteId} onValueChange={setFormInstituteId} disabled={isSubmitting} required>
+                    <Select value={formInstituteId} onValueChange={setFormInstituteId} disabled={isSubmitting || institutes.length === 0} required>
                       <SelectTrigger id="instituteId"><SelectValue placeholder="Select Institute" /></SelectTrigger>
                       <SelectContent>{institutes.map(i => <SelectItem key={i.id} value={i.id}>{i.name} ({i.code})</SelectItem>)}</SelectContent>
                     </Select>
@@ -514,7 +430,7 @@ bldg_sample_1,Science Block,SCI,"Labs for Physics and Chemistry",inst1,active,20
                     <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  CSV fields: id (optional), name, code, description, instituteId, status, constructionYear, numberOfFloors, totalAreaSqFt.
+                  CSV fields: id (optional), name, code, description, instituteId OR (instituteName and instituteCode), status, constructionYear, numberOfFloors, totalAreaSqFt.
                 </p>
             </div>
           </div>
@@ -560,7 +476,7 @@ bldg_sample_1,Science Block,SCI,"Labs for Physics and Chemistry",inst1,active,20
           <Table>
             <TableHeader>
               <TableRow>
-                 <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedBuildings.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={handleSelectAll} aria-label="Select all buildings on this page"/></TableHead>
+                 <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedBuildings.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all buildings on this page"/></TableHead>
                 <SortableTableHeader field="name" label="Building Name" />
                 <SortableTableHeader field="code" label="Code" />
                 <TableHead>Institute</TableHead>

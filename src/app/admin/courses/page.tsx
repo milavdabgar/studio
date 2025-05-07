@@ -14,64 +14,16 @@ import { PlusCircle, Edit, Trash2, ClipboardList, Loader2, UploadCloud, Download
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
+import type { Course, Department, Program } from '@/types/entities';
+import { courseService } from '@/lib/api/courses';
+import { departmentService } from '@/lib/api/departments';
+import { programService } from '@/lib/api/programs';
 
-interface Course {
-  id: string;
-  subcode: string; // Subject Code
-  branchCode?: string; // Optional, as some courses might be general
-  effFrom?: string; // Effective From Year, e.g., 2024-25
-  subjectName: string;
-  category?: string; // e.g., Basic Science Courses, Program Core
-  semester: number; // Semester or Year
-  lectureHours: number; // L
-  tutorialHours: number; // T
-  practicalHours: number; // P
-  credits: number; // Total Credits (L+T+P)
-  theoryEseMarks: number; // Theory ESE (E)
-  theoryPaMarks: number; // Theory PA (M)
-  practicalEseMarks: number; // Practical ESE/Viva (V)
-  practicalPaMarks: number; // Practical PA (I)
-  totalMarks: number; // (E+M+V+I)
-  isElective: boolean;
-  isTheory: boolean;
-  theoryExamDuration?: string; // e.g., 2.5 Hrs
-  isPractical: boolean;
-  practicalExamDuration?: string;
-  isFunctional: boolean;
-  isSemiPractical?: boolean; // If applicable
-  remarks?: string;
-  departmentId: string; // Associated department
-  programId: string; // Associated program
-}
-
-interface Department {
-  id: string;
-  name: string;
-  code: string;
-}
-
-interface Program {
-  id: string;
-  name: string;
-  code: string;
-  departmentId: string;
-}
-
-const initialCourses: Course[] = [
-  { id: "crs1", subcode: "DI01000021", branchCode: "011", effFrom: "2024-25", subjectName: "Mathematics-I", category: "Basic Science Courses", semester: 1, lectureHours: 3, tutorialHours: 1, practicalHours: 0, credits: 4, theoryEseMarks: 70, theoryPaMarks: 30, practicalEseMarks: 0, practicalPaMarks: 0, totalMarks: 100, isElective: false, isTheory: true, theoryExamDuration: "2.5 Hrs", isPractical: false, isFunctional: true, departmentId: "dept6", programId: "prog1" },
-  { id: "crs2", subcode: "CE01000001", branchCode: "005", effFrom: "2023-24", subjectName: "Introduction to Computer Engg", category: "Program Core", semester: 1, lectureHours: 2, tutorialHours: 0, practicalHours: 2, credits: 3, theoryEseMarks: 50, theoryPaMarks: 25, practicalEseMarks: 25, practicalPaMarks: 0, totalMarks: 100, isElective: false, isTheory: true, isPractical: true, isFunctional: true, departmentId: "dept1", programId: "prog1" },
-];
-
-const LOCAL_STORAGE_KEY_COURSES = 'managedCoursesPMP';
-const LOCAL_STORAGE_KEY_DEPARTMENTS = 'managedDepartmentsPMP';
-const LOCAL_STORAGE_KEY_PROGRAMS = 'managedProgramsPMP';
 
 type SortField = keyof Course | 'none';
 type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
-
-const generateClientId = (): string => `crs_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export default function CourseManagementPage() {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -124,50 +76,39 @@ export default function CourseManagementPage() {
 
   const { toast } = useToast();
 
-  useEffect(() => {
+  const fetchInitialData = async () => {
     setIsLoading(true);
     try {
-      const storedCourses = localStorage.getItem(LOCAL_STORAGE_KEY_COURSES);
-      setCourses(storedCourses ? JSON.parse(storedCourses) : initialCourses);
-
-      const storedDepartments = localStorage.getItem(LOCAL_STORAGE_KEY_DEPARTMENTS);
-      setDepartments(storedDepartments ? JSON.parse(storedDepartments) : []);
-      
-      const storedPrograms = localStorage.getItem(LOCAL_STORAGE_KEY_PROGRAMS);
-      setPrograms(storedPrograms ? JSON.parse(storedPrograms) : []);
-
+      const [courseData, deptData, progData] = await Promise.all([
+        courseService.getAllCourses(),
+        departmentService.getAllDepartments(),
+        programService.getAllPrograms()
+      ]);
+      setCourses(courseData);
+      setDepartments(deptData);
+      setPrograms(progData);
+      if (deptData.length > 0 && !formDepartmentId) {
+        setFormDepartmentId(deptData[0].id);
+      }
     } catch (error) {
-      console.error("Failed to load data from localStorage", error);
-      setCourses(initialCourses);
-      setDepartments([]);
-      setPrograms([]);
+      console.error("Failed to load data", error);
+      toast({ variant: "destructive", title: "Error", description: "Could not load initial course data." });
     }
     setIsLoading(false);
-  }, []);
+  };
 
   useEffect(() => {
-    if(!isLoading) { 
-        try {
-            localStorage.setItem(LOCAL_STORAGE_KEY_COURSES, JSON.stringify(courses));
-        } catch (error) {
-            console.error("Failed to save courses to localStorage", error);
-            toast({
-                variant: "destructive",
-                title: "Storage Error",
-                description: "Could not save course data locally. Changes might be lost.",
-            });
-        }
-    }
-  }, [courses, isLoading, toast]);
+    fetchInitialData();
+  }, []);
 
   useEffect(() => {
     if (formDepartmentId) {
       setFilteredPrograms(programs.filter(p => p.departmentId === formDepartmentId));
       if(!programs.find(p => p.id === formProgramId && p.departmentId === formDepartmentId)){
-        setFormProgramId(''); // Reset program if it doesn't belong to the selected department
+        setFormProgramId(''); 
       }
     } else {
-      setFilteredPrograms(programs);
+      setFilteredPrograms(programs); // Show all programs if no department selected, or handle as needed
     }
   }, [formDepartmentId, programs, formProgramId]);
 
@@ -213,23 +154,25 @@ export default function CourseManagementPage() {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (courseId: string) => {
+  const handleDelete = async (courseId: string) => {
     setIsSubmitting(true);
-    setTimeout(() => { 
-      setCourses(prev => prev.filter(c => c.id !== courseId));
+    try {
+      await courseService.deleteCourse(courseId);
+      await fetchInitialData(); // Re-fetch courses
       setSelectedCourseIds(prev => prev.filter(id => id !== courseId));
       toast({ title: "Course Deleted", description: "The course has been successfully deleted." });
-      setIsSubmitting(false);
-    }, 500);
+    } catch(error) {
+      toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message || "Could not delete course." });
+    }
+    setIsSubmitting(false);
   };
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!formSubcode.trim() || !formSubjectName.trim() || !formDepartmentId || !formProgramId || formSemester <=0 ) {
       toast({ variant: "destructive", title: "Validation Error", description: "Subcode, Subject Name, Department, Program and Semester are required."});
       return;
     }
-    // Additional validations for numeric fields
     const numericFields = {formLectureHours, formTutorialHours, formPracticalHours, formTheoryEseMarks, formTheoryPaMarks, formPracticalEseMarks, formPracticalPaMarks};
     for (const [key, value] of Object.entries(numericFields)) {
         if (value < 0 || isNaN(value)) {
@@ -240,46 +183,46 @@ export default function CourseManagementPage() {
 
     setIsSubmitting(true);
     
-    setTimeout(() => { 
-      const credits = formLectureHours + formTutorialHours + formPracticalHours;
-      const totalMarks = formTheoryEseMarks + formTheoryPaMarks + formPracticalEseMarks + formPracticalPaMarks;
+    const credits = formLectureHours + formTutorialHours + formPracticalHours;
+    const totalMarks = formTheoryEseMarks + formTheoryPaMarks + formPracticalEseMarks + formPracticalPaMarks;
 
-      const courseData: Omit<Course, 'id'> = { 
-        subcode: formSubcode.trim().toUpperCase(), branchCode: formBranchCode.trim() || undefined,
-        effFrom: formEffFrom.trim() || undefined, subjectName: formSubjectName.trim(),
-        category: formCategory.trim() || undefined, semester: formSemester,
-        lectureHours: formLectureHours, tutorialHours: formTutorialHours, practicalHours: formPracticalHours,
-        credits, theoryEseMarks: formTheoryEseMarks, theoryPaMarks: formTheoryPaMarks,
-        practicalEseMarks: formPracticalEseMarks, practicalPaMarks: formPracticalPaMarks, totalMarks,
-        isElective: formIsElective, isTheory: formIsTheory, theoryExamDuration: formTheoryExamDuration.trim() || undefined,
-        isPractical: formIsPractical, practicalExamDuration: formPracticalExamDuration.trim() || undefined,
-        isFunctional: formIsFunctional, isSemiPractical: formIsSemiPractical || false,
-        remarks: formRemarks.trim() || undefined,
-        departmentId: formDepartmentId, programId: formProgramId,
-      };
-
+    const courseData: Omit<Course, 'id'> = { 
+      subcode: formSubcode.trim().toUpperCase(), branchCode: formBranchCode.trim() || undefined,
+      effFrom: formEffFrom.trim() || undefined, subjectName: formSubjectName.trim(),
+      category: formCategory.trim() || undefined, semester: formSemester,
+      lectureHours: formLectureHours, tutorialHours: formTutorialHours, practicalHours: formPracticalHours,
+      credits, theoryEseMarks: formTheoryEseMarks, theoryPaMarks: formTheoryPaMarks,
+      practicalEseMarks: formPracticalEseMarks, practicalPaMarks: formPracticalPaMarks, totalMarks,
+      isElective: formIsElective, isTheory: formIsTheory, theoryExamDuration: formTheoryExamDuration.trim() || undefined,
+      isPractical: formIsPractical, practicalExamDuration: formPracticalExamDuration.trim() || undefined,
+      isFunctional: formIsFunctional, isSemiPractical: formIsSemiPractical || false,
+      remarks: formRemarks.trim() || undefined,
+      departmentId: formDepartmentId, programId: formProgramId,
+    };
+    
+    try {
       if (currentCourse && currentCourse.id) {
-        setCourses(prev => prev.map(c => c.id === currentCourse.id ? { ...c, ...courseData } : c));
+        await courseService.updateCourse(currentCourse.id, courseData);
         toast({ title: "Course Updated", description: "The course has been successfully updated." });
       } else {
-        const newCourse: Course = { 
-          id: generateClientId(), 
-          ...courseData
-        };
-        setCourses(prev => [...prev, newCourse]);
+        await courseService.createCourse(courseData);
         toast({ title: "Course Created", description: "The new course has been successfully created." });
       }
-      setIsSubmitting(false);
+      await fetchInitialData(); // Re-fetch courses
       setIsDialogOpen(false);
       resetForm();
-    }, 1000);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Save Failed", description: (error as Error).message || "Could not save course." });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectedFile(event.target.files && event.target.files[0] ? event.target.files[0] : null);
   };
 
-  const handleImportCourses = () => {
+  const handleImportCourses = async () => {
     if (!selectedFile) {
       toast({ variant: "destructive", title: "Import Error", description: "Please select a CSV file to import." });
       return;
@@ -290,103 +233,18 @@ export default function CourseManagementPage() {
     }
 
     setIsSubmitting(true);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const text = e.target?.result as string;
-        const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
-        if (lines.length <= 1) throw new Error("CSV file is empty or has only a header.");
-        
-        const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
-        const expectedHeaders = ['id', 'subcode', 'branchcode', 'efffrom', 'subjectname', 'category', 'semester', 'lecturehours', 'tutorialhours', 'practicalhours', 'credits', 'theoryesemarks', 'theorypamarks', 'practicalesemarks', 'practicalpamarks', 'totalmarks', 'iselective', 'istheory', 'theoryexamduration', 'ispractical', 'practicalexamduration', 'isfunctional', 'issemipractical', 'remarks', 'departmentid', 'programid'];
-        const requiredHeaders = ['subcode', 'subjectname', 'semester', 'departmentid', 'programid'];
-
-        if (!requiredHeaders.every(rh => header.includes(rh))) {
-            throw new Error(`CSV header is missing required columns. Expected at least: ${requiredHeaders.join(', ')}. Found: ${header.join(', ')}`);
-        }
-        
-        const hMap = Object.fromEntries(expectedHeaders.map(eh => [eh, header.indexOf(eh)]));
-
-        const importedBatch: Course[] = [];
-        const currentCopy = [...courses];
-        let newCount = 0, updatedCount = 0;
-
-        for (let i = 1; i < lines.length; i++) {
-          const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
-          
-          const subcode = data[hMap['subcode']];
-          const subjectName = data[hMap['subjectname']];
-          const semesterStr = data[hMap['semester']];
-          const departmentId = data[hMap['departmentid']];
-          const programId = data[hMap['programid']];
-
-          if (!subcode || !subjectName || !semesterStr || !departmentId || !programId ) {
-            console.warn(`Skipping row ${i+1}: Missing or invalid required data (subcode, subjectName, semester, departmentId, programId).`);
-            continue;
-          }
-          if (!departments.find(d => d.id === departmentId) || !programs.find(p => p.id === programId && p.departmentId === departmentId)) {
-            console.warn(`Skipping row ${i+1}: Department ID '${departmentId}' or Program ID '${programId}' not found or mismatched.`);
-            continue;
-          }
-          const semester = parseInt(semesterStr);
-          if(isNaN(semester) || semester <=0) {
-            console.warn(`Skipping row ${i+1}: Invalid semester value '${semesterStr}'.`);
-            continue;
-          }
-
-          const id = data[hMap['id']];
-          const courseData: Omit<Course, 'id'> = {
-            subcode: subcode.toUpperCase(), branchCode: data[hMap['branchcode']] || undefined,
-            effFrom: data[hMap['efffrom']] || undefined, subjectName, category: data[hMap['category']] || undefined,
-            semester, lectureHours: parseInt(data[hMap['lecturehours']]) || 0,
-            tutorialHours: parseInt(data[hMap['tutorialhours']]) || 0, practicalHours: parseInt(data[hMap['practicalhours']]) || 0,
-            credits: parseInt(data[hMap['credits']]) || 0, // Or calculate
-            theoryEseMarks: parseInt(data[hMap['theoryesemarks']]) || 0, theoryPaMarks: parseInt(data[hMap['theorypamarks']]) || 0,
-            practicalEseMarks: parseInt(data[hMap['practicalesemarks']]) || 0, practicalPaMarks: parseInt(data[hMap['practicalpamarks']]) || 0,
-            totalMarks: parseInt(data[hMap['totalmarks']]) || 0, // Or calculate
-            isElective: data[hMap['iselective']]?.toLowerCase() === 'true',
-            isTheory: data[hMap['istheory']]?.toLowerCase() !== 'false', // Default true
-            theoryExamDuration: data[hMap['theoryexamduration']] || undefined,
-            isPractical: data[hMap['ispractical']]?.toLowerCase() === 'true',
-            practicalExamDuration: data[hMap['practicalexamduration']] || undefined,
-            isFunctional: data[hMap['isfunctional']]?.toLowerCase() !== 'false', // Default true
-            isSemiPractical: data[hMap['issemipractical']]?.toLowerCase() === 'true',
-            remarks: data[hMap['remarks']] || undefined,
-            departmentId, programId,
-          };
-           // Recalculate credits and totalMarks based on imported L,T,P and marks
-          courseData.credits = courseData.lectureHours + courseData.tutorialHours + courseData.practicalHours;
-          courseData.totalMarks = courseData.theoryEseMarks + courseData.theoryPaMarks + courseData.practicalEseMarks + courseData.practicalPaMarks;
-          
-          if (id) {
-            const existingIdx = currentCopy.findIndex(c => c.id === id);
-            if (existingIdx !== -1) {
-              currentCopy[existingIdx] = { ...currentCopy[existingIdx], ...courseData };
-              updatedCount++;
-            } else {
-              importedBatch.push({ id, ...courseData });
-              newCount++;
-            }
-          } else {
-            importedBatch.push({ id: generateClientId(), ...courseData });
-            newCount++;
-          }
-        }
-        
-        const finalCourses = [...currentCopy.filter(c => !importedBatch.find(ic => ic.id === c.id)), ...importedBatch];
-        setCourses(finalCourses);
-        toast({ title: "Import Successful", description: `${newCount} courses added, ${updatedCount} courses updated.` });
-
-      } catch (error: any) {
-        console.error("Error processing CSV file:", error);
-        toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
-      } finally {
-        setIsSubmitting(false); setSelectedFile(null); 
-        const fileInput = document.getElementById('csvImportCourse') as HTMLInputElement;
-        if (fileInput) fileInput.value = '';
-      }
-    };
-    reader.readAsText(selectedFile);
+    try {
+      const result = await courseService.importCourses(selectedFile, departments, programs);
+      await fetchInitialData();
+      toast({ title: "Import Successful", description: `${result.newCount} courses added, ${result.updatedCount} courses updated. Skipped: ${result.skippedCount}` });
+    } catch (error: any) {
+      console.error("Error processing CSV file:", error);
+      toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
+    } finally {
+      setIsSubmitting(false); setSelectedFile(null); 
+      const fileInput = document.getElementById('csvImportCourse') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+    }
   };
 
   const handleExportCourses = () => {
@@ -394,17 +252,22 @@ export default function CourseManagementPage() {
       toast({ title: "Export Canceled", description: "No courses to export (check filters)." });
       return;
     }
-    const header = ['id', 'subcode', 'branchCode', 'effFrom', 'subjectName', 'category', 'semester', 'lectureHours', 'tutorialHours', 'practicalHours', 'credits', 'theoryEseMarks', 'theoryPaMarks', 'practicalEseMarks', 'practicalPaMarks', 'totalMarks', 'isElective', 'isTheory', 'theoryExamDuration', 'isPractical', 'practicalExamDuration', 'isFunctional', 'isSemiPractical', 'remarks', 'departmentId', 'programId'];
+    const header = ['id', 'subcode', 'branchCode', 'effFrom', 'subjectName', 'category', 'semester', 'lectureHours', 'tutorialHours', 'practicalHours', 'credits', 'theoryEseMarks', 'theoryPaMarks', 'practicalEseMarks', 'practicalPaMarks', 'totalMarks', 'isElective', 'isTheory', 'theoryExamDuration', 'isPractical', 'practicalExamDuration', 'isFunctional', 'isSemiPractical', 'remarks', 'departmentId', 'departmentName', 'departmentCode', 'programId', 'programName', 'programCode'];
     const csvRows = [
       header.join(','),
-      ...filteredAndSortedCourses.map(c => [
-        c.id, c.subcode, c.branchCode || "", c.effFrom || "", `"${c.subjectName.replace(/"/g, '""')}"`,
-        `"${(c.category || "").replace(/"/g, '""')}"`, c.semester, c.lectureHours, c.tutorialHours, c.practicalHours,
-        c.credits, c.theoryEseMarks, c.theoryPaMarks, c.practicalEseMarks, c.practicalPaMarks, c.totalMarks,
-        c.isElective, c.isTheory, c.theoryExamDuration || "", c.isPractical, c.practicalExamDuration || "",
-        c.isFunctional, c.isSemiPractical || false, `"${(c.remarks || "").replace(/"/g, '""')}"`,
-        c.departmentId, c.programId
-      ].join(','))
+      ...filteredAndSortedCourses.map(c => {
+        const dept = departments.find(d => d.id === c.departmentId);
+        const prog = programs.find(p => p.id === c.programId);
+        return [
+          c.id, c.subcode, c.branchCode || "", c.effFrom || "", `"${c.subjectName.replace(/"/g, '""')}"`,
+          `"${(c.category || "").replace(/"/g, '""')}"`, c.semester, c.lectureHours, c.tutorialHours, c.practicalHours,
+          c.credits, c.theoryEseMarks, c.theoryPaMarks, c.practicalEseMarks, c.practicalPaMarks, c.totalMarks,
+          c.isElective, c.isTheory, c.theoryExamDuration || "", c.isPractical, c.practicalExamDuration || "",
+          c.isFunctional, c.isSemiPractical || false, `"${(c.remarks || "").replace(/"/g, '""')}"`,
+          c.departmentId, `"${(dept?.name || "").replace(/"/g, '""')}"`, `"${(dept?.code || "").replace(/"/g, '""')}"`,
+          c.programId, `"${(prog?.name || "").replace(/"/g, '""')}"`, `"${(prog?.code || "").replace(/"/g, '""')}"`
+        ].join(',')
+      })
     ];
     const csvString = csvRows.join('\r\n');
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
@@ -416,9 +279,9 @@ export default function CourseManagementPage() {
   };
 
   const handleDownloadSampleCsv = () => {
-    const sampleCsvContent = `id,subcode,branchCode,effFrom,subjectName,category,semester,lectureHours,tutorialHours,practicalHours,credits,theoryEseMarks,theoryPaMarks,practicalEseMarks,practicalPaMarks,totalMarks,isElective,isTheory,theoryExamDuration,isPractical,practicalExamDuration,isFunctional,isSemiPractical,remarks,departmentId,programId
-crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,25,25,150,false,true,2.5 Hrs,true,2 Hrs,true,false,"Basic programming concepts",dept1,prog1
-,MA101,,2024-25,Calculus I,Basic Science,1,4,0,0,4,100,0,0,0,100,false,true,3 Hrs,false,,true,false,,dept6,prog1
+    const sampleCsvContent = `id,subcode,branchCode,effFrom,subjectName,category,semester,lectureHours,tutorialHours,practicalHours,credits,theoryEseMarks,theoryPaMarks,practicalEseMarks,practicalPaMarks,totalMarks,isElective,isTheory,theoryExamDuration,isPractical,practicalExamDuration,isFunctional,isSemiPractical,remarks,departmentId,departmentName,departmentCode,programId,programName,programCode
+crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,25,25,150,false,true,2.5 Hrs,true,2 Hrs,true,false,"Basic programming concepts",dept1,"Computer Engineering","CE",prog1,"Diploma in CE","DCE"
+,MA101,,2024-25,Calculus I,Basic Science,1,4,0,0,4,100,0,0,0,100,false,true,3 Hrs,false,,true,false,,dept_gen,"General Department","GEN",prog1,"Diploma in CE","DCE"
 `; 
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -502,18 +365,23 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
     setSelectedCourseIds(prev => checked ? [...prev, courseId] : prev.filter(id => id !== courseId));
   };
 
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = async () => {
     if (selectedCourseIds.length === 0) {
       toast({ variant: "destructive", title: "No Courses Selected", description: "Please select courses to delete." });
       return;
     }
     setIsSubmitting(true);
-    setTimeout(() => {
-      setCourses(prev => prev.filter(c => !selectedCourseIds.includes(c.id)));
-      setSelectedCourseIds([]);
+    try {
+      for (const id of selectedCourseIds) {
+        await courseService.deleteCourse(id);
+      }
+      await fetchInitialData();
       toast({ title: "Courses Deleted", description: `${selectedCourseIds.length} course(s) have been successfully deleted.` });
-      setIsSubmitting(false);
-    }, 500);
+      setSelectedCourseIds([]);
+    } catch (error) {
+       toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message || "Could not delete selected courses."});
+    }
+    setIsSubmitting(false);
   };
   
   const isAllSelectedOnPage = paginatedCourses.length > 0 && paginatedCourses.every(c => selectedCourseIds.includes(c.id));
@@ -578,14 +446,14 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
                   {/* Department & Program */}
                   <div className="md:col-span-1">
                     <Label htmlFor="departmentId">Department *</Label>
-                    <Select value={formDepartmentId} onValueChange={val => {setFormDepartmentId(val); setFormProgramId('');}} disabled={isSubmitting} required>
+                    <Select value={formDepartmentId} onValueChange={val => {setFormDepartmentId(val); setFormProgramId('');}} disabled={isSubmitting || departments.length === 0} required>
                       <SelectTrigger id="departmentId"><SelectValue placeholder="Select Department" /></SelectTrigger>
                       <SelectContent>{departments.map(d => <SelectItem key={d.id} value={d.id}>{d.name} ({d.code})</SelectItem>)}</SelectContent>
                     </Select>
                   </div>
                   <div className="md:col-span-1">
                     <Label htmlFor="programId">Program *</Label>
-                    <Select value={formProgramId} onValueChange={setFormProgramId} disabled={isSubmitting || !formDepartmentId} required>
+                    <Select value={formProgramId} onValueChange={setFormProgramId} disabled={isSubmitting || !formDepartmentId || filteredPrograms.length === 0} required>
                       <SelectTrigger id="programId"><SelectValue placeholder="Select Program" /></SelectTrigger>
                       <SelectContent>{filteredPrograms.map(p => <SelectItem key={p.id} value={p.id}>{p.name} ({p.code})</SelectItem>)}</SelectContent>
                     </Select>
@@ -650,7 +518,7 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
                     <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  CSV format fields: id (optional), subcode, subjectName, semester, departmentId, programId, and other relevant fields.
+                  CSV fields: id (opt), subcode, subjectName, semester, departmentId/Name/Code, programId/Name/Code, and other fields.
                 </p>
             </div>
           </div>
@@ -675,7 +543,7 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
             </div>
             <div>
               <Label htmlFor="filterDepartment">Filter by Department</Label>
-              <Select value={filterDepartmentVal} onValueChange={val => {setFilterDepartmentVal(val); setFilterProgramVal('all');}}>
+              <Select value={filterDepartmentVal} onValueChange={val => {setFilterDepartmentVal(val); setFilterProgramVal('all');}} disabled={departments.length === 0}>
                 <SelectTrigger id="filterDepartment"><SelectValue placeholder="All Departments" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Departments</SelectItem>
@@ -709,7 +577,7 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
           <Table>
             <TableHeader>
               <TableRow>
-                 <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedCourses.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={handleSelectAll} aria-label="Select all courses on this page"/></TableHead>
+                 <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedCourses.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all courses on this page"/></TableHead>
                 <SortableTableHeader field="subjectName" label="Subject Name" />
                 <SortableTableHeader field="subcode" label="Sub. Code" />
                 <SortableTableHeader field="semester" label="Sem" />
@@ -765,3 +633,4 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
     </div>
   );
 }
+

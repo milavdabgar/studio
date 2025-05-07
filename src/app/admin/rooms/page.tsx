@@ -13,40 +13,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { PlusCircle, Edit, Trash2, DoorOpen, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
+import type { Room, Building, RoomType, RoomStatus } from '@/types/entities';
+import { roomService } from '@/lib/api/rooms';
+import { buildingService } from '@/lib/api/buildings';
 
-type RoomType = 'Lecture Hall' | 'Laboratory' | 'Office' | 'Staff Room' | 'Workshop' | 'Library' | 'Store Room' | 'Other';
+
 const ROOM_TYPE_OPTIONS: RoomType[] = ['Lecture Hall', 'Laboratory', 'Office', 'Staff Room', 'Workshop', 'Library', 'Store Room', 'Other'];
-
-interface Room {
-  id: string;
-  roomNumber: string; // e.g., A-001, G-105
-  name?: string; // Optional descriptive name, e.g., "Physics Lab"
-  buildingId: string;
-  floor?: number;
-  type: RoomType;
-  capacity?: number;
-  areaSqFt?: number;
-  status: 'available' | 'occupied' | 'under_maintenance' | 'unavailable';
-  notes?: string;
-}
-
-interface Building {
-  id: string;
-  name: string;
-  code?: string;
-}
-
-const initialRooms: Room[] = [
-  { id: "room1", roomNumber: "A-001", name: "Principal's Office", buildingId: "bldg1", floor: 0, type: "Office", capacity: 5, areaSqFt: 500, status: "occupied", notes: "Main admin office." },
-  { id: "room2", roomNumber: "NAC-101", name: "Electronics Lab", buildingId: "bldg2", floor: 1, type: "Laboratory", capacity: 30, areaSqFt: 1200, status: "available" },
-  { id: "room3", roomNumber: "NAC-205", buildingId: "bldg2", floor: 2, type: "Lecture Hall", capacity: 60, areaSqFt: 1000, status: "available" },
-  { id: "room4", roomNumber: "WRK-002", name: "Fitting Shop", buildingId: "bldg3", type: "Workshop", capacity: 25, status: "under_maintenance" },
-];
-
-const LOCAL_STORAGE_KEY_ROOMS = 'managedRoomsPMP';
-const LOCAL_STORAGE_KEY_BUILDINGS = 'managedBuildingsPMP';
-
-type RoomStatus = 'available' | 'occupied' | 'under_maintenance' | 'unavailable';
 const ROOM_STATUS_OPTIONS: { value: RoomStatus, label: string }[] = [
     { value: "available", label: "Available" },
     { value: "occupied", label: "Occupied" },
@@ -59,8 +31,6 @@ type SortField = keyof Room | 'none';
 type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
-
-const generateClientId = (): string => `room_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export default function RoomManagementPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -95,37 +65,28 @@ export default function RoomManagementPage() {
 
   const { toast } = useToast();
 
-  useEffect(() => {
+  const fetchRoomsAndBuildings = async () => {
     setIsLoading(true);
     try {
-      const storedRooms = localStorage.getItem(LOCAL_STORAGE_KEY_ROOMS);
-      setRooms(storedRooms ? JSON.parse(storedRooms) : initialRooms);
-
-      const storedBuildings = localStorage.getItem(LOCAL_STORAGE_KEY_BUILDINGS);
-      setBuildings(storedBuildings ? JSON.parse(storedBuildings) : []);
-
+      const [roomData, buildingData] = await Promise.all([
+        roomService.getAllRooms(),
+        buildingService.getAllBuildings()
+      ]);
+      setRooms(roomData);
+      setBuildings(buildingData);
+      if (buildingData.length > 0 && !formBuildingId) {
+        setFormBuildingId(buildingData[0].id);
+      }
     } catch (error) {
-      console.error("Failed to load data from localStorage", error);
-      setRooms(initialRooms);
-      setBuildings([]);
+      console.error("Failed to load data", error);
+      toast({ variant: "destructive", title: "Error", description: "Could not load rooms or buildings data." });
     }
     setIsLoading(false);
-  }, []);
+  };
 
   useEffect(() => {
-    if(!isLoading) { 
-        try {
-            localStorage.setItem(LOCAL_STORAGE_KEY_ROOMS, JSON.stringify(rooms));
-        } catch (error) {
-            console.error("Failed to save rooms to localStorage", error);
-            toast({
-                variant: "destructive",
-                title: "Storage Error",
-                description: "Could not save room data locally. Changes might be lost.",
-            });
-        }
-    }
-  }, [rooms, isLoading, toast]);
+    fetchRoomsAndBuildings();
+  }, []);
 
   const resetForm = () => {
     setFormRoomNumber(''); setFormName(''); 
@@ -140,10 +101,10 @@ export default function RoomManagementPage() {
     setFormRoomNumber(room.roomNumber);
     setFormName(room.name || '');
     setFormBuildingId(room.buildingId);
-    setFormFloor(room.floor || undefined);
+    setFormFloor(room.floor === null ? undefined : room.floor);
     setFormType(room.type);
-    setFormCapacity(room.capacity || undefined);
-    setFormAreaSqFt(room.areaSqFt || undefined);
+    setFormCapacity(room.capacity === null ? undefined : room.capacity);
+    setFormAreaSqFt(room.areaSqFt === null ? undefined : room.areaSqFt);
     setFormStatus(room.status);
     setFormNotes(room.notes || '');
     setIsDialogOpen(true);
@@ -158,17 +119,20 @@ export default function RoomManagementPage() {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (roomId: string) => {
+  const handleDelete = async (roomId: string) => {
     setIsSubmitting(true);
-    setTimeout(() => { 
-      setRooms(prev => prev.filter(r => r.id !== roomId));
+    try {
+      await roomService.deleteRoom(roomId);
+      await fetchRoomsAndBuildings();
       setSelectedRoomIds(prev => prev.filter(id => id !== roomId));
       toast({ title: "Room Deleted", description: "The room has been successfully deleted." });
-      setIsSubmitting(false);
-    }, 500);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message || "Could not delete room." });
+    }
+    setIsSubmitting(false);
   };
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!formRoomNumber.trim() || !formBuildingId) {
       toast({ variant: "destructive", title: "Validation Error", description: "Room Number and Building are required."});
@@ -176,7 +140,7 @@ export default function RoomManagementPage() {
     }
     const numericFields = {formFloor, formCapacity, formAreaSqFt};
     for (const [key, value] of Object.entries(numericFields)) {
-        if (value !== undefined && (isNaN(value))) { // Allow negative for floor (e.g. basement)
+        if (value !== undefined && (isNaN(value))) { 
             toast({ variant: "destructive", title: "Validation Error", description: `${key.replace('form','')} must be a valid number.` });
             return;
         }
@@ -188,40 +152,40 @@ export default function RoomManagementPage() {
 
     setIsSubmitting(true);
     
-    setTimeout(() => { 
-      const roomData: Omit<Room, 'id'> = { 
-        roomNumber: formRoomNumber.trim().toUpperCase(), name: formName.trim() || undefined,
-        buildingId: formBuildingId,
-        floor: formFloor !== undefined ? Number(formFloor) : undefined,
-        type: formType,
-        capacity: formCapacity !== undefined ? Number(formCapacity) : undefined,
-        areaSqFt: formAreaSqFt !== undefined ? Number(formAreaSqFt) : undefined,
-        status: formStatus,
-        notes: formNotes.trim() || undefined,
-      };
+    const roomData: Omit<Room, 'id'> = { 
+      roomNumber: formRoomNumber.trim().toUpperCase(), name: formName.trim() || undefined,
+      buildingId: formBuildingId,
+      floor: formFloor !== undefined ? Number(formFloor) : undefined,
+      type: formType,
+      capacity: formCapacity !== undefined ? Number(formCapacity) : undefined,
+      areaSqFt: formAreaSqFt !== undefined ? Number(formAreaSqFt) : undefined,
+      status: formStatus,
+      notes: formNotes.trim() || undefined,
+    };
 
+    try {
       if (currentRoom && currentRoom.id) {
-        setRooms(prev => prev.map(r => r.id === currentRoom.id ? { ...r, ...roomData } : r));
+        await roomService.updateRoom(currentRoom.id, roomData);
         toast({ title: "Room Updated", description: "The room has been successfully updated." });
       } else {
-        const newRoom: Room = { 
-          id: generateClientId(), 
-          ...roomData
-        };
-        setRooms(prev => [...prev, newRoom]);
+        await roomService.createRoom(roomData);
         toast({ title: "Room Created", description: "The new room has been successfully created." });
       }
-      setIsSubmitting(false);
+      await fetchRoomsAndBuildings();
       setIsDialogOpen(false);
       resetForm();
-    }, 1000);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Save Failed", description: (error as Error).message || "Could not save room." });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectedFile(event.target.files && event.target.files[0] ? event.target.files[0] : null);
   };
 
-  const handleImportRooms = () => {
+  const handleImportRooms = async () => {
     if (!selectedFile) {
       toast({ variant: "destructive", title: "Import Error", description: "Please select a CSV file to import." });
       return;
@@ -232,85 +196,18 @@ export default function RoomManagementPage() {
     }
 
     setIsSubmitting(true);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const text = e.target?.result as string;
-        const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
-        if (lines.length <= 1) throw new Error("CSV file is empty or has only a header.");
-        
-        const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
-        const expectedHeaders = ['id', 'roomnumber', 'name', 'buildingid', 'floor', 'type', 'capacity', 'areasqft', 'status', 'notes'];
-        const requiredHeaders = ['roomnumber', 'buildingid', 'type', 'status'];
-
-        if (!requiredHeaders.every(rh => header.includes(rh))) {
-            throw new Error(`CSV header is missing required columns. Expected at least: ${requiredHeaders.join(', ')}. Found: ${header.join(', ')}`);
-        }
-        
-        const hMap = Object.fromEntries(expectedHeaders.map(eh => [eh, header.indexOf(eh)]));
-
-        const importedBatch: Room[] = [];
-        const currentCopy = [...rooms];
-        let newCount = 0, updatedCount = 0;
-
-        for (let i = 1; i < lines.length; i++) {
-          const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
-          
-          const roomNumber = data[hMap['roomnumber']];
-          const buildingId = data[hMap['buildingid']];
-          const type = data[hMap['type']] as RoomType;
-          const status = data[hMap['status']] as RoomStatus;
-
-          if (!roomNumber || !buildingId || !ROOM_TYPE_OPTIONS.includes(type) || !ROOM_STATUS_OPTIONS.find(s => s.value === status)) {
-            console.warn(`Skipping row ${i+1}: Missing or invalid required data (roomNumber, buildingId, type, status).`);
-            continue;
-          }
-          if (!buildings.find(bldg => bldg.id === buildingId)) {
-            console.warn(`Skipping row ${i+1}: Building ID '${buildingId}' not found.`);
-            continue;
-          }
-
-          const id = data[hMap['id']];
-          const roomData: Omit<Room, 'id'> = {
-            roomNumber: roomNumber.toUpperCase(), name: data[hMap['name']] || undefined,
-            buildingId,
-            floor: data[hMap['floor']] ? parseInt(data[hMap['floor']]) : undefined,
-            type,
-            capacity: data[hMap['capacity']] ? parseInt(data[hMap['capacity']]) : undefined,
-            areaSqFt: data[hMap['areasqft']] ? parseFloat(data[hMap['areasqft']]) : undefined,
-            status,
-            notes: data[hMap['notes']] || undefined,
-          };
-          
-          if (id) {
-            const existingIdx = currentCopy.findIndex(c => c.id === id);
-            if (existingIdx !== -1) {
-              currentCopy[existingIdx] = { ...currentCopy[existingIdx], ...roomData };
-              updatedCount++;
-            } else {
-              importedBatch.push({ id, ...roomData });
-              newCount++;
-            }
-          } else {
-            importedBatch.push({ id: generateClientId(), ...roomData });
-            newCount++;
-          }
-        }
-        
-        const finalRooms = [...currentCopy.filter(c => !importedBatch.find(ic => ic.id === c.id)), ...importedBatch];
-        setRooms(finalRooms);
-        toast({ title: "Import Successful", description: `${newCount} rooms added, ${updatedCount} rooms updated.` });
-
-      } catch (error: any) {
-        console.error("Error processing CSV file:", error);
-        toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
-      } finally {
-        setIsSubmitting(false); setSelectedFile(null); 
-        const fileInput = document.getElementById('csvImportRoom') as HTMLInputElement;
-        if (fileInput) fileInput.value = '';
-      }
-    };
-    reader.readAsText(selectedFile);
+    try {
+      const result = await roomService.importRooms(selectedFile, buildings);
+      await fetchRoomsAndBuildings();
+      toast({ title: "Import Successful", description: `${result.newCount} rooms added, ${result.updatedCount} rooms updated. Skipped: ${result.skippedCount}` });
+    } catch (error: any) {
+      console.error("Error processing CSV file:", error);
+      toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
+    } finally {
+      setIsSubmitting(false); setSelectedFile(null); 
+      const fileInput = document.getElementById('csvImportRoom') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+    }
   };
 
   const handleExportRooms = () => {
@@ -318,14 +215,18 @@ export default function RoomManagementPage() {
       toast({ title: "Export Canceled", description: "No rooms to export (check filters)." });
       return;
     }
-    const header = ['id', 'roomNumber', 'name', 'buildingId', 'floor', 'type', 'capacity', 'areaSqFt', 'status', 'notes'];
+    const header = ['id', 'roomNumber', 'name', 'buildingId', 'buildingName', 'buildingCode', 'floor', 'type', 'capacity', 'areaSqFt', 'status', 'notes'];
     const csvRows = [
       header.join(','),
-      ...filteredAndSortedRooms.map(r => [
-        r.id, r.roomNumber, `"${(r.name || "").replace(/"/g, '""')}"`, r.buildingId, 
-        r.floor === undefined ? "" : r.floor, r.type, r.capacity === undefined ? "" : r.capacity,
-        r.areaSqFt === undefined ? "" : r.areaSqFt, r.status, `"${(r.notes || "").replace(/"/g, '""')}"`
-      ].join(','))
+      ...filteredAndSortedRooms.map(r => {
+        const bldg = buildings.find(b => b.id === r.buildingId);
+        return [
+          r.id, r.roomNumber, `"${(r.name || "").replace(/"/g, '""')}"`, r.buildingId, 
+          `"${(bldg?.name || "").replace(/"/g, '""')}"`, `"${(bldg?.code || "").replace(/"/g, '""')}"`,
+          r.floor === undefined ? "" : r.floor, r.type, r.capacity === undefined ? "" : r.capacity,
+          r.areaSqFt === undefined ? "" : r.areaSqFt, r.status, `"${(r.notes || "").replace(/"/g, '""')}"`
+        ].join(',')
+      })
     ];
     const csvString = csvRows.join('\r\n');
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
@@ -337,9 +238,9 @@ export default function RoomManagementPage() {
   };
 
   const handleDownloadSampleCsv = () => {
-    const sampleCsvContent = `id,roomNumber,name,buildingId,floor,type,capacity,areaSqFt,status,notes
-room_sample_1,C-101,Smart Classroom 1,bldg2,1,Lecture Hall,50,800,available,"Projector and AC available"
-,LAB-003,Network Lab,bldg2,0,Laboratory,25,600,occupied,
+    const sampleCsvContent = `id,roomNumber,name,buildingId,buildingName,buildingCode,floor,type,capacity,areaSqFt,status,notes
+room_sample_1,C-101,Smart Classroom 1,bldg2,"New Academic Complex","NAC",1,Lecture Hall,50,800,available,"Projector and AC available"
+,LAB-003,Network Lab,bldg2,"New Academic Complex","NAC",0,Laboratory,25,600,occupied,
 `; 
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -423,18 +324,23 @@ room_sample_1,C-101,Smart Classroom 1,bldg2,1,Lecture Hall,50,800,available,"Pro
     setSelectedRoomIds(prev => checked ? [...prev, roomId] : prev.filter(id => id !== roomId));
   };
 
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = async () => {
     if (selectedRoomIds.length === 0) {
       toast({ variant: "destructive", title: "No Rooms Selected", description: "Please select rooms to delete." });
       return;
     }
     setIsSubmitting(true);
-    setTimeout(() => {
-      setRooms(prev => prev.filter(r => !selectedRoomIds.includes(r.id)));
-      setSelectedRoomIds([]);
-      toast({ title: "Rooms Deleted", description: `${selectedRoomIds.length} room(s) have been successfully deleted.` });
-      setIsSubmitting(false);
-    }, 500);
+    try {
+        for (const id of selectedRoomIds) {
+            await roomService.deleteRoom(id);
+        }
+        await fetchRoomsAndBuildings();
+        toast({ title: "Rooms Deleted", description: `${selectedRoomIds.length} room(s) have been successfully deleted.` });
+        setSelectedRoomIds([]);
+    } catch(error) {
+        toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message || "Could not delete selected rooms."});
+    }
+    setIsSubmitting(false);
   };
   
   const isAllSelectedOnPage = paginatedRooms.length > 0 && paginatedRooms.every(r => selectedRoomIds.includes(r.id));
@@ -488,7 +394,7 @@ room_sample_1,C-101,Smart Classroom 1,bldg2,1,Lecture Hall,50,800,available,"Pro
                   
                   <div className="md:col-span-1">
                     <Label htmlFor="buildingId">Building *</Label>
-                    <Select value={formBuildingId} onValueChange={setFormBuildingId} disabled={isSubmitting} required>
+                    <Select value={formBuildingId} onValueChange={setFormBuildingId} disabled={isSubmitting || buildings.length === 0} required>
                       <SelectTrigger id="buildingId"><SelectValue placeholder="Select Building" /></SelectTrigger>
                       <SelectContent>{buildings.map(b => <SelectItem key={b.id} value={b.id}>{b.name} ({b.code || b.id.substring(0,5)})</SelectItem>)}</SelectContent>
                     </Select>
@@ -541,7 +447,7 @@ room_sample_1,C-101,Smart Classroom 1,bldg2,1,Lecture Hall,50,800,available,"Pro
                     <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  CSV fields: id (optional), roomNumber, name, buildingId, floor, type, capacity, areaSqFt, status, notes.
+                  CSV fields: id (optional), roomNumber, name, buildingId OR (buildingName and buildingCode), floor, type, capacity, areaSqFt, status, notes.
                 </p>
             </div>
           </div>
@@ -566,16 +472,16 @@ room_sample_1,C-101,Smart Classroom 1,bldg2,1,Lecture Hall,50,800,available,"Pro
             </div>
              <div>
               <Label htmlFor="filterType">Filter by Type</Label>
-              <Select value={filterTypeVal} onValueChange={setFilterTypeVal}>
+              <Select value={filterTypeVal} onValueChange={(value) => setFilterTypeVal(value as RoomType | 'all')}>
                 <SelectTrigger id="filterType"><SelectValue placeholder="All Types"/></SelectTrigger>
-                <SelectContent>{[{value: 'all', label: 'All Types'}, ...ROOM_TYPE_OPTIONS.map(t => ({value: t, label: t}))].map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}</SelectContent>
+                <SelectContent>{[{value: 'all', label: 'All Types'} as {value: RoomType | 'all', label: string}, ...ROOM_TYPE_OPTIONS.map(t => ({value: t, label: t}))].map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}</SelectContent>
               </Select>
             </div>
              <div>
               <Label htmlFor="filterStatusRoom">Filter by Status</Label>
-              <Select value={filterStatusVal} onValueChange={setFilterStatusVal}>
+              <Select value={filterStatusVal} onValueChange={(value) => setFilterStatusVal(value as RoomStatus | 'all')}>
                 <SelectTrigger id="filterStatusRoom"><SelectValue placeholder="All Statuses"/></SelectTrigger>
-                <SelectContent>{[{value: 'all', label: 'All Statuses'}, ...ROOM_STATUS_OPTIONS].map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}</SelectContent>
+                <SelectContent>{[{value: 'all', label: 'All Statuses'} as {value: RoomStatus | 'all', label: string}, ...ROOM_STATUS_OPTIONS].map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}</SelectContent>
               </Select>
             </div>
           </div>
@@ -594,7 +500,7 @@ room_sample_1,C-101,Smart Classroom 1,bldg2,1,Lecture Hall,50,800,available,"Pro
           <Table>
             <TableHeader>
               <TableRow>
-                 <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedRooms.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={handleSelectAll} aria-label="Select all rooms on this page"/></TableHead>
+                 <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedRooms.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all rooms on this page"/></TableHead>
                 <SortableTableHeader field="roomNumber" label="Room No." />
                 <SortableTableHeader field="name" label="Name" />
                 <TableHead>Building</TableHead>
@@ -657,3 +563,4 @@ room_sample_1,C-101,Smart Classroom 1,bldg2,1,Lecture Hall,50,800,available,"Pro
     </div>
   );
 }
+

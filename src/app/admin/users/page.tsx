@@ -11,19 +11,10 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
-import { PlusCircle, Edit, Trash2, Users, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Users as UsersIcon, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react"; // Renamed Users to UsersIcon
 import { useToast } from "@/hooks/use-toast";
-
-type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  roles: UserRole[]; 
-  status: 'active' | 'inactive';
-  department?: string; 
-}
+import type { SystemUser, UserRole } from '@/types/entities'; // Renamed User to SystemUser
+import { userService } from '@/lib/api/users';
 
 const USER_ROLE_OPTIONS: { value: UserRole; label: string }[] = [
   { value: "admin", label: "Admin" },
@@ -31,6 +22,7 @@ const USER_ROLE_OPTIONS: { value: UserRole; label: string }[] = [
   { value: "faculty", label: "Faculty" },
   { value: "hod", label: "HOD" },
   { value: "jury", label: "Jury" },
+  { value: "unknown", label: "Unknown" },
 ];
 
 const STATUS_OPTIONS: { value: 'active' | 'inactive'; label: string }[] = [
@@ -38,29 +30,18 @@ const STATUS_OPTIONS: { value: 'active' | 'inactive'; label: string }[] = [
   { value: "inactive", label: "Inactive" },
 ];
 
-const initialUsers: User[] = [
-  { id: "u1", name: "Super Admin", email: "admin@gppalanpur.in", roles: ["admin"], status: "active", department: "Administration" },
-  { id: "u2", name: "Alice Wonderland", email: "alice.wonder@example.com", roles: ["student"], status: "active", department: "Computer Science" },
-  { id: "u3", name: "Bob The Builder", email: "bob.builder@example.com", roles: ["faculty", "jury"], status: "active", department: "Civil Engineering" },
-  { id: "u4", name: "Charlie Chaplin", email: "charlie.c@example.com", roles: ["hod", "faculty"], status: "active", department: "Mechanical Engineering" },
-  { id: "u5", name: "Diana Prince", email: "diana.p@example.com", roles: ["jury"], status: "inactive", department: "General" },
-  { id: "u6", name: "Edward Scissorhands", email: "ed.hands@example.com", roles: ["student"], status: "active", department: "Computer Science" },
-];
-
-const LOCAL_STORAGE_KEY_USERS = 'managedUsers';
-
-type SortField = keyof Omit<User, 'roles'> | 'roles' | 'none'; 
+type SortField = keyof Omit<SystemUser, 'roles'> | 'roles' | 'none'; 
 type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
 
 
 export default function UserManagementPage() {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<SystemUser[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState<Partial<User> & { password?: string; confirmPassword?: string } | null>(null);
+  const [currentUser, setCurrentUser] = useState<Partial<SystemUser> & { password?: string; confirmPassword?: string } | null>(null);
 
   const [formUserName, setFormUserName] = useState('');
   const [formUserEmail, setFormUserEmail] = useState('');
@@ -81,39 +62,23 @@ export default function UserManagementPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
 
-
   const { toast } = useToast();
 
-  useEffect(() => {
+  const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      const storedUsers = localStorage.getItem(LOCAL_STORAGE_KEY_USERS);
-      if (storedUsers) {
-        setUsers(JSON.parse(storedUsers));
-      } else {
-        setUsers(initialUsers);
-      }
+      const data = await userService.getAllUsers();
+      setUsers(data);
     } catch (error) {
-        console.error("Failed to load users from localStorage", error);
-        setUsers(initialUsers);
+      console.error("Failed to load users", error);
+      toast({ variant: "destructive", title: "Error", description: (error as Error).message || "Could not load users." });
     }
     setIsLoading(false);
-  }, []);
+  };
 
   useEffect(() => {
-    if(!isLoading) { 
-        try {
-            localStorage.setItem(LOCAL_STORAGE_KEY_USERS, JSON.stringify(users));
-        } catch (error) {
-            console.error("Failed to save users to localStorage", error);
-            toast({
-                variant: "destructive",
-                title: "Storage Error",
-                description: "Could not save user data locally. Changes might be lost.",
-            });
-        }
-    }
-  }, [users, isLoading, toast]);
+    fetchUsers();
+  }, []);
 
   const resetForm = () => {
     setFormUserName('');
@@ -126,7 +91,7 @@ export default function UserManagementPage() {
     setCurrentUser(null);
   };
 
-  const handleEdit = (user: User) => {
+  const handleEdit = (user: SystemUser) => {
     setCurrentUser(user);
     setFormUserName(user.name);
     setFormUserEmail(user.email);
@@ -143,18 +108,22 @@ export default function UserManagementPage() {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (userId: string) => {
-    if (userId === "u1" && users.find(u => u.id === userId)?.email === "admin@gppalanpur.in") {
+  const handleDelete = async (userId: string) => {
+    const userToDelete = users.find(u => u.id === userId);
+    if (userToDelete?.email === "admin@gppalanpur.in") { // Assuming this is the primary admin
         toast({ variant: "destructive", title: "Action Forbidden", description: "Cannot delete the primary admin user." });
         return;
     }
     setIsSubmitting(true);
-    setTimeout(() => { 
-      setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
+    try {
+      await userService.deleteUser(userId);
+      await fetchUsers();
       setSelectedUserIds(prev => prev.filter(id => id !== userId));
       toast({ title: "User Deleted", description: "The user has been successfully deleted." });
-      setIsSubmitting(false);
-    }, 500);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message || "Could not delete user." });
+    }
+    setIsSubmitting(false);
   };
 
   const handleRoleCheckboxChange = (roleValue: UserRole) => {
@@ -167,7 +136,7 @@ export default function UserManagementPage() {
     });
   };
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!formUserName.trim() || !formUserEmail.trim()) {
       toast({ variant: "destructive", title: "Validation Error", description: "Name and Email cannot be empty."});
@@ -177,7 +146,7 @@ export default function UserManagementPage() {
       toast({ variant: "destructive", title: "Validation Error", description: "User must have at least one role."});
       return;
     }
-    if (!currentUser) {
+    if (!currentUser?.id) { // Only require password for new users
         if (!formUserPassword || formUserPassword.length < 6) {
             toast({ variant: "destructive", title: "Validation Error", description: "Password must be at least 6 characters long for new users." });
             return;
@@ -190,30 +159,33 @@ export default function UserManagementPage() {
 
     setIsSubmitting(true);
     
-    setTimeout(() => { 
-      const userData: Omit<User, 'id'> = { 
-        name: formUserName, 
-        email: formUserEmail, 
-        roles: formUserRoles, 
-        status: formUserStatus,
-        department: formUserDepartment,
-      };
+    const userData: Omit<SystemUser, 'id'> & { password?: string } = { 
+      name: formUserName, 
+      email: formUserEmail, 
+      roles: formUserRoles, 
+      status: formUserStatus,
+      department: formUserDepartment,
+    };
+    if (formUserPassword) {
+      userData.password = formUserPassword;
+    }
 
+    try {
       if (currentUser && currentUser.id) {
-        setUsers(prevUsers => prevUsers.map(u => u.id === currentUser.id ? { ...u, ...userData } : u));
+        await userService.updateUser(currentUser.id, userData);
         toast({ title: "User Updated", description: "The user has been successfully updated." });
       } else {
-        const newUser: User = { 
-          id: String(Date.now()), 
-          ...userData
-        };
-        setUsers(prevUsers => [...prevUsers, newUser]);
+        await userService.createUser(userData);
         toast({ title: "User Created", description: "The new user has been successfully created." });
       }
-      setIsSubmitting(false);
+      await fetchUsers();
       setIsDialogOpen(false);
       resetForm();
-    }, 1000);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Save Failed", description: (error as Error).message || "Could not save user." });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -224,86 +196,25 @@ export default function UserManagementPage() {
     }
   };
 
-  const handleImportUsers = () => {
+  const handleImportUsers = async () => {
     if (!selectedFile) {
       toast({ variant: "destructive", title: "Import Error", description: "Please select a CSV file to import." });
       return;
     }
     setIsSubmitting(true);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const text = e.target?.result as string;
-        const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
-        if (lines.length <= 1) throw new Error("CSV file is empty or has only a header.");
-        
-        const header = lines[0].split(',').map(h => h.trim().toLowerCase());
-        const expectedHeaders = ['id', 'name', 'email', 'roles', 'status', 'department']; 
-        const requiredHeaders = ['name', 'email', 'roles', 'status'];
-
-        if (!requiredHeaders.every(rh => header.includes(rh))) {
-            throw new Error(`CSV header is missing required columns. Expected at least: ${requiredHeaders.join(', ')}`);
-        }
-        
-        const hMap = Object.fromEntries(expectedHeaders.map(eh => [eh, header.indexOf(eh)]));
-
-        const importedUsersBatch: User[] = [];
-        const currentUsersCopy = [...users];
-        let newUsersCount = 0;
-        let updatedUsersCount = 0;
-
-        for (let i = 1; i < lines.length; i++) {
-          const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
-          
-          const name = data[hMap['name']];
-          const email = data[hMap['email']];
-          const rolesString = data[hMap['roles']];
-          const roles = rolesString ? rolesString.split(';').map(r => r.trim() as UserRole).filter(r => USER_ROLE_OPTIONS.find(opt => opt.value === r)) : [];
-          const status = data[hMap['status']] as 'active' | 'inactive';
-          const department = data[hMap['department']];
-          const id = data[hMap['id']];
-
-          if (!name || !email || roles.length === 0 || !STATUS_OPTIONS.find(s => s.value === status)) {
-            console.warn(`Skipping row ${i+1}: Missing or invalid required data (name, email, roles, status). Roles: ${rolesString}`);
-            continue;
-          }
-
-          const userData: Omit<User, 'id'> = { name, email, roles, status, department: department || "" };
-          
-          if (id) {
-            const existingUserIndex = currentUsersCopy.findIndex(u => u.id === id);
-            if (existingUserIndex !== -1) {
-              currentUsersCopy[existingUserIndex] = { ...currentUsersCopy[existingUserIndex], ...userData };
-              updatedUsersCount++;
-            } else {
-              importedUsersBatch.push({ id, ...userData });
-              newUsersCount++;
-            }
-          } else {
-            importedUsersBatch.push({ id: String(Date.now() + Math.random()), ...userData });
-            newUsersCount++;
-          }
-        }
-        
-        const finalUsers = [
-            ...currentUsersCopy.filter(u => !importedUsersBatch.find(iu => iu.id === u.id)),
-            ...importedUsersBatch
-        ];
-
-        setUsers(finalUsers);
-        toast({ title: "Import Successful", description: `${newUsersCount} users added, ${updatedUsersCount} users updated.` });
-
-      } catch (error: any) {
-        console.error("Error processing CSV file:", error);
-        toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
-      } finally {
-        setIsSubmitting(false);
-        setSelectedFile(null); 
-        const fileInput = document.getElementById('csvImportUser') as HTMLInputElement;
-        if (fileInput) fileInput.value = '';
-      }
-    };
-    reader.readAsText(selectedFile);
+    try {
+      const result = await userService.importUsers(selectedFile);
+      await fetchUsers();
+      toast({ title: "Import Successful", description: `${result.newCount} users added, ${result.updatedCount} users updated. Skipped: ${result.skippedCount}` });
+    } catch (error: any) {
+      console.error("Error processing CSV file:", error);
+      toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
+    } finally {
+      setIsSubmitting(false);
+      setSelectedFile(null); 
+      const fileInput = document.getElementById('csvImportUser') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+    }
   };
 
   const handleExportUsers = () => {
@@ -335,10 +246,10 @@ export default function UserManagementPage() {
   };
 
   const handleDownloadSampleCsv = () => {
-    const sampleCsvContent = `id,name,email,roles,status,department
-u_001,John Doe,john.doe@example.com,student,active,Computer Science
-u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineering
-,New User,new.user@example.com,jury,inactive,General
+    const sampleCsvContent = `id,name,email,roles,status,department,password
+u_001,John Doe,john.doe@example.com,student,active,Computer Science,Pass@123
+u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineering,Pass@123
+,New User,new.user@example.com,jury,inactive,General,Pass@123
 `; 
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -387,8 +298,8 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
           valA = a.roles.join(', '); 
           valB = b.roles.join(', ');
         } else {
-          valA = a[sortField as keyof Omit<User, 'roles'>];
-          valB = b[sortField as keyof Omit<User, 'roles'>];
+          valA = a[sortField as keyof Omit<SystemUser, 'roles'>];
+          valB = b[sortField as keyof Omit<SystemUser, 'roles'>];
         }
 
         if (valA === undefined || valA === null) return sortDirection === 'asc' ? 1 : -1;
@@ -430,30 +341,39 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
     }
   };
 
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = async () => {
     if (selectedUserIds.length === 0) {
       toast({ variant: "destructive", title: "No Users Selected", description: "Please select users to delete." });
       return;
     }
     setIsSubmitting(true);
-    setTimeout(() => {
-      const nonAdminSelectedIds = selectedUserIds.filter(id => {
+    let deletedCount = 0;
+    let adminSkipped = false;
+
+    for (const id of selectedUserIds) {
         const user = users.find(u => u.id === id);
-        return !(user?.id === "u1" && user?.email === "admin@gppalanpur.in");
-      });
-
-      const adminAttempted = selectedUserIds.length !== nonAdminSelectedIds.length;
-
-      setUsers(prevUsers => prevUsers.filter(user => !nonAdminSelectedIds.includes(user.id)));
-      setSelectedUserIds([]);
-      
-      let description = `${nonAdminSelectedIds.length} user(s) have been successfully deleted.`;
-      if(adminAttempted){
-        toast({ variant: "destructive", title: "Admin User Protected", description: "The primary admin user (admin@gppalanpur.in) cannot be deleted." });
-      }
-      toast({ title: "Users Deleted", description });
-      setIsSubmitting(false);
-    }, 500);
+        if (user?.email === "admin@gppalanpur.in") {
+            adminSkipped = true;
+            continue;
+        }
+        try {
+            await userService.deleteUser(id);
+            deletedCount++;
+        } catch (error) {
+            toast({ variant: "destructive", title: "Delete Failed", description: `Could not delete user ${user?.name || id}.`});
+        }
+    }
+    
+    await fetchUsers();
+    setSelectedUserIds([]);
+    let description = `${deletedCount} user(s) have been successfully deleted.`;
+    if(adminSkipped){
+      toast({ variant: "warning", title: "Admin User Protected", description: "The primary admin user (admin@gppalanpur.in) cannot be deleted." });
+    }
+    if (deletedCount > 0) {
+        toast({ title: "Users Deleted", description });
+    }
+    setIsSubmitting(false);
   };
   
   const isAllSelectedOnPage = paginatedUsers.length > 0 && paginatedUsers.every(user => selectedUserIds.includes(user.id));
@@ -481,7 +401,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
         <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
-              <Users className="h-6 w-6" />
+              <UsersIcon className="h-6 w-6" />
               User Management
             </CardTitle>
             <CardDescription>
@@ -509,12 +429,12 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
                   </div>
                   <div>
                     <Label htmlFor="userEmail">Email Address</Label>
-                    <Input id="userEmail" type="email" value={formUserEmail} onChange={(e) => setFormUserEmail(e.target.value)} placeholder="e.g., john.doe@example.com" disabled={isSubmitting} />
+                    <Input id="userEmail" type="email" value={formUserEmail} onChange={(e) => setFormUserEmail(e.target.value)} placeholder="e.g., john.doe@example.com" disabled={isSubmitting || !!currentUser?.id} />
                   </div>
                   <div>
                     <Label>Roles</Label>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-2 border rounded-md max-h-40 overflow-y-auto">
-                      {USER_ROLE_OPTIONS.map(opt => (
+                      {USER_ROLE_OPTIONS.filter(opt => opt.value !== 'unknown').map(opt => (
                         <div key={opt.value} className="flex items-center space-x-2">
                           <Checkbox
                             id={`role-${opt.value}`}
@@ -575,7 +495,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
                     <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  CSV format: id (optional), name, email, roles (semicolon-separated), status, department.
+                  CSV format: id (optional), name, email, roles (semicolon-separated), status, department, password (for new users).
                 </p>
             </div>
           </div>
@@ -632,8 +552,8 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
               <TableRow>
                  <TableHead className="w-[50px]">
                     <Checkbox 
-                        checked={isAllSelectedOnPage || isSomeSelectedOnPage}
-                        onCheckedChange={handleSelectAll}
+                        checked={isAllSelectedOnPage || (paginatedUsers.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)}
+                        onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)}
                         aria-label="Select all users on this page"
                     />
                 </TableHead>
@@ -707,7 +627,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
                     }}
                     >
                     <SelectTrigger className="w-[70px] h-8 text-xs">
-                        <SelectValue placeholder={itemsPerPage} />
+                        <SelectValue placeholder={String(itemsPerPage)} />
                     </SelectTrigger>
                     <SelectContent side="top">
                         {ITEMS_PER_PAGE_OPTIONS.map((pageSize) => (
@@ -768,3 +688,4 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
     </div>
   );
 }
+
