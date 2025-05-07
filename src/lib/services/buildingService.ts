@@ -63,7 +63,6 @@ export const buildingService = {
   async importBuildings(file: File, institutes: Institute[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number }> {
     const formData = new FormData();
     formData.append('file', file);
-    // Sending institutes data along as it's needed for mapping instituteId by name/code on the backend
     formData.append('institutes', JSON.stringify(institutes));
 
 

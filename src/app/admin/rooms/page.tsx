@@ -14,8 +14,8 @@ import { PlusCircle, Edit, Trash2, DoorOpen, Loader2, UploadCloud, Download, Fil
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import type { Room, Building, RoomType, RoomStatus } from '@/types/entities';
-import { roomService } from '@/lib/api/rooms';
-import { buildingService } from '@/lib/api/buildings';
+import { roomService } from '@/lib/services/roomService';
+import { buildingService } from '@/lib/services/buildingService';
 
 
 const ROOM_TYPE_OPTIONS: RoomType[] = ['Lecture Hall', 'Laboratory', 'Office', 'Staff Room', 'Workshop', 'Library', 'Store Room', 'Other'];
@@ -543,7 +543,7 @@ room_sample_1,C-101,Smart Classroom 1,bldg2,"New Academic Complex","NAC",1,Lectu
         </CardContent>
          <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
             <div className="text-sm text-muted-foreground">
-                Showing {Math.min((currentPage -1) * itemsPerPage + 1, filteredAndSortedRooms.length)} to {Math.min(currentPage * itemsPerPage, filteredAndSortedRooms.length)} of {filteredAndSortedRooms.length} rooms.
+                Showing {paginatedRooms.length > 0 ? Math.min((currentPage -1) * itemsPerPage + 1, filteredAndSortedRooms.length): 0} to {Math.min(currentPage * itemsPerPage, filteredAndSortedRooms.length)} of {filteredAndSortedRooms.length} rooms.
             </div>
             <div className="flex items-center gap-2">
                  <Select value={String(itemsPerPage)} onValueChange={(value) => {setItemsPerPage(Number(value)); setCurrentPage(1);}}>
