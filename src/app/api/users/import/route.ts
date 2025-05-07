@@ -2,7 +2,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { User, UserRole, Institute } from '@/types/entities'; 
 import { parse, type ParseError } from 'papaparse';
-import { instituteService } from '@/lib/api/institutes'; 
+// Removed instituteService import as clientInstitutes are passed in
 
 declare global {
   var __API_USERS_STORE__: User[] | undefined;
@@ -33,19 +33,11 @@ const generateIdForImport = (): string => `user_imp_${Date.now()}_${Math.random(
 const USER_ROLE_OPTIONS_VALUES: UserRole[] = ["admin", "student", "faculty", "hod", "jury", "unknown", "super_admin", "dte_admin", "gtu_admin", "institute_admin", "department_admin", "committee_admin", "committee_convener", "committee_co_convener", "committee_member", "lab_assistant", "clerical_staff"];
 
 
-const parseFullNameForEmailGen = (fullName: string | undefined, displayName?: string): { firstName?: string, lastName?: string } => {
-    const nameToParse = fullName || displayName;
-    if (!nameToParse) return {};
-    const parts = nameToParse.trim().split(/\s+/);
-    if (parts.length === 1) return { firstName: parts[0].toLowerCase() };
-    if (parts.length >= 2) return { firstName: parts.find(p => p.toLowerCase() !== parts[0].toLowerCase())?.toLowerCase() || parts[1].toLowerCase() , lastName: parts[0].toLowerCase() };
-    return {};
-};
 const parseGtuNameToComponents = (gtuName: string | undefined): { firstName?: string, middleName?: string, lastName?: string } => {
     if (!gtuName) return {};
     const parts = gtuName.trim().split(/\s+/);
-    if (parts.length === 1) return { firstName: parts[0], lastName: "SURNAME_PLACEHOLDER" }; // Or however you handle single names
-    if (parts.length === 2) return { lastName: parts[0], firstName: parts[1] }; // Assuming SURNAME NAME
+    if (parts.length === 1) return { firstName: parts[0], lastName: "SURNAME_PLACEHOLDER" };
+    if (parts.length === 2) return { lastName: parts[0], firstName: parts[1] }; 
     return { lastName: parts[0], firstName: parts[1], middleName: parts.slice(2).join(' ') };
   };
 
@@ -60,10 +52,8 @@ export async function POST(request: NextRequest) {
     if (!file) {
       return NextResponse.json({ message: 'No file uploaded.' }, { status: 400 });
     }
-    if (!institutesJson) {
-      return NextResponse.json({ message: 'Institute data for mapping is missing for institute email generation.' }, { status: 400 });
-    }
-    const clientInstitutes: Institute[] = JSON.parse(institutesJson);
+    // Institutes data is now optional for import, will use default domain if not provided
+    const clientInstitutes: Institute[] = institutesJson ? JSON.parse(institutesJson) : [];
 
 
     const fileText = await file.text();
@@ -109,18 +99,23 @@ export async function POST(request: NextRequest) {
       const displayNameFromCSV = row.displayname?.toString().trim();
 
       let instituteId = row.instituteid?.toString().trim();
-      if (!instituteId && (row.institutename || row.institutecode)) {
+      let currentInstitute: Institute | undefined;
+
+      if (instituteId) {
+        currentInstitute = clientInstitutes.find(inst => inst.id === instituteId);
+        if (!currentInstitute) {
+            importErrors.push({ row: rowIndex, message: `Provided instituteId '${instituteId}' does not exist. Cannot determine institute domain.`, data: row });
+            skippedCount++; continue;
+        }
+      } else if (row.institutename || row.institutecode) {
           const instName = row.institutename?.toString().trim();
           const instCode = row.institutecode?.toString().trim().toUpperCase();
-          const foundInst = clientInstitutes.find(inst => (instName && inst.name.toLowerCase() === instName.toLowerCase()) || (instCode && inst.code.toUpperCase() === instCode));
-          if (foundInst) instituteId = foundInst.id;
-          else {
-            importErrors.push({ row: rowIndex, message: `Institute not found by name/code: ${instName || instCode}. Cannot generate institute email.`, data: row });
-            skippedCount++; continue;
+          currentInstitute = clientInstitutes.find(inst => (instName && inst.name.toLowerCase() === instName.toLowerCase()) || (instCode && inst.code.toUpperCase() === instCode));
+          if (currentInstitute) {
+            instituteId = currentInstitute.id;
+          } else {
+            // Institute not found by name/code, but instituteId is optional, proceed with default domain
           }
-      } else if (instituteId && !clientInstitutes.some(inst => inst.id === instituteId)) {
-          importErrors.push({ row: rowIndex, message: `Provided instituteId '${instituteId}' does not exist. Cannot generate institute email.`, data: row });
-          skippedCount++; continue;
       }
 
 
@@ -141,15 +136,12 @@ export async function POST(request: NextRequest) {
 
 
       let instituteDomain = 'gpp.ac.in'; // Default domain
-      if (instituteId) {
-        const currentInstitute = clientInstitutes.find(inst => inst.id === instituteId);
-        if (currentInstitute && currentInstitute.domain) {
-            instituteDomain = currentInstitute.domain;
-        } else {
-            console.warn(`Institute ID ${instituteId} found but no domain specified, using default ${instituteDomain}.`);
-        }
+      if (currentInstitute && currentInstitute.domain) {
+          instituteDomain = currentInstitute.domain;
+      } else if (currentInstitute) {
+          console.warn(`Institute ${currentInstitute.name} found but no domain specified, using default ${instituteDomain}.`);
       } else {
-           console.warn(`No institute ID provided for user ${personalEmail}, using default domain '${instituteDomain}' for institute email.`);
+           console.warn(`No institute specified or found for user ${personalEmail}, using default domain '${instituteDomain}' for institute email.`);
       }
       
       const firstNameForEmail = (firstName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -157,7 +149,7 @@ export async function POST(request: NextRequest) {
       let baseInstituteEmail = `${firstNameForEmail}.${lastNameForEmail}`;
       if (!firstNameForEmail || !lastNameForEmail) { 
           baseInstituteEmail = personalEmail.split('@')[0].replace(/[^a-z0-9]/g, '');
-          if (!baseInstituteEmail) baseInstituteEmail = `user${generateIdForImport().substring(0,5)}`;
+          if (!baseInstituteEmail) baseInstituteEmail = `user${generateIdForImport().substring(9,14)}`; // Shorter random string
       }
       
       let tempInstituteEmail = `${baseInstituteEmail}@${instituteDomain}`;
@@ -192,7 +184,13 @@ export async function POST(request: NextRequest) {
         existingUserIndex = usersStore.findIndex(u => u.email === personalEmail);
       }
 
-      while (usersStore.some(u => (existingUserIndex !== -1 ? u.id !== usersStore[existingUserIndex].id : true) && u.instituteEmail?.toLowerCase() === tempInstituteEmail.toLowerCase())) {
+      // Check and resolve institute email conflict before assigning to userData
+      const isEmailConflict = (emailToCheck: string) => usersStore.some(u => 
+          (existingUserIndex !== -1 ? u.id !== usersStore[existingUserIndex].id : true) && 
+          u.instituteEmail?.toLowerCase() === emailToCheck.toLowerCase()
+      );
+
+      while (isEmailConflict(tempInstituteEmail)) {
           tempInstituteEmail = `${originalBase}${emailSuffix}@${instituteDomain}`;
           emailSuffix++;
       }
@@ -219,8 +217,9 @@ export async function POST(request: NextRequest) {
              skippedCount++; continue;
         }
         if (!userData.password) { 
-            importErrors.push({row: rowIndex, message: `Password is required for new user ${displayName} (${personalEmail}).`, data: row});
-            skippedCount++; continue;
+            // Generate a default password if not provided for new users
+            userData.password = `${(firstName || 'user').toLowerCase()}${new Date().getFullYear()}!`;
+            console.warn(`Password not provided for new user ${displayName} (${personalEmail}). Generated default: ${userData.password}`);
         }
         const newUser: User = {
           id: idFromCsv || generateIdForImport(), 
@@ -236,6 +235,8 @@ export async function POST(request: NextRequest) {
       }
     }
     
+    (global as any).__API_USERS_STORE__ = usersStore;
+    
     if (importErrors.length > 0) {
         return NextResponse.json({ 
             message: `Users import partially completed with ${importErrors.length} issues.`, 
@@ -250,6 +251,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Critical error during user import process:', error);
-    return NextResponse.json({ message: 'Critical error during user import process. Please check server logs.', error: (error as Error).message }, { status: 500 });
+    const errorMessage = (error instanceof Error) ? error.message : 'An unknown error occurred.';
+    return NextResponse.json({ message: 'Critical error during user import process. Please check server logs.', error: errorMessage }, { status: 500 });
   }
 }

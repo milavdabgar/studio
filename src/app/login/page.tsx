@@ -49,34 +49,33 @@ const getMockUsers = (): MockUser[] => {
     { id: "u4", email: "hod@example.com", password: "password", roles: ["hod", "faculty"], name: "Charlie HOD", status: "active" },
     { id: "u5", email: "jury@example.com", password: "password", roles: ["jury", "faculty"], name: "Diana Jury", status: "inactive" },
     { id: "u6", email: "multi@example.com", password: "password", roles: ["student", "jury"], name: "Multi Role User", status: "active" },
-    { email: "086260306003@gppalanpur.in", roles: ["student"], name: "DOE JOHN MICHAEL (from import)", status: "active"},
+    { email: "086260306003@gppalanpur.in", roles: ["student"], name: "DOE JOHN MICHAEL (from import)", status: "active", password: "086260306003"},
   ];
 
   if (typeof window !== 'undefined') {
     try {
-      const storedUsersRaw = localStorage.getItem('managedUsers');
+      const storedUsersRaw = localStorage.getItem('__API_USERS_STORE__'); // Use the API store name
       if (storedUsersRaw) {
-        const storedUsers: MockUser[] = JSON.parse(storedUsersRaw);
+        const storedUsersFromApi: MockUser[] = JSON.parse(storedUsersRaw);
         const combinedUsers = new Map<string, MockUser>();
+        
+        // Add base users first, potentially overridden by API store users
         baseUsers.forEach(user => combinedUsers.set(user.email, user));
-        storedUsers.forEach(user => {
+        
+        storedUsersFromApi.forEach(user => {
+          const userToStore = {...user};
+          // Ensure password logic for student/faculty from API store (if needed, though API should handle this ideally)
           if (user.roles.includes('student') && !user.password && user.email.includes('@gppalanpur.in')) {
             const enrollmentNumber = user.email.split('@')[0];
-            combinedUsers.set(user.email, { ...user, password: enrollmentNumber });
+            userToStore.password = enrollmentNumber;
           } else if (user.roles.includes('faculty') && !user.password && user.email.includes('@gppalanpur.in') && user.name) {
-             // Basic faculty password derivation: firstname.lastname (if names exist)
-             // This is a placeholder, actual staff code / unique ID would be better
              const nameParts = user.name.split(' ');
              if(nameParts.length >= 2) {
                 const pw = `${nameParts[0].toLowerCase()}.${nameParts[nameParts.length - 1].toLowerCase()}`;
-                combinedUsers.set(user.email, { ...user, password: pw });
-             } else {
-                combinedUsers.set(user.email, user);
+                userToStore.password = pw;
              }
           }
-          else {
-            combinedUsers.set(user.email, user);
-          }
+          combinedUsers.set(user.email, userToStore);
         });
         return Array.from(combinedUsers.values());
       }
@@ -95,7 +94,16 @@ const USER_ROLE_LOGIN_OPTIONS: { value: UserRole; label: string }[] = [
   { value: "hod", label: "HOD" },
   { value: "jury", label: "Jury" },
   { value: "committee_convener", label: "Committee Convener"},
-  // Add other login-selectable roles here. Not all UserRoles need to be in this list.
+  { value: "committee_co_convener", label: "Committee Co-Convener"},
+  { value: "committee_member", label: "Committee Member"},
+  { value: "super_admin", label: "Super Admin" },
+  { value: "dte_admin", label: "DTE Admin" },
+  { value: "gtu_admin", label: "GTU Admin" },
+  { value: "institute_admin", label: "Institute Admin" },
+  { value: "department_admin", label: "Department Admin" },
+  { value: "committee_admin", label: "Committee Admin" },
+  { value: "lab_assistant", label: "Lab Assistant" },
+  { value: "clerical_staff", label: "Clerical Staff" },
 ];
 
 export default function LoginPage() {
@@ -152,7 +160,8 @@ export default function LoginPage() {
 
     const foundUser = MOCK_USERS.find(user => {
         if (user.email !== email) return false;
-        const expectedPassword = user.password || (user.roles.includes('student') && user.email.includes('@gppalanpur.in') ? user.email.split('@')[0] : undefined);
+        // Use password from MOCK_USERS if present, otherwise derive for specific student/faculty cases.
+        const expectedPassword = user.password; 
         return expectedPassword === password;
     });
 
@@ -287,15 +296,19 @@ export default function LoginPage() {
               variant="outline"
               className="w-full text-sm py-3 mt-4"
               onClick={() => {
-                localStorage.removeItem('managedUsers');
                 localStorage.removeItem('__API_USERS_STORE__'); 
                 localStorage.removeItem('__API_STUDENTS_STORE__'); 
                 localStorage.removeItem('__API_FACULTY_STORE__');
                 localStorage.removeItem('__API_COMMITTEES_STORE__');
-                // Add other stores if necessary
-                setMockUsersState(getMockUsers()); // Re-fetch base users
-                toast({ title: "Dev Info", description: "Local storage cleared for PolyManager." });
-              }}>Clear Local Storage (Dev)</Button>
+                localStorage.removeItem('__API_BUILDINGS_STORE__');
+                localStorage.removeItem('__API_ROOMS_STORE__');
+                localStorage.removeItem('__API_DEPARTMENTS_STORE__');
+                localStorage.removeItem('__API_PROGRAMS_STORE__');
+                localStorage.removeItem('__API_COURSES_STORE__');
+                localStorage.removeItem('__API_ROLES_STORE__');
+                setMockUsersState(getMockUsers()); 
+                toast({ title: "Dev Info", description: "Local storage for API stores cleared." });
+              }}>Clear API Stores (Dev)</Button>
           )}
         </CardContent>
         <CardFooter className="flex flex-col items-center gap-4">

@@ -24,6 +24,8 @@ const USER_ROLE_OPTIONS: { value: UserRole; label: string }[] = [
   { value: "hod", label: "HOD" },
   { value: "jury", label: "Jury" },
   { value: "committee_convener", label: "Committee Convener"},
+  { value: "committee_co_convener", label: "Committee Co-Convener"},
+  { value: "committee_member", label: "Committee Member"},
   { value: "super_admin", label: "Super Admin"},
   { value: "dte_admin", label: "DTE Admin"},
   { value: "gtu_admin", label: "GTU Admin"},
@@ -35,6 +37,7 @@ const USER_ROLE_OPTIONS: { value: UserRole; label: string }[] = [
   { value: "unknown", label: "Unknown" },
 ];
 
+
 const STATUS_OPTIONS: { value: 'active' | 'inactive'; label: string }[] = [
   { value: "active", label: "Active" },
   { value: "inactive", label: "Inactive" },
@@ -44,6 +47,7 @@ type SortField = keyof Omit<SystemUser, 'roles' | 'preferences'> | 'roles' | 'no
 type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
+const NO_INSTITUTE_VALUE = "__NO_INSTITUTE__";
 
 
 export default function UserManagementPage() {
@@ -70,6 +74,7 @@ export default function UserManagementPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState<UserRole | 'all'>('all');
   const [filterStatus, setFilterStatus] = useState<'active' | 'inactive' | 'all'>('all');
+  const [filterInstitute, setFilterInstitute] = useState<string | 'all'>('all');
   const [sortField, setSortField] = useState<SortField>('displayName');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
@@ -95,11 +100,8 @@ export default function UserManagementPage() {
         userService.getAllUsers(),
         instituteService.getAllInstitutes()
       ]);
-      setUsers(userData as SystemUser[]); // Assuming getAllUsers returns correct type
+      setUsers(userData as SystemUser[]); 
       setInstitutes(instituteData);
-      if (instituteData.length > 0 && !formInstituteId) {
-        // setFormInstituteId(instituteData[0].id); // Don't auto-select, make it optional
-      }
     } catch (error) {
       console.error("Failed to load users or institutes", error);
       toast({ variant: "destructive", title: "Error", description: (error as Error).message || "Could not load data." });
@@ -128,12 +130,11 @@ export default function UserManagementPage() {
   const handleEdit = (user: SystemUser) => {
     setCurrentUser(user);
     setFormFullName(user.fullName || '');
-    const { firstName, middleName, lastName } = parseGtuNameToComponents(user.fullName);
-    setFormFirstName(user.firstName || firstName || '');
-    setFormMiddleName(user.middleName || middleName || '');
-    setFormLastName(user.lastName || lastName || '');
+    setFormFirstName(user.firstName || '');
+    setFormMiddleName(user.middleName || '');
+    setFormLastName(user.lastName || '');
     setFormUserEmail(user.email);
-    setFormUserRoles(user.roles);
+    setFormUserRoles(user.roles || []);
     setFormUserStatus(user.isActive ? 'active' : 'inactive');
     setFormInstituteId(user.instituteId || undefined);
     setFormUserPassword('');
@@ -206,7 +207,7 @@ export default function UserManagementPage() {
       email: formUserEmail.trim(), 
       roles: formUserRoles, 
       isActive: formUserStatus === 'active',
-      instituteId: formInstituteId,
+      instituteId: formInstituteId === NO_INSTITUTE_VALUE ? undefined : formInstituteId,
     };
     if (formUserPassword) {
       userData.password = formUserPassword;
@@ -245,7 +246,7 @@ export default function UserManagementPage() {
     }
     setIsSubmitting(true);
     try {
-      const result = await userService.importUsers(selectedFile, institutes); // Pass institutes for domain mapping
+      const result = await userService.importUsers(selectedFile, institutes); 
       await fetchUsersAndInstitutes();
       toast({ title: "Import Successful", description: `${result.newCount} users added, ${result.updatedCount} users updated. Skipped: ${result.skippedCount}` });
       if(result.errors && result.errors.length > 0){
@@ -255,7 +256,7 @@ export default function UserManagementPage() {
       }
     } catch (error: any) {
       console.error("Error processing CSV file for User Import:", error);
-      toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
+      toast({ variant: "destructive", title: "Import Failed", description: error.message || error.data?.message || "Could not process the CSV file." });
     } finally {
       setIsSubmitting(false);
       setSelectedFile(null); 
@@ -276,7 +277,7 @@ export default function UserManagementPage() {
         const inst = institutes.find(i => i.id === user.instituteId);
         return [
           user.id,
-          `"${user.displayName.replace(/"/g, '""')}"`,
+          `"${(user.displayName || "").replace(/"/g, '""')}"`,
           `"${(user.fullName || "").replace(/"/g, '""')}"`,
           `"${(user.firstName || "").replace(/"/g, '""')}"`,
           `"${(user.middleName || "").replace(/"/g, '""')}"`,
@@ -304,8 +305,8 @@ export default function UserManagementPage() {
 
   const handleDownloadSampleCsv = () => {
     const sampleCsvContent = `id,displayName,fullName_GTUFormat,firstName,middleName,lastName,username,email,instituteEmail,roles,isActive,instituteId,instituteName,instituteCode,password
-u_001,John Doe,DOE JOHN R,John,R,Doe,johndoe,john.doe@example.com,john.doe@gpp.ac.in,student,true,inst1,Government Polytechnic Palanpur,GPP,Pass@123
-,Jane Smith,SMITH JANE,Jane,,Smith,janesmith,jane.smith@example.com,jane.smith@gpp.ac.in,faculty;jury,true,inst1,Government Polytechnic Palanpur,GPP,Pass@123
+,John Doe,DOE JOHN R,John,R,Doe,johndoe,john.doe@example.com,,student,true,inst1,Government Polytechnic Palanpur,GPP,Pass@123
+,Jane Smith,SMITH JANE,Jane,,Smith,janesmith,jane.smith@example.com,,faculty;jury,true,inst1,Government Polytechnic Palanpur,GPP,Pass@123
 ,New User,USER NEW ONE,New,One,User,newuser,new.user@example.com,,jury,false,,,,Pass@123
 `; 
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
@@ -346,6 +347,9 @@ u_001,John Doe,DOE JOHN R,John,R,Doe,johndoe,john.doe@example.com,john.doe@gpp.a
     if (filterStatus !== 'all') {
       result = result.filter(user => (user.isActive ? 'active' : 'inactive') === filterStatus);
     }
+    if (filterInstitute !== 'all') {
+        result = result.filter(user => user.instituteId === filterInstitute);
+    }
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
@@ -377,7 +381,7 @@ u_001,John Doe,DOE JOHN R,John,R,Doe,johndoe,john.doe@example.com,john.doe@gpp.a
       });
     }
     return result;
-  }, [users, searchTerm, filterRole, filterStatus, sortField, sortDirection]);
+  }, [users, searchTerm, filterRole, filterStatus, filterInstitute, sortField, sortDirection]);
 
   const totalPages = Math.ceil(filteredAndSortedUsers.length / itemsPerPage);
   const paginatedUsers = useMemo(() => {
@@ -387,7 +391,7 @@ u_001,John Doe,DOE JOHN R,John,R,Doe,johndoe,john.doe@example.com,john.doe@gpp.a
 
   useEffect(() => {
     setCurrentPage(1); 
-  }, [searchTerm, filterRole, filterStatus, itemsPerPage]);
+  }, [searchTerm, filterRole, filterStatus, filterInstitute, itemsPerPage]);
 
 
   const handleSelectAll = (checked: boolean | 'indeterminate') => {
@@ -512,10 +516,10 @@ u_001,John Doe,DOE JOHN R,John,R,Doe,johndoe,john.doe@example.com,john.doe@gpp.a
 
                   <div className="md:col-span-2">
                     <Label htmlFor="userInstitute">Institute (Optional)</Label>
-                     <Select value={formInstituteId || ""} onValueChange={(value) => setFormInstituteId(value === "" ? undefined : value)} disabled={isSubmitting || institutes.length === 0}>
+                     <Select value={formInstituteId || NO_INSTITUTE_VALUE} onValueChange={(value) => setFormInstituteId(value === NO_INSTITUTE_VALUE ? undefined : value)} disabled={isSubmitting || institutes.length === 0}>
                         <SelectTrigger id="userInstitute"><SelectValue placeholder="Select Institute (Optional)" /></SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="">None</SelectItem>
+                            <SelectItem value={NO_INSTITUTE_VALUE}>None</SelectItem>
                             {institutes.map(inst => <SelectItem key={inst.id} value={inst.id}>{inst.name} ({inst.code})</SelectItem>)}
                         </SelectContent>
                     </Select>
@@ -587,7 +591,7 @@ u_001,John Doe,DOE JOHN R,John,R,Doe,johndoe,john.doe@example.com,john.doe@gpp.a
             </div>
           </div>
 
-          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4 border rounded-lg">
+          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 border rounded-lg">
             <div>
               <Label htmlFor="searchUser">Search Users</Label>
               <div className="relative">
@@ -618,6 +622,16 @@ u_001,John Doe,DOE JOHN R,John,R,Doe,johndoe,john.doe@example.com,john.doe@gpp.a
                 <SelectContent>
                   <SelectItem value="all">All Statuses</SelectItem>
                   {STATUS_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+             <div>
+              <Label htmlFor="filterUserInstitute">Filter by Institute</Label>
+              <Select value={filterInstitute} onValueChange={(value) => setFilterInstitute(value as string | 'all')} disabled={institutes.length === 0}>
+                <SelectTrigger id="filterUserInstitute"><SelectValue placeholder="All Institutes" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Institutes</SelectItem>
+                  {institutes.map(inst => <SelectItem key={inst.id} value={inst.id}>{inst.name} ({inst.code})</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>

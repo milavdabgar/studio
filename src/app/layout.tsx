@@ -1,7 +1,7 @@
 
 "use client"; 
 
-import { GeistSans } from 'geist/font';
+import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
@@ -60,6 +60,8 @@ const USER_ROLE_OPTIONS_DISPLAY: { value: UserRole; label: string }[] = [
   { value: "hod", label: "HOD" },
   { value: "jury", label: "Jury" },
   { value: "committee_convener", label: "Committee Convener"},
+  { value: "committee_co_convener", label: "Committee Co-Convener"},
+  { value: "committee_member", label: "Committee Member"},
   { value: "super_admin", label: "Super Admin" },
   { value: "dte_admin", label: "DTE Admin" },
   { value: "gtu_admin", label: "GTU Admin" },
@@ -120,27 +122,33 @@ const baseNavItems: Record<UserRole, Array<{ href: string; icon: React.ElementTy
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'jury-dashboard' },
     { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'jury-evaluate' },
   ],
-  committee_convener: [ // Nav items for Committee Convener
+  committee_convener: [ 
     { href: '/dashboard', icon: Home, label: 'Convener Dashboard', id: 'convener-dashboard' },
     { href: '/committee/my-committee', icon: CommitteeIcon, label: 'My Committee', id: 'convener-my-committee'},
     { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'convener-meetings'},
   ],
-  // Add empty arrays for roles without specific nav items yet, to prevent errors
+  committee_co_convener: [
+    { href: '/dashboard', icon: Home, label: 'Co-Convener Dashboard', id: 'co-convener-dashboard' },
+    { href: '/committee/my-committee', icon: CommitteeIcon, label: 'My Committee', id: 'co-convener-my-committee'},
+    { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'co-convener-meetings'},
+  ],
+  committee_member: [
+    { href: '/dashboard', icon: Home, label: 'Member Dashboard', id: 'member-dashboard' },
+    { href: '/committee/my-committee', icon: CommitteeIcon, label: 'My Committee', id: 'member-my-committee'},
+  ],
   super_admin: [{ href: '/dashboard', icon: Home, label: 'Super Admin Dashboard', id: 'super-admin-dashboard' }],
   dte_admin: [{ href: '/dashboard', icon: Home, label: 'DTE Dashboard', id: 'dte-admin-dashboard' }],
   gtu_admin: [{ href: '/dashboard', icon: Home, label: 'GTU Dashboard', id: 'gtu-admin-dashboard' }],
   institute_admin: [{ href: '/dashboard', icon: Home, label: 'Institute Dashboard', id: 'institute-admin-dashboard' }],
   department_admin: [{ href: '/dashboard', icon: Home, label: 'Department Dashboard', id: 'department-admin-dashboard' }],
   committee_admin: [{ href: '/dashboard', icon: Home, label: 'Committee Admin Dashboard', id: 'committee-admin-dashboard' }],
-  committee_co_convener: [{ href: '/dashboard', icon: Home, label: 'Co-Convener Dashboard', id: 'co-convener-dashboard' }],
-  committee_member: [{ href: '/dashboard', icon: Home, label: 'Committee Member Dashboard', id: 'committee-member-dashboard' }],
   lab_assistant: [{ href: '/dashboard', icon: Home, label: 'Lab Assistant Dashboard', id: 'lab-assistant-dashboard' }],
   clerical_staff: [{ href: '/dashboard', icon: Home, label: 'Clerical Dashboard', id: 'clerical-dashboard' }],
   unknown: [], 
 };
 
 const getNavItemsForRole = (role: UserRole): Array<{ href: string; icon: React.ElementType; label: string; id: string }> => {
-  const items = baseNavItems[role] || baseNavItems['unknown']; // Fallback to unknown if role not in baseNavItems
+  const items = baseNavItems[role] || baseNavItems['unknown']; 
   items.sort((a, b) => {
     if (a.label.includes('Dashboard')) return -1;
     if (b.label.includes('Dashboard')) return 1;

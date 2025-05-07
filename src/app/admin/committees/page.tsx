@@ -77,7 +77,7 @@ export default function CommitteeManagementPage() {
       setCommittees(committeeData);
       setInstitutes(instituteData);
       // Filter for users who can be conveners (e.g., faculty, hod, admin)
-      setFacultyUsers(usersData.filter(u => u.roles.includes('faculty') || u.roles.includes('hod') || u.roles.includes('admin')));
+      setFacultyUsers(usersData.filter(u => u.roles.includes('faculty') || u.roles.includes('hod') || u.roles.includes('admin') || u.roles.includes('committee_convener')));
       if (instituteData.length > 0 && !formInstituteId) {
         setFormInstituteId(instituteData[0].id);
       }
@@ -552,7 +552,7 @@ cmt_sample_1,Academic Committee,"Oversees academic policies","To ensure academic
                   <TableCell id={`committee-name-${committee.id}`} className="font-medium">{committee.name}</TableCell>
                   <TableCell>{institutes.find(i => i.id === committee.instituteId)?.name || 'N/A'}</TableCell>
                   <TableCell>{facultyUsers.find(u => u.id === committee.convenerId)?.displayName || '-'}</TableCell>
-                  <TableCell>{committee.formationDate ? format(parseISO(committee.formationDate), 'dd MMM yyyy') : '-'}</TableCell>
+                  <TableCell>{committee.formationDate && isValid(parseISO(committee.formationDate)) ? format(parseISO(committee.formationDate), 'dd MMM yyyy') : '-'}</TableCell>
                   <TableCell>
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
                         committee.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
