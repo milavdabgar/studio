@@ -13,17 +13,18 @@ declare global {
 if (!global.__API_COMMITTEES_STORE__) {
   global.__API_COMMITTEES_STORE__ = [];
 }
-let committeesStore: Committee[] = global.__API_COMMITTEES_STORE__;
+// let committeesStore: Committee[] = global.__API_COMMITTEES_STORE__; // Use global directly
 
 if (!global.__API_ROLES_STORE__) {
   global.__API_ROLES_STORE__ = [];
 }
-let rolesStore: Role[] = global.__API_ROLES_STORE__;
+// let rolesStore: Role[] = global.__API_ROLES_STORE__; // Use global directly
 
 if (!global.__API_USERS_STORE__) {
   global.__API_USERS_STORE__ = [];
 }
-let usersStore: User[] = global.__API_USERS_STORE__;
+// let usersStore: User[] = global.__API_USERS_STORE__; // Use global directly
+
 
 interface RouteParams {
   params: {
@@ -31,10 +32,15 @@ interface RouteParams {
   };
 }
 
-async function updateUserRole(userId: string, roleName: UserRole, add: boolean) {
+// This function now updates the specific committee convener role, e.g., "CWAN Convener"
+async function updateUserSpecificConvenerRole(userId: string, committeeName: string, add: boolean) {
+  const roleName: UserRole = `${committeeName} Convener`;
   try {
     const user = await userService.getUserById(userId) as User;
-    if (!user) return;
+    if (!user) {
+        console.warn(`User ${userId} not found for role update to ${roleName}`);
+        return;
+    }
 
     let newRoles = [...user.roles];
     if (add && !newRoles.includes(roleName)) {
@@ -43,6 +49,7 @@ async function updateUserRole(userId: string, roleName: UserRole, add: boolean) 
       newRoles = newRoles.filter(r => r !== roleName);
     }
 
+    // Only update if roles actually changed
     if (JSON.stringify(newRoles.sort()) !== JSON.stringify(user.roles.sort())) {
       await userService.updateUser(userId, { roles: newRoles });
     }
@@ -52,40 +59,40 @@ async function updateUserRole(userId: string, roleName: UserRole, add: boolean) 
 }
 
 async function updateCommitteeRoleNames(oldCommitteeName: string, newCommitteeName: string, committeeId: string, newCommitteeCode: string) {
+    let currentRolesStore: Role[] = global.__API_ROLES_STORE__ || [];
+    let currentUsersStore: User[] = global.__API_USERS_STORE__ || []; // For direct manipulation, if needed
+
     const roleTypes = ['Convener', 'Co-Convener', 'Member'];
     for (const type of roleTypes) {
         const oldRoleName = `${oldCommitteeName} ${type}`;
         const newRoleName = `${newCommitteeName} ${type}`;
         const newRoleCode = `${newCommitteeCode.toLowerCase()}_${type.toLowerCase().replace(/\s+/g, '_')}`;
 
-        const roleIndex = rolesStore.findIndex(r => r.committeeId === committeeId && r.name === oldRoleName);
+        const roleIndex = currentRolesStore.findIndex(r => r.committeeId === committeeId && r.name === oldRoleName);
         if (roleIndex !== -1) {
-            rolesStore[roleIndex].name = newRoleName;
-            rolesStore[roleIndex].code = newRoleCode; // Also update code if it's derived from committee code
-            rolesStore[roleIndex].description = `${type} for the ${newCommitteeName} committee.`;
-            rolesStore[roleIndex].updatedAt = new Date().toISOString();
+            currentRolesStore[roleIndex].name = newRoleName;
+            currentRolesStore[roleIndex].code = newRoleCode; // Also update code
+            currentRolesStore[roleIndex].description = `${type} for the ${newCommitteeName} committee.`;
+            currentRolesStore[roleIndex].updatedAt = new Date().toISOString();
 
             // Update users who have the old role name
-            usersStore.forEach(user => {
-                if (user.roles.includes(oldRoleName)) {
-                    user.roles = user.roles.map(r => r === oldRoleName ? newRoleName : r);
-                    // No direct call to userService.updateUser here to avoid circular dependencies / complexity
-                    // This assumes usersStore is the source of truth or will be persisted by userService eventually
+            // This is for direct manipulation of in-memory usersStore. If userService updates users through API, this part might differ.
+            currentUsersStore.forEach(user => {
+                const userRoleIndex = user.roles.indexOf(oldRoleName);
+                if (userRoleIndex !== -1) {
+                    user.roles[userRoleIndex] = newRoleName;
                 }
             });
         }
     }
-    global.__API_ROLES_STORE__ = rolesStore;
-    global.__API_USERS_STORE__ = usersStore;
+    global.__API_ROLES_STORE__ = currentRolesStore;
+    global.__API_USERS_STORE__ = currentUsersStore; // Persist changes if usersStore was manipulated
 }
 
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
-  if (!Array.isArray(global.__API_COMMITTEES_STORE__)) {
-    global.__API_COMMITTEES_STORE__ = [];
-    return NextResponse.json({ message: 'Committee data store corrupted.' }, { status: 500 });
-  }
+  const committeesStore = global.__API_COMMITTEES_STORE__ || [];
   const committee = committeesStore.find(c => c.id === id);
   if (committee) {
     return NextResponse.json(committee);
@@ -95,14 +102,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
-  if (!Array.isArray(global.__API_COMMITTEES_STORE__) || !Array.isArray(global.__API_ROLES_STORE__) || !Array.isArray(global.__API_USERS_STORE__)) {
-    // Initialize stores if they are not arrays
-    global.__API_COMMITTEES_STORE__ = global.__API_COMMITTEES_STORE__ || [];
-    global.__API_ROLES_STORE__ = global.__API_ROLES_STORE__ || [];
-    global.__API_USERS_STORE__ = global.__API_USERS_STORE__ || [];
-    return NextResponse.json({ message: 'Data store corrupted.' }, { status: 500 });
-  }
-
+  let committeesStore = global.__API_COMMITTEES_STORE__ || [];
+  
   try {
     const committeeData = await request.json() as Partial<Omit<Committee, 'id' | 'createdAt' | 'updatedAt'>>;
     const committeeIndex = committeesStore.findIndex(c => c.id === id);
@@ -141,7 +142,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 
     const oldConvenerId = existingCommittee.convenerId;
-    const newConvenerId = committeeData.convenerId === undefined ? existingCommittee.convenerId : committeeData.convenerId;
+    const newConvenerId = committeeData.convenerId === undefined ? existingCommittee.convenerId : (committeeData.convenerId === null ? undefined : committeeData.convenerId) ; // Handle null for unassigning
+
     const oldCommitteeName = existingCommittee.name;
     const newCommitteeName = committeeData.name ? committeeData.name.trim() : existingCommittee.name;
     const newCommitteeCode = committeeData.code ? committeeData.code.trim().toUpperCase() : existingCommittee.code;
@@ -155,7 +157,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       description: committeeData.description !== undefined ? committeeData.description.trim() || undefined : existingCommittee.description,
       purpose: committeeData.purpose ? committeeData.purpose.trim() : existingCommittee.purpose,
       dissolutionDate: committeeData.dissolutionDate === null ? undefined : committeeData.dissolutionDate || existingCommittee.dissolutionDate,
-      convenerId: newConvenerId,
+      convenerId: newConvenerId, // This is now correctly handling null or new ID
       updatedAt: new Date().toISOString(),
     };
 
@@ -165,18 +167,17 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (newCommitteeName !== oldCommitteeName || newCommitteeCode !== existingCommittee.code) {
         await updateCommitteeRoleNames(oldCommitteeName, newCommitteeName, existingCommittee.id, newCommitteeCode);
     }
-
-    const convenerRoleName = `${newCommitteeName} Convener`;
-    if (oldConvenerId && oldConvenerId !== newConvenerId) {
-      const oldConvenerRoleName = `${oldCommitteeName} Convener`;
-      await updateUserRole(oldConvenerId, oldConvenerRoleName, false);
+    
+    // Handle convener role changes
+    if (oldConvenerId && oldConvenerId !== newConvenerId) { // If old convener existed and is different from new one
+      await updateUserSpecificConvenerRole(oldConvenerId, oldCommitteeName, false); // Remove role from old convener using old committee name
     }
-    if (newConvenerId && newConvenerId !== oldConvenerId) {
-      await updateUserRole(newConvenerId, convenerRoleName, true);
-    } else if (newConvenerId && newCommitteeName !== oldCommitteeName) { // Convener same, but committee name changed
-        const oldConvenerRoleName = `${oldCommitteeName} Convener`;
-        await updateUserRole(newConvenerId, oldConvenerRoleName, false); // Remove old role name
-        await updateUserRole(newConvenerId, convenerRoleName, true); // Add new role name
+    if (newConvenerId && newConvenerId !== oldConvenerId) { // If new convener exists and is different from old one
+      await updateUserSpecificConvenerRole(newConvenerId, newCommitteeName, true); // Add role to new convener using new committee name
+    } else if (newConvenerId && newConvenerId === oldConvenerId && (newCommitteeName !== oldCommitteeName)) { 
+      // Convener is the same, but committee name changed, so update the role name for the convener
+      await updateUserSpecificConvenerRole(newConvenerId, oldCommitteeName, false); // Remove old named role
+      await updateUserSpecificConvenerRole(newConvenerId, newCommitteeName, true);  // Add new named role
     }
 
 
@@ -189,12 +190,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
-  if (!Array.isArray(global.__API_COMMITTEES_STORE__) || !Array.isArray(global.__API_ROLES_STORE__) || !Array.isArray(global.__API_USERS_STORE__)) {
-    global.__API_COMMITTEES_STORE__ = global.__API_COMMITTEES_STORE__ || [];
-    global.__API_ROLES_STORE__ = global.__API_ROLES_STORE__ || [];
-    global.__API_USERS_STORE__ = global.__API_USERS_STORE__ || [];
-    return NextResponse.json({ message: 'Data store corrupted.' }, { status: 500 });
-  }
+  let committeesStore = global.__API_COMMITTEES_STORE__ || [];
+  let currentRolesStore = global.__API_ROLES_STORE__ || [];
+  let currentUsersStore = global.__API_USERS_STORE__ || [];
   
   const committeeIndex = committeesStore.findIndex(c => c.id === id);
   if (committeeIndex === -1) {
@@ -205,29 +203,25 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
   global.__API_COMMITTEES_STORE__ = committeesStore;
 
   // Delete associated committee roles
-  const rolesToDelete = rolesStore.filter(r => r.committeeId === id);
-  rolesStore = rolesStore.filter(r => r.committeeId !== id);
-  global.__API_ROLES_STORE__ = rolesStore;
+  const rolesToDelete = currentRolesStore.filter(r => r.committeeId === id);
+  currentRolesStore = currentRolesStore.filter(r => r.committeeId !== id);
+  global.__API_ROLES_STORE__ = currentRolesStore;
 
   // Remove these roles from any users who have them
   for (const role of rolesToDelete) {
-      usersStore.forEach(user => {
+      currentUsersStore.forEach(user => {
           if (user.roles.includes(role.name)) {
               user.roles = user.roles.filter(rName => rName !== role.name);
-              // Consider calling userService.updateUser if user store is not directly managed here for persistence
           }
       });
   }
-  global.__API_USERS_STORE__ = usersStore;
+  global.__API_USERS_STORE__ = currentUsersStore;
 
 
   // If there was a convener, remove their specific convener role for this committee
   if (deletedCommittee.convenerId) {
-    const convenerRoleName = `${deletedCommittee.name} Convener`;
-    await updateUserRole(deletedCommittee.convenerId, convenerRoleName, false);
+    await updateUserSpecificConvenerRole(deletedCommittee.convenerId, deletedCommittee.name, false);
   }
 
   return NextResponse.json({ message: 'Committee and associated roles deleted successfully' }, { status: 200 });
 }
-
-    

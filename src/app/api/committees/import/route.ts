@@ -1,35 +1,53 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Committee, CommitteeStatus, Institute, SystemUser as User, UserRole } from '@/types/entities';
+import type { Committee, CommitteeStatus, Institute, SystemUser as User, UserRole, Role } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 import { isValid, parseISO, format } from 'date-fns';
 import { userService } from '@/lib/api/users';
+// Role store is needed for creating/updating committee-specific roles
+// const { roleService } = '@/lib/api/roles'; // Not used directly, manipulating global store
 
 declare global {
   var __API_COMMITTEES_STORE__: Committee[] | undefined;
+  var __API_ROLES_STORE__: Role[] | undefined;
+  var __API_USERS_STORE__: User[] | undefined;
 }
 
 if (!global.__API_COMMITTEES_STORE__) {
   global.__API_COMMITTEES_STORE__ = [];
 }
-let committeesStore: Committee[] = global.__API_COMMITTEES_STORE__;
+// let committeesStore: Committee[] = global.__API_COMMITTEES_STORE__; // Use global directly
+
+if (!global.__API_ROLES_STORE__) {
+  global.__API_ROLES_STORE__ = [];
+}
+// let rolesStore: Role[] = global.__API_ROLES_STORE__; // Use global directly
+
+if (!global.__API_USERS_STORE__) {
+  global.__API_USERS_STORE__ = [];
+}
+// let usersStore: User[] = global.__API_USERS_STORE__; // Use global directly
+
 
 const generateIdForImport = (): string => `cmt_imp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+const generateRoleIdForImport = (): string => `role_imp_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 const COMMITTEE_STATUS_OPTIONS: CommitteeStatus[] = ['active', 'inactive', 'dissolved'];
 
-async function updateUserRoleOnImport(userId: string, role: UserRole, add: boolean) {
+// Helper to update a user's specific committee convener role
+async function updateUserSpecificConvenerRole(userId: string, committeeName: string, add: boolean) {
+  const roleName: UserRole = `${committeeName} Convener`;
   try {
     const user = await userService.getUserById(userId) as User;
     if (!user) {
-        console.warn(`User with ID ${userId} not found during import role update.`);
+        console.warn(`User with ID ${userId} not found during convener role update.`);
         return false;
     }
 
     let newRoles = [...user.roles];
-    if (add && !newRoles.includes(role)) {
-      newRoles.push(role);
+    if (add && !newRoles.includes(roleName)) {
+      newRoles.push(roleName);
     } else if (!add) {
-      newRoles = newRoles.filter(r => r !== role);
+      newRoles = newRoles.filter(r => r !== roleName);
     }
 
     if (JSON.stringify(newRoles.sort()) !== JSON.stringify(user.roles.sort())) {
@@ -37,9 +55,73 @@ async function updateUserRoleOnImport(userId: string, role: UserRole, add: boole
     }
     return true;
   } catch (error) {
-    console.error(`Failed to update role for user ${userId} during import:`, error);
+    console.error(`Failed to update role '${roleName}' for user ${userId} during import:`, error);
     return false;
   }
+}
+
+async function createCommitteeRolesForImport(committee: Committee) {
+  let currentRolesStore: Role[] = global.__API_ROLES_STORE__ || [];
+  const committeeRolesInfo = [
+    { type: 'Convener', permissions: ['view_committee_info', 'manage_committee_meetings', 'manage_committee_members'] },
+    { type: 'Co-Convener', permissions: ['view_committee_info', 'manage_committee_meetings'] },
+    { type: 'Member', permissions: ['view_committee_info'] },
+  ];
+
+  for (const roleInfo of committeeRolesInfo) {
+    const roleName = `${committee.name} ${roleInfo.type}`;
+    const roleCode = `${committee.code.toLowerCase()}_${roleInfo.type.toLowerCase().replace(/\s+/g, '_')}`;
+    
+    if (!currentRolesStore.some(r => r.code === roleCode)) {
+      const newRole: Role = {
+        id: generateRoleIdForImport(),
+        name: roleName,
+        code: roleCode,
+        description: `${roleInfo.type} for the ${committee.name} committee.`,
+        permissions: roleInfo.permissions,
+        isSystemRole: false,
+        isCommitteeRole: true,
+        committeeId: committee.id,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      currentRolesStore.push(newRole);
+    }
+  }
+  global.__API_ROLES_STORE__ = currentRolesStore;
+}
+
+async function updateCommitteeRoleNamesForImport(oldCommitteeName: string, newCommitteeName: string, committeeId: string, newCommitteeCode: string) {
+    let currentRolesStore: Role[] = global.__API_ROLES_STORE__ || [];
+    let currentUsersStore: User[] = global.__API_USERS_STORE__ || [];
+    
+    const roleTypes = ['Convener', 'Co-Convener', 'Member'];
+    for (const type of roleTypes) {
+        const oldRoleName = `${oldCommitteeName} ${type}`;
+        const newRoleName = `${newCommitteeName} ${type}`;
+        const newRoleCode = `${newCommitteeCode.toLowerCase()}_${type.toLowerCase().replace(/\s+/g, '_')}`;
+
+        const roleIndex = currentRolesStore.findIndex(r => r.committeeId === committeeId && r.name === oldRoleName);
+        if (roleIndex !== -1) {
+            currentRolesStore[roleIndex].name = newRoleName;
+            currentRolesStore[roleIndex].code = newRoleCode;
+            currentRolesStore[roleIndex].description = `${type} for the ${newCommitteeName} committee.`;
+            currentRolesStore[roleIndex].updatedAt = new Date().toISOString();
+
+            // Update users who have the old role name
+            // This direct manipulation of usersStore is acceptable for in-memory setup.
+            // For a real DB, userService.updateUser should be called for each affected user.
+            currentUsersStore.forEach(user => {
+                const userRoleIndex = user.roles.indexOf(oldRoleName);
+                if (userRoleIndex !== -1) {
+                    user.roles[userRoleIndex] = newRoleName;
+                    // Potentially mark user for update if using a more complex persistence layer
+                }
+            });
+        }
+    }
+    global.__API_ROLES_STORE__ = currentRolesStore;
+    global.__API_USERS_STORE__ = currentUsersStore;
 }
 
 
@@ -78,7 +160,7 @@ export async function POST(request: NextRequest) {
     }
 
     const header = Object.keys(parsedData[0] || {}).map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
-    const requiredHeaders = ['name', 'purpose', 'formationdate', 'status'];
+    const requiredHeaders = ['name', 'code', 'purpose', 'formationdate', 'status'];
     if (!requiredHeaders.every(rh => header.includes(rh))) {
       const missing = requiredHeaders.filter(rh => !header.includes(rh));
       return NextResponse.json({ message: `CSV header is missing required columns: ${missing.join(', ')}. Found: ${header.join(', ')}` }, { status: 400 });
@@ -89,19 +171,22 @@ export async function POST(request: NextRequest) {
     let skippedCount = 0;
     const importErrors: { row: number; message: string; data: any }[] = [];
     const now = new Date().toISOString();
+    let committeesStoreRef = global.__API_COMMITTEES_STORE__!;
+
 
     for (let i = 0; i < parsedData.length; i++) {
       const row = parsedData[i];
       const rowIndex = i + 2; 
 
       const name = row.name?.toString().trim();
+      const code = row.code?.toString().trim().toUpperCase();
       const purpose = row.purpose?.toString().trim();
       const formationDateStr = row.formationdate?.toString().trim();
       const statusRaw = row.status?.toString().trim().toLowerCase();
       const status = COMMITTEE_STATUS_OPTIONS.includes(statusRaw as CommitteeStatus) ? statusRaw as CommitteeStatus : undefined;
 
-      if (!name || !purpose || !formationDateStr || !status) {
-        importErrors.push({ row: rowIndex, message: "Missing required fields: name, purpose, formationDate, or status.", data: row });
+      if (!name || !code || !purpose || !formationDateStr || !status) {
+        importErrors.push({ row: rowIndex, message: "Missing required fields: name, code, purpose, formationDate, or status.", data: row });
         skippedCount++; continue;
       }
       
@@ -129,12 +214,12 @@ export async function POST(request: NextRequest) {
       let instituteId = row.instituteid?.toString().trim();
       if (!instituteId) {
         const instituteName = row.institutename?.toString().trim();
-        const instituteCode = row.institutecode?.toString().trim().toUpperCase();
-        const foundInstitute = clientInstitutes.find(inst => (instituteName && inst.name.toLowerCase() === instituteName.toLowerCase()) || (instituteCode && inst.code.toUpperCase() === instituteCode));
+        const instituteCodeCsv = row.institutecode?.toString().trim().toUpperCase();
+        const foundInstitute = clientInstitutes.find(inst => (instituteName && inst.name.toLowerCase() === instituteName.toLowerCase()) || (instituteCodeCsv && inst.code.toUpperCase() === instituteCodeCsv));
         if (foundInstitute) {
           instituteId = foundInstitute.id;
         } else {
-          importErrors.push({ row: rowIndex, message: `Institute not found by name '${instituteName}' or code '${instituteCode}'.`, data: row });
+          importErrors.push({ row: rowIndex, message: `Institute not found by name '${instituteName}' or code '${instituteCodeCsv}'.`, data: row });
           skippedCount++; continue;
         }
       } else if (!clientInstitutes.some(inst => inst.id === instituteId)) {
@@ -149,17 +234,15 @@ export async function POST(request: NextRequest) {
           if (foundUser) {
               convenerId = foundUser.id;
           } else {
-              importErrors.push({ row: rowIndex, message: `Convener not found by email '${convenerEmail}'.`, data: row });
-              // Not skipping, convener is optional
+              importErrors.push({ row: rowIndex, message: `Convener not found by email '${convenerEmail}'. Convener will be unassigned.`, data: row });
           }
       } else if (convenerId && !clientFacultyUsers.some(u => u.id === convenerId)) {
-          importErrors.push({ row: rowIndex, message: `Provided convenerId '${convenerId}' does not exist or is not a faculty member.`, data: row });
-          convenerId = undefined; // Clear invalid convenerId
+          importErrors.push({ row: rowIndex, message: `Provided convenerId '${convenerId}' does not exist or is not a faculty member. Convener will be unassigned.`, data: row });
+          convenerId = undefined;
       }
 
-
-      const committeeData: Omit<Committee, 'id' | 'createdAt' | 'updatedAt'> = {
-        name, purpose, instituteId, formationDate, status,
+      const committeeDataFromCsv: Omit<Committee, 'id' | 'createdAt' | 'updatedAt'> = {
+        name, code, purpose, instituteId, formationDate, status,
         description: row.description?.toString().trim() || undefined,
         dissolutionDate,
         convenerId: convenerId || undefined,
@@ -167,43 +250,65 @@ export async function POST(request: NextRequest) {
 
       const idFromCsv = row.id?.toString().trim();
       let existingCommitteeIndex = -1;
-      let oldConvenerIdToUpdate: string | undefined = undefined;
+      let oldCommitteeSnapshot: Committee | undefined = undefined;
 
       if (idFromCsv) {
-        existingCommitteeIndex = committeesStore.findIndex(c => c.id === idFromCsv);
+        existingCommitteeIndex = committeesStoreRef.findIndex(c => c.id === idFromCsv);
       } else {
-        existingCommitteeIndex = committeesStore.findIndex(c => c.name.toLowerCase() === name.toLowerCase() && c.instituteId === instituteId);
+        existingCommitteeIndex = committeesStoreRef.findIndex(c => c.code.toLowerCase() === code.toLowerCase() && c.instituteId === instituteId);
+        if (existingCommitteeIndex === -1) { // Fallback to name if code not found
+             existingCommitteeIndex = committeesStoreRef.findIndex(c => c.name.toLowerCase() === name.toLowerCase() && c.instituteId === instituteId);
+        }
       }
 
       if (existingCommitteeIndex !== -1) {
-        oldConvenerIdToUpdate = committeesStore[existingCommitteeIndex].convenerId;
-        committeesStore[existingCommitteeIndex] = { ...committeesStore[existingCommitteeIndex], ...committeeData, updatedAt: now };
+        oldCommitteeSnapshot = { ...committeesStoreRef[existingCommitteeIndex] };
+        committeesStoreRef[existingCommitteeIndex] = { ...oldCommitteeSnapshot, ...committeeDataFromCsv, updatedAt: now };
+        const updatedCommittee = committeesStoreRef[existingCommitteeIndex];
         updatedCount++;
+
+        // Update committee roles if name or code changed
+        if (oldCommitteeSnapshot && (updatedCommittee.name !== oldCommitteeSnapshot.name || updatedCommittee.code !== oldCommitteeSnapshot.code)) {
+            await updateCommitteeRoleNamesForImport(oldCommitteeSnapshot.name, updatedCommittee.name, updatedCommittee.id, updatedCommittee.code);
+        }
+        // Update convener role
+        if (oldCommitteeSnapshot && oldCommitteeSnapshot.convenerId !== updatedCommittee.convenerId) {
+            if(oldCommitteeSnapshot.convenerId) await updateUserSpecificConvenerRole(oldCommitteeSnapshot.convenerId, oldCommitteeSnapshot.name, false);
+            if(updatedCommittee.convenerId) await updateUserSpecificConvenerRole(updatedCommittee.convenerId, updatedCommittee.name, true);
+        } else if (updatedCommittee.convenerId && oldCommitteeSnapshot && (updatedCommittee.name !== oldCommitteeSnapshot.name) ) {
+            // Name changed, convener same: update specific role name
+            await updateUserSpecificConvenerRole(updatedCommittee.convenerId, oldCommitteeSnapshot.name, false);
+            await updateUserSpecificConvenerRole(updatedCommittee.convenerId, updatedCommittee.name, true);
+        }
+
       } else {
-        if (committeesStore.some(c => c.name.toLowerCase() === name.toLowerCase() && c.instituteId === instituteId)) {
+        if (committeesStoreRef.some(c => c.code.toLowerCase() === code.toLowerCase() && c.instituteId === instituteId)) {
+          importErrors.push({ row: rowIndex, message: `Committee with code '${code}' already exists for this institute.`, data: row });
+          skippedCount++; continue;
+        }
+         if (committeesStoreRef.some(c => c.name.toLowerCase() === name.toLowerCase() && c.instituteId === instituteId)) {
           importErrors.push({ row: rowIndex, message: `Committee with name '${name}' already exists for this institute.`, data: row });
           skippedCount++; continue;
         }
+
         const newCommittee: Committee = {
           id: idFromCsv || generateIdForImport(),
-          ...committeeData,
+          ...committeeDataFromCsv,
           createdAt: now,
           updatedAt: now,
         };
-        committeesStore.push(newCommittee);
+        committeesStoreRef.push(newCommittee);
+        await createCommitteeRolesForImport(newCommittee); // Create roles for the new committee
         newCount++;
-      }
-      
-      // Update user roles for conveners
-      if (oldConvenerIdToUpdate && oldConvenerIdToUpdate !== committeeData.convenerId) {
-          await updateUserRoleOnImport(oldConvenerIdToUpdate, 'committee_convener', false);
-      }
-      if (committeeData.convenerId && committeeData.convenerId !== oldConvenerIdToUpdate) {
-          await updateUserRoleOnImport(committeeData.convenerId, 'committee_convener', true);
+        // Assign convener role if new committee has a convener
+        if (newCommittee.convenerId) {
+            await updateUserSpecificConvenerRole(newCommittee.convenerId, newCommittee.name, true);
+        }
       }
     }
 
-    global.__API_COMMITTEES_STORE__ = committeesStore;
+    global.__API_COMMITTEES_STORE__ = committeesStoreRef;
+
     if (importErrors.length > 0) {
         return NextResponse.json({ 
             message: `Committees import partially completed with ${importErrors.length} issues.`, 
