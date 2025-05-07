@@ -18,55 +18,9 @@ import { format, parseISO, isValid } from 'date-fns';
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Checkbox } from '@/components/ui/checkbox';
+import type { Student, StudentStatus, SemesterStatus } from '@/types/entities';
+import { studentService } from '@/lib/api/students';
 
-type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown';
-interface SystemUser {
-  id: string;
-  name: string;
-  email: string;
-  roles: UserRole[];
-  status: 'active' | 'inactive';
-  department?: string;
-}
-
-type StudentStatus = 'active' | 'inactive' | 'graduated' | 'dropped';
-type SemesterStatus = 'Passed' | 'Pending' | 'Not Appeared' | 'N/A';
-
-interface Student {
-  id: string; 
-  enrollmentNumber: string; 
-  gtuName?: string; 
-  firstName?: string;
-  middleName?: string;
-  lastName?: string;
-  personalEmail?: string; 
-  instituteEmail: string; 
-  department: string;
-  branchCode?: string; 
-  currentSemester: number;
-  status: StudentStatus;
-  contactNumber?: string; 
-  address?: string;
-  dateOfBirth?: string; 
-  admissionDate?: string; 
-  gender?: 'Male' | 'Female' | 'Other';
-  convocationYear?: number;
-  sem1Status?: SemesterStatus;
-  sem2Status?: SemesterStatus;
-  sem3Status?: SemesterStatus;
-  sem4Status?: SemesterStatus;
-  sem5Status?: SemesterStatus;
-  sem6Status?: SemesterStatus;
-  sem7Status?: SemesterStatus;
-  sem8Status?: SemesterStatus;
-  category?: string;
-  isComplete?: boolean;
-  termClose?: boolean;
-  isCancel?: boolean;
-  isPassAll?: boolean;
-  aadharNumber?: string;
-  shift?: 'Morning' | 'Afternoon' | string;
-}
 
 const DEPARTMENT_OPTIONS = [
   "Computer Engineering",
@@ -93,18 +47,16 @@ const SEMESTER_STATUS_OPTIONS: { value: SemesterStatus; label: string }[] = [
     { value: "Not Appeared", label: "Not Appeared" },
 ];
 
-const GENDER_OPTIONS = ["Male", "Female", "Other"];
-const SHIFT_OPTIONS = ["Morning", "Afternoon"];
+const GENDER_OPTIONS: Student['gender'][] = ["Male", "Female", "Other"];
+const SHIFT_OPTIONS: Student['shift'][] = ["Morning", "Afternoon"];
 
-const LOCAL_STORAGE_KEY_STUDENTS = 'managedStudentsPMP';
-const LOCAL_STORAGE_KEY_USERS = 'managedUsers';
 
 type SortField = keyof Student | 'none';
 type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
 
-const parseGtuName = (gtuName: string): { firstName?: string, middleName?: string, lastName?: string } => {
+const parseGtuName = (gtuName: string | undefined): { firstName?: string, middleName?: string, lastName?: string } => {
     if (!gtuName) return {};
     const parts = gtuName.trim().split(/\s+/);
     if (parts.length === 1) return { firstName: parts[0] };
@@ -117,10 +69,6 @@ const mapSemesterCodeToStatus = (code: string | undefined | null): SemesterStatu
     if (code === '1') return 'Pending';
     if (code === '' || code === undefined || code === null) return 'Not Appeared';
     return 'N/A';
-};
-
-const generateClientId = (): string => {
-  return `client_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 };
 
 const normalizeGender = (gender: string | undefined): Student['gender'] | undefined => {
@@ -138,24 +86,6 @@ const normalizeShift = (shift: string | undefined): Student['shift'] | undefined
     if (lowerShift.startsWith('m')) return 'Morning';
     if (lowerShift.startsWith('a')) return 'Afternoon';
     return shift; 
-};
-
-const addUserToLocalStorage = (newUser: SystemUser) => {
-  if (typeof window === 'undefined') return;
-  try {
-    const storedUsers = localStorage.getItem(LOCAL_STORAGE_KEY_USERS);
-    let users: SystemUser[] = storedUsers ? JSON.parse(storedUsers) : [];
-    
-    const existingUserIndex = users.findIndex(u => u.email === newUser.email);
-    if (existingUserIndex !== -1) {
-      return;
-    }
-    
-    users.push(newUser);
-    localStorage.setItem(LOCAL_STORAGE_KEY_USERS, JSON.stringify(users));
-  } catch (error) {
-    console.error("Failed to add user to localStorage", error);
-  }
 };
 
 
@@ -184,19 +114,19 @@ export default function StudentManagementPage() {
   const [formConvocationYear, setFormConvocationYear] = useState<number | undefined>(undefined);
   const [formShift, setFormShift] = useState<Student['shift'] | undefined>(undefined);
 
-  const semesterStatusGetters: { [key: number]: SemesterStatus } = {
+  const initialSemesterStatusGetters: { [key: number]: SemesterStatus } = {
     1: 'N/A', 2: 'N/A', 3: 'N/A', 4: 'N/A',
     5: 'N/A', 6: 'N/A', 7: 'N/A', 8: 'N/A',
   };
-  const [formSemesterStatuses, setFormSemesterStatuses] = useState<typeof semesterStatusGetters>(semesterStatusGetters);
+  const [formSemesterStatuses, setFormSemesterStatuses] = useState<typeof initialSemesterStatusGetters>(initialSemesterStatusGetters);
 
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedGtuFile, setSelectedGtuFile] = useState<File | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterDepartment, setFilterDepartment] = useState<string>('all');
-  const [filterSemester, setFilterSemester] = useState<string>('all');
-  const [filterStatus, setFilterStatus] = useState<StudentStatus | 'all'>('all');
+  const [filterDepartmentVal, setFilterDepartmentVal] = useState<string>('all');
+  const [filterSemesterVal, setFilterSemesterVal] = useState<string>('all');
+  const [filterStatusVal, setFilterStatusVal] = useState<StudentStatus | 'all'>('all');
   const [sortField, setSortField] = useState<SortField>('gtuName');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>([]);
@@ -205,61 +135,32 @@ export default function StudentManagementPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
 
-
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setIsLoading(true);
-      try {
-        const storedStudents = localStorage.getItem(LOCAL_STORAGE_KEY_STUDENTS);
-        if (storedStudents) {
-          setStudents(JSON.parse(storedStudents));
-        }
-      } catch (error) {
-        console.error("Failed to load students from localStorage", error);
-      }
-      setIsLoading(false);
+  const fetchStudents = async () => {
+    setIsLoading(true);
+    try {
+      const data = await studentService.getAllStudents();
+      setStudents(data);
+    } catch (error) {
+        toast({ variant: "destructive", title: "Error", description: (error as Error).message || "Could not load student data." });
     }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchStudents();
   }, []);
 
-  useEffect(() => {
-    if (!isLoading && typeof window !== 'undefined') {
-        try {
-            localStorage.setItem(LOCAL_STORAGE_KEY_STUDENTS, JSON.stringify(students));
-        } catch (error) {
-            console.error("Failed to save students to localStorage", error);
-             setTimeout(() => { // setTimeout to avoid issues with rendering
-                toast({
-                    variant: "destructive",
-                    title: "Storage Error",
-                    description: "Could not save student data locally. Changes might be lost.",
-                });
-            }, 0);
-        }
-    }
-  }, [students, isLoading, toast]);
-
-
   const resetForm = () => {
-    setFormEnrollment('');
-    setFormGtuName('');
-    setFormFirstName('');
-    setFormMiddleName('');
-    setFormLastName('');
-    setFormPersonalEmail('');
-    setFormDepartment(DEPARTMENT_OPTIONS[0]);
-    setFormBranchCode('');
-    setFormSemester(1);
-    setFormStatus('active');
-    setFormContact('');
-    setFormAddress('');
-    setFormDob(undefined);
-    setFormAdmissionDate(undefined);
-    setFormGender(undefined); // Ensure undefined for select placeholder
-    setFormConvocationYear(undefined); // Ensure undefined for empty input
+    setFormEnrollment(''); setFormGtuName(''); setFormFirstName('');
+    setFormMiddleName(''); setFormLastName(''); setFormPersonalEmail('');
+    setFormDepartment(DEPARTMENT_OPTIONS[0]); setFormBranchCode('');
+    setFormSemester(1); setFormStatus('active'); setFormContact('');
+    setFormAddress(''); setFormDob(undefined); setFormAdmissionDate(undefined);
+    setFormGender(undefined); setFormConvocationYear(undefined);
     setFormShift(undefined);
-    setFormSemesterStatuses(semesterStatusGetters);
+    setFormSemesterStatuses(initialSemesterStatusGetters);
     setCurrentStudent(null);
   };
 
@@ -279,11 +180,11 @@ export default function StudentManagementPage() {
     setFormAddress(student.address || '');
     setFormDob(student.dateOfBirth && isValid(parseISO(student.dateOfBirth)) ? parseISO(student.dateOfBirth) : undefined);
     setFormAdmissionDate(student.admissionDate && isValid(parseISO(student.admissionDate)) ? parseISO(student.admissionDate) : undefined);
- setFormGender(student.gender === '' ? undefined : student.gender); // Set undefined if empty string
- setFormConvocationYear(student.convocationYear === null ? undefined : student.convocationYear); // Set undefined if null
- setFormShift(student.shift === '' ? undefined : student.shift); // Set undefined if empty string
+    setFormGender(student.gender === '' ? undefined : student.gender); 
+    setFormConvocationYear(student.convocationYear === null ? undefined : student.convocationYear); 
+    setFormShift(student.shift || undefined);
     
-    const newSemesterStatuses = {...semesterStatusGetters};
+    const newSemesterStatuses = {...initialSemesterStatusGetters};
     SEMESTER_OPTIONS.forEach(semNum => {
         newSemesterStatuses[semNum] = student[`sem${semNum}Status` as keyof Student] as SemesterStatus || 'N/A';
     });
@@ -296,17 +197,20 @@ export default function StudentManagementPage() {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (studentId: string) => {
+  const handleDelete = async (studentId: string) => {
     setIsSubmitting(true);
-    setTimeout(() => {
-      setStudents(prevStudents => prevStudents.filter(student => student.id !== studentId));
+    try {
+      await studentService.deleteStudent(studentId);
+      await fetchStudents();
       setSelectedStudentIds(prev => prev.filter(id => id !== studentId));
       toast({ title: "Student Deleted", description: "The student record has been successfully deleted." });
-      setIsSubmitting(false);
-    }, 500);
+    } catch (error) {
+        toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message || "Could not delete student." });
+    }
+    setIsSubmitting(false);
   };
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!formEnrollment.trim() || (!formGtuName.trim() && (!formFirstName.trim() || !formLastName.trim()))) {
       toast({ variant: "destructive", title: "Validation Error", description: "Enrollment Number and Name (GTU Name or First/Last Name) are required." });
@@ -316,83 +220,62 @@ export default function StudentManagementPage() {
         toast({ variant: "destructive", title: "Validation Error", description: "Please enter a valid personal email address or leave it empty." });
         return;
     }
-    if (!currentStudent?.id && students.some(s => s.enrollmentNumber === formEnrollment.trim())) {
-        toast({ variant: "destructive", title: "Validation Error", description: `Enrollment number ${formEnrollment.trim()} already exists.` });
-        return;
-    }
-    if (currentStudent?.id && formEnrollment.trim() !== currentStudent.enrollmentNumber && students.some(s => s.id !== currentStudent.id && s.enrollmentNumber === formEnrollment.trim())) {
-        toast({ variant: "destructive", title: "Validation Error", description: `Enrollment number ${formEnrollment.trim()} already exists for another student.` });
-        return;
-    }
     if (formConvocationYear && (isNaN(formConvocationYear) || formConvocationYear < 1950 || formConvocationYear > new Date().getFullYear() + 5)) {
       toast({ variant: "destructive", title: "Validation Error", description: "Please enter a valid convocation year." });
       return;
     }
 
-
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      const { firstName: parsedFN, middleName: parsedMN, lastName: parsedLN } = parseGtuName(formGtuName);
+    const { firstName: parsedFN, middleName: parsedMN, lastName: parsedLN } = parseGtuName(formGtuName);
 
-      const studentData: Omit<Student, 'id' | 'instituteEmail'> & { instituteEmail?: string } = {
-        enrollmentNumber: formEnrollment.trim(),
-        gtuName: formGtuName.trim() || undefined,
-        firstName: formFirstName.trim() || parsedFN || undefined,
-        middleName: formMiddleName.trim() || parsedMN || undefined,
-        lastName: formLastName.trim() || parsedLN || undefined,
-        personalEmail: formPersonalEmail.trim() || undefined,
-        department: formDepartment,
-        branchCode: formBranchCode.trim() || undefined,
-        currentSemester: formSemester,
-        status: formStatus,
-        contactNumber: formContact.trim() || undefined,
-        address: formAddress.trim() || undefined,
-        dateOfBirth: formDob ? format(formDob, "yyyy-MM-dd") : undefined,
-        admissionDate: formAdmissionDate ? format(formAdmissionDate, "yyyy-MM-dd") : undefined,
-        gender: formGender,
-        convocationYear: formConvocationYear ? Number(formConvocationYear) : undefined,
-        shift: formShift,
-        sem1Status: formSemesterStatuses[1],
-        sem2Status: formSemesterStatuses[2],
-        sem3Status: formSemesterStatuses[3],
-        sem4Status: formSemesterStatuses[4],
-        sem5Status: formSemesterStatuses[5],
-        sem6Status: formSemesterStatuses[6],
-        sem7Status: formSemesterStatuses[7],
-        sem8Status: formSemesterStatuses[8],
-      };
+    const studentData: Omit<Student, 'id' | 'instituteEmail'> & { instituteEmail?: string } = {
+      enrollmentNumber: formEnrollment.trim(),
+      gtuName: formGtuName.trim() || undefined,
+      firstName: formFirstName.trim() || parsedFN || undefined,
+      middleName: formMiddleName.trim() || parsedMN || undefined,
+      lastName: formLastName.trim() || parsedLN || undefined,
+      personalEmail: formPersonalEmail.trim() || undefined,
+      department: formDepartment,
+      branchCode: formBranchCode.trim() || undefined,
+      currentSemester: formSemester,
+      status: formStatus,
+      contactNumber: formContact.trim() || undefined,
+      address: formAddress.trim() || undefined,
+      dateOfBirth: formDob ? format(formDob, "yyyy-MM-dd") : undefined,
+      admissionDate: formAdmissionDate ? format(formAdmissionDate, "yyyy-MM-dd") : undefined,
+      gender: formGender,
+      convocationYear: formConvocationYear ? Number(formConvocationYear) : undefined,
+      shift: formShift,
+      sem1Status: formSemesterStatuses[1],
+      sem2Status: formSemesterStatuses[2],
+      sem3Status: formSemesterStatuses[3],
+      sem4Status: formSemesterStatuses[4],
+      sem5Status: formSemesterStatuses[5],
+      sem6Status: formSemesterStatuses[6],
+      sem7Status: formSemesterStatuses[7],
+      sem8Status: formSemesterStatuses[8],
+    };
       
-      studentData.instituteEmail = `${studentData.enrollmentNumber}@gppalanpur.in`;
+    studentData.instituteEmail = `${studentData.enrollmentNumber}@gppalanpur.in`;
 
-      if (currentStudent && currentStudent.id) {
-        setStudents(prevStudents => prevStudents.map(s => s.id === currentStudent.id ? { ...s, ...studentData, instituteEmail: studentData.instituteEmail! } : s));
-        toast({ title: "Student Updated", description: "The student record has been successfully updated." });
-      } else {
-        const newStudent: Student = {
-          id: generateClientId(),
-          ...studentData,
-          instituteEmail: studentData.instituteEmail!,
-        };
-        setStudents(prevStudents => [...prevStudents, newStudent]);
-        
-        const systemUserName = newStudent.gtuName || `${newStudent.firstName || ''} ${newStudent.lastName || ''}`.trim();
-        const newUserForSystem: SystemUser = {
-          id: `user_${newStudent.id}`, 
-          name: systemUserName || newStudent.enrollmentNumber,
-          email: newStudent.instituteEmail,
-          roles: ['student'],
-          status: 'active',
-          department: newStudent.department,
-        };
-        addUserToLocalStorage(newUserForSystem);
-
-        toast({ title: "Student Added", description: `Student ${systemUserName} added. Institute Email: ${newStudent.instituteEmail}, Default Password: ${newStudent.enrollmentNumber}` });
-      }
-      setIsSubmitting(false);
-      setIsDialogOpen(false);
-      resetForm();
-    }, 1000);
+    try {
+        if (currentStudent && currentStudent.id) {
+            await studentService.updateStudent(currentStudent.id, studentData);
+            toast({ title: "Student Updated", description: "The student record has been successfully updated." });
+        } else {
+            await studentService.createStudent(studentData as Omit<Student, 'id'>);
+            const systemUserName = studentData.gtuName || `${studentData.firstName || ''} ${studentData.lastName || ''}`.trim();
+            toast({ title: "Student Added", description: `Student ${systemUserName} added. Institute Email: ${studentData.instituteEmail}, Default Password: ${studentData.enrollmentNumber}` });
+        }
+        await fetchStudents();
+        setIsDialogOpen(false);
+        resetForm();
+    } catch (error) {
+        toast({ variant: "destructive", title: "Save Failed", description: (error as Error).message || "Could not save student record." });
+    } finally {
+        setIsSubmitting(false);
+    }
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -410,151 +293,27 @@ export default function StudentManagementPage() {
     }
   };
 
-  const handleImportStudents = () => {
+  const handleImportStudents = async () => {
     if (!selectedFile) {
       toast({ variant: "destructive", title: "Import Error", description: "Please select a CSV file to import." });
       return;
     }
     setIsSubmitting(true);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      let newStudentsCount = 0;
-      let updatedStudentsCount = 0;
-      try {
-        const text = e.target?.result as string;
-        const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
-        if (lines.length <= 1) throw new Error("CSV file is empty or has only a header.");
-
-        const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
-        const expectedHeaders = ['id', 'enrollmentnumber', 'gtuname', 'firstname', 'middlename', 'lastname', 'personalemail', 'department', 'branchcode', 'currentsemester', 'status', 'contactnumber', 'address', 'dateofbirth', 'admissiondate', 'gender', 'convocationyear', 'shift', 'sem1status', 'sem2status', 'sem3status', 'sem4status', 'sem5status', 'sem6status', 'sem7status', 'sem8status', 'category', 'iscomplete', 'termclose', 'iscancel', 'ispassall', 'aadharnumber'];
-        const requiredHeaders = ['enrollmentnumber', 'department', 'currentsemester', 'status'];
-
-        if (!requiredHeaders.every(rh => header.includes(rh))) {
-            throw new Error(`CSV header is missing required columns. Expected at least: ${requiredHeaders.join(', ')}. Found: ${header.join(', ')}`);
-        }
-
-        const hMap = Object.fromEntries(expectedHeaders.map(eh => [eh, header.indexOf(eh)]));
-        
-        let studentsToUpdate = [...students];
-
-        for (let i = 1; i < lines.length; i++) {
-          const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
-
-          const enrollmentNumber = data[hMap['enrollmentnumber']];
-          if (!enrollmentNumber) {
-            console.warn(`Skipping row ${i+1}: Enrollment number is missing.`);
-            continue;
-          }
-          const department = data[hMap['department']];
-          const currentSemesterStr = data[hMap['currentsemester']];
-          const status = data[hMap['status']] as StudentStatus;
-
-          if (!department || !currentSemesterStr || !STATUS_OPTIONS.find(s => s.value === status)) {
-            console.warn(`Skipping row ${i+1} for ${enrollmentNumber}: Missing or invalid department, current semester, or status.`);
-            continue;
-          }
-          const currentSemester = parseInt(currentSemesterStr, 10);
-          if (isNaN(currentSemester) || !SEMESTER_OPTIONS.includes(currentSemester)) {
-              console.warn(`Skipping row ${i+1} for ${enrollmentNumber}: Invalid semester value.`);
-              continue;
-          }
-
-          const gtuName = data[hMap['gtuname']];
-          const parsedNames = parseGtuName(gtuName || '');
-
-          const studentDataPartial: Omit<Student, 'id' | 'instituteEmail'| 'enrollmentNumber' | 'department' | 'currentSemester' | 'status'> & {instituteEmail?: string} = {
-            gtuName: gtuName || undefined,
-            firstName: data[hMap['firstname']] || parsedNames.firstName || undefined,
-            middleName: data[hMap['middlename']] || parsedNames.middleName || undefined,
-            lastName: data[hMap['lastname']] || parsedNames.lastName || undefined,
-            personalEmail: data[hMap['personalemail']] || undefined,
-            branchCode: data[hMap['branchcode']] || undefined,
-            contactNumber: data[hMap['contactnumber']] || undefined,
-            address: data[hMap['address']] || undefined,
-            dateOfBirth: data[hMap['dateofbirth']] || undefined,
-            admissionDate: data[hMap['admissiondate']] || undefined,
-            gender: normalizeGender(data[hMap['gender']]),
-            convocationYear: data[hMap['convocationyear']] ? parseInt(data[hMap['convocationyear']], 10) : undefined,
-            shift: normalizeShift(data[hMap['shift']]),
-            sem1Status: (data[hMap['sem1status']] as SemesterStatus) || 'N/A',
-            sem2Status: (data[hMap['sem2status']] as SemesterStatus) || 'N/A',
-            sem3Status: (data[hMap['sem3status']] as SemesterStatus) || 'N/A',
-            sem4Status: (data[hMap['sem4status']] as SemesterStatus) || 'N/A',
-            sem5Status: (data[hMap['sem5status']] as SemesterStatus) || 'N/A',
-            sem6Status: (data[hMap['sem6status']] as SemesterStatus) || 'N/A',
-            sem7Status: (data[hMap['sem7status']] as SemesterStatus) || 'N/A',
-            sem8Status: (data[hMap['sem8status']] as SemesterStatus) || 'N/A',
-            category: data[hMap['category']] || undefined,
-            isComplete: data[hMap['iscomplete']] ? data[hMap['iscomplete']].toLowerCase() === 'true' : undefined,
-            termClose: data[hMap['termclose']] ? data[hMap['termclose']].toLowerCase() === 'true' : undefined,
-            isCancel: data[hMap['iscancel']] ? data[hMap['iscancel']].toLowerCase() === 'true' : undefined,
-            isPassAll: data[hMap['ispassall']] ? data[hMap['ispassall']].toLowerCase() === 'true' : undefined,
-            aadharNumber: data[hMap['aadharnumber']] || undefined,
-          };
-
-          const studentData: Omit<Student, 'id'> = {
-            enrollmentNumber,
-            department,
-            currentSemester,
-            status,
-            instituteEmail: `${enrollmentNumber}@gppalanpur.in`,
-            ...studentDataPartial
-          };
-
-          const idFromCsv = data[hMap['id']];
-          let existingStudentIndex = -1;
-
-          if (idFromCsv) {
-            existingStudentIndex = studentsToUpdate.findIndex(s => s.id === idFromCsv);
-            if (existingStudentIndex !== -1 && studentsToUpdate[existingStudentIndex].enrollmentNumber !== enrollmentNumber) {
-              const conflictIndex = studentsToUpdate.findIndex(s => s.enrollmentNumber === enrollmentNumber && s.id !== idFromCsv);
-              if (conflictIndex !== -1) {
-                console.warn(`Skipping update for ID ${idFromCsv}: Enrollment number ${enrollmentNumber} from CSV conflicts with an existing different student (ID: ${studentsToUpdate[conflictIndex].id}). Student with this enrollment will be updated if found by enrollment number directly.`);
-                existingStudentIndex = -1; 
-              }
-            }
-          }
-
-          if(existingStudentIndex === -1){
-            existingStudentIndex = studentsToUpdate.findIndex(s => s.enrollmentNumber === enrollmentNumber);
-          }
-
-          if (existingStudentIndex !== -1) {
-            studentsToUpdate[existingStudentIndex] = { ...studentsToUpdate[existingStudentIndex], ...studentData };
-            updatedStudentsCount++;
-          } else {
-            const newStudent = { id: generateClientId(), ...studentData };
-            studentsToUpdate.push(newStudent);
-            newStudentsCount++;
-
-            const systemUserName = newStudent.gtuName || `${newStudent.firstName || ''} ${newStudent.lastName || ''}`.trim();
-            const newUserForSystem: SystemUser = {
-              id: `user_${newStudent.id}`,
-              name: systemUserName || newStudent.enrollmentNumber,
-              email: newStudent.instituteEmail,
-              roles: ['student'],
-              status: 'active',
-              department: newStudent.department,
-            };
-            addUserToLocalStorage(newUserForSystem);
-          }
-        }
-        setStudents(studentsToUpdate);
-
-        toast({ title: "Import Successful", description: `${newStudentsCount} students added, ${updatedStudentsCount} students updated.` });
-
-      } catch (error: any) {
+    try {
+        const result = await studentService.importStudents(selectedFile);
+        await fetchStudents();
+        toast({ title: "Import Successful", description: `${result.newCount} students added, ${result.updatedCount} students updated. Skipped: ${result.skippedCount}` });
+    } catch (error: any) {
         console.error("Error processing standard CSV file:", error);
         toast({ variant: "destructive", title: "Standard Import Failed", description: error.message || "Could not process the CSV file." });
-      } finally {
+    } finally {
         setIsSubmitting(false);
         setSelectedFile(null);
         const fileInput = document.getElementById('csvImportStudent') as HTMLInputElement;
         if (fileInput) fileInput.value = '';
-      }
-    };
-    reader.readAsText(selectedFile);
+    }
   };
+
   const handleExportStudents = () => {
     if (filteredStudents.length === 0) {
       toast({ title: "Export Canceled", description: "No students to export (check filters)." });
@@ -604,8 +363,8 @@ export default function StudentManagementPage() {
   };
   const handleDownloadSampleCsv = () => {
     const sampleCsvContent = `id,enrollmentNumber,gtuName,firstName,middleName,lastName,personalEmail,instituteEmail,department,branchCode,currentSemester,status,contactNumber,address,dateOfBirth,admissionDate,gender,convocationYear,shift,sem1Status,sem2Status,sem3Status,sem4Status,sem5Status,sem6Status,sem7Status,sem8Status,category,isComplete,termClose,isCancel,isPassAll,aadharNumber
-s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN22001@gppalanpur.in,Computer Engineering,CE,3,active,9988776655,"123 Cyber Lane, Palanpur",2003-08-15,2022-07-01,Male,2025,Morning,Passed,Passed,Pending,N/A,N/A,N/A,N/A,N/A,OPEN,false,false,false,false,123456789012
-,GPPLN21005,PATEL BHAVNA MAHESH,BHAVNA,MAHESH,PATEL,bhavna.p@example.com,GPPLN21005@gppalanpur.in,Mechanical Engineering,ME,5,active,9988776650,"Plot 45, Industrial Area, Mehsana",2002-01-20,2021-06-15,Female,2024,Afternoon,Passed,Passed,Passed,Passed,Passed,N/A,N/A,N/A,SEBC,false,false,false,false,
+s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,,Computer Engineering,CE,3,active,9988776655,"123 Cyber Lane, Palanpur",2003-08-15,2022-07-01,Male,2025,Morning,Passed,Passed,Pending,N/A,N/A,N/A,N/A,N/A,OPEN,false,false,false,false,123456789012
+,GPPLN21005,PATEL BHAVNA MAHESH,BHAVNA,MAHESH,PATEL,bhavna.p@example.com,,Mechanical Engineering,ME,5,active,9988776650,"Plot 45, Industrial Area, Mehsana",2002-01-20,2021-06-15,Female,2024,Afternoon,Passed,Passed,Passed,Passed,Passed,N/A,N/A,N/A,SEBC,false,false,false,false,
 `;
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -618,133 +377,27 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
   };
 
 
-  const handleImportGtuStudents = () => {
+  const handleImportGtuStudents = async () => {
     if (!selectedGtuFile) {
       toast({ variant: "destructive", title: "GTU Import Error", description: "Please select a GTU CSV file to import." });
       return;
     }
     setIsSubmitting(true);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      let newStudentsCount = 0;
-      let updatedStudentsCount = 0;
-      let skippedCount = 0;
-      try {
-        const text = e.target?.result as string;
-        const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
-        if (lines.length <= 1) throw new Error("GTU CSV file is empty or has only a header.");
-
-        const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
-        const gtuHeaders = ['s.no','map_number','br_code','name','email','mobile','gender','convoyear','sem1','sem2','sem3','sem4','sem5','sem6','sem7','sem8','category','iscomplete','termclose','iscancel','ispassall','aadhar','shift'];
-        const requiredGtuHeaders = ['map_number', 'name'];
-
-        if (!requiredGtuHeaders.every(rh => header.includes(rh))) {
-            throw new Error(`GTU CSV header is missing required columns. Expected at least: ${requiredGtuHeaders.join(', ')}. Found: ${header.join(', ')}`);
-        }
-
-        const hMap = Object.fromEntries(gtuHeaders.map(eh => [eh, header.indexOf(eh)]));
-        let studentsToUpdate = [...students];
-
-        for (let i = 1; i < lines.length; i++) {
-          const data = lines[i].split(',').map(d => d.trim().replace(/^"|"$/g, ''));
-
-          const enrollmentNumber = data[hMap['map_number']];
-          const gtuName = data[hMap['name']];
-
-          if (!enrollmentNumber || !gtuName) {
-            console.warn(`Skipping GTU row ${i+1}: Enrollment number or GTU Name is missing.`);
-            skippedCount++;
-            continue;
-          }
-
-          const { firstName, middleName, lastName } = parseGtuName(gtuName);
-          const branchCode = data[hMap['br_code']];
-          const department = DEPARTMENT_OPTIONS.find(d => d.toLowerCase().includes((branchCode || "").toLowerCase().substring(0,2))) || "General";
-
-          let currentSemester = 1;
-          for (let sem = 8; sem >= 1; sem--) {
-            if (mapSemesterCodeToStatus(data[hMap[`sem${sem}` as keyof typeof hMap]]) === 'Passed') {
-                currentSemester = Math.min(sem + 1, 8);
-                break;
-            } else if (mapSemesterCodeToStatus(data[hMap[`sem${sem}` as keyof typeof hMap]]) === 'Pending') {
-                currentSemester = sem; 
-                break;
-            }
-          }
-           if (data[hMap['ispassall']]?.toLowerCase() === 'true' || data[hMap['iscomplete']]?.toLowerCase() === 'true'){
-            currentSemester = 8; 
-          }
-
-
-          const studentData: Omit<Student, 'id'> = {
-            enrollmentNumber,
-            gtuName,
-            firstName,
-            middleName,
-            lastName,
-            personalEmail: data[hMap['email']] || undefined,
-            instituteEmail: `${enrollmentNumber}@gppalanpur.in`,
-            department,
-            branchCode: branchCode || undefined,
-            currentSemester: currentSemester,
-            status: data[hMap['iscancel']]?.toLowerCase() === 'true' ? 'dropped' : (data[hMap['iscomplete']]?.toLowerCase() === 'true' || data[hMap['ispassall']]?.toLowerCase() === 'true' ? 'graduated' : 'active'),
-            contactNumber: data[hMap['mobile']] || undefined,
-            gender: normalizeGender(data[hMap['gender']]),
-            convocationYear: data[hMap['convoyear']] ? parseInt(data[hMap['convoyear']], 10) : undefined,
-            sem1Status: mapSemesterCodeToStatus(data[hMap['sem1']]),
-            sem2Status: mapSemesterCodeToStatus(data[hMap['sem2']]),
-            sem3Status: mapSemesterCodeToStatus(data[hMap['sem3']]),
-            sem4Status: mapSemesterCodeToStatus(data[hMap['sem4']]),
-            sem5Status: mapSemesterCodeToStatus(data[hMap['sem5']]),
-            sem6Status: mapSemesterCodeToStatus(data[hMap['sem6']]),
-            sem7Status: mapSemesterCodeToStatus(data[hMap['sem7']]),
-            sem8Status: mapSemesterCodeToStatus(data[hMap['sem8']]),
-            category: data[hMap['category']] || undefined,
-            isComplete: data[hMap['iscomplete']]?.toLowerCase() === 'true',
-            termClose: data[hMap['termclose']]?.toLowerCase() === 'true',
-            isCancel: data[hMap['iscancel']]?.toLowerCase() === 'true',
-            isPassAll: data[hMap['ispassall']]?.toLowerCase() === 'true',
-            aadharNumber: data[hMap['aadhar']] || undefined,
-            shift: normalizeShift(data[hMap['shift']]),
-          };
-
-          const existingStudentIndex = studentsToUpdate.findIndex(s => s.enrollmentNumber === enrollmentNumber);
-          if (existingStudentIndex !== -1) {
-            studentsToUpdate[existingStudentIndex] = { ...studentsToUpdate[existingStudentIndex], ...studentData };
-            updatedStudentsCount++;
-          } else {
-            const newStudentForList = { id: generateClientId(), ...studentData };
-            studentsToUpdate.push(newStudentForList);
-            newStudentsCount++;
-
-            const systemUserName = newStudentForList.gtuName || `${newStudentForList.firstName || ''} ${newStudentForList.lastName || ''}`.trim();
-            const newUserForSystem: SystemUser = {
-              id: `user_gtu_${newStudentForList.id}`, 
-              name: systemUserName || newStudentForList.enrollmentNumber,
-              email: newStudentForList.instituteEmail,
-              roles: ['student'],
-              status: 'active',
-              department: newStudentForList.department,
-            };
-            addUserToLocalStorage(newUserForSystem);
-          }
-        }
-        setStudents(studentsToUpdate);
-
-        toast({ title: "GTU Import Successful", description: `${newStudentsCount} students added, ${updatedStudentsCount} students updated. ${skippedCount} rows skipped.` });
-
-      } catch (error: any) {
+    try {
+        const result = await studentService.importGtuStudents(selectedGtuFile);
+        await fetchStudents();
+        toast({ title: "GTU Import Successful", description: `${result.newCount} students added, ${result.updatedCount} students updated. ${result.skippedCount} rows skipped.` });
+    } catch (error: any) {
         console.error("Error processing GTU CSV file:", error);
         toast({ variant: "destructive", title: "GTU Import Failed", description: error.message || "Could not process the GTU CSV file." });
-      } finally {
+    } finally {
         setIsSubmitting(false);
         setSelectedGtuFile(null);
         const fileInput = document.getElementById('gtuCsvImportStudent') as HTMLInputElement;
         if (fileInput) fileInput.value = '';
-      }
-    };
-    reader.readAsText(selectedGtuFile);
+    }
   };
+
   const handleDownloadGtuSampleCsv = () => {
     const sampleCsvContent = `S.NO,map_number,BR_CODE,Name,Email,Mobile,Gender,convoyear,SEM1,SEM2,SEM3,SEM4,SEM5,SEM6,SEM7,SEM8,Category,isComplete,termClose,isCancel,ispassall,aadhar,shift
 1,190010107001,CE,DOE JOHN MICHAEL,john.doe@example.com,9876500001,Male,2023,2,2,2,2,1,,,GENERAL,FALSE,FALSE,FALSE,FALSE,123456789012,Morning
@@ -786,14 +439,14 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
         (student.department && student.department.toLowerCase().includes(termLower))
       );
     }
-    if (filterDepartment !== 'all') {
-      result = result.filter(student => student.department === filterDepartment);
+    if (filterDepartmentVal !== 'all') {
+      result = result.filter(student => student.department === filterDepartmentVal);
     }
-    if (filterSemester !== 'all') {
-      result = result.filter(student => student.currentSemester === parseInt(filterSemester, 10));
+    if (filterSemesterVal !== 'all') {
+      result = result.filter(student => student.currentSemester === parseInt(filterSemesterVal, 10));
     }
-    if (filterStatus !== 'all') {
-      result = result.filter(student => student.status === filterStatus);
+    if (filterStatusVal !== 'all') {
+      result = result.filter(student => student.status === filterStatusVal);
     }
 
     if (sortField !== 'none') {
@@ -819,7 +472,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
       });
     }
     return result;
-  }, [students, searchTerm, filterDepartment, filterSemester, filterStatus, sortField, sortDirection]);
+  }, [students, searchTerm, filterDepartmentVal, filterSemesterVal, filterStatusVal, sortField, sortDirection]);
 
   const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
   const paginatedStudents = useMemo(() => {
@@ -829,7 +482,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
 
   useEffect(() => {
     setCurrentPage(1); 
-  }, [searchTerm, filterDepartment, filterSemester, filterStatus, itemsPerPage]);
+  }, [searchTerm, filterDepartmentVal, filterSemesterVal, filterStatusVal, itemsPerPage]);
 
   const handleSelectAll = (checked: boolean | 'indeterminate') => {
     if (checked === true) {
@@ -847,25 +500,30 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
     }
   };
 
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = async () => {
     if (selectedStudentIds.length === 0) {
       toast({ variant: "destructive", title: "No Students Selected", description: "Please select students to delete." });
       return;
     }
     setIsSubmitting(true);
-    setTimeout(() => {
-      setStudents(prevStudents => prevStudents.filter(student => !selectedStudentIds.includes(student.id)));
-      setSelectedStudentIds([]);
-      toast({ title: "Students Deleted", description: `${selectedStudentIds.length} student(s) have been successfully deleted.` });
-      setIsSubmitting(false);
-    }, 500);
+    try {
+        for (const id of selectedStudentIds) {
+            await studentService.deleteStudent(id);
+        }
+        await fetchStudents();
+        toast({ title: "Students Deleted", description: `${selectedStudentIds.length} student(s) have been successfully deleted.` });
+        setSelectedStudentIds([]);
+    } catch (error) {
+        toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message || "Could not delete selected students." });
+    }
+    setIsSubmitting(false);
   };
   
   const isAllSelectedOnPage = paginatedStudents.length > 0 && paginatedStudents.every(student => selectedStudentIds.includes(student.id));
   const isSomeSelectedOnPage = paginatedStudents.some(student => selectedStudentIds.includes(student.id)) && !isAllSelectedOnPage;
 
 
-  if (isLoading && !students.length) { 
+  if (isLoading) { 
     return <div className="flex justify-center items-center h-screen"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
   }
 
@@ -909,7 +567,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                 <form onSubmit={handleSubmit} className="space-y-4 py-4 max-h-[75vh] overflow-y-auto pr-2 grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
                   <div className="md:col-span-1">
                     <Label htmlFor="studentEnrollment">Enrollment Number *</Label>
-                    <Input id="studentEnrollment" value={formEnrollment} onChange={(e) => setFormEnrollment(e.target.value)} placeholder="e.g., GPPLN20001" disabled={isSubmitting} required />
+                    <Input id="studentEnrollment" value={formEnrollment} onChange={(e) => setFormEnrollment(e.target.value)} placeholder="e.g., GPPLN20001" disabled={isSubmitting || !!currentStudent?.id} required />
                   </div>
                   <div className="md:col-span-2">
                     <Label htmlFor="studentGtuName">Full Name (GTU Format)</Label>
@@ -940,7 +598,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                   <div className="md:col-span-1">
                     <Label htmlFor="studentDepartment">Department *</Label>
                     <Select value={formDepartment} onValueChange={(value) => setFormDepartment(value)} disabled={isSubmitting} required>
- <SelectTrigger id="studentDepartment"><SelectValue placeholder="Select Department" /></SelectTrigger>
+                       <SelectTrigger id="studentDepartment"><SelectValue placeholder="Select Department" /></SelectTrigger>
                         <SelectContent>
                             {DEPARTMENT_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
                         </SelectContent>
@@ -953,7 +611,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                   <div className="md:col-span-1">
                     <Label htmlFor="studentSemester">Current Semester *</Label>
                      <Select value={String(formSemester)} onValueChange={(value) => setFormSemester(parseInt(value))} disabled={isSubmitting} required>
- <SelectTrigger id="studentSemester"><SelectValue placeholder="Select Semester" /></SelectTrigger>
+                       <SelectTrigger id="studentSemester"><SelectValue placeholder="Select Semester" /></SelectTrigger>
                         <SelectContent>
                             {SEMESTER_OPTIONS.map(opt => <SelectItem key={opt} value={String(opt)}>{opt}</SelectItem>)}
                         </SelectContent>
@@ -962,18 +620,18 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                   <div className="md:col-span-1">
                     <Label htmlFor="studentStatus">Status *</Label>
                      <Select value={formStatus} onValueChange={(value) => setFormStatus(value as StudentStatus)} disabled={isSubmitting} required>
- <SelectTrigger id="studentStatus"><SelectValue placeholder="Select Status" /></SelectTrigger>
+                       <SelectTrigger id="studentStatus"><SelectValue placeholder="Select Status" /></SelectTrigger>
                         <SelectContent>
                             {STATUS_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
                         </SelectContent>
                     </Select>
                   </div>
                    <div className="md:col-span-1">
- <Label htmlFor="studentGender">Gender</Label>
+                     <Label htmlFor="studentGender">Gender</Label>
                      <Select value={formGender} onValueChange={(value) => setFormGender(value as Student['gender'] || undefined)} disabled={isSubmitting}>
                         <SelectTrigger id="studentGender"><SelectValue placeholder="Select Gender" /></SelectTrigger>
                         <SelectContent>
- {GENDER_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
+                            {GENDER_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
                         </SelectContent>
                     </Select>
                   </div>
@@ -981,13 +639,11 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                     <Label htmlFor="studentShift">Shift</Label>
                      <Select value={formShift || ""} onValueChange={(value) => setFormShift(value as Student['shift'] || undefined)} disabled={isSubmitting}>
                         <SelectTrigger id="studentShift"><SelectValue placeholder="Select Shift" /></SelectTrigger>
- <SelectContent>
- {SHIFT_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
+                         <SelectContent>
+                            {SHIFT_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
                         </SelectContent>
                     </Select>
                   </div>
-
-
                    <div className="md:col-span-1">
                     <Label htmlFor="studentDob">Date of Birth</Label>
                     <Popover>
@@ -1044,7 +700,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                                 onValueChange={(val) => setFormSemesterStatuses(prev => ({...prev, [semNum]: val as SemesterStatus}))}
                                 disabled={isSubmitting}
                             >
- <SelectTrigger id={`sem${semNum}StatusForm`}><SelectValue placeholder="Select Status" /></SelectTrigger>
+                               <SelectTrigger id={`sem${semNum}StatusForm`}><SelectValue placeholder="Select Status" /></SelectTrigger>
                                 <SelectContent>
                                     {SEMESTER_STATUS_OPTIONS.map(opt => <SelectItem key={`${opt.value}-${semNum}`} value={opt.value}>{opt.label}</SelectItem>)}
                                 </SelectContent>
@@ -1125,9 +781,9 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
               </div>
             </div>
             <div>
-              <Label htmlFor="filterDepartment">Filter by Department</Label>
-              <Select value={filterDepartment} onValueChange={(value) => setFilterDepartment(value)}>
- <SelectTrigger id="filterDepartment"><SelectValue placeholder="All Departments" /></SelectTrigger>
+              <Label htmlFor="filterDepartmentStudent">Filter by Department</Label>
+              <Select value={filterDepartmentVal} onValueChange={(value) => setFilterDepartmentVal(value)}>
+                 <SelectTrigger id="filterDepartmentStudent"><SelectValue placeholder="All Departments" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Departments</SelectItem>
                   {DEPARTMENT_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
@@ -1135,9 +791,9 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
               </Select>
             </div>
             <div>
-              <Label htmlFor="filterSemester">Filter by Semester</Label>
-              <Select value={filterSemester} onValueChange={(value) => setFilterSemester(value)}>
- <SelectTrigger id="filterSemester"><SelectValue placeholder="All Semesters" /></SelectTrigger>
+              <Label htmlFor="filterSemesterStudent">Filter by Semester</Label>
+              <Select value={filterSemesterVal} onValueChange={(value) => setFilterSemesterVal(value)}>
+                 <SelectTrigger id="filterSemesterStudent"><SelectValue placeholder="All Semesters" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Semesters</SelectItem>
                   {SEMESTER_OPTIONS.map(opt => <SelectItem key={opt} value={String(opt)}>{`Semester ${opt}`}</SelectItem>)}
@@ -1146,8 +802,8 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
             </div>
             <div>
               <Label htmlFor="filterStatusStudent">Filter by Status</Label>
-              <Select value={filterStatus} onValueChange={(value) => setFilterStatus(value as StudentStatus | 'all')}>
- <SelectTrigger id="filterStatusStudent"><SelectValue placeholder="All Statuses" /></SelectTrigger>
+              <Select value={filterStatusVal} onValueChange={(value) => setFilterStatusVal(value as StudentStatus | 'all')}>
+                 <SelectTrigger id="filterStatusStudent"><SelectValue placeholder="All Statuses" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Statuses</SelectItem>
                   {STATUS_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
@@ -1172,8 +828,8 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
               <TableRow>
                 <TableHead className="w-[50px]">
                     <Checkbox 
-                        checked={isAllSelectedOnPage || isSomeSelectedOnPage}
-                        onCheckedChange={handleSelectAll}
+                        checked={isAllSelectedOnPage || (paginatedStudents.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)}
+                        onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)}
                         aria-label="Select all students on this page"
                     />
                 </TableHead>
@@ -1214,9 +870,9 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                         student.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
                         : student.status === 'graduated' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
                         : student.status === 'dropped' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' // inactive
                     }`}>
-                      {student.status.charAt(0).toUpperCase() + student.status.slice(1)}
+                      {STATUS_OPTIONS.find(s => s.value === student.status)?.label || student.status}
                     </span>
                   </TableCell>
                   <TableCell>
@@ -1279,7 +935,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
         </CardContent>
          <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
             <div className="text-sm text-muted-foreground">
-                Showing {Math.min((currentPage -1) * itemsPerPage + 1, filteredStudents.length)} to {Math.min(currentPage * itemsPerPage, filteredStudents.length)} of {filteredStudents.length} students.
+                Showing {filteredStudents.length > 0 ? Math.min((currentPage -1) * itemsPerPage + 1, filteredStudents.length) : 0} to {Math.min(currentPage * itemsPerPage, filteredStudents.length)} of {filteredStudents.length} students.
             </div>
             <div className="flex items-center gap-2">
                  <Select
@@ -1290,7 +946,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                     }}
                     >
                     <SelectTrigger className="w-[70px] h-8 text-xs">
-                        <SelectValue placeholder={itemsPerPage} />
+                        <SelectValue placeholder={String(itemsPerPage)} />
                     </SelectTrigger>
                     <SelectContent side="top">
                         {ITEMS_PER_PAGE_OPTIONS.map((pageSize) => (
@@ -1309,7 +965,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                         size="icon"
                         className="h-8 w-8"
                         onClick={() => setCurrentPage(1)}
-                        disabled={currentPage === 1}
+                        disabled={currentPage === 1 || totalPages === 0}
                         >
                         <ChevronsLeft className="h-4 w-4" />
                         <span className="sr-only">First page</span>
@@ -1319,7 +975,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,GPPLN
                         size="icon"
                         className="h-8 w-8"
                         onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                        disabled={currentPage === 1}
+                        disabled={currentPage === 1 || totalPages === 0}
                         >
                         <ChevronLeft className="h-4 w-4" />
                         <span className="sr-only">Previous page</span>
