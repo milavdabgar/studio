@@ -1,4 +1,5 @@
 
+
 export interface Institute {
   id: string;
   name: string;
@@ -10,6 +11,9 @@ export interface Institute {
   status: 'active' | 'inactive';
   establishmentYear?: number;
   domain?: string; // For generating institute-specific emails e.g. gppalanpur.in
+  administrators?: string[]; // User IDs of Institute Admins
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
 }
 
 export interface Department {
@@ -21,6 +25,8 @@ export interface Department {
   establishmentYear?: number;
   status: 'active' | 'inactive';
   instituteId: string;
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
 }
 
 export interface Program {
@@ -29,11 +35,14 @@ export interface Program {
   code: string;
   description?: string;
   departmentId: string; // Links to Department
+  instituteId: string; // Links to Institute (derived from department or direct)
   degreeType?: 'Diploma' | 'Bachelor' | 'Master' | 'PhD' | 'Certificate';
   durationYears?: number;
   totalSemesters?: number;
   totalCredits?: number;
   status: 'active' | 'inactive';
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
 }
 
 export interface Course {
@@ -63,6 +72,8 @@ export interface Course {
   remarks?: string;
   departmentId: string; 
   programId: string; 
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
 }
 
 export interface Building {
@@ -75,6 +86,8 @@ export interface Building {
   constructionYear?: number;
   numberOfFloors?: number;
   totalAreaSqFt?: number;
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
 }
 
 export type RoomType = 'Lecture Hall' | 'Laboratory' | 'Office' | 'Staff Room' | 'Workshop' | 'Library' | 'Store Room' | 'Other';
@@ -91,30 +104,30 @@ export interface Room {
   areaSqFt?: number;
   status: RoomStatus;
   notes?: string;
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
 }
 
 export type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown' | 'super_admin' | 'dte_admin' | 'gtu_admin' | 'institute_admin' | 'department_admin' | 'committee_admin' | 'lab_assistant' | 'clerical_staff';
 
-// Updated User interface based on project specification
 export interface User {
   id: string;
-  email: string; // Personal email, can be login ID if username is not set
-  username?: string; // Optional login username
-  displayName: string; // Full name for display
+  email: string; 
+  username?: string; 
+  displayName: string; 
   photoURL?: string;
   phoneNumber?: string;
   
   authProviders: ('password' | 'google' | 'microsoft')[];
   
-  createdAt: string; // ISO string Timestamp
-  updatedAt: string; // ISO string Timestamp
-  lastLoginAt?: string; // ISO string Timestamp
-  isActive: boolean; // Replaces 'status'
+  createdAt: string; 
+  updatedAt: string; 
+  lastLoginAt?: string; 
+  isActive: boolean; 
   isEmailVerified: boolean;
   
-  roles: UserRole[]; // All assigned roles
-  // currentRole is managed client-side via cookie, not stored in DB model directly
-
+  roles: UserRole[]; 
+  
   preferences: {
       theme?: 'light' | 'dark' | 'system';
       language?: string;
@@ -129,24 +142,25 @@ export interface User {
       };
   };
 
-  instituteId?: string; // ID of the institute the user is primarily associated with
-  instituteEmail?: string; // Institute-specific email, potentially used for login
-
-  // Password is not part of the type sent to client unless for specific auth init scenarios.
-  // It's handled by the backend.
+  instituteId?: string; 
+  instituteEmail?: string; 
   password?: string; 
+  fullName?: string; // GTU Format Name
 }
+
+// Renamed original User to SystemUser to avoid conflict with User from next-auth if used later
+export type SystemUser = User;
 
 
 export interface Role {
   id: string;
-  name: string; // User-friendly name (e.g., "Site Administrator", "Content Editor")
-  code: string; // Unique code (e.g., "admin", "editor") - should map to UserRole values
+  name: string; 
   description: string;
-  permissions: string[]; // Array of permission codes
-  isSystemRole?: boolean; // True if this role cannot be deleted/modified by regular admins
-  createdAt?: string; // ISO string
-  updatedAt?: string; // ISO string
+  permissions: string[]; 
+  code?: string; // Should map to UserRole values if we want to enforce consistency
+  isSystemRole?: boolean; 
+  createdAt?: string; 
+  updatedAt?: string; 
 }
 
 
@@ -154,30 +168,29 @@ export type StudentStatus = 'active' | 'inactive' | 'graduated' | 'dropped';
 export type SemesterStatus = 'Passed' | 'Pending' | 'Not Appeared' | 'N/A';
 
 export interface Student {
-  id: string; // Links to User.id if a user account exists for the student
+  id: string; 
   enrollmentNumber: string;
-  gtuName?: string; // Full name as per GTU records
+  gtuName?: string; 
   firstName?: string;
   middleName?: string;
   lastName?: string;
   
   personalEmail?: string;
-  instituteEmail: string; // Derived: enrollmentNumber@instituteDomain
+  instituteEmail: string; 
   
-  programId: string; // Link to Program
-  // department is derived from Program
-  branchCode?: string; // From Program or Course
+  programId: string; 
+  department: string; // This is departmentId, derived from program
+  branchCode?: string; 
   currentSemester: number;
   status: StudentStatus;
   
   contactNumber?: string;
-  address?: string; // Consider making this a structured Address type
-  dateOfBirth?: string; // ISO string
-  admissionDate?: string; // ISO string
+  address?: string; 
+  dateOfBirth?: string; 
+  admissionDate?: string; 
   gender?: 'Male' | 'Female' | 'Other';
   convocationYear?: number;
   
-  // Semester-wise status
   sem1Status?: SemesterStatus;
   sem2Status?: SemesterStatus;
   sem3Status?: SemesterStatus;
@@ -187,27 +200,28 @@ export interface Student {
   sem7Status?: SemesterStatus;
   sem8Status?: SemesterStatus;
   
-  category?: string; // e.g., OPEN, SEBC, SC, ST
-  isComplete?: boolean; // Overall program completion
-  termClose?: boolean; // If term is closed for this student
-  isCancel?: boolean; // If admission is cancelled
-  isPassAll?: boolean; // If passed all subjects up to current sem
+  category?: string; 
+  isComplete?: boolean; 
+  termClose?: boolean; 
+  isCancel?: boolean; 
+  isPassAll?: boolean; 
   aadharNumber?: string;
-  shift?: 'Morning' | 'Afternoon' | string; // Or specific shift codes
+  shift?: 'Morning' | 'Afternoon' | string; 
   
-  // User account linkage
-  userId?: string; // ID of the corresponding User account
+  userId?: string; 
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
 }
 
 
 export type FacultyStatus = 'active' | 'inactive' | 'retired' | 'resigned' | 'on_leave';
 export type JobType = 'Regular' | 'Adhoc' | 'Contractual' | 'Visiting' | 'Other';
-export type Gender = 'Male' | 'Female' | 'Other';
+// Gender type already defined for Student, can be reused
 
 export interface Faculty {
   id: string;
-  staffCode: string; // Unique code for faculty
-  gtuName?: string; // Full name as per GTU records
+  staffCode: string; 
+  gtuName?: string; 
   
   title?: string;
   firstName?: string;
@@ -215,36 +229,68 @@ export interface Faculty {
   lastName?: string;
   
   personalEmail?: string;
-  instituteEmail: string; // Derived: firstName.lastName@instituteDomain
+  instituteEmail: string; 
   
   contactNumber?: string;
-  department: string; // Department name or ID
+  department: string; 
   designation?: string;
   jobType?: JobType;
-  instType?: string; // Like DI, DE, Degree (GTU specific)
+  instType?: string; 
   
-  dateOfBirth?: string; // ISO string
-  gender?: Gender;
+  dateOfBirth?: string; 
+  gender?: Gender; 
   maritalStatus?: string;
-  joiningDate?: string; // ISO string
+  joiningDate?: string; 
   
   status: FacultyStatus;
   
-  // Additional details from spec
-  qualifications?: string; // Could be an array of Qualification objects
+  qualifications?: string; 
   specializations?: string[];
-  // serviceHistory: object; // This would be complex, maybe a sub-collection
   
   aadharNumber?: string;
   panCardNumber?: string;
-  gpfNpsNumber?: string; // GPF/NPS number
+  gpfNpsNumber?: string; 
   placeOfBirth?: string;
   nationality?: string;
-  knownAs?: string; // Alias or common name
+  knownAs?: string; 
   
-  // User account linkage
-  userId?: string; // ID of the corresponding User account
+  userId?: string; 
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
 }
+
+
+export type CommitteeStatus = 'active' | 'inactive' | 'dissolved';
+export type CommitteeMemberRole = 'chairperson' | 'secretary' | 'member' | 'convener' | 'coordinator';
+
+export interface Committee {
+  id: string;
+  name: string;
+  description?: string;
+  purpose: string;
+  instituteId: string; 
+  formationDate: string; // ISO string
+  dissolutionDate?: string; // ISO string
+  status: CommitteeStatus;
+  // For simplicity, members might be a list of user IDs or more detailed CommitteeMember objects later
+  // memberIds?: string[]; // User IDs of members
+  // chairpersonId?: string; // User ID of chairperson
+  // secretaryId?: string; // User ID of secretary
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
+}
+
+export interface CommitteeMember {
+  id: string;
+  committeeId: string;
+  userId: string; // Link to User
+  role: CommitteeMemberRole;
+  assignmentDate: string; // ISO string
+  endDate?: string; // ISO string
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
+}
+
 
 // Timestamp placeholder type
 export type Timestamp = string; // For ISO date strings, or use Firebase's Timestamp type if integrating
