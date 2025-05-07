@@ -1,3 +1,4 @@
+
 import type { Department, SystemUser as User } from '@/types/entities';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
@@ -74,7 +75,11 @@ export const departmentService = {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: 'Failed to import departments' }));
-      throw new Error(errorData.message || 'Failed to import departments');
+      let detailedMessage = errorData.message || 'Failed to import departments';
+      if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+        detailedMessage += ` Specific issues: ${errorData.errors.slice(0, 3).join('; ')}${errorData.errors.length > 3 ? '...' : ''}`;
+      }
+      throw new Error(detailedMessage);
     }
     return response.json();
   }

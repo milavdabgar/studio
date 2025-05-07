@@ -1,13 +1,13 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Building, Institute } from '@/types/entities';
-import { parse } from 'papaparse';
+import { parse, type ParseError } from 'papaparse';
 
-let buildingsStore: Building[] = (global as any).buildingsStore || [];
-if (!(global as any).buildingsStore) {
-  (global as any).buildingsStore = buildingsStore;
+let buildingsStore: Building[] = (global as any).__API_BUILDINGS_STORE__ || [];
+if (!(global as any).__API_BUILDINGS_STORE__) {
+  (global as any).__API_BUILDINGS_STORE__ = buildingsStore;
 }
-let institutesStore: Institute[] = (global as any).institutes || []; // Ensure institutes are loaded
+// let institutesStore: Institute[] = (global as any).institutes || []; // Ensure institutes are loaded (handled by client sending data)
 
 const generateIdForImport = (): string => `bldg_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
@@ -34,15 +34,17 @@ export async function POST(request: NextRequest) {
       header: true,
       skipEmptyLines: true,
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, ''),
+      dynamicTyping: true,
     });
 
     if (parseErrors.length > 0) {
-      console.error('CSV Parse Errors:', parseErrors);
-      return NextResponse.json({ message: 'Error parsing CSV file.', errors: parseErrors.map(e => e.message) }, { status: 400 });
+      console.error('CSV Parse Errors (Building Import):', JSON.stringify(parseErrors, null, 2));
+      const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row}: ${e.message} (Code: ${e.code})`);
+      return NextResponse.json({ message: 'Error parsing Buildings CSV file. Please check the file format and content.', errors: errorMessages }, { status: 400 });
     }
     
     const header = Object.keys(parsedData[0] || {});
-    const requiredHeaders = ['name', 'status']; // instituteId or (instituteName and instituteCode) checked later
+    const requiredHeaders = ['name', 'status']; 
 
     if (!requiredHeaders.every(rh => header.includes(rh))) {
         const missing = requiredHeaders.filter(rh => !header.includes(rh));
@@ -54,18 +56,18 @@ export async function POST(request: NextRequest) {
     let skippedCount = 0;
 
     parsedData.forEach((row: any) => {
-      const name = row.name?.trim();
-      const status = row.status?.trim().toLowerCase() as Building['status'];
+      const name = row.name?.toString().trim();
+      const status = row.status?.toString().trim().toLowerCase() as Building['status'];
 
       if (!name || !['active', 'inactive', 'under_maintenance'].includes(status)) {
-        console.warn(`Skipping row: Missing or invalid required data (name, status). Row: ${JSON.stringify(row)}`);
+        console.warn(`Skipping building row: Missing or invalid required data (name, status). Row: ${JSON.stringify(row)}`);
         skippedCount++;
         return;
       }
 
-      let instituteId = row.instituteid?.trim();
-      const instituteName = row.institutename?.trim();
-      const instituteCode = row.institutecode?.trim().toUpperCase();
+      let instituteId = row.instituteid?.toString().trim();
+      const instituteName = row.institutename?.toString().trim();
+      const instituteCode = row.institutecode?.toString().trim().toUpperCase();
 
       if (!instituteId) {
         const foundInstitute = clientInstitutes.find(i => 
@@ -87,46 +89,42 @@ export async function POST(request: NextRequest) {
         }
       }
       
-      const constYearStr = row.constructionyear?.trim();
-      const constructionYear = constYearStr && !isNaN(parseInt(constYearStr)) ? parseInt(constYearStr) : undefined;
+      const constructionYear = row.constructionyear !== undefined && row.constructionyear !== null && !isNaN(Number(row.constructionyear)) ? Number(row.constructionyear) : undefined;
       if (constructionYear && (constructionYear < 1800 || constructionYear > new Date().getFullYear() + 5)) {
         console.warn(`Skipping row for building ${name}: Invalid construction year ${constructionYear}.`);
         skippedCount++;
         return;
       }
 
-      const numFloorsStr = row.numberoffloors?.trim();
-      const numberOfFloors = numFloorsStr && !isNaN(parseInt(numFloorsStr)) && parseInt(numFloorsStr) >= 0 ? parseInt(numFloorsStr) : undefined;
-      
-      const areaSqFtStr = row.totalareasqft?.trim();
-      const totalAreaSqFt = areaSqFtStr && !isNaN(parseFloat(areaSqFtStr)) && parseFloat(areaSqFtStr) >= 0 ? parseFloat(areaSqFtStr) : undefined;
+      const numberOfFloors = row.numberoffloors !== undefined && row.numberoffloors !== null && !isNaN(Number(row.numberoffloors)) && Number(row.numberoffloors) >=0 ? Number(row.numberoffloors) : undefined;
+      const totalAreaSqFt = row.totalareasqft !== undefined && row.totalareasqft !== null && !isNaN(Number(row.totalareasqft)) && Number(row.totalareasqft) >=0 ? Number(row.totalareasqft) : undefined;
 
 
       const buildingData: Omit<Building, 'id'> = {
         name,
         status,
         instituteId,
-        code: row.code?.trim().toUpperCase() || undefined,
-        description: row.description?.trim() || undefined,
+        code: row.code?.toString().trim().toUpperCase() || undefined,
+        description: row.description?.toString().trim() || undefined,
         constructionYear,
         numberOfFloors,
         totalAreaSqFt,
       };
 
-      const idFromCsv = row.id?.trim();
+      const idFromCsv = row.id?.toString().trim();
       let existingBuildingIndex = -1;
 
       if (idFromCsv) {
         existingBuildingIndex = buildingsStore.findIndex(b => b.id === idFromCsv);
         if (existingBuildingIndex !== -1 && buildingData.code && buildingData.code !== buildingsStore[existingBuildingIndex].code && buildingsStore.some(b => b.id !== idFromCsv && b.instituteId === instituteId && b.code === buildingData.code)) {
-          console.warn(`Skipping update for ID ${idFromCsv}: Code ${buildingData.code} from CSV conflicts with another existing building in the same institute.`);
+          console.warn(`Skipping update for building ID ${idFromCsv}: Code ${buildingData.code} from CSV conflicts with another existing building in the same institute.`);
           skippedCount++;
           return; 
         }
       } else { 
-        if (buildingData.code) { // Try to find by code and institute if no ID
+        if (buildingData.code) { 
             existingBuildingIndex = buildingsStore.findIndex(b => b.instituteId === instituteId && b.code === buildingData.code);
-        } else { // Try to find by name and institute if no ID and no code
+        } else { 
             existingBuildingIndex = buildingsStore.findIndex(b => b.instituteId === instituteId && b.name.toLowerCase() === name.toLowerCase());
         }
       }
@@ -155,7 +153,7 @@ export async function POST(request: NextRequest) {
         newCount++;
       }
     });
-
+    (global as any).__API_BUILDINGS_STORE__ = buildingsStore;
     return NextResponse.json({ message: 'Buildings imported successfully.', newCount, updatedCount, skippedCount }, { status: 200 });
 
   } catch (error) {
@@ -163,4 +161,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Error importing buildings.', error: (error as Error).message }, { status: 500 });
   }
 }
-

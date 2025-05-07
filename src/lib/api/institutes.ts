@@ -59,7 +59,7 @@ export const instituteService = {
     }
   },
 
-  async importInstitutes(file: File): Promise<{ newCount: number; updatedCount: number }> {
+  async importInstitutes(file: File): Promise<{ newCount: number; updatedCount: number, skippedCount: number }> {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -70,7 +70,11 @@ export const instituteService = {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: 'Failed to import institutes' }));
-      throw new Error(errorData.message || 'Failed to import institutes');
+      let detailedMessage = errorData.message || 'Failed to import institutes';
+      if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+        detailedMessage += ` Specific issues: ${errorData.errors.slice(0, 3).join('; ')}${errorData.errors.length > 3 ? '...' : ''}`;
+      }
+      throw new Error(detailedMessage);
     }
     return response.json();
   }

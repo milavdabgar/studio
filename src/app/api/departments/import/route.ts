@@ -1,11 +1,12 @@
+
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Department } from '@/types/entities';
-import { parse } from 'papaparse'; // Using papaparse for CSV parsing
+import { parse, type ParseError } from 'papaparse'; 
 
 // In-memory store for departments
-let departmentsStore: Department[] = (global as any).departmentsStore || [];
-if (!(global as any).departmentsStore) {
-  (global as any).departmentsStore = departmentsStore;
+let departmentsStore: Department[] = (global as any).__API_DEPARTMENTS_STORE__ || [];
+if (!(global as any).__API_DEPARTMENTS_STORE__) {
+  (global as any).__API_DEPARTMENTS_STORE__ = departmentsStore;
 }
 
 const generateIdForImport = (): string => `dept_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
@@ -25,11 +26,13 @@ export async function POST(request: NextRequest) {
       header: true,
       skipEmptyLines: true,
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, ''),
+      dynamicTyping: true,
     });
 
     if (parseErrors.length > 0) {
-      console.error('CSV Parse Errors:', parseErrors);
-      return NextResponse.json({ message: 'Error parsing CSV file.', errors: parseErrors.map(e => e.message) }, { status: 400 });
+      console.error('CSV Parse Errors (Department Import):', JSON.stringify(parseErrors, null, 2));
+      const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row}: ${e.message} (Code: ${e.code})`);
+      return NextResponse.json({ message: 'Error parsing Departments CSV file. Please check the file format and content.', errors: errorMessages }, { status: 400 });
     }
     
     const header = Object.keys(parsedData[0] || {});
@@ -45,18 +48,17 @@ export async function POST(request: NextRequest) {
     let skippedCount = 0;
 
     parsedData.forEach((row: any) => {
-      const name = row.name?.trim();
-      const code = row.code?.trim().toUpperCase();
-      const status = row.status?.trim().toLowerCase() as 'active' | 'inactive';
+      const name = row.name?.toString().trim();
+      const code = row.code?.toString().trim().toUpperCase();
+      const status = row.status?.toString().trim().toLowerCase() as 'active' | 'inactive';
 
       if (!name || !code || !['active', 'inactive'].includes(status)) {
-        console.warn(`Skipping row: Missing or invalid required data (name, code, status). Row: ${JSON.stringify(row)}`);
+        console.warn(`Skipping department row: Missing or invalid required data (name, code, status). Row: ${JSON.stringify(row)}`);
         skippedCount++;
         return;
       }
       
-      const estYearStr = row.establishmentyear?.trim();
-      const establishmentYear = estYearStr && !isNaN(parseInt(estYearStr)) ? parseInt(estYearStr) : undefined;
+      const establishmentYear = row.establishmentyear !== undefined && row.establishmentyear !== null && !isNaN(Number(row.establishmentyear)) ? Number(row.establishmentyear) : undefined;
       if (establishmentYear && (establishmentYear < 1900 || establishmentYear > new Date().getFullYear())) {
         console.warn(`Skipping row for department ${name}: Invalid establishment year ${establishmentYear}.`);
         skippedCount++;
@@ -67,23 +69,22 @@ export async function POST(request: NextRequest) {
         name,
         code,
         status,
-        description: row.description?.trim() || undefined,
-        hodId: row.hodid?.trim() || undefined, // Assuming HOD ID might be in CSV
+        description: row.description?.toString().trim() || undefined,
+        hodId: row.hodid?.toString().trim() || undefined, 
         establishmentYear,
       };
 
-      const idFromCsv = row.id?.trim();
+      const idFromCsv = row.id?.toString().trim();
       let existingDepartmentIndex = -1;
 
       if (idFromCsv) {
         existingDepartmentIndex = departmentsStore.findIndex(d => d.id === idFromCsv);
-        // If ID exists but code is different and that new code already exists for another department, it's a conflict.
         if (existingDepartmentIndex !== -1 && code !== departmentsStore[existingDepartmentIndex].code && departmentsStore.some(d => d.id !== idFromCsv && d.code === code)) {
-          console.warn(`Skipping update for ID ${idFromCsv} (Department: ${departmentsStore[existingDepartmentIndex].name}): Code ${code} from CSV conflicts with another existing department.`);
+          console.warn(`Skipping update for department ID ${idFromCsv} (Department: ${departmentsStore[existingDepartmentIndex].name}): Code ${code} from CSV conflicts with another existing department.`);
           skippedCount++;
-          return; // Skip this conflicting update
+          return; 
         }
-      } else { // if no id in csv, try to find by code for potential update
+      } else { 
         existingDepartmentIndex = departmentsStore.findIndex(d => d.code === code);
       }
 
@@ -92,23 +93,20 @@ export async function POST(request: NextRequest) {
         departmentsStore[existingDepartmentIndex] = { ...departmentsStore[existingDepartmentIndex], ...departmentData };
         updatedCount++;
       } else {
-        // If trying to update by code and no ID was provided, but code already exists, this is a conflict unless it's the same department.
-        // However, the previous check (existingDepartmentIndex based on code) would have found it for update.
-        // So, if we are here, it's a new department.
         if (departmentsStore.some(d => d.code === code)) {
              console.warn(`Skipping new department: Code ${code} (for ${name}) already exists.`);
              skippedCount++;
              return;
         }
         const newDepartment: Department = {
-          id: idFromCsv || generateIdForImport(), // Use CSV id if present and new, otherwise generate.
+          id: idFromCsv || generateIdForImport(), 
           ...departmentData,
         };
         departmentsStore.push(newDepartment);
         newCount++;
       }
     });
-
+    (global as any).__API_DEPARTMENTS_STORE__ = departmentsStore;
     return NextResponse.json({ message: 'Departments imported successfully.', newCount, updatedCount, skippedCount }, { status: 200 });
 
   } catch (error) {

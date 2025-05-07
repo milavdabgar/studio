@@ -1,7 +1,7 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Faculty, FacultyStatus, JobType, Gender, SystemUser } from '@/types/entities';
-import { parse } from 'papaparse';
+import { parse, type ParseError } from 'papaparse';
 import { userService } from '@/lib/api/users';
 
 // In-memory store (replace with DB)
@@ -43,6 +43,8 @@ const generateInstituteEmailForFaculty = (firstName?: string, lastName?: string,
 
 const JOB_TYPE_OPTIONS: JobType[] = ["Regular", "Adhoc", "Contractual", "Visiting", "Other"];
 const FACULTY_STATUS_OPTIONS: FacultyStatus[] = ["active", "inactive", "on_leave", "retired", "resigned"];
+const GENDER_OPTIONS: Gender[] = ["Male", "Female", "Other"];
+
 
 export async function POST(request: NextRequest) {
   try {
@@ -58,57 +60,61 @@ export async function POST(request: NextRequest) {
       header: true,
       skipEmptyLines: true,
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/gi, ''),
+      dynamicTyping: true,
     });
 
     if (parseErrors.length > 0) {
-      return NextResponse.json({ message: 'Error parsing CSV file.', errors: parseErrors.map(e => e.message) }, { status: 400 });
+      console.error('CSV Parse Errors (Faculty Standard Import):', JSON.stringify(parseErrors, null, 2));
+      const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row}: ${e.message} (Code: ${e.code})`);
+      return NextResponse.json({ message: 'Error parsing Faculty (Standard) CSV file. Please check the file format and content.', errors: errorMessages }, { status: 400 });
     }
 
     let newCount = 0, updatedCount = 0, skippedCount = 0;
 
     for (const row of parsedData) {
-      const staffCode = row.staffcode?.trim();
-      const firstName = row.firstname?.trim();
-      const lastName = row.lastname?.trim();
-      const department = row.department?.trim();
-      const statusRaw = row.status?.trim().toLowerCase();
+      const staffCode = row.staffcode?.toString().trim();
+      const firstName = row.firstname?.toString().trim();
+      const lastName = row.lastname?.toString().trim();
+      const department = row.department?.toString().trim();
+      const statusRaw = row.status?.toString().trim().toLowerCase();
       const status = FACULTY_STATUS_OPTIONS.includes(statusRaw as FacultyStatus) ? statusRaw as FacultyStatus : undefined;
 
       if (!staffCode || !firstName || !lastName || !department || !status) {
+        console.warn(`Skipping faculty row: Missing required data (staffCode, firstName, lastName, department, status). Row: ${JSON.stringify(row)}`);
         skippedCount++; continue;
       }
       
-      const gtuName = row.gtuname?.trim();
+      const gtuName = row.gtuname?.toString().trim();
       const parsedFromName = parseGtuFacultyNameFromString(gtuName);
 
       const facultyData: Omit<Faculty, 'id'> = {
         staffCode,
-        gtuName: gtuName || `${row.title || parsedFromName.title || ''} ${firstName} ${row.middlename || parsedFromName.middleName || ''} ${lastName}`.replace(/\s+/g, ' ').trim(),
-        title: row.title?.trim() || parsedFromName.title || undefined,
+        gtuName: gtuName || `${row.title || parsedFromName.title || ''} ${firstName} ${row.middlename?.toString().trim() || parsedFromName.middleName || ''} ${lastName}`.replace(/\s+/g, ' ').trim(),
+        title: row.title?.toString().trim() || parsedFromName.title || undefined,
         firstName,
-        middleName: row.middlename?.trim() || parsedFromName.middleName || undefined,
+        middleName: row.middlename?.toString().trim() || parsedFromName.middleName || undefined,
         lastName,
-        personalEmail: row.personalemail?.trim() || undefined,
-        instituteEmail: row.instituteemail?.trim() || generateInstituteEmailForFaculty(firstName, lastName, staffCode),
-        contactNumber: row.contactnumber?.trim() || undefined,
+        personalEmail: row.personalemail?.toString().trim() || undefined,
+        instituteEmail: row.instituteemail?.toString().trim() || generateInstituteEmailForFaculty(firstName, lastName, staffCode),
+        contactNumber: row.contactnumber?.toString().trim() || undefined,
         department,
-        designation: row.designation?.trim() || undefined,
-        jobType: JOB_TYPE_OPTIONS.includes(row.jobtype as JobType) ? row.jobtype as JobType : 'Other',
-        instType: row.insttype?.trim() || undefined,
-        dateOfBirth: row.dateofbirth?.trim() || undefined,
-        gender: row.gender?.trim() as Gender || undefined,
-        maritalStatus: row.maritalstatus?.trim() || undefined,
-        joiningDate: row.joiningdate?.trim() || undefined,
+        designation: row.designation?.toString().trim() || undefined,
+        jobType: JOB_TYPE_OPTIONS.includes(row.jobtype?.toString() as JobType) ? row.jobtype as JobType : 'Other',
+        instType: row.insttype?.toString().trim() || undefined,
+        dateOfBirth: row.dateofbirth?.toString().trim() || undefined,
+        gender: GENDER_OPTIONS.includes(row.gender?.toString() as Gender) ? row.gender as Gender : undefined,
+        maritalStatus: row.maritalstatus?.toString().trim() || undefined,
+        joiningDate: row.joiningdate?.toString().trim() || undefined,
         status,
-        aadharNumber: row.aadharnumber?.trim() || undefined,
-        panCardNumber: row.pancardnumber?.trim() || undefined,
-        gpfNpsNumber: row.gpfnpfnumber?.trim() || undefined,
-        placeOfBirth: row.placeofbirth?.trim() || undefined,
-        nationality: row.nationality?.trim() || undefined,
-        knownAs: row.knownas?.trim() || undefined,
+        aadharNumber: row.aadharnumber?.toString().trim() || undefined,
+        panCardNumber: row.pancardnumber?.toString().trim() || undefined,
+        gpfNpsNumber: row.gpfnpfnumber?.toString().trim() || undefined, // Corrected key
+        placeOfBirth: row.placeofbirth?.toString().trim() || undefined,
+        nationality: row.nationality?.toString().trim() || undefined,
+        knownAs: row.knownas?.toString().trim() || undefined,
       };
 
-      const idFromCsv = row.id?.trim();
+      const idFromCsv = row.id?.toString().trim();
       let existingFacultyIndex = -1;
       if (idFromCsv) {
         existingFacultyIndex = facultyStore.findIndex(f => f.id === idFromCsv);
@@ -121,7 +127,7 @@ export async function POST(request: NextRequest) {
         updatedCount++;
          const linkedUser = await userService.getAllUsers().then(users => users.find(u => u.email === facultyStore[existingFacultyIndex].instituteEmail));
         if(linkedUser) {
-            await userService.updateUser(linkedUser.id, { name: facultyData.name || facultyData.staffCode, department: facultyData.department, status: facultyData.status === 'active' ? 'active' : 'inactive' });
+            await userService.updateUser(linkedUser.id, { name: facultyData.gtuName || facultyData.staffCode, department: facultyData.department, status: facultyData.status === 'active' ? 'active' : 'inactive' });
         }
       } else {
         const newFaculty: Faculty = { id: idFromCsv || generateIdForImport(), ...facultyData };

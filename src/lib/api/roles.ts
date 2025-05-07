@@ -1,6 +1,6 @@
 
 import type { Role, UserRole } from '@/types/entities';
-import { parse } from 'papaparse';
+// Removed papaparse import as it's not directly used in this service file
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 
@@ -82,9 +82,12 @@ export const roleService = {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: 'Failed to import roles' }));
-      throw new Error(errorData.message || 'Failed to import roles');
+      let detailedMessage = errorData.message || 'Failed to import roles';
+      if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+        detailedMessage += ` Specific issues: ${errorData.errors.slice(0, 3).join('; ')}${errorData.errors.length > 3 ? '...' : ''}`;
+      }
+      throw new Error(detailedMessage);
     }
     return response.json();
   }
 };
-

@@ -1,7 +1,7 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Student, SemesterStatus, SystemUser } from '@/types/entities';
-import { parse } from 'papaparse';
+import { parse, type ParseError } from 'papaparse';
 import { userService } from '@/lib/api/users';
 
 // In-memory store (replace with DB)
@@ -40,7 +40,7 @@ const normalizeShiftFromString = (shift: string | undefined): Student['shift'] |
     const lowerShift = shift.toLowerCase();
     if (lowerShift.startsWith('m')) return 'Morning';
     if (lowerShift.startsWith('a')) return 'Afternoon';
-    return shift; 
+    return shift as Student['shift'];
 };
 
 const DEPARTMENT_OPTIONS_MAP: { [key: string]: string } = {
@@ -63,66 +63,70 @@ export async function POST(request: NextRequest) {
     }
 
     const fileText = await file.text();
-    const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
+    const { data: parsedData, errors: parseErrors, meta } = parse<any>(fileText, {
       header: true,
       skipEmptyLines: true,
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/gi, ''),
+      dynamicTyping: true, 
     });
 
     if (parseErrors.length > 0) {
-      return NextResponse.json({ message: 'Error parsing GTU CSV file.', errors: parseErrors.map(e => e.message) }, { status: 400 });
+      console.error('CSV Parse Errors (GTU Import):', JSON.stringify(parseErrors, null, 2));
+      const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row}: ${e.message} (Code: ${e.code})`);
+      return NextResponse.json({ message: 'Error parsing GTU CSV file. Please check the file format and content.', errors: errorMessages }, { status: 400 });
     }
     
     let newCount = 0, updatedCount = 0, skippedCount = 0;
 
     for (const row of parsedData) {
-      const enrollmentNumber = row.mapnumber?.trim();
-      const gtuName = row.name?.trim();
+      const enrollmentNumber = row.mapnumber?.toString().trim();
+      const gtuName = row.name?.toString().trim();
       
       if (!enrollmentNumber || !gtuName) {
+        console.warn(`Skipping GTU import row due to missing enrollment number or name: ${JSON.stringify(row)}`);
         skippedCount++; continue;
       }
 
       const { firstName, middleName, lastName } = parseGtuNameFromString(gtuName);
-      const branchCode = row.brcode?.trim().toUpperCase();
+      const branchCode = row.brcode?.toString().trim().toUpperCase();
       const department = DEPARTMENT_OPTIONS_MAP[branchCode || ""] || "General";
 
       let currentSemester = 1;
       for (let sem = 8; sem >= 1; sem--) {
-        if (mapSemesterCodeToStatusFromString(row[`sem${sem}`]) === 'Passed') {
+        if (mapSemesterCodeToStatusFromString(row[`sem${sem}`]?.toString()) === 'Passed') {
             currentSemester = Math.min(sem + 1, 8); break;
-        } else if (mapSemesterCodeToStatusFromString(row[`sem${sem}`]) === 'Pending') {
+        } else if (mapSemesterCodeToStatusFromString(row[`sem${sem}`]?.toString()) === 'Pending') {
             currentSemester = sem; break;
         }
       }
-      if (row.ispassall?.toLowerCase() === 'true' || row.iscomplete?.toLowerCase() === 'true'){
+      if (row.ispassall?.toString().toLowerCase() === 'true' || row.iscomplete?.toString().toLowerCase() === 'true'){
         currentSemester = 8; 
       }
 
       const studentData: Omit<Student, 'id'> = {
         enrollmentNumber, gtuName, firstName, middleName, lastName,
-        personalEmail: row.email?.trim() || undefined,
+        personalEmail: row.email?.toString().trim() || undefined,
         instituteEmail: `${enrollmentNumber}@gppalanpur.in`,
         department, branchCode, currentSemester,
-        status: row.iscancel?.toLowerCase() === 'true' ? 'dropped' : (row.iscomplete?.toLowerCase() === 'true' || row.ispassall?.toLowerCase() === 'true' ? 'graduated' : 'active'),
-        contactNumber: row.mobile?.trim() || undefined,
-        gender: normalizeGenderFromString(row.gender),
+        status: row.iscancel?.toString().toLowerCase() === 'true' ? 'dropped' : (row.iscomplete?.toString().toLowerCase() === 'true' || row.ispassall?.toString().toLowerCase() === 'true' ? 'graduated' : 'active'),
+        contactNumber: row.mobile?.toString().trim() || undefined,
+        gender: normalizeGenderFromString(row.gender?.toString()),
         convocationYear: row.convoyear ? parseInt(row.convoyear, 10) : undefined,
-        sem1Status: mapSemesterCodeToStatusFromString(row.sem1),
-        sem2Status: mapSemesterCodeToStatusFromString(row.sem2),
-        sem3Status: mapSemesterCodeToStatusFromString(row.sem3),
-        sem4Status: mapSemesterCodeToStatusFromString(row.sem4),
-        sem5Status: mapSemesterCodeToStatusFromString(row.sem5),
-        sem6Status: mapSemesterCodeToStatusFromString(row.sem6),
-        sem7Status: mapSemesterCodeToStatusFromString(row.sem7),
-        sem8Status: mapSemesterCodeToStatusFromString(row.sem8),
-        category: row.category?.trim() || undefined,
-        isComplete: row.iscomplete?.toLowerCase() === 'true',
-        termClose: row.termclose?.toLowerCase() === 'true',
-        isCancel: row.iscancel?.toLowerCase() === 'true',
-        isPassAll: row.ispassall?.toLowerCase() === 'true',
-        aadharNumber: row.aadhar?.trim() || undefined,
-        shift: normalizeShiftFromString(row.shift),
+        sem1Status: mapSemesterCodeToStatusFromString(row.sem1?.toString()),
+        sem2Status: mapSemesterCodeToStatusFromString(row.sem2?.toString()),
+        sem3Status: mapSemesterCodeToStatusFromString(row.sem3?.toString()),
+        sem4Status: mapSemesterCodeToStatusFromString(row.sem4?.toString()),
+        sem5Status: mapSemesterCodeToStatusFromString(row.sem5?.toString()),
+        sem6Status: mapSemesterCodeToStatusFromString(row.sem6?.toString()),
+        sem7Status: mapSemesterCodeToStatusFromString(row.sem7?.toString()),
+        sem8Status: mapSemesterCodeToStatusFromString(row.sem8?.toString()),
+        category: row.category?.toString().trim() || undefined,
+        isComplete: row.iscomplete?.toString().toLowerCase() === 'true',
+        termClose: row.termclose?.toString().toLowerCase() === 'true',
+        isCancel: row.iscancel?.toString().toLowerCase() === 'true',
+        isPassAll: row.ispassall?.toString().toLowerCase() === 'true',
+        aadharNumber: row.aadhar?.toString().trim() || undefined,
+        shift: normalizeShiftFromString(row.shift?.toString()),
       };
 
       const existingStudentIndex = studentsStore.findIndex(s => s.enrollmentNumber === enrollmentNumber);
@@ -132,7 +136,7 @@ export async function POST(request: NextRequest) {
         // Optionally update linked user
         const linkedUser = await userService.getAllUsers().then(users => users.find(u => u.email === studentsStore[existingStudentIndex].instituteEmail));
         if(linkedUser) {
-            await userService.updateUser(linkedUser.id, { name: studentData.name || studentData.enrollmentNumber, department: studentData.department, status: studentData.status === 'active' ? 'active' : 'inactive' });
+            await userService.updateUser(linkedUser.id, { name: studentData.gtuName || studentData.enrollmentNumber, department: studentData.department, status: studentData.status === 'active' ? 'active' : 'inactive' });
         }
       } else {
         const newStudent: Student = { id: generateIdForImport(), ...studentData };

@@ -1,7 +1,7 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Faculty, FacultyStatus, JobType, Gender, SystemUser } from '@/types/entities';
-import { parse } from 'papaparse';
+import { parse, type ParseError } from 'papaparse';
 import { userService } from '@/lib/api/users';
 
 // In-memory store (replace with DB)
@@ -67,28 +67,32 @@ export async function POST(request: NextRequest) {
       header: true,
       skipEmptyLines: true,
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/gi, ''),
+      dynamicTyping: true,
     });
 
     if (parseErrors.length > 0) {
-      return NextResponse.json({ message: 'Error parsing GTU CSV file.', errors: parseErrors.map(e => e.message) }, { status: 400 });
+      console.error('CSV Parse Errors (Faculty GTU Import):', JSON.stringify(parseErrors, null, 2));
+      const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row}: ${e.message} (Code: ${e.code})`);
+      return NextResponse.json({ message: 'Error parsing Faculty (GTU) CSV file. Please check the file format and content.', errors: errorMessages }, { status: 400 });
     }
 
     let newCount = 0, updatedCount = 0, skippedCount = 0;
 
     for (const row of parsedData) {
-      const staffCode = row.staffcode?.trim();
-      const gtuName = row.name?.trim();
+      const staffCode = row.staffcode?.toString().trim();
+      const gtuName = row.name?.toString().trim();
       
       if (!staffCode || !gtuName) {
+        console.warn(`Skipping GTU faculty row due to missing staff code or name: ${JSON.stringify(row)}`);
         skippedCount++; continue;
       }
 
       const { title, firstName, middleName, lastName } = parseGtuFacultyNameFromString(gtuName);
-      const departmentGTU = row.department?.trim().toUpperCase();
+      const departmentGTU = row.department?.toString().trim().toUpperCase();
       const department = DEPARTMENT_MAP[departmentGTU || ""] || "Other";
-      const designation = row.designation?.trim() || "Lecturer"; // Default if missing
+      const designation = row.designation?.toString().trim() || "Lecturer"; 
       
-      const jobTypeRaw = row.jobtype?.trim();
+      const jobTypeRaw = row.jobtype?.toString().trim();
       const jobType = JOB_TYPE_OPTIONS.includes(jobTypeRaw as JobType) ? jobTypeRaw as JobType : 'Other';
 
 
@@ -96,37 +100,35 @@ export async function POST(request: NextRequest) {
         staffCode,
         gtuName,
         title, firstName, middleName, lastName,
-        personalEmail: row.emailaddress?.trim() || undefined,
+        personalEmail: row.emailaddress?.toString().trim() || undefined,
         instituteEmail: generateInstituteEmailForFaculty(firstName, lastName, staffCode),
-        contactNumber: row.mobileno?.trim() || undefined,
+        contactNumber: row.mobileno?.toString().trim() || undefined,
         department,
         designation,
         jobType,
-        instType: row.insttype?.trim() || undefined,
-        status: 'active', // Default status for imported GTU data
+        instType: row.insttype?.toString().trim() || undefined,
+        status: 'active', 
       };
 
       const existingFacultyIndex = facultyStore.findIndex(f => f.staffCode === staffCode);
       if (existingFacultyIndex !== -1) {
         facultyStore[existingFacultyIndex] = { ...facultyStore[existingFacultyIndex], ...facultyData };
         updatedCount++;
-        // Optionally update linked user
         const linkedUser = await userService.getAllUsers().then(users => users.find(u => u.email === facultyStore[existingFacultyIndex].instituteEmail));
         if(linkedUser) {
-            await userService.updateUser(linkedUser.id, { name: facultyData.name || facultyData.staffCode, department: facultyData.department, status: facultyData.status === 'active' ? 'active' : 'inactive' });
+            await userService.updateUser(linkedUser.id, { name: facultyData.gtuName || facultyData.staffCode, department: facultyData.department, status: facultyData.status === 'active' ? 'active' : 'inactive' });
         }
 
       } else {
         const newFaculty: Faculty = { id: generateIdForImport(), ...facultyData };
         facultyStore.push(newFaculty);
         newCount++;
-        // Create linked system user
         const systemUserName = newFaculty.gtuName || `${newFaculty.firstName || ''} ${newFaculty.lastName || ''}`.trim() || newFaculty.staffCode;
         try {
             await userService.createUser({
                 name: systemUserName,
                 email: newFaculty.instituteEmail,
-                password: newFaculty.staffCode, // Default password
+                password: newFaculty.staffCode, 
                 roles: ['faculty'],
                 status: 'active',
                 department: newFaculty.department
@@ -136,7 +138,6 @@ export async function POST(request: NextRequest) {
                 console.warn(`System user with email ${newFaculty.instituteEmail} already exists. Linking faculty ${newFaculty.staffCode} to existing user.`);
              } else {
                 console.error(`Failed to create system user for faculty ${newFaculty.staffCode}:`, userCreationError);
-                // Potentially skip this faculty or log as needing manual user creation
              }
         }
       }

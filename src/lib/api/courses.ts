@@ -73,7 +73,11 @@ export const courseService = {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: 'Failed to import courses' }));
-      throw new Error(errorData.message || 'Failed to import courses');
+      let detailedMessage = errorData.message || 'Failed to import courses';
+      if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+        detailedMessage += ` Specific issues: ${errorData.errors.slice(0, 3).join('; ')}${errorData.errors.length > 3 ? '...' : ''}`;
+      }
+      throw new Error(detailedMessage);
     }
     return response.json();
   }

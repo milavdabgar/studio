@@ -1,7 +1,7 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
 import type { SystemUser, UserRole } from '@/types/entities';
-import { parse } from 'papaparse';
+import { parse, type ParseError } from 'papaparse';
 
 // Ensure the global store is initialized (copied from main route for consistency)
 declare global {
@@ -17,6 +17,7 @@ if (!global.__API_USERS_STORE__) {
 const usersStore: SystemUser[] = global.__API_USERS_STORE__;
 
 const generateIdForImport = (): string => `user_imp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+const USER_ROLE_OPTIONS_VALUES = ["admin", "student", "faculty", "hod", "jury", "unknown"];
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,11 +34,13 @@ export async function POST(request: NextRequest) {
       header: true,
       skipEmptyLines: true,
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, ''),
+      dynamicTyping: true,
     });
 
     if (parseErrors.length > 0) {
-      console.error('CSV Parse Errors:', parseErrors);
-      return NextResponse.json({ message: 'Error parsing CSV file.', errors: parseErrors.map(e => e.message) }, { status: 400 });
+      console.error('CSV Parse Errors (User Import):', JSON.stringify(parseErrors, null, 2));
+      const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row}: ${e.message} (Code: ${e.code})`);
+      return NextResponse.json({ message: 'Error parsing Users CSV file. Please check the file format and content.', errors: errorMessages }, { status: 400 });
     }
     
     const header = Object.keys(parsedData[0] || {});
@@ -53,14 +56,14 @@ export async function POST(request: NextRequest) {
     let skippedCount = 0;
 
     parsedData.forEach((row: any) => {
-      const name = row.name?.trim();
-      const email = row.email?.trim().toLowerCase();
-      const rolesString = row.roles?.trim().replace(/^"|"$/g, '');
-      const roles = rolesString ? rolesString.split(';').map((r: string) => r.trim() as UserRole).filter(Boolean) : [];
-      const status = row.status?.trim().toLowerCase() as 'active' | 'inactive';
+      const name = row.name?.toString().trim();
+      const email = row.email?.toString().trim().toLowerCase();
+      const rolesString = row.roles?.toString().trim().replace(/^"|"$/g, '');
+      const roles = rolesString ? rolesString.split(';').map((r: string) => r.trim() as UserRole).filter(r => USER_ROLE_OPTIONS_VALUES.includes(r)) : [];
+      const status = row.status?.toString().trim().toLowerCase() as 'active' | 'inactive';
 
       if (!name || !email || roles.length === 0 || !['active', 'inactive'].includes(status)) {
-        console.warn(`Skipping row: Missing or invalid required data (name, email, roles, status). Row: ${JSON.stringify(row)}`);
+        console.warn(`Skipping user row: Missing or invalid required data (name, email, roles, status). Row: ${JSON.stringify(row)}`);
         skippedCount++;
         return;
       }
@@ -70,14 +73,14 @@ export async function POST(request: NextRequest) {
         email,
         roles,
         status,
-        department: row.department?.trim() || undefined,
+        department: row.department?.toString().trim() || undefined,
       };
-      if (row.password && row.password.trim().length >= 6) {
-        userData.password = row.password.trim();
+      if (row.password && row.password.toString().trim().length >= 6) {
+        userData.password = row.password.toString().trim();
       }
 
 
-      const idFromCsv = row.id?.trim();
+      const idFromCsv = row.id?.toString().trim();
       let existingUserIndex = -1;
 
       if (idFromCsv) {
@@ -88,21 +91,20 @@ export async function POST(request: NextRequest) {
 
 
       if (existingUserIndex !== -1) {
-        // If updating, preserve existing password if new one isn't provided or is weak
         const existingPassword = usersStore[existingUserIndex].password;
         usersStore[existingUserIndex] = { 
             ...usersStore[existingUserIndex], 
             ...userData,
-            password: userData.password || existingPassword // Prioritize new valid password, else keep old
+            password: userData.password || existingPassword 
         };
         updatedCount++;
       } else {
-         if (usersStore.some(u => u.email === email)) { // Check email uniqueness for new users
+         if (usersStore.some(u => u.email === email)) { 
              console.warn(`Skipping new user: Email ${email} (for ${name}) already exists.`);
              skippedCount++;
              return;
         }
-        if (!userData.password) { // New users must have a password from CSV
+        if (!userData.password) { 
             console.warn(`Skipping new user ${name} (${email}): Password is required for new users in CSV.`);
             skippedCount++;
             return;
@@ -110,14 +112,12 @@ export async function POST(request: NextRequest) {
         const newUser: SystemUser = {
           id: idFromCsv || generateIdForImport(), 
           ...userData,
-          password: userData.password, // Already validated it's present for new user
+          password: userData.password, 
         };
-        usersStore.push(newUser); // This modifies global.__API_USERS_STORE__ because usersStore is a reference
+        usersStore.push(newUser); 
         newCount++;
       }
     });
-
-    // global.__API_USERS_STORE__ is already updated if usersStore is directly modified.
 
     return NextResponse.json({ message: 'Users imported successfully.', newCount, updatedCount, skippedCount }, { status: 200 });
 
@@ -126,4 +126,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Error importing users.', error: (error as Error).message }, { status: 500 });
   }
 }
-

@@ -1,18 +1,18 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Role, UserRole } from '@/types/entities';
-import { parse } from 'papaparse';
-import { allPermissions } from '@/lib/api/roles'; // Import allPermissions
+import { parse, type ParseError } from 'papaparse';
+import { allPermissions } from '@/lib/api/roles'; 
 
 // In-memory store for roles (replace with actual DB interaction)
-let rolesStore: Role[] = (global as any).roles || [
+let rolesStore: Role[] = (global as any).__API_ROLES_STORE__ || [
   { id: "1", name: "Admin", description: "Full access to all system features.", permissions: ["manage_users", "manage_roles", "manage_settings", "manage_institutes", "manage_buildings", "manage_rooms", "manage_departments", "manage_programs", "manage_courses"] },
   { id: "2", name: "Student", description: "Access to student-specific features.", permissions: ["view_courses", "submit_assignments"] },
   { id: "3", name: "Faculty", description: "Access to faculty-specific features.", permissions: ["manage_courses", "grade_assignments", "evaluate_projects"] },
   { id: "4", name: "HOD", description: "Head of Department access.", permissions: ["manage_faculty", "view_department_reports", "manage_courses", "evaluate_projects"] },
   { id: "5", name: "Jury", description: "Project fair jury access.", permissions: ["evaluate_projects"] },
 ];
-(global as any).roles = rolesStore;
+(global as any).__API_ROLES_STORE__ = rolesStore;
 
 const generateClientIdForImport = (): string => `role_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
@@ -30,15 +30,18 @@ export async function POST(request: NextRequest) {
     const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
       header: true,
       skipEmptyLines: true,
+      transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, ''),
+      dynamicTyping: true,
     });
 
     if (parseErrors.length > 0) {
-      console.error('CSV Parse Errors:', parseErrors);
-      return NextResponse.json({ message: 'Error parsing CSV file.', errors: parseErrors }, { status: 400 });
+      console.error('CSV Parse Errors (Role Import):', JSON.stringify(parseErrors, null, 2));
+      const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row}: ${e.message} (Code: ${e.code})`);
+      return NextResponse.json({ message: 'Error parsing Roles CSV file. Please check the file format and content.', errors: errorMessages }, { status: 400 });
     }
     
     const header = Object.keys(parsedData[0] || {}).map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
-    const expectedHeaders = ['id', 'name', 'description', 'permissions']; 
+    // const expectedHeaders = ['id', 'name', 'description', 'permissions']; 
     const requiredHeaders = ['name', 'description', 'permissions'];
 
     if (!requiredHeaders.every(rh => header.includes(rh))) {
@@ -51,15 +54,15 @@ export async function POST(request: NextRequest) {
     let skippedCount = 0;
 
     parsedData.forEach((row: any) => {
-      const name = row.name?.trim();
-      const description = row.description?.trim();
-      const permissionsString = row.permissions?.trim().replace(/^"|"$/g, '');
+      const name = row.name?.toString().trim();
+      const description = row.description?.toString().trim();
+      const permissionsString = row.permissions?.toString().trim().replace(/^"|"$/g, '');
       const permissions = permissionsString 
         ? permissionsString.split(';').map(p => p.trim()).filter(p => allPermissions.includes(p)) 
         : [];
 
       if (!name || !description) {
-        console.warn(`Skipping row: Missing name or description. Row: ${JSON.stringify(row)}`);
+        console.warn(`Skipping role row: Missing name or description. Row: ${JSON.stringify(row)}`);
         skippedCount++;
         return;
       }
@@ -70,21 +73,20 @@ export async function POST(request: NextRequest) {
         permissions,
       };
 
-      const idFromCsv = row.id?.trim();
-      let existingRole = null;
+      const idFromCsv = row.id?.toString().trim();
+      let existingRoleIndex = -1;
       if(idFromCsv) {
-        existingRole = rolesStore.find(r => r.id === idFromCsv);
+        existingRoleIndex = rolesStore.findIndex(r => r.id === idFromCsv);
       } else { 
-        existingRole = rolesStore.find(r => r.name.toLowerCase() === name.toLowerCase());
+        existingRoleIndex = rolesStore.findIndex(r => r.name.toLowerCase() === name.toLowerCase());
       }
 
-      if (existingRole) {
-        // Prevent changing the name of the 'Admin' role through import
-        if (existingRole.name.toLowerCase() === 'admin' && name.toLowerCase() !== 'admin') {
+      if (existingRoleIndex !== -1) {
+        if (rolesStore[existingRoleIndex].name.toLowerCase() === 'admin' && name.toLowerCase() !== 'admin') {
             console.warn(`Skipping update for Admin role name. Original name preserved.`);
-            Object.assign(existingRole, { ...roleData, name: existingRole.name }); // Keep original name
+            rolesStore[existingRoleIndex] = { ...rolesStore[existingRoleIndex], ...roleData, name: rolesStore[existingRoleIndex].name };
         } else {
-            Object.assign(existingRole, roleData);
+            rolesStore[existingRoleIndex] = { ...rolesStore[existingRoleIndex], ...roleData };
         }
         updatedCount++;
       } else {
@@ -97,7 +99,7 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    (global as any).roles = rolesStore; 
+    (global as any).__API_ROLES_STORE__ = rolesStore; 
 
     return NextResponse.json({ message: 'Roles imported successfully.', newCount, updatedCount, skippedCount }, { status: 200 });
 
@@ -106,4 +108,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Error importing roles.', error: (error as Error).message }, { status: 500 });
   }
 }
-
