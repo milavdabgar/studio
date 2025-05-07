@@ -15,12 +15,13 @@ import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import type { Department, SystemUser as User } from '@/types/entities'; // Renamed SystemUser to User to avoid conflict
 import { departmentService } from '@/lib/api/departments';
-import { userService } from '@/lib/api/users'; // Assuming userService exists for fetching HODs
+import { userService } from '@/lib/api/users'; 
 
 type SortField = keyof Department | 'none';
 type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
+const NO_HOD_VALUE = "__NO_HOD__"; // Value for the "None" HOD option
 
 export default function DepartmentManagementPage() {
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -378,10 +379,14 @@ dept_sample_1,Information Technology,IT,"Handles all IT related courses and infr
                   </div>
                   <div>
                     <Label htmlFor="deptHod">Head of Department (HOD)</Label>
-                    <Select value={formHodId} onValueChange={setFormHodId} disabled={isSubmitting}>
+                    <Select 
+                      value={formHodId} 
+                      onValueChange={(value) => setFormHodId(value === NO_HOD_VALUE ? undefined : value)} 
+                      disabled={isSubmitting}
+                    >
                       <SelectTrigger id="deptHod"><SelectValue placeholder="Select HOD (Optional)" /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">None</SelectItem>
+                        <SelectItem value={NO_HOD_VALUE}>None</SelectItem>
                         {facultyUsers.map(user => (
                           <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
                         ))}
