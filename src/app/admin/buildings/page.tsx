@@ -14,7 +14,7 @@ import { PlusCircle, Edit, Trash2, Building, Loader2, UploadCloud, Download, Fil
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import type { Building as BuildingType, Institute } from '@/types/entities'; // Renamed Building to BuildingType
-import { buildingService } from '@/lib/api/buildings';
+import { buildingService } from '@/lib/services/buildingService';
 import { instituteService } from '@/lib/api/institutes';
 
 type BuildingStatus = 'active' | 'inactive' | 'under_maintenance';
