@@ -229,3 +229,5 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
   return NextResponse.json({ message: 'Committee and associated roles deleted successfully' }, { status: 200 });
 }
+
+    

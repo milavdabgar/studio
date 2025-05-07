@@ -45,6 +45,7 @@ export default function CommitteeManagementPage() {
 
   // Form state
   const [formName, setFormName] = useState('');
+  const [formCode, setFormCode] = useState('');
   const [formDescription, setFormDescription] = useState('');
   const [formPurpose, setFormPurpose] = useState('');
   const [formInstituteId, setFormInstituteId] = useState<string>('');
@@ -76,7 +77,6 @@ export default function CommitteeManagementPage() {
       ]);
       setCommittees(committeeData);
       setInstitutes(instituteData);
-      // Filter for users who can be conveners (e.g., faculty, hod, admin)
       setFacultyUsers(usersData.filter(u => u.roles.includes('faculty') || u.roles.includes('hod') || u.roles.includes('admin') || u.roles.includes('committee_convener')));
       if (instituteData.length > 0 && !formInstituteId) {
         setFormInstituteId(instituteData[0].id);
@@ -93,7 +93,7 @@ export default function CommitteeManagementPage() {
   }, []);
 
   const resetForm = () => {
-    setFormName(''); setFormDescription(''); setFormPurpose('');
+    setFormName(''); setFormCode(''); setFormDescription(''); setFormPurpose('');
     setFormInstituteId(institutes.length > 0 ? institutes[0].id : ''); 
     setFormFormationDate(undefined); setFormDissolutionDate(undefined);
     setFormStatus('active');
@@ -104,6 +104,7 @@ export default function CommitteeManagementPage() {
   const handleEdit = (committee: Committee) => {
     setCurrentCommittee(committee);
     setFormName(committee.name);
+    setFormCode(committee.code);
     setFormDescription(committee.description || '');
     setFormPurpose(committee.purpose);
     setFormInstituteId(committee.instituteId);
@@ -138,8 +139,8 @@ export default function CommitteeManagementPage() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    if (!formName.trim() || !formPurpose.trim() || !formInstituteId || !formFormationDate) {
-      toast({ variant: "destructive", title: "Validation Error", description: "Name, Purpose, Institute, and Formation Date are required."});
+    if (!formName.trim() || !formCode.trim() || !formPurpose.trim() || !formInstituteId || !formFormationDate) {
+      toast({ variant: "destructive", title: "Validation Error", description: "Name, Code, Purpose, Institute, and Formation Date are required."});
       return;
     }
 
@@ -147,6 +148,7 @@ export default function CommitteeManagementPage() {
     
     const committeeData: Omit<Committee, 'id' | 'createdAt' | 'updatedAt'> = { 
       name: formName.trim(),
+      code: formCode.trim().toUpperCase(),
       description: formDescription.trim() || undefined,
       purpose: formPurpose.trim(),
       instituteId: formInstituteId,
@@ -216,14 +218,14 @@ export default function CommitteeManagementPage() {
       toast({ title: "Export Canceled", description: "No committees to export (check filters)." });
       return;
     }
-    const header = ['id', 'name', 'description', 'purpose', 'instituteId', 'instituteName', 'instituteCode', 'formationDate', 'dissolutionDate', 'status', 'convenerId', 'convenerName'];
+    const header = ['id', 'name', 'code', 'description', 'purpose', 'instituteId', 'instituteName', 'instituteCode', 'formationDate', 'dissolutionDate', 'status', 'convenerId', 'convenerName'];
     const csvRows = [
       header.join(','),
       ...filteredAndSortedCommittees.map(c => {
         const inst = institutes.find(i => i.id === c.instituteId);
         const convener = facultyUsers.find(u => u.id === c.convenerId);
         return [
-          c.id, `"${c.name.replace(/"/g, '""')}"`, 
+          c.id, `"${c.name.replace(/"/g, '""')}"`, `"${c.code.replace(/"/g, '""')}"`,
           `"${(c.description || "").replace(/"/g, '""')}"`,
           `"${c.purpose.replace(/"/g, '""')}"`,
           c.instituteId, 
@@ -244,9 +246,9 @@ export default function CommitteeManagementPage() {
   };
 
   const handleDownloadSampleCsv = () => {
-    const sampleCsvContent = `id,name,description,purpose,instituteId,instituteName,instituteCode,formationDate,dissolutionDate,status,convenerId,convenerEmail
-cmt_sample_1,Academic Committee,"Oversees academic policies","To ensure academic standards and curriculum development",inst1,"Government Polytechnic Palanpur","GPP",2023-01-15,,active,user_faculty_1,faculty1@example.com
-,Anti-Ragging Committee,"Prevents ragging incidents","To create a ragging-free campus environment",inst1,"Government Polytechnic Palanpur","GPP",2022-08-01,2023-07-31,dissolved,,
+    const sampleCsvContent = `id,name,code,description,purpose,instituteId,instituteName,instituteCode,formationDate,dissolutionDate,status,convenerId,convenerEmail
+cmt_sample_1,Academic Committee,ACCOM,"Oversees academic policies","To ensure academic standards and curriculum development",inst1,"Government Polytechnic Palanpur","GPP",2023-01-15,,active,user_faculty_1,faculty1@example.com
+,Anti-Ragging Committee,ARC,"Prevents ragging incidents","To create a ragging-free campus environment",inst1,"Government Polytechnic Palanpur","GPP",2022-08-01,2023-07-31,dissolved,,
 `; 
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -271,6 +273,7 @@ cmt_sample_1,Academic Committee,"Oversees academic policies","To ensure academic
     if (searchTerm) {
       result = result.filter(c => 
         c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (c.purpose && c.purpose.toLowerCase().includes(searchTerm.toLowerCase())) ||
         (c.description && c.description.toLowerCase().includes(searchTerm.toLowerCase()))
       );
@@ -390,8 +393,9 @@ cmt_sample_1,Academic Committee,"Oversees academic policies","To ensure academic
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4 py-4 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                   <div className="md:col-span-1"><Label htmlFor="name">Committee Name *</Label><Input id="name" value={formName} onChange={e => setFormName(e.target.value)} placeholder="e.g., Academic Council" disabled={isSubmitting} required /></div>
+                  <div className="md:col-span-1"><Label htmlFor="code">Committee Code *</Label><Input id="code" value={formCode} onChange={e => setFormCode(e.target.value.toUpperCase())} placeholder="e.g., AC" disabled={isSubmitting} required /></div>
                   
-                  <div className="md:col-span-1">
+                  <div className="md:col-span-2">
                     <Label htmlFor="instituteId">Institute *</Label>
                     <Select value={formInstituteId} onValueChange={setFormInstituteId} disabled={isSubmitting || institutes.length === 0} required>
                       <SelectTrigger id="instituteId"><SelectValue placeholder="Select Institute" /></SelectTrigger>
@@ -490,7 +494,7 @@ cmt_sample_1,Academic Committee,"Oversees academic policies","To ensure academic
                     <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  CSV fields: id (opt), name, purpose, instituteId/Name/Code, formationDate, status, convenerId/Email.
+                  CSV fields: id (opt), name, code, purpose, instituteId/Name/Code, formationDate, status, convenerId/Email.
                 </p>
             </div>
           </div>
@@ -499,7 +503,7 @@ cmt_sample_1,Academic Committee,"Oversees academic policies","To ensure academic
             <div>
               <Label htmlFor="searchCommittee">Search Committees</Label>
               <div className="relative">
-                 <Input id="searchCommittee" placeholder="Name, purpose..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pr-8"/>
+                 <Input id="searchCommittee" placeholder="Name, code, purpose..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pr-8"/>
                 <Search className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               </div>
             </div>
@@ -538,6 +542,7 @@ cmt_sample_1,Academic Committee,"Oversees academic policies","To ensure academic
               <TableRow>
                  <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedCommittees.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all committees on this page"/></TableHead>
                 <SortableTableHeader field="name" label="Committee Name" />
+                <SortableTableHeader field="code" label="Code" />
                 <TableHead>Institute</TableHead>
                 <TableHead>Convener</TableHead>
                 <SortableTableHeader field="formationDate" label="Formed On" />
@@ -550,6 +555,7 @@ cmt_sample_1,Academic Committee,"Oversees academic policies","To ensure academic
                 <TableRow key={committee.id} data-state={selectedCommitteeIds.includes(committee.id) ? "selected" : undefined}>
                   <TableCell><Checkbox checked={selectedCommitteeIds.includes(committee.id)} onCheckedChange={(checked) => handleSelectCommittee(committee.id, !!checked)} aria-labelledby={`committee-name-${committee.id}`}/></TableCell>
                   <TableCell id={`committee-name-${committee.id}`} className="font-medium">{committee.name}</TableCell>
+                  <TableCell>{committee.code}</TableCell>
                   <TableCell>{institutes.find(i => i.id === committee.instituteId)?.name || 'N/A'}</TableCell>
                   <TableCell>{facultyUsers.find(u => u.id === committee.convenerId)?.displayName || '-'}</TableCell>
                   <TableCell>{committee.formationDate && isValid(parseISO(committee.formationDate)) ? format(parseISO(committee.formationDate), 'dd MMM yyyy') : '-'}</TableCell>
@@ -569,7 +575,7 @@ cmt_sample_1,Academic Committee,"Oversees academic policies","To ensure academic
                 </TableRow>
               ))}
               {paginatedCommittees.length === 0 && (
-                 <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No committees found. Adjust filters or add a new committee.</TableCell></TableRow>
+                 <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">No committees found. Adjust filters or add a new committee.</TableCell></TableRow>
               )}
             </TableBody>
           </Table>
@@ -596,3 +602,5 @@ cmt_sample_1,Academic Committee,"Oversees academic policies","To ensure academic
     </div>
   );
 }
+
+    

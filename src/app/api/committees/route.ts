@@ -146,3 +146,5 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Error creating committee', error: (error as Error).message }, { status: 500 });
   }
 }
+
+    
