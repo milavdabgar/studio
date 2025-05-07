@@ -15,21 +15,21 @@ const generateIdForImport = (): string => `std_gtu_${Date.now()}_${Math.random()
 const parseGtuNameFromString = (gtuName: string | undefined): { firstName?: string, middleName?: string, lastName?: string } => {
     if (!gtuName) return {};
     const parts = gtuName.trim().split(/\s+/);
-    if (parts.length === 1) return { firstName: parts[0] };
-    if (parts.length === 2) return { lastName: parts[0], firstName: parts[1] };
+    if (parts.length === 1) return { firstName: parts[0] }; // Or handle as just name if no clear convention
+    if (parts.length === 2) return { lastName: parts[0], firstName: parts[1] }; // Common convention: SURNAME NAME
     return { lastName: parts[0], firstName: parts[1], middleName: parts.slice(2).join(' ') };
 };
 
 const mapSemesterCodeToStatusFromString = (code: string | undefined | null): SemesterStatus => {
     if (code === '2') return 'Passed';
     if (code === '1') return 'Pending';
-    if (code === '' || code === undefined || code === null) return 'Not Appeared';
-    return 'N/A';
+    if (code === '' || code === undefined || code === null || String(code).trim() === "") return 'Not Appeared'; // Handle empty string also
+    return 'N/A'; // Default or for other codes
 };
 
 const normalizeGenderFromString = (gender: string | undefined): Student['gender'] | undefined => {
     if (!gender) return undefined;
-    const lowerGender = gender.toLowerCase();
+    const lowerGender = String(gender).toLowerCase().trim();
     if (lowerGender.startsWith('m')) return 'Male';
     if (lowerGender.startsWith('f')) return 'Female';
     if (lowerGender.startsWith('o')) return 'Other';
@@ -37,10 +37,10 @@ const normalizeGenderFromString = (gender: string | undefined): Student['gender'
 };
 const normalizeShiftFromString = (shift: string | undefined): Student['shift'] | undefined => {
     if (!shift) return undefined;
-    const lowerShift = shift.toLowerCase();
+    const lowerShift = String(shift).toLowerCase().trim();
     if (lowerShift.startsWith('m')) return 'Morning';
     if (lowerShift.startsWith('a')) return 'Afternoon';
-    return shift as Student['shift'];
+    return shift as Student['shift']; // Keep original if not matched
 };
 
 const DEPARTMENT_OPTIONS_MAP: { [key: string]: string } = {
@@ -49,6 +49,9 @@ const DEPARTMENT_OPTIONS_MAP: { [key: string]: string } = {
   "EE": "Electrical Engineering",
   "CIVIL": "Civil Engineering",
   "EC": "Electronics & Communication Engineering",
+  "IT": "Information Technology", // Added IT as per general polytechnic branches
+  "CH": "Chemical Engineering", // Added Chemical
+  "GEN": "General Department", // For subjects like Maths, Physics under General Dept
   // Add more mappings as needed
 };
 
@@ -67,7 +70,7 @@ export async function POST(request: NextRequest) {
       header: true,
       skipEmptyLines: true,
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/gi, ''),
-      dynamicTyping: true, 
+      dynamicTyping: false, // Changed to false
     });
 
     if (parseErrors.length > 0) {
@@ -89,29 +92,38 @@ export async function POST(request: NextRequest) {
 
       const { firstName, middleName, lastName } = parseGtuNameFromString(gtuName);
       const branchCode = row.brcode?.toString().trim().toUpperCase();
-      const department = DEPARTMENT_OPTIONS_MAP[branchCode || ""] || "General";
+      const department = DEPARTMENT_OPTIONS_MAP[branchCode || ""] || "General"; // Fallback to General
 
       let currentSemester = 1;
       for (let sem = 8; sem >= 1; sem--) {
-        if (mapSemesterCodeToStatusFromString(row[`sem${sem}`]?.toString()) === 'Passed') {
+        const semStatusVal = mapSemesterCodeToStatusFromString(row[`sem${sem}`]?.toString());
+        if (semStatusVal === 'Passed') {
             currentSemester = Math.min(sem + 1, 8); break;
-        } else if (mapSemesterCodeToStatusFromString(row[`sem${sem}`]?.toString()) === 'Pending') {
+        } else if (semStatusVal === 'Pending') {
             currentSemester = sem; break;
         }
       }
-      if (row.ispassall?.toString().toLowerCase() === 'true' || row.iscomplete?.toString().toLowerCase() === 'true'){
+      
+      const isPassAllStr = String(row.ispassall).toLowerCase();
+      const isCompleteStr = String(row.iscomplete).toLowerCase();
+
+      if (isPassAllStr === 'true' || isCompleteStr === 'true'){
         currentSemester = 8; 
       }
+      
+      const convocationYearStr = String(row.convoyear).trim();
+      const convocationYear = convocationYearStr && !isNaN(parseInt(convocationYearStr, 10)) ? parseInt(convocationYearStr, 10) : undefined;
+
 
       const studentData: Omit<Student, 'id'> = {
         enrollmentNumber, gtuName, firstName, middleName, lastName,
         personalEmail: row.email?.toString().trim() || undefined,
         instituteEmail: `${enrollmentNumber}@gppalanpur.in`,
         department, branchCode, currentSemester,
-        status: row.iscancel?.toString().toLowerCase() === 'true' ? 'dropped' : (row.iscomplete?.toString().toLowerCase() === 'true' || row.ispassall?.toString().toLowerCase() === 'true' ? 'graduated' : 'active'),
+        status: String(row.iscancel).toLowerCase() === 'true' ? 'dropped' : (isCompleteStr === 'true' || isPassAllStr === 'true' ? 'graduated' : 'active'),
         contactNumber: row.mobile?.toString().trim() || undefined,
         gender: normalizeGenderFromString(row.gender?.toString()),
-        convocationYear: row.convoyear ? parseInt(row.convoyear, 10) : undefined,
+        convocationYear: convocationYear,
         sem1Status: mapSemesterCodeToStatusFromString(row.sem1?.toString()),
         sem2Status: mapSemesterCodeToStatusFromString(row.sem2?.toString()),
         sem3Status: mapSemesterCodeToStatusFromString(row.sem3?.toString()),
@@ -121,34 +133,34 @@ export async function POST(request: NextRequest) {
         sem7Status: mapSemesterCodeToStatusFromString(row.sem7?.toString()),
         sem8Status: mapSemesterCodeToStatusFromString(row.sem8?.toString()),
         category: row.category?.toString().trim() || undefined,
-        isComplete: row.iscomplete?.toString().toLowerCase() === 'true',
-        termClose: row.termclose?.toString().toLowerCase() === 'true',
-        isCancel: row.iscancel?.toString().toLowerCase() === 'true',
-        isPassAll: row.ispassall?.toString().toLowerCase() === 'true',
+        isComplete: isCompleteStr === 'true',
+        termClose: String(row.termclose).toLowerCase() === 'true',
+        isCancel: String(row.iscancel).toLowerCase() === 'true',
+        isPassAll: isPassAllStr === 'true',
         aadharNumber: row.aadhar?.toString().trim() || undefined,
         shift: normalizeShiftFromString(row.shift?.toString()),
       };
 
       const existingStudentIndex = studentsStore.findIndex(s => s.enrollmentNumber === enrollmentNumber);
       if (existingStudentIndex !== -1) {
-        studentsStore[existingStudentIndex] = { ...studentsStore[existingStudentIndex], ...studentData };
+        const oldStudent = studentsStore[existingStudentIndex];
+        studentsStore[existingStudentIndex] = { ...oldStudent, ...studentData, id: oldStudent.id }; // Preserve existing ID
         updatedCount++;
-        // Optionally update linked user
         const linkedUser = await userService.getAllUsers().then(users => users.find(u => u.email === studentsStore[existingStudentIndex].instituteEmail));
         if(linkedUser) {
             await userService.updateUser(linkedUser.id, { name: studentData.gtuName || studentData.enrollmentNumber, department: studentData.department, status: studentData.status === 'active' ? 'active' : 'inactive' });
         }
+
       } else {
         const newStudent: Student = { id: generateIdForImport(), ...studentData };
         studentsStore.push(newStudent);
         newCount++;
-        // Create linked system user
         const systemUserName = newStudent.gtuName || `${newStudent.firstName || ''} ${newStudent.lastName || ''}`.trim() || newStudent.enrollmentNumber;
         try {
             await userService.createUser({
                 name: systemUserName,
                 email: newStudent.instituteEmail,
-                password: newStudent.enrollmentNumber, // Default password
+                password: newStudent.enrollmentNumber, 
                 roles: ['student'],
                 status: 'active',
                 department: newStudent.department
