@@ -14,8 +14,8 @@ import { PlusCircle, Edit, Trash2, BookCopy, Loader2, UploadCloud, Download, Fil
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import type { Program, Department } from '@/types/entities';
-import { programService } from '@/lib/services/programService';
-import { departmentService } from '@/lib/services/departmentService';
+import { programService } from '@/lib/api/programs';
+import { departmentService } from '@/lib/api/departments';
 
 type SortField = keyof Program | 'none';
 type SortDirection = 'asc' | 'desc';
