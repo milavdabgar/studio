@@ -2,13 +2,15 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Institute } from '@/types/entities';
 
-// This assumes the in-memory 'institutes' array is accessible here.
-// In a real app, you'd import it or use a shared DB module.
-// For simplicity, we'll redefine it here for this isolated API route example.
-let institutesStore: Institute[] = (global as any).institutes || [
- { id: "inst1", name: "Government Polytechnic Palanpur", code: "GPP", address: "Jagana, Palanpur, Gujarat 385011", contactEmail: "gp-palanpur-dte@gujarat.gov.in", contactPhone: "02742-280126", website: "http://www.gppalanpur.ac.in", status: "active", establishmentYear: 1964 },
-];
-(global as any).institutes = institutesStore;
+declare global {
+  var __API_INSTITUTES_STORE__: Institute[] | undefined;
+}
+if (!global.__API_INSTITUTES_STORE__) {
+  global.__API_INSTITUTES_STORE__ = [
+    { id: "inst1", name: "Government Polytechnic Palanpur", code: "GPP", address: "Jagana, Palanpur, Gujarat 385011", contactEmail: "gp-palanpur-dte@gujarat.gov.in", contactPhone: "02742-280126", website: "http://www.gppalanpur.ac.in", status: "active", establishmentYear: 1964 },
+  ];
+}
+let institutesStore: Institute[] = global.__API_INSTITUTES_STORE__;
 
 
 interface RouteParams {
@@ -19,7 +21,11 @@ interface RouteParams {
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
-  const institute = institutesStore.find(i => i.id === id);
+  if (!Array.isArray(global.__API_INSTITUTES_STORE__)) {
+    global.__API_INSTITUTES_STORE__ = [];
+    return NextResponse.json({ message: 'Institute data store corrupted.' }, { status: 500 });
+  }
+  const institute = global.__API_INSTITUTES_STORE__.find(i => i.id === id);
   if (institute) {
     return NextResponse.json(institute);
   }
@@ -28,20 +34,27 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
+  if (!Array.isArray(global.__API_INSTITUTES_STORE__)) {
+    global.__API_INSTITUTES_STORE__ = [];
+    return NextResponse.json({ message: 'Institute data store corrupted.' }, { status: 500 });
+  }
   try {
     const instituteData = await request.json() as Partial<Omit<Institute, 'id'>>;
-    const instituteIndex = institutesStore.findIndex(i => i.id === id);
+    const instituteIndex = global.__API_INSTITUTES_STORE__.findIndex(i => i.id === id);
 
     if (instituteIndex === -1) {
       return NextResponse.json({ message: 'Institute not found' }, { status: 404 });
     }
+    const existingInstitute = global.__API_INSTITUTES_STORE__[instituteIndex];
 
-    // Basic validation for partial update
-    if (instituteData.name === '') {
+    if (instituteData.name !== undefined && !instituteData.name.trim()) {
         return NextResponse.json({ message: 'Institute Name cannot be empty.' }, { status: 400 });
     }
-    if (instituteData.code === '') {
+    if (instituteData.code !== undefined && !instituteData.code.trim()) {
         return NextResponse.json({ message: 'Institute Code cannot be empty.' }, { status: 400 });
+    }
+    if (instituteData.code && instituteData.code.trim().toUpperCase() !== existingInstitute.code.toUpperCase() && global.__API_INSTITUTES_STORE__.some(i => i.id !== id && i.code.toLowerCase() === instituteData.code!.trim().toLowerCase())) {
+        return NextResponse.json({ message: `Institute with code '${instituteData.code.trim()}' already exists.` }, { status: 409 });
     }
     if (instituteData.establishmentYear && (isNaN(instituteData.establishmentYear) || instituteData.establishmentYear < 1800 || instituteData.establishmentYear > new Date().getFullYear())) {
       return NextResponse.json({ message: 'Please enter a valid establishment year.' }, { status: 400 });
@@ -50,24 +63,37 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         return NextResponse.json({ message: 'Please enter a valid contact email address.' }, { status: 400 });
     }
 
+    const updatedInstitute = { ...existingInstitute, ...instituteData };
+    if (instituteData.code) updatedInstitute.code = instituteData.code.trim().toUpperCase();
+    if (instituteData.name) updatedInstitute.name = instituteData.name.trim();
+    if (instituteData.address !== undefined) updatedInstitute.address = instituteData.address.trim() || undefined;
+    if (instituteData.contactEmail !== undefined) updatedInstitute.contactEmail = instituteData.contactEmail.trim() || undefined;
+    if (instituteData.contactPhone !== undefined) updatedInstitute.contactPhone = instituteData.contactPhone.trim() || undefined;
+    if (instituteData.website !== undefined) updatedInstitute.website = instituteData.website.trim() || undefined;
 
-    institutesStore[instituteIndex] = { ...institutesStore[instituteIndex], ...instituteData };
-    (global as any).institutes = institutesStore; // Update global store
-    return NextResponse.json(institutesStore[instituteIndex]);
+
+    global.__API_INSTITUTES_STORE__[instituteIndex] = updatedInstitute;
+    institutesStore = global.__API_INSTITUTES_STORE__; 
+    return NextResponse.json(updatedInstitute);
   } catch (error) {
     console.error(`Error updating institute ${id}:`, error);
-    return NextResponse.json({ message: `Error updating institute ${id}` }, { status: 500 });
+    return NextResponse.json({ message: `Error updating institute ${id}`, error: (error as Error).message }, { status: 500 });
   }
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
-  const initialLength = institutesStore.length;
-  institutesStore = institutesStore.filter(i => i.id !== id);
+  if (!Array.isArray(global.__API_INSTITUTES_STORE__)) {
+    global.__API_INSTITUTES_STORE__ = [];
+    return NextResponse.json({ message: 'Institute data store corrupted.' }, { status: 500 });
+  }
+  const initialLength = global.__API_INSTITUTES_STORE__.length;
+  const newStore = global.__API_INSTITUTES_STORE__.filter(i => i.id !== id);
 
-  if (institutesStore.length === initialLength) {
+  if (newStore.length === initialLength) {
     return NextResponse.json({ message: 'Institute not found' }, { status: 404 });
   }
-  (global as any).institutes = institutesStore; // Update global store
+  global.__API_INSTITUTES_STORE__ = newStore; 
+  institutesStore = global.__API_INSTITUTES_STORE__;
   return NextResponse.json({ message: 'Institute deleted successfully' }, { status: 200 });
 }

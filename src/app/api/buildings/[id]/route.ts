@@ -2,10 +2,13 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Building } from '@/types/entities';
 
-let buildingsStore: Building[] = (global as any).buildingsStore || [];
-if (!(global as any).buildingsStore) {
-  (global as any).buildingsStore = buildingsStore;
+declare global {
+  var __API_BUILDINGS_STORE__: Building[] | undefined;
 }
+if (!global.__API_BUILDINGS_STORE__) {
+  global.__API_BUILDINGS_STORE__ = [];
+}
+let buildingsStore: Building[] = global.__API_BUILDINGS_STORE__;
 
 interface RouteParams {
   params: {
@@ -15,7 +18,11 @@ interface RouteParams {
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
-  const building = buildingsStore.find(b => b.id === id);
+  if (!Array.isArray(global.__API_BUILDINGS_STORE__)) {
+    global.__API_BUILDINGS_STORE__ = [];
+    return NextResponse.json({ message: 'Building data store corrupted.' }, { status: 500 });
+  }
+  const building = global.__API_BUILDINGS_STORE__.find(b => b.id === id);
   if (building) {
     return NextResponse.json(building);
   }
@@ -24,14 +31,18 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
+  if (!Array.isArray(global.__API_BUILDINGS_STORE__)) {
+    global.__API_BUILDINGS_STORE__ = [];
+    return NextResponse.json({ message: 'Building data store corrupted.' }, { status: 500 });
+  }
   try {
     const buildingData = await request.json() as Partial<Omit<Building, 'id'>>;
-    const buildingIndex = buildingsStore.findIndex(b => b.id === id);
+    const buildingIndex = global.__API_BUILDINGS_STORE__.findIndex(b => b.id === id);
 
     if (buildingIndex === -1) {
       return NextResponse.json({ message: 'Building not found' }, { status: 404 });
     }
-    const existingBuilding = buildingsStore[buildingIndex];
+    const existingBuilding = global.__API_BUILDINGS_STORE__[buildingIndex];
 
     if (buildingData.name !== undefined && !buildingData.name.trim()) {
         return NextResponse.json({ message: 'Building Name cannot be empty.' }, { status: 400 });
@@ -39,7 +50,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (buildingData.instituteId !== undefined && !buildingData.instituteId) {
       return NextResponse.json({ message: 'Institute ID is required.' }, { status: 400 });
     }
-    if (buildingData.code && buildingData.code.trim().toUpperCase() !== existingBuilding.code?.toUpperCase() && buildingsStore.some(b => b.id !== id && b.instituteId === (buildingData.instituteId || existingBuilding.instituteId) && b.code?.toLowerCase() === buildingData.code!.trim().toLowerCase())) {
+    if (buildingData.code && buildingData.code.trim().toUpperCase() !== existingBuilding.code?.toUpperCase() && global.__API_BUILDINGS_STORE__.some(b => b.id !== id && b.instituteId === (buildingData.instituteId || existingBuilding.instituteId) && b.code?.toLowerCase() === buildingData.code!.trim().toLowerCase())) {
         return NextResponse.json({ message: `Building with code '${buildingData.code.trim()}' already exists for this institute.` }, { status: 409 });
     }
      if (buildingData.constructionYear && (isNaN(buildingData.constructionYear) || buildingData.constructionYear < 1800 || buildingData.constructionYear > new Date().getFullYear() + 5)) {
@@ -58,7 +69,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if(buildingData.description !== undefined) updatedBuilding.description = buildingData.description.trim() || undefined;
 
 
-    buildingsStore[buildingIndex] = updatedBuilding;
+    global.__API_BUILDINGS_STORE__[buildingIndex] = updatedBuilding;
+    buildingsStore = global.__API_BUILDINGS_STORE__;
     return NextResponse.json(updatedBuilding);
   } catch (error) {
     console.error(`Error updating building ${id}:`, error);
@@ -68,11 +80,17 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
-  const initialLength = buildingsStore.length;
-  buildingsStore = buildingsStore.filter(b => b.id !== id);
+  if (!Array.isArray(global.__API_BUILDINGS_STORE__)) {
+    global.__API_BUILDINGS_STORE__ = [];
+    return NextResponse.json({ message: 'Building data store corrupted.' }, { status: 500 });
+  }
+  const initialLength = global.__API_BUILDINGS_STORE__.length;
+  const newStore = global.__API_BUILDINGS_STORE__.filter(b => b.id !== id);
 
-  if (buildingsStore.length === initialLength) {
+  if (newStore.length === initialLength) {
     return NextResponse.json({ message: 'Building not found' }, { status: 404 });
   }
+  global.__API_BUILDINGS_STORE__ = newStore;
+  buildingsStore = global.__API_BUILDINGS_STORE__;
   return NextResponse.json({ message: 'Building deleted successfully' }, { status: 200 });
 }

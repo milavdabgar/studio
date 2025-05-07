@@ -24,10 +24,8 @@ const generateId = (): string => `user_${Date.now()}_${Math.random().toString(36
 
 export async function GET(request: NextRequest) {
   try {
-    // Ensure usersStore is an array before sending
     if (!Array.isArray(global.__API_USERS_STORE__)) {
       console.error("/api/users GET: global.__API_USERS_STORE__ is not an array!", global.__API_USERS_STORE__);
-      // Attempt to re-initialize if corrupted, though this indicates a deeper issue
       global.__API_USERS_STORE__ = []; 
       return NextResponse.json({ message: 'Internal server error: User data store corrupted.' }, { status: 500 });
     }
@@ -52,10 +50,9 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ message: 'User must have at least one role.' }, { status: 400 });
     }
     
-    if (!userData.password && (!currentUser || !currentUser.id)) { // Require password for new users only
-        if (!userData.password || userData.password.length < 6) {
-             return NextResponse.json({ message: 'Password must be at least 6 characters long for new users.' }, { status: 400 });
-        }
+    // Password is required for new users being created via API POST
+    if (!userData.password || userData.password.length < 6) {
+         return NextResponse.json({ message: 'Password must be at least 6 characters long for new users.' }, { status: 400 });
     }
 
 
@@ -66,7 +63,7 @@ export async function POST(request: NextRequest) {
       roles: userData.roles,
       status: userData.status || 'active',
       department: userData.department?.trim() || undefined,
-      password: userData.password, // Store password (insecurely for this mock)
+      password: userData.password, 
     };
     global.__API_USERS_STORE__?.push(newUser);
     return NextResponse.json(newUser, { status: 201 });
