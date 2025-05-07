@@ -1,5 +1,4 @@
 
-
 export interface Institute {
   id: string;
   name: string;
@@ -108,7 +107,24 @@ export interface Room {
   updatedAt?: Timestamp;
 }
 
-export type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown' | 'super_admin' | 'dte_admin' | 'gtu_admin' | 'institute_admin' | 'department_admin' | 'committee_admin' | 'lab_assistant' | 'clerical_staff';
+export type UserRole = 
+  | 'admin' 
+  | 'student' 
+  | 'faculty' 
+  | 'hod' 
+  | 'jury' 
+  | 'unknown' 
+  | 'super_admin' 
+  | 'dte_admin' 
+  | 'gtu_admin' 
+  | 'institute_admin' 
+  | 'department_admin' 
+  | 'committee_admin'
+  | 'committee_convener' // New role
+  | 'committee_co_convener' // New role
+  | 'committee_member' // New role
+  | 'lab_assistant' 
+  | 'clerical_staff';
 
 export interface User {
   id: string;
@@ -261,7 +277,7 @@ export interface Faculty {
 
 
 export type CommitteeStatus = 'active' | 'inactive' | 'dissolved';
-export type CommitteeMemberRole = 'chairperson' | 'secretary' | 'member' | 'convener' | 'coordinator';
+export type CommitteeMemberRole = 'convener' | 'co_convener' | 'member';
 
 export interface Committee {
   id: string;
@@ -272,6 +288,7 @@ export interface Committee {
   formationDate: string; // ISO string YYYY-MM-DD
   dissolutionDate?: string; // ISO string YYYY-MM-DD
   status: CommitteeStatus;
+  convenerId?: string; // User ID of the convener
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
@@ -290,4 +307,3 @@ export interface CommitteeMember {
 
 // Timestamp placeholder type
 export type Timestamp = string; // For ISO date strings, or use Firebase's Timestamp type if integrating
-

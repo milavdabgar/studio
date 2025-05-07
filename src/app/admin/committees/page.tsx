@@ -12,14 +12,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, PlusCircle, Edit, Trash2, Users2 as CommitteeIcon, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { CalendarIcon, PlusCircle, Edit, Trash2, Users2 as CommitteeIcon, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, UserCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import { format, parseISO, isValid } from 'date-fns';
 import { cn } from "@/lib/utils";
-import type { Committee, CommitteeStatus, Institute } from '@/types/entities';
+import type { Committee, CommitteeStatus, Institute, SystemUser as User } from '@/types/entities';
 import { committeeService } from '@/lib/api/committees';
 import { instituteService } from '@/lib/api/institutes';
+import { userService } from '@/lib/api/users';
 
 const COMMITTEE_STATUS_OPTIONS: { value: CommitteeStatus; label: string }[] = [
   { value: "active", label: "Active" },
@@ -31,10 +32,12 @@ type SortField = keyof Committee | 'none';
 type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
+const NO_CONVENER_VALUE = "__NO_CONVENER__";
 
 export default function CommitteeManagementPage() {
   const [committees, setCommittees] = useState<Committee[]>([]);
   const [institutes, setInstitutes] = useState<Institute[]>([]);
+  const [facultyUsers, setFacultyUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -48,6 +51,7 @@ export default function CommitteeManagementPage() {
   const [formFormationDate, setFormFormationDate] = useState<Date | undefined>(undefined);
   const [formDissolutionDate, setFormDissolutionDate] = useState<Date | undefined>(undefined);
   const [formStatus, setFormStatus] = useState<CommitteeStatus>('active');
+  const [formConvenerId, setFormConvenerId] = useState<string | undefined>(undefined);
   
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -65,18 +69,21 @@ export default function CommitteeManagementPage() {
   const fetchInitialData = async () => {
     setIsLoading(true);
     try {
-      const [committeeData, instituteData] = await Promise.all([
+      const [committeeData, instituteData, usersData] = await Promise.all([
         committeeService.getAllCommittees(),
-        instituteService.getAllInstitutes()
+        instituteService.getAllInstitutes(),
+        userService.getAllUsers()
       ]);
       setCommittees(committeeData);
       setInstitutes(instituteData);
+      // Filter for users who can be conveners (e.g., faculty, hod, admin)
+      setFacultyUsers(usersData.filter(u => u.roles.includes('faculty') || u.roles.includes('hod') || u.roles.includes('admin')));
       if (instituteData.length > 0 && !formInstituteId) {
         setFormInstituteId(instituteData[0].id);
       }
     } catch (error) {
       console.error("Failed to load data", error);
-      toast({ variant: "destructive", title: "Error", description: "Could not load committees or institutes data." });
+      toast({ variant: "destructive", title: "Error", description: "Could not load initial data." });
     }
     setIsLoading(false);
   };
@@ -90,6 +97,7 @@ export default function CommitteeManagementPage() {
     setFormInstituteId(institutes.length > 0 ? institutes[0].id : ''); 
     setFormFormationDate(undefined); setFormDissolutionDate(undefined);
     setFormStatus('active');
+    setFormConvenerId(undefined);
     setCurrentCommittee(null);
   };
 
@@ -102,6 +110,7 @@ export default function CommitteeManagementPage() {
     setFormFormationDate(committee.formationDate && isValid(parseISO(committee.formationDate)) ? parseISO(committee.formationDate) : undefined);
     setFormDissolutionDate(committee.dissolutionDate && isValid(parseISO(committee.dissolutionDate)) ? parseISO(committee.dissolutionDate) : undefined);
     setFormStatus(committee.status);
+    setFormConvenerId(committee.convenerId || undefined);
     setIsDialogOpen(true);
   };
 
@@ -144,6 +153,7 @@ export default function CommitteeManagementPage() {
       formationDate: format(formFormationDate, "yyyy-MM-dd"),
       dissolutionDate: formDissolutionDate ? format(formDissolutionDate, "yyyy-MM-dd") : undefined,
       status: formStatus,
+      convenerId: formConvenerId === NO_CONVENER_VALUE ? undefined : formConvenerId,
     };
 
     try {
@@ -177,10 +187,13 @@ export default function CommitteeManagementPage() {
       toast({ variant: "destructive", title: "Import Error", description: "No institutes loaded. Cannot map institute IDs." });
       return;
     }
+    if (facultyUsers.length === 0) {
+      toast({ variant: "warning", title: "Import Note", description: "No faculty users loaded. Convener IDs might not be mapped correctly." });
+    }
 
     setIsSubmitting(true);
     try {
-        const result = await committeeService.importCommittees(selectedFile, institutes);
+        const result = await committeeService.importCommittees(selectedFile, institutes, facultyUsers);
         await fetchInitialData();
         toast({ title: "Import Successful", description: `${result.newCount} committees added, ${result.updatedCount} updated. Skipped: ${result.skippedCount}`});
         if (result.errors && result.errors.length > 0) {
@@ -203,11 +216,12 @@ export default function CommitteeManagementPage() {
       toast({ title: "Export Canceled", description: "No committees to export (check filters)." });
       return;
     }
-    const header = ['id', 'name', 'description', 'purpose', 'instituteId', 'instituteName', 'instituteCode', 'formationDate', 'dissolutionDate', 'status'];
+    const header = ['id', 'name', 'description', 'purpose', 'instituteId', 'instituteName', 'instituteCode', 'formationDate', 'dissolutionDate', 'status', 'convenerId', 'convenerName'];
     const csvRows = [
       header.join(','),
       ...filteredAndSortedCommittees.map(c => {
         const inst = institutes.find(i => i.id === c.instituteId);
+        const convener = facultyUsers.find(u => u.id === c.convenerId);
         return [
           c.id, `"${c.name.replace(/"/g, '""')}"`, 
           `"${(c.description || "").replace(/"/g, '""')}"`,
@@ -215,7 +229,8 @@ export default function CommitteeManagementPage() {
           c.instituteId, 
           `"${(inst?.name || "").replace(/"/g, '""')}"`,
           `"${(inst?.code || "").replace(/"/g, '""')}"`,
-          c.formationDate, c.dissolutionDate || "", c.status
+          c.formationDate, c.dissolutionDate || "", c.status,
+          c.convenerId || "", `"${(convener?.displayName || "").replace(/"/g, '""')}"`
         ].join(',')
       })
     ];
@@ -229,9 +244,9 @@ export default function CommitteeManagementPage() {
   };
 
   const handleDownloadSampleCsv = () => {
-    const sampleCsvContent = `id,name,description,purpose,instituteId,instituteName,instituteCode,formationDate,dissolutionDate,status
-cmt_sample_1,Academic Committee,"Oversees academic policies","To ensure academic standards and curriculum development",inst1,"Government Polytechnic Palanpur","GPP",2023-01-15,,active
-,Anti-Ragging Committee,"Prevents ragging incidents","To create a ragging-free campus environment",inst1,"Government Polytechnic Palanpur","GPP",2022-08-01,2023-07-31,dissolved
+    const sampleCsvContent = `id,name,description,purpose,instituteId,instituteName,instituteCode,formationDate,dissolutionDate,status,convenerId,convenerEmail
+cmt_sample_1,Academic Committee,"Oversees academic policies","To ensure academic standards and curriculum development",inst1,"Government Polytechnic Palanpur","GPP",2023-01-15,,active,user_faculty_1,faculty1@example.com
+,Anti-Ragging Committee,"Prevents ragging incidents","To create a ragging-free campus environment",inst1,"Government Polytechnic Palanpur","GPP",2022-08-01,2023-07-31,dissolved,,
 `; 
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -388,6 +403,23 @@ cmt_sample_1,Academic Committee,"Oversees academic policies","To ensure academic
                   <div className="md:col-span-2"><Label htmlFor="description">Description</Label><Textarea id="description" value={formDescription} onChange={e => setFormDescription(e.target.value)} placeholder="Detailed description (optional)" disabled={isSubmitting} rows={3}/></div>
                   
                   <div className="md:col-span-1">
+                    <Label htmlFor="convenerId">Convener</Label>
+                    <Select 
+                      value={formConvenerId || NO_CONVENER_VALUE} 
+                      onValueChange={(value) => setFormConvenerId(value === NO_CONVENER_VALUE ? undefined : value)} 
+                      disabled={isSubmitting || facultyUsers.length === 0}
+                    >
+                      <SelectTrigger id="convenerId"><SelectValue placeholder="Select Convener (Optional)" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={NO_CONVENER_VALUE}>None</SelectItem>
+                        {facultyUsers.map(user => (
+                          <SelectItem key={user.id} value={user.id}>{user.displayName} ({user.email})</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="md:col-span-1">
                     <Label htmlFor="formationDate">Formation Date *</Label>
                     <Popover>
                         <PopoverTrigger asChild>
@@ -458,7 +490,7 @@ cmt_sample_1,Academic Committee,"Oversees academic policies","To ensure academic
                     <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  CSV fields: id (opt), name, purpose, instituteId/Name/Code, formationDate, status, etc.
+                  CSV fields: id (opt), name, purpose, instituteId/Name/Code, formationDate, status, convenerId/Email.
                 </p>
             </div>
           </div>
@@ -507,7 +539,7 @@ cmt_sample_1,Academic Committee,"Oversees academic policies","To ensure academic
                  <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedCommittees.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all committees on this page"/></TableHead>
                 <SortableTableHeader field="name" label="Committee Name" />
                 <TableHead>Institute</TableHead>
-                <SortableTableHeader field="purpose" label="Purpose" />
+                <TableHead>Convener</TableHead>
                 <SortableTableHeader field="formationDate" label="Formed On" />
                 <SortableTableHeader field="status" label="Status" />
                 <TableHead className="text-right">Actions</TableHead>
@@ -519,7 +551,7 @@ cmt_sample_1,Academic Committee,"Oversees academic policies","To ensure academic
                   <TableCell><Checkbox checked={selectedCommitteeIds.includes(committee.id)} onCheckedChange={(checked) => handleSelectCommittee(committee.id, !!checked)} aria-labelledby={`committee-name-${committee.id}`}/></TableCell>
                   <TableCell id={`committee-name-${committee.id}`} className="font-medium">{committee.name}</TableCell>
                   <TableCell>{institutes.find(i => i.id === committee.instituteId)?.name || 'N/A'}</TableCell>
-                  <TableCell className="max-w-xs truncate">{committee.purpose}</TableCell>
+                  <TableCell>{facultyUsers.find(u => u.id === committee.convenerId)?.displayName || '-'}</TableCell>
                   <TableCell>{committee.formationDate ? format(parseISO(committee.formationDate), 'dd MMM yyyy') : '-'}</TableCell>
                   <TableCell>
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${

@@ -1,7 +1,9 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Committee } from '@/types/entities';
+import type { Committee, UserRole, SystemUser as User } from '@/types/entities';
 import { isValid, parseISO } from 'date-fns';
+import { userService } from '@/lib/api/users';
+
 
 declare global {
   var __API_COMMITTEES_STORE__: Committee[] | undefined;
@@ -16,6 +18,26 @@ interface RouteParams {
   params: {
     id: string;
   };
+}
+
+async function updateUserRole(userId: string, role: UserRole, add: boolean) {
+  try {
+    const user = await userService.getUserById(userId) as User;
+    if (!user) return;
+
+    let newRoles = [...user.roles];
+    if (add && !newRoles.includes(role)) {
+      newRoles.push(role);
+    } else if (!add) {
+      newRoles = newRoles.filter(r => r !== role);
+    }
+
+    if (JSON.stringify(newRoles.sort()) !== JSON.stringify(user.roles.sort())) {
+      await userService.updateUser(userId, { roles: newRoles });
+    }
+  } catch (error) {
+    console.error(`Failed to update role for user ${userId}:`, error);
+  }
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
@@ -66,6 +88,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ message: `Committee with name '${committeeData.name.trim()}' already exists for this institute.` }, { status: 409 });
     }
 
+    const oldConvenerId = existingCommittee.convenerId;
+    const newConvenerId = committeeData.convenerId === undefined ? existingCommittee.convenerId : committeeData.convenerId;
+
+
     const updatedCommittee = { 
       ...existingCommittee, 
       ...committeeData,
@@ -73,11 +99,21 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       description: committeeData.description !== undefined ? committeeData.description.trim() || undefined : existingCommittee.description,
       purpose: committeeData.purpose ? committeeData.purpose.trim() : existingCommittee.purpose,
       dissolutionDate: committeeData.dissolutionDate === null ? undefined : committeeData.dissolutionDate || existingCommittee.dissolutionDate, // Allow clearing dissolutionDate
+      convenerId: newConvenerId,
       updatedAt: new Date().toISOString(),
     };
 
     committeesStore[committeeIndex] = updatedCommittee;
     global.__API_COMMITTEES_STORE__ = committeesStore;
+
+    if (oldConvenerId && oldConvenerId !== newConvenerId) {
+      await updateUserRole(oldConvenerId, 'committee_convener', false);
+    }
+    if (newConvenerId && newConvenerId !== oldConvenerId) {
+      await updateUserRole(newConvenerId, 'committee_convener', true);
+    }
+
+
     return NextResponse.json(updatedCommittee);
   } catch (error) {
     console.error(`Error updating committee ${id}:`, error);
@@ -91,13 +127,19 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     global.__API_COMMITTEES_STORE__ = [];
     return NextResponse.json({ message: 'Committee data store corrupted.' }, { status: 500 });
   }
-  const initialLength = committeesStore.length;
-  const newStore = committeesStore.filter(c => c.id !== id);
-
-  if (newStore.length === initialLength) {
+  
+  const committeeIndex = committeesStore.findIndex(c => c.id === id);
+  if (committeeIndex === -1) {
     return NextResponse.json({ message: 'Committee not found' }, { status: 404 });
   }
-  global.__API_COMMITTEES_STORE__ = newStore;
-  committeesStore = global.__API_COMMITTEES_STORE__;
+
+  const deletedCommittee = committeesStore[committeeIndex];
+  committeesStore.splice(committeeIndex, 1);
+  global.__API_COMMITTEES_STORE__ = committeesStore;
+
+  if (deletedCommittee.convenerId) {
+    await updateUserRole(deletedCommittee.convenerId, 'committee_convener', false);
+  }
+
   return NextResponse.json({ message: 'Committee deleted successfully' }, { status: 200 });
 }

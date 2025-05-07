@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, type FormEvent, useEffect } from "react";
@@ -12,29 +13,43 @@ import { Loader2, LogIn } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
-type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown';
+type UserRole = 
+  | 'admin' 
+  | 'student' 
+  | 'faculty' 
+  | 'hod' 
+  | 'jury' 
+  | 'unknown' 
+  | 'super_admin' 
+  | 'dte_admin' 
+  | 'gtu_admin' 
+  | 'institute_admin' 
+  | 'department_admin' 
+  | 'committee_admin'
+  | 'committee_convener'
+  | 'committee_co_convener'
+  | 'committee_member'
+  | 'lab_assistant' 
+  | 'clerical_staff';
 
 interface MockUser {
-  id?: string; // Added id to align with SystemUser from student page
+  id?: string; 
   email: string;
-  password?: string; // Make password optional if it's set by enrollment number
+  password?: string; 
   roles: UserRole[];
   name?: string;
   status?: 'active' | 'inactive';
-  department?: string;
 }
 
-// Merged MOCK_USERS and a function to get users from localStorage
 const getMockUsers = (): MockUser[] => {
   const baseUsers: MockUser[] = [
-    { id: "u1", email: "admin@gppalanpur.in", password: "Admin@123", roles: ["admin"], name: "Super Admin", status: "active" },
+    { id: "u1", email: "admin@gppalanpur.in", password: "Admin@123", roles: ["admin", "super_admin"], name: "Super Admin", status: "active" },
     { id: "u2", email: "student@example.com", password: "password", roles: ["student"], name: "Alice Student", status: "active" },
     { id: "u3", email: "faculty@example.com", password: "password", roles: ["faculty"], name: "Bob Faculty", status: "active" },
     { id: "u4", email: "hod@example.com", password: "password", roles: ["hod", "faculty"], name: "Charlie HOD", status: "active" },
     { id: "u5", email: "jury@example.com", password: "password", roles: ["jury", "faculty"], name: "Diana Jury", status: "inactive" },
     { id: "u6", email: "multi@example.com", password: "password", roles: ["student", "jury"], name: "Multi Role User", status: "active" },
-    // Example of imported student, password would be enrollment number
-    { email: "086260306003@gppalanpur.in", roles: ["student"], name: "DOE JOHN MICHAEL (from import)", status: "active", department: "Computer Engineering"},
+    { email: "086260306003@gppalanpur.in", roles: ["student"], name: "DOE JOHN MICHAEL (from import)", status: "active"},
   ];
 
   if (typeof window !== 'undefined') {
@@ -42,15 +57,24 @@ const getMockUsers = (): MockUser[] => {
       const storedUsersRaw = localStorage.getItem('managedUsers');
       if (storedUsersRaw) {
         const storedUsers: MockUser[] = JSON.parse(storedUsersRaw);
-        // Merge baseUsers with storedUsers, giving preference to storedUsers by email
         const combinedUsers = new Map<string, MockUser>();
         baseUsers.forEach(user => combinedUsers.set(user.email, user));
         storedUsers.forEach(user => {
-          // For students, password is their enrollment number if not explicitly set
           if (user.roles.includes('student') && !user.password && user.email.includes('@gppalanpur.in')) {
             const enrollmentNumber = user.email.split('@')[0];
             combinedUsers.set(user.email, { ...user, password: enrollmentNumber });
-          } else {
+          } else if (user.roles.includes('faculty') && !user.password && user.email.includes('@gppalanpur.in') && user.name) {
+             // Basic faculty password derivation: firstname.lastname (if names exist)
+             // This is a placeholder, actual staff code / unique ID would be better
+             const nameParts = user.name.split(' ');
+             if(nameParts.length >= 2) {
+                const pw = `${nameParts[0].toLowerCase()}.${nameParts[nameParts.length - 1].toLowerCase()}`;
+                combinedUsers.set(user.email, { ...user, password: pw });
+             } else {
+                combinedUsers.set(user.email, user);
+             }
+          }
+          else {
             combinedUsers.set(user.email, user);
           }
         });
@@ -64,12 +88,14 @@ const getMockUsers = (): MockUser[] => {
 };
 
 
-const USER_ROLE_OPTIONS: { value: UserRole; label: string }[] = [
+const USER_ROLE_LOGIN_OPTIONS: { value: UserRole; label: string }[] = [
   { value: "admin", label: "Admin" },
   { value: "student", label: "Student" },
   { value: "faculty", label: "Faculty" },
   { value: "hod", label: "HOD" },
   { value: "jury", label: "Jury" },
+  { value: "committee_convener", label: "Committee Convener"},
+  // Add other login-selectable roles here. Not all UserRoles need to be in this list.
 ];
 
 export default function LoginPage() {
@@ -88,25 +114,24 @@ export default function LoginPage() {
     if (typeof document !== 'undefined') {
         document.cookie = 'auth_user=;path=/;max-age=0';
     }
-    setMockUsersState(getMockUsers()); // Load users when component mounts
+    setMockUsersState(getMockUsers());
   }, []);
 
   useEffect(() => {
     const user = MOCK_USERS.find(u => u.email === email);
     if (user && user.roles) {
-      setAvailableRolesForUser(user.roles);
-      // Auto-select first available role if current selection is not valid for this user
-      if (!user.roles.includes(selectedRole) && user.roles.length > 0) {
-        setSelectedRole(user.roles[0]);
-      } else if (user.roles.length === 0) {
-        setSelectedRole('unknown'); // Should not happen if user has roles
+      const loginableRoles = user.roles.filter(role => USER_ROLE_LOGIN_OPTIONS.some(opt => opt.value === role));
+      setAvailableRolesForUser(loginableRoles);
+      if (!loginableRoles.includes(selectedRole) && loginableRoles.length > 0) {
+        setSelectedRole(loginableRoles[0]);
+      } else if (loginableRoles.length === 0) {
+        setSelectedRole('unknown'); 
       }
     } else {
       setAvailableRolesForUser([]);
-       // If user not found or no roles, reset role or set to a default/first option
-      if(USER_ROLE_OPTIONS.length > 0) setSelectedRole(USER_ROLE_OPTIONS[0].value);
+      if(USER_ROLE_LOGIN_OPTIONS.length > 0) setSelectedRole(USER_ROLE_LOGIN_OPTIONS[0].value);
     }
-  }, [email, MOCK_USERS, selectedRole]); // Added selectedRole to dependencies
+  }, [email, MOCK_USERS, selectedRole]); 
 
 
   const handleSubmit = async (event: FormEvent) => {
@@ -127,16 +152,24 @@ export default function LoginPage() {
 
     const foundUser = MOCK_USERS.find(user => {
         if (user.email !== email) return false;
-        // If user.password is set, check it. Otherwise (e.g. imported student), use enrollment number.
         const expectedPassword = user.password || (user.roles.includes('student') && user.email.includes('@gppalanpur.in') ? user.email.split('@')[0] : undefined);
         return expectedPassword === password;
     });
 
     if (foundUser) {
       if (foundUser.roles.includes(selectedRole)) {
+        if(foundUser.status === 'inactive'){
+            toast({
+              variant: "destructive",
+              title: "Login Failed",
+              description: `Your account is inactive. Please contact administrator.`,
+            });
+            setIsLoading(false);
+            return;
+        }
         toast({
           title: "Login Successful",
-          description: `Welcome back, ${foundUser.name || foundUser.email}! You are logged in as ${selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}.`,
+          description: `Welcome back, ${foundUser.name || foundUser.email}! You are logged in as ${USER_ROLE_LOGIN_OPTIONS.find(opt => opt.value === selectedRole)?.label || selectedRole}.`,
         });
 
         const userPayload = {
@@ -156,7 +189,7 @@ export default function LoginPage() {
         toast({
           variant: "destructive",
           title: "Login Failed",
-          description: `The role '${selectedRole}' is not assigned to this user.`,
+          description: `The role '${selectedRole}' is not assigned to this user or is not a loginable role.`,
         });
       }
     } else {
@@ -174,8 +207,8 @@ export default function LoginPage() {
   }
 
   const roleOptionsToDisplay = email && availableRolesForUser.length > 0
-    ? USER_ROLE_OPTIONS.filter(opt => availableRolesForUser.includes(opt.value))
-    : USER_ROLE_OPTIONS;
+    ? USER_ROLE_LOGIN_OPTIONS.filter(opt => availableRolesForUser.includes(opt.value))
+    : USER_ROLE_LOGIN_OPTIONS;
 
 
   return (
@@ -231,8 +264,9 @@ export default function LoginPage() {
                       <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                     ))
                   ) : (
-                     email ? <SelectItem value="unknown" disabled>No roles available</SelectItem> 
-                           : USER_ROLE_OPTIONS.map(opt => ( // Fallback if email is empty
+                     email && !MOCK_USERS.find(u=>u.email === email) ? <SelectItem value="unknown" disabled>Enter valid email first</SelectItem>
+                     : email ? <SelectItem value="unknown" disabled>No roles available</SelectItem> 
+                           : USER_ROLE_LOGIN_OPTIONS.map(opt => ( 
                                 <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
                               ))
                   )}
@@ -248,13 +282,21 @@ export default function LoginPage() {
               Login
             </Button>
           </form>
-          <Button
-            variant="outline"
-            className="w-full text-lg py-6 mt-4"
-            onClick={() => {
-              localStorage.removeItem('managedUsers');
-              alert('Local storage cleared');
-            }}>Clear Local Storage</Button>
+          {process.env.NODE_ENV === 'development' && (
+            <Button
+              variant="outline"
+              className="w-full text-sm py-3 mt-4"
+              onClick={() => {
+                localStorage.removeItem('managedUsers');
+                localStorage.removeItem('__API_USERS_STORE__'); 
+                localStorage.removeItem('__API_STUDENTS_STORE__'); 
+                localStorage.removeItem('__API_FACULTY_STORE__');
+                localStorage.removeItem('__API_COMMITTEES_STORE__');
+                // Add other stores if necessary
+                setMockUsersState(getMockUsers()); // Re-fetch base users
+                toast({ title: "Dev Info", description: "Local storage cleared for PolyManager." });
+              }}>Clear Local Storage (Dev)</Button>
+          )}
         </CardContent>
         <CardFooter className="flex flex-col items-center gap-4">
            <Link href="#" className="text-sm text-primary hover:underline">
@@ -271,4 +313,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

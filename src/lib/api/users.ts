@@ -1,5 +1,5 @@
 
-import type { User } from '@/types/entities'; // Updated import
+import type { User, Institute } from '@/types/entities'; 
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 
@@ -20,7 +20,7 @@ export const userService = {
     return response.json();
   },
 
-  async createUser(userData: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'authProviders' | 'isEmailVerified' | 'preferences'> & { password?: string, fullName?: string }): Promise<Omit<User, 'password'>> {
+  async createUser(userData: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'authProviders' | 'isEmailVerified' | 'preferences'> & { password?: string }): Promise<Omit<User, 'password'>> {
     const response = await fetch(`${API_BASE_URL}/users`, {
       method: 'POST',
       headers: {
@@ -35,7 +35,7 @@ export const userService = {
     return response.json();
   },
 
-  async updateUser(id: string, userData: Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>> & { password?: string, fullName?: string }): Promise<Omit<User, 'password'>> {
+  async updateUser(id: string, userData: Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>> & { password?: string }): Promise<Omit<User, 'password'>> {
     const response = await fetch(`${API_BASE_URL}/users/${id}`, {
       method: 'PUT',
       headers: {
@@ -60,9 +60,10 @@ export const userService = {
     }
   },
 
-  async importUsers(file: File): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: any[] }> {
+  async importUsers(file: File, institutes: Institute[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: any[] }> {
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('institutes', JSON.stringify(institutes)); // Pass institutes for domain mapping
 
     const response = await fetch(`${API_BASE_URL}/users/import`, {
       method: 'POST',
@@ -74,9 +75,9 @@ export const userService = {
     if (!response.ok) {
       let detailedMessage = responseData.message || 'Failed to import users.';
       if (responseData.errors && Array.isArray(responseData.errors) && responseData.errors.length > 0) {
-        const errorSummary = responseData.errors.slice(0, 3).map((err: any) => err.message || JSON.stringify(err)).join('; ');
+        const errorSummary = responseData.errors.slice(0, 3).map((err: any) => err.message || JSON.stringify(err.data)).join('; ');
         detailedMessage += ` Specific issues: ${errorSummary}${responseData.errors.length > 3 ? '...' : ''}`;
-      } else if(response.status === 500 && !responseData.message) {
+      } else if(response.status === 500 && !responseData.message && !responseData.errors) {
         detailedMessage = 'Critical error during user import process. Please check server logs.';
       }
       const error = new Error(detailedMessage) as any;

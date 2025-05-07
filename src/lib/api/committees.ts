@@ -1,5 +1,5 @@
 
-import type { Committee, Institute } from '@/types/entities';
+import type { Committee, Institute, SystemUser as User } from '@/types/entities';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 
@@ -60,10 +60,12 @@ export const committeeService = {
     }
   },
 
-  async importCommittees(file: File, institutes: Institute[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: any[] }> {
+  async importCommittees(file: File, institutes: Institute[], facultyUsers: User[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: any[] }> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('institutes', JSON.stringify(institutes));
+    formData.append('facultyUsers', JSON.stringify(facultyUsers));
+
 
     const response = await fetch(`${API_BASE_URL}/committees/import`, {
       method: 'POST',

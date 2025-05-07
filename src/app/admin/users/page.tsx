@@ -9,12 +9,13 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from "@/components/ui/switch";
-import { PlusCircle, Edit, Trash2, Users as UsersIcon, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react"; // Renamed Users to UsersIcon
+import { PlusCircle, Edit, Trash2, Users as UsersIcon, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Landmark } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { SystemUser, UserRole } from '@/types/entities'; // Renamed User to SystemUser
+import type { SystemUser, UserRole, Institute } from '@/types/entities';
 import { userService } from '@/lib/api/users';
+import { instituteService } from '@/lib/api/institutes';
 
 const USER_ROLE_OPTIONS: { value: UserRole; label: string }[] = [
   { value: "admin", label: "Admin" },
@@ -22,6 +23,15 @@ const USER_ROLE_OPTIONS: { value: UserRole; label: string }[] = [
   { value: "faculty", label: "Faculty" },
   { value: "hod", label: "HOD" },
   { value: "jury", label: "Jury" },
+  { value: "committee_convener", label: "Committee Convener"},
+  { value: "super_admin", label: "Super Admin"},
+  { value: "dte_admin", label: "DTE Admin"},
+  { value: "gtu_admin", label: "GTU Admin"},
+  { value: "institute_admin", label: "Institute Admin"},
+  { value: "department_admin", label: "Department Admin"},
+  { value: "committee_admin", label: "Committee Admin"},
+  { value: "lab_assistant", label: "Lab Assistant"},
+  { value: "clerical_staff", label: "Clerical Staff"},
   { value: "unknown", label: "Unknown" },
 ];
 
@@ -30,7 +40,7 @@ const STATUS_OPTIONS: { value: 'active' | 'inactive'; label: string }[] = [
   { value: "inactive", label: "Inactive" },
 ];
 
-type SortField = keyof Omit<SystemUser, 'roles'> | 'roles' | 'none'; 
+type SortField = keyof Omit<SystemUser, 'roles' | 'preferences'> | 'roles' | 'none'; 
 type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
@@ -38,24 +48,29 @@ const ITEMS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
 
 export default function UserManagementPage() {
   const [users, setUsers] = useState<SystemUser[]>([]);
+  const [institutes, setInstitutes] = useState<Institute[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<Partial<SystemUser> & { password?: string; confirmPassword?: string } | null>(null);
 
-  const [formUserName, setFormUserName] = useState('');
+  const [formFullName, setFormFullName] = useState('');
+  const [formFirstName, setFormFirstName] = useState('');
+  const [formMiddleName, setFormMiddleName] = useState('');
+  const [formLastName, setFormLastName] = useState('');
   const [formUserEmail, setFormUserEmail] = useState('');
   const [formUserRoles, setFormUserRoles] = useState<UserRole[]>(['student']); 
   const [formUserStatus, setFormUserStatus] = useState<'active' | 'inactive'>('active');
-  const [formUserDepartment, setFormUserDepartment] = useState('');
   const [formUserPassword, setFormUserPassword] = useState('');
   const [formUserConfirmPassword, setFormUserConfirmPassword] = useState('');
+  const [formInstituteId, setFormInstituteId] = useState<string | undefined>(undefined);
+
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState<UserRole | 'all'>('all');
   const [filterStatus, setFilterStatus] = useState<'active' | 'inactive' | 'all'>('all');
-  const [sortField, setSortField] = useState<SortField>('name');
+  const [sortField, setSortField] = useState<SortField>('displayName');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
 
@@ -63,41 +78,64 @@ export default function UserManagementPage() {
   const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
 
   const { toast } = useToast();
+  
+  const parseGtuNameToComponents = (gtuName: string | undefined): { firstName?: string, middleName?: string, lastName?: string } => {
+    if (!gtuName) return {};
+    const parts = gtuName.trim().split(/\s+/);
+    if (parts.length === 1) return { firstName: parts[0], lastName: "SURNAME_PLACEHOLDER" }; // Or however you handle single names
+    if (parts.length === 2) return { lastName: parts[0], firstName: parts[1] }; // Assuming SURNAME NAME
+    return { lastName: parts[0], firstName: parts[1], middleName: parts.slice(2).join(' ') };
+  };
 
-  const fetchUsers = async () => {
+
+  const fetchUsersAndInstitutes = async () => {
     setIsLoading(true);
     try {
-      const data = await userService.getAllUsers();
-      setUsers(data);
+      const [userData, instituteData] = await Promise.all([
+        userService.getAllUsers(),
+        instituteService.getAllInstitutes()
+      ]);
+      setUsers(userData as SystemUser[]); // Assuming getAllUsers returns correct type
+      setInstitutes(instituteData);
+      if (instituteData.length > 0 && !formInstituteId) {
+        // setFormInstituteId(instituteData[0].id); // Don't auto-select, make it optional
+      }
     } catch (error) {
-      console.error("Failed to load users", error);
-      toast({ variant: "destructive", title: "Error", description: (error as Error).message || "Could not load users." });
+      console.error("Failed to load users or institutes", error);
+      toast({ variant: "destructive", title: "Error", description: (error as Error).message || "Could not load data." });
     }
     setIsLoading(false);
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchUsersAndInstitutes();
   }, []);
 
   const resetForm = () => {
-    setFormUserName('');
+    setFormFullName('');
+    setFormFirstName('');
+    setFormMiddleName('');
+    setFormLastName('');
     setFormUserEmail('');
     setFormUserRoles(['student']);
     setFormUserStatus('active');
-    setFormUserDepartment('');
     setFormUserPassword('');
     setFormUserConfirmPassword('');
+    setFormInstituteId(undefined); 
     setCurrentUser(null);
   };
 
   const handleEdit = (user: SystemUser) => {
     setCurrentUser(user);
-    setFormUserName(user.name);
+    setFormFullName(user.fullName || '');
+    const { firstName, middleName, lastName } = parseGtuNameToComponents(user.fullName);
+    setFormFirstName(user.firstName || firstName || '');
+    setFormMiddleName(user.middleName || middleName || '');
+    setFormLastName(user.lastName || lastName || '');
     setFormUserEmail(user.email);
     setFormUserRoles(user.roles);
-    setFormUserStatus(user.status);
-    setFormUserDepartment(user.department || '');
+    setFormUserStatus(user.isActive ? 'active' : 'inactive');
+    setFormInstituteId(user.instituteId || undefined);
     setFormUserPassword('');
     setFormUserConfirmPassword('');
     setIsDialogOpen(true);
@@ -110,14 +148,14 @@ export default function UserManagementPage() {
 
   const handleDelete = async (userId: string) => {
     const userToDelete = users.find(u => u.id === userId);
-    if (userToDelete?.email === "admin@gppalanpur.in") { // Assuming this is the primary admin
+    if (userToDelete?.email === "admin@gppalanpur.in" || userToDelete?.instituteEmail === "admin@gppalanpur.in") { 
         toast({ variant: "destructive", title: "Action Forbidden", description: "Cannot delete the primary admin user." });
         return;
     }
     setIsSubmitting(true);
     try {
       await userService.deleteUser(userId);
-      await fetchUsers();
+      await fetchUsersAndInstitutes();
       setSelectedUserIds(prev => prev.filter(id => id !== userId));
       toast({ title: "User Deleted", description: "The user has been successfully deleted." });
     } catch (error) {
@@ -138,15 +176,15 @@ export default function UserManagementPage() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    if (!formUserName.trim() || !formUserEmail.trim()) {
-      toast({ variant: "destructive", title: "Validation Error", description: "Name and Email cannot be empty."});
+    if (!formFullName.trim() || !formFirstName.trim() || !formLastName.trim() || !formUserEmail.trim()) {
+      toast({ variant: "destructive", title: "Validation Error", description: "Full Name, First Name, Last Name, and Personal Email are required."});
       return;
     }
     if (formUserRoles.length === 0) {
       toast({ variant: "destructive", title: "Validation Error", description: "User must have at least one role."});
       return;
     }
-    if (!currentUser?.id) { // Only require password for new users
+    if (!currentUser?.id) { 
         if (!formUserPassword || formUserPassword.length < 6) {
             toast({ variant: "destructive", title: "Validation Error", description: "Password must be at least 6 characters long for new users." });
             return;
@@ -159,12 +197,16 @@ export default function UserManagementPage() {
 
     setIsSubmitting(true);
     
-    const userData: Omit<SystemUser, 'id'> & { password?: string } = { 
-      name: formUserName, 
-      email: formUserEmail, 
+    const userData: Partial<Omit<SystemUser, 'id' | 'createdAt' | 'updatedAt' | 'authProviders' | 'isEmailVerified' | 'preferences'>> & { password?: string } = { 
+      displayName: `${formFirstName.trim()} ${formLastName.trim()}`,
+      fullName: formFullName.trim(),
+      firstName: formFirstName.trim(),
+      middleName: formMiddleName.trim() || undefined,
+      lastName: formLastName.trim(),
+      email: formUserEmail.trim(), 
       roles: formUserRoles, 
-      status: formUserStatus,
-      department: formUserDepartment,
+      isActive: formUserStatus === 'active',
+      instituteId: formInstituteId,
     };
     if (formUserPassword) {
       userData.password = formUserPassword;
@@ -175,10 +217,10 @@ export default function UserManagementPage() {
         await userService.updateUser(currentUser.id, userData);
         toast({ title: "User Updated", description: "The user has been successfully updated." });
       } else {
-        await userService.createUser(userData);
+        await userService.createUser(userData as any); // Cast needed due to Omit differences
         toast({ title: "User Created", description: "The new user has been successfully created." });
       }
-      await fetchUsers();
+      await fetchUsersAndInstitutes();
       setIsDialogOpen(false);
       resetForm();
     } catch (error) {
@@ -203,11 +245,16 @@ export default function UserManagementPage() {
     }
     setIsSubmitting(true);
     try {
-      const result = await userService.importUsers(selectedFile);
-      await fetchUsers();
+      const result = await userService.importUsers(selectedFile, institutes); // Pass institutes for domain mapping
+      await fetchUsersAndInstitutes();
       toast({ title: "Import Successful", description: `${result.newCount} users added, ${result.updatedCount} users updated. Skipped: ${result.skippedCount}` });
+      if(result.errors && result.errors.length > 0){
+          result.errors.slice(0,3).forEach((err:any) => {
+            toast({variant: "warning", title: `Import Warning (Row ${err.row})`, description: err.message, duration: 7000});
+          });
+      }
     } catch (error: any) {
-      console.error("Error processing CSV file:", error);
+      console.error("Error processing CSV file for User Import:", error);
       toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
     } finally {
       setIsSubmitting(false);
@@ -222,17 +269,27 @@ export default function UserManagementPage() {
       toast({ title: "Export Canceled", description: "No users to export (check filters)." });
       return;
     }
-    const header = ["id", "name", "email", "roles", "status", "department"];
+    const header = ["id", "displayName", "fullName_GTUFormat", "firstName", "middleName", "lastName", "email", "instituteEmail", "roles", "isActive", "instituteId", "instituteName", "instituteCode"];
     const csvRows = [
       header.join(','),
-      ...filteredAndSortedUsers.map(user => [
-        user.id,
-        `"${user.name.replace(/"/g, '""')}"`,
-        `"${user.email.replace(/"/g, '""')}"`,
-        `"${user.roles.join(';')}"`, 
-        user.status,
-        `"${(user.department || "").replace(/"/g, '""')}"`
-      ].join(','))
+      ...filteredAndSortedUsers.map(user => {
+        const inst = institutes.find(i => i.id === user.instituteId);
+        return [
+          user.id,
+          `"${user.displayName.replace(/"/g, '""')}"`,
+          `"${(user.fullName || "").replace(/"/g, '""')}"`,
+          `"${(user.firstName || "").replace(/"/g, '""')}"`,
+          `"${(user.middleName || "").replace(/"/g, '""')}"`,
+          `"${(user.lastName || "").replace(/"/g, '""')}"`,
+          `"${user.email.replace(/"/g, '""')}"`,
+          `"${(user.instituteEmail || "").replace(/"/g, '""')}"`,
+          `"${user.roles.join(';')}"`, 
+          user.isActive,
+          user.instituteId || "",
+          `"${(inst?.name || "").replace(/"/g, '""')}"`,
+          `"${(inst?.code || "").replace(/"/g, '""')}"`,
+        ].join(',')
+      })
     ];
     const csvString = csvRows.join('\r\n');
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
@@ -246,10 +303,10 @@ export default function UserManagementPage() {
   };
 
   const handleDownloadSampleCsv = () => {
-    const sampleCsvContent = `id,name,email,roles,status,department,password
-u_001,John Doe,john.doe@example.com,student,active,Computer Science,Pass@123
-u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineering,Pass@123
-,New User,new.user@example.com,jury,inactive,General,Pass@123
+    const sampleCsvContent = `id,displayName,fullName_GTUFormat,firstName,middleName,lastName,username,email,instituteEmail,roles,isActive,instituteId,instituteName,instituteCode,password
+u_001,John Doe,DOE JOHN R,John,R,Doe,johndoe,john.doe@example.com,john.doe@gpp.ac.in,student,true,inst1,Government Polytechnic Palanpur,GPP,Pass@123
+,Jane Smith,SMITH JANE,Jane,,Smith,janesmith,jane.smith@example.com,jane.smith@gpp.ac.in,faculty;jury,true,inst1,Government Polytechnic Palanpur,GPP,Pass@123
+,New User,USER NEW ONE,New,One,User,newuser,new.user@example.com,,jury,false,,,,Pass@123
 `; 
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -276,9 +333,10 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
 
     if (searchTerm) {
       result = result.filter(user => 
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (user.department && user.department.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (user.instituteEmail && user.instituteEmail.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (user.fullName && user.fullName.toLowerCase().includes(searchTerm.toLowerCase())) ||
         user.roles.some(role => role.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
@@ -286,7 +344,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
       result = result.filter(user => user.roles.includes(filterRole));
     }
     if (filterStatus !== 'all') {
-      result = result.filter(user => user.status === filterStatus);
+      result = result.filter(user => (user.isActive ? 'active' : 'inactive') === filterStatus);
     }
 
     if (sortField !== 'none') {
@@ -297,9 +355,13 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
         if (sortField === 'roles') {
           valA = a.roles.join(', '); 
           valB = b.roles.join(', ');
-        } else {
-          valA = a[sortField as keyof Omit<SystemUser, 'roles'>];
-          valB = b[sortField as keyof Omit<SystemUser, 'roles'>];
+        } else if (sortField === 'isActive'){
+          valA = a.isActive;
+          valB = b.isActive;
+        }
+        else {
+          valA = a[sortField as keyof Omit<SystemUser, 'roles' | 'preferences' | 'isActive'>];
+          valB = b[sortField as keyof Omit<SystemUser, 'roles' | 'preferences' | 'isActive'>];
         }
 
         if (valA === undefined || valA === null) return sortDirection === 'asc' ? 1 : -1;
@@ -307,6 +369,9 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
         
         if (typeof valA === 'string' && typeof valB === 'string') {
           return sortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+        }
+         if (typeof valA === 'boolean' && typeof valB === 'boolean') {
+          return sortDirection === 'asc' ? (valA === valB ? 0 : valA ? -1 : 1) : (valA === valB ? 0 : valA ? 1 : -1);
         }
         return 0;
       });
@@ -352,7 +417,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
 
     for (const id of selectedUserIds) {
         const user = users.find(u => u.id === id);
-        if (user?.email === "admin@gppalanpur.in") {
+        if (user?.email === "admin@gppalanpur.in" || user?.instituteEmail === "admin@gppalanpur.in") {
             adminSkipped = true;
             continue;
         }
@@ -360,11 +425,11 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
             await userService.deleteUser(id);
             deletedCount++;
         } catch (error) {
-            toast({ variant: "destructive", title: "Delete Failed", description: `Could not delete user ${user?.name || id}.`});
+            toast({ variant: "destructive", title: "Delete Failed", description: `Could not delete user ${user?.displayName || id}.`});
         }
     }
     
-    await fetchUsers();
+    await fetchUsersAndInstitutes();
     setSelectedUserIds([]);
     let description = `${deletedCount} user(s) have been successfully deleted.`;
     if(adminSkipped){
@@ -415,24 +480,49 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
                   <PlusCircle className="mr-2 h-5 w-5" /> Add New User
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[625px]">
+              <DialogContent className="sm:max-w-2xl">
                 <DialogHeader>
                   <DialogTitle>{currentUser?.id ? "Edit User" : "Add New User"}</DialogTitle>
                   <DialogDescription>
                     {currentUser?.id ? "Modify the details of this user." : "Create a new user account."}
                   </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-4 py-4 max-h-[70vh] overflow-y-auto pr-2">
-                  <div>
-                    <Label htmlFor="userName">Full Name</Label>
-                    <Input id="userName" value={formUserName} onChange={(e) => setFormUserName(e.target.value)} placeholder="e.g., John Doe" disabled={isSubmitting} />
+                <form onSubmit={handleSubmit} className="space-y-4 py-4 max-h-[70vh] overflow-y-auto pr-2 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                  <div className="md:col-span-2">
+                    <Label htmlFor="userFullName">Full Name (GTU Format) *</Label>
+                    <Input id="userFullName" value={formFullName} onChange={(e) => {setFormFullName(e.target.value); const {firstName, middleName, lastName} = parseGtuNameToComponents(e.target.value); setFormFirstName(firstName || ''); setFormMiddleName(middleName || ''); setFormLastName(lastName || '');}} placeholder="e.g., SURNAME NAME FATHERNAME" disabled={isSubmitting} required />
                   </div>
                   <div>
-                    <Label htmlFor="userEmail">Email Address</Label>
-                    <Input id="userEmail" type="email" value={formUserEmail} onChange={(e) => setFormUserEmail(e.target.value)} placeholder="e.g., john.doe@example.com" disabled={isSubmitting || !!currentUser?.id} />
+                    <Label htmlFor="userFirstName">First Name *</Label>
+                    <Input id="userFirstName" value={formFirstName} onChange={(e) => setFormFirstName(e.target.value)} placeholder="e.g., John" disabled={isSubmitting} required/>
                   </div>
+                   <div>
+                    <Label htmlFor="userMiddleName">Middle Name</Label>
+                    <Input id="userMiddleName" value={formMiddleName} onChange={(e) => setFormMiddleName(e.target.value)} placeholder="e.g., Robert" disabled={isSubmitting}/>
+                  </div>
+                   <div>
+                    <Label htmlFor="userLastName">Last Name *</Label>
+                    <Input id="userLastName" value={formLastName} onChange={(e) => setFormLastName(e.target.value)} placeholder="e.g., Doe" disabled={isSubmitting} required/>
+                  </div>
+
                   <div>
-                    <Label>Roles</Label>
+                    <Label htmlFor="userEmail">Personal Email *</Label>
+                    <Input id="userEmail" type="email" value={formUserEmail} onChange={(e) => setFormUserEmail(e.target.value)} placeholder="e.g., john.doe@example.com" disabled={isSubmitting} required />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <Label htmlFor="userInstitute">Institute (Optional)</Label>
+                     <Select value={formInstituteId || ""} onValueChange={(value) => setFormInstituteId(value === "" ? undefined : value)} disabled={isSubmitting || institutes.length === 0}>
+                        <SelectTrigger id="userInstitute"><SelectValue placeholder="Select Institute (Optional)" /></SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="">None</SelectItem>
+                            {institutes.map(inst => <SelectItem key={inst.id} value={inst.id}>{inst.name} ({inst.code})</SelectItem>)}
+                        </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <Label>Roles *</Label>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-2 border rounded-md max-h-40 overflow-y-auto">
                       {USER_ROLE_OPTIONS.filter(opt => opt.value !== 'unknown').map(opt => (
                         <div key={opt.value} className="flex items-center space-x-2">
@@ -447,23 +537,20 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
                       ))}
                     </div>
                   </div>
+                  
                   <div>
-                    <Label htmlFor="userDepartment">Department (Optional)</Label>
-                    <Input id="userDepartment" value={formUserDepartment} onChange={(e) => setFormUserDepartment(e.target.value)} placeholder="e.g., Computer Science" disabled={isSubmitting} />
-                  </div>
-                  <div>
-                    <Label htmlFor="userPassword">Password {currentUser?.id ? "(Leave blank to keep current)" : ""}</Label>
+                    <Label htmlFor="userPassword">Password {currentUser?.id ? "(Leave blank to keep current)" : "*"}</Label>
                     <Input id="userPassword" type="password" value={formUserPassword} onChange={(e) => setFormUserPassword(e.target.value)} placeholder="••••••••" disabled={isSubmitting} />
                   </div>
                    <div>
                     <Label htmlFor="userConfirmPassword">Confirm Password</Label>
                     <Input id="userConfirmPassword" type="password" value={formUserConfirmPassword} onChange={(e) => setFormUserConfirmPassword(e.target.value)} placeholder="••••••••" disabled={isSubmitting} />
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="md:col-span-2 flex items-center space-x-2 pt-2">
                     <Switch id="userStatus" checked={formUserStatus === 'active'} onCheckedChange={(checked) => setFormUserStatus(checked ? 'active' : 'inactive')} disabled={isSubmitting} />
                     <Label htmlFor="userStatus">User Status: {formUserStatus === 'active' ? 'Active' : 'Inactive'}</Label>
                   </div>
-                  <DialogFooter>
+                  <DialogFooter className="md:col-span-2">
                     <DialogClose asChild>
                       <Button type="button" variant="outline" disabled={isSubmitting}>Cancel</Button>
                     </DialogClose>
@@ -495,7 +582,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
                     <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  CSV format: id (optional), name, email, roles (semicolon-separated), status, department, password (for new users).
+                  CSV headers: id,displayName,fullName_GTUFormat,firstName,middleName,lastName,username,email,instituteEmail,roles,isActive,instituteId,instituteName,instituteCode,password
                 </p>
             </div>
           </div>
@@ -506,7 +593,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
               <div className="relative">
                  <Input 
                     id="searchUser" 
-                    placeholder="Search by name, email, dept, role..." 
+                    placeholder="Name, email, role..." 
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pr-8"
@@ -517,7 +604,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
             <div>
               <Label htmlFor="filterRole">Filter by Role</Label>
               <Select value={filterRole} onValueChange={(value) => setFilterRole(value as UserRole | 'all')}>
-                <SelectTrigger id="filterRole"><SelectValue /></SelectTrigger>
+                <SelectTrigger id="filterRole"><SelectValue placeholder="All Roles" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Roles</SelectItem>
                   {USER_ROLE_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
@@ -527,7 +614,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
             <div>
               <Label htmlFor="filterStatus">Filter by Status</Label>
               <Select value={filterStatus} onValueChange={(value) => setFilterStatus(value as 'active' | 'inactive' | 'all')}>
-                <SelectTrigger id="filterStatus"><SelectValue /></SelectTrigger>
+                <SelectTrigger id="filterStatus"><SelectValue placeholder="All Statuses" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Statuses</SelectItem>
                   {STATUS_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
@@ -557,11 +644,12 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
                         aria-label="Select all users on this page"
                     />
                 </TableHead>
-                <SortableTableHeader field="name" label="Name" />
-                <SortableTableHeader field="email" label="Email" />
+                <SortableTableHeader field="displayName" label="Display Name" />
+                <SortableTableHeader field="email" label="Personal Email" />
+                <SortableTableHeader field="instituteEmail" label="Institute Email" />
                 <SortableTableHeader field="roles" label="Roles" />
-                <SortableTableHeader field="department" label="Department" />
-                <SortableTableHeader field="status" label="Status" />
+                 <TableHead>Institute</TableHead>
+                <SortableTableHeader field="isActive" label="Status" />
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -573,18 +661,19 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
                         checked={selectedUserIds.includes(user.id)}
                         onCheckedChange={(checked) => handleSelectUser(user.id, !!checked)}
                         aria-labelledby={`user-name-${user.id}`}
-                        disabled={user.email === "admin@gppalanpur.in"}
+                        disabled={user.email === "admin@gppalanpur.in" || user.instituteEmail === "admin@gppalanpur.in"}
                        />
                   </TableCell>
-                  <TableCell id={`user-name-${user.id}`} className="font-medium">{user.name}</TableCell>
+                  <TableCell id={`user-name-${user.id}`} className="font-medium">{user.displayName}</TableCell>
                   <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.instituteEmail || '-'}</TableCell>
                   <TableCell className="max-w-xs truncate">
-                    {user.roles.map(r => r.charAt(0).toUpperCase() + r.slice(1)).join(', ')}
+                    {user.roles.map(r => USER_ROLE_OPTIONS.find(opt => opt.value ===r)?.label || r).join(', ')}
                   </TableCell>
-                  <TableCell>{user.department || '-'}</TableCell>
+                  <TableCell>{institutes.find(i => i.id === user.instituteId)?.code || '-'}</TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${user.status === 'active' ? 'bg-success/20 text-success-foreground' : 'bg-destructive/20 text-destructive-foreground'}`}>
-                      {user.status === 'active' ? 'Active' : 'Inactive'}
+                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${user.isActive ? 'bg-success/20 text-success-foreground' : 'bg-destructive/20 text-destructive-foreground'}`}>
+                      {user.isActive ? 'Active' : 'Inactive'}
                     </span>
                   </TableCell>
                   <TableCell className="text-right space-x-2">
@@ -596,7 +685,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
                         variant="destructive" 
                         size="icon" 
                         onClick={() => handleDelete(user.id)} 
-                        disabled={isSubmitting || user.email === "admin@gppalanpur.in"}
+                        disabled={isSubmitting || user.email === "admin@gppalanpur.in" || user.instituteEmail === "admin@gppalanpur.in"}
                     >
                       <Trash2 className="h-4 w-4" />
                       <span className="sr-only">Delete User</span>
@@ -606,7 +695,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
               ))}
               {paginatedUsers.length === 0 && (
                  <TableRow>
-                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
                         No users found. Try adjusting your search or filters, or add a new user.
                     </TableCell>
                  </TableRow>
@@ -616,7 +705,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
         </CardContent>
          <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
             <div className="text-sm text-muted-foreground">
-                Showing {Math.min((currentPage -1) * itemsPerPage + 1, filteredAndSortedUsers.length)} to {Math.min(currentPage * itemsPerPage, filteredAndSortedUsers.length)} of {filteredAndSortedUsers.length} users.
+                Showing {paginatedUsers.length > 0 ? Math.min((currentPage -1) * itemsPerPage + 1, filteredAndSortedUsers.length) : 0} to {Math.min(currentPage * itemsPerPage, filteredAndSortedUsers.length)} of {filteredAndSortedUsers.length} users.
             </div>
             <div className="flex items-center gap-2">
                  <Select
@@ -646,7 +735,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
                         size="icon"
                         className="h-8 w-8"
                         onClick={() => setCurrentPage(1)}
-                        disabled={currentPage === 1}
+                        disabled={currentPage === 1 || totalPages === 0}
                         >
                         <ChevronsLeft className="h-4 w-4" />
                         <span className="sr-only">First page</span>
@@ -656,7 +745,7 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
                         size="icon"
                         className="h-8 w-8"
                         onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                        disabled={currentPage === 1}
+                        disabled={currentPage === 1 || totalPages === 0}
                         >
                         <ChevronLeft className="h-4 w-4" />
                         <span className="sr-only">Previous page</span>
@@ -688,4 +777,3 @@ u_002,Jane Smith,jane.smith@example.com,faculty;jury,active,Electrical Engineeri
     </div>
   );
 }
-

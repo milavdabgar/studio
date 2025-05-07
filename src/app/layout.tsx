@@ -1,7 +1,7 @@
 
 "use client"; 
 
-import { GeistSans } from 'geist/font/sans';
+import { GeistSans } from 'geist/font';
 import './globals.css';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
@@ -16,7 +16,25 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 
 
-type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown';
+type UserRole = 
+  | 'admin' 
+  | 'student' 
+  | 'faculty' 
+  | 'hod' 
+  | 'jury' 
+  | 'unknown' 
+  | 'super_admin' 
+  | 'dte_admin' 
+  | 'gtu_admin' 
+  | 'institute_admin' 
+  | 'department_admin' 
+  | 'committee_admin'
+  | 'committee_convener'
+  | 'committee_co_convener'
+  | 'committee_member'
+  | 'lab_assistant' 
+  | 'clerical_staff';
+
 
 interface User {
   name: string;
@@ -35,6 +53,25 @@ const DEFAULT_USER: User = {
   dataAiHint: 'user avatar'
 };
 
+const USER_ROLE_OPTIONS_DISPLAY: { value: UserRole; label: string }[] = [
+  { value: "admin", label: "Admin" },
+  { value: "student", label: "Student" },
+  { value: "faculty", label: "Faculty" },
+  { value: "hod", label: "HOD" },
+  { value: "jury", label: "Jury" },
+  { value: "committee_convener", label: "Committee Convener"},
+  { value: "super_admin", label: "Super Admin" },
+  { value: "dte_admin", label: "DTE Admin" },
+  { value: "gtu_admin", label: "GTU Admin" },
+  { value: "institute_admin", label: "Institute Admin" },
+  { value: "department_admin", label: "Department Admin" },
+  { value: "committee_admin", label: "Committee Admin" },
+  { value: "lab_assistant", label: "Lab Assistant" },
+  { value: "clerical_staff", label: "Clerical Staff" },
+  { value: "unknown", label: "Unknown" },
+];
+
+
 const baseNavItems: Record<UserRole, Array<{ href: string; icon: React.ElementType; label: string; id: string }>> = {
   admin: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard' },
@@ -49,9 +86,7 @@ const baseNavItems: Record<UserRole, Array<{ href: string; icon: React.ElementTy
     { href: '/admin/departments', icon: Building2, label: 'Departments', id: 'admin-departments' },
     { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs' },
     { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses' },
-    // { href: '/admin/results', icon: Award, label: 'Results Admin', id: 'admin-results' }, // Example
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback' },
-    // { href: '/project-fair/admin', icon: FileText, label: 'Project Fair Admin', id: 'admin-project-fair' }, // Example
   ],
   student: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'student-dashboard' },
@@ -85,16 +120,30 @@ const baseNavItems: Record<UserRole, Array<{ href: string; icon: React.ElementTy
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'jury-dashboard' },
     { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'jury-evaluate' },
   ],
+  committee_convener: [ // Nav items for Committee Convener
+    { href: '/dashboard', icon: Home, label: 'Convener Dashboard', id: 'convener-dashboard' },
+    { href: '/committee/my-committee', icon: CommitteeIcon, label: 'My Committee', id: 'convener-my-committee'},
+    { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'convener-meetings'},
+  ],
+  // Add empty arrays for roles without specific nav items yet, to prevent errors
+  super_admin: [{ href: '/dashboard', icon: Home, label: 'Super Admin Dashboard', id: 'super-admin-dashboard' }],
+  dte_admin: [{ href: '/dashboard', icon: Home, label: 'DTE Dashboard', id: 'dte-admin-dashboard' }],
+  gtu_admin: [{ href: '/dashboard', icon: Home, label: 'GTU Dashboard', id: 'gtu-admin-dashboard' }],
+  institute_admin: [{ href: '/dashboard', icon: Home, label: 'Institute Dashboard', id: 'institute-admin-dashboard' }],
+  department_admin: [{ href: '/dashboard', icon: Home, label: 'Department Dashboard', id: 'department-admin-dashboard' }],
+  committee_admin: [{ href: '/dashboard', icon: Home, label: 'Committee Admin Dashboard', id: 'committee-admin-dashboard' }],
+  committee_co_convener: [{ href: '/dashboard', icon: Home, label: 'Co-Convener Dashboard', id: 'co-convener-dashboard' }],
+  committee_member: [{ href: '/dashboard', icon: Home, label: 'Committee Member Dashboard', id: 'committee-member-dashboard' }],
+  lab_assistant: [{ href: '/dashboard', icon: Home, label: 'Lab Assistant Dashboard', id: 'lab-assistant-dashboard' }],
+  clerical_staff: [{ href: '/dashboard', icon: Home, label: 'Clerical Dashboard', id: 'clerical-dashboard' }],
   unknown: [], 
 };
 
-// Function to get nav items for a single active role
 const getNavItemsForRole = (role: UserRole): Array<{ href: string; icon: React.ElementType; label: string; id: string }> => {
-  const items = baseNavItems[role] || [];
-  // Ensure Dashboard is always first if present
+  const items = baseNavItems[role] || baseNavItems['unknown']; // Fallback to unknown if role not in baseNavItems
   items.sort((a, b) => {
-    if (a.label === 'Dashboard') return -1;
-    if (b.label === 'Dashboard') return 1;
+    if (a.label.includes('Dashboard')) return -1;
+    if (b.label.includes('Dashboard')) return 1;
     return a.label.localeCompare(b.label);
   });
   return items;
@@ -167,7 +216,7 @@ export default function RootLayout({
          router.push('/login');
        }
     }
-  }, [pathname, router]); // Added router to dependency array
+  }, [pathname, router]); 
 
 
   const handleRoleChange = (newRole: UserRole) => {
@@ -272,11 +321,14 @@ export default function RootLayout({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-sidebar text-sidebar-foreground border-sidebar-border">
-                      {currentUser.availableRoles.map(role => (
+                      {currentUser.availableRoles.map(role => {
+                        const roleDisplay = USER_ROLE_OPTIONS_DISPLAY.find(opt => opt.value === role);
+                        return (
                         <SelectItem key={role} value={role} className="text-xs focus:bg-sidebar-primary focus:text-sidebar-primary-foreground">
-                          {role.charAt(0).toUpperCase() + role.slice(1)}
+                          {roleDisplay ? roleDisplay.label : (role.charAt(0).toUpperCase() + role.slice(1))}
                         </SelectItem>
-                      ))}
+                        );
+                      })}
                     </SelectContent>
                   </Select>
                 </div>
@@ -308,7 +360,7 @@ export default function RootLayout({
             <header className="sticky top-0 z-50 flex items-center justify-between h-16 px-4 border-b bg-background/80 backdrop-blur-sm">
               <SidebarTrigger />
               <div className="flex items-center gap-4">
-                <span className="font-semibold">Welcome, {currentUser.name}! (Role: {currentUser.activeRole.charAt(0).toUpperCase() + currentUser.activeRole.slice(1)})</span>
+                <span className="font-semibold">Welcome, {currentUser.name}! (Role: {USER_ROLE_OPTIONS_DISPLAY.find(r => r.value === currentUser.activeRole)?.label || currentUser.activeRole})</span>
               </div>
             </header>
             <main className="flex-1 p-4 md:p-6 lg:p-8">
