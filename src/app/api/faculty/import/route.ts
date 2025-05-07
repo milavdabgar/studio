@@ -1,10 +1,10 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Faculty, FacultyStatus, JobType, Gender, SystemUser } from '@/types/entities';
+import type { Faculty, FacultyStatus, JobType, Gender, User, Institute } from '@/types/entities'; // Updated User import
 import { parse, type ParseError } from 'papaparse';
 import { userService } from '@/lib/api/users';
+import { instituteService } from '@/lib/api/institutes'; // To fetch institute domain if needed
 
-// In-memory store (replace with DB)
 let facultyStore: Faculty[] = (global as any).__API_FACULTY_STORE__ || [];
 if (!(global as any).__API_FACULTY_STORE__) {
   (global as any).__API_FACULTY_STORE__ = facultyStore;
@@ -33,12 +33,12 @@ const parseGtuFacultyNameFromString = (gtuNameInput: string | undefined): { titl
     return { title, lastName: parts[0], firstName: parts[1], middleName: parts.slice(2).join(' ') };
 };
 
-const generateInstituteEmailForFaculty = (firstName?: string, lastName?: string, staffCode?: string): string => {
+const generateInstituteEmailForFaculty = (firstName?: string, lastName?: string, instituteDomain: string = "gppalanpur.ac.in"): string => {
   const fn = (firstName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
   const ln = (lastName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
-  if (fn && ln) return `${fn}.${ln}@gppalanpur.ac.in`;
-  if (staffCode) return `${staffCode.toLowerCase()}@gppalanpur.ac.in`;
-  return `faculty_${Date.now()}@gppalanpur.ac.in`;
+  if (fn && ln) return `${fn}.${ln}@${instituteDomain}`;
+  // Fallback for uniqueness, this could be improved with a check against existing emails
+  return `faculty_${Date.now().toString().slice(-5)}_${Math.random().toString(36).substring(2,5)}@${instituteDomain}`;
 };
 
 const JOB_TYPE_OPTIONS: JobType[] = ["Regular", "Adhoc", "Contractual", "Visiting", "Other"];
@@ -50,6 +50,7 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
+    const defaultInstituteId = formData.get('instituteId') as string | null; // For new users if institute not in CSV
 
     if (!file) {
       return NextResponse.json({ message: 'No file uploaded.' }, { status: 400 });
@@ -59,43 +60,59 @@ export async function POST(request: NextRequest) {
     const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
       header: true,
       skipEmptyLines: true,
-      transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/gi, ''),
-      dynamicTyping: true,
+      transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9_]/gi, ''),
+      dynamicTyping: false, // Keep as string for manual conversion
     });
 
     if (parseErrors.length > 0) {
       console.error('CSV Parse Errors (Faculty Standard Import):', JSON.stringify(parseErrors, null, 2));
       const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row}: ${e.message} (Code: ${e.code})`);
-      return NextResponse.json({ message: 'Error parsing Faculty (Standard) CSV file. Please check the file format and content.', errors: errorMessages }, { status: 400 });
+      return NextResponse.json({ message: 'Error parsing Faculty (Standard) CSV file.', errors: errorMessages }, { status: 400 });
     }
 
     let newCount = 0, updatedCount = 0, skippedCount = 0;
+    const importErrors: { row: number, message: string, data: any }[] = [];
 
-    for (const row of parsedData) {
+    for (let i = 0; i < parsedData.length; i++) {
+      const row = parsedData[i];
+      const rowIndex = i + 2;
+
       const staffCode = row.staffcode?.toString().trim();
       const firstName = row.firstname?.toString().trim();
       const lastName = row.lastname?.toString().trim();
       const department = row.department?.toString().trim();
       const statusRaw = row.status?.toString().trim().toLowerCase();
       const status = FACULTY_STATUS_OPTIONS.includes(statusRaw as FacultyStatus) ? statusRaw as FacultyStatus : undefined;
+      const personalEmailFromCSV = row.personalemail?.toString().trim() || undefined;
+      const instituteEmailFromCSV = row.instituteemail?.toString().trim() || undefined;
+      const facultyInstituteId = row.instituteid?.toString().trim() || defaultInstituteId;
 
-      if (!staffCode || !firstName || !lastName || !department || !status) {
-        console.warn(`Skipping faculty row: Missing required data (staffCode, firstName, lastName, department, status). Row: ${JSON.stringify(row)}`);
+
+      if (!staffCode || !firstName || !lastName || !department || !status || !facultyInstituteId) {
+        importErrors.push({row: rowIndex, message: "Missing required fields: staffCode, firstName, lastName, department, status, or instituteId.", data: row});
         skippedCount++; continue;
       }
       
+      let instituteDomain = "gppalanpur.ac.in"; // Default
+      try {
+        const inst = await instituteService.getInstituteById(facultyInstituteId);
+        if(inst.domain) instituteDomain = inst.domain;
+      } catch (e) { /* use default */ }
+
+      const instituteEmail = instituteEmailFromCSV || generateInstituteEmailForFaculty(firstName, lastName, instituteDomain);
+
       const gtuName = row.gtuname?.toString().trim();
       const parsedFromName = parseGtuFacultyNameFromString(gtuName);
 
-      const facultyData: Omit<Faculty, 'id'> = {
+      const facultyData: Omit<Faculty, 'id' | 'userId'> = {
         staffCode,
         gtuName: gtuName || `${row.title || parsedFromName.title || ''} ${firstName} ${row.middlename?.toString().trim() || parsedFromName.middleName || ''} ${lastName}`.replace(/\s+/g, ' ').trim(),
         title: row.title?.toString().trim() || parsedFromName.title || undefined,
         firstName,
         middleName: row.middlename?.toString().trim() || parsedFromName.middleName || undefined,
         lastName,
-        personalEmail: row.personalemail?.toString().trim() || undefined,
-        instituteEmail: row.instituteemail?.toString().trim() || generateInstituteEmailForFaculty(firstName, lastName, staffCode),
+        personalEmail: personalEmailFromCSV,
+        instituteEmail,
         contactNumber: row.contactnumber?.toString().trim() || undefined,
         department,
         designation: row.designation?.toString().trim() || undefined,
@@ -108,51 +125,71 @@ export async function POST(request: NextRequest) {
         status,
         aadharNumber: row.aadharnumber?.toString().trim() || undefined,
         panCardNumber: row.pancardnumber?.toString().trim() || undefined,
-        gpfNpsNumber: row.gpfnpfnumber?.toString().trim() || undefined, // Corrected key
+        gpfNpsNumber: row.gpfnpfnumber?.toString().trim() || row.gpfnpsnumber?.toString().trim() || undefined,
         placeOfBirth: row.placeofbirth?.toString().trim() || undefined,
         nationality: row.nationality?.toString().trim() || undefined,
         knownAs: row.knownas?.toString().trim() || undefined,
       };
 
       const idFromCsv = row.id?.toString().trim();
-      let existingFacultyIndex = -1;
-      if (idFromCsv) {
-        existingFacultyIndex = facultyStore.findIndex(f => f.id === idFromCsv);
-      } else {
-        existingFacultyIndex = facultyStore.findIndex(f => f.staffCode === staffCode);
-      }
+      let existingFacultyIndex = facultyStore.findIndex(f => (idFromCsv && f.id === idFromCsv) || f.staffCode === staffCode);
+      let facultyToProcess: Faculty;
 
       if (existingFacultyIndex !== -1) {
-        facultyStore[existingFacultyIndex] = { ...facultyStore[existingFacultyIndex], ...facultyData };
+        facultyToProcess = { ...facultyStore[existingFacultyIndex], ...facultyData };
+        facultyStore[existingFacultyIndex] = facultyToProcess;
         updatedCount++;
-         const linkedUser = await userService.getAllUsers().then(users => users.find(u => u.email === facultyStore[existingFacultyIndex].instituteEmail));
-        if(linkedUser) {
-            await userService.updateUser(linkedUser.id, { name: facultyData.gtuName || facultyData.staffCode, department: facultyData.department, status: facultyData.status === 'active' ? 'active' : 'inactive' });
-        }
       } else {
-        const newFaculty: Faculty = { id: idFromCsv || generateIdForImport(), ...facultyData };
-        facultyStore.push(newFaculty);
+        facultyToProcess = { id: idFromCsv || generateIdForImport(), ...facultyData };
+        facultyStore.push(facultyToProcess);
         newCount++;
-        const systemUserName = newFaculty.gtuName || `${newFaculty.firstName || ''} ${newFaculty.lastName || ''}`.trim() || newFaculty.staffCode;
-        try {
-            await userService.createUser({
-                name: systemUserName,
-                email: newFaculty.instituteEmail,
-                password: newFaculty.staffCode, // Default password
-                roles: ['faculty'],
-                status: 'active',
-                department: newFaculty.department
-            });
-        } catch(userCreationError: any) {
-             if (userCreationError.message?.includes("already exists")) {
-                console.warn(`System user with email ${newFaculty.instituteEmail} already exists. Linking faculty ${newFaculty.staffCode} to existing user.`);
-             } else {
-                console.error(`Failed to create system user for faculty ${newFaculty.staffCode}:`, userCreationError);
-             }
+      }
+
+      // Create or update linked User account
+      const userDisplayName = facultyToProcess.gtuName || facultyToProcess.staffCode;
+      try {
+        const existingUserByEmail = await userService.getAllUsers().then(users => users.find(u => u.instituteEmail === facultyToProcess.instituteEmail || (facultyToProcess.personalEmail && u.email === facultyToProcess.personalEmail)));
+        
+        const userDataPayload = {
+            displayName: userDisplayName,
+            email: facultyToProcess.personalEmail || facultyToProcess.instituteEmail,
+            instituteEmail: facultyToProcess.instituteEmail,
+            isActive: facultyToProcess.status === 'active',
+            instituteId: facultyInstituteId, 
+            // roles will be managed based on existing user or default for new
+        };
+
+        if (existingUserByEmail) { // User exists, update and link
+            facultyToProcess.userId = existingUserByEmail.id;
+            let rolesToSet = existingUserByEmail.roles.includes('faculty') ? existingUserByEmail.roles : [...existingUserByEmail.roles, 'faculty' as UserRole];
+            await userService.updateUser(existingUserByEmail.id, {...userDataPayload, roles: rolesToSet });
+        } else { // New user
+            const createdUser = await userService.createUser({...userDataPayload, password: facultyToProcess.staffCode, roles: ['faculty']});
+            facultyToProcess.userId = createdUser.id;
         }
+         // Update faculty record with userId if it was just set
+        const finalFacultyIndex = facultyStore.findIndex(f => f.id === facultyToProcess.id);
+        if (finalFacultyIndex !== -1) {
+            facultyStore[finalFacultyIndex].userId = facultyToProcess.userId;
+        }
+
+
+      } catch(userError: any) {
+        importErrors.push({row: rowIndex, message: `User account linking/creation failed for ${staffCode}: ${userError.message}`, data: row});
+        // If user creation failed, we might still keep the faculty record or mark it as needing user setup
       }
     }
     (global as any).__API_FACULTY_STORE__ = facultyStore;
+    
+    if (importErrors.length > 0) {
+        return NextResponse.json({ 
+            message: `Faculty import partially completed with ${importErrors.length} issues.`, 
+            newCount, 
+            updatedCount, 
+            skippedCount,
+            errors: importErrors 
+        }, { status: 207 });
+    }
     return NextResponse.json({ message: 'Faculty imported successfully.', newCount, updatedCount, skippedCount }, { status: 200 });
   } catch (error) {
     console.error('Error importing faculty:', error);

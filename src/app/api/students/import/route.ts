@@ -1,10 +1,10 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Student, SemesterStatus, StudentStatus, SystemUser } from '@/types/entities';
-import { parse } from 'papaparse';
+import type { Student, SemesterStatus, StudentStatus, User, Program } from '@/types/entities'; // Updated User import
+import { parse, type ParseError } from 'papaparse';
 import { userService } from '@/lib/api/users';
+import { programService } from '@/lib/api/programs'; // To get program details for instituteId
 
-// In-memory store (replace with DB)
 let studentsStore: Student[] = (global as any).__API_STUDENTS_STORE__ || [];
 if (!(global as any).__API_STUDENTS_STORE__) {
   (global as any).__API_STUDENTS_STORE__ = studentsStore;
@@ -33,7 +33,7 @@ const normalizeShiftFromString = (shift: string | undefined): Student['shift'] |
     const lowerShift = shift.toLowerCase();
     if (lowerShift.startsWith('m')) return 'Morning';
     if (lowerShift.startsWith('a')) return 'Afternoon';
-    return shift; 
+    return shift as Student['shift']; 
 };
 const SEMESTER_STATUS_OPTIONS: SemesterStatus[] = ["Passed", "Pending", "Not Appeared", "N/A"];
 const STUDENT_STATUS_OPTIONS: StudentStatus[] = ["active", "inactive", "graduated", "dropped"];
@@ -43,60 +43,97 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
+    const programsJson = formData.get('programs') as string | null;
+
 
     if (!file) {
       return NextResponse.json({ message: 'No file uploaded.' }, { status: 400 });
     }
+    if (!programsJson) {
+        return NextResponse.json({ message: 'Program data for mapping is missing.' }, { status: 400 });
+    }
+    const clientPrograms: Program[] = JSON.parse(programsJson);
+
 
     const fileText = await file.text();
     const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
       header: true,
       skipEmptyLines: true,
-      transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/gi, ''),
+      transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9_]/gi, ''),
+      dynamicTyping: false,
     });
 
     if (parseErrors.length > 0) {
-      return NextResponse.json({ message: 'Error parsing CSV file.', errors: parseErrors.map(e => e.message) }, { status: 400 });
+      const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row}: ${e.message} (Code: ${e.code})`);
+      return NextResponse.json({ message: 'Error parsing CSV file.', errors: errorMessages }, { status: 400 });
     }
 
     let newCount = 0, updatedCount = 0, skippedCount = 0;
+    const importErrors: { row: number, message: string, data: any }[] = [];
 
-    for (const row of parsedData) {
-      const enrollmentNumber = row.enrollmentnumber?.trim();
-      const department = row.department?.trim();
-      const currentSemesterStr = row.currentsemester?.trim();
-      const statusRaw = row.status?.trim().toLowerCase();
+
+    for (let i = 0; i < parsedData.length; i++) {
+      const row = parsedData[i];
+      const rowIndex = i + 2;
+
+      const enrollmentNumber = row.enrollmentnumber?.toString().trim();
+      // department is now derived from program. programId is needed.
+      const programIdFromCsv = row.programid?.toString().trim();
+      const programCodeFromCsv = row.programcode?.toString().trim().toUpperCase();
+
+      const currentSemesterStr = row.currentsemester?.toString().trim();
+      const statusRaw = row.status?.toString().trim().toLowerCase();
       const status = STUDENT_STATUS_OPTIONS.includes(statusRaw as StudentStatus) ? statusRaw as StudentStatus : undefined;
       
-      if (!enrollmentNumber || !department || !currentSemesterStr || !status) {
+      if (!enrollmentNumber || (!programIdFromCsv && !programCodeFromCsv) || !currentSemesterStr || !status) {
+        importErrors.push({row: rowIndex, message: "Missing required fields: enrollmentNumber, programId/programCode, currentSemester, or status.", data: row});
         skippedCount++; continue;
       }
       const currentSemester = parseInt(currentSemesterStr, 10);
-      if (isNaN(currentSemester) || currentSemester < 1 || currentSemester > 8) {
+      if (isNaN(currentSemester) || currentSemester < 1 || currentSemester > 8) { // Assuming max 8 semesters
+        importErrors.push({row: rowIndex, message: "Invalid current semester value.", data: row});
         skippedCount++; continue;
       }
-      
-      const gtuName = row.gtuname?.trim();
+
+      let programId = programIdFromCsv;
+      let studentProgram: Program | undefined;
+
+      if (programId) {
+        studentProgram = clientPrograms.find(p => p.id === programId);
+      } else if (programCodeFromCsv) {
+        studentProgram = clientPrograms.find(p => p.code.toUpperCase() === programCodeFromCsv);
+      }
+
+      if (!studentProgram) {
+        importErrors.push({row: rowIndex, message: `Program not found for ID '${programIdFromCsv}' or Code '${programCodeFromCsv}'.`, data: row});
+        skippedCount++; continue;
+      }
+      programId = studentProgram.id;
+      const studentDepartmentId = studentProgram.departmentId; // For User model, if needed, or department can be derived.
+      // The Student model now has programId, department is derived via program.
+
+      const gtuName = row.gtuname?.toString().trim();
       const parsedFromName = parseGtuNameFromString(gtuName);
 
-      const studentData: Omit<Student, 'id'> = {
+      const studentData: Omit<Student, 'id' | 'userId'> = {
         enrollmentNumber,
         gtuName: gtuName || undefined,
-        firstName: row.firstname?.trim() || parsedFromName.firstName || undefined,
-        middleName: row.middlename?.trim() || parsedFromName.middleName || undefined,
-        lastName: row.lastname?.trim() || parsedFromName.lastName || undefined,
-        personalEmail: row.personalemail?.trim() || undefined,
-        instituteEmail: row.instituteemail?.trim() || `${enrollmentNumber}@gppalanpur.in`,
-        department,
-        branchCode: row.branchcode?.trim() || undefined,
+        firstName: row.firstname?.toString().trim() || parsedFromName.firstName || undefined,
+        middleName: row.middlename?.toString().trim() || parsedFromName.middleName || undefined,
+        lastName: row.lastname?.toString().trim() || parsedFromName.lastName || undefined,
+        personalEmail: row.personalemail?.toString().trim() || undefined,
+        instituteEmail: row.instituteemail?.toString().trim() || `${enrollmentNumber}@gppalanpur.in`, // Default, should be derived based on institute
+        programId: programId!, // studentProgram is checked
+        department: studentDepartmentId, // Derived from program
+        branchCode: row.branchcode?.toString().trim() || undefined,
         currentSemester, status,
-        contactNumber: row.contactnumber?.trim() || undefined,
-        address: row.address?.trim() || undefined,
-        dateOfBirth: row.dateofbirth?.trim() || undefined,
-        admissionDate: row.admissiondate?.trim() || undefined,
-        gender: normalizeGenderFromString(row.gender),
-        convocationYear: row.convocationyear ? parseInt(row.convocationyear, 10) : undefined,
-        shift: normalizeShiftFromString(row.shift),
+        contactNumber: row.contactnumber?.toString().trim() || undefined,
+        address: row.address?.toString().trim() || undefined,
+        dateOfBirth: row.dateofbirth?.toString().trim() || undefined,
+        admissionDate: row.admissiondate?.toString().trim() || undefined,
+        gender: normalizeGenderFromString(row.gender?.toString()),
+        convocationYear: row.convocationyear ? parseInt(row.convocationyear.toString(), 10) : undefined,
+        shift: normalizeShiftFromString(row.shift?.toString()),
         sem1Status: SEMESTER_STATUS_OPTIONS.includes(row.sem1status as SemesterStatus) ? row.sem1status as SemesterStatus : 'N/A',
         sem2Status: SEMESTER_STATUS_OPTIONS.includes(row.sem2status as SemesterStatus) ? row.sem2status as SemesterStatus : 'N/A',
         sem3Status: SEMESTER_STATUS_OPTIONS.includes(row.sem3status as SemesterStatus) ? row.sem3status as SemesterStatus : 'N/A',
@@ -105,53 +142,71 @@ export async function POST(request: NextRequest) {
         sem6Status: SEMESTER_STATUS_OPTIONS.includes(row.sem6status as SemesterStatus) ? row.sem6status as SemesterStatus : 'N/A',
         sem7Status: SEMESTER_STATUS_OPTIONS.includes(row.sem7status as SemesterStatus) ? row.sem7status as SemesterStatus : 'N/A',
         sem8Status: SEMESTER_STATUS_OPTIONS.includes(row.sem8status as SemesterStatus) ? row.sem8status as SemesterStatus : 'N/A',
-        category: row.category?.trim() || undefined,
-        isComplete: row.iscomplete?.toLowerCase() === 'true',
-        termClose: row.termclose?.toLowerCase() === 'true',
-        isCancel: row.iscancel?.toLowerCase() === 'true',
-        isPassAll: row.ispassall?.toLowerCase() === 'true',
-        aadharNumber: row.aadharnumber?.trim() || undefined,
+        category: row.category?.toString().trim() || undefined,
+        isComplete: String(row.iscomplete).toLowerCase() === 'true',
+        termClose: String(row.termclose).toLowerCase() === 'true',
+        isCancel: String(row.iscancel).toLowerCase() === 'true',
+        isPassAll: String(row.ispassall).toLowerCase() === 'true',
+        aadharNumber: row.aadharnumber?.toString().trim() || undefined,
+        shift: normalizeShiftFromString(row.shift?.toString()),
       };
       
-      const idFromCsv = row.id?.trim();
-      let existingStudentIndex = -1;
-      if (idFromCsv) {
-        existingStudentIndex = studentsStore.findIndex(s => s.id === idFromCsv);
-      } else {
-        existingStudentIndex = studentsStore.findIndex(s => s.enrollmentNumber === enrollmentNumber);
-      }
+      const idFromCsv = row.id?.toString().trim();
+      let existingStudentIndex = studentsStore.findIndex(s => (idFromCsv && s.id === idFromCsv) || s.enrollmentNumber === enrollmentNumber);
+      let studentToProcess: Student;
+
 
       if (existingStudentIndex !== -1) {
-        studentsStore[existingStudentIndex] = { ...studentsStore[existingStudentIndex], ...studentData };
+        studentToProcess = { ...studentsStore[existingStudentIndex], ...studentData };
+        studentsStore[existingStudentIndex] = studentToProcess;
         updatedCount++;
-        const linkedUser = await userService.getAllUsers().then(users => users.find(u => u.email === studentsStore[existingStudentIndex].instituteEmail));
-        if(linkedUser) {
-            await userService.updateUser(linkedUser.id, { name: studentData.name || studentData.enrollmentNumber, department: studentData.department, status: studentData.status === 'active' ? 'active' : 'inactive' });
-        }
       } else {
-        const newStudent: Student = { id: idFromCsv || generateIdForImport(), ...studentData };
-        studentsStore.push(newStudent);
+        studentToProcess = { id: idFromCsv || generateIdForImport(), ...studentData };
+        studentsStore.push(studentToProcess);
         newCount++;
-        const systemUserName = newStudent.gtuName || `${newStudent.firstName || ''} ${newStudent.lastName || ''}`.trim() || newStudent.enrollmentNumber;
-        try {
-            await userService.createUser({
-                name: systemUserName,
-                email: newStudent.instituteEmail,
-                password: newStudent.enrollmentNumber, // Default password
-                roles: ['student'],
-                status: 'active',
-                department: newStudent.department
-            });
-        } catch(userCreationError: any) {
-             if (userCreationError.message?.includes("already exists")) {
-                console.warn(`System user with email ${newStudent.instituteEmail} already exists. Linking student ${newStudent.enrollmentNumber} to existing user.`);
-             } else {
-                console.error(`Failed to create system user for student ${newStudent.enrollmentNumber}:`, userCreationError);
-             }
+      }
+
+      // Create or update linked User account
+      const userDisplayName = studentToProcess.gtuName || studentToProcess.enrollmentNumber;
+      try {
+        const existingUserByEmail = await userService.getAllUsers().then(users => users.find(u => u.instituteEmail === studentToProcess.instituteEmail));
+        
+        const userDataPayload = {
+            displayName: userDisplayName,
+            email: studentToProcess.personalEmail || studentToProcess.instituteEmail, // Primary email for User
+            instituteEmail: studentToProcess.instituteEmail,
+            isActive: studentToProcess.status === 'active',
+            instituteId: studentProgram.instituteId, // From program -> department -> institute
+        };
+
+        if (existingUserByEmail) {
+            studentToProcess.userId = existingUserByEmail.id;
+            let rolesToSet = existingUserByEmail.roles.includes('student') ? existingUserByEmail.roles : [...existingUserByEmail.roles, 'student' as UserRole];
+            await userService.updateUser(existingUserByEmail.id, {...userDataPayload, roles: rolesToSet});
+        } else {
+            const createdUser = await userService.createUser({...userDataPayload, password: studentToProcess.enrollmentNumber, roles: ['student']});
+            studentToProcess.userId = createdUser.id;
         }
+        const finalStudentIndex = studentsStore.findIndex(s => s.id === studentToProcess.id);
+        if (finalStudentIndex !== -1) {
+            studentsStore[finalStudentIndex].userId = studentToProcess.userId;
+        }
+
+      } catch(userError: any) {
+        importErrors.push({row:rowIndex, message: `User account linking/creation failed for ${enrollmentNumber}: ${userError.message}`, data: row});
       }
     }
     (global as any).__API_STUDENTS_STORE__ = studentsStore;
+    
+    if (importErrors.length > 0) {
+        return NextResponse.json({ 
+            message: `Students import partially completed with ${importErrors.length} issues.`, 
+            newCount, 
+            updatedCount, 
+            skippedCount,
+            errors: importErrors 
+        }, { status: 207 });
+    }
     return NextResponse.json({ message: 'Students imported successfully.', newCount, updatedCount, skippedCount }, { status: 200 });
   } catch (error) {
     console.error('Error importing students:', error);

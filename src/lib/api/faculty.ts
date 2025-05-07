@@ -1,22 +1,10 @@
 
-import type { Faculty, SystemUser } from '@/types/entities';
+import type { Faculty, User, Institute } from '@/types/entities'; // Updated User import
+import { userService } from '@/lib/api/users';
+import { instituteService } from '@/lib/api/institutes';
+
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
-
-// Helper to create a SystemUser from Faculty data
-const createSystemUserFromFaculty = (faculty: Faculty): Omit<SystemUser, 'id' | 'password'> & { password?: string } => {
-  const name = faculty.gtuName || `${faculty.title || ''} ${faculty.firstName || ''} ${faculty.middleName || ''} ${faculty.lastName || ''}`.replace(/\s+/g, ' ').trim();
-  return {
-    name: name || faculty.staffCode,
-    email: faculty.instituteEmail, // Institute email for login
-    roles: ['faculty'], // Default role, can be expanded
-    status: faculty.status === 'active' ? 'active' : 'inactive',
-    department: faculty.department,
-    // Password for new user - can be staffCode or a generated one
-    // This will be handled by the backend when creating a new user linked to faculty
-  };
-};
-
 
 export const facultyService = {
   async getAllFaculty(): Promise<Faculty[]> {
@@ -35,7 +23,8 @@ export const facultyService = {
     return response.json();
   },
 
-  async createFaculty(facultyData: Omit<Faculty, 'id'>): Promise<Faculty> {
+  async createFaculty(facultyData: Omit<Faculty, 'id' | 'userId'> & { instituteId?: string }): Promise<Faculty> {
+    // instituteId is passed to backend to determine domain for instituteEmail for the User
     const response = await fetch(`${API_BASE_URL}/faculty`, {
       method: 'POST',
       headers: {
@@ -50,7 +39,7 @@ export const facultyService = {
     return response.json();
   },
 
-  async updateFaculty(id: string, facultyData: Partial<Omit<Faculty, 'id'>>): Promise<Faculty> {
+  async updateFaculty(id: string, facultyData: Partial<Omit<Faculty, 'id'>> & { instituteId?: string }): Promise<Faculty> {
     const response = await fetch(`${API_BASE_URL}/faculty/${id}`, {
       method: 'PUT',
       headers: {
@@ -75,43 +64,43 @@ export const facultyService = {
     }
   },
 
-  async importFaculty(file: File): Promise<{ newCount: number; updatedCount: number; skippedCount: number }> {
+  async importFaculty(file: File, instituteId?: string): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: any[] }> {
     const formData = new FormData();
     formData.append('file', file);
+    if (instituteId) formData.append('instituteId', instituteId); // Pass institute context if available
 
     const response = await fetch(`${API_BASE_URL}/faculty/import`, {
       method: 'POST',
       body: formData,
     });
-
+    const responseData = await response.json();
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: 'Failed to import faculty (standard)' }));
-      let detailedMessage = errorData.message || 'Failed to import faculty (standard)';
-      if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
-        detailedMessage += ` Specific issues: ${errorData.errors.slice(0, 3).join('; ')}${errorData.errors.length > 3 ? '...' : ''}`;
+      let detailedMessage = responseData.message || 'Failed to import faculty (standard)';
+      if (responseData.errors && Array.isArray(responseData.errors) && responseData.errors.length > 0) {
+        detailedMessage += ` Specific issues: ${responseData.errors.slice(0,3).map((e:any) => e.message || JSON.stringify(e.data)).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
       }
       throw new Error(detailedMessage);
     }
-    return response.json();
+    return responseData;
   },
 
-  async importGtuFaculty(file: File): Promise<{ newCount: number; updatedCount: number; skippedCount: number }> {
+  async importGtuFaculty(file: File, instituteId?: string): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: any[] }> {
     const formData = new FormData();
     formData.append('file', file);
+    if (instituteId) formData.append('instituteId', instituteId);
 
     const response = await fetch(`${API_BASE_URL}/faculty/import-gtu`, {
       method: 'POST',
       body: formData,
     });
-
+    const responseData = await response.json();
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: 'Failed to import GTU faculty data' }));
-      let detailedMessage = errorData.message || 'Failed to import GTU faculty data';
-      if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
-        detailedMessage += ` Specific issues: ${errorData.errors.slice(0, 3).join('; ')}${errorData.errors.length > 3 ? '...' : ''}`;
+      let detailedMessage = responseData.message || 'Failed to import GTU faculty data';
+      if (responseData.errors && Array.isArray(responseData.errors) && responseData.errors.length > 0) {
+         detailedMessage += ` Specific issues: ${responseData.errors.slice(0,3).map((e:any) => e.message || JSON.stringify(e.data)).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
       }
       throw new Error(detailedMessage);
     }
-    return response.json();
+    return responseData;
   }
 };

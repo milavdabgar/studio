@@ -1,9 +1,8 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Student, SystemUser } from '@/types/entities';
-import { userService } from '@/lib/api/users'; // For updating/deleting linked user
+import type { Student, User } from '@/types/entities'; // Updated User import
+import { userService } from '@/lib/api/users'; 
 
-// In-memory store (replace with DB)
 let studentsStore: Student[] = (global as any).__API_STUDENTS_STORE__ || [];
 if (!(global as any).__API_STUDENTS_STORE__) {
   (global as any).__API_STUDENTS_STORE__ = studentsStore;
@@ -14,12 +13,6 @@ interface RouteParams {
     id: string;
   };
 }
-
-const findUserByStudentEmail = async (email: string): Promise<SystemUser | undefined> => {
-    const users = await userService.getAllUsers(); 
-    return users.find(u => u.email.toLowerCase() === email.toLowerCase());
-};
-
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
@@ -53,19 +46,26 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     studentsStore[studentIndex] = updatedStudent;
     (global as any).__API_STUDENTS_STORE__ = studentsStore;
 
-    // Update linked system user if email or name changes
-    const linkedUser = await findUserByStudentEmail(existingStudent.instituteEmail);
-    if (linkedUser) {
-        const userUpdateData: Partial<SystemUser> = {
-            name: updatedStudent.gtuName || `${updatedStudent.firstName || ''} ${updatedStudent.lastName || ''}`.trim() || updatedStudent.enrollmentNumber,
-            status: updatedStudent.status === 'active' ? 'active' : 'inactive',
-            department: updatedStudent.department,
+    if (updatedStudent.userId) {
+        const userUpdateData: Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>> = { // Use Omit User
+            displayName: updatedStudent.gtuName || `${updatedStudent.firstName || ''} ${updatedStudent.lastName || ''}`.trim() || updatedStudent.enrollmentNumber,
+            isActive: updatedStudent.status === 'active',
+            // department is on Student model, User's instituteId needs to be accurate
         };
-        // Assuming instituteEmail (login email) does not change after creation for simplicity here
+         if (updatedStudent.instituteEmail.toLowerCase() !== existingStudent.instituteEmail.toLowerCase()) {
+            userUpdateData.instituteEmail = updatedStudent.instituteEmail;
+             if (existingStudent.personalEmail === existingStudent.instituteEmail) { 
+                userUpdateData.email = updatedStudent.personalEmail || updatedStudent.instituteEmail;
+             }
+        }
+        if(updatedStudent.personalEmail && updatedStudent.personalEmail !== existingStudent.personalEmail){
+            userUpdateData.email = updatedStudent.personalEmail;
+        }
+
         try {
-            await userService.updateUser(linkedUser.id, userUpdateData);
+            await userService.updateUser(updatedStudent.userId, userUpdateData);
         } catch(userError) {
-            console.error(`Failed to update linked system user ${linkedUser.id} for student ${updatedStudent.id}:`, userError);
+            console.error(`Failed to update linked system user ${updatedStudent.userId} for student ${updatedStudent.id}:`, userError);
         }
     }
 
@@ -87,12 +87,15 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const deletedStudent = studentsStore.splice(studentIndex, 1)[0];
   (global as any).__API_STUDENTS_STORE__ = studentsStore;
 
-  const linkedUser = await findUserByStudentEmail(deletedStudent.instituteEmail);
-  if (linkedUser) {
+  if (deletedStudent.userId) {
       try {
-          await userService.deleteUser(linkedUser.id);
-      } catch (userError) {
-          console.error(`Failed to delete linked system user ${linkedUser.id} for student ${id}:`, userError);
+          await userService.deleteUser(deletedStudent.userId);
+      } catch (userError: any) {
+           if (userError.message?.includes('Cannot delete this administrative user')) {
+            console.warn(`Administrative user ${deletedStudent.userId} linked to student ${id} was not deleted.`);
+          } else {
+            console.error(`Failed to delete linked system user ${deletedStudent.userId} for student ${id}:`, userError);
+          }
       }
   }
 

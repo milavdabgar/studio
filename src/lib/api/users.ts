@@ -1,10 +1,10 @@
 
-import type { SystemUser, UserRole } from '@/types/entities';
+import type { User } from '@/types/entities'; // Updated import
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 
 export const userService = {
-  async getAllUsers(): Promise<SystemUser[]> {
+  async getAllUsers(): Promise<Omit<User, 'password'>[]> {
     const response = await fetch(`${API_BASE_URL}/users`);
     if (!response.ok) {
       throw new Error('Failed to fetch users');
@@ -12,7 +12,7 @@ export const userService = {
     return response.json();
   },
 
-  async getUserById(id: string): Promise<SystemUser> {
+  async getUserById(id: string): Promise<Omit<User, 'password'>> {
     const response = await fetch(`${API_BASE_URL}/users/${id}`);
     if (!response.ok) {
       throw new Error(`Failed to fetch user with id ${id}`);
@@ -20,7 +20,7 @@ export const userService = {
     return response.json();
   },
 
-  async createUser(userData: Omit<SystemUser, 'id'> & { password?: string }): Promise<SystemUser> {
+  async createUser(userData: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'authProviders' | 'isEmailVerified' | 'preferences'> & { password?: string, fullName?: string }): Promise<Omit<User, 'password'>> {
     const response = await fetch(`${API_BASE_URL}/users`, {
       method: 'POST',
       headers: {
@@ -35,7 +35,7 @@ export const userService = {
     return response.json();
   },
 
-  async updateUser(id: string, userData: Partial<Omit<SystemUser, 'id'>> & { password?: string }): Promise<SystemUser> {
+  async updateUser(id: string, userData: Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>> & { password?: string, fullName?: string }): Promise<Omit<User, 'password'>> {
     const response = await fetch(`${API_BASE_URL}/users/${id}`, {
       method: 'PUT',
       headers: {
@@ -60,7 +60,7 @@ export const userService = {
     }
   },
 
-  async importUsers(file: File): Promise<{ newCount: number; updatedCount: number; skippedCount: number }> {
+  async importUsers(file: File): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: any[] }> {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -69,14 +69,20 @@ export const userService = {
       body: formData,
     });
 
+    const responseData = await response.json();
+
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: 'Failed to import users' }));
-      let detailedMessage = errorData.message || 'Failed to import users';
-      if (errorData.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
-        detailedMessage += ` Specific issues: ${errorData.errors.slice(0, 3).join('; ')}${errorData.errors.length > 3 ? '...' : ''}`;
+      let detailedMessage = responseData.message || 'Failed to import users.';
+      if (responseData.errors && Array.isArray(responseData.errors) && responseData.errors.length > 0) {
+        const errorSummary = responseData.errors.slice(0, 3).map((err: any) => err.message || JSON.stringify(err)).join('; ');
+        detailedMessage += ` Specific issues: ${errorSummary}${responseData.errors.length > 3 ? '...' : ''}`;
+      } else if(response.status === 500 && !responseData.message) {
+        detailedMessage = 'Critical error during user import process. Please check server logs.';
       }
-      throw new Error(detailedMessage);
+      const error = new Error(detailedMessage) as any;
+      error.data = responseData; 
+      throw error;
     }
-    return response.json();
+    return responseData;
   }
 };

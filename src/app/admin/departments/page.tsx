@@ -13,7 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { PlusCircle, Edit, Trash2, Building2, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
-import type { Department, SystemUser as User } from '@/types/entities'; // Renamed SystemUser to User to avoid conflict
+import type { Department, User } from '@/types/entities'; 
 import { departmentService } from '@/lib/api/departments';
 import { userService } from '@/lib/api/users'; 
 
@@ -21,11 +21,11 @@ type SortField = keyof Department | 'none';
 type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
-const NO_HOD_VALUE = "__NO_HOD__"; // Value for the "None" HOD option
+const NO_HOD_VALUE = "__NO_HOD__"; 
 
 export default function DepartmentManagementPage() {
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [facultyUsers, setFacultyUsers] = useState<User[]>([]); // For HOD selection
+  const [facultyUsers, setFacultyUsers] = useState<User[]>([]); 
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -59,6 +59,7 @@ export default function DepartmentManagementPage() {
         userService.getAllUsers() 
       ]);
       setDepartments(deptData);
+      // Filter users who have 'faculty' or 'hod' roles
       setFacultyUsers(usersData.filter(u => u.roles.includes('faculty') || u.roles.includes('hod')));
     } catch (error) {
       console.error("Failed to load data", error);
@@ -123,21 +124,28 @@ export default function DepartmentManagementPage() {
 
     setIsSubmitting(true);
     
-    const departmentData: Omit<Department, 'id'> = { 
+    const departmentData: Omit<Department, 'id' | 'instituteId'> & { instituteId?: string } = { 
       name: formDeptName.trim(), 
       code: formDeptCode.trim().toUpperCase(), 
       description: formDeptDescription.trim() || undefined, 
-      hodId: formHodId || undefined,
+      hodId: formHodId === NO_HOD_VALUE ? undefined : formHodId,
       establishmentYear: formEstablishmentYear ? Number(formEstablishmentYear) : undefined,
       status: formStatus,
+      instituteId: currentDepartment?.instituteId || "inst1", // TODO: Make this dynamic if supporting multiple institutes
     };
+    if (!departmentData.instituteId) {
+        toast({variant: "destructive", title: "Error", description: "Institute ID is missing."});
+        setIsSubmitting(false);
+        return;
+    }
+
 
     try {
       if (currentDepartment && currentDepartment.id) {
         await departmentService.updateDepartment(currentDepartment.id, departmentData);
         toast({ title: "Department Updated", description: "The department has been successfully updated." });
       } else {
-        await departmentService.createDepartment(departmentData);
+        await departmentService.createDepartment(departmentData as Omit<Department, 'id'>);
         toast({ title: "Department Created", description: "The new department has been successfully created." });
       }
       await fetchDepartmentsAndFaculty();
@@ -165,7 +173,9 @@ export default function DepartmentManagementPage() {
     }
     setIsSubmitting(true);
     try {
-      const result = await departmentService.importDepartments(selectedFile);
+      // Assuming instituteId will be handled by the backend or a default is set.
+      // For a multi-institute setup, you might need to pass an instituteId or select one in the UI.
+      const result = await departmentService.importDepartments(selectedFile, "inst1"); // Example instituteId
       await fetchDepartmentsAndFaculty();
       toast({ title: "Import Successful", description: `${result.newCount} departments added, ${result.updatedCount} departments updated.` });
     } catch (error: any) {
@@ -184,18 +194,23 @@ export default function DepartmentManagementPage() {
       toast({ title: "Export Canceled", description: "No departments to export (check filters)." });
       return;
     }
-    const header = ["id", "name", "code", "description", "hodId", "establishmentYear", "status"];
+    const header = ["id", "name", "code", "description", "hodId", "hodName", "establishmentYear", "status", "instituteId"];
     const csvRows = [
       header.join(','),
-      ...filteredDepartments.map(dept => [
-        dept.id,
-        `"${dept.name.replace(/"/g, '""')}"`,
-        `"${dept.code.replace(/"/g, '""')}"`,
-        `"${(dept.description || "").replace(/"/g, '""')}"`,
-        dept.hodId || "",
-        dept.establishmentYear || "",
-        dept.status
-      ].join(','))
+      ...filteredDepartments.map(dept => {
+        const hod = facultyUsers.find(u => u.id === dept.hodId);
+        return [
+          dept.id,
+          `"${dept.name.replace(/"/g, '""')}"`,
+          `"${dept.code.replace(/"/g, '""')}"`,
+          `"${(dept.description || "").replace(/"/g, '""')}"`,
+          dept.hodId || "",
+          `"${(hod?.displayName || "").replace(/"/g, '""')}"`,
+          dept.establishmentYear || "",
+          dept.status,
+          dept.instituteId || "inst1" // Example default
+        ].join(',')
+      })
     ];
     const csvString = csvRows.join('\r\n');
     const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
@@ -209,9 +224,9 @@ export default function DepartmentManagementPage() {
   };
 
   const handleDownloadSampleCsv = () => {
-    const sampleCsvContent = `id,name,code,description,hodId,establishmentYear,status
-dept_sample_1,Information Technology,IT,"Handles all IT related courses and infrastructure",user_hod_it,2005,active
-,Textile Engineering,TX,"Focuses on textile manufacturing and design",,1998,inactive
+    const sampleCsvContent = `id,name,code,description,hodId,establishmentYear,status,instituteId
+dept_sample_1,Information Technology,IT,"Handles all IT related courses and infrastructure",user_hod_it_id,2005,active,inst1
+,Textile Engineering,TX,"Focuses on textile manufacturing and design",,1998,inactive,inst1
 `; 
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -380,7 +395,7 @@ dept_sample_1,Information Technology,IT,"Handles all IT related courses and infr
                   <div>
                     <Label htmlFor="deptHod">Head of Department (HOD)</Label>
                     <Select 
-                      value={formHodId} 
+                      value={formHodId || NO_HOD_VALUE} 
                       onValueChange={(value) => setFormHodId(value === NO_HOD_VALUE ? undefined : value)} 
                       disabled={isSubmitting}
                     >
@@ -388,7 +403,7 @@ dept_sample_1,Information Technology,IT,"Handles all IT related courses and infr
                       <SelectContent>
                         <SelectItem value={NO_HOD_VALUE}>None</SelectItem>
                         {facultyUsers.map(user => (
-                          <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
+                          <SelectItem key={user.id} value={user.id}>{user.displayName}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -439,7 +454,7 @@ dept_sample_1,Information Technology,IT,"Handles all IT related courses and infr
                     <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  CSV format: id (optional), name, code, description, hodId, establishmentYear, status.
+                  CSV format: id (optional), name, code, description, hodId, establishmentYear, status, instituteId.
                 </p>
             </div>
           </div>
@@ -512,7 +527,7 @@ dept_sample_1,Information Technology,IT,"Handles all IT related courses and infr
                   </TableCell>
                   <TableCell id={`dept-name-${dept.id}`} className="font-medium">{dept.name}</TableCell>
                   <TableCell>{dept.code}</TableCell>
-                  <TableCell>{facultyUsers.find(u => u.id === dept.hodId)?.name || '-'}</TableCell>
+                  <TableCell>{facultyUsers.find(u => u.id === dept.hodId)?.displayName || '-'}</TableCell>
                   <TableCell>{dept.establishmentYear || '-'}</TableCell>
                   <TableCell>
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${dept.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'}`}>
@@ -620,4 +635,3 @@ dept_sample_1,Information Technology,IT,"Handles all IT related courses and infr
     </div>
   );
 }
-

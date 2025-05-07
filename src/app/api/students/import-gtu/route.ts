@@ -1,10 +1,13 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Student, SemesterStatus, SystemUser } from '@/types/entities';
+import type { Student, SemesterStatus, User, Program, Institute } from '@/types/entities'; // Updated User import
 import { parse, type ParseError } from 'papaparse';
 import { userService } from '@/lib/api/users';
+import { programService } from '@/lib/api/programs'; // To find program by code
+import { departmentService } from '@/lib/api/departments'; // To find department by code to link to program
+import { instituteService } from '@/lib/api/institutes'; // To get institute domain
 
-// In-memory store (replace with DB)
+
 let studentsStore: Student[] = (global as any).__API_STUDENTS_STORE__ || [];
 if (!(global as any).__API_STUDENTS_STORE__) {
   (global as any).__API_STUDENTS_STORE__ = studentsStore;
@@ -15,16 +18,18 @@ const generateIdForImport = (): string => `std_gtu_${Date.now()}_${Math.random()
 const parseGtuNameFromString = (gtuName: string | undefined): { firstName?: string, middleName?: string, lastName?: string } => {
     if (!gtuName) return {};
     const parts = gtuName.trim().split(/\s+/);
-    if (parts.length === 1) return { firstName: parts[0] }; // Or handle as just name if no clear convention
-    if (parts.length === 2) return { lastName: parts[0], firstName: parts[1] }; // Common convention: SURNAME NAME
+    if (parts.length === 1) return { firstName: parts[0] }; 
+    if (parts.length === 2) return { lastName: parts[0], firstName: parts[1] };
     return { lastName: parts[0], firstName: parts[1], middleName: parts.slice(2).join(' ') };
 };
 
 const mapSemesterCodeToStatusFromString = (code: string | undefined | null): SemesterStatus => {
-    if (code === '2') return 'Passed';
-    if (code === '1') return 'Pending';
-    if (code === '' || code === undefined || code === null || String(code).trim() === "") return 'Not Appeared'; // Handle empty string also
-    return 'N/A'; // Default or for other codes
+    if (!code) return 'N/A';
+    const codeStr = String(code).trim();
+    if (codeStr === '2') return 'Passed';
+    if (codeStr === '1') return 'Pending';
+    if (codeStr === '') return 'Not Appeared'; 
+    return 'N/A'; 
 };
 
 const normalizeGenderFromString = (gender: string | undefined): Student['gender'] | undefined => {
@@ -40,19 +45,18 @@ const normalizeShiftFromString = (shift: string | undefined): Student['shift'] |
     const lowerShift = String(shift).toLowerCase().trim();
     if (lowerShift.startsWith('m')) return 'Morning';
     if (lowerShift.startsWith('a')) return 'Afternoon';
-    return shift as Student['shift']; // Keep original if not matched
+    return shift as Student['shift'];
 };
 
-const DEPARTMENT_OPTIONS_MAP: { [key: string]: string } = {
-  "CE": "Computer Engineering",
-  "ME": "Mechanical Engineering",
-  "EE": "Electrical Engineering",
-  "CIVIL": "Civil Engineering",
-  "EC": "Electronics & Communication Engineering",
-  "IT": "Information Technology", // Added IT as per general polytechnic branches
-  "CH": "Chemical Engineering", // Added Chemical
+const DEPARTMENT_CODE_TO_NAME_MAP: { [key: string]: string } = {
+  "CE": "Computer Engineering", "07": "Computer Engineering",
+  "ME": "Mechanical Engineering", "19": "Mechanical Engineering",
+  "EE": "Electrical Engineering", "09": "Electrical Engineering",
+  "CV": "Civil Engineering", "06": "Civil Engineering", // Assuming CV for Civil
+  "EC": "Electronics & Communication Engineering", "11": "Electronics & Communication Engineering",
+  "IT": "Information Technology", "16": "Information Technology",
+  "CH": "Chemical Engineering", "05": "Chemical Engineering",
   "GEN": "General Department", // For subjects like Maths, Physics under General Dept
-  // Add more mappings as needed
 };
 
 
@@ -60,39 +64,59 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
+    const programsJson = formData.get('programs') as string | null; // Get client-side programs
 
     if (!file) {
       return NextResponse.json({ message: 'No file uploaded.' }, { status: 400 });
     }
+    if (!programsJson) {
+        return NextResponse.json({ message: 'Program data for mapping is missing.' }, { status: 400 });
+    }
+    const clientPrograms: Program[] = JSON.parse(programsJson);
+
 
     const fileText = await file.text();
-    const { data: parsedData, errors: parseErrors, meta } = parse<any>(fileText, {
+    const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
       header: true,
       skipEmptyLines: true,
-      transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/gi, ''),
-      dynamicTyping: false, // Changed to false
+      transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9_]/gi, ''),
+      dynamicTyping: false, 
     });
 
     if (parseErrors.length > 0) {
       console.error('CSV Parse Errors (GTU Import):', JSON.stringify(parseErrors, null, 2));
       const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row}: ${e.message} (Code: ${e.code})`);
-      return NextResponse.json({ message: 'Error parsing GTU CSV file. Please check the file format and content.', errors: errorMessages }, { status: 400 });
+      return NextResponse.json({ message: 'Error parsing GTU CSV file.', errors: errorMessages }, { status: 400 });
     }
     
     let newCount = 0, updatedCount = 0, skippedCount = 0;
+    const importErrors: { row: number, message: string, data: any }[] = [];
 
-    for (const row of parsedData) {
+
+    for (let i = 0; i < parsedData.length; i++) {
+      const row = parsedData[i];
+      const rowIndex = i + 2;
+
       const enrollmentNumber = row.mapnumber?.toString().trim();
       const gtuName = row.name?.toString().trim();
       
       if (!enrollmentNumber || !gtuName) {
-        console.warn(`Skipping GTU import row due to missing enrollment number or name: ${JSON.stringify(row)}`);
+        importErrors.push({row: rowIndex, message: `Missing enrollment number or name.`, data: row});
         skippedCount++; continue;
       }
 
       const { firstName, middleName, lastName } = parseGtuNameFromString(gtuName);
       const branchCode = row.brcode?.toString().trim().toUpperCase();
-      const department = DEPARTMENT_OPTIONS_MAP[branchCode || ""] || "General"; // Fallback to General
+      // Infer programId and instituteId from branchCode
+      const studentProgram = clientPrograms.find(p => p.code === branchCode); // Assuming program code is same as branch code for simplicity
+      if (!studentProgram) {
+          importErrors.push({row: rowIndex, message: `Program not found for branch code ${branchCode}. Ensure program exists with this code.`, data: row});
+          skippedCount++; continue;
+      }
+      const programId = studentProgram.id;
+      const studentInstituteId = studentProgram.instituteId; // Get instituteId from the found program
+      const studentDepartment = studentProgram.departmentId; // Department ID from program
+
 
       let currentSemester = 1;
       for (let sem = 8; sem >= 1; sem--) {
@@ -113,13 +137,24 @@ export async function POST(request: NextRequest) {
       
       const convocationYearStr = String(row.convoyear).trim();
       const convocationYear = convocationYearStr && !isNaN(parseInt(convocationYearStr, 10)) ? parseInt(convocationYearStr, 10) : undefined;
+      
+      let instituteDomain = "gppalanpur.in"; // Default domain
+      if (studentInstituteId) {
+          try {
+              const inst = await instituteService.getInstituteById(studentInstituteId);
+              if (inst.domain) instituteDomain = inst.domain;
+          } catch(e) { /* use default */ }
+      }
+      const instituteEmail = `${enrollmentNumber}@${instituteDomain}`;
 
 
-      const studentData: Omit<Student, 'id'> = {
+      const studentData: Omit<Student, 'id' | 'userId'> = {
         enrollmentNumber, gtuName, firstName, middleName, lastName,
         personalEmail: row.email?.toString().trim() || undefined,
-        instituteEmail: `${enrollmentNumber}@gppalanpur.in`,
-        department, branchCode, currentSemester,
+        instituteEmail,
+        programId, 
+        department: studentDepartment, // This is departmentId
+        branchCode, currentSemester,
         status: String(row.iscancel).toLowerCase() === 'true' ? 'dropped' : (isCompleteStr === 'true' || isPassAllStr === 'true' ? 'graduated' : 'active'),
         contactNumber: row.mobile?.toString().trim() || undefined,
         gender: normalizeGenderFromString(row.gender?.toString()),
@@ -142,39 +177,58 @@ export async function POST(request: NextRequest) {
       };
 
       const existingStudentIndex = studentsStore.findIndex(s => s.enrollmentNumber === enrollmentNumber);
+      let studentToProcess: Student;
+
       if (existingStudentIndex !== -1) {
-        const oldStudent = studentsStore[existingStudentIndex];
-        studentsStore[existingStudentIndex] = { ...oldStudent, ...studentData, id: oldStudent.id }; // Preserve existing ID
+        studentToProcess = { ...studentsStore[existingStudentIndex], ...studentData };
+        studentsStore[existingStudentIndex] = studentToProcess;
         updatedCount++;
-        const linkedUser = await userService.getAllUsers().then(users => users.find(u => u.email === studentsStore[existingStudentIndex].instituteEmail));
-        if(linkedUser) {
-            await userService.updateUser(linkedUser.id, { name: studentData.gtuName || studentData.enrollmentNumber, department: studentData.department, status: studentData.status === 'active' ? 'active' : 'inactive' });
+      } else {
+        studentToProcess = { id: generateIdForImport(), ...studentData };
+        studentsStore.push(studentToProcess);
+        newCount++;
+      }
+
+      const userDisplayName = studentToProcess.gtuName || studentToProcess.enrollmentNumber;
+      try {
+        const existingUserByEmail = await userService.getAllUsers().then(users => users.find(u => u.instituteEmail === studentToProcess.instituteEmail));
+        
+        const userDataPayload = {
+            displayName: userDisplayName,
+            email: studentToProcess.personalEmail || studentToProcess.instituteEmail,
+            instituteEmail: studentToProcess.instituteEmail,
+            isActive: studentToProcess.status === 'active',
+            instituteId: studentInstituteId, // Pass student's institute ID
+        };
+
+        if (existingUserByEmail) {
+            studentToProcess.userId = existingUserByEmail.id;
+            let rolesToSet = existingUserByEmail.roles.includes('student') ? existingUserByEmail.roles : [...existingUserByEmail.roles, 'student' as UserRole];
+            await userService.updateUser(existingUserByEmail.id, {...userDataPayload, roles: rolesToSet});
+        } else {
+            const createdUser = await userService.createUser({...userDataPayload, password: studentToProcess.enrollmentNumber, roles: ['student']});
+            studentToProcess.userId = createdUser.id;
+        }
+        const finalStudentIndex = studentsStore.findIndex(s => s.id === studentToProcess.id);
+        if (finalStudentIndex !== -1) {
+            studentsStore[finalStudentIndex].userId = studentToProcess.userId;
         }
 
-      } else {
-        const newStudent: Student = { id: generateIdForImport(), ...studentData };
-        studentsStore.push(newStudent);
-        newCount++;
-        const systemUserName = newStudent.gtuName || `${newStudent.firstName || ''} ${newStudent.lastName || ''}`.trim() || newStudent.enrollmentNumber;
-        try {
-            await userService.createUser({
-                name: systemUserName,
-                email: newStudent.instituteEmail,
-                password: newStudent.enrollmentNumber, 
-                roles: ['student'],
-                status: 'active',
-                department: newStudent.department
-            });
-        } catch(userCreationError: any) {
-             if (userCreationError.message?.includes("already exists")) {
-                console.warn(`System user with email ${newStudent.instituteEmail} already exists. Linking student ${newStudent.enrollmentNumber} to existing user.`);
-             } else {
-                console.error(`Failed to create system user for student ${newStudent.enrollmentNumber}:`, userCreationError);
-             }
-        }
+      } catch(userError: any) {
+        importErrors.push({row: rowIndex, message: `User account linking/creation failed for ${enrollmentNumber}: ${userError.message}`, data: row});
       }
     }
     (global as any).__API_STUDENTS_STORE__ = studentsStore;
+    
+    if (importErrors.length > 0) {
+        return NextResponse.json({ 
+            message: `GTU Students import partially completed with ${importErrors.length} issues.`, 
+            newCount, 
+            updatedCount, 
+            skippedCount,
+            errors: importErrors 
+        }, { status: 207 });
+    }
     return NextResponse.json({ message: 'GTU Students imported successfully.', newCount, updatedCount, skippedCount }, { status: 200 });
   } catch (error) {
     console.error('Error importing GTU students:', error);

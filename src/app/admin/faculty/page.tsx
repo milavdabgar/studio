@@ -18,9 +18,9 @@ import { format, parseISO, isValid } from 'date-fns';
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Checkbox } from '@/components/ui/checkbox';
-import type { Faculty, FacultyStatus, JobType, Gender } from '@/types/entities';
+import type { Faculty, FacultyStatus, JobType, Gender, Institute } from '@/types/entities'; // Added Institute
 import { facultyService } from '@/lib/api/faculty';
-
+import { instituteService } from '@/lib/api/institutes'; // For fetching institutes
 
 const DEPARTMENT_OPTIONS = [
   "Computer Engineering",
@@ -80,21 +80,20 @@ const parseGtuFacultyName = (gtuNameInput: string | undefined): { title?: string
     return { title, lastName: parts[0], firstName: parts[1], middleName: parts.slice(2).join(' ') }; 
 };
 
-const generateInstituteEmail = (firstName?: string, lastName?: string, staffCode?: string): string => {
+const generateInstituteEmail = (firstName?: string, lastName?: string, instituteDomain: string = "gppalanpur.ac.in"): string => {
   const fn = (firstName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
   const ln = (lastName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
   if (fn && ln) {
-    return `${fn}.${ln}@gppalanpur.ac.in`;
+    return `${fn}.${ln}@${instituteDomain}`;
   }
-  if (staffCode) {
-    return `${staffCode.toLowerCase()}@gppalanpur.ac.in`;
-  }
-  return `faculty_${Date.now()}@gppalanpur.ac.in`;
+  // Fallback if names are not sufficient, perhaps use a generic prefix or staff code if available
+  return `faculty_${Date.now()}@${instituteDomain}`;
 };
 
 
 export default function FacultyManagementPage() {
   const [facultyList, setFacultyList] = useState<Faculty[]>([]);
+  const [institutes, setInstitutes] = useState<Institute[]>([]); // For institute selection
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -119,6 +118,7 @@ export default function FacultyManagementPage() {
   const [formStatus, setFormStatus] = useState<FacultyStatus>('active');
   const [formAadhar, setFormAadhar] = useState('');
   const [formPan, setFormPan] = useState('');
+  const [formInstituteId, setFormInstituteId] = useState<string>('');
 
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -137,19 +137,26 @@ export default function FacultyManagementPage() {
 
   const { toast } = useToast();
 
-  const fetchFaculty = async () => {
+  const fetchInitialData = async () => {
     setIsLoading(true);
     try {
-      const data = await facultyService.getAllFaculty();
-      setFacultyList(data);
+      const [facultyData, instituteData] = await Promise.all([
+        facultyService.getAllFaculty(),
+        instituteService.getAllInstitutes()
+      ]);
+      setFacultyList(facultyData);
+      setInstitutes(instituteData);
+      if (instituteData.length > 0 && !formInstituteId) {
+        setFormInstituteId(instituteData[0].id); // Default to first institute
+      }
     } catch (error) {
-      toast({ variant: "destructive", title: "Error", description: (error as Error).message || "Could not load faculty data." });
+      toast({ variant: "destructive", title: "Error", description: (error as Error).message || "Could not load initial data." });
     }
     setIsLoading(false);
   };
 
   useEffect(() => {
-    fetchFaculty();
+    fetchInitialData();
   }, []);
 
   const resetForm = () => {
@@ -161,6 +168,7 @@ export default function FacultyManagementPage() {
     setFormDob(undefined); setFormJoiningDate(undefined);
     setFormGender(undefined); setFormMaritalStatus(undefined);
     setFormStatus('active'); setFormAadhar(''); setFormPan('');
+    setFormInstituteId(institutes.length > 0 ? institutes[0].id : '');
     setCurrentFaculty(null);
   };
 
@@ -195,10 +203,21 @@ export default function FacultyManagementPage() {
     setFormStatus(faculty.status);
     setFormAadhar(faculty.aadharNumber || '');
     setFormPan(faculty.panCardNumber || '');
+    // Assuming faculty has userId which links to User, and User has instituteId.
+    // This part might need adjustment based on how Faculty is linked to Institute.
+    // For now, let's assume Faculty might have an instituteId directly or we fetch user's institute.
+    // If Faculty directly has instituteId:
+    setFormInstituteId( (faculty as any).instituteId || (institutes.length > 0 ? institutes[0].id : ''));
+
+
     setIsDialogOpen(true);
   };
 
   const handleAddNew = () => {
+    if (institutes.length === 0) {
+      toast({ variant: "destructive", title: "Cannot Add Faculty", description: "No institutes available. Please create an institute first." });
+      return;
+    }
     resetForm();
     setIsDialogOpen(true);
   };
@@ -207,7 +226,7 @@ export default function FacultyManagementPage() {
     setIsSubmitting(true);
     try {
       await facultyService.deleteFaculty(facultyId);
-      await fetchFaculty();
+      await fetchInitialData();
       setSelectedFacultyIds(prev => prev.filter(id => id !== facultyId));
       toast({ title: "Faculty Deleted", description: "The faculty record has been successfully deleted." });
     } catch (error) {
@@ -222,6 +241,10 @@ export default function FacultyManagementPage() {
       toast({ variant: "destructive", title: "Validation Error", description: "Staff Code, First Name and Last Name are required." });
       return;
     }
+    if (!formInstituteId) {
+      toast({ variant: "destructive", title: "Validation Error", description: "Institute is required." });
+      return;
+    }
     if (formPersonalEmail.trim() && !/\S+@\S+\.\S+/.test(formPersonalEmail)) {
         toast({ variant: "destructive", title: "Validation Error", description: "Please enter a valid personal email address or leave it empty." });
         return;
@@ -229,7 +252,11 @@ export default function FacultyManagementPage() {
     
     setIsSubmitting(true);
       
-    const facultyData: Omit<Faculty, 'id' | 'instituteEmail'> & { instituteEmail?: string; } = {
+    const selectedInstitute = institutes.find(inst => inst.id === formInstituteId);
+    const instituteDomain = selectedInstitute?.domain || "gppalanpur.ac.in";
+
+
+    const facultyData: Omit<Faculty, 'id' > = {
       staffCode: formStaffCode.trim(),
       gtuName: formGtuName.trim() || [formTitle.trim(), formFirstName.trim(), formMiddleName.trim(), formLastName.trim()].filter(Boolean).join(' ') || undefined,
       title: formTitle.trim() || undefined,
@@ -237,6 +264,7 @@ export default function FacultyManagementPage() {
       middleName: formMiddleName.trim() || undefined,
       lastName: formLastName.trim() || undefined,
       personalEmail: formPersonalEmail.trim() || undefined, 
+      instituteEmail: generateInstituteEmail(formFirstName.trim(), formLastName.trim(), instituteDomain),
       department: formDepartment,
       designation: formDesignation.trim() || undefined,
       jobType: formJobType,
@@ -248,19 +276,21 @@ export default function FacultyManagementPage() {
       status: formStatus,
       aadharNumber: formAadhar.trim() || undefined,
       panCardNumber: formPan.trim() || undefined,
+      // userId will be handled by backend linking logic if new User needs to be created.
     };
       
-    facultyData.instituteEmail = generateInstituteEmail(facultyData.firstName, facultyData.lastName, facultyData.staffCode);
 
     try {
+      let resultFaculty;
       if (currentFaculty && currentFaculty.id) {
-        await facultyService.updateFaculty(currentFaculty.id, facultyData);
+        resultFaculty = await facultyService.updateFaculty(currentFaculty.id, facultyData);
         toast({ title: "Faculty Updated", description: "The faculty record has been successfully updated." });
       } else {
-        await facultyService.createFaculty(facultyData as Omit<Faculty, 'id'>);
-        toast({ title: "Faculty Added", description: `Faculty ${facultyData.firstName} ${facultyData.lastName} added. Default Password: ${facultyData.staffCode}` });
+        resultFaculty = await facultyService.createFaculty(facultyData as Omit<Faculty, 'id'>); // Cast as backend adds ID
+        const defaultPassword = facultyData.staffCode;
+        toast({ title: "Faculty Added", description: `Faculty ${resultFaculty.firstName} ${resultFaculty.lastName} added. Institute Email: ${resultFaculty.instituteEmail}. Default Password: ${defaultPassword}` });
       }
-      await fetchFaculty();
+      await fetchInitialData();
       setIsDialogOpen(false);
       resetForm();
     } catch (error) {
@@ -303,7 +333,7 @@ export default function FacultyManagementPage() {
     setIsSubmitting(true);
     try {
         const result = await facultyService.importFaculty(selectedFile);
-        await fetchFaculty();
+        await fetchInitialData();
         toast({ title: "Standard Import Successful", description: `${result.newCount} faculty added, ${result.updatedCount} faculty updated. Skipped: ${result.skippedCount}` });
     } catch (error: any) {
         console.error("Error processing standard CSV file:", error);
@@ -321,14 +351,15 @@ export default function FacultyManagementPage() {
       toast({ title: "Export Canceled", description: "No faculty to export (check filters)." });
       return;
     }
-    const header = ['id', 'staffCode', 'gtuName', 'title', 'firstName', 'middleName', 'lastName', 'personalEmail', 'instituteEmail', 'contactNumber', 'department', 'designation', 'jobType', 'instType', 'dateOfBirth', 'joiningDate', 'gender', 'maritalStatus', 'status', 'aadharNumber', 'panCardNumber', 'gpfNpsNumber', 'placeOfBirth', 'nationality', 'knownAs'];
+    const header = ['id', 'staffCode', 'gtuName', 'title', 'firstName', 'middleName', 'lastName', 'personalEmail', 'instituteEmail', 'contactNumber', 'department', 'designation', 'jobType', 'instType', 'dateOfBirth', 'joiningDate', 'gender', 'maritalStatus', 'status', 'aadharNumber', 'panCardNumber', 'gpfNpsNumber', 'placeOfBirth', 'nationality', 'knownAs', 'userId'];
     const csvRows = [
       header.join(','),
       ...filteredFaculty.map(f => [
         f.id, f.staffCode, `"${f.gtuName || ''}"`, `"${f.title || ''}"`, `"${f.firstName || ''}"`, `"${f.middleName || ''}"`, `"${f.lastName || ''}"`,
         `"${f.personalEmail || ''}"`, f.instituteEmail, `"${f.contactNumber || ''}"`, `"${f.department}"`, `"${f.designation || ''}"`,
         f.jobType || '', f.instType || '', f.dateOfBirth || '', f.joiningDate || '', f.gender || '', f.maritalStatus || '', f.status,
-        `"${f.aadharNumber || ''}"`, `"${f.panCardNumber || ''}"`, `"${f.gpfNpsNumber || ''}"`, `"${f.placeOfBirth || ''}"`, `"${f.nationality || ''}"`, `"${f.knownAs || ''}"`
+        `"${f.aadharNumber || ''}"`, `"${f.panCardNumber || ''}"`, `"${f.gpfNpsNumber || ''}"`, `"${f.placeOfBirth || ''}"`, `"${f.nationality || ''}"`, `"${f.knownAs || ''}"`,
+        f.userId || ''
       ].join(','))
     ];
     const csvString = csvRows.join('\r\n');
@@ -343,9 +374,9 @@ export default function FacultyManagementPage() {
   };
 
   const handleDownloadSampleCsv = () => {
-    const sampleCsvContent = `id,staffCode,gtuName,title,firstName,middleName,lastName,personalEmail,instituteEmail,contactNumber,department,designation,jobType,instType,dateOfBirth,joiningDate,gender,maritalStatus,status,aadharNumber,panCardNumber,gpfNpsNumber,placeOfBirth,nationality,knownAs
-faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@example.com,,9876543210,Computer Engineering,Professor,Regular,DI,1975-05-15,2005-08-01,Male,Married,active,123456789012,ABCDE1234F,GPF123,Palanpur,Indian,"Anil S."
-,S002,"Ms. PATEL PRIYA RAJESH",Ms.,PRIYA,RAJESH,PATEL,priya.patel@example.com,,9876543211,Mechanical Engineering,Lecturer,Adhoc,DI,1988-11-20,2015-06-10,Female,Single,active,,,,,,,
+    const sampleCsvContent = `id,staffCode,gtuName,title,firstName,middleName,lastName,personalEmail,instituteEmail,contactNumber,department,designation,jobType,instType,dateOfBirth,joiningDate,gender,maritalStatus,status,aadharNumber,panCardNumber,gpfNpsNumber,placeOfBirth,nationality,knownAs,userId
+faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@example.com,anil.sharma@gppalanpur.ac.in,9876543210,Computer Engineering,Professor,Regular,DI,1975-05-15,2005-08-01,Male,Married,active,123456789012,ABCDE1234F,GPF123,Palanpur,Indian,"Anil S.",user_id_link
+,S002,"Ms. PATEL PRIYA RAJESH",Ms.,PRIYA,RAJESH,PATEL,priya.patel@example.com,priya.patel@gppalanpur.ac.in,9876543211,Mechanical Engineering,Lecturer,Adhoc,DI,1988-11-20,2015-06-10,Female,Single,active,,,,,,,user_id_link2
 `;
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -366,7 +397,7 @@ faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@examp
     setIsSubmitting(true);
     try {
         const result = await facultyService.importGtuFaculty(selectedGtuFile);
-        await fetchFaculty();
+        await fetchInitialData();
         toast({ title: "GTU Import Successful", description: `${result.newCount} faculty added, ${result.updatedCount} faculty updated. ${result.skippedCount} rows skipped.` });
 
     } catch (error: any) {
@@ -487,7 +518,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
         for (const id of selectedFacultyIds) {
             await facultyService.deleteFaculty(id);
         }
-        await fetchFaculty();
+        await fetchInitialData();
         toast({ title: "Faculty Deleted", description: `${selectedFacultyIds.length} faculty member(s) have been successfully deleted.` });
         setSelectedFacultyIds([]);
     } catch (error) {
@@ -546,7 +577,20 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                     <Label htmlFor="facultyStaffCode">Staff Code *</Label>
                     <Input id="facultyStaffCode" value={formStaffCode} onChange={(e) => setFormStaffCode(e.target.value)} placeholder="e.g., S001" disabled={isSubmitting} required />
                   </div>
-                  <div className="md:col-span-2">
+                   <div className="md:col-span-1">
+                    <Label htmlFor="facultyInstitute">Institute *</Label>
+                    <Select value={formInstituteId} onValueChange={setFormInstituteId} disabled={isSubmitting || institutes.length === 0} required>
+                        <SelectTrigger id="facultyInstitute"><SelectValue placeholder="Select Institute"/></SelectTrigger>
+                        <SelectContent>
+                            {institutes.map(inst => <SelectItem key={inst.id} value={inst.id}>{inst.name} ({inst.code})</SelectItem>)}
+                        </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="md:col-span-1">
+                    {/* Spacer or another field */}
+                  </div>
+
+                  <div className="md:col-span-3">
                     <Label htmlFor="facultyGtuName">Full Name (GTU Format)</Label>
                     <Input 
                       id="facultyGtuName" 
@@ -569,6 +613,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                         <SelectTrigger id="facultyTitle"><SelectValue placeholder="Select Title" /></SelectTrigger>
                         <SelectContent >
                             {TITLE_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
+                             <SelectItem value="">None</SelectItem>
                         </SelectContent>
                     </Select>
                   </div>
@@ -598,6 +643,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                         <SelectTrigger id="facultyGender"><SelectValue placeholder="Select Gender" /></SelectTrigger>
                         <SelectContent >
                             {GENDER_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
+                             <SelectItem value="">Prefer not to say</SelectItem>
                         </SelectContent>
                     </Select>
                   </div>
@@ -625,6 +671,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                         <SelectTrigger id="facultyMaritalStatus"><SelectValue placeholder="Select Status" /></SelectTrigger>
                         <SelectContent >
                             {MARITAL_STATUS_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
+                            <SelectItem value="">Prefer not to say</SelectItem>
                         </SelectContent>
                     </Select>
                   </div>
