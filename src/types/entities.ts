@@ -95,6 +95,7 @@ export interface SystemUser {
   id: string;
   name: string;
   email: string;
+  password?: string; // Added for internal handling, should not be sent to client unless explicitly for auth init
   roles: UserRole[];
   status: 'active' | 'inactive';
   department?: string;
@@ -178,3 +179,4 @@ export interface Faculty {
   nationality?: string;
   knownAs?: string;
 }
+
