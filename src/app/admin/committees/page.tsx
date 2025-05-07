@@ -52,7 +52,7 @@ export default function CommitteeManagementPage() {
   const [formFormationDate, setFormFormationDate] = useState<Date | undefined>(undefined);
   const [formDissolutionDate, setFormDissolutionDate] = useState<Date | undefined>(undefined);
   const [formStatus, setFormStatus] = useState<CommitteeStatus>('active');
-  const [formConvenerId, setFormConvenerId] = useState<string | undefined>(undefined);
+  const [formConvenerId, setFormConvenerId] = useState<string>(NO_CONVENER_VALUE);
   
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -93,25 +93,29 @@ export default function CommitteeManagementPage() {
   }, []);
 
   const resetForm = () => {
-    setFormName(''); setFormCode(''); setFormDescription(''); setFormPurpose('');
+    setFormName(''); 
+    setFormCode(''); 
+    setFormDescription(''); 
+    setFormPurpose('');
     setFormInstituteId(institutes.length > 0 ? institutes[0].id : ''); 
-    setFormFormationDate(undefined); setFormDissolutionDate(undefined);
+    setFormFormationDate(undefined); 
+    setFormDissolutionDate(undefined);
     setFormStatus('active');
-    setFormConvenerId(undefined);
+    setFormConvenerId(NO_CONVENER_VALUE);
     setCurrentCommittee(null);
   };
 
   const handleEdit = (committee: Committee) => {
     setCurrentCommittee(committee);
-    setFormName(committee.name);
-    setFormCode(committee.code);
+    setFormName(committee.name || '');
+    setFormCode(committee.code || '');
     setFormDescription(committee.description || '');
-    setFormPurpose(committee.purpose);
-    setFormInstituteId(committee.instituteId);
+    setFormPurpose(committee.purpose || '');
+    setFormInstituteId(committee.instituteId || '');
     setFormFormationDate(committee.formationDate && isValid(parseISO(committee.formationDate)) ? parseISO(committee.formationDate) : undefined);
     setFormDissolutionDate(committee.dissolutionDate && isValid(parseISO(committee.dissolutionDate)) ? parseISO(committee.dissolutionDate) : undefined);
     setFormStatus(committee.status);
-    setFormConvenerId(committee.convenerId || undefined);
+    setFormConvenerId(committee.convenerId || NO_CONVENER_VALUE);
     setIsDialogOpen(true);
   };
 
@@ -409,8 +413,8 @@ cmt_sample_1,Academic Committee,ACCOM,"Oversees academic policies","To ensure ac
                   <div className="md:col-span-1">
                     <Label htmlFor="convenerId">Convener</Label>
                     <Select 
-                      value={formConvenerId || NO_CONVENER_VALUE} 
-                      onValueChange={(value) => setFormConvenerId(value === NO_CONVENER_VALUE ? undefined : value)} 
+                      value={formConvenerId} 
+                      onValueChange={(value) => setFormConvenerId(value)} 
                       disabled={isSubmitting || facultyUsers.length === 0}
                     >
                       <SelectTrigger id="convenerId"><SelectValue placeholder="Select Convener (Optional)" /></SelectTrigger>
@@ -602,5 +606,3 @@ cmt_sample_1,Academic Committee,ACCOM,"Oversees academic policies","To ensure ac
     </div>
   );
 }
-
-    
