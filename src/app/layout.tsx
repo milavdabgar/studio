@@ -4,7 +4,7 @@ import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
-import { Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser, UsersRound, Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText, BarChart3 } from 'lucide-react'; // Added missing icons
+import { Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser, UsersRound, Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText, BarChart3, CalendarRange } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -47,6 +47,7 @@ const adminNavItems = [
   { href: '/admin/faculty', icon: UsersRound, label: 'Faculty Mgt.', id: 'admin-faculty' }, 
   { href: '/admin/departments', icon: Building2, label: 'Departments', id: 'admin-departments' },
   { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs' },
+  { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches' },
   { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses' },
   { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback' },
 ];
@@ -75,6 +76,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/committees', icon: CommitteeIcon, label: 'Committees', id: 'hod-committees'},
     { href: '/admin/departments', icon: Building2, label: 'My Department', id: 'hod-department' }, 
     { href: '/admin/programs', icon: BookCopy, label: 'Programs (Dept)', id: 'hod-programs' },
+    { href: '/admin/batches', icon: CalendarRange, label: 'Batches (Dept)', id: 'hod-batches' },
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'hod-courses' },
     { href: '/admin/faculty', icon: UsersRound, label: 'Faculty (Dept)', id: 'hod-faculty' },
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'hod-students' },
@@ -102,9 +104,24 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
   super_admin: adminNavItems, 
   dte_admin: [{ href: '/dashboard', icon: Home, label: 'DTE Dashboard', id: 'dte-admin-dashboard' }],
   gtu_admin: [{ href: '/dashboard', icon: Home, label: 'GTU Dashboard', id: 'gtu-admin-dashboard' }],
-  institute_admin: [{ href: '/dashboard', icon: Home, label: 'Institute Dashboard', id: 'institute-admin-dashboard' }],
-  department_admin: [{ href: '/dashboard', icon: Home, label: 'Department Dashboard', id: 'department-admin-dashboard' }],
-  committee_admin: [{ href: '/dashboard', icon: Home, label: 'Committee Admin Dashboard', id: 'committee-admin-dashboard' }],
+  institute_admin: [
+    ...adminNavItems.filter(item => ![
+      '/admin/users', '/admin/roles', '/admin/institutes' // Institute admin manages their own institute
+    ].includes(item.href)),
+    { href: '/dashboard', icon: Home, label: 'Institute Dashboard', id: 'institute-admin-dashboard' },
+  ],
+  department_admin: [
+    { href: '/dashboard', icon: Home, label: 'Department Dashboard', id: 'department-admin-dashboard' },
+    { href: '/admin/programs', icon: BookCopy, label: 'Programs (Dept)', id: 'dept-admin-programs' },
+    { href: '/admin/batches', icon: CalendarRange, label: 'Batches (Dept)', id: 'dept-admin-batches' },
+    { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'dept-admin-courses' },
+    { href: '/admin/faculty', icon: UsersRound, label: 'Faculty (Dept)', id: 'dept-admin-faculty' },
+    { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'dept-admin-students' },
+  ],
+  committee_admin: [
+    { href: '/dashboard', icon: Home, label: 'Committee Admin DB', id: 'committee-admin-dashboard' },
+    { href: '/admin/committees', icon: CommitteeIcon, label: 'Manage Committees', id: 'committee-admin-committees' },
+  ],
   lab_assistant: [{ href: '/dashboard', icon: Home, label: 'Lab Assistant Dashboard', id: 'lab-assistant-dashboard' }],
   clerical_staff: [{ href: '/dashboard', icon: Home, label: 'Clerical Dashboard', id: 'clerical-dashboard' }],
   unknown: [], 
@@ -113,12 +130,12 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
 const getNavItemsForRoleCode = (roleCode: UserRoleCode): Array<{ href: string; icon: React.ElementType; label: string; id: string }> => {
   const items = baseNavItems[roleCode] || baseNavItems['unknown']; 
   
-  if (roleCode.startsWith('committee_') || roleCode.includes('_convener') || roleCode.includes('_member') || roleCode.includes('_co_convener')) {
+  if (roleCode.startsWith('committee_') && !['committee_admin'].includes(roleCode)) {
      if (roleCode.endsWith('_convener')) return baseNavItems['committee_convener'];
      if (roleCode.endsWith('_co_convener')) return baseNavItems['committee_co_convener'];
      if (roleCode.endsWith('_member')) return baseNavItems['committee_member'];
   }
-  const sortedItems = [...items]; // Create a new array to avoid mutating the original
+  const sortedItems = [...items]; 
   sortedItems.sort((a, b) => {
     if (a.label.includes('Dashboard')) return -1;
     if (b.label.includes('Dashboard')) return 1;
@@ -179,7 +196,7 @@ export default function RootLayout({
   }
 
   useEffect(() => {
-    setIsMounted(true);
+    setIsMounted(true); // Indicate component has mounted
     const parsedUser = parseUserCookie();
     if (parsedUser) {
       setCurrentUser({

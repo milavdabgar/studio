@@ -373,16 +373,16 @@ export interface Program {
   updatedAt?: Timestamp;
 }
 
+export type BatchStatus = 'upcoming' | 'active' | 'completed' | 'inactive';
 export interface Batch {
     id: string;
     name: string; 
     programId: string;
-    academicYear: number; 
-    startDate: Timestamp;
-    endDate?: Timestamp;
+    startAcademicYear: number; 
+    endAcademicYear?: number; 
+    status: BatchStatus;
     maxIntake?: number;
-    actualIntake?: number;
-    status: 'active' | 'inactive' | 'completed' | 'upcoming';
+    // currentIntake will be derived from number of students enrolled in this batch
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
