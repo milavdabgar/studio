@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, type FormEvent, useEffect } from "react";
@@ -12,14 +11,14 @@ import { AppLogo } from "@/components/app-logo";
 import { Loader2, LogIn } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import type { UserRole, SystemUser as User, Role } from '@/types/entities'; // Import Role
-import { roleService } from "@/lib/api/roles"; // Import roleService
+import type { UserRole as UserRoleCode, SystemUser as User, Role } from '@/types/entities'; // UserRole is now UserRoleCode
+import { roleService } from "@/lib/api/roles"; 
 
 interface MockUser {
   id?: string; 
   email: string;
   password?: string; 
-  roles: UserRole[];
+  roles: UserRoleCode[]; // Stores role codes
   name?: string;
   status?: 'active' | 'inactive';
   instituteId?: string;
@@ -40,7 +39,7 @@ const getMockUsers = (): MockUser[] => {
     try {
       const storedUsersRaw = localStorage.getItem('__API_USERS_STORE__');
       if (storedUsersRaw) {
-        const storedUsersFromApi: MockUser[] = JSON.parse(storedUsersRaw);
+        const storedUsersFromApi: User[] = JSON.parse(storedUsersRaw); // Using User type now
         const combinedUsers = new Map<string, MockUser>();
         
         baseUsers.forEach(user => combinedUsers.set(user.email, user));
@@ -49,10 +48,10 @@ const getMockUsers = (): MockUser[] => {
           const userToStore: MockUser = {
             id: apiUser.id,
             email: apiUser.email,
-            password: apiUser.password, // Assuming password might be in the localStorage version
-            roles: apiUser.roles,
-            name: apiUser.name,
-            status: apiUser.status,
+            password: apiUser.password, 
+            roles: apiUser.roles, // Assuming apiUser.roles are codes
+            name: apiUser.displayName, // Use displayName from User
+            status: apiUser.isActive ? 'active' : 'inactive',
             instituteId: apiUser.instituteId,
           };
           combinedUsers.set(userToStore.email, userToStore);
@@ -70,9 +69,9 @@ const getMockUsers = (): MockUser[] => {
 export default function LoginPage() {
   const [email, setEmail] = useState("admin@gppalanpur.in");
   const [password, setPassword] = useState("Admin@123");
-  const [selectedRole, setSelectedRole] = useState<UserRole>("admin");
-  const [availableRolesForUser, setAvailableRolesForUser] = useState<UserRole[]>([]);
-  const [allSystemRoles, setAllSystemRoles] = useState<Role[]>([]); // To store all roles fetched from API
+  const [selectedRoleCode, setSelectedRoleCode] = useState<UserRoleCode>("admin"); // Store role code
+  const [availableRolesForUser, setAvailableRolesForUser] = useState<Role[]>([]); // Store Role objects
+  const [allSystemRoles, setAllSystemRoles] = useState<Role[]>([]); 
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
@@ -90,51 +89,49 @@ export default function LoginPage() {
       try {
         const roles = await roleService.getAllRoles();
         setAllSystemRoles(roles);
-        // Set a default role if none is selected or current one is not in fetched roles
-        if (roles.length > 0 && (!selectedRole || !roles.find(r => r.name === selectedRole))) {
-             const adminRole = roles.find(r => r.code === 'admin'); // Prefer 'admin' role by code
-             if (adminRole) setSelectedRole(adminRole.name);
-             else setSelectedRole(roles[0].name); // Fallback to first role name
+        if (roles.length > 0 && (!selectedRoleCode || !roles.find(r => r.code === selectedRoleCode))) {
+             const adminRole = roles.find(r => r.code === 'admin');
+             if (adminRole) setSelectedRoleCode(adminRole.code);
+             else setSelectedRoleCode(roles[0].code); // Fallback to first role code
         }
       } catch (error) {
         toast({ variant: "destructive", title: "Error", description: "Could not load system roles."});
       }
     };
     fetchAllRoles();
-  }, [toast]); // Removed selectedRole from deps to avoid re-fetching on selection change
+  }, [toast]);
 
   useEffect(() => {
     const user = MOCK_USERS.find(u => u.email === email);
     if (user && user.roles && allSystemRoles.length > 0) {
-      const loginableRoles = user.roles.filter(roleNameOrCode => 
-        allSystemRoles.some(sysRole => sysRole.name === roleNameOrCode || sysRole.code === roleNameOrCode)
-      );
-      setAvailableRolesForUser(loginableRoles);
+      const userRolesAsObjects = user.roles
+        .map(roleCode => allSystemRoles.find(sysRole => sysRole.code === roleCode))
+        .filter(role => role !== undefined) as Role[];
       
-      // If current selectedRole is not in user's available roles, try to set a default
-      if (!loginableRoles.includes(selectedRole) && loginableRoles.length > 0) {
-        setSelectedRole(loginableRoles[0]);
-      } else if (loginableRoles.length === 0) {
-        setSelectedRole('unknown'); 
+      setAvailableRolesForUser(userRolesAsObjects);
+      
+      if (!userRolesAsObjects.find(r => r.code === selectedRoleCode) && userRolesAsObjects.length > 0) {
+        setSelectedRoleCode(userRolesAsObjects[0].code);
+      } else if (userRolesAsObjects.length === 0) {
+        setSelectedRoleCode('unknown'); 
       }
     } else {
       setAvailableRolesForUser([]);
-      // If no user found or no roles for user, still show all system roles for selection initially
-      // The handleSubmit will validate if the selected role is actually assigned to the user
-      if (allSystemRoles.length > 0 && (!selectedRole || !allSystemRoles.find(r => r.name === selectedRole))) {
+      if (allSystemRoles.length > 0 && (!selectedRoleCode || !allSystemRoles.find(r => r.code === selectedRoleCode))) {
           const adminRole = allSystemRoles.find(r => r.code === 'admin');
-          if (adminRole) setSelectedRole(adminRole.name);
-          else setSelectedRole(allSystemRoles[0].name);
+          if (adminRole) setSelectedRoleCode(adminRole.code);
+          else if(allSystemRoles.length > 0) setSelectedRoleCode(allSystemRoles[0].code);
+          else setSelectedRoleCode('unknown');
       }
     }
-  }, [email, MOCK_USERS, allSystemRoles, selectedRole]); 
+  }, [email, MOCK_USERS, allSystemRoles, selectedRoleCode]); 
 
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
 
-    if (!selectedRole || selectedRole === 'unknown' || !allSystemRoles.find(r => r.name === selectedRole)) {
+    if (!selectedRoleCode || selectedRoleCode === 'unknown') {
         toast({
             variant: "destructive",
             title: "Login Failed",
@@ -152,8 +149,8 @@ export default function LoginPage() {
     });
 
     if (foundUser) {
-      const selectedRoleObject = allSystemRoles.find(r => r.name === selectedRole || r.code === selectedRole);
-      if (selectedRoleObject && foundUser.roles.some(userRoleNameOrCode => userRoleNameOrCode === selectedRoleObject.name || userRoleNameOrCode === selectedRoleObject.code)) {
+      // Ensure selectedRoleCode is one of the user's assigned role codes
+      if (foundUser.roles.includes(selectedRoleCode)) {
         if(foundUser.status === 'inactive'){
             toast({
               variant: "destructive",
@@ -163,16 +160,20 @@ export default function LoginPage() {
             setIsLoading(false);
             return;
         }
+        
+        const activeRoleDetails = allSystemRoles.find(r => r.code === selectedRoleCode);
+        const activeRoleDisplayName = activeRoleDetails ? activeRoleDetails.name : selectedRoleCode;
+
         toast({
           title: "Login Successful",
-          description: `Welcome back, ${foundUser.name || foundUser.email}! You are logged in as ${selectedRoleObject.name}.`,
+          description: `Welcome back, ${foundUser.name || foundUser.email}! You are logged in as ${activeRoleDisplayName}.`,
         });
 
         const userPayload = {
           email: foundUser.email,
           name: foundUser.name || foundUser.email,
-          availableRoles: foundUser.roles, // Store the user's actual assigned roles
-          activeRole: selectedRoleObject.name // Store the display name of the active role
+          availableRoles: foundUser.roles, // Array of role codes
+          activeRole: selectedRoleCode // Store active role as code
         };
         const encodedUserPayload = encodeURIComponent(JSON.stringify(userPayload));
 
@@ -182,10 +183,11 @@ export default function LoginPage() {
 
         router.push("/dashboard");
       } else {
+        const roleToDisplay = allSystemRoles.find(r => r.code === selectedRoleCode)?.name || selectedRoleCode;
         toast({
           variant: "destructive",
           title: "Login Failed",
-          description: `The role '${selectedRole}' is not assigned to this user.`,
+          description: `The role '${roleToDisplay}' is not assigned to this user.`,
         });
       }
     } else {
@@ -202,10 +204,9 @@ export default function LoginPage() {
     return <div className="flex items-center justify-center min-h-screen"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
   }
 
-  // Determine which roles to display in the dropdown
-  const roleOptionsToDisplay = email && availableRolesForUser.length > 0
-    ? allSystemRoles.filter(sysRole => availableRolesForUser.some(userRole => userRole === sysRole.name || userRole === sysRole.code))
-    : allSystemRoles.filter(sysRole => sysRole.code !== 'unknown'); // Show all roles if no specific user or user has no roles
+  const roleOptionsForDropdown = email && availableRolesForUser.length > 0 
+    ? availableRolesForUser 
+    : allSystemRoles.filter(r => r.code !== 'unknown');
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-background to-secondary/20 p-4">
@@ -246,18 +247,18 @@ export default function LoginPage() {
             <div className="space-y-2">
               <Label htmlFor="role">Login as</Label>
               <Select 
-                value={selectedRole} 
-                onValueChange={(value) => setSelectedRole(value as UserRole)} 
+                value={selectedRoleCode} 
+                onValueChange={(value) => setSelectedRoleCode(value as UserRoleCode)} 
                 required 
-                disabled={isLoading || roleOptionsToDisplay.length === 0}
+                disabled={isLoading || roleOptionsForDropdown.length === 0}
               >
                 <SelectTrigger id="role">
-                  <SelectValue placeholder={roleOptionsToDisplay.length === 0 ? "No roles available" : "Select your role"} />
+                  <SelectValue placeholder={roleOptionsForDropdown.length === 0 ? "No roles available" : "Select your role"} />
                 </SelectTrigger>
                 <SelectContent>
-                  {roleOptionsToDisplay.length > 0 ? (
-                    roleOptionsToDisplay.map(opt => (
-                      <SelectItem key={opt.id} value={opt.name}>{opt.name}</SelectItem>
+                  {roleOptionsForDropdown.length > 0 ? (
+                    roleOptionsForDropdown.map(role => (
+                      <SelectItem key={role.id} value={role.code}>{role.name}</SelectItem> // Value is role.code, display is role.name
                     ))
                   ) : (
                     <SelectItem value="unknown" disabled>
@@ -311,3 +312,4 @@ export default function LoginPage() {
     </div>
   );
 }
+    

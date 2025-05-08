@@ -1,10 +1,10 @@
-
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Role } from '@/types/entities';
+import type { Role, User } from '@/types/entities'; // Import User
 import { allPermissions } from '@/lib/api/roles'; 
 
 declare global {
   var __API_ROLES_STORE__: Role[] | undefined;
+  var __API_USERS_STORE__: User[] | undefined; // For updating user roles if a role code changes (though disallowed now)
 }
 
 if (!global.__API_ROLES_STORE__) {
@@ -44,22 +44,18 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (existingRole.isSystemRole && roleData.name && roleData.name.trim().toLowerCase() !== existingRole.name.toLowerCase()) {
         return NextResponse.json({ message: `Cannot change the name of the system role '${existingRole.name}'.` }, { status: 400 });
     }
-    if (existingRole.isSystemRole && roleData.code && roleData.code.trim().toLowerCase() !== existingRole.code.toLowerCase()) {
-        return NextResponse.json({ message: `Cannot change the code of the system role '${existingRole.name}'.` }, { status: 400 });
+    // Disallow changing the code of any role after creation
+    if (roleData.code && roleData.code.trim().toLowerCase() !== existingRole.code.toLowerCase()) {
+        return NextResponse.json({ message: `Changing the 'code' of a role is not allowed. Create a new role if a different code is needed.` }, { status: 400 });
     }
 
     if (roleData.name !== undefined && !roleData.name.trim()) {
         return NextResponse.json({ message: 'Role Name cannot be empty.' }, { status: 400 });
     }
     
-    const newCode = roleData.code?.trim().toLowerCase();
-    if (newCode && newCode !== existingRole.code.toLowerCase() && rolesStore.some(r => r.id !== id && r.code.toLowerCase() === newCode)) {
-      return NextResponse.json({ message: `Role with code '${newCode}' already exists.` }, { status: 409 });
-    }
     if (roleData.name && roleData.name.trim().toLowerCase() !== existingRole.name.toLowerCase() && rolesStore.some(r => r.id !== id && r.name.toLowerCase() === roleData.name!.trim().toLowerCase())) {
         return NextResponse.json({ message: `Role with name '${roleData.name.trim()}' already exists.` }, { status: 409 });
     }
-
 
     if(roleData.permissions){
         roleData.permissions = roleData.permissions.filter(p => allPermissions.includes(p));
@@ -67,13 +63,15 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     const updatedRoleData = { ...roleData };
     if (updatedRoleData.name) updatedRoleData.name = updatedRoleData.name.trim();
-    if (updatedRoleData.code) updatedRoleData.code = updatedRoleData.code.trim().toLowerCase();
+    // Code is not updated here as it's disallowed
     if (updatedRoleData.description !== undefined) updatedRoleData.description = updatedRoleData.description.trim();
 
 
     const updatedRole = { 
       ...existingRole, 
       ...updatedRoleData,
+      code: existingRole.code, // Ensure code remains unchanged
+      committeeCode: roleData.committeeCode ? roleData.committeeCode.toLowerCase() : existingRole.committeeCode,
       updatedAt: new Date().toISOString()
     };
 
@@ -96,13 +94,13 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
   }
   
   const roleToDelete = rolesStore[roleIndex];
-  if (roleToDelete.isSystemRole) {
+  if (roleToDelete.isSystemRole && !roleToDelete.isCommitteeRole) { // System roles (non-committee) are protected
       return NextResponse.json({ message: `Cannot delete the system role '${roleToDelete.name}'.` }, { status: 403 });
   }
   
   // Remove this role (by code) from all users
   currentUsersStore.forEach(user => {
-      if (user.roles.includes(roleToDelete.code)) {
+      if (user.roles.includes(roleToDelete.code)) { // Compare with role CODE
           user.roles = user.roles.filter(rCode => rCode !== roleToDelete.code);
       }
   });
@@ -113,3 +111,4 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
   global.__API_ROLES_STORE__ = rolesStore;
   return NextResponse.json({ message: 'Role deleted successfully' }, { status: 200 });
 }
+    

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
@@ -24,6 +23,7 @@ export default function RoleManagementPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentRole, setCurrentRole] = useState<Partial<Role> | null>(null);
   const [formRoleName, setFormRoleName] = useState('');
+  const [formRoleCode, setFormRoleCode] = useState(''); // Added for code
   const [formRoleDescription, setFormRoleDescription] = useState('');
   const [formRolePermissions, setFormRolePermissions] = useState<string[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -65,6 +65,7 @@ export default function RoleManagementPage() {
   const handleEdit = (role: Role) => {
     setCurrentRole(role);
     setFormRoleName(role.name);
+    setFormRoleCode(role.code); // Set code for editing
     setFormRoleDescription(role.description);
     setFormRolePermissions([...role.permissions]);
     setIsDialogOpen(true);
@@ -73,6 +74,7 @@ export default function RoleManagementPage() {
   const handleAddNew = () => {
     setCurrentRole(null);
     setFormRoleName('');
+    setFormRoleCode(''); // Clear code for new role
     setFormRoleDescription('');
     setFormRolePermissions([]);
     setIsDialogOpen(true);
@@ -101,24 +103,28 @@ export default function RoleManagementPage() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    if (!formRoleName.trim()) {
-      toast({ variant: "destructive", title: "Validation Error", description: "Role name cannot be empty."});
+    if (!formRoleName.trim() || !formRoleCode.trim()) { // Check for code
+      toast({ variant: "destructive", title: "Validation Error", description: "Role name and code cannot be empty."});
       return;
     }
     setIsSubmitting(true);
     
-    const roleData: Omit<Role, 'id'> = { 
-      name: formRoleName, 
-      description: formRoleDescription, 
+    const roleData: Omit<Role, 'id' | 'createdAt' | 'updatedAt' | 'isSystemRole' | 'isCommitteeRole' | 'committeeId' | 'committeeCode'> = { 
+      name: formRoleName.trim(), 
+      code: formRoleCode.trim().toLowerCase(), // Send lowercase code
+      description: formRoleDescription.trim(), 
       permissions: formRolePermissions 
     };
     
     try {
       if (currentRole && currentRole.id) {
-        await roleService.updateRole(currentRole.id, roleData);
+        // For update, do not send 'code' if it's not allowed to be changed via PUT, or backend handles it.
+        // Assuming backend disallows code change on PUT, so we might not need to send it or send only if it's different (but API disallows it)
+        const updateData = {name: roleData.name, description: roleData.description, permissions: roleData.permissions};
+        await roleService.updateRole(currentRole.id, updateData);
         toast({ title: "Role Updated", description: "The role has been successfully updated." });
       } else {
-        await roleService.createRole(roleData);
+        await roleService.createRole(roleData); // createRole expects code
         toast({ title: "Role Created", description: "The new role has been successfully created." });
       }
       await fetchRoles();
@@ -164,14 +170,19 @@ export default function RoleManagementPage() {
       toast({ title: "Export Canceled", description: "No roles to export." });
       return;
     }
-    const header = ["id", "name", "description", "permissions"];
+    const header = ["id", "name", "code", "description", "permissions", "isSystemRole", "isCommitteeRole", "committeeId", "committeeCode"]; // Added code
     const csvRows = [
       header.join(','),
       ...roles.map(role => [
         role.id,
         `"${role.name.replace(/"/g, '""')}"`, 
+        role.code, // Export code
         `"${role.description.replace(/"/g, '""')}"`, 
-        `"${role.permissions.join(';')}"` 
+        `"${role.permissions.join(';')}"`,
+        role.isSystemRole || false,
+        role.isCommitteeRole || false,
+        role.committeeId || '',
+        role.committeeCode || ''
       ].join(','))
     ];
     const csvString = csvRows.join('\r\n');
@@ -192,10 +203,10 @@ export default function RoleManagementPage() {
   };
 
   const handleDownloadSampleCsv = () => {
-    const sampleCsvContent = `id,name,description,permissions
-role_001,Editor,"Can edit content but not publish","manage_content;view_content"
-role_002,Viewer,"Can only view published content","view_content"
-,Moderator,"Can moderate comments and user interactions","moderate_comments;manage_users_basic" 
+    const sampleCsvContent = `id,name,code,description,permissions,isSystemRole,isCommitteeRole,committeeId,committeeCode
+role_001,Editor,editor,"Can edit content but not publish","manage_content;view_content",false,false,,
+role_002,Viewer,viewer,"Can only view published content","view_content",false,false,,
+,Moderator,moderator,"Can moderate comments and user interactions","moderate_comments;manage_users_basic",false,false,,
 `; 
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -231,11 +242,17 @@ role_002,Viewer,"Can only view published content","view_content"
     setIsSubmitting(true);
     let deletedCount = 0;
     let adminSkipped = false;
+    let systemRoleSkipped = false;
 
     for (const id of selectedRoleIds) {
       const role = roles.find(r => r.id === id);
-      if (role?.name === 'Admin') {
+      if (role?.code === 'admin' || role?.code === 'super_admin') { // Check by code
         adminSkipped = true;
+        continue;
+      }
+      if (role?.isSystemRole && !role.isCommitteeRole) { // Protect non-committee system roles
+        systemRoleSkipped = true;
+        toast({ variant: "warning", title: "System Role Protected", description: `The system role '${role.name}' cannot be deleted.` });
         continue;
       }
       try {
@@ -250,7 +267,7 @@ role_002,Viewer,"Can only view published content","view_content"
     setSelectedRoleIds([]);
     let description = `${deletedCount} role(s) have been successfully deleted.`;
     if (adminSkipped) {
-        toast({ variant: "warning", title: "Admin Role Protected", description: "The 'Admin' role cannot be deleted." });
+        toast({ variant: "warning", title: "Admin Role Protected", description: "The 'admin' or 'super_admin' role cannot be deleted." });
     }
     if(deletedCount > 0) {
         toast({ title: "Roles Deleted", description });
@@ -295,13 +312,23 @@ role_002,Viewer,"Can only view published content","view_content"
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4 py-4">
                   <div>
-                    <Label htmlFor="roleName">Role Name</Label>
+                    <Label htmlFor="roleName">Role Name *</Label>
                     <Input 
                       id="roleName" 
                       value={formRoleName} 
                       onChange={(e) => setFormRoleName(e.target.value)} 
-                      placeholder="e.g., Administrator" 
-                      disabled={isSubmitting}
+                      placeholder="e.g., Content Editor" 
+                      disabled={isSubmitting || (currentRole?.isSystemRole && !currentRole.isCommitteeRole) || false}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="roleCode">Role Code * (lowercase, no spaces, e.g., content_editor)</Label>
+                    <Input 
+                      id="roleCode" 
+                      value={formRoleCode} 
+                      onChange={(e) => setFormRoleCode(e.target.value.toLowerCase().replace(/\s+/g, '_'))} 
+                      placeholder="e.g., content_editor" 
+                      disabled={isSubmitting || !!currentRole?.id} // Code cannot be changed after creation
                     />
                   </div>
                   <div>
@@ -323,7 +350,7 @@ role_002,Viewer,"Can only view published content","view_content"
                             id={`perm-${permission}`}
                             checked={formRolePermissions.includes(permission)}
                             onCheckedChange={() => handlePermissionChange(permission)}
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || (currentRole?.code === 'admin' || currentRole?.code === 'super_admin')} // Admin roles have all perms
                           />
                           <Label htmlFor={`perm-${permission}`} className="text-sm font-normal cursor-pointer">
                             {permission.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
@@ -338,7 +365,7 @@ role_002,Viewer,"Can only view published content","view_content"
                         Cancel
                       </Button>
                     </DialogClose>
-                    <Button type="submit" disabled={isSubmitting}>
+                    <Button type="submit" disabled={isSubmitting || (currentRole?.code === 'admin' || currentRole?.code === 'super_admin')}>
                       {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       {currentRole ? "Save Changes" : "Create Role"}
                     </Button>
@@ -365,7 +392,7 @@ role_002,Viewer,"Can only view published content","view_content"
                 <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
             </Button>
             <p className="text-xs text-muted-foreground mt-2">
-              CSV format: id (optional, for updates), name, description, permissions (semicolon-separated, e.g., "perm1;perm2").
+              CSV format: id (optional, for updates), name, code, description, permissions (semicolon-separated, e.g., "perm_code1;perm_code2").
             </p>
           </div>
 
@@ -391,6 +418,7 @@ role_002,Viewer,"Can only view published content","view_content"
                     />
                 </TableHead>
                 <TableHead>Role Name</TableHead>
+                <TableHead>Code</TableHead> {/* Added Code column */}
                 <TableHead>Description</TableHead>
                 <TableHead>Permissions</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -404,20 +432,21 @@ role_002,Viewer,"Can only view published content","view_content"
                         checked={selectedRoleIds.includes(role.id)}
                         onCheckedChange={(checked) => handleSelectRole(role.id, !!checked)}
                         aria-labelledby={`role-name-${role.id}`}
-                        disabled={role.name === 'Admin'}
+                        disabled={role.code === 'admin' || role.code === 'super_admin' || (role.isSystemRole && !role.isCommitteeRole)}
                        />
                   </TableCell>
-                  <TableCell id={`role-name-${role.id}`} className="font-medium">{role.name}</TableCell>
+                  <TableCell id={`role-name-${role.id}`} className="font-medium">{role.name} {role.isSystemRole && <span className="text-xs text-muted-foreground">(System)</span>} {role.isCommitteeRole && <span className="text-xs text-blue-500">(Committee)</span>}</TableCell>
+                  <TableCell>{role.code}</TableCell> {/* Display code */}
                   <TableCell>{role.description}</TableCell>
                   <TableCell className="max-w-xs truncate">
-                    {role.permissions.map(p => p.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ') || '-'}
+                    {role.permissions.length > 3 ? `${role.permissions.slice(0,3).map(p => p.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ')}, ...` : role.permissions.map(p => p.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ') || '-'}
                   </TableCell>
                   <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="icon" onClick={() => handleEdit(role)} disabled={isSubmitting}>
+                    <Button variant="outline" size="icon" onClick={() => handleEdit(role)} disabled={isSubmitting || (role.code === 'admin' || role.code === 'super_admin')}>
                       <Edit className="h-4 w-4" />
                       <span className="sr-only">Edit Role</span>
                     </Button>
-                    <Button variant="destructive" size="icon" onClick={() => handleDelete(role.id)} disabled={isSubmitting || role.name === 'Admin'}>
+                    <Button variant="destructive" size="icon" onClick={() => handleDelete(role.id)} disabled={isSubmitting || role.code === 'admin' || role.code === 'super_admin' || (role.isSystemRole && !role.isCommitteeRole)}>
                       <Trash2 className="h-4 w-4" />
                       <span className="sr-only">Delete Role</span>
                     </Button>
@@ -426,7 +455,7 @@ role_002,Viewer,"Can only view published content","view_content"
               ))}
               {paginatedRoles.length === 0 && (
                  <TableRow>
-                    <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={6} className="text-center text-muted-foreground py-8"> {/* Increased colspan */}
                         No roles found. Click "Add New Role" or import a CSV file to create roles.
                     </TableCell>
                  </TableRow>
@@ -508,4 +537,4 @@ role_002,Viewer,"Can only view published content","view_content"
     </div>
   );
 }
-
+    

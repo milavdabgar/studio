@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
@@ -13,10 +12,10 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from "@/components/ui/switch";
 import { PlusCircle, Edit, Trash2, Users as UsersIcon, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Landmark } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { SystemUser, UserRole, Institute, Role } from '@/types/entities'; // Import Role
+import type { SystemUser, UserRole as UserRoleCode, Institute, Role } from '@/types/entities'; 
 import { userService } from '@/lib/api/users';
 import { instituteService } from '@/lib/api/institutes';
-import { roleService } from '@/lib/api/roles'; // Import roleService
+import { roleService } from '@/lib/api/roles'; 
 
 const STATUS_OPTIONS: { value: 'active' | 'inactive'; label: string }[] = [
   { value: "active", label: "Active" },
@@ -33,7 +32,7 @@ const NO_INSTITUTE_VALUE = "__NO_INSTITUTE__";
 export default function UserManagementPage() {
   const [users, setUsers] = useState<SystemUser[]>([]);
   const [institutes, setInstitutes] = useState<Institute[]>([]);
-  const [allSystemRoles, setAllSystemRoles] = useState<Role[]>([]); // Store all roles
+  const [allSystemRoles, setAllSystemRoles] = useState<Role[]>([]); 
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -44,7 +43,7 @@ export default function UserManagementPage() {
   const [formMiddleName, setFormMiddleName] = useState('');
   const [formLastName, setFormLastName] = useState('');
   const [formUserEmail, setFormUserEmail] = useState('');
-  const [formUserRoles, setFormUserRoles] = useState<UserRole[]>([]); 
+  const [formUserRoles, setFormUserRoles] = useState<UserRoleCode[]>([]); 
   const [formUserStatus, setFormUserStatus] = useState<'active' | 'inactive'>('active');
   const [formUserPassword, setFormUserPassword] = useState('');
   const [formUserConfirmPassword, setFormUserConfirmPassword] = useState('');
@@ -53,7 +52,7 @@ export default function UserManagementPage() {
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterRole, setFilterRole] = useState<UserRole | 'all'>('all');
+  const [filterRoleCode, setFilterRoleCode] = useState<UserRoleCode | 'all'>('all'); // Filter by role code
   const [filterStatus, setFilterStatus] = useState<'active' | 'inactive' | 'all'>('all');
   const [filterInstitute, setFilterInstitute] = useState<string | 'all'>('all');
   const [sortField, setSortField] = useState<SortField>('displayName');
@@ -68,7 +67,7 @@ export default function UserManagementPage() {
   const parseGtuNameToComponents = (gtuName: string | undefined): { firstName?: string, middleName?: string, lastName?: string } => {
     if (!gtuName) return {};
     const parts = gtuName.trim().split(/\s+/);
-    if (parts.length === 1) return { firstName: parts[0], lastName: "SURNAME_PLACEHOLDER" };
+    if (parts.length === 1) return { firstName: parts[0], lastName: "SURNAME_PLACEHOLDER" }; // Default last name if only one part
     if (parts.length === 2) return { lastName: parts[0], firstName: parts[1] }; 
     return { lastName: parts[0], firstName: parts[1], middleName: parts.slice(2).join(' ') };
   };
@@ -80,16 +79,15 @@ export default function UserManagementPage() {
       const [userData, instituteData, rolesData] = await Promise.all([
         userService.getAllUsers(),
         instituteService.getAllInstitutes(),
-        roleService.getAllRoles() // Fetch all roles
+        roleService.getAllRoles() 
       ]);
       setUsers(userData as SystemUser[]); 
       setInstitutes(instituteData);
-      setAllSystemRoles(rolesData); // Store fetched roles
+      setAllSystemRoles(rolesData); 
 
-      // Set default role if formUserRoles is empty and roles are available
       if (rolesData.length > 0 && formUserRoles.length === 0) {
         const defaultRole = rolesData.find(r => r.code === 'student') || rolesData[0];
-        setFormUserRoles([defaultRole.name]); // Use role name for user's roles array
+        setFormUserRoles([defaultRole.code]); // Use role code
       }
 
     } catch (error) {
@@ -109,10 +107,9 @@ export default function UserManagementPage() {
     setFormMiddleName('');
     setFormLastName('');
     setFormUserEmail('');
-    // Set default role if roles are available
     if (allSystemRoles.length > 0) {
         const defaultRole = allSystemRoles.find(r => r.code === 'student') || allSystemRoles[0];
-        setFormUserRoles([defaultRole.name]); // Use role name
+        setFormUserRoles([defaultRole.code]); // Use role code
     } else {
         setFormUserRoles([]);
     }
@@ -130,7 +127,7 @@ export default function UserManagementPage() {
     setFormMiddleName(user.middleName || '');
     setFormLastName(user.lastName || '');
     setFormUserEmail(user.email);
-    setFormUserRoles(user.roles || []); // User roles are stored by name
+    setFormUserRoles(user.roles || []); // User roles are stored by code
     setFormUserStatus(user.isActive ? 'active' : 'inactive');
     setFormInstituteId(user.instituteId || undefined);
     setFormUserPassword('');
@@ -161,12 +158,12 @@ export default function UserManagementPage() {
     setIsSubmitting(false);
   };
 
-  const handleRoleCheckboxChange = (roleName: UserRole) => { // Parameter is role name
+  const handleRoleCheckboxChange = (roleCode: UserRoleCode) => { 
     setFormUserRoles(prevRoles => {
-      if (prevRoles.includes(roleName)) {
-        return prevRoles.filter(r => r !== roleName);
+      if (prevRoles.includes(roleCode)) {
+        return prevRoles.filter(r => r !== roleCode);
       } else {
-        return [...prevRoles, roleName];
+        return [...prevRoles, roleCode];
       }
     });
   };
@@ -201,7 +198,7 @@ export default function UserManagementPage() {
       middleName: formMiddleName.trim() || undefined,
       lastName: formLastName.trim(),
       email: formUserEmail.trim(), 
-      roles: formUserRoles, // Send role names
+      roles: formUserRoles, // Send role codes
       isActive: formUserStatus === 'active',
       instituteId: formInstituteId === NO_INSTITUTE_VALUE ? undefined : formInstituteId,
     };
@@ -271,6 +268,7 @@ export default function UserManagementPage() {
       header.join(','),
       ...filteredAndSortedUsers.map(user => {
         const inst = institutes.find(i => i.id === user.instituteId);
+        const roleNames = user.roles.map(roleCode => allSystemRoles.find(r => r.code === roleCode)?.name || roleCode); // Map codes to names for export if preferred
         return [
           user.id,
           `"${(user.displayName || "").replace(/"/g, '""')}"`,
@@ -280,7 +278,7 @@ export default function UserManagementPage() {
           `"${(user.lastName || "").replace(/"/g, '""')}"`,
           `"${user.email.replace(/"/g, '""')}"`,
           `"${(user.instituteEmail || "").replace(/"/g, '""')}"`,
-          `"${user.roles.join(';')}"`, // Roles are stored as names
+          `"${roleNames.join(';')}"`, // Export role names
           user.isActive,
           user.instituteId || "",
           `"${(inst?.name || "").replace(/"/g, '""')}"`,
@@ -334,11 +332,14 @@ export default function UserManagementPage() {
         user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (user.instituteEmail && user.instituteEmail.toLowerCase().includes(searchTerm.toLowerCase())) ||
         (user.fullName && user.fullName.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        user.roles.some(role => role.toLowerCase().includes(searchTerm.toLowerCase()))
+        user.roles.some(roleCode => { // Search by role code or name
+            const roleObj = allSystemRoles.find(r => r.code === roleCode);
+            return roleCode.toLowerCase().includes(searchTerm.toLowerCase()) || (roleObj && roleObj.name.toLowerCase().includes(searchTerm.toLowerCase()));
+        })
       );
     }
-    if (filterRole !== 'all') {
-      result = result.filter(user => user.roles.includes(filterRole)); // Filter by role name
+    if (filterRoleCode !== 'all') {
+      result = result.filter(user => user.roles.includes(filterRoleCode)); // Filter by role code
     }
     if (filterStatus !== 'all') {
       result = result.filter(user => (user.isActive ? 'active' : 'inactive') === filterStatus);
@@ -353,8 +354,9 @@ export default function UserManagementPage() {
         let valB: any;
 
         if (sortField === 'roles') {
-          valA = a.roles.join(', '); 
-          valB = b.roles.join(', ');
+          // Sort by concatenated role names for display consistency
+          valA = a.roles.map(rc => allSystemRoles.find(r => r.code === rc)?.name || rc).join(', '); 
+          valB = b.roles.map(rc => allSystemRoles.find(r => r.code === rc)?.name || rc).join(', ');
         } else if (sortField === 'isActive'){
           valA = a.isActive;
           valB = b.isActive;
@@ -377,7 +379,7 @@ export default function UserManagementPage() {
       });
     }
     return result;
-  }, [users, searchTerm, filterRole, filterStatus, filterInstitute, sortField, sortDirection]);
+  }, [users, searchTerm, filterRoleCode, filterStatus, filterInstitute, sortField, sortDirection, allSystemRoles]);
 
   const totalPages = Math.ceil(filteredAndSortedUsers.length / itemsPerPage);
   const paginatedUsers = useMemo(() => {
@@ -387,7 +389,7 @@ export default function UserManagementPage() {
 
   useEffect(() => {
     setCurrentPage(1); 
-  }, [searchTerm, filterRole, filterStatus, filterInstitute, itemsPerPage]);
+  }, [searchTerm, filterRoleCode, filterStatus, filterInstitute, itemsPerPage]);
 
 
   const handleSelectAll = (checked: boolean | 'indeterminate') => {
@@ -524,12 +526,12 @@ export default function UserManagementPage() {
                   <div className="md:col-span-2">
                     <Label>Roles *</Label>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-2 border rounded-md max-h-40 overflow-y-auto">
-                      {allSystemRoles.filter(role => !role.isSystemRole || ['admin', 'student', 'faculty', 'hod', 'jury', 'super_admin'].includes(role.code) || role.isCommitteeRole).map(role => ( // Show common system roles and committee roles
+                      {allSystemRoles.filter(role => !role.isSystemRole || ['admin', 'student', 'faculty', 'hod', 'jury', 'super_admin', 'committee_convener', 'committee_member', 'committee_co_convener'].includes(role.code) || role.isCommitteeRole).map(role => ( 
                         <div key={role.id} className="flex items-center space-x-2">
                           <Checkbox
                             id={`role-${role.id}`}
-                            checked={formUserRoles.includes(role.name)} // Check against role name
-                            onCheckedChange={() => handleRoleCheckboxChange(role.name)} // Pass role name
+                            checked={formUserRoles.includes(role.code)} // Check against role code
+                            onCheckedChange={() => handleRoleCheckboxChange(role.code)} // Pass role code
                             disabled={isSubmitting}
                           />
                           <Label htmlFor={`role-${role.id}`} className="text-sm font-normal cursor-pointer">{role.name}</Label>
@@ -582,7 +584,7 @@ export default function UserManagementPage() {
                     <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  CSV headers: id,displayName,fullName_GTUFormat,firstName,middleName,lastName,username,email,instituteEmail,roles,isActive,instituteId,instituteName,instituteCode,password
+                  CSV headers: id,displayName,fullName_GTUFormat,firstName,middleName,lastName,username,email,instituteEmail,roles(codes),isActive,instituteId,instituteName,instituteCode,password
                 </p>
             </div>
           </div>
@@ -603,11 +605,11 @@ export default function UserManagementPage() {
             </div>
             <div>
               <Label htmlFor="filterRole">Filter by Role</Label>
-              <Select value={filterRole} onValueChange={(value) => setFilterRole(value as UserRole | 'all')}>
+              <Select value={filterRoleCode} onValueChange={(value) => setFilterRoleCode(value as UserRoleCode | 'all')}>
                 <SelectTrigger id="filterRole"><SelectValue placeholder="All Roles" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Roles</SelectItem>
-                  {allSystemRoles.map(opt => <SelectItem key={opt.id} value={opt.name}>{opt.name}</SelectItem>)}
+                  {allSystemRoles.map(role => <SelectItem key={role.id} value={role.code}>{role.name}</SelectItem>)} {/* Use role.code as value */}
                 </SelectContent>
               </Select>
             </div>
@@ -678,11 +680,11 @@ export default function UserManagementPage() {
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.instituteEmail || '-'}</TableCell>
                   <TableCell className="max-w-xs truncate">
-                    {user.roles.join(', ')}
+                    {user.roles.map(roleCode => allSystemRoles.find(r => r.code === roleCode)?.name || roleCode).join(', ')}
                   </TableCell>
                   <TableCell>{institutes.find(i => i.id === user.instituteId)?.code || '-'}</TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${user.isActive ? 'bg-success/20 text-success-foreground' : 'bg-destructive/20 text-destructive-foreground'}`}>
+                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${user.isActive ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'}`}>
                       {user.isActive ? 'Active' : 'Inactive'}
                     </span>
                   </TableCell>
@@ -787,3 +789,4 @@ export default function UserManagementPage() {
     </div>
   );
 }
+    

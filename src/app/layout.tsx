@@ -1,11 +1,10 @@
-
 "use client"; 
 
 import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
-import { Home, BarChart3, Users as UsersIconLucide, FileText, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser, UsersRound, Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen, Users2 as CommitteeIcon } from 'lucide-react';
+import { Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser, UsersRound, Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText, BarChart3 } from 'lucide-react'; // Added missing icons
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -14,7 +13,7 @@ import React, { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import type { UserRole as UserRoleType, Role } from '@/types/entities'; // Use UserRoleType to avoid naming conflict
+import type { UserRole as UserRoleCode, Role } from '@/types/entities'; 
 import { roleService } from '@/lib/api/roles';
 import { useToast } from '@/hooks/use-toast';
 
@@ -24,8 +23,8 @@ interface User {
   email?: string;
   avatarUrl?: string;
   dataAiHint?: string;
-  activeRole: UserRoleType;
-  availableRoles: UserRoleType[];
+  activeRole: UserRoleCode; 
+  availableRoles: UserRoleCode[]; 
 }
 
 const DEFAULT_USER: User = {
@@ -36,28 +35,24 @@ const DEFAULT_USER: User = {
   dataAiHint: 'user avatar'
 };
 
-// This will be dynamically populated by API call later
-let USER_ROLE_OPTIONS_DISPLAY: { value: UserRoleType; label: string }[] = [
-  { value: "unknown", label: "Unknown" },
+const adminNavItems = [
+  { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard' },
+  { href: '/admin/users', icon: UsersIconLucide, label: 'User Management', id: 'admin-users' },
+  { href: '/admin/roles', icon: UserCog, label: 'Role Management', id: 'admin-roles' },
+  { href: '/admin/institutes', icon: Landmark, label: 'Institutes', id: 'admin-institutes'},
+  { href: '/admin/buildings', icon: Building, label: 'Buildings', id: 'admin-buildings'},
+  { href: '/admin/rooms', icon: DoorOpen, label: 'Rooms', id: 'admin-rooms'},
+  { href: '/admin/committees', icon: CommitteeIcon, label: 'Committees', id: 'admin-committees'},
+  { href: '/admin/students', icon: BookUser, label: 'Student Mgt.', id: 'admin-students' },
+  { href: '/admin/faculty', icon: UsersRound, label: 'Faculty Mgt.', id: 'admin-faculty' }, 
+  { href: '/admin/departments', icon: Building2, label: 'Departments', id: 'admin-departments' },
+  { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs' },
+  { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses' },
+  { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback' },
 ];
 
-
-const baseNavItems: Record<UserRoleType, Array<{ href: string; icon: React.ElementType; label: string; id: string }>> = {
-  admin: [
-    { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard' },
-    { href: '/admin/users', icon: UsersIconLucide, label: 'User Management', id: 'admin-users' },
-    { href: '/admin/roles', icon: UserCog, label: 'Role Management', id: 'admin-roles' },
-    { href: '/admin/institutes', icon: Landmark, label: 'Institutes', id: 'admin-institutes'},
-    { href: '/admin/buildings', icon: Building, label: 'Buildings', id: 'admin-buildings'},
-    { href: '/admin/rooms', icon: DoorOpen, label: 'Rooms', id: 'admin-rooms'},
-    { href: '/admin/committees', icon: CommitteeIcon, label: 'Committees', id: 'admin-committees'},
-    { href: '/admin/students', icon: BookUser, label: 'Student Mgt.', id: 'admin-students' },
-    { href: '/admin/faculty', icon: UsersRound, label: 'Faculty Mgt.', id: 'admin-faculty' }, 
-    { href: '/admin/departments', icon: Building2, label: 'Departments', id: 'admin-departments' },
-    { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs' },
-    { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses' },
-    { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback' },
-  ],
+const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.ElementType; label: string; id: string }>> = {
+  admin: adminNavItems,
   student: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'student-dashboard' },
     { href: '/courses', icon: BookOpen, label: 'My Courses', id: 'student-courses' },
@@ -92,7 +87,7 @@ const baseNavItems: Record<UserRoleType, Array<{ href: string; icon: React.Eleme
   ],
   committee_convener: [ 
     { href: '/dashboard', icon: Home, label: 'Convener Dashboard', id: 'convener-dashboard' },
-    { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'convener-my-committee'}, // Generic committee dashboard
+    { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'convener-my-committee'},
     { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'convener-meetings'},
   ],
   committee_co_convener: [
@@ -104,7 +99,7 @@ const baseNavItems: Record<UserRoleType, Array<{ href: string; icon: React.Eleme
     { href: '/dashboard', icon: Home, label: 'Member Dashboard', id: 'member-dashboard' },
     { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'member-my-committee'},
   ],
-  super_admin: [{ href: '/dashboard', icon: Home, label: 'Super Admin Dashboard', id: 'super-admin-dashboard' }],
+  super_admin: adminNavItems, 
   dte_admin: [{ href: '/dashboard', icon: Home, label: 'DTE Dashboard', id: 'dte-admin-dashboard' }],
   gtu_admin: [{ href: '/dashboard', icon: Home, label: 'GTU Dashboard', id: 'gtu-admin-dashboard' }],
   institute_admin: [{ href: '/dashboard', icon: Home, label: 'Institute Dashboard', id: 'institute-admin-dashboard' }],
@@ -115,14 +110,21 @@ const baseNavItems: Record<UserRoleType, Array<{ href: string; icon: React.Eleme
   unknown: [], 
 };
 
-const getNavItemsForRole = (role: UserRoleType): Array<{ href: string; icon: React.ElementType; label: string; id: string }> => {
-  const items = baseNavItems[role] || baseNavItems['unknown']; 
-  items.sort((a, b) => {
+const getNavItemsForRoleCode = (roleCode: UserRoleCode): Array<{ href: string; icon: React.ElementType; label: string; id: string }> => {
+  const items = baseNavItems[roleCode] || baseNavItems['unknown']; 
+  
+  if (roleCode.startsWith('committee_') || roleCode.includes('_convener') || roleCode.includes('_member') || roleCode.includes('_co_convener')) {
+     if (roleCode.endsWith('_convener')) return baseNavItems['committee_convener'];
+     if (roleCode.endsWith('_co_convener')) return baseNavItems['committee_co_convener'];
+     if (roleCode.endsWith('_member')) return baseNavItems['committee_member'];
+  }
+  const sortedItems = [...items]; // Create a new array to avoid mutating the original
+  sortedItems.sort((a, b) => {
     if (a.label.includes('Dashboard')) return -1;
     if (b.label.includes('Dashboard')) return 1;
     return a.label.localeCompare(b.label);
   });
-  return items;
+  return sortedItems;
 };
 
 
@@ -142,8 +144,8 @@ function getCookie(name: string): string | undefined {
 interface ParsedUserCookie {
   email: string;
   name: string;
-  availableRoles: UserRoleType[];
-  activeRole: UserRoleType;
+  availableRoles: UserRoleCode[]; 
+  activeRole: UserRoleCode; 
 }
 
 
@@ -199,7 +201,6 @@ export default function RootLayout({
         try {
             const roles = await roleService.getAllRoles();
             setAllSystemRoles(roles);
-            USER_ROLE_OPTIONS_DISPLAY = roles.map(r => ({ value: r.name, label: r.name })); // Store by name for display
         } catch (error) {
             toast({ variant: "destructive", title: "Error loading roles", description: (error as Error).message });
         }
@@ -209,32 +210,30 @@ export default function RootLayout({
   }, [pathname, router, toast]); 
 
 
-  const handleRoleChange = (newRoleName: UserRoleType) => {
+  const handleRoleChange = (newRoleCode: UserRoleCode) => {
     const parsedUser = parseUserCookie();
-    // Find the role object from allSystemRoles to ensure it's a valid system role name
-    const roleToActivate = allSystemRoles.find(r => r.name === newRoleName);
-
-    if (parsedUser && roleToActivate && parsedUser.availableRoles.some(ar => allSystemRoles.find(sysR => sysR.name === ar)?.code === roleToActivate.code || ar === roleToActivate.name)) {
-        const updatedUserPayload = { ...parsedUser, activeRole: roleToActivate.name }; // Store active role by name
+    if (parsedUser && parsedUser.availableRoles.includes(newRoleCode)) {
+        const updatedUserPayload = { ...parsedUser, activeRole: newRoleCode }; 
         const encodedUserPayload = encodeURIComponent(JSON.stringify(updatedUserPayload));
         if (typeof document !== 'undefined') {
-          document.cookie = `auth_user=${encodedUserPayload};path=/;max-age=${60 * 60 * 24 * 7}`; // 7 days
+          document.cookie = `auth_user=${encodedUserPayload};path=/;max-age=${60 * 60 * 24 * 7}`; 
         }
-        setCurrentUser(prev => ({...prev, activeRole: roleToActivate.name}));
+        setCurrentUser(prev => ({...prev, activeRole: newRoleCode}));
         
-        // Redirect to a generic committee dashboard if a committee role is selected and exists
-        if(roleToActivate.isCommitteeRole){
+        const roleToActivate = allSystemRoles.find(r => r.code === newRoleCode);
+        if(roleToActivate?.isCommitteeRole){
             router.push('/dashboard/committee');
         } else {
             router.push('/dashboard'); 
         }
     } else {
-        toast({ variant: "destructive", title: "Role Switch Failed", description: "Selected role is not available for your account or is invalid."})
+        const roleDetails = allSystemRoles.find(r => r.code === newRoleCode);
+        toast({ variant: "destructive", title: "Role Switch Failed", description: `Role '${roleDetails?.name || newRoleCode}' is not available for your account or is invalid.`})
     }
   };
   
-  const activeRoleObject = allSystemRoles.find(r => r.name === currentUser.activeRole);
-  const currentNavItems = getNavItemsForRole(activeRoleObject?.code as UserRoleType || currentUser.activeRole);
+  const activeRoleObject = allSystemRoles.find(r => r.code === currentUser.activeRole);
+  const currentNavItems = getNavItemsForRoleCode(currentUser.activeRole);
   const hideSidebar = ['/login', '/signup', '/'].includes(pathname);
 
 
@@ -245,7 +244,7 @@ export default function RootLayout({
             <title>PolyManager</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
         </head>
-        <body className={`${GeistSans.className} antialiased`} suppressHydrationWarning={true}>
+        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           {children}
           <Toaster />
         </body>
@@ -260,7 +259,7 @@ export default function RootLayout({
             <title>PolyManager - Loading...</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
         </head>
-        <body className={`${GeistSans.className} antialiased`} suppressHydrationWarning={true}>
+        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           <div className="flex items-center justify-center min-h-screen">
             <Loader2 className="h-12 w-12 animate-spin text-primary" />
           </div>
@@ -277,7 +276,7 @@ export default function RootLayout({
             <title>PolyManager</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
         </head>
-      <body className={`${GeistSans.className} antialiased`} suppressHydrationWarning={true}>
+      <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
         <SidebarProvider>
           <Sidebar>
             <SidebarHeader className="p-4 border-b border-sidebar-border">
@@ -323,10 +322,10 @@ export default function RootLayout({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-sidebar text-sidebar-foreground border-sidebar-border">
-                      {currentUser.availableRoles.map(roleNameOrCode => {
-                        const roleObj = allSystemRoles.find(sysR => sysR.name === roleNameOrCode || sysR.code === roleNameOrCode);
+                      {currentUser.availableRoles.map(roleCode => { 
+                        const roleObj = allSystemRoles.find(sysR => sysR.code === roleCode);
                         return roleObj ? (
-                          <SelectItem key={roleObj.id} value={roleObj.name} className="text-xs focus:bg-sidebar-primary focus:text-sidebar-primary-foreground">
+                          <SelectItem key={roleObj.id} value={roleObj.code} className="text-xs focus:bg-sidebar-primary focus:text-sidebar-primary-foreground">
                             {roleObj.name}
                           </SelectItem>
                         ) : null;
@@ -375,3 +374,4 @@ export default function RootLayout({
     </html>
   );
 }
+    
