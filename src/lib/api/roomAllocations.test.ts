@@ -1,68 +1,60 @@
-import { roomAllocationService } from './roomAllocations';
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import fetch from 'node-fetch';
 
-// Mock the fetch function
-jest.mock('./roomAllocations');
-jest.mock('node-fetch');
 
-const mockedFetch = jest.fn();
-(global as any).fetch = mockedFetch; // Use 'global as any' for Jest in Node.js environment
-
+process.env.NEXT_PUBLIC_API_BASE_URL = 'http://localhost'
+const fetchSpy = jest.spyOn(global, 'fetch');
+import { roomAllocationService } from './roomAllocations';
 describe('Room Allocations API', () => {
-
-  beforeEach(() => {
-    mockedFetch.mockReset();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-  
   it('getRoomAllocations should return data', async () => {
-    const mockData = [{ id: '1', roomId: 'room1', courseId: 'course1' }];
-    mockedFetch.mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve(mockData),
+    fetchSpy.mockClear();    const mockData = [{ id: '1', roomId: 'room1', courseId: 'course1' }];    fetchSpy.mockResolvedValue({
+ json: async () => mockData, ok: true
     });
-
     const result = await roomAllocationService.getAllRoomAllocations();
-    expect(mockedFetch).toHaveBeenCalledWith('/api/room-allocations');
+    expect(fetchSpy).toHaveBeenCalledWith('http://localhost/api/room-allocations?', undefined);
     expect(result).toEqual(mockData);
   });
 
   it('getRoomAllocations should handle errors', async () => {
-    mockedFetch.mockResolvedValue({ ok: false });
-
+    fetchSpy.mockClear()
+    const mockError = new Error('Failed to fetch room allocations');
+    fetchSpy.mockResolvedValue({
+      ok: false,
+ json: async () => ({ message: 'Failed to fetch room allocations' })
+    });
     await expect(roomAllocationService.getAllRoomAllocations()).rejects.toThrow('Failed to fetch room allocations');
   });
 
   it('getRoomAllocationById should return data', async () => {
     const mockData = { id: '1', roomId: 'room1', courseId: 'course1' };
-    mockedFetch.mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve(mockData),
+    fetchSpy.mockResolvedValueOnce({
+      json: async () => mockData,
+ ok: true
     });
-
     const result = await roomAllocationService.getRoomAllocationById('1');
-    expect(mockedFetch).toHaveBeenCalledWith('/api/room-allocations/1');
+    expect(fetchSpy).toHaveBeenCalledWith('http://localhost/api/room-allocations/1');
     expect(result).toEqual(mockData);
   });
 
   it('getRoomAllocationById should handle errors', async () => {
-    mockedFetch.mockResolvedValue({ ok: false });
-
+    const mockError = new Error('Failed to fetch room allocation with id 1');
+    fetchSpy.mockResolvedValueOnce({
+      ok: false,
+ json: async () => ({ message: 'Failed to fetch room allocation with id 1' })
+    });
     await expect(roomAllocationService.getRoomAllocationById('1')).rejects.toThrow('Failed to fetch room allocation with id 1');
+    expect(fetchSpy).toHaveBeenCalledWith('http://localhost/api/room-allocations/1');
   });
 
   it('createRoomAllocation should return data', async () => {
     const mockData = { id: '1', roomId: 'room1', courseId: 'course1' };
-    mockedFetch.mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve(mockData),
-    });
+    fetchSpy.mockResolvedValueOnce({
+      json: async () => mockData,
+ ok: true
 
+    });
     const result = await roomAllocationService.createRoomAllocation(mockData);
-    expect(mockedFetch).toHaveBeenCalledWith('/api/room-allocations', {
+    expect(fetchSpy).toHaveBeenCalledWith('http://localhost/api/room-allocations', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -73,21 +65,26 @@ describe('Room Allocations API', () => {
   });
 
   it('createRoomAllocation should handle errors', async () => {
-    mockedFetch.mockResolvedValue({ ok: false });
     const mockData = { id: '1', roomId: 'room1', courseId: 'course1' };
-
+    const mockError = new Error('Failed to create room allocation');
+    fetchSpy.mockClear()
+    fetchSpy.mockResolvedValueOnce({
+      ok: false,
+ json: async () => ({ message: 'Failed to create room allocation' })
+    });
     await expect(roomAllocationService.createRoomAllocation(mockData)).rejects.toThrow('Failed to create room allocation');
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 
   it('updateRoomAllocation should return data', async () => {
     const mockData = { id: '1', roomId: 'room2', courseId: 'course2' };
-    mockedFetch.mockResolvedValue({
-      ok: true,
-      json: () => Promise.resolve(mockData),
-    });
+    fetchSpy.mockResolvedValueOnce({
+      json: async () => mockData,
+ ok: true
 
+    });
     const result = await roomAllocationService.updateRoomAllocation('1', mockData);
-    expect(mockedFetch).toHaveBeenCalledWith('/api/room-allocations/1', {
+    expect(fetchSpy).toHaveBeenCalledWith('http://localhost/api/room-allocations/1', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -97,29 +94,42 @@ describe('Room Allocations API', () => {
     expect(result).toEqual(mockData);
   });
 
-  it('updateRoomAllocation should handle errors', async () => {
-    mockedFetch.mockResolvedValue({ ok: false });
-    const mockData = { id: '1', roomId: 'room2', courseId: 'course2' };
 
+  it('updateRoomAllocation should handle errors', async () => {
+    const mockData = { id: '1', roomId: 'room2', courseId: 'course2' };
+    const mockError = new Error('Failed to update room allocation');
+    fetchSpy.mockResolvedValueOnce({
+ ok: false,
+      json: async () => ({ message: 'Failed to update room allocation' })
+
+    });
     await expect(roomAllocationService.updateRoomAllocation('1', mockData)).rejects.toThrow('Failed to update room allocation');
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 
   it('deleteRoomAllocation should return data', async () => {
-    const mockData = { message: 'Room allocation deleted' };
-    mockedFetch.mockResolvedValue({
+    fetchSpy.mockClear()
+    fetchSpy.mockResolvedValueOnce({
       ok: true,
-      json: () => Promise.resolve(mockData),
+      json: async () => {}, // Assuming delete returns nothing or an empty object
+
     });
 
     await roomAllocationService.deleteRoomAllocation('1');
-    expect(mockedFetch).toHaveBeenCalledWith('/api/room-allocations/1', {
+    expect(fetchSpy).toHaveBeenCalledWith('http://localhost/api/room-allocations/1', {
       method: 'DELETE',
     });
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 
   it('deleteRoomAllocation should handle errors', async () => {
-    mockedFetch.mockResolvedValue({ ok: false });
+    fetchSpy.mockClear()
+    fetchSpy.mockResolvedValueOnce({
+      ok: false, json: async () => ({ message: 'Failed to delete room allocation with id 1'})
 
+    });
     await expect(roomAllocationService.deleteRoomAllocation('1')).rejects.toThrow('Failed to delete room allocation with id 1');
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
+
 });

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +8,7 @@ import {
   BookOpen, CalendarDays, Award, Users2 as CommitteeIcon, BotMessageSquare, 
   CalendarCheck, Settings, UserCog, GitFork, BookUser, UsersRound, 
   Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen, 
-  Loader2, CalendarRange, Settings2 as ResourceIcon, Activity, Clock, Home, FileText 
+  Loader2, CalendarRange, Settings2 as ResourceIcon, Activity, Clock, Home, FileText, ListChecks
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -65,7 +66,7 @@ const adminQuickLinks = [
 
 
 const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
-  admin: [ // Specific cards for admin, not directly from adminNavItems
+  admin: [ 
     { id: "admin-total-users", title: "Total Users", value: "1,250", icon: UsersIcon, color: "text-primary", href: "/admin/users" },
     { id: "admin-total-students", title: "Total Students", value: "850", icon: BookUser, color: "text-green-500", href: "/admin/students"},
     { id: "admin-total-faculty", title: "Total Faculty", value: "75", icon: UsersRound, color: "text-indigo-500", href: "/admin/faculty"},
@@ -142,7 +143,7 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "member-committee-dashboard", title: "My Committee", value: "View Info", icon: CommitteeIcon, color: "text-pink-500", href: "/dashboard/committee"},
     { id: "member-tasks", title: "Assigned Tasks", value: "View", icon: ListChecks, color: "text-green-500", href: "/committee/tasks/my" },
   ],
-  super_admin: [ // Specific cards for super_admin
+  super_admin: [ 
     { id: "sadmin-total-users", title: "Platform Users", value: "Manage All", icon: UsersIcon, color: "text-primary", href: "/admin/users" },
     { id: "sadmin-system-roles", title: "System Roles", value: "Configure", icon: UserCog, color: "text-indigo-500", href: "/admin/roles" },
     { id: "sadmin-all-institutes", title: "All Institutes", value: "Oversee", icon: Landmark, color: "text-red-500", href: "/admin/institutes"},
@@ -157,7 +158,7 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "iadmin-institute-buildings", title: "Buildings & Rooms", value: "Manage", icon: Building, color: "text-blue-500", href: "/admin/buildings"},
     { id: "iadmin-institute-committees", title: "Committees", value: "Manage", icon: CommitteeIcon, color: "text-pink-500", href: "/admin/committees"},
   ],
-  department_admin: [ // This is essentially HOD, so can be same as HOD or slightly different
+  department_admin: [ 
     { id: "dept-admin-programs", title: "Dept. Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs" },
     { id: "dept-admin-courses", title: "Dept. Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses" },
     { id: "dept-admin-students", title: "Dept. Students", value: "View", icon: BookUser, color: "text-green-500", href: "/admin/students"},
@@ -175,7 +176,6 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
 };
 
 
-// This function will now return cards for the *active* role only.
 const getDashboardDataForActiveRole = (activeRole: UserRole): DashboardCardItem[] => {
   return baseDashboardData[activeRole] || [];
 };
@@ -204,6 +204,13 @@ interface ParsedUserCookie {
 export default function DashboardPage() {
   const [currentUser, setCurrentUser] = useState<User>(DEFAULT_USER);
   const [isMounted, setIsMounted] = useState(false);
+  const [dashboardStats, setDashboardStats] = useState({
+    totalUsers: 0,
+    totalStudents: 0,
+    totalFaculty: 0,
+    // ... other stats
+  });
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
 
   useEffect(() => {
     setIsMounted(true);
@@ -227,8 +234,38 @@ export default function DashboardPage() {
       setCurrentUser(DEFAULT_USER);
     }
   }, []);
+  
+  useEffect(() => {
+    // Simulate fetching stats
+    const fetchStats = async () => {
+        setIsLoadingStats(true);
+        // In a real app, you would fetch these from your API based on currentUser.activeRole
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
+        setDashboardStats({
+            totalUsers: 1250, // Placeholder
+            totalStudents: 850, // Placeholder
+            totalFaculty: 75,   // Placeholder
+        });
+        setIsLoadingStats(false);
+    };
+    if(currentUser.activeRole !== 'unknown'){
+        fetchStats();
+    } else {
+        setIsLoadingStats(false);
+    }
+  }, [currentUser.activeRole]);
 
-  const dashboardCards = getDashboardDataForActiveRole(currentUser.activeRole);
+
+  const dashboardCards = getDashboardDataForActiveRole(currentUser.activeRole).map(card => {
+      if (isLoadingStats) {
+          return {...card, value: "Loading..."};
+      }
+      if (card.id === "admin-total-users") return { ...card, value: dashboardStats.totalUsers.toLocaleString() };
+      if (card.id === "admin-total-students") return { ...card, value: dashboardStats.totalStudents.toLocaleString() };
+      if (card.id === "admin-total-faculty") return { ...card, value: dashboardStats.totalFaculty.toLocaleString() };
+      // ... map other dynamic stats
+      return card;
+  });
   const displayActiveRole = currentUser.activeRole.charAt(0).toUpperCase() + currentUser.activeRole.slice(1).replace(/_/g, ' ');
 
 
@@ -357,3 +394,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+

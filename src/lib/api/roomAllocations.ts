@@ -1,6 +1,5 @@
 import type { RoomAllocation } from '@/types/entities';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 
 export const roomAllocationService = {
   async getAllRoomAllocations(filters?: { roomId?: string, courseOfferingId?: string, facultyId?: string, date?: string }): Promise<RoomAllocation[]> {
@@ -10,7 +9,7 @@ export const roomAllocationService = {
     if (filters?.facultyId) queryParams.append('facultyId', filters.facultyId);
     if (filters?.date) queryParams.append('date', filters.date); // Expects YYYY-MM-DD
 
-    const response = await fetch(`${API_BASE_URL}/room-allocations?${queryParams.toString()}`);
+    const response = await fetch(`http://localhost/api/room-allocations?${queryParams.toString()}`);
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: 'Failed to fetch room allocations' }));
       throw new Error(errorData.message || 'Failed to fetch room allocations');
@@ -19,7 +18,7 @@ export const roomAllocationService = {
   },
 
   async getRoomAllocationById(id: string): Promise<RoomAllocation> {
-    const response = await fetch(`${API_BASE_URL}/room-allocations/${id}`);
+    const response = await fetch(`http://localhost/api/room-allocations/${id}`);
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: `Failed to fetch room allocation with id ${id}` }));
       throw new Error(errorData.message || `Failed to fetch room allocation with id ${id}`);
@@ -28,7 +27,7 @@ export const roomAllocationService = {
   },
 
   async createRoomAllocation(allocationData: Omit<RoomAllocation, 'id' | 'createdAt' | 'updatedAt'>): Promise<RoomAllocation> {
-    const response = await fetch(`${API_BASE_URL}/room-allocations`, {
+    const response = await fetch(`http://localhost/api/room-allocations`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -43,7 +42,7 @@ export const roomAllocationService = {
   },
 
   async updateRoomAllocation(id: string, allocationData: Partial<Omit<RoomAllocation, 'id' | 'createdAt' | 'updatedAt'>>): Promise<RoomAllocation> {
-    const response = await fetch(`${API_BASE_URL}/room-allocations/${id}`, {
+    const response = await fetch(`http://localhost/api/room-allocations/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -58,7 +57,7 @@ export const roomAllocationService = {
   },
 
   async deleteRoomAllocation(id: string): Promise<void> {
-    const response = await fetch(`${API_BASE_URL}/room-allocations/${id}`, {
+    const response = await fetch(`http://localhost/api/room-allocations/${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) {
