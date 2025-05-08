@@ -1,13 +1,15 @@
+
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BarChart, Users as UsersIcon, Briefcase, CheckCircle, FileText as AssessmentIcon, BookOpen, CalendarDays, Award, Users2 as CommitteeIcon, BotMessageSquare, CalendarCheck, Settings, UserCog, GitFork, BookUser, UsersRound, Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen, Loader2, CalendarRange } from "lucide-react";
+import { BarChart3, Users as UsersIcon, Briefcase, CheckCircle, FileText as AssessmentIcon, BookOpen, CalendarDays, Award, Users2 as CommitteeIcon, BotMessageSquare, CalendarCheck, Settings, UserCog, GitFork, BookUser, UsersRound, Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen, Loader2, CalendarRange, Settings2 as ResourceIcon, Activity } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState } from 'react';
 
-type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown';
+type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown' | 'committee_convener' | 'committee_co_convener' | 'committee_member' | 'super_admin' | 'institute_admin' | 'department_admin' | 'committee_admin';
+
 
 interface User {
   name: string;
@@ -45,9 +47,11 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "admin-total-batches", title: "Total Batches", value: "10", icon: CalendarRange, color: "text-yellow-600", href: "/admin/batches"},
     { id: "admin-total-courses", title: "Total Courses", value: "50", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses"},
     { id: "admin-total-assessments", title: "Total Assessments", value: "120", icon: AssessmentIcon, color: "text-lime-500", href: "/admin/assessments"},
+    { id: "admin-resource-allocation", title: "Resource Allocation", value: "Manage", icon: ResourceIcon, color: "text-orange-400", href: "/admin/resource-allocation" },
     { id: "admin-active-projects", title: "Active Projects", value: "78", icon: Briefcase, color: "text-accent", href: "/project-fair/admin" },
     { id: "admin-pending-approvals", title: "Pending Approvals", value: "12", icon: CheckCircle, color: "text-yellow-500", href: "/admin/approvals" },
     { id: "admin-feedback-reports", title: "Feedback Reports", value: "5", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
+    { id: "admin-reporting-analytics", title: "Reporting & Analytics", value: "View", icon: BarChart3, color: "text-sky-500", href: "/admin/reporting-analytics" },
     { id: "admin-role-management", title: "Role Management", value: "Configure", icon: UserCog, color: "text-indigo-500", href: "/admin/roles" },
   ],
   student: [
@@ -74,8 +78,10 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "hod-my-batches", title: "Department Batches", value: "Manage", icon: CalendarRange, color: "text-yellow-600", href: "/admin/batches" },
     { id: "hod-my-courses", title: "Department Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses" },
     { id: "hod-my-assessments", title: "Department Assessments", value: "Manage", icon: AssessmentIcon, color: "text-lime-500", href: "/admin/assessments" },
+    { id: "hod-resource-allocation", title: "Resource Allocation", value: "Manage", icon: ResourceIcon, color: "text-orange-400", href: "/admin/resource-allocation" },
     { id: "hod-department-projects", title: "Department Projects", value: "25", icon: Briefcase, color: "text-yellow-500", href: "/project-fair/admin" }, 
     { id: "hod-department-feedback", title: "Department Feedback", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" }, 
+    { id: "hod-reporting-analytics", title: "Reporting & Analytics", value: "View", icon: BarChart3, color: "text-sky-500", href: "/admin/reporting-analytics" },
   ],
   jury: [
     { id: "jury-projects-to-evaluate", title: "Projects to Evaluate", value: "10", icon: AssessmentIcon, color: "text-primary", href: "/project-fair/jury" },
@@ -83,6 +89,32 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "jury-submitted-evaluations", title: "Submitted Evaluations", value: "5", icon: GitFork, color: "text-green-500", href: "/project-fair/jury/submissions" },
     { id: "jury-evaluation-schedule", title: "Evaluation Schedule", value: "Today", icon: CalendarDays, color: "text-yellow-500", href: "/project-fair/jury/schedule" },
   ],
+  committee_convener: [
+    { id: "convener-committee-dashboard", title: "Committee Dashboard", value: "View", icon: CommitteeIcon, color: "text-pink-500", href: "/dashboard/committee"},
+    { id: "convener-book-room", title: "Book Room", value: "Schedule", icon: DoorOpen, color: "text-cyan-500", href: "/admin/resource-allocation/rooms"},
+  ],
+  committee_co_convener: [
+    { id: "co_convener-committee-dashboard", title: "Committee Dashboard", value: "View", icon: CommitteeIcon, color: "text-pink-500", href: "/dashboard/committee"},
+    { id: "co_convener-book-room", title: "Book Room", value: "Schedule", icon: DoorOpen, color: "text-cyan-500", href: "/admin/resource-allocation/rooms"},
+  ],
+  committee_member: [
+    { id: "member-committee-dashboard", title: "Committee Dashboard", value: "View", icon: CommitteeIcon, color: "text-pink-500", href: "/dashboard/committee"},
+  ],
+  super_admin: baseDashboardData.admin,
+  institute_admin: baseDashboardData.admin.filter(item => !['admin-total-users', 'admin-role-management', 'admin-total-institutes'].includes(item.id)),
+  department_admin: [
+    { id: "dept-admin-programs", title: "Department Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs" },
+    { id: "dept-admin-courses", title: "Department Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses" },
+    { id: "dept-admin-students", title: "Department Students", value: "View", icon: BookUser, color: "text-green-500", href: "/admin/students"},
+    { id: "dept-admin-faculty", title: "Department Faculty", value: "View", icon: UsersRound, color: "text-indigo-500", href: "/admin/faculty"},
+  ],
+  committee_admin: [
+    { id: "committee-admin-manage", title: "Manage Committees", value: "Configure", icon: CommitteeIcon, color: "text-pink-500", href: "/admin/committees" },
+  ],
+  dte_admin: [{ id: "dte-overview", title: "DTE Overview", value: "View Stats", icon: BarChart3, color: "text-primary", href: "/dte/overview" }],
+  gtu_admin: [{ id: "gtu-overview", title: "GTU Overview", value: "View Stats", icon: BarChart3, color: "text-primary", href: "/gtu/overview" }],
+  lab_assistant: [{ id: "lab-inventory", title: "Lab Inventory", value: "Manage", icon: Settings, color: "text-primary", href: "/lab/inventory" }],
+  clerical_staff: [{ id: "clerical-tasks", title: "Administrative Tasks", value: "View", icon: FileText, color: "text-primary", href: "/office/tasks" }],
   unknown: [],
 };
 
@@ -238,7 +270,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent className="flex items-center justify-center h-[250px] bg-muted/30 rounded-md">
             <div className="text-center text-muted-foreground">
-              <BarChart className="h-16 w-16 mx-auto mb-2 text-primary" />
+              <BarChart3 className="h-16 w-16 mx-auto mb-2 text-primary" />
               <p>Chart data will be displayed here.</p>
               <p className="text-xs">(e.g., using ShadCN Charts)</p>
             </div>
@@ -314,6 +346,11 @@ export default function DashboardPage() {
                   <AssessmentIcon className="h-5 w-5" /> Manage Assessments
                 </Button>
               </Link>
+              <Link href="/admin/resource-allocation" passHref>
+                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
+                  <ResourceIcon className="h-5 w-5" /> Resource Allocation
+                </Button>
+              </Link>
               <Link href="/project-fair/admin/new-event" passHref>
                  <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
                   <Briefcase className="h-5 w-5" /> Create Project Event
@@ -327,6 +364,11 @@ export default function DashboardPage() {
               <Link href="/admin/feedback-analysis" passHref>
                 <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
                   <BotMessageSquare className="h-5 w-5" /> Analyze Feedback
+                </Button>
+              </Link>
+               <Link href="/admin/reporting-analytics" passHref>
+                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
+                  <BarChart3 className="h-5 w-5" /> Reports & Analytics
                 </Button>
               </Link>
                 <Link href="/admin/roles" passHref>

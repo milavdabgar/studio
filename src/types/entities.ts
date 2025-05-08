@@ -1,4 +1,4 @@
-export type Timestamp = string;
+export type Timestamp = string; // ISO 8601 format: "YYYY-MM-DDTHH:mm:ss.sssZ"
 
 // User and Authentication
 export interface User {
@@ -336,8 +336,8 @@ export interface Committee {
   description?: string;
   purpose: string;
   instituteId: string; 
-  formationDate: Timestamp; 
-  dissolutionDate?: Timestamp; 
+  formationDate: Timestamp; // "YYYY-MM-DD"
+  dissolutionDate?: Timestamp; // "YYYY-MM-DD"
   status: CommitteeStatus;
   convenerId?: string; 
   createdAt?: Timestamp;
@@ -349,8 +349,8 @@ export interface CommitteeMember {
   committeeId: string;
   userId: string; 
   role: CommitteeMemberRole; 
-  assignmentDate: Timestamp; 
-  endDate?: Timestamp; 
+  assignmentDate: Timestamp; // "YYYY-MM-DD"
+  endDate?: Timestamp; // "YYYY-MM-DD"
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
@@ -432,8 +432,8 @@ export interface CourseOffering {
     semester: number; 
     facultyIds: string[]; 
     roomIds?: string[]; 
-    startDate?: Timestamp;
-    endDate?: Timestamp;
+    startDate?: Timestamp; // "YYYY-MM-DD"
+    endDate?: Timestamp;   // "YYYY-MM-DD"
     status: 'scheduled' | 'ongoing' | 'completed' | 'cancelled';
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
@@ -490,20 +490,25 @@ export interface Room {
   updatedAt?: Timestamp;
 }
 
+export type RoomAllocationPurpose = 'lecture' | 'practical' | 'exam' | 'event' | 'meeting' | 'other';
+export type RoomAllocationStatus = 'scheduled' | 'cancelled' | 'completed' | 'ongoing';
+export type DayOfWeek = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
+
+
 export interface RoomAllocation {
     id: string;
     roomId: string;
-    purpose: 'lecture' | 'practical' | 'exam' | 'event' | 'meeting' | 'other';
+    purpose: RoomAllocationPurpose;
     courseOfferingId?: string; 
     committeeId?: string; 
     facultyId?: string; 
     title?: string; 
-    dayOfWeek?: 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday' | string;
-    startTime: Timestamp; 
-    endTime: Timestamp;   
+    dayOfWeek?: DayOfWeek | string; // Allows for 'Daily' or specific day. For 'Daily', startTime/endTime might span multiple days or it repeats on all weekdays.
+    startTime: Timestamp; // ISO string "YYYY-MM-DDTHH:mm:ss.sssZ"
+    endTime: Timestamp;   // ISO string "YYYY-MM-DDTHH:mm:ss.sssZ"
     isRecurring?: boolean;
-    recurrencePattern?: string; 
-    status: 'scheduled' | 'cancelled' | 'completed' | 'ongoing';
+    recurrencePattern?: string; // e.g., RRULE string or simple "daily", "weekly", "monthly"
+    status: RoomAllocationStatus;
     notes?: string;
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
@@ -554,7 +559,7 @@ export interface AttendanceRecord {
     id: string;
     studentId: string; // Link to StudentProfile.id
     courseOfferingId: string; // Identifies the specific class/lab session for a course
-    date: Timestamp; // Date of the session
+    date: Timestamp; // Date of the session, "YYYY-MM-DD"
     status: AttendanceStatus;
     markedBy: string; // facultyId who marked attendance
     remarks?: string;
@@ -570,7 +575,7 @@ export interface StaffTransfer {
   fromInstituteId: string;
   toInstituteId: string;
   transferOrderNumber: string;
-  transferDate: Timestamp;
+  transferDate: Timestamp; // "YYYY-MM-DD"
   transferType: 'promotion' | 'request' | 'administrative' | string;
   status: 'pending' | 'approved' | 'rejected' | 'completed' | 'cancelled';
   remarks?: string;
@@ -582,7 +587,7 @@ export interface Curriculum {
     id: string;
     programId: string;
     version: string; 
-    effectiveDate: Timestamp;
+    effectiveDate: Timestamp; // "YYYY-MM-DD"
     courses: Array<{ courseId: string, semester: number, isElective: boolean }>; 
     status: 'draft' | 'active' | 'archived';
     createdAt?: Timestamp;
@@ -595,8 +600,8 @@ export interface Examination {
     gtuExamCode?: string;
     academicYear: string;
     examType: 'regular' | 'remedial' | 'internal' | 'external_practical';
-    startDate: Timestamp;
-    endDate: Timestamp;
+    startDate: Timestamp; // "YYYY-MM-DD"
+    endDate: Timestamp;   // "YYYY-MM-DD"
     programs: string[]; 
     status: 'scheduled' | 'ongoing' | 'completed' | 'postponed' | 'cancelled';
     createdAt?: Timestamp;
@@ -612,11 +617,9 @@ export interface FacultyAssignment {
     role?: 'teaching' | 'non_teaching_academic' | 'administrative' | string; 
     teachingHours?: number;
     assignmentType?: 'full_time' | 'part_time' | 'additional_charge';
-    startDate: Timestamp;
-    endDate?: Timestamp;
+    startDate: Timestamp; // "YYYY-MM-DD"
+    endDate?: Timestamp;   // "YYYY-MM-DD"
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
-    
-
     
