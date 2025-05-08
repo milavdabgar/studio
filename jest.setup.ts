@@ -1,4 +1,6 @@
 
+import 'reflect-metadata';
+
 // Optional: extend Jest's expect functionality
 import '@testing-library/jest-dom';
 

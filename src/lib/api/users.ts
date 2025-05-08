@@ -3,7 +3,7 @@ import type { User, Institute, Role } from '@/types/entities';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 
-export const userService = {
+const userService = {
   async getAllUsers(): Promise<Omit<User, 'password'>[]> {
     const response = await fetch(`${API_BASE_URL}/users`);
     if (!response.ok) {
@@ -88,3 +88,5 @@ export const userService = {
     return responseData;
   }
 };
+
+export { userService };

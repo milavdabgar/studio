@@ -5,6 +5,11 @@ import { AppLogo } from '../app-logo'; // Adjust the import path as necessary
 
 describe('AppLogo', () => {
   it('renders an SVG element', () => {
+    // Basic test to ensure the component renders without crashing
+    render(<AppLogo />);
+    expect(screen.getByTestId('app-logo')).toBeInTheDocument();
+
+    // Original tests
     render(<AppLogo />);
     const svgElement = screen.getByRole('img', { hidden: true }); // SVGs might not have an explicit role by default
     expect(svgElement).toBeInTheDocument();
