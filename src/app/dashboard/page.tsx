@@ -1,9 +1,14 @@
-
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BarChart3, Users as UsersIcon, Briefcase, CheckCircle, FileText as AssessmentIcon, BookOpen, CalendarDays, Award, Users2 as CommitteeIcon, BotMessageSquare, CalendarCheck, Settings, UserCog, GitFork, BookUser, UsersRound, Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen, Loader2, CalendarRange, Settings2 as ResourceIcon, Activity, Clock, Home, FileText } from "lucide-react";
+import { 
+  BarChart3, Users as UsersIcon, Briefcase, CheckCircle, FileText as AssessmentIcon, 
+  BookOpen, CalendarDays, Award, Users2 as CommitteeIcon, BotMessageSquare, 
+  CalendarCheck, Settings, UserCog, GitFork, BookUser, UsersRound, 
+  Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen, 
+  Loader2, CalendarRange, Settings2 as ResourceIcon, Activity, Clock, Home, FileText 
+} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState } from 'react';
@@ -34,113 +39,133 @@ interface DashboardCardItem {
 }
 
 // Define adminNavItems here before baseDashboardData uses it
-const adminNavItems = [
-  { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard' },
-  { href: '/admin/users', icon: UsersIcon, label: 'User Management', id: 'admin-users' },
-  { href: '/admin/roles', icon: UserCog, label: 'Role Management', id: 'admin-roles' },
-  { href: '/admin/institutes', icon: Landmark, label: 'Institutes', id: 'admin-institutes'},
-  { href: '/admin/buildings', icon: Building, label: 'Buildings', id: 'admin-buildings'},
-  { href: '/admin/rooms', icon: DoorOpen, label: 'Rooms', id: 'admin-rooms'},
-  { href: '/admin/committees', icon: CommitteeIcon, label: 'Committees', id: 'admin-committees'},
-  { href: '/admin/students', icon: BookUser, label: 'Student Mgt.', id: 'admin-students' },
-  { href: '/admin/faculty', icon: UsersRound, label: 'Faculty Mgt.', id: 'admin-faculty' },
-  { href: '/admin/departments', icon: Building2, label: 'Departments', id: 'admin-departments' },
-  { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs' },
-  { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches' },
-  { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses' },
-  { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments' },
-  { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance' },
-  { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'admin-resource-allocation' },
-  { href: '/admin/timetables', icon: Clock, label: 'Timetables', id: 'admin-timetables'},
-  { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback' },
-  { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'admin-reporting' },
+const adminQuickLinks = [
+  { href: '/admin/users', icon: UsersIcon, label: 'User Management', id: 'admin-users-link' },
+  { href: '/admin/roles', icon: UserCog, label: 'Role Management', id: 'admin-roles-link' },
+  { href: '/admin/institutes', icon: Landmark, label: 'Institutes', id: 'admin-institutes-link'},
+  { href: '/admin/buildings', icon: Building, label: 'Buildings', id: 'admin-buildings-link'},
+  { href: '/admin/rooms', icon: DoorOpen, label: 'Rooms', id: 'admin-rooms-link'},
+  { href: '/admin/committees', icon: CommitteeIcon, label: 'Committees', id: 'admin-committees-link'},
+  { href: '/admin/students', icon: BookUser, label: 'Student Mgt.', id: 'admin-students-link' },
+  { href: '/admin/faculty', icon: UsersRound, label: 'Faculty Mgt.', id: 'admin-faculty-link' }, 
+  { href: '/admin/departments', icon: Building2, label: 'Departments', id: 'admin-departments-link' },
+  { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs-link' },
+  { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches-link' },
+  { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses-link' },
+  { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments-link' },
+  { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance-link' },
+  { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'admin-resource-allocation-link' },
+  { href: '/admin/timetables', icon: Clock, label: 'Timetables', id: 'admin-timetables-link'},
+  { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback-link' },
+  { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'admin-reporting-link' },
+  { href: '/project-fair/admin/new-event', icon: Briefcase, label: 'Create Project Event', id: 'admin-project-event-link'},
+  { href: '/admin/results/import', icon: AssessmentIcon, label: 'Import Results', id: 'admin-import-results-link'},
+  { href: '/admin/settings', icon: Settings, label: 'System Settings', id: 'admin-settings-link'},
 ];
 
 
 const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
-  admin: [
+  admin: [ // Specific cards for admin, not directly from adminNavItems
     { id: "admin-total-users", title: "Total Users", value: "1,250", icon: UsersIcon, color: "text-primary", href: "/admin/users" },
     { id: "admin-total-students", title: "Total Students", value: "850", icon: BookUser, color: "text-green-500", href: "/admin/students"},
     { id: "admin-total-faculty", title: "Total Faculty", value: "75", icon: UsersRound, color: "text-indigo-500", href: "/admin/faculty"},
-    { id: "admin-total-institutes", title: "Total Institutes", value: "1", icon: Landmark, color: "text-red-500", href: "/admin/institutes"},
-    { id: "admin-total-buildings", title: "Total Buildings", value: "3", icon: Building, color: "text-blue-500", href: "/admin/buildings"},
-    { id: "admin-total-rooms", title: "Total Rooms", value: "150", icon: DoorOpen, color: "text-cyan-500", href: "/admin/rooms"},
-    { id: "admin-total-committees", title: "Total Committees", value: "12", icon: CommitteeIcon, color: "text-pink-500", href: "/admin/committees"},
-    { id: "admin-total-departments", title: "Total Departments", value: "7", icon: Building2, color: "text-orange-500", href: "/admin/departments"},
-    { id: "admin-total-programs", title: "Total Programs", value: "5", icon: BookCopy, color: "text-purple-500", href: "/admin/programs"},
-    { id: "admin-total-batches", title: "Total Batches", value: "10", icon: CalendarRange, color: "text-yellow-600", href: "/admin/batches"},
-    { id: "admin-total-courses", title: "Total Courses", value: "50", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses"},
-    { id: "admin-total-assessments", title: "Total Assessments", value: "120", icon: AssessmentIcon, color: "text-lime-500", href: "/admin/assessments"},
+    { id: "admin-total-institutes", title: "Institutes", value: "Manage", icon: Landmark, color: "text-red-500", href: "/admin/institutes"},
+    { id: "admin-total-buildings", title: "Buildings", value: "Manage", icon: Building, color: "text-blue-500", href: "/admin/buildings"},
+    { id: "admin-total-rooms", title: "Rooms", value: "Manage", icon: DoorOpen, color: "text-cyan-500", href: "/admin/rooms"},
+    { id: "admin-total-committees", title: "Committees", value: "Manage", icon: CommitteeIcon, color: "text-pink-500", href: "/admin/committees"},
+    { id: "admin-total-departments", title: "Departments", value: "Manage", icon: Building2, color: "text-orange-500", href: "/admin/departments"},
+    { id: "admin-total-programs", title: "Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs"},
+    { id: "admin-total-batches", title: "Batches", value: "Manage", icon: CalendarRange, color: "text-yellow-600", href: "/admin/batches"},
+    { id: "admin-total-courses", title: "Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses"},
+    { id: "admin-total-assessments", title: "Assessments", value: "Manage", icon: AssessmentIcon, color: "text-lime-500", href: "/admin/assessments"},
     { id: "admin-mark-attendance", title: "Mark Attendance", value: "Record", icon: CalendarCheck, color: "text-blue-400", href: "/faculty/attendance/mark"},
-    { id: "admin-resource-allocation", title: "Resource Allocation", value: "Manage", icon: ResourceIcon, color: "text-orange-400", href: "/admin/resource-allocation" },
-    { id: "admin-timetable", title: "Timetables", value: "Manage", icon: Clock, color: "text-gray-500", href: "/admin/timetables" },
-    { id: "admin-active-projects", title: "Active Projects", value: "78", icon: Briefcase, color: "text-accent", href: "/project-fair/admin" },
+    { id: "admin-resource-allocation", title: "Resource Allocation", value: "Allocate", icon: ResourceIcon, color: "text-orange-400", href: "/admin/resource-allocation" },
+    { id: "admin-timetable", title: "Timetables", value: "View/Edit", icon: Clock, color: "text-gray-500", href: "/admin/timetables" },
+    { id: "admin-active-projects", title: "Active Projects", value: "View", icon: Briefcase, color: "text-accent", href: "/project-fair/admin" },
     { id: "admin-pending-approvals", title: "Pending Approvals", value: "12", icon: CheckCircle, color: "text-yellow-500", href: "/admin/approvals" },
-    { id: "admin-feedback-reports", title: "Feedback Reports", value: "5", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
-    { id: "admin-reporting-analytics", title: "Reporting & Analytics", value: "View", icon: BarChart3, color: "text-sky-500", href: "/admin/reporting-analytics" },
+    { id: "admin-feedback-reports", title: "Feedback Reports", value: "Analyze", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
+    { id: "admin-reporting-analytics", title: "Reporting & Analytics", value: "Generate", icon: BarChart3, color: "text-sky-500", href: "/admin/reporting-analytics" },
     { id: "admin-role-management", title: "Role Management", value: "Configure", icon: UserCog, color: "text-indigo-500", href: "/admin/roles" },
   ],
   student: [
-    { id: "student-my-courses", title: "My Courses", value: "6", icon: BookOpen, color: "text-primary", href: "/courses" },
-    { id: "student-upcoming-assignments", title: "Upcoming Assignments", value: "3", icon: CalendarCheck, color: "text-accent", href: "/assignments" },
-    { id: "student-latest-grades", title: "Latest Grades", value: "A-", icon: Award, color: "text-green-500", href: "/results/history/me" },
+    { id: "student-my-courses", title: "My Courses", value: "6 Active", icon: BookOpen, color: "text-primary", href: "/courses" },
+    { id: "student-upcoming-assignments", title: "Upcoming Assignments", value: "3 Due", icon: CalendarCheck, color: "text-accent", href: "/assignments" },
+    { id: "student-latest-grades", title: "Latest Grades", value: "View", icon: Award, color: "text-green-500", href: "/results/history/me" },
     { id: "student-project-status", title: "Project Status", value: "Submitted", icon: AssessmentIcon, color: "text-yellow-500", href: "/project-fair/student" },
   ],
   faculty: [
-    { id: "faculty-assigned-courses", title: "Assigned Courses", value: "3", icon: BookOpen, color: "text-primary", href: "/faculty/courses" },
-    { id: "faculty-students-enrolled", title: "Students Enrolled", value: "120", icon: UsersIcon, color: "text-accent", href: "/faculty/students" }, // This might link to a faculty specific student view
-    { id: "faculty-pending-evaluations", title: "Pending Evaluations", value: "8", icon: CheckCircle, color: "text-yellow-500", href: "/project-fair/jury" },
+    { id: "faculty-assigned-courses", title: "Assigned Courses", value: "3 Active", icon: BookOpen, color: "text-primary", href: "/faculty/courses" },
+    { id: "faculty-students-enrolled", title: "Students Enrolled", value: "120 Total", icon: UsersIcon, color: "text-accent", href: "/faculty/students" }, 
+    { id: "faculty-pending-evaluations", title: "Pending Evaluations", value: "8 Projects", icon: CheckCircle, color: "text-yellow-500", href: "/project-fair/jury" },
     { id: "faculty-feedback-reports", title: "Feedback Reports", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
     { id: "faculty-mark-attendance", title: "Mark Attendance", value: "Record", icon: CalendarCheck, color: "text-blue-400", href: "/faculty/attendance/mark"},
     { id: "faculty-manage-timetable", title: "My Timetable", value: "View/Edit", icon: Clock, color: "text-gray-500", href: "/faculty/timetable"},
   ],
   hod: [
-    { id: "hod-department-staff", title: "Department Staff", value: "15", icon: UsersRound, color: "text-primary", href: "/admin/faculty" },
-    { id: "hod-department-students", title: "Department Students", value: "250", icon: BookUser, color: "text-accent", href: "/admin/students" },
-    { id: "hod-my-institute", title: "My Institute", value: "Manage", icon: Landmark, color: "text-red-500", href: "/admin/institutes"},
-    { id: "hod-my-buildings", title: "Institute Buildings", value: "Manage", icon: Building, color: "text-blue-500", href: "/admin/buildings"},
-    { id: "hod-my-rooms", title: "Institute Rooms", value: "Manage", icon: DoorOpen, color: "text-cyan-500", href: "/admin/rooms"},
-    { id: "hod-my-committees", title: "Institute Committees", value: "Manage", icon: CommitteeIcon, color: "text-pink-500", href: "/admin/committees"},
-    { id: "hod-my-department", title: "My Department", value: "Manage", icon: Building2, color: "text-orange-500", href: "/admin/departments" },
-    { id: "hod-my-programs", title: "Department Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs" },
-    { id: "hod-my-batches", title: "Department Batches", value: "Manage", icon: CalendarRange, color: "text-yellow-600", href: "/admin/batches" },
-    { id: "hod-my-courses", title: "Department Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses" },
-    { id: "hod-my-assessments", title: "Department Assessments", value: "Manage", icon: AssessmentIcon, color: "text-lime-500", href: "/admin/assessments" },
-    { id: "hod-mark-attendance", title: "Mark Attendance", value: "Record", icon: CalendarCheck, color: "text-blue-400", href: "/faculty/attendance/mark"},
+    { id: "hod-department-staff", title: "Department Staff", value: "15 Members", icon: UsersRound, color: "text-primary", href: "/admin/faculty" },
+    { id: "hod-department-students", title: "Department Students", value: "250 Enrolled", icon: BookUser, color: "text-accent", href: "/admin/students" },
+    { id: "hod-my-institute", title: "Institute Details", value: "View/Edit", icon: Landmark, color: "text-red-500", href: "/admin/institutes"},
+    { id: "hod-my-buildings", title: "Buildings", value: "Manage", icon: Building, color: "text-blue-500", href: "/admin/buildings"},
+    { id: "hod-my-rooms", title: "Rooms", value: "Manage", icon: DoorOpen, color: "text-cyan-500", href: "/admin/rooms"},
+    { id: "hod-my-committees", title: "Committees", value: "Manage", icon: CommitteeIcon, color: "text-pink-500", href: "/admin/committees"},
+    { id: "hod-my-department", title: "Department Info", value: "View/Edit", icon: Building2, color: "text-orange-500", href: "/admin/departments" },
+    { id: "hod-my-programs", title: "Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs" },
+    { id: "hod-my-batches", title: "Batches", value: "Manage", icon: CalendarRange, color: "text-yellow-600", href: "/admin/batches" },
+    { id: "hod-my-courses", title: "Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses" },
+    { id: "hod-my-assessments", title: "Assessments", value: "Manage", icon: AssessmentIcon, color: "text-lime-500", href: "/admin/assessments" },
+    { id: "hod-mark-attendance", title: "Mark Attendance", value: "Oversee", icon: CalendarCheck, color: "text-blue-400", href: "/faculty/attendance/mark"},
     { id: "hod-resource-allocation", title: "Resource Allocation", value: "Manage", icon: ResourceIcon, color: "text-orange-400", href: "/admin/resource-allocation" },
-    { id: "hod-manage-timetable", title: "Department Timetable", value: "Manage", icon: Clock, color: "text-gray-500", href: "/admin/timetables"},
-    { id: "hod-department-projects", title: "Department Projects", value: "25", icon: Briefcase, color: "text-yellow-500", href: "/project-fair/admin" },
-    { id: "hod-department-feedback", title: "Department Feedback", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
-    { id: "hod-reporting-analytics", title: "Reporting & Analytics", value: "View", icon: BarChart3, color: "text-sky-500", href: "/admin/reporting-analytics" },
+    { id: "hod-manage-timetable", title: "Department Timetable", value: "View/Edit", icon: Clock, color: "text-gray-500", href: "/admin/timetables"},
+    { id: "hod-department-projects", title: "Department Projects", value: "25 Active", icon: Briefcase, color: "text-yellow-500", href: "/project-fair/admin" },
+    { id: "hod-department-feedback", title: "Department Feedback", value: "Analyze", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
+    { id: "hod-reporting-analytics", title: "Reporting & Analytics", value: "Generate", icon: BarChart3, color: "text-sky-500", href: "/admin/reporting-analytics" },
   ],
   jury: [
-    { id: "jury-projects-to-evaluate", title: "Projects to Evaluate", value: "10", icon: AssessmentIcon, color: "text-primary", href: "/project-fair/jury" },
+    { id: "jury-projects-to-evaluate", title: "Projects to Evaluate", value: "10 Pending", icon: AssessmentIcon, color: "text-primary", href: "/project-fair/jury" },
     { id: "jury-evaluation-criteria", title: "Evaluation Criteria", value: "View", icon: CheckCircle, color: "text-accent", href: "/project-fair/jury/criteria" },
-    { id: "jury-submitted-evaluations", title: "Submitted Evaluations", value: "5", icon: GitFork, color: "text-green-500", href: "/project-fair/jury/submissions" },
-    { id: "jury-evaluation-schedule", title: "Evaluation Schedule", value: "Today", icon: CalendarDays, color: "text-yellow-500", href: "/project-fair/jury/schedule" },
+    { id: "jury-submitted-evaluations", title: "Submitted Evaluations", value: "5 Done", icon: GitFork, color: "text-green-500", href: "/project-fair/jury/submissions" },
+    { id: "jury-evaluation-schedule", title: "Evaluation Schedule", value: "View Today", icon: CalendarDays, color: "text-yellow-500", href: "/project-fair/jury/schedule" },
   ],
   committee_convener: [
-    { id: "convener-committee-dashboard", title: "Committee Dashboard", value: "View", icon: CommitteeIcon, color: "text-pink-500", href: "/dashboard/committee"},
+    { id: "convener-committee-dashboard", title: "My Committee", value: "Manage", icon: CommitteeIcon, color: "text-pink-500", href: "/dashboard/committee"},
     { id: "convener-book-room", title: "Book Room", value: "Schedule", icon: DoorOpen, color: "text-cyan-500", href: "/admin/resource-allocation/rooms"},
+    { id: "convener-meetings", title: "Meetings", value: "Schedule/View", icon: CalendarCheck, color: "text-blue-500", href: "/committee/meetings" },
+    { id: "convener-tasks", title: "Committee Tasks", value: "Assign/Track", icon: ListChecks, color: "text-green-500", href: "/committee/tasks" },
+
   ],
   committee_co_convener: [
-    { id: "co_convener-committee-dashboard", title: "Committee Dashboard", value: "View", icon: CommitteeIcon, color: "text-pink-500", href: "/dashboard/committee"},
-    { id: "co_convener-book-room", title: "Book Room", value: "Schedule", icon: DoorOpen, color: "text-cyan-500", href: "/admin/resource-allocation/rooms"},
+    { id: "co_convener-committee-dashboard", title: "My Committee", value: "View", icon: CommitteeIcon, color: "text-pink-500", href: "/dashboard/committee"},
+    { id: "co_convener-book-room", title: "Book Room", value: "Request", icon: DoorOpen, color: "text-cyan-500", href: "/admin/resource-allocation/rooms"},
+    { id: "co_convener-meetings", title: "Meetings", value: "View", icon: CalendarCheck, color: "text-blue-500", href: "/committee/meetings" },
   ],
   committee_member: [
-    { id: "member-committee-dashboard", title: "Committee Dashboard", value: "View", icon: CommitteeIcon, color: "text-pink-500", href: "/dashboard/committee"},
+    { id: "member-committee-dashboard", title: "My Committee", value: "View Info", icon: CommitteeIcon, color: "text-pink-500", href: "/dashboard/committee"},
+    { id: "member-tasks", title: "Assigned Tasks", value: "View", icon: ListChecks, color: "text-green-500", href: "/committee/tasks/my" },
   ],
-  super_admin: adminNavItems,
-  institute_admin: adminNavItems.filter(item => !['admin-total-users', 'admin-role-management', 'admin-total-institutes'].includes(item.id)),
-  department_admin: [
-    { id: "dept-admin-programs", title: "Department Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs" },
-    { id: "dept-admin-courses", title: "Department Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses" },
-    { id: "dept-admin-students", title: "Department Students", value: "View", icon: BookUser, color: "text-green-500", href: "/admin/students"},
-    { id: "dept-admin-faculty", title: "Department Faculty", value: "View", icon: UsersRound, color: "text-indigo-500", href: "/admin/faculty"},
-    { id: "dept-admin-timetable", title: "Department Timetable", value: "Manage", icon: Clock, color: "text-gray-500", href: "/admin/timetables"},
+  super_admin: [ // Specific cards for super_admin
+    { id: "sadmin-total-users", title: "Platform Users", value: "Manage All", icon: UsersIcon, color: "text-primary", href: "/admin/users" },
+    { id: "sadmin-system-roles", title: "System Roles", value: "Configure", icon: UserCog, color: "text-indigo-500", href: "/admin/roles" },
+    { id: "sadmin-all-institutes", title: "All Institutes", value: "Oversee", icon: Landmark, color: "text-red-500", href: "/admin/institutes"},
+    { id: "sadmin-system-settings", title: "System Settings", value: "Global Config", icon: Settings, color: "text-teal-500", href: "/admin/settings" },
+    { id: "sadmin-activity-log", title: "Activity Log", value: "Audit", icon: Activity, color: "text-orange-500", href: "/admin/logs" },
+  ],
+  institute_admin: [
+    { id: "iadmin-institute-faculty", title: "Institute Faculty", value: "Manage", icon: UsersRound, color: "text-indigo-500", href: "/admin/faculty"},
+    { id: "iadmin-institute-students", title: "Institute Students", value: "Manage", icon: BookUser, color: "text-green-500", href: "/admin/students"},
+    { id: "iadmin-institute-depts", title: "Departments", value: "Manage", icon: Building2, color: "text-orange-500", href: "/admin/departments" },
+    { id: "iadmin-institute-programs", title: "Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs" },
+    { id: "iadmin-institute-buildings", title: "Buildings & Rooms", value: "Manage", icon: Building, color: "text-blue-500", href: "/admin/buildings"},
+    { id: "iadmin-institute-committees", title: "Committees", value: "Manage", icon: CommitteeIcon, color: "text-pink-500", href: "/admin/committees"},
+  ],
+  department_admin: [ // This is essentially HOD, so can be same as HOD or slightly different
+    { id: "dept-admin-programs", title: "Dept. Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs" },
+    { id: "dept-admin-courses", title: "Dept. Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses" },
+    { id: "dept-admin-students", title: "Dept. Students", value: "View", icon: BookUser, color: "text-green-500", href: "/admin/students"},
+    { id: "dept-admin-faculty", title: "Dept. Faculty", value: "View", icon: UsersRound, color: "text-indigo-500", href: "/admin/faculty"},
+    { id: "dept-admin-timetable", title: "Dept. Timetable", value: "View", icon: Clock, color: "text-gray-500", href: "/admin/timetables"},
   ],
   committee_admin: [
-    { id: "committee-admin-manage", title: "Manage Committees", value: "Configure", icon: CommitteeIcon, color: "text-pink-500", href: "/admin/committees" },
+    { id: "committee-admin-manage", title: "All Committees", value: "Oversee", icon: CommitteeIcon, color: "text-pink-500", href: "/admin/committees" },
   ],
   dte_admin: [{ id: "dte-overview", title: "DTE Overview", value: "View Stats", icon: BarChart3, color: "text-primary", href: "/dte/overview" }],
   gtu_admin: [{ id: "gtu-overview", title: "GTU Overview", value: "View Stats", icon: BarChart3, color: "text-primary", href: "/gtu/overview" }],
@@ -310,119 +335,21 @@ export default function DashboardPage() {
         </Card>
       </section>
 
-      {currentUser.activeRole === 'admin' && (
+      {(currentUser.activeRole === 'admin' || currentUser.activeRole === 'super_admin') && (
         <section>
           <Card className="shadow-lg">
             <CardHeader>
-              <CardTitle>Quick Actions (Admin)</CardTitle>
+              <CardTitle>Quick Actions</CardTitle>
               <CardDescription>Access common administrative tasks quickly.</CardDescription>
             </CardHeader>
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              <Link href="/admin/users" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <UsersIcon className="h-5 w-5" /> Manage Users
-                </Button>
-              </Link>
-               <Link href="/admin/students" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <BookUser className="h-5 w-5" /> Manage Students
-                </Button>
-              </Link>
-              <Link href="/admin/faculty" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <UsersRound className="h-5 w-5" /> Manage Faculty
-                </Button>
-              </Link>
-              <Link href="/admin/institutes" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <Landmark className="h-5 w-5" /> Manage Institutes
-                </Button>
-              </Link>
-              <Link href="/admin/buildings" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <Building className="h-5 w-5" /> Manage Buildings
-                </Button>
-              </Link>
-              <Link href="/admin/rooms" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <DoorOpen className="h-5 w-5" /> Manage Rooms
-                </Button>
-              </Link>
-              <Link href="/admin/committees" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <CommitteeIcon className="h-5 w-5" /> Manage Committees
-                </Button>
-              </Link>
-              <Link href="/admin/departments" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <Building2 className="h-5 w-5" /> Manage Departments
-                </Button>
-              </Link>
-              <Link href="/admin/programs" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <BookCopy className="h-5 w-5" /> Manage Programs
-                </Button>
-              </Link>
-              <Link href="/admin/batches" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <CalendarRange className="h-5 w-5" /> Manage Batches
-                </Button>
-              </Link>
-              <Link href="/admin/courses" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <ClipboardList className="h-5 w-5" /> Manage Courses
-                </Button>
-              </Link>
-               <Link href="/admin/assessments" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <AssessmentIcon className="h-5 w-5" /> Manage Assessments
-                </Button>
-              </Link>
-               <Link href="/faculty/attendance/mark" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <CalendarCheck className="h-5 w-5" /> Mark Attendance
-                </Button>
-              </Link>
-              <Link href="/admin/resource-allocation" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <ResourceIcon className="h-5 w-5" /> Resource Allocation
-                </Button>
-              </Link>
-              <Link href="/admin/timetables" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <Clock className="h-5 w-5" /> Manage Timetables
-                </Button>
-              </Link>
-              <Link href="/project-fair/admin/new-event" passHref>
-                 <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <Briefcase className="h-5 w-5" /> Create Project Event
-                </Button>
-              </Link>
-              <Link href="/admin/results/import" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <AssessmentIcon className="h-5 w-5" /> Import Results
-                </Button>
-              </Link>
-              <Link href="/admin/feedback-analysis" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <BotMessageSquare className="h-5 w-5" /> Analyze Feedback
-                </Button>
-              </Link>
-               <Link href="/admin/reporting-analytics" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <BarChart3 className="h-5 w-5" /> Reports & Analytics
-                </Button>
-              </Link>
-                <Link href="/admin/roles" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <UserCog className="h-5 w-5" /> Manage Roles
-                </Button>
-              </Link>
-                <Link href="/admin/settings" passHref>
-                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <Settings className="h-5 w-5" /> System Settings
-                </Button>
-              </Link>
+              {adminQuickLinks.map(item => (
+                <Link href={item.href} passHref key={item.id}>
+                  <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
+                    <item.icon className="h-5 w-5" /> {item.label}
+                  </Button>
+                </Link>
+              ))}
             </CardContent>
           </Card>
         </section>
@@ -430,4 +357,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-

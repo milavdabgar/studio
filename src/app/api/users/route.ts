@@ -1,6 +1,5 @@
-
 import { NextResponse, type NextRequest } from 'next/server';
-import type { User } from '@/types/entities'; 
+import type { User, UserRole } from '@/types/entities'; 
 import { instituteService } from '@/lib/api/institutes'; 
 
 declare global {
@@ -9,6 +8,7 @@ declare global {
 
 const now = new Date().toISOString();
 
+// Corrected initial user data
 if (!global.__API_USERS_STORE__ || global.__API_USERS_STORE__.length === 0) {
   global.__API_USERS_STORE__ = [
     { 
@@ -16,9 +16,9 @@ if (!global.__API_USERS_STORE__ || global.__API_USERS_STORE__.length === 0) {
       displayName: "GPP Super Admin", 
       username: "gpp_superadmin",
       email: "admin@gppalanpur.in", 
-      instituteEmail: "admin@gppalanpur.ac.in", 
+      instituteEmail: "admin@gppalanpur.ac.in", // Consistent institute email
       password: "Admin@123", 
-      roles: ["super_admin", "admin"], 
+      roles: ["super_admin", "admin"], // Use role CODES
       isActive: true, 
       instituteId: "inst1", 
       authProviders: ['password'],
@@ -28,16 +28,17 @@ if (!global.__API_USERS_STORE__ || global.__API_USERS_STORE__.length === 0) {
       preferences: { theme: 'system', language: 'en' },
       fullName: "ADMIN SUPER GPP",
       firstName: "SUPER",
-      lastName: "ADMIN"
+      lastName: "ADMIN",
+      currentRole: "super_admin"
     },
      { 
       id: "user_hod_ce_gpp", 
       displayName: "HOD Computer", 
       username: "hod_ce_gpp",
-      email: "hod.ce@gppalanpur.in", 
+      email: "hod.ce@example.com", // Personal email
       instituteEmail: "hod.ce@gppalanpur.ac.in", 
       password: "Password@123", 
-      roles: ["hod", "faculty"], 
+      roles: ["hod", "faculty"], // Role CODES
       isActive: true, 
       instituteId: "inst1", 
       authProviders: ['password'],
@@ -47,15 +48,16 @@ if (!global.__API_USERS_STORE__ || global.__API_USERS_STORE__.length === 0) {
       preferences: { theme: 'system', language: 'en' },
       fullName: "HOD COMPUTER ENGINEERING",
       firstName: "COMPUTER",
-      lastName: "HOD"
+      lastName: "HOD",
+      currentRole: "hod"
     },
     { 
       id: "user_faculty_cs01_gpp", 
       displayName: "Faculty CS01", 
-      email: "faculty.cs01@gppalanpur.in", 
+      email: "faculty.cs01@example.com", // Personal email
       instituteEmail: "faculty.cs01@gppalanpur.ac.in", 
       password: "Password@123", 
-      roles: ["faculty"], 
+      roles: ["faculty"], // Role CODE
       isActive: true, 
       instituteId: "inst1", 
       authProviders: ['password'],
@@ -65,7 +67,8 @@ if (!global.__API_USERS_STORE__ || global.__API_USERS_STORE__.length === 0) {
       preferences: { theme: 'system', language: 'en' },
       fullName: "FACULTY CS01 GPP",
       firstName: "CS01",
-      lastName: "FACULTY"
+      lastName: "FACULTY",
+      currentRole: "faculty"
     },
     { 
       id: "user_student_ce001_gpp", 
@@ -73,7 +76,7 @@ if (!global.__API_USERS_STORE__ || global.__API_USERS_STORE__.length === 0) {
       email: "student.ce001@example.com", // Personal Email
       instituteEmail: "220010107001@gppalanpur.ac.in", 
       password: "220010107001", 
-      roles: ["student"], 
+      roles: ["student"], // Role CODE
       isActive: true, 
       instituteId: "inst1", 
       authProviders: ['password'],
@@ -84,7 +87,8 @@ if (!global.__API_USERS_STORE__ || global.__API_USERS_STORE__.length === 0) {
       fullName: "DOE JOHN MICHAEL", // GTU Format
       firstName: "JOHN",
       middleName: "MICHAEL",
-      lastName: "DOE"
+      lastName: "DOE",
+      currentRole: "student"
     },
     { 
       id: "user_student_me002_gpp", 
@@ -92,7 +96,7 @@ if (!global.__API_USERS_STORE__ || global.__API_USERS_STORE__.length === 0) {
       email: "student.me002@example.com",
       instituteEmail: "220010108002@gppalanpur.ac.in", 
       password: "220010108002", 
-      roles: ["student"], 
+      roles: ["student"], // Role CODE
       isActive: true, 
       instituteId: "inst1", 
       authProviders: ['password'],
@@ -103,7 +107,8 @@ if (!global.__API_USERS_STORE__ || global.__API_USERS_STORE__.length === 0) {
       fullName: "SMITH JANE ANNA",
       firstName: "JANE",
       middleName: "ANNA",
-      lastName: "SMITH"
+      lastName: "SMITH",
+      currentRole: "student"
     },
     { 
       id: "user_faculty_me01_gpp", 
@@ -111,7 +116,7 @@ if (!global.__API_USERS_STORE__ || global.__API_USERS_STORE__.length === 0) {
       email: "faculty.me01@example.com",
       instituteEmail: "faculty.me01@gppalanpur.ac.in", 
       password: "Password@123", 
-      roles: ["faculty", "jury"], 
+      roles: ["faculty", "jury"], // Role CODES
       isActive: true, 
       instituteId: "inst1", 
       authProviders: ['password'],
@@ -122,15 +127,16 @@ if (!global.__API_USERS_STORE__ || global.__API_USERS_STORE__.length === 0) {
       fullName: "PATEL RAJ KUMAR",
       firstName: "RAJ",
       middleName: "KUMAR",
-      lastName: "PATEL"
+      lastName: "PATEL",
+      currentRole: "faculty"
     },
     { 
       id: "user_committee_convener_gpp", 
       displayName: "CWAN Convener", 
-      email: "convener.cwan@gppalanpur.in", 
+      email: "convener.cwan@example.com", // Personal Email
       instituteEmail: "convener.cwan@gppalanpur.ac.in", 
       password: "Password@123", 
-      roles: ["faculty", "cwan_gpp_convener"], 
+      roles: ["faculty", "cwan_gpp_convener"], // Role CODES
       isActive: true, 
       instituteId: "inst1", 
       authProviders: ['password'],
@@ -140,7 +146,8 @@ if (!global.__API_USERS_STORE__ || global.__API_USERS_STORE__.length === 0) {
       preferences: { theme: 'system', language: 'en' },
       fullName: "CONVENER CWAN GPP",
       firstName: "CWAN",
-      lastName: "CONVENER"
+      lastName: "CONVENER",
+      currentRole: "cwan_gpp_convener"
     },
   ];
 }
