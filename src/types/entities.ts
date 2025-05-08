@@ -33,8 +33,8 @@ export interface Program {
   name: string;
   code: string;
   description?: string;
-  departmentId: string; // Links to Department
-  instituteId: string; // Links to Institute (derived from department or direct)
+  departmentId: string; 
+  instituteId: string; 
   degreeType?: 'Diploma' | 'Bachelor' | 'Master' | 'PhD' | 'Certificate';
   durationYears?: number;
   totalSemesters?: number;
@@ -107,7 +107,7 @@ export interface Room {
   updatedAt?: Timestamp;
 }
 
-// UserRole is now a string to accommodate dynamic committee roles
+// UserRole should represent the role CODE
 export type UserRole = string;
 
 export interface User {
@@ -126,7 +126,7 @@ export interface User {
   isActive: boolean; 
   isEmailVerified: boolean;
   
-  roles: UserRole[]; 
+  roles: UserRole[]; // Stores role CODES
   
   preferences: {
       theme?: 'light' | 'dark' | 'system';
@@ -151,19 +151,19 @@ export interface User {
   lastName?: string;
 }
 
-// Renamed original User to SystemUser to avoid conflict with User from next-auth if used later
 export type SystemUser = User;
 
 
 export interface Role {
   id: string;
-  name: string; // Display name, can be dynamic e.g., "CWAN Convener"
-  code: string; // Unique machine-readable identifier, e.g., "cwan_convener" or "admin"
+  name: string; // Display name, e.g., "CWAN Convener", "Administrator"
+  code: string; // Unique machine-readable identifier, e.g., "cwan_convener", "admin"
   description: string;
   permissions: string[]; 
-  isSystemRole?: boolean; // For predefined essential roles like Admin, Student
-  isCommitteeRole?: boolean; // True if this role was auto-generated for a committee
-  committeeId?: string; // ID of the committee this role is associated with, if any
+  isSystemRole?: boolean; 
+  isCommitteeRole?: boolean; 
+  committeeId?: string; 
+  committeeCode?: string; // Store committee code for easier unique role code generation for committee roles
   createdAt?: string; 
   updatedAt?: string; 
 }
@@ -221,7 +221,7 @@ export interface Student {
 
 export type FacultyStatus = 'active' | 'inactive' | 'retired' | 'resigned' | 'on_leave';
 export type JobType = 'Regular' | 'Adhoc' | 'Contractual' | 'Visiting' | 'Other';
-export type Gender = 'Male' | 'Female' | 'Other'; // Re-defined Gender for consistency
+export type Gender = 'Male' | 'Female' | 'Other'; 
 
 export interface Faculty {
   id: string;
@@ -237,7 +237,7 @@ export interface Faculty {
   instituteEmail: string; 
   
   contactNumber?: string;
-  department: string; 
+  department: string; // Department Name
   designation?: string;
   jobType?: JobType;
   instType?: string; 
@@ -260,6 +260,7 @@ export interface Faculty {
   knownAs?: string; 
   
   userId?: string; 
+  instituteId?: string; // Link to institute
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
@@ -271,16 +272,14 @@ export type CommitteeMemberRole = 'convener' | 'co_convener' | 'member';
 export interface Committee {
   id: string;
   name: string;
-  code: string; // Added code for committee
+  code: string; 
   description?: string;
   purpose: string;
   instituteId: string; 
-  formationDate: string; // ISO string YYYY-MM-DD
-  dissolutionDate?: string; // ISO string YYYY-MM-DD
+  formationDate: string; 
+  dissolutionDate?: string; 
   status: CommitteeStatus;
-  convenerId?: string; // User ID of the convener
-  // coConvenerIds?: string[]; // User IDs of co-conveners - simplify to single convener for now
-  // memberIds?: string[]; // User IDs of members - roles will handle this
+  convenerId?: string; 
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
@@ -288,14 +287,13 @@ export interface Committee {
 export interface CommitteeMember {
   id: string;
   committeeId: string;
-  userId: string; // Link to User
-  role: CommitteeMemberRole; // This is specific to their function within the committee instance
-  assignmentDate: string; // ISO string YYYY-MM-DD
-  endDate?: string; // ISO string YYYY-MM-DD
+  userId: string; 
+  role: CommitteeMemberRole; 
+  assignmentDate: string; 
+  endDate?: string; 
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
 
 
-// Timestamp placeholder type
-export type Timestamp = string; // For ISO date strings, or use Firebase's Timestamp type if integrating
+export type Timestamp = string;

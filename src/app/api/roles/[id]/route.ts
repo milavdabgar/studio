@@ -6,7 +6,7 @@ import { allPermissions } from '@/lib/api/roles';
 declare global {
   var __API_ROLES_STORE__: Role[] | undefined;
 }
-// Ensure rolesStore is initialized from global or with defaults
+
 if (!global.__API_ROLES_STORE__) {
   global.__API_ROLES_STORE__ = [
     { id: "1", name: "Admin", code: "admin", description: "Full access to all system features.", permissions: allPermissions, isSystemRole: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
@@ -41,21 +41,20 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
 
     const existingRole = rolesStore[roleIndex];
-    if (existingRole.isSystemRole && roleData.name && roleData.name.toLowerCase() !== existingRole.name.toLowerCase()) {
+    if (existingRole.isSystemRole && roleData.name && roleData.name.trim().toLowerCase() !== existingRole.name.toLowerCase()) {
         return NextResponse.json({ message: `Cannot change the name of the system role '${existingRole.name}'.` }, { status: 400 });
     }
-    if (existingRole.isSystemRole && roleData.code && roleData.code.toLowerCase() !== existingRole.code.toLowerCase()) {
+    if (existingRole.isSystemRole && roleData.code && roleData.code.trim().toLowerCase() !== existingRole.code.toLowerCase()) {
         return NextResponse.json({ message: `Cannot change the code of the system role '${existingRole.name}'.` }, { status: 400 });
     }
 
     if (roleData.name !== undefined && !roleData.name.trim()) {
         return NextResponse.json({ message: 'Role Name cannot be empty.' }, { status: 400 });
     }
-    if (roleData.code !== undefined && !roleData.code.trim()) {
-        return NextResponse.json({ message: 'Role Code cannot be empty.' }, { status: 400 });
-    }
-    if (roleData.code && roleData.code.trim().toLowerCase() !== existingRole.code.toLowerCase() && rolesStore.some(r => r.id !== id && r.code.toLowerCase() === roleData.code!.trim().toLowerCase())) {
-      return NextResponse.json({ message: `Role with code '${roleData.code.trim()}' already exists.` }, { status: 409 });
+    
+    const newCode = roleData.code?.trim().toLowerCase();
+    if (newCode && newCode !== existingRole.code.toLowerCase() && rolesStore.some(r => r.id !== id && r.code.toLowerCase() === newCode)) {
+      return NextResponse.json({ message: `Role with code '${newCode}' already exists.` }, { status: 409 });
     }
     if (roleData.name && roleData.name.trim().toLowerCase() !== existingRole.name.toLowerCase() && rolesStore.some(r => r.id !== id && r.name.toLowerCase() === roleData.name!.trim().toLowerCase())) {
         return NextResponse.json({ message: `Role with name '${roleData.name.trim()}' already exists.` }, { status: 409 });
@@ -66,12 +65,15 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         roleData.permissions = roleData.permissions.filter(p => allPermissions.includes(p));
     }
 
+    const updatedRoleData = { ...roleData };
+    if (updatedRoleData.name) updatedRoleData.name = updatedRoleData.name.trim();
+    if (updatedRoleData.code) updatedRoleData.code = updatedRoleData.code.trim().toLowerCase();
+    if (updatedRoleData.description !== undefined) updatedRoleData.description = updatedRoleData.description.trim();
+
+
     const updatedRole = { 
       ...existingRole, 
-      ...roleData,
-      name: roleData.name ? roleData.name.trim() : existingRole.name,
-      code: roleData.code ? roleData.code.trim().toLowerCase() : existingRole.code,
-      description: roleData.description !== undefined ? roleData.description.trim() : existingRole.description,
+      ...updatedRoleData,
       updatedAt: new Date().toISOString()
     };
 
@@ -86,6 +88,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
+  let currentUsersStore: User[] = (global as any).__API_USERS_STORE__ || [];
   const roleIndex = rolesStore.findIndex(r => r.id === id);
 
   if (roleIndex === -1) {
@@ -96,11 +99,14 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
   if (roleToDelete.isSystemRole) {
       return NextResponse.json({ message: `Cannot delete the system role '${roleToDelete.name}'.` }, { status: 403 });
   }
-  if (roleToDelete.isCommitteeRole) {
-      // Optionally, add logic here to prevent deletion if users are assigned, or unassign first.
-      // For now, we'll allow deletion, but this could be refined.
-      // Also, consider if deleting a committee should trigger role deletion.
-  }
+  
+  // Remove this role (by code) from all users
+  currentUsersStore.forEach(user => {
+      if (user.roles.includes(roleToDelete.code)) {
+          user.roles = user.roles.filter(rCode => rCode !== roleToDelete.code);
+      }
+  });
+  (global as any).__API_USERS_STORE__ = currentUsersStore;
 
 
   rolesStore.splice(roleIndex, 1);

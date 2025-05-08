@@ -4,8 +4,6 @@ import type { Committee, CommitteeStatus, Institute, SystemUser as User, UserRol
 import { parse, type ParseError } from 'papaparse';
 import { isValid, parseISO, format } from 'date-fns';
 import { userService } from '@/lib/api/users';
-// Role store is needed for creating/updating committee-specific roles
-// const { roleService } = '@/lib/api/roles'; // Not used directly, manipulating global store
 
 declare global {
   var __API_COMMITTEES_STORE__: Committee[] | undefined;
@@ -16,38 +14,36 @@ declare global {
 if (!global.__API_COMMITTEES_STORE__) {
   global.__API_COMMITTEES_STORE__ = [];
 }
-// let committeesStore: Committee[] = global.__API_COMMITTEES_STORE__; // Use global directly
 
 if (!global.__API_ROLES_STORE__) {
   global.__API_ROLES_STORE__ = [];
 }
-// let rolesStore: Role[] = global.__API_ROLES_STORE__; // Use global directly
 
 if (!global.__API_USERS_STORE__) {
   global.__API_USERS_STORE__ = [];
 }
-// let usersStore: User[] = global.__API_USERS_STORE__; // Use global directly
 
 
 const generateIdForImport = (): string => `cmt_imp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-const generateRoleIdForImport = (): string => `role_imp_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+const generateRoleIdForImport = (): string => `role_cmt_imp_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 const COMMITTEE_STATUS_OPTIONS: CommitteeStatus[] = ['active', 'inactive', 'dissolved'];
 
-// Helper to update a user's specific committee convener role
-async function updateUserSpecificConvenerRole(userId: string, committeeName: string, add: boolean) {
-  const roleName: UserRole = `${committeeName} Convener`;
+async function updateUserConvenerRoleForImport(userId: string, committeeCode: string, committeeName: string, add: boolean) {
+  const roleCode: UserRole = `${committeeCode.toLowerCase()}_convener`;
+  // Role name not strictly needed for user update if roles are stored by code, but good for logging
+  const roleName = `${committeeName} Convener`; 
   try {
     const user = await userService.getUserById(userId) as User;
     if (!user) {
-        console.warn(`User with ID ${userId} not found during convener role update.`);
+        console.warn(`User with ID ${userId} not found during convener role update (Import).`);
         return false;
     }
 
-    let newRoles = [...user.roles];
-    if (add && !newRoles.includes(roleName)) {
-      newRoles.push(roleName);
+    let newRoles = [...user.roles]; // user.roles stores role codes
+    if (add && !newRoles.includes(roleCode)) {
+      newRoles.push(roleCode);
     } else if (!add) {
-      newRoles = newRoles.filter(r => r !== roleName);
+      newRoles = newRoles.filter(r => r !== roleCode);
     }
 
     if (JSON.stringify(newRoles.sort()) !== JSON.stringify(user.roles.sort())) {
@@ -55,12 +51,12 @@ async function updateUserSpecificConvenerRole(userId: string, committeeName: str
     }
     return true;
   } catch (error) {
-    console.error(`Failed to update role '${roleName}' for user ${userId} during import:`, error);
+    console.error(`Failed to update role (Code: '${roleCode}', Name: '${roleName}') for user ${userId} during import:`, error);
     return false;
   }
 }
 
-async function createCommitteeRolesForImport(committee: Committee) {
+async function createOrUpdateCommitteeRolesForImport(committee: Committee, isUpdate: boolean = false, oldCommitteeDetails?: {name: string, code: string}) {
   let currentRolesStore: Role[] = global.__API_ROLES_STORE__ || [];
   const committeeRolesInfo = [
     { type: 'Convener', permissions: ['view_committee_info', 'manage_committee_meetings', 'manage_committee_members'] },
@@ -69,19 +65,58 @@ async function createCommitteeRolesForImport(committee: Committee) {
   ];
 
   for (const roleInfo of committeeRolesInfo) {
-    const roleName = `${committee.name} ${roleInfo.type}`;
-    const roleCode = `${committee.code.toLowerCase()}_${roleInfo.type.toLowerCase().replace(/\s+/g, '_')}`;
+    const roleNameSuffix = roleInfo.type;
+    const newRoleName = `${committee.name} ${roleNameSuffix}`;
+    const newRoleCode = `${committee.code.toLowerCase()}_${roleNameSuffix.toLowerCase().replace(/\s+/g, '_')}`;
     
-    if (!currentRolesStore.some(r => r.code === roleCode)) {
+    let existingRoleIndex = -1;
+    let oldRoleCodeForSearch: string | undefined = undefined;
+
+    if (isUpdate && oldCommitteeDetails) {
+      oldRoleCodeForSearch = `${oldCommitteeDetails.code.toLowerCase()}_${roleNameSuffix.toLowerCase().replace(/\s+/g, '_')}`;
+      existingRoleIndex = currentRolesStore.findIndex(r => r.code === oldRoleCodeForSearch && r.committeeId === committee.id);
+    } else {
+       existingRoleIndex = currentRolesStore.findIndex(r => r.code === newRoleCode && r.committeeId === committee.id);
+    }
+
+    if (existingRoleIndex !== -1) {
+      const existingRole = currentRolesStore[existingRoleIndex];
+      const oldRoleCodeActual = existingRole.code;
+
+      currentRolesStore[existingRoleIndex] = {
+        ...existingRole,
+        name: newRoleName,
+        code: newRoleCode,
+        description: `${roleInfo.type} for the ${committee.name} committee.`,
+        committeeCode: committee.code,
+        updatedAt: new Date().toISOString(),
+      };
+      
+      if (oldRoleCodeActual !== newRoleCode) {
+        let currentUsersStore: User[] = (global as any).__API_USERS_STORE__ || [];
+        currentUsersStore.forEach(user => {
+          const userRoleIndex = user.roles.indexOf(oldRoleCodeActual);
+          if (userRoleIndex !== -1) {
+            user.roles[userRoleIndex] = newRoleCode;
+          }
+        });
+        (global as any).__API_USERS_STORE__ = currentUsersStore;
+      }
+    } else {
+      if (currentRolesStore.some(r => r.code === newRoleCode)) {
+          console.warn(`Role with code ${newRoleCode} already exists. Skipping creation for ${committee.name} ${roleInfo.type}.`);
+          continue;
+      }
       const newRole: Role = {
         id: generateRoleIdForImport(),
-        name: roleName,
-        code: roleCode,
+        name: newRoleName,
+        code: newRoleCode,
         description: `${roleInfo.type} for the ${committee.name} committee.`,
         permissions: roleInfo.permissions,
         isSystemRole: false,
         isCommitteeRole: true,
         committeeId: committee.id,
+        committeeCode: committee.code,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -89,39 +124,6 @@ async function createCommitteeRolesForImport(committee: Committee) {
     }
   }
   global.__API_ROLES_STORE__ = currentRolesStore;
-}
-
-async function updateCommitteeRoleNamesForImport(oldCommitteeName: string, newCommitteeName: string, committeeId: string, newCommitteeCode: string) {
-    let currentRolesStore: Role[] = global.__API_ROLES_STORE__ || [];
-    let currentUsersStore: User[] = global.__API_USERS_STORE__ || [];
-    
-    const roleTypes = ['Convener', 'Co-Convener', 'Member'];
-    for (const type of roleTypes) {
-        const oldRoleName = `${oldCommitteeName} ${type}`;
-        const newRoleName = `${newCommitteeName} ${type}`;
-        const newRoleCode = `${newCommitteeCode.toLowerCase()}_${type.toLowerCase().replace(/\s+/g, '_')}`;
-
-        const roleIndex = currentRolesStore.findIndex(r => r.committeeId === committeeId && r.name === oldRoleName);
-        if (roleIndex !== -1) {
-            currentRolesStore[roleIndex].name = newRoleName;
-            currentRolesStore[roleIndex].code = newRoleCode;
-            currentRolesStore[roleIndex].description = `${type} for the ${newCommitteeName} committee.`;
-            currentRolesStore[roleIndex].updatedAt = new Date().toISOString();
-
-            // Update users who have the old role name
-            // This direct manipulation of usersStore is acceptable for in-memory setup.
-            // For a real DB, userService.updateUser should be called for each affected user.
-            currentUsersStore.forEach(user => {
-                const userRoleIndex = user.roles.indexOf(oldRoleName);
-                if (userRoleIndex !== -1) {
-                    user.roles[userRoleIndex] = newRoleName;
-                    // Potentially mark user for update if using a more complex persistence layer
-                }
-            });
-        }
-    }
-    global.__API_ROLES_STORE__ = currentRolesStore;
-    global.__API_USERS_STORE__ = currentUsersStore;
 }
 
 
@@ -256,7 +258,7 @@ export async function POST(request: NextRequest) {
         existingCommitteeIndex = committeesStoreRef.findIndex(c => c.id === idFromCsv);
       } else {
         existingCommitteeIndex = committeesStoreRef.findIndex(c => c.code.toLowerCase() === code.toLowerCase() && c.instituteId === instituteId);
-        if (existingCommitteeIndex === -1) { // Fallback to name if code not found
+        if (existingCommitteeIndex === -1) { 
              existingCommitteeIndex = committeesStoreRef.findIndex(c => c.name.toLowerCase() === name.toLowerCase() && c.instituteId === instituteId);
         }
       }
@@ -267,18 +269,16 @@ export async function POST(request: NextRequest) {
         const updatedCommittee = committeesStoreRef[existingCommitteeIndex];
         updatedCount++;
 
-        // Update committee roles if name or code changed
         if (oldCommitteeSnapshot && (updatedCommittee.name !== oldCommitteeSnapshot.name || updatedCommittee.code !== oldCommitteeSnapshot.code)) {
-            await updateCommitteeRoleNamesForImport(oldCommitteeSnapshot.name, updatedCommittee.name, updatedCommittee.id, updatedCommittee.code);
+            await createOrUpdateCommitteeRolesForImport(updatedCommittee, true, oldCommitteeSnapshot);
         }
-        // Update convener role
+        
         if (oldCommitteeSnapshot && oldCommitteeSnapshot.convenerId !== updatedCommittee.convenerId) {
-            if(oldCommitteeSnapshot.convenerId) await updateUserSpecificConvenerRole(oldCommitteeSnapshot.convenerId, oldCommitteeSnapshot.name, false);
-            if(updatedCommittee.convenerId) await updateUserSpecificConvenerRole(updatedCommittee.convenerId, updatedCommittee.name, true);
-        } else if (updatedCommittee.convenerId && oldCommitteeSnapshot && (updatedCommittee.name !== oldCommitteeSnapshot.name) ) {
-            // Name changed, convener same: update specific role name
-            await updateUserSpecificConvenerRole(updatedCommittee.convenerId, oldCommitteeSnapshot.name, false);
-            await updateUserSpecificConvenerRole(updatedCommittee.convenerId, updatedCommittee.name, true);
+            if(oldCommitteeSnapshot.convenerId) await updateUserConvenerRoleForImport(oldCommitteeSnapshot.convenerId, oldCommitteeSnapshot.code, oldCommitteeSnapshot.name, false);
+            if(updatedCommittee.convenerId) await updateUserConvenerRoleForImport(updatedCommittee.convenerId, updatedCommittee.code, updatedCommittee.name, true);
+        } else if (updatedCommittee.convenerId && oldCommitteeSnapshot && (updatedCommittee.name !== oldCommitteeSnapshot.name || updatedCommittee.code !== oldCommitteeSnapshot.code) ) {
+            await updateUserConvenerRoleForImport(updatedCommittee.convenerId, oldCommitteeSnapshot.code, oldCommitteeSnapshot.name, false);
+            await updateUserConvenerRoleForImport(updatedCommittee.convenerId, updatedCommittee.code, updatedCommittee.name, true);
         }
 
       } else {
@@ -298,11 +298,11 @@ export async function POST(request: NextRequest) {
           updatedAt: now,
         };
         committeesStoreRef.push(newCommittee);
-        await createCommitteeRolesForImport(newCommittee); // Create roles for the new committee
+        await createOrUpdateCommitteeRolesForImport(newCommittee, false); 
         newCount++;
-        // Assign convener role if new committee has a convener
+        
         if (newCommittee.convenerId) {
-            await updateUserSpecificConvenerRole(newCommittee.convenerId, newCommittee.name, true);
+            await updateUserConvenerRoleForImport(newCommittee.convenerId, newCommittee.code, newCommittee.name, true);
         }
       }
     }

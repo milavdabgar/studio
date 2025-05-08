@@ -16,7 +16,10 @@ if (!global.__API_ROLES_STORE__) {
     { id: "5", name: "Jury", code: "jury", description: "Project fair jury access.", permissions: ["evaluate_projects", "view_committee_info"], isSystemRole: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
     { id: "6", name: "Unknown", code: "unknown", description: "Default role with no permissions.", permissions: [], isSystemRole: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
     { id: "7", name: "Super Admin", code: "super_admin", description: "System-wide super admin.", permissions: allPermissions, isSystemRole: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-    // Other predefined roles
+    // Generic committee roles
+    { id: "cm_convener", name: "Committee Convener (Generic)", code: "committee_convener", description: "Generic convener role for committees.", permissions: ["view_committee_info", "manage_committee_meetings", "manage_committee_members"], isSystemRole: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+    { id: "cm_co_convener", name: "Committee Co-Convener (Generic)", code: "committee_co_convener", description: "Generic co-convener role for committees.", permissions: ["view_committee_info", "manage_committee_meetings"], isSystemRole: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+    { id: "cm_member", name: "Committee Member (Generic)", code: "committee_member", description: "Generic member role for committees.", permissions: ["view_committee_info"], isSystemRole: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
   ];
 }
 const rolesStore: Role[] = global.__API_ROLES_STORE__;
@@ -42,8 +45,9 @@ export async function POST(request: NextRequest) {
     if (!roleData.code || !roleData.code.trim()) {
         return NextResponse.json({ message: 'Role Code cannot be empty.' }, { status: 400 });
     }
-    if (rolesStore.some(r => r.code.toLowerCase() === roleData.code.trim().toLowerCase())) {
-        return NextResponse.json({ message: `Role with code '${roleData.code.trim()}' already exists.` }, { status: 409 });
+    const roleCodeToCreate = roleData.code.trim().toLowerCase();
+    if (rolesStore.some(r => r.code.toLowerCase() === roleCodeToCreate)) {
+        return NextResponse.json({ message: `Role with code '${roleCodeToCreate}' already exists.` }, { status: 409 });
     }
      if (rolesStore.some(r => r.name.toLowerCase() === roleData.name.trim().toLowerCase())) {
         return NextResponse.json({ message: `Role with name '${roleData.name.trim()}' already exists.` }, { status: 409 });
@@ -53,12 +57,13 @@ export async function POST(request: NextRequest) {
     const newRole: Role = {
       id: generateRoleId(),
       name: roleData.name.trim(),
-      code: roleData.code.trim().toLowerCase(),
+      code: roleCodeToCreate,
       description: roleData.description?.trim() || "",
       permissions: roleData.permissions ? roleData.permissions.filter(p => allPermissions.includes(p)) : [],
       isSystemRole: roleData.isSystemRole || false,
       isCommitteeRole: roleData.isCommitteeRole || false,
       committeeId: roleData.committeeId || undefined,
+      committeeCode: roleData.committeeCode || undefined,
       createdAt: now,
       updatedAt: now,
     };
