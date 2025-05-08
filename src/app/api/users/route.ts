@@ -70,8 +70,8 @@ if (!global.__API_USERS_STORE__ || global.__API_USERS_STORE__.length === 0) {
     { 
       id: "user_student_ce001_gpp", 
       displayName: "Student CE001", 
-      email: "student.ce001@gppalanpur.in", 
-      instituteEmail: "220010107001@gppalanpur.ac.in", // Example, derived from enrollment
+      email: "student.ce001@example.com", // Personal Email
+      instituteEmail: "220010107001@gppalanpur.ac.in", 
       password: "220010107001", 
       roles: ["student"], 
       isActive: true, 
@@ -81,17 +81,18 @@ if (!global.__API_USERS_STORE__ || global.__API_USERS_STORE__.length === 0) {
       updatedAt: now,
       isEmailVerified: true,
       preferences: { theme: 'system', language: 'en' },
-      fullName: "STUDENT CE001 GPP",
-      firstName: "CE001",
-      lastName: "STUDENT"
+      fullName: "DOE JOHN MICHAEL", // GTU Format
+      firstName: "JOHN",
+      middleName: "MICHAEL",
+      lastName: "DOE"
     },
     { 
-      id: "user_committee_convener_gpp", 
-      displayName: "Committee Convener", 
-      email: "convener.arc@gppalanpur.in", 
-      instituteEmail: "convener.arc@gppalanpur.ac.in", 
-      password: "Password@123", 
-      roles: ["faculty", "arc_gpp_convener"], // Example specific committee role code
+      id: "user_student_me002_gpp", 
+      displayName: "Student ME002", 
+      email: "student.me002@example.com",
+      instituteEmail: "220010108002@gppalanpur.ac.in", 
+      password: "220010108002", 
+      roles: ["student"], 
       isActive: true, 
       instituteId: "inst1", 
       authProviders: ['password'],
@@ -99,8 +100,46 @@ if (!global.__API_USERS_STORE__ || global.__API_USERS_STORE__.length === 0) {
       updatedAt: now,
       isEmailVerified: true,
       preferences: { theme: 'system', language: 'en' },
-      fullName: "CONVENER COMMITTEE GPP",
-      firstName: "COMMITTEE",
+      fullName: "SMITH JANE ANNA",
+      firstName: "JANE",
+      middleName: "ANNA",
+      lastName: "SMITH"
+    },
+    { 
+      id: "user_faculty_me01_gpp", 
+      displayName: "Faculty ME01", 
+      email: "faculty.me01@example.com",
+      instituteEmail: "faculty.me01@gppalanpur.ac.in", 
+      password: "Password@123", 
+      roles: ["faculty", "jury"], 
+      isActive: true, 
+      instituteId: "inst1", 
+      authProviders: ['password'],
+      createdAt: now,
+      updatedAt: now,
+      isEmailVerified: true,
+      preferences: { theme: 'system', language: 'en' },
+      fullName: "PATEL RAJ KUMAR",
+      firstName: "RAJ",
+      middleName: "KUMAR",
+      lastName: "PATEL"
+    },
+    { 
+      id: "user_committee_convener_gpp", 
+      displayName: "CWAN Convener", 
+      email: "convener.cwan@gppalanpur.in", 
+      instituteEmail: "convener.cwan@gppalanpur.ac.in", 
+      password: "Password@123", 
+      roles: ["faculty", "cwan_gpp_convener"], 
+      isActive: true, 
+      instituteId: "inst1", 
+      authProviders: ['password'],
+      createdAt: now,
+      updatedAt: now,
+      isEmailVerified: true,
+      preferences: { theme: 'system', language: 'en' },
+      fullName: "CONVENER CWAN GPP",
+      firstName: "CWAN",
       lastName: "CONVENER"
     },
   ];
@@ -184,7 +223,7 @@ export async function POST(request: NextRequest) {
         const usernamePart = emailParts[0].replace(/[^a-z0-9]/g, '');
         if (usernamePart) {
             baseInstituteEmail = usernamePart;
-        } else { // Fallback if username part is also empty
+        } else { 
             baseInstituteEmail = `user${generateId().substring(5,10)}`;
         }
     }
@@ -216,7 +255,7 @@ export async function POST(request: NextRequest) {
       isActive: userData.isActive === undefined ? true : userData.isActive,
       isEmailVerified: false,
       roles: userData.roles,
-      currentRole: userData.roles[0], // Default to first role
+      currentRole: userData.roles[0], 
       preferences: userData.preferences || { theme: 'system', language: 'en'},
       instituteId: userData.instituteId || undefined,
       password: userData.password, 

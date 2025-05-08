@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
@@ -36,13 +37,14 @@ type SortField = keyof Assessment | 'none';
 type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
+const ALL_BATCHES_SENTINEL_VALUE = "__ALL_BATCHES_IN_PROGRAM__";
 
 export default function AssessmentManagementPage() {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [programs, setPrograms] = useState<Program[]>([]);
   const [batches, setBatches] = useState<Batch[]>([]);
-  const [facultyList, setFacultyList] = useState<FacultyUser[]>([]); // For assigning faculty
+  const [facultyList, setFacultyList] = useState<FacultyUser[]>([]); 
   
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,7 +55,7 @@ export default function AssessmentManagementPage() {
   const [formName, setFormName] = useState('');
   const [formCourseId, setFormCourseId] = useState<string>('');
   const [formProgramId, setFormProgramId] = useState<string>('');
-  const [formBatchId, setFormBatchId] = useState<string>('');
+  const [formBatchId, setFormBatchId] = useState<string>(ALL_BATCHES_SENTINEL_VALUE);
   const [formType, setFormType] = useState<AssessmentType>('Quiz');
   const [formDescription, setFormDescription] = useState('');
   const [formMaxMarks, setFormMaxMarks] = useState<number>(100);
@@ -116,7 +118,7 @@ export default function AssessmentManagementPage() {
     setFormName('');
     setFormCourseId(courses.length > 0 ? courses[0].id : '');
     setFormProgramId(courses.length > 0 ? courses[0].programId : (programs.length > 0 ? programs[0].id : ''));
-    setFormBatchId('');
+    setFormBatchId(ALL_BATCHES_SENTINEL_VALUE);
     setFormType('Quiz');
     setFormDescription('');
     setFormMaxMarks(100);
@@ -135,7 +137,7 @@ export default function AssessmentManagementPage() {
     setFormName(assessment.name);
     setFormCourseId(assessment.courseId);
     setFormProgramId(assessment.programId);
-    setFormBatchId(assessment.batchId || '');
+    setFormBatchId(assessment.batchId || ALL_BATCHES_SENTINEL_VALUE);
     setFormType(assessment.type);
     setFormDescription(assessment.description || '');
     setFormMaxMarks(assessment.maxMarks);
@@ -192,7 +194,7 @@ export default function AssessmentManagementPage() {
       name: formName.trim(),
       courseId: formCourseId,
       programId: formProgramId,
-      batchId: formBatchId || undefined,
+      batchId: formBatchId === ALL_BATCHES_SENTINEL_VALUE ? undefined : formBatchId,
       type: formType,
       description: formDescription.trim() || undefined,
       maxMarks: Number(formMaxMarks),
@@ -488,7 +490,7 @@ asm_s1,Midterm 1,crs1,CS101,prog1,DCE,batch1,2024-2027,Midterm,"Covers first 3 u
                     <Select value={formBatchId} onValueChange={setFormBatchId} disabled={isSubmitting || filteredBatches.length === 0 || !formProgramId}>
                       <SelectTrigger id="batchId"><SelectValue placeholder="Select Batch (Optional)" /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All Batches in Program</SelectItem>
+                        <SelectItem value={ALL_BATCHES_SENTINEL_VALUE}>All Batches in Program</SelectItem>
                         {filteredBatches.map(b => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
                       </SelectContent>
                     </Select>
@@ -520,7 +522,7 @@ asm_s1,Midterm 1,crs1,CS101,prog1,DCE,batch1,2024-2027,Midterm,"Covers first 3 u
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
                             <Calendar mode="single" selected={formAssessmentDate} onSelect={setFormAssessmentDate} initialFocus />
-                            {/* Basic Time Picker (can be improved with a dedicated time input) */}
+                            
                             <Input type="time" className="mt-2" defaultValue={formAssessmentDate ? format(formAssessmentDate, "HH:mm") : "00:00"} onChange={(e) => {
                                 const time = e.target.value.split(':');
                                 setFormAssessmentDate(current => {

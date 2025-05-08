@@ -1,6 +1,6 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { AttendanceRecord, AttendanceStatus } from '@/types/entities'; // Corrected type import
+import type { AttendanceRecord, AttendanceStatus } from '@/types/entities'; 
 import { isValid, parseISO } from 'date-fns';
 
 declare global {
@@ -9,28 +9,47 @@ declare global {
 
 const now = new Date().toISOString();
 
+// Ensure __API_COURSE_OFFERINGS_STORE__ is initialized, or create it if not present
+if (!(global as any).__API_COURSE_OFFERINGS_STORE__) {
+  (global as any).__API_COURSE_OFFERINGS_STORE__ = [
+    { id: "co_cs101_b2022_sem1_gpp", courseId: "course_cs101_dce_gpp", batchId: "batch_dce_2022_gpp", academicYear: "2023-24", semester: 1, facultyIds: ["user_faculty_cs01_gpp"], status: "ongoing", createdAt: now, updatedAt: now },
+    { id: "co_me101_b2023_sem1_gpp", courseId: "course_me101_dme_gpp", batchId: "batch_dme_2023_gpp", academicYear: "2023-24", semester: 1, facultyIds: ["user_faculty_me01_gpp"], status: "ongoing", createdAt: now, updatedAt: now },
+  ];
+}
+
+
 if (!global.__API_ATTENDANCE_STORE__ || global.__API_ATTENDANCE_STORE__.length === 0) {
   global.__API_ATTENDANCE_STORE__ = [
     {
       id: "att_1_stdCE001_cs101_20231001",
-      studentId: "user_student_ce001_gpp", // Link to user ID
-      courseOfferingId: "co_cs101_b2022_sem1_gpp", // Example course offering ID
-      date: "2023-10-01T00:00:00.000Z",
+      studentId: "std_ce_001_gpp", 
+      courseOfferingId: "co_cs101_b2022_sem1_gpp", 
+      date: "2023-10-01T09:30:00.000Z",
       status: "present",
-      markedBy: "user_faculty_cs01_gpp", // Example faculty user ID
+      markedBy: "user_faculty_cs01_gpp", 
       createdAt: now,
       updatedAt: now,
     },
     {
       id: "att_2_stdCE001_cs101_20231002",
-      studentId: "user_student_ce001_gpp",
+      studentId: "std_ce_001_gpp",
       courseOfferingId: "co_cs101_b2022_sem1_gpp",
-      date: "2023-10-02T00:00:00.000Z",
+      date: "2023-10-02T09:30:00.000Z",
       status: "absent",
       markedBy: "user_faculty_cs01_gpp",
       createdAt: now,
       updatedAt: now,
-    }
+    },
+    {
+      id: "att_3_stdME002_me101_20231001",
+      studentId: "std_me_002_gpp", 
+      courseOfferingId: "co_me101_b2023_sem1_gpp", 
+      date: "2023-10-01T10:30:00.000Z",
+      status: "late",
+      markedBy: "user_faculty_me01_gpp", 
+      createdAt: now,
+      updatedAt: now,
+    },
   ];
 }
 const attendanceStore: AttendanceRecord[] = global.__API_ATTENDANCE_STORE__;
@@ -58,11 +77,11 @@ export async function GET(request: NextRequest) {
   }
   if (date) {
     try {
-        // Assuming date comes as YYYY-MM-DD from client filter
+        
         if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error('Invalid date format for filter');
         
         filteredAttendance = filteredAttendance.filter(att => {
-            // Compare only the date part of the ISO string
+            
             return att.date.startsWith(date);
         });
     } catch (e) {
