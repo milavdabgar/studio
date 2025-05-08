@@ -3,12 +3,12 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BarChart3, Users as UsersIcon, Briefcase, CheckCircle, FileText as AssessmentIcon, BookOpen, CalendarDays, Award, Users2 as CommitteeIcon, BotMessageSquare, CalendarCheck, Settings, UserCog, GitFork, BookUser, UsersRound, Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen, Loader2, CalendarRange, Settings2 as ResourceIcon, Activity } from "lucide-react";
+import { BarChart3, Users as UsersIcon, Briefcase, CheckCircle, FileText as AssessmentIcon, BookOpen, CalendarDays, Award, Users2 as CommitteeIcon, BotMessageSquare, CalendarCheck, Settings, UserCog, GitFork, BookUser, UsersRound, Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen, Loader2, CalendarRange, Settings2 as ResourceIcon, Activity, Clock } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState } from 'react';
 
-type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown' | 'committee_convener' | 'committee_co_convener' | 'committee_member' | 'super_admin' | 'institute_admin' | 'department_admin' | 'committee_admin';
+type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown' | 'committee_convener' | 'committee_co_convener' | 'committee_member' | 'super_admin' | 'institute_admin' | 'department_admin' | 'committee_admin' | 'dte_admin' | 'gtu_admin' | 'lab_assistant' | 'clerical_staff';
 
 
 interface User {
@@ -47,7 +47,9 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "admin-total-batches", title: "Total Batches", value: "10", icon: CalendarRange, color: "text-yellow-600", href: "/admin/batches"},
     { id: "admin-total-courses", title: "Total Courses", value: "50", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses"},
     { id: "admin-total-assessments", title: "Total Assessments", value: "120", icon: AssessmentIcon, color: "text-lime-500", href: "/admin/assessments"},
+    { id: "admin-mark-attendance", title: "Mark Attendance", value: "Record", icon: CalendarCheck, color: "text-blue-400", href: "/faculty/attendance/mark"},
     { id: "admin-resource-allocation", title: "Resource Allocation", value: "Manage", icon: ResourceIcon, color: "text-orange-400", href: "/admin/resource-allocation" },
+    { id: "admin-timetable", title: "Timetables", value: "Manage", icon: Clock, color: "text-gray-500", href: "/admin/timetables" },
     { id: "admin-active-projects", title: "Active Projects", value: "78", icon: Briefcase, color: "text-accent", href: "/project-fair/admin" },
     { id: "admin-pending-approvals", title: "Pending Approvals", value: "12", icon: CheckCircle, color: "text-yellow-500", href: "/admin/approvals" },
     { id: "admin-feedback-reports", title: "Feedback Reports", value: "5", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
@@ -65,6 +67,8 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "faculty-students-enrolled", title: "Students Enrolled", value: "120", icon: UsersIcon, color: "text-accent", href: "/faculty/students" }, // This might link to a faculty specific student view
     { id: "faculty-pending-evaluations", title: "Pending Evaluations", value: "8", icon: CheckCircle, color: "text-yellow-500", href: "/project-fair/jury" }, 
     { id: "faculty-feedback-reports", title: "Feedback Reports", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
+    { id: "faculty-mark-attendance", title: "Mark Attendance", value: "Record", icon: CalendarCheck, color: "text-blue-400", href: "/faculty/attendance/mark"},
+    { id: "faculty-manage-timetable", title: "My Timetable", value: "View/Edit", icon: Clock, color: "text-gray-500", href: "/faculty/timetable"},
   ],
   hod: [
     { id: "hod-department-staff", title: "Department Staff", value: "15", icon: UsersRound, color: "text-primary", href: "/admin/faculty" }, 
@@ -78,7 +82,9 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "hod-my-batches", title: "Department Batches", value: "Manage", icon: CalendarRange, color: "text-yellow-600", href: "/admin/batches" },
     { id: "hod-my-courses", title: "Department Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses" },
     { id: "hod-my-assessments", title: "Department Assessments", value: "Manage", icon: AssessmentIcon, color: "text-lime-500", href: "/admin/assessments" },
+    { id: "hod-mark-attendance", title: "Mark Attendance", value: "Record", icon: CalendarCheck, color: "text-blue-400", href: "/faculty/attendance/mark"},
     { id: "hod-resource-allocation", title: "Resource Allocation", value: "Manage", icon: ResourceIcon, color: "text-orange-400", href: "/admin/resource-allocation" },
+    { id: "hod-manage-timetable", title: "Department Timetable", value: "Manage", icon: Clock, color: "text-gray-500", href: "/admin/timetables"},
     { id: "hod-department-projects", title: "Department Projects", value: "25", icon: Briefcase, color: "text-yellow-500", href: "/project-fair/admin" }, 
     { id: "hod-department-feedback", title: "Department Feedback", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" }, 
     { id: "hod-reporting-analytics", title: "Reporting & Analytics", value: "View", icon: BarChart3, color: "text-sky-500", href: "/admin/reporting-analytics" },
@@ -100,13 +106,14 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
   committee_member: [
     { id: "member-committee-dashboard", title: "Committee Dashboard", value: "View", icon: CommitteeIcon, color: "text-pink-500", href: "/dashboard/committee"},
   ],
-  super_admin: baseDashboardData.admin,
+  super_admin: adminNavItems,
   institute_admin: baseDashboardData.admin.filter(item => !['admin-total-users', 'admin-role-management', 'admin-total-institutes'].includes(item.id)),
   department_admin: [
     { id: "dept-admin-programs", title: "Department Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs" },
     { id: "dept-admin-courses", title: "Department Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses" },
     { id: "dept-admin-students", title: "Department Students", value: "View", icon: BookUser, color: "text-green-500", href: "/admin/students"},
     { id: "dept-admin-faculty", title: "Department Faculty", value: "View", icon: UsersRound, color: "text-indigo-500", href: "/admin/faculty"},
+    { id: "dept-admin-timetable", title: "Department Timetable", value: "Manage", icon: Clock, color: "text-gray-500", href: "/admin/timetables"},
   ],
   committee_admin: [
     { id: "committee-admin-manage", title: "Manage Committees", value: "Configure", icon: CommitteeIcon, color: "text-pink-500", href: "/admin/committees" },
@@ -346,9 +353,19 @@ export default function DashboardPage() {
                   <AssessmentIcon className="h-5 w-5" /> Manage Assessments
                 </Button>
               </Link>
+               <Link href="/faculty/attendance/mark" passHref>
+                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
+                  <CalendarCheck className="h-5 w-5" /> Mark Attendance
+                </Button>
+              </Link>
               <Link href="/admin/resource-allocation" passHref>
                 <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
                   <ResourceIcon className="h-5 w-5" /> Resource Allocation
+                </Button>
+              </Link>
+              <Link href="/admin/timetables" passHref>
+                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
+                  <Clock className="h-5 w-5" /> Manage Timetables
                 </Button>
               </Link>
               <Link href="/project-fair/admin/new-event" passHref>
