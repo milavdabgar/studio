@@ -377,7 +377,7 @@ export type BatchStatus = 'upcoming' | 'active' | 'completed' | 'inactive';
 export interface Batch {
     id: string;
     name: string; 
-    programId: string; // Added this for better linking
+    programId: string; 
     startAcademicYear: number; 
     endAcademicYear?: number; 
     status: BatchStatus;
@@ -416,7 +416,7 @@ export interface Course {
   isSemiPractical?: boolean; 
   
   departmentId: string; 
-  programId: string; // Added this for better linking
+  programId: string; 
   
   remarks?: string;
   
@@ -443,6 +443,7 @@ export interface Enrollment {
     id: string;
     studentProfileId: string;
     courseOfferingId: string;
+    
     status: 'enrolled' | 'withdrawn' | 'completed' | 'failed' | 'incomplete';
     internalMarks?: number;
     externalMarks?: number;
@@ -547,6 +548,20 @@ export interface StudentAssessmentScore {
     updatedAt?: Timestamp;
 }
 
+export type AttendanceStatus = 'present' | 'absent' | 'late' | 'excused';
+
+export interface AttendanceRecord {
+    id: string;
+    studentId: string; // Link to StudentProfile.id
+    courseOfferingId: string; // Identifies the specific class/lab session for a course
+    date: Timestamp; // Date of the session
+    status: AttendanceStatus;
+    markedBy: string; // facultyId who marked attendance
+    remarks?: string;
+    createdAt?: Timestamp;
+    updatedAt?: Timestamp;
+}
+
 
 // Other common types from the specification
 export interface StaffTransfer {
@@ -602,4 +617,6 @@ export interface FacultyAssignment {
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
+    
+
     
