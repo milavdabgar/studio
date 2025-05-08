@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BarChart, Users as UsersIcon, Briefcase, CheckCircle, FileText, BookOpen, CalendarDays, Award, Users2 as CommitteeIcon, BotMessageSquare, CalendarCheck, Settings, UserCog, GitFork, BookUser, UsersRound, Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen, Loader2, CalendarRange } from "lucide-react";
+import { BarChart, Users as UsersIcon, Briefcase, CheckCircle, FileText as AssessmentIcon, BookOpen, CalendarDays, Award, Users2 as CommitteeIcon, BotMessageSquare, CalendarCheck, Settings, UserCog, GitFork, BookUser, UsersRound, Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen, Loader2, CalendarRange } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState } from 'react';
@@ -44,6 +44,7 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "admin-total-programs", title: "Total Programs", value: "5", icon: BookCopy, color: "text-purple-500", href: "/admin/programs"},
     { id: "admin-total-batches", title: "Total Batches", value: "10", icon: CalendarRange, color: "text-yellow-600", href: "/admin/batches"},
     { id: "admin-total-courses", title: "Total Courses", value: "50", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses"},
+    { id: "admin-total-assessments", title: "Total Assessments", value: "120", icon: AssessmentIcon, color: "text-lime-500", href: "/admin/assessments"},
     { id: "admin-active-projects", title: "Active Projects", value: "78", icon: Briefcase, color: "text-accent", href: "/project-fair/admin" },
     { id: "admin-pending-approvals", title: "Pending Approvals", value: "12", icon: CheckCircle, color: "text-yellow-500", href: "/admin/approvals" },
     { id: "admin-feedback-reports", title: "Feedback Reports", value: "5", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
@@ -53,7 +54,7 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "student-my-courses", title: "My Courses", value: "6", icon: BookOpen, color: "text-primary", href: "/courses" },
     { id: "student-upcoming-assignments", title: "Upcoming Assignments", value: "3", icon: CalendarCheck, color: "text-accent", href: "/assignments" },
     { id: "student-latest-grades", title: "Latest Grades", value: "A-", icon: Award, color: "text-green-500", href: "/results/history/me" },
-    { id: "student-project-status", title: "Project Status", value: "Submitted", icon: FileText, color: "text-yellow-500", href: "/project-fair/student" },
+    { id: "student-project-status", title: "Project Status", value: "Submitted", icon: AssessmentIcon, color: "text-yellow-500", href: "/project-fair/student" },
   ],
   faculty: [
     { id: "faculty-assigned-courses", title: "Assigned Courses", value: "3", icon: BookOpen, color: "text-primary", href: "/faculty/courses" },
@@ -72,11 +73,12 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "hod-my-programs", title: "Department Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs" },
     { id: "hod-my-batches", title: "Department Batches", value: "Manage", icon: CalendarRange, color: "text-yellow-600", href: "/admin/batches" },
     { id: "hod-my-courses", title: "Department Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses" },
+    { id: "hod-my-assessments", title: "Department Assessments", value: "Manage", icon: AssessmentIcon, color: "text-lime-500", href: "/admin/assessments" },
     { id: "hod-department-projects", title: "Department Projects", value: "25", icon: Briefcase, color: "text-yellow-500", href: "/project-fair/admin" }, 
     { id: "hod-department-feedback", title: "Department Feedback", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" }, 
   ],
   jury: [
-    { id: "jury-projects-to-evaluate", title: "Projects to Evaluate", value: "10", icon: FileText, color: "text-primary", href: "/project-fair/jury" },
+    { id: "jury-projects-to-evaluate", title: "Projects to Evaluate", value: "10", icon: AssessmentIcon, color: "text-primary", href: "/project-fair/jury" },
     { id: "jury-evaluation-criteria", title: "Evaluation Criteria", value: "View", icon: CheckCircle, color: "text-accent", href: "/project-fair/jury/criteria" },
     { id: "jury-submitted-evaluations", title: "Submitted Evaluations", value: "5", icon: GitFork, color: "text-green-500", href: "/project-fair/jury/submissions" },
     { id: "jury-evaluation-schedule", title: "Evaluation Schedule", value: "Today", icon: CalendarDays, color: "text-yellow-500", href: "/project-fair/jury/schedule" },
@@ -307,6 +309,11 @@ export default function DashboardPage() {
                   <ClipboardList className="h-5 w-5" /> Manage Courses
                 </Button>
               </Link>
+               <Link href="/admin/assessments" passHref>
+                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
+                  <AssessmentIcon className="h-5 w-5" /> Manage Assessments
+                </Button>
+              </Link>
               <Link href="/project-fair/admin/new-event" passHref>
                  <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
                   <Briefcase className="h-5 w-5" /> Create Project Event
@@ -314,7 +321,7 @@ export default function DashboardPage() {
               </Link>
               <Link href="/admin/results/import" passHref>
                 <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
-                  <FileText className="h-5 w-5" /> Import Results
+                  <AssessmentIcon className="h-5 w-5" /> Import Results
                 </Button>
               </Link>
               <Link href="/admin/feedback-analysis" passHref>

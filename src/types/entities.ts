@@ -305,9 +305,9 @@ export interface Institute {
   contactEmail?: string;
   contactPhone?: string;
   website?: string;
+  domain?: string; // e.g., gppalanpur.ac.in
   status: 'active' | 'inactive';
   establishmentYear?: number;
-  domain?: string; 
   administrators?: string[]; 
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
@@ -377,12 +377,11 @@ export type BatchStatus = 'upcoming' | 'active' | 'completed' | 'inactive';
 export interface Batch {
     id: string;
     name: string; 
-    programId: string;
+    programId: string; // Added this for better linking
     startAcademicYear: number; 
     endAcademicYear?: number; 
     status: BatchStatus;
     maxIntake?: number;
-    // currentIntake will be derived from number of students enrolled in this batch
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
@@ -417,7 +416,7 @@ export interface Course {
   isSemiPractical?: boolean; 
   
   departmentId: string; 
-  programId: string; 
+  programId: string; // Added this for better linking
   
   remarks?: string;
   
@@ -505,6 +504,45 @@ export interface RoomAllocation {
     recurrencePattern?: string; 
     status: 'scheduled' | 'cancelled' | 'completed' | 'ongoing';
     notes?: string;
+    createdAt?: Timestamp;
+    updatedAt?: Timestamp;
+}
+
+
+// Assessment and Results
+export type AssessmentType = 'Quiz' | 'Midterm' | 'Final Exam' | 'Assignment' | 'Project' | 'Lab Work' | 'Presentation' | 'Other';
+export type AssessmentStatus = 'Draft' | 'Published' | 'Ongoing' | 'Completed' | 'Cancelled';
+
+export interface Assessment {
+    id: string;
+    name: string;
+    courseId: string; 
+    programId: string; 
+    batchId?: string; 
+    type: AssessmentType;
+    description?: string;
+    maxMarks: number;
+    passingMarks?: number;
+    weightage?: number; // e.g., 0.20 for 20%
+    assessmentDate?: Timestamp; // For timed exams
+    dueDate?: Timestamp; // For assignments/projects
+    status: AssessmentStatus;
+    instructions?: string;
+    facultyId?: string; // Creator/Assigner
+    createdAt?: Timestamp;
+    updatedAt?: Timestamp;
+}
+
+export interface StudentAssessmentScore {
+    id: string;
+    studentId: string;
+    assessmentId: string;
+    score?: number;
+    grade?: string;
+    remarks?: string;
+    submissionDate?: Timestamp;
+    evaluatedBy?: string; // facultyId
+    evaluatedAt?: Timestamp;
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }

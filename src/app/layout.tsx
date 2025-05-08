@@ -4,7 +4,7 @@ import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
-import { Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser, UsersRound, Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText, BarChart3, CalendarRange } from 'lucide-react';
+import { Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser, UsersRound, Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, BarChart3, CalendarRange } from 'lucide-react'; // Added AssessmentIcon
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -49,6 +49,7 @@ const adminNavItems = [
   { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs' },
   { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches' },
   { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses' },
+  { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments' }, // Added Assessments
   { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback' },
 ];
 
@@ -59,13 +60,13 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/courses', icon: BookOpen, label: 'My Courses', id: 'student-courses' },
     { href: '/assignments', icon: CalendarCheck, label: 'Assignments', id: 'student-assignments'},
     { href: '/results/history/me', icon: Award, label: 'My Results', id: 'student-results' },
-    { href: '/project-fair/student', icon: FileText, label: 'My Project', id: 'student-project' },
+    { href: '/project-fair/student', icon: AssessmentIcon, label: 'My Project', id: 'student-project' },
   ],
   faculty: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'faculty-dashboard' },
     { href: '/faculty/courses', icon: BookOpen, label: 'My Courses', id: 'faculty-courses' },
     { href: '/faculty/students', icon: UsersIconLucide, label: 'My Students', id: 'faculty-students'},
-    { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'faculty-evaluate' },
+    { href: '/project-fair/jury', icon: AssessmentIcon, label: 'Evaluate Projects', id: 'faculty-evaluate' }, 
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'faculty-feedback' },
   ],
   hod: [
@@ -78,14 +79,15 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/programs', icon: BookCopy, label: 'Programs (Dept)', id: 'hod-programs' },
     { href: '/admin/batches', icon: CalendarRange, label: 'Batches (Dept)', id: 'hod-batches' },
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'hod-courses' },
+    { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'hod-assessments' }, // Added Assessments
     { href: '/admin/faculty', icon: UsersRound, label: 'Faculty (Dept)', id: 'hod-faculty' },
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'hod-students' },
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'hod-feedback' },
-    { href: '/project-fair/admin', icon: FileText, label: 'Project Fair Admin', id: 'hod-project-fair' },
+    { href: '/project-fair/admin', icon: AssessmentIcon, label: 'Project Fair Admin', id: 'hod-project-fair' },
   ],
   jury: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'jury-dashboard' },
-    { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'jury-evaluate' },
+    { href: '/project-fair/jury', icon: AssessmentIcon, label: 'Evaluate Projects', id: 'jury-evaluate' },
   ],
   committee_convener: [ 
     { href: '/dashboard', icon: Home, label: 'Convener Dashboard', id: 'convener-dashboard' },
@@ -106,7 +108,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
   gtu_admin: [{ href: '/dashboard', icon: Home, label: 'GTU Dashboard', id: 'gtu-admin-dashboard' }],
   institute_admin: [
     ...adminNavItems.filter(item => ![
-      '/admin/users', '/admin/roles', '/admin/institutes' // Institute admin manages their own institute
+      '/admin/users', '/admin/roles', '/admin/institutes' 
     ].includes(item.href)),
     { href: '/dashboard', icon: Home, label: 'Institute Dashboard', id: 'institute-admin-dashboard' },
   ],
@@ -115,6 +117,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/programs', icon: BookCopy, label: 'Programs (Dept)', id: 'dept-admin-programs' },
     { href: '/admin/batches', icon: CalendarRange, label: 'Batches (Dept)', id: 'dept-admin-batches' },
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'dept-admin-courses' },
+    { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'dept-admin-assessments' }, // Added Assessments
     { href: '/admin/faculty', icon: UsersRound, label: 'Faculty (Dept)', id: 'dept-admin-faculty' },
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'dept-admin-students' },
   ],
@@ -196,7 +199,7 @@ export default function RootLayout({
   }
 
   useEffect(() => {
-    setIsMounted(true); // Indicate component has mounted
+    setIsMounted(true); 
     const parsedUser = parseUserCookie();
     if (parsedUser) {
       setCurrentUser({
@@ -256,12 +259,12 @@ export default function RootLayout({
 
   if (hideSidebar) {
     return (
-      <html lang="en" suppressHydrationWarning={true}>
+      <html lang="en" suppressHydrationWarning>
         <head>
             <title>PolyManager</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
         </head>
-        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
+        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning>
           {children}
           <Toaster />
         </body>
@@ -271,12 +274,12 @@ export default function RootLayout({
 
   if (!isMounted) { 
     return (
-       <html lang="en" suppressHydrationWarning={true}>
+       <html lang="en" suppressHydrationWarning>
          <head>
             <title>PolyManager - Loading...</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
         </head>
-        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
+        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning>
           <div className="flex items-center justify-center min-h-screen">
             <Loader2 className="h-12 w-12 animate-spin text-primary" />
           </div>
@@ -288,12 +291,12 @@ export default function RootLayout({
 
 
   return (
-    <html lang="en" suppressHydrationWarning={true}>
+    <html lang="en" suppressHydrationWarning>
        <head>
             <title>PolyManager</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
         </head>
-      <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
+      <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning>
         <SidebarProvider>
           <Sidebar>
             <SidebarHeader className="p-4 border-b border-sidebar-border">
