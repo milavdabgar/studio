@@ -66,7 +66,7 @@ export default function RoleManagementPage() {
     setCurrentRole(role);
     setFormRoleName(role.name);
     setFormRoleCode(role.code); // Set code for editing
-    setFormRoleDescription(role.description);
+    setFormRoleDescription(role.description || '');
     setFormRolePermissions([...role.permissions]);
     setIsDialogOpen(true);
   };
@@ -109,22 +109,24 @@ export default function RoleManagementPage() {
     }
     setIsSubmitting(true);
     
-    const roleData: Omit<Role, 'id' | 'createdAt' | 'updatedAt' | 'isSystemRole' | 'isCommitteeRole' | 'committeeId' | 'committeeCode'> = { 
+    const roleData: Omit<Role, 'id' | 'createdAt' | 'updatedAt' > = { 
       name: formRoleName.trim(), 
       code: formRoleCode.trim().toLowerCase(), // Send lowercase code
-      description: formRoleDescription.trim(), 
-      permissions: formRolePermissions 
+      description: formRoleDescription.trim() || '', 
+      permissions: formRolePermissions,
+      isSystemRole: currentRole?.isSystemRole || false,
+      isCommitteeRole: currentRole?.isCommitteeRole || false,
+      committeeId: currentRole?.committeeId || undefined,
+      committeeCode: currentRole?.committeeCode || undefined,
     };
     
     try {
       if (currentRole && currentRole.id) {
-        // For update, do not send 'code' if it's not allowed to be changed via PUT, or backend handles it.
-        // Assuming backend disallows code change on PUT, so we might not need to send it or send only if it's different (but API disallows it)
         const updateData = {name: roleData.name, description: roleData.description, permissions: roleData.permissions};
         await roleService.updateRole(currentRole.id, updateData);
         toast({ title: "Role Updated", description: "The role has been successfully updated." });
       } else {
-        await roleService.createRole(roleData); // createRole expects code
+        await roleService.createRole(roleData); 
         toast({ title: "Role Created", description: "The new role has been successfully created." });
       }
       await fetchRoles();
@@ -177,7 +179,7 @@ export default function RoleManagementPage() {
         role.id,
         `"${role.name.replace(/"/g, '""')}"`, 
         role.code, // Export code
-        `"${role.description.replace(/"/g, '""')}"`, 
+        `"${(role.description || "").replace(/"/g, '""')}"`, 
         `"${role.permissions.join(';')}"`,
         role.isSystemRole || false,
         role.isCommitteeRole || false,
@@ -318,7 +320,7 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
                       value={formRoleName} 
                       onChange={(e) => setFormRoleName(e.target.value)} 
                       placeholder="e.g., Content Editor" 
-                      disabled={isSubmitting || (currentRole?.isSystemRole && !currentRole.isCommitteeRole) || false}
+                      disabled={isSubmitting || (currentRole?.isSystemRole && !currentRole.isCommitteeRole && currentRole.code !== 'admin' && currentRole.code !== 'super_admin') || false}
                     />
                   </div>
                   <div>
@@ -365,7 +367,7 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
                         Cancel
                       </Button>
                     </DialogClose>
-                    <Button type="submit" disabled={isSubmitting || (currentRole?.code === 'admin' || currentRole?.code === 'super_admin')}>
+                    <Button type="submit" disabled={isSubmitting || (currentRole?.isSystemRole && !currentRole.isCommitteeRole && currentRole.code !== 'admin' && currentRole.code !== 'super_admin')}>
                       {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       {currentRole ? "Save Changes" : "Create Role"}
                     </Button>
@@ -418,7 +420,7 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
                     />
                 </TableHead>
                 <TableHead>Role Name</TableHead>
-                <TableHead>Code</TableHead> {/* Added Code column */}
+                <TableHead>Code</TableHead>
                 <TableHead>Description</TableHead>
                 <TableHead>Permissions</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
@@ -435,14 +437,14 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
                         disabled={role.code === 'admin' || role.code === 'super_admin' || (role.isSystemRole && !role.isCommitteeRole)}
                        />
                   </TableCell>
-                  <TableCell id={`role-name-${role.id}`} className="font-medium">{role.name} {role.isSystemRole && <span className="text-xs text-muted-foreground">(System)</span>} {role.isCommitteeRole && <span className="text-xs text-blue-500">(Committee)</span>}</TableCell>
-                  <TableCell>{role.code}</TableCell> {/* Display code */}
+                  <TableCell id={`role-name-${role.id}`} className="font-medium">{role.name} {role.isSystemRole && <span className="text-xs text-muted-foreground">(System)</span>} {role.isCommitteeRole && <span className="text-xs text-blue-500">(Committee {role.committeeCode})</span>}</TableCell>
+                  <TableCell>{role.code}</TableCell> 
                   <TableCell>{role.description}</TableCell>
                   <TableCell className="max-w-xs truncate">
                     {role.permissions.length > 3 ? `${role.permissions.slice(0,3).map(p => p.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ')}, ...` : role.permissions.map(p => p.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ') || '-'}
                   </TableCell>
                   <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="icon" onClick={() => handleEdit(role)} disabled={isSubmitting || (role.code === 'admin' || role.code === 'super_admin')}>
+                    <Button variant="outline" size="icon" onClick={() => handleEdit(role)} disabled={isSubmitting || (role.isSystemRole && !role.isCommitteeRole && role.code !== 'admin' && role.code !== 'super_admin')}>
                       <Edit className="h-4 w-4" />
                       <span className="sr-only">Edit Role</span>
                     </Button>
@@ -455,7 +457,7 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
               ))}
               {paginatedRoles.length === 0 && (
                  <TableRow>
-                    <TableCell colSpan={6} className="text-center text-muted-foreground py-8"> {/* Increased colspan */}
+                    <TableCell colSpan={6} className="text-center text-muted-foreground py-8"> 
                         No roles found. Click "Add New Role" or import a CSV file to create roles.
                     </TableCell>
                  </TableRow>
@@ -465,7 +467,7 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
         </CardContent>
         <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
             <div className="text-sm text-muted-foreground">
-                Showing {Math.min((currentPage -1) * itemsPerPage + 1, roles.length)} to {Math.min(currentPage * itemsPerPage, roles.length)} of {roles.length} roles.
+                Showing {paginatedRoles.length > 0 ? Math.min((currentPage -1) * itemsPerPage + 1, roles.length) : 0} to {Math.min(currentPage * itemsPerPage, roles.length)} of {roles.length} roles.
             </div>
             <div className="flex items-center gap-2">
                  <Select
