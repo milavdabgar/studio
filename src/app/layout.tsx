@@ -1,4 +1,3 @@
-
 "use client"; 
 
 import { GeistSans } from 'geist/font/sans';
@@ -15,7 +14,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import type { UserRole as UserRoleCode, Role } from '@/types/entities'; 
-import { roleService } from '@/lib/api/roles';
+import { roleService } from '@/lib/api/roles'; 
 import { useToast } from '@/hooks/use-toast';
 
 
@@ -407,6 +406,4 @@ export default function RootLayout({
     </html>
   );
 }
-    
-
     

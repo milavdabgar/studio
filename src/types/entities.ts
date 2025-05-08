@@ -503,7 +503,7 @@ export interface RoomAllocation {
     committeeId?: string; 
     facultyId?: string; 
     title?: string; 
-    dayOfWeek?: DayOfWeek | string; // Allows for 'Daily' or specific day. For 'Daily', startTime/endTime might span multiple days or it repeats on all weekdays.
+    dayOfWeek?: DayOfWeek | string; // Allows for 'Daily' or specific day.
     startTime: Timestamp; // ISO string "YYYY-MM-DDTHH:mm:ss.sssZ"
     endTime: Timestamp;   // ISO string "YYYY-MM-DDTHH:mm:ss.sssZ"
     isRecurring?: boolean;

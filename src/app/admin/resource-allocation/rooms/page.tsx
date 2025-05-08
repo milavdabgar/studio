@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
@@ -25,7 +24,12 @@ import { roomService } from '@/lib/services/roomService';
 // import { committeeService } from '@/lib/api/committees';
 
 const PURPOSE_OPTIONS: RoomAllocationPurpose[] = ['lecture', 'practical', 'exam', 'event', 'meeting', 'other'];
-const STATUS_OPTIONS: RoomAllocationStatus[] = ['scheduled', 'cancelled', 'completed', 'ongoing'];
+const STATUS_OPTIONS: {value: RoomAllocationStatus, label: string}[] = [
+    {value:'scheduled', label: 'Scheduled'}, 
+    {value: 'cancelled', label: 'Cancelled'}, 
+    {value:'completed', label: 'Completed'}, 
+    {value:'ongoing', label: 'Ongoing'}
+];
 const DAY_OPTIONS: DayOfWeek[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 type SortField = keyof RoomAllocation | 'roomNumber' | 'none';
@@ -291,7 +295,7 @@ export default function RoomAllocationManagementPage() {
                   <TableCell>{alloc.purpose}</TableCell>
                   <TableCell>{format(parseISO(alloc.startTime), "Pp")}</TableCell>
                   <TableCell>{format(parseISO(alloc.endTime), "Pp")}</TableCell>
-                  <TableCell><span className={`px-2 py-1 text-xs font-semibold rounded-full ${alloc.status === 'scheduled' ? 'bg-blue-100 text-blue-800' : alloc.status === 'completed' ? 'bg-green-100 text-green-800' : alloc.status === 'cancelled' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}`}>{alloc.status}</span></TableCell>
+                  <TableCell><span className={`px-2 py-1 text-xs font-semibold rounded-full ${alloc.status === 'scheduled' ? 'bg-blue-100 text-blue-800 dark:bg-blue-700 dark:text-blue-200' : alloc.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-200' : alloc.status === 'cancelled' ? 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-700 dark:text-yellow-200'}`}>{STATUS_OPTIONS.find(s => s.value === alloc.status)?.label || alloc.status}</span></TableCell>
                   <TableCell className="text-right space-x-2"><Button variant="outline" size="icon" onClick={() => handleEdit(alloc)}><Edit className="h-4 w-4" /></Button><Button variant="destructive" size="icon" onClick={() => handleDelete(alloc.id)}><Trash2 className="h-4 w-4" /></Button></TableCell>
                 </TableRow>
               ))}
