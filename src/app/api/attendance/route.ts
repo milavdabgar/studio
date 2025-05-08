@@ -1,13 +1,37 @@
+
 import { NextResponse, type NextRequest } from 'next/server';
-import type { AttendanceRecord } from '@/types/entities';
+import type { AttendanceRecord, AttendanceStatus } from '@/types/entities'; // Corrected type import
+import { isValid, parseISO } from 'date-fns';
 
 declare global {
-  // eslint-disable-next-line no-var
   var __API_ATTENDANCE_STORE__: AttendanceRecord[] | undefined;
 }
 
-if (!global.__API_ATTENDANCE_STORE__) {
-  global.__API_ATTENDANCE_STORE__ = [];
+const now = new Date().toISOString();
+
+if (!global.__API_ATTENDANCE_STORE__ || global.__API_ATTENDANCE_STORE__.length === 0) {
+  global.__API_ATTENDANCE_STORE__ = [
+    {
+      id: "att_1_stdCE001_cs101_20231001",
+      studentId: "user_student_ce001_gpp", // Link to user ID
+      courseOfferingId: "co_cs101_b2022_sem1_gpp", // Example course offering ID
+      date: "2023-10-01T00:00:00.000Z",
+      status: "present",
+      markedBy: "user_faculty_cs01_gpp", // Example faculty user ID
+      createdAt: now,
+      updatedAt: now,
+    },
+    {
+      id: "att_2_stdCE001_cs101_20231002",
+      studentId: "user_student_ce001_gpp",
+      courseOfferingId: "co_cs101_b2022_sem1_gpp",
+      date: "2023-10-02T00:00:00.000Z",
+      status: "absent",
+      markedBy: "user_faculty_cs01_gpp",
+      createdAt: now,
+      updatedAt: now,
+    }
+  ];
 }
 const attendanceStore: AttendanceRecord[] = global.__API_ATTENDANCE_STORE__;
 
@@ -18,10 +42,11 @@ export async function GET(request: NextRequest) {
     global.__API_ATTENDANCE_STORE__ = [];
     return NextResponse.json({ message: 'Internal server error: Attendance data store corrupted.' }, { status: 500 });
   }
+  
   const { searchParams } = new URL(request.url);
   const studentId = searchParams.get('studentId');
   const courseOfferingId = searchParams.get('courseOfferingId');
-  const date = searchParams.get('date');
+  const date = searchParams.get('date'); 
 
   let filteredAttendance = [...global.__API_ATTENDANCE_STORE__];
 
@@ -32,9 +57,19 @@ export async function GET(request: NextRequest) {
     filteredAttendance = filteredAttendance.filter(att => att.courseOfferingId === courseOfferingId);
   }
   if (date) {
-    // Basic date matching, assumes date is in 'YYYY-MM-DD' format from client
-    filteredAttendance = filteredAttendance.filter(att => att.date.startsWith(date));
+    try {
+        // Assuming date comes as YYYY-MM-DD from client filter
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error('Invalid date format for filter');
+        
+        filteredAttendance = filteredAttendance.filter(att => {
+            // Compare only the date part of the ISO string
+            return att.date.startsWith(date);
+        });
+    } catch (e) {
+        console.warn("Invalid date format provided for attendance filter:", date, e);
+    }
   }
+
 
   return NextResponse.json(filteredAttendance);
 }
@@ -54,14 +89,20 @@ export async function POST(request: NextRequest) {
         continue;
       }
       
-      // Basic validation
       const validStatuses: AttendanceStatus[] = ['present', 'absent', 'late', 'excused'];
       if (!validStatuses.includes(status)) {
         errors.push(`Invalid status: ${status}. Must be one of ${validStatuses.join(', ')}.`);
         continue;
       }
+      try {
+          if(!isValid(parseISO(date))) throw new Error('Invalid date format');
+      } catch (e) {
+          errors.push(`Invalid date format: ${date}. Must be ISO 8601.`);
+          continue;
+      }
 
-      const now = new Date().toISOString();
+
+      const currentTimestamp = new Date().toISOString();
       const newRecord: AttendanceRecord = {
         id: generateId(),
         studentId,
@@ -70,8 +111,8 @@ export async function POST(request: NextRequest) {
         status,
         markedBy,
         remarks: recordData.remarks || undefined,
-        createdAt: now,
-        updatedAt: now,
+        createdAt: currentTimestamp,
+        updatedAt: currentTimestamp,
       };
       global.__API_ATTENDANCE_STORE__?.push(newRecord);
       createdRecords.push(newRecord);
@@ -91,4 +132,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Error creating attendance record(s)', error: (error as Error).message }, { status: 500 });
   }
 }
-    

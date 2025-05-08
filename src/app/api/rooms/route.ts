@@ -5,8 +5,48 @@ import type { Room } from '@/types/entities';
 declare global {
   var __API_ROOMS_STORE__: Room[] | undefined;
 }
-if (!global.__API_ROOMS_STORE__) {
-  global.__API_ROOMS_STORE__ = [];
+
+const now = new Date().toISOString();
+
+if (!global.__API_ROOMS_STORE__ || global.__API_ROOMS_STORE__.length === 0) {
+  global.__API_ROOMS_STORE__ = [
+    { 
+      id: "room_a101_gpp", 
+      roomNumber: "A-101", 
+      name: "Computer Lab 1", 
+      buildingId: "bldg_main_gpp", 
+      floor: 1, 
+      type: "Laboratory", 
+      capacity: 30, 
+      status: "available",
+      createdAt: now,
+      updatedAt: now,
+    },
+    { 
+      id: "room_b202_gpp", 
+      roomNumber: "B-202", 
+      name: "Lecture Hall B2", 
+      buildingId: "bldg_main_gpp", 
+      floor: 2, 
+      type: "Lecture Hall", 
+      capacity: 60, 
+      status: "available",
+      createdAt: now,
+      updatedAt: now,
+    },
+    { 
+      id: "room_w1_gpp", 
+      roomNumber: "WKSP-01", 
+      name: "Mechanical Workshop", 
+      buildingId: "bldg_workshop_gpp", 
+      floor: 0, 
+      type: "Workshop", 
+      capacity: 40, 
+      status: "under_maintenance",
+      createdAt: now,
+      updatedAt: now,
+    },
+  ];
 }
 const roomsStore: Room[] = global.__API_ROOMS_STORE__;
 
@@ -23,7 +63,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const roomData = await request.json() as Omit<Room, 'id'>;
+    const roomData = await request.json() as Omit<Room, 'id' | 'createdAt' | 'updatedAt'>;
 
     if (!roomData.roomNumber || !roomData.roomNumber.trim()) {
       return NextResponse.json({ message: 'Room Number cannot be empty.' }, { status: 400 });
@@ -45,7 +85,7 @@ export async function POST(request: NextRequest) {
         }
     }
 
-
+    const currentTimestamp = new Date().toISOString();
     const newRoom: Room = {
       id: generateId(),
       roomNumber: roomData.roomNumber.trim().toUpperCase(),
@@ -57,6 +97,8 @@ export async function POST(request: NextRequest) {
       areaSqFt: roomData.areaSqFt !== undefined && roomData.areaSqFt !== null ? Number(roomData.areaSqFt) : undefined,
       status: roomData.status || 'available',
       notes: roomData.notes?.trim() || undefined,
+      createdAt: currentTimestamp,
+      updatedAt: currentTimestamp,
     };
     global.__API_ROOMS_STORE__?.push(newRoom);
     return NextResponse.json(newRoom, { status: 201 });

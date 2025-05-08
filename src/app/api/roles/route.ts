@@ -1,10 +1,10 @@
+
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Role } from '@/types/entities';
 import { allPermissions } from '@/lib/api/roles'; 
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 import { z } from 'zod';
 
-// Define Zod schema for Role creation
 const createRoleSchema = z.object({
     name: z.string().min(1, "Role Name cannot be empty.").trim(),
     code: z.string().min(1, "Role Code cannot be empty.").trim(),
@@ -16,17 +16,15 @@ const createRoleSchema = z.object({
     committeeCode: z.string().optional().nullable(),
 });
 
-// Define Zod schema for Role update
 const updateRoleSchema = z.object({
     name: z.string().min(1, "Role Name cannot be empty.").trim().optional(),
     description: z.string().optional().nullable(),
     permissions: z.array(z.string()).optional(),
 });
 
-// Rate limiting setup
 const rateLimiter = new RateLimiterMemory({
-    points: 10, // 10 points
-    duration: 1, // per 1 second
+    points: 10, 
+    duration: 1, 
 });
 
 const rateLimiterMiddleware = async (req: NextRequest) => {
@@ -40,17 +38,22 @@ const rateLimiterMiddleware = async (req: NextRequest) => {
 declare global {
   var __API_ROLES_STORE__: Role[] | undefined;
 }
+
+const now = new Date().toISOString();
+
 const initialRoles: Role[] = [
-    { id: "2", name: "Student", code: "student", description: "Access to student-specific features.", permissions: ["view_courses", "submit_assignments"], isSystemRole: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-    { id: "3", name: "Faculty", code: "faculty", description: "Access to faculty-specific features.", permissions: ["manage_courses", "grade_assignments", "evaluate_projects", "view_committee_info"], isSystemRole: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-    { id: "4", name: "HOD", code: "hod", description: "Head of Department access.", permissions: ["manage_faculty", "view_department_reports", "manage_courses", "evaluate_projects", "view_committee_info"], isSystemRole: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-    { id: "5", name: "Jury", code: "jury", description: "Project fair jury access.", permissions: ["evaluate_projects", "view_committee_info"], isSystemRole: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-    { id: "6", name: "Unknown", code: "unknown", description: "Default role with no permissions.", permissions: [], isSystemRole: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-    { id: "7", name: "Super Admin", code: "super_admin", description: "System-wide super admin.", permissions: allPermissions, isSystemRole: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-    // Generic committee roles will be created dynamically by committee API
+    { id: "role_super_admin", name: "Super Admin", code: "super_admin", description: "System-wide super administrator with all permissions.", permissions: allPermissions, isSystemRole: true, createdAt: now, updatedAt: now },
+    { id: "role_admin", name: "Admin", code: "admin", description: "Administrator with broad access to system features.", permissions: allPermissions.filter(p => !p.includes('super')), isSystemRole: true, createdAt: now, updatedAt: now },
+    { id: "role_student", name: "Student", code: "student", description: "Access to student-specific features.", permissions: ["view_courses", "submit_assignments"], isSystemRole: true, createdAt: now, updatedAt: now },
+    { id: "role_faculty", name: "Faculty", code: "faculty", description: "Access to faculty-specific features.", permissions: ["manage_courses", "grade_assignments", "evaluate_projects", "view_committee_info"], isSystemRole: true, createdAt: now, updatedAt: now },
+    { id: "role_hod", name: "HOD", code: "hod", description: "Head of Department access.", permissions: ["manage_faculty", "view_department_reports", "manage_courses", "evaluate_projects", "view_committee_info"], isSystemRole: true, createdAt: now, updatedAt: now },
+    { id: "role_jury", name: "Jury", code: "jury", description: "Project fair jury access.", permissions: ["evaluate_projects", "view_committee_info"], isSystemRole: true, createdAt: now, updatedAt: now },
+    { id: "role_unknown", name: "Unknown", code: "unknown", description: "Default role with no permissions.", permissions: [], isSystemRole: true, createdAt: now, updatedAt: now },
+    // Example of a dynamically generated committee role (actual ones created by committee API)
+    // { id: "role_cwan_convener", name: "CWAN Convener", code: "cwan_convener", description: "Convener for the CWAN committee.", permissions: ["view_committee_info", "manage_committee_meetings"], isSystemRole: false, isCommitteeRole: true, committeeId: "cmt_cwan_gpp", committeeCode:"CWAN", createdAt: now, updatedAt: now },
 ];
 
-if (!global.__API_ROLES_STORE__) {
+if (!global.__API_ROLES_STORE__ || global.__API_ROLES_STORE__.length === 0) {
     global.__API_ROLES_STORE__ = initialRoles;
 }
 const rolesStore: Role[] = global.__API_ROLES_STORE__;
@@ -64,22 +67,22 @@ const getAllRoles = (): Role[] => {
 };
 
 const createRole = (data: z.infer<typeof createRoleSchema>): Role => {
- const now = new Date().toISOString();
+ const currentTimestamp = new Date().toISOString();
  const newRole: Role = {
- id: generateRoleId(),
- name: data.name,
- code: data.code.toLowerCase(),
- description: data.description ?? "",
- permissions: data.permissions ? data.permissions.filter(p => allPermissions.includes(p)) : [],
- isSystemRole: data.isSystemRole ?? false,
- isCommitteeRole: data.isCommitteeRole ?? false,
- committeeId: data.committeeId,
- committeeCode: data.committeeCode?.toLowerCase(),
- createdAt: now,
- updatedAt: now,
-    };
+    id: generateRoleId(),
+    name: data.name,
+    code: data.code.toLowerCase(),
+    description: data.description ?? "",
+    permissions: data.permissions ? data.permissions.filter(p => allPermissions.includes(p)) : [],
+    isSystemRole: data.isSystemRole ?? false,
+    isCommitteeRole: data.isCommitteeRole ?? false,
+    committeeId: data.committeeId,
+    committeeCode: data.committeeCode?.toLowerCase(),
+    createdAt: currentTimestamp,
+    updatedAt: currentTimestamp,
+  };
  rolesStore.push(newRole);
- global.__API_ROLES_STORE__ = rolesStore; // Update global store
+ global.__API_ROLES_STORE__ = rolesStore; 
  return newRole;
 };
 
@@ -88,7 +91,7 @@ const updateRole = (id: string, data: z.infer<typeof updateRoleSchema>): Role | 
  if (roleIndex === -1) return undefined;
  const updatedRole = { ...rolesStore[roleIndex], ...data, updatedAt: new Date().toISOString() };
  rolesStore[roleIndex] = updatedRole;
- global.__API_ROLES_STORE__ = rolesStore; // Update global store
+ global.__API_ROLES_STORE__ = rolesStore; 
  return updatedRole;
 };
 const generateRoleId = (): string => `role_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
@@ -175,7 +178,7 @@ export async function PUT(request: NextRequest) {
             return NextResponse.json({ message: 'Role not found.' }, { status: 404 });
         }
 
-        // Prevent updating system roles via PUT (except for name/description/permissions maybe, but safer to restrict code)
+        
         if (rolesStore[roleIndex].isSystemRole && updateData.name && updateData.name.toLowerCase() !== rolesStore[roleIndex].name.toLowerCase()) {
              return NextResponse.json({ message: 'Cannot change the name of a system role.' }, { status: 403 });
         }
@@ -203,10 +206,10 @@ export async function DELETE(request: NextRequest) {
         }
 
         const initialLength = rolesStore.length;
-        // Prevent deleting system roles
+        
         const roleToDelete = rolesStore.find(r => r.id === id);
-        if (roleToDelete && roleToDelete.isSystemRole) {
-             return NextResponse.json({ message: 'Cannot delete a system role.' }, { status: 403 });
+        if (roleToDelete && roleToDelete.isSystemRole && !roleToDelete.isCommitteeRole) {
+             return NextResponse.json({ message: 'Cannot delete a non-committee system role.' }, { status: 403 });
         }
 
         global.__API_ROLES_STORE__ = rolesStore.filter(r => r.id !== id);

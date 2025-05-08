@@ -1,3 +1,4 @@
+
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Batch } from '@/types/entities';
 
@@ -5,8 +6,44 @@ declare global {
   var __API_BATCHES_STORE__: Batch[] | undefined;
 }
 
-if (!global.__API_BATCHES_STORE__) {
-  global.__API_BATCHES_STORE__ = [];
+const now = new Date().toISOString();
+
+if (!global.__API_BATCHES_STORE__ || global.__API_BATCHES_STORE__.length === 0) {
+  global.__API_BATCHES_STORE__ = [
+    { 
+      id: "batch_dce_2022_gpp", 
+      name: "DCE 2022-2025", 
+      programId: "prog_dce_gpp", 
+      startAcademicYear: 2022, 
+      endAcademicYear: 2025, 
+      status: "active", 
+      maxIntake: 60,
+      createdAt: now,
+      updatedAt: now,
+    },
+    { 
+      id: "batch_dme_2023_gpp", 
+      name: "DME 2023-2026", 
+      programId: "prog_dme_gpp", 
+      startAcademicYear: 2023, 
+      endAcademicYear: 2026, 
+      status: "active", 
+      maxIntake: 60,
+      createdAt: now,
+      updatedAt: now,
+    },
+    { 
+      id: "batch_dee_2023_gpp", 
+      name: "DEE 2023-2026", 
+      programId: "prog_dee_gpp", 
+      startAcademicYear: 2023, 
+      endAcademicYear: 2026, 
+      status: "upcoming", 
+      maxIntake: 60,
+      createdAt: now,
+      updatedAt: now,
+    },
+  ];
 }
 const batchesStore: Batch[] = global.__API_BATCHES_STORE__;
 
@@ -41,7 +78,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ message: `Batch with name '${batchData.name.trim()}' already exists for this program.` }, { status: 409 });
     }
     
-    const now = new Date().toISOString();
+    const currentTimestamp = new Date().toISOString();
     const newBatch: Batch = {
       id: generateId(),
       name: batchData.name.trim(),
@@ -50,8 +87,8 @@ export async function POST(request: NextRequest) {
       endAcademicYear: batchData.endAcademicYear ? Number(batchData.endAcademicYear) : undefined,
       status: batchData.status || 'upcoming',
       maxIntake: batchData.maxIntake ? Number(batchData.maxIntake) : undefined,
-      createdAt: now,
-      updatedAt: now,
+      createdAt: currentTimestamp,
+      updatedAt: currentTimestamp,
     };
     global.__API_BATCHES_STORE__?.push(newBatch);
     return NextResponse.json(newBatch, { status: 201 });

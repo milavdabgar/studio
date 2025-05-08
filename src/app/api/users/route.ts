@@ -7,23 +7,101 @@ declare global {
   var __API_USERS_STORE__: User[] | undefined;
 }
 
-if (!global.__API_USERS_STORE__) {
+const now = new Date().toISOString();
+
+if (!global.__API_USERS_STORE__ || global.__API_USERS_STORE__.length === 0) {
   global.__API_USERS_STORE__ = [
     { 
-      id: "user1", 
-      displayName: "Alice Admin", 
-      username: "admin",
-      email: "admin@example.com", 
-      instituteEmail: "admin@gppalanpur.in", 
+      id: "user_admin_gpp", 
+      displayName: "GPP Super Admin", 
+      username: "gpp_superadmin",
+      email: "admin@gppalanpur.in", 
+      instituteEmail: "admin@gppalanpur.ac.in", 
       password: "Admin@123", 
-      roles: ["admin", "super_admin"], 
+      roles: ["super_admin", "admin"], 
       isActive: true, 
       instituteId: "inst1", 
       authProviders: ['password'],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
       isEmailVerified: true,
-      preferences: { theme: 'system', language: 'en' }
+      preferences: { theme: 'system', language: 'en' },
+      fullName: "ADMIN SUPER GPP",
+      firstName: "SUPER",
+      lastName: "ADMIN"
+    },
+     { 
+      id: "user_hod_ce_gpp", 
+      displayName: "HOD Computer", 
+      username: "hod_ce_gpp",
+      email: "hod.ce@gppalanpur.in", 
+      instituteEmail: "hod.ce@gppalanpur.ac.in", 
+      password: "Password@123", 
+      roles: ["hod", "faculty"], 
+      isActive: true, 
+      instituteId: "inst1", 
+      authProviders: ['password'],
+      createdAt: now,
+      updatedAt: now,
+      isEmailVerified: true,
+      preferences: { theme: 'system', language: 'en' },
+      fullName: "HOD COMPUTER ENGINEERING",
+      firstName: "COMPUTER",
+      lastName: "HOD"
+    },
+    { 
+      id: "user_faculty_cs01_gpp", 
+      displayName: "Faculty CS01", 
+      email: "faculty.cs01@gppalanpur.in", 
+      instituteEmail: "faculty.cs01@gppalanpur.ac.in", 
+      password: "Password@123", 
+      roles: ["faculty"], 
+      isActive: true, 
+      instituteId: "inst1", 
+      authProviders: ['password'],
+      createdAt: now,
+      updatedAt: now,
+      isEmailVerified: true,
+      preferences: { theme: 'system', language: 'en' },
+      fullName: "FACULTY CS01 GPP",
+      firstName: "CS01",
+      lastName: "FACULTY"
+    },
+    { 
+      id: "user_student_ce001_gpp", 
+      displayName: "Student CE001", 
+      email: "student.ce001@gppalanpur.in", 
+      instituteEmail: "220010107001@gppalanpur.ac.in", // Example, derived from enrollment
+      password: "220010107001", 
+      roles: ["student"], 
+      isActive: true, 
+      instituteId: "inst1", 
+      authProviders: ['password'],
+      createdAt: now,
+      updatedAt: now,
+      isEmailVerified: true,
+      preferences: { theme: 'system', language: 'en' },
+      fullName: "STUDENT CE001 GPP",
+      firstName: "CE001",
+      lastName: "STUDENT"
+    },
+    { 
+      id: "user_committee_convener_gpp", 
+      displayName: "Committee Convener", 
+      email: "convener.arc@gppalanpur.in", 
+      instituteEmail: "convener.arc@gppalanpur.ac.in", 
+      password: "Password@123", 
+      roles: ["faculty", "arc_gpp_convener"], // Example specific committee role code
+      isActive: true, 
+      instituteId: "inst1", 
+      authProviders: ['password'],
+      createdAt: now,
+      updatedAt: now,
+      isEmailVerified: true,
+      preferences: { theme: 'system', language: 'en' },
+      fullName: "CONVENER COMMITTEE GPP",
+      firstName: "COMMITTEE",
+      lastName: "CONVENER"
     },
   ];
 }
@@ -36,7 +114,9 @@ const parseFullNameForEmail = (fullName: string | undefined, displayName?: strin
     if (!nameToParse) return {};
     const parts = nameToParse.trim().split(/\s+/);
     if (parts.length === 1) return { firstName: parts[0].toLowerCase() };
-    if (parts.length >= 2) return { firstName: parts.find(p => p.toLowerCase() !== parts[0].toLowerCase())?.toLowerCase() || parts[1].toLowerCase() , lastName: parts[0].toLowerCase() };
+    if (parts.length >= 2) { // SURNAME NAME FATHERNAME -> lastName=SURNAME, firstName=NAME
+      return { firstName: parts[1].toLowerCase() , lastName: parts[0].toLowerCase() };
+    }
     return {};
 };
 
@@ -79,7 +159,7 @@ export async function POST(request: NextRequest) {
          return NextResponse.json({ message: 'Password must be at least 6 characters long for new users.' }, { status: 400 });
     }
     
-    let instituteDomain = 'gpp.ac.in'; // Default domain if institute not found or no domain set
+    let instituteDomain = 'gpp.ac.in'; // Default domain
     if (userData.instituteId) {
         try {
             const institute = await instituteService.getInstituteById(userData.instituteId);
@@ -98,8 +178,15 @@ export async function POST(request: NextRequest) {
     const firstNameForEmail = (userData.firstName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
     const lastNameForEmail = (userData.lastName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
     let baseInstituteEmail = `${firstNameForEmail}.${lastNameForEmail}`;
-    if (!firstNameForEmail || !lastNameForEmail) { // Fallback if names are insufficient
-        baseInstituteEmail = userData.email.split('@')[0].replace(/[^a-z0-9]/g, '');
+
+    if (!firstNameForEmail || !lastNameForEmail) { 
+        const emailParts = userData.email.split('@');
+        const usernamePart = emailParts[0].replace(/[^a-z0-9]/g, '');
+        if (usernamePart) {
+            baseInstituteEmail = usernamePart;
+        } else { // Fallback if username part is also empty
+            baseInstituteEmail = `user${generateId().substring(5,10)}`;
+        }
     }
     
     let instituteEmail = `${baseInstituteEmail}@${instituteDomain}`;
@@ -109,9 +196,10 @@ export async function POST(request: NextRequest) {
         emailSuffix++;
     }
 
+    const currentTimestamp = new Date().toISOString();
     const newUser: User = {
       id: generateId(),
-      displayName: `${userData.firstName.trim()} ${userData.lastName.trim()}`,
+      displayName: userData.displayName || `${userData.firstName.trim()} ${userData.lastName.trim()}`,
       fullName: userData.fullName.trim(),
       firstName: userData.firstName.trim(),
       middleName: userData.middleName?.trim() || undefined,
@@ -122,12 +210,13 @@ export async function POST(request: NextRequest) {
       photoURL: userData.photoURL || undefined,
       phoneNumber: userData.phoneNumber || undefined,
       authProviders: ['password'],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: currentTimestamp,
+      updatedAt: currentTimestamp,
       lastLoginAt: undefined,
       isActive: userData.isActive === undefined ? true : userData.isActive,
       isEmailVerified: false,
       roles: userData.roles,
+      currentRole: userData.roles[0], // Default to first role
       preferences: userData.preferences || { theme: 'system', language: 'en'},
       instituteId: userData.instituteId || undefined,
       password: userData.password, 

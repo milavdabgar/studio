@@ -5,8 +5,47 @@ import type { Building } from '@/types/entities';
 declare global {
   var __API_BUILDINGS_STORE__: Building[] | undefined;
 }
-if (!global.__API_BUILDINGS_STORE__) {
-  global.__API_BUILDINGS_STORE__ = [];
+
+const now = new Date().toISOString();
+
+if (!global.__API_BUILDINGS_STORE__ || global.__API_BUILDINGS_STORE__.length === 0) {
+  global.__API_BUILDINGS_STORE__ = [
+    { 
+      id: "bldg_main_gpp", 
+      name: "Main Building", 
+      code: "MAIN", 
+      instituteId: "inst1", 
+      status: "active", 
+      constructionYear: 1964, 
+      numberOfFloors: 2, 
+      totalAreaSqFt: 50000,
+      createdAt: now,
+      updatedAt: now,
+    },
+    { 
+      id: "bldg_workshop_gpp", 
+      name: "Workshop Block", 
+      code: "WKSP", 
+      instituteId: "inst1", 
+      status: "active", 
+      constructionYear: 1980, 
+      numberOfFloors: 1, 
+      totalAreaSqFt: 20000,
+      createdAt: now,
+      updatedAt: now,
+    },
+    { 
+      id: "bldg_acad_gecm", 
+      name: "Academic Block A", 
+      code: "ACAD-A", 
+      instituteId: "inst2", 
+      status: "active", 
+      constructionYear: 1985, 
+      numberOfFloors: 3,
+      createdAt: now,
+      updatedAt: now,
+    },
+  ];
 }
 const buildingsStore: Building[] = global.__API_BUILDINGS_STORE__;
 
@@ -23,7 +62,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const buildingData = await request.json() as Omit<Building, 'id'>;
+    const buildingData = await request.json() as Omit<Building, 'id' | 'createdAt' | 'updatedAt'>;
 
     if (!buildingData.name || !buildingData.name.trim()) {
       return NextResponse.json({ message: 'Building Name cannot be empty.' }, { status: 400 });
@@ -44,6 +83,7 @@ export async function POST(request: NextRequest) {
         }
     }
 
+    const currentTimestamp = new Date().toISOString();
     const newBuilding: Building = {
       id: generateId(),
       name: buildingData.name.trim(),
@@ -54,6 +94,8 @@ export async function POST(request: NextRequest) {
       constructionYear: buildingData.constructionYear ? Number(buildingData.constructionYear) : undefined,
       numberOfFloors: buildingData.numberOfFloors ? Number(buildingData.numberOfFloors) : undefined,
       totalAreaSqFt: buildingData.totalAreaSqFt ? Number(buildingData.totalAreaSqFt) : undefined,
+      createdAt: currentTimestamp,
+      updatedAt: currentTimestamp,
     };
     global.__API_BUILDINGS_STORE__?.push(newBuilding);
     return NextResponse.json(newBuilding, { status: 201 });

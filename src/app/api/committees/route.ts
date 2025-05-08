@@ -9,8 +9,36 @@ declare global {
   var __API_ROLES_STORE__: Role[] | undefined;
 }
 
-if (!global.__API_COMMITTEES_STORE__) {
-  global.__API_COMMITTEES_STORE__ = [];
+const now = new Date().toISOString();
+
+if (!global.__API_COMMITTEES_STORE__ || global.__API_COMMITTEES_STORE__.length === 0) {
+  global.__API_COMMITTEES_STORE__ = [
+    {
+      id: "cmt_arc_gpp",
+      name: "Anti-Ragging Committee",
+      code: "ARC_GPP",
+      purpose: "To prevent ragging and ensure a safe campus environment.",
+      instituteId: "inst1",
+      formationDate: "2023-07-01",
+      status: "active",
+      convenerId: "user_hod_ce_gpp", // Example convener (HOD Computer)
+      createdAt: now,
+      updatedAt: now,
+    },
+    {
+      id: "cmt_cwan_gpp",
+      name: "College Website & Network Committee",
+      code: "CWAN_GPP",
+      description: "Manages and maintains the college website and network infrastructure.",
+      purpose: "To oversee digital presence and IT infrastructure.",
+      instituteId: "inst1",
+      formationDate: "2023-01-15",
+      status: "active",
+      convenerId: "user_committee_convener_gpp", // Specific convener for CWAN
+      createdAt: now,
+      updatedAt: now,
+    }
+  ];
 }
 
 if (!global.__API_ROLES_STORE__) { 
@@ -71,22 +99,18 @@ async function createOrUpdateCommitteeRoles(committee: Committee, isUpdate: bool
 
     if (existingRoleIndex !== -1) { // Update existing role
       const existingRole = currentRolesStore[existingRoleIndex];
-      const oldRoleName = existingRole.name; // Capture old name before update
+      const oldRoleName = existingRole.name; 
 
       currentRolesStore[existingRoleIndex] = {
         ...existingRole,
         name: newRoleName,
-        code: newRoleCode, // Code might also change if committee code changes
+        code: newRoleCode, 
         description: `${roleInfo.type} for the ${committee.name} committee.`,
-        committeeCode: committee.code, // Ensure committeeCode on role is updated
+        committeeCode: committee.code, 
         updatedAt: new Date().toISOString(),
       };
 
-      // If role name changed, update it for all users who have this role (by its code)
-      // This assumes user.roles stores role codes.
       if (oldRoleName !== newRoleName) {
-        // No action needed on user.roles if it stores codes, as role code might not change.
-        // If role code changed, then user.roles needs update.
         if (existingRole.code !== newRoleCode) {
           let currentUsersStore: User[] = (global as any).__API_USERS_STORE__ || [];
           currentUsersStore.forEach(user => {
@@ -100,10 +124,11 @@ async function createOrUpdateCommitteeRoles(committee: Committee, isUpdate: bool
       }
 
     } else { // Create new role
-      if (currentRolesStore.some(r => r.code === newRoleCode)) { // Ensure new role code is unique system-wide
+      if (currentRolesStore.some(r => r.code === newRoleCode)) { 
           console.warn(`Role with code ${newRoleCode} already exists. Skipping creation for ${committee.name} ${roleInfo.type}.`);
           continue;
       }
+      const currentTimestamp = new Date().toISOString();
       const newRole: Role = {
         id: generateRoleId(),
         name: newRoleName,
@@ -114,8 +139,8 @@ async function createOrUpdateCommitteeRoles(committee: Committee, isUpdate: bool
         isCommitteeRole: true,
         committeeId: committee.id,
         committeeCode: committee.code,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: currentTimestamp,
+        updatedAt: currentTimestamp,
       };
       currentRolesStore.push(newRole);
     }
@@ -160,7 +185,7 @@ export async function POST(request: NextRequest) {
     }
 
 
-    const now = new Date().toISOString();
+    const currentTimestamp = new Date().toISOString();
     const newCommittee: Committee = {
       id: generateId(),
       name: committeeData.name.trim(),
@@ -172,8 +197,8 @@ export async function POST(request: NextRequest) {
       dissolutionDate: committeeData.dissolutionDate || undefined,
       status: committeeData.status || 'active',
       convenerId: committeeData.convenerId || undefined,
-      createdAt: now,
-      updatedAt: now,
+      createdAt: currentTimestamp,
+      updatedAt: currentTimestamp,
     };
     
     committeesStore.push(newCommittee); 

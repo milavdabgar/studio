@@ -1,14 +1,44 @@
+
 import { NextResponse, type NextRequest } from 'next/server';
 import type { RoomAllocation } from '@/types/entities';
 import { isValid, parseISO } from 'date-fns';
 
 declare global {
-  // eslint-disable-next-line no-var
   var __API_ROOM_ALLOCATIONS_STORE__: RoomAllocation[] | undefined;
 }
 
-if (!global.__API_ROOM_ALLOCATIONS_STORE__) {
-  global.__API_ROOM_ALLOCATIONS_STORE__ = [];
+const now = new Date().toISOString();
+
+if (!global.__API_ROOM_ALLOCATIONS_STORE__ || global.__API_ROOM_ALLOCATIONS_STORE__.length === 0) {
+  global.__API_ROOM_ALLOCATIONS_STORE__ = [
+    {
+      id: "ra_1_gpp",
+      roomId: "room_a101_gpp",
+      purpose: "lecture",
+      courseOfferingId: "co_cs101_b2022_sem1_gpp", // Example
+      facultyId: "user_faculty_cs01_gpp", // Example
+      title: "CS101 Lecture",
+      startTime: "2024-07-29T09:00:00.000Z",
+      endTime: "2024-07-29T10:00:00.000Z",
+      dayOfWeek: "Monday",
+      isRecurring: true,
+      status: "scheduled",
+      createdAt: now,
+      updatedAt: now,
+    },
+    {
+      id: "ra_2_gpp",
+      roomId: "room_b202_gpp",
+      purpose: "meeting",
+      committeeId: "cmt_arc_gpp", // Example
+      title: "Anti-Ragging Committee Meeting",
+      startTime: "2024-07-30T15:00:00.000Z",
+      endTime: "2024-07-30T16:30:00.000Z",
+      status: "scheduled",
+      createdAt: now,
+      updatedAt: now,
+    }
+  ];
 }
 const roomAllocationsStore: RoomAllocation[] = global.__API_ROOM_ALLOCATIONS_STORE__;
 
@@ -24,7 +54,7 @@ export async function GET(request: NextRequest) {
   const roomId = searchParams.get('roomId');
   const courseOfferingId = searchParams.get('courseOfferingId');
   const facultyId = searchParams.get('facultyId');
-  const date = searchParams.get('date'); // Expected format YYYY-MM-DD
+  const date = searchParams.get('date'); 
 
   let filteredAllocations = [...global.__API_ROOM_ALLOCATIONS_STORE__];
 
@@ -39,19 +69,13 @@ export async function GET(request: NextRequest) {
   }
   if (date) {
     try {
-        const targetDate = parseISO(date); // Parses "YYYY-MM-DD" to start of that day in UTC
-        if (!isValid(targetDate)) throw new Error('Invalid date format');
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error('Invalid date format for filter');
         
         filteredAllocations = filteredAllocations.filter(ra => {
-            const startTime = parseISO(ra.startTime);
-            const endTime = parseISO(ra.endTime);
-            // Check if the targetDate falls within the allocation's start and end (considering only date part for simplicity)
-            // This is a basic check. For recurring events, more complex logic is needed.
-            return startTime.toISOString().split('T')[0] <= date && endTime.toISOString().split('T')[0] >= date;
+            return ra.startTime.startsWith(date);
         });
     } catch (e) {
-        // If date is invalid, return empty or error, for now, just don't filter by date.
-        console.warn("Invalid date format provided for room allocation filter:", date);
+        console.warn("Invalid date format provided for room allocation filter:", date, e);
     }
   }
 
@@ -78,8 +102,6 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ message: 'Invalid date format for startTime or endTime. Use ISO 8601 format.' }, { status: 400 });
     }
     
-    // Basic conflict check (can be more sophisticated for recurring events)
-    // For simplicity, this checks for any overlap with existing non-cancelled allocations for the same room.
     const newStartTime = parseISO(allocationData.startTime);
     const newEndTime = parseISO(allocationData.endTime);
 
@@ -95,12 +117,12 @@ export async function POST(request: NextRequest) {
     }
 
 
-    const now = new Date().toISOString();
+    const currentTimestamp = new Date().toISOString();
     const newAllocation: RoomAllocation = {
       id: generateId(),
       ...allocationData,
-      createdAt: now,
-      updatedAt: now,
+      createdAt: currentTimestamp,
+      updatedAt: currentTimestamp,
     };
     global.__API_ROOM_ALLOCATIONS_STORE__?.push(newAllocation);
     return NextResponse.json(newAllocation, { status: 201 });

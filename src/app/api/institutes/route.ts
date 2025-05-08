@@ -5,9 +5,41 @@ import type { Institute } from '@/types/entities';
 declare global {
   var __API_INSTITUTES_STORE__: Institute[] | undefined;
 }
-if (!global.__API_INSTITUTES_STORE__) {
+
+const now = new Date().toISOString();
+
+if (!global.__API_INSTITUTES_STORE__ || global.__API_INSTITUTES_STORE__.length === 0) {
   global.__API_INSTITUTES_STORE__ = [
-    { id: "inst1", name: "Government Polytechnic Palanpur", code: "GPP", address: "Jagana, Palanpur, Gujarat 385011", contactEmail: "gp-palanpur-dte@gujarat.gov.in", contactPhone: "02742-280126", website: "http://www.gppalanpur.ac.in", status: "active", establishmentYear: 1964 },
+    { 
+      id: "inst1", 
+      name: "Government Polytechnic Palanpur", 
+      code: "GPP", 
+      address: "Jagana, Palanpur, Banaskantha, Gujarat - 385011", 
+      contactEmail: "gp-palanpur-dte@gujarat.gov.in", 
+      contactPhone: "02742-280126", 
+      website: "http://www.gppalanpur.ac.in", 
+      status: "active", 
+      establishmentYear: 1964,
+      domain: "gppalanpur.ac.in",
+      administrators: ["user_admin_gpp"], // Example admin user ID
+      createdAt: now,
+      updatedAt: now,
+    },
+    { 
+      id: "inst2", 
+      name: "Government Engineering College, Modasa", 
+      code: "GECM", 
+      address: "Shamlaji Road, Modasa, Aravalli, Gujarat - 383315", 
+      contactEmail: "gec-modasa-dte@gujarat.gov.in", 
+      contactPhone: "02774-299299", 
+      website: "http://www.gecmodasa.ac.in", 
+      status: "active", 
+      establishmentYear: 1984,
+      domain: "gecmodasa.ac.in",
+      administrators: ["user_admin_gecm"], // Example admin user ID
+      createdAt: now,
+      updatedAt: now,
+    },
   ];
 }
 const institutesStore: Institute[] = global.__API_INSTITUTES_STORE__;
@@ -49,8 +81,12 @@ export async function POST(request: NextRequest) {
       contactEmail: instituteData.contactEmail?.trim() || undefined,
       contactPhone: instituteData.contactPhone?.trim() || undefined,
       website: instituteData.website?.trim() || undefined,
+      domain: instituteData.domain?.trim().toLowerCase() || `${instituteData.code.trim().toLowerCase()}.ac.in`,
       status: instituteData.status || 'active',
       establishmentYear: instituteData.establishmentYear ? Number(instituteData.establishmentYear) : undefined,
+      administrators: instituteData.administrators || [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
     global.__API_INSTITUTES_STORE__?.push(newInstitute);
     return NextResponse.json(newInstitute, { status: 201 });
