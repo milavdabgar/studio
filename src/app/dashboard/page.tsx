@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,7 +12,7 @@ type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown' | '
 
 interface User {
   name: string;
-  activeRole: UserRole; 
+  activeRole: UserRole;
   availableRoles: UserRole[];
   email?: string;
 }
@@ -32,6 +31,30 @@ interface DashboardCardItem {
   href?: string;
   id: string; // Unique ID for deduplication
 }
+
+// Define adminNavItems here before baseDashboardData uses it
+const adminNavItems = [
+  { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard' },
+  { href: '/admin/users', icon: UsersIcon, label: 'User Management', id: 'admin-users' },
+  { href: '/admin/roles', icon: UserCog, label: 'Role Management', id: 'admin-roles' },
+  { href: '/admin/institutes', icon: Landmark, label: 'Institutes', id: 'admin-institutes'},
+  { href: '/admin/buildings', icon: Building, label: 'Buildings', id: 'admin-buildings'},
+  { href: '/admin/rooms', icon: DoorOpen, label: 'Rooms', id: 'admin-rooms'},
+  { href: '/admin/committees', icon: CommitteeIcon, label: 'Committees', id: 'admin-committees'},
+  { href: '/admin/students', icon: BookUser, label: 'Student Mgt.', id: 'admin-students' },
+  { href: '/admin/faculty', icon: UsersRound, label: 'Faculty Mgt.', id: 'admin-faculty' },
+  { href: '/admin/departments', icon: Building2, label: 'Departments', id: 'admin-departments' },
+  { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs' },
+  { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches' },
+  { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses' },
+  { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments' },
+  { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance' },
+  { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'admin-resource-allocation' },
+  { href: '/admin/timetables', icon: Clock, label: 'Timetables', id: 'admin-timetables'},
+  { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback' },
+  { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'admin-reporting' },
+];
+
 
 const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
   admin: [
@@ -65,14 +88,14 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
   faculty: [
     { id: "faculty-assigned-courses", title: "Assigned Courses", value: "3", icon: BookOpen, color: "text-primary", href: "/faculty/courses" },
     { id: "faculty-students-enrolled", title: "Students Enrolled", value: "120", icon: UsersIcon, color: "text-accent", href: "/faculty/students" }, // This might link to a faculty specific student view
-    { id: "faculty-pending-evaluations", title: "Pending Evaluations", value: "8", icon: CheckCircle, color: "text-yellow-500", href: "/project-fair/jury" }, 
+    { id: "faculty-pending-evaluations", title: "Pending Evaluations", value: "8", icon: CheckCircle, color: "text-yellow-500", href: "/project-fair/jury" },
     { id: "faculty-feedback-reports", title: "Feedback Reports", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
     { id: "faculty-mark-attendance", title: "Mark Attendance", value: "Record", icon: CalendarCheck, color: "text-blue-400", href: "/faculty/attendance/mark"},
     { id: "faculty-manage-timetable", title: "My Timetable", value: "View/Edit", icon: Clock, color: "text-gray-500", href: "/faculty/timetable"},
   ],
   hod: [
-    { id: "hod-department-staff", title: "Department Staff", value: "15", icon: UsersRound, color: "text-primary", href: "/admin/faculty" }, 
-    { id: "hod-department-students", title: "Department Students", value: "250", icon: BookUser, color: "text-accent", href: "/admin/students" }, 
+    { id: "hod-department-staff", title: "Department Staff", value: "15", icon: UsersRound, color: "text-primary", href: "/admin/faculty" },
+    { id: "hod-department-students", title: "Department Students", value: "250", icon: BookUser, color: "text-accent", href: "/admin/students" },
     { id: "hod-my-institute", title: "My Institute", value: "Manage", icon: Landmark, color: "text-red-500", href: "/admin/institutes"},
     { id: "hod-my-buildings", title: "Institute Buildings", value: "Manage", icon: Building, color: "text-blue-500", href: "/admin/buildings"},
     { id: "hod-my-rooms", title: "Institute Rooms", value: "Manage", icon: DoorOpen, color: "text-cyan-500", href: "/admin/rooms"},
@@ -85,8 +108,8 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "hod-mark-attendance", title: "Mark Attendance", value: "Record", icon: CalendarCheck, color: "text-blue-400", href: "/faculty/attendance/mark"},
     { id: "hod-resource-allocation", title: "Resource Allocation", value: "Manage", icon: ResourceIcon, color: "text-orange-400", href: "/admin/resource-allocation" },
     { id: "hod-manage-timetable", title: "Department Timetable", value: "Manage", icon: Clock, color: "text-gray-500", href: "/admin/timetables"},
-    { id: "hod-department-projects", title: "Department Projects", value: "25", icon: Briefcase, color: "text-yellow-500", href: "/project-fair/admin" }, 
-    { id: "hod-department-feedback", title: "Department Feedback", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" }, 
+    { id: "hod-department-projects", title: "Department Projects", value: "25", icon: Briefcase, color: "text-yellow-500", href: "/project-fair/admin" },
+    { id: "hod-department-feedback", title: "Department Feedback", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
     { id: "hod-reporting-analytics", title: "Reporting & Analytics", value: "View", icon: BarChart3, color: "text-sky-500", href: "/admin/reporting-analytics" },
   ],
   jury: [
@@ -107,7 +130,7 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "member-committee-dashboard", title: "Committee Dashboard", value: "View", icon: CommitteeIcon, color: "text-pink-500", href: "/dashboard/committee"},
   ],
   super_admin: adminNavItems,
-  institute_admin: baseDashboardData.admin.filter(item => !['admin-total-users', 'admin-role-management', 'admin-total-institutes'].includes(item.id)),
+  institute_admin: adminNavItems.filter(item => !['admin-total-users', 'admin-role-management', 'admin-total-institutes'].includes(item.id)),
   department_admin: [
     { id: "dept-admin-programs", title: "Department Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs" },
     { id: "dept-admin-courses", title: "Department Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses" },
@@ -163,7 +186,7 @@ export default function DashboardPage() {
       try {
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as ParsedUserCookie;
-        
+
         setCurrentUser({
           name: parsedUser.name || parsedUser.email,
           activeRole: parsedUser.activeRole || 'unknown',
@@ -180,7 +203,8 @@ export default function DashboardPage() {
   }, []);
 
   const dashboardCards = getDashboardDataForActiveRole(currentUser.activeRole);
-  const displayActiveRole = currentUser.activeRole.charAt(0).toUpperCase() + currentUser.activeRole.slice(1);
+  const displayActiveRole = currentUser.activeRole.charAt(0).toUpperCase() + currentUser.activeRole.slice(1).replace(/_/g, ' ');
+
 
   if (!isMounted) {
     return <div className="flex justify-center items-center h-screen"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
@@ -285,7 +309,7 @@ export default function DashboardPage() {
         </Card>
       </section>
 
-      {currentUser.activeRole === 'admin' && ( 
+      {currentUser.activeRole === 'admin' && (
         <section>
           <Card className="shadow-lg">
             <CardHeader>
