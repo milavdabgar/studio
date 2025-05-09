@@ -4,7 +4,13 @@ import { GeistSans } from 'geist/font/sans';
 import './globals.css';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
-import { Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser, UsersRound, Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Activity } from 'lucide-react';
+import { 
+    Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, 
+    Loader2, UserCog, BookUser, UsersRound, Building2, BookCopy, ClipboardList, Landmark, 
+    Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, 
+    BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Activity, Clock,
+    ListChecks, BookOpenCheck
+} from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -52,21 +58,29 @@ const adminNavItems = [
   { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments' },
   { href: '/faculty/attendance/mark', icon: AttendanceIcon, label: 'Mark Attendance', id: 'admin-mark-attendance' },
   { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'admin-resource-allocation' },
+  { href: '/admin/timetables', icon: Clock, label: 'Timetables', id: 'admin-timetables'},
   { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback' },
   { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'admin-reporting' },
 ];
+
 
 const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.ElementType; label: string; id: string }>> = {
   admin: adminNavItems,
   student: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'student-dashboard' },
+    { href: '/student/profile', icon: UserCircle, label: 'My Profile', id: 'student-profile' },
+    { href: '/student/timetable', icon: Clock, label: 'My Timetable', id: 'student-timetable' },
+    { href: '/student/attendance', icon: AttendanceIcon, label: 'My Attendance', id: 'student-attendance' },
     { href: '/courses', icon: BookOpen, label: 'My Courses', id: 'student-courses' },
     { href: '/assignments', icon: CalendarCheck, label: 'Assignments', id: 'student-assignments'},
     { href: '/results/history/me', icon: Award, label: 'My Results', id: 'student-results' },
+    { href: '/student/materials', icon: BookOpenCheck, label: 'Study Materials', id: 'student-materials' },
     { href: '/project-fair/student', icon: AssessmentIcon, label: 'My Project', id: 'student-project' },
   ],
   faculty: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'faculty-dashboard' },
+    { href: '/faculty/profile', icon: UserCircle, label: 'My Profile', id: 'faculty-profile' },
+    { href: '/faculty/timetable', icon: Clock, label: 'My Timetable', id: 'faculty-timetable' },
     { href: '/faculty/courses', icon: BookOpen, label: 'My Courses', id: 'faculty-courses' },
     { href: '/faculty/students', icon: UsersIconLucide, label: 'My Students', id: 'faculty-students'},
     { href: '/faculty/attendance/mark', icon: AttendanceIcon, label: 'Mark Attendance', id: 'faculty-mark-attendance' },
@@ -111,6 +125,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
   committee_member: [
     { href: '/dashboard', icon: Home, label: 'Member Dashboard', id: 'member-dashboard' },
     { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'member-my-committee'},
+    { href: '/committee/tasks/my', icon: ListChecks, label: 'My Tasks', id: 'member-my-tasks'}
   ],
   super_admin: adminNavItems, 
   dte_admin: [{ href: '/dashboard', icon: Home, label: 'DTE Dashboard', id: 'dte-admin-dashboard' }],
@@ -178,6 +193,7 @@ interface ParsedUserCookie {
   name: string;
   availableRoles: UserRoleCode[]; 
   activeRole: UserRoleCode; 
+  id?: string; // Added optional ID for linking
 }
 
 
@@ -220,7 +236,8 @@ export default function RootLayout({
         availableRoles: parsedUser.availableRoles && parsedUser.availableRoles.length > 0 ? parsedUser.availableRoles : ['unknown'],
         email: parsedUser.email,
         avatarUrl: `https://picsum.photos/seed/${parsedUser.email}/40/40`, 
-        dataAiHint: 'user avatar'
+        dataAiHint: 'user avatar',
+        id: parsedUser.id // Make sure id is part of ParsedUserCookie and User
       });
     } else {
       setCurrentUser(DEFAULT_USER);
@@ -253,11 +270,13 @@ export default function RootLayout({
         setCurrentUser(prev => ({...prev, activeRole: newRoleCode}));
         
         const roleToActivate = allSystemRoles.find(r => r.code === newRoleCode);
-        if(roleToActivate?.isCommitteeRole){
+        // Redirect logic based on role
+        if(roleToActivate?.isCommitteeRole && !['committee_admin'].includes(newRoleCode) ){ // Redirect committee roles (not admin) to committee dash
             router.push('/dashboard/committee');
-        } else {
+        } else { // Default dashboard for other roles
             router.push('/dashboard'); 
         }
+        router.refresh(); // Force a refresh to ensure new role context is applied
     } else {
         const roleDetails = allSystemRoles.find(r => r.code === newRoleCode);
         toast({ variant: "destructive", title: "Role Switch Failed", description: `Role '${roleDetails?.name || newRoleCode}' is not available for your account or is invalid.`})
@@ -276,7 +295,7 @@ export default function RootLayout({
             <title>PolyManager</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
         </head>
-        <body className={`${GeistSans.className} antialiased`} suppressHydrationWarning>
+        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           {children}
           <Toaster />
         </body>
@@ -291,7 +310,7 @@ export default function RootLayout({
             <title>PolyManager - Loading...</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
         </head>
-        <body className={`${GeistSans.className} antialiased`} suppressHydrationWarning>
+        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           <div className="flex items-center justify-center min-h-screen">
             <Loader2 className="h-12 w-12 animate-spin text-primary" />
           </div>
@@ -308,7 +327,7 @@ export default function RootLayout({
             <title>PolyManager</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
         </head>
-      <body className={`${GeistSans.className} antialiased`} suppressHydrationWarning>
+      <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
         <SidebarProvider>
           <Sidebar>
             <SidebarHeader className="p-4 border-b border-sidebar-border">
@@ -322,7 +341,7 @@ export default function RootLayout({
                 {currentNavItems.map((item) => (
                   <SidebarMenuItem key={item.id}>
                     <Link href={item.href} passHref legacyBehavior>
-                      <SidebarMenuButton tooltip={item.label} isActive={pathname.startsWith(item.href) && (item.href === '/dashboard' ? pathname === '/dashboard' : true) && (item.href.startsWith('/dashboard/') ? pathname.startsWith(item.href) : true) }>
+                      <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/dashboard')} >
                         <item.icon />
                         <span>{item.label}</span>
                       </SidebarMenuButton>
