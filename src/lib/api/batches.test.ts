@@ -1,155 +1,189 @@
-import {
-  createBatch,
-  getBatch,
-  getBatches,
-  updateBatch,
-  deleteBatch,
-  importBatches,
-} from './batches';
-import { rest } from 'msw';
-import { setupServer } from 'msw/node';
+import { batchService } from './batches';
+import type { Batch, Program } from '@/types/entities';
+import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
-const server = setupServer();
+// Mock the fetch function
+global.fetch = jest.fn() as jest.MockedFunction<typeof fetch>;
 
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
+beforeEach(() => {
+  jest.clearAllMocks();
+});
 
 describe('Batch API', () => {
-  const mockBatch = {
+  const mockBatch: Batch = {
     id: '1',
     name: 'Batch 1',
-    description: 'Description for Batch 1',
-    programId: "program1"
+    programId: "program1",
+    status: 'active',
+    startAcademicYear: 2023,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   };
 
   const mockBatches = [mockBatch];
+  
+  // Create a mock batch data without id for creating new batches
+  const newBatchData: Omit<Batch, 'id' | 'createdAt' | 'updatedAt'> = {
+    name: 'Batch 1',
+    programId: "program1",
+    status: 'active',
+    startAcademicYear: 2023
+  };
 
   it('should create a batch', async () => {
-    server.use(
-      rest.post('/api/batches', (req, res, ctx) => {
-        return res(ctx.json(mockBatch));
-      })
-    );
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+      ok: true,
+      json: async () => mockBatch
+    } as Response);
 
-    const newBatch = await createBatch(mockBatch);
+    const newBatch = await batchService.createBatch(newBatchData);
+    
+    expect(fetch).toHaveBeenCalledWith('/api/batches', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newBatchData)
+    });
     expect(newBatch).toEqual(mockBatch);
   });
 
   it('should get a batch', async () => {
-    server.use(
-      rest.get('/api/batches/1', (req, res, ctx) => {
-        return res(ctx.json(mockBatch));
-      })
-    );
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+      ok: true,
+      json: async () => mockBatch
+    } as Response);
 
-    const batch = await getBatch('1');
+    const batch = await batchService.getBatchById('1');
+    
+    expect(fetch).toHaveBeenCalledWith('/api/batches/1');
     expect(batch).toEqual(mockBatch);
   });
 
   it('should get all batches', async () => {
-    server.use(
-      rest.get('/api/batches', (req, res, ctx) => {
-        return res(ctx.json(mockBatches));
-      })
-    );
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+      ok: true,
+      json: async () => mockBatches
+    } as Response);
 
-    const batches = await getBatches();
+    const batches = await batchService.getAllBatches();
+    
+    expect(fetch).toHaveBeenCalledWith('/api/batches');
     expect(batches).toEqual(mockBatches);
   });
 
   it('should update a batch', async () => {
-    server.use(
-      rest.put('/api/batches/1', (req, res, ctx) => {
-        return res(ctx.json({ ...mockBatch, name: 'Updated Batch' }));
-      })
-    );
+    const updatedMockBatch = { ...mockBatch, name: 'Updated Batch' };
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+      ok: true,
+      json: async () => updatedMockBatch
+    } as Response);
 
-    const updatedBatch = await updateBatch('1', { name: 'Updated Batch' });
-    expect(updatedBatch).toEqual({ ...mockBatch, name: 'Updated Batch' });
+    const updatedBatch = await batchService.updateBatch('1', { name: 'Updated Batch' });
+    
+    expect(fetch).toHaveBeenCalledWith('/api/batches/1', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'Updated Batch' })
+    });
+    expect(updatedBatch).toEqual(updatedMockBatch);
   });
 
   it('should delete a batch', async () => {
-    server.use(
-      rest.delete('/api/batches/1', (req, res, ctx) => {
-        return res(ctx.json(mockBatch));
-      })
-    );
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+      ok: true,
+      json: async () => ({})
+    } as Response);
 
-    const deletedBatch = await deleteBatch('1');
-    expect(deletedBatch).toEqual(mockBatch);
+    await batchService.deleteBatch('1');
+    
+    expect(fetch).toHaveBeenCalledWith('/api/batches/1', {
+      method: 'DELETE'
+    });
   });
 
   it('should import batches', async () => {
-    server.use(
-      rest.post('/api/batches/import', (req, res, ctx) => {
-          return res(ctx.json({ message: 'Batches imported successfully' }));
-      })
-    );
+    const successResponse = { 
+      newCount: 5, 
+      updatedCount: 2, 
+      skippedCount: 0 
+    };
+    
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+      ok: true,
+      json: async () => successResponse
+    } as Response);
     
     const mockFile = new File([''], 'test.csv', { type: 'text/csv' });
-    const result = await importBatches(mockFile);
-    expect(result).toEqual({ message: 'Batches imported successfully' });
+    const mockPrograms: Program[] = [];
+    
+    const result = await batchService.importBatches(mockFile, mockPrograms);
+    
+    // Check that fetch was called with the correct FormData
+    expect(fetch).toHaveBeenCalledWith('/api/batches/import', expect.objectContaining({
+      method: 'POST',
+      body: expect.any(FormData)
+    }));
+    expect(result).toEqual(successResponse);
   });
   
   it('should handle errors when creating a batch', async () => {
-    server.use(
-      rest.post('/api/batches', (req, res, ctx) => {
-        return res(ctx.status(500), ctx.json({ error: 'Internal Server Error' }));
-      })
-    );
-
-    await expect(createBatch(mockBatch)).rejects.toThrow('Failed to create batch');
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: async () => ({ message: 'Internal Server Error' })
+    } as Response);
+    
+    await expect(batchService.createBatch(newBatchData)).rejects.toThrow('Internal Server Error');
   });
-
+  
   it('should handle errors when getting a batch', async () => {
-    server.use(
-      rest.get('/api/batches/1', (req, res, ctx) => {
-        return res(ctx.status(404), ctx.json({ error: 'Batch not found' }));
-      })
-    );
-
-    await expect(getBatch('1')).rejects.toThrow('Failed to get batch');
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+      ok: false,
+      status: 404,
+      json: async () => ({ message: 'Batch not found' })
+    } as Response);
+    
+    await expect(batchService.getBatchById('1')).rejects.toThrow('Batch not found');
   });
 
   it('should handle errors when getting all batches', async () => {
-    server.use(
-      rest.get('/api/batches', (req, res, ctx) => {
-        return res(ctx.status(500), ctx.json({ error: 'Internal Server Error' }));
-      })
-    );
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: async () => ({ message: 'Internal Server Error' })
+    } as Response);
 
-    await expect(getBatches()).rejects.toThrow('Failed to get batches');
+    await expect(batchService.getAllBatches()).rejects.toThrow('Internal Server Error');
   });
 
   it('should handle errors when updating a batch', async () => {
-    server.use(
-      rest.put('/api/batches/1', (req, res, ctx) => {
-        return res(ctx.status(500), ctx.json({ error: 'Internal Server Error' }));
-      })
-    );
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: async () => ({ message: 'Internal Server Error' })
+    } as Response);
 
-    await expect(updateBatch('1', { name: 'Updated Batch' })).rejects.toThrow('Failed to update batch');
+    await expect(batchService.updateBatch('1', { name: 'Updated Batch' })).rejects.toThrow('Internal Server Error');
   });
 
   it('should handle errors when deleting a batch', async () => {
-    server.use(
-      rest.delete('/api/batches/1', (req, res, ctx) => {
-        return res(ctx.status(500), ctx.json({ error: 'Internal Server Error' }));
-      })
-    );
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: async () => ({ message: 'Internal Server Error' })
+    } as Response);
 
-    await expect(deleteBatch('1')).rejects.toThrow('Failed to delete batch');
+    await expect(batchService.deleteBatch('1')).rejects.toThrow('Internal Server Error');
   });
 
   it('should handle errors when importing batches', async () => {
-    server.use(
-      rest.post('/api/batches/import', (req, res, ctx) => {
-          return res(ctx.status(500), ctx.json({ error: 'Internal Server Error' }));
-      })
-    );
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: async () => ({ message: 'Internal Server Error' })
+    } as Response);
     
     const mockFile = new File([''], 'test.csv', { type: 'text/csv' });
-    await expect(importBatches(mockFile)).rejects.toThrow('Failed to import batches');
+    const mockPrograms: Program[] = [];
+    await expect(batchService.importBatches(mockFile, mockPrograms)).rejects.toThrow();
   });
 });

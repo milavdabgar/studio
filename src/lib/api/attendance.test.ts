@@ -1,8 +1,9 @@
 import { describe, it, expect, jest } from '@jest/globals';
-import * as attendanceApi from './attendance';
+import { attendanceService } from './attendance';
+import type { AttendanceRecord } from '@/types/entities';
 
 // Mock the fetch function
-global.fetch = jest.fn();
+global.fetch = jest.fn() as jest.MockedFunction<typeof fetch>;
 
 describe('Attendance API', () => {
   beforeEach(() => {
@@ -10,140 +11,158 @@ describe('Attendance API', () => {
   });
 
   it('should fetch all attendance records', async () => {
-    const mockResponse = [{ id: 1, date: '2023-01-01' }, { id: 2, date: '2023-01-02' }];
-    (fetch as jest.Mock).mockResolvedValue({
+    const mockResponse = [{ id: '1', date: '2023-01-01' }, { id: '2', date: '2023-01-02' }] as AttendanceRecord[];
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: true,
       json: async () => mockResponse,
-    });
+    } as Response);
 
-    const result = await attendanceApi.getAllAttendance();
+    const result = await attendanceService.getAttendanceRecords({});
 
-    expect(fetch).toHaveBeenCalledWith('/api/attendance', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    expect(fetch).toHaveBeenCalledWith('/api/attendance?');
     expect(result).toEqual(mockResponse);
   });
 
   it('should handle errors when fetching all attendance records', async () => {
-    (fetch as jest.Mock).mockResolvedValue({
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: false,
       status: 500,
-    });
+      json: async () => ({ message: 'Server error' }),
+    } as Response);
 
-    await expect(attendanceApi.getAllAttendance()).rejects.toThrow('Failed to fetch attendance: 500');
+    await expect(attendanceService.getAttendanceRecords({})).rejects.toThrow('Server error');
   });
 
-  it('should fetch a single attendance record by ID', async () => {
-    const mockResponse = { id: 1, date: '2023-01-01' };
-    (fetch as jest.Mock).mockResolvedValue({
+  it('should fetch attendance records by student ID', async () => {
+    const mockResponse = [{ id: '1', date: '2023-01-01', studentId: '1' }] as AttendanceRecord[];
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: true,
       json: async () => mockResponse,
-    });
+    } as Response);
 
-    const result = await attendanceApi.getAttendanceById('1');
+    const result = await attendanceService.getAttendanceRecords({ studentId: '1' });
 
-    expect(fetch).toHaveBeenCalledWith('/api/attendance/1', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    expect(fetch).toHaveBeenCalledWith('/api/attendance?studentId=1');
     expect(result).toEqual(mockResponse);
   });
 
-  it('should handle errors when fetching a single attendance record', async () => {
-    (fetch as jest.Mock).mockResolvedValue({
+  it('should handle errors when fetching attendance records by student ID', async () => {
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: false,
       status: 404,
-    });
+      json: async () => ({ message: 'Not found' }),
+    } as Response);
 
-    await expect(attendanceApi.getAttendanceById('1')).rejects.toThrow('Failed to fetch attendance: 404');
+    await expect(attendanceService.getAttendanceRecords({ studentId: '1' })).rejects.toThrow('Not found');
   });
 
-  it('should create a new attendance record', async () => {
-    const mockAttendanceData = { date: '2023-01-03' };
-    const mockResponse = { id: 3, ...mockAttendanceData };
-    (fetch as jest.Mock).mockResolvedValue({
+  it('should mark attendance', async () => {
+    const mockAttendanceData = { 
+      date: '2023-01-03', 
+      studentId: '1', 
+      courseOfferingId: '101', 
+      status: 'present',
+      markedBy: 'teacher1'
+    } as Omit<AttendanceRecord, 'id' | 'createdAt' | 'updatedAt'>;
+    
+    const mockResponse = [{ id: '3', ...mockAttendanceData }] as AttendanceRecord[];
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: true,
       json: async () => mockResponse,
-    });
+    } as Response);
 
-    const result = await attendanceApi.createAttendance(mockAttendanceData);
+    const result = await attendanceService.markAttendance([mockAttendanceData]);
 
-    expect(fetch).toHaveBeenCalledWith('/api/attendance', {
+    expect(fetch).toHaveBeenCalledWith(`${'/api'}/attendance`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(mockAttendanceData),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify([mockAttendanceData]),
     });
     expect(result).toEqual(mockResponse);
   });
 
-  it('should handle errors when creating a new attendance record', async () => {
-    const mockAttendanceData = { date: '2023-01-03' };
-    (fetch as jest.Mock).mockResolvedValue({
+  it('should handle errors when marking attendance', async () => {
+    const mockAttendanceData = { 
+      date: '2023-01-03', 
+      studentId: '1', 
+      courseOfferingId: '101', 
+      status: 'present',
+      markedBy: 'teacher1'
+    } as Omit<AttendanceRecord, 'id' | 'createdAt' | 'updatedAt'>;
+    
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: false,
       status: 400,
-    });
+      json: async () => ({ message: 'Bad request' }),
+    } as Response);
 
-    await expect(attendanceApi.createAttendance(mockAttendanceData)).rejects.toThrow('Failed to create attendance: 400');
+    await expect(attendanceService.markAttendance([mockAttendanceData])).rejects.toThrow('Bad request');
   });
 
   it('should update an existing attendance record', async () => {
-    const mockAttendanceData = { id: '1', date: '2023-01-04' };
-    const mockResponse = { ...mockAttendanceData };
-    (fetch as jest.Mock).mockResolvedValue({
+    const mockAttendanceData = { 
+      date: '2023-01-04',
+      status: 'absent' 
+    } as Partial<Omit<AttendanceRecord, 'id' | 'createdAt' | 'updatedAt'>>;
+    
+    const mockResponse = { 
+      id: '1', 
+      date: '2023-01-04',
+      studentId: '1',
+      courseOfferingId: '101',
+      status: 'absent',
+      markedBy: 'teacher1'
+    } as AttendanceRecord;
+    
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: true,
       json: async () => mockResponse,
-    });
+    } as Response);
 
-    const result = await attendanceApi.updateAttendance(mockAttendanceData);
+    const result = await attendanceService.updateAttendanceRecord('1', mockAttendanceData);
 
     expect(fetch).toHaveBeenCalledWith('/api/attendance/1', {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(mockAttendanceData),
     });
     expect(result).toEqual(mockResponse);
   });
 
   it('should handle errors when updating an attendance record', async () => {
-    const mockAttendanceData = { id: '1', date: '2023-01-04' };
-    (fetch as jest.Mock).mockResolvedValue({
+    const mockAttendanceData = { 
+      date: '2023-01-04',
+      status: 'absent' 
+    } as Partial<Omit<AttendanceRecord, 'id' | 'createdAt' | 'updatedAt'>>;
+    
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: false,
       status: 400,
-    });
+      json: async () => ({ message: 'Bad request' }),
+    } as Response);
 
-    await expect(attendanceApi.updateAttendance(mockAttendanceData)).rejects.toThrow('Failed to update attendance: 400');
+    await expect(attendanceService.updateAttendanceRecord('1', mockAttendanceData)).rejects.toThrow('Bad request');
   });
 
   it('should delete an attendance record', async () => {
-    (fetch as jest.Mock).mockResolvedValue({
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: true,
-    });
+    } as Response);
 
-    await attendanceApi.deleteAttendance('1');
+    await attendanceService.deleteAttendanceRecord('1');
 
     expect(fetch).toHaveBeenCalledWith('/api/attendance/1', {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
     });
   });
 
   it('should handle errors when deleting an attendance record', async () => {
-    (fetch as jest.Mock).mockResolvedValue({
+    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: false,
       status: 400,
-    });
+      json: async () => ({ message: 'Bad request' }),
+    } as Response);
 
-    await expect(attendanceApi.deleteAttendance('1')).rejects.toThrow('Failed to delete attendance: 400');
+    await expect(attendanceService.deleteAttendanceRecord('1')).rejects.toThrow('Bad request');
   });
 });
