@@ -1,195 +1,253 @@
-import {
-  createProgram,
-  getProgram,
-  getPrograms,
-  updateProgram,
-  deleteProgram,
-  importPrograms,
-} from './programs';
-import { mock } from 'jest-mock-extended';
-import { db } from '@/lib/db';
-import {
-  programs,
-  type Program,
-} from '@/lib/db/schema';
-import { eq } from 'drizzle-orm';
+import { programService } from './programs';
+import type { Program } from '@/types/entities';
+import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
-jest.mock('@/lib/db');
+// Create a proper mock for the Response object
+const createMockResponse = (options: { ok: boolean; status?: number; statusText?: string; json?: () => Promise<any> }): Response => {
+  const { ok, status = 200, statusText = '', json = async () => ({}) } = options;
+  return {
+    ok,
+    status,
+    statusText,
+    json,
+    headers: new Headers(),
+    redirected: false,
+    type: 'basic' as ResponseType,
+    url: '',
+    clone: () => createMockResponse(options),
+    text: async () => '',
+    blob: async () => new Blob(),
+    formData: async () => new FormData(),
+    arrayBuffer: async () => new ArrayBuffer(0),
+    bodyUsed: false,
+  } as Response;
+};
+
+// Mock fetch with proper return type
+const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
+global.fetch = mockFetch;
 
 describe('Program API Functions', () => {
   const mockProgram: Program = {
     id: 'test-program-id',
     name: 'Test Program',
     instituteId: 'test-institute-id',
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    code: 'TP',
+    status: 'active',
+    description: 'Test program description',
+    departmentId: 'test-department-id',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('createProgram', () => {
-    it('should create a program', async () => {
-      const mockDb = mock<typeof db>();
-      (mockDb.insert as jest.Mock).mockReturnValueOnce({
-        returning: jest.fn().mockResolvedValueOnce([mockProgram]),
-      });
-      const newProgramData = {
-        name: 'Test Program',
-        instituteId: 'test-institute-id',
-      };
-      const result = await createProgram(newProgramData, mockDb);
-      expect(mockDb.insert).toHaveBeenCalledWith(programs);
+  describe('getAllPrograms', () => {
+    it('should fetch all programs', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true,
+        json: async () => [mockProgram]
+      }));
+
+      const result = await programService.getAllPrograms();
+      expect(result).toEqual([mockProgram]);
+      expect(fetch).toHaveBeenCalledWith('/api/programs');
+    });
+
+    it('should throw an error if fetch fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error'
+      }));
+
+      await expect(programService.getAllPrograms()).rejects.toThrow('Failed to fetch programs');
+    });
+  });
+
+  describe('getProgramById', () => {
+    it('should fetch a program by id', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true,
+        json: async () => mockProgram
+      }));
+
+      const result = await programService.getProgramById('test-program-id');
       expect(result).toEqual(mockProgram);
+      expect(fetch).toHaveBeenCalledWith('/api/programs/test-program-id');
+    });
+
+    it('should throw an error if fetch fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 404,
+        statusText: 'Not Found'
+      }));
+
+      await expect(programService.getProgramById('test-program-id')).rejects.toThrow('Failed to fetch program with id test-program-id');
+    });
+  });
+
+  describe('createProgram', () => {
+    it('should create a new program', async () => {
+      const newProgramData = {
+        name: 'New Test Program',
+        code: 'NTP',
+        instituteId: 'test-institute-id',
+        departmentId: 'test-department-id',
+        status: 'active' as Program['status'],
+        description: 'New test program description'
+      };
+      
+      const createdProgram = {
+        id: 'new-test-program-id',
+        ...newProgramData,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true,
+        status: 201,
+        json: async () => createdProgram
+      }));
+
+      const result = await programService.createProgram(newProgramData);
+      expect(result).toEqual(createdProgram);
+      expect(fetch).toHaveBeenCalledWith('/api/programs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newProgramData)
+      });
     });
 
     it('should throw an error if creation fails', async () => {
-      const mockDb = mock<typeof db>();
-      (mockDb.insert as jest.Mock).mockRejectedValueOnce(new Error('Failed to create program'));
       const newProgramData = {
-        name: 'Test Program',
+        name: 'New Test Program',
+        code: 'NTP',
         instituteId: 'test-institute-id',
+        departmentId: 'test-department-id',
+        status: 'active' as Program['status'],
+        description: 'New test program description'
       };
-      await expect(createProgram(newProgramData, mockDb)).rejects.toThrow('Failed to create program');
-    });
-  });
 
-  describe('getProgram', () => {
-    it('should get a program by id', async () => {
-      const mockDb = mock<typeof db>();
-      (mockDb.select as jest.Mock).mockReturnValueOnce({
-        from: jest.fn().mockReturnValueOnce({
-          where: jest.fn().mockResolvedValueOnce([mockProgram]),
-        }),
-      });
-      const result = await getProgram(mockProgram.id, mockDb);
-      expect(mockDb.select).toHaveBeenCalled();
-      expect(result).toEqual(mockProgram);
-    });
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 400,
+        json: async () => ({ message: 'Failed to create program' })
+      }));
 
-    it('should throw an error if get fails', async () => {
-      const mockDb = mock<typeof db>();
-      (mockDb.select as jest.Mock).mockRejectedValueOnce(new Error('Failed to get program'));
-      await expect(getProgram('test-program-id', mockDb)).rejects.toThrow('Failed to get program');
-    });
-
-    it('should return null if program is not found', async () => {
-      const mockDb = mock<typeof db>();
-        (mockDb.select as jest.Mock).mockReturnValueOnce({
-          from: jest.fn().mockReturnValueOnce({
-            where: jest.fn().mockResolvedValueOnce([]),
-          }),
-        });
-      const result = await getProgram('non-existent-program-id', mockDb);
-      expect(result).toBeNull();
-    });
-  });
-
-  describe('getPrograms', () => {
-    it('should get all programs', async () => {
-      const mockDb = mock<typeof db>();
-      (mockDb.select as jest.Mock).mockReturnValueOnce({
-        from: jest.fn().mockResolvedValueOnce([mockProgram]),
-      });
-      const result = await getPrograms(mockDb);
-      expect(mockDb.select).toHaveBeenCalled();
-      expect(result).toEqual([mockProgram]);
-    });
-
-    it('should throw an error if get all fails', async () => {
-      const mockDb = mock<typeof db>();
-      (mockDb.select as jest.Mock).mockRejectedValueOnce(new Error('Failed to get programs'));
-      await expect(getPrograms(mockDb)).rejects.toThrow('Failed to get programs');
+      await expect(programService.createProgram(newProgramData)).rejects.toThrow('Failed to create program');
     });
   });
 
   describe('updateProgram', () => {
     it('should update a program', async () => {
-      const mockDb = mock<typeof db>();
-      (mockDb.update as jest.Mock).mockReturnValueOnce({
-        returning: jest.fn().mockResolvedValueOnce([mockProgram]),
+      const updateData = { 
+        name: 'Updated Test Program',
+        description: 'Updated description' 
+      };
+      
+      const updatedProgram = {
+        ...mockProgram,
+        name: 'Updated Test Program',
+        description: 'Updated description',
+        updatedAt: new Date().toISOString()
+      };
+
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true,
+        json: async () => updatedProgram
+      }));
+
+      const result = await programService.updateProgram('test-program-id', updateData);
+      expect(result).toEqual(updatedProgram);
+      expect(fetch).toHaveBeenCalledWith('/api/programs/test-program-id', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateData)
       });
-      const updatedProgramData = { name: 'Updated Test Program' };
-      const result = await updateProgram(mockProgram.id, updatedProgramData, mockDb);
-      expect(mockDb.update).toHaveBeenCalledWith(programs);
-      expect(result).toEqual(mockProgram);
     });
 
     it('should throw an error if update fails', async () => {
-      const mockDb = mock<typeof db>();
-      (mockDb.update as jest.Mock).mockRejectedValueOnce(new Error('Failed to update program'));
-      const updatedProgramData = { name: 'Updated Test Program' };
-      await expect(updateProgram(mockProgram.id, updatedProgramData, mockDb)).rejects.toThrow('Failed to update program');
-    });
+      const updateData = { name: 'Updated Test Program' };
 
-    it('should return null if program is not found', async () => {
-      const mockDb = mock<typeof db>();
-      (mockDb.update as jest.Mock).mockReturnValueOnce({
-        returning: jest.fn().mockResolvedValueOnce([]),
-      });
-      const updatedProgramData = { name: 'Updated Test Program' };
-      const result = await updateProgram('non-existent-program-id', updatedProgramData, mockDb);
-      expect(result).toBeNull();
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 404,
+        json: async () => ({ message: 'Failed to update program' })
+      }));
+
+      await expect(programService.updateProgram('test-program-id', updateData)).rejects.toThrow('Failed to update program');
     });
   });
 
   describe('deleteProgram', () => {
     it('should delete a program', async () => {
-      const mockDb = mock<typeof db>();
-      (mockDb.delete as jest.Mock).mockReturnValueOnce({
-        returning: jest.fn().mockResolvedValueOnce([mockProgram]),
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true
+      }));
+
+      await programService.deleteProgram('test-program-id');
+      expect(fetch).toHaveBeenCalledWith('/api/programs/test-program-id', {
+        method: 'DELETE'
       });
-      const result = await deleteProgram(mockProgram.id, mockDb);
-      expect(mockDb.delete).toHaveBeenCalledWith(programs);
-      expect(result).toEqual(mockProgram);
     });
 
-    it('should throw an error if delete fails', async () => {
-      const mockDb = mock<typeof db>();
-      (mockDb.delete as jest.Mock).mockRejectedValueOnce(new Error('Failed to delete program'));
-      await expect(deleteProgram(mockProgram.id, mockDb)).rejects.toThrow('Failed to delete program');
-    });
+    it('should throw an error if deletion fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 404,
+        json: async () => ({ message: 'Failed to delete program with id test-program-id' })
+      }));
 
-    it('should return null if program is not found', async () => {
-      const mockDb = mock<typeof db>();
-      (mockDb.delete as jest.Mock).mockReturnValueOnce({
-        returning: jest.fn().mockResolvedValueOnce([]),
-      });
-      const result = await deleteProgram('non-existent-program-id', mockDb);
-      expect(result).toBeNull();
+      await expect(programService.deleteProgram('test-program-id')).rejects.toThrow('Failed to delete program with id test-program-id');
     });
   });
 
-    describe('importPrograms', () => {
-    it('should import programs', async () => {
-      const mockDb = mock<typeof db>();
-      const mockProgramsData = [{
-        name: 'Test Program 1',
-        instituteId: 'test-institute-id-1',
-      },{
-        name: 'Test Program 2',
-        instituteId: 'test-institute-id-2',
-      }];
+  describe('importPrograms', () => {
+    it('should import programs from a file', async () => {
+      const mockFile = new File(['test data'], 'programs.csv', { type: 'text/csv' });
+      const mockDepartments = [{ id: 'dept-1', name: 'Department 1' }] as any[];
+      const mockResponse = { newCount: 5, updatedCount: 2, skippedCount: 1 };
 
-      (mockDb.insert as jest.Mock).mockReturnValueOnce({
-        returning: jest.fn().mockResolvedValueOnce([mockProgram]),
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true,
+        json: async () => mockResponse
+      }));
+
+      const result = await programService.importPrograms(mockFile, mockDepartments);
+      expect(result).toEqual(mockResponse);
+      
+      // Check that FormData was created correctly
+      expect(fetch).toHaveBeenCalledWith('/api/programs/import', {
+        method: 'POST',
+        body: expect.any(FormData)
       });
-      const result = await importPrograms(mockProgramsData, mockDb);
-      expect(mockDb.insert).toHaveBeenCalledWith(programs);
     });
 
     it('should throw an error if import fails', async () => {
-        const mockDb = mock<typeof db>();
-        const mockProgramsData = [{
-            name: 'Test Program 1',
-            instituteId: 'test-institute-id-1',
-        },{
-            name: 'Test Program 2',
-            instituteId: 'test-institute-id-2',
-        }];
-      (mockDb.insert as jest.Mock).mockRejectedValueOnce(new Error('Failed to import program'));
-      await expect(importPrograms(mockProgramsData, mockDb)).rejects.toThrow('Failed to import program');
+      const mockFile = new File(['test data'], 'programs.csv', { type: 'text/csv' });
+      const mockDepartments = [{ id: 'dept-1', name: 'Department 1' }] as any[];
+
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 400,
+        json: async () => ({ 
+          message: 'Failed to import programs',
+          errors: ['Invalid CSV format', 'Missing required fields']
+        })
+      }));
+
+      await expect(programService.importPrograms(mockFile, mockDepartments)).rejects.toThrow(
+        'Failed to import programs Specific issues: Invalid CSV format; Missing required fields'
+      );
     });
   });
 });

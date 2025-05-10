@@ -1,83 +1,177 @@
-import { getInstitutes, getInstitute, createInstitute, updateInstitute, deleteInstitute } from './institutes';
-import { rest } from 'msw';
-import { setupServer } from 'msw/node';
+import { instituteService } from './institutes';
+import type { Institute } from '@/types/entities';
+import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
-const mockInstitutes = [
-  { id: '1', name: 'Institute 1', code: 'INS1' },
-  { id: '2', name: 'Institute 2', code: 'INS2' },
+// Create a proper mock for the Response object
+const createMockResponse = (options: { ok: boolean; status?: number; statusText?: string; json?: () => Promise<any> }): Response => {
+  const { ok, status = 200, statusText = '', json = async () => ({}) } = options;
+  return {
+    ok,
+    status,
+    statusText,
+    json,
+    headers: new Headers(),
+    redirected: false,
+    type: 'basic' as ResponseType,
+    url: '',
+    clone: () => createMockResponse(options),
+    text: async () => '',
+    blob: async () => new Blob(),
+    formData: async () => new FormData(),
+    arrayBuffer: async () => new ArrayBuffer(0),
+    bodyUsed: false,
+  } as Response;
+};
+
+// Mock fetch with proper return type
+const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
+global.fetch = mockFetch;
+
+const mockInstitutes: Institute[] = [
+  { id: '1', name: 'Institute 1', code: 'INS1', status: 'active' } as Institute,
+  { id: '2', name: 'Institute 2', code: 'INS2', status: 'active' } as Institute,
 ];
 
-const server = setupServer(
-  rest.get('/api/institutes', (req, res, ctx) => {
-    return res(ctx.json(mockInstitutes));
-  }),
-  rest.get('/api/institutes/1', (req, res, ctx) => {
-    return res(ctx.json(mockInstitutes[0]));
-  }),
-  rest.get('/api/institutes/3', (req, res, ctx) => {
-    return res(ctx.status(404));
-  }),
-  rest.post('/api/institutes', async (req, res, ctx) => {
-    const newInstitute = await req.json();
-    return res(ctx.status(201), ctx.json({ ...newInstitute, id: '3' }));
-  }),
-  rest.put('/api/institutes/1', async (req, res, ctx) => {
-    const updatedInstitute = await req.json();
-    return res(ctx.json({ ...updatedInstitute, id: '1' }));
-  }),
-  rest.put('/api/institutes/3', async (req, res, ctx) => {
-    return res(ctx.status(404));
-  }),
-  rest.delete('/api/institutes/1', (req, res, ctx) => {
-    return res(ctx.status(204));
-  }),
-  rest.delete('/api/institutes/3', (req, res, ctx) => {
-    return res(ctx.status(404));
-  })
-);
-
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
-
 describe('Institutes API', () => {
-  it('should fetch all institutes', async () => {
-    const institutes = await getInstitutes();
-    expect(institutes).toEqual(mockInstitutes);
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('should fetch a single institute by id', async () => {
-    const institute = await getInstitute('1');
-    expect(institute).toEqual(mockInstitutes[0]);
+  describe('getAllInstitutes', () => {
+    it('should fetch all institutes', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true,
+        json: async () => mockInstitutes
+      }));
+
+      const institutes = await instituteService.getAllInstitutes();
+      expect(institutes).toEqual(mockInstitutes);
+      expect(fetch).toHaveBeenCalledWith('/api/institutes');
+    });
+
+    it('should throw an error if fetch fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error'
+      }));
+
+      await expect(instituteService.getAllInstitutes()).rejects.toThrow('Failed to fetch institutes');
+    });
   });
 
-  it('should return an error if institute not found', async () => {
-      await expect(getInstitute('3')).rejects.toThrow('Request failed with status code 404')
+  describe('getInstituteById', () => {
+    it('should fetch a single institute by id', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true,
+        json: async () => mockInstitutes[0]
+      }));
+
+      const institute = await instituteService.getInstituteById('1');
+      expect(institute).toEqual(mockInstitutes[0]);
+      expect(fetch).toHaveBeenCalledWith('/api/institutes/1');
+    });
+
+    it('should throw an error if institute not found', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 404,
+        statusText: 'Not Found'
+      }));
+
+      await expect(instituteService.getInstituteById('3')).rejects.toThrow('Failed to fetch institute with id 3');
+    });
   });
 
-  it('should create a new institute', async () => {
-    const newInstituteData = { name: 'New Institute', code: 'NEW' };
-    const institute = await createInstitute(newInstituteData);
-    expect(institute).toEqual({ ...newInstituteData, id: '3' });
+  describe('createInstitute', () => {
+    it('should create a new institute', async () => {
+      const newInstituteData = { name: 'New Institute', code: 'NEW', status: 'active' } as Omit<Institute, 'id'>;
+      const createdInstitute = { id: '3', ...newInstituteData };
+
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true,
+        status: 201,
+        json: async () => createdInstitute
+      }));
+
+      const institute = await instituteService.createInstitute(newInstituteData);
+      expect(institute).toEqual(createdInstitute);
+      expect(fetch).toHaveBeenCalledWith('/api/institutes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newInstituteData)
+      });
+    });
+
+    it('should throw an error if creation fails', async () => {
+      const newInstituteData = { name: 'New Institute', code: 'NEW', status: 'active' } as Omit<Institute, 'id'>;
+
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 400,
+        statusText: 'Bad Request'
+      }));
+
+      await expect(instituteService.createInstitute(newInstituteData)).rejects.toThrow('Failed to create institute');
+    });
   });
 
-  it('should update an existing institute', async () => {
-    const updatedInstituteData = { name: 'Updated Institute', code: 'UPD' };
-    const institute = await updateInstitute('1', updatedInstituteData);
-    expect(institute).toEqual({ ...updatedInstituteData, id: '1' });
+  describe('updateInstitute', () => {
+    it('should update an existing institute', async () => {
+      const updatedInstituteData = { name: 'Updated Institute', code: 'UPD' };
+      const updatedInstitute = { id: '1', ...updatedInstituteData, status: 'active' } as Institute;
+
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true,
+        json: async () => updatedInstitute
+      }));
+
+      const institute = await instituteService.updateInstitute('1', updatedInstituteData);
+      expect(institute).toEqual(updatedInstitute);
+      expect(fetch).toHaveBeenCalledWith('/api/institutes/1', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedInstituteData)
+      });
+    });
+
+    it('should throw an error when updating non-existing institute', async () => {
+      const updatedInstituteData = { name: 'Updated Institute', code: 'UPD' };
+
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 404,
+        statusText: 'Not Found'
+      }));
+
+      await expect(instituteService.updateInstitute('3', updatedInstituteData)).rejects.toThrow('Failed to update institute');
+    });
   });
 
-  it('should return an error when updating not existing institute', async () => {
-    const updatedInstituteData = { name: 'Updated Institute', code: 'UPD' };
-    await expect(updateInstitute('3', updatedInstituteData)).rejects.toThrow('Request failed with status code 404')
-  });
+  describe('deleteInstitute', () => {
+    it('should delete an institute', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true
+      }));
 
-  it('should delete an institute', async () => {
-    const result = await deleteInstitute('1');
-    expect(result).toBeUndefined();
-  });
+      await instituteService.deleteInstitute('1');
+      expect(fetch).toHaveBeenCalledWith('/api/institutes/1', {
+        method: 'DELETE'
+      });
+    });
 
-  it('should return an error when deleting not existing institute', async () => {
-      await expect(deleteInstitute('3')).rejects.toThrow('Request failed with status code 404')
+    it('should throw an error when deleting non-existing institute', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 404,
+        statusText: 'Not Found'
+      }));
+
+      await expect(instituteService.deleteInstitute('3')).rejects.toThrow('Failed to delete institute with id 3');
+    });
   });
 });

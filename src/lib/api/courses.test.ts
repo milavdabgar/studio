@@ -1,14 +1,31 @@
-import {
-  createCourse,
-  getCourses,
-  getCourseById,
-  updateCourse,
-  deleteCourse,
-  importCourses,
-} from './courses';
-import { Course } from '@/types/entities';
+import { courseService } from './courses';
+import type { Course, Department, Program } from '@/types/entities';
+import { describe, it, expect, jest } from '@jest/globals';
 
-jest.mock('./courses');
+// Create a proper mock for the Response object
+const createMockResponse = (options: { ok: boolean; status?: number; statusText?: string; json?: () => Promise<any> }): Response => {
+  const { ok, status = 200, statusText = '', json = async () => ({}) } = options;
+  return {
+    ok,
+    status,
+    statusText,
+    json,
+    headers: new Headers(),
+    redirected: false,
+    type: 'basic' as ResponseType,
+    url: '',
+    clone: () => createMockResponse(options),
+    text: async () => '',
+    blob: async () => new Blob(),
+    formData: async () => new FormData(),
+    arrayBuffer: async () => new ArrayBuffer(0),
+    bodyUsed: false,
+  } as Response;
+};
+
+// Mock fetch with proper return type
+const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
+global.fetch = mockFetch;
 
 describe('Course API', () => {
   beforeEach(() => {
@@ -16,92 +33,371 @@ describe('Course API', () => {
   });
 
   describe('createCourse', () => {
-    it('should call the createCourse function', async () => {
-      const mockCourse: Course = {
-        id: '1',
-        name: 'Test Course',
-        code: 'TC101',
+    it('should create a course successfully', async () => {
+      const newCourse: Omit<Course, 'id'> = {
+        subcode: 'TC101',
+        subjectName: 'Test Course',
         departmentId: 'dep1',
+        programId: 'prog1',
+        semester: 1,
+        lectureHours: 3,
+        tutorialHours: 1,
+        practicalHours: 2,
+        credits: 4,
+        theoryEseMarks: 70,
+        theoryPaMarks: 30,
+        practicalEseMarks: 50,
+        practicalPaMarks: 50,
+        totalMarks: 200,
+        isElective: false,
+        isTheory: true,
+        isPractical: true,
+        isFunctional: true
       };
-      (createCourse as jest.Mock).mockResolvedValue(mockCourse);
+      const createdCourse = { id: '1', ...newCourse };
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true,
+        json: async () => createdCourse
+      }));
 
-      const result = await createCourse(mockCourse);
+      const result = await courseService.createCourse(newCourse);
+      
+      expect(result).toEqual(createdCourse);
+      expect(fetch).toHaveBeenCalledWith('/api/courses', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newCourse)
+      });
+    });
+    
+    it('should throw an error if creation fails', async () => {
+      const newCourse: Omit<Course, 'id'> = {
+        subcode: 'TC101',
+        subjectName: 'Test Course',
+        departmentId: 'dep1',
+        programId: 'prog1',
+        semester: 1,
+        lectureHours: 3,
+        tutorialHours: 1,
+        practicalHours: 2,
+        credits: 4,
+        theoryEseMarks: 70,
+        theoryPaMarks: 30,
+        practicalEseMarks: 50,
+        practicalPaMarks: 50,
+        totalMarks: 200,
+        isElective: false,
+        isTheory: true,
+        isPractical: true,
+        isFunctional: true
+      };
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 400,
+        statusText: 'Bad Request'
+      }));
 
-      expect(createCourse).toHaveBeenCalledWith(mockCourse);
-      expect(result).toEqual(mockCourse);
+      await expect(courseService.createCourse(newCourse))
+        .rejects.toThrow('Failed to create course');
     });
   });
 
-  describe('getCourses', () => {
-    it('should call the getCourses function', async () => {
+  describe('getAllCourses', () => {
+    it('should fetch and return a list of courses', async () => {
       const mockCourses: Course[] = [
-        { id: '1', name: 'Test Course 1', code: 'TC101', departmentId: 'dep1' },
-        { id: '2', name: 'Test Course 2', code: 'TC102', departmentId: 'dep1' },
+        { 
+          id: '1', 
+          subcode: 'TC101',
+          subjectName: 'Test Course 1',
+          departmentId: 'dep1',
+          programId: 'prog1',
+          semester: 1,
+          lectureHours: 3,
+          tutorialHours: 1,
+          practicalHours: 2,
+          credits: 4,
+          theoryEseMarks: 70,
+          theoryPaMarks: 30,
+          practicalEseMarks: 50,
+          practicalPaMarks: 50,
+          totalMarks: 200,
+          isElective: false,
+          isTheory: true,
+          isPractical: true,
+          isFunctional: true
+        },
+        { 
+          id: '2', 
+          subcode: 'TC102',
+          subjectName: 'Test Course 2',
+          departmentId: 'dep1',
+          programId: 'prog1',
+          semester: 1,
+          lectureHours: 3,
+          tutorialHours: 1,
+          practicalHours: 2,
+          credits: 4,
+          theoryEseMarks: 70,
+          theoryPaMarks: 30,
+          practicalEseMarks: 50,
+          practicalPaMarks: 50,
+          totalMarks: 200,
+          isElective: false,
+          isTheory: true,
+          isPractical: true,
+          isFunctional: true
+        }
       ];
-      (getCourses as jest.Mock).mockResolvedValue(mockCourses);
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true,
+        json: async () => mockCourses
+      }));
 
-      const result = await getCourses();
-
-      expect(getCourses).toHaveBeenCalled();
+      const result = await courseService.getAllCourses();
+      
       expect(result).toEqual(mockCourses);
+      expect(fetch).toHaveBeenCalledWith('/api/courses');
+    });
+    
+    it('should throw an error if fetch fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 500,
+        statusText: 'Server Error'
+      }));
+
+      await expect(courseService.getAllCourses()).rejects.toThrow('Failed to fetch courses');
     });
   });
-
+  
   describe('getCourseById', () => {
-    it('should call the getCourseById function with the correct id', async () => {
-      const mockCourse: Course = {
-        id: '1',
-        name: 'Test Course',
-        code: 'TC101',
+    it('should fetch a course by ID', async () => {
+      const mockCourse: Course = { 
+        id: '1', 
+        subcode: 'TC101',
+        subjectName: 'Test Course',
         departmentId: 'dep1',
+        programId: 'prog1',
+        semester: 1,
+        lectureHours: 3,
+        tutorialHours: 1,
+        practicalHours: 2,
+        credits: 4,
+        theoryEseMarks: 70,
+        theoryPaMarks: 30,
+        practicalEseMarks: 50,
+        practicalPaMarks: 50,
+        totalMarks: 200,
+        isElective: false,
+        isTheory: true,
+        isPractical: true,
+        isFunctional: true
       };
-      (getCourseById as jest.Mock).mockResolvedValue(mockCourse);
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true,
+        json: async () => mockCourse
+      }));
 
-      const result = await getCourseById('1');
-
-      expect(getCourseById).toHaveBeenCalledWith('1');
+      const result = await courseService.getCourseById('1');
+      
       expect(result).toEqual(mockCourse);
+      expect(fetch).toHaveBeenCalledWith('/api/courses/1');
+    });
+    
+    it('should throw an error if fetch fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 404,
+        statusText: 'Not Found'
+      }));
+
+      await expect(courseService.getCourseById('999')).rejects.toThrow('Failed to fetch course with id 999');
     });
   });
-
+  
   describe('updateCourse', () => {
-    it('should call the updateCourse function with the correct id and data', async () => {
-      const mockCourse: Course = {
-        id: '1',
-        name: 'Updated Course',
-        code: 'UC101',
-        departmentId: 'dep1'
+    it('should update a course', async () => {
+      const updatedCourse: Partial<Omit<Course, 'id'>> = {
+        subcode: 'UC101',
+        subjectName: 'Updated Course',
+        departmentId: 'dep1',
+        programId: 'prog1',
+        semester: 1,
+        lectureHours: 3,
+        tutorialHours: 1,
+        practicalHours: 2,
+        credits: 4,
+        theoryEseMarks: 70,
+        theoryPaMarks: 30,
+        practicalEseMarks: 50,
+        practicalPaMarks: 50,
+        totalMarks: 200,
+        isElective: false,
+        isTheory: true,
+        isPractical: true,
+        isFunctional: true
       };
-      (updateCourse as jest.Mock).mockResolvedValue(mockCourse);
+      const mockResponse: Course = { 
+        id: '1', 
+        subcode: 'UC101',
+        subjectName: 'Updated Course',
+        departmentId: 'dep1',
+        programId: 'prog1',
+        semester: 1,
+        lectureHours: 3,
+        tutorialHours: 1,
+        practicalHours: 2,
+        credits: 4,
+        theoryEseMarks: 70,
+        theoryPaMarks: 30,
+        practicalEseMarks: 50,
+        practicalPaMarks: 50,
+        totalMarks: 200,
+        isElective: false,
+        isTheory: true,
+        isPractical: true,
+        isFunctional: true
+      };
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true,
+        json: async () => mockResponse
+      }));
 
-      const result = await updateCourse('1', mockCourse);
+      const result = await courseService.updateCourse('1', updatedCourse);
+      
+      expect(result).toEqual(mockResponse);
+      expect(fetch).toHaveBeenCalledWith('/api/courses/1', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedCourse)
+      });
+    });
+    
+    it('should throw an error if update fails', async () => {
+      const updatedCourse: Partial<Omit<Course, 'id'>> = {
+        subcode: 'UC101',
+        subjectName: 'Updated Course',
+        departmentId: 'dep1',
+        programId: 'prog1',
+        semester: 1,
+        lectureHours: 3,
+        tutorialHours: 1,
+        practicalHours: 2,
+        credits: 4,
+        theoryEseMarks: 70,
+        theoryPaMarks: 30,
+        practicalEseMarks: 50,
+        practicalPaMarks: 50,
+        totalMarks: 200,
+        isElective: false,
+        isTheory: true,
+        isPractical: true,
+        isFunctional: true
+      };
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 400,
+        statusText: 'Bad Request'
+      }));
 
-      expect(updateCourse).toHaveBeenCalledWith('1', mockCourse);
-      expect(result).toEqual(mockCourse);
+      await expect(courseService.updateCourse('1', updatedCourse)).rejects.toThrow('Failed to update course');
     });
   });
 
   describe('deleteCourse', () => {
-    it('should call the deleteCourse function with the correct id', async () => {
-      (deleteCourse as jest.Mock).mockResolvedValue(undefined);
+    it('should delete a course', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true
+      }));
 
-      await deleteCourse('1');
+      await courseService.deleteCourse('1');
+      
+      expect(fetch).toHaveBeenCalledWith('/api/courses/1', {
+        method: 'DELETE'
+      });
+    });
+    
+    it('should throw an error if deletion fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 404,
+        statusText: 'Not Found'
+      }));
 
-      expect(deleteCourse).toHaveBeenCalledWith('1');
+      await expect(courseService.deleteCourse('999')).rejects.toThrow('Failed to delete course with id 999');
     });
   });
-    describe('importCourses', () => {
-    it('should call the importCourses function with the correct data', async () => {
-      const mockData = [
-        { id: '1', name: 'Test Course 1', code: 'TC101', departmentId: 'dep1' },
-        { id: '2', name: 'Test Course 2', code: 'TC102', departmentId: 'dep1' },
-      ];
-      (importCourses as jest.Mock).mockResolvedValue(mockData);
+  
+  describe('importCourses', () => {
+    it('should import courses successfully', async () => {
+      const mockFile = new File(['test'], 'test.csv');
+      const mockDepartments: Department[] = [{
+        id: 'dep1',
+        name: 'Department 1',
+        code: 'DEP1',
+        status: 'active',
+        instituteId: 'inst1'
+      }];
+      const mockPrograms: Program[] = [{
+        id: 'prog1',
+        name: 'Program 1',
+        code: 'PROG1',
+        departmentId: 'dep1',
+        instituteId: 'inst1',
+        status: 'active'
+      }];
+      const mockResult = { newCount: 2, updatedCount: 1, skippedCount: 0 };
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true,
+        json: async () => mockResult
+      }));
 
-      const result = await importCourses(mockData);
+      const result = await courseService.importCourses(mockFile, mockDepartments, mockPrograms);
+      
+      expect(result).toEqual(mockResult);
+      expect(fetch).toHaveBeenCalledWith('/api/courses/import', {
+        method: 'POST',
+        body: expect.any(FormData)
+      });
+    });
+    
+    it('should throw an error if import fails', async () => {
+      const mockFile = new File(['test'], 'test.csv');
+      const mockDepartments: Department[] = [{
+        id: 'dep1',
+        name: 'Department 1',
+        code: 'DEP1',
+        status: 'active',
+        instituteId: 'inst1'
+      }];
+      const mockPrograms: Program[] = [{
+        id: 'prog1',
+        name: 'Program 1',
+        code: 'PROG1',
+        departmentId: 'dep1',
+        instituteId: 'inst1',
+        status: 'active'
+      }];
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 400,
+        statusText: 'Bad Request'
+      }));
 
-      expect(importCourses).toHaveBeenCalledWith(mockData);
-      expect(result).toEqual(mockData);
+      await expect(courseService.importCourses(mockFile, mockDepartments, mockPrograms))
+        .rejects.toThrow('Failed to import courses');
     });
   });
 });

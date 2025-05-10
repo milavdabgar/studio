@@ -1,31 +1,29 @@
 import { describe, it, expect, jest } from '@jest/globals';
-import { getRooms, getRoomById, createRoom, updateRoom, deleteRoom } from './roomService';
-import * as api from '../api/rooms';
-
-jest.mock('../api/rooms');
+import { roomService } from './roomService';
+import type { Room, RoomType, RoomStatus } from '@/types/entities';
 
 describe('RoomService', () => {
-  const mockRooms = [
-    { id: '1', name: 'Room 101', capacity: 30 },
-    { id: '2', name: 'Room 102', capacity: 40 },
+  const mockRooms: Room[] = [
+    { id: '1', name: 'Room 101', roomNumber: '101', buildingId: 'building1', type: 'Lecture Hall' as RoomType, capacity: 30, status: 'available' as RoomStatus },
+    { id: '2', name: 'Room 102', roomNumber: '102', buildingId: 'building1', type: 'Laboratory' as RoomType, capacity: 40, status: 'available' as RoomStatus },
   ];
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('getRooms', () => {
+  describe('getAllRooms', () => {
     it('should return all rooms', async () => {
-      (api.getRooms as jest.Mock).mockResolvedValue(mockRooms);
-      const rooms = await getRooms();
+      jest.spyOn(roomService, 'getAllRooms').mockResolvedValue(mockRooms);
+      const rooms = await roomService.getAllRooms();
       expect(rooms).toEqual(mockRooms);
-      expect(api.getRooms).toHaveBeenCalledTimes(1);
+      expect(roomService.getAllRooms).toHaveBeenCalledTimes(1);
     });
 
-    it('should throw an error if getRooms API call fails', async () => {
-      (api.getRooms as jest.Mock).mockRejectedValue(new Error('API Error'));
-      await expect(getRooms()).rejects.toThrow('API Error');
-      expect(api.getRooms).toHaveBeenCalledTimes(1);
+    it('should throw an error if getAllRooms API call fails', async () => {
+      jest.spyOn(roomService, 'getAllRooms').mockRejectedValue(new Error('API Error'));
+      await expect(roomService.getAllRooms()).rejects.toThrow('API Error');
+      expect(roomService.getAllRooms).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -33,35 +31,35 @@ describe('RoomService', () => {
     it('should return a room by ID', async () => {
       const roomId = '1';
       const expectedRoom = mockRooms[0];
-      (api.getRoomById as jest.Mock).mockResolvedValue(expectedRoom);
-      const room = await getRoomById(roomId);
+      jest.spyOn(roomService, 'getRoomById').mockResolvedValue(expectedRoom);
+      const room = await roomService.getRoomById(roomId);
       expect(room).toEqual(expectedRoom);
-      expect(api.getRoomById).toHaveBeenCalledWith(roomId);
+      expect(roomService.getRoomById).toHaveBeenCalledWith(roomId);
     });
 
     it('should throw an error if getRoomById API call fails', async () => {
       const roomId = '1';
-      (api.getRoomById as jest.Mock).mockRejectedValue(new Error('API Error'));
-      await expect(getRoomById(roomId)).rejects.toThrow('API Error');
-      expect(api.getRoomById).toHaveBeenCalledWith(roomId);
+      jest.spyOn(roomService, 'getRoomById').mockRejectedValue(new Error('API Error'));
+      await expect(roomService.getRoomById(roomId)).rejects.toThrow('API Error');
+      expect(roomService.getRoomById).toHaveBeenCalledWith(roomId);
     });
   });
 
   describe('createRoom', () => {
     it('should create a new room', async () => {
-      const newRoomData = { name: 'Room 103', capacity: 50 };
+      const newRoomData = { name: 'Room 103', capacity: 50, buildingId: 'building1', floor: 1, roomNumber: '103', status: 'active' };
       const createdRoom = { id: '3', ...newRoomData };
-      (api.createRoom as jest.Mock).mockResolvedValue(createdRoom);
-      const room = await createRoom(newRoomData);
+      jest.spyOn(roomService, 'createRoom').mockResolvedValue(createdRoom);
+      const room = await roomService.createRoom(newRoomData);
       expect(room).toEqual(createdRoom);
-      expect(api.createRoom).toHaveBeenCalledWith(newRoomData);
+      expect(roomService.createRoom).toHaveBeenCalledWith(newRoomData);
     });
 
     it('should throw an error if createRoom API call fails', async () => {
-      const newRoomData = { name: 'Room 103', capacity: 50 };
-      (api.createRoom as jest.Mock).mockRejectedValue(new Error('API Error'));
-      await expect(createRoom(newRoomData)).rejects.toThrow('API Error');
-      expect(api.createRoom).toHaveBeenCalledWith(newRoomData);
+      const newRoomData = { name: 'Room 103', capacity: 50, buildingId: 'building1', floor: 1, roomNumber: '103', status: 'active' };
+      jest.spyOn(roomService, 'createRoom').mockRejectedValue(new Error('API Error'));
+      await expect(roomService.createRoom(newRoomData)).rejects.toThrow('API Error');
+      expect(roomService.createRoom).toHaveBeenCalledWith(newRoomData);
     });
   });
 
@@ -69,35 +67,35 @@ describe('RoomService', () => {
     it('should update an existing room', async () => {
       const roomId = '1';
       const updatedRoomData = { name: 'Room 101 Updated', capacity: 35 };
-      const updatedRoom = { id: roomId, ...updatedRoomData };
-      (api.updateRoom as jest.Mock).mockResolvedValue(updatedRoom);
-      const room = await updateRoom(roomId, updatedRoomData);
+      const updatedRoom = { ...mockRooms[0], ...updatedRoomData };
+      jest.spyOn(roomService, 'updateRoom').mockResolvedValue(updatedRoom);
+      const room = await roomService.updateRoom(roomId, updatedRoomData);
       expect(room).toEqual(updatedRoom);
-      expect(api.updateRoom).toHaveBeenCalledWith(roomId, updatedRoomData);
+      expect(roomService.updateRoom).toHaveBeenCalledWith(roomId, updatedRoomData);
     });
 
     it('should throw an error if updateRoom API call fails', async () => {
       const roomId = '1';
       const updatedRoomData = { name: 'Room 101 Updated', capacity: 35 };
-      (api.updateRoom as jest.Mock).mockRejectedValue(new Error('API Error'));
-      await expect(updateRoom(roomId, updatedRoomData)).rejects.toThrow('API Error');
-      expect(api.updateRoom).toHaveBeenCalledWith(roomId, updatedRoomData);
+      jest.spyOn(roomService, 'updateRoom').mockRejectedValue(new Error('API Error'));
+      await expect(roomService.updateRoom(roomId, updatedRoomData)).rejects.toThrow('API Error');
+      expect(roomService.updateRoom).toHaveBeenCalledWith(roomId, updatedRoomData);
     });
   });
 
   describe('deleteRoom', () => {
     it('should delete a room', async () => {
       const roomId = '1';
-      (api.deleteRoom as jest.Mock).mockResolvedValue(undefined);
-      await deleteRoom(roomId);
-      expect(api.deleteRoom).toHaveBeenCalledWith(roomId);
+      jest.spyOn(roomService, 'deleteRoom').mockResolvedValue(undefined);
+      await roomService.deleteRoom(roomId);
+      expect(roomService.deleteRoom).toHaveBeenCalledWith(roomId);
     });
 
     it('should throw an error if deleteRoom API call fails', async () => {
       const roomId = '1';
-      (api.deleteRoom as jest.Mock).mockRejectedValue(new Error('API Error'));
-      await expect(deleteRoom(roomId)).rejects.toThrow('API Error');
-      expect(api.deleteRoom).toHaveBeenCalledWith(roomId);
+      jest.spyOn(roomService, 'deleteRoom').mockRejectedValue(new Error('API Error'));
+      await expect(roomService.deleteRoom(roomId)).rejects.toThrow('API Error');
+      expect(roomService.deleteRoom).toHaveBeenCalledWith(roomId);
     });
   });
 });

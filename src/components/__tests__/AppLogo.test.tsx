@@ -1,4 +1,8 @@
 
+/**
+ * @jest-environment jsdom
+ */
+
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { AppLogo } from '../app-logo'; // Adjust the import path as necessary

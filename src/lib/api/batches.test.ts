@@ -2,8 +2,30 @@ import { batchService } from './batches';
 import type { Batch, Program } from '@/types/entities';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
-// Mock the fetch function
-global.fetch = jest.fn() as jest.MockedFunction<typeof fetch>;
+// Create a proper mock for the Response object
+const createMockResponse = (options: { ok: boolean; status?: number; statusText?: string; json?: () => Promise<any> }): Response => {
+  const { ok, status = 200, statusText = '', json = async () => ({}) } = options;
+  return {
+    ok,
+    status,
+    statusText,
+    json,
+    headers: new Headers(),
+    redirected: false,
+    type: 'basic' as ResponseType,
+    url: '',
+    clone: () => createMockResponse(options),
+    text: async () => '',
+    blob: async () => new Blob(),
+    formData: async () => new FormData(),
+    arrayBuffer: async () => new ArrayBuffer(0),
+    bodyUsed: false,
+  } as Response;
+};
+
+// Mock fetch with proper return type
+const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
+global.fetch = mockFetch;
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -31,10 +53,10 @@ describe('Batch API', () => {
   };
 
   it('should create a batch', async () => {
-    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+    mockFetch.mockResolvedValueOnce(createMockResponse({
       ok: true,
       json: async () => mockBatch
-    } as Response);
+    }));
 
     const newBatch = await batchService.createBatch(newBatchData);
     
@@ -47,10 +69,10 @@ describe('Batch API', () => {
   });
 
   it('should get a batch', async () => {
-    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+    mockFetch.mockResolvedValueOnce(createMockResponse({
       ok: true,
       json: async () => mockBatch
-    } as Response);
+    }));
 
     const batch = await batchService.getBatchById('1');
     
@@ -59,10 +81,10 @@ describe('Batch API', () => {
   });
 
   it('should get all batches', async () => {
-    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+    mockFetch.mockResolvedValueOnce(createMockResponse({
       ok: true,
       json: async () => mockBatches
-    } as Response);
+    }));
 
     const batches = await batchService.getAllBatches();
     
@@ -72,10 +94,10 @@ describe('Batch API', () => {
 
   it('should update a batch', async () => {
     const updatedMockBatch = { ...mockBatch, name: 'Updated Batch' };
-    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+    mockFetch.mockResolvedValueOnce(createMockResponse({
       ok: true,
       json: async () => updatedMockBatch
-    } as Response);
+    }));
 
     const updatedBatch = await batchService.updateBatch('1', { name: 'Updated Batch' });
     
@@ -88,10 +110,10 @@ describe('Batch API', () => {
   });
 
   it('should delete a batch', async () => {
-    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+    mockFetch.mockResolvedValueOnce(createMockResponse({
       ok: true,
       json: async () => ({})
-    } as Response);
+    }));
 
     await batchService.deleteBatch('1');
     
@@ -107,10 +129,10 @@ describe('Batch API', () => {
       skippedCount: 0 
     };
     
-    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+    mockFetch.mockResolvedValueOnce(createMockResponse({
       ok: true,
       json: async () => successResponse
-    } as Response);
+    }));
     
     const mockFile = new File([''], 'test.csv', { type: 'text/csv' });
     const mockPrograms: Program[] = [];
@@ -126,64 +148,212 @@ describe('Batch API', () => {
   });
   
   it('should handle errors when creating a batch', async () => {
-    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+    mockFetch.mockResolvedValueOnce(createMockResponse({
       ok: false,
       status: 500,
       json: async () => ({ message: 'Internal Server Error' })
-    } as Response);
+    }));
     
     await expect(batchService.createBatch(newBatchData)).rejects.toThrow('Internal Server Error');
   });
+
+  it('should handle JSON parsing errors when creating a batch', async () => {
+    mockFetch.mockResolvedValueOnce(createMockResponse({
+      ok: false,
+      status: 500,
+      json: async () => { throw new Error('Invalid JSON'); }
+    }));
+    
+    await expect(batchService.createBatch(newBatchData)).rejects.toThrow('Failed to create batch');
+  });
   
   it('should handle errors when getting a batch', async () => {
-    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+    mockFetch.mockResolvedValueOnce(createMockResponse({
       ok: false,
       status: 404,
       json: async () => ({ message: 'Batch not found' })
-    } as Response);
+    }));
     
     await expect(batchService.getBatchById('1')).rejects.toThrow('Batch not found');
   });
 
+  it('should handle JSON parsing errors when getting a batch', async () => {
+    mockFetch.mockResolvedValueOnce(createMockResponse({
+      ok: false,
+      status: 404,
+      json: async () => { throw new Error('Invalid JSON'); }
+    }));
+    
+    await expect(batchService.getBatchById('1')).rejects.toThrow('Failed to fetch batch with id 1');
+  });
+
   it('should handle errors when getting all batches', async () => {
-    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+    mockFetch.mockResolvedValueOnce(createMockResponse({
       ok: false,
       status: 500,
       json: async () => ({ message: 'Internal Server Error' })
-    } as Response);
+    }));
 
     await expect(batchService.getAllBatches()).rejects.toThrow('Internal Server Error');
   });
 
+  it('should handle JSON parsing errors when getting all batches', async () => {
+    mockFetch.mockResolvedValueOnce(createMockResponse({
+      ok: false,
+      status: 500,
+      json: async () => { throw new Error('Invalid JSON'); }
+    }));
+
+    await expect(batchService.getAllBatches()).rejects.toThrow('Failed to fetch batches');
+  });
+
   it('should handle errors when updating a batch', async () => {
-    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+    mockFetch.mockResolvedValueOnce(createMockResponse({
       ok: false,
       status: 500,
       json: async () => ({ message: 'Internal Server Error' })
-    } as Response);
+    }));
 
     await expect(batchService.updateBatch('1', { name: 'Updated Batch' })).rejects.toThrow('Internal Server Error');
   });
 
+  it('should handle JSON parsing errors when updating a batch', async () => {
+    mockFetch.mockResolvedValueOnce(createMockResponse({
+      ok: false,
+      status: 500,
+      json: async () => { throw new Error('Invalid JSON'); }
+    }));
+
+    await expect(batchService.updateBatch('1', { name: 'Updated Batch' })).rejects.toThrow('Failed to update batch');
+  });
+
   it('should handle errors when deleting a batch', async () => {
-    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+    mockFetch.mockResolvedValueOnce(createMockResponse({
       ok: false,
       status: 500,
       json: async () => ({ message: 'Internal Server Error' })
-    } as Response);
+    }));
 
     await expect(batchService.deleteBatch('1')).rejects.toThrow('Internal Server Error');
   });
 
+  it('should handle JSON parsing errors when deleting a batch', async () => {
+    mockFetch.mockResolvedValueOnce(createMockResponse({
+      ok: false,
+      status: 500,
+      json: async () => { throw new Error('Invalid JSON'); }
+    }));
+
+    await expect(batchService.deleteBatch('1')).rejects.toThrow('Failed to delete batch with id 1');
+  });
+
   it('should handle errors when importing batches', async () => {
-    (fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
+    mockFetch.mockResolvedValueOnce(createMockResponse({
       ok: false,
       status: 500,
       json: async () => ({ message: 'Internal Server Error' })
-    } as Response);
+    }));
     
     const mockFile = new File([''], 'test.csv', { type: 'text/csv' });
     const mockPrograms: Program[] = [];
-    await expect(batchService.importBatches(mockFile, mockPrograms)).rejects.toThrow();
+    await expect(batchService.importBatches(mockFile, mockPrograms)).rejects.toThrow('Internal Server Error');
+  });
+
+  it('should handle errors with specific issues when importing batches', async () => {
+    mockFetch.mockResolvedValueOnce(createMockResponse({
+      ok: false,
+      status: 400,
+      json: async () => ({ 
+        message: 'Validation errors', 
+        errors: [
+          { message: 'Invalid batch name', data: { row: 1, field: 'name' } },
+          { message: 'Invalid program ID', data: { row: 2, field: 'programId' } },
+          { message: 'Missing status', data: { row: 3, field: 'status' } },
+          { message: 'Invalid year', data: { row: 4, field: 'startAcademicYear' } }
+        ] 
+      })
+    }));
+    
+    const mockFile = new File([''], 'test.csv', { type: 'text/csv' });
+    const mockPrograms: Program[] = [];
+    
+    await expect(batchService.importBatches(mockFile, mockPrograms))
+      .rejects.toThrow('Validation errors Specific issues: Invalid batch name; Invalid program ID; Missing status...');
+    
+    // Mock the fetch again for the second call in the try/catch block
+    mockFetch.mockResolvedValueOnce(createMockResponse({
+      ok: false,
+      status: 400,
+      json: async () => ({ 
+        message: 'Validation errors', 
+        errors: [
+          { message: 'Invalid batch name', data: { row: 1, field: 'name' } },
+          { message: 'Invalid program ID', data: { row: 2, field: 'programId' } },
+          { message: 'Missing status', data: { row: 3, field: 'status' } },
+          { message: 'Invalid year', data: { row: 4, field: 'startAcademicYear' } }
+        ] 
+      })
+    }));
+    
+    // Verify the error contains the expected data
+    try {
+      await batchService.importBatches(mockFile, mockPrograms);
+      fail('Should have thrown an error');
+    } catch (error: any) {
+      expect(error.message).toContain('Validation errors');
+      expect(error.data).toBeDefined();
+      expect(error.data.errors.length).toBe(4);
+    }
+  });
+
+  it('should handle server errors (500) with no message when importing batches', async () => {
+    mockFetch.mockResolvedValueOnce(createMockResponse({
+      ok: false,
+      status: 500,
+      json: async () => ({}) // No message or errors
+    }));
+    
+    const mockFile = new File([''], 'test.csv', { type: 'text/csv' });
+    const mockPrograms: Program[] = [];
+    
+    await expect(batchService.importBatches(mockFile, mockPrograms))
+      .rejects.toThrow('Critical error during batch import process. Please check server logs.');
+  });
+
+  it('should handle few errors when importing batches', async () => {
+    mockFetch.mockResolvedValueOnce(createMockResponse({
+      ok: false,
+      status: 400,
+      json: async () => ({ 
+        message: 'Validation errors', 
+        errors: [
+          { message: 'Invalid batch name', data: { row: 1, field: 'name' } },
+          { message: 'Invalid program ID', data: { row: 2, field: 'programId' } }
+        ] 
+      })
+    }));
+    
+    const mockFile = new File([''], 'test.csv', { type: 'text/csv' });
+    const mockPrograms: Program[] = [];
+    
+    await expect(batchService.importBatches(mockFile, mockPrograms))
+      .rejects.toThrow('Validation errors Specific issues: Invalid batch name; Invalid program ID');
+  });
+
+  it('should handle errors with no specific issues when importing batches', async () => {
+    mockFetch.mockResolvedValueOnce(createMockResponse({
+      ok: false,
+      status: 400,
+      json: async () => ({ 
+        message: 'Validation errors',
+        errors: [] // Empty errors array
+      })
+    }));
+    
+    const mockFile = new File([''], 'test.csv', { type: 'text/csv' });
+    const mockPrograms: Program[] = [];
+    
+    await expect(batchService.importBatches(mockFile, mockPrograms))
+      .rejects.toThrow('Validation errors');
   });
 });
