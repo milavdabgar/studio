@@ -13,8 +13,8 @@ export interface User {
     authProviders: ('password' | 'google' | 'microsoft')[];
     
     // Status
-    createdAt: Timestamp;
-    updatedAt: Timestamp;
+    createdAt?: Timestamp; // Made optional as it's auto-set by DB usually
+    updatedAt?: Timestamp; // Made optional as it's auto-set by DB usually
     lastLoginAt?: Timestamp;
     isActive: boolean;
     isEmailVerified: boolean;
@@ -144,7 +144,7 @@ export interface StudentProfile {
     middleName?: string;
     lastName?: string;
     gender?: 'Male' | 'Female' | 'Other' | string;
-    dateOfBirth?: Timestamp;
+    dateOfBirth?: Timestamp; // "YYYY-MM-DD"
     bloodGroup?: string;
     aadharNumber?: string;
     
@@ -169,6 +169,7 @@ export interface StudentProfile {
     
     // System
     instituteId?: string; // Store institute context
+    photoURL?: string;
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
@@ -207,8 +208,8 @@ export interface FacultyProfile {
     qualifications?: Qualification[];
     
     // Dates
-    dateOfBirth?: Timestamp;
-    joiningDate?: Timestamp;
+    dateOfBirth?: Timestamp; // "YYYY-MM-DD"
+    joiningDate?: Timestamp; // "YYYY-MM-DD"
     
     // Personal Details
     gender?: Gender; 
@@ -583,12 +584,47 @@ export interface StaffTransfer {
   updatedAt?: Timestamp;
 }
 
+export type TimetableStatus = 'draft' | 'published' | 'archived';
+export type TimetableEntryType = 'lecture' | 'lab' | 'tutorial' | 'break' | 'other';
+
+export interface TimetableEntry {
+    dayOfWeek: DayOfWeek;
+    startTime: string; // HH:mm
+    endTime: string;   // HH:mm
+    courseOfferingId?: string; // Link to specific offering for subject, batch
+    courseId: string; // For display, actual link via CourseOffering
+    facultyId: string;
+    roomId: string;
+    entryType: TimetableEntryType;
+    notes?: string;
+}
+
+export interface Timetable {
+    id: string;
+    name: string; // e.g., "DCE Sem 3 (AY 2024-25)"
+    academicYear: string; // e.g., "2024-25"
+    semester: number;
+    programId: string;
+    batchId?: string; // Optional: For specific batch timetable
+    version: string; // e.g., "1.0", "1.1-revised"
+    status: TimetableStatus;
+    effectiveDate: Timestamp; // "YYYY-MM-DD"
+    entries: TimetableEntry[];
+    createdAt?: Timestamp;
+    updatedAt?: Timestamp;
+}
+
+
 export interface Curriculum { 
     id: string;
     programId: string;
     version: string; 
     effectiveDate: Timestamp; // "YYYY-MM-DD"
-    courses: Array<{ courseId: string, semester: number, isElective: boolean }>; 
+    courses: Array<{ 
+        courseId: string, 
+        semester: number, 
+        isElective: boolean 
+    }>; 
     status: 'draft' | 'active' | 'archived';
     createdAt?: Timestamp;
     updatedAt?: Timestamp;

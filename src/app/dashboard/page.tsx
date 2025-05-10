@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +8,7 @@ import {
   CalendarCheck, Settings, UserCog, GitFork, BookUser, 
   Building2, BookCopy, ClipboardList, Landmark, 
   Building, DoorOpen, Loader2, CalendarRange, Settings2 as ResourceIcon, Activity, Clock, Home, FileText, ListChecks,
-  FilePieChart
+  FilePieChart, BookOpenText
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -55,6 +54,7 @@ const adminQuickLinks = [
   { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs-link' },
   { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches-link' },
   { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses-link' },
+  { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum Mgt.', id: 'admin-curriculum-link' },
   { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments-link' },
   { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance-link' },
   { href: '/faculty/attendance/reports', icon: BarChart3, label: 'Attendance Reports', id: 'admin-attendance-reports-link' },
@@ -81,6 +81,7 @@ const baseDashboardData: Record<UserRoleCode, DashboardCardItem[]> = {
     { id: "admin-total-programs", title: "Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs"},
     { id: "admin-total-batches", title: "Batches", value: "Manage", icon: CalendarRange, color: "text-yellow-600", href: "/admin/batches" },
     { id: "admin-total-courses", title: "Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses"},
+    { id: "admin-curriculum", title: "Curricula", value: "Manage", icon: BookOpenText, color: "text-sky-500", href: "/admin/curriculum"},
     { id: "admin-total-assessments", title: "Assessments", value: "Manage", icon: AssessmentIcon, color: "text-lime-500", href: "/admin/assessments"},
     { id: "admin-mark-attendance", title: "Mark Attendance", value: "Record", icon: CalendarCheck, color: "text-blue-400", href: "/faculty/attendance/mark"},
     { id: "admin-attendance-reports", title: "Attendance Reports", value: "View", icon: BarChart3, color: "text-cyan-400", href: "/faculty/attendance/reports"},
@@ -120,6 +121,7 @@ const baseDashboardData: Record<UserRoleCode, DashboardCardItem[]> = {
     { id: "hod-my-programs", title: "Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs" },
     { id: "hod-my-batches", title: "Batches", value: "Manage", icon: CalendarRange, color: "text-yellow-600", href: "/admin/batches" },
     { id: "hod-my-courses", title: "Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses" },
+    { id: "hod-curriculum", title: "Curricula", value: "Manage", icon: BookOpenText, color: "text-sky-500", href: "/admin/curriculum"},
     { id: "hod-my-assessments", title: "Assessments", value: "Manage", icon: AssessmentIcon, color: "text-lime-500", href: "/admin/assessments" },
     { id: "hod-mark-attendance", title: "Mark Attendance", value: "Oversee", icon: CalendarCheck, color: "text-blue-400", href: "/faculty/attendance/mark"},
     { id: "hod-attendance-reports", title: "Attendance Reports", value: "View", icon: BarChart3, color: "text-cyan-400", href: "/faculty/attendance/reports"},
@@ -173,6 +175,7 @@ const baseDashboardData: Record<UserRoleCode, DashboardCardItem[]> = {
   department_admin: [ 
     { id: "dept-admin-programs", title: "Dept. Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs" },
     { id: "dept-admin-courses", title: "Dept. Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses" },
+    { id: "dept-admin-curriculum", title: "Curriculum (Dept)", value: "Manage", icon: BookOpenText, color: "text-sky-500", href: "/admin/curriculum"},
     { id: "dept-admin-students", title: "Dept. Students", value: "View", icon: BookUser, color: "text-green-500", href: "/admin/students"},
     { id: "dept-admin-faculty", title: "Dept. Faculty", value: "View", icon: UserCog, color: "text-indigo-500", href: "/admin/faculty"},
     { id: "dept-admin-timetable", title: "Dept. Timetable", value: "View", icon: Clock, color: "text-gray-500", href: "/admin/timetables"},
