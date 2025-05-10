@@ -1,17 +1,22 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FormEvent } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { UserCircle, Mail, Phone, CalendarDays, Landmark, GraduationCap, Loader2, Edit } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Student, User, Program, Batch } from '@/types/entities';
 import { studentService } from '@/lib/api/students';
+import { userService } from '@/lib/api/users';
 import { programService } from '@/lib/api/programs';
 import { batchService } from '@/lib/api/batches';
-import { format } from 'date-fns';
-import Link from 'next/link';
+import { format, parseISO, isValid } from 'date-fns';
+import { Textarea } from '@/components/ui/textarea';
+
 
 interface UserCookie {
   email: string;
@@ -42,6 +47,17 @@ export default function StudentProfilePage() {
   const [user, setUser] = useState<UserCookie | null>(null);
   const { toast } = useToast();
 
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isSubmittingEdit, setIsSubmittingEdit] = useState(false);
+
+  // Form state for editing
+  const [formPersonalEmail, setFormPersonalEmail] = useState('');
+  const [formContactNumber, setFormContactNumber] = useState('');
+  const [formAddress, setFormAddress] = useState('');
+  // Add other editable fields as needed e.g. photoURL, guardianDetails
+  const [formPhotoURL, setFormPhotoURL] = useState('');
+
+
   useEffect(() => {
     const authUserCookie = getCookie('auth_user');
     if (authUserCookie) {
@@ -58,37 +74,90 @@ export default function StudentProfilePage() {
     }
   }, [toast]);
 
-  useEffect(() => {
+  const fetchProfileData = async () => {
     if (!user || !user.id) return;
+    setIsLoading(true);
+    try {
+      const allStudents = await studentService.getAllStudents(); 
+      const studentProfile = allStudents.find(s => s.userId === user.id);
 
-    const fetchProfileData = async () => {
-      setIsLoading(true);
-      try {
-        // Assuming student ID is linked to user ID. This logic might need adjustment
-        // based on how student profiles are fetched (e.g., by user ID or enrollment number).
-        const allStudents = await studentService.getAllStudents(); 
-        const studentProfile = allStudents.find(s => s.userId === user.id); // or s.email === user.email for initial link
+      if (studentProfile) {
+        setStudent(studentProfile);
+        setFormPersonalEmail(studentProfile.personalEmail || '');
+        setFormContactNumber(studentProfile.contactNumber || '');
+        setFormAddress(studentProfile.address || '');
+        setFormPhotoURL(studentProfile.photoURL || '');
 
-        if (studentProfile) {
-          setStudent(studentProfile);
-          if (studentProfile.programId) {
-            const prog = await programService.getProgramById(studentProfile.programId);
-            setProgram(prog);
-          }
-          if (studentProfile.batchId) {
-            const bat = await batchService.getBatchById(studentProfile.batchId);
-            setBatch(bat);
-          }
-        } else {
-          toast({ variant: "destructive", title: "Profile Not Found", description: "Could not find your student profile." });
+
+        if (studentProfile.programId) {
+          const prog = await programService.getProgramById(studentProfile.programId);
+          setProgram(prog);
         }
-      } catch (error) {
-        toast({ variant: "destructive", title: "Error", description: "Could not load profile data." });
+        if (studentProfile.batchId) {
+          const bat = await batchService.getBatchById(studentProfile.batchId);
+          setBatch(bat);
+        }
+      } else {
+        toast({ variant: "destructive", title: "Profile Not Found", description: "Could not find your student profile." });
       }
-      setIsLoading(false);
-    };
+    } catch (error) {
+      toast({ variant: "destructive", title: "Error", description: "Could not load profile data." });
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
     fetchProfileData();
-  }, [user, toast]);
+  }, [user]); // Dependency on user to refetch if user context changes
+
+  const handleEditProfile = () => {
+    if (student) {
+      setFormPersonalEmail(student.personalEmail || '');
+      setFormContactNumber(student.contactNumber || '');
+      setFormAddress(student.address || '');
+      setFormPhotoURL(student.photoURL || '');
+      setIsEditDialogOpen(true);
+    }
+  };
+
+  const handleProfileUpdateSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!student || !user || !user.id) return;
+
+    setIsSubmittingEdit(true);
+    
+    const updatedStudentData: Partial<Student> = {
+      personalEmail: formPersonalEmail.trim() || undefined,
+      contactNumber: formContactNumber.trim() || undefined,
+      address: formAddress.trim() || undefined,
+      photoURL: formPhotoURL.trim() || undefined,
+    };
+
+    try {
+      await studentService.updateStudent(student.id, updatedStudentData);
+      
+      // Check if user display name needs update (if student name changes are allowed)
+      // For now, assuming student name fields (firstName, lastName) are not editable here.
+      // If they were, and they affect User.displayName:
+      // const systemUser = await userService.getUserById(user.id);
+      // const newDisplayName = `${student.firstName} ${student.lastName}`; // From form if editable
+      // if(systemUser.displayName !== newDisplayName) {
+      //    await userService.updateUser(user.id, { displayName: newDisplayName });
+      // }
+      // Also, if personalEmail is the primary email on User record and it changed:
+      // await userService.updateUser(user.id, { email: formPersonalEmail.trim() });
+
+
+      toast({ title: "Profile Updated", description: "Your profile details have been updated." });
+      setIsEditDialogOpen(false);
+      await fetchProfileData(); // Re-fetch to show updated data
+    } catch (error) {
+      toast({ variant: "destructive", title: "Update Failed", description: (error as Error).message || "Could not update profile." });
+    } finally {
+      setIsSubmittingEdit(false);
+    }
+  };
+
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
@@ -103,10 +172,11 @@ export default function StudentProfilePage() {
     { icon: Mail, label: "Institute Email", value: student.instituteEmail },
     { icon: Mail, label: "Personal Email", value: student.personalEmail || "N/A" },
     { icon: Phone, label: "Contact", value: student.contactNumber || "N/A" },
-    { icon: CalendarDays, label: "Date of Birth", value: student.dateOfBirth ? format(new Date(student.dateOfBirth), "PPP") : "N/A" },
+    { icon: CalendarDays, label: "Date of Birth", value: student.dateOfBirth && isValid(parseISO(student.dateOfBirth)) ? format(parseISO(student.dateOfBirth), "PPP") : "N/A" },
     { icon: GraduationCap, label: "Program", value: program?.name || "N/A" },
     { icon: UsersIcon, label: "Batch", value: batch?.name || "N/A" },
     { icon: Landmark, label: "Current Semester", value: student.currentSemester.toString() },
+    { icon: UserCircle, label: "Address", value: student.address || "N/A"}
   ];
 
   return (
@@ -114,7 +184,7 @@ export default function StudentProfilePage() {
       <Card className="shadow-xl">
         <CardHeader className="items-center text-center">
           <Avatar className="w-24 h-24 mb-4 ring-2 ring-primary ring-offset-2">
-            <AvatarImage src={user?.avatarUrl || `https://picsum.photos/seed/${student.id}/100/100`} alt={student.firstName || student.enrollmentNumber} data-ai-hint="student avatar" />
+            <AvatarImage src={student.photoURL || `https://picsum.photos/seed/${student.id}/100/100`} alt={student.firstName || student.enrollmentNumber} data-ai-hint="student avatar" />
             <AvatarFallback>{(student.firstName?.[0] || 'S').toUpperCase()}{(student.lastName?.[0] || 'P').toUpperCase()}</AvatarFallback>
           </Avatar>
           <CardTitle className="text-3xl font-bold text-primary">
@@ -134,17 +204,52 @@ export default function StudentProfilePage() {
           ))}
         </CardContent>
         <CardFooter className="justify-center pt-6">
-           <Button variant="outline" disabled>
-            <Edit className="mr-2 h-4 w-4" /> Edit Profile (Coming Soon)
-          </Button>
+           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" onClick={handleEditProfile}>
+                <Edit className="mr-2 h-4 w-4" /> Edit Profile
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Edit Your Profile</DialogTitle>
+                <DialogDescription>
+                  Update your personal information. Some fields may be locked by administration.
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleProfileUpdateSubmit} className="space-y-4 py-4">
+                <div>
+                  <Label htmlFor="editPersonalEmail">Personal Email</Label>
+                  <Input id="editPersonalEmail" type="email" value={formPersonalEmail} onChange={e => setFormPersonalEmail(e.target.value)} disabled={isSubmittingEdit}/>
+                </div>
+                <div>
+                  <Label htmlFor="editContactNumber">Contact Number</Label>
+                  <Input id="editContactNumber" type="tel" value={formContactNumber} onChange={e => setFormContactNumber(e.target.value)} disabled={isSubmittingEdit}/>
+                </div>
+                <div>
+                  <Label htmlFor="editAddress">Address</Label>
+                  <Textarea id="editAddress" value={formAddress} onChange={e => setFormAddress(e.target.value)} disabled={isSubmittingEdit} rows={3}/>
+                </div>
+                 <div>
+                  <Label htmlFor="editPhotoURL">Photo URL</Label>
+                  <Input id="editPhotoURL" type="url" value={formPhotoURL} onChange={e => setFormPhotoURL(e.target.value)} placeholder="https://example.com/photo.jpg" disabled={isSubmittingEdit}/>
+                </div>
+                <DialogFooter>
+                  <DialogClose asChild><Button type="button" variant="outline" disabled={isSubmittingEdit}>Cancel</Button></DialogClose>
+                  <Button type="submit" disabled={isSubmittingEdit}>
+                    {isSubmittingEdit && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Save Changes
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+           </Dialog>
         </CardFooter>
       </Card>
     </div>
   );
 }
 
-// Placeholder for UsersIcon as it seems it's not imported or used in this component.
-// If it's needed, it should be imported from lucide-react. For now, we can use a generic one.
+// Placeholder for UsersIcon if it's used from a different import
 const UsersIcon = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
     <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>

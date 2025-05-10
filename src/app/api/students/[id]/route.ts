@@ -26,7 +26,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
   try {
-    const studentData = await request.json() as Partial<Omit<Student, 'id'>>;
+    const studentDataToUpdate = await request.json() as Partial<Omit<Student, 'id' | 'userId' | 'createdAt' | 'updatedAt'>>;
     const studentIndex = studentsStore.findIndex(s => s.id === id);
 
     if (studentIndex === -1) {
@@ -34,38 +34,99 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
     const existingStudent = studentsStore[studentIndex];
     
-    if (studentData.enrollmentNumber && studentData.enrollmentNumber.trim() !== existingStudent.enrollmentNumber && studentsStore.some(s => s.id !== id && s.enrollmentNumber === studentData.enrollmentNumber!.trim())) {
-        return NextResponse.json({ message: `Enrollment number '${studentData.enrollmentNumber.trim()}' already exists.` }, { status: 409 });
+    if (studentDataToUpdate.enrollmentNumber && studentDataToUpdate.enrollmentNumber.trim() !== existingStudent.enrollmentNumber && studentsStore.some(s => s.id !== id && s.enrollmentNumber === studentDataToUpdate.enrollmentNumber!.trim())) {
+        return NextResponse.json({ message: `Enrollment number '${studentDataToUpdate.enrollmentNumber.trim()}' already exists.` }, { status: 409 });
     }
-     if (studentData.instituteEmail && studentData.instituteEmail.trim().toLowerCase() !== existingStudent.instituteEmail.toLowerCase() && studentsStore.some(s => s.id !== id && s.instituteEmail.toLowerCase() === studentData.instituteEmail!.trim().toLowerCase())) {
-        return NextResponse.json({ message: `Institute email '${studentData.instituteEmail.trim()}' is already in use.` }, { status: 409 });
+    if (studentDataToUpdate.instituteEmail && studentDataToUpdate.instituteEmail.trim().toLowerCase() !== existingStudent.instituteEmail?.toLowerCase() && studentsStore.some(s => s.id !== id && s.instituteEmail?.toLowerCase() === studentDataToUpdate.instituteEmail!.trim().toLowerCase())) {
+        return NextResponse.json({ message: `Institute email '${studentDataToUpdate.instituteEmail.trim()}' is already in use.` }, { status: 409 });
     }
 
 
-    const updatedStudent = { ...existingStudent, ...studentData };
+    const updatedStudent: Student = { 
+      ...existingStudent,
+      // Apply only the fields that are present in studentDataToUpdate
+      ...(studentDataToUpdate.enrollmentNumber && { enrollmentNumber: studentDataToUpdate.enrollmentNumber.trim() }),
+      ...(studentDataToUpdate.gtuEnrollmentNumber && { gtuEnrollmentNumber: studentDataToUpdate.gtuEnrollmentNumber.trim() }),
+      ...(studentDataToUpdate.programId && { programId: studentDataToUpdate.programId }),
+      ...(studentDataToUpdate.department && { department: studentDataToUpdate.department }),
+      ...(studentDataToUpdate.batchId && { batchId: studentDataToUpdate.batchId }),
+      ...(studentDataToUpdate.currentSemester && { currentSemester: studentDataToUpdate.currentSemester }),
+      ...(studentDataToUpdate.admissionDate && { admissionDate: studentDataToUpdate.admissionDate }),
+      ...(studentDataToUpdate.category && { category: studentDataToUpdate.category }),
+      ...(studentDataToUpdate.shift && { shift: studentDataToUpdate.shift }),
+      ...(studentDataToUpdate.isComplete !== undefined && { isComplete: studentDataToUpdate.isComplete }),
+      ...(studentDataToUpdate.termClose !== undefined && { termClose: studentDataToUpdate.termClose }),
+      ...(studentDataToUpdate.isCancel !== undefined && { isCancel: studentDataToUpdate.isCancel }),
+      ...(studentDataToUpdate.isPassAll !== undefined && { isPassAll: studentDataToUpdate.isPassAll }),
+      ...(studentDataToUpdate.fullNameGtuFormat && { fullNameGtuFormat: studentDataToUpdate.fullNameGtuFormat.trim() }),
+      ...(studentDataToUpdate.firstName && { firstName: studentDataToUpdate.firstName.trim() }),
+      ...(studentDataToUpdate.middleName !== undefined && { middleName: studentDataToUpdate.middleName.trim() || undefined }),
+      ...(studentDataToUpdate.lastName && { lastName: studentDataToUpdate.lastName.trim() }),
+      ...(studentDataToUpdate.gender && { gender: studentDataToUpdate.gender }),
+      ...(studentDataToUpdate.dateOfBirth && { dateOfBirth: studentDataToUpdate.dateOfBirth }),
+      ...(studentDataToUpdate.bloodGroup && { bloodGroup: studentDataToUpdate.bloodGroup }),
+      ...(studentDataToUpdate.aadharNumber && { aadharNumber: studentDataToUpdate.aadharNumber.trim() }),
+      ...(studentDataToUpdate.personalEmail !== undefined && { personalEmail: studentDataToUpdate.personalEmail.trim() || undefined }),
+      ...(studentDataToUpdate.instituteEmail && { instituteEmail: studentDataToUpdate.instituteEmail.trim() }),
+      ...(studentDataToUpdate.contactNumber !== undefined && { contactNumber: studentDataToUpdate.contactNumber.trim() || undefined }),
+      ...(studentDataToUpdate.address !== undefined && { address: studentDataToUpdate.address.trim() || undefined }),
+      ...(studentDataToUpdate.guardianDetails && { guardianDetails: studentDataToUpdate.guardianDetails }),
+      ...(studentDataToUpdate.status && { status: studentDataToUpdate.status }),
+      ...(studentDataToUpdate.convocationYear && { convocationYear: studentDataToUpdate.convocationYear }),
+      ...(studentDataToUpdate.instituteId && { instituteId: studentDataToUpdate.instituteId }),
+      ...(studentDataToUpdate.photoURL !== undefined && { photoURL: studentDataToUpdate.photoURL.trim() || undefined }),
+      // Semester statuses update
+      ...(studentDataToUpdate.sem1Status && { sem1Status: studentDataToUpdate.sem1Status }),
+      ...(studentDataToUpdate.sem2Status && { sem2Status: studentDataToUpdate.sem2Status }),
+      ...(studentDataToUpdate.sem3Status && { sem3Status: studentDataToUpdate.sem3Status }),
+      ...(studentDataToUpdate.sem4Status && { sem4Status: studentDataToUpdate.sem4Status }),
+      ...(studentDataToUpdate.sem5Status && { sem5Status: studentDataToUpdate.sem5Status }),
+      ...(studentDataToUpdate.sem6Status && { sem6Status: studentDataToUpdate.sem6Status }),
+      ...(studentDataToUpdate.sem7Status && { sem7Status: studentDataToUpdate.sem7Status }),
+      ...(studentDataToUpdate.sem8Status && { sem8Status: studentDataToUpdate.sem8Status }),
+      updatedAt: new Date().toISOString(), // Always update the timestamp
+    };
+
     studentsStore[studentIndex] = updatedStudent;
     (global as any).__API_STUDENTS_STORE__ = studentsStore;
 
     if (updatedStudent.userId) {
-        const userUpdateData: Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>> = { // Use Omit User
-            displayName: updatedStudent.gtuName || `${updatedStudent.firstName || ''} ${updatedStudent.lastName || ''}`.trim() || updatedStudent.enrollmentNumber,
-            isActive: updatedStudent.status === 'active',
-            // department is on Student model, User's instituteId needs to be accurate
-        };
-         if (updatedStudent.instituteEmail.toLowerCase() !== existingStudent.instituteEmail.toLowerCase()) {
-            userUpdateData.instituteEmail = updatedStudent.instituteEmail;
-             if (existingStudent.personalEmail === existingStudent.instituteEmail) { 
-                userUpdateData.email = updatedStudent.personalEmail || updatedStudent.instituteEmail;
-             }
+        const userUpdateData: Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>> = {};
+        let userNeedsUpdate = false;
+
+        const newDisplayName = updatedStudent.fullNameGtuFormat || `${updatedStudent.firstName || ''} ${updatedStudent.lastName || ''}`.trim() || updatedStudent.enrollmentNumber;
+        if (newDisplayName !== existingStudent.fullNameGtuFormat && newDisplayName !== `${existingStudent.firstName || ''} ${existingStudent.lastName || ''}`.trim()) {
+             userUpdateData.displayName = newDisplayName;
+             userNeedsUpdate = true;
         }
-        if(updatedStudent.personalEmail && updatedStudent.personalEmail !== existingStudent.personalEmail){
-            userUpdateData.email = updatedStudent.personalEmail;
+        if (updatedStudent.status === 'active' !== existingStudent.isActive ) { // Assuming existingStudent has isActive from user link
+             userUpdateData.isActive = updatedStudent.status === 'active';
+             userNeedsUpdate = true;
         }
 
-        try {
-            await userService.updateUser(updatedStudent.userId, userUpdateData);
-        } catch(userError) {
-            console.error(`Failed to update linked system user ${updatedStudent.userId} for student ${updatedStudent.id}:`, userError);
+        if (updatedStudent.personalEmail && updatedStudent.personalEmail !== existingStudent.personalEmail){
+            // If personalEmail is used as primary email for User.
+            // This logic depends on how User.email is populated (personal vs institute)
+            // Assuming User.email is personalEmail if available, else instituteEmail
+            const currentUserRecord = await userService.getUserById(updatedStudent.userId);
+            if(currentUserRecord.email === existingStudent.personalEmail || currentUserRecord.email === existingStudent.instituteEmail) {
+                userUpdateData.email = updatedStudent.personalEmail;
+                userNeedsUpdate = true;
+            }
+        }
+        if (updatedStudent.photoURL && updatedStudent.photoURL !== existingStudent.photoURL) {
+            userUpdateData.photoURL = updatedStudent.photoURL;
+            userNeedsUpdate = true;
+        }
+
+
+        if (userNeedsUpdate) {
+            try {
+                await userService.updateUser(updatedStudent.userId, userUpdateData);
+            } catch(userError) {
+                console.error(`Failed to update linked system user ${updatedStudent.userId} for student ${updatedStudent.id}:`, userError);
+                // Optionally, decide if this should make the student update fail
+            }
         }
     }
 
