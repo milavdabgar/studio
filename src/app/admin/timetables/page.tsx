@@ -118,7 +118,7 @@ export default function TimetableManagementPage() {
       setIsLoading(false);
     };
     fetchInitialData();
-  }, [toast]); 
+  }, [toast, formProgramId]); 
   
   const filteredBatchesForForm = useMemo(() => {
       if(!formProgramId) return [];
@@ -137,6 +137,7 @@ export default function TimetableManagementPage() {
   const resetForm = () => {
     setFormName(''); setFormAcademicYear(''); setFormSemester(1);
     setFormProgramId(programs.length > 0 ? programs[0].id : '');
+    // Batch ID will be set by the useEffect above if programs has items
     setFormBatchId(filteredBatchesForForm.length > 0 ? filteredBatchesForForm[0].id : '');
     setFormVersion('1.0'); setFormStatus('draft'); setFormEffectiveDate(new Date());
     setCurrentEntries([]); setCurrentTimetable(null); setEntryEditingIndex(null);
@@ -313,7 +314,24 @@ export default function TimetableManagementPage() {
   const isAllSelectedOnPage = paginatedTimetables.length > 0 && paginatedTimetables.every(t => selectedTimetableIds.includes(t.id));
   const isSomeSelectedOnPage = paginatedTimetables.some(t => selectedTimetableIds.includes(t.id)) && !isAllSelectedOnPage;
 
-  const handleDeleteSelected = async () => { /* TODO: Implement bulk delete */ }; 
+  const handleDeleteSelected = async () => { 
+    if(selectedTimetableIds.length === 0) {
+      toast({variant: "destructive", title: "No Selection", description: "Please select timetables to delete."});
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      for(const id of selectedTimetableIds) {
+        await timetableService.deleteTimetable(id);
+      }
+      setTimetables(prev => prev.filter(t => !selectedTimetableIds.includes(t.id)));
+      setSelectedTimetableIds([]);
+      toast({title: "Deleted", description: `${selectedTimetableIds.length} timetables deleted.`});
+    } catch (error) {
+      toast({variant: "destructive", title: "Delete Failed", description: (error as Error).message});
+    }
+    setIsSubmitting(false);
+  }; 
 
   const SortableTableHeader = ({ field, label }: { field: SortField; label: string }) => (
     <TableHead onClick={() => { setSortField(field); setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc'); }} className="cursor-pointer hover:bg-muted/50">
@@ -341,9 +359,19 @@ export default function TimetableManagementPage() {
             <div><Label htmlFor="filterBatch">Filter Batch</Label><Select value={filterBatch} onValueChange={setFilterBatch} disabled={filterProgram === 'all'}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Batches</SelectItem>{batches.filter(b=>b.programId === filterProgram).map(b => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}</SelectContent></Select></div>
             <div><Label htmlFor="filterStatus">Filter Status</Label><Select value={filterStatus} onValueChange={val => setFilterStatus(val as TimetableStatus | 'all')}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Statuses</SelectItem>{STATUS_OPTIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}</SelectContent></Select></div>
           </div>
+            {selectedTimetableIds.length > 0 && (
+             <div className="mb-4 flex items-center gap-2">
+                <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
+                    <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedTimetableIds.length})
+                </Button>
+                <span className="text-sm text-muted-foreground">
+                    {selectedTimetableIds.length} timetable(s) selected.
+                </span>
+            </div>
+          )}
 
           <Table>
-            <TableHeader><TableRow><TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedTimetables.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={handleSelectAll}/></TableHead><SortableTableHeader field="name" label="Name" /><SortableTableHeader field="programName" label="Program" /><SortableTableHeader field="batchName" label="Batch" /><SortableTableHeader field="academicYear" label="Academic Year" /><SortableTableHeader field="status" label="Status" /><TableHead className="text-right">Actions</TableHead></TableRow></TableHeader>
+            <TableHeader><TableRow><TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedTimetables.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(val) => handleSelectAll(val as boolean | 'indeterminate')}/></TableHead><SortableTableHeader field="name" label="Name" /><SortableTableHeader field="programName" label="Program" /><SortableTableHeader field="batchName" label="Batch" /><SortableTableHeader field="academicYear" label="Academic Year" /><SortableTableHeader field="status" label="Status" /><TableHead className="text-right">Actions</TableHead></TableRow></TableHeader>
             <TableBody>
               {paginatedTimetables.map((tt) => (
                 <TableRow key={tt.id} data-state={selectedTimetableIds.includes(tt.id) ? "selected" : undefined}>
@@ -431,4 +459,3 @@ export default function TimetableManagementPage() {
     </div>
   );
 }
-
