@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -5,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { 
   BarChart3, Users as UsersIcon, Briefcase, CheckCircle, FileText as AssessmentIcon, 
   BookOpen, CalendarDays, Award, Users2 as CommitteeIcon, BotMessageSquare, 
-  CalendarCheck, Settings, UserCog, GitFork, BookUser, UsersCog, 
+  CalendarCheck, Settings, UserCog, GitFork, BookUser, 
   Building2, BookCopy, ClipboardList, Landmark, 
   Building, DoorOpen, Loader2, CalendarRange, Settings2 as ResourceIcon, Activity, Clock, Home, FileText, ListChecks,
   FilePieChart
@@ -13,14 +14,15 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState } from 'react';
-
-type UserRole = 'admin' | 'student' | 'faculty' | 'hod' | 'jury' | 'unknown' | 'committee_convener' | 'committee_co_convener' | 'committee_member' | 'super_admin' | 'institute_admin' | 'department_admin' | 'committee_admin' | 'dte_admin' | 'gtu_admin' | 'lab_assistant' | 'clerical_staff';
-
+import type { UserRole as UserRoleCode, Role } from '@/types/entities'; 
+import { userService } from "@/lib/api/users";
+import { studentService } from "@/lib/api/students";
+import { facultyService } from "@/lib/api/faculty";
 
 interface User {
   name: string;
-  activeRole: UserRole;
-  availableRoles: UserRole[];
+  activeRole: UserRoleCode;
+  availableRoles: UserRoleCode[];
   email?: string;
 }
 
@@ -39,7 +41,6 @@ interface DashboardCardItem {
   id: string; // Unique ID for deduplication
 }
 
-// Define adminNavItems here before baseDashboardData uses it
 const adminQuickLinks = [
   { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard-link' }, 
   { href: '/admin/users', icon: UsersIcon, label: 'User Management', id: 'admin-users-link' },
@@ -49,7 +50,7 @@ const adminQuickLinks = [
   { href: '/admin/rooms', icon: DoorOpen, label: 'Rooms', id: 'admin-rooms-link'},
   { href: '/admin/committees', icon: CommitteeIcon, label: 'Committees', id: 'admin-committees-link'},
   { href: '/admin/students', icon: BookUser, label: 'Student Mgt.', id: 'admin-students-link' },
-  { href: '/admin/faculty', icon: UsersCog, label: 'Faculty Mgt.', id: 'admin-faculty-link' }, 
+  { href: '/admin/faculty', icon: UserCog, label: 'Faculty Mgt.', id: 'admin-faculty-link' }, 
   { href: '/admin/departments', icon: Building2, label: 'Departments', id: 'admin-departments-link' },
   { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs-link' },
   { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches-link' },
@@ -67,12 +68,11 @@ const adminQuickLinks = [
   { href: '/admin/settings', icon: Settings, label: 'System Settings', id: 'admin-settings-link'},
 ];
 
-
-const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
+const baseDashboardData: Record<UserRoleCode, DashboardCardItem[]> = {
   admin: [ 
-    { id: "admin-total-users", title: "Total Users", value: "1,250", icon: UsersIcon, color: "text-primary", href: "/admin/users" },
-    { id: "admin-total-students", title: "Total Students", value: "850", icon: BookUser, color: "text-green-500", href: "/admin/students"},
-    { id: "admin-total-faculty", title: "Total Faculty", value: "75", icon: UsersCog, color: "text-indigo-500", href: "/admin/faculty"},
+    { id: "admin-total-users", title: "Total Users", value: "0", icon: UsersIcon, color: "text-primary", href: "/admin/users" },
+    { id: "admin-total-students", title: "Total Students", value: "0", icon: BookUser, color: "text-green-500", href: "/admin/students"},
+    { id: "admin-total-faculty", title: "Total Faculty", value: "0", icon: UserCog, color: "text-indigo-500", href: "/admin/faculty"},
     { id: "admin-total-institutes", title: "Institutes", value: "Manage", icon: Landmark, color: "text-red-500", href: "/admin/institutes"},
     { id: "admin-total-buildings", title: "Buildings", value: "Manage", icon: Building, color: "text-blue-500", href: "/admin/buildings"},
     { id: "admin-total-rooms", title: "Rooms", value: "Manage", icon: DoorOpen, color: "text-cyan-500", href: "/admin/rooms"},
@@ -88,7 +88,7 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "admin-resource-allocation", title: "Resource Allocation", value: "Allocate", icon: ResourceIcon, color: "text-orange-400", href: "/admin/resource-allocation" },
     { id: "admin-timetable", title: "Timetables", value: "View/Edit", icon: Clock, color: "text-gray-500", href: "/admin/timetables" },
     { id: "admin-active-projects", title: "Active Projects", value: "View", icon: Briefcase, color: "text-accent", href: "/project-fair/admin" },
-    { id: "admin-pending-approvals", title: "Pending Approvals", value: "12", icon: CheckCircle, color: "text-yellow-500", href: "/admin/approvals" },
+    { id: "admin-pending-approvals", title: "Pending Approvals", value: "0", icon: CheckCircle, color: "text-yellow-500", href: "/admin/approvals" },
     { id: "admin-feedback-reports", title: "Feedback Reports", value: "Analyze", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
     { id: "admin-reporting-analytics", title: "Reporting & Analytics", value: "Generate", icon: BarChart3, color: "text-sky-500", href: "/admin/reporting-analytics" },
     { id: "admin-role-management", title: "Role Management", value: "Configure", icon: UserCog, color: "text-indigo-500", href: "/admin/roles" },
@@ -110,8 +110,8 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "faculty-manage-timetable", title: "My Timetable", value: "View/Edit", icon: Clock, color: "text-gray-500", href: "/faculty/timetable"},
   ],
   hod: [
-    { id: "hod-department-staff", title: "Department Staff", value: "15 Members", icon: UsersCog, color: "text-primary", href: "/admin/faculty" },
-    { id: "hod-department-students", title: "Department Students", value: "250 Enrolled", icon: BookUser, color: "text-accent", href: "/admin/students" },
+    { id: "hod-department-staff", title: "Department Staff", value: "0", icon: UserCog, color: "text-primary", href: "/admin/faculty" },
+    { id: "hod-department-students", title: "Department Students", value: "0", icon: BookUser, color: "text-accent", href: "/admin/students" },
     { id: "hod-my-institute", title: "Institute Details", value: "View/Edit", icon: Landmark, color: "text-red-500", href: "/admin/institutes"},
     { id: "hod-my-buildings", title: "Buildings", value: "Manage", icon: Building, color: "text-blue-500", href: "/admin/buildings"},
     { id: "hod-my-rooms", title: "Rooms", value: "Manage", icon: DoorOpen, color: "text-cyan-500", href: "/admin/rooms"},
@@ -126,7 +126,7 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "hod-grade-assessments", title: "Grade Assessments", value: "Oversee", icon: FilePieChart, color: "text-purple-400", href: "/faculty/assessments/grade"},
     { id: "hod-resource-allocation", title: "Resource Allocation", value: "Manage", icon: ResourceIcon, color: "text-orange-400", href: "/admin/resource-allocation" },
     { id: "hod-manage-timetable", title: "Department Timetable", value: "View/Edit", icon: Clock, color: "text-gray-500", href: "/admin/timetables"},
-    { id: "hod-department-projects", title: "Department Projects", value: "25 Active", icon: Briefcase, color: "text-yellow-500", href: "/project-fair/admin" },
+    { id: "hod-department-projects", title: "Department Projects", value: "View", icon: Briefcase, color: "text-yellow-500", href: "/project-fair/admin" },
     { id: "hod-department-feedback", title: "Department Feedback", value: "Analyze", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
     { id: "hod-reporting-analytics", title: "Reporting & Analytics", value: "Generate", icon: BarChart3, color: "text-sky-500", href: "/admin/reporting-analytics" },
   ],
@@ -153,14 +153,17 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "member-tasks", title: "Assigned Tasks", value: "View", icon: ListChecks, color: "text-green-500", href: "/committee/tasks/my" }, 
   ],
   super_admin: [ 
-    { id: "sadmin-total-users", title: "Platform Users", value: "Manage All", icon: UsersIcon, color: "text-primary", href: "/admin/users" },
+    { id: "sadmin-total-users", title: "Platform Users", value: "0", icon: UsersIcon, color: "text-primary", href: "/admin/users" },
     { id: "sadmin-system-roles", title: "System Roles", value: "Configure", icon: UserCog, color: "text-indigo-500", href: "/admin/roles" },
     { id: "sadmin-all-institutes", title: "All Institutes", value: "Oversee", icon: Landmark, color: "text-red-500", href: "/admin/institutes"},
     { id: "sadmin-system-settings", title: "System Settings", value: "Global Config", icon: Settings, color: "text-teal-500", href: "/admin/settings" },
     { id: "sadmin-activity-log", title: "Activity Log", value: "Audit", icon: Activity, color: "text-orange-500", href: "/admin/logs" },
   ],
   institute_admin: [
-    { id: "iadmin-institute-faculty", title: "Institute Faculty", value: "Manage", icon: UsersCog, color: "text-indigo-500", href: "/admin/faculty"},
+    ...adminQuickLinks.filter(item => ![
+      '/admin/users', '/admin/roles', '/admin/institutes', '/admin/settings'
+    ].includes(item.href) && item.label !== 'Dashboard').map(item => ({...item, title: item.label, value: 'Manage', id: `iadmin-${item.id}`})), 
+    { id: "iadmin-institute-faculty", title: "Institute Faculty", value: "Manage", icon: UserCog, color: "text-indigo-500", href: "/admin/faculty"},
     { id: "iadmin-institute-students", title: "Institute Students", value: "Manage", icon: BookUser, color: "text-green-500", href: "/admin/students"},
     { id: "iadmin-institute-depts", title: "Departments", value: "Manage", icon: Building2, color: "text-orange-500", href: "/admin/departments" },
     { id: "iadmin-institute-programs", title: "Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs" },
@@ -171,7 +174,7 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "dept-admin-programs", title: "Dept. Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs" },
     { id: "dept-admin-courses", title: "Dept. Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses" },
     { id: "dept-admin-students", title: "Dept. Students", value: "View", icon: BookUser, color: "text-green-500", href: "/admin/students"},
-    { id: "dept-admin-faculty", title: "Dept. Faculty", value: "View", icon: UsersCog, color: "text-indigo-500", href: "/admin/faculty"},
+    { id: "dept-admin-faculty", title: "Dept. Faculty", value: "View", icon: UserCog, color: "text-indigo-500", href: "/admin/faculty"},
     { id: "dept-admin-timetable", title: "Dept. Timetable", value: "View", icon: Clock, color: "text-gray-500", href: "/admin/timetables"},
   ],
   committee_admin: [
@@ -185,7 +188,7 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
 };
 
 
-const getDashboardDataForActiveRole = (activeRole: UserRole): DashboardCardItem[] => {
+const getDashboardDataForActiveRole = (activeRole: UserRoleCode): DashboardCardItem[] => {
   return baseDashboardData[activeRole] || [];
 };
 
@@ -205,8 +208,8 @@ function getCookie(name: string): string | undefined {
 interface ParsedUserCookie {
   email: string;
   name: string;
-  availableRoles: UserRole[];
-  activeRole: UserRole;
+  availableRoles: UserRoleCode[];
+  activeRole: UserRoleCode;
 }
 
 
@@ -217,7 +220,7 @@ export default function DashboardPage() {
     totalUsers: 0,
     totalStudents: 0,
     totalFaculty: 0,
-    // ... other stats
+    pendingApprovals: 0,
   });
   const [isLoadingStats, setIsLoadingStats] = useState(true);
 
@@ -245,40 +248,50 @@ export default function DashboardPage() {
   }, []);
   
   useEffect(() => {
-    // Simulate fetching stats
     const fetchStats = async () => {
         setIsLoadingStats(true);
-        // In a real app, you would fetch these from your API based on currentUser.activeRole
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
-        setDashboardStats({
-            totalUsers: 1250, // Placeholder
-            totalStudents: 850, // Placeholder
-            totalFaculty: 75,   // Placeholder
-        });
+        try {
+            const [users, students, faculty] = await Promise.all([
+                userService.getAllUsers(),
+                studentService.getAllStudents(),
+                facultyService.getAllFaculty(),
+            ]);
+            setDashboardStats({
+                totalUsers: users.length,
+                totalStudents: students.length,
+                totalFaculty: faculty.length,
+                pendingApprovals: 12 // Placeholder
+            });
+        } catch (error) {
+            console.error("Failed to fetch dashboard stats:", error);
+            // Keep default 0 values or show error indicator
+        }
         setIsLoadingStats(false);
     };
-    if(currentUser.activeRole !== 'unknown'){
+    if(currentUser.activeRole !== 'unknown' && isMounted){ // Only fetch if mounted and user is known
         fetchStats();
-    } else {
+    } else if (!isMounted) { // if not mounted yet, keep loading
+        setIsLoadingStats(true);
+    } else { // if unknown role or not mounted, stop loading
         setIsLoadingStats(false);
     }
-  }, [currentUser.activeRole]);
+  }, [currentUser.activeRole, isMounted]);
 
 
   const dashboardCards = getDashboardDataForActiveRole(currentUser.activeRole).map(card => {
       if (isLoadingStats) {
-          return {...card, value: "Loading..."};
+          return {...card, value: "..."}; // Show ellipses during loading
       }
       if (card.id === "admin-total-users" || card.id === "sadmin-total-users") return { ...card, value: dashboardStats.totalUsers.toLocaleString() };
       if (card.id === "admin-total-students" || card.id === "iadmin-institute-students" || card.id === "dept-admin-students" || card.id === "hod-department-students") return { ...card, value: dashboardStats.totalStudents.toLocaleString() };
       if (card.id === "admin-total-faculty" || card.id === "iadmin-institute-faculty" || card.id === "dept-admin-faculty" || card.id === "hod-department-staff") return { ...card, value: dashboardStats.totalFaculty.toLocaleString() };
-      // ... map other dynamic stats
+      if (card.id === "admin-pending-approvals") return { ...card, value: dashboardStats.pendingApprovals.toLocaleString() };
       return card;
   });
   const displayActiveRole = currentUser.activeRole.charAt(0).toUpperCase() + currentUser.activeRole.slice(1).replace(/_/g, ' ');
 
 
-  if (!isMounted) {
+  if (!isMounted) { // Show full page loader until client-side hydration is complete
     return <div className="flex justify-center items-center h-screen"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
   }
 

@@ -1,3 +1,4 @@
+
 "use client"; 
 
 import { GeistSans } from 'geist/font/sans';
@@ -6,7 +7,7 @@ import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, 
 import { Toaster } from "@/components/ui/toaster";
 import { 
     Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, 
-    Loader2, UserCog, BookUser, UsersCog, Building2, BookCopy, ClipboardList, Landmark, 
+    Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, 
     Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, 
     BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Activity, Clock,
     ListChecks, BookOpenCheck, FilePieChart, FileText
@@ -51,7 +52,7 @@ const adminNavItems = [
   { href: '/admin/rooms', icon: DoorOpen, label: 'Rooms', id: 'admin-rooms'},
   { href: '/admin/committees', icon: CommitteeIcon, label: 'Committees', id: 'admin-committees'},
   { href: '/admin/students', icon: BookUser, label: 'Student Mgt.', id: 'admin-students' },
-  { href: '/admin/faculty', icon: UsersCog, label: 'Faculty Mgt.', id: 'admin-faculty' }, 
+  { href: '/admin/faculty', icon: UserCog, label: 'Faculty Mgt.', id: 'admin-faculty' }, 
   { href: '/admin/departments', icon: Building2, label: 'Departments', id: 'admin-departments' },
   { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs' },
   { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches' },
@@ -106,7 +107,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'hod-assessments' },
     { href: '/admin/attendance', icon: AttendanceIcon, label: 'Attendance (Dept)', id: 'hod-attendance-records' },
     { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'hod-resource-allocation' },
-    { href: '/admin/faculty', icon: UsersCog, label: 'Faculty (Dept)', id: 'hod-faculty' },
+    { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'hod-faculty' },
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'hod-students' },
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'hod-feedback' },
     { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'hod-reporting' },
@@ -149,7 +150,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'dept-admin-courses' },
     { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'dept-admin-assessments' },
     { href: '/admin/attendance', icon: AttendanceIcon, label: 'Attendance (Dept)', id: 'dept-admin-attendance-records' },
-    { href: '/admin/faculty', icon: UsersCog, label: 'Faculty (Dept)', id: 'dept-admin-faculty' },
+    { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'dept-admin-faculty' },
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'dept-admin-students' },
     { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'dept-admin-resource-allocation' },
     { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'dept-admin-reporting' },
