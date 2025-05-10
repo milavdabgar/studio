@@ -1,4 +1,3 @@
-
 "use client"; 
 
 import { GeistSans } from 'geist/font/sans';
@@ -10,7 +9,7 @@ import {
     Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, 
     Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, 
     BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Activity, Clock,
-    ListChecks, BookOpenCheck, FilePieChart, FileText
+    ListChecks, BookOpenCheck, FilePieChart, FileText, BookOpenText
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -57,6 +56,7 @@ const adminNavItems = [
   { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs' },
   { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches' },
   { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses' },
+  { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum Mgt.', id: 'admin-curriculum' },
   { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments' },
   { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance-link' },
   { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'admin-resource-allocation' },
@@ -104,6 +104,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/programs', icon: BookCopy, label: 'Programs (Dept)', id: 'hod-programs' },
     { href: '/admin/batches', icon: CalendarRange, label: 'Batches (Dept)', id: 'hod-batches' },
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'hod-courses' },
+    { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum (Dept)', id: 'hod-curriculum' },
     { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'hod-assessments' },
     { href: '/admin/attendance', icon: AttendanceIcon, label: 'Attendance (Dept)', id: 'hod-attendance-records' },
     { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'hod-resource-allocation' },
@@ -148,6 +149,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/programs', icon: BookCopy, label: 'Programs (Dept)', id: 'dept-admin-programs' },
     { href: '/admin/batches', icon: CalendarRange, label: 'Batches (Dept)', id: 'dept-admin-batches' },
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'dept-admin-courses' },
+    { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum (Dept)', id: 'dept-admin-curriculum' },
     { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'dept-admin-assessments' },
     { href: '/admin/attendance', icon: AttendanceIcon, label: 'Attendance (Dept)', id: 'dept-admin-attendance-records' },
     { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'dept-admin-faculty' },
