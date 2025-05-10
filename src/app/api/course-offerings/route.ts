@@ -39,6 +39,20 @@ if (!global.__API_COURSE_OFFERINGS_STORE__ || global.__API_COURSE_OFFERINGS_STOR
       createdAt: now, 
       updatedAt: now 
     },
+     { 
+      id: "co_math1_b2022_sem1_gpp", 
+      courseId: "course_math1_gen_gpp", 
+      batchId: "batch_dce_2022_gpp", 
+      academicYear: "2024-25", 
+      semester: 1, 
+      facultyIds: ["user_faculty_cs01_gpp"], // Example faculty
+      roomIds: ["room_b202_gpp"], 
+      startDate: "2024-07-15T00:00:00.000Z",
+      endDate: "2024-11-15T00:00:00.000Z",
+      status: "scheduled", 
+      createdAt: now, 
+      updatedAt: now 
+    },
   ];
 }
 const courseOfferingsStore: CourseOffering[] = global.__API_COURSE_OFFERINGS_STORE__;

@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
@@ -20,7 +21,7 @@ import type { Timetable, TimetableEntry, TimetableStatus, DayOfWeek, Program, Ba
 import { timetableService } from '@/lib/api/timetables';
 import { programService } from '@/lib/api/programs';
 import { batchService } from '@/lib/api/batches';
-import { courseOfferingService } from '../../../lib/api/courseOfferings'; // Changed to relative path
+import { courseOfferingService } from '@/lib/api/courseOfferings'; 
 import { facultyService } from '@/lib/api/faculty';
 import { roomService } from '@/lib/services/roomService';
 import { courseService } from '@/lib/api/courses';
@@ -430,3 +431,4 @@ export default function TimetableManagementPage() {
     </div>
   );
 }
+
