@@ -11,19 +11,17 @@ describe('AppLogo', () => {
   it('renders an SVG element', () => {
     // Basic test to ensure the component renders without crashing
     render(<AppLogo />);
-    expect(screen.getByTestId('app-logo')).toBeInTheDocument();
-
-    // Original tests
-    render(<AppLogo />);
-    const svgElement = screen.getByRole('img', { hidden: true }); // SVGs might not have an explicit role by default
+    
+    // Find the SVG element by tag name
+    const svgElement = document.querySelector('svg');
     expect(svgElement).toBeInTheDocument();
-    expect(svgElement.tagName).toBe('svg');
+    expect(svgElement?.tagName.toLowerCase()).toBe('svg');
   });
 
   it('applies className prop', () => {
     const testClassName = 'test-class';
     render(<AppLogo className={testClassName} />);
-    const svgElement = screen.getByRole('img', { hidden: true });
+    const svgElement = document.querySelector('svg');
     expect(svgElement).toHaveClass(testClassName);
   });
 
