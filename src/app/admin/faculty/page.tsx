@@ -609,11 +609,11 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                   </div>
                   <div className="md:col-span-1">
                     <Label htmlFor="facultyTitle">Title</Label>
-                     <Select value={formTitle} onValueChange={(value) => setFormTitle(value)} disabled={isSubmitting}>
+                     <Select value={formTitle || "none"} onValueChange={(value) => setFormTitle(value === "none" ? "" : value)} disabled={isSubmitting}>
                         <SelectTrigger id="facultyTitle"><SelectValue placeholder="Select Title" /></SelectTrigger>
                         <SelectContent >
                             {TITLE_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
-                             <SelectItem value="">None</SelectItem>
+                             <SelectItem value="none">None</SelectItem>
                         </SelectContent>
                     </Select>
                   </div>
@@ -639,11 +639,11 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                   </div>
                   <div className="md:col-span-1">
                     <Label htmlFor="facultyGender">Gender</Label>
-                     <Select value={formGender || ""} onValueChange={(value) => setFormGender(value as Gender || undefined)} disabled={isSubmitting}>
+                     <Select value={formGender || "none"} onValueChange={(value) => setFormGender(value === "none" ? undefined : value as Gender)} disabled={isSubmitting}>
                         <SelectTrigger id="facultyGender"><SelectValue placeholder="Select Gender" /></SelectTrigger>
                         <SelectContent >
                             {GENDER_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
-                             <SelectItem value="">Prefer not to say</SelectItem>
+                             <SelectItem value="none">Prefer not to say</SelectItem>
                         </SelectContent>
                     </Select>
                   </div>
@@ -667,11 +667,11 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                   </div>
                   <div className="md:col-span-1">
                     <Label htmlFor="facultyMaritalStatus">Marital Status</Label>
-                     <Select value={formMaritalStatus || ""} onValueChange={(value) => setFormMaritalStatus(value || undefined)} disabled={isSubmitting}>
+                     <Select value={formMaritalStatus || "none"} onValueChange={(value) => setFormMaritalStatus(value === "none" ? undefined : value)} disabled={isSubmitting}>
                         <SelectTrigger id="facultyMaritalStatus"><SelectValue placeholder="Select Status" /></SelectTrigger>
                         <SelectContent >
                             {MARITAL_STATUS_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
-                            <SelectItem value="">Prefer not to say</SelectItem>
+                            <SelectItem value="none">Prefer not to say</SelectItem>
                         </SelectContent>
                     </Select>
                   </div>
