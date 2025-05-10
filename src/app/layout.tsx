@@ -6,7 +6,7 @@ import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, 
 import { Toaster } from "@/components/ui/toaster";
 import { 
     Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, 
-    Loader2, UserCog, BookUser, UsersRound, Building2, BookCopy, ClipboardList, Landmark, 
+    Loader2, UserCog, BookUser, UsersCog, Building2, BookCopy, ClipboardList, Landmark, 
     Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, 
     BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Activity, Clock,
     ListChecks, BookOpenCheck, FilePieChart, FileText
@@ -51,17 +51,20 @@ const adminNavItems = [
   { href: '/admin/rooms', icon: DoorOpen, label: 'Rooms', id: 'admin-rooms'},
   { href: '/admin/committees', icon: CommitteeIcon, label: 'Committees', id: 'admin-committees'},
   { href: '/admin/students', icon: BookUser, label: 'Student Mgt.', id: 'admin-students' },
-  { href: '/admin/faculty', icon: UsersRound, label: 'Faculty Mgt.', id: 'admin-faculty' }, 
+  { href: '/admin/faculty', icon: UsersCog, label: 'Faculty Mgt.', id: 'admin-faculty' }, 
   { href: '/admin/departments', icon: Building2, label: 'Departments', id: 'admin-departments' },
   { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs' },
   { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches' },
   { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses' },
   { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments' },
-  { href: '/admin/attendance', icon: AttendanceIcon, label: 'Attendance Records', id: 'admin-attendance-records' },
+  { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance-link' },
   { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'admin-resource-allocation' },
   { href: '/admin/timetables', icon: Clock, label: 'Timetables', id: 'admin-timetables'},
   { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback' },
   { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'admin-reporting' },
+  { href: '/project-fair/admin/new-event', icon: Briefcase, label: 'Create Project Event', id: 'admin-project-event-link'},
+  { href: '/admin/results/import', icon: AssessmentIcon, label: 'Import Results', id: 'admin-import-results-link'},
+  { href: '/admin/settings', icon: Settings, label: 'System Settings', id: 'admin-settings-link'},
 ];
 
 
@@ -84,7 +87,8 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/faculty/timetable', icon: Clock, label: 'My Timetable', id: 'faculty-timetable' },
     { href: '/faculty/courses', icon: BookOpen, label: 'My Courses', id: 'faculty-courses' }, 
     { href: '/faculty/students', icon: UsersIconLucide, label: 'My Students', id: 'faculty-students'}, 
-    { href: '/faculty/attendance/mark', icon: AttendanceIcon, label: 'Mark Attendance', id: 'faculty-mark-attendance' },
+    { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'faculty-mark-attendance' },
+    { href: '/faculty/attendance/reports', icon: BarChart3, label: 'Attendance Reports', id: 'faculty-attendance-reports' },
     { href: '/faculty/assessments/grade', icon: FilePieChart, label: 'Grade Assessments', id: 'faculty-grade-assessments' },
     { href: '/project-fair/jury', icon: AssessmentIcon, label: 'Evaluate Projects', id: 'faculty-evaluate' }, 
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'faculty-feedback' }, 
@@ -102,7 +106,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'hod-assessments' },
     { href: '/admin/attendance', icon: AttendanceIcon, label: 'Attendance (Dept)', id: 'hod-attendance-records' },
     { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'hod-resource-allocation' },
-    { href: '/admin/faculty', icon: UsersRound, label: 'Faculty (Dept)', id: 'hod-faculty' },
+    { href: '/admin/faculty', icon: UsersCog, label: 'Faculty (Dept)', id: 'hod-faculty' },
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'hod-students' },
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'hod-feedback' },
     { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'hod-reporting' },
@@ -145,7 +149,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'dept-admin-courses' },
     { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'dept-admin-assessments' },
     { href: '/admin/attendance', icon: AttendanceIcon, label: 'Attendance (Dept)', id: 'dept-admin-attendance-records' },
-    { href: '/admin/faculty', icon: UsersRound, label: 'Faculty (Dept)', id: 'dept-admin-faculty' },
+    { href: '/admin/faculty', icon: UsersCog, label: 'Faculty (Dept)', id: 'dept-admin-faculty' },
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'dept-admin-students' },
     { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'dept-admin-resource-allocation' },
     { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'dept-admin-reporting' },
@@ -307,7 +311,7 @@ export default function RootLayout({
             <title>PolyManager - Loading...</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
         </head>
-        <body className={`${GeistSans.className} antialiased`} suppressHydrationWarning={true}>
+        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           <div className="flex items-center justify-center min-h-screen">
             <Loader2 className="h-12 w-12 animate-spin text-primary" />
           </div>
@@ -324,7 +328,7 @@ export default function RootLayout({
             <title>PolyManager</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
         </head>
-        <body className={`${GeistSans.className} antialiased`} suppressHydrationWarning={true}>
+        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           {children}
           <Toaster />
         </body>
@@ -339,7 +343,7 @@ export default function RootLayout({
             <title>PolyManager</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
         </head>
-      <body className={`${GeistSans.className} antialiased`} suppressHydrationWarning={true}>
+      <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
         <SidebarProvider>
           <Sidebar>
             <SidebarHeader className="p-4 border-b border-sidebar-border">

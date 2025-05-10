@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { 
   BarChart3, Users as UsersIcon, Briefcase, CheckCircle, FileText as AssessmentIcon, 
   BookOpen, CalendarDays, Award, Users2 as CommitteeIcon, BotMessageSquare, 
-  CalendarCheck, Settings, UserCog, GitFork, BookUser, UsersRound, 
+  CalendarCheck, Settings, UserCog, GitFork, BookUser, UsersCog, 
   Building2, BookCopy, ClipboardList, Landmark, 
-  Building, DoorOpen, Loader2, CalendarRange, Settings2 as ResourceIcon, Activity, Clock, Home, FileText, ListChecks
+  Building, DoorOpen, Loader2, CalendarRange, Settings2 as ResourceIcon, Activity, Clock, Home, FileText, ListChecks,
+  FilePieChart
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -40,7 +41,7 @@ interface DashboardCardItem {
 
 // Define adminNavItems here before baseDashboardData uses it
 const adminQuickLinks = [
-  { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard-link' }, // Changed id to avoid conflict
+  { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard-link' }, 
   { href: '/admin/users', icon: UsersIcon, label: 'User Management', id: 'admin-users-link' },
   { href: '/admin/roles', icon: UserCog, label: 'Role Management', id: 'admin-roles-link' },
   { href: '/admin/institutes', icon: Landmark, label: 'Institutes', id: 'admin-institutes-link'},
@@ -48,13 +49,15 @@ const adminQuickLinks = [
   { href: '/admin/rooms', icon: DoorOpen, label: 'Rooms', id: 'admin-rooms-link'},
   { href: '/admin/committees', icon: CommitteeIcon, label: 'Committees', id: 'admin-committees-link'},
   { href: '/admin/students', icon: BookUser, label: 'Student Mgt.', id: 'admin-students-link' },
-  { href: '/admin/faculty', icon: UsersRound, label: 'Faculty Mgt.', id: 'admin-faculty-link' }, 
+  { href: '/admin/faculty', icon: UsersCog, label: 'Faculty Mgt.', id: 'admin-faculty-link' }, 
   { href: '/admin/departments', icon: Building2, label: 'Departments', id: 'admin-departments-link' },
   { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs-link' },
   { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches-link' },
   { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses-link' },
   { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments-link' },
   { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance-link' },
+  { href: '/faculty/attendance/reports', icon: BarChart3, label: 'Attendance Reports', id: 'admin-attendance-reports-link' },
+  { href: '/faculty/assessments/grade', icon: FilePieChart, label: 'Grade Assessments', id: 'admin-grade-assessments-link' },
   { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'admin-resource-allocation-link' },
   { href: '/admin/timetables', icon: Clock, label: 'Timetables', id: 'admin-timetables-link'},
   { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback-link' },
@@ -69,17 +72,19 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
   admin: [ 
     { id: "admin-total-users", title: "Total Users", value: "1,250", icon: UsersIcon, color: "text-primary", href: "/admin/users" },
     { id: "admin-total-students", title: "Total Students", value: "850", icon: BookUser, color: "text-green-500", href: "/admin/students"},
-    { id: "admin-total-faculty", title: "Total Faculty", value: "75", icon: UsersRound, color: "text-indigo-500", href: "/admin/faculty"},
+    { id: "admin-total-faculty", title: "Total Faculty", value: "75", icon: UsersCog, color: "text-indigo-500", href: "/admin/faculty"},
     { id: "admin-total-institutes", title: "Institutes", value: "Manage", icon: Landmark, color: "text-red-500", href: "/admin/institutes"},
     { id: "admin-total-buildings", title: "Buildings", value: "Manage", icon: Building, color: "text-blue-500", href: "/admin/buildings"},
     { id: "admin-total-rooms", title: "Rooms", value: "Manage", icon: DoorOpen, color: "text-cyan-500", href: "/admin/rooms"},
     { id: "admin-total-committees", title: "Committees", value: "Manage", icon: CommitteeIcon, color: "text-pink-500", href: "/admin/committees"},
     { id: "admin-total-departments", title: "Departments", value: "Manage", icon: Building2, color: "text-orange-500", href: "/admin/departments"},
     { id: "admin-total-programs", title: "Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs"},
-    { id: "admin-total-batches", title: "Batches", value: "Manage", icon: CalendarRange, color: "text-yellow-600", href: "/admin/batches"},
+    { id: "admin-total-batches", title: "Batches", value: "Manage", icon: CalendarRange, color: "text-yellow-600", href: "/admin/batches" },
     { id: "admin-total-courses", title: "Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses"},
     { id: "admin-total-assessments", title: "Assessments", value: "Manage", icon: AssessmentIcon, color: "text-lime-500", href: "/admin/assessments"},
     { id: "admin-mark-attendance", title: "Mark Attendance", value: "Record", icon: CalendarCheck, color: "text-blue-400", href: "/faculty/attendance/mark"},
+    { id: "admin-attendance-reports", title: "Attendance Reports", value: "View", icon: BarChart3, color: "text-cyan-400", href: "/faculty/attendance/reports"},
+    { id: "admin-grade-assessments", title: "Grade Assessments", value: "Grade", icon: FilePieChart, color: "text-purple-400", href: "/faculty/assessments/grade"},
     { id: "admin-resource-allocation", title: "Resource Allocation", value: "Allocate", icon: ResourceIcon, color: "text-orange-400", href: "/admin/resource-allocation" },
     { id: "admin-timetable", title: "Timetables", value: "View/Edit", icon: Clock, color: "text-gray-500", href: "/admin/timetables" },
     { id: "admin-active-projects", title: "Active Projects", value: "View", icon: Briefcase, color: "text-accent", href: "/project-fair/admin" },
@@ -100,10 +105,12 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "faculty-pending-evaluations", title: "Pending Evaluations", value: "8 Projects", icon: CheckCircle, color: "text-yellow-500", href: "/project-fair/jury" },
     { id: "faculty-feedback-reports", title: "Feedback Reports", value: "View", icon: BotMessageSquare, color: "text-green-500", href: "/admin/feedback-analysis" },
     { id: "faculty-mark-attendance", title: "Mark Attendance", value: "Record", icon: CalendarCheck, color: "text-blue-400", href: "/faculty/attendance/mark"},
+    { id: "faculty-attendance-reports", title: "Attendance Reports", value: "View", icon: BarChart3, color: "text-cyan-400", href: "/faculty/attendance/reports"},
+    { id: "faculty-grade-assessments", title: "Grade Assessments", value: "Grade", icon: FilePieChart, color: "text-purple-400", href: "/faculty/assessments/grade"},
     { id: "faculty-manage-timetable", title: "My Timetable", value: "View/Edit", icon: Clock, color: "text-gray-500", href: "/faculty/timetable"},
   ],
   hod: [
-    { id: "hod-department-staff", title: "Department Staff", value: "15 Members", icon: UsersRound, color: "text-primary", href: "/admin/faculty" },
+    { id: "hod-department-staff", title: "Department Staff", value: "15 Members", icon: UsersCog, color: "text-primary", href: "/admin/faculty" },
     { id: "hod-department-students", title: "Department Students", value: "250 Enrolled", icon: BookUser, color: "text-accent", href: "/admin/students" },
     { id: "hod-my-institute", title: "Institute Details", value: "View/Edit", icon: Landmark, color: "text-red-500", href: "/admin/institutes"},
     { id: "hod-my-buildings", title: "Buildings", value: "Manage", icon: Building, color: "text-blue-500", href: "/admin/buildings"},
@@ -115,6 +122,8 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "hod-my-courses", title: "Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses" },
     { id: "hod-my-assessments", title: "Assessments", value: "Manage", icon: AssessmentIcon, color: "text-lime-500", href: "/admin/assessments" },
     { id: "hod-mark-attendance", title: "Mark Attendance", value: "Oversee", icon: CalendarCheck, color: "text-blue-400", href: "/faculty/attendance/mark"},
+    { id: "hod-attendance-reports", title: "Attendance Reports", value: "View", icon: BarChart3, color: "text-cyan-400", href: "/faculty/attendance/reports"},
+    { id: "hod-grade-assessments", title: "Grade Assessments", value: "Oversee", icon: FilePieChart, color: "text-purple-400", href: "/faculty/assessments/grade"},
     { id: "hod-resource-allocation", title: "Resource Allocation", value: "Manage", icon: ResourceIcon, color: "text-orange-400", href: "/admin/resource-allocation" },
     { id: "hod-manage-timetable", title: "Department Timetable", value: "View/Edit", icon: Clock, color: "text-gray-500", href: "/admin/timetables"},
     { id: "hod-department-projects", title: "Department Projects", value: "25 Active", icon: Briefcase, color: "text-yellow-500", href: "/project-fair/admin" },
@@ -141,7 +150,7 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
   ],
   committee_member: [
     { id: "member-committee-dashboard", title: "My Committee", value: "View Info", icon: CommitteeIcon, color: "text-pink-500", href: "/dashboard/committee"},
-    { id: "member-tasks", title: "Assigned Tasks", value: "View", icon: ListChecks, color: "text-green-500", href: "/committee/tasks/my" },
+    { id: "member-tasks", title: "Assigned Tasks", value: "View", icon: ListChecks, color: "text-green-500", href: "/committee/tasks/my" }, 
   ],
   super_admin: [ 
     { id: "sadmin-total-users", title: "Platform Users", value: "Manage All", icon: UsersIcon, color: "text-primary", href: "/admin/users" },
@@ -151,7 +160,7 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "sadmin-activity-log", title: "Activity Log", value: "Audit", icon: Activity, color: "text-orange-500", href: "/admin/logs" },
   ],
   institute_admin: [
-    { id: "iadmin-institute-faculty", title: "Institute Faculty", value: "Manage", icon: UsersRound, color: "text-indigo-500", href: "/admin/faculty"},
+    { id: "iadmin-institute-faculty", title: "Institute Faculty", value: "Manage", icon: UsersCog, color: "text-indigo-500", href: "/admin/faculty"},
     { id: "iadmin-institute-students", title: "Institute Students", value: "Manage", icon: BookUser, color: "text-green-500", href: "/admin/students"},
     { id: "iadmin-institute-depts", title: "Departments", value: "Manage", icon: Building2, color: "text-orange-500", href: "/admin/departments" },
     { id: "iadmin-institute-programs", title: "Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs" },
@@ -162,7 +171,7 @@ const baseDashboardData: Record<UserRole, DashboardCardItem[]> = {
     { id: "dept-admin-programs", title: "Dept. Programs", value: "Manage", icon: BookCopy, color: "text-purple-500", href: "/admin/programs" },
     { id: "dept-admin-courses", title: "Dept. Courses", value: "Manage", icon: ClipboardList, color: "text-teal-500", href: "/admin/courses" },
     { id: "dept-admin-students", title: "Dept. Students", value: "View", icon: BookUser, color: "text-green-500", href: "/admin/students"},
-    { id: "dept-admin-faculty", title: "Dept. Faculty", value: "View", icon: UsersRound, color: "text-indigo-500", href: "/admin/faculty"},
+    { id: "dept-admin-faculty", title: "Dept. Faculty", value: "View", icon: UsersCog, color: "text-indigo-500", href: "/admin/faculty"},
     { id: "dept-admin-timetable", title: "Dept. Timetable", value: "View", icon: Clock, color: "text-gray-500", href: "/admin/timetables"},
   ],
   committee_admin: [
@@ -260,9 +269,9 @@ export default function DashboardPage() {
       if (isLoadingStats) {
           return {...card, value: "Loading..."};
       }
-      if (card.id === "admin-total-users") return { ...card, value: dashboardStats.totalUsers.toLocaleString() };
-      if (card.id === "admin-total-students") return { ...card, value: dashboardStats.totalStudents.toLocaleString() };
-      if (card.id === "admin-total-faculty") return { ...card, value: dashboardStats.totalFaculty.toLocaleString() };
+      if (card.id === "admin-total-users" || card.id === "sadmin-total-users") return { ...card, value: dashboardStats.totalUsers.toLocaleString() };
+      if (card.id === "admin-total-students" || card.id === "iadmin-institute-students" || card.id === "dept-admin-students" || card.id === "hod-department-students") return { ...card, value: dashboardStats.totalStudents.toLocaleString() };
+      if (card.id === "admin-total-faculty" || card.id === "iadmin-institute-faculty" || card.id === "dept-admin-faculty" || card.id === "hod-department-staff") return { ...card, value: dashboardStats.totalFaculty.toLocaleString() };
       // ... map other dynamic stats
       return card;
   });

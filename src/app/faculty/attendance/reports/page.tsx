@@ -1,30 +1,27 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { Button } from "@/components/ui/button";
+import React, { useEffect, useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, ListFilter, Download, Loader2, BarChart2, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { format, startOfMonth, endOfMonth } from 'date-fns';
-import { cn } from "@/lib/utils";
-import type { CourseOffering, Student, AttendanceRecord, Batch, Course, Program, Faculty } from '@/types/entities';
+import type { AttendanceRecord, Student, User, CourseOffering, Course, Faculty, Program, Batch } from '@/types/entities';
 import { attendanceService } from '@/lib/api/attendance';
 import { studentService } from '@/lib/api/students';
 import { courseService } from '@/lib/api/courses';
-import { batchService } from '@/lib/api/batches';
-import { programService } from '@/lib/api/programs';
 import { facultyService } from '@/lib/api/faculty';
+import { programService } from '@/lib/api/programs';
+import { batchService } from '@/lib/api/batches';
+// Mock course offering service for now - replace with actual API calls later
+// import { courseOfferingService } from '@/lib/api/courseOfferings'; 
+import { format, startOfMonth, endOfMonth, parseISO, isValid } from 'date-fns';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from '@/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-// MOCK DATA for CourseOfferings - Replace with API calls
-const MOCK_COURSE_OFFERINGS: (CourseOffering & { courseName?: string, batchName?: string, programName?: string })[] = [
-  { id: "co_cs101_b2022_sem1_gpp", courseId: "course_cs101_dce_gpp", batchId: "batch_dce_2022_gpp", academicYear: "2023-24", semester: 1, facultyIds: ["user_faculty_cs01_gpp"], status: "ongoing", courseName: "Intro to Programming", batchName: "CS Batch 2022", programName: "DCE" },
-  { id: "co_me101_b2023_sem1_gpp", courseId: "course_me101_dme_gpp", batchId: "batch_dme_2023_gpp", academicYear: "2023-24", semester: 1, facultyIds: ["user_faculty_me01_gpp"], status: "ongoing", courseName: "Mechanics", batchName: "ME Batch 2023", programName: "DME" },
-];
 
 interface UserCookie {
   email: string;
@@ -38,6 +35,13 @@ interface EnrichedAttendanceRecord extends AttendanceRecord {
   studentName?: string;
   studentEnrollment?: string;
 }
+
+// Placeholder MOCK_COURSE_OFFERINGS - replace with actual API calls
+const MOCK_COURSE_OFFERINGS_DATA: (CourseOffering & { courseName?: string, batchName?: string, programName?: string })[] = [
+    { id: "co_cs101_b2022_sem1_gpp", courseId: "course_cs101_dce_gpp", batchId: "batch_dce_2022_gpp", academicYear: "2023-24", semester: 1, facultyIds: ["user_faculty_cs01_gpp", "fac_cs01_gpp"], status: "ongoing", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), courseName: "Intro to Programming", batchName: "CS Batch 2022", programName: "DCE" },
+    { id: "co_me101_b2023_sem1_gpp", courseId: "course_me101_dme_gpp", batchId: "batch_dme_2023_gpp", academicYear: "2023-24", semester: 1, facultyIds: ["user_faculty_me01_gpp", "fac_me01_gpp"], status: "ongoing", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), courseName: "Mechanics", batchName: "ME Batch 2023", programName: "DME" },
+];
+
 
 function getCookie(name: string): string | undefined {
   if (typeof document === 'undefined') return undefined;
@@ -67,7 +71,7 @@ export default function AttendanceReportsPage() {
   const [attendanceRecords, setAttendanceRecords] = useState<EnrichedAttendanceRecord[]>([]);
   const [allStudents, setAllStudents] = useState<Student[]>([]);
   
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -95,9 +99,9 @@ export default function AttendanceReportsPage() {
             const batches = await batchService.getAllBatches();
             const programs = await programService.getAllPrograms();
             
-            // Filter MOCK_COURSE_OFFERINGS for the current facultyId
-            const facultyCOs = MOCK_COURSE_OFFERINGS
-              .filter(co => co.facultyIds.includes(facultyProfile.id)) // Use facultyProfile.id
+            // Use MOCK_COURSE_OFFERINGS_DATA and filter by facultyProfile.id
+            const facultyCOs = MOCK_COURSE_OFFERINGS_DATA
+              .filter(co => co.facultyIds.includes(facultyProfile.id)) 
               .map(co => {
                 const course = courses.find(c => c.id === co.courseId);
                 const batch = batches.find(b => b.id === co.batchId);
@@ -123,7 +127,7 @@ export default function AttendanceReportsPage() {
         setAllStudents(studentsData);
 
       } catch (error) {
-        toast({ variant: "destructive", title: "Error", description: "Failed to load initial data." });
+        toast({ variant: "destructive", title: "Error", description: "Failed to load initial data for reports." });
       }
       setIsLoading(false);
     };
@@ -140,26 +144,26 @@ export default function AttendanceReportsPage() {
       try {
         const records = await attendanceService.getAttendanceRecords({ 
           courseOfferingId: selectedCourseOfferingId,
-          // Backend should handle date range filtering if possible, or filter client-side for now
+          // Backend should handle date range filtering. For now, API fetches all for course offering.
         });
         
-        // Client-side date filtering
+        // Client-side date filtering (if backend doesn't support it yet)
         const filteredByDate = records.filter(r => {
-            const recordDate = new Date(r.date);
-            return recordDate >= dateRange.from! && recordDate <= dateRange.to!;
+            const recordDate = parseISO(r.date); // Make sure r.date is a valid ISO string
+            return isValid(recordDate) && recordDate >= dateRange.from! && recordDate <= dateRange.to!;
         });
 
         const enriched = filteredByDate.map(r => {
           const student = allStudents.find(s => s.id === r.studentId);
           return {
             ...r,
-            studentName: student ? `${student.firstName} ${student.lastName}` : 'Unknown Student',
+            studentName: student ? `${student.firstName || ''} ${student.lastName || ''}`.trim() : 'Unknown Student',
             studentEnrollment: student?.enrollmentNumber || 'N/A',
           };
         });
         setAttendanceRecords(enriched);
       } catch (error) {
-        toast({ variant: "destructive", title: "Error", description: "Failed to load attendance records." });
+        toast({ variant: "destructive", title: "Error", description: "Failed to load attendance records for the selected criteria." });
       }
       setIsLoading(false);
     };
@@ -178,11 +182,11 @@ export default function AttendanceReportsPage() {
       const counts = { present: 0, absent: 0, late: 0, excused: 0, total: studentRecords.length };
       studentRecords.forEach(r => counts[r.status]++);
       
-      const effectivePresent = counts.present + (counts.late * 0.5) + counts.excused; // Example: late counts as half, excused counts as present
+      const effectivePresent = counts.present + (counts.late * 0.5) + counts.excused; 
       const percentage = counts.total > 0 ? (effectivePresent / counts.total) * 100 : 0;
 
       summary[student.id] = {
-        studentName: `${student.firstName} ${student.lastName}`,
+        studentName: `${student.firstName || ''} ${student.lastName || ''}`.trim(),
         enrollment: student.enrollmentNumber,
         ...counts,
         percentage: parseFloat(percentage.toFixed(1)),
@@ -198,7 +202,6 @@ export default function AttendanceReportsPage() {
   }, [studentAttendanceSummary]);
 
   const handleExport = () => {
-    // Basic CSV export functionality
     if (Object.keys(studentAttendanceSummary).length === 0) {
       toast({ title: "No Data", description: "No attendance data to export for the current selection." });
       return;
@@ -280,34 +283,36 @@ export default function AttendanceReportsPage() {
                     <Button onClick={handleExport} size="sm" className="mt-3"><Download className="mr-2 h-4 w-4" /> Export Summary CSV</Button>
                 </CardContent>
               </Card>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Enrollment No.</TableHead>
-                    <TableHead>Student Name</TableHead>
-                    <TableHead className="text-center">Total</TableHead>
-                    <TableHead className="text-center">Present</TableHead>
-                    <TableHead className="text-center">Absent</TableHead>
-                    <TableHead className="text-center">Late</TableHead>
-                    <TableHead className="text-center">Excused</TableHead>
-                    <TableHead className="text-center">Attendance %</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {Object.values(studentAttendanceSummary).sort((a,b) => a.enrollment.localeCompare(b.enrollment)).map(summary => (
-                    <TableRow key={summary.enrollment}>
-                      <TableCell>{summary.enrollment}</TableCell>
-                      <TableCell>{summary.studentName}</TableCell>
-                      <TableCell className="text-center">{summary.total}</TableCell>
-                      <TableCell className="text-center text-green-600">{summary.present}</TableCell>
-                      <TableCell className="text-center text-red-600">{summary.absent}</TableCell>
-                      <TableCell className="text-center text-yellow-600">{summary.late}</TableCell>
-                      <TableCell className="text-center text-blue-600">{summary.excused}</TableCell>
-                      <TableCell className={`text-center font-semibold ${summary.percentage >= 75 ? 'text-success' : 'text-destructive'}`}>{summary.percentage}%</TableCell>
+              <div className="overflow-x-auto">
+                <Table>
+                    <TableHeader>
+                    <TableRow>
+                        <TableHead>Enrollment No.</TableHead>
+                        <TableHead>Student Name</TableHead>
+                        <TableHead className="text-center">Total</TableHead>
+                        <TableHead className="text-center">Present</TableHead>
+                        <TableHead className="text-center">Absent</TableHead>
+                        <TableHead className="text-center">Late</TableHead>
+                        <TableHead className="text-center">Excused</TableHead>
+                        <TableHead className="text-center">Attendance %</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                    </TableHeader>
+                    <TableBody>
+                    {Object.values(studentAttendanceSummary).sort((a,b) => a.enrollment.localeCompare(b.enrollment)).map(summary => (
+                        <TableRow key={summary.enrollment}>
+                        <TableCell>{summary.enrollment}</TableCell>
+                        <TableCell>{summary.studentName}</TableCell>
+                        <TableCell className="text-center">{summary.total}</TableCell>
+                        <TableCell className="text-center text-green-600">{summary.present}</TableCell>
+                        <TableCell className="text-center text-red-600">{summary.absent}</TableCell>
+                        <TableCell className="text-center text-yellow-600">{summary.late}</TableCell>
+                        <TableCell className="text-center text-blue-600">{summary.excused}</TableCell>
+                        <TableCell className={`text-center font-semibold ${summary.percentage >= 75 ? 'text-success' : 'text-destructive'}`}>{summary.percentage}%</TableCell>
+                        </TableRow>
+                    ))}
+                    </TableBody>
+                </Table>
+              </div>
             </>
           ) : (
             <p className="text-center text-muted-foreground py-8">No attendance records found for the selected criteria.</p>
@@ -317,4 +322,3 @@ export default function AttendanceReportsPage() {
     </div>
   );
 }
-

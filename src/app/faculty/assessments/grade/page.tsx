@@ -161,7 +161,8 @@ export default function GradeAssessmentsPage() {
         const allAssessments = await assessmentService.getAllAssessments();
         const courseAssessments = allAssessments.filter(asmnt => 
             asmnt.courseId === offering.courseId && 
-            asmnt.programId === offering.programName && // This might be an issue, programName vs programId
+            // This programId comparison logic might need adjustment based on how program info is stored on offering
+            asmnt.programId === (offering as any).programId && // Assuming offering has programId, or find program by batch
             (asmnt.batchId === offering.batchId || !asmnt.batchId) // Batch specific or program-wide for course
         );
         setAssessments(courseAssessments);
