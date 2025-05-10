@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
@@ -118,7 +117,7 @@ export default function TimetableManagementPage() {
       setIsLoading(false);
     };
     fetchInitialData();
-  }, [toast, formProgramId]); 
+  }, [toast]); // Removed formProgramId from dependency array to avoid re-fetch on form change.
   
   const filteredBatchesForForm = useMemo(() => {
       if(!formProgramId) return [];
@@ -137,7 +136,6 @@ export default function TimetableManagementPage() {
   const resetForm = () => {
     setFormName(''); setFormAcademicYear(''); setFormSemester(1);
     setFormProgramId(programs.length > 0 ? programs[0].id : '');
-    // Batch ID will be set by the useEffect above if programs has items
     setFormBatchId(filteredBatchesForForm.length > 0 ? filteredBatchesForForm[0].id : '');
     setFormVersion('1.0'); setFormStatus('draft'); setFormEffectiveDate(new Date());
     setCurrentEntries([]); setCurrentTimetable(null); setEntryEditingIndex(null);
