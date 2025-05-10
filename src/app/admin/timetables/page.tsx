@@ -20,7 +20,7 @@ import type { Timetable, TimetableEntry, TimetableStatus, DayOfWeek, Program, Ba
 import { timetableService } from '@/lib/api/timetables';
 import { programService } from '@/lib/api/programs';
 import { batchService } from '@/lib/api/batches';
-import { courseOfferingService } from '@/lib/api/courseOfferings';
+import { courseOfferingService } from '../../../lib/api/courseOfferings'; // Changed to relative path
 import { facultyService } from '@/lib/api/faculty';
 import { roomService } from '@/lib/services/roomService';
 import { courseService } from '@/lib/api/courses';
@@ -117,7 +117,7 @@ export default function TimetableManagementPage() {
       setIsLoading(false);
     };
     fetchInitialData();
-  }, [toast, formProgramId]); // Added formProgramId to dependencies
+  }, [toast]); 
   
   const filteredBatchesForForm = useMemo(() => {
       if(!formProgramId) return [];
@@ -127,7 +127,7 @@ export default function TimetableManagementPage() {
   useEffect(() => {
       if(filteredBatchesForForm.length > 0 && !filteredBatchesForForm.find(b => b.id === formBatchId)){
           setFormBatchId(filteredBatchesForForm[0].id);
-      } else if (filteredBatchesForForm.length === 0 && formProgramId) { // If program is selected but no batches
+      } else if (filteredBatchesForForm.length === 0 && formProgramId) { 
           setFormBatchId('');
       }
   }, [formProgramId, filteredBatchesForForm, formBatchId]);
@@ -136,7 +136,7 @@ export default function TimetableManagementPage() {
   const resetForm = () => {
     setFormName(''); setFormAcademicYear(''); setFormSemester(1);
     setFormProgramId(programs.length > 0 ? programs[0].id : '');
-    // Batch ID will be set by the useEffect above based on program
+    setFormBatchId(filteredBatchesForForm.length > 0 ? filteredBatchesForForm[0].id : '');
     setFormVersion('1.0'); setFormStatus('draft'); setFormEffectiveDate(new Date());
     setCurrentEntries([]); setCurrentTimetable(null); setEntryEditingIndex(null);
   };
@@ -189,14 +189,14 @@ export default function TimetableManagementPage() {
       startTime: entryStartTime,
       endTime: entryEndTime,
       courseOfferingId: entryCourseOfferingId,
+      courseId: courseOfferings.find(co => co.id === entryCourseOfferingId)?.courseId || '', // Store courseId for easier access
       facultyId: entryFacultyId,
       roomId: entryRoomId,
       entryType: entryType,
     };
 
-    // Conflict check for the current timetable entries
     const conflict = currentEntries.find((e, idx) => 
-        idx !== entryEditingIndex && // Exclude the entry being edited from conflict check
+        idx !== entryEditingIndex && 
         e.dayOfWeek === newEntry.dayOfWeek &&
         e.roomId === newEntry.roomId &&
         !(newEntry.endTime <= e.startTime || newEntry.startTime >= e.endTime) 
@@ -214,7 +214,6 @@ export default function TimetableManagementPage() {
     } else {
       setCurrentEntries(prev => [...prev, newEntry]);
     }
-    // Reset entry form
     setEntryDayOfWeek('Monday'); setEntryStartTime('09:00'); setEntryEndTime('10:00');
     setEntryCourseOfferingId(''); setEntryFacultyId(''); setEntryRoomId(''); setEntryType('lecture');
   };
@@ -268,7 +267,6 @@ export default function TimetableManagementPage() {
     }
   };
   
-  // Filtering and Sorting Logic
   const filteredTimetables = useMemo(() => {
       let result = [...timetables];
       if (searchTerm) {
@@ -336,7 +334,6 @@ export default function TimetableManagementPage() {
           <Button onClick={() => { resetForm(); setIsDialogOpen(true); }} disabled={programs.length === 0 || batches.length === 0}><PlusCircle className="mr-2 h-5 w-5" />New Timetable</Button>
         </CardHeader>
         <CardContent>
-          {/* Filters and Search */}
           <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 border rounded-lg">
             <div><Label htmlFor="searchTerm">Search Name/Year</Label><Input id="searchTerm" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Keyword..." /></div>
             <div><Label htmlFor="filterProgram">Filter Program</Label><Select value={filterProgram} onValueChange={setFilterProgram}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Programs</SelectItem>{programs.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent></Select></div>
@@ -410,7 +407,7 @@ export default function TimetableManagementPage() {
                 <TableBody>{currentEntries.map((entry, index) => (
                     <TableRow key={index}>
                         <TableCell>{entry.dayOfWeek}</TableCell><TableCell>{entry.startTime}-{entry.endTime}</TableCell>
-                        <TableCell>{courses.find(c=>c.id === (courseOfferings.find(co=>co.id===entry.courseOfferingId)?.courseId))?.subjectName || 'N/A'}</TableCell>
+                        <TableCell>{courses.find(c=>c.id === (entry.courseId))?.subjectName || 'N/A'}</TableCell>
                         <TableCell>{faculties.find(f=>f.id===entry.facultyId)?.gtuName?.split(' ')[0] || 'N/A'}</TableCell>
                         <TableCell>{rooms.find(r=>r.id===entry.roomId)?.roomNumber || 'N/A'}</TableCell>
                         <TableCell className="space-x-1">
@@ -421,7 +418,7 @@ export default function TimetableManagementPage() {
                 ))}</TableBody></Table> : <p className="p-4 text-sm text-muted-foreground text-center">No entries added yet.</p>}
             </div>
           </form>
-          <DialogFooter className="pt-4 border-t mt-auto"> {/* Added mt-auto to push footer down */}
+          <DialogFooter className="pt-4 border-t mt-auto"> 
             <DialogClose asChild><Button type="button" variant="outline" disabled={isSubmitting}>Cancel</Button></DialogClose>
             <Button type="submit" form="timetableForm" disabled={isSubmitting}>
               {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
