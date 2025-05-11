@@ -1,4 +1,3 @@
-
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Result, Student, Program, ResultSubject } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
@@ -44,24 +43,18 @@ const processGtuResultCsvForApi = (rows: any[], clientPrograms: Program[]): { pr
         return;
       }
       
-      // Find programId and departmentId based on branchCode by looking up clientPrograms
       const programForBranch = clientPrograms.find(p => p.code.toUpperCase() === branchCodeCsv);
       if (!programForBranch) {
-        processingErrors.push({ row: index + 2, message: `Program not found for branch code '${branchCodeCsv}'. Ensure this program and branch code exists in the system.`, data: row });
+        processingErrors.push({ row: index + 2, message: `Program not found for branch code '${branchCodeCsv}'. CSV row: ${JSON.stringify(row)}. Available program codes: ${clientPrograms.map(p=>p.code).join(', ')}. Ensure this program and branch code exists in the system.`, data: row });
         return;
       }
-      // const programId = programForBranch.id;
-      // No departmentId directly on Result model, but program implies department
 
       const subjects: ResultSubject[] = [];
-      // Header transformation makes keys lowercase and removes spaces/special chars.
-      // E.g., SUB1 -> sub1, SUB1NA -> sub1na
       const subjectKeys = Object.keys(row).filter(key => /^sub\d+$/.test(key));
-      const maxSubjects = subjectKeys.length;
+      const maxSubjects = Math.floor(subjectKeys.length / 6); // Approx count based on 6 grade fields per subject in sample
 
 
       for (let i = 1; i <= maxSubjects; i++) {
-        // Use transformed keys
         const subCodeKey = `sub${i}`;
         const subNameKey = `sub${i}na`;
         const creditsKey = `sub${i}cr`;
@@ -105,14 +98,14 @@ const processGtuResultCsvForApi = (rows: any[], clientPrograms: Program[]): { pr
         declarationDate: row.declarationdate ? new Date(row.declarationdate).toISOString() : undefined,
         academicYear: row.academicyear?.toString().trim(),
         semester: parseInt(row.sem?.toString(), 10) || 0,
-        unitNo: parseFloat(row.unitno?.toString()) || undefined, // Transformed: unit_no -> unitno
+        unitNo: parseFloat(row.unitno?.toString()) || undefined, 
         examNumber: parseFloat(row.examnumber?.toString()) || undefined,
         name: row.name?.toString().trim() || 'Unknown Student',
         instcode: parseInt(row.instcode?.toString(), 10) || undefined,
         instName: row.instname?.toString().trim(),
         courseName: row.coursename?.toString().trim(),
         branchCode: parseInt(branchCodeCsv, 10) || undefined, 
-        branchName: row.brname?.toString().trim() || 'Unknown Branch', // Transformed: br_name -> brname
+        branchName: row.brname?.toString().trim() || 'Unknown Branch', 
         subjects,
         totalCredits: subjects.reduce((sum, sub) => sum + sub.credits, 0),
         earnedCredits: subjects.reduce((sum, sub) => sum + (sub.isBacklog ? 0 : sub.credits), 0),
@@ -124,8 +117,8 @@ const processGtuResultCsvForApi = (rows: any[], clientPrograms: Program[]): { pr
         remark: row.remark?.toString().trim(),
         currentBacklog: parseInt(row.curbackl?.toString(), 10) || 0,
         totalBacklog: parseInt(row.totbackl?.toString(), 10) || 0,
-        uploadBatch: uuidv4(), // Generate a new batch ID for this import
-        programId: programForBranch.id, // Add programId
+        uploadBatch: uuidv4(), 
+        programId: programForBranch.id, 
       };
       processedResults.push(resultEntry);
     } catch (e) {
@@ -145,20 +138,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'No file uploaded.' }, { status: 400 });
     }
     if (!programsJson) {
-      return NextResponse.json({ message: 'Program data for mapping is missing.' }, { status: 400 });
+        return NextResponse.json({ message: 'Program data for mapping is missing.' }, { status: 400 });
     }
     const clientPrograms: Program[] = JSON.parse(programsJson);
 
     const fileText = await file.text();
-    // Ensure papaparse config matches the one in the reference code or is appropriate
-    const { data: parsedCsvData, errors: parseErrors } = parse<any>(fileText, {
+    const { data: parsedCsvData, errors: parseErrors, meta } = parse<any>(fileText, {
       header: true,
-      skipEmptyLines: 'greedy', // Changed from true to 'greedy' to match reference behavior if intended
-      transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9_]/gi, ''), // Key: ensure this matches how processGtuResultCsvForApi expects keys
+      skipEmptyLines: 'greedy', 
+      transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9_]/gi, ''),
     });
+    
+    console.log("Parsed CSV Headers:", meta.fields);
+    console.log("First Parsed Row (sample):", parsedCsvData.length > 0 ? parsedCsvData[0] : "No data");
+
 
     if (parseErrors.length > 0) {
       const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row + 2}: ${e.message} (Code: ${e.code})`).slice(0,5);
+      console.error("CSV Parsing Errors:", errorMessages);
       return NextResponse.json({ message: 'Error parsing GTU Results CSV file.', errors: errorMessages, error: `Error parsing GTU Results CSV file. First error: ${errorMessages[0]}` }, { status: 400 });
     }
     if (parsedCsvData.length === 0) {
@@ -171,6 +168,7 @@ export async function POST(request: NextRequest) {
     let updatedCount = 0; 
     let skippedCountDueToProcessing = processingErrors.length; 
     const now = new Date().toISOString();
+    const currentUploadBatchId = uuidv4(); // Single batch ID for this upload
 
     for (const resultData of processedResults) {
       const existingResultIndex = resultsStore.findIndex(
@@ -178,13 +176,13 @@ export async function POST(request: NextRequest) {
       );
 
       if (existingResultIndex !== -1) {
-        resultsStore[existingResultIndex] = { ...resultsStore[existingResultIndex], ...resultData, updatedAt: now };
+        resultsStore[existingResultIndex] = { ...resultsStore[existingResultIndex], ...resultData, uploadBatch: currentUploadBatchId, updatedAt: now };
         updatedCount++;
       } else {
         const newResultWithId: Result = {
           _id: `gtu_res_${uuidv4()}`, 
           ...resultData,
-          uploadBatch: resultData.uploadBatch || uuidv4(), 
+          uploadBatch: currentUploadBatchId, 
           createdAt: now,
           updatedAt: now,
         };
@@ -197,16 +195,17 @@ export async function POST(request: NextRequest) {
 
     if (processingErrors.length > 0) {
         const finalMessage = `GTU Results import partially completed. New: ${newCount}, Updated: ${updatedCount}, Skipped (due to processing issues): ${skippedCountDueToProcessing}.`;
+        console.error("GTU Import Processing Errors:", processingErrors.slice(0,10));
         return NextResponse.json({ 
             message: finalMessage, 
             newCount, 
             updatedCount, 
-            skippedCount: skippedCountDueToProcessing, // Report only processing skips for clarity
+            skippedCount: skippedCountDueToProcessing, 
             errors: processingErrors.slice(0,10) 
         }, { status: 207 }); 
     }
 
-    return NextResponse.json({ message: 'GTU Results imported successfully.', newCount, updatedCount, skippedCount: skippedCountDueToProcessing }, { status: 201 });
+    return NextResponse.json({ message: 'GTU Results imported successfully.', newCount, updatedCount, skippedCount: skippedCountDueToProcessing, batchId: currentUploadBatchId }, { status: 201 });
 
   } catch (error) {
     console.error('Critical error during GTU result import process:', error);
