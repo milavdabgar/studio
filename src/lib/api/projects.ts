@@ -31,7 +31,8 @@ export const projectService = {
       const errorData = await response.json().catch(() => ({ message: 'Failed to fetch projects' }));
       throw new Error(errorData.message || 'Failed to fetch projects');
     }
-    return response.json();
+    const data = await response.json();
+    return Array.isArray(data) ? data : (data.projects || []); // Ensure it returns an array
   },
 
   async getProjectById(id: string): Promise<Project> {
@@ -89,14 +90,13 @@ export const projectService = {
   },
   
   async getMyProjects(): Promise<Project[]> {
-    // This assumes the API route /api/projects/my-projects uses authentication context
-    // to determine the current user and fetch their projects.
     const response = await fetch(`${API_BASE_URL}/projects/my-projects`);
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: 'Failed to fetch your projects' }));
       throw new Error(errorData.message || 'Failed to fetch your projects');
     }
-    return response.json();
+    const data = await response.json();
+    return data.data?.projects || data || []; // Handle different possible response structures
   },
 
   async getProjectsForJury(eventId: string, evaluationType: 'department' | 'central' = 'department'): Promise<{ evaluatedProjects: Project[], pendingProjects: Project[], totalEvaluated: number, totalPending: number }> {
@@ -141,7 +141,7 @@ export const projectService = {
         throw new Error(errorData.message || 'Failed to generate certificate data.');
     }
     const result = await response.json();
-    return result.certificates || [];
+    return result.data?.certificates || result.certificates || []; // Handle nested data structure if present
   },
 
   async sendCertificateEmails(data: { certificateIds: string[], emailSubject?: string, emailTemplate?: string }): Promise<{ message: string, emailsSent: number }> {
@@ -157,7 +157,6 @@ export const projectService = {
     return response.json();
   },
 
-  // Import/Export
   async importProjects(file: File, departments: Department[], teams: ProjectTeam[], events: ProjectEvent[], users: User[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number, errors?: any[] }> {
     const formData = new FormData();
     formData.append('file', file);
@@ -181,7 +180,7 @@ export const projectService = {
     return responseData;
   },
 
-  async exportProjects(filters: Record<string, string | number | boolean> = {}): Promise<string> { // Returns CSV string
+  async exportProjects(filters: Record<string, string | number | boolean> = {}): Promise<string> { 
     const queryParams = new URLSearchParams();
      for (const key in filters) {
       if (Object.prototype.hasOwnProperty.call(filters, key) && filters[key] !== undefined && filters[key] !== null && filters[key] !== '') {
@@ -192,16 +191,18 @@ export const projectService = {
     if (!response.ok) {
       throw new Error('Failed to export projects to CSV');
     }
-    return response.text(); // Get CSV data as text
+    return response.text();
   },
   
   async getProjectStatistics(eventId?: string): Promise<ProjectStatistics> {
     const queryParams = eventId ? `?eventId=${eventId}` : '';
     const response = await fetch(`${API_BASE_URL}/projects/statistics${queryParams}`);
     if (!response.ok) {
-        throw new Error('Failed to fetch project statistics');
+        const errorData = await response.json().catch(() => ({ message: 'Failed to fetch project statistics' }));
+        throw new Error(errorData.message || 'Failed to fetch project statistics');
     }
-    return response.json();
+    const data = await response.json();
+    return data.data || data; // Handle potential nesting of 'data' property
   },
 
 };
