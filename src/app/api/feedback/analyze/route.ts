@@ -202,19 +202,35 @@ function calculateGenericScores<T extends { scores: { [key: string]: number }, c
 
 const generateMarkdownReport = (result: Omit<AnalysisResult, 'id'|'markdownReport'|'analysisDate'|'originalFileName'>): string => {
     const formatFloat = (x: number): string => x.toFixed(2);
+
     let report = `# Student Feedback Analysis Report\n\n`;
-    // ... (rest of the markdown generation logic from reference/feedback.ts) ...
-    // This part is quite lengthy, so I'll summarize. It should iterate through
-    // subject_scores, faculty_scores, etc., and format them into markdown tables.
 
     report += `## Assessment Parameters & Rating Scale\n\n`;
     report += `### Assessment Parameters\n\n`;
-    report += `- **Q1 Syllabus Coverage**: ...\n`; // Add all questions
-    report += `- **Q12 Student Progress Feedback**: ...\n\n`;
+    report += `- **Q1 Syllabus Coverage**: Has the Teacher covered the entire syllabus as prescribed by University/College/Board?\n`;
+    report += `- **Q2 Topics Beyond Syllabus**: Has the Teacher covered relevant topics beyond the syllabus?\n`;
+    report += `- **Q3 Pace of Teaching**: Pace at which contents were covered?\n`;
+    report += `- **Q4 Practical Demo**: Support for the development of student's skill (Practical demonstration)\n`;
+    report += `- **Q5 Hands-on Training**: Support for the development of student's skill (Hands-on training)\n`;
+    report += `- **Q6 Technical Skills of Teacher**: Effectiveness of Teacher in terms of: Technical skills\n`;
+    report += `- **Q7 Communication Skills of Teacher**: Effectiveness of Teacher in terms of: Communication skills\n`;
+    report += `- **Q8 Doubt Clarification**: Clarity of expectations of students\n`;
+    report += `- **Q9 Use of Teaching Tools**: Effectiveness of Teacher in terms of: Use of teaching aids\n`;
+    report += `- **Q10 Motivation**: Motivation and inspiration for students to learn\n`;
+    report += `- **Q11 Helpfulness of Teacher**: Willingness to offer help and advice to students\n`;
+    report += `- **Q12 Student Progress Feedback**: Feedback provided on student's progress\n\n`;
 
-    report += `### Rating Scale\n\n| Rating | Description |\n|--------|-------------|\n| 1      | Very Poor   |\n...\n| 5      | Very Good   |\n\n`;
+    report += `### Rating Scale\n\n`;
+    report += `| Rating | Description |\n`;
+    report += `|--------|-------------|\n`;
+    report += `| 1      | Very Poor   |\n`;
+    report += `| 2      | Poor        |\n`;
+    report += `| 3      | Average     |\n`;
+    report += `| 4      | Good        |\n`;
+    report += `| 5      | Very Good   |\n\n`;
+
     report += `## Feedback Analysis (Overall)\n\n`;
-    
+
     const overallSections = [
         { title: "Branch Analysis", data: result.branch_scores, keys: ["Branch", "Score"] },
         { title: "Term-Year Analysis", data: result.term_year_scores, keys: ["Year", "Term", "Score"] },
@@ -225,11 +241,15 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id'|'markdownRepor
 
     overallSections.forEach(section => {
         report += `### ${section.title}\n\n`;
-        report += `| ${section.keys.join(' | ')} |\n`;
-        report += `|${section.keys.map(() => '------').join('|')}|\n`;
-        section.data.forEach((item: any) => {
-            report += `| ${section.keys.map(key => typeof item[key] === 'number' ? formatFloat(item[key]) : item[key] || '-').join(' | ')} |\n`;
-        });
+        if (section.data && section.data.length > 0) {
+            report += `| ${section.keys.join(' | ')} |\n`;
+            report += `|${section.keys.map(() => '------').join('|')}|\n`;
+            section.data.forEach((item: any) => {
+                report += `| ${section.keys.map(key => typeof item[key] === 'number' ? formatFloat(item[key]) : item[key] || '-').join(' | ')} |\n`;
+            });
+        } else {
+            report += `_No data available for ${section.title}._\n`;
+        }
         report += '\n';
     });
 
@@ -245,14 +265,22 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id'|'markdownRepor
     
     parameterSections.forEach(section => {
         report += `### ${section.title}\n\n`;
-        const allKeys = [...section.baseKeys, ...section.scoreKeys, section.overallScoreKey];
-        report += `| ${allKeys.join(' | ')} |\n`;
-        report += `|${allKeys.map(() => '------').join('|')}|\n`;
-        section.data.forEach((item: any) => {
-            report += `| ${allKeys.map(key => typeof item[key] === 'number' ? formatFloat(item[key]) : item[key] || '-').join(' | ')} |\n`;
-        });
+        if (section.data && section.data.length > 0) {
+            const allKeys = [...section.baseKeys, ...section.scoreKeys, section.overallScoreKey];
+            report += `| ${allKeys.join(' | ')} |\n`;
+            report += `|${allKeys.map(() => '------').join('|')}|\n`;
+            section.data.forEach((item: any) => {
+                report += `| ${allKeys.map(key => typeof item[key] === 'number' ? formatFloat(item[key]) : item[key] || '-').join(' | ')} |\n`;
+            });
+        } else {
+            report += `_No data available for ${section.title}._\n`;
+        }
         report += '\n';
     });
+    
+    report += `## Misc Feedback Analysis\n\n`;
+    report += `### Faculty-Subject Correlation Matrix\n\n`;
+    report += `_Faculty-Subject Correlation Matrix data and visualization would be presented here in a full implementation._\n\n`;
 
 
     return report;
@@ -275,7 +303,6 @@ export async function POST(request: NextRequest) {
         header: true,
         skipEmptyLines: true,
         dynamicTyping: (field: string | number) => {
-            // Enable dynamic typing for Q1-Q12, default others to string
             if (typeof field === 'string' && /^Q\d+$/.test(field)) {
               return true;
             }
@@ -292,13 +319,12 @@ export async function POST(request: NextRequest) {
       const newRow: any = { ...row };
       for (let i = 1; i <= 12; i++) {
         const qKey = `Q${i}`;
-        newRow[qKey] = Number(row[qKey] || 0); // Ensure Qx are numbers, default to 0 if missing/invalid
+        newRow[qKey] = Number(row[qKey] || 0); 
       }
       return newRow as FeedbackDataRow;
     });
 
 
-    // Calculate scores
     const subjectScores = calculateSubjectScores(feedbackData);
     const facultyScores = calculateFacultyScores(subjectScores);
     const semesterScores = calculateGenericScores<any, keyof FeedbackDataRow>(feedbackData, ['Year', 'Term', 'Branch', 'Sem']) as SemesterScore[];
@@ -322,12 +348,10 @@ export async function POST(request: NextRequest) {
         analysisDate: new Date().toISOString(),
         ...analysisPayload,
         markdownReport,
-        // rawFeedbackData: feedbackData.slice(0, 10) // Store a sample
     };
 
     analysisResultsStore.set(resultId, analysisResult);
 
-    // For simplicity, we return the ID and the client can fetch the full report
     return NextResponse.json({ success: true, reportId: resultId, message: "Analysis complete. Fetch report by ID." });
 
   } catch (error) {
