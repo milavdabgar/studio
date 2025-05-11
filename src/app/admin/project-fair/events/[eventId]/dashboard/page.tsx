@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, ArrowLeft, Users, Briefcase, CalendarCheck, Award, MapPin, ListChecks, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { ProjectEvent, Project, ProjectTeam, ProjectLocation, ProjectStatistics } from '@/types/entities';
+import type { ProjectEvent, Project, ProjectStatistics } from '@/types/entities';
 import { projectEventService } from '@/lib/api/projectEvents';
-import { projectService } from '@/lib/api/projects'; // Assuming this service exists
+import { projectService } from '@/lib/api/projects'; 
 import Link from 'next/link';
 import { format } from 'date-fns';
 
@@ -29,14 +29,17 @@ export default function ProjectEventDashboardPage() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const [eventData, projectsData, statsData] = await Promise.all([
+        const [eventData, projectsDataResponse, statsDataResponse] = await Promise.all([
           projectEventService.getEventById(eventId),
-          projectService.getAllProjects({ eventId: eventId }), // Assuming getAllProjects filters by eventId
-          projectService.getProjectStatistics(eventId) // Assuming this service exists
+          projectService.getAllProjects({ eventId: eventId }),
+          projectService.getProjectStatistics(eventId) 
         ]);
         setEvent(eventData);
-        setProjects(projectsData);
-        setStats(statsData);
+        
+        setProjects(Array.isArray(projectsDataResponse) ? projectsDataResponse : []);
+        
+        setStats(statsDataResponse && typeof statsDataResponse === 'object' ? statsDataResponse : { total: 0, evaluated: 0, pending: 0, averageScore: 0, departmentWise: {} });
+
       } catch (error) {
         console.error("Failed to load event dashboard data:", error);
         toast({ variant: "destructive", title: "Error", description: "Could not load event dashboard data." });
@@ -62,9 +65,9 @@ export default function ProjectEventDashboardPage() {
   }
 
   const dashboardCards = [
-    { title: "Total Projects", value: stats?.total || projects.length, icon: Briefcase, color: "text-blue-500", href: `/admin/project-fair/events/${eventId}/projects` },
-    { title: "Total Teams", value: new Set(projects.map(p => p.teamId)).size, icon: Users, color: "text-green-500", href: `/admin/project-fair/events/${eventId}/teams` },
-    { title: "Evaluated Projects", value: stats?.evaluated || projects.filter(p => p.deptEvaluation?.completed || p.centralEvaluation?.completed).length, icon: CalendarCheck, color: "text-purple-500", href: `/admin/project-fair/events/${eventId}/evaluations` },
+    { title: "Total Projects", value: String(stats?.total || projects.length), icon: Briefcase, color: "text-blue-500", href: `/admin/project-fair/events/${eventId}/projects` },
+    { title: "Total Teams", value: String(new Set(projects.map(p => p.teamId)).size), icon: Users, color: "text-green-500", href: `/admin/project-fair/events/${eventId}/teams` },
+    { title: "Evaluated Projects", value: String(stats?.evaluated || projects.filter(p => p.deptEvaluation?.completed || p.centralEvaluation?.completed).length), icon: CalendarCheck, color: "text-purple-500", href: `/admin/project-fair/events/${eventId}/evaluations` },
     { title: "Winners Published", value: event.publishResults ? "Yes" : "No", icon: Award, color: event.publishResults ? "text-yellow-500" : "text-gray-500", href: `/admin/project-fair/events/${eventId}/results` },
   ];
 
@@ -128,3 +131,9 @@ export default function ProjectEventDashboardPage() {
                     </Link>
                 ))}
             </CardContent>
+          </Card>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

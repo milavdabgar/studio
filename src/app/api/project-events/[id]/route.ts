@@ -11,6 +11,9 @@ declare global {
 if (!global.__API_PROJECT_EVENTS_STORE__) {
   global.__API_PROJECT_EVENTS_STORE__ = [];
 }
+// This variable will reference the global store.
+// IMPORTANT: If this variable is reassigned (e.g., by .filter()), 
+// global.__API_PROJECT_EVENTS_STORE__ must also be reassigned to reflect the change.
 let projectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
 
 interface RouteParams {
@@ -21,7 +24,12 @@ interface RouteParams {
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
-  const event = projectEventsStore.find(e => e.id === id);
+  // Ensure the store is an array before searching
+  if (!Array.isArray(global.__API_PROJECT_EVENTS_STORE__)) {
+    global.__API_PROJECT_EVENTS_STORE__ = []; // Recover if possible
+    return NextResponse.json({ message: 'Project Event data store corrupted.' }, { status: 500 });
+  }
+  const event = global.__API_PROJECT_EVENTS_STORE__.find(e => e.id === id);
   if (event) {
     return NextResponse.json(event);
   }
@@ -30,15 +38,19 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
+  if (!Array.isArray(global.__API_PROJECT_EVENTS_STORE__)) {
+    global.__API_PROJECT_EVENTS_STORE__ = [];
+    return NextResponse.json({ message: 'Project Event data store corrupted.' }, { status: 500 });
+  }
   try {
     const eventDataToUpdate = await request.json() as Partial<Omit<ProjectEvent, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>>;
-    const eventIndex = projectEventsStore.findIndex(e => e.id === id);
+    const eventIndex = global.__API_PROJECT_EVENTS_STORE__.findIndex(e => e.id === id);
 
     if (eventIndex === -1) {
       return NextResponse.json({ message: 'Event not found' }, { status: 404 });
     }
 
-    const existingEvent = projectEventsStore[eventIndex];
+    const existingEvent = global.__API_PROJECT_EVENTS_STORE__[eventIndex];
 
     // Validations
     if (eventDataToUpdate.name !== undefined && !eventDataToUpdate.name.trim()) {
@@ -76,8 +88,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       updatedAt: new Date().toISOString(),
     };
 
-    projectEventsStore[eventIndex] = updatedEvent;
-    global.__API_PROJECT_EVENTS_STORE__ = projectEventsStore;
+    global.__API_PROJECT_EVENTS_STORE__[eventIndex] = updatedEvent;
+    projectEventsStore = global.__API_PROJECT_EVENTS_STORE__; // Keep local ref in sync
     return NextResponse.json(updatedEvent);
   } catch (error) {
     console.error(`Error updating event ${id}:`, error);
@@ -87,43 +99,17 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
-  const initialLength = projectEventsStore.length;
-  projectEventsStore = projectEventsStore.filter(e => e.id !== id);
+  if (!Array.isArray(global.__API_PROJECT_EVENTS_STORE__)) {
+    global.__API_PROJECT_EVENTS_STORE__ = [];
+    return NextResponse.json({ message: 'Project Event data store corrupted during delete.' }, { status: 500 });
+  }
+  const initialLength = global.__API_PROJECT_EVENTS_STORE__.length;
+  const newStore = global.__API_PROJECT_EVENTS_STORE__.filter(e => e.id !== id);
 
-  if (projectEventsStore.length === initialLength) {
+  if (newStore.length === initialLength) {
     return NextResponse.json({ message: 'Event not found' }, { status: 404 });
   }
-  global.__API_PROJECT_EVENTS_STORE__ = projectEventsStore;
+  global.__API_PROJECT_EVENTS_STORE__ = newStore;
+  projectEventsStore = global.__API_PROJECT_EVENTS_STORE__;
   return NextResponse.json({ message: 'Event deleted successfully' }, { status: 200 });
 }
-
-// Specific route for updating schedule was moved to its own file: [id]/schedule/route.ts
-// So, this PATCH handler is no longer needed here.
-// If it was intended for general partial updates, PUT can handle that,
-// or a more specific PATCH can be designed. For now, removing to avoid conflict.
-/*
-export async function PATCH(request: NextRequest, { params }: RouteParams) {
-    const { id } = params; // This is the event ID
-    if (request.nextUrl.pathname.endsWith('/schedule')) { // Check if it's a schedule update
-        try {
-            const { schedule } = await request.json() as { schedule: ProjectEventScheduleItem[] };
-            const eventIndex = projectEventsStore.findIndex(e => e.id === id);
-
-            if (eventIndex === -1) {
-                return NextResponse.json({ message: 'Event not found for schedule update' }, { status: 404 });
-            }
-
-            projectEventsStore[eventIndex].schedule = schedule;
-            projectEventsStore[eventIndex].updatedAt = new Date().toISOString();
-            projectEventsStore[eventIndex].updatedBy = "user_admin_placeholder_schedule_patch"; // Placeholder
-            global.__API_PROJECT_EVENTS_STORE__ = projectEventsStore;
-
-            return NextResponse.json(projectEventsStore[eventIndex]);
-        } catch (error) {
-            console.error(`Error updating schedule for event ${id}:`, error);
-            return NextResponse.json({ message: `Error updating schedule for event ${id}`, error: (error as Error).message }, { status: 500 });
-        }
-    }
-    return NextResponse.json({ message: 'Invalid endpoint for PATCH' }, { status: 405 });
-}
-*/
