@@ -40,31 +40,55 @@ let projectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
 const generateEventId = (): string => `event_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const isActiveParam = searchParams.get('isActive');
+  try {
+    if (!Array.isArray(global.__API_PROJECT_EVENTS_STORE__)) {
+      console.error("/api/project-events GET: global.__API_PROJECT_EVENTS_STORE__ is not an array!", global.__API_PROJECT_EVENTS_STORE__);
+      global.__API_PROJECT_EVENTS_STORE__ = []; // Attempt to recover
+      return NextResponse.json({ message: 'Internal server error: Project Event data store corrupted.' }, { status: 500 });
+    }
+    const projectEventsStoreRef = [...global.__API_PROJECT_EVENTS_STORE__];
 
-  let filteredEvents = [...projectEventsStore];
 
-  if (isActiveParam === 'true') {
-    filteredEvents = filteredEvents.filter(event => event.isActive);
-  } else if (isActiveParam === 'false') {
-    filteredEvents = filteredEvents.filter(event => !event.isActive);
+    const { searchParams } = new URL(request.url);
+    const isActiveParam = searchParams.get('isActive');
+
+    let filteredEvents = projectEventsStoreRef; 
+
+    if (isActiveParam === 'true') {
+      filteredEvents = filteredEvents.filter(event => event.isActive);
+    } else if (isActiveParam === 'false') {
+      filteredEvents = filteredEvents.filter(event => !event.isActive);
+    }
+    
+    filteredEvents.sort((a, b) => {
+      const dateA = a.eventDate && isValid(parseISO(a.eventDate)) ? parseISO(a.eventDate).getTime() : 0;
+      const dateB = b.eventDate && isValid(parseISO(b.eventDate)) ? parseISO(b.eventDate).getTime() : 0;
+
+      if (a.isActive && !b.isActive) return -1;
+      if (!a.isActive && b.isActive) return 1;
+      
+      if (a.isActive === b.isActive) {
+          // For active events, sort by eventDate ascending
+          // For inactive events, sort by eventDate descending (or however you prefer, this keeps more recent inactive ones first)
+          return a.isActive ? dateA - dateB : dateB - dateA;
+      }
+      return 0; // Should not happen given the isActive checks above
+    });
+
+    return NextResponse.json(filteredEvents);
+  } catch (error) {
+    console.error("Error in GET /api/project-events:", error);
+    return NextResponse.json({ message: 'Failed to retrieve project events due to a server error.', error: (error as Error).message }, { status: 500 });
   }
-  
-  filteredEvents.sort((a, b) => {
-    const dateA = a.eventDate ? parseISO(a.eventDate).getTime() : 0;
-    const dateB = b.eventDate ? parseISO(b.eventDate).getTime() : 0;
-    if (a.isActive && !b.isActive) return -1;
-    if (!a.isActive && b.isActive) return 1;
-    if (a.isActive) return dateA - dateB;
-    return dateB - dateA; 
-  });
-
-  return NextResponse.json(filteredEvents);
 }
 
 export async function POST(request: NextRequest) {
   try {
+    if (!Array.isArray(global.__API_PROJECT_EVENTS_STORE__)) {
+      global.__API_PROJECT_EVENTS_STORE__ = []; // Initialize if corrupted
+    }
+    const projectEventsStoreRef = global.__API_PROJECT_EVENTS_STORE__;
+
     const eventData = await request.json() as Omit<ProjectEvent, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy' | 'schedule'>;
 
     if (!eventData.name || !eventData.name.trim()) {
@@ -109,15 +133,11 @@ export async function POST(request: NextRequest) {
       createdAt: currentTimestamp,
       updatedAt: currentTimestamp,
     };
-    projectEventsStore.push(newEvent);
-    global.__API_PROJECT_EVENTS_STORE__ = projectEventsStore;
+    projectEventsStoreRef.push(newEvent);
+    global.__API_PROJECT_EVENTS_STORE__ = projectEventsStoreRef;
     return NextResponse.json(newEvent, { status: 201 });
   } catch (error) {
     console.error('Error creating project event:', error);
     return NextResponse.json({ message: 'Error creating project event', error: (error as Error).message }, { status: 500 });
   }
 }
-```
-  </change>
-  <change>
-    <
