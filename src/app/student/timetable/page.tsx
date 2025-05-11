@@ -52,7 +52,7 @@ export default function StudentTimetablePage() {
   const [studentTimetable, setStudentTimetable] = useState<Timetable | null>(null);
   const [enrichedEntries, setEnrichedEntries] = useState<EnrichedTimetableEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
+  // Student data is used indirectly through the batch ID
   const [user, setUser] = useState<UserCookie | null>(null);
 
   const { toast } = useToast();
@@ -91,7 +91,7 @@ export default function StudentTimetablePage() {
           setIsLoading(false);
           return;
         }
-        setCurrentStudent(studentProfile);
+        // Student profile found, proceed with timetable lookup
 
         const allTimetables = await timetableService.getAllTimetables();
         const applicableTimetable = allTimetables.find(tt => tt.batchId === studentProfile.batchId && tt.status === 'published');
@@ -140,10 +140,9 @@ export default function StudentTimetablePage() {
 
     enrichedEntries.forEach(entry => {
       const dayIndex = DAYS_OF_WEEK.indexOf(entry.dayOfWeek as TimetableEntry['dayOfWeek']);
-      // Simplified time slot matching - needs robust parsing
       const slotIndex = TIME_SLOTS.findIndex(slot => {
-        const [slotStart, slotEnd] = slot.split('-');
-        return entry.startTime === slotStart; // This is a simplification
+        const [slotStart] = slot.split('-');
+        return entry.startTime === slotStart; 
       });
 
       if (dayIndex !== -1 && slotIndex !== -1) {

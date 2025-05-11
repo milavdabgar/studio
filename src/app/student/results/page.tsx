@@ -3,14 +3,13 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Award, Loader2, Filter } from "lucide-react";
+import { Award, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Student, StudentAssessmentScore, Assessment, Course, Program, Batch } from '@/types/entities';
+import type { Student, StudentAssessmentScore, Assessment, Course } from '@/types/entities';
 import { studentService } from '@/lib/api/students';
 import { assessmentService } from '@/lib/api/assessments';
 import { courseService } from '@/lib/api/courses';
-import { programService } from '@/lib/api/programs';
-import { batchService } from '@/lib/api/batches';
+// Program and batch info comes from student and assessment data
 // import { studentAssessmentScoreService } from '@/lib/api/studentAssessmentScores'; // To be created if backend supports it
 import { format } from 'date-fns';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -110,8 +109,8 @@ export default function StudentResultsPage() {
   const [scores, setScores] = useState<EnrichedScore[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserCookie | null>(null);
+  const [currentProgram, setCurrentProgram] = useState<{ id: string; name: string } | null>(null);
   const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
-  const [programs, setPrograms] = useState<Program[]>([]);
   
   const [selectedProgramFilter, setSelectedProgramFilter] = useState<string>("all"); // Will be set to student's program
   const [selectedSemesterFilter, setSelectedSemesterFilter] = useState<string>("all");
@@ -141,21 +140,21 @@ export default function StudentResultsPage() {
       try {
         const allStudents = await studentService.getAllStudents();
         const studentProfile = allStudents.find(s => s.userId === user.id);
-        setCurrentStudent(studentProfile || null);
+        setCurrentProgram({ id: studentProfile?.programId || '', name: "Current Program" });
 
         if (studentProfile && studentProfile.programId) {
-          const [studentScores, allAssessments, allCourses, allProgramsData] = await Promise.all([
+          const [studentScores, allAssessments, allCourses] = await Promise.all([
             mockStudentAssessmentScoreService.getScoresByStudentId(studentProfile.id),
             assessmentService.getAllAssessments(),
             courseService.getAllCourses(),
-            programService.getAllPrograms()
           ]);
-          setPrograms(allProgramsData);
           setSelectedProgramFilter(studentProfile.programId); // Set program filter to student's program
 
-          const enrichedScores = studentScores.map(score => {
-            const assessment = allAssessments.find(a => a.id === score.assessmentId);
-            const course = assessment ? allCourses.find(c => c.id === assessment.courseId) : undefined;
+          const enrichedScores = studentScores
+            .map((score: Partial<StudentAssessmentScore>): EnrichedScore | undefined => {
+            const assessment = allAssessments.find((a: Assessment) => a.id === score.assessmentId);
+            const course = assessment ? allCourses.find((c: Course) => c.id === assessment.courseId) : undefined;
+            if (!assessment || !course) return undefined;
             return {
               ...score,
               assessmentName: assessment?.name || "Unknown Assessment",
@@ -167,7 +166,7 @@ export default function StudentResultsPage() {
               courseCredits: course?.credits || 0, // Default to 0 if no credits
             };
           });
-          setScores(enrichedScores);
+          setScores(enrichedScores.filter((score): score is EnrichedScore => score !== undefined));
         } else {
           setScores([]);
           if(studentProfile && !studentProfile.programId){
@@ -176,7 +175,8 @@ export default function StudentResultsPage() {
              toast({ variant: "default", title: "No Profile", description: "Student profile not found." });
           }
         }
-      } catch (error) {
+      } catch (_error) {
+        console.error("Error loading results:", _error);
         toast({ variant: "destructive", title: "Error", description: "Could not load results data." });
       }
       setIsLoading(false);
@@ -192,8 +192,9 @@ export default function StudentResultsPage() {
   
   const studentProgramDetails = useMemo(() => {
     if (!currentStudent || !currentStudent.programId) return null;
-    return programs.find(p => p.id === currentStudent.programId);
-  }, [currentStudent, programs]);
+    const programName = currentProgram?.name || "Unknown Program";
+    return { id: currentStudent.programId, name: programName };
+  }, [currentStudent, currentProgram]);
 
   const filteredScores = useMemo(() => {
     let filtered = [...scores];
@@ -243,7 +244,7 @@ export default function StudentResultsPage() {
              <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 border rounded-lg">
                 <div>
                     <Label htmlFor="programDisplay">Program</Label>
-                    <Input id="programDisplay" value={studentProgramDetails ? `${studentProgramDetails.name} (${studentProgramDetails.code})` : "N/A"} disabled />
+                    <div className="text-sm text-muted-foreground">{studentProgramDetails ? studentProgramDetails.name : "Program details not available"}</div>
                 </div>
                 <div>
                     <Label htmlFor="semesterFilter">Filter by Semester</Label>

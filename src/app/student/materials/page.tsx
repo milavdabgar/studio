@@ -3,12 +3,12 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { BookOpenCheck, Download, Loader2, FileText, Filter } from "lucide-react";
+import { Download, Loader2, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Course, Student, Program } from '@/types/entities';
+import type { Course, Student } from '@/types/entities';
 import { studentService } from '@/lib/api/students';
 import { courseService } from '@/lib/api/courses';
-import { programService } from '@/lib/api/programs';
+// programService not needed as we get program info via courses
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -59,7 +59,7 @@ export default function StudyMaterialsPage() {
   const [materials, setMaterials] = useState<CourseMaterial[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserCookie | null>(null);
-  const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
+  // Student data is used indirectly through enrolled courses
   const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([]);
   
   const [selectedCourseFilter, setSelectedCourseFilter] = useState<string>("all");
@@ -75,7 +75,7 @@ export default function StudyMaterialsPage() {
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setUser(parsedUser);
-      } catch (error) { /* Handled by global layout */ }
+      } catch (_error) { /* Handled by global layout */ }
     }
   }, []);
 
@@ -87,7 +87,7 @@ export default function StudyMaterialsPage() {
       try {
         const allStudents = await studentService.getAllStudents();
         const studentProfile = allStudents.find(s => s.userId === user.id);
-        setCurrentStudent(studentProfile || null);
+        // Student profile found, proceed with course lookup
 
         if (studentProfile && studentProfile.programId) {
           const allCourses = await courseService.getAllCourses();
@@ -111,7 +111,9 @@ export default function StudyMaterialsPage() {
           setMaterials([]);
           toast({ variant: "default", title: "Profile/Program Error", description: "Student profile or program information not found." });
         }
-      } catch (error) {
+      } catch (_error) {
+        // Log error to console for debugging but use generic message for user
+        console.error("Error fetching study materials:", _error);
         toast({ variant: "destructive", title: "Error", description: "Could not load study materials." });
       }
       setIsLoading(false);
@@ -154,7 +156,7 @@ export default function StudyMaterialsPage() {
       <Card className="shadow-xl">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
-            <BookOpenCheck className="h-6 w-6" /> Study Materials
+            <FileText className="h-6 w-6" /> Study Materials
           </CardTitle>
           <CardDescription>Access study materials, notes, and resources for your courses.</CardDescription>
         </CardHeader>
