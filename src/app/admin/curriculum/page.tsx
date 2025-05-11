@@ -6,20 +6,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, PlusCircle, Edit, Trash2, BookOpenText, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, ListPlus, XCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import type { Curriculum, Program, Course } from '@/types/entities';
 import { curriculumService } from '@/lib/api/curriculum';
 import { programService } from '@/lib/api/programs';
 import { courseService } from '@/lib/api/courses';
-import { format, parseISO, isValid } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { cn } from "@/lib/utils";
 
 type CurriculumStatus = 'draft' | 'active' | 'archived';
@@ -39,7 +38,7 @@ export default function CurriculumManagementPage() {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [allCourses, setAllCourses] = useState<Course[]>([]);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentCurriculum, setCurrentCurriculum] = useState<Partial<Curriculum> | null>(null);
@@ -149,7 +148,7 @@ export default function CurriculumManagementPage() {
         return;
     }
     if (formCourses.find(fc => fc.courseId === tempCourseId && fc.semester === tempSemester)) {
-        toast({variant: "warning", title: "Duplicate Course", description: "This course is already added for this semester in the curriculum."});
+        toast({variant: "default", title: "Duplicate Course", description: "This course is already added for this semester in the curriculum."});
         return;
     }
 
@@ -221,7 +220,7 @@ export default function CurriculumManagementPage() {
       toast({ title: "Import Successful", description: `${result.newCount} curricula added, ${result.updatedCount} updated. Skipped: ${result.skippedCount}` });
       if(result.errors && result.errors.length > 0){
           result.errors.slice(0,3).forEach((err:any) => {
-            toast({variant: "warning", title: `Import Warning (Row ${err.row})`, description: err.message, duration: 7000});
+            toast({variant: "default", title: `Import Warning (Row ${err.row})`, description: err.message, duration: 7000});
           });
       }
     } catch (error: any) {
@@ -453,7 +452,7 @@ curr_2,prog_dme_gpp,DME,2.1,2025-01-01,draft,course_me101_dme_gpp,ME101,1,false
                 
                 <div className="mt-3 max-h-48 overflow-y-auto">
                     {formCourses.length === 0 ? <p className="text-sm text-center text-muted-foreground py-2">No courses added to this curriculum yet.</p> :
-                    <Table size="sm">
+                    <Table className="text-xs">
                         <TableHeader><TableRow><TableHead>Course</TableHead><TableHead>Sem</TableHead><TableHead>Elective</TableHead><TableHead className="text-right">Action</TableHead></TableRow></TableHeader>
                         <TableBody>{formCourses.map((fc, idx) => {
                             const courseInfo = allCourses.find(c => c.id === fc.courseId);

@@ -14,7 +14,8 @@ import { batchService } from '@/lib/api/batches';
 // import { studentAssessmentScoreService } from '@/lib/api/studentAssessmentScores'; // To be created if backend supports it
 import { format } from 'date-fns';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Label } from '@/components/ui/label';
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 interface UserCookie {
   email: string;
@@ -170,9 +171,9 @@ export default function StudentResultsPage() {
         } else {
           setScores([]);
           if(studentProfile && !studentProfile.programId){
-            toast({ variant: "warning", title: "No Program", description: "Student is not enrolled in a program." });
+            toast({ variant: "default", title: "No Program", description: "Student is not enrolled in a program." });
           } else if (!studentProfile) {
-             toast({ variant: "warning", title: "No Profile", description: "Student profile not found." });
+             toast({ variant: "default", title: "No Profile", description: "Student profile not found." });
           }
         }
       } catch (error) {

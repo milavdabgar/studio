@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PlusCircle, Edit, Trash2, UsersRound, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, CalendarDays as CalendarIcon, Info, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Textarea } from '@/components/ui/textarea';
+// Removed unused Textarea import
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { format, parseISO, isValid } from 'date-fns';
@@ -155,6 +155,7 @@ export default function FacultyManagementPage() {
     setIsLoading(false);
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchInitialData();
   }, []);
@@ -207,7 +208,9 @@ export default function FacultyManagementPage() {
     // This part might need adjustment based on how Faculty is linked to Institute.
     // For now, let's assume Faculty might have an instituteId directly or we fetch user's institute.
     // If Faculty directly has instituteId:
-    setFormInstituteId( (faculty as any).instituteId || (institutes.length > 0 ? institutes[0].id : ''));
+    // Use a safer approach to access the instituteId property
+    const facultyAny = faculty as any;
+    setFormInstituteId(facultyAny.instituteId || (institutes.length > 0 ? institutes[0].id : ''));
 
 
     setIsDialogOpen(true);
@@ -314,8 +317,9 @@ export default function FacultyManagementPage() {
   };
   
   const handleGtuFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setSelectedGtuFile(event.target.files[0]);
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedGtuFile(file);
     } else {
       setSelectedGtuFile(null);
     }
@@ -335,9 +339,9 @@ export default function FacultyManagementPage() {
         const result = await facultyService.importFaculty(selectedFile);
         await fetchInitialData();
         toast({ title: "Standard Import Successful", description: `${result.newCount} faculty added, ${result.updatedCount} faculty updated. Skipped: ${result.skippedCount}` });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error processing standard CSV file:", error);
-        toast({ variant: "destructive", title: "Standard Import Failed", description: error.message || "Could not process the CSV file." });
+        toast({ variant: "destructive", title: "Standard Import Failed", description: error instanceof Error ? error.message : "Could not process the CSV file." });
     } finally {
         setIsSubmitting(false);
         setSelectedFile(null);
@@ -388,7 +392,6 @@ faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@examp
     toast({ title: "Sample CSV Downloaded", description: "sample_faculty_import.csv downloaded." });
   };
 
-
   const handleImportGtuFaculty = async () => {
     if (!selectedGtuFile) {
       toast({ variant: "destructive", title: "GTU Import Error", description: "Please select a GTU CSV file to import." });
@@ -400,9 +403,9 @@ faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@examp
         await fetchInitialData();
         toast({ title: "GTU Import Successful", description: `${result.newCount} faculty added, ${result.updatedCount} faculty updated. ${result.skippedCount} rows skipped.` });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error processing GTU CSV file:", error);
-        toast({ variant: "destructive", title: "GTU Import Failed", description: error.message || "Could not process the GTU CSV file." });
+        toast({ variant: "destructive", title: "GTU Import Failed", description: error instanceof Error ? error.message : "Could not process the GTU CSV file." });
     } finally {
         setIsSubmitting(false);
         setSelectedGtuFile(null);
@@ -464,8 +467,8 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA: any = a[sortField as keyof Faculty]; 
-        let valB: any = b[sortField as keyof Faculty]; 
+        const valA = a[sortField as keyof Faculty] as string | number | Date | undefined; 
+        const valB = b[sortField as keyof Faculty] as string | number | Date | undefined; 
 
         if (valA === undefined || valA === null) return sortDirection === 'asc' ? 1 : -1;
         if (valB === undefined || valB === null) return sortDirection === 'asc' ? -1 : 1;

@@ -75,7 +75,7 @@ export default function AssessmentManagementPage() {
   const [filterCourseVal, setFilterCourseVal] = useState<string>('all');
   
   const [sortField, setSortField] = useState<SortField>('name');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc' | 'desc'>('asc'));
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [selectedAssessmentIds, setSelectedAssessmentIds] = useState<string[]>([]);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -110,6 +110,7 @@ export default function AssessmentManagementPage() {
     setIsLoading(false);
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchInitialData();
   }, []);
@@ -260,13 +261,13 @@ export default function AssessmentManagementPage() {
       await fetchInitialData();
       toast({ title: "Import Successful", description: `${result.newCount} assessments added, ${result.updatedCount} assessments updated. Skipped: ${result.skippedCount}` });
       if (result.errors && result.errors.length > 0) {
-          result.errors.slice(0, 3).forEach((err: any) => {
+          result.errors.slice(0, 3).forEach((err: { row: number; message: string }) => {
             toast({ variant: "destructive", title: `Import Warning (Row ${err.row})`, description: err.message });
           });
         }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error processing CSV file:", error);
-      toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
+      toast({ variant: "destructive", title: "Import Failed", description: error instanceof Error ? error.message : "Could not process the CSV file." });
     } finally {
       setIsSubmitting(false); setSelectedFile(null); 
       const fileInput = document.getElementById('csvImportAssessment') as HTMLInputElement;
@@ -350,8 +351,8 @@ asm_s1,Midterm 1,crs1,CS101,prog1,DCE,batch1,2024-2027,Midterm,"Covers first 3 u
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA: any = a[sortField as keyof Assessment];
-        let valB: any = b[sortField as keyof Assessment];
+        let valA = a[sortField as keyof Assessment] as string | number | Date | undefined;
+        let valB = b[sortField as keyof Assessment] as string | number | Date | undefined;
         
         const numericFields: (keyof Assessment)[] = ['maxMarks', 'passingMarks', 'weightage'];
         if (numericFields.includes(sortField as keyof Assessment)) {

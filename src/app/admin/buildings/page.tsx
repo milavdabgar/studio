@@ -17,11 +17,12 @@ import type { Building as BuildingType, Institute } from '@/types/entities'; // 
 import { buildingService } from '@/lib/services/buildingService';
 import { instituteService } from '@/lib/api/institutes';
 
-type BuildingStatus = 'active' | 'inactive' | 'under_maintenance';
+type BuildingStatus = 'active' | 'inactive' | 'under_maintenance' | 'demolished';
 const BUILDING_STATUS_OPTIONS: { value: BuildingStatus, label: string }[] = [
     { value: "active", label: "Active" },
     { value: "inactive", label: "Inactive" },
     { value: "under_maintenance", label: "Under Maintenance" },
+    { value: "demolished", label: "Demolished" },
 ];
 
 
@@ -80,6 +81,7 @@ export default function BuildingManagementPage() {
     setIsLoading(false);
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchBuildingsAndInstitutes();
   }, []);
@@ -191,9 +193,9 @@ export default function BuildingManagementPage() {
         const result = await buildingService.importBuildings(selectedFile, institutes);
         await fetchBuildingsAndInstitutes();
         toast({ title: "Import Successful", description: `${result.newCount} buildings added, ${result.updatedCount} updated. Skipped: ${result.skippedCount}`});
-    } catch (error: any) {
-        console.error("Error processing CSV file:", error);
-        toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
+    } catch (error: unknown) {
+      console.error("Error processing CSV file:", error);
+      toast({ variant: "destructive", title: "Import Failed", description: error instanceof Error ? error.message : "Could not process the CSV file." });
     } finally {
         setIsSubmitting(false); setSelectedFile(null); 
         const fileInput = document.getElementById('csvImportBuilding') as HTMLInputElement;
@@ -272,8 +274,8 @@ bldg_sample_1,Science Block,SCI,"Labs for Physics and Chemistry",inst1,"Governme
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA: any = a[sortField as keyof BuildingType];
-        let valB: any = b[sortField as keyof BuildingType];
+        let valA = a[sortField as keyof BuildingType] as string | number | Date | undefined;
+        let valB = b[sortField as keyof BuildingType] as string | number | Date | undefined;
         
         const numericFields: (keyof BuildingType)[] = ['constructionYear', 'numberOfFloors', 'totalAreaSqFt'];
         if (numericFields.includes(sortField as keyof BuildingType)) {
@@ -445,7 +447,7 @@ bldg_sample_1,Science Block,SCI,"Labs for Physics and Chemistry",inst1,"Governme
             </div>
              <div>
               <Label htmlFor="filterStatus">Filter by Status</Label>
-              <Select value={filterStatusVal} onValueChange={setFilterStatusVal}>
+              <Select value={filterStatusVal} onValueChange={(value) => setFilterStatusVal(value as BuildingStatus | 'all')}>
                 <SelectTrigger id="filterStatus"><SelectValue placeholder="All Statuses"/></SelectTrigger>
                 <SelectContent>{[{value: 'all', label: 'All Statuses'}, ...BUILDING_STATUS_OPTIONS].map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}</SelectContent>
               </Select>
