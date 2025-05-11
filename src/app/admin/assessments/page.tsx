@@ -103,9 +103,9 @@ export default function AssessmentManagementPage() {
         setFormCourseId(courseData[0].id);
         setFormProgramId(courseData[0].programId); 
       }
-    } catch (error) {
-      console.error("Failed to load data", error);
-      toast({ variant: "destructive", title: "Error", description: "Could not load initial assessment data." });
+    } catch (_error: unknown) {
+      console.error("Failed to load data:", _error);
+      toast({ variant: "destructive", title: "Error", description: "Could not load initial data" });
     }
     setIsLoading(false);
   };
@@ -219,8 +219,9 @@ export default function AssessmentManagementPage() {
       await fetchInitialData();
       setIsDialogOpen(false);
       resetForm();
-    } catch (error) {
-      toast({ variant: "destructive", title: "Save Failed", description: (error as Error).message || "Could not save assessment." });
+    } catch (_error: unknown) {
+      console.error("Failed to save assessment:", _error);
+      toast({ variant: "destructive", title: "Error", description: _error instanceof Error ? _error.message : "Failed to save assessment" });
     } finally {
       setIsSubmitting(false);
     }

@@ -74,8 +74,8 @@ export default function BuildingManagementPage() {
       if (instituteData.length > 0 && !formInstituteId) {
         setFormInstituteId(instituteData[0].id);
       }
-    } catch (error) {
-      console.error("Failed to load data", error);
+    } catch (_error: unknown) {
+      console.error("Failed to load data:", _error);
       toast({ variant: "destructive", title: "Error", description: "Could not load buildings or institutes data." });
     }
     setIsLoading(false);
@@ -167,8 +167,9 @@ export default function BuildingManagementPage() {
       await fetchBuildingsAndInstitutes();
       setIsDialogOpen(false);
       resetForm();
-    } catch (error) {
-      toast({ variant: "destructive", title: "Save Failed", description: (error as Error).message || "Could not save building." });
+    } catch (_error: unknown) {
+      console.error("Failed to save building:", _error);
+      toast({ variant: "destructive", title: "Error", description: _error instanceof Error ? _error.message : "Failed to save building" });
     } finally {
       setIsSubmitting(false);
     }

@@ -149,8 +149,9 @@ export default function FacultyManagementPage() {
       if (instituteData.length > 0 && !formInstituteId) {
         setFormInstituteId(instituteData[0].id); // Default to first institute
       }
-    } catch (error) {
-      toast({ variant: "destructive", title: "Error", description: (error as Error).message || "Could not load initial data." });
+    } catch (_error: unknown) {
+      console.error("Failed to load data:", _error);
+      toast({ variant: "destructive", title: "Error", description: "Could not load faculty data" });
     }
     setIsLoading(false);
   };
@@ -232,8 +233,9 @@ export default function FacultyManagementPage() {
       await fetchInitialData();
       setSelectedFacultyIds(prev => prev.filter(id => id !== facultyId));
       toast({ title: "Faculty Deleted", description: "The faculty record has been successfully deleted." });
-    } catch (error) {
-        toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message || "Could not delete faculty member." });
+    } catch (_error: unknown) {
+        console.error("Failed to delete faculty member:", _error);
+        toast({ variant: "destructive", title: "Delete Failed", description: _error instanceof Error ? _error.message : "Failed to delete faculty member" });
     }
     setIsSubmitting(false);
   };
@@ -296,8 +298,9 @@ export default function FacultyManagementPage() {
       await fetchInitialData();
       setIsDialogOpen(false);
       resetForm();
-    } catch (error) {
-        toast({ variant: "destructive", title: "Save Failed", description: (error as Error).message || "Could not save faculty member." });
+    } catch (_error: unknown) {
+      console.error("Failed to save faculty member:", _error);
+      toast({ variant: "destructive", title: "Error", description: _error instanceof Error ? _error.message : "Failed to save faculty member" });
     } finally {
         setIsSubmitting(false);
     }
