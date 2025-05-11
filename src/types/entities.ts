@@ -9,21 +9,17 @@ export interface User {
     photoURL?: string;
     phoneNumber?: string;
     
-    // Authentication
     authProviders: ('password' | 'google' | 'microsoft')[];
     
-    // Status
-    createdAt?: Timestamp; // Made optional as it's auto-set by DB usually
-    updatedAt?: Timestamp; // Made optional as it's auto-set by DB usually
+    createdAt?: Timestamp; 
+    updatedAt?: Timestamp; 
     lastLoginAt?: Timestamp;
     isActive: boolean;
     isEmailVerified: boolean;
     
-    // Authorization
-    roles: UserRole[]; // Stores role CODES
-    currentRole: UserRole; // Stores the active role CODE
+    roles: UserRole[]; 
+    currentRole: UserRole; 
     
-    // Settings
     preferences: {
         theme?: 'light' | 'dark' | 'system';
         language?: string;
@@ -37,34 +33,32 @@ export interface User {
             favorites?: string[];
         };
     };
-    // Additional fields that were in existing User and might be from spec's User or Profile models
     instituteId?: string; 
     instituteEmail?: string; 
-    password?: string; // Only for creation/update, should not be stored directly accessible
-    fullName?: string; // GTU Format Name: SURNAME NAME FATHERNAME
+    password?: string; 
+    fullName?: string; 
     firstName?: string;
     middleName?: string;
     lastName?: string;
 }
 
-export type SystemUser = User; // Alias for User
-export type UserRole = string; // Represents a role CODE
+export type SystemUser = User; 
+export type UserRole = string; 
 
 
 export interface Role {
     id: string;
-    name: string; // Display name, e.g., "CWAN Convener", "Administrator"
-    code: string; // Unique machine-readable identifier (lowercase), e.g., "cwan_convener", "admin"
+    name: string; 
+    code: string; 
     description: string;
-    permissions: string[]; // Permission codes or keys
+    permissions: string[]; 
     isSystemRole?: boolean; 
     isCommitteeRole?: boolean; 
-    committeeId?: string; // If it's a committee-specific role
-    committeeCode?: string; // Committee code, for easier generation of unique role codes
+    committeeId?: string; 
+    committeeCode?: string; 
     createdAt?: Timestamp; 
     updatedAt?: Timestamp; 
     
-    // Scope of this role (if applicable)
     scope?: {
         level: 'system' | 'dte' | 'gtu' | 'institute' | 'department' | 'committee';
         instituteId?: string;
@@ -78,20 +72,19 @@ export interface Permission {
     name: string;
     code: string;
     description: string;
-    resource: string; // e.g., 'student_profile', 'course'
-    action: 'create' | 'read' | 'update' | 'delete' | 'manage' | string; // 'manage' implies all CRUD
-    conditions?: unknown; // For attribute-based access control (ABAC)
+    resource: string; 
+    action: 'create' | 'read' | 'update' | 'delete' | 'manage' | string; 
+    conditions?: unknown; 
 }
 
 export interface RoleAssignment {
     id: string;
     userId: string;
-    roleId: string; // Reference to Role.id (or perhaps Role.code for more resilience to ID changes)
-    assignedBy: string; // User ID of assigner
+    roleId: string; 
+    assignedBy: string; 
     assignedAt: Timestamp;
     expiresAt?: Timestamp;
     
-    // Scope of this assignment (e.g., for a specific institute or department if the role is scoped)
     scope?: {
         instituteId?: string;
         departmentId?: string;
@@ -105,30 +98,26 @@ export interface RoleAssignment {
 export type StudentStatus = 'active' | 'inactive' | 'graduated' | 'dropped';
 export type SemesterStatus = 'N/A' | 'Passed' | 'Pending' | 'Not Appeared';
 
-export interface StudentProfile {
+export interface Student {
     id: string; 
-    userId?: string; // Link to User account
+    userId?: string; 
     
-    // Identification
     enrollmentNumber: string;
-    gtuEnrollmentNumber?: string; // If different from institute enrollment
+    gtuEnrollmentNumber?: string; 
     
-    // Academic Info
-    programId: string; // Link to Program
-    department: string; // Department ID (Derived from Program, but can be stored for denormalization/reporting)
-    batchId?: string; // Link to Batch
+    programId: string; 
+    department: string; 
+    batchId?: string; 
     currentSemester: number;
     admissionDate?: Timestamp;
     
-    // Categories
-    category?: string; // OPEN, OBC, SC, ST, EWS, etc.
+    category?: string; 
     shift?: 'Morning' | 'Afternoon' | 'Evening' | string; 
     
-    // Academic Status
     isComplete?: boolean;
-    termClose?: boolean; // Indicates if term work is completed for current sem
-    isCancel?: boolean; // Admission cancelled
-    isPassAll?: boolean; // Passed all subjects up to current semester
+    termClose?: boolean; 
+    isCancel?: boolean; 
+    isPassAll?: boolean; 
     sem1Status?: SemesterStatus;
     sem2Status?: SemesterStatus;
     sem3Status?: SemesterStatus;
@@ -138,23 +127,20 @@ export interface StudentProfile {
     sem7Status?: SemesterStatus;
     sem8Status?: SemesterStatus;
     
-    // Personal Details
-    fullNameGtuFormat?: string; // SURNAME NAME FATHERNAME
+    fullNameGtuFormat?: string; 
     firstName?: string;
     middleName?: string;
     lastName?: string;
     gender?: 'Male' | 'Female' | 'Other' | string;
-    dateOfBirth?: Timestamp; // "YYYY-MM-DD"
+    dateOfBirth?: Timestamp; 
     bloodGroup?: string;
     aadharNumber?: string;
     
-    // Contact
     personalEmail?: string;
     instituteEmail: string; 
     contactNumber?: string;
-    address?: string; // Simplified address for now
+    address?: string; 
     
-    // Guardian
     guardianDetails?: {
         name: string;
         relation: string;
@@ -163,18 +149,14 @@ export interface StudentProfile {
         annualIncome?: number;
     };
     
-    // Administrative
-    status: StudentStatus; // Overall status
+    status: StudentStatus; 
     convocationYear?: number;
     
-    // System
-    instituteId?: string; // Store institute context
+    instituteId?: string; 
     photoURL?: string;
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
-
-export type Student = StudentProfile;
 
 
 export type FacultyStatus = 'active' | 'inactive' | 'retired' | 'resigned' | 'on_leave';
@@ -183,35 +165,30 @@ export type Gender = 'Male' | 'Female' | 'Other' | string;
 
 export interface FacultyProfile {
     id: string;
-    userId?: string; // Link to User account
+    userId?: string; 
     
-    // Identification
     staffCode: string; 
-    employeeId?: string; // Government employee ID if applicable
+    employeeId?: string; 
     
-    // Personal & Contact
     title?: string;
     firstName?: string;
     middleName?: string;
     lastName?: string;
-    gtuName?: string; // Full name as per GTU records, if different
+    gtuName?: string; 
     personalEmail?: string;
     instituteEmail: string; 
     contactNumber?: string;
     
-    // Professional
     department: string; 
     designation?: string;
     jobType?: JobType;
-    instType?: string; // Institute Type (e.g., DI, DEG) as per GTU
+    instType?: string; 
     specializations?: string[];
     qualifications?: Qualification[];
     
-    // Dates
-    dateOfBirth?: Timestamp; // "YYYY-MM-DD"
-    joiningDate?: Timestamp; // "YYYY-MM-DD"
+    dateOfBirth?: Timestamp; 
+    joiningDate?: Timestamp; 
     
-    // Personal Details
     gender?: Gender; 
     maritalStatus?: string;
     aadharNumber?: string;
@@ -219,12 +196,10 @@ export interface FacultyProfile {
     gpfNpsNumber?: string; 
     placeOfBirth?: string;
     nationality?: string;
-    knownAs?: string; // Alias or nickname
+    knownAs?: string; 
     
-    // Status
     status: FacultyStatus;
     
-    // System
     instituteId?: string; 
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
@@ -233,7 +208,7 @@ export type Faculty = FacultyProfile;
 
 export interface StaffProfile {
     id: string;
-    userId: string; // Link to User account
+    userId: string; 
     
     staffCode: string;
     employeeId?: string;
@@ -252,8 +227,7 @@ export interface StaffProfile {
     updatedAt?: Timestamp;
 }
 
-// Common Types for Profiles
-export interface Address { // Kept for potential future use, but student uses simplified string
+export interface Address { 
     line1: string;
     line2?: string;
     city: string;
@@ -275,12 +249,12 @@ export interface Qualification {
 export interface DTE {
     id: string;
     name: string;
-    code: string; // e.g., DTEGUJ
+    code: string; 
     address?: string;
     contactEmail?: string;
     contactPhone?: string;
     website?: string;
-    administrators?: string[]; // User IDs of DTE Admins
+    administrators?: string[]; 
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
@@ -288,12 +262,12 @@ export interface DTE {
 export interface GTU {
     id: string;
     name: string;
-    code: string; // e.g., GTU
+    code: string; 
     address?: string;
     contactEmail?: string;
     contactPhone?: string;
     website?: string;
-    administrators?: string[]; // User IDs of GTU Admins
+    administrators?: string[]; 
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
@@ -301,12 +275,12 @@ export interface GTU {
 export interface Institute {
   id: string;
   name: string;
-  code: string; // Short code, e.g., GPP
+  code: string; 
   address?: string;
   contactEmail?: string;
   contactPhone?: string;
   website?: string;
-  domain?: string; // e.g., gppalanpur.ac.in
+  domain?: string; 
   status: 'active' | 'inactive';
   establishmentYear?: number;
   administrators?: string[]; 
@@ -317,12 +291,12 @@ export interface Institute {
 export interface Department {
   id:string;
   name: string;
-  code: string; // Short code, e.g., CE, ME
+  code: string; 
   description?: string;
-  hodId?: string; // User ID of HOD
+  hodId?: string; 
   establishmentYear?: number;
   status: 'active' | 'inactive';
-  instituteId: string; // Link to Institute
+  instituteId: string; 
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
@@ -337,8 +311,8 @@ export interface Committee {
   description?: string;
   purpose: string;
   instituteId: string; 
-  formationDate: Timestamp; // "YYYY-MM-DD"
-  dissolutionDate?: Timestamp; // "YYYY-MM-DD"
+  formationDate: Timestamp; 
+  dissolutionDate?: Timestamp; 
   status: CommitteeStatus;
   convenerId?: string; 
   createdAt?: Timestamp;
@@ -350,8 +324,8 @@ export interface CommitteeMember {
   committeeId: string;
   userId: string; 
   role: CommitteeMemberRole; 
-  assignmentDate: Timestamp; // "YYYY-MM-DD"
-  endDate?: Timestamp; // "YYYY-MM-DD"
+  assignmentDate: Timestamp; 
+  endDate?: Timestamp; 
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
@@ -433,8 +407,8 @@ export interface CourseOffering {
     semester: number; 
     facultyIds: string[]; 
     roomIds?: string[]; 
-    startDate?: Timestamp; // "YYYY-MM-DD"
-    endDate?: Timestamp;   // "YYYY-MM-DD"
+    startDate?: Timestamp; 
+    endDate?: Timestamp;   
     status: 'scheduled' | 'ongoing' | 'completed' | 'cancelled';
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
@@ -458,13 +432,14 @@ export interface Enrollment {
 
 
 // Infrastructure Models
+export type BuildingStatus = 'active' | 'inactive' | 'under_maintenance' | 'demolished';
 export interface Building {
   id: string;
   name: string;
   code?: string; 
   description?: string;
   instituteId: string; 
-  status: 'active' | 'inactive' | 'under_maintenance' | 'demolished';
+  status: BuildingStatus;
   constructionYear?: number;
   numberOfFloors?: number;
   totalAreaSqFt?: number;
@@ -504,11 +479,11 @@ export interface RoomAllocation {
     committeeId?: string; 
     facultyId?: string; 
     title?: string; 
-    dayOfWeek?: DayOfWeek | string; // Allows for 'Daily' or specific day.
-    startTime: Timestamp; // ISO string "YYYY-MM-DDTHH:mm:ss.sssZ"
-    endTime: Timestamp;   // ISO string "YYYY-MM-DDTHH:mm:ss.sssZ"
+    dayOfWeek?: DayOfWeek | string; 
+    startTime: Timestamp; 
+    endTime: Timestamp;   
     isRecurring?: boolean;
-    recurrencePattern?: string; // e.g., RRULE string or simple "daily", "weekly", "monthly"
+    recurrencePattern?: string; 
     status: RoomAllocationStatus;
     notes?: string;
     createdAt?: Timestamp;
@@ -530,12 +505,12 @@ export interface Assessment {
     description?: string;
     maxMarks: number;
     passingMarks?: number;
-    weightage?: number; // e.g., 0.20 for 20%
-    assessmentDate?: Timestamp; // For timed exams
-    dueDate?: Timestamp; // For assignments/projects
+    weightage?: number; 
+    assessmentDate?: Timestamp; 
+    dueDate?: Timestamp; 
     status: AssessmentStatus;
     instructions?: string;
-    facultyId?: string; // Creator/Assigner
+    facultyId?: string; 
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
@@ -548,7 +523,7 @@ export interface StudentAssessmentScore {
     grade?: string;
     remarks?: string;
     submissionDate?: Timestamp;
-    evaluatedBy?: string; // facultyId
+    evaluatedBy?: string; 
     evaluatedAt?: Timestamp;
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
@@ -558,14 +533,83 @@ export type AttendanceStatus = 'present' | 'absent' | 'late' | 'excused';
 
 export interface AttendanceRecord {
     id: string;
-    studentId: string; // Link to StudentProfile.id
-    courseOfferingId: string; // Identifies the specific class/lab session for a course
-    date: Timestamp; // Date of the session, "YYYY-MM-DD"
+    studentId: string; 
+    courseOfferingId: string; 
+    date: Timestamp; 
     status: AttendanceStatus;
-    markedBy: string; // facultyId who marked attendance
+    markedBy: string; 
     remarks?: string;
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
+}
+
+export interface ResultSubject {
+  code: string;
+  name: string;
+  credits: number;
+  grade: string;
+  isBacklog: boolean;
+  theoryEseGrade?: string;
+  theoryPaGrade?: string;
+  theoryTotalGrade?: string;
+  practicalPaGrade?: string;
+  practicalVivaGrade?: string;
+  practicalTotalGrade?: string;
+}
+
+export interface Result {
+  _id: string; // Changed from id to _id to match reference
+  st_id: string;
+  enrollmentNo: string; 
+  extype?: string;
+  examid?: number;
+  exam?: string;
+  declarationDate?: Timestamp;
+  academicYear?: string;
+  semester: number;
+  unitNo?: number;
+  examNumber?: number;
+  name: string; 
+  instcode?: number;
+  instName?: string;
+  courseName?: string; // Can be derived if not directly available
+  branchCode?: number;
+  branchName: string;
+  subjects: ResultSubject[];
+  totalCredits: number;
+  earnedCredits: number;
+  spi: number;
+  cpi: number;
+  cgpa?: number;
+  result: string; 
+  trials?: number;
+  remark?: string;
+  currentBacklog?: number;
+  totalBacklog?: number;
+  uploadBatch: string; 
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
+}
+
+export interface UploadBatch {
+  _id: string; // Typically corresponds to uploadBatch value in Result
+  count: number;
+  latestUpload: Timestamp;
+}
+
+export interface BranchAnalysis {
+  _id: { // Grouping keys
+    branchName: string;
+    semester: number;
+  };
+  totalStudents: number;
+  passCount: number;
+  distinctionCount: number;
+  firstClassCount: number;
+  secondClassCount: number;
+  passPercentage: number;
+  avgSpi: number;
+  avgCpi: number;
 }
 
 
@@ -576,7 +620,7 @@ export interface StaffTransfer {
   fromInstituteId: string;
   toInstituteId: string;
   transferOrderNumber: string;
-  transferDate: Timestamp; // "YYYY-MM-DD"
+  transferDate: Timestamp; 
   transferType: 'promotion' | 'request' | 'administrative' | string;
   status: 'pending' | 'approved' | 'rejected' | 'completed' | 'cancelled';
   remarks?: string;
@@ -589,10 +633,10 @@ export type TimetableEntryType = 'lecture' | 'lab' | 'tutorial' | 'break' | 'oth
 
 export interface TimetableEntry {
     dayOfWeek: DayOfWeek;
-    startTime: string; // HH:mm
-    endTime: string;   // HH:mm
-    courseOfferingId?: string; // Link to specific offering for subject, batch
-    courseId: string; // For display, actual link via CourseOffering
+    startTime: string; 
+    endTime: string;   
+    courseOfferingId?: string; 
+    courseId: string; 
     facultyId: string;
     roomId: string;
     entryType: TimetableEntryType;
@@ -601,14 +645,14 @@ export interface TimetableEntry {
 
 export interface Timetable {
     id: string;
-    name: string; // e.g., "DCE Sem 3 (AY 2024-25)"
-    academicYear: string; // e.g., "2024-25"
+    name: string; 
+    academicYear: string; 
     semester: number;
     programId: string;
-    batchId?: string; // Optional: For specific batch timetable
-    version: string; // e.g., "1.0", "1.1-revised"
+    batchId?: string; 
+    version: string; 
     status: TimetableStatus;
-    effectiveDate: Timestamp; // "YYYY-MM-DD"
+    effectiveDate: Timestamp; 
     entries: TimetableEntry[];
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
@@ -619,7 +663,7 @@ export interface Curriculum {
     id: string;
     programId: string;
     version: string; 
-    effectiveDate: Timestamp; // "YYYY-MM-DD"
+    effectiveDate: Timestamp; 
     courses: Array<{ 
         courseId: string, 
         semester: number, 
@@ -636,8 +680,8 @@ export interface Examination {
     gtuExamCode?: string;
     academicYear: string;
     examType: 'regular' | 'remedial' | 'internal' | 'external_practical';
-    startDate: Timestamp; // "YYYY-MM-DD"
-    endDate: Timestamp;   // "YYYY-MM-DD"
+    startDate: Timestamp; 
+    endDate: Timestamp;   
     programs: string[]; 
     status: 'scheduled' | 'ongoing' | 'completed' | 'postponed' | 'cancelled';
     createdAt?: Timestamp;
@@ -653,8 +697,8 @@ export interface FacultyAssignment {
     role?: 'teaching' | 'non_teaching_academic' | 'administrative' | string; 
     teachingHours?: number;
     assignmentType?: 'full_time' | 'part_time' | 'additional_charge';
-    startDate: Timestamp; // "YYYY-MM-DD"
-    endDate?: Timestamp;   // "YYYY-MM-DD"
+    startDate: Timestamp; 
+    endDate?: Timestamp;   
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
