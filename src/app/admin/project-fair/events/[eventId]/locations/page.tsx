@@ -27,12 +27,14 @@ export default function EventLocationsPage() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const [eventData, locationsData] = await Promise.all([
+        const [eventData, locationsDataResponse] = await Promise.all([ // Renamed locationsData to locationsDataResponse
           projectEventService.getEventById(eventId),
           projectLocationService.getAllLocations({ eventId: eventId }), 
         ]);
         setEvent(eventData);
-        setLocations(locationsData.locations || []); // Assuming the service returns { locations: [], pagination: ... }
+        // Assuming getAllLocations returns an object like { locations: [], pagination: {} }
+        // Adjust based on actual return type of projectLocationService.getAllLocations
+        setLocations(locationsDataResponse.locations || []); 
       } catch (error) {
         console.error("Failed to load event locations data:", error);
         toast({ variant: "destructive", title: "Error", description: "Could not load event locations data." });
