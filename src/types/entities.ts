@@ -80,7 +80,7 @@ export interface Permission {
     description: string;
     resource: string; // e.g., 'student_profile', 'course'
     action: 'create' | 'read' | 'update' | 'delete' | 'manage' | string; // 'manage' implies all CRUD
-    conditions?: any; // For attribute-based access control (ABAC)
+    conditions?: unknown; // For attribute-based access control (ABAC)
 }
 
 export interface RoleAssignment {

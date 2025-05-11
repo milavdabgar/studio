@@ -61,7 +61,7 @@ export const curriculumService = {
     }
   },
 
-  async importCurricula(file: File, programs: Program[], courses: Course[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: any[] }> {
+  async importCurricula(file: File, programs: Program[], courses: Course[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: Array<{ message?: string; data?: unknown; row?: number }> }> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('programs', JSON.stringify(programs));
@@ -76,12 +76,12 @@ export const curriculumService = {
     if (!response.ok) {
       let detailedMessage = responseData.message || 'Failed to import curricula.';
       if (responseData.errors && Array.isArray(responseData.errors) && responseData.errors.length > 0) {
-        const errorSummary = responseData.errors.slice(0, 3).map((err: any) => err.message || JSON.stringify(err.data)).join('; ');
+        const errorSummary = responseData.errors.slice(0, 3).map((err: { message?: string; data?: unknown }) => err.message || JSON.stringify(err.data)).join('; ');
         detailedMessage += ` Specific issues: ${errorSummary}${responseData.errors.length > 3 ? '...' : ''}`;
       } else if (response.status === 500 && !responseData.message && !responseData.errors) {
         detailedMessage = 'Critical error during curriculum import process. Please check server logs.';
       }
-      const error = new Error(detailedMessage) as any;
+      const error = new Error(detailedMessage) as Error & { data?: unknown };
       error.data = responseData; 
       throw error;
     }

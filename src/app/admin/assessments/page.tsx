@@ -261,7 +261,7 @@ export default function AssessmentManagementPage() {
       await fetchInitialData();
       toast({ title: "Import Successful", description: `${result.newCount} assessments added, ${result.updatedCount} assessments updated. Skipped: ${result.skippedCount}` });
       if (result.errors && result.errors.length > 0) {
-          result.errors.slice(0, 3).forEach((err: { row: number; message: string }) => {
+          result.errors.slice(0, 3).forEach((err: { row?: number; message?: string }) => {
             toast({ variant: "destructive", title: `Import Warning (Row ${err.row})`, description: err.message });
           });
         }

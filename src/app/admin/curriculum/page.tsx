@@ -223,7 +223,7 @@ export default function CurriculumManagementPage() {
             toast({variant: "default", title: `Import Warning (Row ${err.row})`, description: err.message, duration: 7000});
           });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process CSV." });
     } finally {
       setIsSubmitting(false); setSelectedFile(null);
@@ -294,8 +294,8 @@ curr_2,prog_dme_gpp,DME,2.1,2025-01-01,draft,course_me101_dme_gpp,ME101,1,false
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA: any = a[sortField as keyof Curriculum];
-        let valB: any = b[sortField as keyof Curriculum];
+        let valA: unknown = a[sortField as keyof Curriculum];
+        let valB: unknown = b[sortField as keyof Curriculum];
         if(sortField === 'programName'){
             valA = programs.find(p => p.id === a.programId)?.name || '';
             valB = programs.find(p => p.id === b.programId)?.name || '';

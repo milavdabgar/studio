@@ -232,8 +232,8 @@ export default function RoomAllocationManagementPage() {
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA: any = a[sortField as keyof RoomAllocation];
-        let valB: any = b[sortField as keyof RoomAllocation];
+        let valA: unknown = a[sortField as keyof RoomAllocation];
+        let valB: unknown = b[sortField as keyof RoomAllocation];
         if (sortField === 'roomNumber') {
             valA = rooms.find(r=>r.id === a.roomId)?.roomNumber || '';
             valB = rooms.find(r=>r.id === b.roomId)?.roomNumber || '';

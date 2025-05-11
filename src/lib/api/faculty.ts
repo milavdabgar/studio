@@ -1,7 +1,5 @@
 
-import type { Faculty, User, Institute } from '@/types/entities'; // Updated User import
-import { userService } from '@/lib/api/users';
-import { instituteService } from '@/lib/api/institutes';
+import type { Faculty } from '@/types/entities';
 
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
@@ -64,7 +62,7 @@ export const facultyService = {
     }
   },
 
-  async importFaculty(file: File, instituteId?: string): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: any[] }> {
+  async importFaculty(file: File, instituteId?: string): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: Array<{ message: string; data?: unknown; row?: number }> }> {
     const formData = new FormData();
     formData.append('file', file);
     if (instituteId) formData.append('instituteId', instituteId); // Pass institute context if available
@@ -77,14 +75,14 @@ export const facultyService = {
     if (!response.ok) {
       let detailedMessage = responseData.message || 'Failed to import faculty (standard)';
       if (responseData.errors && Array.isArray(responseData.errors) && responseData.errors.length > 0) {
-        detailedMessage += ` Specific issues: ${responseData.errors.slice(0,3).map((e:any) => e.message || JSON.stringify(e.data)).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
+        detailedMessage += ` Specific issues: ${responseData.errors.slice(0,3).map((e: { message?: string; data?: unknown }) => e.message || JSON.stringify(e.data)).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
       }
       throw new Error(detailedMessage);
     }
     return responseData;
   },
 
-  async importGtuFaculty(file: File, instituteId?: string): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: any[] }> {
+  async importGtuFaculty(file: File, instituteId?: string): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: Array<{ message: string; data?: unknown; row?: number }> }> {
     const formData = new FormData();
     formData.append('file', file);
     if (instituteId) formData.append('instituteId', instituteId);
@@ -97,7 +95,7 @@ export const facultyService = {
     if (!response.ok) {
       let detailedMessage = responseData.message || 'Failed to import GTU faculty data';
       if (responseData.errors && Array.isArray(responseData.errors) && responseData.errors.length > 0) {
-         detailedMessage += ` Specific issues: ${responseData.errors.slice(0,3).map((e:any) => e.message || JSON.stringify(e.data)).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
+         detailedMessage += ` Specific issues: ${responseData.errors.slice(0,3).map((e: { message?: string; data?: unknown }) => e.message || JSON.stringify(e.data)).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
       }
       throw new Error(detailedMessage);
     }

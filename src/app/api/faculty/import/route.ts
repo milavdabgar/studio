@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     }
 
     let newCount = 0, updatedCount = 0, skippedCount = 0;
-    const importErrors: { row: number, message: string, data: any }[] = [];
+    const importErrors: { row: number, message: string, data: unknown }[] = [];
 
     for (let i = 0; i < parsedData.length; i++) {
       const row = parsedData[i];
@@ -174,7 +174,7 @@ export async function POST(request: NextRequest) {
         }
 
 
-      } catch(userError: any) {
+      } catch(userError: unknown) {
         importErrors.push({row: rowIndex, message: `User account linking/creation failed for ${staffCode}: ${userError.message}`, data: row});
         // If user creation failed, we might still keep the faculty record or mark it as needing user setup
       }

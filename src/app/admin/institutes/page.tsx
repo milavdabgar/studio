@@ -166,7 +166,7 @@ export default function InstituteManagementPage() {
       const result = await instituteService.importInstitutes(selectedFile);
       await fetchInstitutes(); 
       toast({ title: "Import Successful", description: `${result.newCount} institutes added, ${result.updatedCount} institutes updated.` });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error processing CSV file:", error);
       toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
     } finally {
@@ -240,8 +240,8 @@ inst_sample_1,Another Polytechnic,AP,123 Sample Street,contact@ap.edu,123-456-78
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA: any = a[sortField as keyof Institute];
-        let valB: any = b[sortField as keyof Institute];
+        let valA: unknown = a[sortField as keyof Institute];
+        let valB: unknown = b[sortField as keyof Institute];
         
         if (sortField === 'establishmentYear') {
             valA = Number(valA) || 0; valB = Number(valB) || 0;

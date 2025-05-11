@@ -1,7 +1,5 @@
 
-import type { Student, User, Program } from '@/types/entities'; // Updated User import
-import { userService } from '@/lib/api/users';
-import { programService } from '@/lib/api/programs'; // To potentially get instituteId from program
+import type { Student, Program } from '@/types/entities';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 
@@ -63,7 +61,7 @@ export const studentService = {
     }
   },
 
-  async importStudents(file: File, programs: Program[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: any[] }> {
+  async importStudents(file: File, programs: Program[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: Array<{ message?: string; data?: unknown; row?: number }> }> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('programs', JSON.stringify(programs)); // Send programs for instituteId derivation
@@ -76,14 +74,14 @@ export const studentService = {
     if (!response.ok) {
       let detailedMessage = responseData.message || 'Failed to import students (standard)';
       if (responseData.errors && Array.isArray(responseData.errors) && responseData.errors.length > 0) {
-         detailedMessage += ` Specific issues: ${responseData.errors.slice(0,3).map((e:any) => e.message || JSON.stringify(e.data)).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
+         detailedMessage += ` Specific issues: ${responseData.errors.slice(0,3).map((e: { message?: string; data?: unknown }) => e.message || JSON.stringify(e.data)).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
       }
       throw new Error(detailedMessage);
     }
     return responseData;
   },
 
-  async importGtuStudents(file: File, programs: Program[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: any[] }> {
+  async importGtuStudents(file: File, programs: Program[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: Array<{ message?: string; data?: unknown; row?: number }> }> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('programs', JSON.stringify(programs));
@@ -96,7 +94,7 @@ export const studentService = {
     if (!response.ok) {
       let detailedMessage = responseData.message || 'Failed to import GTU students data';
        if (responseData.errors && Array.isArray(responseData.errors) && responseData.errors.length > 0) {
-         detailedMessage += ` Specific issues: ${responseData.errors.slice(0,3).map((e:any) => e.message || JSON.stringify(e.data)).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
+         detailedMessage += ` Specific issues: ${responseData.errors.slice(0,3).map((e: { message?: string; data?: unknown }) => e.message || JSON.stringify(e.data)).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
       }
       throw new Error(detailedMessage);
     }

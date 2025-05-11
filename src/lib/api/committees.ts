@@ -60,7 +60,7 @@ export const committeeService = {
     }
   },
 
-  async importCommittees(file: File, institutes: Institute[], facultyUsers: User[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: any[] }> {
+  async importCommittees(file: File, institutes: Institute[], facultyUsers: User[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: Array<{ message?: string; data?: unknown; row?: number }> }> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('institutes', JSON.stringify(institutes));
@@ -76,7 +76,7 @@ export const committeeService = {
     if (!response.ok) {
       let detailedMessage = responseData.message || 'Failed to import committees';
       if (responseData.errors && Array.isArray(responseData.errors) && responseData.errors.length > 0) {
-        detailedMessage += ` Specific issues: ${responseData.errors.slice(0, 3).map((e: any) => e.message || JSON.stringify(e.data)).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
+        detailedMessage += ` Specific issues: ${responseData.errors.slice(0, 3).map((e: unknown) => e.message || JSON.stringify(e.data)).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
       }
       throw new Error(detailedMessage);
     }

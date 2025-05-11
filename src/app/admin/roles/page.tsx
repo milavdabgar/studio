@@ -156,7 +156,7 @@ export default function RoleManagementPage() {
       const result = await roleService.importRoles(selectedFile);
       await fetchRoles();
       toast({ title: "Import Successful", description: `${result.newCount} roles added, ${result.updatedCount} roles updated. Skipped: ${result.skippedCount}` });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error processing CSV file:", error);
       toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
     } finally {

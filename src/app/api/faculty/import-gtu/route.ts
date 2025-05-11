@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
     }
 
     let newCount = 0, updatedCount = 0, skippedCount = 0;
-    const importErrors: { row: number, message: string, data: any }[] = [];
+    const importErrors: { row: number, message: string, data: unknown }[] = [];
 
 
     for (let i=0; i < parsedData.length; i++) {
@@ -159,7 +159,7 @@ export async function POST(request: NextRequest) {
             facultyStore[finalFacultyIndex].userId = facultyToProcess.userId;
         }
 
-      } catch(userError: any) {
+      } catch(userError: unknown) {
          importErrors.push({row: rowIndex, message: `User account linking/creation failed for ${staffCode}: ${userError.message}`, data: row});
       }
     }

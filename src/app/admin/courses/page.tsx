@@ -237,7 +237,7 @@ export default function CourseManagementPage() {
       const result = await courseService.importCourses(selectedFile, departments, programs);
       await fetchInitialData();
       toast({ title: "Import Successful", description: `${result.newCount} courses added, ${result.updatedCount} courses updated. Skipped: ${result.skippedCount}` });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error processing CSV file:", error);
       toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
     } finally {
@@ -323,8 +323,8 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA: any = a[sortField as keyof Course];
-        let valB: any = b[sortField as keyof Course];
+        let valA: unknown = a[sortField as keyof Course];
+        let valB: unknown = b[sortField as keyof Course];
         
         const numericFields: (keyof Course)[] = ['semester', 'lectureHours', 'tutorialHours', 'practicalHours', 'credits', 'theoryEseMarks', 'theoryPaMarks', 'practicalEseMarks', 'practicalPaMarks', 'totalMarks'];
         if (numericFields.includes(sortField as keyof Course)) {

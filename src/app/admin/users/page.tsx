@@ -247,7 +247,7 @@ export default function UserManagementPage() {
             toast({variant: "warning", title: `Import Warning (Row ${err.row})`, description: err.message, duration: 7000});
           });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error processing CSV file for User Import:", error);
       toast({ variant: "destructive", title: "Import Failed", description: error.data?.message || error.message || "Could not process the CSV file." });
     } finally {
@@ -350,8 +350,8 @@ export default function UserManagementPage() {
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA: any;
-        let valB: any;
+        let valA: unknown;
+        let valB: unknown;
 
         if (sortField === 'roles') {
           // Sort by concatenated role names for display consistency

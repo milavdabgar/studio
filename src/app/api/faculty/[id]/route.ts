@@ -92,7 +92,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
   if (deletedFaculty.userId) {
       try {
           await userService.deleteUser(deletedFaculty.userId);
-      } catch (userError: any) {
+      } catch (userError: unknown) {
            if (userError.message?.includes('Cannot delete this administrative user')) {
             console.warn(`Administrative user ${deletedFaculty.userId} linked to faculty ${id} was not deleted.`);
           } else {

@@ -172,7 +172,7 @@ export async function POST(request: NextRequest) {
         createdUserId = createdUser.id;
         newStudent.userId = createdUserId;
 
-    } catch (userCreationError: any) {
+    } catch (userCreationError: unknown) {
         if (userCreationError.message?.includes("already exists")) {
             console.warn(`System user with email ${instituteEmail} or ${studentData.personalEmail} already exists. Attempting to link student ${newStudent.enrollmentNumber}.`);
             const allUsers = await userService.getAllUsers();

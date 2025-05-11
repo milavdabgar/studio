@@ -113,7 +113,7 @@ export async function GET(request: NextRequest) {
  const role = getRole(id);
  return role ? NextResponse.json(role) : NextResponse.json({ message: 'Role not found' }, { status: 404 });
  } else { return NextResponse.json(getAllRoles()); }
-    } catch (error: any) {
+    } catch (error: unknown) {
         if (error.message === 'Too Many Requests') {
             return NextResponse.json({ message: 'Too Many Requests' }, { status: 429 });
         }
@@ -144,7 +144,7 @@ export async function POST(request: NextRequest) {
 
  const newRole = createRole(roleData);
         return NextResponse.json(newRole, { status: 201 });
-    } catch (error: any) {
+    } catch (error: unknown) {
         if (error.message === 'Too Many Requests') {
             return NextResponse.json({ message: 'Too Many Requests' }, { status: 429 });
         }
@@ -186,7 +186,7 @@ export async function PUT(request: NextRequest) {
  const updatedRole = updateRole(id, updateData);
  if (!updatedRole) return NextResponse.json({ message: 'Role not found' }, { status: 404 });
         return NextResponse.json(updatedRole);
-    } catch (error: any) {
+    } catch (error: unknown) {
          if (error.message === 'Too Many Requests') {
             return NextResponse.json({ message: 'Too Many Requests' }, { status: 429 });
         }
@@ -219,7 +219,7 @@ export async function DELETE(request: NextRequest) {
         }
 
         return NextResponse.json({ message: 'Role deleted successfully.' });
-    } catch (error: any) {
+    } catch (error: unknown) {
          if (error.message === 'Too Many Requests') {
             return NextResponse.json({ message: 'Too Many Requests' }, { status: 429 });
         }

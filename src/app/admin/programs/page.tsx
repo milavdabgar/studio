@@ -184,7 +184,7 @@ export default function ProgramManagementPage() {
       const result = await programService.importPrograms(selectedFile, departments); // Pass departments for mapping
       await fetchProgramsAndDepartments();
       toast({ title: "Import Successful", description: `${result.newCount} programs added, ${result.updatedCount} programs updated. Skipped: ${result.skippedCount}` });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error processing CSV file:", error);
       toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
     } finally {
@@ -274,8 +274,8 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA: any = a[sortField as keyof Program];
-        let valB: any = b[sortField as keyof Program];
+        let valA: unknown = a[sortField as keyof Program];
+        let valB: unknown = b[sortField as keyof Program];
 
         if (sortField === 'durationYears' || sortField === 'totalSemesters') {
             valA = Number(valA) || 0;

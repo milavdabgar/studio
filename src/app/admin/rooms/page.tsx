@@ -200,7 +200,7 @@ export default function RoomManagementPage() {
       const result = await roomService.importRooms(selectedFile, buildings);
       await fetchRoomsAndBuildings();
       toast({ title: "Import Successful", description: `${result.newCount} rooms added, ${result.updatedCount} rooms updated. Skipped: ${result.skippedCount}` });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error processing CSV file:", error);
       toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
     } finally {
@@ -282,8 +282,8 @@ room_sample_1,C-101,Smart Classroom 1,bldg2,"New Academic Complex","NAC",1,Lectu
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA: any = a[sortField as keyof Room];
-        let valB: any = b[sortField as keyof Room];
+        let valA: unknown = a[sortField as keyof Room];
+        let valB: unknown = b[sortField as keyof Room];
         
         const numericFields: (keyof Room)[] = ['floor', 'capacity', 'areaSqFt'];
         if (numericFields.includes(sortField as keyof Room)) {

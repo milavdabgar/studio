@@ -303,7 +303,7 @@ export default function StudentManagementPage() {
         const result = await studentService.importStudents(selectedFile);
         await fetchStudents();
         toast({ title: "Import Successful", description: `${result.newCount} students added, ${result.updatedCount} students updated. Skipped: ${result.skippedCount}` });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error processing standard CSV file:", error);
         toast({ variant: "destructive", title: "Standard Import Failed", description: error.message || "Could not process the CSV file." });
     } finally {
@@ -387,7 +387,7 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,,Comp
         const result = await studentService.importGtuStudents(selectedGtuFile);
         await fetchStudents();
         toast({ title: "GTU Import Successful", description: `${result.newCount} students added, ${result.updatedCount} students updated. ${result.skippedCount} rows skipped.` });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error processing GTU CSV file:", error);
         toast({ variant: "destructive", title: "GTU Import Failed", description: error.message || "Could not process the GTU CSV file." });
     } finally {
@@ -451,8 +451,8 @@ s_001,GPPLN22001,SHARMA AARAV ROHIT,AARAV,ROHIT,SHARMA,aarav.s@example.com,,Comp
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA: any = a[sortField as keyof Student]; 
-        let valB: any = b[sortField as keyof Student]; 
+        let valA: unknown = a[sortField as keyof Student]; 
+        let valB: unknown = b[sortField as keyof Student]; 
 
         if (sortField === 'currentSemester' || sortField === 'convocationYear') {
             valA = Number(valA) || 0;

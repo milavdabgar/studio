@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
     let newCount = 0;
     let updatedCount = 0;
     let skippedCount = 0;
-    const importErrors: { row: number, message: string, data: any }[] = [];
+    const importErrors: { row: number, message: string, data: unknown }[] = [];
 
     for (let i = 0; i < parsedData.length; i++) {
       const row = parsedData[i];

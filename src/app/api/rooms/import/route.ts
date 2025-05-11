@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     let updatedCount = 0;
     let skippedCount = 0;
 
-    parsedData.forEach((row: any) => {
+    parsedData.forEach((row: unknown) => {
       const roomNumber = row.roomnumber?.toString().trim().toUpperCase();
       const typeRaw = row.type?.toString().trim().toLowerCase();
       const type = ROOM_TYPE_OPTIONS_LOWER.includes(typeRaw) ? (typeRaw.charAt(0).toUpperCase() + typeRaw.slice(1).replace(/\s([a-z])/g, (match) => ` ${match.trim().toUpperCase()}`)) as RoomType : 'Other';

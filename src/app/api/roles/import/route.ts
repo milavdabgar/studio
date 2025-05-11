@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     let updatedCount = 0;
     let skippedCount = 0;
 
-    parsedData.forEach((row: any) => {
+    parsedData.forEach((row: unknown) => {
       const name = row.name?.toString().trim();
       const description = row.description?.toString().trim();
       const permissionsString = row.permissions?.toString().trim().replace(/^"|"$/g, '');

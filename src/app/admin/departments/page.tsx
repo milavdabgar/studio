@@ -178,7 +178,7 @@ export default function DepartmentManagementPage() {
       const result = await departmentService.importDepartments(selectedFile, "inst1"); // Example instituteId
       await fetchDepartmentsAndFaculty();
       toast({ title: "Import Successful", description: `${result.newCount} departments added, ${result.updatedCount} departments updated.` });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error processing CSV file:", error);
       toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
     } finally {
@@ -264,8 +264,8 @@ dept_sample_1,Information Technology,IT,"Handles all IT related courses and infr
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA: any = a[sortField as keyof Department];
-        let valB: any = b[sortField as keyof Department];
+        let valA: unknown = a[sortField as keyof Department];
+        let valB: unknown = b[sortField as keyof Department];
 
         if (sortField === 'establishmentYear') {
             valA = Number(valA) || 0;

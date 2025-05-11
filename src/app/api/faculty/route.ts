@@ -184,7 +184,7 @@ export async function POST(request: NextRequest) {
         createdUserId = createdUser.id;
         newFaculty.userId = createdUserId; 
 
-    } catch (userCreationError: any) {
+    } catch (userCreationError: unknown) {
         if (userCreationError.message?.includes("already exists")) {
             console.warn(`System user with email ${instituteEmail} or ${facultyData.personalEmail} already exists. Attempting to link faculty ${newFaculty.staffCode}.`);
             const allUsers = await userService.getAllUsers();

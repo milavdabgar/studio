@@ -168,7 +168,7 @@ export default function TimetableManagementPage() {
     setIsSubmitting(false);
   };
 
-  const handleEntryChange = (index: number, field: keyof TimetableEntry, value: any) => {
+  const handleEntryChange = (index: number, field: keyof TimetableEntry, value: unknown) => {
     const updatedEntries = [...currentEntries];
     (updatedEntries[index] as any)[field] = value;
     setCurrentEntries(updatedEntries);
@@ -282,8 +282,8 @@ export default function TimetableManagementPage() {
     let sorted = [...filteredTimetables];
     if (sortField !== 'none') {
       sorted.sort((a, b) => {
-        let valA: any = a[sortField as keyof Timetable];
-        let valB: any = b[sortField as keyof Timetable];
+        let valA: unknown = a[sortField as keyof Timetable];
+        let valB: unknown = b[sortField as keyof Timetable];
         if (sortField === 'programName') {
             valA = programs.find(p => p.id === a.programId)?.name || '';
             valB = programs.find(p => p.id === b.programId)?.name || '';

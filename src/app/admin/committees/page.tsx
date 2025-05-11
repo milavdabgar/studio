@@ -203,11 +203,11 @@ export default function CommitteeManagementPage() {
         await fetchInitialData();
         toast({ title: "Import Successful", description: `${result.newCount} committees added, ${result.updatedCount} updated. Skipped: ${result.skippedCount}`});
         if (result.errors && result.errors.length > 0) {
-          result.errors.slice(0, 3).forEach((err: any) => {
+          result.errors.slice(0, 3).forEach((err: unknown) => {
             toast({ variant: "destructive", title: `Import Warning (Row ${err.row})`, description: err.message });
           });
         }
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error processing CSV file:", error);
         toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
     } finally {
@@ -291,8 +291,8 @@ cmt_sample_1,Academic Committee,ACCOM,"Oversees academic policies","To ensure ac
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA: any = a[sortField as keyof Committee];
-        let valB: any = b[sortField as keyof Committee];
+        let valA: unknown = a[sortField as keyof Committee];
+        let valB: unknown = b[sortField as keyof Committee];
         
         if (sortField === 'formationDate' || sortField === 'dissolutionDate') {
             valA = valA ? new Date(valA).getTime() : 0;
