@@ -2,12 +2,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { FeedbackDataRow, AnalysisResult, SubjectScore, FacultyScore, SemesterScore, BranchScore, TermYearScore } from '@/types/feedback';
 import { parse } from 'papaparse';
-// import { marked } from 'marked'; // Keep for markdown generation
-// PDF/Excel/ZIP generation libraries are commented out for now due to complexity in Next.js API routes
-// import ExcelJS from 'exceljs';
-// import archiver from 'archiver';
-// import puppeteer from 'puppeteer';
-// import fs from 'fs'; // fs operations are generally not suitable for serverless environments
+import { marked } from 'marked';
 
 declare global {
   // eslint-disable-next-line no-var
@@ -22,21 +17,21 @@ const analysisResultsStore: Map<string, AnalysisResult> = global.__API_FEEDBACK_
 const getFacultyInitial = (name: string): string => {
     const parts = name.split(' ');
     if (parts.length === 0) return '';
-    // Skip common titles like Mr., Ms., Dr., Prof.
     const commonTitles = ['mr.', 'ms.', 'mrs.', 'dr.', 'prof.'];
     let nameParts = parts;
-    if (commonTitles.includes(parts[0].toLowerCase())) {
+    if (commonTitles.includes(parts[0].toLowerCase().replace('.', ''))) {
         nameParts = parts.slice(1);
     }
-    return nameParts.map(part => part[0]?.toUpperCase()).join('');
+    return nameParts.map(part => part[0]?.toUpperCase()).filter(Boolean).join('');
 };
 
 const getSubjectShortForm = (fullName: string): string => {
     if (!fullName) return '';
-    const commonWords = ['of', 'and', 'in', 'to', 'the', 'for', '&', 'a', 'an', 'engineering', 'technology', 'science', 'studies', 'application', 'system', 'management', 'design', 'development', 'introduction', 'advanced', 'basic', 'principles'];
+    const commonWords = ['of', 'and', 'in', 'to', 'the', 'for', '&', 'a', 'an', 'engineering', 'technology', 'science', 'studies', 'application', 'system', 'management', 'design', 'development', 'introduction', 'advanced', 'basic', 'principles', 'workshop', 'practice'];
     return fullName.split(' ')
-        .filter(word => word.length > 0 && !commonWords.includes(word.toLowerCase()))
+        .filter(word => word.length > 0 && !commonWords.includes(word.toLowerCase().replace(/[^\w\s]/gi, '')))
         .map(word => word[0]?.toUpperCase())
+        .filter(Boolean)
         .join('');
 };
 
@@ -81,8 +76,10 @@ function calculateSubjectScores(data: FeedbackDataRow[]): SubjectScore[] {
             const qKey = `Q${i}`;
             const avgScore = subject.count > 0 ? (subject.scores[qKey] || 0) / subject.count : 0;
             averageScores[qKey] = avgScore;
-            totalSumOfAverages += avgScore;
-            if (subject.scores[qKey] !== undefined) validQuestionCount++;
+            if (subject.scores[qKey] !== undefined) { // Only count questions that had data
+                totalSumOfAverages += avgScore;
+                validQuestionCount++;
+            }
         }
         
         const overallScore = validQuestionCount > 0 ? totalSumOfAverages / validQuestionCount : 0;
@@ -102,28 +99,29 @@ function calculateSubjectScores(data: FeedbackDataRow[]): SubjectScore[] {
 function calculateFacultyScores(subjectScores: SubjectScore[]): FacultyScore[] {
     const facultyScoresMap = new Map<string, {
         scores: { [key: string]: number };
-        count: number;
+        count: number; // Number of subjects taught by faculty
         Faculty_Initial: string;
     }>();
 
     subjectScores.forEach(subject => {
-        if (!facultyScoresMap.has(subject.Faculty_Name)) {
-            facultyScoresMap.set(subject.Faculty_Name, {
+        const facultyName = subject.Faculty_Name;
+        if (!facultyScoresMap.has(facultyName)) {
+            facultyScoresMap.set(facultyName, {
                 scores: {},
                 count: 0,
-                Faculty_Initial: getFacultyInitial(subject.Faculty_Name)
+                Faculty_Initial: getFacultyInitial(facultyName)
             });
         }
 
-        const faculty = facultyScoresMap.get(subject.Faculty_Name);
-        if (!faculty) return;
+        const facultyEntry = facultyScoresMap.get(facultyName);
+        if (!facultyEntry) return;
 
         for (let i = 1; i <= 12; i++) {
             const qKey = `Q${i}`;
-            if (!faculty.scores[qKey]) faculty.scores[qKey] = 0;
-            faculty.scores[qKey] += subject[qKey] || 0;
+            if (!facultyEntry.scores[qKey]) facultyEntry.scores[qKey] = 0;
+            facultyEntry.scores[qKey] += (subject[qKey as keyof SubjectScore] as number) || 0; // Accumulate scores from each subject
         }
-        faculty.count++;
+        facultyEntry.count++; // Increment count for each subject handled by this faculty
     });
 
     return Array.from(facultyScoresMap.entries()).map(([name, faculty]) => {
@@ -132,10 +130,11 @@ function calculateFacultyScores(subjectScores: SubjectScore[]): FacultyScore[] {
         let validQuestionCount = 0;
         for (let i = 1; i <= 12; i++) {
             const qKey = `Q${i}`;
+            // Average score for a question is sum of that question's scores across all subjects taught by faculty / number of subjects
             const avgScore = faculty.count > 0 ? (faculty.scores[qKey] || 0) / faculty.count : 0;
             averageScores[qKey] = avgScore;
             totalSumOfAverages += avgScore;
-             if (faculty.scores[qKey] !== undefined) validQuestionCount++;
+            if (faculty.scores[qKey] !== undefined) validQuestionCount++;
         }
         const overallScore = validQuestionCount > 0 ? totalSumOfAverages / validQuestionCount : 0;
 
@@ -186,8 +185,10 @@ function calculateGenericScores<T extends { scores: { [key: string]: number }, c
             const qKey = `Q${i}`;
             const avgScore = entry.count > 0 ? (entry.scores[qKey] || 0) / entry.count : 0;
             averageScores[qKey] = avgScore;
-            totalSumOfAverages += avgScore;
-            if (entry.scores[qKey] !== undefined) validQuestionCount++;
+            if (entry.scores[qKey] !== undefined) {
+                totalSumOfAverages += avgScore;
+                validQuestionCount++;
+            }
         }
         const overallScore = validQuestionCount > 0 ? totalSumOfAverages / validQuestionCount : 0;
         
@@ -200,7 +201,7 @@ function calculateGenericScores<T extends { scores: { [key: string]: number }, c
 }
 
 
-const generateMarkdownReport = (result: Omit<AnalysisResult, 'id'|'markdownReport'|'analysisDate'|'originalFileName'>): string => {
+const generateMarkdownReport = (result: Omit<AnalysisResult, 'id'|'markdownReport'|'analysisDate'|'originalFileName'|'rawFeedbackData'>): string => {
     const formatFloat = (x: number): string => x.toFixed(2);
 
     let report = `# Student Feedback Analysis Report\n\n`;
@@ -280,8 +281,39 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id'|'markdownRepor
     
     report += `## Misc Feedback Analysis\n\n`;
     report += `### Faculty-Subject Correlation Matrix\n\n`;
-    report += `_Faculty-Subject Correlation Matrix data and visualization would be presented here in a full implementation._\n\n`;
 
+    if (result.subject_scores && result.faculty_scores && result.subject_scores.length > 0 && result.faculty_scores.length > 0) {
+        const facultyInitials = result.faculty_scores.map(f => f.Faculty_Initial).sort();
+        const uniqueSubjectInfos = Array.from(new Map(result.subject_scores.map(s => [`${s.Subject_Code}-${s.Subject_ShortForm}`, { code: s.Subject_Code, shortForm: s.Subject_ShortForm }])).values());
+
+        report += `| Subject Code | Subject SF | ${facultyInitials.join(' | ')} | Subject Avg |\n`;
+        report += `|--------------|------------|${facultyInitials.map(() => '------').join('|')}|-------------|\n`;
+
+        uniqueSubjectInfos.forEach(subjectInfo => {
+            let row = `| ${subjectInfo.code} | ${subjectInfo.shortForm} |`;
+            let subjectScoresForAvg: number[] = [];
+            facultyInitials.forEach(facultyInitial => {
+                const scoreEntry = result.subject_scores.find(s => s.Subject_Code === subjectInfo.code && s.Faculty_Initial === facultyInitial);
+                const score = scoreEntry ? scoreEntry.Score : undefined;
+                row += ` ${score !== undefined ? formatFloat(score) : '-'} |`;
+                if (score !== undefined) subjectScoresForAvg.push(score);
+            });
+            const subjectAvg = subjectScoresForAvg.length > 0 ? subjectScoresForAvg.reduce((a,b) => a+b, 0) / subjectScoresForAvg.length : 0;
+            row += ` ${formatFloat(subjectAvg)} |\n`;
+            report += row;
+        });
+
+        report += `| **Faculty Avg** | -          |`;
+        facultyInitials.forEach(facultyInitial => {
+            const facultyOverallScore = result.faculty_scores.find(f => f.Faculty_Initial === facultyInitial)?.Score;
+            report += ` **${facultyOverallScore !== undefined ? formatFloat(facultyOverallScore) : '-'}** |`;
+        });
+        report += ` - |\n`;
+
+    } else {
+        report += `_Faculty-Subject Correlation Matrix data cannot be generated (no subject or faculty scores)._\n`;
+    }
+    report += '\n';
 
     return report;
 };
@@ -303,23 +335,26 @@ export async function POST(request: NextRequest) {
         header: true,
         skipEmptyLines: true,
         dynamicTyping: (field: string | number) => {
-            if (typeof field === 'string' && /^Q\d+$/.test(field)) {
+            if (typeof field === 'string' && /^Q\d+$/.test(field)) { // For Q1, Q2 etc.
               return true;
             }
-            return false;
+            return false; // Keep other fields as strings initially
           },
-        transformHeader: header => header.trim(),
+        transformHeader: header => header.trim(), // Keep original header case for mapping if needed, but trim
     });
     
     if (parseResult.errors.length > 0) {
         console.error("CSV Parsing errors:", parseResult.errors);
-        return NextResponse.json({ error: 'Error parsing CSV file', details: parseResult.errors.slice(0,5) }, { status: 400 });
+        const userFriendlyErrors = parseResult.errors.map(err => `Row ${err.row + 2}: ${err.message} (Code: ${err.code})`).slice(0, 5);
+        return NextResponse.json({ error: 'Error parsing CSV file. Please check column headers and data format.', details: userFriendlyErrors }, { status: 400 });
     }
+
     feedbackData = parseResult.data.map(row => {
       const newRow: any = { ...row };
       for (let i = 1; i <= 12; i++) {
         const qKey = `Q${i}`;
-        newRow[qKey] = Number(row[qKey] || 0); 
+        const val = row[qKey];
+        newRow[qKey] = (val !== undefined && val !== null && !isNaN(Number(val))) ? Number(val) : 0; 
       }
       return newRow as FeedbackDataRow;
     });
@@ -331,7 +366,7 @@ export async function POST(request: NextRequest) {
     const branchScores = calculateGenericScores<any, keyof FeedbackDataRow>(feedbackData, ['Branch']) as BranchScore[];
     const termYearScores = calculateGenericScores<any, keyof FeedbackDataRow>(feedbackData, ['Year', 'Term']) as TermYearScore[];
     
-    const analysisPayload = {
+    const analysisPayloadForReport = {
         subject_scores: subjectScores,
         faculty_scores: facultyScores,
         semester_scores: semesterScores,
@@ -339,15 +374,16 @@ export async function POST(request: NextRequest) {
         term_year_scores: termYearScores,
     };
 
-    const markdownReport = generateMarkdownReport(analysisPayload);
+    const markdownReport = generateMarkdownReport(analysisPayloadForReport);
 
     const resultId = `analysis_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
     const analysisResult: AnalysisResult = {
         id: resultId,
         originalFileName: file.name,
         analysisDate: new Date().toISOString(),
-        ...analysisPayload,
+        ...analysisPayloadForReport,
         markdownReport,
+        rawFeedbackData: fileContent, // Store raw CSV data
     };
 
     analysisResultsStore.set(resultId, analysisResult);

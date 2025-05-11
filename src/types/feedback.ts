@@ -10,8 +10,8 @@ export interface FeedbackDataRow {
   Subject_Code: string;
   Subject_FullName: string;
   Faculty_Name: string;
-  Faculty_Initial?: string; // Added for convenience
-  Subject_ShortForm?: string; // Added for convenience
+  Faculty_Initial?: string; 
+  Subject_ShortForm?: string; 
   Q1: number;
   Q2: number;
   Q3: number;
@@ -24,8 +24,8 @@ export interface FeedbackDataRow {
   Q10: number;
   Q11: number;
   Q12: number;
-  Score?: number; // Overall score for a row/subject if applicable
-  [key: string]: string | number | undefined; // For Q1-Q12 and other dynamic props
+  Score?: number; 
+  [key: string]: string | number | undefined; 
 }
 
 export interface SubjectScore {
@@ -131,7 +131,7 @@ export interface AnalysisResult {
   semester_scores: SemesterScore[];
   branch_scores: BranchScore[];
   term_year_scores: TermYearScore[];
-  // correlation_matrix: { [key: string]: { [key: string]: number } }; // This might be complex to display directly
-  markdownReport: string; // Store the generated markdown report
-  rawFeedbackData?: FeedbackDataRow[]; // Optionally store raw data if needed later, or a sample
+  correlation_matrix?: { [key: string]: { [key: string]: number } }; // Make optional for now
+  markdownReport: string; 
+  rawFeedbackData?: string; // Store the original CSV string for Excel export
 }
