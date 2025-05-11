@@ -110,10 +110,9 @@ export default function AssessmentManagementPage() {
     setIsLoading(false);
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchInitialData();
-  }, []);
+  }, [toast, courses, programs]);
 
   const resetForm = () => {
     setFormName('');

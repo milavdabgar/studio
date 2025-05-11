@@ -74,10 +74,9 @@ export default function BatchManagementPage() {
     setIsLoading(false);
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchInitialData();
-  }, []);
+  }, [programs.length, toast]); // Added programs.length and toast to dependencies
 
   const resetForm = () => {
     setFormName(''); 

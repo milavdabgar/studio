@@ -99,7 +99,7 @@ export default function CourseManagementPage() {
 
   useEffect(() => {
     fetchInitialData();
-  }, []);
+  }, [toast]);
 
   useEffect(() => {
     if (formDepartmentId) {
