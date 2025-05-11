@@ -1,12 +1,11 @@
 // src/app/api/feedback/download/[type]/[id]/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { AnalysisResult, SubjectScore, FacultyScore, SemesterScore, BranchScore, TermYearScore } from '@/types/feedback';
-import { parse as csvToObjects } from 'papaparse'; // For reading CSV if needed, though we stored raw string
+import type { AnalysisResult } from '@/types/feedback';
+import { parse as csvToObjects } from 'papaparse';
 import ExcelJS from 'exceljs';
-import puppeteer from 'puppeteer-core'; // Using puppeteer-core
+import puppeteer from 'puppeteer-core';
 import chromium from '@sparticuz/chromium-min';
-import { marked }
-from 'marked';
+import { marked } from 'marked';
 import fs from 'fs';
 import path from 'path';
 
@@ -34,7 +33,6 @@ async function generateExcelReportBuffer(analysisResult: AnalysisResult): Promis
     workbook.created = new Date();
     workbook.modified = new Date();
 
-    // Add Original Data Sheet (if available)
     if (analysisResult.rawFeedbackData) {
         const originalSheet = workbook.addWorksheet('Original Feedback Data');
         const parsedCsv = csvToObjects(analysisResult.rawFeedbackData, { header: true, skipEmptyLines: true });
@@ -44,11 +42,11 @@ async function generateExcelReportBuffer(analysisResult: AnalysisResult): Promis
         }
     }
     
-    // Helper to add a sheet from an array of objects
     const addSheetFromData = (sheetName: string, data: any[]) => {
         if (data && data.length > 0) {
             const sheet = workbook.addWorksheet(sheetName);
-            sheet.columns = Object.keys(data[0]).map(key => ({ header: key, key: key, width: key.toLowerCase().includes('name') ? 30 : 15 }));
+            const headers = Object.keys(data[0] || {});
+            sheet.columns = headers.map(key => ({ header: key, key: key, width: key.toLowerCase().includes('name') || key.toLowerCase().includes('fullname') ? 30 : (key.toLowerCase().includes('code') ? 15 : 12) }));
             sheet.addRows(data.map(row => {
                 const newRow: any = {};
                 for (const key in row) {
@@ -66,23 +64,20 @@ async function generateExcelReportBuffer(analysisResult: AnalysisResult): Promis
     addSheetFromData('Branch Scores', analysisResult.branch_scores);
     addSheetFromData('Term-Year Scores', analysisResult.term_year_scores);
     
-    // TODO: Add Correlation Matrix if needed and available in analysisResult.correlation_matrix
-
     const buffer = await workbook.xlsx.writeBuffer();
-    return Buffer.from(buffer); // Convert ArrayBuffer to Node.js Buffer
+    return Buffer.from(buffer);
 }
 
 
 async function generatePuppeteerPDFBuffer(markdownContent: string): Promise<Buffer> {
     let browser = null;
     try {
-        // Path to local Chromium for development, adjust if needed for deployment
         const executablePath = await chromium.executablePath(
           `https://github.com/Sparticuz/chromium/releases/download/v123.0.1/chromium-v123.0.1-pack.tar`
         );
 
         browser = await puppeteer.launch({
-            args: [...chromium.args, '--disable-web-security'], // Added '--disable-web-security'
+            args: [...chromium.args, '--disable-web-security', '--no-sandbox', '--disable-setuid-sandbox'],
             defaultViewport: chromium.defaultViewport,
             executablePath,
             headless: chromium.headless,
@@ -91,8 +86,6 @@ async function generatePuppeteerPDFBuffer(markdownContent: string): Promise<Buff
 
         const page = await browser.newPage();
         
-        // Read CSS content (assuming github.css is in public/css)
-        // Note: In Vercel serverless functions, `process.cwd()` is the root of your project.
         const cssPath = path.join(process.cwd(), 'public', 'css', 'github.css');
         let cssContent = '';
         try {
@@ -102,11 +95,13 @@ async function generatePuppeteerPDFBuffer(markdownContent: string): Promise<Buff
         }
         
         const htmlContent = `
+            <!DOCTYPE html>
             <html>
             <head>
+                <meta charset="UTF-8">
                 <style>${cssContent}</style>
             </head>
-            <body class="markdown-body" style="padding: 2cm;"> <!-- Added padding to body -->
+            <body class="markdown-body" style="padding: 2cm; font-family: sans-serif;">
                 ${await marked(markdownContent)}
             </body>
             </html>
@@ -117,7 +112,7 @@ async function generatePuppeteerPDFBuffer(markdownContent: string): Promise<Buff
         const pdfBuffer = await page.pdf({
             format: 'A4',
             printBackground: true,
-            margin: { // Redundant if body padding is used, but good for consistency
+            margin: {
                 top: '2cm',
                 right: '2cm',
                 bottom: '2cm',
@@ -140,8 +135,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   const { type, id } = params;
   const analysisResult = analysisResultsStore.get(id);
 
-  if (!analysisResult) {
-    return NextResponse.json({ error: 'Report not found' }, { status: 404 });
+  if (!analysisResult || !analysisResult.markdownReport) {
+    return NextResponse.json({ error: 'Report not found or is incomplete' }, { status: 404 });
   }
 
   let filename: string;
@@ -162,19 +157,28 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       contentType = 'application/pdf';
       bufferContent = await generatePuppeteerPDFBuffer(analysisResult.markdownReport);
     } else if (type === 'wkhtml' || type === 'latex') {
-      // Fallback: provide markdown for user to convert with their tools
-      filename = `feedback_report_for_${type}_${id}.md`;
+      // Provide markdown and instruct user to convert locally due to server-side complexity
+      filename = `feedback_report_for_${type}_conversion_${id}.md`;
       contentType = 'text/markdown; charset=utf-8';
-      bufferContent = `Please use your local ${type} (via Pandoc) to convert this Markdown file to PDF.\n\n${analysisResult.markdownReport}`;
-       return new NextResponse(bufferContent, {
-            status: 200,
-            headers: {
-                'Content-Type': contentType,
-                'Content-Disposition': `attachment; filename="${filename}"`,
-            },
-        });
-    }
-    else {
+      bufferContent = `## Instructions for PDF Generation via ${type.toUpperCase()}
+
+This Markdown file contains your feedback report. To generate a PDF using ${type.toUpperCase()}, please use Pandoc or a similar tool on your local machine.
+
+**Example Pandoc command (for wkhtmltopdf):**
+\`\`\`bash
+pandoc -s ${filename} -o feedback_report_${id}.pdf --pdf-engine=wkhtmltopdf --css=path/to/your/github.css --toc -N --shift-heading-level-by=-1
+\`\`\`
+
+**Example Pandoc command (for LaTeX/XeLaTeX):**
+\`\`\`bash
+pandoc -s ${filename} -o feedback_report_${id}.pdf --pdf-engine=xelatex -N --shift-heading-level-by=-1
+\`\`\`
+(Ensure you have a LaTeX distribution like MiKTeX, TeX Live, or MacTeX installed for LaTeX conversion.)
+
+---
+
+${analysisResult.markdownReport}`;
+    } else {
       return NextResponse.json({ error: 'Invalid download type requested' }, { status: 400 });
     }
 
@@ -188,6 +192,12 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
   } catch (error) {
     console.error(`Error generating ${type} report for ${id}:`, error);
-    return NextResponse.json({ error: `Failed to generate ${type} report`, details: (error as Error).message }, { status: 500 });
+    // Log the full error for server-side debugging
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorStack = error instanceof Error ? error.stack : "No stack available";
+    console.error(`Full error: ${errorMessage}\nStack: ${errorStack}`);
+    
+    return NextResponse.json({ error: `Failed to generate ${type} report. Server error: ${errorMessage}` }, { status: 500 });
   }
 }
+

@@ -15,10 +15,27 @@ interface FeedbackReportProps {
 const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
   const { toast } = useToast();
 
-  const downloadReport = async (type: 'markdown' | 'excel' | 'pdf', reportId: string) => {
+  const downloadReport = async (type: 'markdown' | 'excel' | 'pdf' | 'wkhtml' | 'latex' | 'puppeteer', reportId: string) => {
     try {
-      // For PDF, we'll download the markdown version as per API simplification
-      const effectiveType = type === 'pdf' ? 'markdown' : type;
+      let effectiveType = type;
+      let fileExtension = type;
+
+      if (type === 'pdf') { // Default PDF to puppeteer for direct generation
+        effectiveType = 'puppeteer';
+        fileExtension = 'pdf';
+      } else if (type === 'wkhtml' || type === 'latex') {
+        // For these types, the API might return markdown if direct PDF generation isn't set up.
+        // The API handles this, but we set the expected extension for the user.
+        // If API returns markdown:
+        // effectiveType = 'markdown'; // API will handle this by providing MD
+        // fileExtension = 'md';
+        // If API attempts PDF generation (even if via Pandoc -> markdown internally):
+        fileExtension = 'pdf';
+      } else if (type === 'excel') {
+        fileExtension = 'xlsx';
+      }
+
+
       const response = await fetch(`/api/feedback/download/${effectiveType}/${reportId}`);
       
       if (!response.ok) {
@@ -31,10 +48,6 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
       const a = document.createElement('a');
       a.href = url;
       
-      let fileExtension = effectiveType;
-      if (type === 'pdf') fileExtension = 'md'; // Actually downloading markdown
-      else if (type === 'excel') fileExtension = 'csv'; // Actually downloading CSV for excel
-
       a.download = `feedback_report_${reportId}.${fileExtension}`;
       document.body.appendChild(a);
       a.click();
@@ -51,7 +64,7 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
     subject: f.Faculty_Initial,
     Q1: f.Q1, Q2: f.Q2, Q3: f.Q3, Q4: f.Q4, Q5: f.Q5, Q6: f.Q6,
     Q7: f.Q7, Q8: f.Q8, Q9: f.Q9, Q10: f.Q10, Q11: f.Q11, Q12: f.Q12,
-    fullMark: 5, // Assuming max score for each question is 5
+    fullMark: 5, 
   }));
   
   const parameterLineData = Array.from({ length: 12 }, (_, i) => {
@@ -92,11 +105,7 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
               <PolarGrid />
               <PolarAngleAxis dataKey="subject" />
               <PolarRadiusAxis angle={30} domain={[0, 5]} />
-              {/* Dynamically generate Radar series for each question if needed, or a single one for overall */}
-              {/* For simplicity, let's show overall score, or average of Qs */}
-              {/* This needs more thought based on how radar chart should represent multiple faculty */}
               <Radar name="Avg Q Score" dataKey="Q1" stroke="hsl(var(--chart-2))" fill="hsl(var(--chart-2))" fillOpacity={0.6} />
-              {/* Add more Radars for other questions if desired, or average them */}
               <Legend />
               <Tooltip />
             </RadarChart>
@@ -140,16 +149,21 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
             <Download className="mr-2 h-4 w-4" /> Download Markdown (.md)
           </Button>
           <Button onClick={() => downloadReport('excel', analysisResult.id)} variant="outline">
-            <Download className="mr-2 h-4 w-4" /> Download Subject Scores (.csv)
+            <Download className="mr-2 h-4 w-4" /> Download Excel (.xlsx)
           </Button>
-           <Button onClick={() => downloadReport('pdf', analysisResult.id)} variant="outline" title="Downloads Markdown version for PDF conversion">
-            <Download className="mr-2 h-4 w-4" /> Download for PDF (MD)
+          <Button onClick={() => downloadReport('puppeteer', analysisResult.id)} variant="outline">
+            <Download className="mr-2 h-4 w-4" /> Download PDF (Puppeteer)
+          </Button>
+          <Button onClick={() => downloadReport('wkhtml', analysisResult.id)} variant="outline" title="Downloads Markdown version for wkhtmltopdf conversion">
+            <Download className="mr-2 h-4 w-4" /> For PDF (wkhtmltopdf)
+          </Button>
+          <Button onClick={() => downloadReport('latex', analysisResult.id)} variant="outline" title="Downloads Markdown version for LaTeX conversion">
+            <Download className="mr-2 h-4 w-4" /> For PDF (LaTeX)
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground mt-4 text-center">Note: Full PDF and Excel generation is simplified in this version. PDF download provides a markdown file.</p>
+        <p className="text-xs text-muted-foreground mt-4 text-center">Note: PDF generation via wkhtmltopdf/LaTeX might provide a Markdown file if server-side conversion tools are not fully configured.</p>
       </div>
       
-      {/* Displaying Markdown Report Content */}
       <div className="mt-12 p-6 rounded-lg shadow-lg border bg-card">
         <h3 className="text-xl font-semibold mb-4 text-card-foreground">Generated Markdown Report Preview</h3>
         <div className="prose prose-sm dark:prose-invert max-w-none max-h-[600px] overflow-y-auto p-4 border rounded-md bg-background">
