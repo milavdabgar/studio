@@ -6,15 +6,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Clock, Loader2 } from "lucide-react";
 import { format } from 'date-fns';
 import { useToast } from "@/hooks/use-toast";
-import type { Timetable, TimetableEntry, Student, User, Course, Faculty, Room, Program, Batch } from '@/types/entities';
+import type { Timetable, TimetableEntry, Student } from '@/types/entities';
 import { timetableService } from '@/lib/api/timetables';
 import { studentService } from '@/lib/api/students';
-import { userService } from '@/lib/api/users';
 import { courseService } from '@/lib/api/courses';
 import { facultyService } from '@/lib/api/faculty';
-import { roomService } from '@/lib/services/roomService'; // Corrected import path
-import { programService } from '@/lib/api/programs';
-import { batchService } from '@/lib/api/batches';
+import { roomService } from '@/lib/services/roomService';
 
 
 const DAYS_OF_WEEK: TimetableEntry['dayOfWeek'][] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -111,9 +108,9 @@ export default function StudentTimetablePage() {
 
           const enriched = applicableTimetable.entries.map(entry => ({
             ...entry,
-            courseName: courses.find(c => c.id === entry.courseId)?.subjectName || 'N/A',
-            facultyName: faculties.find(f => f.id === entry.facultyId)?.gtuName || 'N/A',
-            roomNumber: rooms.find(r => r.id === entry.roomId)?.roomNumber || 'N/A',
+            courseName: courses.find((c: { id: string }) => c.id === entry.courseId)?.subjectName || 'N/A',
+            facultyName: faculties.find((f: { id: string }) => f.id === entry.facultyId)?.firstName || 'N/A',
+            roomNumber: rooms.find((r: { id: string }) => r.id === entry.roomId)?.roomNumber || 'N/A',
           }));
           setEnrichedEntries(enriched);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, FormEvent } from 'react';
+import React, { useEffect, useState, FormEvent, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -74,7 +74,7 @@ export default function StudentProfilePage() {
     }
   }, [toast]);
 
-  const fetchProfileData = async () => {
+  const fetchProfileData = useCallback(async () => {
     if (!user || !user.id) return;
     setIsLoading(true);
     try {
@@ -88,7 +88,6 @@ export default function StudentProfilePage() {
         setFormAddress(studentProfile.address || '');
         setFormPhotoURL(studentProfile.photoURL || '');
 
-
         if (studentProfile.programId) {
           const prog = await programService.getProgramById(studentProfile.programId);
           setProgram(prog);
@@ -101,14 +100,15 @@ export default function StudentProfilePage() {
         toast({ variant: "destructive", title: "Profile Not Found", description: "Could not find your student profile." });
       }
     } catch (error) {
-      toast({ variant: "destructive", title: "Error", description: "Could not load profile data." });
+      console.error("Error fetching student profile:", error);
+      toast({ variant: "destructive", title: "Error", description: "Failed to load profile data." });
     }
     setIsLoading(false);
-  };
+  }, [user, toast]);
 
   useEffect(() => {
     fetchProfileData();
-  }, [user]); // Dependency on user to refetch if user context changes
+  }, [fetchProfileData]); // fetchProfileData is memoized with useCallback
 
   const handleEditProfile = () => {
     if (student) {
@@ -190,7 +190,7 @@ export default function StudentProfilePage() {
           <CardTitle className="text-3xl font-bold text-primary">
             {student.firstName} {student.middleName} {student.lastName}
           </CardTitle>
-          <CardDescription className="text-lg">{student.gtuName || student.enrollmentNumber}</CardDescription>
+          <CardDescription className="text-lg">{student.enrollmentNumber}</CardDescription>
         </CardHeader>
         <CardContent className="grid md:grid-cols-2 gap-x-8 gap-y-4 px-6 md:px-10">
           {profileItems.map((item, index) => (
