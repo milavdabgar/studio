@@ -11,6 +11,7 @@ import { courseService } from '@/lib/api/courses';
 import { programService } from '@/lib/api/programs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
 
 interface UserCookie {
   email: string;
@@ -108,7 +109,7 @@ export default function StudyMaterialsPage() {
 
         } else {
           setMaterials([]);
-          toast({ variant: "warning", title: "Profile/Program Error", description: "Student profile or program information not found." });
+          toast({ variant: "default", title: "Profile/Program Error", description: "Student profile or program information not found." });
         }
       } catch (error) {
         toast({ variant: "destructive", title: "Error", description: "Could not load study materials." });

@@ -4,6 +4,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Clock, Loader2 } from "lucide-react";
+import { format } from 'date-fns';
 import { useToast } from "@/hooks/use-toast";
 import type { Timetable, TimetableEntry, Student, User, Course, Faculty, Room, Program, Batch } from '@/types/entities';
 import { timetableService } from '@/lib/api/timetables';
