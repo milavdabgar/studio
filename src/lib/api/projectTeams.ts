@@ -26,7 +26,17 @@ export const projectTeamService = {
       const errorData = await response.json().catch(() => ({ message: 'Failed to fetch project teams' }));
       throw new Error(errorData.message || 'Failed to fetch project teams');
     }
-    return response.json();
+    const responseData = await response.json();
+    // Assuming the API returns an object like { data: { teams: [], pagination: {} } }
+    if (responseData.data && Array.isArray(responseData.data.teams)) {
+      return responseData.data.teams;
+    }
+    // Fallback for direct array response, though API route indicates nested structure
+    if (Array.isArray(responseData)) {
+        return responseData;
+    }
+    console.warn("Unexpected response structure for getAllTeams:", responseData);
+    throw new Error('Unexpected response structure when fetching teams.');
   },
 
   async getTeamById(id: string): Promise<ProjectTeam> {
@@ -53,7 +63,7 @@ export const projectTeamService = {
 
   async updateTeam(id: string, teamData: Partial<Omit<ProjectTeam, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>>): Promise<ProjectTeam> {
     const response = await fetch(`${API_BASE_URL}/project-teams/${id}`, {
-      method: 'PATCH', // Or PUT, depending on API design for partial updates
+      method: 'PATCH', 
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(teamData),
     });
@@ -80,7 +90,13 @@ export const projectTeamService = {
       const errorData = await response.json().catch(() => ({ message: 'Failed to fetch your teams' }));
       throw new Error(errorData.message || 'Failed to fetch your teams');
     }
-    return response.json();
+    const responseData = await response.json();
+    if (responseData.data && Array.isArray(responseData.data.teams)) {
+        return responseData.data.teams;
+    }
+    if (Array.isArray(responseData)) return responseData;
+    console.warn("Unexpected response structure for getMyTeams:", responseData);
+    return [];
   },
 
   async getTeamMembers(teamId: string): Promise<TeamWithMembers> {
@@ -89,7 +105,13 @@ export const projectTeamService = {
       const errorData = await response.json().catch(() => ({ message: 'Failed to fetch team members' }));
       throw new Error(errorData.message || 'Failed to fetch team members');
     }
-    return response.json();
+    const responseData = await response.json();
+    // API returns { status: 'success', data: { teamId, teamName, members }}
+    if (responseData.data) {
+        return responseData.data;
+    }
+    console.warn("Unexpected response structure for getTeamMembers:", responseData);
+    throw new Error('Unexpected response structure when fetching team members.');
   },
 
   async addTeamMember(teamId: string, memberData: Omit<TeamMemberInfo, 'id' | 'isLeader'> & { isLeader?: boolean }): Promise<ProjectTeam> {
@@ -118,7 +140,7 @@ export const projectTeamService = {
 
   async setTeamLeader(teamId: string, memberUserId: string): Promise<ProjectTeam> {
     const response = await fetch(`${API_BASE_URL}/project-teams/${teamId}/leader/${memberUserId}`, {
-      method: 'PATCH', // Using PATCH for updating a specific field
+      method: 'PATCH', 
     });
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: 'Failed to set team leader' }));
@@ -127,15 +149,12 @@ export const projectTeamService = {
     return response.json();
   },
 
-
-  // Import/Export
   async importTeams(file: File, departments: Department[], events: ProjectEvent[], users: User[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number, errors?: any[] }> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('departments', JSON.stringify(departments));
     formData.append('events', JSON.stringify(events));
     formData.append('users', JSON.stringify(users));
-
 
     const response = await fetch(`${API_BASE_URL}/project-teams/import`, {
       method: 'POST',
@@ -152,7 +171,7 @@ export const projectTeamService = {
     return responseData;
   },
 
-  async exportTeams(filters: Record<string, string> = {}): Promise<string> { // Returns CSV string
+  async exportTeams(filters: Record<string, string> = {}): Promise<string> { 
     const queryParams = new URLSearchParams(filters);
     const response = await fetch(`${API_BASE_URL}/project-teams/export?${queryParams.toString()}`);
     if (!response.ok) {

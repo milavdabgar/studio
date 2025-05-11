@@ -1,6 +1,6 @@
 // src/app/admin/project-fair/events/edit/[eventId]/page.tsx
 "use client";
-import ProjectEventForm from '@/components/admin/project-fair/ProjectEventForm'; // Assuming the form is generic
+import ProjectEventForm from '@/components/admin/project-fair/ProjectEventForm';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Loader2 } from 'lucide-react';
@@ -70,7 +70,3 @@ export default function EditProjectEventPage() {
     </div>
   );
 }
-```
-  </change>
-  <change>
-    <file>src/components/

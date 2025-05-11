@@ -149,3 +149,10 @@ const ProjectEventForm: React.FC<ProjectEventFormProps> = ({ existingEvent, onEv
           {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
           {existingEvent?.id ? "Save Changes" : "Create Event"}
         </Button>
+      </div>
+    </form>
+  );
+};
+
+export default ProjectEventForm;
+    
