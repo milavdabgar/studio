@@ -112,7 +112,7 @@ export default function AssessmentManagementPage() {
 
   useEffect(() => {
     fetchInitialData();
-  }, [toast, courses, programs]);
+  }, []);
 
   const resetForm = () => {
     setFormName('');
