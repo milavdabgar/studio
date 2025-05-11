@@ -97,7 +97,11 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
   return NextResponse.json({ message: 'Event deleted successfully' }, { status: 200 });
 }
 
-// Specific route for updating schedule
+// Specific route for updating schedule was moved to its own file: [id]/schedule/route.ts
+// So, this PATCH handler is no longer needed here.
+// If it was intended for general partial updates, PUT can handle that,
+// or a more specific PATCH can be designed. For now, removing to avoid conflict.
+/*
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
     const { id } = params; // This is the event ID
     if (request.nextUrl.pathname.endsWith('/schedule')) { // Check if it's a schedule update
@@ -122,7 +126,4 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     }
     return NextResponse.json({ message: 'Invalid endpoint for PATCH' }, { status: 405 });
 }
-```
-  </change>
-  <change>
-    <file>src/lib
+*/

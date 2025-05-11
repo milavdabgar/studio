@@ -8,9 +8,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { 
     Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, 
     Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, 
-    Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, 
+    Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as FileTextIcon, 
     BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Activity, Clock,
-    ListChecks, BookOpenCheck, FilePieChart, BookOpenText, Upload, FileText
+    ListChecks, BookOpenCheck, FilePieChart, BookOpenText, Upload
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -58,7 +58,7 @@ const adminNavItems = [
   { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches' },
   { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses' },
   { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum Mgt.', id: 'admin-curriculum' },
-  { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments' },
+  { href: '/admin/assessments', icon: FileTextIcon, label: 'Assessments', id: 'admin-assessments' },
   { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance-link' },
   { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'admin-resource-allocation' },
   { href: '/admin/timetables', icon: Clock, label: 'Timetables', id: 'admin-timetables'},
@@ -78,10 +78,10 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/student/timetable', icon: Clock, label: 'My Timetable', id: 'student-timetable' },
     { href: '/student/attendance', icon: AttendanceIcon, label: 'My Attendance', id: 'student-attendance' },
     { href: '/student/courses', icon: BookOpen, label: 'My Courses', id: 'student-courses' },
-    { href: '/student/assignments', icon: AssessmentIcon, label: 'Assignments', id: 'student-assignments'},
+    { href: '/student/assignments', icon: FileTextIcon, label: 'Assignments', id: 'student-assignments'},
     { href: '/student/results', icon: Award, label: 'My Results', id: 'student-results' },
     { href: '/student/materials', icon: BookOpenCheck, label: 'Study Materials', id: 'student-materials' },
-    { href: '/project-fair/student', icon: FileText, label: 'My Project', id: 'student-project' }, 
+    { href: '/project-fair/student', icon: FileTextIcon, label: 'My Project', id: 'student-project' }, 
   ],
   faculty: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'faculty-dashboard' },
@@ -92,7 +92,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'faculty-mark-attendance' },
     { href: '/faculty/attendance/reports', icon: BarChart3, label: 'Attendance Reports', id: 'faculty-attendance-reports' },
     { href: '/faculty/assessments/grade', icon: FilePieChart, label: 'Grade Assessments', id: 'faculty-grade-assessments' },
-    { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'faculty-evaluate' }, 
+    { href: '/project-fair/jury', icon: FileTextIcon, label: 'Evaluate Projects', id: 'faculty-evaluate' }, 
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'faculty-feedback' }, 
   ],
   hod: [
@@ -106,7 +106,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/batches', icon: CalendarRange, label: 'Batches (Dept)', id: 'hod-batches' },
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'hod-courses' },
     { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum (Dept)', id: 'hod-curriculum' },
-    { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'hod-assessments' },
+    { href: '/admin/assessments', icon: FileTextIcon, label: 'Assessments (Dept)', id: 'hod-assessments' },
     { href: '/admin/attendance', icon: AttendanceIcon, label: 'Attendance (Dept)', id: 'hod-attendance-records' },
     { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'hod-resource-allocation' },
     { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'hod-faculty' },
@@ -117,23 +117,23 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
   ],
   jury: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'jury-dashboard' },
-    { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'jury-evaluate' }, 
+    { href: '/project-fair/jury', icon: FileTextIcon, label: 'Evaluate Projects', id: 'jury-evaluate' }, 
   ],
   committee_convener: [ 
     { href: '/dashboard', icon: Home, label: 'Convener Dashboard', id: 'convener-dashboard' },
-    { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'convener-my-committee'},
+    // My Committee will be added by getNavItemsForRoleCode
     { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'convener-meetings'}, 
     { href: '/admin/resource-allocation/rooms', icon: DoorOpen, label: 'Book Room', id: 'convener-book-room' }
   ],
   committee_co_convener: [
     { href: '/dashboard', icon: Home, label: 'Co-Convener Dashboard', id: 'co-convener-dashboard' },
-    { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'co-convener-my-committee'},
+    // My Committee will be added by getNavItemsForRoleCode
     { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'co-convener-meetings'}, 
     { href: '/admin/resource-allocation/rooms', icon: DoorOpen, label: 'Book Room', id: 'co_convener-book-room' }
   ],
   committee_member: [
     { href: '/dashboard', icon: Home, label: 'Member Dashboard', id: 'member-dashboard' },
-    { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'member-my-committee'},
+    // My Committee will be added by getNavItemsForRoleCode
     { href: '/committee/tasks/my', icon: ListChecks, label: 'My Tasks', id: 'member-my-tasks'} 
   ],
   super_admin: adminNavItems, 
@@ -151,7 +151,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/batches', icon: CalendarRange, label: 'Batches (Dept)', id: 'dept-admin-batches' },
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'dept-admin-courses' },
     { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum (Dept)', id: 'dept-admin-curriculum' },
-    { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'dept-admin-assessments' },
+    { href: '/admin/assessments', icon: FileTextIcon, label: 'Assessments (Dept)', id: 'dept-admin-assessments' },
     { href: '/admin/attendance', icon: AttendanceIcon, label: 'Attendance (Dept)', id: 'dept-admin-attendance-records' },
     { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'dept-admin-faculty' },
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'dept-admin-students' },
@@ -165,34 +165,6 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
   lab_assistant: [{ href: '/dashboard', icon: Home, label: 'Lab Assistant Dashboard', id: 'lab-assistant-dashboard' }], 
   clerical_staff: [{ href: '/dashboard', icon: Home, label: 'Clerical Dashboard', id: 'clerical-dashboard' }], 
   unknown: [], 
-};
-
-
-const getNavItemsForRoleCode = (roleCode: UserRoleCode): Array<{ href: string; icon: React.ElementType; label: string; id: string }> => {
-  const items = baseNavItems[roleCode] || baseNavItems['unknown']; 
-  
-  if (roleCode.startsWith('committee_') && !['committee_admin'].includes(roleCode) && !items.find(item => item.id.includes('-my-committee'))) {
-     const committeeDashboardLink = { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: `${roleCode}-my-committee`};
-     if (!items.find(item => item.id === committeeDashboardLink.id)) {
-       const specificItems = baseNavItems[roleCode as keyof typeof baseNavItems] || [];
-       return [committeeDashboardLink, ...specificItems.filter(item => item.href !== '/dashboard')].sort((a,b) => a.label.localeCompare(b.label));
-     }
-  } else if (roleCode.endsWith('_convener') && !items.find(item => item.id.includes('-my-committee'))) {
-    return getNavItemsForRoleCode('committee_convener');
-  } else if (roleCode.endsWith('_co_convener') && !items.find(item => item.id.includes('-my-committee'))) {
-    return getNavItemsForRoleCode('committee_co_convener');
-  } else if (roleCode.endsWith('_member') && !items.find(item => item.id.includes('-my-committee'))) {
-    return getNavItemsForRoleCode('committee_member');
-  }
-
-
-  const sortedItems = [...items]; 
-  sortedItems.sort((a, b) => {
-    if (a.label.includes('Dashboard')) return -1;
-    if (b.label.includes('Dashboard')) return 1;
-    return a.label.localeCompare(b.label);
-  });
-  return sortedItems;
 };
 
 
@@ -229,6 +201,40 @@ export default function RootLayout({
   const pathname = usePathname();
   const router = useRouter();
   const { toast } = useToast();
+
+  // Moved getNavItemsForRoleCode inside the component
+  const getNavItemsForRoleCode = (roleCode: UserRoleCode): Array<{ href: string; icon: React.ElementType; label: string; id: string }> => {
+    let items = baseNavItems[roleCode] || baseNavItems['unknown'] || [];
+  
+    const isGenericCommitteeRole = ['committee_convener', 'committee_co_convener', 'committee_member'].includes(roleCode);
+    const isSpecificCommitteeRole = roleCode.startsWith('committee_') && !isGenericCommitteeRole && roleCode !== 'committee_admin';
+  
+    if (isGenericCommitteeRole || isSpecificCommitteeRole) {
+      let baseCommitteeItems: Array<{ href: string; icon: React.ElementType; label: string; id: string }> = [];
+      if (roleCode.endsWith('_convener')) baseCommitteeItems = baseNavItems['committee_convener'] || [];
+      else if (roleCode.endsWith('_co_convener')) baseCommitteeItems = baseNavItems['committee_co_convener'] || [];
+      else if (roleCode.endsWith('_member')) baseCommitteeItems = baseNavItems['committee_member'] || [];
+      
+      // If `items` is from `baseNavItems['unknown']` or doesn't have 'My Committee', add it.
+      // This condition `items === baseNavItems['unknown']` might be true if `roleCode` (e.g. cwan_gpp_convener) isn't a direct key in `baseNavItems`.
+      if (items === baseNavItems['unknown'] || !items.find(item => item.href === '/dashboard/committee')) {
+        items = [...baseCommitteeItems]; // Start with the generic committee role items
+        const committeeDashboardLink = { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: `${roleCode}-my-committee`};
+        if (!items.find(item => item.id === committeeDashboardLink.id || item.href === '/dashboard/committee')) {
+          items = [committeeDashboardLink, ...items.filter(item => item.href !== '/dashboard')];
+        }
+      }
+    }
+  
+    const sortedItems = [...items]; 
+    sortedItems.sort((a, b) => {
+      if (a.label.includes('Dashboard')) return -1;
+      if (b.label.includes('Dashboard')) return 1;
+      return a.label.localeCompare(b.label);
+    });
+    return sortedItems;
+  };
+
 
   const parseUserCookie = (): ParsedUserCookie | null => {
     const authUserCookie = getCookie('auth_user');
@@ -276,9 +282,7 @@ export default function RootLayout({
         }
     };
     fetchRoles();
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, router]);
+  }, [pathname, router, toast]);
 
 
   const handleRoleChange = (newRoleCode: UserRoleCode) => {
@@ -374,7 +378,6 @@ export default function RootLayout({
             </SidebarContent>
             <SidebarFooter className="p-4 border-t border-sidebar-border">
               <div className="flex items-center gap-3 mb-4">
-                {/* User avatar and name */}
                 {currentUser.avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={currentUser.avatarUrl} alt={currentUser.name} data-ai-hint={currentUser.dataAiHint} className="h-10 w-10 rounded-full" />
@@ -388,7 +391,6 @@ export default function RootLayout({
                   </p>
                 </div>
               </div>
-              {/* Role switcher */}
               {currentUser.availableRoles.length > 1 && allSystemRoles.length > 0 && (
                 <div className="mb-4">
                   <Label htmlFor="role-switcher" className="text-xs text-sidebar-foreground/70 mb-1 block">Switch Role:</Label>
@@ -409,7 +411,6 @@ export default function RootLayout({
                   </Select>
                 </div>
               )}
-              {/* Footer actions */}
               <div className="flex items-center justify-between">
                 <Link href="/admin/settings" passHref>
                   <Button variant="ghost" size="icon" className="text-sidebar-foreground hover:bg-sidebar-accent">
@@ -417,13 +418,13 @@ export default function RootLayout({
                   </Button>
                 </Link>
                 <ThemeToggle />
-                <Button
-                    variant="ghost"
-                    size="icon"
+                <Button 
+                    variant="ghost" 
+                    size="icon" 
                     className="text-sidebar-foreground hover:bg-sidebar-accent"
                     onClick={() => {
                        if (typeof document !== 'undefined') {
-                        document.cookie = 'auth_user=;path=/;max-age=0';
+                        document.cookie = 'auth_user=;path=/;max-age=0'; 
                        }
                        router.push('/login');
                     }}
