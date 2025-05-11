@@ -45,13 +45,22 @@ async function generateExcelReportBuffer(analysisResult: AnalysisResult): Promis
     const addSheetFromData = (sheetName: string, data: any[]) => {
         if (data && data.length > 0) {
             const sheet = workbook.addWorksheet(sheetName);
-            const headers = Object.keys(data[0] || {});
-            sheet.columns = headers.map(key => ({ header: key, key: key, width: key.toLowerCase().includes('name') || key.toLowerCase().includes('fullname') ? 30 : (key.toLowerCase().includes('code') ? 15 : 12) }));
+            // Ensure headers are derived correctly even if some objects miss keys by checking all objects
+            const allKeys = new Set<string>();
+            data.forEach(row => Object.keys(row).forEach(key => allKeys.add(key)));
+            const headers = Array.from(allKeys);
+            
+            sheet.columns = headers.map(key => ({ header: key, key: key, width: key.toLowerCase().includes('name') || key.toLowerCase().includes('fullname') ? 30 : (key.toLowerCase().includes('code') || key.toLowerCase().includes('initial') ? 15 : 12) }));
+            
             sheet.addRows(data.map(row => {
                 const newRow: any = {};
-                for (const key in row) {
-                    if (typeof row[key] === 'number') newRow[key] = parseFloat(row[key].toFixed(2));
-                    else newRow[key] = row[key];
+                for (const key of headers) { // Iterate over consistent headers
+                    if (row[key] !== undefined && row[key] !== null) {
+                       if (typeof row[key] === 'number') newRow[key] = parseFloat(row[key].toFixed(2));
+                       else newRow[key] = row[key];
+                    } else {
+                        newRow[key] = ''; // Or null, depending on preference for empty cells
+                    }
                 }
                 return newRow;
             }));
@@ -73,16 +82,32 @@ async function generatePuppeteerPDFBuffer(markdownContent: string): Promise<Buff
     let browser = null;
     try {
         const executablePath = await chromium.executablePath(
-          `https://github.com/Sparticuz/chromium/releases/download/v123.0.1/chromium-v123.0.1-pack.tar`
+          // If running locally, you may need to provide a path to a local Chromium installation
+          // For Firebase/Google Cloud, this attempts to use the one provided by @sparticuz/chromium-min
+          // process.env.NODE_ENV === 'development' 
+          //  ? "/opt/google/chrome/chrome" // Example local path, adjust as needed
+          //  : 
+          // Removing specific URL for @sparticuz/chromium-min to use its default discovery/download mechanism.
         );
 
-        browser = await puppeteer.launch({
-            args: [...chromium.args, '--disable-web-security', '--no-sandbox', '--disable-setuid-sandbox'],
+        const launchOptions: Parameters<typeof puppeteer.launch>[0] = {
+            args: [
+              ...chromium.args,
+              '--disable-web-security',
+              '--no-sandbox',
+              '--disable-setuid-sandbox',
+              '--disable-dev-shm-usage', // Often needed in constrained environments
+              '--disable-gpu',           // Can help in environments without a GPU
+              '--single-process',        // May reduce resource usage
+            ],
             defaultViewport: chromium.defaultViewport,
             executablePath,
-            headless: chromium.headless,
+            headless: chromium.headless, // Should be 'new' or true for new headless mode
             ignoreHTTPSErrors: true,
-        });
+        };
+        
+        console.log("Puppeteer launch options:", JSON.stringify(launchOptions, null, 2));
+        browser = await puppeteer.launch(launchOptions);
 
         const page = await browser.newPage();
         
@@ -121,8 +146,15 @@ async function generatePuppeteerPDFBuffer(markdownContent: string): Promise<Buff
         });
         return pdfBuffer;
     } catch (error) {
-        console.error('Error generating PDF with Puppeteer:', error);
-        throw error;
+        console.error('Error launching Puppeteer or generating PDF:', error);
+        let errorMessage = 'Failed to generate PDF using Puppeteer.';
+        if (error instanceof Error) {
+            errorMessage += ` Server error: ${error.message}`;
+            if (error.message.toLowerCase().includes('libnss3.so') || error.message.toLowerCase().includes('shared librar')) {
+                errorMessage += ' This often indicates missing system libraries (like libnss3) in the server environment. Please check your hosting environment dependencies for Puppeteer/Chromium.';
+            }
+        }
+        throw new Error(errorMessage);
     } finally {
         if (browser !== null) {
             await browser.close();
@@ -157,7 +189,6 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       contentType = 'application/pdf';
       bufferContent = await generatePuppeteerPDFBuffer(analysisResult.markdownReport);
     } else if (type === 'wkhtml' || type === 'latex') {
-      // Provide markdown and instruct user to convert locally due to server-side complexity
       filename = `feedback_report_for_${type}_conversion_${id}.md`;
       contentType = 'text/markdown; charset=utf-8';
       bufferContent = `## Instructions for PDF Generation via ${type.toUpperCase()}
@@ -192,12 +223,7 @@ ${analysisResult.markdownReport}`;
 
   } catch (error) {
     console.error(`Error generating ${type} report for ${id}:`, error);
-    // Log the full error for server-side debugging
     const errorMessage = error instanceof Error ? error.message : String(error);
-    const errorStack = error instanceof Error ? error.stack : "No stack available";
-    console.error(`Full error: ${errorMessage}\nStack: ${errorStack}`);
-    
     return NextResponse.json({ error: `Failed to generate ${type} report. Server error: ${errorMessage}` }, { status: 500 });
   }
 }
-
