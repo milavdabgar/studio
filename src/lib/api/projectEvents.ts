@@ -63,13 +63,12 @@ export const projectEventService = {
   },
   
   async getEventSchedule(eventId: string): Promise<{ schedule: ProjectEventScheduleItem[], eventDate: string }> {
-    // This is a simplified mock. In a real API, you'd fetch this from the event's data.
     const event = await this.getEventById(eventId);
     return { schedule: event.schedule || [], eventDate: event.eventDate };
   },
 
   async updateEventSchedule(eventId: string, scheduleData: { schedule: ProjectEventScheduleItem[] }): Promise<ProjectEvent> {
-    const response = await fetch(`${API_BASE_URL}/project-events/${eventId}/schedule`, { // Assuming a PATCH endpoint for schedule
+    const response = await fetch(`${API_BASE_URL}/project-events/${eventId}/schedule`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(scheduleData),
@@ -82,7 +81,7 @@ export const projectEventService = {
   },
   
   async publishEventResults(eventId: string, publish: boolean): Promise<ProjectEvent> {
-     const response = await fetch(`${API_BASE_URL}/project-events/${eventId}`, { // Use main update endpoint
+     const response = await fetch(`${API_BASE_URL}/project-events/${eventId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ publishResults: publish }),
@@ -114,7 +113,3 @@ export const projectEventService = {
     return responseData;
   },
 };
-```
-  </change>
-  <change>
-    <file>src/app/api/project-events
