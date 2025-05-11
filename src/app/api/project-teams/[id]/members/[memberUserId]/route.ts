@@ -6,7 +6,7 @@ import type { ProjectTeam } from '@/types/entities';
 if (!(global as any).__API_PROJECT_TEAMS_STORE__) {
   (global as any).__API_PROJECT_TEAMS_STORE__ = [];
 }
-const projectTeamsStore: ProjectTeam[] = (global as any).__API_PROJECT_TEAMS_STORE__;
+// let projectTeamsStore: ProjectTeam[] = (global as any).__API_PROJECT_TEAMS_STORE__; // Local ref is fine here if mutations update global
 
 interface RouteParams {
   params: {
@@ -17,14 +17,21 @@ interface RouteParams {
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { id: teamId, memberUserId } = params;
+  let currentProjectTeamsStore = global.__API_PROJECT_TEAMS_STORE__ as ProjectTeam[];
 
-  const teamIndex = projectTeamsStore.findIndex(t => t.id === teamId);
+  if (!Array.isArray(currentProjectTeamsStore)) {
+    currentProjectTeamsStore = []; // Recover if corrupted
+    global.__API_PROJECT_TEAMS_STORE__ = currentProjectTeamsStore;
+    return NextResponse.json({ message: 'Team data store issue, please retry or contact admin.' }, { status: 500 });
+  }
+
+  const teamIndex = currentProjectTeamsStore.findIndex(t => t.id === teamId);
 
   if (teamIndex === -1) {
     return NextResponse.json({ message: 'Team not found' }, { status: 404 });
   }
 
-  const team = projectTeamsStore[teamIndex];
+  const team = { ...currentProjectTeamsStore[teamIndex] }; // Work on a copy
 
   // TODO: Add permission checks (e.g., only admin or team leader can remove members)
 
@@ -43,9 +50,10 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
   team.members = team.members.filter(m => m.userId !== memberUserId);
   team.updatedAt = new Date().toISOString();
+  team.updatedBy = "user_admin_placeholder_member_remove"; // TODO: Replace with actual user ID
   
-  projectTeamsStore[teamIndex] = team;
-  (global as any).__API_PROJECT_TEAMS_STORE__ = projectTeamsStore;
+  currentProjectTeamsStore[teamIndex] = team;
+  global.__API_PROJECT_TEAMS_STORE__ = currentProjectTeamsStore; // Persist changes to global store
 
   return NextResponse.json(team, { status: 200 });
 }
