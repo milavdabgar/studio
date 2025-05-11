@@ -1,9 +1,10 @@
 // src/app/api/project-events/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { ProjectEvent } from '@/types/entities';
+import type { ProjectEvent, ProjectEventStatus } from '@/types/entities';
 import { isValid, parseISO } from 'date-fns';
 
 declare global {
+  // eslint-disable-next-line no-var
   var __API_PROJECT_EVENTS_STORE__: ProjectEvent[] | undefined;
 }
 
@@ -50,14 +51,13 @@ export async function GET(request: NextRequest) {
     filteredEvents = filteredEvents.filter(event => !event.isActive);
   }
   
-  // Sort active events by eventDate ascending, others descending
   filteredEvents.sort((a, b) => {
     const dateA = a.eventDate ? parseISO(a.eventDate).getTime() : 0;
     const dateB = b.eventDate ? parseISO(b.eventDate).getTime() : 0;
     if (a.isActive && !b.isActive) return -1;
     if (!a.isActive && b.isActive) return 1;
-    if (a.isActive) return dateA - dateB; // Active events, earliest first
-    return dateB - dateA; // Inactive/past events, latest first
+    if (a.isActive) return dateA - dateB;
+    return dateB - dateA; 
   });
 
   return NextResponse.json(filteredEvents);
@@ -85,13 +85,26 @@ export async function POST(request: NextRequest) {
     if (parseISO(eventData.registrationStartDate) >= parseISO(eventData.eventDate) || parseISO(eventData.registrationEndDate) >= parseISO(eventData.eventDate) || parseISO(eventData.registrationStartDate) >= parseISO(eventData.registrationEndDate)) {
         return NextResponse.json({ message: 'Event dates are illogical. Please check registration and event dates.' }, { status: 400 });
     }
+    if (!eventData.status) {
+        return NextResponse.json({ message: 'Event status is required.' }, { status: 400 });
+    }
+
 
     const currentTimestamp = new Date().toISOString();
     const newEvent: ProjectEvent = {
       id: generateEventId(),
-      ...eventData,
-      schedule: [], // Initialize with empty schedule
-      createdBy: "user_admin_placeholder", // TODO: Get actual user ID from session/auth
+      name: eventData.name.trim(),
+      description: eventData.description?.trim() || undefined,
+      academicYear: eventData.academicYear.trim(),
+      eventDate: eventData.eventDate,
+      registrationStartDate: eventData.registrationStartDate,
+      registrationEndDate: eventData.registrationEndDate,
+      status: eventData.status,
+      isActive: eventData.isActive === undefined ? true : eventData.isActive,
+      publishResults: eventData.publishResults === undefined ? false : eventData.publishResults,
+      schedule: [], 
+      departments: eventData.departments || [],
+      createdBy: "user_admin_placeholder", 
       updatedBy: "user_admin_placeholder",
       createdAt: currentTimestamp,
       updatedAt: currentTimestamp,
@@ -104,3 +117,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Error creating project event', error: (error as Error).message }, { status: 500 });
   }
 }
+```
+  </change>
+  <change>
+    <

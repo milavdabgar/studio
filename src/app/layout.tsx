@@ -1,3 +1,4 @@
+// src/app/layout.tsx
 "use client"; 
 
 import { GeistSans } from 'geist/font/sans';
@@ -9,7 +10,7 @@ import {
     Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, 
     Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, 
     BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Activity, Clock,
-    ListChecks, BookOpenCheck, FilePieChart, FileText, BookOpenText
+    ListChecks, BookOpenCheck, FilePieChart, BookOpenText, Upload, FileText
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -43,7 +44,7 @@ const DEFAULT_USER: User = {
 };
 
 const adminNavItems = [
-  { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard' },
+  { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard' }, 
   { href: '/admin/users', icon: UsersIconLucide, label: 'User Management', id: 'admin-users' },
   { href: '/admin/roles', icon: UserCog, label: 'Role Management', id: 'admin-roles' },
   { href: '/admin/institutes', icon: Landmark, label: 'Institutes', id: 'admin-institutes'},
@@ -63,8 +64,8 @@ const adminNavItems = [
   { href: '/admin/timetables', icon: Clock, label: 'Timetables', id: 'admin-timetables'},
   { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback' },
   { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'admin-reporting' },
-  { href: '/project-fair/admin/new-event', icon: Briefcase, label: 'Create Project Event', id: 'admin-project-event-link'},
-  { href: '/admin/results/import', icon: AssessmentIcon, label: 'Import Results', id: 'admin-import-results-link'},
+  { href: '/admin/project-fair/events', icon: Briefcase, label: 'Project Fair Events', id: 'admin-project-fair-events-link'},
+  { href: '/admin/results/import', icon: Upload, label: 'Import Results', id: 'admin-import-results-link'},
   { href: '/admin/settings', icon: Settings, label: 'System Settings', id: 'admin-settings-link'},
 ];
 
@@ -77,10 +78,10 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/student/timetable', icon: Clock, label: 'My Timetable', id: 'student-timetable' },
     { href: '/student/attendance', icon: AttendanceIcon, label: 'My Attendance', id: 'student-attendance' },
     { href: '/student/courses', icon: BookOpen, label: 'My Courses', id: 'student-courses' },
-    { href: '/student/assignments', icon: FileText, label: 'Assignments', id: 'student-assignments'},
+    { href: '/student/assignments', icon: AssessmentIcon, label: 'Assignments', id: 'student-assignments'},
     { href: '/student/results', icon: Award, label: 'My Results', id: 'student-results' },
     { href: '/student/materials', icon: BookOpenCheck, label: 'Study Materials', id: 'student-materials' },
-    { href: '/project-fair/student', icon: AssessmentIcon, label: 'My Project', id: 'student-project' }, 
+    { href: '/project-fair/student', icon: FileText, label: 'My Project', id: 'student-project' }, 
   ],
   faculty: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'faculty-dashboard' },
@@ -91,7 +92,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'faculty-mark-attendance' },
     { href: '/faculty/attendance/reports', icon: BarChart3, label: 'Attendance Reports', id: 'faculty-attendance-reports' },
     { href: '/faculty/assessments/grade', icon: FilePieChart, label: 'Grade Assessments', id: 'faculty-grade-assessments' },
-    { href: '/project-fair/jury', icon: AssessmentIcon, label: 'Evaluate Projects', id: 'faculty-evaluate' }, 
+    { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'faculty-evaluate' }, 
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'faculty-feedback' }, 
   ],
   hod: [
@@ -112,11 +113,11 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'hod-students' },
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'hod-feedback' },
     { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'hod-reporting' },
-    { href: '/project-fair/admin', icon: AssessmentIcon, label: 'Project Fair Admin', id: 'hod-project-fair' }, 
+    { href: '/admin/project-fair/events', icon: Briefcase, label: 'Project Fair Admin', id: 'hod-project-fair' }, 
   ],
   jury: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'jury-dashboard' },
-    { href: '/project-fair/jury', icon: AssessmentIcon, label: 'Evaluate Projects', id: 'jury-evaluate' }, 
+    { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'jury-evaluate' }, 
   ],
   committee_convener: [ 
     { href: '/dashboard', icon: Home, label: 'Convener Dashboard', id: 'convener-dashboard' },
@@ -276,7 +277,8 @@ export default function RootLayout({
     };
     fetchRoles();
 
-  }, [pathname, router, toast]); 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, router]);
 
 
   const handleRoleChange = (newRoleCode: UserRoleCode) => {
@@ -372,6 +374,7 @@ export default function RootLayout({
             </SidebarContent>
             <SidebarFooter className="p-4 border-t border-sidebar-border">
               <div className="flex items-center gap-3 mb-4">
+                {/* User avatar and name */}
                 {currentUser.avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={currentUser.avatarUrl} alt={currentUser.name} data-ai-hint={currentUser.dataAiHint} className="h-10 w-10 rounded-full" />
@@ -385,6 +388,7 @@ export default function RootLayout({
                   </p>
                 </div>
               </div>
+              {/* Role switcher */}
               {currentUser.availableRoles.length > 1 && allSystemRoles.length > 0 && (
                 <div className="mb-4">
                   <Label htmlFor="role-switcher" className="text-xs text-sidebar-foreground/70 mb-1 block">Switch Role:</Label>
@@ -405,6 +409,7 @@ export default function RootLayout({
                   </Select>
                 </div>
               )}
+              {/* Footer actions */}
               <div className="flex items-center justify-between">
                 <Link href="/admin/settings" passHref>
                   <Button variant="ghost" size="icon" className="text-sidebar-foreground hover:bg-sidebar-accent">
@@ -412,13 +417,13 @@ export default function RootLayout({
                   </Button>
                 </Link>
                 <ThemeToggle />
-                <Button 
-                    variant="ghost" 
-                    size="icon" 
+                <Button
+                    variant="ghost"
+                    size="icon"
                     className="text-sidebar-foreground hover:bg-sidebar-accent"
                     onClick={() => {
                        if (typeof document !== 'undefined') {
-                        document.cookie = 'auth_user=;path=/;max-age=0'; 
+                        document.cookie = 'auth_user=;path=/;max-age=0';
                        }
                        router.push('/login');
                     }}
@@ -445,4 +450,3 @@ export default function RootLayout({
     </html>
   );
 }
-    
