@@ -75,11 +75,13 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
   // If project had a location, unassign it
   if (deletedProject.locationId) {
-    const locationIndex = projectLocationsStore.findIndex(loc => loc.id === deletedProject.locationId || loc.locationId === deletedProject.locationId); // Check both possible ID fields
+    // Find location by user-friendly locationId string or MongoDB _id
+    const locationIndex = projectLocationsStore.findIndex(loc => loc.id === deletedProject.locationId || loc.locationId === deletedProject.locationId);
     if (locationIndex !== -1) {
-      projectLocationsStore[locationIndex].projectId = null;
+      projectLocationsStore[locationIndex].projectId = undefined; // Use undefined for optional fields
       projectLocationsStore[locationIndex].isAssigned = false;
       projectLocationsStore[locationIndex].updatedBy = "user_admin_placeholder_project_delete"; // Placeholder
+      projectLocationsStore[locationIndex].updatedAt = new Date().toISOString();
       global.__API_PROJECT_LOCATIONS_STORE__ = projectLocationsStore;
     }
   }
