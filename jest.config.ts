@@ -91,8 +91,9 @@ const config: Config = {
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   moduleNameMapper: {
-    '^.+\.(css|less|scss)$': 'identity-obj-proxy',
-    '^.+\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.js'
+    '^@/(.*)$': '<rootDir>/src/$1', // Added this line to correctly map @/ paths
+    '^.+\\.(css|less|scss)$': 'identity-obj-proxy',
+    '^.+\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.js'
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -140,7 +141,7 @@ const config: Config = {
   // setupFiles: [],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'], // Changed to .ts file
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
   // slowTestThreshold: 5,
@@ -166,7 +167,7 @@ const config: Config = {
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: [
     "/node_modules/",
-    "/e2e/"
+    "/e2e/" // Keep e2e tests ignored for unit test runs
   ],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
@@ -180,11 +181,11 @@ const config: Config = {
 
   // A map from regular expressions to paths to transformers
   transform: {
-    '^.+\.(ts|tsx|js|jsx)$': ['babel-jest', { configFile: './babel.config.jest.js' }]
+    '^.+\\.(ts|tsx|js|jsx)$': ['babel-jest', { configFile: './babel.config.jest.js' }]
   },
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   transformIgnorePatterns: [
-    '/node_modules/(?!.*\.mjs$)'
+    '/node_modules/(?!.*\\.mjs$)' // Keep this to transpile mjs from node_modules if needed
   ],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
