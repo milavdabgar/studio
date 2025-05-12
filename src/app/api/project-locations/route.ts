@@ -133,4 +133,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ status: 'success', data: { location: newLocation } }, { status: 201 });
   } catch (error) {
     console.error('Error creating project location:', error);
-    return NextResponse.json({ message: 'Error creating project location', error: (error as Error).message }, { status:
+    return NextResponse.json({ message: 'Error creating project location', error: (error as Error).message }, { status: 500 });
+  }
+}

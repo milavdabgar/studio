@@ -56,8 +56,8 @@ export async function GET(request: NextRequest) {
     const dateB = b.eventDate ? parseISO(b.eventDate).getTime() : 0;
     if (a.isActive && !b.isActive) return -1;
     if (!a.isActive && b.isActive) return 1;
-    if (a.isActive) return dateA - dateB; // Active events sorted ascending by date
-    return dateB - dateA; // Inactive events sorted descending by date (most recent inactive first)
+    if (a.isActive) return dateA - dateB; 
+    return dateB - dateA; 
   });
 
   return NextResponse.json(filteredEvents);

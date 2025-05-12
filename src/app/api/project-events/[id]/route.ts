@@ -8,14 +8,10 @@ declare global {
   var __API_PROJECT_EVENTS_STORE__: ProjectEvent[] | undefined;
 }
 
-const initialProjectEventsData: ProjectEvent[] = [ /* Default data if needed */ ];
-
-const ensureProjectEventsStore = () => {
-  if (!global.__API_PROJECT_EVENTS_STORE__ || !Array.isArray(global.__API_PROJECT_EVENTS_STORE__)) {
-    console.warn("Project Events API Store (by ID) was not an array or undefined. Initializing.");
-    global.__API_PROJECT_EVENTS_STORE__ = [...initialProjectEventsData]; // Or just [] if no defaults
-  }
-};
+if (!global.__API_PROJECT_EVENTS_STORE__) {
+  global.__API_PROJECT_EVENTS_STORE__ = [];
+}
+let projectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
 
 interface RouteParams {
   params: {
@@ -24,41 +20,34 @@ interface RouteParams {
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  ensureProjectEventsStore();
-  const currentProjectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__!;
   const { id } = params;
-  
-  try {
-    const event = currentProjectEventsStore.find(e => e.id === id);
-    if (event) {
-      return NextResponse.json(event);
-    }
-    return NextResponse.json({ message: 'Event not found' }, { status: 404 });
-  } catch (error) {
-    console.error(`Error in GET /api/project-events/${id}:`, error);
-    return NextResponse.json({ message: 'Internal server error.', error: (error as Error).message }, { status: 500 });
+  const event = projectEventsStore.find(e => e.id === id);
+  if (event) {
+    return NextResponse.json(event);
   }
+  return NextResponse.json({ message: 'Event not found' }, { status: 404 });
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  ensureProjectEventsStore();
-  const currentProjectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__!;
   const { id } = params;
-
   try {
     const eventDataToUpdate = await request.json() as Partial<Omit<ProjectEvent, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>>;
-    const eventIndex = currentProjectEventsStore.findIndex(e => e.id === id);
+    const eventIndex = projectEventsStore.findIndex(e => e.id === id);
 
     if (eventIndex === -1) {
       return NextResponse.json({ message: 'Event not found' }, { status: 404 });
     }
 
-    const existingEvent = currentProjectEventsStore[eventIndex];
+    const existingEvent = projectEventsStore[eventIndex];
 
+    // Validations
     if (eventDataToUpdate.name !== undefined && !eventDataToUpdate.name.trim()) {
         return NextResponse.json({ message: 'Event Name cannot be empty.' }, { status: 400 });
     }
-    // ... other validations from previous commit ...
+    if (eventDataToUpdate.academicYear !== undefined && !eventDataToUpdate.academicYear.trim()) {
+        return NextResponse.json({ message: 'Academic Year cannot be empty.' }, { status: 400 });
+    }
+    
     const newEventDate = eventDataToUpdate.eventDate ? parseISO(eventDataToUpdate.eventDate) : parseISO(existingEvent.eventDate);
     const newRegStartDate = eventDataToUpdate.registrationStartDate ? parseISO(eventDataToUpdate.registrationStartDate) : parseISO(existingEvent.registrationStartDate);
     const newRegEndDate = eventDataToUpdate.registrationEndDate ? parseISO(eventDataToUpdate.registrationEndDate) : parseISO(existingEvent.registrationEndDate);
@@ -68,6 +57,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
     if (newRegStartDate >= newEventDate || newRegEndDate >= newEventDate || newRegStartDate >= newRegEndDate) {
         return NextResponse.json({ message: 'Event dates are illogical. Please check registration and event dates.' }, { status: 400 });
+    }
+     if (eventDataToUpdate.status && !['upcoming', 'ongoing', 'completed', 'cancelled'].includes(eventDataToUpdate.status)) {
+        return NextResponse.json({ message: 'Invalid event status.' }, { status: 400 });
     }
 
 
@@ -80,12 +72,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       eventDate: eventDataToUpdate.eventDate || existingEvent.eventDate,
       registrationStartDate: eventDataToUpdate.registrationStartDate || existingEvent.registrationStartDate,
       registrationEndDate: eventDataToUpdate.registrationEndDate || existingEvent.registrationEndDate,
-      updatedBy: "user_admin_placeholder", 
+      updatedBy: "user_admin_placeholder", // TODO: Get actual user ID
       updatedAt: new Date().toISOString(),
     };
 
-    currentProjectEventsStore[eventIndex] = updatedEvent;
-    global.__API_PROJECT_EVENTS_STORE__ = currentProjectEventsStore;
+    projectEventsStore[eventIndex] = updatedEvent;
+    global.__API_PROJECT_EVENTS_STORE__ = projectEventsStore;
     return NextResponse.json(updatedEvent);
   } catch (error) {
     console.error(`Error updating event ${id}:`, error);
@@ -94,25 +86,39 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  ensureProjectEventsStore();
-  let currentProjectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__!;
   const { id } = params;
+  const initialLength = projectEventsStore.length;
+  projectEventsStore = projectEventsStore.filter(e => e.id !== id);
 
-  try {
-    const initialLength = currentProjectEventsStore.length;
-    const newStore = currentProjectEventsStore.filter(e => e.id !== id);
-
-    if (newStore.length === initialLength) {
-      return NextResponse.json({ message: 'Event not found' }, { status: 404 });
-    }
-    global.__API_PROJECT_EVENTS_STORE__ = newStore;
-    return NextResponse.json({ message: 'Event deleted successfully' }, { status: 200 });
-  } catch (error) {
-    console.error(`Error deleting event ${id}:`, error);
-    return NextResponse.json({ message: `Error deleting event ${id}`, error: (error as Error).message }, { status: 500 });
+  if (projectEventsStore.length === initialLength) {
+    return NextResponse.json({ message: 'Event not found' }, { status: 404 });
   }
+  global.__API_PROJECT_EVENTS_STORE__ = projectEventsStore;
+  return NextResponse.json({ message: 'Event deleted successfully' }, { status: 200 });
 }
-```
-  </change>
-  <change>
-    <file>src/app/api/project-locations/[id]/route
+
+// Specific route for updating schedule, though it can be part of PUT
+export async function PATCH(request: NextRequest, { params }: RouteParams) {
+    const { id } = params; // This is the event ID
+    if (request.nextUrl.pathname.endsWith('/schedule')) { // Check if it's a schedule update
+        try {
+            const { schedule } = await request.json() as { schedule: ProjectEventScheduleItem[] };
+            const eventIndex = projectEventsStore.findIndex(e => e.id === id);
+
+            if (eventIndex === -1) {
+                return NextResponse.json({ message: 'Event not found for schedule update' }, { status: 404 });
+            }
+
+            projectEventsStore[eventIndex].schedule = schedule;
+            projectEventsStore[eventIndex].updatedAt = new Date().toISOString();
+            projectEventsStore[eventIndex].updatedBy = "user_admin_placeholder_schedule_patch"; // Placeholder
+            global.__API_PROJECT_EVENTS_STORE__ = projectEventsStore;
+
+            return NextResponse.json(projectEventsStore[eventIndex]);
+        } catch (error) {
+            console.error(`Error updating schedule for event ${id}:`, error);
+            return NextResponse.json({ message: `Error updating schedule for event ${id}`, error: (error as Error).message }, { status: 500 });
+        }
+    }
+    return NextResponse.json({ message: 'Invalid endpoint for PATCH' }, { status: 405 });
+}
