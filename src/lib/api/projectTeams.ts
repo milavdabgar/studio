@@ -47,6 +47,10 @@ export const projectTeamService = {
     if (responseData.data && responseData.data.team) { // Expecting { data: { team: { ... } } }
         return responseData.data.team;
     }
+     // Handle cases where the API might return the team object directly
+    if (responseData && typeof responseData === 'object' && responseData.id === id) {
+        return responseData as ProjectTeam;
+    }
     throw new Error('Unexpected response structure for getTeamById.');
   },
 
@@ -64,6 +68,10 @@ export const projectTeamService = {
      if (responseData.data && responseData.data.team) { // Expecting { data: { team: { ... } } }
         return responseData.data.team;
     }
+    // Handle cases where the API might return the team object directly
+    if (responseData && typeof responseData === 'object' && responseData.id) {
+        return responseData as ProjectTeam;
+    }
     throw new Error('Unexpected response structure after creating team.');
   },
 
@@ -80,6 +88,9 @@ export const projectTeamService = {
     const responseData = await response.json();
     if (responseData.data && responseData.data.team) {
         return responseData.data.team;
+    }
+     if (responseData && typeof responseData === 'object' && responseData.id === id) {
+        return responseData as ProjectTeam;
     }
     throw new Error('Unexpected response structure after updating team.');
   },
@@ -137,6 +148,9 @@ export const projectTeamService = {
     if (responseData.data && responseData.data.team) {
         return responseData.data.team;
     }
+    if (responseData && typeof responseData === 'object' && responseData.id) { // Direct team object
+        return responseData as ProjectTeam;
+    }
     throw new Error('Unexpected response structure after adding team member.');
   },
 
@@ -149,10 +163,10 @@ export const projectTeamService = {
       throw new Error(errorData.message || 'Failed to remove team member');
     }
     const responseData = await response.json();
-     if (responseData && responseData.id) { // If the API returns the updated team directly
+     if (responseData && typeof responseData === 'object' && responseData.id) { 
         return responseData as ProjectTeam;
     }
-    if (responseData.data && responseData.data.team) { // If nested under data.team
+    if (responseData.data && responseData.data.team) { 
         return responseData.data.team;
     }
     throw new Error('Unexpected response structure after removing team member.');
@@ -167,10 +181,10 @@ export const projectTeamService = {
       throw new Error(errorData.message || 'Failed to set team leader');
     }
      const responseData = await response.json();
-    if (responseData && responseData.id) { // If the API returns the updated team directly
+    if (responseData && typeof responseData === 'object' && responseData.id) {
         return responseData as ProjectTeam;
     }
-    if (responseData.data && responseData.data.team) { // If nested under data.team
+    if (responseData.data && responseData.data.team) {
         return responseData.data.team;
     }
     throw new Error('Unexpected response structure after setting team leader.');
@@ -207,9 +221,3 @@ export const projectTeamService = {
     return response.text();
   },
 };
-```
-  </change>
-</changes>```OK, I've made the code changes as requested
-<changes>
-  <change>
-    <file>src/app/api/project
