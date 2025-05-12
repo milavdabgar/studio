@@ -1,16 +1,17 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { useEffect, useState } from 'react';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Loader2, Info, FileText, Percent, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Loader2, FileText, CheckCircle, AlertTriangle } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
+import { Label } from "@/components/ui/label"; // Added Label import
 import type { Result, Student, Program, Course } from '@/types/entities';
 import { resultService } from '@/lib/api/results';
 import { studentService } from '@/lib/api/students';
 import { programService } from '@/lib/api/programs';
 import { courseService } from '@/lib/api/courses';
 import { format } from 'date-fns';
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface DetailedResultViewProps {
   resultId: string;
@@ -35,7 +36,7 @@ export default function DetailedResultView({ resultId }: DetailedResultViewProps
         setResult(resultData);
 
         if (resultData.enrollmentNo) {
-          // This is a simplification. In a real app, you might fetch student by ID from result.studentId.
+          // This is a simplification. In a real app, you might fetch student by ID from resultData.studentId.
           // For now, assuming enrollmentNo is unique and sufficient.
           const allStudents = await studentService.getAllStudents();
           const studentData = allStudents.find(s => s.enrollmentNumber === resultData.enrollmentNo);
@@ -46,12 +47,12 @@ export default function DetailedResultView({ resultId }: DetailedResultViewProps
             setProgram(programData);
           }
         }
-        
+
         // Fetch details for all courses in the result subjects
         if (resultData.subjects && resultData.subjects.length > 0) {
-            const courseIds = resultData.subjects.map(s => s.code); // Assuming subject.code is course.subcode
-            const allCourses = await courseService.getAllCourses();
-            const details: Record<string, Course> = {};
+            const courseSubcodes = resultData.subjects.map(s => s.code); // Assuming subject.code is course.subcode
+            const allCourses = await courseService.getAllCourses({}); // Pass an empty object for query options
+            const details: Record<string, Course> = {};const courseIds = courseSubcodes; // Assuming courseSubcodes is the intended variable name
             courseIds.forEach(subcode => {
                 const course = allCourses.find(c => c.subcode === subcode && c.programId === resultData.programId && c.semester === resultData.semester);
                 if(course) details[subcode] = course;
