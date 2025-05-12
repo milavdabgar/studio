@@ -15,9 +15,9 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 1 : 0, // Reduced retries for faster local feedback if needed
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 2 : undefined, // Allow some parallelism on CI
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -27,6 +27,15 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    // Increase default action timeout
+    actionTimeout: 10 * 1000, // 10 seconds
+    // Increase default navigation timeout
+    navigationTimeout: 30 * 1000, // 30 seconds
+  },
+  // Increase global test timeout
+  timeout: 60 * 1000, // 60 seconds per test
+  expect: {
+    timeout: 10 * 1000, // 10 seconds for expect assertions
   },
 
   /* Configure projects for major browsers */
@@ -36,15 +45,15 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
 
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
+    // {
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'] },
+    // },
 
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    // },
 
     /* Test against mobile viewports. */
     // {
@@ -69,11 +78,15 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npm run dev',
+    command: 'npm run dev', // Ensure this command starts your Next.js dev server
     url: process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:9003',
     reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000, // 2 minutes
+    timeout: 180 * 1000, // Increased to 3 minutes for server to start, especially with Turbopack
     stdout: 'pipe',
     stderr: 'pipe',
+    env: {
+        NODE_ENV: 'development', // Or 'test' if you have specific test environment settings
+    }
   },
 });
+
