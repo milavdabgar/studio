@@ -11,10 +11,11 @@ import type { Project, ProjectEvent, Department, ProjectTeam, ProjectStatus, Use
 import { projectService } from '@/lib/api/projects';
 import { projectEventService } from '@/lib/api/projectEvents';
 import { departmentService } from '@/lib/api/departments';
+import { projectTeamService } from '@/lib/api/projectTeams'; // Added import
 import ProjectForm from '@/components/admin/project-fair/ProjectForm';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label"; // Added Label import
+import { Label } from "@/components/ui/label"; 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowUpDown } from 'lucide-react';
@@ -35,7 +36,7 @@ export default function EventProjectsPage() {
   const [event, setEvent] = useState<ProjectEvent | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [teams, setTeams] = useState<ProjectTeam[]>([]); // To get team names
+  const [teams, setTeams] = useState<ProjectTeam[]>([]); 
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
@@ -82,7 +83,7 @@ export default function EventProjectsPage() {
   }, [fetchEventData]);
 
   const handleProjectSaved = () => {
-    fetchEventData(); // Refresh projects list
+    fetchEventData(); 
     setIsProjectFormOpen(false);
     setEditingProject(null);
   };
@@ -102,7 +103,7 @@ export default function EventProjectsPage() {
       try {
         await projectService.deleteProject(projectId);
         toast({ title: "Project Deleted", description: "Successfully deleted project." });
-        fetchEventData(); // Refresh
+        fetchEventData(); 
       } catch (error) {
         toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message });
       }
@@ -119,7 +120,7 @@ export default function EventProjectsPage() {
             await Promise.all(selectedProjectIds.map(id => projectService.deleteProject(id)));
             toast({ title: "Projects Deleted", description: `${selectedProjectIds.length} projects deleted successfully.` });
             setSelectedProjectIds([]);
-            fetchEventData(); // Refresh
+            fetchEventData(); 
         } catch (error) {
             toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message });
         }
