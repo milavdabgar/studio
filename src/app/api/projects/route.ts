@@ -73,11 +73,23 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const eventId = searchParams.get('eventId');
+    const department = searchParams.get('department');
+    const status = searchParams.get('status');
+    const category = searchParams.get('category');
     
     let filteredProjects = [...currentProjectsStore];
 
     if (eventId) {
       filteredProjects = filteredProjects.filter(project => project.eventId === eventId);
+    }
+    if (department && department !== 'all') {
+      filteredProjects = filteredProjects.filter(project => project.department === department);
+    }
+    if (status && status !== 'all') {
+      filteredProjects = filteredProjects.filter(project => project.status === status);
+    }
+    if (category && category !== 'all') {
+      filteredProjects = filteredProjects.filter(project => project.category === category);
     }
     
     return NextResponse.json({ status: 'success', data: { projects: filteredProjects } });
@@ -105,6 +117,10 @@ export async function POST(request: NextRequest) {
      if (!projectData.eventId) {
       return NextResponse.json({ message: 'Event ID is required.' }, { status: 400 });
     }
+    if (!projectData.guide || !projectData.guide.userId || !projectData.guide.name || !projectData.guide.department) {
+        return NextResponse.json({ message: 'Guide information (userId, name, department) is required.' }, { status: 400 });
+    }
+
 
     const currentTimestamp = new Date().toISOString();
     const newProject: Project = {
@@ -121,3 +137,5 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error creating project:', error);
     return NextResponse.json({ message: 'Error creating project', error: (error as Error).message }, { status: 500 });
+  }
+}

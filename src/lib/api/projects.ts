@@ -22,7 +22,7 @@ export const projectService = {
   async getAllProjects(filters: Record<string, string | number | boolean> = {}): Promise<Project[]> {
     const queryParams = new URLSearchParams();
     for (const key in filters) {
-      if (Object.prototype.hasOwnProperty.call(filters, key) && filters[key] !== undefined && filters[key] !== null && filters[key] !== '') {
+      if (Object.prototype.hasOwnProperty.call(filters, key) && filters[key] !== undefined && filters[key] !== null && String(filters[key]).trim() !== '') {
         queryParams.append(key, String(filters[key]));
       }
     }
@@ -32,8 +32,7 @@ export const projectService = {
       throw new Error(errorData.message || 'Failed to fetch projects');
     }
     const data = await response.json();
-    // Adjust to handle potential nesting: { status: 'success', data: { projects: [] } } or just []
-    return Array.isArray(data) ? data : (data.data?.projects || data.projects || []); 
+    return data.data?.projects || data.projects || (Array.isArray(data) ? data : []); 
   },
 
   async getProjectById(id: string): Promise<Project> {
@@ -43,7 +42,7 @@ export const projectService = {
       throw new Error(errorData.message || `Failed to fetch project with id ${id}`);
     }
     const data = await response.json();
-    return data.data?.project || data; // Handle potential nesting
+    return data.data?.project || data; 
   },
   
   async getProjectWithDetails(id: string): Promise<Project & { team?: ProjectTeam, location?: ProjectLocation, event?: ProjectEvent, departmentDetails?: Department, guideDetails?: User, deptJuryDetails?: User, centralJuryDetails?: User }> {
@@ -53,7 +52,7 @@ export const projectService = {
       throw new Error(errorData.message || `Failed to fetch detailed project data for id ${id}`);
     }
     const data = await response.json();
-    return data.data?.project || data; // Handle potential nesting
+    return data.data?.project || data; 
   },
 
   async createProject(projectData: Omit<Project, 'id'>): Promise<Project> {
@@ -66,12 +65,13 @@ export const projectService = {
       const errorData = await response.json().catch(() => ({ message: 'Failed to create project' }));
       throw new Error(errorData.message || 'Failed to create project');
     }
-    return response.json();
+    const responseData = await response.json();
+    return responseData.data?.project || responseData;
   },
 
   async updateProject(id: string, projectData: Partial<Omit<Project, 'id'>>): Promise<Project> {
     const response = await fetch(`${API_BASE_URL}/projects/${id}`, {
-      method: 'PUT', // Changed to PUT as per API route
+      method: 'PUT', 
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(projectData),
     });
@@ -79,7 +79,8 @@ export const projectService = {
       const errorData = await response.json().catch(() => ({ message: 'Failed to update project' }));
       throw new Error(errorData.message || 'Failed to update project');
     }
-    return response.json();
+     const responseData = await response.json();
+    return responseData.data?.project || responseData;
   },
 
   async deleteProject(id: string): Promise<void> {
@@ -109,7 +110,7 @@ export const projectService = {
       throw new Error(errorData.message || 'Failed to fetch projects for jury');
     }
     const data = await response.json();
-    return data.data || data; // Handle potential nesting
+    return data.data || data; 
   },
 
   async evaluateProjectByDepartment(projectId: string, evaluationData: EvaluationData): Promise<Project> {
@@ -123,7 +124,7 @@ export const projectService = {
       throw new Error(errorData.message || 'Failed to submit department evaluation');
     }
     const data = await response.json();
-    return data.data?.project || data; // Handle potential nesting
+    return data.data?.project || data; 
   },
 
   async evaluateProjectByCentral(projectId: string, evaluationData: EvaluationData): Promise<Project> {
@@ -137,7 +138,7 @@ export const projectService = {
       throw new Error(errorData.message || 'Failed to submit central evaluation');
     }
     const data = await response.json();
-    return data.data?.project || data; // Handle potential nesting
+    return data.data?.project || data; 
   },
   
   async generateProjectCertificates(eventId: string, type: 'participation' | 'department-winner' | 'institute-winner' = 'participation'): Promise<CertificateInfo[]> {
@@ -208,7 +209,17 @@ export const projectService = {
         throw new Error(errorData.message || 'Failed to fetch project statistics');
     }
     const data = await response.json();
-    return data.data || data; // Handle potential nesting of 'data' property
+    return data.data || data; 
   },
-
+  // Re-add getAllTeams from projectTeamService if it was meant to be part of projectService
+  async getAllTeams(filters: Record<string, string> = {}): Promise<ProjectTeam[]> {
+    const queryParams = new URLSearchParams(filters);
+    const response = await fetch(`${API_BASE_URL}/project-teams?${queryParams.toString()}`);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to fetch project teams' }));
+      throw new Error(errorData.message || 'Failed to fetch project teams');
+    }
+    const responseData = await response.json();
+    return responseData.data?.teams || responseData.teams || (Array.isArray(responseData) ? responseData : []);
+  },
 };
