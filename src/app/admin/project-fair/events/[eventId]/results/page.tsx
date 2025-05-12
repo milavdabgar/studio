@@ -6,8 +6,9 @@ import { useParams, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Loader2, ArrowLeft, Award as ResultsIcon, Download, Mail, Settings, FileText, Users as UsersIcon, BarChart3, CheckCircle, AlertTriangle, Info, ListChecks } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import type { ProjectEvent, Project, ProjectTeam, Department, SystemUser as User, ProjectEvaluationScore } from '@/types/entities';
+import type { ProjectEvent, Project, ProjectTeam, Department, SystemUser as User, ProjectEvaluationScore, Checkbox } from '@/types/entities';
 import { projectEventService } from '@/lib/api/projectEvents';
 import { projectService } from '@/lib/api/projects';
 import { departmentService } from '@/lib/api/departments';
@@ -20,6 +21,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 
