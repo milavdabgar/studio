@@ -1,5 +1,5 @@
 
-import type { ProjectTeam, Department, ProjectEvent, User } from '@/types/entities';
+import type { ProjectTeam, Department, ProjectEvent, User, ProjectTeamMember } from '@/types/entities';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 
@@ -27,16 +27,14 @@ export const projectTeamService = {
       throw new Error(errorData.message || 'Failed to fetch project teams');
     }
     const responseData = await response.json();
-    // Assuming the API returns an object like { data: { teams: [], pagination: {} } }
     if (responseData.data && Array.isArray(responseData.data.teams)) {
       return responseData.data.teams;
     }
-    // Fallback for direct array response, though API route indicates nested structure
-    if (Array.isArray(responseData)) {
+    if (Array.isArray(responseData)) { // Fallback for direct array response
         return responseData;
     }
     console.warn("Unexpected response structure for getAllTeams:", responseData);
-    throw new Error('Unexpected response structure when fetching teams.');
+    return []; // Return empty array if structure is unexpected
   },
 
   async getTeamById(id: string): Promise<ProjectTeam> {
@@ -45,7 +43,11 @@ export const projectTeamService = {
       const errorData = await response.json().catch(() => ({ message: `Failed to fetch project team with id ${id}` }));
       throw new Error(errorData.message || `Failed to fetch project team with id ${id}`);
     }
-    return response.json();
+    const responseData = await response.json();
+    if (responseData.data && responseData.data.team) { // Expecting { data: { team: { ... } } }
+        return responseData.data.team;
+    }
+    throw new Error('Unexpected response structure for getTeamById.');
   },
 
   async createTeam(teamData: Omit<ProjectTeam, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>): Promise<ProjectTeam> {
@@ -58,7 +60,11 @@ export const projectTeamService = {
       const errorData = await response.json().catch(() => ({ message: 'Failed to create project team' }));
       throw new Error(errorData.message || 'Failed to create project team');
     }
-    return response.json();
+    const responseData = await response.json();
+     if (responseData.data && responseData.data.team) { // Expecting { data: { team: { ... } } }
+        return responseData.data.team;
+    }
+    throw new Error('Unexpected response structure after creating team.');
   },
 
   async updateTeam(id: string, teamData: Partial<Omit<ProjectTeam, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>>): Promise<ProjectTeam> {
@@ -71,7 +77,11 @@ export const projectTeamService = {
       const errorData = await response.json().catch(() => ({ message: 'Failed to update project team' }));
       throw new Error(errorData.message || 'Failed to update project team');
     }
-    return response.json();
+    const responseData = await response.json();
+    if (responseData.data && responseData.data.team) {
+        return responseData.data.team;
+    }
+    throw new Error('Unexpected response structure after updating team.');
   },
 
   async deleteTeam(id: string): Promise<void> {
@@ -106,7 +116,6 @@ export const projectTeamService = {
       throw new Error(errorData.message || 'Failed to fetch team members');
     }
     const responseData = await response.json();
-    // API returns { status: 'success', data: { teamId, teamName, members }}
     if (responseData.data) {
         return responseData.data;
     }
@@ -124,7 +133,11 @@ export const projectTeamService = {
       const errorData = await response.json().catch(() => ({ message: 'Failed to add team member' }));
       throw new Error(errorData.message || 'Failed to add team member');
     }
-    return response.json();
+    const responseData = await response.json();
+    if (responseData.data && responseData.data.team) {
+        return responseData.data.team;
+    }
+    throw new Error('Unexpected response structure after adding team member.');
   },
 
   async removeTeamMember(teamId: string, memberUserId: string): Promise<ProjectTeam> {
@@ -135,7 +148,14 @@ export const projectTeamService = {
       const errorData = await response.json().catch(() => ({ message: 'Failed to remove team member' }));
       throw new Error(errorData.message || 'Failed to remove team member');
     }
-    return response.json();
+    const responseData = await response.json();
+     if (responseData && responseData.id) { // If the API returns the updated team directly
+        return responseData as ProjectTeam;
+    }
+    if (responseData.data && responseData.data.team) { // If nested under data.team
+        return responseData.data.team;
+    }
+    throw new Error('Unexpected response structure after removing team member.');
   },
 
   async setTeamLeader(teamId: string, memberUserId: string): Promise<ProjectTeam> {
@@ -146,7 +166,14 @@ export const projectTeamService = {
       const errorData = await response.json().catch(() => ({ message: 'Failed to set team leader' }));
       throw new Error(errorData.message || 'Failed to set team leader');
     }
-    return response.json();
+     const responseData = await response.json();
+    if (responseData && responseData.id) { // If the API returns the updated team directly
+        return responseData as ProjectTeam;
+    }
+    if (responseData.data && responseData.data.team) { // If nested under data.team
+        return responseData.data.team;
+    }
+    throw new Error('Unexpected response structure after setting team leader.');
   },
 
   async importTeams(file: File, departments: Department[], events: ProjectEvent[], users: User[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number, errors?: any[] }> {
@@ -180,3 +207,9 @@ export const projectTeamService = {
     return response.text();
   },
 };
+```
+  </change>
+</changes>```OK, I've made the code changes as requested
+<changes>
+  <change>
+    <file>src/app/api/project

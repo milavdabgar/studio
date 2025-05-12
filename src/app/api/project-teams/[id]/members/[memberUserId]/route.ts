@@ -6,7 +6,6 @@ import type { ProjectTeam } from '@/types/entities';
 if (!(global as any).__API_PROJECT_TEAMS_STORE__) {
   (global as any).__API_PROJECT_TEAMS_STORE__ = [];
 }
-// let projectTeamsStore: ProjectTeam[] = (global as any).__API_PROJECT_TEAMS_STORE__; // Local ref is fine here if mutations update global
 
 interface RouteParams {
   params: {
@@ -20,7 +19,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
   let currentProjectTeamsStore = global.__API_PROJECT_TEAMS_STORE__ as ProjectTeam[];
 
   if (!Array.isArray(currentProjectTeamsStore)) {
-    currentProjectTeamsStore = []; // Recover if corrupted
+    currentProjectTeamsStore = []; 
     global.__API_PROJECT_TEAMS_STORE__ = currentProjectTeamsStore;
     return NextResponse.json({ message: 'Team data store issue, please retry or contact admin.' }, { status: 500 });
   }
@@ -31,9 +30,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Team not found' }, { status: 404 });
   }
 
-  const team = { ...currentProjectTeamsStore[teamIndex] }; // Work on a copy
-
-  // TODO: Add permission checks (e.g., only admin or team leader can remove members)
+  const team = { ...currentProjectTeamsStore[teamIndex] }; 
 
   if (team.members.length <= 1) {
     return NextResponse.json({ message: 'Team must have at least one member. Cannot remove the last member.' }, { status: 400 });
@@ -50,10 +47,14 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
   team.members = team.members.filter(m => m.userId !== memberUserId);
   team.updatedAt = new Date().toISOString();
-  team.updatedBy = "user_admin_placeholder_member_remove"; // TODO: Replace with actual user ID
+  team.updatedBy = "user_admin_placeholder_member_remove"; 
   
   currentProjectTeamsStore[teamIndex] = team;
-  global.__API_PROJECT_TEAMS_STORE__ = currentProjectTeamsStore; // Persist changes to global store
+  global.__API_PROJECT_TEAMS_STORE__ = currentProjectTeamsStore; 
 
-  return NextResponse.json(team, { status: 200 });
+  return NextResponse.json({ status: 'success', data: { team } }, { status: 200 });
 }
+```
+  </change>
+  <change>
+    <file>src/app/api/project-teams/[id]/leader/[memberUserId]/route.ts</file

@@ -27,25 +27,20 @@ export async function GET(request: NextRequest) {
     let relevantProjects = projectsStore;
     if (eventId) {
       const eventExists = projectEventsStore.find(e => e.id === eventId);
-      // If eventId is provided, filter projects for that event.
-      // If eventId is provided but event doesn't exist, relevantProjects will become empty.
-      relevantProjects = relevantProjects.filter(p => p.eventId === eventId);
+      relevantProjects = projectsStore.filter(p => p.eventId === eventId);
       
       if (!eventExists && relevantProjects.length === 0) {
-          // If eventId was given, and no such event exists (and thus no projects),
-          // it might be better to return a 404 or specific message.
-          // For now, returning empty stats if event not found.
           const emptyStats: ProjectStatistics = {
               total: 0, evaluated: 0, pending: 0, averageScore: 0, departmentWise: {}
           };
-          return NextResponse.json({ data: emptyStats });
+          return NextResponse.json({ status: 'success', data: emptyStats });
       }
     }
     
     const departmentStatsMap = new Map<string, { departmentId: string; name: string; code: string; total: number; evaluated: number; totalScore: number; scoreCount: number }>();
 
     relevantProjects.forEach(project => {
-      const deptId = project.department; // This is departmentId
+      const deptId = project.department; 
       const deptInfo = departmentsStore.find(d => d.id === deptId);
 
       if (!departmentStatsMap.has(deptId)) {
@@ -114,10 +109,9 @@ export async function GET(request: NextRequest) {
       }, {} as ProjectStatistics['departmentWise']),
     };
 
-    return NextResponse.json({ data: responseData });
+    return NextResponse.json({ status: 'success', data: responseData });
 
   } catch (error) {
     console.error("Error fetching project statistics:", error);
     return NextResponse.json({ message: "Error fetching project statistics", error: (error as Error).message }, { status: 500 });
   }
-}

@@ -10,9 +10,6 @@ if (!(global as any).__API_USERS_STORE__) {
   (global as any).__API_USERS_STORE__ = [];
 }
 
-// let projectTeamsStore: ProjectTeam[] = (global as any).__API_PROJECT_TEAMS_STORE__; // Local ref fine if mutations update global
-// let usersStore: User[] = (global as any).__API_USERS_STORE__; // Local ref fine if mutations update global
-
 interface RouteParams {
   params: {
     id: string; // Team ID
@@ -41,11 +38,11 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const user = usersStoreRef.find(u => u.id === member.userId);
     return {
       userId: member.userId,
-      name: user?.displayName || member.name || 'Unknown User', // Fallback name
+      name: user?.displayName || member.name || 'Unknown User', 
       enrollmentNo: member.enrollmentNo,
       role: member.role,
       isLeader: member.isLeader,
-      email: user?.email, // Add email if available
+      email: user?.email, 
     };
   });
 
@@ -76,7 +73,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Team not found' }, { status: 404 });
   }
   
-  const team = { ...projectTeamsStoreRef[teamIndex] }; // Work on a copy
+  const team = { ...projectTeamsStoreRef[teamIndex] }; 
 
   try {
     const { userId, name, enrollmentNo, role, isLeader } = await request.json() as Partial<ProjectTeamMember> & { userId: string };
@@ -85,8 +82,6 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ message: 'User ID, name, and enrollment number are required for a new member.' }, { status: 400 });
     }
     
-    // TODO: Add permission checks for adding members (e.g., only admin or team leader)
-
     if (team.members.length >= 4) {
       return NextResponse.json({ message: 'Team cannot have more than 4 members' }, { status: 400 });
     }
@@ -111,14 +106,13 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     team.members.push(newMember);
     team.updatedAt = new Date().toISOString();
-    team.updatedBy = "user_admin_placeholder_member_add"; // TODO: Replace with actual user ID
+    team.updatedBy = "user_admin_placeholder_member_add"; 
 
-    projectTeamsStoreRef[teamIndex] = team; // Update the copy in the store
-    global.__API_PROJECT_TEAMS_STORE__ = projectTeamsStoreRef; // Persist changes to global store
+    projectTeamsStoreRef[teamIndex] = team; 
+    global.__API_PROJECT_TEAMS_STORE__ = projectTeamsStoreRef; 
 
     return NextResponse.json({ status: 'success', data: { team } }, { status: 200 });
   } catch (error) {
     console.error(`Error adding member to team ${teamId}:`, error);
     return NextResponse.json({ message: 'Error adding member to team', error: (error as Error).message }, { status: 500 });
   }
-}

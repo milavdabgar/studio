@@ -11,7 +11,7 @@ import type { ProjectEvent, Project, ProjectStatistics } from '@/types/entities'
 import { projectEventService } from '@/lib/api/projectEvents';
 import { projectService } from '@/lib/api/projects'; 
 import Link from 'next/link';
-import { format } from 'date-fns';
+import { format, isValid, parseISO } from 'date-fns';
 
 export default function ProjectEventDashboardPage() {
   const router = useRouter();
@@ -29,16 +29,18 @@ export default function ProjectEventDashboardPage() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const [eventData, projectsDataResponse, statsDataResponse] = await Promise.all([
-          projectEventService.getEventById(eventId),
-          projectService.getAllProjects({ eventId: eventId }),
-          projectService.getProjectStatistics(eventId) 
-        ]);
+        const eventData = await projectEventService.getEventById(eventId);
         setEvent(eventData);
         
-        setProjects(Array.isArray(projectsDataResponse) ? projectsDataResponse : []);
-        
-        setStats(statsDataResponse && typeof statsDataResponse === 'object' ? statsDataResponse : { total: 0, evaluated: 0, pending: 0, averageScore: 0, departmentWise: {} });
+        // Fetch projects for this event
+        const projectsData = await projectService.getAllProjects({ eventId: eventId });
+        setProjects(Array.isArray(projectsData) ? projectsData : (projectsData.data?.projects || []));
+
+
+        // Fetch statistics for this event
+        const statsData = await projectService.getProjectStatistics(eventId);
+        setStats(statsData && typeof statsData === 'object' ? (statsData.data || statsData) : { total: 0, evaluated: 0, pending: 0, averageScore: 0, departmentWise: {} });
+
 
       } catch (error) {
         console.error("Failed to load event dashboard data:", error);
@@ -65,9 +67,9 @@ export default function ProjectEventDashboardPage() {
   }
 
   const dashboardCards = [
-    { title: "Total Projects", value: String(stats?.total || projects.length), icon: Briefcase, color: "text-blue-500", href: `/admin/project-fair/events/${eventId}/projects` },
+    { title: "Total Projects", value: String(stats?.total ?? projects.length), icon: Briefcase, color: "text-blue-500", href: `/admin/project-fair/events/${eventId}/projects` },
     { title: "Total Teams", value: String(new Set(projects.map(p => p.teamId)).size), icon: Users, color: "text-green-500", href: `/admin/project-fair/events/${eventId}/teams` },
-    { title: "Evaluated Projects", value: String(stats?.evaluated || projects.filter(p => p.deptEvaluation?.completed || p.centralEvaluation?.completed).length), icon: CalendarCheck, color: "text-purple-500", href: `/admin/project-fair/events/${eventId}/evaluations` },
+    { title: "Evaluated Projects", value: String(stats?.evaluated ?? projects.filter(p => p.deptEvaluation?.completed || p.centralEvaluation?.completed).length), icon: CalendarCheck, color: "text-purple-500", href: `/admin/project-fair/events/${eventId}/evaluations` },
     { title: "Winners Published", value: event.publishResults ? "Yes" : "No", icon: Award, color: event.publishResults ? "text-yellow-500" : "text-gray-500", href: `/admin/project-fair/events/${eventId}/results` },
   ];
 
@@ -91,7 +93,7 @@ export default function ProjectEventDashboardPage() {
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-primary">{event.name}</CardTitle>
           <CardDescription>
-            {event.academicYear} | {format(new Date(event.eventDate), "PPP")} | Status: <span className={`font-semibold ${event.status === 'completed' ? 'text-green-600' : event.status === 'ongoing' ? 'text-blue-600' : 'text-yellow-600'}`}>{event.status.charAt(0).toUpperCase() + event.status.slice(1)}</span>
+            {event.academicYear} | {event.eventDate && isValid(parseISO(event.eventDate)) ? format(parseISO(event.eventDate), "PPP") : "Date N/A"} | Status: <span className={`font-semibold ${event.status === 'completed' ? 'text-green-600' : event.status === 'ongoing' ? 'text-blue-600' : 'text-yellow-600'}`}>{event.status.charAt(0).toUpperCase() + event.status.slice(1)}</span>
           </CardDescription>
         </CardHeader>
         <CardContent>

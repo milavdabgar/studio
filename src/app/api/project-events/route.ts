@@ -8,51 +8,52 @@ declare global {
   var __API_PROJECT_EVENTS_STORE__: ProjectEvent[] | undefined;
 }
 
-const now = new Date().toISOString();
+const initialProjectEventsData: ProjectEvent[] = [
+  { 
+    id: "event_techfest_2024_gpp", 
+    name: "TechFest 2024",
+    academicYear: "2024-25",
+    description: "Annual technical project fair.",
+    eventDate: "2025-03-15T00:00:00.000Z",
+    registrationStartDate: "2024-12-01T00:00:00.000Z",
+    registrationEndDate: "2025-01-31T00:00:00.000Z",
+    status: "upcoming",
+    isActive: true,
+    departments: ["dept_ce_gpp", "dept_me_gpp"],
+    createdBy: "user_admin_gpp",
+    updatedBy: "user_admin_gpp",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    schedule: [
+      { time: "09:00 AM - 10:00 AM", activity: "Inauguration", location: "Auditorium", coordinator: { userId: "user_faculty_cs01_gpp", name: "Prof. CS01" }, notes: "Chief Guest to arrive by 8:45 AM" },
+      { time: "10:00 AM - 01:00 PM", activity: "Project Expo Round 1", location: "Main Building Stalls", coordinator: { userId: "user_hod_ce_gpp", name: "HOD CE" }, notes: "Judges to visit stalls" }
+    ],
+    publishResults: false,
+  },
+];
 
-if (!global.__API_PROJECT_EVENTS_STORE__ || global.__API_PROJECT_EVENTS_STORE__.length === 0) {
-  global.__API_PROJECT_EVENTS_STORE__ = [
-    { 
-      id: "event_techfest_2024_gpp", 
-      name: "TechFest 2024",
-      academicYear: "2024-25",
-      description: "Annual technical project fair.",
-      eventDate: "2025-03-15T00:00:00.000Z",
-      registrationStartDate: "2024-12-01T00:00:00.000Z",
-      registrationEndDate: "2025-01-31T00:00:00.000Z",
-      status: "upcoming",
-      isActive: true,
-      departments: ["dept_ce_gpp", "dept_me_gpp"],
-      createdBy: "user_admin_gpp",
-      updatedBy: "user_admin_gpp",
-      createdAt: now,
-      updatedAt: now,
-      schedule: [
-        { time: "09:00 AM - 10:00 AM", activity: "Inauguration", location: "Auditorium", coordinator: { userId: "user_faculty_cs01_gpp", name: "Prof. CS01" }, notes: "Chief Guest to arrive by 8:45 AM" },
-        { time: "10:00 AM - 01:00 PM", activity: "Project Expo Round 1", location: "Main Building Stalls", coordinator: { userId: "user_hod_ce_gpp", name: "HOD CE" }, notes: "Judges to visit stalls" }
-      ],
-      publishResults: false,
-    },
-  ];
-}
-let projectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
+const ensureProjectEventsStore = () => {
+  if (!global.__API_PROJECT_EVENTS_STORE__ || !Array.isArray(global.__API_PROJECT_EVENTS_STORE__)) {
+    console.warn("Project Events API Store was not an array or undefined. Initializing with default data.");
+    global.__API_PROJECT_EVENTS_STORE__ = [...initialProjectEventsData];
+  } else if (global.__API_PROJECT_EVENTS_STORE__.length === 0 && process.env.NODE_ENV === 'development') {
+    // console.warn("Project Events API Store was an empty array. Re-initializing with default data for development.");
+    // global.__API_PROJECT_EVENTS_STORE__ = [...initialProjectEventsData];
+  }
+};
+ensureProjectEventsStore(); // Initialize at module load
 
-const generateEventId = (): string => `event_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+const generateEventIdInternal = (): string => `event_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function GET(request: NextRequest) {
+  ensureProjectEventsStore();
+  const currentProjectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__!;
+  
   try {
-    if (!Array.isArray(global.__API_PROJECT_EVENTS_STORE__)) {
-      console.error("/api/project-events GET: global.__API_PROJECT_EVENTS_STORE__ is not an array!", global.__API_PROJECT_EVENTS_STORE__);
-      global.__API_PROJECT_EVENTS_STORE__ = []; // Attempt to recover
-      return NextResponse.json({ message: 'Internal server error: Project Event data store corrupted.' }, { status: 500 });
-    }
-    const projectEventsStoreRef = [...global.__API_PROJECT_EVENTS_STORE__];
-
-
     const { searchParams } = new URL(request.url);
     const isActiveParam = searchParams.get('isActive');
 
-    let filteredEvents = projectEventsStoreRef; 
+    let filteredEvents = [...currentProjectEventsStore]; 
 
     if (isActiveParam === 'true') {
       filteredEvents = filteredEvents.filter(event => event.isActive);
@@ -68,27 +69,22 @@ export async function GET(request: NextRequest) {
       if (!a.isActive && b.isActive) return 1;
       
       if (a.isActive === b.isActive) {
-          // For active events, sort by eventDate ascending
-          // For inactive events, sort by eventDate descending (or however you prefer, this keeps more recent inactive ones first)
           return a.isActive ? dateA - dateB : dateB - dateA;
       }
-      return 0; // Should not happen given the isActive checks above
+      return 0; 
     });
 
     return NextResponse.json(filteredEvents);
   } catch (error) {
     console.error("Error in GET /api/project-events:", error);
-    return NextResponse.json({ message: 'Failed to retrieve project events due to a server error.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error processing project events request.', error: (error as Error).message }, { status: 500 });
   }
 }
 
 export async function POST(request: NextRequest) {
+  ensureProjectEventsStore();
+  const currentProjectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__!;
   try {
-    if (!Array.isArray(global.__API_PROJECT_EVENTS_STORE__)) {
-      global.__API_PROJECT_EVENTS_STORE__ = []; // Initialize if corrupted
-    }
-    const projectEventsStoreRef = global.__API_PROJECT_EVENTS_STORE__;
-
     const eventData = await request.json() as Omit<ProjectEvent, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy' | 'schedule'>;
 
     if (!eventData.name || !eventData.name.trim()) {
@@ -113,10 +109,9 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ message: 'Event status is required.' }, { status: 400 });
     }
 
-
     const currentTimestamp = new Date().toISOString();
     const newEvent: ProjectEvent = {
-      id: generateEventId(),
+      id: generateEventIdInternal(),
       name: eventData.name.trim(),
       description: eventData.description?.trim() || undefined,
       academicYear: eventData.academicYear.trim(),
@@ -133,11 +128,15 @@ export async function POST(request: NextRequest) {
       createdAt: currentTimestamp,
       updatedAt: currentTimestamp,
     };
-    projectEventsStoreRef.push(newEvent);
-    global.__API_PROJECT_EVENTS_STORE__ = projectEventsStoreRef;
+    currentProjectEventsStore.push(newEvent);
+    global.__API_PROJECT_EVENTS_STORE__ = currentProjectEventsStore;
     return NextResponse.json(newEvent, { status: 201 });
   } catch (error) {
     console.error('Error creating project event:', error);
     return NextResponse.json({ message: 'Error creating project event', error: (error as Error).message }, { status: 500 });
   }
 }
+```
+  </change>
+  <change>
+    <file>src/app/api/project-events/[id]/route.ts</

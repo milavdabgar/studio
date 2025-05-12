@@ -26,7 +26,6 @@ export const projectLocationService = {
       throw new Error(errorData.message || 'Failed to fetch project locations');
     }
     const data = await response.json();
-    // Assuming API returns { data: { locations: [], pagination: {} } } or just { locations: [], pagination: {} }
     return data.data || data || { locations: [], pagination: { total: 0, page: 1, limit: 10, pages: 1 } };
   },
 
@@ -36,7 +35,8 @@ export const projectLocationService = {
       const errorData = await response.json().catch(() => ({ message: `Failed to fetch project location with id ${id}` }));
       throw new Error(errorData.message || `Failed to fetch project location with id ${id}`);
     }
-    return response.json();
+    const responseData = await response.json();
+    return responseData.data?.location || responseData; // Handle potential nesting
   },
 
   async createLocation(locationData: Omit<ProjectLocation, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>): Promise<ProjectLocation> {
@@ -49,20 +49,22 @@ export const projectLocationService = {
       const errorData = await response.json().catch(() => ({ message: 'Failed to create project location' }));
       throw new Error(errorData.message || 'Failed to create project location');
     }
-    return response.json();
+    const responseData = await response.json();
+    return responseData.data?.location || responseData; // Handle potential nesting
   },
   
-  async createLocationBatch(batchData: Array<Omit<ProjectLocation, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>>): Promise<{count: number, locations: ProjectLocation[]}> {
+  async createLocationBatch(batchData: Array<Omit<ProjectLocation, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>>): Promise<{count: number, locations: ProjectLocation[], errors?: any[]}> {
     const response = await fetch(`${API_BASE_URL}/project-locations/batch`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ locations: batchData }), // Ensure payload matches API expectation if it's an object
+        body: JSON.stringify({ locations: batchData }), 
     });
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: 'Failed to create location batch' }));
         throw new Error(errorData.message || 'Failed to create location batch');
     }
-    return response.json();
+    const responseData = await response.json();
+    return responseData.data || responseData; // Handle potential nesting
   },
 
   async updateLocation(id: string, locationData: Partial<Omit<ProjectLocation, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>>): Promise<ProjectLocation> {
@@ -75,7 +77,8 @@ export const projectLocationService = {
       const errorData = await response.json().catch(() => ({ message: 'Failed to update project location' }));
       throw new Error(errorData.message || 'Failed to update project location');
     }
-    return response.json();
+    const responseData = await response.json();
+    return responseData.data?.location || responseData; // Handle potential nesting
   },
 
   async deleteLocation(id: string): Promise<void> {
@@ -88,9 +91,9 @@ export const projectLocationService = {
     }
   },
 
-  async assignProjectToLocation(locationId: string, projectId: string): Promise<ProjectLocation> {
-    const response = await fetch(`${API_BASE_URL}/project-locations/${locationId}/assign`, {
-      method: 'PATCH', // Or POST, depending on API design
+  async assignProjectToLocation(locationIdString: string, projectId: string): Promise<ProjectLocation> {
+    const response = await fetch(`${API_BASE_URL}/project-locations/${locationIdString}/assign`, {
+      method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ projectId }),
     });
@@ -98,18 +101,20 @@ export const projectLocationService = {
       const errorData = await response.json().catch(() => ({ message: 'Failed to assign project to location' }));
       throw new Error(errorData.message || 'Failed to assign project to location');
     }
-    return response.json();
+    const responseData = await response.json();
+    return responseData.data?.location || responseData; // Handle potential nesting
   },
 
-  async unassignProjectFromLocation(locationId: string): Promise<ProjectLocation> {
-    const response = await fetch(`${API_BASE_URL}/project-locations/${locationId}/unassign`, {
-      method: 'PATCH', // Or POST
+  async unassignProjectFromLocation(locationIdString: string): Promise<ProjectLocation> {
+    const response = await fetch(`${API_BASE_URL}/project-locations/${locationIdString}/unassign`, {
+      method: 'PATCH',
     });
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: 'Failed to unassign project from location' }));
       throw new Error(errorData.message || 'Failed to unassign project from location');
     }
-    return response.json();
+    const responseData = await response.json();
+    return responseData.data?.location || responseData; // Handle potential nesting
   },
 
   async importLocations(file: File, eventId: string, departments: Department[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number, errors?: any[] }> {
@@ -134,7 +139,7 @@ export const projectLocationService = {
     return responseData;
   },
 
-  async exportLocations(filters: { eventId?: string } = {}): Promise<string> { // Returns CSV string
+  async exportLocations(filters: { eventId?: string } = {}): Promise<string> { 
     const queryParams = new URLSearchParams();
     if (filters.eventId) queryParams.append('eventId', filters.eventId);
     const response = await fetch(`${API_BASE_URL}/project-locations/export?${queryParams.toString()}`);
@@ -144,7 +149,7 @@ export const projectLocationService = {
     return response.text();
   },
   
-  async autoAssignLocations(eventId: string, departmentWise: boolean = true): Promise<any> {
+  async autoAssignLocations(eventId: string, departmentWise: boolean = true): Promise<{ assignments: { projectId: string, locationId: string }[], assignedCount: number, totalProjectsToAssign: number, totalAvailableLocations: number }> {
      const response = await fetch(`${API_BASE_URL}/project-locations/auto-assign`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -154,6 +159,5 @@ export const projectLocationService = {
       const errorData = await response.json().catch(() => ({ message: 'Failed to auto-assign locations' }));
       throw new Error(errorData.message || 'Failed to auto-assign locations');
     }
-    return response.json();
-  }
-};
+    const responseData = await response.json();
+    return responseData.data || responseData; //

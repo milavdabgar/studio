@@ -10,9 +10,6 @@ declare global {
 if (!global.__API_PROJECT_TEAMS_STORE__) {
   global.__API_PROJECT_TEAMS_STORE__ = [];
 }
-// This variable will reference the global store.
-// IMPORTANT: If this variable is reassigned (e.g., by .filter()), 
-// global.__API_PROJECT_TEAMS_STORE__ must also be reassigned to reflect the change.
 let projectTeamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
 
 interface RouteParams {
@@ -23,13 +20,12 @@ interface RouteParams {
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
-  // Ensure the store is an array before searching
   if (!Array.isArray(global.__API_PROJECT_TEAMS_STORE__)) {
-    global.__API_PROJECT_TEAMS_STORE__ = []; // Recover if possible
-    projectTeamsStore = global.__API_PROJECT_TEAMS_STORE__; // Update local ref
+    global.__API_PROJECT_TEAMS_STORE__ = []; 
+    projectTeamsStore = global.__API_PROJECT_TEAMS_STORE__;
     return NextResponse.json({ message: 'Project Team data store corrupted.' }, { status: 500 });
   }
-  projectTeamsStore = global.__API_PROJECT_TEAMS_STORE__; // Ensure local ref is up-to-date
+  projectTeamsStore = global.__API_PROJECT_TEAMS_STORE__; 
   const team = projectTeamsStore.find(t => t.id === id);
   if (team) {
     return NextResponse.json({ status: 'success', data: { team } });
@@ -37,7 +33,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   return NextResponse.json({ message: 'Team not found' }, { status: 404 });
 }
 
-export async function PATCH(request: NextRequest, { params }: RouteParams) { // Changed from PUT to PATCH for partial updates
+export async function PATCH(request: NextRequest, { params }: RouteParams) { 
   const { id } = params;
   if (!Array.isArray(global.__API_PROJECT_TEAMS_STORE__)) {
     global.__API_PROJECT_TEAMS_STORE__ = [];
@@ -59,20 +55,25 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) { // 
     if (teamDataToUpdate.name !== undefined && !teamDataToUpdate.name.trim()) {
         return NextResponse.json({ message: 'Team Name cannot be empty if provided.' }, { status: 400 });
     }
-    // Add other specific validations for update if needed
+    if (teamDataToUpdate.members && teamDataToUpdate.members.length === 0) {
+        return NextResponse.json({ message: 'Team must have at least one member.' }, { status: 400 });
+    }
+    if (teamDataToUpdate.members && !teamDataToUpdate.members.some(m => m.isLeader)) {
+        return NextResponse.json({ message: 'Team must have at least one leader.' }, { status: 400 });
+    }
+
 
     const updatedTeam: ProjectTeam = {
       ...existingTeam,
       ...teamDataToUpdate,
       name: teamDataToUpdate.name?.trim() || existingTeam.name,
-      // Ensure members array is preserved or updated correctly
       members: teamDataToUpdate.members || existingTeam.members,
-      updatedBy: "user_admin_placeholder_update", // TODO: Get actual user ID
+      updatedBy: "user_admin_placeholder_update", 
       updatedAt: new Date().toISOString(),
     };
 
     projectTeamsStore[teamIndex] = updatedTeam;
-    global.__API_PROJECT_TEAMS_STORE__ = projectTeamsStore; // Persist change to global
+    global.__API_PROJECT_TEAMS_STORE__ = projectTeamsStore; 
 
     return NextResponse.json({ status: 'success', data: { team: updatedTeam } });
   } catch (error) {
@@ -97,8 +98,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Team not found' }, { status: 404 });
   }
   
-  global.__API_PROJECT_TEAMS_STORE__ = newStore; // Update the global store reference
-  projectTeamsStore = newStore; // Update local reference as well
+  global.__API_PROJECT_TEAMS_STORE__ = newStore; 
+  projectTeamsStore = newStore; 
 
-  return NextResponse.json({ message: 'Team deleted successfully' }, { status: 200 });
-}
+  return NextResponse.json({ status: 'success', data: null

@@ -13,7 +13,7 @@ interface CertificateInfo {
     rank?: number;
     certificateType: 'participation' | 'department-winner' | 'institute-winner';
     eventName: string;
-    eventDate: string;
+    eventDate: string; // Assuming eventDate is a string like "YYYY-MM-DD"
     downloadUrl: string;
 }
 
@@ -32,7 +32,8 @@ export const projectService = {
       throw new Error(errorData.message || 'Failed to fetch projects');
     }
     const data = await response.json();
-    return Array.isArray(data) ? data : (data.projects || []); // Ensure it returns an array
+    // Adjust to handle potential nesting: { status: 'success', data: { projects: [] } } or just []
+    return Array.isArray(data) ? data : (data.data?.projects || data.projects || []); 
   },
 
   async getProjectById(id: string): Promise<Project> {
@@ -41,7 +42,8 @@ export const projectService = {
       const errorData = await response.json().catch(() => ({ message: `Failed to fetch project with id ${id}` }));
       throw new Error(errorData.message || `Failed to fetch project with id ${id}`);
     }
-    return response.json();
+    const data = await response.json();
+    return data.data?.project || data; // Handle potential nesting
   },
   
   async getProjectWithDetails(id: string): Promise<Project & { team?: ProjectTeam, location?: ProjectLocation, event?: ProjectEvent, departmentDetails?: Department, guideDetails?: User, deptJuryDetails?: User, centralJuryDetails?: User }> {
@@ -50,7 +52,8 @@ export const projectService = {
       const errorData = await response.json().catch(() => ({ message: `Failed to fetch detailed project data for id ${id}` }));
       throw new Error(errorData.message || `Failed to fetch detailed project data for id ${id}`);
     }
-    return response.json();
+    const data = await response.json();
+    return data.data?.project || data; // Handle potential nesting
   },
 
   async createProject(projectData: Omit<Project, 'id'>): Promise<Project> {
@@ -68,7 +71,7 @@ export const projectService = {
 
   async updateProject(id: string, projectData: Partial<Omit<Project, 'id'>>): Promise<Project> {
     const response = await fetch(`${API_BASE_URL}/projects/${id}`, {
-      method: 'PUT',
+      method: 'PUT', // Changed to PUT as per API route
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(projectData),
     });
@@ -96,7 +99,7 @@ export const projectService = {
       throw new Error(errorData.message || 'Failed to fetch your projects');
     }
     const data = await response.json();
-    return data.data?.projects || data || []; // Handle different possible response structures
+    return data.data?.projects || data || []; 
   },
 
   async getProjectsForJury(eventId: string, evaluationType: 'department' | 'central' = 'department'): Promise<{ evaluatedProjects: Project[], pendingProjects: Project[], totalEvaluated: number, totalPending: number }> {
@@ -105,7 +108,8 @@ export const projectService = {
       const errorData = await response.json().catch(() => ({ message: 'Failed to fetch projects for jury' }));
       throw new Error(errorData.message || 'Failed to fetch projects for jury');
     }
-    return response.json();
+    const data = await response.json();
+    return data.data || data; // Handle potential nesting
   },
 
   async evaluateProjectByDepartment(projectId: string, evaluationData: EvaluationData): Promise<Project> {
@@ -118,7 +122,8 @@ export const projectService = {
       const errorData = await response.json().catch(() => ({ message: 'Failed to submit department evaluation' }));
       throw new Error(errorData.message || 'Failed to submit department evaluation');
     }
-    return response.json();
+    const data = await response.json();
+    return data.data?.project || data; // Handle potential nesting
   },
 
   async evaluateProjectByCentral(projectId: string, evaluationData: EvaluationData): Promise<Project> {
@@ -131,7 +136,8 @@ export const projectService = {
       const errorData = await response.json().catch(() => ({ message: 'Failed to submit central evaluation' }));
       throw new Error(errorData.message || 'Failed to submit central evaluation');
     }
-    return response.json();
+    const data = await response.json();
+    return data.data?.project || data; // Handle potential nesting
   },
   
   async generateProjectCertificates(eventId: string, type: 'participation' | 'department-winner' | 'institute-winner' = 'participation'): Promise<CertificateInfo[]> {
@@ -141,7 +147,7 @@ export const projectService = {
         throw new Error(errorData.message || 'Failed to generate certificate data.');
     }
     const result = await response.json();
-    return result.data?.certificates || result.certificates || []; // Handle nested data structure if present
+    return result.data?.certificates || result.certificates || []; 
   },
 
   async sendCertificateEmails(data: { certificateIds: string[], emailSubject?: string, emailTemplate?: string }): Promise<{ message: string, emailsSent: number }> {
@@ -163,7 +169,7 @@ export const projectService = {
     formData.append('departments', JSON.stringify(departments));
     formData.append('teams', JSON.stringify(teams));
     formData.append('events', JSON.stringify(events));
-    formData.append('users', JSON.stringify(users)); // For guide mapping
+    formData.append('users', JSON.stringify(users)); 
 
     const response = await fetch(`${API_BASE_URL}/projects/import`, {
       method: 'POST',
@@ -206,3 +212,7 @@ export const projectService = {
   },
 
 };
+```
+  </change>
+  <change>
+    <file>src/app/api/projects/route
