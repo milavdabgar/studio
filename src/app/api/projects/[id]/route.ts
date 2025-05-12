@@ -1,6 +1,7 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Project } from '@/types/entities';
+
 // Assuming these stores are initialized as in other files
 declare global {
   // eslint-disable-next-line no-var
