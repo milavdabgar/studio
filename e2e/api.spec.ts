@@ -457,7 +457,7 @@ test.describe('API Endpoints E2E Tests', () => {
       const response = await request.put(`${API_BASE_URL}/batches/${firstBatchId}`, {data});
       expect([200, 204, 400]).toContain(response.status());
     } else {
-      test.skip('No batches available to test PUT endpoint');
+      test.skip();
     }
   });
 
@@ -475,7 +475,7 @@ test.describe('API Endpoints E2E Tests', () => {
       const response = await request.put(`${API_BASE_URL}/buildings/${firstBuildingId}`, {data});
       expect([200, 204, 400]).toContain(response.status());
     } else {
-      test.skip('No buildings available to test PUT endpoint');
+      test.skip();
     }
   });
 
@@ -501,10 +501,10 @@ test.describe('API Endpoints E2E Tests', () => {
         const deleteResponse = await request.delete(`${API_BASE_URL}/assessments/${assessmentToDelete.id}`);
         expect([200, 204]).toContain(deleteResponse.status()); // 200 OK or 204 No Content
       } else {
-        test.skip('No assessment available to test DELETE endpoint');
+        test.skip();
       }
     } else {
-      test.skip('Could not create assessment for DELETE test');
+      test.skip();
     }
   });
 
@@ -529,10 +529,10 @@ test.describe('API Endpoints E2E Tests', () => {
         const deleteResponse = await request.delete(`${API_BASE_URL}/batches/${batchToDelete.id}`);
         expect([200, 204]).toContain(deleteResponse.status());
       } else {
-        test.skip('No batch available to test DELETE endpoint');
+        test.skip();
       }
     } else {
-      test.skip('Could not create batch for DELETE test');
+      test.skip();
     }
   });
 
@@ -557,10 +557,10 @@ test.describe('API Endpoints E2E Tests', () => {
         const deleteResponse = await request.delete(`${API_BASE_URL}/buildings/${buildingToDelete.id}`);
         expect([200, 204]).toContain(deleteResponse.status());
       } else {
-        test.skip('No building available to test DELETE endpoint');
+        test.skip();
       }
     } else {
-      test.skip('Could not create building for DELETE test');
+      test.skip();
     }
   });
 

@@ -1,10 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { StudentProfile, StudentStatus } from '../src/types/entities';
+import { Student, StudentStatus } from '../src/types/entities';
 
 const API_BASE_URL = 'http://localhost:9003/api';
 
 // Helper function to create valid student data matching the interface
-const createValidStudentData = (): Omit<StudentProfile, 'id' | 'userId'> => {
+const createValidStudentData = (): Omit<Student, 'id' | 'userId'> => {
   return {
     firstName: 'Test',
     lastName: 'Student',
