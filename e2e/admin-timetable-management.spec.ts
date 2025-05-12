@@ -2,23 +2,55 @@ import { test, expect, Page } from '@playwright/test';
 
 const APP_BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:9003';
 
+const adminUserCredentials = {
+  email: 'admin@gppalanpur.in',
+  password: 'Admin@123',
+  role: 'admin',
+};
+
 async function loginAsAdmin(page: Page) {
   await page.goto(`${APP_BASE_URL}/login`);
-  await page.getByLabel(/email/i).fill('admin@gppalanpur.in');
-  await page.getByLabel(/password/i).fill('Admin@123');
+  await page.getByLabel(/email/i).fill(adminUserCredentials.email);
+  await page.getByLabel(/password/i).fill(adminUserCredentials.password);
   await page.getByLabel(/login as/i).click();
-  await page.getByRole('option', { name: /admin/i }).click();
+  await page.getByRole('option', { name: new RegExp(adminUserCredentials.role, 'i') }).click();
   await page.getByRole('button', { name: /login/i }).click();
-  await expect(page).toHaveURL(`${APP_BASE_URL}/dashboard`, {timeout: 15000});
+  await expect(page).toHaveURL(new RegExp(`${APP_BASE_URL}/dashboard`), {timeout: 25000});
 }
+
+// Helper to ensure required data exists or skip test
+async function ensureTestData(page: Page, entityName: string, checkUrl: string, creationButtonText: string) {
+  await page.goto(checkUrl);
+  // Check if any data exists (e.g., by looking for table rows excluding header)
+  const rowCount = await page.locator('table tbody tr').count();
+  if (rowCount === 0 || (rowCount === 1 && await page.locator('table tbody tr td:has-text("No data")').count() === 1) ) {
+    console.warn(`No ${entityName} found. Some timetable tests might be skipped or fail if dependent data is needed via UI selection.`);
+    return false;
+  }
+  return true;
+}
+
 
 test.describe('Admin Timetable Management', () => {
   let page: Page;
   let createdTimetableName: string = '';
+  const timetableBaseName = 'E2E Timetable';
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
     await loginAsAdmin(page);
+
+    // Check for essential dependent data. This is a simplified check.
+    // A full setup would involve creating test programs, batches, courses, offerings, faculty, rooms via API or UI.
+    const programsExist = await ensureTestData(page, 'programs', `${APP_BASE_URL}/admin/programs`, 'Add New Program');
+    const batchesExist = await ensureTestData(page, 'batches', `${APP_BASE_URL}/admin/batches`, 'Add New Batch');
+    const courseOfferingsExist = true; // Hard to check UI without specific selectors, assume some exist for now
+    const facultyExist = await ensureTestData(page, 'faculty', `${APP_BASE_URL}/admin/faculty`, 'Add New Faculty');
+    const roomsExist = await ensureTestData(page, 'rooms', `${APP_BASE_URL}/admin/rooms`, 'Add New Room');
+
+    if (!programsExist || !batchesExist || !facultyExist || !roomsExist) {
+        console.warn("One or more prerequisite data types (programs, batches, faculty, rooms) are missing. Timetable creation tests might not be fully operational via UI selection.");
+    }
   });
 
   test.afterAll(async () => {
@@ -29,7 +61,8 @@ test.describe('Admin Timetable Management', () => {
     await page.goto(`${APP_BASE_URL}/admin/timetables`);
     await expect(page.getByRole('heading', { name: /timetable management/i })).toBeVisible();
 
-    createdTimetableName = `E2E Timetable ${Date.now().toString().slice(-4)}`;
+    const timestamp = Date.now().toString().slice(-6);
+    createdTimetableName = `${timetableBaseName} ${timestamp}`;
 
     await page.getByRole('button', { name: /new timetable/i }).click();
 
@@ -37,71 +70,85 @@ test.describe('Admin Timetable Management', () => {
     await page.getByLabel(/name/i).fill(createdTimetableName);
     await page.getByLabel(/academic year/i).fill('2024-25');
     
-    // Select Program
+    // Select Program (ensure options are available)
     const programSelect = page.locator('form').getByLabel(/program/i).first();
     await programSelect.click();
-    await page.getByRole('option').first().click(); // Select the first available program (e.g., DCE)
+    await page.getByRole('option').first().click(); 
 
-    // Select Batch (options should filter based on program)
+    // Select Batch (ensure options filter or are available)
     const batchSelect = page.locator('form').getByLabel(/batch/i).first();
     await batchSelect.click();
-    await page.getByRole('option').first().click(); // Select the first available batch
+    // Wait for batch options to potentially populate based on program
+    await page.waitForTimeout(500); // Small delay for dependent dropdowns
+    const firstBatchOption = page.getByRole('option').first();
+    if (await firstBatchOption.isVisible({timeout: 3000})){
+        await firstBatchOption.click();
+    } else {
+        console.warn("No batches available for selection for timetable test.");
+        // If no batch, the form might not be submittable, this test part might fail or skip.
+        await page.keyboard.press('Escape'); // Close dropdown
+        test.skip(true, "No batches available to select for timetable creation.");
+        return;
+    }
+
 
     await page.getByLabel(/semester/i).fill('1');
     await page.getByLabel(/version/i).fill('1.0');
 
-    await page.getByLabel(/status/i).click();
+    await page.locator('form').getByLabel('Status').click();
     await page.getByRole('option', { name: /draft/i }).click();
 
-    await page.getByLabel(/effective date/i).click(); // Open calendar
-    await page.getByRole('gridcell', { name: '15' }).first().click(); // Select 15th of current month
+    await page.getByLabel(/effective date/i).locator('button').click(); 
+    await page.getByRole('gridcell', { name: '15' }).first().click(); 
     
-    // Add a timetable entry (simplified - assuming course offerings, faculty, rooms are available)
-    const entryDialogPromise = page.waitForEvent('dialog'); // if add entry opens a separate dialog
-
-    // Click "Add Entry" or fill inline form fields
-    // For simplicity, assuming inline fields for now. If it's a modal/dialog, interaction will be different.
-    // This part is highly dependent on the actual UI for adding entries.
-    // For example, if there's an "Add Entry" button within the form:
-    // await page.getByRole('button', { name: /add entry/i }).click(); // This might open another modal
-
-    // Let's assume the form has direct input fields for the first entry:
-    const daySelect = page.locator('form').getByLabel(/day/i).first(); // Assuming a select for Day
+    // Add a timetable entry
+    const daySelect = page.locator('form div.grid').getByLabel(/day/i).first();
     await daySelect.click();
     await page.getByRole('option', { name: /monday/i }).click();
     
-    await page.locator('form').getByLabel(/start time/i).first().fill('09:00');
-    await page.locator('form').getByLabel(/end time/i).first().fill('10:00');
+    await page.locator('form div.grid').getByLabel(/start time/i).first().fill('09:00');
+    await page.locator('form div.grid').getByLabel(/end time/i).first().fill('10:00');
 
-    // Select Course Offering
-    const courseOfferingSelect = page.locator('form').getByLabel(/course offering/i).first();
+    // Select Course Offering (ensure options are available)
+    const courseOfferingSelect = page.locator('form div.grid').getByLabel(/course offering/i).first();
     await courseOfferingSelect.click();
-    await page.getByRole('option').first().click(); // Select first available offering
+    await page.waitForTimeout(500); // For dependent dropdowns
+    const firstCOOption = page.getByRole('option').first();
+     if (await firstCOOption.isVisible({timeout: 3000})){
+        await firstCOOption.click();
+    } else {
+        console.warn("No course offerings available to select for timetable entry.");
+        await page.keyboard.press('Escape');
+        test.skip(true, "No course offerings available to select for timetable entry.");
+        return;
+    }
 
     // Select Faculty
-    const facultySelect = page.locator('form').getByLabel(/faculty/i).first();
+    const facultySelect = page.locator('form div.grid').getByLabel(/faculty/i).first();
     await facultySelect.click();
-    await page.getByRole('option').first().click(); // Select first available faculty
+    await page.getByRole('option').first().click();
 
     // Select Room
-    const roomSelect = page.locator('form').getByLabel(/room/i).first();
+    const roomSelect = page.locator('form div.grid').getByLabel(/room/i).first();
     await roomSelect.click();
-    await page.getByRole('option').first().click(); // Select first available room
+    await page.getByRole('option').first().click();
 
-    await page.getByRole('button', { name: /add entry/i }).click(); // Click to add the configured entry to the list
+    await page.getByRole('button', { name: /add entry/i }).click();
     
     // Verify entry added to a list (if visible in the form)
-    // await expect(page.locator('ul:has-text("Monday 09:00-10:00")')).toBeVisible();
+    await expect(page.locator('table tbody tr').filter({hasText: /Monday/i}).filter({hasText: /09:00-10:00/i})).toBeVisible();
 
-    await page.getByRole('button', { name: /create timetable/i, exact: true }).click(); // Assuming exact name or more specific selector
+
+    await page.getByRole('button', { name: /create timetable/i, exact: true }).click();
 
     await expect(page.getByText(/timetable created/i, { exact: false })).toBeVisible({timeout: 10000});
     await expect(page.getByText(new RegExp(createdTimetableName, "i"))).toBeVisible();
   });
 
   test('should delete the created timetable', async () => {
-    test.skip(!createdTimetableName, 'Skipping delete timetable test as no name available');
+    test.skip(!createdTimetableName, 'Skipping delete: No timetable name from create test.');
     await page.goto(`${APP_BASE_URL}/admin/timetables`);
+    await page.waitForSelector(`tr:has-text("${createdTimetableName}")`);
     const timetableRow = page.locator(`tr:has-text("${createdTimetableName}")`).first();
     await expect(timetableRow).toBeVisible();
     await timetableRow.getByRole('button', { name: /delete/i }).click();

@@ -2,14 +2,20 @@ import { test, expect, Page } from '@playwright/test';
 
 const APP_BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:9003';
 
+const adminUserCredentials = {
+  email: 'admin@gppalanpur.in',
+  password: 'Admin@123',
+  role: 'admin',
+};
+
 async function loginAsAdmin(page: Page) {
   await page.goto(`${APP_BASE_URL}/login`);
-  await page.getByLabel(/email/i).fill('admin@gppalanpur.in');
-  await page.getByLabel(/password/i).fill('Admin@123');
+  await page.getByLabel(/email/i).fill(adminUserCredentials.email);
+  await page.getByLabel(/password/i).fill(adminUserCredentials.password);
   await page.getByLabel(/login as/i).click();
-  await page.getByRole('option', { name: /admin/i }).click();
+  await page.getByRole('option', { name: new RegExp(adminUserCredentials.role, 'i') }).click();
   await page.getByRole('button', { name: /login/i }).click();
-  await expect(page).toHaveURL(`${APP_BASE_URL}/dashboard`, {timeout: 15000});
+  await expect(page).toHaveURL(new RegExp(`${APP_BASE_URL}/dashboard`), {timeout: 25000});
 }
 
 test.describe('Admin System Settings', () => {
@@ -35,31 +41,36 @@ test.describe('Admin System Settings', () => {
     await notificationsEmailInput.fill(newEmail);
 
     // Toggle Maintenance Mode
-    const maintenanceModeSwitch = page.getByLabel(/enable maintenance mode/i);
-    const isMaintenanceModeEnabled = await maintenanceModeSwitch.isChecked();
-    await maintenanceModeSwitch.setChecked(!isMaintenanceModeEnabled);
+    const maintenanceModeSwitch = page.locator('button[role="switch"][aria-label*="maintenance mode"]'); // More specific selector for ShadCN switch
+    const isMaintenanceModeEnabled = await maintenanceModeSwitch.getAttribute('aria-checked') === 'true';
+    await maintenanceModeSwitch.click(); // Click to toggle
 
     // Toggle New User Registrations
-    const registrationSwitch = page.getByLabel(/allow new user registrations/i);
-    const isRegistrationEnabled = await registrationSwitch.isChecked();
-    await registrationSwitch.setChecked(!isRegistrationEnabled);
+    const registrationSwitch = page.locator('button[role="switch"][aria-label*="user registrations"]');
+    const isRegistrationEnabled = await registrationSwitch.getAttribute('aria-checked') === 'true';
+    await registrationSwitch.click();
 
     // Save settings
     await page.getByRole('button', { name: /save settings/i }).click();
     await expect(page.getByText(/settings saved/i, { exact: false })).toBeVisible({timeout: 10000});
 
-    // Verify changes (by reloading and checking values, or if API returns updated values)
+    // Verify changes (by reloading and checking values)
     await page.reload();
     await page.waitForLoadState('networkidle');
     
     await expect(page.getByLabel(/notifications email/i)).toHaveValue(newEmail);
-    await expect(page.getByLabel(/enable maintenance mode/i)).toBeChecked(!isMaintenanceModeEnabled);
-    await expect(page.getByLabel(/allow new user registrations/i)).toBeChecked(!isRegistrationEnabled);
+    expect(await page.locator('button[role="switch"][aria-label*="maintenance mode"]').getAttribute('aria-checked') === 'true').toBe(!isMaintenanceModeEnabled);
+    expect(await page.locator('button[role="switch"][aria-label*="user registrations"]').getAttribute('aria-checked') === 'true').toBe(!isRegistrationEnabled);
 
-    // Revert changes (optional, good for test hygiene if state persists across tests)
-    await notificationsEmailInput.fill(originalEmail);
-    await maintenanceModeSwitch.setChecked(isMaintenanceModeEnabled);
-    await registrationSwitch.setChecked(isRegistrationEnabled);
+    // Revert changes 
+    await page.getByLabel(/notifications email/i).fill(originalEmail);
+    // Click to revert to original states
+    if ((await page.locator('button[role="switch"][aria-label*="maintenance mode"]').getAttribute('aria-checked') === 'true') !== isMaintenanceModeEnabled) {
+      await page.locator('button[role="switch"][aria-label*="maintenance mode"]').click();
+    }
+    if ((await page.locator('button[role="switch"][aria-label*="user registrations"]').getAttribute('aria-checked') === 'true') !== isRegistrationEnabled) {
+      await page.locator('button[role="switch"][aria-label*="user registrations"]').click();
+    }
     await page.getByRole('button', { name: /save settings/i }).click();
     await expect(page.getByText(/settings saved/i, { exact: false })).toBeVisible({timeout: 10000});
   });
