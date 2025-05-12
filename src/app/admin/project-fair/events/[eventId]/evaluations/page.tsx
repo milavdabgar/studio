@@ -9,7 +9,6 @@ import { Loader2, ArrowLeft, Award } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { ProjectEvent, Project, ProjectEvaluation } from '@/types/entities';
 import { projectEventService } from '@/lib/api/projectEvents';
-// TODO: Import EvaluationTable and related components when they are created
 
 export default function EventEvaluationsPage() {
   const router = useRouter();
@@ -17,7 +16,6 @@ export default function EventEvaluationsPage() {
   const eventId = params.eventId as string;
 
   const [event, setEvent] = useState<ProjectEvent | null>(null);
-  // const [evaluations, setEvaluations] = useState<ProjectEvaluation[]>([]); // Or link evaluations to projects
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 

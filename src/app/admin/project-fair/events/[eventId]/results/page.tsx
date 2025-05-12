@@ -9,7 +9,6 @@ import { Loader2, ArrowLeft, CalendarCheck as ResultsIcon, Download, Mail } from
 import { useToast } from "@/hooks/use-toast";
 import type { ProjectEvent } from '@/types/entities';
 import { projectEventService } from '@/lib/api/projectEvents';
-// TODO: Import components for displaying results and managing certificates
 
 export default function EventResultsPage() {
   const router = useRouter();

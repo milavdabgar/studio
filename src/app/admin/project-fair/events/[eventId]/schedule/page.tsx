@@ -9,7 +9,6 @@ import { Loader2, ArrowLeft, ListChecks } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { ProjectEvent, ProjectEventScheduleItem } from '@/types/entities';
 import { projectEventService } from '@/lib/api/projectEvents';
-// TODO: Import ScheduleTable and ScheduleForm components when they are created
 
 export default function EventSchedulePage() {
   const router = useRouter();
@@ -17,7 +16,7 @@ export default function EventSchedulePage() {
   const eventId = params.eventId as string;
 
   const [event, setEvent] = useState<ProjectEvent | null>(null);
-  const [schedule, setSchedule] = useState<ProjectEventScheduleItem[]>([]);
+  const [schedule, setSchedule] = useState<ProjectEventScheduleItem[]>([]); // State for schedule items
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
@@ -28,7 +27,7 @@ export default function EventSchedulePage() {
       try {
         const eventData = await projectEventService.getEventById(eventId);
         setEvent(eventData);
-        setSchedule(eventData.schedule || []);
+        setSchedule(eventData.schedule || []); // Populate schedule
       } catch (error) {
         console.error("Failed to load event schedule data:", error);
         toast({ variant: "destructive", title: "Error", description: "Could not load event schedule data." });
