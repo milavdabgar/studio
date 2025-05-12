@@ -85,7 +85,3 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
   return NextResponse.json({ status: 'success', data: null });
 }
-```
-  </change>
-  <change>
-    <file>src/app/api/projects/statistics/route

@@ -8,10 +8,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"; // Removed DialogClose import
 import { Loader2, Save, PlusCircle, XCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Project, Department, ProjectTeam, User as FacultyUser, ProjectEvent, ProjectStatus, ProjectRequirements, ProjectGuide } from '@/types/entities';
+import type { Project, Department, ProjectTeam, User as FacultyUser, ProjectStatus, ProjectRequirements, ProjectGuide } from '@/types/entities';
 import { projectService } from '@/lib/api/projects';
 import { departmentService } from '@/lib/api/departments';
 import { projectTeamService } from '@/lib/api/projectTeams';
@@ -40,16 +40,31 @@ const ProjectForm: React.FC<ProjectFormProps> = ({
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Initialize state with empty strings for potentially undefined fields
   const [title, setTitle] = useState(existingProject?.title || '');
   const [category, setCategory] = useState(existingProject?.category || PROJECT_CATEGORIES[0]);
   const [abstract, setAbstract] = useState(existingProject?.abstract || '');
   const [departmentId, setDepartmentId] = useState(existingProject?.department || '');
   const [status, setStatus] = useState<ProjectStatus>(existingProject?.status || 'draft');
   const [requirements, setRequirements] = useState<ProjectRequirements>(
-    existingProject?.requirements || { power: false, internet: false, specialSpace: false, otherRequirements: '' }
+    existingProject?.requirements 
+      ? {
+          power: existingProject.requirements.power || false,
+          internet: existingProject.requirements.internet || false,
+          specialSpace: existingProject.requirements.specialSpace || false,
+          otherRequirements: existingProject.requirements.otherRequirements || '',
+        }
+      : { power: false, internet: false, specialSpace: false, otherRequirements: '' }
   );
   const [guide, setGuide] = useState<ProjectGuide>(
-    existingProject?.guide || { userId: '', name: '', department: '', contactNumber: '' }
+    existingProject?.guide 
+      ? {
+          userId: existingProject.guide.userId || '',
+          name: existingProject.guide.name || '',
+          department: existingProject.guide.department || '',
+          contactNumber: existingProject.guide.contactNumber || '',
+        }
+      : { userId: '', name: '', department: '', contactNumber: '' }
   );
   const [teamId, setTeamId] = useState(existingProject?.teamId || '');
 
@@ -60,35 +75,35 @@ const ProjectForm: React.FC<ProjectFormProps> = ({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [deptData, teamData, facultyData] = await Promise.all([
+        const [deptData, teamDataResponse, facultyData] = await Promise.all([
           departmentService.getAllDepartments(),
-          projectTeamService.getAllTeams({ eventId }), // Fetch teams for the current event
+          projectTeamService.getAllTeams({ eventId }), 
           userService.getAllUsers().then(users => users.filter(u => u.roles.includes('faculty') || u.roles.includes('hod'))),
         ]);
         setDepartments(deptData);
-        setTeams(teamData);
+        setTeams(Array.isArray(teamDataResponse) ? teamDataResponse : []);
         setFacultyList(facultyData);
 
-        if (deptData.length > 0 && !departmentId && !existingProject) {
-          setDepartmentId(deptData[0].id);
+        // Set initial form values if not editing an existing project
+        if (!existingProject) {
+            if (deptData.length > 0 && !departmentId) setDepartmentId(deptData[0].id);
+            if (facultyData.length > 0 && !guide.userId) {
+                 setGuide(prev => ({ ...prev, userId: facultyData[0].id, name: facultyData[0].displayName, department: facultyData[0].departmentId || '' }));
+            }
+            if (teamDataResponse.length > 0 && !teamId) {
+                 setTeamId(Array.isArray(teamDataResponse) ? teamDataResponse[0].id : '');
+            }
         }
-         if (facultyData.length > 0 && !guide.userId && !existingProject) {
-          setGuide(prev => ({ ...prev, userId: facultyData[0].id, name: facultyData[0].displayName, department: facultyData[0].departmentId || '' }));
-        }
-        if (teamData.length > 0 && !teamId && !existingProject) {
-          setTeamId(teamData[0].id);
-        }
-
       } catch (error) {
         toast({ variant: "destructive", title: "Error loading form data", description: (error as Error).message });
       }
     };
-    if (isOpen) { // Fetch data only when dialog is open
+    if (isOpen) {
         fetchData();
     }
-  }, [eventId, isOpen, toast, departmentId, guide.userId, teamId, existingProject]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventId, isOpen, toast, existingProject]); // Removed departmentId, guide.userId, teamId from deps as they are set inside based on initial state
 
-  // Update form fields if existingProject changes (e.g., when opening dialog for edit)
   useEffect(() => {
     if (existingProject) {
       setTitle(existingProject.title || '');
@@ -96,31 +111,52 @@ const ProjectForm: React.FC<ProjectFormProps> = ({
       setAbstract(existingProject.abstract || '');
       setDepartmentId(existingProject.department || (departments.length > 0 ? departments[0].id : ''));
       setStatus(existingProject.status || 'draft');
-      setRequirements(existingProject.requirements || { power: false, internet: false, specialSpace: false, otherRequirements: '' });
-      setGuide(existingProject.guide || { userId: (facultyList.length > 0 ? facultyList[0].id : ''), name: (facultyList.length > 0 ? facultyList[0].displayName : ''), department: (facultyList.length > 0 ? facultyList[0].departmentId || '' : ''), contactNumber: '' });
+      setRequirements(
+        existingProject.requirements 
+          ? {
+              power: existingProject.requirements.power || false,
+              internet: existingProject.requirements.internet || false,
+              specialSpace: existingProject.requirements.specialSpace || false,
+              otherRequirements: existingProject.requirements.otherRequirements || '',
+            }
+          : { power: false, internet: false, specialSpace: false, otherRequirements: '' }
+      );
+      setGuide(
+        existingProject.guide 
+          ? {
+              userId: existingProject.guide.userId || '',
+              name: existingProject.guide.name || '',
+              department: existingProject.guide.department || '',
+              contactNumber: existingProject.guide.contactNumber || '',
+            }
+          : { userId: (facultyList.length > 0 ? facultyList[0].id : ''), name: (facultyList.length > 0 ? facultyList[0].displayName : ''), department: (facultyList.length > 0 ? (facultyList[0].departmentId || '') : ''), contactNumber: '' }
+      );
       setTeamId(existingProject.teamId || (teams.length > 0 ? teams[0].id : ''));
     } else {
-      // Reset to defaults for new project if existingProject becomes null
+      // Reset form for new project
       setTitle('');
       setCategory(PROJECT_CATEGORIES[0]);
       setAbstract('');
       setDepartmentId(departments.length > 0 ? departments[0].id : '');
       setStatus('draft');
       setRequirements({ power: false, internet: false, specialSpace: false, otherRequirements: '' });
-      setGuide({ userId: (facultyList.length > 0 ? facultyList[0].id : ''), name: (facultyList.length > 0 ? facultyList[0].displayName : ''), department: (facultyList.length > 0 ? facultyList[0].departmentId || '' : ''), contactNumber: '' });
+      setGuide({ userId: (facultyList.length > 0 ? facultyList[0].id : ''), name: (facultyList.length > 0 ? facultyList[0].displayName : ''), department: (facultyList.length > 0 ? (facultyList[0].departmentId || '') : ''), contactNumber: '' });
       setTeamId(teams.length > 0 ? teams[0].id : '');
     }
-  }, [existingProject, departments, facultyList, teams]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [existingProject, departments, facultyList, teams, isOpen]); // Added isOpen to re-init form when dialog opens
 
   const handleGuideChange = (facultyId: string) => {
     const selectedFaculty = facultyList.find(f => f.id === facultyId);
     if (selectedFaculty) {
       setGuide({
         userId: selectedFaculty.id,
-        name: selectedFaculty.displayName,
-        department: selectedFaculty.departmentId || '', // Assuming Faculty has departmentId
+        name: selectedFaculty.displayName || '',
+        department: selectedFaculty.departmentId || '',
         contactNumber: selectedFaculty.phoneNumber || ''
       });
+    } else {
+      setGuide({ userId: '', name: '', department: '', contactNumber: '' });
     }
   };
 
@@ -145,7 +181,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({
       }
       onProjectSaved(savedProject);
       toast({ title: "Success", description: `Project "${savedProject.title}" saved successfully.` });
-      setIsOpen(false); // Close dialog on success
+      setIsOpen(false); 
     } catch (error) {
       toast({ variant: "destructive", title: "Save Failed", description: (error as Error).message });
     } finally {
@@ -201,3 +237,4 @@ const ProjectForm: React.FC<ProjectFormProps> = ({
 };
 
 export default ProjectForm;
+    
