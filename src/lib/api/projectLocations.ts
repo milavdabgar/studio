@@ -36,7 +36,7 @@ export const projectLocationService = {
       throw new Error(errorData.message || `Failed to fetch project location with id ${id}`);
     }
     const responseData = await response.json();
-    return responseData.data?.location || responseData; // Handle potential nesting
+    return responseData.data?.location || responseData;
   },
 
   async createLocation(locationData: Omit<ProjectLocation, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>): Promise<ProjectLocation> {
@@ -50,7 +50,7 @@ export const projectLocationService = {
       throw new Error(errorData.message || 'Failed to create project location');
     }
     const responseData = await response.json();
-    return responseData.data?.location || responseData; // Handle potential nesting
+    return responseData.data?.location || responseData;
   },
   
   async createLocationBatch(batchData: Array<Omit<ProjectLocation, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>>): Promise<{count: number, locations: ProjectLocation[], errors?: any[]}> {
@@ -64,7 +64,7 @@ export const projectLocationService = {
         throw new Error(errorData.message || 'Failed to create location batch');
     }
     const responseData = await response.json();
-    return responseData.data || responseData; // Handle potential nesting
+    return responseData.data || responseData;
   },
 
   async updateLocation(id: string, locationData: Partial<Omit<ProjectLocation, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>>): Promise<ProjectLocation> {
@@ -78,7 +78,7 @@ export const projectLocationService = {
       throw new Error(errorData.message || 'Failed to update project location');
     }
     const responseData = await response.json();
-    return responseData.data?.location || responseData; // Handle potential nesting
+    return responseData.data?.location || responseData;
   },
 
   async deleteLocation(id: string): Promise<void> {
@@ -102,7 +102,7 @@ export const projectLocationService = {
       throw new Error(errorData.message || 'Failed to assign project to location');
     }
     const responseData = await response.json();
-    return responseData.data?.location || responseData; // Handle potential nesting
+    return responseData.data?.location || responseData;
   },
 
   async unassignProjectFromLocation(locationIdString: string): Promise<ProjectLocation> {
@@ -114,7 +114,7 @@ export const projectLocationService = {
       throw new Error(errorData.message || 'Failed to unassign project from location');
     }
     const responseData = await response.json();
-    return responseData.data?.location || responseData; // Handle potential nesting
+    return responseData.data?.location || responseData;
   },
 
   async importLocations(file: File, eventId: string, departments: Department[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number, errors?: any[] }> {
@@ -160,4 +160,6 @@ export const projectLocationService = {
       throw new Error(errorData.message || 'Failed to auto-assign locations');
     }
     const responseData = await response.json();
-    return responseData.data || responseData; //
+    return responseData.data || responseData;
+  }
+};

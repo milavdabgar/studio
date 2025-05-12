@@ -212,7 +212,3 @@ export const projectService = {
   },
 
 };
-```
-  </change>
-  <change>
-    <file>src/app/api/projects/route
