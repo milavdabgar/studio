@@ -14,6 +14,7 @@ import { departmentService } from '@/lib/api/departments';
 import ProjectForm from '@/components/admin/project-fair/ProjectForm';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label"; // Added Label import
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowUpDown } from 'lucide-react';
@@ -58,16 +59,16 @@ export default function EventProjectsPage() {
     if (!eventId) return;
     setIsLoading(true);
     try {
-      const [eventData, projectsData, deptData, teamData] = await Promise.all([
+      const [eventData, projectsDataResponse, deptData, teamDataResponse] = await Promise.all([
         projectEventService.getEventById(eventId),
         projectService.getAllProjects({ eventId }),
         departmentService.getAllDepartments(),
-        projectService.getAllTeams({ eventId }) // Fetch all teams for the event
+        projectTeamService.getAllTeams({ eventId }) 
       ]);
       setEvent(eventData);
-      setProjects(Array.isArray(projectsData) ? projectsData : projectsData.data?.projects || []);
+      setProjects(Array.isArray(projectsDataResponse) ? projectsDataResponse : (projectsDataResponse.data?.projects || []));
       setDepartments(deptData);
-      setTeams(Array.isArray(teamData) ? teamData : teamData.data?.teams || []);
+      setTeams(Array.isArray(teamDataResponse) ? teamDataResponse : (teamDataResponse.data?.teams || []));
 
     } catch (error) {
       console.error("Failed to load event projects data:", error);
@@ -148,6 +149,9 @@ export default function EventProjectsPage() {
             valA = a[sortField as keyof Project];
             valB = b[sortField as keyof Project];
         }
+        if (valA === undefined || valA === null) return sortDirection === 'asc' ? 1 : -1;
+        if (valB === undefined || valB === null) return sortDirection === 'asc' ? -1 : 1;
+        
         if (typeof valA === 'string' && typeof valB === 'string') return sortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
         if (typeof valA === 'number' && typeof valB === 'number') return sortDirection === 'asc' ? valA - valB : valB - valA;
         return 0;
@@ -177,7 +181,7 @@ export default function EventProjectsPage() {
   );
 
 
-  if (isLoading && !event) { // Show loader only if event data is also not available
+  if (isLoading && !event) { 
     return <div className="flex justify-center items-center h-screen"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
   }
 
