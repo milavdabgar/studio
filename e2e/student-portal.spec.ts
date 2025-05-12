@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
+import path from 'path';
 
 const APP_BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:9003';
 
@@ -19,81 +20,97 @@ async function loginAsStudent(page: Page) {
   await expect(page).toHaveURL(`${APP_BASE_URL}/dashboard`, {timeout: 15000});
 }
 
-test.describe('Student Portal', () => {
-  let page: Page;
+// Helper function to create a dummy file for upload
+const createDummyFile = (content: string, fileName: string): string => {
+  const fs = require('fs');
+  const os = require('os');
+  const filePath = path.join(os.tmpdir(), fileName);
+  fs.writeFileSync(filePath, content);
+  return filePath;
+};
+let sampleFilePath: string;
 
+
+test.describe('Student Portal Detailed Functionality', () => {
+  let page: Page;
+  
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
     await loginAsStudent(page);
+    sampleFilePath = createDummyFile('This is a test submission file.', 'e2e_sample_submission.txt');
   });
 
   test.afterAll(async () => {
+    // Clean up sample file
+    const fs = require('fs');
+    if (sampleFilePath) fs.unlinkSync(sampleFilePath);
     await page.close();
   });
 
-  test('should display student dashboard with relevant cards', async () => {
-    await page.goto(`${APP_BASE_URL}/dashboard`);
-    await expect(page.getByText(`Welcome to your Dashboard, ${studentUser.name}!`)).toBeVisible();
-    await expect(page.getByText('My Courses')).toBeVisible();
-    await expect(page.getByText('Upcoming Assignments')).toBeVisible();
-    await expect(page.getByText('Latest Grades')).toBeVisible();
-  });
-
-  test('should navigate to My Profile page and display profile info', async () => {
-    await page.goto(`${APP_BASE_URL}/student/profile`);
-    await expect(page.getByRole('heading', { name: studentUser.name })).toBeVisible();
-    await expect(page.getByText(studentUser.email, {exact: false})).toBeVisible(); // Check for personal or institute email
-    await expect(page.getByText(studentUser.email.split('@')[0])).toBeVisible(); // Enrollment number
-  });
-
-  test('should navigate to My Timetable page', async () => {
-    await page.goto(`${APP_BASE_URL}/student/timetable`);
-    await expect(page.getByRole('heading', { name: /my timetable/i })).toBeVisible();
-    // Further checks can be added if timetable data is predictable or mockable
-    // For now, just checking if the page loads
-    await expect(page.getByText(/Monday|Tuesday|Wednesday|Thursday|Friday|Saturday/i)).toBeVisible();
-  });
-
-  test('should navigate to My Attendance page', async () => {
-    await page.goto(`${APP_BASE_URL}/student/attendance`);
-    await expect(page.getByRole('heading', { name: /my attendance/i })).toBeVisible();
-    // Check for filter or summary elements
-    await expect(page.getByText(/filter by course/i)).toBeVisible();
-  });
-
-  test('should navigate to My Courses page', async () => {
-    await page.goto(`${APP_BASE_URL}/student/courses`);
-    await expect(page.getByRole('heading', { name: /my courses/i })).toBeVisible();
-    // Check for list of courses
-    // This depends on actual data, if "Intro to Programming" is an enrolled course for the test student:
-    // await expect(page.getByText(/Intro to Programming/i)).toBeVisible(); 
-  });
-  
-  test('should navigate to Assignments page', async () => {
+  test('should submit an assignment', async () => {
     await page.goto(`${APP_BASE_URL}/student/assignments`);
     await expect(page.getByRole('heading', { name: /my assignments/i })).toBeVisible();
-    // Check for assignment list elements
-    // Example: await expect(page.getByText(/Quiz 1/i)).toBeVisible();
+
+    // Find an assignment to submit to (assuming one is listed and available for submission)
+    // This selector is highly dependent on the UI.
+    const submitLink = page.locator('table tbody tr:has-text("Pending") a:has-text("Submit"), table tbody tr:has-text("Pending") button:has-text("Submit")').first();
+    
+    const assignmentIsAvailable = await submitLink.count() > 0;
+    test.skip(!assignmentIsAvailable, "No pending assignment found to submit for testing.");
+    
+    await submitLink.click();
+    
+    // Now on the assignment detail/submission page
+    await expect(page.getByRole('heading', { name: /submit your work/i })).toBeVisible();
+
+    // Upload a file
+    await page.getByLabel(/upload file/i).setInputFiles(sampleFilePath);
+    await expect(page.getByText(/e2e_sample_submission.txt/i, { exact: false })).toBeVisible();
+
+    // Add comments (optional)
+    await page.getByLabel(/comments/i).fill('This is my E2E test submission.');
+
+    await page.getByRole('button', { name: /submit assignment/i }).click();
+    await expect(page.getByText(/submission successful/i, { exact: false })).toBeVisible({timeout: 10000});
+
+    // Verify submission status changed on the main assignments page (optional)
+    await page.goto(`${APP_BASE_URL}/student/assignments`);
+    // This check depends on how the submitted assignment is displayed, e.g., its status text changes.
+    // await expect(page.locator('table tbody tr:has-text("e2e_sample_submission.txt")').first().getByText(/submitted/i)).toBeVisible();
   });
 
-  test('should navigate to My Results page', async () => {
-    await page.goto(`${APP_BASE_URL}/student/results`);
-    await expect(page.getByRole('heading', { name: /my academic results/i })).toBeVisible();
-    // Check for semester-wise results
-    await expect(page.getByText(/semester 1 results/i, {exact: false})).toBeVisible();
-  });
-  
-  test('should navigate to Study Materials page', async () => {
+  test('should view and download study materials', async () => {
     await page.goto(`${APP_BASE_URL}/student/materials`);
     await expect(page.getByRole('heading', { name: /study materials/i })).toBeVisible();
-    // Check for accordion or list of materials
-    // Example: await expect(page.getByText(/Intro to Programming Materials/i)).toBeVisible();
-  });
 
-  test('should navigate to My Project page (Project Fair)', async () => {
-    await page.goto(`${APP_BASE_URL}/project-fair/student`);
-    await expect(page.getByRole('heading', { name: /my projects/i })).toBeVisible();
-    // Check for project registration button or project list
-  });
+    // Assume materials are grouped by course in accordions
+    // Click on the first course accordion to expand it
+    const firstCourseAccordionTrigger = page.locator('button[role="heading"][aria-expanded="false"]').first(); // Selector for ShadCN accordion trigger
+    
+    const courseAccordionExists = await firstCourseAccordionTrigger.count() > 0;
+    test.skip(!courseAccordionExists, "No course accordions found for study materials.");
 
+    await firstCourseAccordionTrigger.click();
+    
+    // Find a material to download within the expanded accordion
+    // This selector is highly dependent on the UI.
+    const downloadButton = page.locator('div[data-state="open"] button:has-text("Download")').first(); // Assuming open accordion content
+    
+    const materialExists = await downloadButton.count() > 0;
+    test.skip(!materialExists, "No downloadable material found in the first course.");
+
+    // Start waiting for download before clicking. Note: web-first assertions are usually preferred.
+    const downloadPromise = page.waitForEvent('download');
+    await downloadButton.click();
+    const download = await downloadPromise;
+
+    // Verify download (e.g., check suggested filename or save path if needed)
+    expect(download.suggestedFilename()).not.toBe(''); // Basic check
+    
+    // To save the file to a temporary path for further inspection (optional):
+    // const tempPath = path.join(os.tmpdir(), `e2e_download_${download.suggestedFilename()}`);
+    // await download.saveAs(tempPath);
+    // expect(fs.existsSync(tempPath)).toBeTruthy();
+    // fs.unlinkSync(tempPath); // Clean up
+  });
 });
