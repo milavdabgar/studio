@@ -1,29 +1,7 @@
 
-import type { Project, ProjectEvent, ProjectTeam, Department, ProjectLocation, ProjectStatistics, EvaluationData, CategoryCounts, User, ProjectEvaluationScore } from '@/types/entities';
+import type { Project, ProjectEvent, ProjectTeam, Department, ProjectLocation, ProjectStatistics, EvaluationData, CategoryCounts, User, ProjectEvaluationScore, CertificateInfo, WinnersResponse } from '@/types/entities';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
-
-interface CertificateInfo {
-    projectId: string;
-    title: string;
-    teamName?: string;
-    teamMembers?: string[];
-    departmentName?: string;
-    score?: number;
-    rank?: number;
-    certificateType: 'participation' | 'department-winner' | 'institute-winner';
-    eventName: string;
-    eventDate: string; 
-    downloadUrl: string;
-}
-
-interface WinnersResponse {
-    departmentWinners: Array<{
-        department: Department;
-        winners: Array<Project & { rank: number }>;
-    }>;
-    instituteWinners: Array<Project & { rank: number }>;
-}
 
 
 export const projectService = {
@@ -156,7 +134,6 @@ export const projectService = {
         throw new Error(errorData.message || 'Failed to generate certificate data.');
     }
     const result = await response.json();
-    // Ensure the response matches the expected structure or adapt
     return result.certificates || (result.data?.certificates || []);
   },
 
@@ -228,7 +205,7 @@ export const projectService = {
       throw new Error(errorData.message || 'Failed to fetch event winners');
     }
     const data = await response.json();
-    return data.data || data; // Assuming data is { data: WinnersResponse } or just WinnersResponse
+    return data.data || data; 
   },
 
   // Re-add getAllTeams from projectTeamService if it was meant to be part of projectService

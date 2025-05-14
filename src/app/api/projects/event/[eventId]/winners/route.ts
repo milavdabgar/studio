@@ -1,3 +1,4 @@
+
 // src/app/api/projects/event/[eventId]/winners/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Project, ProjectEvent, Department, ProjectTeam as Team } from '@/types/entities';

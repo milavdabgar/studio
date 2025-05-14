@@ -1,3 +1,4 @@
+
 // src/app/api/project-events/[id]/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
 import type { ProjectEvent, ProjectEventStatus, ProjectEventScheduleItem } from '@/types/entities';
@@ -100,25 +101,30 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 // Specific route for updating schedule, though it can be part of PUT
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
     const { id } = params; // This is the event ID
-    if (request.nextUrl.pathname.endsWith('/schedule')) { // Check if it's a schedule update
-        try {
-            const { schedule } = await request.json() as { schedule: ProjectEventScheduleItem[] };
-            const eventIndex = projectEventsStore.findIndex(e => e.id === id);
+    // Check if the request is specifically for the schedule sub-resource based on URL or payload.
+    // For a dedicated route like /api/project-events/[id]/schedule, this check might not be needed
+    // if this PATCH handler is ONLY for schedule.
+    // However, if PATCH on /api/project-events/[id] can update other fields too, a check is good.
 
-            if (eventIndex === -1) {
-                return NextResponse.json({ message: 'Event not found for schedule update' }, { status: 404 });
-            }
+    // Assuming this handler is now at /api/project-events/[id]/schedule/route.ts
+    // then the path check is implicitly handled by the file system routing.
+    
+    try {
+        const { schedule } = await request.json() as { schedule: ProjectEventScheduleItem[] };
+        const eventIndex = projectEventsStore.findIndex(e => e.id === id);
 
-            projectEventsStore[eventIndex].schedule = schedule;
-            projectEventsStore[eventIndex].updatedAt = new Date().toISOString();
-            projectEventsStore[eventIndex].updatedBy = "user_admin_placeholder_schedule_patch"; // Placeholder
-            global.__API_PROJECT_EVENTS_STORE__ = projectEventsStore;
-
-            return NextResponse.json(projectEventsStore[eventIndex]);
-        } catch (error) {
-            console.error(`Error updating schedule for event ${id}:`, error);
-            return NextResponse.json({ message: `Error updating schedule for event ${id}`, error: (error as Error).message }, { status: 500 });
+        if (eventIndex === -1) {
+            return NextResponse.json({ message: 'Event not found for schedule update' }, { status: 404 });
         }
+
+        projectEventsStore[eventIndex].schedule = schedule;
+        projectEventsStore[eventIndex].updatedAt = new Date().toISOString();
+        projectEventsStore[eventIndex].updatedBy = "user_admin_placeholder_schedule_patch"; // Placeholder
+        global.__API_PROJECT_EVENTS_STORE__ = projectEventsStore;
+
+        return NextResponse.json(projectEventsStore[eventIndex]);
+    } catch (error) {
+        console.error(`Error updating schedule for event ${id}:`, error);
+        return NextResponse.json({ message: `Error updating schedule for event ${id}`, error: (error as Error).message }, { status: 500 });
     }
-    return NextResponse.json({ message: 'Invalid endpoint for PATCH' }, { status: 405 });
 }

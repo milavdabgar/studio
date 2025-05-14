@@ -1,3 +1,4 @@
+
 // src/lib/api/projectEvents.ts
 import type { ProjectEvent, Department, ProjectEventScheduleItem } from '@/types/entities';
 
@@ -63,12 +64,12 @@ export const projectEventService = {
   },
   
   async getEventSchedule(eventId: string): Promise<{ schedule: ProjectEventScheduleItem[], eventDate: string }> {
-    const event = await this.getEventById(eventId);
+    const event = await this.getEventById(eventId); // Re-uses existing getEventById
     return { schedule: event.schedule || [], eventDate: event.eventDate };
   },
 
   async updateEventSchedule(eventId: string, scheduleData: { schedule: ProjectEventScheduleItem[] }): Promise<ProjectEvent> {
-    const response = await fetch(`${API_BASE_URL}/project-events/${eventId}/schedule`, {
+    const response = await fetch(`${API_BASE_URL}/project-events/${eventId}/schedule`, { // Target the specific schedule endpoint
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(scheduleData),
@@ -81,6 +82,7 @@ export const projectEventService = {
   },
   
   async publishEventResults(eventId: string, publish: boolean): Promise<ProjectEvent> {
+     // This should call the PUT endpoint for the event, updating the publishResults flag
      const response = await fetch(`${API_BASE_URL}/project-events/${eventId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },

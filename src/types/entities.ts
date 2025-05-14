@@ -1,5 +1,4 @@
 
-
 export type Timestamp = string; // ISO 8601 format: "YYYY-MM-DDTHH:mm:ss.sssZ"
 
 // User and Authentication
@@ -63,7 +62,6 @@ export interface User {
     instituteId?: string; 
     instituteEmail?: string; 
     password?: string; 
-    departmentId?: string; 
 }
 export type SystemUser = User;
 
@@ -128,7 +126,7 @@ export interface Student {
     gtuEnrollmentNumber?: string; 
     
     programId: string; 
-    department: string; 
+    department: string; // This should be departmentId, will derive name if needed
     batchId?: string; 
     currentSemester: number;
     admissionDate?: Timestamp;
@@ -149,7 +147,7 @@ export interface Student {
     sem7Status?: SemesterStatus;
     sem8Status?: SemesterStatus;
     
-    fullNameGtuFormat?: string; 
+    fullNameGtuFormat?: string; // Name as per GTU records e.g. SURNAME FIRSTNAME MIDDLENAME
     firstName?: string;
     middleName?: string;
     lastName?: string;
@@ -161,7 +159,7 @@ export interface Student {
     personalEmail?: string;
     instituteEmail: string; 
     contactNumber?: string;
-    address?: string; 
+    address?: string; // Changed from Address object to string for simplicity, can be expanded later
     
     guardianDetails?: {
         name: string;
@@ -174,16 +172,17 @@ export interface Student {
     status: StudentStatus; 
     convocationYear?: number;
     
-    instituteId?: string; 
+    instituteId?: string; // Added to link student to an institute
     photoURL?: string;
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
-    isActive?: boolean; 
+    isActive?: boolean; // From User model, for consistency
 }
 
 
 export type FacultyStatus = 'active' | 'inactive' | 'retired' | 'resigned' | 'on_leave';
 export type JobType = 'Regular' | 'Adhoc' | 'Contractual' | 'Visiting' | 'Other';
+export type Gender = 'Male' | 'Female' | 'Other';
 
 
 export interface FacultyProfile {
@@ -202,10 +201,10 @@ export interface FacultyProfile {
     instituteEmail: string; 
     contactNumber?: string;
     
-    department: string; 
+    department: string; // Name of department
     designation?: string;
     jobType?: JobType;
-    instType?: string; 
+    instType?: string; // From GTU data "DI", "DE", "PG"
     specializations?: string[];
     qualifications?: Qualification[];
     
@@ -219,11 +218,11 @@ export interface FacultyProfile {
     gpfNpsNumber?: string; 
     placeOfBirth?: string;
     nationality?: string;
-    knownAs?: string; 
+    knownAs?: string; // From GTU Data
     
     status: FacultyStatus;
     
-    instituteId?: string; 
+    instituteId?: string; // Added for linking to institute
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
@@ -316,7 +315,7 @@ export interface Department {
   name: string;
   code: string; 
   description?: string;
-  hodId?: string; 
+  hodId?: string; // User ID of HoD
   establishmentYear?: number;
   status: 'active' | 'inactive';
   instituteId: string; 
@@ -337,7 +336,7 @@ export interface Committee {
   formationDate: Timestamp; 
   dissolutionDate?: Timestamp; 
   status: CommitteeStatus;
-  convenerId?: string; 
+  convenerId?: string; // User ID of the convener
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
@@ -360,7 +359,7 @@ export interface Program {
   code: string; 
   description?: string;
   departmentId: string; 
-  instituteId: string; 
+  instituteId: string; // Added to link Program to an Institute
   degreeType?: 'Diploma' | 'Bachelor' | 'Master' | 'PhD' | 'Certificate' | string;
   durationYears?: number;
   totalSemesters?: number;
@@ -434,7 +433,7 @@ export interface CourseOffering {
     startDate?: Timestamp; 
     endDate?: Timestamp;   
     status: CourseOfferingStatus;
-    programId?: string; 
+    programId?: string; // Added to link course offering to program
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
@@ -821,7 +820,7 @@ export interface ProjectEvent {
   registrationEndDate: Timestamp;
   status: ProjectEventStatus;
   isActive: boolean;
-  publishResults?: boolean;
+  publishResults?: boolean; // Added this field
   schedule?: ProjectEventScheduleItem[];
   departments?: string[]; 
   createdBy?: string; 
@@ -964,9 +963,8 @@ export interface CertificateInfo {
 
 export interface WinnersResponse {
   departmentWinners: Array<{
-      department: Department;
+      department: Department; // Store full department object
       winners: Array<Project & { rank: number }>;
   }>;
   instituteWinners: Array<Project & { rank: number }>;
 }
-```

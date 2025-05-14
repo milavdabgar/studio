@@ -1,6 +1,7 @@
 
+// src/app/api/projects/event/[eventId]/certificates/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Project, ProjectEvent, Department, ProjectTeam as Team } from '@/types/entities';
+import type { Project, ProjectEvent, Department, ProjectTeam as Team, CertificateInfo } from '@/types/entities';
 
 // Ensure global stores are initialized
 if (!(global as any).__API_PROJECTS_STORE__) {
@@ -27,21 +28,6 @@ interface RouteParams {
   };
 }
 
-interface CertificateData {
-    projectId: string;
-    title: string;
-    teamName?: string;
-    teamMembers?: string[];
-    departmentName?: string;
-    score?: number;
-    rank?: number;
-    certificateType: 'participation' | 'department-winner' | 'institute-winner';
-    eventName: string;
-    eventDate: string; // Assuming eventDate is a string like "YYYY-MM-DD"
-    downloadUrl: string;
-}
-
-
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { eventId } = params;
   const { searchParams } = new URL(request.url);
@@ -53,12 +39,12 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   }
 
   const eventProjects = projectsStore.filter(p => p.eventId === eventId);
-  const certificates: CertificateData[] = [];
+  const certificates: CertificateInfo[] = [];
 
   if (certificateType === 'participation') {
     eventProjects.forEach(project => {
       const team = teamsStore.find(t => t.id === project.teamId);
-      const department = departmentsStore.find(d => d.id === project.department);
+      const department = departmentsStore.find(d => d.id === (typeof project.department === 'string' ? project.department : project.department?.id));
       certificates.push({
         projectId: project.id,
         title: project.title,
@@ -68,7 +54,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         certificateType: 'participation',
         eventName: event.name,
         eventDate: event.eventDate,
-        downloadUrl: `/api/projects/certificates/download/${project.id}?type=participation` // Example
+        downloadUrl: `/api/projects/certificates/download/${project.id}?type=participation` 
       });
     });
   } else if (certificateType === 'department-winner') {
@@ -76,17 +62,18 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     eventProjects
         .filter(p => p.deptEvaluation?.completed && p.deptEvaluation.score !== undefined)
         .forEach(p => {
-            if (!departmentWinnersMap.has(p.department)) {
-                departmentWinnersMap.set(p.department, []);
+            const deptId = typeof p.department === 'string' ? p.department : p.department?.id || 'unknown_dept';
+            if (!departmentWinnersMap.has(deptId)) {
+                departmentWinnersMap.set(deptId, []);
             }
-            departmentWinnersMap.get(p.department)?.push(p);
+            departmentWinnersMap.get(deptId)?.push(p);
         });
 
-    departmentWinnersMap.forEach((deptProjects, deptId) => {
+    departmentWinnersMap.forEach((deptProjects) => {
         deptProjects.sort((a, b) => (b.deptEvaluation?.score || 0) - (a.deptEvaluation?.score || 0));
         deptProjects.slice(0, 3).forEach((project, index) => {
             const team = teamsStore.find(t => t.id === project.teamId);
-            const department = departmentsStore.find(d => d.id === project.department);
+            const department = departmentsStore.find(d => d.id === (typeof project.department === 'string' ? project.department : project.department?.id));
             certificates.push({
                 projectId: project.id,
                 title: project.title,
@@ -110,7 +97,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         .slice(0,3)
         .forEach((project, index) => {
             const team = teamsStore.find(t => t.id === project.teamId);
-            const department = departmentsStore.find(d => d.id === project.department);
+            const department = departmentsStore.find(d => d.id === (typeof project.department === 'string' ? project.department : project.department?.id));
              certificates.push({
                 projectId: project.id,
                 title: project.title,
