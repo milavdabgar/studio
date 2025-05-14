@@ -1,16 +1,23 @@
 // src/app/api/student-scores/[scoreId]/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { StudentAssessmentScore } from '@/types/entities';
+import type { StudentAssessmentScore, Assessment } from '@/types/entities';
+import { notificationService } from '@/lib/api/notifications'; // Import notification service
 
 declare global {
   // eslint-disable-next-line no-var
   var __API_STUDENT_SCORES_STORE__: StudentAssessmentScore[] | undefined;
+  // eslint-disable-next-line no-var
+  var __API_ASSESSMENTS_STORE__: Assessment[] | undefined; // For fetching assessment name
 }
 
 if (!global.__API_STUDENT_SCORES_STORE__) {
   global.__API_STUDENT_SCORES_STORE__ = [];
 }
+if (!global.__API_ASSESSMENTS_STORE__) {
+  global.__API_ASSESSMENTS_STORE__ = [];
+}
 let studentScoresStore: StudentAssessmentScore[] = global.__API_STUDENT_SCORES_STORE__;
+const assessmentsStore: Assessment[] = global.__API_ASSESSMENTS_STORE__;
 
 interface RouteParams {
   params: {
@@ -38,13 +45,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
 
     const existingRecord = studentScoresStore[scoreIndex];
+    const assessment = assessmentsStore.find(a => a.id === existingRecord.assessmentId);
 
-    if (dataToUpdate.score !== undefined && (isNaN(dataToUpdate.score) || dataToUpdate.score < 0)) { // Assuming assessment maxMarks check happens on frontend or with assessment details
-        return NextResponse.json({ message: 'Score must be a non-negative number.' }, { status: 400 });
+    if (dataToUpdate.score !== undefined && (isNaN(dataToUpdate.score) || dataToUpdate.score < 0 || (assessment && dataToUpdate.score > assessment.maxMarks))) {
+        return NextResponse.json({ message: `Score must be a non-negative number and not exceed assessment max marks (${assessment?.maxMarks || 'N/A'}).` }, { status: 400 });
     }
     
-    // TODO: Add validation against assessment.maxMarks if assessment details are fetched here.
-
     const updatedRecord: StudentAssessmentScore = {
       ...existingRecord,
       ...dataToUpdate,
@@ -58,6 +64,21 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     studentScoresStore[scoreIndex] = updatedRecord;
     global.__API_STUDENT_SCORES_STORE__ = studentScoresStore;
+
+    // --- Notification Trigger for Student ---
+    if (assessment) {
+      try {
+        await notificationService.createNotification({
+          userId: existingRecord.studentId, // Notify the student whose submission was graded
+          message: `Your submission for '${assessment.name}' has been graded. Score: ${updatedRecord.score !== undefined ? updatedRecord.score : 'N/A'}.`,
+          type: 'assignment_graded',
+          link: `/student/assignments/${existingRecord.assessmentId}`, // Link to the assignment detail page
+        });
+      } catch (notifError) {
+        console.error("Failed to create grading notification for student:", notifError);
+      }
+    }
+    // --- End Notification Trigger ---
 
     return NextResponse.json(updatedRecord);
   } catch (error) {
