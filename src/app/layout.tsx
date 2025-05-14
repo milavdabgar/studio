@@ -16,7 +16,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { AppLogo } from '@/components/app-logo';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
@@ -86,8 +86,8 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
   faculty: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'faculty-dashboard' },
     { href: '/faculty/profile', icon: UserCircle, label: 'My Profile', id: 'faculty-profile' },
-    { href: '/faculty/my-courses', icon: BookOpen, label: 'My Courses', id: 'faculty-my-courses' },
     { href: '/faculty/timetable', icon: Clock, label: 'My Timetable', id: 'faculty-timetable' },
+    { href: '/faculty/courses', icon: BookOpen, label: 'My Courses', id: 'faculty-courses' }, 
     { href: '/faculty/students', icon: UsersIconLucide, label: 'My Students', id: 'faculty-students'}, 
     { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'faculty-mark-attendance' },
     { href: '/faculty/attendance/reports', icon: BarChart3, label: 'Attendance Reports', id: 'faculty-attendance-reports' },
@@ -168,6 +168,37 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
 };
 
 
+const getNavItemsForRoleCode = (roleCode: UserRoleCode): Array<{ href: string; icon: React.ElementType; label: string; id: string }> => {
+  const items = baseNavItems[roleCode] || baseNavItems['unknown']; 
+  
+  const itemsArray = Array.isArray(items) ? items : [];
+
+  if (roleCode.startsWith('committee_') && !['committee_admin'].includes(roleCode) && !itemsArray.find(item => item.id.includes('-my-committee'))) {
+     const committeeDashboardLink = { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: `${roleCode}-my-committee`};
+     if (!itemsArray.find(item => item.id === committeeDashboardLink.id)) {
+       const specificItems = baseNavItems[roleCode as keyof typeof baseNavItems] || [];
+       return [committeeDashboardLink, ...specificItems.filter(item => item.href !== '/dashboard')].sort((a,b) => (a.label || "").localeCompare(b.label || ""));
+     }
+  } else if (roleCode.endsWith('_convener') && !itemsArray.find(item => item.id.includes('-my-committee'))) {
+    return getNavItemsForRoleCode('committee_convener');
+  } else if (roleCode.endsWith('_co_convener') && !itemsArray.find(item => item.id.includes('-my-committee'))) {
+    return getNavItemsForRoleCode('committee_co_convener');
+  } else if (roleCode.endsWith('_member') && !itemsArray.find(item => item.id.includes('-my-committee'))) {
+    return getNavItemsForRoleCode('committee_member');
+  }
+
+  const sortedItems = [...itemsArray]; 
+  sortedItems.sort((a, b) => {
+    const labelA = a.label || "";
+    const labelB = b.label || "";
+    if (labelA.includes('Dashboard')) return -1;
+    if (labelB.includes('Dashboard')) return 1;
+    return labelA.localeCompare(labelB);
+  });
+  return sortedItems;
+};
+
+
 function getCookie(name: string): string | undefined {
   if (typeof document === 'undefined') return undefined;
   const value = `; ${document.cookie}`;
@@ -202,42 +233,7 @@ export default function RootLayout({
   const router = useRouter();
   const { toast } = useToast();
 
-  const getNavItemsForRoleCode = (roleCode: UserRoleCode): Array<{ href: string; icon: React.ElementType; label: string; id: string }> => {
-    let items = baseNavItems[roleCode] || baseNavItems['unknown'] || [];
-  
-    const isGenericCommitteeRole = ['committee_convener', 'committee_co_convener', 'committee_member'].includes(roleCode);
-    // Check if the roleCode is a specific committee role (e.g., "cwan_gpp_convener")
-    const isSpecificCommitteeRole = roleCode.startsWith('committee_') && !isGenericCommitteeRole && roleCode !== 'committee_admin';
-  
-    if (isGenericCommitteeRole || isSpecificCommitteeRole) {
-      let baseCommitteeItems: Array<{ href: string; icon: React.ElementType; label: string; id: string }> = [];
-      // Determine base items from generic committee role
-      if (roleCode.endsWith('_convener')) baseCommitteeItems = baseNavItems['committee_convener'] || [];
-      else if (roleCode.endsWith('_co_convener')) baseCommitteeItems = baseNavItems['committee_co_convener'] || [];
-      else if (roleCode.endsWith('_member')) baseCommitteeItems = baseNavItems['committee_member'] || [];
-      
-      // If current items are just 'unknown' or don't include 'My Committee', rebuild them
-      if (items === baseNavItems['unknown'] || !items.find(item => item.href === '/dashboard/committee')) {
-        items = [...baseCommitteeItems]; // Start with the generic committee role items
-        const committeeDashboardLink = { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: `${roleCode}-my-committee`};
-        // Add 'My Committee' if not already present
-        if (!items.find(item => item.id === committeeDashboardLink.id || item.href === '/dashboard/committee')) {
-          items = [committeeDashboardLink, ...items.filter(item => item.href !== '/dashboard')]; // Replace generic dashboard
-        }
-      }
-    }
-  
-    const sortedItems = [...items]; 
-    sortedItems.sort((a, b) => {
-      if (a.label.includes('Dashboard')) return -1;
-      if (b.label.includes('Dashboard')) return 1;
-      return a.label.localeCompare(b.label);
-    });
-    return sortedItems;
-  };
-
-
-  const parseUserCookie = (): ParsedUserCookie | null => {
+  const parseUserCookie = useCallback((): ParsedUserCookie | null => {
     const authUserCookie = getCookie('auth_user');
     if (authUserCookie) {
       try {
@@ -252,7 +248,7 @@ export default function RootLayout({
       }
     }
     return null;
-  }
+  }, []);
 
   useEffect(() => {
     setIsMounted(true); 
@@ -284,8 +280,7 @@ export default function RootLayout({
     };
     fetchRoles();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, router]); 
+  }, [pathname, router, toast, parseUserCookie]); 
 
 
   const handleRoleChange = (newRoleCode: UserRoleCode) => {
@@ -305,7 +300,7 @@ export default function RootLayout({
         } else { 
             router.push('/dashboard'); 
         }
-        router.refresh(); 
+        // router.refresh(); // This might not be necessary if state update triggers re-render
     } else {
         const roleDetails = allSystemRoles.find(r => r.code === newRoleCode);
         toast({ variant: "destructive", title: "Role Switch Failed", description: `Role '${roleDetails?.name || newRoleCode}' is not available for your account or is invalid.`})
@@ -331,7 +326,7 @@ export default function RootLayout({
           <Toaster />
         </body>
       </html>
-    )
+    );
   }
 
   if (hideSidebar) {
@@ -348,7 +343,6 @@ export default function RootLayout({
       </html>
     );
   }
-
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -370,7 +364,7 @@ export default function RootLayout({
                 {currentNavItems.map((item) => (
                   <SidebarMenuItem key={item.id}>
                     <Link href={item.href} passHref legacyBehavior>
-                      <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/dashboard')} >
+                      <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/dashboard' && item.href !== '/')}>
                         <item.icon />
                         <span>{item.label}</span>
                       </SidebarMenuButton>
@@ -454,4 +448,5 @@ export default function RootLayout({
     </html>
   );
 }
+    
     

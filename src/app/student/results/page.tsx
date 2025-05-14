@@ -3,18 +3,16 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Award, Loader2 } from "lucide-react";
+import { Award, Loader2, CheckCircle, XCircle, TrendingUp, TrendingDown, BarChart3 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Student, StudentAssessmentScore, Assessment, Course } from '@/types/entities';
+import type { Result, Student, Program, Course, ResultSubject } from '@/types/entities';
+import { resultService } from '@/lib/api/results';
 import { studentService } from '@/lib/api/students';
-import { assessmentService } from '@/lib/api/assessments';
+import { programService } from '@/lib/api/programs';
 import { courseService } from '@/lib/api/courses';
-// Program and batch info comes from student and assessment data
-// import { studentAssessmentScoreService } from '@/lib/api/studentAssessmentScores'; // To be created if backend supports it
-import { format } from 'date-fns';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { format, parseISO } from 'date-fns';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 interface UserCookie {
   email: string;
@@ -23,58 +21,6 @@ interface UserCookie {
   availableRoles: string[];
   id?: string; 
 }
-
-interface EnrichedScore extends Partial<StudentAssessmentScore> { // Made StudentAssessmentScore partial to allow for mocking
-  assessmentName?: string;
-  courseName?: string;
-  courseSubcode?: string;
-  maxMarks?: number;
-  semester?: number;
-  assessmentType?: string;
-  courseCredits?: number; // Added for SGPA calculation
-}
-
-// Mock service for student submissions/scores
-const mockStudentAssessmentScoreService = {
-  getScoresByStudentId: async (studentId: string): Promise<Partial<StudentAssessmentScore>[]> => {
-    // This is a placeholder. In a real app, this would fetch scores from the backend.
-    // For now, we'll generate mock scores based on assessments the student *might* have taken.
-    const allAssessments = await assessmentService.getAllAssessments();
-    const student = await studentService.getStudentById(studentId); // Assume this service works or mock it
-    
-    if (!student || !student.programId) return [];
-
-    const relevantAssessments = allAssessments.filter(
-      asmnt => asmnt.programId === student.programId && 
-               (asmnt.batchId === student.batchId || !asmnt.batchId)
-    );
-
-    return relevantAssessments.map((asmnt, index) => {
-      const passingScore = asmnt.passingMarks || asmnt.maxMarks * 0.4;
-      const score = Math.floor(Math.random() * (asmnt.maxMarks - passingScore) + passingScore);
-      let grade = 'N/A';
-      const percentage = (score / asmnt.maxMarks) * 100;
-      if (percentage >= 90) grade = 'AA';
-      else if (percentage >= 80) grade = 'AB';
-      else if (percentage >= 70) grade = 'BB';
-      else if (percentage >= 60) grade = 'BC';
-      else if (percentage >= 50) grade = 'CC';
-      else if (percentage >= 40) grade = 'CD';
-      else if (percentage >= 35) grade = 'DD';
-      else grade = 'FF';
-      
-      return {
-        id: `score_${studentId}_${asmnt.id}`,
-        studentId: studentId,
-        assessmentId: asmnt.id,
-        score: score,
-        grade: grade, 
-        evaluatedAt: new Date().toISOString(), // Mock evaluation date
-      };
-    });
-  },
-};
-
 
 function getCookie(name: string): string | undefined {
   if (typeof document === 'undefined') return undefined;
@@ -89,7 +35,7 @@ function getCookie(name: string): string | undefined {
   return undefined;
 }
 
-// Helper for grade points
+// Helper for grade points (can be moved to a utils file)
 const getGradePoint = (grade?: string): number => {
     if (!grade) return 0;
     switch (grade.toUpperCase()) {
@@ -106,14 +52,12 @@ const getGradePoint = (grade?: string): number => {
 };
 
 export default function StudentResultsPage() {
-  const [scores, setScores] = useState<EnrichedScore[]>([]);
+  const [results, setResults] = useState<Result[]>([]);
+  const [student, setStudent] = useState<Student | null>(null);
+  const [program, setProgram] = useState<Program | null>(null);
+  const [coursesDetails, setCoursesDetails] = useState<Record<string, Course>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserCookie | null>(null);
-  const [currentProgram, setCurrentProgram] = useState<{ id: string; name: string } | null>(null);
-  const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
-  
-  const [selectedProgramFilter, setSelectedProgramFilter] = useState<string>("all"); // Will be set to student's program
-  const [selectedSemesterFilter, setSelectedSemesterFilter] = useState<string>("all");
 
   const { toast } = useToast();
 
@@ -135,186 +79,151 @@ export default function StudentResultsPage() {
   useEffect(() => {
     if (!user || !user.id) return;
 
-    const fetchResultsData = async () => {
+    const fetchStudentData = async () => {
       setIsLoading(true);
       try {
         const allStudents = await studentService.getAllStudents();
         const studentProfile = allStudents.find(s => s.userId === user.id);
-        setCurrentProgram({ id: studentProfile?.programId || '', name: "Current Program" });
+        setStudent(studentProfile || null);
 
-        if (studentProfile && studentProfile.programId) {
-          const [studentScores, allAssessments, allCourses] = await Promise.all([
-            mockStudentAssessmentScoreService.getScoresByStudentId(studentProfile.id),
-            assessmentService.getAllAssessments(),
-            courseService.getAllCourses(),
-          ]);
-          setSelectedProgramFilter(studentProfile.programId); // Set program filter to student's program
+        if (studentProfile) {
+          const studentResultsResponse = await resultService.getStudentResults(studentProfile.enrollmentNumber);
+          setResults(studentResultsResponse.data.results || []);
 
-          const enrichedScores = studentScores
-            .map((score: Partial<StudentAssessmentScore>): EnrichedScore | undefined => {
-            const assessment = allAssessments.find((a: Assessment) => a.id === score.assessmentId);
-            const course = assessment ? allCourses.find((c: Course) => c.id === assessment.courseId) : undefined;
-            if (!assessment || !course) return undefined;
-            return {
-              ...score,
-              assessmentName: assessment?.name || "Unknown Assessment",
-              courseName: course?.subjectName || "Unknown Course",
-              courseSubcode: course?.subcode || "N/A",
-              maxMarks: assessment?.maxMarks,
-              semester: course?.semester,
-              assessmentType: assessment?.type,
-              courseCredits: course?.credits || 0, // Default to 0 if no credits
-            };
-          });
-          setScores(enrichedScores.filter((score): score is EnrichedScore => score !== undefined));
-        } else {
-          setScores([]);
-          if(studentProfile && !studentProfile.programId){
-            toast({ variant: "default", title: "No Program", description: "Student is not enrolled in a program." });
-          } else if (!studentProfile) {
-             toast({ variant: "default", title: "No Profile", description: "Student profile not found." });
+          if (studentProfile.programId) {
+            const programData = await programService.getProgramById(studentProfile.programId);
+            setProgram(programData);
           }
+          
+          // Fetch all courses to map subject codes to names/credits if needed
+          const allCourses = await courseService.getAllCourses();
+          const courseMap: Record<string, Course> = {};
+          allCourses.forEach(c => { courseMap[c.subcode] = c }); // Assuming subcode is unique enough for this context
+          setCoursesDetails(courseMap);
+
+        } else {
+          setResults([]);
+          toast({ variant: "warning", title: "No Profile", description: "Student profile not found." });
         }
-      } catch (_error) {
-        console.error("Error loading results:", _error);
+      } catch (error) {
+        console.error("Error fetching student results data:", error);
         toast({ variant: "destructive", title: "Error", description: "Could not load results data." });
       }
       setIsLoading(false);
     };
 
-    fetchResultsData();
+    fetchStudentData();
   }, [user, toast]);
-  
-  const uniqueSemesters = useMemo(() => {
-    const semesters = new Set(scores.map(s => s.semester).filter(Boolean).map(String));
-    return Array.from(semesters).sort((a,b) => parseInt(a) - parseInt(b));
-  }, [scores]);
-  
-  const studentProgramDetails = useMemo(() => {
-    if (!currentStudent || !currentStudent.programId) return null;
-    const programName = currentProgram?.name || "Unknown Program";
-    return { id: currentStudent.programId, name: programName };
-  }, [currentStudent, currentProgram]);
 
-  const filteredScores = useMemo(() => {
-    let filtered = [...scores];
-    // Program filter is implicitly handled by fetching scores for the student's program
-    if (selectedSemesterFilter !== "all") {
-      filtered = filtered.filter(score => score.semester?.toString() === selectedSemesterFilter);
-    }
-    return filtered;
-  }, [scores, selectedSemesterFilter]);
-
-  const groupedScoresBySemester = useMemo(() => {
-    return filteredScores.reduce((acc, score) => {
-      const semester = score.semester || 0;
-      if (!acc[semester]) acc[semester] = { scores: [], totalCredits: 0, weightedGradePoints: 0 };
-      
-      acc[semester].scores.push(score);
-      const gradePoint = getGradePoint(score.grade);
-      const credits = score.courseCredits || 0; // Default to 0 credits if not defined
-      if (credits > 0) { // Only include courses with credits in SGPA calculation
-        acc[semester].totalCredits += credits;
-        acc[semester].weightedGradePoints += gradePoint * credits;
+  const resultsBySemester = useMemo(() => {
+    const grouped: Record<number, Result[]> = {};
+    results.forEach(result => {
+      const semesterKey = result.semester || 0; // Group results with no semester under 0 or handle differently
+      if (!grouped[semesterKey]) {
+        grouped[semesterKey] = [];
       }
-      return acc;
-    }, {} as Record<number, { scores: EnrichedScore[]; totalCredits: number; weightedGradePoints: number }>);
-  }, [filteredScores]);
+      grouped[semesterKey].push(result);
+    });
+    // Sort by semester number
+    return Object.entries(grouped).sort(([semA], [semB]) => parseInt(semA) - parseInt(semB));
+  }, [results]);
+
+  const overallCpi = useMemo(() => {
+    if (results.length === 0) return 0;
+    const latestResult = results.reduce((latest, current) => 
+      (current.semester > latest.semester) || (current.semester === latest.semester && new Date(current.declarationDate || 0) > new Date(latest.declarationDate || 0)) 
+      ? current : latest
+    , results[0]);
+    return latestResult.cpi || 0;
+  }, [results]);
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
   }
 
+  if (!student) {
+    return <div className="text-center py-10">Student profile not loaded. Cannot display results.</div>;
+  }
+  
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <Card className="shadow-xl">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
-            <Award className="h-6 w-6" /> My Academic Results
+          <CardTitle className="text-3xl font-bold text-primary flex items-center gap-3">
+            <Award className="h-8 w-8" /> My Academic Results
           </CardTitle>
-          <CardDescription>View your assessment scores, grades, and SGPA for each semester.</CardDescription>
+          <CardDescription>
+            Enrollment: {student.enrollmentNumber} | Program: {program?.name || 'N/A'} &lt;br/&gt;
+            Overall CPI: &lt;span className="font-semibold"&gt;{overallCpi.toFixed(2)}&lt;/span&gt;
+          </CardDescription>
         </CardHeader>
-        <CardContent>
-          {!currentStudent ? (
-             <p className="text-center text-muted-foreground py-8">Student profile not loaded. Cannot display results.</p>
-          ) : scores.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">No results found for your program.</p>
-          ) : (
-            <>
-             <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 border rounded-lg">
-                <div>
-                    <Label htmlFor="programDisplay">Program</Label>
-                    <div className="text-sm text-muted-foreground">{studentProgramDetails ? studentProgramDetails.name : "Program details not available"}</div>
-                </div>
-                <div>
-                    <Label htmlFor="semesterFilter">Filter by Semester</Label>
-                    <Select value={selectedSemesterFilter} onValueChange={setSelectedSemesterFilter} disabled={uniqueSemesters.length === 0}>
-                        <SelectTrigger id="semesterFilter"><SelectValue placeholder="All Semesters" /></SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">All Semesters</SelectItem>
-                            {uniqueSemesters.map(sem => (
-                                <SelectItem key={sem} value={sem}>Semester {sem}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
+        <CardContent className="space-y-6">
+          {resultsBySemester.length === 0 ? (
+            <div className="text-center py-10 text-muted-foreground">
+              <Award className="mx-auto h-12 w-12 mb-4" />
+              <p>No results found for your program yet. Please check back later.</p>
             </div>
-
-            {Object.keys(groupedScoresBySemester).length === 0 && selectedSemesterFilter !== "all" && (
-                 <p className="text-center text-muted-foreground py-6">No results found for Semester {selectedSemesterFilter}.</p>
-            )}
-
-            {Object.keys(groupedScoresBySemester).sort((a,b) => parseInt(a) - parseInt(b)).map(semesterKey => {
-                const semester = parseInt(semesterKey);
-                const { scores: semesterScores, totalCredits, weightedGradePoints } = groupedScoresBySemester[semester];
-                if (!semesterScores || semesterScores.length === 0) return null;
-
-                const sgpa = totalCredits > 0 ? (weightedGradePoints / totalCredits).toFixed(2) : "N/A";
+          ) : (
+            resultsBySemester.map(([semester, semesterResults]) => {
+                const semesterKey = parseInt(semester);
+                if (semesterResults.length === 0) return null;
+                
+                // For SGPA, we ideally want the latest result for that semester
+                const latestSemesterResult = semesterResults.sort((a,b) => new Date(b.declarationDate || 0).getTime() - new Date(a.declarationDate || 0).getTime())[0];
+                const sgpa = latestSemesterResult?.spi?.toFixed(2) || "N/A";
 
                 return (
-                    <Card key={semester} className="mb-6 bg-card shadow-md">
-                        <CardHeader>
-                            <CardTitle className="text-xl text-secondary flex items-center justify-between">
-                                <span>Semester {semester} Results</span>
-                                <span className="text-lg font-medium">SGPA: <span className="text-primary">{sgpa}</span></span>
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <Table>
-                                <TableHeader>
-                                <TableRow>
-                                    <TableHead className="w-2/5">Course</TableHead>
-                                    <TableHead className="w-2/5">Assessment</TableHead>
-                                    <TableHead className="text-center w-1/12">Type</TableHead>
-                                    <TableHead className="text-right w-1/12">Score</TableHead>
-                                    <TableHead className="text-center w-1/12">Grade</TableHead>
-                                </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                {semesterScores.map(score => (
-                                    <TableRow key={score.id}>
-                                    <TableCell>
-                                        <div className="font-medium">{score.courseName}</div>
-                                        <div className="text-xs text-muted-foreground">{score.courseSubcode} (Credits: {score.courseCredits})</div>
-                                    </TableCell>
-                                    <TableCell>{score.assessmentName}</TableCell>
-                                    <TableCell className="text-center">{score.assessmentType}</TableCell>
-                                    <TableCell className="text-right">{score.score !== undefined ? `${score.score} / ${score.maxMarks}` : "N/A"}</TableCell>
-                                    <TableCell className="text-center font-semibold">{score.grade || "N/A"}</TableCell>
-                                    </TableRow>
-                                ))}
-                                </TableBody>
-                            </Table>
-                        </CardContent>
-                    </Card>
+                    &lt;Card key={semesterKey} className="bg-card shadow-md"&gt;
+                        &lt;CardHeader&gt;
+                            &lt;CardTitle className="text-xl text-secondary flex items-center justify-between"&gt;
+                                &lt;span&gt;Semester {semesterKey} Results&lt;/span&gt;
+                                &lt;span className="text-lg font-medium"&gt;SGPA: &lt;span className="text-primary"&gt;{sgpa}&lt;/span&gt;&lt;/span&gt;
+                            &lt;/CardTitle&gt;
+                        &lt;/CardHeader&gt;
+                        &lt;CardContent&gt;
+                             {semesterResults.sort((a,b) => new Date(b.declarationDate || 0).getTime() - new Date(a.declarationDate || 0).getTime()).map(result => (
+                                &lt;div key={result._id} className="mb-4 p-3 border rounded-md bg-background"&gt;
+                                    &lt;div className="flex justify-between items-center mb-2"&gt;
+                                        &lt;h4 className="font-semibold"&gt;{result.exam || 'Exam Result'}&lt;/h4&gt;
+                                        &lt;span className={`text-xs px-2 py-0.5 rounded-full font-medium ${result.result === 'PASS' ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'}`}&gt;
+                                            {result.result}
+                                        &lt;/span&gt;
+                                    &lt;/div&gt;
+                                    &lt;p className="text-xs text-muted-foreground mb-2"&gt;Declared: {result.declarationDate ? format(parseISO(result.declarationDate), "PPP") : 'N/A'}&lt;/p&gt;
+                                    &lt;Table size="sm"&gt;
+                                        &lt;TableHeader&gt;
+                                        &lt;TableRow&gt;
+                                            &lt;TableHead className="w-1/4"&gt;Subject Code&lt;/TableHead&gt;
+                                            &lt;TableHead className="w-2/4"&gt;Subject Name&lt;/TableHead&gt;
+                                            &lt;TableHead className="text-center w-1/12"&gt;Credits&lt;/TableHead&gt;
+                                            &lt;TableHead className="text-center w-1/12"&gt;Grade&lt;/TableHead&gt;
+                                        &lt;/TableRow&gt;
+                                        &lt;/TableHeader&gt;
+                                        &lt;TableBody&gt;
+                                        {result.subjects.map((subject, index) => (
+                                            &lt;TableRow key={`${result._id}-sub-${index}`} className={subject.isBacklog ? "bg-red-50 dark:bg-red-900/20" : ""}&gt;
+                                                &lt;TableCell&gt;{subject.code}&lt;/TableCell&gt;
+                                                &lt;TableCell className="font-medium"&gt;{subject.name || coursesDetails[subject.code]?.subjectName || 'N/A'}&lt;/TableCell&gt;
+                                                &lt;TableCell className="text-center"&gt;{subject.credits || coursesDetails[subject.code]?.credits || 'N/A'}&lt;/TableCell&gt;
+                                                &lt;TableCell className="text-center font-semibold"&gt;{subject.grade}&lt;/TableCell&gt;
+                                            &lt;/TableRow&gt;
+                                        ))}
+                                        &lt;/TableBody&gt;
+                                    &lt;/Table&gt;
+                                     &lt;div className="mt-3 text-right"&gt;
+                                        &lt;Link href={`/admin/results/detailed/${result._id}`} passHref&gt;
+                                            &lt;Button variant="link" size="sm" className="text-xs"&gt;View Full Marksheet&lt;/Button&gt;
+                                        &lt;/Link&gt;
+                                    &lt;/div&gt;
+                                &lt;/div&gt;
+                             ))}
+                        &lt;/CardContent&gt;
+                    &lt;/Card&gt;
                 );
-            })}
-            
-            </>
+            })
           )}
-        </CardContent>
-      </Card>
-    </div>
+        &lt;/CardContent&gt;
+      &lt;/Card&gt;
+    &lt;/div&gt;
   );
 }
-
