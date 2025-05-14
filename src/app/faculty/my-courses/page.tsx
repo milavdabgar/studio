@@ -1,10 +1,9 @@
-
 "use client";
 
 import React, { useEffect, useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Users, CalendarCheck, Edit, Loader2, AlertTriangle, Library, NotebookPen, Edit3, Paperclip } from "lucide-react";
+import { BookOpen, Users, CalendarCheck, Edit, Loader2, AlertTriangle, Library, NotebookPen, Edit3, Paperclip, FileText as AssessmentIcon } from "lucide-react"; // Added AssessmentIcon
 import { useToast } from "@/hooks/use-toast";
 import type { CourseOffering, Course, Batch, Program, Faculty, User as SystemUser } from '@/types/entities';
 import { courseOfferingService } from '@/lib/api/courseOfferings';
@@ -60,20 +59,19 @@ export default function MyCoursesPage() {
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
       }
     } else {
-      toast({ variant: "destructive", title: "Authentication Required", description: "Please login to view your courses." });
+        toast({ variant: "destructive", title: "Authentication Required", description: "Please login to view your courses." });
     }
   }, [toast]);
 
   useEffect(() => {
     if (!currentUser?.id) {
-      if(currentUser) setIsLoading(false); // Only set loading false if currentUser is processed (even if null)
+      if(currentUser) setIsLoading(false); 
       return;
     }
 
     const fetchFacultyAndCourses = async () => {
       setIsLoading(true);
       try {
-        // First, find the faculty profile linked to the current user
         const allFaculty = await facultyService.getAllFaculty();
         const facultyProfile = allFaculty.find(f => f.userId === currentUser.id);
         
@@ -85,7 +83,6 @@ export default function MyCoursesPage() {
         }
         setCurrentFaculty(facultyProfile);
 
-        // Fetch all necessary data for enrichment
         const [offeringsData, coursesData, batchesData, programsData] = await Promise.all([
           courseOfferingService.getAllCourseOfferings(),
           courseService.getAllCourses(),
@@ -93,9 +90,8 @@ export default function MyCoursesPage() {
           programService.getAllPrograms(),
         ]);
 
-        // Filter offerings assigned to this faculty
         const assignedOfferings = offeringsData.filter(offering => 
-          offering.facultyIds && offering.facultyIds.includes(facultyProfile.id) // Assuming facultyIds on CO maps to Faculty entity ID
+          offering.facultyIds && offering.facultyIds.includes(facultyProfile.id)
         );
         
         const enriched = assignedOfferings.map(offering => {
@@ -180,6 +176,9 @@ export default function MyCoursesPage() {
                     <Link href={`/faculty/assessments/grade?offeringId=${offering.id}`} passHref>
                        <Button variant="outline" className="w-full justify-start"><Edit3 className="mr-2 h-4 w-4"/>Grade Assessments</Button>
                     </Link>
+                    <Link href={`/faculty/course-offerings/${offering.id}/assessments`} passHref>
+                       <Button variant="outline" className="w-full justify-start"><AssessmentIcon className="mr-2 h-4 w-4"/>Manage Assessments</Button>
+                    </Link>
                     <Link href={`/faculty/course-offerings/${offering.id}/materials`} passHref>
                        <Button variant="outline" className="w-full justify-start"><Paperclip className="mr-2 h-4 w-4"/>Manage Materials</Button>
                     </Link>
@@ -193,3 +192,4 @@ export default function MyCoursesPage() {
     </div>
   );
 }
+

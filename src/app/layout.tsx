@@ -7,10 +7,10 @@ import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, 
 import { Toaster } from "@/components/ui/toaster";
 import { 
     Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, 
-    Loader2, UserCog, BookUser, Users as UsersIconLucide, Building2, BookCopy, ClipboardList, Landmark, 
-    Building, DoorOpen, Users2 as CommitteeIcon, FileText as AssessmentIcon, FileText,
+    Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, 
+    Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, FileText,
     BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Activity, Clock,
-    ListChecks, BookOpenCheck, FilePieChart, BookOpenText, Upload, Paperclip, CheckSquare, UserPlus, Bell
+    ListChecks, BookOpenCheck, FilePieChart, Upload, Paperclip, CheckSquare, UserPlus, Bell, NotebookPen, BookOpenText
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -44,145 +44,131 @@ const DEFAULT_USER: User = {
   dataAiHint: 'user avatar'
 };
 
+// Moved definitions to top-level
 const adminNavItems = [
-  { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard' }, 
-  { href: '/admin/users', icon: UsersIconLucide, label: 'User Management', id: 'admin-users' },
-  { href: '/admin/roles', icon: UserCog, label: 'Role Management', id: 'admin-roles' },
-  { href: '/admin/institutes', icon: Landmark, label: 'Institutes', id: 'admin-institutes'},
-  { href: '/admin/buildings', icon: Building, label: 'Buildings', id: 'admin-buildings'},
-  { href: '/admin/rooms', icon: DoorOpen, label: 'Rooms', id: 'admin-rooms'},
-  { href: '/admin/committees', icon: CommitteeIcon, label: 'Committees', id: 'admin-committees'},
-  { href: '/admin/students', icon: BookUser, label: 'Student Mgt.', id: 'admin-students' },
-  { href: '/admin/faculty', icon: UserCog, label: 'Faculty Mgt.', id: 'admin-faculty' }, 
-  { href: '/admin/departments', icon: Building2, label: 'Departments', id: 'admin-departments' },
-  { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs' },
-  { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches' },
-  { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses' },
-  { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum Mgt.', id: 'admin-curriculum' },
-  { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments' },
-  { href: '/admin/enrollments', icon: UserPlus, label: 'Enrollment Mgt.', id: 'admin-enrollments'},
-  { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance-link' },
-  { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'admin-resource-allocation' },
-  { href: '/admin/timetables', icon: Clock, label: 'Timetables', id: 'admin-timetables'},
-  { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback' },
-  { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'admin-reporting' },
-  { href: '/admin/project-fair/events', icon: Briefcase, label: 'Project Fair Events', id: 'admin-project-fair-events-link'},
-  { href: '/admin/results/import', icon: Upload, label: 'Import Results', id: 'admin-import-results-link'}, 
-  { href: '/admin/settings', icon: Settings, label: 'System Settings', id: 'admin-settings-link'},
+  { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard-link' }, 
+  { href: '/admin/users', icon: UsersIconLucide, label: 'User Management', id: 'admin-users-link' },
+  { href: '/admin/roles', icon: UserCog, label: 'Role Management', id: 'admin-roles-link' },
+  { href: '/admin/institutes', icon: Landmark, label: 'Institutes', id: 'admin-institutes-link'},
+  { href: '/admin/buildings', icon: Building, label: 'Buildings', id: 'admin-buildings-link'},
+  { href: '/admin/rooms', icon: DoorOpen, label: 'Rooms', id: 'admin-rooms-link'},
+  { href: '/admin/committees', icon: CommitteeIcon, label: 'Committees', id: 'admin-committees-link'},
+  { href: '/admin/students', icon: BookUser, label: 'Student Mgt.', id: 'admin-students-link' },
+  { href: '/admin/faculty', icon: UserCog, label: 'Faculty Mgt.', id: 'admin-faculty-link' }, 
+  { href: '/admin/departments', icon: Building2, label: 'Departments', id: 'admin-departments-link' },
+  { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs-link' },
+  { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches-link' },
+  { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses-link' },
+  { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum Mgt.', id: 'admin-curriculum-link' },
+  { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments-link' },
+  { href: '/admin/enrollments', icon: UserPlus, label: 'Enrollment Mgt.', id: 'admin-enrollments-link'},
+  { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance-nav-link' }, 
+  { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'admin-resource-allocation-link' },
+  { href: '/admin/timetables', icon: Clock, label: 'Timetables', id: 'admin-timetables-link'},
+  { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback-link' },
+  { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'admin-reporting-link' },
+  { href: '/admin/project-fair/events', icon: Briefcase, label: 'Project Fair Events', id: 'admin-project-event-nav-link'},
+  { href: '/admin/results', icon: Award, label: 'Results Mgt.', id: 'admin-results-link'},
+  { href: '/admin/settings', icon: Settings, label: 'System Settings', id: 'admin-settings-nav-link'},
 ];
-
 
 const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.ElementType; label: string; id: string }>> = {
   admin: adminNavItems,
   student: [
-    { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'student-dashboard' },
-    { href: '/student/profile', icon: UserCircle, label: 'My Profile', id: 'student-profile' },
-    { href: '/student/timetable', icon: Clock, label: 'My Timetable', id: 'student-timetable' },
-    { href: '/student/attendance', icon: AttendanceIcon, label: 'My Attendance', id: 'student-attendance' },
-    { href: '/student/courses', icon: BookOpen, label: 'My Courses', id: 'student-courses' },
-    { href: '/student/courses/enroll', icon: BookOpenCheck, label: 'Enroll in Courses', id: 'student-enroll-courses' },
-    { href: '/student/assignments', icon: AssessmentIcon, label: 'Assignments', id: 'student-assignments'},
-    { href: '/student/results', icon: Award, label: 'My Results', id: 'student-results' },
-    { href: '/student/materials', icon: Paperclip, label: 'Study Materials', id: 'student-materials' },
-    { href: '/project-fair/student', icon: FileText, label: 'My Project', id: 'student-project' }, 
+    { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'student-dashboard-link' },
+    { href: '/student/profile', icon: UserCircle, label: 'My Profile', id: 'student-profile-link' },
+    { href: '/student/timetable', icon: Clock, label: 'My Timetable', id: 'student-timetable-link' },
+    { href: '/student/attendance', icon: AttendanceIcon, label: 'My Attendance', id: 'student-attendance-link' },
+    { href: '/student/courses', icon: BookOpen, label: 'My Courses', id: 'student-courses-link' },
+    { href: '/student/courses/enroll', icon: BookOpenCheck, label: 'Enroll in Courses', id: 'student-enroll-courses-link' },
+    { href: '/student/assignments', icon: AssessmentIcon, label: 'Assignments', id: 'student-assignments-link'},
+    { href: '/student/results', icon: Award, label: 'My Results', id: 'student-results-link' },
+    { href: '/student/materials', icon: Paperclip, label: 'Study Materials', id: 'student-materials-link' },
+    { href: '/project-fair/student', icon: FileText, label: 'Project Fair', id: 'student-project-link' }, 
   ],
   faculty: [
-    { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'faculty-dashboard' },
-    { href: '/faculty/profile', icon: UserCircle, label: 'My Profile', id: 'faculty-profile' },
-    { href: '/faculty/timetable', icon: Clock, label: 'My Timetable', id: 'faculty-timetable' },
-    { href: '/faculty/my-courses', icon: BookOpen, label: 'My Courses', id: 'faculty-courses' }, 
-    { href: '/faculty/students', icon: UsersIconLucide, label: 'My Students', id: 'faculty-students'}, 
-    { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'faculty-mark-attendance' },
-    { href: '/faculty/attendance/reports', icon: BarChart3, label: 'Attendance Reports', id: 'faculty-attendance-reports' },
-    { href: '/faculty/assessments/grade', icon: FilePieChart, label: 'Grade Assessments', id: 'faculty-grade-assessments' },
-    { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'faculty-evaluate' }, 
-    { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'faculty-feedback' }, 
+    { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'faculty-dashboard-link' },
+    { href: '/faculty/profile', icon: UserCircle, label: 'My Profile', id: 'faculty-profile-link' },
+    { href: '/faculty/timetable', icon: Clock, label: 'My Timetable', id: 'faculty-timetable-link' },
+    { href: '/faculty/my-courses', icon: BookOpen, label: 'My Courses', id: 'faculty-courses-link' }, 
+    { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'faculty-mark-attendance-link' },
+    { href: '/faculty/attendance/reports', icon: BarChart3, label: 'Attendance Reports', id: 'faculty-attendance-reports-link' },
+    { href: '/faculty/assessments/grade', icon: FilePieChart, label: 'Grade Assessments', id: 'faculty-grade-assessments-link' },
+    { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'faculty-evaluate-link' }, 
   ],
   hod: [
-    { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'hod-dashboard' },
-    { href: '/admin/institutes', icon: Landmark, label: 'Institutes', id: 'hod-institutes'},
-    { href: '/admin/buildings', icon: Building, label: 'Buildings', id: 'hod-buildings'},
-    { href: '/admin/rooms', icon: DoorOpen, label: 'Rooms', id: 'hod-rooms'},
-    { href: '/admin/committees', icon: CommitteeIcon, label: 'Committees', id: 'hod-committees'},
-    { href: '/admin/departments', icon: Building2, label: 'My Department', id: 'hod-department' }, 
-    { href: '/admin/programs', icon: BookCopy, label: 'Programs (Dept)', id: 'hod-programs' },
-    { href: '/admin/batches', icon: CalendarRange, label: 'Batches (Dept)', id: 'hod-batches' },
-    { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'hod-courses' },
-    { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum (Dept)', id: 'hod-curriculum' },
-    { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'hod-assessments' },
-    { href: '/admin/enrollments', icon: UserPlus, label: 'Enrollment Mgt.', id: 'hod-enrollments'},
-    { href: '/admin/attendance', icon: AttendanceIcon, label: 'Attendance (Dept)', id: 'hod-attendance-records' },
-    { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'hod-resource-allocation' },
-    { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'hod-faculty' },
-    { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'hod-students' },
-    { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'hod-feedback' },
-    { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'hod-reporting' },
-    { href: '/admin/project-fair/events', icon: Briefcase, label: 'Project Fair Admin', id: 'hod-project-fair' }, 
+    { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'hod-dashboard-link' },
+    { href: '/admin/departments', icon: Building2, label: 'My Department', id: 'hod-department-link' }, 
+    { href: '/admin/programs', icon: BookCopy, label: 'Programs (Dept)', id: 'hod-programs-link' },
+    { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'hod-courses-link' },
+    { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'hod-faculty-link' },
+    { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'hod-students-link' },
+    { href: '/admin/timetables', icon: Clock, label: 'Dept. Timetable', id: 'hod-timetables-link'},
   ],
   jury: [
-    { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'jury-dashboard' },
-    { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'jury-evaluate' }, 
+    { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'jury-dashboard-link' },
+    { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'jury-evaluate-link' }, 
   ],
   committee_convener: [ 
-    { href: '/dashboard', icon: Home, label: 'Convener Dashboard', id: 'convener-dashboard' },
-    { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'convener-my-committee'},
-    { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'convener-meetings'}, 
-    { href: '/admin/resource-allocation/rooms', icon: DoorOpen, label: 'Book Room', id: 'convener-book-room' }
+    { href: '/dashboard', icon: Home, label: 'Convener Dashboard', id: 'convener-dashboard-link' },
+    { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'convener-my-committee-link'},
+    { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'convener-meetings-link'}, 
+    { href: '/admin/resource-allocation/rooms', icon: DoorOpen, label: 'Book Room', id: 'convener-book-room-link' }
   ],
   committee_co_convener: [
-    { href: '/dashboard', icon: Home, label: 'Co-Convener Dashboard', id: 'co-convener-dashboard' },
-    { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'co-convener-my-committee'},
-    { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'co-convener-meetings'}, 
-    { href: '/admin/resource-allocation/rooms', icon: DoorOpen, label: 'Book Room', id: 'co_convener-book-room' }
+    { href: '/dashboard', icon: Home, label: 'Co-Convener Dashboard', id: 'co-convener-dashboard-link' },
+    { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'co-convener-my-committee-link'},
+    { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'co-convener-meetings-link'}, 
+    { href: '/admin/resource-allocation/rooms', icon: DoorOpen, label: 'Book Room', id: 'co_convener-book-room-link' }
   ],
   committee_member: [
-    { href: '/dashboard', icon: Home, label: 'Member Dashboard', id: 'member-dashboard' },
-    { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'member-my-committee'},
-    { href: '/committee/tasks/my', icon: ListChecks, label: 'My Tasks', id: 'member-my-tasks'} 
+    { href: '/dashboard', icon: Home, label: 'Member Dashboard', id: 'member-dashboard-link' },
+    { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'member-my-committee-link'},
+    { href: '/committee/tasks/my', icon: ListChecks, label: 'My Tasks', id: 'member-my-tasks-link'} 
   ],
   super_admin: adminNavItems, 
-  dte_admin: [{ href: '/dashboard', icon: Home, label: 'DTE Dashboard', id: 'dte-admin-dashboard' }], 
-  gtu_admin: [{ href: '/dashboard', icon: Home, label: 'GTU Dashboard', id: 'gtu-admin-dashboard' }], 
+  dte_admin: [{ href: '/dashboard', icon: Home, label: 'DTE Dashboard', id: 'dte-admin-dashboard-link' }], 
+  gtu_admin: [{ href: '/dashboard', icon: Home, label: 'GTU Dashboard', id: 'gtu-admin-dashboard-link' }], 
   institute_admin: [
+    { href: '/dashboard', icon: Home, label: 'Institute Dashboard', id: 'institute-admin-dashboard-link' },
     ...adminNavItems.filter(item => ![
-      '/admin/users', '/admin/roles', '/admin/institutes' 
+      '/admin/users', '/admin/roles', '/admin/institutes', '/dashboard'
     ].includes(item.href)), 
-    { href: '/dashboard', icon: Home, label: 'Institute Dashboard', id: 'institute-admin-dashboard' },
   ],
   department_admin: [ 
-    { href: '/dashboard', icon: Home, label: 'Department Dashboard', id: 'department-admin-dashboard' },
-    { href: '/admin/programs', icon: BookCopy, label: 'Programs (Dept)', id: 'dept-admin-programs' },
-    { href: '/admin/batches', icon: CalendarRange, label: 'Batches (Dept)', id: 'dept-admin-batches' },
-    { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'dept-admin-courses' },
-    { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum (Dept)', id: 'dept-admin-curriculum' },
-    { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'dept-admin-assessments' },
-    { href: '/admin/enrollments', icon: UserPlus, label: 'Enrollment Mgt.', id: 'dept-admin-enrollments'},
-    { href: '/admin/attendance', icon: AttendanceIcon, label: 'Attendance (Dept)', id: 'dept-admin-attendance-records' },
-    { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'dept-admin-faculty' },
-    { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'dept-admin-students' },
-    { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'dept-admin-resource-allocation' },
-    { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'dept-admin-reporting' },
+    { href: '/dashboard', icon: Home, label: 'Department Dashboard', id: 'department-admin-dashboard-link' },
+    { href: '/admin/programs', icon: BookCopy, label: 'Programs (Dept)', id: 'department-admin-programs-link' },
+    { href: '/admin/batches', icon: CalendarRange, label: 'Batches (Dept)', id: 'department-admin-batches-link' },
+    { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'department-admin-courses-link' },
+    { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum (Dept)', id: 'department-admin-curriculum-link' },
+    { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'department-admin-assessments-link' },
+    { href: '/admin/enrollments', icon: UserPlus, label: 'Enrollment Mgt.', id: 'department-admin-enrollments-link'},
+    { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'department-admin-faculty-link' },
+    { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'department-admin-students-link' },
+    { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'department-admin-resource-allocation-link' },
+    { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'department-admin-reporting-link' },
   ],
   committee_admin: [
-    { href: '/dashboard', icon: Home, label: 'Committee Admin DB', id: 'committee-admin-dashboard' },
-    { href: '/admin/committees', icon: CommitteeIcon, label: 'Manage Committees', id: 'committee-admin-committees' },
+    { href: '/dashboard', icon: Home, label: 'Committee Admin DB', id: 'committee-admin-dashboard-link' },
+    { href: '/admin/committees', icon: CommitteeIcon, label: 'Manage Committees', id: 'committee-admin-committees-link' },
   ],
-  lab_assistant: [{ href: '/dashboard', icon: Home, label: 'Lab Assistant Dashboard', id: 'lab-assistant-dashboard' }], 
-  clerical_staff: [{ href: '/dashboard', icon: Home, label: 'Clerical Dashboard', id: 'clerical-dashboard' }], 
+  lab_assistant: [{ href: '/dashboard', icon: Home, label: 'Lab Assistant Dashboard', id: 'lab-assistant-dashboard-link' }], 
+  clerical_staff: [{ href: '/dashboard', icon: Home, label: 'Clerical Dashboard', id: 'clerical-dashboard-link' }], 
   unknown: [], 
 };
 
 
 const getNavItemsForRoleCode = (roleCode: UserRoleCode): Array<{ href: string; icon: React.ElementType; label: string; id: string }> => {
   const items = baseNavItems[roleCode] || baseNavItems['unknown']; 
-  
   const itemsArray = Array.isArray(items) ? items : [];
-
+  
   if (roleCode.startsWith('committee_') && !['committee_admin'].includes(roleCode) && !itemsArray.find(item => item.id.includes('-my-committee'))) {
-     const committeeDashboardLink = { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: `${roleCode}-my-committee`};
+     const committeeDashboardLink = { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: `${roleCode}-my-committee-link`}; // Ensure unique ID
      if (!itemsArray.find(item => item.id === committeeDashboardLink.id)) {
        const specificItems = baseNavItems[roleCode as keyof typeof baseNavItems] || [];
-       return [committeeDashboardLink, ...specificItems.filter(item => item.href !== '/dashboard')].sort((a,b) => (a.label || "").localeCompare(b.label || ""));
+       // Filter out generic dashboard if committee one exists
+       const dashboardFilteredItems = specificItems.filter(item => item.href !== '/dashboard' || roleCode === 'committee_member'); // Keep dashboard for member
+       return [committeeDashboardLink, ...dashboardFilteredItems].sort((a,b) => (a.label || "").localeCompare(b.label || ""));
      }
   } else if (roleCode.endsWith('_convener') && !itemsArray.find(item => item.id.includes('-my-committee'))) {
     return getNavItemsForRoleCode('committee_convener');
@@ -192,7 +178,7 @@ const getNavItemsForRoleCode = (roleCode: UserRoleCode): Array<{ href: string; i
     return getNavItemsForRoleCode('committee_member');
   }
 
-  const sortedItems = [...itemsArray]; 
+  const sortedItems = [...new Map(itemsArray.map(item => [item.id, item])).values()]; // Deduplicate by ID
   sortedItems.sort((a, b) => {
     if (a.label.includes('Dashboard')) return -1;
     if (b.label.includes('Dashboard')) return 1;
@@ -278,12 +264,13 @@ export default function RootLayout({
             const roles = await roleService.getAllRoles();
             setAllSystemRoles(roles);
         } catch (error) {
-            toast({ variant: "destructive", title: "Error loading roles", description: (error as Error).message });
+            console.error("Failed to load system roles in layout:", error);
+            // toast({ variant: "destructive", title: "Error loading roles", description: (error as Error).message });
         }
     };
     fetchRoles();
 
-  }, [pathname, router, toast, parseUserCookie]); 
+  }, [pathname, router, parseUserCookie]);
 
 
   const handleRoleChange = (newRoleCode: UserRoleCode) => {
@@ -303,7 +290,7 @@ export default function RootLayout({
         } else { 
             router.push('/dashboard'); 
         }
-        router.refresh(); 
+        router.refresh(); // Refresh to ensure sidebar and content update based on new role
     } else {
         const roleDetails = allSystemRoles.find(r => r.code === newRoleCode);
         toast({ variant: "destructive", title: "Role Switch Failed", description: `Role '${roleDetails?.name || newRoleCode}' is not available for your account or is invalid.`})
@@ -368,7 +355,7 @@ export default function RootLayout({
                 {currentNavItems.map((item) => (
                   <SidebarMenuItem key={item.id}>
                     <Link href={item.href} passHref legacyBehavior>
-                      <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/dashboard')} >
+                      <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/dashboard' && item.href !== '/')} >
                         <item.icon />
                         <span>{item.label}</span>
                       </SidebarMenuButton>
@@ -440,7 +427,7 @@ export default function RootLayout({
               <SidebarTrigger />
               <div className="flex items-center gap-4">
                  <NotificationBell />
-                <span className="font-semibold">Welcome, {currentUser.name}! (Role: {activeRoleObject?.name || currentUser.activeRole})</span>
+                <span className="font-semibold text-sm md:text-base">Welcome, {currentUser.name}! (Role: {activeRoleObject?.name || currentUser.activeRole})</span>
               </div>
             </header>
             <main className="flex-1 p-4 md:p-6 lg:p-8">
@@ -453,4 +440,3 @@ export default function RootLayout({
     </html>
   );
 }
-    
