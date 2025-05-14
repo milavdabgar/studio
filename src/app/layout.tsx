@@ -8,7 +8,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { 
     Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, 
     Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, 
-    Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as FileTextIcon, 
+    Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, 
     BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Activity, Clock,
     ListChecks, BookOpenCheck, FilePieChart, BookOpenText, Upload
 } from 'lucide-react';
@@ -58,14 +58,14 @@ const adminNavItems = [
   { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches' },
   { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses' },
   { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum Mgt.', id: 'admin-curriculum' },
-  { href: '/admin/assessments', icon: FileTextIcon, label: 'Assessments', id: 'admin-assessments' },
+  { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments' },
   { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance-link' },
   { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'admin-resource-allocation' },
   { href: '/admin/timetables', icon: Clock, label: 'Timetables', id: 'admin-timetables'},
   { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'admin-feedback' },
   { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'admin-reporting' },
   { href: '/admin/project-fair/events', icon: Briefcase, label: 'Project Fair Events', id: 'admin-project-fair-events-link'},
-  { href: '/admin/results/import', icon: Upload, label: 'Import Results', id: 'admin-import-results-link'},
+  { href: '/admin/results/import', icon: Upload, label: 'Import Results', id: 'admin-import-results-link'}, 
   { href: '/admin/settings', icon: Settings, label: 'System Settings', id: 'admin-settings-link'},
 ];
 
@@ -78,21 +78,21 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/student/timetable', icon: Clock, label: 'My Timetable', id: 'student-timetable' },
     { href: '/student/attendance', icon: AttendanceIcon, label: 'My Attendance', id: 'student-attendance' },
     { href: '/student/courses', icon: BookOpen, label: 'My Courses', id: 'student-courses' },
-    { href: '/student/assignments', icon: FileTextIcon, label: 'Assignments', id: 'student-assignments'},
+    { href: '/student/assignments', icon: AssessmentIcon, label: 'Assignments', id: 'student-assignments'},
     { href: '/student/results', icon: Award, label: 'My Results', id: 'student-results' },
     { href: '/student/materials', icon: BookOpenCheck, label: 'Study Materials', id: 'student-materials' },
-    { href: '/project-fair/student', icon: FileTextIcon, label: 'My Project', id: 'student-project' }, 
+    { href: '/project-fair/student', icon: AssessmentIcon, label: 'My Project', id: 'student-project' }, 
   ],
   faculty: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'faculty-dashboard' },
     { href: '/faculty/profile', icon: UserCircle, label: 'My Profile', id: 'faculty-profile' },
+    { href: '/faculty/my-courses', icon: BookOpen, label: 'My Courses', id: 'faculty-my-courses' },
     { href: '/faculty/timetable', icon: Clock, label: 'My Timetable', id: 'faculty-timetable' },
-    { href: '/faculty/courses', icon: BookOpen, label: 'My Courses', id: 'faculty-courses' }, 
     { href: '/faculty/students', icon: UsersIconLucide, label: 'My Students', id: 'faculty-students'}, 
     { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'faculty-mark-attendance' },
     { href: '/faculty/attendance/reports', icon: BarChart3, label: 'Attendance Reports', id: 'faculty-attendance-reports' },
     { href: '/faculty/assessments/grade', icon: FilePieChart, label: 'Grade Assessments', id: 'faculty-grade-assessments' },
-    { href: '/project-fair/jury', icon: FileTextIcon, label: 'Evaluate Projects', id: 'faculty-evaluate' }, 
+    { href: '/project-fair/jury', icon: AssessmentIcon, label: 'Evaluate Projects', id: 'faculty-evaluate' }, 
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'faculty-feedback' }, 
   ],
   hod: [
@@ -106,7 +106,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/batches', icon: CalendarRange, label: 'Batches (Dept)', id: 'hod-batches' },
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'hod-courses' },
     { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum (Dept)', id: 'hod-curriculum' },
-    { href: '/admin/assessments', icon: FileTextIcon, label: 'Assessments (Dept)', id: 'hod-assessments' },
+    { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'hod-assessments' },
     { href: '/admin/attendance', icon: AttendanceIcon, label: 'Attendance (Dept)', id: 'hod-attendance-records' },
     { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'hod-resource-allocation' },
     { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'hod-faculty' },
@@ -117,23 +117,23 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
   ],
   jury: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'jury-dashboard' },
-    { href: '/project-fair/jury', icon: FileTextIcon, label: 'Evaluate Projects', id: 'jury-evaluate' }, 
+    { href: '/project-fair/jury', icon: AssessmentIcon, label: 'Evaluate Projects', id: 'jury-evaluate' }, 
   ],
   committee_convener: [ 
     { href: '/dashboard', icon: Home, label: 'Convener Dashboard', id: 'convener-dashboard' },
-    // My Committee will be added by getNavItemsForRoleCode
+    { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'convener-my-committee'},
     { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'convener-meetings'}, 
     { href: '/admin/resource-allocation/rooms', icon: DoorOpen, label: 'Book Room', id: 'convener-book-room' }
   ],
   committee_co_convener: [
     { href: '/dashboard', icon: Home, label: 'Co-Convener Dashboard', id: 'co-convener-dashboard' },
-    // My Committee will be added by getNavItemsForRoleCode
+    { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'co-convener-my-committee'},
     { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'co-convener-meetings'}, 
     { href: '/admin/resource-allocation/rooms', icon: DoorOpen, label: 'Book Room', id: 'co_convener-book-room' }
   ],
   committee_member: [
     { href: '/dashboard', icon: Home, label: 'Member Dashboard', id: 'member-dashboard' },
-    // My Committee will be added by getNavItemsForRoleCode
+    { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'member-my-committee'},
     { href: '/committee/tasks/my', icon: ListChecks, label: 'My Tasks', id: 'member-my-tasks'} 
   ],
   super_admin: adminNavItems, 
@@ -151,7 +151,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/batches', icon: CalendarRange, label: 'Batches (Dept)', id: 'dept-admin-batches' },
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'dept-admin-courses' },
     { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum (Dept)', id: 'dept-admin-curriculum' },
-    { href: '/admin/assessments', icon: FileTextIcon, label: 'Assessments (Dept)', id: 'dept-admin-assessments' },
+    { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'dept-admin-assessments' },
     { href: '/admin/attendance', icon: AttendanceIcon, label: 'Attendance (Dept)', id: 'dept-admin-attendance-records' },
     { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'dept-admin-faculty' },
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'dept-admin-students' },
@@ -202,26 +202,27 @@ export default function RootLayout({
   const router = useRouter();
   const { toast } = useToast();
 
-  // Moved getNavItemsForRoleCode inside the component
   const getNavItemsForRoleCode = (roleCode: UserRoleCode): Array<{ href: string; icon: React.ElementType; label: string; id: string }> => {
     let items = baseNavItems[roleCode] || baseNavItems['unknown'] || [];
   
     const isGenericCommitteeRole = ['committee_convener', 'committee_co_convener', 'committee_member'].includes(roleCode);
+    // Check if the roleCode is a specific committee role (e.g., "cwan_gpp_convener")
     const isSpecificCommitteeRole = roleCode.startsWith('committee_') && !isGenericCommitteeRole && roleCode !== 'committee_admin';
   
     if (isGenericCommitteeRole || isSpecificCommitteeRole) {
       let baseCommitteeItems: Array<{ href: string; icon: React.ElementType; label: string; id: string }> = [];
+      // Determine base items from generic committee role
       if (roleCode.endsWith('_convener')) baseCommitteeItems = baseNavItems['committee_convener'] || [];
       else if (roleCode.endsWith('_co_convener')) baseCommitteeItems = baseNavItems['committee_co_convener'] || [];
       else if (roleCode.endsWith('_member')) baseCommitteeItems = baseNavItems['committee_member'] || [];
       
-      // If `items` is from `baseNavItems['unknown']` or doesn't have 'My Committee', add it.
-      // This condition `items === baseNavItems['unknown']` might be true if `roleCode` (e.g. cwan_gpp_convener) isn't a direct key in `baseNavItems`.
+      // If current items are just 'unknown' or don't include 'My Committee', rebuild them
       if (items === baseNavItems['unknown'] || !items.find(item => item.href === '/dashboard/committee')) {
         items = [...baseCommitteeItems]; // Start with the generic committee role items
         const committeeDashboardLink = { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: `${roleCode}-my-committee`};
+        // Add 'My Committee' if not already present
         if (!items.find(item => item.id === committeeDashboardLink.id || item.href === '/dashboard/committee')) {
-          items = [committeeDashboardLink, ...items.filter(item => item.href !== '/dashboard')];
+          items = [committeeDashboardLink, ...items.filter(item => item.href !== '/dashboard')]; // Replace generic dashboard
         }
       }
     }
@@ -282,7 +283,9 @@ export default function RootLayout({
         }
     };
     fetchRoles();
-  }, [pathname, router, toast]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, router]); 
 
 
   const handleRoleChange = (newRoleCode: UserRoleCode) => {
@@ -451,3 +454,4 @@ export default function RootLayout({
     </html>
   );
 }
+    
