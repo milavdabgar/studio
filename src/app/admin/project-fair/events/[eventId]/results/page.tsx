@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Loader2, ArrowLeft, Award as ResultsIcon, Download, Mail, Settings, FileText, Users as UsersIcon, BarChart3, CheckCircle, AlertTriangle, Info, ListChecks } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import type { ProjectEvent, Project, ProjectTeam, Department, SystemUser as User, ProjectEvaluationScore, Checkbox } from '@/types/entities'; // Checkbox might be an error here
+import type { ProjectEvent, Project, ProjectTeam, Department, SystemUser as User, ProjectEvaluationScore } from '@/types/entities'; // Checkbox type is not needed here
 import { projectEventService } from '@/lib/api/projectEvents';
 import { projectService } from '@/lib/api/projects';
 import { departmentService } from '@/lib/api/departments';
@@ -21,9 +21,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
-// Removed Checkbox import again as it's unused for now
+import { Checkbox } from "@/components/ui/checkbox"; // Added Checkbox import
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from '@/components/ui/badge'; // Added Badge
+import { Badge } from '@/components/ui/badge'; 
 
 interface WinnerProject extends Project {
     rank?: number;
@@ -87,7 +87,7 @@ export default function EventResultsPage() {
         const [eventData, projectsDataResponse, teamsDataResponse, deptsData] = await Promise.all([
           projectEventService.getEventById(eventId),
           projectService.getAllProjects({ eventId }),
-          projectTeamService.getAllTeams({ eventId }), // Fetch teams for this event
+          projectTeamService.getAllTeams({ eventId }), 
           departmentService.getAllDepartments(),
         ]);
         setEvent(eventData);
@@ -208,7 +208,10 @@ export default function EventResultsPage() {
         emailTemplate: emailSettings.template.replace('{event_name}', event.name).replace('{certificate_type}', type),
       });
       toast({ title: "Emails Queued", description: `Simulated emailing ${certsToEmail.length} ${type} certificates.` });
-      setCertificateStats(prev => ({ ...prev, [type]: { ...prev[type as keyof typeof prev], emailSent: certsToEmail.length }}));
+      // This is optimistic update for UI, actual sent status might need another mechanism
+      if (type === 'participation') setCertificateStats(prev => ({...prev, participation: {...prev.participation, emailSent: certsToEmail.length}}));
+      else if (type === 'department-winner') setCertificateStats(prev => ({...prev, departmentWinners: {...prev.departmentWinners, emailSent: certsToEmail.length}}));
+      else setCertificateStats(prev => ({...prev, instituteWinners: {...prev.instituteWinners, emailSent: certsToEmail.length}}));
     } catch (error) {
       toast({ variant: "destructive", title: "Email Error", description: (error as Error).message });
     }
