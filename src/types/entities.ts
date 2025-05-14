@@ -126,7 +126,7 @@ export interface Student {
     gtuEnrollmentNumber?: string; 
     
     programId: string; 
-    department: string; // This should be departmentId, will derive name if needed
+    department: string; 
     batchId?: string; 
     currentSemester: number;
     admissionDate?: Timestamp;
@@ -147,7 +147,7 @@ export interface Student {
     sem7Status?: SemesterStatus;
     sem8Status?: SemesterStatus;
     
-    fullNameGtuFormat?: string; // Name as per GTU records e.g. SURNAME FIRSTNAME MIDDLENAME
+    fullNameGtuFormat?: string; 
     firstName?: string;
     middleName?: string;
     lastName?: string;
@@ -159,7 +159,7 @@ export interface Student {
     personalEmail?: string;
     instituteEmail: string; 
     contactNumber?: string;
-    address?: string; // Changed from Address object to string for simplicity, can be expanded later
+    address?: string; 
     
     guardianDetails?: {
         name: string;
@@ -172,11 +172,11 @@ export interface Student {
     status: StudentStatus; 
     convocationYear?: number;
     
-    instituteId?: string; // Added to link student to an institute
+    instituteId?: string; 
     photoURL?: string;
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
-    isActive?: boolean; // From User model, for consistency
+    isActive?: boolean; 
 }
 
 
@@ -201,10 +201,10 @@ export interface FacultyProfile {
     instituteEmail: string; 
     contactNumber?: string;
     
-    department: string; // Name of department
+    department: string; 
     designation?: string;
     jobType?: JobType;
-    instType?: string; // From GTU data "DI", "DE", "PG"
+    instType?: string; 
     specializations?: string[];
     qualifications?: Qualification[];
     
@@ -218,11 +218,11 @@ export interface FacultyProfile {
     gpfNpsNumber?: string; 
     placeOfBirth?: string;
     nationality?: string;
-    knownAs?: string; // From GTU Data
+    knownAs?: string; 
     
     status: FacultyStatus;
     
-    instituteId?: string; // Added for linking to institute
+    instituteId?: string; 
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
@@ -315,7 +315,7 @@ export interface Department {
   name: string;
   code: string; 
   description?: string;
-  hodId?: string; // User ID of HoD
+  hodId?: string; 
   establishmentYear?: number;
   status: 'active' | 'inactive';
   instituteId: string; 
@@ -336,7 +336,7 @@ export interface Committee {
   formationDate: Timestamp; 
   dissolutionDate?: Timestamp; 
   status: CommitteeStatus;
-  convenerId?: string; // User ID of the convener
+  convenerId?: string; 
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
@@ -359,7 +359,7 @@ export interface Program {
   code: string; 
   description?: string;
   departmentId: string; 
-  instituteId: string; // Added to link Program to an Institute
+  instituteId: string; 
   degreeType?: 'Diploma' | 'Bachelor' | 'Master' | 'PhD' | 'Certificate' | string;
   durationYears?: number;
   totalSemesters?: number;
@@ -433,7 +433,7 @@ export interface CourseOffering {
     startDate?: Timestamp; 
     endDate?: Timestamp;   
     status: CourseOfferingStatus;
-    programId?: string; // Added to link course offering to program
+    programId?: string; 
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
@@ -541,19 +541,25 @@ export interface Assessment {
 }
 
 export interface StudentAssessmentScore {
-    id: string;
-    studentId: string;
-    assessmentId: string;
-    score?: number;
-    grade?: string;
-    remarks?: string;
-    submissionDate?: Timestamp;
-    evaluatedBy?: string; 
-    evaluatedAt?: Timestamp;
-    files?: Array<{ name: string, url: string, type: string }>; 
-    createdAt?: Timestamp;
-    updatedAt?: Timestamp;
+  id: string;
+  studentId: string;
+  assessmentId: string;
+  score?: number;
+  grade?: string;
+  remarks?: string; // Faculty feedback
+  submissionDate?: Timestamp; // When the student submitted
+  files?: Array<{ 
+    name: string; 
+    url: string; // Path or URL to the stored file
+    type: string; // MIME type
+    size?: number;
+  }>;
+  evaluatedBy?: string; // Faculty user ID
+  evaluatedAt?: Timestamp;
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
 }
+
 
 export type AttendanceStatus = 'present' | 'absent' | 'late' | 'excused';
 
@@ -688,12 +694,12 @@ export interface ResultImportResponse {
     batchId: string | null;
     importedCount: number;
     totalRows: number;
-    error?: string; // For general import error
+    error?: string; 
   };
-  newCount?: number; // If endpoint provides more granular counts
-  updatedCount?: number; // If endpoint provides more granular counts
-  skippedCount?: number; // If endpoint provides more granular counts
-  errors?: Array<{ row: number; message: string; data: any }>; // For row-level errors
+  newCount?: number; 
+  updatedCount?: number; 
+  skippedCount?: number; 
+  errors?: Array<{ row: number; message: string; data: any }>; 
 }
 
 
@@ -820,7 +826,7 @@ export interface ProjectEvent {
   registrationEndDate: Timestamp;
   status: ProjectEventStatus;
   isActive: boolean;
-  publishResults?: boolean; // Added this field
+  publishResults?: boolean; 
   schedule?: ProjectEventScheduleItem[];
   departments?: string[]; 
   createdBy?: string; 
@@ -864,7 +870,7 @@ export interface ProjectGuide {
 }
 
 export interface ProjectEvaluationScore {
-  criteriaId: string; 
+  criteriaId: string; // e.g., 'innovation', 'implementation'
   score: number;
   comments?: string;
 }
@@ -935,16 +941,21 @@ export interface CourseMaterial {
 }
 
 // Notification System
+export type NotificationType = 'info' | 'success' | 'warning' | 'error' | 'update' | 'reminder' | 'assignment_new' | 'assignment_graded' | 'enrollment_approved' | 'enrollment_rejected' | 'project_status_change' | 'meeting_scheduled' | 'new_material';
+
 export interface Notification {
   id: string;
-  userId: string; // The user to whom the notification is addressed
+  userId: string; 
   message: string;
-  type: 'info' | 'success' | 'warning' | 'error' | 'update' | 'reminder';
+  type: NotificationType;
   isRead: boolean;
-  link?: string; // Optional link to navigate to a relevant page
+  link?: string; 
   createdAt: Timestamp;
   updatedAt?: Timestamp;
+  relatedEntityId?: string; 
+  relatedEntityType?: string; 
 }
+
 
 // For Project Fair API responses
 export interface CertificateInfo {
@@ -963,8 +974,9 @@ export interface CertificateInfo {
 
 export interface WinnersResponse {
   departmentWinners: Array<{
-      department: Department; // Store full department object
+      department: Department; 
       winners: Array<Project & { rank: number }>;
   }>;
   instituteWinners: Array<Project & { rank: number }>;
 }
+
