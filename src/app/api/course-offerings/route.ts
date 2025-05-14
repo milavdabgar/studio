@@ -1,4 +1,3 @@
-
 import { NextResponse, type NextRequest } from 'next/server';
 import type { CourseOffering } from '@/types/entities';
 import { isValid, parseISO } from 'date-fns';
@@ -45,7 +44,7 @@ if (!global.__API_COURSE_OFFERINGS_STORE__ || global.__API_COURSE_OFFERINGS_STOR
       batchId: "batch_dce_2022_gpp", 
       academicYear: "2024-25", 
       semester: 1, 
-      facultyIds: ["user_faculty_cs01_gpp"], // Example faculty
+      facultyIds: ["user_faculty_cs01_gpp", "fac_cs01_gpp"], 
       roomIds: ["room_b202_gpp"], 
       startDate: "2024-07-15T00:00:00.000Z",
       endDate: "2024-11-15T00:00:00.000Z",
@@ -59,7 +58,7 @@ const courseOfferingsStore: CourseOffering[] = global.__API_COURSE_OFFERINGS_STO
 
 const generateId = (): string => `co_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   if (!Array.isArray(global.__API_COURSE_OFFERINGS_STORE__)) {
     global.__API_COURSE_OFFERINGS_STORE__ = [];
     return NextResponse.json({ message: 'Internal server error: Course Offering data store corrupted.' }, { status: 500 });

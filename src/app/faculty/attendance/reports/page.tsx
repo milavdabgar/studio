@@ -1,21 +1,20 @@
 
 "use client";
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CalendarIcon, ListFilter, Download, Loader2, BarChart2, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { AttendanceRecord, Student, User, CourseOffering, Course, Faculty, Program, Batch } from '@/types/entities';
+import type { AttendanceRecord, Student, User as SystemUser, CourseOffering, Course, Faculty, Program, Batch } from '@/types/entities';
 import { attendanceService } from '@/lib/api/attendance';
 import { studentService } from '@/lib/api/students';
 import { courseService } from '@/lib/api/courses';
 import { facultyService } from '@/lib/api/faculty';
 import { programService } from '@/lib/api/programs';
 import { batchService } from '@/lib/api/batches';
-// Mock course offering service for now - replace with actual API calls later
-// import { courseOfferingService } from '@/lib/api/courseOfferings'; 
-import { format, startOfMonth, endOfMonth, parseISO, isValid } from 'date-fns';
+import { courseOfferingService } from '@/lib/api/courseOfferings'; 
+import { format, startOfMonth, endOfMonth, parseISO, isValid, eachDayOfInterval } from 'date-fns';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -37,12 +36,6 @@ interface EnrichedAttendanceRecord extends AttendanceRecord {
   studentEnrollment?: string;
 }
 
-// Placeholder MOCK_COURSE_OFFERINGS - replace with actual API calls
-const MOCK_COURSE_OFFERINGS_DATA: (CourseOffering & { courseName?: string, batchName?: string, programName?: string })[] = [
-    { id: "co_cs101_b2022_sem1_gpp", courseId: "course_cs101_dce_gpp", batchId: "batch_dce_2022_gpp", academicYear: "2023-24", semester: 1, facultyIds: ["user_faculty_cs01_gpp", "fac_cs01_gpp"], status: "ongoing", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), courseName: "Intro to Programming", batchName: "CS Batch 2022", programName: "DCE" },
-    { id: "co_me101_b2023_sem1_gpp", courseId: "course_me101_dme_gpp", batchId: "batch_dme_2023_gpp", academicYear: "2023-24", semester: 1, facultyIds: ["user_faculty_me01_gpp", "fac_me01_gpp"], status: "ongoing", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), courseName: "Mechanics", batchName: "ME Batch 2023", programName: "DME" },
-];
-
 
 function getCookie(name: string): string | undefined {
   if (typeof document === 'undefined') return undefined;
@@ -61,7 +54,7 @@ export default function AttendanceReportsPage() {
   const [user, setUser] = useState<UserCookie | null>(null);
   const [currentFaculty, setCurrentFaculty] = useState<Faculty | null>(null);
   
-  const [courseOfferings, setCourseOfferings] = useState<(CourseOffering & { courseName?: string, batchName?: string, programName?: string })[]>([]);
+  const [allCourseOfferings, setAllCourseOfferings] = useState<(CourseOffering & { courseName?: string, batchName?: string, programName?: string })[]>([]);
   const [selectedCourseOfferingId, setSelectedCourseOfferingId] = useState<string>("");
   
   const [dateRange, setDateRange] = useState<{ from: Date | undefined, to: Date | undefined }>({
@@ -82,98 +75,109 @@ export default function AttendanceReportsPage() {
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setUser(parsedUser);
-      } catch (error) { /* Handled by global layout */ }
+      } catch (error) { 
+        toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
+       }
+    } else {
+        toast({ variant: "destructive", title: "Authentication Error", description: "User not logged in." });
     }
-  }, []);
+  }, [toast]);
 
-  useEffect(() => {
-    if (!user || !user.id) return;
-    const fetchFacultyAndOfferings = async () => {
-      setIsLoading(true);
-      try {
-        const faculties = await facultyService.getAllFaculty();
-        const facultyProfile = faculties.find(f => f.userId === user.id);
-        setCurrentFaculty(facultyProfile || null);
+  const fetchFacultyAndOfferings = useCallback(async () => {
+    if (!user || !user.id) {
+        if (user) setIsLoading(false); // User processed but no ID
+        return;
+    }
+    setIsLoading(true);
+    try {
+      const faculties = await facultyService.getAllFaculty();
+      const facultyProfile = faculties.find(f => f.userId === user.id);
+      setCurrentFaculty(facultyProfile || null);
 
-        if (facultyProfile) {
-            const courses = await courseService.getAllCourses();
-            const batches = await batchService.getAllBatches();
-            const programs = await programService.getAllPrograms();
-            
-            // Use MOCK_COURSE_OFFERINGS_DATA and filter by facultyProfile.id
-            const facultyCOs = MOCK_COURSE_OFFERINGS_DATA
-              .filter(co => co.facultyIds.includes(facultyProfile.id)) 
-              .map(co => {
-                const course = courses.find(c => c.id === co.courseId);
-                const batch = batches.find(b => b.id === co.batchId);
-                const program = batch ? programs.find(p => p.id === batch.programId) : undefined;
-                return {
-                  ...co,
-                  courseName: course?.subjectName || 'Unknown Course',
-                  batchName: batch?.name || 'Unknown Batch',
-                  programName: program?.name || 'Unknown Program',
-                };
-              });
-            setCourseOfferings(facultyCOs);
-            if (facultyCOs.length > 0) {
-              setSelectedCourseOfferingId(facultyCOs[0].id);
-            } else {
-                toast({title: "No Assigned Courses", description: "You are not assigned to any active course offerings."});
-            }
-        } else {
-            toast({title: "Profile Error", description: "Faculty profile not found."});
-        }
-        
-        const studentsData = await studentService.getAllStudents();
-        setAllStudents(studentsData);
-
-      } catch (error) {
-        toast({ variant: "destructive", title: "Error", description: "Failed to load initial data for reports." });
+      if (facultyProfile) {
+          const [offeringsData, courses, batches, programs] = await Promise.all([
+            courseOfferingService.getAllCourseOfferings(),
+            courseService.getAllCourses(),
+            batchService.getAllBatches(),
+            programService.getAllPrograms(),
+          ]);
+          
+          const facultyCOs = offeringsData
+            .filter(co => co.facultyIds.includes(facultyProfile.id)) 
+            .map(co => {
+              const course = courses.find(c => c.id === co.courseId);
+              const batch = batches.find(b => b.id === co.batchId);
+              const program = batch ? programs.find(p => p.id === batch.programId) : undefined;
+              return {
+                ...co,
+                courseName: course?.subjectName || 'Unknown Course',
+                batchName: batch?.name || 'Unknown Batch',
+                programName: program?.name || 'Unknown Program',
+              };
+            });
+          setAllCourseOfferings(facultyCOs);
+          if (facultyCOs.length > 0) {
+            setSelectedCourseOfferingId(facultyCOs[0].id);
+          } else {
+              toast({title: "No Assigned Courses", description: "You are not assigned to any active course offerings."});
+          }
+      } else {
+          toast({title: "Profile Error", description: "Faculty profile not found."});
       }
-      setIsLoading(false);
-    };
-    fetchFacultyAndOfferings();
+      
+      const studentsData = await studentService.getAllStudents();
+      setAllStudents(studentsData);
+
+    } catch (error) {
+      toast({ variant: "destructive", title: "Error", description: "Failed to load initial data for reports." });
+    }
+    setIsLoading(false);
   }, [user, toast]);
 
   useEffect(() => {
+    fetchFacultyAndOfferings();
+  }, [fetchFacultyAndOfferings]);
+
+  const fetchAttendanceForRange = useCallback(async () => {
     if (!selectedCourseOfferingId || !dateRange.from || !dateRange.to) {
       setAttendanceRecords([]);
       return;
     }
-    const fetchAttendance = async () => {
-      setIsLoading(true);
-      try {
-        const records = await attendanceService.getAttendanceRecords({ 
-          courseOfferingId: selectedCourseOfferingId,
-          // Backend should handle date range filtering. For now, API fetches all for course offering.
-        });
-        
-        // Client-side date filtering (if backend doesn't support it yet)
-        const filteredByDate = records.filter(r => {
-            const recordDate = parseISO(r.date); // Make sure r.date is a valid ISO string
-            return isValid(recordDate) && recordDate >= dateRange.from! && recordDate <= dateRange.to!;
-        });
+    setIsLoading(true);
+    try {
+      // Fetch all records for the offering and filter client-side
+      // In a real app, backend would ideally support date range query
+      const allRecordsForOffering = await attendanceService.getAttendanceRecords({ 
+        courseOfferingId: selectedCourseOfferingId,
+      });
+      
+      const filteredByDate = allRecordsForOffering.filter(r => {
+          const recordDate = parseISO(r.date);
+          return isValid(recordDate) && recordDate >= dateRange.from! && recordDate <= dateRange.to!;
+      });
 
-        const enriched = filteredByDate.map(r => {
-          const student = allStudents.find(s => s.id === r.studentId);
-          return {
-            ...r,
-            studentName: student ? `${student.firstName || ''} ${student.lastName || ''}`.trim() : 'Unknown Student',
-            studentEnrollment: student?.enrollmentNumber || 'N/A',
-          };
-        });
-        setAttendanceRecords(enriched);
-      } catch (error) {
-        toast({ variant: "destructive", title: "Error", description: "Failed to load attendance records for the selected criteria." });
-      }
-      setIsLoading(false);
-    };
-    fetchAttendance();
+      const enriched = filteredByDate.map(r => {
+        const student = allStudents.find(s => s.id === r.studentId);
+        return {
+          ...r,
+          studentName: student ? `${student.firstName || ''} ${student.lastName || ''}`.trim() : 'Unknown Student',
+          studentEnrollment: student?.enrollmentNumber || 'N/A',
+        };
+      });
+      setAttendanceRecords(enriched);
+    } catch (error) {
+      toast({ variant: "destructive", title: "Error", description: "Failed to load attendance records for the selected criteria." });
+    }
+    setIsLoading(false);
   }, [selectedCourseOfferingId, dateRange, allStudents, toast]);
+
+  useEffect(() => {
+    fetchAttendanceForRange();
+  }, [fetchAttendanceForRange]);
 
   const studentAttendanceSummary = useMemo(() => {
     const summary: Record<string, { studentName: string, enrollment: string, present: number, absent: number, late: number, excused: number, total: number, percentage: number }> = {};
-    const offering = courseOfferings.find(co => co.id === selectedCourseOfferingId);
+    const offering = allCourseOfferings.find(co => co.id === selectedCourseOfferingId);
     if (!offering || !offering.batchId) return summary;
 
     const studentsInBatch = allStudents.filter(s => s.batchId === offering.batchId && s.status === 'active');
@@ -181,7 +185,9 @@ export default function AttendanceReportsPage() {
     studentsInBatch.forEach(student => {
       const studentRecords = attendanceRecords.filter(r => r.studentId === student.id);
       const counts = { present: 0, absent: 0, late: 0, excused: 0, total: studentRecords.length };
-      studentRecords.forEach(r => counts[r.status]++);
+      studentRecords.forEach(r => {
+        if (r.status) counts[r.status]++;
+      });
       
       const effectivePresent = counts.present + (counts.late * 0.5) + counts.excused; 
       const percentage = counts.total > 0 ? (effectivePresent / counts.total) * 100 : 0;
@@ -194,7 +200,7 @@ export default function AttendanceReportsPage() {
       };
     });
     return summary;
-  }, [attendanceRecords, selectedCourseOfferingId, courseOfferings, allStudents]);
+  }, [attendanceRecords, selectedCourseOfferingId, allCourseOfferings, allStudents]);
 
   const overallAttendancePercentage = useMemo(() => {
     const totalEffectivePresent = Object.values(studentAttendanceSummary).reduce((sum, s) => sum + (s.present + s.late * 0.5 + s.excused), 0);
@@ -207,7 +213,7 @@ export default function AttendanceReportsPage() {
       toast({ title: "No Data", description: "No attendance data to export for the current selection." });
       return;
     }
-    const offering = courseOfferings.find(co => co.id === selectedCourseOfferingId);
+    const offering = allCourseOfferings.find(co => co.id === selectedCourseOfferingId);
     const header = "Enrollment,Student Name,Total Classes,Present,Absent,Late,Excused,Attendance %\n";
     const csvRows = Object.values(studentAttendanceSummary).map(s => 
       `${s.enrollment},"${s.studentName}",${s.total},${s.present},${s.absent},${s.late},${s.excused},${s.percentage}`
@@ -237,10 +243,10 @@ export default function AttendanceReportsPage() {
           <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border rounded-lg">
             <div>
               <Label htmlFor="courseOfferingSelect">Course Offering</Label>
-              <Select value={selectedCourseOfferingId} onValueChange={setSelectedCourseOfferingId} disabled={isLoading || courseOfferings.length === 0}>
+              <Select value={selectedCourseOfferingId} onValueChange={setSelectedCourseOfferingId} disabled={isLoading || allCourseOfferings.length === 0}>
                 <SelectTrigger id="courseOfferingSelect"><SelectValue placeholder="Select Course" /></SelectTrigger>
                 <SelectContent>
-                  {courseOfferings.map(co => (
+                  {allCourseOfferings.map(co => (
                     <SelectItem key={co.id} value={co.id}>{co.courseName} ({co.batchName})</SelectItem>
                   ))}
                 </SelectContent>
@@ -279,7 +285,7 @@ export default function AttendanceReportsPage() {
                     <CardTitle className="text-lg flex items-center gap-2"><Users className="h-5 w-5 text-primary"/>Overall Summary</CardTitle>
                 </CardHeader>
                 <CardContent className="text-sm">
-                    Selected Course Offering: <strong>{courseOfferings.find(co=>co.id === selectedCourseOfferingId)?.courseName}</strong>
+                    Selected Course Offering: <strong>{allCourseOfferings.find(co=>co.id === selectedCourseOfferingId)?.courseName}</strong>
                     <p>Overall Attendance: <span className={`font-bold ${overallAttendancePercentage >= 75 ? 'text-success' : 'text-destructive'}`}>{overallAttendancePercentage}%</span></p>
                     <Button onClick={handleExport} size="sm" className="mt-3"><Download className="mr-2 h-4 w-4" /> Export Summary CSV</Button>
                 </CardContent>
@@ -324,3 +330,109 @@ export default function AttendanceReportsPage() {
   );
 }
     
+</content>
+  </change>
+  <change>
+    <file>src/app/api/course-offerings/route.ts</file>
+    <content><![CDATA[
+import { NextResponse, type NextRequest } from 'next/server';
+import type { CourseOffering } from '@/types/entities';
+import { isValid, parseISO } from 'date-fns';
+
+declare global {
+  var __API_COURSE_OFFERINGS_STORE__: CourseOffering[] | undefined;
+}
+
+const now = new Date().toISOString();
+
+if (!global.__API_COURSE_OFFERINGS_STORE__ || global.__API_COURSE_OFFERINGS_STORE__.length === 0) {
+  global.__API_COURSE_OFFERINGS_STORE__ = [
+    { 
+      id: "co_cs101_b2022_sem1_gpp", 
+      courseId: "course_cs101_dce_gpp", 
+      batchId: "batch_dce_2022_gpp", 
+      academicYear: "2024-25", 
+      semester: 1, 
+      facultyIds: ["user_faculty_cs01_gpp", "fac_cs01_gpp"], 
+      roomIds: ["room_a101_gpp"], 
+      startDate: "2024-07-15T00:00:00.000Z",
+      endDate: "2024-11-15T00:00:00.000Z",
+      status: "scheduled", 
+      createdAt: now, 
+      updatedAt: now 
+    },
+    { 
+      id: "co_me101_b2023_sem1_gpp", 
+      courseId: "course_me101_dme_gpp", 
+      batchId: "batch_dme_2023_gpp", 
+      academicYear: "2024-25", 
+      semester: 1, 
+      facultyIds: ["user_faculty_me01_gpp", "fac_me01_gpp"], 
+      roomIds: ["room_b202_gpp"], 
+      startDate: "2024-07-15T00:00:00.000Z",
+      endDate: "2024-11-15T00:00:00.000Z",
+      status: "ongoing", 
+      createdAt: now, 
+      updatedAt: now 
+    },
+     { 
+      id: "co_math1_b2022_sem1_gpp", 
+      courseId: "course_math1_gen_gpp", 
+      batchId: "batch_dce_2022_gpp", 
+      academicYear: "2024-25", 
+      semester: 1, 
+      facultyIds: ["user_faculty_cs01_gpp", "fac_cs01_gpp"], 
+      roomIds: ["room_b202_gpp"], 
+      startDate: "2024-07-15T00:00:00.000Z",
+      endDate: "2024-11-15T00:00:00.000Z",
+      status: "scheduled", 
+      createdAt: now, 
+      updatedAt: now 
+    },
+  ];
+}
+const courseOfferingsStore: CourseOffering[] = global.__API_COURSE_OFFERINGS_STORE__;
+
+const generateId = (): string => `co_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+
+export async function GET(request: NextRequest) {
+  if (!Array.isArray(global.__API_COURSE_OFFERINGS_STORE__)) {
+    global.__API_COURSE_OFFERINGS_STORE__ = [];
+    return NextResponse.json({ message: 'Internal server error: Course Offering data store corrupted.' }, { status: 500 });
+  }
+  return NextResponse.json(global.__API_COURSE_OFFERINGS_STORE__);
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const offeringData = await request.json() as Omit<CourseOffering, 'id' | 'createdAt' | 'updatedAt'>;
+
+    if (!offeringData.courseId || !offeringData.batchId || !offeringData.academicYear || !offeringData.semester || !offeringData.facultyIds || offeringData.facultyIds.length === 0) {
+      return NextResponse.json({ message: 'Missing required fields: courseId, batchId, academicYear, semester, facultyIds.' }, { status: 400 });
+    }
+    if (offeringData.startDate && !isValid(parseISO(offeringData.startDate))) {
+      return NextResponse.json({ message: 'Invalid startDate format. Use ISO 8601.' }, { status: 400 });
+    }
+    if (offeringData.endDate && !isValid(parseISO(offeringData.endDate))) {
+      return NextResponse.json({ message: 'Invalid endDate format. Use ISO 8601.' }, { status: 400 });
+    }
+    if (offeringData.startDate && offeringData.endDate && parseISO(offeringData.startDate) >= parseISO(offeringData.endDate)) {
+      return NextResponse.json({ message: 'End date must be after start date.' }, { status: 400 });
+    }
+
+    const currentTimestamp = new Date().toISOString();
+    const newOffering: CourseOffering = {
+      id: generateId(),
+      ...offeringData,
+      status: offeringData.status || 'scheduled',
+      createdAt: currentTimestamp,
+      updatedAt: currentTimestamp,
+    };
+    global.__API_COURSE_OFFERINGS_STORE__?.push(newOffering);
+    return NextResponse.json(newOffering, { status: 201 });
+  } catch (error) {
+    console.error('Error creating course offering:', error);
+    return NextResponse.json({ message: 'Error creating course offering', error: (error as Error).message }, { status: 500 });
+  }
+}
+
