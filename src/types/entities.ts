@@ -431,6 +431,7 @@ export interface CourseOffering {
     startDate?: Timestamp; 
     endDate?: Timestamp;   
     status: CourseOfferingStatus;
+    programId?: string; // Added to easily filter offerings by program for student enrollment
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
@@ -438,7 +439,7 @@ export interface CourseOffering {
 export type EnrollmentStatus = 'requested' | 'enrolled' | 'withdrawn' | 'completed' | 'failed' | 'incomplete';
 export interface Enrollment {
     id: string;
-    studentId: string; // Changed from studentProfileId to studentId for consistency
+    studentId: string; 
     courseOfferingId: string;
     
     status: EnrollmentStatus;
@@ -927,5 +928,17 @@ export interface CourseMaterial {
   fileSize?: number; 
   uploadedBy: string; 
   uploadedAt: Timestamp;
+  updatedAt?: Timestamp;
+}
+
+// Notification System
+export interface Notification {
+  id: string;
+  userId: string; // The user to whom the notification is addressed
+  message: string;
+  type: 'info' | 'success' | 'warning' | 'error' | 'update' | 'reminder';
+  isRead: boolean;
+  link?: string; // Optional link to navigate to a relevant page
+  createdAt: Timestamp;
   updatedAt?: Timestamp;
 }

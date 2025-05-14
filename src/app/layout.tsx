@@ -7,10 +7,10 @@ import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, 
 import { Toaster } from "@/components/ui/toaster";
 import { 
     Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, 
-    Loader2, UserCog, BookUser, Users as UsersIcon, Building2, BookCopy, ClipboardList, Landmark, 
+    Loader2, UserCog, BookUser, Users as UsersIconLucide, Building2, BookCopy, ClipboardList, Landmark, 
     Building, DoorOpen, Users2 as CommitteeIcon, FileText as AssessmentIcon, FileText,
     BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Activity, Clock,
-    ListChecks, BookOpenCheck, FilePieChart, BookOpenText, Upload, Paperclip, CheckSquare
+    ListChecks, BookOpenCheck, FilePieChart, BookOpenText, Upload, Paperclip, CheckSquare, UserPlus, Bell
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -23,6 +23,7 @@ import { Label } from "@/components/ui/label";
 import type { UserRole as UserRoleCode, Role } from '@/types/entities'; 
 import { roleService } from '@/lib/api/roles'; 
 import { useToast } from '@/hooks/use-toast';
+import NotificationBell from '@/components/notifications/NotificationBell';
 
 
 interface User {
@@ -45,7 +46,7 @@ const DEFAULT_USER: User = {
 
 const adminNavItems = [
   { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard' }, 
-  { href: '/admin/users', icon: UsersIcon, label: 'User Management', id: 'admin-users' },
+  { href: '/admin/users', icon: UsersIconLucide, label: 'User Management', id: 'admin-users' },
   { href: '/admin/roles', icon: UserCog, label: 'Role Management', id: 'admin-roles' },
   { href: '/admin/institutes', icon: Landmark, label: 'Institutes', id: 'admin-institutes'},
   { href: '/admin/buildings', icon: Building, label: 'Buildings', id: 'admin-buildings'},
@@ -59,6 +60,7 @@ const adminNavItems = [
   { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses' },
   { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum Mgt.', id: 'admin-curriculum' },
   { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments' },
+  { href: '/admin/enrollments', icon: UserPlus, label: 'Enrollment Mgt.', id: 'admin-enrollments'},
   { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance-link' },
   { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'admin-resource-allocation' },
   { href: '/admin/timetables', icon: Clock, label: 'Timetables', id: 'admin-timetables'},
@@ -89,7 +91,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/faculty/profile', icon: UserCircle, label: 'My Profile', id: 'faculty-profile' },
     { href: '/faculty/timetable', icon: Clock, label: 'My Timetable', id: 'faculty-timetable' },
     { href: '/faculty/my-courses', icon: BookOpen, label: 'My Courses', id: 'faculty-courses' }, 
-    { href: '/faculty/students', icon: UsersIcon, label: 'My Students', id: 'faculty-students'}, 
+    { href: '/faculty/students', icon: UsersIconLucide, label: 'My Students', id: 'faculty-students'}, 
     { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'faculty-mark-attendance' },
     { href: '/faculty/attendance/reports', icon: BarChart3, label: 'Attendance Reports', id: 'faculty-attendance-reports' },
     { href: '/faculty/assessments/grade', icon: FilePieChart, label: 'Grade Assessments', id: 'faculty-grade-assessments' },
@@ -108,6 +110,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'hod-courses' },
     { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum (Dept)', id: 'hod-curriculum' },
     { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'hod-assessments' },
+    { href: '/admin/enrollments', icon: UserPlus, label: 'Enrollment Mgt.', id: 'hod-enrollments'},
     { href: '/admin/attendance', icon: AttendanceIcon, label: 'Attendance (Dept)', id: 'hod-attendance-records' },
     { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'hod-resource-allocation' },
     { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'hod-faculty' },
@@ -153,6 +156,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'dept-admin-courses' },
     { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum (Dept)', id: 'dept-admin-curriculum' },
     { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'dept-admin-assessments' },
+    { href: '/admin/enrollments', icon: UserPlus, label: 'Enrollment Mgt.', id: 'dept-admin-enrollments'},
     { href: '/admin/attendance', icon: AttendanceIcon, label: 'Attendance (Dept)', id: 'dept-admin-attendance-records' },
     { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'dept-admin-faculty' },
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'dept-admin-students' },
@@ -435,6 +439,7 @@ export default function RootLayout({
             <header className="sticky top-0 z-50 flex items-center justify-between h-16 px-4 border-b bg-background/80 backdrop-blur-sm">
               <SidebarTrigger />
               <div className="flex items-center gap-4">
+                 <NotificationBell />
                 <span className="font-semibold">Welcome, {currentUser.name}! (Role: {activeRoleObject?.name || currentUser.activeRole})</span>
               </div>
             </header>
@@ -448,3 +453,4 @@ export default function RootLayout({
     </html>
   );
 }
+    
