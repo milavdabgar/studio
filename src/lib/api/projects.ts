@@ -1,5 +1,5 @@
 
-import type { Project, ProjectEvent, ProjectTeam, Department, ProjectLocation, ProjectStatistics, EvaluationData, CategoryCounts, User } from '@/types/entities';
+import type { Project, ProjectEvent, ProjectTeam, Department, ProjectLocation, ProjectStatistics, EvaluationData, CategoryCounts, User, ProjectEvaluationScore } from '@/types/entities';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 
@@ -13,8 +13,16 @@ interface CertificateInfo {
     rank?: number;
     certificateType: 'participation' | 'department-winner' | 'institute-winner';
     eventName: string;
-    eventDate: string; // Assuming eventDate is a string like "YYYY-MM-DD"
+    eventDate: string; 
     downloadUrl: string;
+}
+
+interface WinnersResponse {
+    departmentWinners: Array<{
+        department: Department;
+        winners: Array<Project & { rank: number }>;
+    }>;
+    instituteWinners: Array<Project & { rank: number }>;
 }
 
 
@@ -148,7 +156,8 @@ export const projectService = {
         throw new Error(errorData.message || 'Failed to generate certificate data.');
     }
     const result = await response.json();
-    return result.data?.certificates || result.certificates || []; 
+    // Ensure the response matches the expected structure or adapt
+    return result.certificates || (result.data?.certificates || []);
   },
 
   async sendCertificateEmails(data: { certificateIds: string[], emailSubject?: string, emailTemplate?: string }): Promise<{ message: string, emailsSent: number }> {
@@ -211,6 +220,17 @@ export const projectService = {
     const data = await response.json();
     return data.data || data; 
   },
+  
+  async getEventWinners(eventId: string): Promise<WinnersResponse> {
+    const response = await fetch(`${API_BASE_URL}/projects/event/${eventId}/winners`);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to fetch event winners' }));
+      throw new Error(errorData.message || 'Failed to fetch event winners');
+    }
+    const data = await response.json();
+    return data.data || data; // Assuming data is { data: WinnersResponse } or just WinnersResponse
+  },
+
   // Re-add getAllTeams from projectTeamService if it was meant to be part of projectService
   async getAllTeams(filters: Record<string, string> = {}): Promise<ProjectTeam[]> {
     const queryParams = new URLSearchParams(filters);

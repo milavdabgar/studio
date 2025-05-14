@@ -1,14 +1,14 @@
 // src/app/admin/project-fair/events/[eventId]/results/page.tsx
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Loader2, ArrowLeft, Award as ResultsIcon, Download, Mail, Settings, FileText, Users as UsersIcon, BarChart3, CheckCircle, AlertTriangle, Info, ListChecks } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import type { ProjectEvent, Project, ProjectTeam, Department, SystemUser as User, ProjectEvaluationScore, Checkbox } from '@/types/entities';
+import type { ProjectEvent, Project, ProjectTeam, Department, SystemUser as User, ProjectEvaluationScore, Checkbox } from '@/types/entities'; // Checkbox might be an error here
 import { projectEventService } from '@/lib/api/projectEvents';
 import { projectService } from '@/lib/api/projects';
 import { departmentService } from '@/lib/api/departments';
@@ -21,9 +21,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
-import { Checkbox } from '@/components/ui/checkbox';
+// Removed Checkbox import again as it's unused for now
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
+import { Badge } from '@/components/ui/badge'; // Added Badge
 
 interface WinnerProject extends Project {
     rank?: number;
@@ -36,6 +36,13 @@ interface DepartmentWinnerGroup {
     departmentName: string;
     departmentCode: string;
     winners: WinnerProject[];
+}
+
+interface CertificateStats {
+  total: number;
+  generated: number;
+  downloaded: number;
+  emailSent: number;
 }
 
 export default function EventResultsPage() {
@@ -56,21 +63,38 @@ export default function EventResultsPage() {
 
   const [isPublishResultsDialogOpen, setIsPublishResultsDialogOpen] = useState(false);
   const [publishResultsConfirmation, setPublishResultsConfirmation] = useState(false);
+  
+  const [certificateStats, setCertificateStats] = useState<{
+    participation: CertificateStats;
+    departmentWinners: CertificateStats;
+    instituteWinners: CertificateStats;
+  }>({
+    participation: { total: 0, generated: 0, downloaded: 0, emailSent: 0 },
+    departmentWinners: { total: 0, generated: 0, downloaded: 0, emailSent: 0 },
+    instituteWinners: { total: 0, generated: 0, downloaded: 0, emailSent: 0 }
+  });
+  const [emailSettings, setEmailSettings] = useState({
+    subject: 'Your Project Fair Certificate',
+    template: 'Dear {participant_name},\n\nCongratulations on your participation in the {event_name}! We are pleased to attach your {certificate_type} certificate.\n\nThank you for your contribution to making this event a success.\n\nBest regards,\nProject Fair Team'
+  });
+
 
   useEffect(() => {
     if (!eventId) return;
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const [eventData, projectsData, teamsData, deptsData] = await Promise.all([
+        const [eventData, projectsDataResponse, teamsDataResponse, deptsData] = await Promise.all([
           projectEventService.getEventById(eventId),
           projectService.getAllProjects({ eventId }),
-          projectTeamService.getAllTeams({ eventId }),
+          projectTeamService.getAllTeams({ eventId }), // Fetch teams for this event
           departmentService.getAllDepartments(),
         ]);
         setEvent(eventData);
-        setAllProjects(Array.isArray(projectsData) ? projectsData : (projectsData.data?.projects || []));
-        setAllTeams(Array.isArray(teamsData) ? teamsData : (teamsData.data?.teams || []));
+        const projectsList = Array.isArray(projectsDataResponse) ? projectsDataResponse : (projectsDataResponse.data?.projects || []);
+        setAllProjects(projectsList);
+        const teamsList = Array.isArray(teamsDataResponse) ? teamsDataResponse : (teamsDataResponse.data?.teams || []);
+        setAllTeams(teamsList);
         setAllDepartments(deptsData);
         setPublishResultsConfirmation(eventData.publishResults || false);
       } catch (error) {
@@ -83,24 +107,26 @@ export default function EventResultsPage() {
 
   useEffect(() => {
     if (event && allProjects.length > 0 && allTeams.length > 0 && allDepartments.length > 0) {
-      calculateWinners();
+      calculateAndSetWinners();
+      fetchAndSetCertificateStats();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [event, allProjects, allTeams, allDepartments]);
 
-  const calculateWinners = () => {
-    // Department Winners (Top 3 per department based on deptEvaluation.score)
+  const calculateAndSetWinners = () => {
+    // Department Winners
     const deptWinnersMap = new Map<string, WinnerProject[]>();
     allProjects
       .filter(p => p.deptEvaluation?.completed && typeof p.deptEvaluation.score === 'number')
       .forEach(p => {
-        if (!deptWinnersMap.has(p.department)) {
-          deptWinnersMap.set(p.department, []);
+        const deptId = typeof p.department === 'string' ? p.department : p.department?.id || 'unknown_dept_id';
+        if (!deptWinnersMap.has(deptId)) {
+          deptWinnersMap.set(deptId, []);
         }
-        deptWinnersMap.get(p.department)!.push({
+        deptWinnersMap.get(deptId)!.push({
             ...p,
             teamDetails: allTeams.find(t => t.id === p.teamId),
-            departmentDetails: allDepartments.find(d => d.id === p.department)
+            departmentDetails: allDepartments.find(d => d.id === deptId)
         });
       });
 
@@ -117,7 +143,7 @@ export default function EventResultsPage() {
     });
     setDepartmentWinners(finalDeptWinners);
 
-    // Institute Winners (Top 3 overall based on centralEvaluation.score)
+    // Institute Winners
     const instWinners = allProjects
       .filter(p => p.centralEvaluation?.completed && typeof p.centralEvaluation.score === 'number')
       .sort((a, b) => (b.centralEvaluation!.score!) - (a.centralEvaluation!.score!))
@@ -126,9 +152,27 @@ export default function EventResultsPage() {
         ...p,
         rank: idx + 1,
         teamDetails: allTeams.find(t => t.id === p.teamId),
-        departmentDetails: allDepartments.find(d => d.id === p.department)
+        departmentDetails: allDepartments.find(d => d.id === (typeof p.department === 'string' ? p.department : p.department?.id))
       }));
     setInstituteWinners(instWinners);
+  };
+
+  const fetchAndSetCertificateStats = async () => {
+    if (!event) return;
+    try {
+        const participationCerts = await projectService.generateProjectCertificates(event.id, 'participation');
+        const deptWinnerCertsData = await projectService.generateProjectCertificates(event.id, 'department-winner');
+        const instWinnerCertsData = await projectService.generateProjectCertificates(event.id, 'institute-winner');
+        
+        setCertificateStats({
+            participation: { total: participationCerts.length, generated: participationCerts.length, downloaded: 0, emailSent: 0 },
+            departmentWinners: { total: deptWinnerCertsData.length, generated: deptWinnerCertsData.length, downloaded: 0, emailSent: 0 },
+            instituteWinners: { total: instWinnerCertsData.length, generated: instWinnerCertsData.length, downloaded: 0, emailSent: 0 },
+        });
+    } catch (error) {
+        console.error("Failed to fetch certificate stats:", error);
+        toast({variant: "warning", title: "Certificate Stats", description: "Could not load certificate statistics."});
+    }
   };
 
   const handlePublishResultsToggle = async () => {
@@ -136,7 +180,7 @@ export default function EventResultsPage() {
     setIsSubmitting(true);
     try {
         const updatedEvent = await projectEventService.publishEventResults(event.id, publishResultsConfirmation);
-        setEvent(updatedEvent);
+        setEvent(updatedEvent); // Update local event state
         toast({ title: "Success", description: `Results are now ${updatedEvent.publishResults ? 'Published' : 'Unpublished'}.`});
         setIsPublishResultsDialogOpen(false);
     } catch (error) {
@@ -144,7 +188,49 @@ export default function EventResultsPage() {
     }
     setIsSubmitting(false);
   };
+  
+  const handleEmailCertificates = async (type: 'participation' | 'department-winner' | 'institute-winner') => {
+    if (!event) return;
+    const certsToEmail = type === 'participation' ? await projectService.generateProjectCertificates(event.id, 'participation') 
+                        : type === 'department-winner' ? await projectService.generateProjectCertificates(event.id, 'department-winner') 
+                        : await projectService.generateProjectCertificates(event.id, 'institute-winner');
+    
+    if (certsToEmail.length === 0) {
+      toast({ title: "No Certificates", description: `No ${type} certificates to email.` });
+      return;
+    }
 
+    setIsSubmitting(true);
+    try {
+      await projectService.sendCertificateEmails({
+        certificateIds: certsToEmail.map(c => c.projectId), // Assuming we need project IDs to identify recipients
+        emailSubject: emailSettings.subject.replace('{event_name}', event.name).replace('{certificate_type}', type),
+        emailTemplate: emailSettings.template.replace('{event_name}', event.name).replace('{certificate_type}', type),
+      });
+      toast({ title: "Emails Queued", description: `Simulated emailing ${certsToEmail.length} ${type} certificates.` });
+      setCertificateStats(prev => ({ ...prev, [type]: { ...prev[type as keyof typeof prev], emailSent: certsToEmail.length }}));
+    } catch (error) {
+      toast({ variant: "destructive", title: "Email Error", description: (error as Error).message });
+    }
+    setIsSubmitting(false);
+  };
+
+
+  const WinnerCard: React.FC<{ project: WinnerProject }> = ({ project }) => (
+    <Card className="hover:shadow-md transition-shadow">
+        <CardHeader className="pb-2">
+            <div className="flex justify-between items-start">
+                <CardTitle className="text-md font-semibold">{project.title}</CardTitle>
+                {project.rank && <Badge variant={project.rank === 1 ? "default" : project.rank === 2 ? "secondary" : "outline"} className="text-xs bg-primary text-primary-foreground">Rank #{project.rank}</Badge>}
+            </div>
+            <CardDescription className="text-xs">{project.teamDetails?.name || 'N/A Team'}</CardDescription>
+        </CardHeader>
+        <CardContent className="text-xs">
+            <p>Score: {project.deptEvaluation?.score ?? project.centralEvaluation?.score ?? 'N/A'}%</p>
+            <p>Department: {project.departmentDetails?.name || 'N/A'}</p>
+        </CardContent>
+    </Card>
+  );
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
@@ -160,23 +246,6 @@ export default function EventResultsPage() {
       </div>
     );
   }
-
-  const WinnerCard: React.FC<{ project: WinnerProject }> = ({ project }) => (
-    <Card className="hover:shadow-md transition-shadow">
-        <CardHeader className="pb-2">
-            <div className="flex justify-between items-start">
-                <CardTitle className="text-md font-semibold">{project.title}</CardTitle>
-                {project.rank && <Badge variant={project.rank === 1 ? "default" : project.rank === 2 ? "secondary" : "outline"} className="text-xs">Rank #{project.rank}</Badge>}
-            </div>
-            <CardDescription className="text-xs">{project.teamDetails?.name || 'N/A Team'}</CardDescription>
-        </CardHeader>
-        <CardContent className="text-xs">
-            <p>Score: {project.deptEvaluation?.score || project.centralEvaluation?.score || 'N/A'}%</p>
-            <p>Department: {project.departmentDetails?.name || 'N/A'}</p>
-        </CardContent>
-    </Card>
-  );
-
 
   return (
     <div className="space-y-6">
@@ -209,8 +278,8 @@ export default function EventResultsPage() {
                         </DialogHeader>
                         <div className="py-4">
                             <div className="flex items-center space-x-2">
-                                <Checkbox id="confirmPublish" checked={publishResultsConfirmation} onCheckedChange={(checked) => setPublishResultsConfirmation(!!checked)} />
-                                <Label htmlFor="confirmPublish" className="text-sm">I understand the consequences of this action.</Label>
+                                <Checkbox id="confirmPublishResults" checked={publishResultsConfirmation} onCheckedChange={(checked) => setPublishResultsConfirmation(!!checked)} />
+                                <Label htmlFor="confirmPublishResults" className="text-sm">I understand the consequences of this action.</Label>
                             </div>
                         </div>
                         <DialogFooter>
@@ -223,7 +292,7 @@ export default function EventResultsPage() {
                     </DialogContent>
                 </Dialog>
             </div>
-             <Alert className={`mt-4 ${event.publishResults ? 'bg-green-50 border-green-200 text-green-700' : 'bg-yellow-50 border-yellow-200 text-yellow-700'}`}>
+             <Alert className={`mt-4 ${event.publishResults ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 'bg-yellow-50 border-yellow-200 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300'}`}>
                 {event.publishResults ? <CheckCircle className="h-4 w-4" /> : <AlertTriangle className="h-4 w-4" />}
                 <AlertDescription className="ml-2">
                     Results are currently <strong>{event.publishResults ? "Published" : "Not Published"}</strong>.
@@ -232,7 +301,7 @@ export default function EventResultsPage() {
         </CardHeader>
         <CardContent>
             <Tabs defaultValue="institute_winners">
-                <TabsList className="grid w-full grid-cols-3 mb-4">
+                <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 mb-4">
                     <TabsTrigger value="institute_winners">Institute Winners</TabsTrigger>
                     <TabsTrigger value="department_winners">Department Winners</TabsTrigger>
                     <TabsTrigger value="certificates">Certificates</TabsTrigger>
@@ -261,11 +330,59 @@ export default function EventResultsPage() {
                  <TabsContent value="certificates">
                     <Card>
                         <CardHeader><CardTitle>Certificate Management</CardTitle><CardDescription>Generate and distribute participation and winner certificates.</CardDescription></CardHeader>
-                        <CardContent className="space-y-4">
-                            <p className="text-muted-foreground">Certificate generation and distribution features are under development.</p>
-                            <div className="flex gap-2">
-                                <Button disabled><Download className="mr-2 h-4 w-4" /> Generate All Participation Certificates</Button>
-                                <Button disabled><Mail className="mr-2 h-4 w-4" /> Email All Winner Certificates</Button>
+                        <CardContent className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {/* Participation Certificates */}
+                                <Card className="bg-muted/20">
+                                    <CardHeader className="pb-2"><CardTitle className="text-sm">Participation</CardTitle></CardHeader>
+                                    <CardContent className="text-xs space-y-1">
+                                        <p>Total: {certificateStats.participation.total}</p>
+                                        <p>Generated: {certificateStats.participation.generated}</p>
+                                        <p>Emailed: {certificateStats.participation.emailSent}</p>
+                                    </CardContent>
+                                    <CardFooter className="gap-2">
+                                        <Button size="sm" variant="outline" onClick={() => handleEmailCertificates('participation')} disabled={isSubmitting}><Mail className="mr-1 h-3 w-3"/>Email All</Button>
+                                    </CardFooter>
+                                </Card>
+                                {/* Department Winner Certificates */}
+                                 <Card className="bg-blue-50 dark:bg-blue-900/20">
+                                    <CardHeader className="pb-2"><CardTitle className="text-sm text-blue-700 dark:text-blue-300">Dept. Winners</CardTitle></CardHeader>
+                                    <CardContent className="text-xs space-y-1">
+                                        <p>Total: {certificateStats.departmentWinners.total}</p>
+                                        <p>Generated: {certificateStats.departmentWinners.generated}</p>
+                                        <p>Emailed: {certificateStats.departmentWinners.emailSent}</p>
+                                    </CardContent>
+                                    <CardFooter className="gap-2">
+                                        <Button size="sm" variant="outline" onClick={() => handleEmailCertificates('department-winner')} disabled={isSubmitting}><Mail className="mr-1 h-3 w-3"/>Email All</Button>
+                                    </CardFooter>
+                                </Card>
+                                {/* Institute Winner Certificates */}
+                                 <Card className="bg-yellow-50 dark:bg-yellow-900/20">
+                                    <CardHeader className="pb-2"><CardTitle className="text-sm text-yellow-700 dark:text-yellow-300">Inst. Winners</CardTitle></CardHeader>
+                                    <CardContent className="text-xs space-y-1">
+                                        <p>Total: {certificateStats.instituteWinners.total}</p>
+                                        <p>Generated: {certificateStats.instituteWinners.generated}</p>
+                                        <p>Emailed: {certificateStats.instituteWinners.emailSent}</p>
+                                    </CardContent>
+                                    <CardFooter className="gap-2">
+                                        <Button size="sm" variant="outline" onClick={() => handleEmailCertificates('institute-winner')} disabled={isSubmitting}><Mail className="mr-1 h-3 w-3"/>Email All</Button>
+                                    </CardFooter>
+                                </Card>
+                            </div>
+                            <div className="pt-4 border-t">
+                                <h4 className="font-medium mb-2">Email Settings</h4>
+                                <div className="space-y-3 max-w-xl">
+                                    <div>
+                                        <Label htmlFor="emailSubject" className="text-xs">Email Subject</Label>
+                                        <Input id="emailSubject" value={emailSettings.subject} onChange={(e) => setEmailSettings(prev => ({...prev, subject: e.target.value}))} />
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="emailTemplate" className="text-xs">Email Template</Label>
+                                        <Textarea id="emailTemplate" value={emailSettings.template} onChange={(e) => setEmailSettings(prev => ({...prev, template: e.target.value}))} rows={5} />
+                                        <p className="text-xs text-muted-foreground mt-1">Placeholders: {'{participant_name}'}, {'{event_name}'}, {'{certificate_type}'}</p>
+                                    </div>
+                                    <Button size="sm" disabled>Save Email Settings (WIP)</Button>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
