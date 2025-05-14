@@ -1,4 +1,5 @@
 
+
 export type Timestamp = string; // ISO 8601 format: "YYYY-MM-DDTHH:mm:ss.sssZ"
 
 // User and Authentication
@@ -41,12 +42,12 @@ export interface User {
     updatedAt?: Timestamp; 
     lastLoginAt?: Timestamp;
     isActive: boolean;
-    isEmailVerified: boolean;
+    isEmailVerified?: boolean;
     
     roles: UserRole[]; 
     currentRole: UserRole; 
     
-    preferences: {
+    preferences?: {
         theme?: 'light' | 'dark' | 'system';
         language?: string;
         notifications?: {
@@ -62,7 +63,7 @@ export interface User {
     instituteId?: string; 
     instituteEmail?: string; 
     password?: string; 
-    departmentId?: string; // Added departmentId for faculty/HOD user context
+    departmentId?: string; 
 }
 export type SystemUser = User;
 
@@ -183,7 +184,7 @@ export interface Student {
 
 export type FacultyStatus = 'active' | 'inactive' | 'retired' | 'resigned' | 'on_leave';
 export type JobType = 'Regular' | 'Adhoc' | 'Contractual' | 'Visiting' | 'Other';
-export type Gender = 'Male' | 'Female' | 'Other' | string; 
+
 
 export interface FacultyProfile {
     id: string;
@@ -688,13 +689,14 @@ export interface ResultImportResponse {
     batchId: string | null;
     importedCount: number;
     totalRows: number;
-    error?: string;
+    error?: string; // For general import error
   };
-  newCount?: number; 
-  updatedCount?: number; 
-  skippedCount?: number; 
-  errors?: Array<{ row: number; message: string; data: any }>; 
+  newCount?: number; // If endpoint provides more granular counts
+  updatedCount?: number; // If endpoint provides more granular counts
+  skippedCount?: number; // If endpoint provides more granular counts
+  errors?: Array<{ row: number; message: string; data: any }>; // For row-level errors
 }
+
 
 export interface ResultDeleteBatchResponse {
   status: string;
@@ -944,3 +946,27 @@ export interface Notification {
   createdAt: Timestamp;
   updatedAt?: Timestamp;
 }
+
+// For Project Fair API responses
+export interface CertificateInfo {
+  projectId: string;
+  title: string;
+  teamName?: string;
+  teamMembers?: string[];
+  departmentName?: string;
+  score?: number;
+  rank?: number;
+  certificateType: 'participation' | 'department-winner' | 'institute-winner';
+  eventName: string;
+  eventDate: string; 
+  downloadUrl: string;
+}
+
+export interface WinnersResponse {
+  departmentWinners: Array<{
+      department: Department;
+      winners: Array<Project & { rank: number }>;
+  }>;
+  instituteWinners: Array<Project & { rank: number }>;
+}
+```
