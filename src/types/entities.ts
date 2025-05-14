@@ -19,7 +19,7 @@ export type UserRole =
   | 'gtu_admin'
   | 'lab_assistant'
   | 'clerical_staff'
-  | string; // To allow for dynamic committee roles like 'cwan_gpp_convenor'
+  | string; 
 
 
 export interface User {
@@ -27,7 +27,7 @@ export interface User {
     email: string; 
     username?: string; 
     displayName: string; 
-    fullName?: string; // As per GTU records: SURNAME NAME FATHERNAME
+    fullName?: string; 
     firstName?: string;
     middleName?: string;
     lastName?: string;
@@ -60,7 +60,7 @@ export interface User {
     };
     instituteId?: string; 
     instituteEmail?: string; 
-    password?: string; // Only for creation/update, not for retrieval
+    password?: string; 
 }
 export type SystemUser = User;
 
@@ -72,9 +72,9 @@ export interface Role {
     description: string;
     permissions: string[]; 
     isSystemRole?: boolean; 
-    isCommitteeRole?: boolean; // True if this role is specific to a committee
-    committeeId?: string; // If it's a committee role, which committee it belongs to
-    committeeCode?: string; // e.g., "CWAN"
+    isCommitteeRole?: boolean; 
+    committeeId?: string; 
+    committeeCode?: string; 
     createdAt?: Timestamp; 
     updatedAt?: Timestamp; 
     
@@ -125,7 +125,7 @@ export interface Student {
     gtuEnrollmentNumber?: string; 
     
     programId: string; 
-    department: string; // Department ID, derived from Program
+    department: string; 
     batchId?: string; 
     currentSemester: number;
     admissionDate?: Timestamp;
@@ -146,7 +146,7 @@ export interface Student {
     sem7Status?: SemesterStatus;
     sem8Status?: SemesterStatus;
     
-    fullNameGtuFormat?: string; // As per GTU records: SURNAME NAME FATHERNAME
+    fullNameGtuFormat?: string; 
     firstName?: string;
     middleName?: string;
     lastName?: string;
@@ -175,6 +175,7 @@ export interface Student {
     photoURL?: string;
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
+    isActive?: boolean; // Added to align with User model
 }
 
 
@@ -198,10 +199,10 @@ export interface FacultyProfile {
     instituteEmail: string; 
     contactNumber?: string;
     
-    department: string; // Department Name (string) or ID
+    department: string; 
     designation?: string;
     jobType?: JobType;
-    instType?: string; // GTU specific, e.g., 'DI' for Diploma Institute
+    instType?: string; 
     specializations?: string[];
     qualifications?: Qualification[];
     
@@ -418,6 +419,7 @@ export interface Course {
   updatedAt?: Timestamp;
 }
 
+export type CourseOfferingStatus = 'scheduled' | 'ongoing' | 'completed' | 'cancelled';
 export interface CourseOffering {
     id: string;
     courseId: string;
@@ -428,17 +430,18 @@ export interface CourseOffering {
     roomIds?: string[]; 
     startDate?: Timestamp; 
     endDate?: Timestamp;   
-    status: 'scheduled' | 'ongoing' | 'completed' | 'cancelled';
+    status: CourseOfferingStatus;
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
 
+export type EnrollmentStatus = 'requested' | 'enrolled' | 'withdrawn' | 'completed' | 'failed' | 'incomplete';
 export interface Enrollment {
     id: string;
-    studentProfileId: string;
+    studentId: string; // Changed from studentProfileId to studentId for consistency
     courseOfferingId: string;
     
-    status: 'enrolled' | 'withdrawn' | 'completed' | 'failed' | 'incomplete';
+    status: EnrollmentStatus;
     internalMarks?: number;
     externalMarks?: number;
     grade?: string;
@@ -544,7 +547,7 @@ export interface StudentAssessmentScore {
     submissionDate?: Timestamp;
     evaluatedBy?: string; 
     evaluatedAt?: Timestamp;
-    files?: Array<{ name: string, url: string, type: string }>; // For assignment submissions
+    files?: Array<{ name: string, url: string, type: string }>; 
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
@@ -578,7 +581,7 @@ export interface ResultSubject {
 }
 
 export interface Result {
-  _id: string; // Changed from id to _id to match reference
+  _id: string; 
   st_id: string;
   enrollmentNo: string; 
   extype?: string;
@@ -592,7 +595,7 @@ export interface Result {
   name: string; 
   instcode?: number;
   instName?: string;
-  courseName?: string; // Can be derived if not directly available
+  courseName?: string; 
   branchCode?: number;
   branchName: string;
   subjects: ResultSubject[];
@@ -607,19 +610,19 @@ export interface Result {
   currentBacklog?: number;
   totalBacklog?: number;
   uploadBatch: string; 
-  programId?: string; // Added to link result to a program
+  programId?: string; 
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
 
 export interface UploadBatch {
-  _id: string; // Typically corresponds to uploadBatch value in Result
+  _id: string; 
   count: number;
   latestUpload: Timestamp;
 }
 
 export interface BranchAnalysis {
-  _id: { // Grouping keys
+  _id: { 
     branchName: string;
     semester: number;
   };
@@ -684,10 +687,10 @@ export interface ResultImportResponse {
     totalRows: number;
     error?: string;
   };
-  newCount?: number; // For GTU import
-  updatedCount?: number; // For GTU import
-  skippedCount?: number; // For GTU import
-  errors?: Array<{ row: number; message: string; data: any }>; // For GTU import
+  newCount?: number; 
+  updatedCount?: number; 
+  skippedCount?: number; 
+  errors?: Array<{ row: number; message: string; data: any }>; 
 }
 
 export interface ResultDeleteBatchResponse {
@@ -815,29 +818,29 @@ export interface ProjectEvent {
   isActive: boolean;
   publishResults?: boolean;
   schedule?: ProjectEventScheduleItem[];
-  departments?: string[]; // Array of Department IDs
-  createdBy?: string; // User ID
-  updatedBy?: string; // User ID
+  departments?: string[]; 
+  createdBy?: string; 
+  updatedBy?: string; 
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
 
 export interface ProjectTeamMember {
   userId: string;
-  name: string; // Denormalized for display
+  name: string; 
   enrollmentNo: string;
-  role: string; // e.g., Team Leader, Developer, Designer
+  role: string; 
   isLeader: boolean;
 }
 
 export interface ProjectTeam {
   id: string;
   name: string;
-  department: string; // Department ID
+  department: string; 
   members: ProjectTeamMember[];
-  eventId: string; // ProjectEvent ID
-  createdBy?: string; // User ID
-  updatedBy?: string; // User ID
+  eventId: string; 
+  createdBy?: string; 
+  updatedBy?: string; 
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
@@ -850,58 +853,58 @@ export interface ProjectRequirements {
 }
 
 export interface ProjectGuide {
-  userId: string; // Faculty User ID
-  name: string;   // Denormalized
-  department: string; // Department ID of Guide
+  userId: string; 
+  name: string;   
+  department: string; 
   contactNumber?: string;
 }
 
 export interface ProjectEvaluationScore {
-  criteriaId: string; // e.g., 'innovation', 'implementation'
+  criteriaId: string; 
   score: number;
   comments?: string;
 }
 
 export interface ProjectEvaluation {
   completed: boolean;
-  score?: number; // Overall score (e.g., percentage)
+  score?: number; 
   feedback?: string;
-  juryId?: string; // User ID of Jury member
+  juryId?: string; 
   evaluatedAt?: Timestamp;
-  criteriaScores?: ProjectEvaluationScore[]; // Detailed scoring
+  criteriaScores?: ProjectEvaluationScore[]; 
 }
 
 export interface Project {
   id: string;
   title: string;
-  category: string; // e.g., IoT, Web App, Hardware
+  category: string; 
   abstract: string;
-  department: string; // Department ID
+  department: string; 
   status: 'draft' | 'submitted' | 'approved' | 'rejected' | 'completed' | 'evaluated';
   requirements: ProjectRequirements;
   guide: ProjectGuide;
-  teamId: string; // ProjectTeam ID
-  eventId: string; // ProjectEvent ID
-  locationId?: string; // Assigned stall/location ID (from ProjectLocation)
+  teamId: string; 
+  eventId: string; 
+  locationId?: string; 
   deptEvaluation?: ProjectEvaluation;
   centralEvaluation?: ProjectEvaluation;
-  rank?: number; // Overall rank in the fair
-  prize?: string; // Prize won, if any
+  rank?: number; 
+  prize?: string; 
   certificateUrl?: string;
-  createdBy?: string; // User ID (likely student leader or faculty)
-  updatedBy?: string; // User ID
+  createdBy?: string; 
+  updatedBy?: string; 
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
 
 export interface ProjectLocation {
   id: string;
-  locationId: string; // User-friendly ID, e.g., A-01, B-12
-  section: string; // e.g., A, B, North Wing
-  position: number; // e.g., 1, 2, 12
-  department?: string; // Department ID (if locations are dept-specific)
-  eventId: string; // ProjectEvent ID
-  projectId?: string; // Project ID if assigned
+  locationId: string; 
+  section: string; 
+  position: number; 
+  department?: string; 
+  eventId: string; 
+  projectId?: string; 
   isAssigned: boolean;
   notes?: string;
   createdBy?: string;
@@ -915,14 +918,14 @@ export type CourseMaterialFileType = 'pdf' | 'doc' | 'docx' | 'ppt' | 'pptx' | '
 
 export interface CourseMaterial {
   id: string;
-  courseOfferingId: string; // Link to a specific offering of a course
+  courseOfferingId: string; 
   title: string;
   description?: string;
   fileType: CourseMaterialFileType;
-  filePathOrUrl: string; // Could be a server path or an external URL
-  fileName?: string; // Original file name, if applicable
-  fileSize?: number; // In bytes
-  uploadedBy: string; // Faculty User ID
+  filePathOrUrl: string; 
+  fileName?: string; 
+  fileSize?: number; 
+  uploadedBy: string; 
   uploadedAt: Timestamp;
   updatedAt?: Timestamp;
 }

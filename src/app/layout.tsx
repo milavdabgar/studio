@@ -1,4 +1,3 @@
-
 // src/app/layout.tsx
 "use client"; 
 
@@ -8,10 +7,10 @@ import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, 
 import { Toaster } from "@/components/ui/toaster";
 import { 
     Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, 
-    Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, 
-    Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, FileText,
+    Loader2, UserCog, BookUser, Users as UsersIcon, Building2, BookCopy, ClipboardList, Landmark, 
+    Building, DoorOpen, Users2 as CommitteeIcon, FileText as AssessmentIcon, FileText,
     BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Activity, Clock,
-    ListChecks, BookOpenCheck, FilePieChart, BookOpenText, Upload, Paperclip
+    ListChecks, BookOpenCheck, FilePieChart, BookOpenText, Upload, Paperclip, CheckSquare
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -46,7 +45,7 @@ const DEFAULT_USER: User = {
 
 const adminNavItems = [
   { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard' }, 
-  { href: '/admin/users', icon: UsersIconLucide, label: 'User Management', id: 'admin-users' },
+  { href: '/admin/users', icon: UsersIcon, label: 'User Management', id: 'admin-users' },
   { href: '/admin/roles', icon: UserCog, label: 'Role Management', id: 'admin-roles' },
   { href: '/admin/institutes', icon: Landmark, label: 'Institutes', id: 'admin-institutes'},
   { href: '/admin/buildings', icon: Building, label: 'Buildings', id: 'admin-buildings'},
@@ -79,6 +78,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/student/timetable', icon: Clock, label: 'My Timetable', id: 'student-timetable' },
     { href: '/student/attendance', icon: AttendanceIcon, label: 'My Attendance', id: 'student-attendance' },
     { href: '/student/courses', icon: BookOpen, label: 'My Courses', id: 'student-courses' },
+    { href: '/student/courses/enroll', icon: BookOpenCheck, label: 'Enroll in Courses', id: 'student-enroll-courses' },
     { href: '/student/assignments', icon: AssessmentIcon, label: 'Assignments', id: 'student-assignments'},
     { href: '/student/results', icon: Award, label: 'My Results', id: 'student-results' },
     { href: '/student/materials', icon: Paperclip, label: 'Study Materials', id: 'student-materials' },
@@ -89,7 +89,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/faculty/profile', icon: UserCircle, label: 'My Profile', id: 'faculty-profile' },
     { href: '/faculty/timetable', icon: Clock, label: 'My Timetable', id: 'faculty-timetable' },
     { href: '/faculty/my-courses', icon: BookOpen, label: 'My Courses', id: 'faculty-courses' }, 
-    { href: '/faculty/students', icon: UsersIconLucide, label: 'My Students', id: 'faculty-students'}, 
+    { href: '/faculty/students', icon: UsersIcon, label: 'My Students', id: 'faculty-students'}, 
     { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'faculty-mark-attendance' },
     { href: '/faculty/attendance/reports', icon: BarChart3, label: 'Attendance Reports', id: 'faculty-attendance-reports' },
     { href: '/faculty/assessments/grade', icon: FilePieChart, label: 'Grade Assessments', id: 'faculty-grade-assessments' },
@@ -318,7 +318,7 @@ export default function RootLayout({
             <title>PolyManager - Loading...</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
         </head>
-        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
+        <body className={`${GeistSans.className} antialiased`} suppressHydrationWarning={true}>
           <div className="flex items-center justify-center min-h-screen">
             <Loader2 className="h-12 w-12 animate-spin text-primary" />
           </div>
@@ -335,7 +335,7 @@ export default function RootLayout({
             <title>PolyManager</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
         </head>
-        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
+        <body className={`${GeistSans.className} antialiased`} suppressHydrationWarning={true}>
           {children}
           <Toaster />
         </body>
@@ -350,7 +350,7 @@ export default function RootLayout({
             <title>PolyManager</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
         </head>
-      <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
+      <body className={`${GeistSans.className} antialiased`} suppressHydrationWarning={true}>
         <SidebarProvider>
           <Sidebar>
             <SidebarHeader className="p-4 border-b border-sidebar-border">
@@ -448,4 +448,3 @@ export default function RootLayout({
     </html>
   );
 }
-
