@@ -8,9 +8,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { 
     Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, 
     Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, 
-    Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, 
+    Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as FileTextIcon, 
     BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Activity, Clock,
-    ListChecks, BookOpenCheck, FilePieChart, BookOpenText, Upload
+    ListChecks, BookOpenCheck, FilePieChart, BookOpenText, Upload, Paperclip
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -58,7 +58,7 @@ const adminNavItems = [
   { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches' },
   { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses' },
   { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum Mgt.', id: 'admin-curriculum' },
-  { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments' },
+  { href: '/admin/assessments', icon: FileTextIcon, label: 'Assessments', id: 'admin-assessments' },
   { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance-link' },
   { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'admin-resource-allocation' },
   { href: '/admin/timetables', icon: Clock, label: 'Timetables', id: 'admin-timetables'},
@@ -78,21 +78,21 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/student/timetable', icon: Clock, label: 'My Timetable', id: 'student-timetable' },
     { href: '/student/attendance', icon: AttendanceIcon, label: 'My Attendance', id: 'student-attendance' },
     { href: '/student/courses', icon: BookOpen, label: 'My Courses', id: 'student-courses' },
-    { href: '/student/assignments', icon: AssessmentIcon, label: 'Assignments', id: 'student-assignments'},
+    { href: '/student/assignments', icon: FileTextIcon, label: 'Assignments', id: 'student-assignments'},
     { href: '/student/results', icon: Award, label: 'My Results', id: 'student-results' },
-    { href: '/student/materials', icon: BookOpenCheck, label: 'Study Materials', id: 'student-materials' },
-    { href: '/project-fair/student', icon: AssessmentIcon, label: 'My Project', id: 'student-project' }, 
+    { href: '/student/materials', icon: Paperclip, label: 'Study Materials', id: 'student-materials' },
+    { href: '/project-fair/student', icon: FileTextIcon, label: 'My Project', id: 'student-project' }, 
   ],
   faculty: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'faculty-dashboard' },
     { href: '/faculty/profile', icon: UserCircle, label: 'My Profile', id: 'faculty-profile' },
     { href: '/faculty/timetable', icon: Clock, label: 'My Timetable', id: 'faculty-timetable' },
-    { href: '/faculty/courses', icon: BookOpen, label: 'My Courses', id: 'faculty-courses' }, 
+    { href: '/faculty/my-courses', icon: BookOpen, label: 'My Courses', id: 'faculty-courses' }, 
     { href: '/faculty/students', icon: UsersIconLucide, label: 'My Students', id: 'faculty-students'}, 
     { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'faculty-mark-attendance' },
     { href: '/faculty/attendance/reports', icon: BarChart3, label: 'Attendance Reports', id: 'faculty-attendance-reports' },
     { href: '/faculty/assessments/grade', icon: FilePieChart, label: 'Grade Assessments', id: 'faculty-grade-assessments' },
-    { href: '/project-fair/jury', icon: AssessmentIcon, label: 'Evaluate Projects', id: 'faculty-evaluate' }, 
+    { href: '/project-fair/jury', icon: FileTextIcon, label: 'Evaluate Projects', id: 'faculty-evaluate' }, 
     { href: '/admin/feedback-analysis', icon: BotMessageSquare, label: 'Feedback Analysis', id: 'faculty-feedback' }, 
   ],
   hod: [
@@ -106,7 +106,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/batches', icon: CalendarRange, label: 'Batches (Dept)', id: 'hod-batches' },
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'hod-courses' },
     { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum (Dept)', id: 'hod-curriculum' },
-    { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'hod-assessments' },
+    { href: '/admin/assessments', icon: FileTextIcon, label: 'Assessments (Dept)', id: 'hod-assessments' },
     { href: '/admin/attendance', icon: AttendanceIcon, label: 'Attendance (Dept)', id: 'hod-attendance-records' },
     { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'hod-resource-allocation' },
     { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'hod-faculty' },
@@ -117,7 +117,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
   ],
   jury: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'jury-dashboard' },
-    { href: '/project-fair/jury', icon: AssessmentIcon, label: 'Evaluate Projects', id: 'jury-evaluate' }, 
+    { href: '/project-fair/jury', icon: FileTextIcon, label: 'Evaluate Projects', id: 'jury-evaluate' }, 
   ],
   committee_convener: [ 
     { href: '/dashboard', icon: Home, label: 'Convener Dashboard', id: 'convener-dashboard' },
@@ -151,7 +151,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/batches', icon: CalendarRange, label: 'Batches (Dept)', id: 'dept-admin-batches' },
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'dept-admin-courses' },
     { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum (Dept)', id: 'dept-admin-curriculum' },
-    { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'dept-admin-assessments' },
+    { href: '/admin/assessments', icon: FileTextIcon, label: 'Assessments (Dept)', id: 'dept-admin-assessments' },
     { href: '/admin/attendance', icon: AttendanceIcon, label: 'Attendance (Dept)', id: 'dept-admin-attendance-records' },
     { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'dept-admin-faculty' },
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'dept-admin-students' },
@@ -189,11 +189,9 @@ const getNavItemsForRoleCode = (roleCode: UserRoleCode): Array<{ href: string; i
 
   const sortedItems = [...itemsArray]; 
   sortedItems.sort((a, b) => {
-    const labelA = a.label || "";
-    const labelB = b.label || "";
-    if (labelA.includes('Dashboard')) return -1;
-    if (labelB.includes('Dashboard')) return 1;
-    return labelA.localeCompare(labelB);
+    if (a.label.includes('Dashboard')) return -1;
+    if (b.label.includes('Dashboard')) return 1;
+    return a.label.localeCompare(b.label);
   });
   return sortedItems;
 };
@@ -300,7 +298,7 @@ export default function RootLayout({
         } else { 
             router.push('/dashboard'); 
         }
-        // router.refresh(); // This might not be necessary if state update triggers re-render
+        router.refresh(); 
     } else {
         const roleDetails = allSystemRoles.find(r => r.code === newRoleCode);
         toast({ variant: "destructive", title: "Role Switch Failed", description: `Role '${roleDetails?.name || newRoleCode}' is not available for your account or is invalid.`})
@@ -326,7 +324,7 @@ export default function RootLayout({
           <Toaster />
         </body>
       </html>
-    );
+    )
   }
 
   if (hideSidebar) {
@@ -343,6 +341,7 @@ export default function RootLayout({
       </html>
     );
   }
+
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -364,7 +363,7 @@ export default function RootLayout({
                 {currentNavItems.map((item) => (
                   <SidebarMenuItem key={item.id}>
                     <Link href={item.href} passHref legacyBehavior>
-                      <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/dashboard' && item.href !== '/')}>
+                      <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/dashboard')} >
                         <item.icon />
                         <span>{item.label}</span>
                       </SidebarMenuButton>
@@ -448,5 +447,3 @@ export default function RootLayout({
     </html>
   );
 }
-    
-    
