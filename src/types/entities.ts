@@ -1,3 +1,4 @@
+
 export type Timestamp = string; // ISO 8601 format: "YYYY-MM-DDTHH:mm:ss.sssZ"
 
 // User and Authentication
@@ -61,6 +62,7 @@ export interface User {
     instituteId?: string; 
     instituteEmail?: string; 
     password?: string; 
+    departmentId?: string; // Added departmentId for faculty/HOD user context
 }
 export type SystemUser = User;
 
@@ -175,7 +177,7 @@ export interface Student {
     photoURL?: string;
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
-    isActive?: boolean; // Added to align with User model
+    isActive?: boolean; 
 }
 
 
@@ -431,7 +433,7 @@ export interface CourseOffering {
     startDate?: Timestamp; 
     endDate?: Timestamp;   
     status: CourseOfferingStatus;
-    programId?: string; // Added to easily filter offerings by program for student enrollment
+    programId?: string; 
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
