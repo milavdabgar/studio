@@ -1,4 +1,5 @@
 
+
 export type Timestamp = string; // ISO 8601 format: "YYYY-MM-DDTHH:mm:ss.sssZ"
 
 // User and Authentication
@@ -341,11 +342,17 @@ export interface Committee {
   dissolutionDate?: Timestamp; 
   status: CommitteeStatus;
   convenerId?: string; 
+  members?: Array<{
+    userId: string;
+    role: CommitteeMemberRole;
+    assignmentDate: Timestamp;
+    endDate?: Timestamp;
+  }>;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
 
-export interface CommitteeMember {
+export interface CommitteeMember { // This can be used if we need a separate collection for detailed member info
   id: string;
   committeeId: string;
   userId: string; 
@@ -437,7 +444,7 @@ export interface CourseOffering {
     startDate?: Timestamp; 
     endDate?: Timestamp;   
     status: CourseOfferingStatus;
-    programId?: string; 
+    programId?: string; // Denormalized for easier filtering
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
@@ -1119,7 +1126,45 @@ export interface AnalysisResult {
   semester_scores: SemesterScore[];
   branch_scores: BranchScore[];
   term_year_scores: TermYearScore[];
-  correlation_matrix?: { [key: string]: { [key: string]: number } }; 
+  correlation_matrix?: { [key: string]: { [key: string]: number } }; // Make optional for now
   markdownReport: string; 
   rawFeedbackData?: string; 
+}
+
+// Reporting & Analytics Types
+export interface StudentStrengthData {
+  instituteName: string;
+  instituteCode: string;
+  totalStudents: number;
+  programs: Array<{
+    programName: string;
+    programCode: string;
+    totalStudents: number;
+    batches: Array<{
+      batchName: string;
+      totalStudents: number;
+      semesters: Array<{
+        semester: number;
+        totalStudents: number;
+      }>;
+    }>;
+  }>;
+}
+
+export interface StudentStrengthReport {
+  byInstitute: StudentStrengthData[];
+  overallTotal: number;
+}
+
+export interface CourseEnrollmentData {
+    courseOfferingId: string;
+    courseName: string;
+    courseCode: string;
+    programName: string;
+    batchName: string;
+    semester: number;
+    academicYear: string;
+    facultyNames: string[];
+    enrolledStudents: number;
+    maxIntake?: number; // from Batch
 }
