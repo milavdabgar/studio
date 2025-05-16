@@ -1,3 +1,4 @@
+
 // src/app/admin/enrollments/page.tsx
 "use client";
 
@@ -8,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, UserPlus, CheckCircle, XCircle, Filter, Search, ArrowUpDown } from "lucide-react";
+import { Loader2, UserPlus, CheckCircle, XCircle, Filter, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Enrollment, Student, CourseOffering, Course, Program, Batch, EnrollmentStatus } from '@/types/entities';
 import { enrollmentService } from '@/lib/api/enrollments';
@@ -30,7 +31,8 @@ interface EnrichedEnrollment extends Enrollment {
   programName?: string;
 }
 
-const ENROLLMENT_STATUS_OPTIONS: EnrollmentStatus[] = ['requested', 'enrolled', 'withdrawn', 'completed', 'failed', 'incomplete'];
+const ITEMS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
+const ENROLLMENT_STATUS_OPTIONS: EnrollmentStatus[] = ['requested', 'enrolled', 'withdrawn', 'completed', 'failed', 'incomplete', 'rejected'];
 
 export default function EnrollmentManagementPage() {
   const [allEnrollments, setAllEnrollments] = useState<Enrollment[]>([]);
@@ -53,7 +55,7 @@ export default function EnrollmentManagementPage() {
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
 
 
   const { toast } = useToast();
@@ -65,7 +67,7 @@ export default function EnrollmentManagementPage() {
         const [
           enrollmentsData, studentsData, coData, coursesData, programsData, batchesData
         ] = await Promise.all([
-          enrollmentService.getAllEnrollments(), // Assuming this function exists or is added
+          enrollmentService.getAllEnrollments(), 
           studentService.getAllStudents(),
           courseOfferingService.getAllCourseOfferings(),
           courseService.getAllCourses(),
@@ -186,10 +188,10 @@ export default function EnrollmentManagementPage() {
       <CardContent>
         <div className="mb-6 p-4 border rounded-lg grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           <div><Label htmlFor="searchTermEnroll">Search Student/Course</Label><Input id="searchTermEnroll" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Name, Enroll No, Course..." /></div>
-          <div><Label htmlFor="filterProgramEnroll">Program</Label><Select value={filterProgramId} onValueChange={setFilterProgramId}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Programs</SelectItem>{programs.map(p=><SelectItem key={p.id} value={p.id}>{p.name} ({p.code})</SelectItem>)}</SelectContent></Select></div>
-          <div><Label htmlFor="filterBatchEnroll">Batch</Label><Select value={filterBatchId} onValueChange={setFilterBatchId} disabled={filterProgramId === 'all' && batches.length === 0}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Batches</SelectItem>{batches.filter(b=> filterProgramId==='all' || b.programId === filterProgramId).map(b=><SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}</SelectContent></Select></div>
-          <div><Label htmlFor="filterCourseOfferingEnroll">Course Offering</Label><Select value={filterCourseOfferingId} onValueChange={setFilterCourseOfferingId} disabled={courseOfferings.length === 0}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Offerings</SelectItem>{courseOfferings.filter(co => (filterBatchId === 'all' || co.batchId === filterBatchId) && (filterProgramId === 'all' || co.programId === filterProgramId)).map(co=><SelectItem key={co.id} value={co.id}>{courses.find(c=>c.id === co.courseId)?.subjectName} ({co.academicYear} Sem {co.semester})</SelectItem>)}</SelectContent></Select></div>
-          <div><Label htmlFor="filterStatusEnroll">Status</Label><Select value={filterStatus} onValueChange={s => setFilterStatus(s as EnrollmentStatus | "all")}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Statuses</SelectItem>{ENROLLMENT_STATUS_OPTIONS.map(s=><SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>)}</SelectContent></Select></div>
+          <div><Label htmlFor="filterProgramEnroll">Program</Label><Select value={filterProgramId} onValueChange={setFilterProgramId}><SelectTrigger><SelectValue placeholder="All Programs"/></SelectTrigger><SelectContent><SelectItem value="all">All Programs</SelectItem>{programs.map(p=><SelectItem key={p.id} value={p.id}>{p.name} ({p.code})</SelectItem>)}</SelectContent></Select></div>
+          <div><Label htmlFor="filterBatchEnroll">Batch</Label><Select value={filterBatchId} onValueChange={setFilterBatchId} disabled={filterProgramId === 'all' && batches.length === 0}><SelectTrigger><SelectValue placeholder="All Batches"/></SelectTrigger><SelectContent><SelectItem value="all">All Batches</SelectItem>{batches.filter(b=> filterProgramId==='all' || b.programId === filterProgramId).map(b=><SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}</SelectContent></Select></div>
+          <div><Label htmlFor="filterCourseOfferingEnroll">Course Offering</Label><Select value={filterCourseOfferingId} onValueChange={setFilterCourseOfferingId} disabled={courseOfferings.length === 0}><SelectTrigger><SelectValue placeholder="All Offerings"/></SelectTrigger><SelectContent><SelectItem value="all">All Offerings</SelectItem>{courseOfferings.filter(co => (filterBatchId === 'all' || co.batchId === filterBatchId) && (filterProgramId === 'all' || co.programId === filterProgramId)).map(co=><SelectItem key={co.id} value={co.id}>{courses.find(c=>c.id === co.courseId)?.subjectName} ({co.academicYear} Sem {co.semester})</SelectItem>)}</SelectContent></Select></div>
+          <div><Label htmlFor="filterStatusEnroll">Status</Label><Select value={filterStatus} onValueChange={s => setFilterStatus(s as EnrollmentStatus | "all")}><SelectTrigger><SelectValue placeholder="All Statuses"/></SelectTrigger><SelectContent><SelectItem value="all">All Statuses</SelectItem>{ENROLLMENT_STATUS_OPTIONS.map(s=><SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>)}</SelectContent></Select></div>
         </div>
         {isLoading ? (
           <div className="flex justify-center py-10"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>
@@ -214,12 +216,12 @@ export default function EnrollmentManagementPage() {
                   <TableCell>{enroll.courseName}</TableCell>
                   <TableCell>{enroll.batchName} ({enroll.programName})</TableCell>
                   <TableCell>{enroll.createdAt ? format(parseISO(enroll.createdAt), "PPP") : 'N/A'}</TableCell>
-                  <TableCell><span className={`capitalize px-2 py-0.5 text-xs rounded-full font-medium bg-${enroll.status === 'enrolled' ? 'green' : enroll.status === 'requested' ? 'yellow' : 'red'}-100 text-${enroll.status === 'enrolled' ? 'green' : enroll.status === 'requested' ? 'yellow' : 'red'}-700`}>{enroll.status}</span></TableCell>
+                  <TableCell><span className={`capitalize px-2 py-0.5 text-xs rounded-full font-medium bg-${enroll.status === 'enrolled' ? 'green' : enroll.status === 'requested' ? 'yellow' : enroll.status === 'rejected' || enroll.status === 'withdrawn' ? 'red' : 'slate'}-100 text-${enroll.status === 'enrolled' ? 'green' : enroll.status === 'requested' ? 'yellow' : enroll.status === 'rejected' || enroll.status === 'withdrawn' ? 'red' : 'slate'}-700`}>{enroll.status}</span></TableCell>
                   <TableCell className="text-right space-x-1">
                     {enroll.status === 'requested' && (
                       <>
                         <Button size="xs" variant="outline" className="text-green-600 border-green-600 hover:bg-green-50 hover:text-green-700" onClick={() => handleUpdateStatus(enroll.id, 'enrolled')} disabled={isSubmitting}><CheckCircle className="mr-1 h-3 w-3"/>Approve</Button>
-                        <Button size="xs" variant="outline" className="text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700" onClick={() => handleUpdateStatus(enroll.id, 'withdrawn')} disabled={isSubmitting}><XCircle className="mr-1 h-3 w-3"/>Reject</Button>
+                        <Button size="xs" variant="outline" className="text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700" onClick={() => handleUpdateStatus(enroll.id, 'rejected')} disabled={isSubmitting}><XCircle className="mr-1 h-3 w-3"/>Reject</Button>
                       </>
                     )}
                     {enroll.status === 'enrolled' && (
