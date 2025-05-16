@@ -1,19 +1,20 @@
+
 "use client";
 
 import React, { useEffect, useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CalendarCheck, Loader2, Filter, UploadCloud, Download, CheckCircle, AlertCircle, Clock } from "lucide-react";
+import { CalendarCheck, Loader2, Filter, CheckCircle, AlertTriangle, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Assessment, Student, Course, Program, Batch, StudentAssessmentScore } from '@/types/entities';
+import type { Assessment, Student, Course, Program, Batch, StudentAssessmentScore, CourseOffering } from '@/types/entities';
 import { assessmentService } from '@/lib/api/assessments';
 import { courseService } from '@/lib/api/courses';
 import { programService } from '@/lib/api/programs';
 import { batchService } from '@/lib/api/batches';
 import { studentService } from '@/lib/api/students';
-// Mock student submission service for now
-// import { studentSubmissionService } from '@/lib/api/studentSubmissions';
-import { format, isPast } from 'date-fns';
+import { studentAssessmentScoreService } from '@/lib/api/studentAssessmentScores';
+import { courseOfferingService } from '@/lib/api/courseOfferings';
+import { format, isPast, isValid, parseISO } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -24,45 +25,18 @@ interface UserCookie {
   name: string;
   activeRole: string;
   availableRoles: string[];
-  id?: string; 
+  id?: string;
 }
 
 interface EnrichedAssignment extends Assessment {
   courseName?: string;
   programName?: string;
   batchName?: string;
-  submissionStatus?: 'Pending' | 'Submitted' | 'Late' | 'Graded';
+  submissionStatus?: 'Pending' | 'Submitted' | 'Late Submission' | 'Graded';
   submittedDate?: string; // ISO string
   grade?: string;
+  score?: number;
 }
-
-// Mock service for student submissions
-const mockStudentSubmissionService = {
-  getStudentSubmissionsForAssessment: async (studentId: string, assessmentId: string): Promise<Partial<StudentAssessmentScore> | null> => {
-    // Simulate fetching submission. In a real app, this would be an API call.
-    // For demo, let's assume some assignments are submitted/graded.
-    if (assessmentId.includes("cs101")) { // Example: Quiz 1 for CS101 submitted & graded
-        if(studentId === "std_ce_001_gpp") { // Specific student
-            return {
-                studentId,
-                assessmentId,
-                score: 18,
-                grade: 'A',
-                submissionDate: new Date(new Date().setDate(new Date().getDate() - 5)).toISOString(), // Submitted 5 days ago
-            };
-        }
-    }
-    if (assessmentId.includes("midterm_me101") && Math.random() > 0.5) { // Some other random submissions
-         return {
-            studentId,
-            assessmentId,
-            submissionDate: new Date(new Date().setDate(new Date().getDate() - 2)).toISOString(),
-        };
-    }
-    return null;
-  },
-};
-
 
 function getCookie(name: string): string | undefined {
   if (typeof document === 'undefined') return undefined;
@@ -116,45 +90,59 @@ export default function StudentAssignmentsPage() {
         if (studentProfile) {
           const allAssessments = await assessmentService.getAllAssessments();
           const allCourses = await courseService.getAllCourses();
-          const allPrograms = await programService.getAllPrograms();
-          const allBatches = await batchService.getAllBatches();
-
-          const studentProgram = allPrograms.find(p => p.id === studentProfile.programId);
-          const studentBatch = allBatches.find(b => b.id === studentProfile.batchId);
+          // No need to fetch programs and batches here as assessment already has programId and batchId
 
           // Filter assessments relevant to the student's program and batch
+          // Also ensure assessment types are relevant (Assignment, Project, Quiz)
           const relevantAssessments = allAssessments.filter(asmnt => 
             asmnt.programId === studentProfile.programId &&
             (asmnt.batchId === studentProfile.batchId || !asmnt.batchId) && // Include program-wide and batch-specific
-            (asmnt.type === 'Assignment' || asmnt.type === 'Project' || asmnt.type === 'Quiz') // Filter for assignment-like types
+            ['Assignment', 'Project', 'Quiz', 'Midterm', 'Final Exam', 'Lab Work', 'Presentation'].includes(asmnt.type) &&
+            asmnt.status === 'Published' // Only show published assignments
           );
           
           const enrichedAssignmentsPromises = relevantAssessments.map(async (asmnt) => {
             const course = allCourses.find(c => c.id === asmnt.courseId);
-            const submission = await mockStudentSubmissionService.getStudentSubmissionsForAssessment(studentProfile.id, asmnt.id);
+            let submission: Partial<StudentAssessmentScore> | null = null;
+            try {
+              submission = await studentAssessmentScoreService.getStudentScoreForAssessment(asmnt.id, studentProfile.id);
+            } catch (e) {
+              // If 404, it means no submission, which is fine. Other errors will be caught by main try-catch
+              if (!(e instanceof Error && e.message.includes('404'))) {
+                 console.warn(`Could not fetch submission for assessment ${asmnt.id}:`, e)
+              }
+            }
             
             let submissionStatus: EnrichedAssignment['submissionStatus'] = 'Pending';
+            const dueDate = asmnt.dueDate && isValid(parseISO(asmnt.dueDate)) ? parseISO(asmnt.dueDate) : null;
+
             if (submission?.score !== undefined || submission?.grade) {
                 submissionStatus = 'Graded';
             } else if (submission?.submissionDate) {
-                submissionStatus = (asmnt.dueDate && isPast(new Date(asmnt.dueDate)) && new Date(submission.submissionDate) > new Date(asmnt.dueDate)) ? 'Late' : 'Submitted';
-            } else if (asmnt.dueDate && isPast(new Date(asmnt.dueDate))) {
-                submissionStatus = 'Late'; // If due date passed and no submission
+                submissionStatus = (dueDate && isPast(dueDate) && parseISO(submission.submissionDate) > dueDate) ? 'Late Submission' : 'Submitted';
+            } else if (dueDate && isPast(dueDate)) {
+                submissionStatus = 'Pending'; // Still pending if due date passed and no submission. Could be "Missed" too.
             }
 
             return {
               ...asmnt,
               courseName: course?.subjectName || "Unknown Course",
-              programName: studentProgram?.name || "Unknown Program",
-              batchName: studentBatch?.name || "Unknown Batch",
               submissionStatus,
               submittedDate: submission?.submissionDate,
               grade: submission?.grade,
+              score: submission?.score,
             };
           });
 
           const enriched = await Promise.all(enrichedAssignmentsPromises);
-          setAssignments(enriched);
+          setAssignments(enriched.sort((a, b) => {
+            const dateA = a.dueDate ? new Date(a.dueDate).getTime() : 0;
+            const dateB = b.dueDate ? new Date(b.dueDate).getTime() : 0;
+            if(dateA === 0 && dateB === 0) return a.name.localeCompare(b.name); // Sort by name if no due dates
+            if(dateA === 0) return 1; // No due date comes last
+            if(dateB === 0) return -1; // No due date comes last
+            return dateA - dateB; // Sort by due date ascending
+          }));
 
         } else {
           setAssignments([]);
@@ -197,14 +185,19 @@ export default function StudentAssignmentsPage() {
         </CardHeader>
         <CardContent>
           {assignments.length === 0 && !isLoading ? (
-            <p className="text-center text-muted-foreground py-8">No assignments found for your current courses.</p>
+             <div className="text-center py-10">
+                <CalendarCheck className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                <p className="text-lg font-medium text-muted-foreground">
+                    No assignments found for your current courses.
+                </p>
+            </div>
           ) : (
             <>
             <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 border rounded-lg">
                 <div>
-                    <Label htmlFor="courseFilter" className="text-sm">Filter by Course:</Label>
+                    <Label htmlFor="courseFilterStudentAssignments" className="text-sm">Filter by Course:</Label>
                     <Select value={filterCourse} onValueChange={setFilterCourse}>
-                        <SelectTrigger id="courseFilter"><SelectValue placeholder="All Courses" /></SelectTrigger>
+                        <SelectTrigger id="courseFilterStudentAssignments"><SelectValue placeholder="All Courses" /></SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">All Courses</SelectItem>
                             {uniqueCoursesForFilter.map(name => <SelectItem key={name} value={name}>{name}</SelectItem>)}
@@ -212,12 +205,12 @@ export default function StudentAssignmentsPage() {
                     </Select>
                 </div>
                  <div>
-                    <Label htmlFor="statusFilter" className="text-sm">Filter by Status:</Label>
+                    <Label htmlFor="statusFilterStudentAssignments" className="text-sm">Filter by Status:</Label>
                     <Select value={filterStatus} onValueChange={setFilterStatus}>
-                        <SelectTrigger id="statusFilter"><SelectValue placeholder="All Statuses" /></SelectTrigger>
+                        <SelectTrigger id="statusFilterStudentAssignments"><SelectValue placeholder="All Statuses" /></SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">All Statuses</SelectItem>
-                            {(['Pending', 'Submitted', 'Late', 'Graded'] as EnrichedAssignment['submissionStatus'][]).map(status => (
+                            {(['Pending', 'Submitted', 'Late Submission', 'Graded'] as EnrichedAssignment['submissionStatus'][]).map(status => (
                                 <SelectItem key={status} value={status!}>{status}</SelectItem>
                             ))}
                         </SelectContent>
@@ -242,23 +235,24 @@ export default function StudentAssignmentsPage() {
                     <TableCell className="font-medium">{assignment.name}</TableCell>
                     <TableCell className="text-center">{assignment.type}</TableCell>
                     <TableCell className="text-center">
-                      {assignment.dueDate ? format(new Date(assignment.dueDate), "PPP, p") : "N/A"}
+                      {assignment.dueDate ? format(parseISO(assignment.dueDate), "PPP, p") : "N/A"}
                     </TableCell>
                     <TableCell className="text-center">
                       <span className={`px-2 py-0.5 text-xs rounded-full font-medium
-                        ${assignment.submissionStatus === 'Pending' ? 'bg-yellow-100 text-yellow-700' : ''}
-                        ${assignment.submissionStatus === 'Submitted' ? 'bg-blue-100 text-blue-700' : ''}
-                        ${assignment.submissionStatus === 'Late' ? 'bg-red-100 text-red-700' : ''}
-                        ${assignment.submissionStatus === 'Graded' ? 'bg-green-100 text-green-700' : ''}
+                        ${assignment.submissionStatus === 'Pending' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-700/30 dark:text-yellow-300' : ''}
+                        ${assignment.submissionStatus === 'Submitted' ? 'bg-blue-100 text-blue-700 dark:bg-blue-700/30 dark:text-blue-300' : ''}
+                        ${assignment.submissionStatus === 'Late Submission' ? 'bg-red-100 text-red-700 dark:bg-red-700/30 dark:text-red-300' : ''}
+                        ${assignment.submissionStatus === 'Graded' ? 'bg-green-100 text-green-700 dark:bg-green-700/30 dark:text-green-300' : ''}
                       `}>
                         {assignment.submissionStatus}
-                        {assignment.submissionStatus === 'Graded' && assignment.grade && ` (${assignment.grade})`}
+                        {assignment.submissionStatus === 'Graded' && (assignment.grade || typeof assignment.score === 'number') && 
+                            ` (${assignment.grade || assignment.score + '/' + assignment.maxMarks})`}
                       </span>
                     </TableCell>
                     <TableCell className="text-right">
                       <Link href={`/student/assignments/${assignment.id}`} passHref>
                         <Button variant="outline" size="sm">
-                          {assignment.submissionStatus === 'Graded' || assignment.submissionStatus === 'Submitted' ? 'View' : 'Submit'}
+                          {assignment.submissionStatus === 'Graded' || assignment.submissionStatus === 'Submitted' || assignment.submissionStatus === 'Late Submission' ? 'View Details' : 'Submit/View'}
                         </Button>
                       </Link>
                     </TableCell>
@@ -280,3 +274,4 @@ export default function StudentAssignmentsPage() {
     </div>
   );
 }
+
