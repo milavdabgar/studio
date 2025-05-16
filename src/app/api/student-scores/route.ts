@@ -1,7 +1,7 @@
 // src/app/api/student-scores/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
 import type { StudentAssessmentScore, Assessment, Student } from '@/types/entities';
-import { notificationService } from '@/lib/api/notifications'; // Import notification service
+import { notificationService } from '@/lib/api/notifications'; 
 
 // Ensure global stores are initialized
 declare global {
@@ -57,8 +57,11 @@ export async function POST(request: NextRequest) {
     const studentId = formData.get('studentId') as string;
     const assessmentId = formData.get('assessmentId') as string;
     const comments = formData.get('comments') as string | undefined;
-    // Handle file(s) - In a real app, this would involve uploading to a storage service
-    // For now, we'll just store mock file metadata if a file is present.
+    const scoreStr = formData.get('score') as string | undefined;
+    const grade = formData.get('grade') as string | undefined;
+    const remarks = formData.get('remarks') as string | undefined;
+    const evaluatedBy = formData.get('evaluatedBy') as string | undefined; // For faculty-initiated score entries
+
     const filesArray: { name: string; type: string; size: number; url: string }[] = [];
     let fileIndex = 0;
     while (formData.has(`file${fileIndex}`)) {
@@ -68,7 +71,7 @@ export async function POST(request: NextRequest) {
                 name: file.name,
                 type: file.type,
                 size: file.size,
-                url: `/uploads/mock/${file.name}` // Mock path
+                url: `/uploads/mock/${Date.now()}_${file.name.replace(/\s+/g, '_')}` 
             });
         }
         fileIndex++;
@@ -88,68 +91,88 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ message: 'Student not found.' }, { status: 404 });
     }
 
+    const score = scoreStr !== undefined ? parseFloat(scoreStr) : undefined;
+    if (score !== undefined && (isNaN(score) || score < 0 || score > assessment.maxMarks)) {
+        return NextResponse.json({ message: `Score must be a non-negative number and not exceed assessment max marks (${assessment.maxMarks}).` }, { status: 400 });
+    }
+
 
     const currentTimestamp = new Date().toISOString();
     let existingScoreIndex = studentScoresStore.findIndex(
       s => s.studentId === studentId && s.assessmentId === assessmentId
     );
 
-    let savedScore: StudentAssessmentScore;
+    let savedScoreRecord: StudentAssessmentScore;
 
     if (existingScoreIndex !== -1) {
-      // Update existing submission
+      // Update existing submission/score record
+      const existingRecord = studentScoresStore[existingScoreIndex];
       studentScoresStore[existingScoreIndex] = {
-        ...studentScoresStore[existingScoreIndex],
-        submissionDate: currentTimestamp,
-        files: filesArray.length > 0 ? filesArray : studentScoresStore[existingScoreIndex].files,
-        comments: comments?.trim() || studentScoresStore[existingScoreIndex].comments,
-        score: undefined, // Reset score and grade on re-submission
-        grade: undefined,
-        evaluatedBy: undefined,
-        evaluatedAt: undefined,
-        remarks: undefined,
+        ...existingRecord,
+        submissionDate: filesArray.length > 0 || comments ? currentTimestamp : existingRecord.submissionDate, // Update submissionDate if new files/comments
+        files: filesArray.length > 0 ? filesArray : existingRecord.files,
+        comments: comments?.trim() || existingRecord.comments,
+        // Only update grading fields if provided by faculty
+        score: score !== undefined ? score : existingRecord.score,
+        grade: grade !== undefined ? grade.trim().toUpperCase() || undefined : existingRecord.grade,
+        remarks: remarks !== undefined ? remarks.trim() || undefined : existingRecord.remarks,
+        evaluatedBy: evaluatedBy || existingRecord.evaluatedBy,
+        evaluatedAt: (score !== undefined || grade !== undefined || remarks !== undefined) ? currentTimestamp : existingRecord.evaluatedAt,
         updatedAt: currentTimestamp,
       };
-      savedScore = studentScoresStore[existingScoreIndex];
+      savedScoreRecord = studentScoresStore[existingScoreIndex];
     } else {
-      // Create new submission
+      // Create new submission/score record
       const newScoreRecord: StudentAssessmentScore = {
         id: generateId(),
         studentId,
         assessmentId,
-        submissionDate: currentTimestamp,
+        submissionDate: (filesArray.length > 0 || comments) ? currentTimestamp : undefined, // Only set submission date if actual submission content
         files: filesArray.length > 0 ? filesArray : undefined,
         comments: comments?.trim() || undefined,
+        score: score !== undefined ? score : undefined,
+        grade: grade?.trim().toUpperCase() || undefined,
+        remarks: remarks?.trim() || undefined,
+        evaluatedBy: evaluatedBy || undefined,
+        evaluatedAt: (score !== undefined || grade !== undefined || remarks !== undefined) ? currentTimestamp : undefined,
         createdAt: currentTimestamp,
         updatedAt: currentTimestamp,
       };
       studentScoresStore.push(newScoreRecord);
-      savedScore = newScoreRecord;
+      savedScoreRecord = newScoreRecord;
     }
     global.__API_STUDENT_SCORES_STORE__ = studentScoresStore;
 
-    // --- Notification Trigger for Faculty ---
-    if (assessment.facultyId) { // Assuming Assessment has a primary facultyId
-      try {
-        await notificationService.createNotification({
-          userId: assessment.facultyId, // Notify the faculty responsible for the assessment
-          message: `New submission for '${assessment.name}' by ${student.firstName || student.enrollmentNumber}.`,
-          type: 'assignment_new',
-          link: `/faculty/assessments/grade?assessmentId=${assessmentId}&studentId=${studentId}`, // Link to grading page
-        });
-      } catch (notifError) {
-        console.error("Failed to create submission notification for faculty:", notifError);
-      }
-    } else {
-        // Fallback: could notify all faculty associated with the course offering if Assessment doesn't have a specific facultyId
-        // This requires fetching CourseOffering based on assessment.courseId and then its facultyIds
-        console.warn(`Assessment ${assessmentId} does not have a specific facultyId for notification.`);
+    // Notification Trigger
+    if (evaluatedBy) { // This implies a faculty action (grading)
+        try {
+            await notificationService.createNotification({
+              userId: studentId, 
+              message: `Your submission for '${assessment.name}' has been graded. Score: ${savedScoreRecord.score !== undefined ? savedScoreRecord.score : 'N/A'}.`,
+              type: 'assignment_graded',
+              link: `/student/assignments/${assessmentId}`, 
+            });
+          } catch (notifError) {
+            console.error("Failed to create grading notification for student:", notifError);
+          }
+    } else if (filesArray.length > 0 || comments) { // This implies a student submission
+        if (assessment.facultyId) {
+          try {
+            await notificationService.createNotification({
+              userId: assessment.facultyId, 
+              message: `New submission for '${assessment.name}' by ${student.firstName || student.enrollmentNumber}.`,
+              type: 'assignment_new',
+              link: `/faculty/assessments/grade?assessmentId=${assessmentId}&studentId=${studentId}`, 
+            });
+          } catch (notifError) {
+            console.error("Failed to create submission notification for faculty:", notifError);
+          }
+        }
     }
-    // --- End Notification Trigger ---
-
-    return NextResponse.json(savedScore, { status: 201 });
+    
+    return NextResponse.json(savedScoreRecord, { status: existingScoreIndex !== -1 ? 200 : 201 });
   } catch (error) {
-    console.error('Error processing student submission:', error);
-    return NextResponse.json({ message: 'Error processing student submission', error: (error as Error).message }, { status: 500 });
+    console.error('Error processing student submission/score:', error);
+    return NextResponse.json({ message: 'Error processing student submission/score', error: (error as Error).message }, { status: 500 });
   }
 }

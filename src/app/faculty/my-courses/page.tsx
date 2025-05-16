@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Users, CalendarCheck, Edit, Loader2, AlertTriangle, Library, NotebookPen, Edit3, Paperclip, FileText as AssessmentIcon } from "lucide-react"; // Added AssessmentIcon
+import { BookOpen, Users, CalendarCheck, Edit3, Loader2, AlertTriangle, Paperclip, FileText as AssessmentIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { CourseOffering, Course, Batch, Program, Faculty, User as SystemUser } from '@/types/entities';
 import { courseOfferingService } from '@/lib/api/courseOfferings';
@@ -86,7 +86,7 @@ export default function MyCoursesPage() {
         const [offeringsData, coursesData, batchesData, programsData] = await Promise.all([
           courseOfferingService.getAllCourseOfferings(),
           courseService.getAllCourses(),
-          batchService.getAllBatches(),
+          batchService.getAllCourses(),
           programService.getAllPrograms(),
         ]);
 
@@ -173,11 +173,11 @@ export default function MyCoursesPage() {
                     <Link href={`/faculty/attendance/mark?offeringId=${offering.id}`} passHref>
                        <Button variant="outline" className="w-full justify-start"><CalendarCheck className="mr-2 h-4 w-4"/>Mark Attendance</Button>
                     </Link>
-                    <Link href={`/faculty/assessments/grade?offeringId=${offering.id}`} passHref>
-                       <Button variant="outline" className="w-full justify-start"><Edit3 className="mr-2 h-4 w-4"/>Grade Assessments</Button>
-                    </Link>
                     <Link href={`/faculty/course-offerings/${offering.id}/assessments`} passHref>
                        <Button variant="outline" className="w-full justify-start"><AssessmentIcon className="mr-2 h-4 w-4"/>Manage Assessments</Button>
+                    </Link>
+                    <Link href={`/faculty/assessments/grade?offeringId=${offering.id}`} passHref>
+                       <Button variant="outline" className="w-full justify-start"><Edit3 className="mr-2 h-4 w-4"/>Grade Assessments</Button>
                     </Link>
                     <Link href={`/faculty/course-offerings/${offering.id}/materials`} passHref>
                        <Button variant="outline" className="w-full justify-start"><Paperclip className="mr-2 h-4 w-4"/>Manage Materials</Button>
@@ -192,4 +192,3 @@ export default function MyCoursesPage() {
     </div>
   );
 }
-

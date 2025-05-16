@@ -16,18 +16,18 @@ export const studentAssessmentScoreService = {
   async getStudentScoreForAssessment(assessmentId: string, studentId: string): Promise<StudentAssessmentScore | null> {
     const response = await fetch(`${API_BASE_URL}/student-scores?assessmentId=${assessmentId}&studentId=${studentId}`);
     if (!response.ok) {
-        if (response.status === 404) return null; // Or handle specific 404 if API returns it consistently
+        if (response.status === 404) return null;
       const errorData = await response.json().catch(() => ({ message: 'Failed to fetch student score' }));
       throw new Error(errorData.message || 'Failed to fetch student score');
     }
     const data = await response.json();
-    return data || null; // API might return empty body for no record, or null directly
+    return data || null;
   },
 
   async submitStudentAssignment(data: {
     assessmentId: string;
     studentId: string;
-    files?: File[]; // Array of files for upload
+    files?: File[];
     comments?: string;
   }): Promise<StudentAssessmentScore> {
     const formData = new FormData();
@@ -38,13 +38,13 @@ export const studentAssessmentScoreService = {
     }
     if (data.files && data.files.length > 0) {
       data.files.forEach((file, index) => {
-        formData.append(`file${index}`, file); // Backend needs to handle multiple files (e.g., file0, file1)
+        formData.append(`file${index}`, file);
       });
     }
 
     const response = await fetch(`${API_BASE_URL}/student-scores`, {
       method: 'POST',
-      body: formData, // No Content-Type header for FormData, browser sets it
+      body: formData,
     });
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: 'Failed to submit assignment' }));
@@ -54,21 +54,55 @@ export const studentAssessmentScoreService = {
   },
 
   async gradeStudentSubmission(
-    scoreId: string, 
+    studentId: string, // Changed from scoreId to studentId
+    assessmentId: string, // Added assessmentId
     data: { score?: number; grade?: string; remarks?: string; evaluatedBy?: string }
     ): Promise<StudentAssessmentScore> {
-    const response = await fetch(`${API_BASE_URL}/student-scores/${scoreId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: 'Failed to grade submission' }));
-      throw new Error(errorData.message || 'Failed to grade submission');
+    
+    // First, try to get existing submission to find its ID, or know if we need to create one
+    let existingScoreRecord = null;
+    try {
+        existingScoreRecord = await this.getStudentScoreForAssessment(assessmentId, studentId);
+    } catch (e) {
+        // Ignore if not found, we'll create it
+        if(!e.message?.includes("Failed to fetch student score") && !e.message?.includes("404")) { // Re-throw unexpected errors
+            throw e;
+        }
     }
-    return response.json();
+    
+    if (existingScoreRecord && existingScoreRecord.id) {
+        // Update existing record
+        const response = await fetch(`${API_BASE_URL}/student-scores/${existingScoreRecord.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', },
+            body: JSON.stringify(data),
+          });
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: 'Failed to update grade' }));
+            throw new Error(errorData.message || 'Failed to update grade');
+          }
+          return response.json();
+    } else {
+        // Create new score record as faculty is grading
+        const payload = {
+            studentId,
+            assessmentId,
+            ...data,
+            // submissionDate can be omitted if faculty is grading without prior student submission
+        };
+        const response = await fetch(`${API_BASE_URL}/student-scores`, {
+            method: 'POST',
+            // FormData might be overkill if not sending files from faculty side during grading
+            // Using JSON if no file upload is expected from faculty during grading
+            headers: { 'Content-Type': 'application/json', },
+            body: JSON.stringify(payload),
+        });
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: 'Failed to create grade entry' }));
+            throw new Error(errorData.message || 'Failed to create grade entry');
+        }
+        return response.json();
+    }
   },
 
   async deleteStudentScore(scoreId: string): Promise<void> {
