@@ -1,14 +1,33 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Enrollment, EnrollmentStatus } from '@/types/entities';
+import type { Enrollment, EnrollmentStatus, Student, CourseOffering, Program, Department, Institute, User } from '@/types/entities';
+import { notificationService } from '@/lib/api/notifications';
+import { courseOfferingService } from '@/lib/api/courseOfferings';
+import { courseService } from '@/lib/api/courses';
+import { programService } from '@/lib/api/programs';
+import { departmentService } from '@/lib/api/departments';
+import { instituteService } from '@/lib/api/institutes';
+import { studentService } from '@/lib/api/students';
+import { userService } from '@/lib/api/users';
+
 
 // Ensure the global store is initialized
 declare global {
   // eslint-disable-next-line no-var
   var __API_ENROLLMENTS_STORE__: Enrollment[] | undefined;
   // eslint-disable-next-line no-var
-  var __API_STUDENTS_STORE__: any[] | undefined; // Assuming student store exists
+  var __API_STUDENTS_STORE__: Student[] | undefined; 
   // eslint-disable-next-line no-var
-  var __API_COURSE_OFFERINGS_STORE__: any[] | undefined; // Assuming course offering store exists
+  var __API_COURSE_OFFERINGS_STORE__: CourseOffering[] | undefined; 
+  // eslint-disable-next-line no-var
+  var __API_USERS_STORE__: User[] | undefined;
+  // eslint-disable-next-line no-var
+  var __API_PROGRAMS_STORE__: Program[] | undefined;
+  // eslint-disable-next-line no-var
+  var __API_DEPARTMENTS_STORE__: Department[] | undefined;
+  // eslint-disable-next-line no-var
+  var __API_INSTITUTES_STORE__: Institute[] | undefined;
+  // eslint-disable-next-line no-var
+  var __API_COURSES_STORE__: Course[] | undefined;
 }
 if (!global.__API_ENROLLMENTS_STORE__) {
   global.__API_ENROLLMENTS_STORE__ = [];
@@ -19,10 +38,32 @@ if (!global.__API_STUDENTS_STORE__) {
 if (!global.__API_COURSE_OFFERINGS_STORE__) {
   global.__API_COURSE_OFFERINGS_STORE__ = [];
 }
+if (!global.__API_USERS_STORE__) {
+  global.__API_USERS_STORE__ = [];
+}
+if (!global.__API_PROGRAMS_STORE__) {
+  global.__API_PROGRAMS_STORE__ = [];
+}
+if (!global.__API_DEPARTMENTS_STORE__) {
+  global.__API_DEPARTMENTS_STORE__ = [];
+}
+if (!global.__API_INSTITUTES_STORE__) {
+  global.__API_INSTITUTES_STORE__ = [];
+}
+if (!global.__API_COURSES_STORE__) {
+  global.__API_COURSES_STORE__ = [];
+}
+
 
 let enrollmentsStore: Enrollment[] = global.__API_ENROLLMENTS_STORE__;
-const studentsStore: any[] = global.__API_STUDENTS_STORE__;
-const courseOfferingsStore: any[] = global.__API_COURSE_OFFERINGS_STORE__;
+const studentsStore: Student[] = global.__API_STUDENTS_STORE__;
+const courseOfferingsStore: CourseOffering[] = global.__API_COURSE_OFFERINGS_STORE__;
+const usersStore: User[] = global.__API_USERS_STORE__;
+const programsStore: Program[] = global.__API_PROGRAMS_STORE__;
+const departmentsStore: Department[] = global.__API_DEPARTMENTS_STORE__;
+const institutesStore: Institute[] = global.__API_INSTITUTES_STORE__;
+const coursesStore: Course[] = global.__API_COURSES_STORE__;
+
 
 const generateId = (): string => `enrl_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
@@ -54,15 +95,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'studentId and courseOfferingId are required.' }, { status: 400 });
     }
 
-    // Validate studentId and courseOfferingId exist (simplified check)
-    if (!studentsStore.some(s => s.id === enrollmentData.studentId)) {
+    const student = studentsStore.find(s => s.id === enrollmentData.studentId);
+    const courseOffering = courseOfferingsStore.find(co => co.id === enrollmentData.courseOfferingId);
+
+    if (!student) {
         return NextResponse.json({ message: `Student with ID ${enrollmentData.studentId} not found.`}, { status: 404});
     }
-    if (!courseOfferingsStore.some(co => co.id === enrollmentData.courseOfferingId)) {
+    if (!courseOffering) {
         return NextResponse.json({ message: `Course Offering with ID ${enrollmentData.courseOfferingId} not found.`}, { status: 404});
     }
 
-    // Prevent duplicate enrollments for the same student in the same course offering
     const existingEnrollment = enrollmentsStore.find(
       e => e.studentId === enrollmentData.studentId && e.courseOfferingId === enrollmentData.courseOfferingId
     );
@@ -75,11 +117,10 @@ export async function POST(request: NextRequest) {
       id: generateId(),
       studentId: enrollmentData.studentId,
       courseOfferingId: enrollmentData.courseOfferingId,
-      status: enrollmentData.status || 'requested', // Default to 'requested' or 'enrolled' based on system logic
+      status: enrollmentData.status || 'requested', 
       enrolledAt: enrollmentData.status === 'enrolled' ? currentTimestamp : undefined,
       createdAt: currentTimestamp,
       updatedAt: currentTimestamp,
-      // Optional fields based on what's sent from client initially
       internalMarks: enrollmentData.internalMarks,
       externalMarks: enrollmentData.externalMarks,
       grade: enrollmentData.grade,
@@ -89,6 +130,44 @@ export async function POST(request: NextRequest) {
 
     enrollmentsStore.push(newEnrollment);
     global.__API_ENROLLMENTS_STORE__ = enrollmentsStore;
+
+    // --- Notification Trigger for Admin/HOD ---
+    if (newEnrollment.status === 'requested') {
+        const course = coursesStore.find(c => c.id === courseOffering.courseId);
+        const program = programsStore.find(p => p.id === courseOffering.programId); // Assuming CO has programId
+        const department = program ? departmentsStore.find(d => d.id === program.departmentId) : null;
+        const institute = department ? institutesStore.find(i => i.id === department.instituteId) : null;
+
+        const studentName = student.firstName && student.lastName ? `${student.firstName} ${student.lastName}` : student.enrollmentNumber;
+        const courseNameText = course ? `${course.subjectName} (${course.subcode})` : `Course Offering ID: ${courseOffering.id}`;
+
+        const adminUserIds: string[] = [];
+        usersStore.forEach(user => {
+            if (user.roles.includes('super_admin')) {
+                adminUserIds.push(user.id);
+            } else if (user.roles.includes('admin') && (!user.instituteId || user.instituteId === institute?.id)) {
+                adminUserIds.push(user.id);
+            } else if (user.roles.includes('hod') && department && user.departmentId === department.id) { // Assuming HOD has departmentId on User model
+                adminUserIds.push(user.id);
+            }
+        });
+        
+        const uniqueAdminUserIds = [...new Set(adminUserIds)];
+
+        for (const adminUserId of uniqueAdminUserIds) {
+            try {
+                await notificationService.createNotification({
+                    userId: adminUserId,
+                    message: `New enrollment request from ${studentName} for ${courseNameText}.`,
+                    type: 'enrollment_request',
+                    link: `/admin/enrollments?courseOfferingId=${courseOffering.id}&status=requested`,
+                });
+            } catch (notifError) {
+                console.error("Failed to create enrollment request notification:", notifError);
+            }
+        }
+    }
+    // --- End Notification Trigger ---
 
     return NextResponse.json(newEnrollment, { status: 201 });
   } catch (error) {

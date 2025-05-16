@@ -1,6 +1,7 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Project } from '@/types/entities';
+import type { Project, ProjectTeam } from '@/types/entities';
+import { notificationService } from '@/lib/api/notifications';
 
 // Assuming these stores are initialized as in other files
 declare global {
@@ -8,12 +9,17 @@ declare global {
   var __API_PROJECTS_STORE__: Project[] | undefined;
   // eslint-disable-next-line no-var
   var __API_PROJECT_LOCATIONS_STORE__: any[] | undefined;
+  // eslint-disable-next-line no-var
+  var __API_PROJECT_TEAMS_STORE__: ProjectTeam[] | undefined; 
 }
 if (!global.__API_PROJECTS_STORE__) global.__API_PROJECTS_STORE__ = [];
 if (!global.__API_PROJECT_LOCATIONS_STORE__) global.__API_PROJECT_LOCATIONS_STORE__ = [];
+if (!global.__API_PROJECT_TEAMS_STORE__) global.__API_PROJECT_TEAMS_STORE__ = [];
+
 
 let projectsStore: Project[] = global.__API_PROJECTS_STORE__;
 let projectLocationsStore: any[] = global.__API_PROJECT_LOCATIONS_STORE__;
+const projectTeamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
 
 
 interface RouteParams {
@@ -42,7 +48,6 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
     const existingProject = projectsStore[projectIndex];
 
-    // Add specific validations for update if necessary
     if (projectDataToUpdate.title !== undefined && !projectDataToUpdate.title.trim()) {
         return NextResponse.json({ message: 'Project Title cannot be empty if provided.' }, { status: 400 });
     }
@@ -54,7 +59,28 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     };
 
     projectsStore[projectIndex] = updatedProject;
-    global.__API_PROJECTS_STORE__ = projectsStore; // Persist change
+    global.__API_PROJECTS_STORE__ = projectsStore;
+
+    // --- Notification Trigger for Project Status Change ---
+    if (projectDataToUpdate.status && projectDataToUpdate.status !== existingProject.status) {
+        const team = projectTeamsStore.find(t => t.id === updatedProject.teamId);
+        if (team && team.members) {
+            for (const member of team.members) {
+                try {
+                    await notificationService.createNotification({
+                        userId: member.userId,
+                        message: `The status of your project '${updatedProject.title}' has been updated to '${updatedProject.status}'.`,
+                        type: 'project_status_change',
+                        link: `/project-fair/student`, // Or a more specific link if available
+                    });
+                } catch (notifError) {
+                    console.error(`Failed to send project status update notification to user ${member.userId}:`, notifError);
+                }
+            }
+        }
+    }
+    // --- End Notification Trigger ---
+
 
     return NextResponse.json({ status: 'success', data: { project: updatedProject } });
   } catch (error) {
@@ -71,16 +97,14 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Project not found' }, { status: 404 });
   }
   const deletedProject = projectsStore.splice(projectIndex, 1)[0];
-  global.__API_PROJECTS_STORE__ = projectsStore; // Persist change
+  global.__API_PROJECTS_STORE__ = projectsStore; 
 
-  // If project had a location, unassign it
   if (deletedProject.locationId) {
-    // Find location by user-friendly locationId string or MongoDB _id
     const locationIndex = projectLocationsStore.findIndex(loc => loc.id === deletedProject.locationId || loc.locationId === deletedProject.locationId);
     if (locationIndex !== -1) {
-      projectLocationsStore[locationIndex].projectId = undefined; // Use undefined for optional fields
+      projectLocationsStore[locationIndex].projectId = undefined; 
       projectLocationsStore[locationIndex].isAssigned = false;
-      projectLocationsStore[locationIndex].updatedBy = "user_admin_placeholder_project_delete"; // Placeholder
+      projectLocationsStore[locationIndex].updatedBy = "user_admin_placeholder_project_delete"; 
       projectLocationsStore[locationIndex].updatedAt = new Date().toISOString();
       global.__API_PROJECT_LOCATIONS_STORE__ = projectLocationsStore;
     }
