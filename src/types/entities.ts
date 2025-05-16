@@ -1,5 +1,4 @@
 
-
 export type Timestamp = string; // ISO 8601 format: "YYYY-MM-DDTHH:mm:ss.sssZ"
 
 // User and Authentication
@@ -127,7 +126,7 @@ export interface Student {
     gtuEnrollmentNumber?: string; 
     
     programId: string; 
-    department: string; // Department ID
+    department: string; // Department ID (derived from program)
     batchId?: string; 
     currentSemester: number;
     admissionDate?: Timestamp;
@@ -184,6 +183,9 @@ export interface Student {
 export type FacultyStatus = 'active' | 'inactive' | 'retired' | 'resigned' | 'on_leave';
 export type JobType = 'Regular' | 'Adhoc' | 'Contractual' | 'Visiting' | 'Other';
 export type Gender = 'Male' | 'Female' | 'Other';
+export type StaffCategory = 'Teaching' | 'Clerical' | 'Technical' | 'Support' | 'Administrative' | 'Other' | string;
+
+export const STAFF_CATEGORY_OPTIONS: StaffCategory[] = ['Teaching', 'Clerical', 'Technical', 'Support', 'Administrative', 'Other'];
 
 
 export interface FacultyProfile {
@@ -205,6 +207,7 @@ export interface FacultyProfile {
     department: string; // Department Name
     designation?: string;
     jobType?: JobType;
+    staffCategory?: StaffCategory; // Added staff category
     instType?: string; // Like DI, DEG, etc.
     specializations?: string[];
     qualifications?: Qualification[];
@@ -223,20 +226,20 @@ export interface FacultyProfile {
     
     status: FacultyStatus;
     
-    instituteId?: string; // Should be linked to an Institute
+    instituteId?: string; 
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
 export type Faculty = FacultyProfile;
 
-export interface StaffProfile {
+export interface StaffProfile { // This might be merged or kept separate based on future needs
     id: string;
     userId: string; 
     
     staffCode: string;
     employeeId?: string;
     
-    staffCategory: 'Clerical' | 'Technical' | 'Support' | 'Administrative' | string;
+    staffCategory: 'Clerical' | 'Technical' | 'Support' | 'Administrative';
     designation: string;
     department?: string; // Department Name
     
@@ -250,7 +253,7 @@ export interface StaffProfile {
     updatedAt?: Timestamp;
 }
 
-export interface Address { // This can be used for structured addresses if implemented
+export interface Address { 
     line1: string;
     line2?: string;
     city: string;
@@ -434,7 +437,7 @@ export interface CourseOffering {
     startDate?: Timestamp; 
     endDate?: Timestamp;   
     status: CourseOfferingStatus;
-    programId?: string; // Added to easily link back to program if needed from offering
+    programId?: string; 
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
@@ -547,15 +550,15 @@ export interface StudentAssessmentScore {
   assessmentId: string;
   score?: number;
   grade?: string;
-  remarks?: string; // Faculty feedback
-  submissionDate?: Timestamp; // When the student submitted
+  remarks?: string; 
+  submissionDate?: Timestamp; 
   files?: Array<{ 
     name: string; 
-    url: string; // Path or URL to the stored file
-    type: string; // MIME type
+    url: string; 
+    type: string; 
     size?: number;
   }>;
-  evaluatedBy?: string; // Faculty user ID
+  evaluatedBy?: string; 
   evaluatedAt?: Timestamp;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
@@ -697,10 +700,10 @@ export interface ResultImportResponse {
     totalRows: number;
     error?: string; 
   };
-  newCount?: number; // These might be returned by some import endpoints
+  newCount?: number; 
   updatedCount?: number; 
   skippedCount?: number; 
-  errors?: Array<{ row: number; message: string; data: any }>; // For detailed CSV import errors
+  errors?: Array<{ row: number; message: string; data: any }>; 
 }
 
 
@@ -735,8 +738,8 @@ export interface TimetableEntry {
     dayOfWeek: DayOfWeek;
     startTime: string; 
     endTime: string;   
-    courseOfferingId?: string; // Should be the primary link for teaching sessions
-    courseId: string; // Denormalized for easier display/lookup
+    courseOfferingId?: string; 
+    courseId: string; 
     facultyId: string;
     roomId: string;
     entryType: TimetableEntryType;
@@ -829,7 +832,7 @@ export interface ProjectEvent {
   isActive: boolean;
   publishResults?: boolean; 
   schedule?: ProjectEventScheduleItem[];
-  departments?: string[]; // Array of Department IDs
+  departments?: string[]; 
   createdBy?: string; 
   updatedBy?: string; 
   createdAt?: Timestamp;
@@ -837,21 +840,21 @@ export interface ProjectEvent {
 }
 
 export interface ProjectTeamMember {
-  userId: string; // Links to User.id
-  name: string; // Denormalized for display, but primary info from User model
-  enrollmentNo: string; // Specific to student members
-  role: string; // e.g., "Team Leader", "Developer", "Hardware Design"
+  userId: string; 
+  name: string; 
+  enrollmentNo: string; 
+  role: string; 
   isLeader: boolean;
 }
 
 export interface ProjectTeam {
   id: string;
   name: string;
-  department: string; // Department ID
+  department: string; 
   members: ProjectTeamMember[];
-  eventId: string; // Link to ProjectEvent
-  createdBy?: string; // User ID
-  updatedBy?: string; // User ID
+  eventId: string; 
+  createdBy?: string; 
+  updatedBy?: string; 
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
@@ -864,25 +867,25 @@ export interface ProjectRequirements {
 }
 
 export interface ProjectGuide {
-  userId: string; // Link to User.id (Faculty)
-  name: string;   // Denormalized Faculty Name
-  department: string; // Department ID
+  userId: string; 
+  name: string;   
+  department: string; 
   contactNumber?: string;
 }
 
 export interface ProjectEvaluationScore {
-  criteriaId: string; // e.g., 'innovation', 'implementation'
+  criteriaId: string; 
   score: number;
   comments?: string;
 }
 
 export interface ProjectEvaluation {
   completed: boolean;
-  score?: number; // Overall score for this evaluation stage
+  score?: number; 
   feedback?: string;
-  juryId?: string; // Link to User.id (Jury)
+  juryId?: string; 
   evaluatedAt?: Timestamp;
-  criteriaScores?: ProjectEvaluationScore[]; // Array of scores for individual criteria
+  criteriaScores?: ProjectEvaluationScore[]; 
 }
 
 export type ProjectStatus = 'draft' | 'submitted' | 'approved' | 'rejected' | 'completed' | 'evaluated';
@@ -890,38 +893,38 @@ export type ProjectStatus = 'draft' | 'submitted' | 'approved' | 'rejected' | 'c
 export interface Project {
   id: string;
   title: string;
-  category: string; // e.g., "Software", "Hardware", "IoT", "Sustainability"
+  category: string; 
   abstract: string;
-  department: string; // Department ID
+  department: string; 
   status: ProjectStatus;
   requirements: ProjectRequirements;
   guide: ProjectGuide;
-  teamId: string; // Link to ProjectTeam.id
-  eventId: string; // Link to ProjectEvent.id
-  locationId?: string; // Link to ProjectLocation.locationId (user-friendly ID, not MongoDB _id)
+  teamId: string; 
+  eventId: string; 
+  locationId?: string; 
   deptEvaluation?: ProjectEvaluation;
   centralEvaluation?: ProjectEvaluation;
-  rank?: number; // Overall or per-category rank
-  prize?: string; // e.g., "1st Prize Overall", "Best Innovation Award"
+  rank?: number; 
+  prize?: string; 
   certificateUrl?: string;
-  createdBy?: string; // User ID of student/team leader who registered
-  updatedBy?: string; // User ID of last updater
+  createdBy?: string; 
+  updatedBy?: string; 
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
 
 export interface ProjectLocation {
-  id: string; // MongoDB document _id
-  locationId: string; // User-friendly ID, e.g., "A-01", "HALL-B-STALL-5"
-  section: string; // e.g., "A", "B", "Hall-B"
-  position: number; // e.g., 1, 2, 5
-  department?: string; // Optional: Department this location is primarily for
-  eventId: string; // Link to ProjectEvent
-  projectId?: string; // Link to Project.id if assigned
+  id: string; 
+  locationId: string; 
+  section: string; 
+  position: number; 
+  department?: string; 
+  eventId: string; 
+  projectId?: string; 
   isAssigned: boolean;
   notes?: string;
-  createdBy?: string; // User ID
-  updatedBy?: string; // User ID
+  createdBy?: string; 
+  updatedBy?: string; 
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
@@ -938,7 +941,7 @@ export interface CourseMaterial {
   filePathOrUrl: string; 
   fileName?: string; 
   fileSize?: number; 
-  uploadedBy: string; // User ID of faculty/uploader
+  uploadedBy: string; 
   uploadedAt: Timestamp;
   updatedAt?: Timestamp;
 }

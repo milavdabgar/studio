@@ -1,9 +1,8 @@
-
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Faculty, FacultyStatus, JobType, Gender, User, Institute } from '@/types/entities'; // Updated User import
+import type { Faculty, FacultyStatus, JobType, Gender, User, Institute, StaffCategory } from '@/types/entities'; 
 import { parse, type ParseError } from 'papaparse';
 import { userService } from '@/lib/api/users';
-import { instituteService } from '@/lib/api/institutes'; // To fetch institute domain if needed
+import { instituteService } from '@/lib/api/institutes'; 
 
 let facultyStore: Faculty[] = (global as any).__API_FACULTY_STORE__ || [];
 if (!(global as any).__API_FACULTY_STORE__) {
@@ -37,20 +36,20 @@ const generateInstituteEmailForFaculty = (firstName?: string, lastName?: string,
   const fn = (firstName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
   const ln = (lastName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
   if (fn && ln) return `${fn}.${ln}@${instituteDomain}`;
-  // Fallback for uniqueness, this could be improved with a check against existing emails
-  return `faculty_${Date.now().toString().slice(-5)}_${Math.random().toString(36).substring(2,5)}@${instituteDomain}`;
+  return `staff_${Date.now().toString().slice(-5)}_${Math.random().toString(36).substring(2,5)}@${instituteDomain}`;
 };
 
 const JOB_TYPE_OPTIONS: JobType[] = ["Regular", "Adhoc", "Contractual", "Visiting", "Other"];
 const FACULTY_STATUS_OPTIONS: FacultyStatus[] = ["active", "inactive", "on_leave", "retired", "resigned"];
 const GENDER_OPTIONS: Gender[] = ["Male", "Female", "Other"];
+const STAFF_CATEGORY_OPTIONS_LOWER: string[] = ['teaching', 'clerical', 'technical', 'support', 'administrative', 'other'];
 
 
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
-    const defaultInstituteId = formData.get('instituteId') as string | null; // For new users if institute not in CSV
+    const defaultInstituteIdFromForm = formData.get('instituteId') as string | null; 
 
     if (!file) {
       return NextResponse.json({ message: 'No file uploaded.' }, { status: 400 });
@@ -61,7 +60,7 @@ export async function POST(request: NextRequest) {
       header: true,
       skipEmptyLines: true,
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9_]/gi, ''),
-      dynamicTyping: false, // Keep as string for manual conversion
+      dynamicTyping: false, 
     });
 
     if (parseErrors.length > 0) {
@@ -83,9 +82,12 @@ export async function POST(request: NextRequest) {
       const department = row.department?.toString().trim();
       const statusRaw = row.status?.toString().trim().toLowerCase();
       const status = FACULTY_STATUS_OPTIONS.includes(statusRaw as FacultyStatus) ? statusRaw as FacultyStatus : undefined;
+      const staffCategoryRaw = row.staffcategory?.toString().trim().toLowerCase();
+      const staffCategory = STAFF_CATEGORY_OPTIONS_LOWER.includes(staffCategoryRaw) ? staffCategoryRaw as StaffCategory : 'Teaching';
+
       const personalEmailFromCSV = row.personalemail?.toString().trim() || undefined;
       const instituteEmailFromCSV = row.instituteemail?.toString().trim() || undefined;
-      const facultyInstituteId = row.instituteid?.toString().trim() || defaultInstituteId;
+      const facultyInstituteId = row.instituteid?.toString().trim() || defaultInstituteIdFromForm || undefined;
 
 
       if (!staffCode || !firstName || !lastName || !department || !status || !facultyInstituteId) {
@@ -117,6 +119,7 @@ export async function POST(request: NextRequest) {
         department,
         designation: row.designation?.toString().trim() || undefined,
         jobType: JOB_TYPE_OPTIONS.includes(row.jobtype?.toString() as JobType) ? row.jobtype as JobType : 'Other',
+        staffCategory,
         instType: row.insttype?.toString().trim() || undefined,
         dateOfBirth: row.dateofbirth?.toString().trim() || undefined,
         gender: GENDER_OPTIONS.includes(row.gender?.toString() as Gender) ? row.gender as Gender : undefined,
@@ -129,6 +132,7 @@ export async function POST(request: NextRequest) {
         placeOfBirth: row.placeofbirth?.toString().trim() || undefined,
         nationality: row.nationality?.toString().trim() || undefined,
         knownAs: row.knownas?.toString().trim() || undefined,
+        instituteId: facultyInstituteId,
       };
 
       const idFromCsv = row.id?.toString().trim();
@@ -136,19 +140,20 @@ export async function POST(request: NextRequest) {
       let facultyToProcess: Faculty;
 
       if (existingFacultyIndex !== -1) {
-        facultyToProcess = { ...facultyStore[existingFacultyIndex], ...facultyData };
+        facultyToProcess = { ...facultyStore[existingFacultyIndex], ...facultyData, staffCategory: facultyData.staffCategory || facultyStore[existingFacultyIndex].staffCategory || 'Teaching' };
         facultyStore[existingFacultyIndex] = facultyToProcess;
         updatedCount++;
       } else {
-        facultyToProcess = { id: idFromCsv || generateIdForImport(), ...facultyData };
+        facultyToProcess = { id: idFromCsv || generateIdForImport(), ...facultyData, staffCategory: facultyData.staffCategory || 'Teaching' };
         facultyStore.push(facultyToProcess);
         newCount++;
       }
 
-      // Create or update linked User account
       const userDisplayName = facultyToProcess.gtuName || facultyToProcess.staffCode;
       try {
         const existingUserByEmail = await userService.getAllUsers().then(users => users.find(u => u.instituteEmail === facultyToProcess.instituteEmail || (facultyToProcess.personalEmail && u.email === facultyToProcess.personalEmail)));
+        
+        const userBaseRole = facultyToProcess.staffCategory === 'Teaching' ? 'faculty' : (facultyToProcess.staffCategory?.toLowerCase() + '_staff' as UserRole) || 'faculty';
         
         const userDataPayload = {
             displayName: userDisplayName,
@@ -156,27 +161,24 @@ export async function POST(request: NextRequest) {
             instituteEmail: facultyToProcess.instituteEmail,
             isActive: facultyToProcess.status === 'active',
             instituteId: facultyInstituteId, 
-            // roles will be managed based on existing user or default for new
         };
 
-        if (existingUserByEmail) { // User exists, update and link
+        if (existingUserByEmail) { 
             facultyToProcess.userId = existingUserByEmail.id;
-            let rolesToSet = existingUserByEmail.roles.includes('faculty') ? existingUserByEmail.roles : [...existingUserByEmail.roles, 'faculty' as UserRole];
+            let rolesToSet = existingUserByEmail.roles.includes(userBaseRole) ? existingUserByEmail.roles : [...existingUserByEmail.roles, userBaseRole];
             await userService.updateUser(existingUserByEmail.id, {...userDataPayload, roles: rolesToSet });
-        } else { // New user
-            const createdUser = await userService.createUser({...userDataPayload, password: facultyToProcess.staffCode, roles: ['faculty']});
+        } else { 
+            const createdUser = await userService.createUser({...userDataPayload, password: facultyToProcess.staffCode, roles: [userBaseRole]});
             facultyToProcess.userId = createdUser.id;
         }
-         // Update faculty record with userId if it was just set
         const finalFacultyIndex = facultyStore.findIndex(f => f.id === facultyToProcess.id);
         if (finalFacultyIndex !== -1) {
             facultyStore[finalFacultyIndex].userId = facultyToProcess.userId;
         }
 
-
       } catch(userError: unknown) {
-        importErrors.push({row: rowIndex, message: `User account linking/creation failed for ${staffCode}: ${userError.message}`, data: row});
-        // If user creation failed, we might still keep the faculty record or mark it as needing user setup
+        const error = userError as Error;
+        importErrors.push({row: rowIndex, message: `User account linking/creation failed for ${staffCode}: ${error.message}`, data: row});
       }
     }
     (global as any).__API_FACULTY_STORE__ = facultyStore;
@@ -196,3 +198,4 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Error importing faculty.', error: (error as Error).message }, { status: 500 });
   }
 }
+

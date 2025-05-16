@@ -1,6 +1,5 @@
-
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Faculty, FacultyStatus, JobType, Gender, User, Institute } from '@/types/entities'; // Updated User import
+import type { Faculty, FacultyStatus, JobType, Gender, User, Institute, StaffCategory } from '@/types/entities'; 
 import { parse, type ParseError } from 'papaparse';
 import { userService } from '@/lib/api/users';
 import { instituteService } from '@/lib/api/institutes';
@@ -37,7 +36,7 @@ const generateInstituteEmailForFaculty = (firstName?: string, lastName?: string,
   const fn = (firstName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
   const ln = (lastName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
   if (fn && ln) return `${fn}.${ln}@${instituteDomain}`;
-  return `faculty_${Date.now().toString().slice(-5)}_${Math.random().toString(36).substring(2,5)}@${instituteDomain}`;
+  return `staff_${Date.now().toString().slice(-5)}_${Math.random().toString(36).substring(2,5)}@${instituteDomain}`;
 };
 
 const DEPARTMENT_MAP: { [key: string]: string } = {
@@ -56,7 +55,7 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
-    const defaultInstituteId = formData.get('instituteId') as string | null; // For new users if institute not in CSV
+    const defaultInstituteIdFromForm = formData.get('instituteId') as string | null; 
 
     if (!file) {
       return NextResponse.json({ message: 'No file uploaded.' }, { status: 400 });
@@ -86,10 +85,10 @@ export async function POST(request: NextRequest) {
 
       const staffCode = row.staffcode?.toString().trim();
       const gtuName = row.name?.toString().trim();
-      const facultyInstituteId = row.instituteid?.toString().trim() || defaultInstituteId; // GTU CSV might not have instituteId
+      const facultyInstituteId = defaultInstituteIdFromForm || "inst1"; // GTU CSV might not have instituteId, use default or one from form
 
-      if (!staffCode || !gtuName || !facultyInstituteId) {
-        importErrors.push({row: rowIndex, message: `Skipping GTU faculty row due to missing staff code, name, or instituteId: ${JSON.stringify(row)}`, data: row});
+      if (!staffCode || !gtuName ) { // facultyInstituteId is now defaulted
+        importErrors.push({row: rowIndex, message: `Skipping GTU faculty row due to missing staff code or name: ${JSON.stringify(row)}`, data: row});
         skippedCount++; continue;
       }
       
@@ -117,8 +116,10 @@ export async function POST(request: NextRequest) {
         instituteEmail,
         contactNumber: row.mobileno?.toString().trim() || undefined,
         department, designation, jobType,
+        staffCategory: 'Teaching', // Assume GTU data is for teaching staff
         instType: row.insttype?.toString().trim() || undefined,
-        status: 'active', // Default for GTU import unless specified
+        status: 'active', 
+        instituteId: facultyInstituteId,
       };
 
       const existingFacultyIndex = facultyStore.findIndex(f => f.staffCode === staffCode);
@@ -138,6 +139,8 @@ export async function POST(request: NextRequest) {
       try {
          const existingUserByEmail = await userService.getAllUsers().then(users => users.find(u => u.instituteEmail === facultyToProcess.instituteEmail || (facultyToProcess.personalEmail && u.email === facultyToProcess.personalEmail)));
         
+        const userBaseRole = 'faculty' as UserRole; // GTU import always for faculty
+        
         const userDataPayload = {
             displayName: userDisplayName,
             email: facultyToProcess.personalEmail || facultyToProcess.instituteEmail,
@@ -148,10 +151,10 @@ export async function POST(request: NextRequest) {
 
         if (existingUserByEmail) {
             facultyToProcess.userId = existingUserByEmail.id;
-            let rolesToSet = existingUserByEmail.roles.includes('faculty') ? existingUserByEmail.roles : [...existingUserByEmail.roles, 'faculty' as UserRole];
+            let rolesToSet = existingUserByEmail.roles.includes(userBaseRole) ? existingUserByEmail.roles : [...existingUserByEmail.roles, userBaseRole];
             await userService.updateUser(existingUserByEmail.id, {...userDataPayload, roles: rolesToSet});
         } else {
-            const createdUser = await userService.createUser({...userDataPayload, password: facultyToProcess.staffCode, roles: ['faculty']});
+            const createdUser = await userService.createUser({...userDataPayload, password: facultyToProcess.staffCode, roles: [userBaseRole]});
             facultyToProcess.userId = createdUser.id;
         }
         const finalFacultyIndex = facultyStore.findIndex(f => f.id === facultyToProcess.id);
@@ -160,7 +163,8 @@ export async function POST(request: NextRequest) {
         }
 
       } catch(userError: unknown) {
-         importErrors.push({row: rowIndex, message: `User account linking/creation failed for ${staffCode}: ${userError.message}`, data: row});
+        const error = userError as Error;
+         importErrors.push({row: rowIndex, message: `User account linking/creation failed for ${staffCode}: ${error.message}`, data: row});
       }
     }
     (global as any).__API_FACULTY_STORE__ = facultyStore;
@@ -181,3 +185,4 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Error importing GTU faculty.', error: (error as Error).message }, { status: 500 });
   }
 }
+

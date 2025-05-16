@@ -1,6 +1,5 @@
-
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Faculty, User } from '@/types/entities'; // Updated User import
+import type { Faculty, User, StaffCategory } from '@/types/entities'; 
 import { userService } from '@/lib/api/users'; 
 
 let facultyStore: Faculty[] = (global as any).__API_FACULTY_STORE__ || [];
@@ -41,7 +40,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         return NextResponse.json({ message: `Institute email '${facultyData.instituteEmail.trim()}' is already in use.` }, { status: 409 });
     }
 
-    const updatedFaculty = { ...existingFaculty, ...facultyData };
+    const updatedFaculty = { ...existingFaculty, ...facultyData, staffCategory: facultyData.staffCategory || existingFaculty.staffCategory || 'Teaching' };
     facultyStore[facultyIndex] = updatedFaculty;
     (global as any).__API_FACULTY_STORE__ = facultyStore;
 
@@ -50,18 +49,29 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         const userUpdateData: Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>> = {
             displayName: updatedFaculty.gtuName || `${updatedFaculty.title || ''} ${updatedFaculty.firstName || ''} ${updatedFaculty.middleName || ''} ${updatedFaculty.lastName || ''}`.replace(/\s+/g, ' ').trim() || updatedFaculty.staffCode,
             isActive: updatedFaculty.status === 'active',
-            // department is on Faculty model, user model's instituteId might need update if faculty institute changes
         };
         if (updatedFaculty.instituteEmail.toLowerCase() !== existingFaculty.instituteEmail.toLowerCase()) {
              userUpdateData.instituteEmail = updatedFaculty.instituteEmail;
-             // Personal email update if it's the primary email for User
-             if (existingFaculty.personalEmail === existingFaculty.instituteEmail) { // Hypothetical check
+             if (existingFaculty.personalEmail === existingFaculty.instituteEmail) { 
                 userUpdateData.email = updatedFaculty.personalEmail || updatedFaculty.instituteEmail;
              }
         }
          if(updatedFaculty.personalEmail && updatedFaculty.personalEmail !== existingFaculty.personalEmail){
             userUpdateData.email = updatedFaculty.personalEmail;
         }
+        // Update roles based on staffCategory if it changed
+        if (updatedFaculty.staffCategory !== existingFaculty.staffCategory) {
+            const baseRole = updatedFaculty.staffCategory === 'Teaching' ? 'faculty' : (updatedFaculty.staffCategory?.toLowerCase() + '_staff' as UserRole) || 'faculty';
+            const existingUser = await userService.getUserById(updatedFaculty.userId);
+            if (existingUser) {
+                let newRoles = existingUser.roles.filter(r => !r.endsWith('_staff') && r !== 'faculty'); // Remove old staff/faculty specific roles
+                if (!newRoles.includes(baseRole)) {
+                    newRoles.push(baseRole);
+                }
+                userUpdateData.roles = newRoles;
+            }
+        }
+
 
         try {
             await userService.updateUser(updatedFaculty.userId, userUpdateData);
@@ -93,13 +103,15 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       try {
           await userService.deleteUser(deletedFaculty.userId);
       } catch (userError: unknown) {
-           if (userError.message?.includes('Cannot delete this administrative user')) {
+           const error = userError as Error & { data?: any };
+           if (error.message?.includes('Cannot delete this administrative user') || (error.data && error.data.message?.includes('administrative user'))) {
             console.warn(`Administrative user ${deletedFaculty.userId} linked to faculty ${id} was not deleted.`);
           } else {
-            console.error(`Failed to delete linked system user ${deletedFaculty.userId} for faculty ${id}:`, userError);
+            console.error(`Failed to delete linked system user ${deletedFaculty.userId} for faculty ${id}:`, error);
           }
       }
   }
 
   return NextResponse.json({ message: 'Faculty deleted successfully' }, { status: 200 });
 }
+

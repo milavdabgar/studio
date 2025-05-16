@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
@@ -18,9 +17,10 @@ import { format, parseISO, isValid } from 'date-fns';
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Checkbox } from '@/components/ui/checkbox';
-import type { Faculty, FacultyStatus, JobType, Gender, Institute } from '@/types/entities'; // Added Institute
+import type { Faculty, FacultyStatus, JobType, Gender, Institute, StaffCategory } from '@/types/entities'; 
+import { STAFF_CATEGORY_OPTIONS } from '@/types/entities'; // Import STAFF_CATEGORY_OPTIONS
 import { facultyService } from '@/lib/api/faculty';
-import { instituteService } from '@/lib/api/institutes'; // For fetching institutes
+import { instituteService } from '@/lib/api/institutes'; 
 
 const DEPARTMENT_OPTIONS = [
   "Computer Engineering",
@@ -86,14 +86,14 @@ const generateInstituteEmail = (firstName?: string, lastName?: string, institute
   if (fn && ln) {
     return `${fn}.${ln}@${instituteDomain}`;
   }
-  // Fallback if names are not sufficient, perhaps use a generic prefix or staff code if available
-  return `faculty_${Date.now()}@${instituteDomain}`;
+  // Fallback if names are not sufficient
+  return `faculty_${Date.now().toString().slice(-5)}_${Math.random().toString(36).substring(2,5)}@${instituteDomain}`;
 };
 
 
 export default function FacultyManagementPage() {
   const [facultyList, setFacultyList] = useState<Faculty[]>([]);
-  const [institutes, setInstitutes] = useState<Institute[]>([]); // For institute selection
+  const [institutes, setInstitutes] = useState<Institute[]>([]); 
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -110,6 +110,7 @@ export default function FacultyManagementPage() {
   const [formDepartment, setFormDepartment] = useState(DEPARTMENT_OPTIONS[0]);
   const [formDesignation, setFormDesignation] = useState(DESIGNATION_OPTIONS[0]);
   const [formJobType, setFormJobType] = useState<JobType>('Regular');
+  const [formStaffCategory, setFormStaffCategory] = useState<StaffCategory>('Teaching'); // Added
   const [formContact, setFormContact] = useState('');
   const [formDob, setFormDob] = useState<Date | undefined>(undefined);
   const [formJoiningDate, setFormJoiningDate] = useState<Date | undefined>(undefined);
@@ -127,6 +128,7 @@ export default function FacultyManagementPage() {
   const [filterDepartmentVal, setFilterDepartmentVal] = useState<string>('all');
   const [filterDesignationVal, setFilterDesignationVal] = useState<string>('all');
   const [filterStatusVal, setFilterStatusVal] = useState<FacultyStatus | 'all'>('all');
+  const [filterStaffCategoryVal, setFilterStaffCategoryVal] = useState<StaffCategory | 'all'>('all'); // Added
   const [sortField, setSortField] = useState<SortField>('gtuName');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [selectedFacultyIds, setSelectedFacultyIds] = useState<string[]>([]);
@@ -147,7 +149,7 @@ export default function FacultyManagementPage() {
       setFacultyList(facultyData);
       setInstitutes(instituteData);
       if (instituteData.length > 0 && !formInstituteId) {
-        setFormInstituteId(instituteData[0].id); // Default to first institute
+        setFormInstituteId(instituteData[0].id); 
       }
     } catch (_error: unknown) {
       console.error("Failed to load data:", _error);
@@ -166,7 +168,8 @@ export default function FacultyManagementPage() {
     setFormFirstName(''); setFormMiddleName(''); setFormLastName('');
     setFormPersonalEmail(''); setFormDepartment(DEPARTMENT_OPTIONS[0]); 
     setFormDesignation(DESIGNATION_OPTIONS[0]); 
-    setFormJobType('Regular'); setFormContact('');
+    setFormJobType('Regular'); setFormStaffCategory('Teaching'); // Added
+    setFormContact('');
     setFormDob(undefined); setFormJoiningDate(undefined);
     setFormGender(undefined); setFormMaritalStatus(undefined);
     setFormStatus('active'); setFormAadhar(''); setFormPan('');
@@ -197,6 +200,7 @@ export default function FacultyManagementPage() {
     setFormDepartment(faculty.department || DEPARTMENT_OPTIONS[0]); 
     setFormDesignation(faculty.designation || DESIGNATION_OPTIONS[0]);
     setFormJobType(faculty.jobType ?? 'Regular'); 
+    setFormStaffCategory(faculty.staffCategory || 'Teaching'); // Added
     setFormContact(faculty.contactNumber ?? '');
     setFormDob(faculty.dateOfBirth && isValid(parseISO(faculty.dateOfBirth)) ? parseISO(faculty.dateOfBirth) : undefined);
     setFormJoiningDate(faculty.joiningDate && isValid(parseISO(faculty.joiningDate)) ? parseISO(faculty.joiningDate) : undefined);
@@ -205,13 +209,7 @@ export default function FacultyManagementPage() {
     setFormStatus(faculty.status);
     setFormAadhar(faculty.aadharNumber || '');
     setFormPan(faculty.panCardNumber || '');
-    // Assuming faculty has userId which links to User, and User has instituteId.
-    // This part might need adjustment based on how Faculty is linked to Institute.
-    // For now, let's assume Faculty might have an instituteId directly or we fetch user's institute.
-    // If Faculty directly has instituteId:
-    // Use a safer approach to access the instituteId property
-    const facultyAny = faculty as any;
-    setFormInstituteId(facultyAny.instituteId || (institutes.length > 0 ? institutes[0].id : ''));
+    setFormInstituteId(faculty.instituteId || (institutes.length > 0 ? institutes[0].id : ''));
 
 
     setIsDialogOpen(true);
@@ -261,7 +259,7 @@ export default function FacultyManagementPage() {
     const instituteDomain = selectedInstitute?.domain || "gppalanpur.ac.in";
 
 
-    const facultyData: Omit<Faculty, 'id' > = {
+    const facultyData: Omit<Faculty, 'id' > & { instituteId: string } = { // Ensure instituteId is part of the payload
       staffCode: formStaffCode.trim(),
       gtuName: formGtuName.trim() || [formTitle.trim(), formFirstName.trim(), formMiddleName.trim(), formLastName.trim()].filter(Boolean).join(' ') || undefined,
       title: formTitle.trim() || undefined,
@@ -273,6 +271,7 @@ export default function FacultyManagementPage() {
       department: formDepartment,
       designation: formDesignation.trim() || undefined,
       jobType: formJobType,
+      staffCategory: formStaffCategory, // Added
       contactNumber: formContact.trim() || undefined,
       dateOfBirth: formDob ? format(formDob, "yyyy-MM-dd") : undefined,
       joiningDate: formJoiningDate ? format(formJoiningDate, "yyyy-MM-dd") : undefined,
@@ -281,7 +280,7 @@ export default function FacultyManagementPage() {
       status: formStatus,
       aadharNumber: formAadhar.trim() || undefined,
       panCardNumber: formPan.trim() || undefined,
-      // userId will be handled by backend linking logic if new User needs to be created.
+      instituteId: formInstituteId, // Added instituteId
     };
       
 
@@ -291,7 +290,7 @@ export default function FacultyManagementPage() {
         resultFaculty = await facultyService.updateFaculty(currentFaculty.id, facultyData);
         toast({ title: "Faculty Updated", description: "The faculty record has been successfully updated." });
       } else {
-        resultFaculty = await facultyService.createFaculty(facultyData as Omit<Faculty, 'id'>); // Cast as backend adds ID
+        resultFaculty = await facultyService.createFaculty(facultyData as Omit<Faculty, 'id'> & { instituteId: string }); 
         const defaultPassword = facultyData.staffCode;
         toast({ title: "Faculty Added", description: `Faculty ${resultFaculty.firstName} ${resultFaculty.lastName} added. Institute Email: ${resultFaculty.instituteEmail}. Default Password: ${defaultPassword}` });
       }
@@ -337,9 +336,12 @@ export default function FacultyManagementPage() {
       toast({ variant: "destructive", title: "Import Error", description: "Please select a CSV file to import." });
       return;
     }
+    if (!formInstituteId && institutes.length > 0) { // Check if an institute context is needed/available
+        toast({ variant: "warning", title: "Institute Context", description: "No institute selected for import context. Using first available or system default for new users." });
+    }
     setIsSubmitting(true);
     try {
-        const result = await facultyService.importFaculty(selectedFile);
+        const result = await facultyService.importFaculty(selectedFile, formInstituteId || undefined);
         await fetchInitialData();
         toast({ title: "Standard Import Successful", description: `${result.newCount} faculty added, ${result.updatedCount} faculty updated. Skipped: ${result.skippedCount}` });
     } catch (error: unknown) {
@@ -358,15 +360,15 @@ export default function FacultyManagementPage() {
       toast({ title: "Export Canceled", description: "No faculty to export (check filters)." });
       return;
     }
-    const header = ['id', 'staffCode', 'gtuName', 'title', 'firstName', 'middleName', 'lastName', 'personalEmail', 'instituteEmail', 'contactNumber', 'department', 'designation', 'jobType', 'instType', 'dateOfBirth', 'joiningDate', 'gender', 'maritalStatus', 'status', 'aadharNumber', 'panCardNumber', 'gpfNpsNumber', 'placeOfBirth', 'nationality', 'knownAs', 'userId'];
+    const header = ['id', 'staffCode', 'gtuName', 'title', 'firstName', 'middleName', 'lastName', 'personalEmail', 'instituteEmail', 'contactNumber', 'department', 'designation', 'jobType', 'staffCategory', 'instType', 'dateOfBirth', 'joiningDate', 'gender', 'maritalStatus', 'status', 'aadharNumber', 'panCardNumber', 'gpfNpsNumber', 'placeOfBirth', 'nationality', 'knownAs', 'userId', 'instituteId'];
     const csvRows = [
       header.join(','),
       ...filteredFaculty.map(f => [
         f.id, f.staffCode, `"${f.gtuName || ''}"`, `"${f.title || ''}"`, `"${f.firstName || ''}"`, `"${f.middleName || ''}"`, `"${f.lastName || ''}"`,
         `"${f.personalEmail || ''}"`, f.instituteEmail, `"${f.contactNumber || ''}"`, `"${f.department}"`, `"${f.designation || ''}"`,
-        f.jobType || '', f.instType || '', f.dateOfBirth || '', f.joiningDate || '', f.gender || '', f.maritalStatus || '', f.status,
+        f.jobType || '', f.staffCategory || 'Teaching', f.instType || '', f.dateOfBirth || '', f.joiningDate || '', f.gender || '', f.maritalStatus || '', f.status,
         `"${f.aadharNumber || ''}"`, `"${f.panCardNumber || ''}"`, `"${f.gpfNpsNumber || ''}"`, `"${f.placeOfBirth || ''}"`, `"${f.nationality || ''}"`, `"${f.knownAs || ''}"`,
-        f.userId || ''
+        f.userId || '', f.instituteId || ''
       ].join(','))
     ];
     const csvString = csvRows.join('\r\n');
@@ -381,9 +383,10 @@ export default function FacultyManagementPage() {
   };
 
   const handleDownloadSampleCsv = () => {
-    const sampleCsvContent = `id,staffCode,gtuName,title,firstName,middleName,lastName,personalEmail,instituteEmail,contactNumber,department,designation,jobType,instType,dateOfBirth,joiningDate,gender,maritalStatus,status,aadharNumber,panCardNumber,gpfNpsNumber,placeOfBirth,nationality,knownAs,userId
-faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@example.com,anil.sharma@gppalanpur.ac.in,9876543210,Computer Engineering,Professor,Regular,DI,1975-05-15,2005-08-01,Male,Married,active,123456789012,ABCDE1234F,GPF123,Palanpur,Indian,"Anil S.",user_id_link
-,S002,"Ms. PATEL PRIYA RAJESH",Ms.,PRIYA,RAJESH,PATEL,priya.patel@example.com,priya.patel@gppalanpur.ac.in,9876543211,Mechanical Engineering,Lecturer,Adhoc,DI,1988-11-20,2015-06-10,Female,Single,active,,,,,,,user_id_link2
+    const sampleCsvContent = `id,staffCode,gtuName,title,firstName,middleName,lastName,personalEmail,instituteEmail,contactNumber,department,designation,jobType,staffCategory,instType,dateOfBirth,joiningDate,gender,maritalStatus,status,aadharNumber,panCardNumber,gpfNpsNumber,placeOfBirth,nationality,knownAs,userId,instituteId
+faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@example.com,anil.sharma@gppalanpur.ac.in,9876543210,Computer Engineering,Professor,Regular,Teaching,DI,1975-05-15,2005-08-01,Male,Married,active,123456789012,ABCDE1234F,GPF123,Palanpur,Indian,"Anil S.",user_id_link,inst1
+,S002,"Ms. PATEL PRIYA RAJESH",Ms.,PRIYA,RAJESH,PATEL,priya.patel@example.com,priya.patel@gppalanpur.ac.in,9876543211,Mechanical Engineering,Lecturer,Adhoc,Teaching,DI,1988-11-20,2015-06-10,Female,Single,active,,,,,,,user_id_link2,inst1
+,C001,"Mr. Admin Clerk",Mr.,Admin,,Clerk,clerk.admin@example.com,clerk.admin@gppalanpur.ac.in,9876500000,Administration,Clerk,Regular,Clerical,DI,1990-01-01,2018-01-01,Male,Single,active,,,,,,,user_clerk_1,inst1
 `;
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -400,9 +403,12 @@ faculty_001,S001,"Dr. SHARMA ANIL KUMAR",Dr.,ANIL,KUMAR,SHARMA,anil.sharma@examp
       toast({ variant: "destructive", title: "GTU Import Error", description: "Please select a GTU CSV file to import." });
       return;
     }
+    if (!formInstituteId && institutes.length > 0) {
+        toast({ variant: "warning", title: "Institute Context", description: "No default institute selected for GTU import. Using first available or system default for new users." });
+    }
     setIsSubmitting(true);
     try {
-        const result = await facultyService.importGtuFaculty(selectedGtuFile);
+        const result = await facultyService.importGtuFaculty(selectedGtuFile, formInstituteId || undefined);
         await fetchInitialData();
         toast({ title: "GTU Import Successful", description: `${result.newCount} faculty added, ${result.updatedCount} faculty updated. ${result.skippedCount} rows skipped.` });
 
@@ -455,7 +461,8 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
         f.instituteEmail.toLowerCase().includes(termLower) ||
         (f.personalEmail && f.personalEmail.toLowerCase().includes(termLower)) ||
         (f.department && f.department.toLowerCase().includes(termLower)) ||
-        (f.designation && f.designation.toLowerCase().includes(termLower))
+        (f.designation && f.designation.toLowerCase().includes(termLower)) ||
+        (f.staffCategory && f.staffCategory.toLowerCase().includes(termLower))
       );
     }
     if (filterDepartmentVal !== 'all') {
@@ -467,6 +474,10 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
     if (filterStatusVal !== 'all') {
       result = result.filter(f => f.status === filterStatusVal);
     }
+    if (filterStaffCategoryVal !== 'all') { // Added filter for staff category
+      result = result.filter(f => f.staffCategory === filterStaffCategoryVal);
+    }
+
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
@@ -486,7 +497,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
       });
     }
     return result;
-  }, [facultyList, searchTerm, filterDepartmentVal, filterDesignationVal, filterStatusVal, sortField, sortDirection]);
+  }, [facultyList, searchTerm, filterDepartmentVal, filterDesignationVal, filterStatusVal, filterStaffCategoryVal, sortField, sortDirection]);
 
   const totalPages = Math.ceil(filteredFaculty.length / itemsPerPage);
   const paginatedFaculty = useMemo(() => {
@@ -496,7 +507,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
 
   useEffect(() => {
     setCurrentPage(1); 
-  }, [searchTerm, filterDepartmentVal, filterDesignationVal, filterStatusVal, itemsPerPage]);
+  }, [searchTerm, filterDepartmentVal, filterDesignationVal, filterStatusVal, filterStaffCategoryVal, itemsPerPage]);
 
   const handleSelectAll = (checked: boolean | 'indeterminate') => {
     if (checked === true) {
@@ -558,24 +569,24 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
           <div>
             <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
               <UsersRound className="h-6 w-6" />
-              Faculty Management
+              Faculty & Staff Management
             </CardTitle>
             <CardDescription>
-              Manage faculty records, academic details, and status.
+              Manage faculty and other staff records, academic details, and status.
             </CardDescription>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
              <Dialog open={isDialogOpen} onOpenChange={(isOpen) => { setIsDialogOpen(isOpen); if (!isOpen) resetForm(); }}>
               <DialogTrigger asChild>
-                <Button onClick={handleAddNew} className="w-full sm:w-auto">
-                  <PlusCircle className="mr-2 h-5 w-5" /> Add New Faculty
+                <Button onClick={handleAddNew} className="w-full sm:w-auto" disabled={institutes.length === 0}>
+                  <PlusCircle className="mr-2 h-5 w-5" /> Add New Staff
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-3xl">
                 <DialogHeader>
-                  <DialogTitle>{currentFaculty?.id ? "Edit Faculty" : "Add New Faculty"}</DialogTitle>
+                  <DialogTitle>{currentFaculty?.id ? "Edit Staff" : "Add New Staff"}</DialogTitle>
                   <DialogDescription>
-                    {currentFaculty?.id ? "Modify the details of this faculty member." : "Create a new faculty record."}
+                    {currentFaculty?.id ? "Modify the details of this staff member." : "Create a new staff record."}
                   </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4 py-4 max-h-[75vh] overflow-y-auto pr-2 grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
@@ -593,8 +604,13 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                     </Select>
                   </div>
                   <div className="md:col-span-1">
-                    {/* Spacer or another field */}
+                    <Label htmlFor="facultyStaffCategory">Staff Category *</Label>
+                    <Select value={formStaffCategory} onValueChange={(v) => setFormStaffCategory(v as StaffCategory)} disabled={isSubmitting} required>
+                      <SelectTrigger id="facultyStaffCategory"><SelectValue placeholder="Select Category"/></SelectTrigger>
+                      <SelectContent>{STAFF_CATEGORY_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}</SelectContent>
+                    </Select>
                   </div>
+
 
                   <div className="md:col-span-3">
                     <Label htmlFor="facultyGtuName">Full Name (GTU Format)</Label>
@@ -749,7 +765,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                     </DialogClose>
                     <Button type="submit" disabled={isSubmitting}>
                       {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                      {currentFaculty?.id ? "Save Changes" : "Create Faculty"}
+                      {currentFaculty?.id ? "Save Changes" : "Create Staff"}
                     </Button>
                   </DialogFooter>
                 </form>
@@ -762,7 +778,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
         </CardHeader>
         <CardContent>
           <div className="mb-6 p-4 border rounded-lg space-y-4">
-            <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Faculty (Standard Format)</h3>
+            <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Staff (Standard Format)</h3>
             <div className="flex flex-col sm:flex-row gap-2 items-center">
               <Input type="file" id="csvImportFaculty" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
               <Button onClick={handleImportFaculty} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto">
@@ -775,7 +791,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                     <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample (Standard)
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  Use for general faculty data import/update. Requires staffCode, firstName, lastName, department, status.
+                  Use for general staff data import/update. Requires staffCode, firstName, lastName, department, status.
                 </p>
             </div>
           </div>
@@ -784,24 +800,25 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
             <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-accent"/>Import GTU Faculty Data</h3>
             <div className="flex flex-col sm:flex-row gap-2 items-center">
               <Input type="file" id="gtuCsvImportFaculty" accept=".csv" onChange={handleGtuFileChange} className="flex-grow" disabled={isSubmitting} />
-              <Button onClick={handleImportGtuFaculty} disabled={isSubmitting || !selectedGtuFile} className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-accent-foreground">
+              <Button onClick={handleImportGtuFaculty} disabled={isSubmitting || !selectedGtuFile || institutes.length === 0} className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-accent-foreground">
                 {isSubmitting && selectedGtuFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>}
                 Import GTU Data
               </Button>
             </div>
+             {institutes.length === 0 && <p className="text-xs text-destructive">GTU Import disabled: No institutes found. Please add institutes first.</p>}
             <div className="flex items-center gap-2">
                  <Button onClick={handleDownloadGtuSampleCsv} variant="link" size="sm" className="px-0 text-accent">
                     <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample (GTU)
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  Import faculty data using the official GTU CSV format.
+                  Import faculty data using the official GTU CSV format. Select default institute for new users above.
                 </p>
             </div>
           </div>
 
-          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border rounded-lg">
+          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 p-4 border rounded-lg">
             <div>
-              <Label htmlFor="searchFaculty">Search Faculty</Label>
+              <Label htmlFor="searchFaculty">Search Staff</Label>
               <div className="relative">
                  <Input
                     id="searchFaculty"
@@ -820,6 +837,16 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                 <SelectContent>
                   <SelectItem value="all">All Departments</SelectItem>
                   {DEPARTMENT_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="filterStaffCategory">Filter by Staff Category</Label>
+              <Select value={filterStaffCategoryVal} onValueChange={(value) => setFilterStaffCategoryVal(value as StaffCategory | 'all')}>
+                <SelectTrigger id="filterStaffCategory"><SelectValue placeholder="All Categories"/></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {STAFF_CATEGORY_OPTIONS.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -851,7 +878,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                     <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedFacultyIds.length})
                 </Button>
                 <span className="text-sm text-muted-foreground">
-                    {selectedFacultyIds.length} faculty member(s) selected.
+                    {selectedFacultyIds.length} staff member(s) selected.
                 </span>
             </div>
           )}
@@ -869,6 +896,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                 <SortableTableHeader field="gtuName" label="Name (GTU)" />
                 <SortableTableHeader field="staffCode" label="Staff Code" />
                 <SortableTableHeader field="department" label="Department" />
+                <SortableTableHeader field="staffCategory" label="Category" /> {/* Added Category Header */}
                 <SortableTableHeader field="designation" label="Designation" />
                 <SortableTableHeader field="status" label="Status" />
                 <TableHead>Details</TableHead>
@@ -896,6 +924,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                   </TableCell>
                   <TableCell>{faculty.staffCode}</TableCell>
                   <TableCell>{faculty.department}</TableCell>
+                  <TableCell>{faculty.staffCategory || 'Teaching'}</TableCell> {/* Display Staff Category */}
                   <TableCell>{faculty.designation}</TableCell>
                   <TableCell>
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
@@ -931,7 +960,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                   <TableCell className="text-right space-x-2">
                     <Button variant="outline" size="icon" onClick={() => handleEdit(faculty)} disabled={isSubmitting}>
                       <Edit className="h-4 w-4" />
-                      <span className="sr-only">Edit Faculty</span>
+                      <span className="sr-only">Edit Staff</span>
                     </Button>
                     <Button
                         variant="destructive"
@@ -940,15 +969,15 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                         disabled={isSubmitting}
                     >
                       <Trash2 className="h-4 w-4" />
-                      <span className="sr-only">Delete Faculty</span>
+                      <span className="sr-only">Delete Staff</span>
                     </Button>
                   </TableCell>
                 </TableRow>
               ))}
               {paginatedFaculty.length === 0 && (
                  <TableRow>
-                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
-                        No faculty members found. Try adjusting your search or filters, or add a new faculty member.
+                    <TableCell colSpan={9} className="text-center text-muted-foreground py-8"> {/* Updated colSpan */}
+                        No staff members found. Try adjusting your search or filters, or add a new staff member.
                     </TableCell>
                  </TableRow>
               )}
@@ -957,7 +986,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
         </CardContent>
          <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
             <div className="text-sm text-muted-foreground">
-                Showing {filteredFaculty.length > 0 ? Math.min((currentPage -1) * itemsPerPage + 1, filteredFaculty.length) : 0} to {Math.min(currentPage * itemsPerPage, filteredFaculty.length)} of {filteredFaculty.length} faculty members.
+                Showing {filteredFaculty.length > 0 ? Math.min((currentPage -1) * itemsPerPage + 1, filteredFaculty.length) : 0} to {Math.min(currentPage * itemsPerPage, filteredFaculty.length)} of {filteredFaculty.length} staff members.
             </div>
             <div className="flex items-center gap-2">
                  <Select
@@ -1029,3 +1058,4 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
     </div>
   );
 }
+

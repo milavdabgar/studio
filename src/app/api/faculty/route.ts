@@ -1,6 +1,5 @@
-
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Faculty, User, Institute } from '@/types/entities'; 
+import type { Faculty, User, Institute, StaffCategory } from '@/types/entities'; 
 import { userService } from '@/lib/api/users'; 
 import { instituteService } from '@/lib/api/institutes'; 
 
@@ -13,7 +12,7 @@ if (!global.__API_FACULTY_STORE__ || global.__API_FACULTY_STORE__.length === 0) 
   global.__API_FACULTY_STORE__ = [
     {
       id: "fac_cs01_gpp",
-      userId: "user_faculty_cs01_gpp", // Link to an existing User ID
+      userId: "user_faculty_cs01_gpp", 
       staffCode: "FCS01",
       gtuName: "PROF. FACULTY CS01 GPP",
       title: "Prof.",
@@ -24,6 +23,7 @@ if (!global.__API_FACULTY_STORE__ || global.__API_FACULTY_STORE__.length === 0) 
       department: "Computer Engineering",
       designation: "Lecturer",
       jobType: "Regular",
+      staffCategory: "Teaching",
       status: "active",
       instituteId: "inst1",
       createdAt: now,
@@ -31,7 +31,7 @@ if (!global.__API_FACULTY_STORE__ || global.__API_FACULTY_STORE__.length === 0) 
     },
     {
       id: "fac_me01_gpp",
-      userId: "user_faculty_me01_gpp", // Link to an existing User ID
+      userId: "user_faculty_me01_gpp", 
       staffCode: "FME01",
       gtuName: "DR. PATEL RAJ KUMAR",
       title: "Dr.",
@@ -43,12 +43,13 @@ if (!global.__API_FACULTY_STORE__ || global.__API_FACULTY_STORE__.length === 0) 
       department: "Mechanical Engineering",
       designation: "Associate Professor",
       jobType: "Regular",
+      staffCategory: "Teaching",
       status: "active",
       instituteId: "inst1",
       createdAt: now,
       updatedAt: now,
     },
-    { // HOD of Computer Engineering
+    { 
       id: "fac_hod_ce_gpp",
       userId: "user_hod_ce_gpp",
       staffCode: "HODCE",
@@ -61,12 +62,13 @@ if (!global.__API_FACULTY_STORE__ || global.__API_FACULTY_STORE__.length === 0) 
       department: "Computer Engineering",
       designation: "Head of Department",
       jobType: "Regular",
+      staffCategory: "Teaching",
       status: "active",
       instituteId: "inst1",
       createdAt: now,
       updatedAt: now,
     },
-    { // Committee Convener
+    { 
       id: "fac_cwan_conv_gpp",
       userId: "user_committee_convener_gpp",
       staffCode: "CWANCONV",
@@ -75,9 +77,10 @@ if (!global.__API_FACULTY_STORE__ || global.__API_FACULTY_STORE__.length === 0) 
       lastName: "CONVENER",
       personalEmail: "convener.cwan@example.com",
       instituteEmail: "convener.cwan@gppalanpur.ac.in",
-      department: "General Department", // Or relevant dept
+      department: "General Department", 
       designation: "Lecturer",
       jobType: "Regular",
+      staffCategory: "Teaching",
       status: "active",
       instituteId: "inst1",
       createdAt: now,
@@ -104,49 +107,38 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const facultyData = await request.json() as Omit<Faculty, 'id' | 'userId'> & { userId?: string, instituteId?: string };
+    const facultyData = await request.json() as Omit<Faculty, 'id' | 'userId'> & { userId?: string, instituteId: string }; // instituteId is mandatory for new staff
 
     if (!facultyData.staffCode || !facultyData.staffCode.trim()) {
       return NextResponse.json({ message: 'Staff Code is required.' }, { status: 400 });
     }
-    if ((!facultyData.firstName || !facultyData.firstName.trim()) && (!facultyData.lastName || !facultyData.lastName.trim())) {
-      return NextResponse.json({ message: 'First Name and Last Name are required if GTU Name is not provided.' }, { status: 400 });
+    if ((!facultyData.firstName || !facultyData.firstName.trim()) || (!facultyData.lastName || !facultyData.lastName.trim())) {
+      return NextResponse.json({ message: 'First Name and Last Name are required.' }, { status: 400 });
+    }
+     if (!facultyData.instituteId) { // Added explicit check
+      return NextResponse.json({ message: 'Institute ID is required for creating staff.' }, { status: 400 });
     }
     
     let instituteDomain = 'gpp.ac.in'; // Default domain
-    let facultyInstituteId = facultyData.instituteId;
-
-    if (facultyInstituteId) {
-        try {
-            const institute = await instituteService.getInstituteById(facultyInstituteId);
-            if (institute && institute.domain) {
-                instituteDomain = institute.domain;
-            }
-        } catch (error) {
-            console.warn(`Error fetching institute ${facultyInstituteId} for domain: ${(error as Error).message}. Using default domain '${instituteDomain}'.`);
-        }
-    } else {
-         // If no institute ID, try to assign to a default one or handle error
-        console.warn(`Institute ID not provided for faculty ${facultyData.staffCode}. Using default domain '${instituteDomain}'. Consider making instituteId mandatory.`);
-        // For now, let's try to find a default institute for user creation if possible
-        const institutes = await instituteService.getAllInstitutes();
-        if(institutes.length > 0) {
-            facultyInstituteId = institutes[0].id; // Assign to first available institute
-            if(institutes[0].domain) instituteDomain = institutes[0].domain;
-             facultyData.instituteId = facultyInstituteId; // Persist this on faculty record
+    try {
+        const institute = await instituteService.getInstituteById(facultyData.instituteId);
+        if (institute && institute.domain) {
+            instituteDomain = institute.domain;
         } else {
-            return NextResponse.json({ message: 'No institutes found. Cannot create faculty without an institute context.' }, { status: 400 });
+             console.warn(`Institute with ID ${facultyData.instituteId} not found or has no domain. Using default domain '${instituteDomain}'.`);
         }
+    } catch (error) {
+        console.warn(`Error fetching institute ${facultyData.instituteId} for domain: ${(error as Error).message}. Using default domain '${instituteDomain}'.`);
     }
-    
+        
     const instituteEmail = facultyData.instituteEmail?.trim() || generateInstituteEmailForFaculty(facultyData.firstName, facultyData.lastName, instituteDomain);
 
 
     if (facultyStore.some(f => f.staffCode === facultyData.staffCode.trim())) {
-      return NextResponse.json({ message: `Faculty with staff code '${facultyData.staffCode.trim()}' already exists.` }, { status: 409 });
+      return NextResponse.json({ message: `Staff with staff code '${facultyData.staffCode.trim()}' already exists.` }, { status: 409 });
     }
     if (facultyStore.some(f => f.instituteEmail.toLowerCase() === instituteEmail.toLowerCase())) {
-      return NextResponse.json({ message: `Faculty with institute email '${instituteEmail}' already exists.` }, { status: 409 });
+      return NextResponse.json({ message: `Staff with institute email '${instituteEmail}' already exists.` }, { status: 409 });
     }
      if (facultyData.personalEmail && !/\S+@\S+\.\S+/.test(facultyData.personalEmail)) {
         return NextResponse.json({ message: 'Invalid personal email format.' }, { status: 400 });
@@ -157,8 +149,9 @@ export async function POST(request: NextRequest) {
     const newFaculty: Faculty = {
       id: newFacultyId,
       ...facultyData,
-      instituteEmail, // Use the generated or provided one
-      instituteId: facultyInstituteId, // Ensure it's set
+      staffCategory: facultyData.staffCategory || 'Teaching', // Default to Teaching
+      instituteEmail, 
+      instituteId: facultyData.instituteId, 
     };
     
     const displayName = facultyData.gtuName || `${facultyData.title || ''} ${facultyData.firstName || ''} ${facultyData.middleName || ''} ${facultyData.lastName || ''}`.replace(/\s+/g, ' ').trim() || facultyData.staffCode;
@@ -170,10 +163,10 @@ export async function POST(request: NextRequest) {
             displayName,
             email: facultyData.personalEmail || instituteEmail, 
             instituteEmail: instituteEmail,
-            password: facultyData.staffCode, 
-            roles: ['faculty'], 
+            password: facultyData.staffCode, // Default password for new staff
+            roles: [facultyData.staffCategory === 'Teaching' ? 'faculty' : (facultyData.staffCategory?.toLowerCase() + '_staff' as UserRole) || 'faculty'], // Assign role based on category
             isActive: facultyData.status === 'active',
-            instituteId: facultyInstituteId, 
+            instituteId: facultyData.instituteId, 
             fullName: facultyData.gtuName || `${facultyData.lastName || ''} ${facultyData.firstName || ''} ${facultyData.middleName || ''}`.trim(),
             firstName: facultyData.firstName,
             middleName: facultyData.middleName,
@@ -185,20 +178,22 @@ export async function POST(request: NextRequest) {
         newFaculty.userId = createdUserId; 
 
     } catch (userCreationError: unknown) {
-        if (userCreationError.message?.includes("already exists")) {
+      const error = userCreationError as Error;
+      if (error.message?.includes("already exists")) {
             console.warn(`System user with email ${instituteEmail} or ${facultyData.personalEmail} already exists. Attempting to link faculty ${newFaculty.staffCode}.`);
             const allUsers = await userService.getAllUsers();
-            const existingUser = allUsers.find(u => u.instituteEmail === instituteEmail || u.email === facultyData.personalEmail);
+            const existingUser = allUsers.find(u => u.instituteEmail === instituteEmail || (facultyData.personalEmail && u.email === facultyData.personalEmail));
             if (existingUser) {
                 newFaculty.userId = existingUser.id;
-                if (!existingUser.roles.includes('faculty')) {
-                    await userService.updateUser(existingUser.id, { roles: [...existingUser.roles, 'faculty'] });
+                const baseRole = facultyData.staffCategory === 'Teaching' ? 'faculty' : (facultyData.staffCategory?.toLowerCase() + '_staff' as UserRole) || 'faculty';
+                if (!existingUser.roles.includes(baseRole)) {
+                    await userService.updateUser(existingUser.id, { roles: [...existingUser.roles, baseRole] });
                 }
             } else {
                  console.error(`Could not link faculty ${newFaculty.staffCode} to an existing user despite 'already exists' error.`);
             }
         } else {
-          console.error(`Failed to create/link system user for new faculty ${newFaculty.staffCode}:`, userCreationError);
+          console.error(`Failed to create/link system user for new faculty ${newFaculty.staffCode}:`, error);
         }
     }
     
@@ -216,5 +211,6 @@ const generateInstituteEmailForFaculty = (firstName?: string, lastName?: string,
   const fn = (firstName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
   const ln = (lastName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
   if (fn && ln) return `${fn}.${ln}@${instituteDomain}`;
-  return `faculty_${Date.now().toString().slice(-5)}_${Math.random().toString(36).substring(2,5)}@${instituteDomain}`;
+  return `staff_${Date.now().toString().slice(-5)}_${Math.random().toString(36).substring(2,5)}@${instituteDomain}`;
 };
+
