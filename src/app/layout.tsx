@@ -1,3 +1,4 @@
+
 // src/app/layout.tsx
 "use client"; 
 
@@ -10,7 +11,7 @@ import {
     Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, 
     Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, FileText,
     BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Activity, Clock,
-    ListChecks, BookOpenCheck, FilePieChart, Upload, Paperclip, CheckSquare, UserPlus, Bell, NotebookPen, BookOpenText
+    ListChecks, BookOpenCheck, FilePieChart, Upload, Paperclip, CheckSquare, UserPlus, Bell, BellRing, NotebookPen, BookOpenText
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -81,10 +82,11 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/student/attendance', icon: AttendanceIcon, label: 'My Attendance', id: 'student-attendance-link' },
     { href: '/student/courses', icon: BookOpen, label: 'My Courses', id: 'student-courses-link' },
     { href: '/student/courses/enroll', icon: BookOpenCheck, label: 'Enroll in Courses', id: 'student-enroll-courses-link' },
-    { href: '/student/assignments', icon: AssessmentIcon, label: 'Assignments', id: 'student-assignments-link'},
+    { href: '/student/assignments', icon: NotebookPen, label: 'Assignments', id: 'student-assignments-link'},
     { href: '/student/results', icon: Award, label: 'My Results', id: 'student-results-link' },
     { href: '/student/materials', icon: Paperclip, label: 'Study Materials', id: 'student-materials-link' },
     { href: '/project-fair/student', icon: FileText, label: 'Project Fair', id: 'student-project-link' }, 
+    { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'student-notifications-link' },
   ],
   faculty: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'faculty-dashboard-link' },
@@ -95,6 +97,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/faculty/attendance/reports', icon: BarChart3, label: 'Attendance Reports', id: 'faculty-attendance-reports-link' },
     { href: '/faculty/assessments/grade', icon: FilePieChart, label: 'Grade Assessments', id: 'faculty-grade-assessments-link' },
     { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'faculty-evaluate-link' }, 
+    { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'faculty-notifications-link' },
   ],
   hod: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'hod-dashboard-link' },
@@ -104,36 +107,43 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'hod-faculty-link' },
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'hod-students-link' },
     { href: '/admin/timetables', icon: Clock, label: 'Dept. Timetable', id: 'hod-timetables-link'},
+    { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'hod-notifications-link' },
   ],
   jury: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'jury-dashboard-link' },
     { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'jury-evaluate-link' }, 
+    { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'jury-notifications-link' },
   ],
   committee_convener: [ 
     { href: '/dashboard', icon: Home, label: 'Convener Dashboard', id: 'convener-dashboard-link' },
     { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'convener-my-committee-link'},
     { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'convener-meetings-link'}, 
-    { href: '/admin/resource-allocation/rooms', icon: DoorOpen, label: 'Book Room', id: 'convener-book-room-link' }
+    { href: '/admin/resource-allocation/rooms', icon: DoorOpen, label: 'Book Room', id: 'convener-book-room-link' },
+    { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'committee_convener-notifications-link' },
   ],
   committee_co_convener: [
     { href: '/dashboard', icon: Home, label: 'Co-Convener Dashboard', id: 'co-convener-dashboard-link' },
     { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'co-convener-my-committee-link'},
     { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'co-convener-meetings-link'}, 
-    { href: '/admin/resource-allocation/rooms', icon: DoorOpen, label: 'Book Room', id: 'co_convener-book-room-link' }
+    { href: '/admin/resource-allocation/rooms', icon: DoorOpen, label: 'Book Room', id: 'co_convener-book-room-link' },
+    { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'committee_co_convener-notifications-link' },
   ],
   committee_member: [
     { href: '/dashboard', icon: Home, label: 'Member Dashboard', id: 'member-dashboard-link' },
     { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'member-my-committee-link'},
-    { href: '/committee/tasks/my', icon: ListChecks, label: 'My Tasks', id: 'member-my-tasks-link'} 
+    { href: '/committee/tasks/my', icon: ListChecks, label: 'My Tasks', id: 'member-my-tasks-link'},
+    { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'committee_member-notifications-link' },
   ],
-  super_admin: adminNavItems, 
-  dte_admin: [{ href: '/dashboard', icon: Home, label: 'DTE Dashboard', id: 'dte-admin-dashboard-link' }], 
-  gtu_admin: [{ href: '/dashboard', icon: Home, label: 'GTU Dashboard', id: 'gtu-admin-dashboard-link' }], 
+  super_admin: [
+    ...adminNavItems,
+    { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'super_admin-notifications-link' },
+  ], 
   institute_admin: [
     { href: '/dashboard', icon: Home, label: 'Institute Dashboard', id: 'institute-admin-dashboard-link' },
     ...adminNavItems.filter(item => ![
       '/admin/users', '/admin/roles', '/admin/institutes', '/dashboard'
     ].includes(item.href)), 
+    { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'institute_admin-notifications-link' },
   ],
   department_admin: [ 
     { href: '/dashboard', icon: Home, label: 'Department Dashboard', id: 'department-admin-dashboard-link' },
@@ -147,14 +157,32 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'department-admin-students-link' },
     { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'department-admin-resource-allocation-link' },
     { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'department-admin-reporting-link' },
+    { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'department_admin-notifications-link' },
   ],
   committee_admin: [
     { href: '/dashboard', icon: Home, label: 'Committee Admin DB', id: 'committee-admin-dashboard-link' },
     { href: '/admin/committees', icon: CommitteeIcon, label: 'Manage Committees', id: 'committee-admin-committees-link' },
+    { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'committee_admin-notifications-link' },
   ],
-  lab_assistant: [{ href: '/dashboard', icon: Home, label: 'Lab Assistant Dashboard', id: 'lab-assistant-dashboard-link' }], 
-  clerical_staff: [{ href: '/dashboard', icon: Home, label: 'Clerical Dashboard', id: 'clerical-dashboard-link' }], 
-  unknown: [], 
+  dte_admin: [
+    { href: '/dashboard', icon: Home, label: 'DTE Dashboard', id: 'dte-admin-dashboard-link' },
+    { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'dte_admin-notifications-link' },
+  ], 
+  gtu_admin: [
+    { href: '/dashboard', icon: Home, label: 'GTU Dashboard', id: 'gtu-admin-dashboard-link' },
+    { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'gtu_admin-notifications-link' },
+  ], 
+  lab_assistant: [
+    { href: '/dashboard', icon: Home, label: 'Lab Assistant Dashboard', id: 'lab-assistant-dashboard-link' },
+    { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'lab_assistant-notifications-link' },
+  ], 
+  clerical_staff: [
+    { href: '/dashboard', icon: Home, label: 'Clerical Dashboard', id: 'clerical-dashboard-link' },
+    { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'clerical_staff-notifications-link' },
+  ], 
+  unknown: [
+    { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'unknown-notifications-link' },
+  ], 
 };
 
 
@@ -162,23 +190,21 @@ const getNavItemsForRoleCode = (roleCode: UserRoleCode): Array<{ href: string; i
   const items = baseNavItems[roleCode] || baseNavItems['unknown']; 
   const itemsArray = Array.isArray(items) ? items : [];
   
-  if (roleCode.startsWith('committee_') && !['committee_admin'].includes(roleCode) && !itemsArray.find(item => item.id.includes('-my-committee'))) {
-     const committeeDashboardLink = { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: `${roleCode}-my-committee-link`}; // Ensure unique ID
-     if (!itemsArray.find(item => item.id === committeeDashboardLink.id)) {
-       const specificItems = baseNavItems[roleCode as keyof typeof baseNavItems] || [];
-       // Filter out generic dashboard if committee one exists
-       const dashboardFilteredItems = specificItems.filter(item => item.href !== '/dashboard' || roleCode === 'committee_member'); // Keep dashboard for member
-       return [committeeDashboardLink, ...dashboardFilteredItems].sort((a,b) => (a.label || "").localeCompare(b.label || ""));
-     }
-  } else if (roleCode.endsWith('_convener') && !itemsArray.find(item => item.id.includes('-my-committee'))) {
-    return getNavItemsForRoleCode('committee_convener');
-  } else if (roleCode.endsWith('_co_convener') && !itemsArray.find(item => item.id.includes('-my-committee'))) {
-    return getNavItemsForRoleCode('committee_co_convener');
-  } else if (roleCode.endsWith('_member') && !itemsArray.find(item => item.id.includes('-my-committee'))) {
-    return getNavItemsForRoleCode('committee_member');
+  const committeeSpecificRoles: UserRoleCode[] = ['committee_convener', 'committee_co_convener', 'committee_member'];
+
+  if (committeeSpecificRoles.includes(roleCode)) {
+    // For specific committee roles, ensure "My Committee" and general dashboard are present if they exist in base.
+    const specificItems = [...(baseNavItems[roleCode] || [])];
+    // Make sure generic dashboard is present if not overridden
+    if (!specificItems.find(item => item.href === '/dashboard')) {
+        specificItems.unshift({ href: '/dashboard', icon: Home, label: 'Dashboard', id: `${roleCode}-dashboard-link` });
+    }
+    const uniqueItems = Array.from(new Map(specificItems.map(item => [item.id, item])).values());
+    uniqueItems.sort((a, b) => a.label.localeCompare(b.label));
+    return uniqueItems;
   }
 
-  const sortedItems = [...new Map(itemsArray.map(item => [item.id, item])).values()]; // Deduplicate by ID
+  const sortedItems = [...new Map(itemsArray.map(item => [item.id, item])).values()]; 
   sortedItems.sort((a, b) => {
     if (a.label.includes('Dashboard')) return -1;
     if (b.label.includes('Dashboard')) return 1;
@@ -290,7 +316,7 @@ export default function RootLayout({
         } else { 
             router.push('/dashboard'); 
         }
-        router.refresh(); // Refresh to ensure sidebar and content update based on new role
+        router.refresh(); 
     } else {
         const roleDetails = allSystemRoles.find(r => r.code === newRoleCode);
         toast({ variant: "destructive", title: "Role Switch Failed", description: `Role '${roleDetails?.name || newRoleCode}' is not available for your account or is invalid.`})
@@ -355,7 +381,7 @@ export default function RootLayout({
                 {currentNavItems.map((item) => (
                   <SidebarMenuItem key={item.id}>
                     <Link href={item.href} passHref legacyBehavior>
-                      <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/dashboard' && item.href !== '/')} >
+                      <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href || (pathname.startsWith(item.href + '/') && item.href !== '/dashboard')} >
                         <item.icon />
                         <span>{item.label}</span>
                       </SidebarMenuButton>
@@ -414,6 +440,7 @@ export default function RootLayout({
                        if (typeof document !== 'undefined') {
                         document.cookie = 'auth_user=;path=/;max-age=0'; 
                        }
+                       setCurrentUser(DEFAULT_USER); // Reset user state
                        router.push('/login');
                     }}
                   >
@@ -440,3 +467,4 @@ export default function RootLayout({
     </html>
   );
 }
+

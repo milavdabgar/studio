@@ -1,8 +1,9 @@
+
 // src/components/notifications/NotificationBell.tsx
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Bell, CheckCheck, X } from 'lucide-react';
+import { Bell, CheckCheck, X, Info, ExternalLink, CheckCircle as CheckCircleIcon, AlertTriangle as AlertTriangleIcon, Clock } from 'lucide-react'; // Renamed CheckCircle to CheckCircleIcon, AlertTriangle to AlertTriangleIcon
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -10,7 +11,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import type { Notification } from '@/types/entities';
 import { notificationService } from '@/lib/api/notifications';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, parseISO } from 'date-fns';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 
@@ -62,7 +63,7 @@ const NotificationBell: React.FC = () => {
     const fetchNotifications = async () => {
       try {
         const data = await notificationService.getNotificationsForUser(userId);
-        setNotifications(data);
+        setNotifications(data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
         setUnreadCount(data.filter(n => !n.isRead).length);
       } catch (error) {
         toast({
@@ -74,16 +75,15 @@ const NotificationBell: React.FC = () => {
     };
 
     fetchNotifications();
-    // Optional: Set up polling or WebSocket for real-time updates
-    // const interval = setInterval(fetchNotifications, 60000); // Poll every minute
-    // return () => clearInterval(interval);
+    const interval = setInterval(fetchNotifications, 60000); // Poll every minute
+    return () => clearInterval(interval);
   }, [userId, toast]);
 
   const handleMarkAsRead = async (notificationId: string) => {
     try {
       await notificationService.markNotificationAsRead(notificationId);
       setNotifications(prev => 
-        prev.map(n => n.id === notificationId ? { ...n, isRead: true } : n)
+        prev.map(n => n.id === notificationId ? { ...n, isRead: true, updatedAt: new Date().toISOString() } : n)
       );
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (error) {
@@ -99,7 +99,7 @@ const NotificationBell: React.FC = () => {
     if (!userId) return;
     try {
       await notificationService.markAllNotificationsAsRead(userId);
-      setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+      setNotifications(prev => prev.map(n => ({ ...n, isRead: true, updatedAt: new Date().toISOString() })));
       setUnreadCount(0);
       toast({ title: "Success", description: "All notifications marked as read." });
     } catch (error) {
@@ -113,9 +113,10 @@ const NotificationBell: React.FC = () => {
 
   const getIconForType = (type: Notification['type']) => {
     switch (type) {
-      case 'success': return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'warning': return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+      case 'success': return <CheckCircleIcon className="h-4 w-4 text-green-500" />;
+      case 'warning': return <AlertTriangleIcon className="h-4 w-4 text-yellow-500" />;
       case 'error': return <X className="h-4 w-4 text-red-500" />;
+      case 'reminder': return <Clock className="h-4 w-4 text-purple-500" />;
       default: return <Info className="h-4 w-4 text-blue-500" />;
     }
   };
@@ -136,7 +137,7 @@ const NotificationBell: React.FC = () => {
           <span className="sr-only">Open notifications</span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 p-0" align="end">
+      <PopoverContent className="w-80 md:w-96 p-0" align="end">
         <div className="p-4">
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-medium">Notifications</h3>
@@ -148,7 +149,7 @@ const NotificationBell: React.FC = () => {
           </div>
         </div>
         <Separator />
-        <ScrollArea className="h-72">
+        <ScrollArea className="h-72 max-h-[60vh]">
           {notifications.length === 0 ? (
             <p className="p-4 text-sm text-muted-foreground text-center">No new notifications.</p>
           ) : (
@@ -162,19 +163,19 @@ const NotificationBell: React.FC = () => {
                         {notification.message}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
+                        {formatDistanceToNow(parseISO(notification.createdAt), { addSuffix: true })}
                       </p>
                     </div>
                     {!notification.isRead && (
-                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleMarkAsRead(notification.id)}>
-                        <CheckCheck className="h-4 w-4 text-green-600" title="Mark as read"/>
+                      <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleMarkAsRead(notification.id)} title="Mark as read">
+                        <CheckCheck className="h-4 w-4 text-green-600"/>
                       </Button>
                     )}
                   </div>
                   {notification.link && (
                     <Link href={notification.link} passHref>
-                      <Button variant="link" size="sm" className="text-xs p-0 h-auto mt-1" onClick={() => setIsOpen(false)}>
-                        View Details
+                      <Button variant="link" size="sm" className="text-xs p-0 h-auto mt-1 flex items-center" onClick={() => setIsOpen(false)}>
+                        <ExternalLink className="h-3 w-3 mr-1"/> View Details
                       </Button>
                     </Link>
                   )}
@@ -184,7 +185,13 @@ const NotificationBell: React.FC = () => {
             ))
           )}
         </ScrollArea>
-        {/* Optional: Footer with "View All Notifications" link */}
+        <div className="p-2 border-t text-center">
+            <Link href="/notifications" passHref>
+                <Button variant="link" size="sm" className="text-xs w-full" onClick={() => setIsOpen(false)}>
+                    View All Notifications
+                </Button>
+            </Link>
+        </div>
       </PopoverContent>
     </Popover>
   );
