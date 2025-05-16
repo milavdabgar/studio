@@ -1,3 +1,4 @@
+
 // src/app/layout.tsx
 "use client"; 
 
@@ -8,7 +9,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { 
     Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, 
     Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, 
-    Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, FileText,
+    Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText, // Removed AssessmentIcon as AssessmentIconLucide
     BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Activity, Clock,
     ListChecks, BookOpenCheck, FilePieChart, Upload, Paperclip, CheckSquare, UserPlus, Bell, BellRing, NotebookPen, BookOpenText
 } from 'lucide-react';
@@ -61,7 +62,7 @@ const adminNavItems = [
   { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches-link' },
   { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses-link' },
   { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum Mgt.', id: 'admin-curriculum-link' },
-  { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments-link' },
+  { href: '/admin/assessments', icon: FileText, label: 'Assessments', id: 'admin-assessments-link' }, // Changed icon to FileText
   { href: '/admin/enrollments', icon: UserPlus, label: 'Enrollment Mgt.', id: 'admin-enrollments-link'},
   { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance-nav-link' }, 
   { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'admin-resource-allocation-link' },
@@ -151,7 +152,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/batches', icon: CalendarRange, label: 'Batches (Dept)', id: 'department-admin-batches-link' },
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'department-admin-courses-link' },
     { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum (Dept)', id: 'department-admin-curriculum-link' },
-    { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'department-admin-assessments-link' },
+    { href: '/admin/assessments', icon: FileText, label: 'Assessments (Dept)', id: 'department-admin-assessments-link' }, // Changed icon
     { href: '/admin/enrollments', icon: UserPlus, label: 'Enrollment Mgt.', id: 'department-admin-enrollments-link'},
     { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'department-admin-faculty-link' },
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'department-admin-students-link' },
@@ -193,9 +194,7 @@ const getNavItemsForRoleCode = (roleCode: UserRoleCode): Array<{ href: string; i
   const committeeSpecificRoles: UserRoleCode[] = ['committee_convener', 'committee_co_convener', 'committee_member'];
 
   if (committeeSpecificRoles.includes(roleCode)) {
-    // For specific committee roles, ensure "My Committee" and general dashboard are present if they exist in base.
     const specificItems = [...(baseNavItems[roleCode] || [])];
-    // Make sure generic dashboard is present if not overridden
     if (!specificItems.find(item => item.href === '/dashboard')) {
         specificItems.unshift({ href: '/dashboard', icon: Home, label: 'Dashboard', id: `${roleCode}-dashboard-link` });
     }
@@ -215,7 +214,7 @@ const getNavItemsForRoleCode = (roleCode: UserRoleCode): Array<{ href: string; i
 
 
 function getCookie(name: string): string | undefined {
-  if (typeof document === 'undefined') return undefined; // Guard for SSR
+  if (typeof document === 'undefined') return undefined;
   const nameEQ = name + "=";
   const ca = document.cookie.split(';');
   for(let i = 0; i < ca.length; i++) {
@@ -291,10 +290,22 @@ export default function RootLayout({
             setAllSystemRoles(roles);
         } catch (error) {
             console.error("Failed to load system roles in layout:", error);
-            // toast({ variant: "destructive", title: "Error loading roles", description: (error as Error).message });
         }
     };
     fetchRoles();
+
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((registration) => {
+            console.log('Service Worker registered with scope:', registration.scope);
+          })
+          .catch((error) => {
+            console.error('Service Worker registration failed:', error);
+          });
+      });
+    }
 
   }, [pathname, router, parseUserCookie, toast]); 
 
@@ -334,8 +345,10 @@ export default function RootLayout({
          <head>
             <title>PolyManager - Loading...</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
+            <link rel="manifest" href="/manifest.json" />
+            <meta name="theme-color" content="#1e40af" />
         </head>
-        <body className={`${GeistSans.className} antialiased`} suppressHydrationWarning={true}>
+        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           <div className="flex items-center justify-center min-h-screen">
             <Loader2 className="h-12 w-12 animate-spin text-primary" />
           </div>
@@ -351,8 +364,10 @@ export default function RootLayout({
         <head>
             <title>PolyManager</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
+            <link rel="manifest" href="/manifest.json" />
+            <meta name="theme-color" content="#1e40af" />
         </head>
-        <body className={`${GeistSans.className} antialiased`} suppressHydrationWarning={true}>
+        <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           {children}
           <Toaster />
         </body>
@@ -366,8 +381,15 @@ export default function RootLayout({
        <head>
             <title>PolyManager</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
+            <link rel="manifest" href="/manifest.json" />
+            <meta name="theme-color" content="#1e40af" />
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+            <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+            <meta name="apple-mobile-web-app-title" content="PolyManager" />
+            {/* Add more apple touch icons as needed */}
+            <link rel="apple-touch-icon" href="/icons/icon-192x192.png" /> 
         </head>
-      <body className={`${GeistSans.className} antialiased`} suppressHydrationWarning={true}>
+      <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
         <SidebarProvider>
           <Sidebar>
             <SidebarHeader className="p-4 border-b border-sidebar-border">
@@ -440,7 +462,7 @@ export default function RootLayout({
                        if (typeof document !== 'undefined') {
                         document.cookie = 'auth_user=;path=/;max-age=0'; 
                        }
-                       setCurrentUser(DEFAULT_USER); // Reset user state
+                       setCurrentUser(DEFAULT_USER); 
                        router.push('/login');
                     }}
                   >
@@ -467,3 +489,4 @@ export default function RootLayout({
     </html>
   );
 }
+
