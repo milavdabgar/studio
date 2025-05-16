@@ -1,3 +1,4 @@
+
 // src/app/faculty/course-offerings/[courseOfferingId]/assessments/page.tsx
 "use client";
 
@@ -7,14 +8,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog"; // Removed DialogTrigger as it's handled by Button
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, PlusCircle, Edit, Trash2, FileText as AssessmentIcon, Loader2, Search, ArrowUpDown, ArrowLeft, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
-import { format, parseISO, isValid } from 'date-fns';
+import { format, parseISO, isValid, setHours, setMinutes, setSeconds, setMilliseconds } from 'date-fns';
 import { cn } from "@/lib/utils";
 import type { Assessment, AssessmentStatus, AssessmentType, CourseOffering, Course, Program, Batch, Faculty, User as SystemUser } from '@/types/entities';
 import { assessmentService } from '@/lib/api/assessments';
@@ -123,11 +124,10 @@ export default function ManageCourseOfferingAssessmentsPage() {
             const programData = allPrograms.find(p => p.id === batchData.programId);
             setProgram(programData || null);
           }
-          // Filter assessments for this specific course offering context AND created by this faculty
           setAssessments(allAssessments.filter(a => 
             a.courseId === offeringData.courseId &&
             a.programId === (batchData?.programId || courseData?.programId) &&
-            (a.batchId === offeringData.batchId || !a.batchId) &&
+            (a.batchId === offeringData.batchId || !a.batchId) && // Include program-wide assessments if batchId on assessment is null/undefined
             a.facultyId === facultyProfile.id 
           ));
         } else {
@@ -149,14 +149,18 @@ export default function ManageCourseOfferingAssessmentsPage() {
     setFormStatus('Draft'); setFormInstructions(''); setEditingAssessment(null);
   };
 
-  const handleEdit = (assessment: Assessment) => {
-    setEditingAssessment(assessment);
-    setFormName(assessment.name); setFormType(assessment.type);
-    setFormDescription(assessment.description || ''); setFormMaxMarks(assessment.maxMarks);
-    setFormPassingMarks(assessment.passingMarks); setFormWeightage(assessment.weightage);
-    setFormAssessmentDate(assessment.assessmentDate && isValid(parseISO(assessment.assessmentDate)) ? parseISO(assessment.assessmentDate) : undefined);
-    setFormDueDate(assessment.dueDate && isValid(parseISO(assessment.dueDate)) ? parseISO(assessment.dueDate) : undefined);
-    setFormStatus(assessment.status); setFormInstructions(assessment.instructions || '');
+  const handleOpenDialog = (assessmentToEdit?: Assessment) => {
+    if (assessmentToEdit) {
+        setEditingAssessment(assessmentToEdit);
+        setFormName(assessmentToEdit.name); setFormType(assessmentToEdit.type);
+        setFormDescription(assessmentToEdit.description || ''); setFormMaxMarks(assessmentToEdit.maxMarks);
+        setFormPassingMarks(assessmentToEdit.passingMarks); setFormWeightage(assessmentToEdit.weightage);
+        setFormAssessmentDate(assessmentToEdit.assessmentDate && isValid(parseISO(assessmentToEdit.assessmentDate)) ? parseISO(assessmentToEdit.assessmentDate) : undefined);
+        setFormDueDate(assessmentToEdit.dueDate && isValid(parseISO(assessmentToEdit.dueDate)) ? parseISO(assessmentToEdit.dueDate) : undefined);
+        setFormStatus(assessmentToEdit.status); setFormInstructions(assessmentToEdit.instructions || '');
+    } else {
+        resetForm();
+    }
     setIsDialogOpen(true);
   };
 
@@ -197,7 +201,7 @@ export default function ManageCourseOfferingAssessmentsPage() {
       name: formName.trim(),
       courseId: course.id,
       programId: program.id,
-      batchId: courseOffering.batchId,
+      batchId: courseOffering.batchId, // Assessment is specific to this offering's batch
       type: formType,
       description: formDescription.trim() || undefined,
       maxMarks: Number(formMaxMarks),
@@ -207,7 +211,7 @@ export default function ManageCourseOfferingAssessmentsPage() {
       dueDate: formDueDate ? format(formDueDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx") : undefined,
       status: formStatus,
       instructions: formInstructions.trim() || undefined,
-      facultyId: currentFaculty.id,
+      facultyId: currentFaculty.id, // Logged-in faculty creates this
     };
     
     try {
@@ -236,21 +240,20 @@ export default function ManageCourseOfferingAssessmentsPage() {
       setIsSubmitting(false);
     }
   };
-
+  
   const handleDateTimeChange = (date: Date | undefined, field: 'assessmentDate' | 'dueDate', type: 'date' | 'time', value?: string) => {
     const setFunction = field === 'assessmentDate' ? setFormAssessmentDate : setFormDueDate;
     const currentValue = field === 'assessmentDate' ? formAssessmentDate : formDueDate;
 
     if (type === 'date' && date) {
         const existingTime = currentValue || new Date();
-        // Preserve time part by setting hours/minutes/seconds from existing time if present
         const newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 
             existingTime.getHours(), existingTime.getMinutes(), existingTime.getSeconds());
         setFunction(newDate);
     } else if (type === 'time' && value) {
         const [hours, minutes] = value.split(':').map(Number);
         const newDateWithTime = currentValue ? new Date(currentValue) : new Date();
-        newDateWithTime.setHours(hours, minutes, 0, 0); // Reset seconds and ms
+        newDateWithTime.setHours(hours, minutes, 0, 0);
         setFunction(newDateWithTime);
     }
   };
@@ -300,7 +303,7 @@ export default function ManageCourseOfferingAssessmentsPage() {
             <AssessmentIcon className="h-7 w-7" /> Manage Assessments
           </CardTitle>
           <CardDescription>
-            For: {course.subjectName} ({course.subcode}) - {program.name} ({batch.name}) <br/>
+            For: {course.subjectName} ({course.subcode}) - {program.name} ({batch.name}) <br />
             Academic Year: {courseOffering.academicYear} | Semester: {courseOffering.semester}
           </CardDescription>
         </CardHeader>
@@ -310,7 +313,7 @@ export default function ManageCourseOfferingAssessmentsPage() {
               <Input type="text" placeholder="Search assessments..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pr-10"/>
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             </div>
-            <Button onClick={() => handleEdit({} as Assessment)}><PlusCircle className="mr-2 h-4 w-4"/> Add New Assessment</Button>
+            <Button onClick={() => handleOpenDialog()}><PlusCircle className="mr-2 h-4 w-4"/> Add New Assessment</Button>
           </div>
           
           {paginatedAssessments.length === 0 ? (
@@ -330,7 +333,7 @@ export default function ManageCourseOfferingAssessmentsPage() {
                     <TableCell>{assessment.dueDate ? format(parseISO(assessment.dueDate), "PPP") : 'N/A'}</TableCell>
                     <TableCell><span className={`px-2 py-1 text-xs font-semibold rounded-full bg-${assessment.status === 'Published' ? 'green' : assessment.status === 'Draft' ? 'yellow' : 'slate'}-100 text-${assessment.status === 'Published' ? 'green' : assessment.status === 'Draft' ? 'yellow' : 'slate'}-700 dark:bg-${assessment.status === 'Published' ? 'green' : assessment.status === 'Draft' ? 'yellow' : 'slate'}-700 dark:text-${assessment.status === 'Published' ? 'green' : assessment.status === 'Draft' ? 'yellow' : 'slate'}-200`}>{assessment.status}</span></TableCell>
                     <TableCell className="text-right space-x-1">
-                      <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => handleEdit(assessment)}><Edit className="h-4 w-4"/></Button>
+                      <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => handleOpenDialog(assessment)}><Edit className="h-4 w-4"/></Button>
                       <Button variant="destructive" size="icon" className="h-7 w-7" onClick={() => handleDelete(assessment.id)}><Trash2 className="h-4 w-4"/></Button>
                     </TableCell>
                   </TableRow>
@@ -359,20 +362,20 @@ export default function ManageCourseOfferingAssessmentsPage() {
       <Dialog open={isDialogOpen} onOpenChange={isOpen => { setIsDialogOpen(isOpen); if(!isOpen) resetForm();}}>
         <DialogContent className="sm:max-w-lg"><DialogHeader><DialogTitle>{editingAssessment?.id ? "Edit Assessment" : "Add New Assessment"}</DialogTitle></DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 py-2 max-h-[70vh] overflow-y-auto pr-1">
-            <div><Label htmlFor="formName">Assessment Name *</Label><Input id="formName" value={formName} onChange={e=>setFormName(e.target.value)} required/></div>
-            <div><Label htmlFor="formType">Type *</Label><Select value={formType} onValueChange={v => setFormType(v as AssessmentType)} required><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{ASSESSMENT_TYPE_OPTIONS.map(t=><SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent></Select></div>
-            <div><Label htmlFor="formDescription">Description</Label><Textarea id="formDescription" value={formDescription} onChange={e=>setFormDescription(e.target.value)} rows={2}/></div>
+            <div><Label htmlFor="formNameFaculty">Assessment Name *</Label><Input id="formNameFaculty" value={formName} onChange={e=>setFormName(e.target.value)} required/></div>
+            <div><Label htmlFor="formTypeFaculty">Type *</Label><Select value={formType} onValueChange={v => setFormType(v as AssessmentType)} required><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{ASSESSMENT_TYPE_OPTIONS.map(t=><SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent></Select></div>
+            <div><Label htmlFor="formDescriptionFaculty">Description</Label><Textarea id="formDescriptionFaculty" value={formDescription} onChange={e=>setFormDescription(e.target.value)} rows={2}/></div>
             <div className="grid grid-cols-3 gap-4">
-                <div><Label htmlFor="formMaxMarks">Max Marks *</Label><Input id="formMaxMarks" type="number" value={formMaxMarks} onChange={e=>setFormMaxMarks(Number(e.target.value))} required min={1}/></div>
-                <div><Label htmlFor="formPassingMarks">Passing Marks</Label><Input id="formPassingMarks" type="number" value={formPassingMarks || ''} onChange={e=>setFormPassingMarks(e.target.value ? Number(e.target.value) : undefined)} min={0}/></div>
-                <div><Label htmlFor="formWeightage">Weightage (0-1)</Label><Input id="formWeightage" type="number" step="0.01" value={formWeightage || ''} onChange={e=>setFormWeightage(e.target.value ? Number(e.target.value) : undefined)} min={0} max={1}/></div>
+                <div><Label htmlFor="formMaxMarksFaculty">Max Marks *</Label><Input id="formMaxMarksFaculty" type="number" value={formMaxMarks} onChange={e=>setFormMaxMarks(Number(e.target.value))} required min={1}/></div>
+                <div><Label htmlFor="formPassingMarksFaculty">Passing Marks</Label><Input id="formPassingMarksFaculty" type="number" value={formPassingMarks || ''} onChange={e=>setFormPassingMarks(e.target.value ? Number(e.target.value) : undefined)} min={0}/></div>
+                <div><Label htmlFor="formWeightageFaculty">Weightage (0-1)</Label><Input id="formWeightageFaculty" type="number" step="0.01" value={formWeightage || ''} onChange={e=>setFormWeightage(e.target.value ? Number(e.target.value) : undefined)} min={0} max={1}/></div>
             </div>
             <div className="grid grid-cols-2 gap-4">
-                <div><Label htmlFor="formAssessmentDate">Assessment Date/Time</Label><Popover><PopoverTrigger asChild><Button variant="outline" className={cn("w-full justify-start", !formAssessmentDate && "text-muted-foreground")}><CalendarIcon className="mr-2 h-4 w-4"/>{formAssessmentDate ? format(formAssessmentDate, "PPP HH:mm") : <span>Pick date & time</span>}</Button></PopoverTrigger><PopoverContent className="w-auto p-0"><Calendar mode="single" selected={formAssessmentDate} onSelect={setFormAssessmentDate} initialFocus /><Input type="time" className="mt-1" defaultValue={formAssessmentDate ? format(formAssessmentDate, "HH:mm") : "00:00"} onChange={(e) => handleDateTimeChange(formAssessmentDate, 'assessmentDate', 'time', e.target.value)}/></PopoverContent></Popover></div>
-                <div><Label htmlFor="formDueDate">Due Date/Time</Label><Popover><PopoverTrigger asChild><Button variant="outline" className={cn("w-full justify-start", !formDueDate && "text-muted-foreground")}><CalendarIcon className="mr-2 h-4 w-4"/>{formDueDate ? format(formDueDate, "PPP HH:mm") : <span>Pick date & time</span>}</Button></PopoverTrigger><PopoverContent className="w-auto p-0"><Calendar mode="single" selected={formDueDate} onSelect={setFormDueDate} initialFocus /><Input type="time" className="mt-1" defaultValue={formDueDate ? format(formDueDate, "HH:mm") : "23:59"} onChange={(e) => handleDateTimeChange(formDueDate, 'dueDate', 'time', e.target.value)}/></PopoverContent></Popover></div>
+                <div><Label htmlFor="formAssessmentDateFaculty">Assessment Date/Time</Label><Popover><PopoverTrigger asChild><Button variant="outline" className={cn("w-full justify-start", !formAssessmentDate && "text-muted-foreground")}><CalendarIcon className="mr-2 h-4 w-4"/>{formAssessmentDate ? format(formAssessmentDate, "PPP HH:mm") : <span>Pick date & time</span>}</Button></PopoverTrigger><PopoverContent className="w-auto p-0"><Calendar mode="single" selected={formAssessmentDate} onSelect={setFormAssessmentDate} initialFocus /><Input type="time" className="mt-1" defaultValue={formAssessmentDate ? format(formAssessmentDate, "HH:mm") : "00:00"} onChange={(e) => handleDateTimeChange(formAssessmentDate, 'assessmentDate', 'time', e.target.value)}/></PopoverContent></Popover></div>
+                <div><Label htmlFor="formDueDateFaculty">Due Date/Time</Label><Popover><PopoverTrigger asChild><Button variant="outline" className={cn("w-full justify-start", !formDueDate && "text-muted-foreground")}><CalendarIcon className="mr-2 h-4 w-4"/>{formDueDate ? format(formDueDate, "PPP HH:mm") : <span>Pick date & time</span>}</Button></PopoverTrigger><PopoverContent className="w-auto p-0"><Calendar mode="single" selected={formDueDate} onSelect={setFormDueDate} initialFocus /><Input type="time" className="mt-1" defaultValue={formDueDate ? format(formDueDate, "HH:mm") : "23:59"} onChange={(e) => handleDateTimeChange(formDueDate, 'dueDate', 'time', e.target.value)}/></PopoverContent></Popover></div>
             </div>
-            <div><Label htmlFor="formStatus">Status *</Label><Select value={formStatus} onValueChange={v=>setFormStatus(v as AssessmentStatus)} required><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{ASSESSMENT_STATUS_OPTIONS.map(s=><SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}</SelectContent></Select></div>
-            <div><Label htmlFor="formInstructions">Instructions</Label><Textarea id="formInstructions" value={formInstructions} onChange={e=>setFormInstructions(e.target.value)} rows={3}/></div>
+            <div><Label htmlFor="formStatusFaculty">Status *</Label><Select value={formStatus} onValueChange={v=>setFormStatus(v as AssessmentStatus)} required><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{ASSESSMENT_STATUS_OPTIONS.map(s=><SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}</SelectContent></Select></div>
+            <div><Label htmlFor="formInstructionsFaculty">Instructions</Label><Textarea id="formInstructionsFaculty" value={formInstructions} onChange={e=>setFormInstructions(e.target.value)} rows={3}/></div>
             <DialogFooter className="pt-4"><DialogClose asChild><Button variant="outline" type="button" disabled={isSubmitting}>Cancel</Button></DialogClose><Button type="submit" disabled={isSubmitting}>{isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}{editingAssessment?.id ? "Save Changes" : "Create Assessment"}</Button></DialogFooter>
           </form>
         </DialogContent>
@@ -380,3 +383,5 @@ export default function ManageCourseOfferingAssessmentsPage() {
     </div>
   );
 }
+
+```
