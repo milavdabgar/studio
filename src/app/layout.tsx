@@ -1,4 +1,3 @@
-
 // src/app/layout.tsx
 "use client"; 
 
@@ -55,7 +54,8 @@ const adminNavItems = [
   { href: '/admin/rooms', icon: DoorOpen, label: 'Rooms', id: 'admin-rooms-link'},
   { href: '/admin/committees', icon: CommitteeIcon, label: 'Committees', id: 'admin-committees-link'},
   { href: '/admin/students', icon: BookUser, label: 'Student Mgt.', id: 'admin-students-link' },
-  { href: '/admin/faculty', icon: UserCog, label: 'Faculty Mgt.', id: 'admin-faculty-link' }, 
+  { href: '/admin/faculty', icon: UserCog, label: 'Staff Mgt.', id: 'admin-faculty-link' }, 
+  { href: '/admin/faculty-workload', icon: Briefcase, label: 'Faculty Workload', id: 'admin-faculty-workload-link'},
   { href: '/admin/departments', icon: Building2, label: 'Departments', id: 'admin-departments-link' },
   { href: '/admin/programs', icon: BookCopy, label: 'Programs', id: 'admin-programs-link' },
   { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches-link' },
@@ -134,7 +134,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/committee/tasks/my', icon: ListChecks, label: 'My Tasks', id: 'member-my-tasks-link'},
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'committee_member-notifications-link' },
   ],
-  super_admin: [
+  super_admin: [ 
     ...adminNavItems,
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'super_admin-notifications-link' },
   ], 
@@ -215,17 +215,17 @@ const getNavItemsForRoleCode = (roleCode: UserRoleCode): Array<{ href: string; i
 
 
 function getCookie(name: string): string | undefined {
-  if (typeof document === 'undefined') return undefined;
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) {
-    const cookiePart = parts.pop();
-    if (cookiePart) {
-      return cookiePart.split(';').shift();
-    }
+  if (typeof document === 'undefined') return undefined; // Guard for SSR
+  const nameEQ = name + "=";
+  const ca = document.cookie.split(';');
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
   }
   return undefined;
 }
+
 
 interface ParsedUserCookie {
   id?: string;
@@ -296,7 +296,7 @@ export default function RootLayout({
     };
     fetchRoles();
 
-  }, [pathname, router, parseUserCookie]);
+  }, [pathname, router, parseUserCookie, toast]); 
 
 
   const handleRoleChange = (newRoleCode: UserRoleCode) => {
@@ -467,4 +467,3 @@ export default function RootLayout({
     </html>
   );
 }
-

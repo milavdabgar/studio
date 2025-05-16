@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Users2 as CommitteeIcon, CalendarCheck, ListChecks, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import type { Role, UserRole as UserRoleCode } from '@/types/entities'; // UserRole is now UserRoleCode
 import { roleService } from '@/lib/api/roles'; // To fetch all roles
 
@@ -49,6 +49,27 @@ export default function CommitteeDashboardPage() {
   const [isMounted, setIsMounted] = useState(false);
   const [isLoadingDetails, setIsLoadingDetails] = useState(true);
 
+  const fetchRoleDetails = useCallback(async (activeRoleCode: UserRoleCode) => {
+    if (activeRoleCode && activeRoleCode !== 'unknown') {
+      try {
+        const allRoles = await roleService.getAllRoles();
+        const roleDetails = allRoles.find(r => r.code === activeRoleCode);
+        if (roleDetails) {
+          setActiveRoleName(roleDetails.name);
+          if (roleDetails.isCommitteeRole && roleDetails.committeeId) {
+            const committeeNameFromRole = roleDetails.name.replace(/ (Convener|Co-Convener|Member)$/i, '').trim();
+            setCommitteeName(committeeNameFromRole || "Committee Details");
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch role details:", error);
+        setCommitteeName("Committee Details"); // Fallback
+      }
+    }
+    setIsLoadingDetails(false);
+  }, []);
+
+
   useEffect(() => {
     setIsMounted(true);
     const authUserCookie = getCookie('auth_user');
@@ -66,38 +87,16 @@ export default function CommitteeDashboardPage() {
           email: parsedUser.email,
         };
         setCurrentUser(userFromCookie);
+        fetchRoleDetails(userFromCookie.activeRole);
       } catch (error) {
         console.error("Failed to parse auth_user cookie on committee dashboard:", error);
-        // Potentially redirect or show error
+        setIsLoadingDetails(false);
       }
+    } else {
+      setIsLoadingDetails(false);
     }
 
-    const fetchRoleDetails = async () => {
-      if (userFromCookie.activeRole && userFromCookie.activeRole !== 'unknown') {
-        try {
-          const allRoles = await roleService.getAllRoles();
-          const roleDetails = allRoles.find(r => r.code === userFromCookie.activeRole);
-          if (roleDetails) {
-            setActiveRoleName(roleDetails.name); // Display role name
-            if (roleDetails.isCommitteeRole && roleDetails.committeeId) {
-                // Example: "CWAN Convener" -> Committee name could be part of the role name or fetched separately.
-                // For now, let's derive from role name if possible or use a placeholder.
-                // Assuming role name format: "[Committee Name] Convener"
-                const committeeNameFromRole = roleDetails.name.replace(/ (Convener|Co-Convener|Member)$/i, '').trim();
-                setCommitteeName(committeeNameFromRole || "Committee Details");
-            }
-          }
-        } catch (error) {
-          console.error("Failed to fetch role details:", error);
-          setCommitteeName("Committee Details"); // Fallback
-        }
-      }
-      setIsLoadingDetails(false);
-    };
-
-    fetchRoleDetails();
-
-  }, []);
+  }, [fetchRoleDetails]);
 
 
   if (!isMounted || isLoadingDetails) {
@@ -181,4 +180,3 @@ export default function CommitteeDashboardPage() {
     </div>
   );
 }
-    
