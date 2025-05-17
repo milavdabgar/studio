@@ -9,9 +9,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { 
     Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, 
     Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, 
-    Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText,
+    Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, 
     BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Activity, Clock,
-    ListChecks, BookOpenCheck, FilePieChart, Upload, Paperclip, CheckSquare, UserPlus, Bell, BellRing, NotebookPen, BookOpenText
+    ListChecks, BookOpenCheck, FilePieChart, Upload, Paperclip, CheckSquare, UserPlus, Bell, BellRing, NotebookPen, BookOpenText, FileText
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -45,7 +45,6 @@ const DEFAULT_USER: User = {
   dataAiHint: 'user avatar'
 };
 
-// Moved definitions to top-level
 const adminNavItems = [
   { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'admin-dashboard-link' }, 
   { href: '/admin/users', icon: UsersIconLucide, label: 'User Management', id: 'admin-users-link' },
@@ -166,11 +165,11 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'committee_admin-notifications-link' },
   ],
   dte_admin: [
-    { href: '/dashboard', icon: Home, label: 'DTE Dashboard', id: 'dte-admin-dashboard-link' },
+    { href: '/dte/dashboard', icon: Home, label: 'DTE Dashboard', id: 'dte-admin-dashboard-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'dte_admin-notifications-link' },
   ], 
   gtu_admin: [
-    { href: '/dashboard', icon: Home, label: 'GTU Dashboard', id: 'gtu-admin-dashboard-link' },
+    { href: '/gtu/dashboard', icon: Home, label: 'GTU Dashboard', id: 'gtu-admin-dashboard-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'gtu_admin-notifications-link' },
   ], 
   lab_assistant: [
@@ -338,6 +337,10 @@ export default function RootLayout({
             router.push('/dashboard/committee');
         } else if (newRoleCode === 'hod' || newRoleCode === 'department_admin') {
             router.push('/dashboard/hod');
+        } else if (newRoleCode === 'dte_admin') {
+            router.push('/dte/dashboard');
+        } else if (newRoleCode === 'gtu_admin') {
+            router.push('/gtu/dashboard');
         }
         else { 
             router.push('/dashboard'); 
