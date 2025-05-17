@@ -6,17 +6,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog"; // Removed DialogTrigger
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog"; 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PlusCircle, Edit, Trash2, FileText as ResultIcon, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, ExternalLink, User, Filter, BookCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
-import type { Result, UploadBatch, BranchAnalysis, ResultFilterParams, Pagination as PaginationType, Program } from '@/types/entities';
+import type { Result, UploadBatch, BranchAnalysis, ResultFilterParams, Pagination as PaginationType, Program, Examination } from '@/types/entities';
 import { resultService } from '@/lib/api/results';
 import { programService } from '@/lib/api/programs';
+import { examinationService } from '@/lib/api/examinations'; // For exam name filter
 
 
-type SortField = keyof Result | 'programName' | 'none'; // Added programName for sorting if needed
+type SortField = keyof Result | 'programName' | 'none'; 
 type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE_OPTIONS = [20, 50, 100, 200];
@@ -29,16 +30,18 @@ export default function AdminResultsPage() {
   const [batches, setBatches] = useState<UploadBatch[]>([]);
   const [branchAnalysis, setBranchAnalysis] = useState<BranchAnalysis[]>([]);
   const [programs, setPrograms] = useState<Program[]>([]);
+  const [examinations, setExaminations] = useState<Examination[]>([]);
   
   const [isLoading, setIsLoading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting = useState(false);
   
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState<ResultFilterParams>({
     branchName: '',
     semester: undefined,
     academicYear: '',
-    examid: undefined,
+    examid: undefined, // Used for GTU specific exam ID
+    examId: undefined, // Used for our internal Examination ID
     uploadBatch: '',
   });
   
@@ -50,23 +53,26 @@ export default function AdminResultsPage() {
   });
 
   const [selectedBatchIdForDelete, setSelectedBatchIdForDelete] = useState<string | null>(null);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm = useState(false);
 
-  const [sortField, setSortField] = useState<SortField>('declarationDate'); // Default sort by declaration date
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [sortField, setSortField] = useState<SortField>('declarationDate'); 
+  const [sortDirection, setSortDirection = useState<SortDirection>('desc');
 
-
-  const fetchProgramsData = async () => {
-    try {
-      const progData = await programService.getAllPrograms();
-      setPrograms(progData);
-    } catch (error) {
-      toast({ variant: "destructive", title: "Error", description: "Could not load programs for filtering." });
-    }
-  };
 
   useEffect(() => {
-    fetchProgramsData();
+    const fetchInitialDropdownData = async () => {
+      try {
+        const [progData, examData] = await Promise.all([
+            programService.getAllPrograms(),
+            examinationService.getAllExaminations()
+        ]);
+        setPrograms(progData);
+        setExaminations(examData);
+      } catch (error) {
+        toast({ variant: "destructive", title: "Error", description: "Could not load filter options." });
+      }
+    };
+    fetchInitialDropdownData();
   }, [toast]);
 
   const fetchResults = async (currentPage = pagination.page, currentLimit = pagination.limit) => {
@@ -82,9 +88,11 @@ export default function AdminResultsPage() {
           return acc;
         }, {} as ResultFilterParams)
       };
-      // Add sorting parameters if needed by backend
-      // params.sortBy = sortField === 'none' ? undefined : sortField;
-      // params.sortOrder = sortDirection;
+      if (sortField !== 'none' && params.sortBy !== null && params.sortBy !== undefined) { // Check for null or undefined before assigning
+        params.sortBy = sortField;
+        params.sortOrder = sortDirection;
+      }
+
 
       const response = await resultService.getAllResults(params);
       setResults(response.data.results);
@@ -116,6 +124,8 @@ export default function AdminResultsPage() {
       const params: { academicYear?: string; examid?: number } = {};
       if (filters.academicYear) params.academicYear = filters.academicYear;
       if (filters.examid) params.examid = Number(filters.examid);
+      // if using examId (our formal exam ID) for analysis
+      // if (filters.examId) params.examid = filters.examId; // Map to backend's 'examid' if that's what it expects
       
       const response = await resultService.getBranchAnalysis(params);
       setBranchAnalysis(response.data.analysis);
@@ -142,10 +152,17 @@ export default function AdminResultsPage() {
     const { name, value } = e.target;
     setFilters(prev => ({ ...prev, [name]: value === 'all' || value === '' ? undefined : value }));
   };
+  
+  const handleNumericFilterChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value === '' ? undefined : parseInt(value, 10) }));
+  };
+
 
   const applyFilters = () => {
-    setPagination(prev => ({ ...prev, page: 1 })); // Reset to first page when filters change
-    // Data fetching is handled by useEffect on filters change
+    setPagination(prev => ({ ...prev, page: 1 })); 
+    if (activeTab === 'results') fetchResults(1, pagination.limit);
+    if (activeTab === 'analysis') fetchBranchAnalysisData();
   };
 
   const handlePageChange = (newPage: number) => {
@@ -163,7 +180,7 @@ export default function AdminResultsPage() {
       const response = await resultService.deleteResultsByBatch(selectedBatchIdForDelete);
       toast({ title: "Batch Deleted", description: `Successfully deleted ${response.data.deletedCount} results.` });
       await fetchBatches();
-      await fetchResults(1, pagination.limit); // Refresh results as well
+      await fetchResults(1, pagination.limit); 
       setShowDeleteConfirm(false);
       setSelectedBatchIdForDelete(null);
     } catch (error) {
@@ -184,7 +201,7 @@ export default function AdminResultsPage() {
               return acc;
             }, {} as ResultFilterParams)
           };
-        const response = await resultService.exportResults(currentFilters); // Pass current filters
+        const response = await resultService.exportResults(currentFilters); 
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
@@ -226,28 +243,34 @@ export default function AdminResultsPage() {
 
   const renderResultsTab = () => (
     <>
-      <div className="mb-6 p-4 border rounded-lg grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="mb-6 p-4 border rounded-lg grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <div>
           <Label htmlFor="searchTermResults">Search Student</Label>
           <Input id="searchTermResults" placeholder="ID, Name, Exam..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="mt-1"/>
         </div>
         <div>
           <Label htmlFor="filterBranchName">Branch</Label>
-          <Input id="filterBranchName" name="branchName" value={filters.branchName || ''} onChange={handleFilterChange} placeholder="e.g. Computer Engineering" className="mt-1"/>
+          <Input id="filterBranchName" name="branchName" value={filters.branchName || ''} onChange={handleFilterChange} placeholder="e.g. Computer Engg" className="mt-1"/>
         </div>
         <div>
           <Label htmlFor="filterSemester">Semester</Label>
-          <Input id="filterSemester" name="semester" type="number" value={filters.semester || ''} onChange={handleFilterChange} placeholder="e.g. 3" className="mt-1"/>
+          <Input id="filterSemester" name="semester" type="number" value={filters.semester || ''} onChange={handleNumericFilterChange} placeholder="e.g. 3" className="mt-1"/>
         </div>
         <div>
           <Label htmlFor="filterAcademicYear">Academic Year</Label>
           <Input id="filterAcademicYear" name="academicYear" value={filters.academicYear || ''} onChange={handleFilterChange} placeholder="e.g. 2023-24" className="mt-1"/>
         </div>
         <div>
-          <Label htmlFor="filterExamId">Exam ID</Label>
-          <Input id="filterExamId" name="examid" type="number" value={filters.examid || ''} onChange={handleFilterChange} placeholder="e.g. 12345" className="mt-1"/>
+            <Label htmlFor="filterExamIdResults">Examination</Label>
+            <Select name="examId" value={filters.examId || "all"} onValueChange={(val) => setFilters(prev => ({...prev, examId: val === "all" ? undefined : val, examid: undefined}))}>
+                <SelectTrigger id="filterExamIdResults" className="mt-1"><SelectValue placeholder="Select Examination" /></SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="all">All Examinations</SelectItem>
+                    {examinations.map(exam => <SelectItem key={exam.id} value={exam.id}>{exam.name} ({exam.academicYear})</SelectItem>)}
+                </SelectContent>
+            </Select>
         </div>
-         <div className="lg:col-start-5 lg:col-end-6 flex items-end">
+         <div className="lg:col-start-6 lg:col-end-7 flex items-end">
             <Button onClick={applyFilters} className="w-full mt-1"><Filter className="mr-2 h-4 w-4"/>Apply Filters</Button>
         </div>
       </div>
@@ -277,8 +300,8 @@ export default function AdminResultsPage() {
                 <TableCell>{result.branchName}</TableCell>
                 <TableCell>{result.semester}</TableCell>
                 <TableCell>{result.exam}</TableCell>
-                <TableCell>{result.spi.toFixed(2)}</TableCell>
-                <TableCell>{result.cpi.toFixed(2)}</TableCell>
+                <TableCell>{result.spi?.toFixed(2)}</TableCell>
+                <TableCell>{result.cpi?.toFixed(2)}</TableCell>
                 <TableCell><span className={`px-2 py-1 text-xs font-semibold rounded-full ${result.result === 'PASS' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{result.result}</span></TableCell>
                 <TableCell className="text-right space-x-1">
                   <Link href={`/admin/results/detailed/${result._id}`} passHref>
@@ -340,8 +363,16 @@ export default function AdminResultsPage() {
           <Input id="analysisAcademicYear" name="academicYear" value={filters.academicYear || ''} onChange={handleFilterChange} placeholder="e.g. 2023-24" className="mt-1"/>
         </div>
         <div>
-          <Label htmlFor="analysisExamId">Exam ID (Optional)</Label>
-          <Input id="analysisExamId" name="examid" type="number" value={filters.examid || ''} onChange={handleFilterChange} placeholder="Filter by specific exam ID" className="mt-1"/>
+            <Label htmlFor="analysisExamId">Examination (GTU Exam ID or Formal Exam)</Label>
+            <Select name="examid" value={filters.examid?.toString() || filters.examId || "all"} onValueChange={(val) => setFilters(prev => ({...prev, examid: val === "all" ? undefined : parseInt(val), examId: val === "all" ? undefined : val }))}>
+                <SelectTrigger id="analysisExamId" className="mt-1"><SelectValue placeholder="Select Examination" /></SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="all">All Examinations</SelectItem>
+                    {/* Combine GTU style exam IDs (if any known/used) and our formal exams */}
+                    {examinations.map(exam => <SelectItem key={exam.id} value={exam.id.toString()}>{exam.name} ({exam.academicYear})</SelectItem>)}
+                    {/* Add known GTU exam IDs if applicable and distinct, e.g., from results data */}
+                </SelectContent>
+            </Select>
         </div>
          <div className="sm:col-span-2 flex justify-end">
             <Button onClick={fetchBranchAnalysisData} className="mt-1"><Filter className="mr-2 h-4 w-4"/>Fetch Analysis</Button>
@@ -458,7 +489,7 @@ export default function AdminResultsPage() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowDeleteConfirm(false)} disabled={isSubmitting}>Cancel</Button>
             <Button variant="destructive" onClick={handleDeleteBatch} disabled={isSubmitting}>
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>} Delete
+              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin/>}/> Delete
             </Button>
           </DialogFooter>
         </DialogContent>

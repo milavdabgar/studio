@@ -44,18 +44,55 @@ export const resultService = {
     }
     return response.json();
   },
+  
+  async createResult(resultData: Omit<Result, '_id' | 'createdAt' | 'updatedAt'>): Promise<Result> {
+    const response = await fetch(`${API_BASE_URL}/results`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(resultData),
+    });
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Failed to create result entry' }));
+        throw new Error(errorData.message || 'Failed to create result entry');
+    }
+    return response.json();
+  },
+
+  async updateResult(resultId: string, resultData: Partial<Omit<Result, '_id' | 'createdAt' | 'updatedAt'>>): Promise<Result> {
+      const response = await fetch(`${API_BASE_URL}/results/${resultId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(resultData),
+      });
+      if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ message: 'Failed to update result entry' }));
+          throw new Error(errorData.message || 'Failed to update result entry');
+      }
+      return response.json();
+  },
+
 
   async importResults(file: File): Promise<ResultImportResponse> {
     const formData = new FormData();
     formData.append('file', file);
-    const response = await fetch(`${API_BASE_URL}/results/import`, {
+    // The backend route for standard import /api/results/import was removed, we'll use POST /api/results
+    // This service function might need to be deprecated or re-routed if /api/results/import is specifically for standard format.
+    // For now, assuming POST /api/results is the target for individual/manual entry,
+    // and /api/results/import-gtu is for GTU format.
+    // Let's assume this function is actually intended to call a general import that handles standard CSVs,
+    // which might be POST /api/results with a specific content-type or flag if the backend supports it,
+    // or a new dedicated endpoint like /api/results/import-standard.
+    // Given current backend, there's no direct "standard bulk import" route.
+    // This function would likely need backend changes or be used to process file and send individual POST requests.
+    // For now, let's make it point to a non-existent standard import to highlight this gap.
+    const response = await fetch(`${API_BASE_URL}/results/import-standard-placeholder`, { // Placeholder
       method: 'POST',
       body: formData,
     });
     const responseData = await response.json();
     if (!response.ok) {
       let detailedMessage = responseData.message || 'Failed to import results (standard).';
-      if(responseData.error) detailedMessage = responseData.error; // Prefer server's error message if available
+      if(responseData.error) detailedMessage = responseData.error; 
       const error = new Error(detailedMessage) as Error & { data?: unknown };
       error.data = responseData;
       throw error;
@@ -99,7 +136,7 @@ export const resultService = {
       const errorText = await response.text().catch(() => 'Failed to export results and could not parse error.');
       throw new Error(errorText || 'Failed to export results');
     }
-    return response; // Return the raw response for blob handling
+    return response; 
   },
 
   async deleteResult(id: string): Promise<void> {

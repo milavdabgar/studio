@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Result } from '@/types/entities';
+import type { Result, ResultSubject } from '@/types/entities';
 
 declare global {
   var __API_RESULTS_STORE__: Result[] | undefined;
@@ -7,7 +7,7 @@ declare global {
 if (!global.__API_RESULTS_STORE__) {
   global.__API_RESULTS_STORE__ = [];
 }
-const resultsStore: Result[] = global.__API_RESULTS_STORE__;
+let resultsStore: Result[] = global.__API_RESULTS_STORE__;
 
 interface RouteParams {
   params: {
@@ -27,6 +27,48 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   }
   return NextResponse.json({ message: 'Result not found' }, { status: 404 });
 }
+
+export async function PUT(request: NextRequest, { params }: RouteParams) {
+    const { id } = params;
+    try {
+        const resultDataToUpdate = await request.json() as Partial<Omit<Result, '_id' | 'createdAt' | 'updatedAt'>>;
+        const resultIndex = resultsStore.findIndex(r => r._id === id);
+
+        if (resultIndex === -1) {
+            return NextResponse.json({ message: 'Result record not found' }, { status: 404 });
+        }
+        const existingResult = resultsStore[resultIndex];
+
+        // Perform any specific validation for result update here if needed
+        // e.g., ensuring subject grades are valid, spi/cpi calculations are consistent (though typically backend would do this)
+
+        const updatedResult: Result = {
+            ...existingResult,
+            ...resultDataToUpdate,
+            updatedAt: new Date().toISOString(),
+        };
+        
+        // If subjects are updated, recalculate credits/spi/cpi if necessary
+        if (resultDataToUpdate.subjects) {
+            updatedResult.totalCredits = resultDataToUpdate.subjects.reduce((sum, sub) => sum + (sub.credits || 0), 0);
+            updatedResult.earnedCredits = resultDataToUpdate.subjects.reduce((sum, sub) => sum + (!sub.isBacklog && sub.credits ? sub.credits : 0), 0);
+            // SPI/CPI calculation would be more complex and might involve historical data.
+            // For a simple update, we might just accept the SPI/CPI if provided, or mark as needing recalculation.
+            // Here, we'll just update based on provided data.
+        }
+
+
+        resultsStore[resultIndex] = updatedResult;
+        global.__API_RESULTS_STORE__ = resultsStore;
+
+        return NextResponse.json(updatedResult);
+
+    } catch (error) {
+        console.error(`Error updating result ${id}:`, error);
+        return NextResponse.json({ message: `Error updating result ${id}`, error: (error as Error).message }, { status: 500 });
+    }
+}
+
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { id } = params;

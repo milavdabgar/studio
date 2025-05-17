@@ -35,7 +35,7 @@ export interface User {
     lastName?: string;
     photoURL?: string;
     phoneNumber?: string;
-    departmentId?: string; // For HODs primarily
+    departmentId?: string; 
     
     authProviders: ('password' | 'google' | 'microsoft')[];
     
@@ -63,7 +63,7 @@ export interface User {
     };
     instituteId?: string; 
     instituteEmail?: string; 
-    password?: string; // Only for creation/update, should not be stored or fetched directly
+    password?: string; 
 }
 export type SystemUser = User;
 
@@ -206,11 +206,11 @@ export interface FacultyProfile {
     instituteEmail: string; 
     contactNumber?: string;
     
-    department: string; // Department Name
+    department: string; 
     designation?: string;
     jobType?: JobType;
     staffCategory?: StaffCategory; 
-    instType?: string; // Like DI, DEG, etc.
+    instType?: string; 
     specializations?: string[];
     qualifications?: Qualification[];
     
@@ -243,7 +243,7 @@ export interface StaffProfile {
     
     staffCategory: 'Clerical' | 'Technical' | 'Support' | 'Administrative';
     designation: string;
-    department?: string; // Department Name
+    department?: string; 
     
     joiningDate?: Timestamp;
     dateOfBirth?: Timestamp;
@@ -321,7 +321,7 @@ export interface Department {
   name: string;
   code: string; 
   description?: string;
-  hodId?: string; // User ID of HoD
+  hodId?: string; 
   establishmentYear?: number;
   status: 'active' | 'inactive';
   instituteId: string; 
@@ -446,7 +446,7 @@ export interface CourseOffering {
     startDate?: Timestamp; 
     endDate?: Timestamp;   
     status: CourseOfferingStatus;
-    programId?: string; // Denormalized for easier filtering
+    programId?: string; 
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
@@ -604,11 +604,12 @@ export interface ResultSubject {
 
 export interface Result {
   _id: string; 
-  st_id: string;
+  st_id?: string; // GTU specific student ID, often same as map_number
+  studentId?: string; // Link to our Student model ID
   enrollmentNo: string; 
   extype?: string;
-  examid?: number;
-  exam?: string;
+  examid?: number; // Can link to Examination.id or be GTU exam_id
+  exam?: string; // Name of the exam
   declarationDate?: Timestamp;
   academicYear?: string;
   semester: number;
@@ -663,6 +664,8 @@ export interface ResultFilterParams {
   semester?: number;
   academicYear?: string;
   examid?: number;
+  examId?: string; // For formal Examination ID
+  studentId?: string;
   uploadBatch?: string;
   page?: number;
   limit?: number;
@@ -749,6 +752,7 @@ export interface TimetableEntry {
     endTime: string;   
     courseOfferingId?: string; 
     courseId: string; 
+    courseName?: string; // For display
     facultyId: string;
     roomId: string;
     entryType: TimetableEntryType;
@@ -791,15 +795,16 @@ export type ExaminationType = 'End Semester Theory' | 'End Semester Practical/Vi
 export type ExaminationStatus = 'scheduled' | 'ongoing' | 'completed' | 'postponed' | 'cancelled';
 
 export interface ExaminationTimeTableEntry {
-  id?: string; // Optional if managed as part of Examination object directly
+  id?: string; 
   examinationId: string;
   courseId: string;
-  date: Timestamp; // YYYY-MM-DD
-  startTime: string; // HH:MM (24h)
-  endTime: string; // HH:MM (24h)
-  roomId?: string; // Optional, can be assigned later or if one room
-  roomIds?: string[]; // For multiple rooms/blocks
-  invigilatorIds?: string[]; // Array of Faculty User IDs
+  courseName?: string; // For display
+  date: Timestamp; 
+  startTime: string; 
+  endTime: string;   
+  roomId?: string; 
+  roomIds?: string[]; 
+  invigilatorIds?: string[]; 
   notes?: string;
 }
 
@@ -1150,7 +1155,7 @@ export interface AnalysisResult {
   semester_scores: SemesterScore[];
   branch_scores: BranchScore[];
   term_year_scores: TermYearScore[];
-  correlation_matrix?: { [key: string]: { [key: string]: number } }; // Make optional for now
+  correlation_matrix?: { [key: string]: { [key: string]: number } }; 
   markdownReport: string; 
   rawFeedbackData?: string; 
 }
@@ -1215,7 +1220,7 @@ export interface InstituteAttendanceSummary {
 
 export interface OverallAttendanceSummary {
     totalStudents: number;
-    totalClassesTakenOverall: number; // Sum of all classes from all included course offerings
+    totalClassesTakenOverall: number; 
     overallAttendancePercentage: number;
 }
 
@@ -1264,6 +1269,5 @@ export interface CourseEnrollmentData {
     academicYear: string;
     facultyNames: string[];
     enrolledStudents: number;
-    maxIntake?: number; // from Batch
+    maxIntake?: number; 
 }
-```
