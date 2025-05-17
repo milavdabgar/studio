@@ -9,7 +9,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { 
     Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, 
     Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, 
-    Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText, // Removed AssessmentIcon as AssessmentIconLucide
+    Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText,
     BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Activity, Clock,
     ListChecks, BookOpenCheck, FilePieChart, Upload, Paperclip, CheckSquare, UserPlus, Bell, BellRing, NotebookPen, BookOpenText
 } from 'lucide-react';
@@ -62,7 +62,7 @@ const adminNavItems = [
   { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches-link' },
   { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses-link' },
   { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum Mgt.', id: 'admin-curriculum-link' },
-  { href: '/admin/assessments', icon: FileText, label: 'Assessments', id: 'admin-assessments-link' }, // Changed icon to FileText
+  { href: '/admin/assessments', icon: FileText, label: 'Assessments', id: 'admin-assessments-link' },
   { href: '/admin/enrollments', icon: UserPlus, label: 'Enrollment Mgt.', id: 'admin-enrollments-link'},
   { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance-nav-link' }, 
   { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'admin-resource-allocation-link' },
@@ -101,7 +101,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'faculty-notifications-link' },
   ],
   hod: [
-    { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'hod-dashboard-link' },
+    { href: '/dashboard/hod', icon: Home, label: 'HOD Dashboard', id: 'hod-dashboard-link' },
     { href: '/admin/departments', icon: Building2, label: 'My Department', id: 'hod-department-link' }, 
     { href: '/admin/programs', icon: BookCopy, label: 'Programs (Dept)', id: 'hod-programs-link' },
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'hod-courses-link' },
@@ -116,21 +116,21 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'jury-notifications-link' },
   ],
   committee_convener: [ 
-    { href: '/dashboard', icon: Home, label: 'Convener Dashboard', id: 'convener-dashboard-link' },
+    { href: '/dashboard/committee', icon: Home, label: 'Convener Dashboard', id: 'convener-dashboard-link' },
     { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'convener-my-committee-link'},
     { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'convener-meetings-link'}, 
     { href: '/admin/resource-allocation/rooms', icon: DoorOpen, label: 'Book Room', id: 'convener-book-room-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'committee_convener-notifications-link' },
   ],
   committee_co_convener: [
-    { href: '/dashboard', icon: Home, label: 'Co-Convener Dashboard', id: 'co-convener-dashboard-link' },
+    { href: '/dashboard/committee', icon: Home, label: 'Co-Convener Dashboard', id: 'co-convener-dashboard-link' },
     { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'co-convener-my-committee-link'},
     { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'co-convener-meetings-link'}, 
     { href: '/admin/resource-allocation/rooms', icon: DoorOpen, label: 'Book Room', id: 'co_convener-book-room-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'committee_co_convener-notifications-link' },
   ],
   committee_member: [
-    { href: '/dashboard', icon: Home, label: 'Member Dashboard', id: 'member-dashboard-link' },
+    { href: '/dashboard/committee', icon: Home, label: 'Member Dashboard', id: 'member-dashboard-link' },
     { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'member-my-committee-link'},
     { href: '/committee/tasks/my', icon: ListChecks, label: 'My Tasks', id: 'member-my-tasks-link'},
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'committee_member-notifications-link' },
@@ -147,12 +147,12 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'institute_admin-notifications-link' },
   ],
   department_admin: [ 
-    { href: '/dashboard', icon: Home, label: 'Department Dashboard', id: 'department-admin-dashboard-link' },
+    { href: '/dashboard/hod', icon: Home, label: 'Department Dashboard', id: 'department-admin-dashboard-link' }, // Using HOD dashboard for dept admin
     { href: '/admin/programs', icon: BookCopy, label: 'Programs (Dept)', id: 'department-admin-programs-link' },
     { href: '/admin/batches', icon: CalendarRange, label: 'Batches (Dept)', id: 'department-admin-batches-link' },
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'department-admin-courses-link' },
     { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum (Dept)', id: 'department-admin-curriculum-link' },
-    { href: '/admin/assessments', icon: FileText, label: 'Assessments (Dept)', id: 'department-admin-assessments-link' }, // Changed icon
+    { href: '/admin/assessments', icon: FileText, label: 'Assessments (Dept)', id: 'department-admin-assessments-link' },
     { href: '/admin/enrollments', icon: UserPlus, label: 'Enrollment Mgt.', id: 'department-admin-enrollments-link'},
     { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'department-admin-faculty-link' },
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'department-admin-students-link' },
@@ -195,8 +195,13 @@ const getNavItemsForRoleCode = (roleCode: UserRoleCode): Array<{ href: string; i
 
   if (committeeSpecificRoles.includes(roleCode)) {
     const specificItems = [...(baseNavItems[roleCode] || [])];
-    if (!specificItems.find(item => item.href === '/dashboard')) {
-        specificItems.unshift({ href: '/dashboard', icon: Home, label: 'Dashboard', id: `${roleCode}-dashboard-link` });
+    if (!specificItems.find(item => item.href === '/dashboard/committee')) { // Ensure dashboard link is for committee
+        const dashboardIndex = specificItems.findIndex(item => item.href === '/dashboard');
+        if (dashboardIndex !== -1) {
+            specificItems[dashboardIndex].href = '/dashboard/committee'; // Correct the dashboard link
+        } else {
+            specificItems.unshift({ href: '/dashboard/committee', icon: Home, label: 'Committee Dashboard', id: `${roleCode}-committee-dashboard-link` });
+        }
     }
     const uniqueItems = Array.from(new Map(specificItems.map(item => [item.id, item])).values());
     uniqueItems.sort((a, b) => a.label.localeCompare(b.label));
@@ -214,7 +219,9 @@ const getNavItemsForRoleCode = (roleCode: UserRoleCode): Array<{ href: string; i
 
 
 function getCookie(name: string): string | undefined {
-  if (typeof document === 'undefined') return undefined;
+  if (typeof document === 'undefined') {
+    return undefined;
+  }
   const nameEQ = name + "=";
   const ca = document.cookie.split(';');
   for(let i = 0; i < ca.length; i++) {
@@ -290,6 +297,11 @@ export default function RootLayout({
             setAllSystemRoles(roles);
         } catch (error) {
             console.error("Failed to load system roles in layout:", error);
+            toast({
+                variant: "destructive",
+                title: "Error Loading Roles",
+                description: "Could not fetch system roles. Some UI elements might not display correctly.",
+            });
         }
     };
     fetchRoles();
@@ -324,7 +336,10 @@ export default function RootLayout({
         
         if(roleToActivate?.isCommitteeRole && !['committee_admin', 'admin', 'super_admin', 'hod', 'institute_admin'].includes(newRoleCode) ){ 
             router.push('/dashboard/committee');
-        } else { 
+        } else if (newRoleCode === 'hod' || newRoleCode === 'department_admin') {
+            router.push('/dashboard/hod');
+        }
+        else { 
             router.push('/dashboard'); 
         }
         router.refresh(); 
@@ -403,7 +418,7 @@ export default function RootLayout({
                 {currentNavItems.map((item) => (
                   <SidebarMenuItem key={item.id}>
                     <Link href={item.href} passHref legacyBehavior>
-                      <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href || (pathname.startsWith(item.href + '/') && item.href !== '/dashboard')} >
+                      <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href || (pathname.startsWith(item.href + '/') && item.href !== '/dashboard' && item.href !== '/dashboard/hod' && item.href !== '/dashboard/committee')} >
                         <item.icon />
                         <span>{item.label}</span>
                       </SidebarMenuButton>
@@ -489,4 +504,5 @@ export default function RootLayout({
     </html>
   );
 }
-
+    
+    

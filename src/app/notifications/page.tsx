@@ -1,10 +1,10 @@
-
+// src/app/notifications/page.tsx
 "use client";
 
 import React, { useEffect, useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, BellRing, CheckCheck, XCircle, Info, AlertTriangle, CheckCircle, Filter, Trash2, Clock } from "lucide-react"; // Added Clock, XCircle
+import { Loader2, BellRing, CheckCheck, XCircle, Info, AlertTriangle, CheckCircle as CheckCircleIcon, Filter, Trash2, Clock } from "lucide-react"; // Renamed CheckCircle to CheckCircleIcon, AlertTriangle to AlertTriangleIcon
 import { useToast } from "@/hooks/use-toast";
 import type { Notification, NotificationType } from '@/types/entities';
 import { notificationService } from '@/lib/api/notifications';
@@ -35,7 +35,7 @@ function getCookie(name: string): string | undefined {
 }
 
 const ITEMS_PER_PAGE_OPTIONS = [10, 25, 50];
-const NOTIFICATION_TYPE_OPTIONS: (NotificationType | 'all' | 'unread')[] = ['all', 'unread', 'info', 'success', 'warning', 'error', 'update', 'reminder', 'assignment_new', 'assignment_graded', 'enrollment_approved', 'enrollment_rejected', 'project_status_change', 'meeting_scheduled', 'new_material'];
+const NOTIFICATION_TYPE_OPTIONS: (NotificationType | 'all' | 'unread')[] = ['all', 'unread', 'info', 'success', 'warning', 'error', 'update', 'reminder', 'assignment_new', 'assignment_graded', 'enrollment_request', 'enrollment_approved', 'enrollment_rejected', 'project_status_change', 'project_location_update', 'event_schedule_update', 'event_results_published', 'meeting_scheduled', 'new_material'];
 
 
 export default function AllNotificationsPage() {
@@ -121,8 +121,8 @@ export default function AllNotificationsPage() {
 
   const getIconForType = (type: Notification['type']) => {
     switch (type) {
-      case 'success': return <CheckCircle className="h-5 w-5 text-green-500" />;
-      case 'warning': return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
+      case 'success': return <CheckCircleIcon className="h-5 w-5 text-green-500" />;
+      case 'warning': return <AlertTriangleIcon className="h-5 w-5 text-yellow-500" />;
       case 'error': return <XCircle className="h-5 w-5 text-red-500" />;
       case 'reminder': return <Clock className="h-5 w-5 text-purple-500" />;
       default: return <Info className="h-5 w-5 text-blue-500" />;
