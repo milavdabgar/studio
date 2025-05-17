@@ -173,6 +173,7 @@ export interface Student {
     
     status: StudentStatus; 
     convocationYear?: number;
+    academicRemarks?: string; // Added for admin notes on academic progress
     
     instituteId?: string; 
     photoURL?: string;
@@ -981,7 +982,7 @@ export interface CourseMaterial {
 export type NotificationType = 
   | 'info' | 'success' | 'warning' | 'error' | 'update' | 'reminder' 
   | 'assignment_new' | 'assignment_graded' 
-  | 'enrollment_request' | 'enrollment_approved' | 'enrollment_rejected' 
+  | 'enrollment_request' | 'enrollment_approved' | 'enrollment_rejected' | 'enrollment_withdrawn'
   | 'project_status_change' | 'project_location_update' | 'event_schedule_update' | 'event_results_published'
   | 'meeting_scheduled' | 'new_material';
 
@@ -1271,3 +1272,4 @@ export interface CourseEnrollmentData {
     enrolledStudents: number;
     maxIntake?: number; 
 }
+

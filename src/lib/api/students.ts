@@ -1,4 +1,5 @@
 
+
 import type { Student, Program } from '@/types/entities';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
@@ -36,7 +37,7 @@ export const studentService = {
     return response.json();
   },
 
-  async updateStudent(id: string, studentData: Partial<Omit<Student, 'id' | 'userId'>> & { instituteId?: string }): Promise<Student> {
+  async updateStudent(id: string, studentData: Partial<Omit<Student, 'id' | 'userId' | 'createdAt' | 'updatedAt'>> & { instituteId?: string, academicRemarks?: string, currentSemester?: number, status?: Student['status'] }): Promise<Student> {
     const response = await fetch(`${API_BASE_URL}/students/${id}`, {
       method: 'PUT',
       headers: {
@@ -76,7 +77,9 @@ export const studentService = {
       if (responseData.errors && Array.isArray(responseData.errors) && responseData.errors.length > 0) {
          detailedMessage += ` Specific issues: ${responseData.errors.slice(0,3).map((e: { message?: string; data?: unknown }) => { return e.message || JSON.stringify(e.data); }).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
       }
-      throw new Error(detailedMessage);
+      const error = new Error(detailedMessage) as Error & { data?: unknown };
+      error.data = responseData;
+      throw error;
     }
     return responseData;
   },
@@ -96,8 +99,14 @@ export const studentService = {
        if (responseData.errors && Array.isArray(responseData.errors) && responseData.errors.length > 0) {
          detailedMessage += ` Specific issues: ${responseData.errors.slice(0,3).map((e: { message?: string; data?: unknown }) => { return e.message || JSON.stringify(e.data); }).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
       }
-      throw new Error(detailedMessage);
+      const error = new Error(detailedMessage) as Error & { data?: unknown };
+      error.data = responseData;
+      throw error;
     }
     return responseData;
   }
 };
+
+```
+  </change>
+</changes>

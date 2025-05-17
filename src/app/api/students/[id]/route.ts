@@ -1,4 +1,5 @@
 
+
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Student, User } from '@/types/entities'; // Updated User import
 import { userService } from '@/lib/api/users'; 
@@ -84,6 +85,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       ...(studentDataToUpdate.sem6Status && { sem6Status: studentDataToUpdate.sem6Status }),
       ...(studentDataToUpdate.sem7Status && { sem7Status: studentDataToUpdate.sem7Status }),
       ...(studentDataToUpdate.sem8Status && { sem8Status: studentDataToUpdate.sem8Status }),
+      ...(studentDataToUpdate.academicRemarks !== undefined && { academicRemarks: studentDataToUpdate.academicRemarks.trim() || undefined }),
       updatedAt: new Date().toISOString(), // Always update the timestamp
     };
 
@@ -95,25 +97,32 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         let userNeedsUpdate = false;
 
         const newDisplayName = updatedStudent.fullNameGtuFormat || `${updatedStudent.firstName || ''} ${updatedStudent.lastName || ''}`.trim() || updatedStudent.enrollmentNumber;
-        if (newDisplayName !== existingStudent.fullNameGtuFormat && newDisplayName !== `${existingStudent.firstName || ''} ${existingStudent.lastName || ''}`.trim()) {
+        // Check against existing displayName on User record if available, else derive from existingStudent
+        const existingUserRecord = await userService.getUserById(updatedStudent.userId).catch(() => null);
+        const oldUserDisplayName = existingUserRecord?.displayName || existingStudent.fullNameGtuFormat || `${existingStudent.firstName || ''} ${existingStudent.lastName || ''}`.trim();
+        
+        if (newDisplayName !== oldUserDisplayName) {
              userUpdateData.displayName = newDisplayName;
              userNeedsUpdate = true;
         }
-        if (updatedStudent.status === 'active' !== existingStudent.isActive ) { // Assuming existingStudent has isActive from user link
+        if (updatedStudent.status === 'active' !== (existingUserRecord?.isActive ?? existingStudent.isActive) ) { 
              userUpdateData.isActive = updatedStudent.status === 'active';
              userNeedsUpdate = true;
         }
 
-        if (updatedStudent.personalEmail && updatedStudent.personalEmail !== existingStudent.personalEmail){
-            // If personalEmail is used as primary email for User.
-            // This logic depends on how User.email is populated (personal vs institute)
-            // Assuming User.email is personalEmail if available, else instituteEmail
-            const currentUserRecord = await userService.getUserById(updatedStudent.userId);
-            if(currentUserRecord.email === existingStudent.personalEmail || currentUserRecord.email === existingStudent.instituteEmail) {
-                userUpdateData.email = updatedStudent.personalEmail;
-                userNeedsUpdate = true;
-            }
+        if (updatedStudent.personalEmail && updatedStudent.personalEmail !== (existingUserRecord?.email === existingStudent.instituteEmail ? existingStudent.personalEmail : existingUserRecord?.email)){
+            userUpdateData.email = updatedStudent.personalEmail; // Primary email for User is personal if available
+            userNeedsUpdate = true;
         }
+        if (updatedStudent.instituteEmail && updatedStudent.instituteEmail !== existingStudent.instituteEmail) {
+            userUpdateData.instituteEmail = updatedStudent.instituteEmail;
+            // If personalEmail was not set, or if instituteEmail was primary, update User.email
+            if (!updatedStudent.personalEmail || existingUserRecord?.email === existingStudent.instituteEmail) {
+                userUpdateData.email = updatedStudent.instituteEmail;
+            }
+            userNeedsUpdate = true;
+        }
+
         if (updatedStudent.photoURL && updatedStudent.photoURL !== existingStudent.photoURL) {
             userUpdateData.photoURL = updatedStudent.photoURL;
             userNeedsUpdate = true;
@@ -125,7 +134,6 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
                 await userService.updateUser(updatedStudent.userId, userUpdateData);
             } catch(userError) {
                 console.error(`Failed to update linked system user ${updatedStudent.userId} for student ${updatedStudent.id}:`, userError);
-                // Optionally, decide if this should make the student update fail
             }
         }
     }
@@ -152,7 +160,8 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       try {
           await userService.deleteUser(deletedStudent.userId);
       } catch (userError: unknown) {
-           if (userError.message?.includes('Cannot delete this administrative user')) {
+           const typedError = userError as Error & {data?: {message?: string}};
+           if (typedError.message?.includes('Cannot delete this administrative user') || (typedError.data && typedError.data.message?.includes('administrative user'))) {
             console.warn(`Administrative user ${deletedStudent.userId} linked to student ${id} was not deleted.`);
           } else {
             console.error(`Failed to delete linked system user ${deletedStudent.userId} for student ${id}:`, userError);
@@ -162,3 +171,8 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
   return NextResponse.json({ message: 'Student deleted successfully' }, { status: 200 });
 }
+
+```
+  </change>
+  <change>
+    <file>/
