@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useEffect, useState, FormEvent, useCallback } from 'react';
@@ -6,16 +7,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
-import { UserCircle, Mail, Phone, CalendarDays, Landmark, GraduationCap, Loader2, Edit } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
+import { UserCircle, Mail, Phone, CalendarDays, Landmark, GraduationCap, Loader2, Edit, BookOpen, AlertCircle, TrendingUp, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Student, User, Program, Batch } from '@/types/entities';
+import type { Student, User, Program, Batch, Result, Course, ResultSubject } from '@/types/entities';
 import { studentService } from '@/lib/api/students';
 import { userService } from '@/lib/api/users';
 import { programService } from '@/lib/api/programs';
 import { batchService } from '@/lib/api/batches';
+import { resultService } from '@/lib/api/results';
+import { courseService } from '@/lib/api/courses';
 import { format, parseISO, isValid } from 'date-fns';
 import { Textarea } from '@/components/ui/textarea';
+import { Progress } from '@/components/ui/progress';
+import Link from 'next/link';
 
 
 interface UserCookie {
@@ -25,6 +30,23 @@ interface UserCookie {
   availableRoles: string[];
   id?: string; 
 }
+
+// Helper for grade points (can be moved to a utils file)
+const getGradePoint = (grade?: string): number => {
+    if (!grade) return 0;
+    switch (grade.toUpperCase()) {
+        case 'AA': return 10;
+        case 'AB': return 9;
+        case 'BB': return 8;
+        case 'BC': return 7;
+        case 'CC': return 6;
+        case 'CD': return 5;
+        case 'DD': return 4;
+        case 'FF': return 0;
+        default: return 0;
+    }
+};
+
 
 function getCookie(name: string): string | undefined {
   if (typeof document === 'undefined') return undefined;
@@ -43,6 +65,8 @@ export default function StudentProfilePage() {
   const [student, setStudent] = useState<Student | null>(null);
   const [program, setProgram] = useState<Program | null>(null);
   const [batch, setBatch] = useState<Batch | null>(null);
+  const [studentResults, setStudentResults] = useState<Result[]>([]);
+  const [allCourses, setAllCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserCookie | null>(null);
   const { toast } = useToast();
@@ -54,7 +78,6 @@ export default function StudentProfilePage() {
   const [formPersonalEmail, setFormPersonalEmail] = useState('');
   const [formContactNumber, setFormContactNumber] = useState('');
   const [formAddress, setFormAddress] = useState('');
-  // Add other editable fields as needed e.g. photoURL, guardianDetails
   const [formPhotoURL, setFormPhotoURL] = useState('');
 
 
@@ -88,14 +111,17 @@ export default function StudentProfilePage() {
         setFormAddress(studentProfile.address || '');
         setFormPhotoURL(studentProfile.photoURL || '');
 
-        if (studentProfile.programId) {
-          const prog = await programService.getProgramById(studentProfile.programId);
-          setProgram(prog);
-        }
-        if (studentProfile.batchId) {
-          const bat = await batchService.getBatchById(studentProfile.batchId);
-          setBatch(bat);
-        }
+        const [progData, batchData, resultsData, coursesData] = await Promise.all([
+            studentProfile.programId ? programService.getProgramById(studentProfile.programId) : Promise.resolve(null),
+            studentProfile.batchId ? batchService.getBatchById(studentProfile.batchId) : Promise.resolve(null),
+            resultService.getStudentResults(studentProfile.enrollmentNumber).then(res => res.data.results || []),
+            courseService.getAllCourses()
+        ]);
+        setProgram(progData);
+        setBatch(batchData);
+        setStudentResults(resultsData);
+        setAllCourses(coursesData);
+
       } else {
         toast({ variant: "destructive", title: "Profile Not Found", description: "Could not find your student profile." });
       }
@@ -108,7 +134,7 @@ export default function StudentProfilePage() {
 
   useEffect(() => {
     fetchProfileData();
-  }, [fetchProfileData]); // fetchProfileData is memoized with useCallback
+  }, [fetchProfileData]);
 
   const handleEditProfile = () => {
     if (student) {
@@ -135,28 +161,87 @@ export default function StudentProfilePage() {
 
     try {
       await studentService.updateStudent(student.id, updatedStudentData);
-      
-      // Check if user display name needs update (if student name changes are allowed)
-      // For now, assuming student name fields (firstName, lastName) are not editable here.
-      // If they were, and they affect User.displayName:
-      // const systemUser = await userService.getUserById(user.id);
-      // const newDisplayName = `${student.firstName} ${student.lastName}`; // From form if editable
-      // if(systemUser.displayName !== newDisplayName) {
-      //    await userService.updateUser(user.id, { displayName: newDisplayName });
-      // }
-      // Also, if personalEmail is the primary email on User record and it changed:
-      // await userService.updateUser(user.id, { email: formPersonalEmail.trim() });
-
-
       toast({ title: "Profile Updated", description: "Your profile details have been updated." });
       setIsEditDialogOpen(false);
-      await fetchProfileData(); // Re-fetch to show updated data
+      await fetchProfileData(); 
     } catch (error) {
       toast({ variant: "destructive", title: "Update Failed", description: (error as Error).message || "Could not update profile." });
     } finally {
       setIsSubmittingEdit(false);
     }
   };
+
+  const academicProgress = useMemo(() => {
+    if (!student || !program || studentResults.length === 0 || allCourses.length === 0) {
+      return {
+        earnedCredits: 0,
+        totalProgramCredits: program?.totalCredits || 0,
+        latestCpi: 0,
+        backlogs: [],
+        progressPercentage: 0,
+        statusMessage: "Data insufficient for progress calculation.",
+      };
+    }
+
+    let earnedCredits = 0;
+    const backlogs: { name: string; code: string; semester: number }[] = [];
+    const semesterSgpa: Record<number, { totalCreditPoints: number, totalCreditsAttempted: number, sgpa: number }> = {};
+
+    studentResults.forEach(res => {
+        let currentSemTotalCredits = 0;
+        let currentSemEarnedCredits = 0; // For SGPA calculation of that specific result entry
+        let currentSemCreditPoints = 0;
+
+        res.subjects.forEach(sub => {
+            const courseDetail = allCourses.find(c => c.subcode === sub.code && c.programId === student.programId && c.semester === res.semester);
+            const credits = courseDetail?.credits || sub.credits || 0;
+            currentSemTotalCredits += credits;
+
+            if (sub.grade && sub.grade.toUpperCase() !== 'FF' && !sub.isBacklog) {
+                earnedCredits += credits; // Accumulates total earned credits for the student across all results
+                currentSemEarnedCredits += credits; // For this specific result's SGPA
+                currentSemCreditPoints += getGradePoint(sub.grade) * credits;
+            } else {
+                if (!backlogs.some(b => b.code === sub.code)) { // Add to backlog list only if not already there (avoids duplicates from re-attempts)
+                    backlogs.push({ name: sub.name, code: sub.code, semester: res.semester });
+                }
+            }
+        });
+        if (currentSemTotalCredits > 0) {
+             semesterSgpa[res.semester] = {
+                totalCreditPoints: currentSemCreditPoints,
+                totalCreditsAttempted: currentSemTotalCredits,
+                sgpa: parseFloat((currentSemCreditPoints / currentSemTotalCredits).toFixed(2)) || 0,
+            };
+        }
+    });
+    
+    // Remove a backlog if a later result shows it passed
+    const finalBacklogs = backlogs.filter(backlogSub => {
+        return !studentResults.some(res => 
+            res.semester > backlogSub.semester && 
+            res.subjects.some(sub => sub.code === backlogSub.code && sub.grade !== 'FF' && !sub.isBacklog)
+        );
+    });
+
+
+    const latestResult = [...studentResults].sort((a, b) => (b.semester - a.semester) || (new Date(b.declarationDate || 0).getTime() - new Date(a.declarationDate || 0).getTime()))[0];
+    const latestCpi = latestResult?.cpi || 0;
+    const totalProgramCredits = program.totalCredits || 150; // Default to 150 if not set
+    const progressPercentage = totalProgramCredits > 0 ? (earnedCredits / totalProgramCredits) * 100 : 0;
+
+    let statusMessage = "On Track";
+    if (finalBacklogs.length > 0) {
+      statusMessage = `Attention Needed: ${finalBacklogs.length} Backlog(s)`;
+    } else if (progressPercentage >= 100 && (student.isPassAll || Object.values(student.semesterStatuses || {}).every(s => s === 'Passed'))) {
+      statusMessage = "Eligible for Graduation / Graduated";
+    } else if (progressPercentage >= 100) {
+        statusMessage = "Credits Complete, Awaiting Final Status";
+    }
+
+
+    return { earnedCredits, totalProgramCredits, latestCpi, backlogs: finalBacklogs, progressPercentage, statusMessage, semesterSgpa };
+  }, [student, program, studentResults, allCourses]);
 
 
   if (isLoading) {
@@ -245,6 +330,68 @@ export default function StudentProfilePage() {
            </Dialog>
         </CardFooter>
       </Card>
+
+      <Card className="shadow-xl">
+        <CardHeader>
+            <CardTitle className="text-xl font-bold text-primary flex items-center gap-2">
+                <TrendingUp className="h-6 w-6" /> Academic Progress Overview
+            </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-3 rounded-md bg-muted/50 border">
+                    <Label className="text-xs text-muted-foreground">Overall CPI</Label>
+                    <p className="text-2xl font-semibold">{academicProgress.latestCpi.toFixed(2)}</p>
+                </div>
+                <div className="p-3 rounded-md bg-muted/50 border">
+                    <Label className="text-xs text-muted-foreground">Credits Earned</Label>
+                    <p className="text-2xl font-semibold">{academicProgress.earnedCredits} / {academicProgress.totalProgramCredits}</p>
+                </div>
+                <div className="p-3 rounded-md bg-muted/50 border">
+                    <Label className="text-xs text-muted-foreground">Status</Label>
+                    <p className={`text-lg font-semibold ${academicProgress.backlogs.length > 0 ? 'text-destructive' : 'text-success'}`}>{academicProgress.statusMessage}</p>
+                </div>
+            </div>
+            <div>
+                <Label className="text-sm font-medium">Credit Completion</Label>
+                <Progress value={academicProgress.progressPercentage} className="w-full mt-1 h-3" />
+                <p className="text-xs text-muted-foreground text-right">{academicProgress.progressPercentage.toFixed(1)}% Complete</p>
+            </div>
+
+            {academicProgress.semesterSgpa && Object.keys(academicProgress.semesterSgpa).length > 0 && (
+                <div>
+                    <h4 className="text-md font-semibold mb-1 text-secondary">Semester Performance (SGPA)</h4>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                        {Object.entries(academicProgress.semesterSgpa)
+                            .sort(([semA], [semB]) => parseInt(semA) - parseInt(semB))
+                            .map(([semester, data]) => (
+                            <div key={semester} className="p-2 border rounded-md text-xs bg-background">
+                                <span className="font-medium">Sem {semester}:</span> {data.sgpa.toFixed(2)}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {academicProgress.backlogs.length > 0 && (
+                <div>
+                    <h4 className="text-md font-semibold mb-1 text-destructive flex items-center gap-1">
+                        <AlertCircle className="h-4 w-4"/> Current Backlogs
+                    </h4>
+                    <ul className="list-disc list-inside pl-4 text-sm text-muted-foreground">
+                        {academicProgress.backlogs.map((backlog, index) => (
+                            <li key={index}>{backlog.name} ({backlog.code}) - Sem {backlog.semester}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+             <div className="mt-4">
+                <Link href="/student/results" passHref>
+                    <Button variant="outline"><BookOpen className="mr-2 h-4 w-4" /> View Detailed Marksheets</Button>
+                </Link>
+            </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
@@ -258,3 +405,4 @@ const UsersIcon = ({ className }: { className?: string }) => (
     <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
   </svg>
 );
+
