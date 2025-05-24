@@ -6,10 +6,12 @@ import { remark } from 'remark';
 import html from 'remark-html';
 import gfm from 'remark-gfm'; // For GitHub Flavored Markdown (tables, etc.)
 
-const postsDirectory = path.join(process.cwd(), 'content/posts');
+const postsRootDirectory = path.join(process.cwd(), 'content/posts');
+export const availableLanguages = ['en', 'gu']; // Define available languages
 
 export interface PostData {
-  id: string;
+  id: string; // This will be the slug
+  lang: string;
   title: string;
   date: string;
   contentHtml: string;
@@ -17,38 +19,43 @@ export interface PostData {
   [key: string]: any; // For other frontmatter fields
 }
 
-export function getSortedPostsData(): Omit<PostData, 'contentHtml'>[] {
-  // Get file names under /content/posts
+export interface PostPreview {
+  id: string; // slug
+  lang: string;
+  title: string;
+  date: string;
+  excerpt?: string;
+  [key: string]: any;
+}
+
+export function getSortedPostsData(lang: string = 'en'): PostPreview[] {
+  const postsDirectory = path.join(postsRootDirectory, lang);
   let fileNames: string[] = [];
   try {
+    if (!fs.existsSync(postsDirectory)) {
+      console.warn(`Directory not found for language "${lang}": ${postsDirectory}`);
+      return [];
+    }
     fileNames = fs.readdirSync(postsDirectory);
   } catch (e) {
-    // If the directory doesn't exist, return an empty array
-    console.warn(`content/posts directory not found. No posts will be loaded.`);
+    console.warn(`Error reading posts directory for language "${lang}": ${postsDirectory}`, e);
     return [];
   }
   
   const allPostsData = fileNames
-    .filter(fileName => fileName.endsWith('.md')) // Only include .md files
+    .filter(fileName => fileName.endsWith('.md'))
     .map(fileName => {
-      // Remove ".md" from file name to get id
-      const id = fileName.replace(/\.md$/, '');
-
-      // Read markdown file as string
+      const id = fileName.replace(/\.md$/, ''); // slug
       const fullPath = path.join(postsDirectory, fileName);
       const fileContents = fs.readFileSync(fullPath, 'utf8');
-
-      // Use gray-matter to parse the post metadata section
       const matterResult = matter(fileContents);
 
-      // Generate a short excerpt (first 150 chars of content, simple approach)
-      const plainContent = matterResult.content.replace(/<\/?[^>]+(>|$)/g, ""); // Strip HTML for excerpt
+      const plainContent = matterResult.content.replace(/<\/?[^>]+(>|$)/g, "");
       const excerpt = plainContent.substring(0, 150) + (plainContent.length > 150 ? '...' : '');
 
-
-      // Combine the data with the id
       return {
         id,
+        lang,
         title: matterResult.data.title || 'Untitled Post',
         date: matterResult.data.date || new Date().toISOString(),
         excerpt,
@@ -56,7 +63,6 @@ export function getSortedPostsData(): Omit<PostData, 'contentHtml'>[] {
       };
     });
 
-  // Sort posts by date
   return allPostsData.sort((a, b) => {
     if (new Date(a.date) < new Date(b.date)) {
       return 1;
@@ -66,32 +72,30 @@ export function getSortedPostsData(): Omit<PostData, 'contentHtml'>[] {
   });
 }
 
-export async function getPostData(id: string): Promise<PostData> {
+export async function getPostData(lang: string, id: string): Promise<PostData> {
+  const postsDirectory = path.join(postsRootDirectory, lang);
   const fullPath = path.join(postsDirectory, `${id}.md`);
   let fileContents = '';
   try {
     fileContents = fs.readFileSync(fullPath, 'utf8');
   } catch (e) {
-    // If the file doesn't exist, throw an error or return a specific structure
-    throw new Error(`Post with id "${id}" not found.`);
+    throw new Error(`Post with lang "${lang}" and id "${id}" not found at ${fullPath}.`);
   }
 
-  // Use gray-matter to parse the post metadata section
   const matterResult = matter(fileContents);
 
-  // Use remark to convert markdown into HTML string
   const processedContent = await remark()
-    .use(gfm) // Add GFM support
-    .use(html, { sanitize: false }) // sanitize: false because we trust our markdown source
+    .use(gfm)
+    .use(html, { sanitize: false })
     .process(matterResult.content);
   const contentHtml = processedContent.toString();
 
   const plainContent = matterResult.content.replace(/<\/?[^>]+(>|$)/g, "");
   const excerpt = plainContent.substring(0, 150) + (plainContent.length > 150 ? '...' : '');
 
-  // Combine the data with the id and contentHtml
   return {
     id,
+    lang,
     contentHtml,
     title: matterResult.data.title || 'Untitled Post',
     date: matterResult.data.date || new Date().toISOString(),
@@ -99,3 +103,18 @@ export async function getPostData(id: string): Promise<PostData> {
     ...matterResult.data,
   };
 }
+
+export function getAllPostSlugsWithLang(): { params: { lang: string; slug: string } }[] {
+  const paths: { params: { lang: string; slug: string } }[] = [];
+  availableLanguages.forEach(lang => {
+    const postsDirectory = path.join(postsRootDirectory, lang);
+    if (fs.existsSync(postsDirectory)) {
+      const fileNames = fs.readdirSync(postsDirectory).filter(fileName => fileName.endsWith('.md'));
+      fileNames.forEach(fileName => {
+        paths.push({
+          params: {
+            lang,
+            slug: fileName.replace(/\.md$/, ''),
+          },
+        });
+      

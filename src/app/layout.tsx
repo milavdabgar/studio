@@ -72,7 +72,7 @@ const adminNavItems = [
   { href: '/admin/project-fair/events', icon: Briefcase, label: 'Project Fair Events', id: 'admin-project-event-nav-link'},
   { href: '/admin/results', icon: Award, label: 'Results Mgt.', id: 'admin-results-link'},
   { href: '/admin/settings', icon: Settings, label: 'System Settings', id: 'admin-settings-nav-link'},
-  { href: '/posts', icon: Newspaper, label: 'Blog', id: 'admin-blog-link' },
+  { href: '/posts/en', icon: Newspaper, label: 'Blog', id: 'admin-blog-link' },
 ];
 
 const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.ElementType; label: string; id: string }>> = {
@@ -88,9 +88,9 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/student/results', icon: Award, label: 'My Results', id: 'student-results-link' },
     { href: '/student/materials', icon: Paperclip, label: 'Study Materials', id: 'student-materials-link' },
     { href: '/student/exam-timetable', icon: CalendarRange, label: 'Exam Schedule', id: 'student-exam-schedule-link'},
-    { href: '/project-fair/student', icon: AssessmentIcon, label: 'Project Fair', id: 'student-project-link' }, 
+    { href: '/project-fair/student', icon: Briefcase, label: 'Project Fair', id: 'student-project-link' }, 
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'student-notifications-link' },
-    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'student-blog-link' },
+    { href: '/posts/en', icon: Newspaper, label: 'Blog', id: 'student-blog-link' },
   ],
   faculty: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'faculty-dashboard-link' },
@@ -102,9 +102,9 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/faculty/assessments/grade', icon: FilePieChart, label: 'Grade Assessments', id: 'faculty-grade-assessments-link' },
     { href: '/faculty/leaves', icon: Plane, label: 'My Leaves', id: 'faculty-leaves-link'},
     { href: '/faculty/exam-timetable', icon: CalendarRange, label: 'Exam Schedule', id: 'faculty-exam-schedule-link'},
-    { href: '/project-fair/jury', icon: AssessmentIcon, label: 'Evaluate Projects', id: 'faculty-evaluate-link' }, 
+    { href: '/project-fair/jury', icon: Briefcase, label: 'Evaluate Projects', id: 'faculty-evaluate-link' }, 
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'faculty-notifications-link' },
-    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'faculty-blog-link' },
+    { href: '/posts/en', icon: Newspaper, label: 'Blog', id: 'faculty-blog-link' },
   ],
   hod: [
     { href: '/dashboard/hod', icon: Home, label: 'HOD Dashboard', id: 'hod-dashboard-link' },
@@ -116,13 +116,13 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/timetables', icon: Clock, label: 'Dept. Timetable', id: 'hod-timetables-link'},
     { href: '/admin/leaves', icon: Plane, label: 'Manage Leaves (Dept)', id: 'hod-manage-leaves-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'hod-notifications-link' },
-    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'hod-blog-link' },
+    { href: '/posts/en', icon: Newspaper, label: 'Blog', id: 'hod-blog-link' },
   ],
   jury: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'jury-dashboard-link' },
-    { href: '/project-fair/jury', icon: AssessmentIcon, label: 'Evaluate Projects', id: 'jury-evaluate-link' }, 
+    { href: '/project-fair/jury', icon: Briefcase, label: 'Evaluate Projects', id: 'jury-evaluate-link' }, 
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'jury-notifications-link' },
-    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'jury-blog-link' },
+    { href: '/posts/en', icon: Newspaper, label: 'Blog', id: 'jury-blog-link' },
   ],
   committee_convener: [ 
     { href: '/dashboard/committee', icon: Home, label: 'Convener Dashboard', id: 'convener-dashboard-link' },
@@ -130,7 +130,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'convener-meetings-link'}, 
     { href: '/admin/resource-allocation/rooms', icon: DoorOpen, label: 'Book Room', id: 'convener-book-room-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'committee_convener-notifications-link' },
-    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'committee_convener-blog-link' },
+    { href: '/posts/en', icon: Newspaper, label: 'Blog', id: 'committee_convener-blog-link' },
   ],
   committee_co_convener: [
     { href: '/dashboard/committee', icon: Home, label: 'Co-Convener Dashboard', id: 'co-convener-dashboard-link' },
@@ -138,14 +138,14 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'co-convener-meetings-link'}, 
     { href: '/admin/resource-allocation/rooms', icon: DoorOpen, label: 'Book Room', id: 'co_convener-book-room-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'committee_co_convener-notifications-link' },
-    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'committee_co_convener-blog-link' },
+    { href: '/posts/en', icon: Newspaper, label: 'Blog', id: 'committee_co_convener-blog-link' },
   ],
   committee_member: [
     { href: '/dashboard/committee', icon: Home, label: 'Member Dashboard', id: 'member-dashboard-link' },
     { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'member-my-committee-link'},
     { href: '/committee/tasks/my', icon: ListChecks, label: 'My Tasks', id: 'member-my-tasks-link'},
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'committee_member-notifications-link' },
-    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'committee_member-blog-link' },
+    { href: '/posts/en', icon: Newspaper, label: 'Blog', id: 'committee_member-blog-link' },
   ],
   super_admin: [ 
     ...adminNavItems,
@@ -157,7 +157,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
       '/admin/users', '/admin/roles', '/admin/institutes', '/dashboard'
     ].includes(item.href)), 
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'institute_admin-notifications-link' },
-    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'institute_admin-blog-link' },
+    { href: '/posts/en', icon: Newspaper, label: 'Blog', id: 'institute_admin-blog-link' },
   ],
   department_admin: [ 
     { href: '/dashboard/hod', icon: Home, label: 'Department Dashboard', id: 'department-admin-dashboard-link' }, // Using HOD dashboard for dept admin
@@ -172,37 +172,37 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'department-admin-resource-allocation-link' },
     { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'department-admin-reporting-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'department_admin-notifications-link' },
-    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'department_admin-blog-link' },
+    { href: '/posts/en', icon: Newspaper, label: 'Blog', id: 'department_admin-blog-link' },
   ],
   committee_admin: [
     { href: '/dashboard', icon: Home, label: 'Committee Admin DB', id: 'committee-admin-dashboard-link' },
     { href: '/admin/committees', icon: CommitteeIcon, label: 'Manage Committees', id: 'committee-admin-committees-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'committee_admin-notifications-link' },
-    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'committee_admin-blog-link' },
+    { href: '/posts/en', icon: Newspaper, label: 'Blog', id: 'committee_admin-blog-link' },
   ],
   dte_admin: [
     { href: '/dte/dashboard', icon: Home, label: 'DTE Dashboard', id: 'dte-admin-dashboard-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'dte_admin-notifications-link' },
-    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'dte_admin-blog-link' },
+    { href: '/posts/en', icon: Newspaper, label: 'Blog', id: 'dte_admin-blog-link' },
   ], 
   gtu_admin: [
     { href: '/gtu/dashboard', icon: Home, label: 'GTU Dashboard', id: 'gtu-admin-dashboard-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'gtu_admin-notifications-link' },
-    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'gtu_admin-blog-link' },
+    { href: '/posts/en', icon: Newspaper, label: 'Blog', id: 'gtu_admin-blog-link' },
   ], 
   lab_assistant: [
     { href: '/dashboard', icon: Home, label: 'Lab Assistant Dashboard', id: 'lab-assistant-dashboard-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'lab_assistant-notifications-link' },
-    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'lab_assistant-blog-link' },
+    { href: '/posts/en', icon: Newspaper, label: 'Blog', id: 'lab_assistant-blog-link' },
   ], 
   clerical_staff: [
     { href: '/dashboard', icon: Home, label: 'Clerical Dashboard', id: 'clerical-dashboard-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'clerical_staff-notifications-link' },
-    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'clerical_staff-blog-link' },
+    { href: '/posts/en', icon: Newspaper, label: 'Blog', id: 'clerical_staff-blog-link' },
   ], 
   unknown: [
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'unknown-notifications-link' },
-    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'unknown-blog-link' },
+    { href: '/posts/en', icon: Newspaper, label: 'Blog', id: 'unknown-blog-link' },
   ], 
 };
 
@@ -215,19 +215,25 @@ const getNavItemsForRoleCode = (roleCode: UserRoleCode): Array<{ href: string; i
 
   if (committeeSpecificRoles.includes(roleCode)) {
     const specificItems = [...(baseNavItems[roleCode] || [])];
-    if (!specificItems.find(item => item.href === '/dashboard/committee')) { // Ensure dashboard link is for committee
+    if (!specificItems.find(item => item.href === '/dashboard/committee')) { 
         const dashboardIndex = specificItems.findIndex(item => item.href === '/dashboard');
         if (dashboardIndex !== -1) {
-            specificItems[dashboardIndex].href = '/dashboard/committee'; // Correct the dashboard link
+            specificItems[dashboardIndex].href = '/dashboard/committee'; 
         } else {
             specificItems.unshift({ href: '/dashboard/committee', icon: Home, label: 'Committee Dashboard', id: `${roleCode}-committee-dashboard-link` });
         }
     }
     const uniqueItems = Array.from(new Map(specificItems.map(item => [item.id, item])).values());
-    uniqueItems.sort((a, b) => a.label.localeCompare(b.label));
+    // Sort alphabetically, but keep "Dashboard" first if it exists
+    uniqueItems.sort((a, b) => {
+        if (a.label.includes('Dashboard')) return -1;
+        if (b.label.includes('Dashboard')) return 1;
+        return a.label.localeCompare(b.label);
+    });
     return uniqueItems;
   }
 
+  // For other roles, use a Map to ensure uniqueness by ID and then sort.
   const sortedItems = [...new Map(itemsArray.map(item => [item.id, item])).values()]; 
   sortedItems.sort((a, b) => {
     if (a.label.includes('Dashboard')) return -1;
@@ -236,7 +242,6 @@ const getNavItemsForRoleCode = (roleCode: UserRoleCode): Array<{ href: string; i
   });
   return sortedItems;
 };
-
 
 function getCookie(name: string): string | undefined {
   if (typeof document === 'undefined') {
@@ -251,7 +256,6 @@ function getCookie(name: string): string | undefined {
   }
   return undefined;
 }
-
 
 interface ParsedUserCookie {
   id?: string;
@@ -317,16 +321,11 @@ export default function RootLayout({
             setAllSystemRoles(roles);
         } catch (error) {
             console.error("Failed to load system roles in layout:", error);
-            // toast({
-            //     variant: "destructive",
-            //     title: "Error Loading Roles",
-            //     description: "Could not fetch system roles. Some UI elements might not display correctly.",
-            // });
+            toast({ variant: "destructive", title: "Role System Error", description: "Could not load system roles. Some features might not work as expected." });
         }
     };
     fetchRoles();
 
-    // PWA Service Worker Registration
     if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
@@ -535,5 +534,3 @@ export default function RootLayout({
     </html>
   );
 }
-    
-    
