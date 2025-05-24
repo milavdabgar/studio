@@ -4,10 +4,14 @@ import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
-import gfm from 'remark-gfm'; // For GitHub Flavored Markdown (tables, etc.)
+import gfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import remarkRehype from 'remark-rehype';
+import rehypeStringify from 'rehype-stringify';
 
 const postsRootDirectory = path.join(process.cwd(), 'content/posts');
-export const availableLanguages = ['en', 'gu']; // Define available languages
+export const availableLanguages = ['en', 'gu'];
 
 export interface PostData {
   id: string; // This will be the slug
@@ -38,7 +42,8 @@ export function getSortedPostsData(lang: string = 'en'): PostPreview[] {
     }
     fileNames = fs.readdirSync(postsDirectory);
   } catch (e) {
-    console.warn(`Error reading posts directory for language "${lang}": ${postsDirectory}`, e);
+    const error = e as Error;
+    console.warn(`Error reading posts directory for language "${lang}" (${postsDirectory}): ${error.message}`);
     return [];
   }
   
@@ -86,7 +91,10 @@ export async function getPostData(lang: string, id: string): Promise<PostData> {
 
   const processedContent = await remark()
     .use(gfm)
-    .use(html, { sanitize: false })
+    .use(remarkMath)
+    .use(remarkRehype, { allowDangerousHtml: true }) 
+    .use(rehypeKatex, { output: 'htmlAndMathml' }) 
+    .use(rehypeStringify, { allowDangerousHtml: true }) 
     .process(matterResult.content);
   const contentHtml = processedContent.toString();
 
@@ -117,4 +125,8 @@ export function getAllPostSlugsWithLang(): { params: { lang: string; slug: strin
             slug: fileName.replace(/\.md$/, ''),
           },
         });
-      
+      });
+    }
+  });
+  return paths;
+}
