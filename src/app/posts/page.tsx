@@ -1,8 +1,8 @@
 
 import Link from 'next/link';
 import { getSortedPostsData } from '@/lib/markdown';
-import { format, parseISO } from 'date-fns';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { format, parseISO, isValid } from 'date-fns'; // Added isValid
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Newspaper } from 'lucide-react';
 
@@ -59,3 +59,4 @@ export default function BlogIndexPage() {
     </div>
   );
 }
+
