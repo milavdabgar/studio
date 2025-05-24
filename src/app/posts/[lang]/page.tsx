@@ -1,7 +1,9 @@
 
+// src/app/posts/[lang]/page.tsx
+
 import Link from 'next/link';
 import { getSortedPostsData, availableLanguages, type PostPreview } from '@/lib/markdown';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, isValid } from 'date-fns';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Newspaper } from 'lucide-react';
@@ -32,7 +34,6 @@ export default function BlogIndexPage({ params }: BlogIndexPageProps) {
   const noPostsMessage = lang === 'gu' ? 'કોઈ પોસ્ટ મળી નથી.' : 'No posts found.';
   const readMoreText = lang === 'gu' ? 'વધુ વાંચો →' : 'Read more →';
 
-
   return (
     <div className="container mx-auto px-4 py-8">
       <Card className="shadow-xl">
@@ -60,7 +61,7 @@ export default function BlogIndexPage({ params }: BlogIndexPageProps) {
                         </a>
                       </Link>
                       <CardDescription className="text-sm text-muted-foreground">
-                        {date && parseISO(date) ? format(parseISO(date), 'LLLL d, yyyy') : 'Date not available'}
+                        {date && isValid(parseISO(date)) ? format(parseISO(date), 'LLLL d, yyyy') : 'Date not available'}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -79,3 +80,7 @@ export default function BlogIndexPage({ params }: BlogIndexPageProps) {
             </ul>
           )}
         </CardContent>
+      </Card>
+    </div>
+  );
+}
