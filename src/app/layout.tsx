@@ -1,4 +1,3 @@
-
 // src/app/layout.tsx
 "use client"; 
 
@@ -8,10 +7,10 @@ import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, 
 import { Toaster } from "@/components/ui/toaster";
 import { 
     Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, 
-    Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, 
-    Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, 
+    Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, Plane,
+    Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText,
     BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Activity, Clock,
-    ListChecks, BookOpenCheck, FilePieChart, Upload, Paperclip, CheckSquare, UserPlus, Bell, BellRing, NotebookPen, BookOpenText, FileText
+    ListChecks, BookOpenCheck, FilePieChart, Upload, Paperclip, CheckSquare, UserPlus, Bell, BellRing, NotebookPen, BookOpenText
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -62,6 +61,7 @@ const adminNavItems = [
   { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses-link' },
   { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum Mgt.', id: 'admin-curriculum-link' },
   { href: '/admin/assessments', icon: FileText, label: 'Assessments', id: 'admin-assessments-link' },
+  { href: '/admin/examinations', icon: Award, label: 'Examination Mgt.', id: 'admin-examinations-link'},
   { href: '/admin/enrollments', icon: UserPlus, label: 'Enrollment Mgt.', id: 'admin-enrollments-link'},
   { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance-nav-link' }, 
   { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'admin-resource-allocation-link' },
@@ -85,6 +85,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/student/assignments', icon: NotebookPen, label: 'Assignments', id: 'student-assignments-link'},
     { href: '/student/results', icon: Award, label: 'My Results', id: 'student-results-link' },
     { href: '/student/materials', icon: Paperclip, label: 'Study Materials', id: 'student-materials-link' },
+    { href: '/student/exam-timetable', icon: CalendarRange, label: 'Exam Schedule', id: 'student-exam-schedule-link'},
     { href: '/project-fair/student', icon: FileText, label: 'Project Fair', id: 'student-project-link' }, 
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'student-notifications-link' },
   ],
@@ -96,6 +97,8 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'faculty-mark-attendance-link' },
     { href: '/faculty/attendance/reports', icon: BarChart3, label: 'Attendance Reports', id: 'faculty-attendance-reports-link' },
     { href: '/faculty/assessments/grade', icon: FilePieChart, label: 'Grade Assessments', id: 'faculty-grade-assessments-link' },
+    { href: '/faculty/leaves', icon: Plane, label: 'My Leaves', id: 'faculty-leaves-link'},
+    { href: '/faculty/exam-timetable', icon: CalendarRange, label: 'Exam Schedule', id: 'faculty-exam-schedule-link'},
     { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'faculty-evaluate-link' }, 
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'faculty-notifications-link' },
   ],
@@ -107,6 +110,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'hod-faculty-link' },
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'hod-students-link' },
     { href: '/admin/timetables', icon: Clock, label: 'Dept. Timetable', id: 'hod-timetables-link'},
+    { href: '/admin/leaves', icon: Plane, label: 'Manage Leaves (Dept)', id: 'hod-manage-leaves-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'hod-notifications-link' },
   ],
   jury: [
