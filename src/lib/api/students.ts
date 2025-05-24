@@ -106,7 +106,3 @@ export const studentService = {
     return responseData;
   }
 };
-
-```
-  </change>
-</changes>

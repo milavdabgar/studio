@@ -1,3 +1,4 @@
+
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import type { UserRole as UserRoleCode, Role } from '@/types/entities'; // UserRole is now UserRoleCode
@@ -55,15 +56,23 @@ const PROTECTED_ROUTES_PREFIXES = [
   '/project-fair/student',
   '/results/history', 
   '/faculty', 
-  '/courses',
-  '/assignments',
+  // '/courses', // Removing /courses as it might have public-facing course catalog aspects
+  '/student/assignments', // Keep student assignments protected
+  '/student/profile',
+  '/student/attendance',
+  '/student/results',
+  '/student/materials',
+  '/student/exam-timetable',
+  '/student/courses/enroll', // Specific enrollment page should be protected
   '/committee', 
+  '/notifications', // Notifications should be protected
 ];
 
 const PUBLIC_ROUTES = [
   '/', 
   '/login',
   '/signup',
+  '/posts', // Add /posts base route
 ];
 
 // Role access control: Key is route prefix, Value is array of ALLOWED role CODES
@@ -83,9 +92,14 @@ const ROLE_ACCESS_CONTROL: Record<string, UserRoleCode[]> = {
   '/project-fair/admin': ['admin', 'super_admin', 'hod', 'faculty'],
   '/project-fair/jury': ['jury', 'faculty', 'admin', 'super_admin'],
   '/faculty/courses': ['faculty', 'hod', 'admin', 'super_admin'],
+  '/faculty/my-courses': ['faculty', 'hod', 'admin', 'super_admin'],
   '/faculty/students': ['faculty', 'hod', 'admin', 'super_admin'],
-  '/committee/meetings': ['committee_convener', 'committee_co_convener', 'admin', 'super_admin'], // Example of using codes
-  // Generic committee dashboard access based on role code pattern matching.
+  '/faculty/attendance/mark': ['faculty', 'hod', 'admin', 'super_admin'],
+  '/faculty/attendance/reports': ['faculty', 'hod', 'admin', 'super_admin'],
+  '/faculty/assessments/grade': ['faculty', 'hod', 'admin', 'super_admin'],
+  '/faculty/leaves': ['faculty', 'hod', 'admin', 'super_admin'],
+  '/faculty/exam-timetable': ['faculty', 'hod', 'admin', 'super_admin'],
+  '/committee/meetings': ['committee_convener', 'committee_co_convener', 'admin', 'super_admin'], 
 };
 
 
@@ -93,10 +107,16 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const authenticatedUser = isAuthenticated(request);
   
+  // Allow static assets and API routes to pass through
   if (pathname.startsWith('/_next/') || 
       pathname.startsWith('/api/') || 
-      pathname.includes('.')) { 
+      pathname.includes('.')) { // Common check for files like .ico, .png
     return NextResponse.next();
+  }
+
+  // Check if the route is a public blog post route
+  if (pathname.startsWith('/posts')) {
+    return NextResponse.next(); // Allow access to all /posts/* routes
   }
 
   const isProtectedRoute = PROTECTED_ROUTES_PREFIXES.some(prefix => pathname.startsWith(prefix));
@@ -109,10 +129,11 @@ export async function middleware(request: NextRequest) {
     }
 
     let hasAccess = false;
-    const activeRoleCode = authenticatedUser.activeRole; // This is a role CODE
+    const activeRoleCode = authenticatedUser.activeRole;
     
-    if (activeRoleCode !== 'unknown') {
-        hasAccess = true; // Default access for authenticated users to general protected areas like /dashboard
+    // Default access for general protected dashboard for any authenticated user (if not more specific rule applies)
+    if (pathname === '/dashboard' && activeRoleCode !== 'unknown') {
+        hasAccess = true;
     }
 
     const sortedRoutePrefixes = Object.keys(ROLE_ACCESS_CONTROL).sort((a, b) => b.length - a.length);
@@ -121,30 +142,53 @@ export async function middleware(request: NextRequest) {
         if (pathname.startsWith(routePrefix)) {
             if (ROLE_ACCESS_CONTROL[routePrefix].includes(activeRoleCode)) {
                 hasAccess = true;
-                break; 
+            } else {
+                hasAccess = false; // Specific rule matched, but role not allowed
             }
-            hasAccess = false; // Specific rule matched, but role not allowed
             break; 
         }
     }
     
-    // Special handling for generic committee dashboards based on role code pattern
+    // Special handling for generic committee dashboards
     if (pathname.startsWith('/dashboard/committee')) {
-        const isCommitteeRole = activeRoleCode.startsWith('committee_') || activeRoleCode.includes('_convener') || activeRoleCode.includes('_member') || activeRoleCode.includes('_co_convener');
+        const isCommitteeRole = activeRoleCode.startsWith('committee_') || 
+                                activeRoleCode.includes('_convener') || 
+                                activeRoleCode.includes('_member') || 
+                                activeRoleCode.includes('_co_convener');
         if (isCommitteeRole) {
             hasAccess = true;
-        } else if (!hasAccess) { // If not already granted by a specific rule
-             hasAccess = false; // Deny if no other rule matched and it's not a committee role accessing committee dashboard
+        } else if (!hasAccess && !ROLE_ACCESS_CONTROL[pathname]) { // If no specific rule already granted access
+             hasAccess = false; 
         }
+    }
+    // Allow access to specific HOD dashboard if role is HOD
+    if (pathname.startsWith('/dashboard/hod') && activeRoleCode === 'hod') {
+        hasAccess = true;
+    }
+    // Allow access to DTE dashboard if role is dte_admin
+    if (pathname.startsWith('/dte/dashboard') && activeRoleCode === 'dte_admin') {
+        hasAccess = true;
+    }
+    // Allow access to GTU dashboard if role is gtu_admin
+    if (pathname.startsWith('/gtu/dashboard') && activeRoleCode === 'gtu_admin') {
+        hasAccess = true;
     }
 
 
     if (!hasAccess) {
         console.warn(`User ${authenticatedUser.email} with active role code [${activeRoleCode}] tried to access ${pathname} without permission.`);
-        return NextResponse.redirect(new URL('/dashboard', request.url)); 
+        // Redirect to their default dashboard or a generic access denied page
+        let redirectPath = '/dashboard'; // Default redirect
+        if (activeRoleCode === 'hod' || activeRoleCode === 'department_admin') redirectPath = '/dashboard/hod';
+        else if (activeRoleCode.startsWith('committee_')) redirectPath = '/dashboard/committee';
+        else if (activeRoleCode === 'dte_admin') redirectPath = '/dte/dashboard';
+        else if (activeRoleCode === 'gtu_admin') redirectPath = '/gtu/dashboard';
+        
+        return NextResponse.redirect(new URL(redirectPath, request.url)); 
     }
 
   } else if (PUBLIC_ROUTES.includes(pathname)) {
+    // If accessing login or signup while already authenticated, redirect to dashboard
     if ((pathname === '/login' || pathname === '/signup') && authenticatedUser) {
        return NextResponse.redirect(new URL('/dashboard', request.url));
     }
@@ -153,3 +197,9 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
     
+// Matcher to apply middleware to all routes except static assets and API routes.
+// export const config = {
+//   matcher: [
+//     '/((?!api|_next/static|_next/image|favicon.ico|icons/).*)',
+//   ],
+// }
