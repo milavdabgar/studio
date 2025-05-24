@@ -32,7 +32,7 @@ export interface PostPreview {
   [key: string]: any;
 }
 
-export function getSortedPostsData(lang: string = 'en'): PostPreview[] {
+export async function getSortedPostsData(lang: string = 'en'): Promise<PostPreview[]> {
   const postsDirectory = path.join(postsRootDirectory, lang);
   let fileNames: string[] = [];
   try {

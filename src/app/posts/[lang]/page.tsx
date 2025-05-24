@@ -9,30 +9,35 @@ import { Button } from '@/components/ui/button';
 import { Newspaper } from 'lucide-react';
 import { notFound } from 'next/navigation';
 
-interface BlogIndexPageProps {
-  params: {
-    lang: string;
-  };
-}
-
 export async function generateStaticParams() {
   return availableLanguages.map((lang) => ({
     lang: lang,
   }));
 }
 
-export default function BlogIndexPage({ params }: BlogIndexPageProps) {
-  const { lang } = params;
+interface PageParams {
+  lang: string;
+}
 
-  if (!availableLanguages.includes(lang)) {
+export default async function BlogIndexPage(
+  { params }: { params: PageParams }
+) {
+  // In Next.js 15, we must await the params object
+  const validatedParams = await Promise.resolve(params);
+  const language = validatedParams.lang;
+
+  // Validate the language parameter
+  if (!language || !availableLanguages.includes(language)) {
     notFound();
   }
+  
 
-  const allPostsData: PostPreview[] = getSortedPostsData(lang);
-  const pageTitle = lang === 'gu' ? 'બ્લોગ / લેખો' : 'Blog / Articles';
-  const pageDescription = lang === 'gu' ? 'પોલીમેનેજર તરફથી નવીનતમ લેખો અને અપડેટ્સ વાંચો.' : 'Read the latest articles and updates from PolyManager.';
-  const noPostsMessage = lang === 'gu' ? 'કોઈ પોસ્ટ મળી નથી.' : 'No posts found.';
-  const readMoreText = lang === 'gu' ? 'વધુ વાંચો →' : 'Read more →';
+
+  const allPostsData: PostPreview[] = await getSortedPostsData(language);
+  const pageTitle = language === 'gu' ? 'બ્લોગ / લેખો' : 'Blog / Articles';
+  const pageDescription = language === 'gu' ? 'પોલીમેનેજર તરફથી નવીનતમ લેખો અને અપડેટ્સ વાંચો.' : 'Read the latest articles and updates from PolyManager.';
+  const noPostsMessage = language === 'gu' ? 'કોઈ પોસ્ટ મળી નથી.' : 'No posts found.';
+  const readMoreText = language === 'gu' ? 'વધુ વાંચો →' : 'Read more →';
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -55,7 +60,7 @@ export default function BlogIndexPage({ params }: BlogIndexPageProps) {
                 <li key={id}>
                   <Card className="hover:shadow-lg transition-shadow">
                     <CardHeader>
-                      <Link href={`/posts/${lang}/${id}`} legacyBehavior>
+                      <Link href={`/posts/${language}/${id}`} legacyBehavior>
                         <a className="text-2xl font-semibold text-primary hover:underline">
                           {title}
                         </a>
@@ -66,11 +71,11 @@ export default function BlogIndexPage({ params }: BlogIndexPageProps) {
                     </CardHeader>
                     <CardContent>
                       <p className="text-muted-foreground line-clamp-3">
-                        {excerpt || (lang === 'gu' ? 'વધુ વાંચો...' : 'Read more...')}
+                        {excerpt || (language === 'gu' ? 'વધુ વાંચો...' : 'Read more...')}
                       </p>
                     </CardContent>
                     <CardFooter>
-                      <Link href={`/posts/${lang}/${id}`} passHref>
+                      <Link href={`/posts/${language}/${id}`} passHref>
                         <Button variant="link" className="p-0">{readMoreText}</Button>
                       </Link>
                     </CardFooter>

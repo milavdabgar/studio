@@ -72,6 +72,7 @@ const PUBLIC_ROUTES = [
   '/', 
   '/login',
   '/signup',
+  '/api/auth/callback/credentials',
   '/posts', // Add /posts base route
 ];
 
@@ -114,9 +115,13 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check if the route is a public blog post route
-  if (pathname.startsWith('/posts')) {
-    return NextResponse.next(); // Allow access to all /posts/* routes
+  // Check if the route is public first
+  if (PUBLIC_ROUTES.includes(pathname) || pathname.startsWith('/posts')) {
+    // If accessing login or signup while already authenticated, redirect to dashboard
+    if ((pathname === '/login' || pathname === '/signup') && authenticatedUser) {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+    return NextResponse.next();
   }
 
   const isProtectedRoute = PROTECTED_ROUTES_PREFIXES.some(prefix => pathname.startsWith(prefix));
@@ -187,11 +192,6 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL(redirectPath, request.url)); 
     }
 
-  } else if (PUBLIC_ROUTES.includes(pathname)) {
-    // If accessing login or signup while already authenticated, redirect to dashboard
-    if ((pathname === '/login' || pathname === '/signup') && authenticatedUser) {
-       return NextResponse.redirect(new URL('/dashboard', request.url));
-    }
   }
   
   return NextResponse.next();
