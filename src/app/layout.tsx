@@ -1,3 +1,4 @@
+
 // src/app/layout.tsx
 "use client"; 
 
@@ -8,9 +9,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { 
     Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, 
     Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, Plane,
-    Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText,
+    Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, 
     BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Activity, Clock,
-    ListChecks, BookOpenCheck, FilePieChart, Upload, Paperclip, CheckSquare, UserPlus, Bell, BellRing, NotebookPen, BookOpenText
+    ListChecks, BookOpenCheck, FilePieChart, Upload, Paperclip, CheckSquare, UserPlus, Bell, BellRing, NotebookPen, BookOpenText, Newspaper
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -60,7 +61,7 @@ const adminNavItems = [
   { href: '/admin/batches', icon: CalendarRange, label: 'Batches', id: 'admin-batches-link' },
   { href: '/admin/courses', icon: ClipboardList, label: 'Course Mgt.', id: 'admin-courses-link' },
   { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum Mgt.', id: 'admin-curriculum-link' },
-  { href: '/admin/assessments', icon: FileText, label: 'Assessments', id: 'admin-assessments-link' },
+  { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments', id: 'admin-assessments-link' },
   { href: '/admin/examinations', icon: Award, label: 'Examination Mgt.', id: 'admin-examinations-link'},
   { href: '/admin/enrollments', icon: UserPlus, label: 'Enrollment Mgt.', id: 'admin-enrollments-link'},
   { href: '/faculty/attendance/mark', icon: CalendarCheck, label: 'Mark Attendance', id: 'admin-mark-attendance-nav-link' }, 
@@ -71,6 +72,7 @@ const adminNavItems = [
   { href: '/admin/project-fair/events', icon: Briefcase, label: 'Project Fair Events', id: 'admin-project-event-nav-link'},
   { href: '/admin/results', icon: Award, label: 'Results Mgt.', id: 'admin-results-link'},
   { href: '/admin/settings', icon: Settings, label: 'System Settings', id: 'admin-settings-nav-link'},
+  { href: '/posts', icon: Newspaper, label: 'Blog', id: 'admin-blog-link' },
 ];
 
 const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.ElementType; label: string; id: string }>> = {
@@ -86,8 +88,9 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/student/results', icon: Award, label: 'My Results', id: 'student-results-link' },
     { href: '/student/materials', icon: Paperclip, label: 'Study Materials', id: 'student-materials-link' },
     { href: '/student/exam-timetable', icon: CalendarRange, label: 'Exam Schedule', id: 'student-exam-schedule-link'},
-    { href: '/project-fair/student', icon: FileText, label: 'Project Fair', id: 'student-project-link' }, 
+    { href: '/project-fair/student', icon: AssessmentIcon, label: 'Project Fair', id: 'student-project-link' }, 
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'student-notifications-link' },
+    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'student-blog-link' },
   ],
   faculty: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'faculty-dashboard-link' },
@@ -99,8 +102,9 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/faculty/assessments/grade', icon: FilePieChart, label: 'Grade Assessments', id: 'faculty-grade-assessments-link' },
     { href: '/faculty/leaves', icon: Plane, label: 'My Leaves', id: 'faculty-leaves-link'},
     { href: '/faculty/exam-timetable', icon: CalendarRange, label: 'Exam Schedule', id: 'faculty-exam-schedule-link'},
-    { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'faculty-evaluate-link' }, 
+    { href: '/project-fair/jury', icon: AssessmentIcon, label: 'Evaluate Projects', id: 'faculty-evaluate-link' }, 
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'faculty-notifications-link' },
+    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'faculty-blog-link' },
   ],
   hod: [
     { href: '/dashboard/hod', icon: Home, label: 'HOD Dashboard', id: 'hod-dashboard-link' },
@@ -112,11 +116,13 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/timetables', icon: Clock, label: 'Dept. Timetable', id: 'hod-timetables-link'},
     { href: '/admin/leaves', icon: Plane, label: 'Manage Leaves (Dept)', id: 'hod-manage-leaves-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'hod-notifications-link' },
+    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'hod-blog-link' },
   ],
   jury: [
     { href: '/dashboard', icon: Home, label: 'Dashboard', id: 'jury-dashboard-link' },
-    { href: '/project-fair/jury', icon: FileText, label: 'Evaluate Projects', id: 'jury-evaluate-link' }, 
+    { href: '/project-fair/jury', icon: AssessmentIcon, label: 'Evaluate Projects', id: 'jury-evaluate-link' }, 
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'jury-notifications-link' },
+    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'jury-blog-link' },
   ],
   committee_convener: [ 
     { href: '/dashboard/committee', icon: Home, label: 'Convener Dashboard', id: 'convener-dashboard-link' },
@@ -124,6 +130,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'convener-meetings-link'}, 
     { href: '/admin/resource-allocation/rooms', icon: DoorOpen, label: 'Book Room', id: 'convener-book-room-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'committee_convener-notifications-link' },
+    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'committee_convener-blog-link' },
   ],
   committee_co_convener: [
     { href: '/dashboard/committee', icon: Home, label: 'Co-Convener Dashboard', id: 'co-convener-dashboard-link' },
@@ -131,12 +138,14 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/committee/meetings', icon: CalendarCheck, label: 'Meetings', id: 'co-convener-meetings-link'}, 
     { href: '/admin/resource-allocation/rooms', icon: DoorOpen, label: 'Book Room', id: 'co_convener-book-room-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'committee_co_convener-notifications-link' },
+    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'committee_co_convener-blog-link' },
   ],
   committee_member: [
     { href: '/dashboard/committee', icon: Home, label: 'Member Dashboard', id: 'member-dashboard-link' },
     { href: '/dashboard/committee', icon: CommitteeIcon, label: 'My Committee', id: 'member-my-committee-link'},
     { href: '/committee/tasks/my', icon: ListChecks, label: 'My Tasks', id: 'member-my-tasks-link'},
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'committee_member-notifications-link' },
+    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'committee_member-blog-link' },
   ],
   super_admin: [ 
     ...adminNavItems,
@@ -148,6 +157,7 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
       '/admin/users', '/admin/roles', '/admin/institutes', '/dashboard'
     ].includes(item.href)), 
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'institute_admin-notifications-link' },
+    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'institute_admin-blog-link' },
   ],
   department_admin: [ 
     { href: '/dashboard/hod', icon: Home, label: 'Department Dashboard', id: 'department-admin-dashboard-link' }, // Using HOD dashboard for dept admin
@@ -155,37 +165,44 @@ const baseNavItems: Record<UserRoleCode, Array<{ href: string; icon: React.Eleme
     { href: '/admin/batches', icon: CalendarRange, label: 'Batches (Dept)', id: 'department-admin-batches-link' },
     { href: '/admin/courses', icon: ClipboardList, label: 'Courses (Dept)', id: 'department-admin-courses-link' },
     { href: '/admin/curriculum', icon: BookOpenText, label: 'Curriculum (Dept)', id: 'department-admin-curriculum-link' },
-    { href: '/admin/assessments', icon: FileText, label: 'Assessments (Dept)', id: 'department-admin-assessments-link' },
+    { href: '/admin/assessments', icon: AssessmentIcon, label: 'Assessments (Dept)', id: 'department-admin-assessments-link' },
     { href: '/admin/enrollments', icon: UserPlus, label: 'Enrollment Mgt.', id: 'department-admin-enrollments-link'},
     { href: '/admin/faculty', icon: UserCog, label: 'Faculty (Dept)', id: 'department-admin-faculty-link' },
     { href: '/admin/students', icon: BookUser, label: 'Students (Dept)', id: 'department-admin-students-link' },
     { href: '/admin/resource-allocation', icon: ResourceIcon, label: 'Resource Allocation', id: 'department-admin-resource-allocation-link' },
     { href: '/admin/reporting-analytics', icon: BarChart3, label: 'Reports & Analytics', id: 'department-admin-reporting-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'department_admin-notifications-link' },
+    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'department_admin-blog-link' },
   ],
   committee_admin: [
     { href: '/dashboard', icon: Home, label: 'Committee Admin DB', id: 'committee-admin-dashboard-link' },
     { href: '/admin/committees', icon: CommitteeIcon, label: 'Manage Committees', id: 'committee-admin-committees-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'committee_admin-notifications-link' },
+    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'committee_admin-blog-link' },
   ],
   dte_admin: [
     { href: '/dte/dashboard', icon: Home, label: 'DTE Dashboard', id: 'dte-admin-dashboard-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'dte_admin-notifications-link' },
+    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'dte_admin-blog-link' },
   ], 
   gtu_admin: [
     { href: '/gtu/dashboard', icon: Home, label: 'GTU Dashboard', id: 'gtu-admin-dashboard-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'gtu_admin-notifications-link' },
+    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'gtu_admin-blog-link' },
   ], 
   lab_assistant: [
     { href: '/dashboard', icon: Home, label: 'Lab Assistant Dashboard', id: 'lab-assistant-dashboard-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'lab_assistant-notifications-link' },
+    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'lab_assistant-blog-link' },
   ], 
   clerical_staff: [
     { href: '/dashboard', icon: Home, label: 'Clerical Dashboard', id: 'clerical-dashboard-link' },
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'clerical_staff-notifications-link' },
+    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'clerical_staff-blog-link' },
   ], 
   unknown: [
     { href: '/notifications', icon: BellRing, label: 'Notifications', id: 'unknown-notifications-link' },
+    { href: '/posts', icon: Newspaper, label: 'Blog', id: 'unknown-blog-link' },
   ], 
 };
 
@@ -300,11 +317,11 @@ export default function RootLayout({
             setAllSystemRoles(roles);
         } catch (error) {
             console.error("Failed to load system roles in layout:", error);
-            toast({
-                variant: "destructive",
-                title: "Error Loading Roles",
-                description: "Could not fetch system roles. Some UI elements might not display correctly.",
-            });
+            // toast({
+            //     variant: "destructive",
+            //     title: "Error Loading Roles",
+            //     description: "Could not fetch system roles. Some UI elements might not display correctly.",
+            // });
         }
     };
     fetchRoles();
@@ -369,6 +386,10 @@ export default function RootLayout({
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
             <link rel="manifest" href="/manifest.json" />
             <meta name="theme-color" content="#1e40af" />
+            <link rel="apple-touch-icon" href="/icons/icon-192x192.png" /> 
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+            <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+            <meta name="apple-mobile-web-app-title" content="PolyManager" />
         </head>
         <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           <div className="flex items-center justify-center min-h-screen">
@@ -388,6 +409,10 @@ export default function RootLayout({
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
             <link rel="manifest" href="/manifest.json" />
             <meta name="theme-color" content="#1e40af" />
+            <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+            <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+            <meta name="apple-mobile-web-app-title" content="PolyManager" />
         </head>
         <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           {children}
@@ -405,11 +430,10 @@ export default function RootLayout({
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
             <link rel="manifest" href="/manifest.json" />
             <meta name="theme-color" content="#1e40af" />
+            <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
             <meta name="apple-mobile-web-app-capable" content="yes" />
             <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
             <meta name="apple-mobile-web-app-title" content="PolyManager" />
-            {/* Add more apple touch icons as needed */}
-            <link rel="apple-touch-icon" href="/icons/icon-192x192.png" /> 
         </head>
       <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
         <SidebarProvider>
