@@ -2,9 +2,9 @@
 "use client";
 
 import React, { useEffect, useRef } from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark, oneLight } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { useTheme } from 'next-themes';
+import { createRoot } from 'react-dom/client';
+import CodeBlock from '../ui/code-block';
 
 interface PostRendererProps {
   contentHtml: string;
@@ -35,7 +35,7 @@ const PostRenderer: React.FC<PostRendererProps> = ({ contentHtml }) => {
         
         // Create a wrapper for the enhanced code block
         const wrapper = document.createElement('div');
-        wrapper.className = 'enhanced-code-block';
+        wrapper.className = 'enhanced-code-block not-prose';
         
         // Mark as enhanced to avoid double processing
         pre.classList.add('enhanced');
@@ -44,21 +44,15 @@ const PostRenderer: React.FC<PostRendererProps> = ({ contentHtml }) => {
         pre.parentNode?.insertBefore(wrapper, pre);
         pre.remove();
         
-        // Create React component container
-        const reactContainer = document.createElement('div');
-        wrapper.appendChild(reactContainer);
-        
-        // We'll use CSS classes for styling instead of React component
-        // to avoid hydration issues
-        wrapper.innerHTML = `
-          <div class="code-block-header">
-            <span class="code-language">${language}</span>
-            <button class="copy-button" onclick="navigator.clipboard.writeText(\`${code.replace(/`/g, '\\`')}\`)">
-              Copy
-            </button>
-          </div>
-          <pre class="enhanced-pre"><code class="language-${language}">${codeBlock.innerHTML}</code></pre>
-        `;
+        // Create React component using createRoot
+        const root = createRoot(wrapper);
+        root.render(
+          <CodeBlock 
+            code={code} 
+            language={language}
+            className="my-4 rounded-lg border overflow-hidden"
+          />
+        );
       });
     };
 
