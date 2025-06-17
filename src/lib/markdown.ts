@@ -205,11 +205,9 @@ export async function getPostData({
   }
 
   if (!filePath) {
-    console.error(`\n🛑🛑🛑 [getPostData] FILE NOT FOUND! 🛑🛑🛑`);
-    console.error(`  Original normalizedSlug: "${normalizedSlug}", Lang: "${langParam}"`);
-    console.error(`  Based on internalSlugParts: ${JSON.stringify(internalSlugParts)}`);
-    console.error(`  Content Directory: ${contentDirectory}`);
-    console.error(`  Checked paths were (see logs above for absolute paths).`);
+    console.warn(`[getPostData] File not found for slug: "${normalizedSlug}", lang: "${langParam}"`);
+    console.warn(`  Searched in: ${contentDirectory}`);
+    console.warn(`  This is normal for 404 requests`);
     return null;
   }
 
@@ -249,7 +247,7 @@ export async function getPostData({
       .use(gfm)
       .use(remarkMath)
       .use(remarkRehype, { allowDangerousHtml: true })
-      .use(rehypeKatex, { output: 'htmlAndMathml', throwOnError: false }) 
+      .use(rehypeKatex) 
       .use(rehypeStringify, { allowDangerousHtml: true })
       .process(contentToProcess);
     console.log(`[getPostData DEBUG] Successfully processed markdown to HTML for: ${filePath}`);
@@ -262,7 +260,7 @@ export async function getPostData({
   
   const plainContentForExcerpt = contentToProcess
       .replace(/<\/?[^>]+(>|$)/g, "") 
-      .replace(/<!--.*?-->/gs, "")      
+      .replace(/<!--[\s\S]*?-->/g, "")      
       .replace(/```[\s\S]*?```/g, "[Code Block]"); 
   const excerpt = plainContentForExcerpt.substring(0, 150) + (plainContentForExcerpt.length > 150 ? '...' : '');
 
@@ -293,12 +291,12 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
       contentForExcerpt = contentForExcerpt.replace(/{{< mermaid >}}([\s\S]*?){{< \/mermaid >}}/gi, (match, mermaidContent) => `\n\`\`\`mermaid\n${mermaidContent.trim()}\n\`\`\`\n`);
       contentForExcerpt = contentForExcerpt.replace(/{{% .*? %}}/g, '[Shortcode]');
       contentForExcerpt = contentForExcerpt.replace(/{{< \/?\w+[^>]* >}}/g, (match) => `<!-- HUGO_SHORTCODE_FILTERED_ANGLE: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`);
-      contentForExcerpt = contentForExcerpt.replace(/```mermaid(?:.|\n)*?```/gs, '[Mermaid Diagram]');
+      contentForExcerpt = contentForExcerpt.replace(/```mermaid[\s\S]*?```/g, '[Mermaid Diagram]');
 
 
       const plainContent = contentForExcerpt
         .replace(/<\/?[^>]+(>|$)/g, "")
-        .replace(/<!--.*?-->/gs, "")
+        .replace(/<!--[\s\S]*?-->/g, "")
         .replace(/```[\s\S]*?```/g, "[Code Block]");
       const excerpt = plainContent.substring(0, 150) + (plainContent.length > 150 ? '...' : '');
       

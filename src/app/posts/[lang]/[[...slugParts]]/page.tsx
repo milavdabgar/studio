@@ -1,6 +1,6 @@
 // src/app/posts/[lang]/[[...slugParts]]/page.tsx
 
-import { getPostData, type PostData } from '@/lib/markdown'; 
+import { getPostData, getSortedPostsData, type PostData, type PostPreview } from '@/lib/markdown'; 
 import { format, parseISO, isValid } from 'date-fns';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
@@ -41,7 +41,89 @@ export async function generateStaticParams() {
 }
 
 
-export default async function PostPage({ params: pageParams }: PostPageProps) {
+export default async function PostPage({ params }: PostPageProps) {
+  // Await params to comply with Next.js 15 requirements
+  const pageParams = await params;
+  
+  // If no slugParts provided, show posts listing
+  if (!pageParams.slugParts || pageParams.slugParts.length === 0) {
+    const posts = await getSortedPostsData(pageParams.lang);
+    
+    const pageTitle = pageParams.lang === 'gu' ? 'બ્લોગ પોસ્ટ્સ' : 'Blog Posts';
+    const backText = pageParams.lang === 'gu' ? 'હોમ પર પાછા જાઓ' : 'Back to Home';
+    
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Link href="/" className="mb-6 inline-block">
+          <Button variant="outline">
+            <ArrowLeft className="mr-2 h-4 w-4" /> {backText}
+          </Button>
+        </Link>
+        
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-primary mb-2">{pageTitle}</h1>
+          <p className="text-muted-foreground">
+            {pageParams.lang === 'gu' 
+              ? 'અમારા બ્લોગ પોસ્ટ્સ અને લેખો શોધો' 
+              : 'Discover our blog posts and articles'
+            }
+          </p>
+        </div>
+
+        {posts.length === 0 ? (
+          <Card>
+            <CardContent className="py-8 text-center">
+              <p className="text-muted-foreground">
+                {pageParams.lang === 'gu' 
+                  ? 'કોઈ પોસ્ટ્સ મળ્યા નથી' 
+                  : 'No posts found'
+                }
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-6">
+            {posts.map((post) => (
+              <Card key={`${post.lang}-${post.id}`} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <CardTitle className="text-2xl">
+                    <Link 
+                      href={post.href} 
+                      className="text-primary hover:text-primary/80 transition-colors"
+                    >
+                      {post.title}
+                    </Link>
+                  </CardTitle>
+                  <CardDescription className="flex flex-col gap-1">
+                    <span>
+                      {post.date && typeof post.date === 'string' && isValid(parseISO(post.date)) 
+                        ? format(parseISO(post.date), 'LLLL d, yyyy') 
+                        : 'Date not available'
+                      }
+                      {post.author && ` by ${post.author}`}
+                    </span>
+                    {post.lang && (
+                      <span className="text-xs">
+                        Language: {post.lang === 'gu' ? 'ગુજરાતી' : 'English'}
+                      </span>
+                    )}
+                  </CardDescription>
+                </CardHeader>
+                {post.excerpt && (
+                  <CardContent>
+                    <p className="text-muted-foreground leading-relaxed">
+                      {post.excerpt}
+                    </p>
+                  </CardContent>
+                )}
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
   // console.log(`[PostPage Rendering] Received raw pageParams in component: ${JSON.stringify(pageParams)}`);
 
   const postData = await getPostData({
@@ -61,39 +143,9 @@ export default async function PostPage({ params: pageParams }: PostPageProps) {
 
   const backLinkText = langForLinks === 'gu' ? 'બધા લેખો પર પાછા જાઓ' : 'Back to all articles';
   
-  let backLinkHref = `/posts/${langForLinks}`;
-  if (slugPartsForLinks.length > 0) {
-    // Check if the current post is an index page for its directory
-    // This heuristic assumes _index.md or index.md implies it's a section page
-    const isIndexPage = postData.id.endsWith('_index') || postData.id.endsWith('/index') || (slugPartsForLinks.length > 0 && (slugPartsForLinks[slugPartsForLinks.length - 1] === '_index' || slugPartsForLinks[slugPartsForLinks.length - 1] === 'index'));
-
-    if (isIndexPage) {
-      // If it's an index page (e.g., /posts/en/blog from content/blog/_index.md), link to parent of the directory
-      const parentDirParts = slugPartsForLinks.slice(0, -1);
-      if (parentDirParts.length > 0) {
-        backLinkHref = `/posts/${langForLinks}/${parentDirParts.join('/')}`;
-      }
-      // If parentDirParts is empty, it means this index is at the language root (e.g. /posts/en from content/_index.en.md), so backLinkHref remains /posts/en (which is not quite right for a "back" button, but correct as a section root)
-      // A better approach for a "back" button from a root index might be to go to `/posts` or a higher level page if applicable.
-      // For simplicity, if it's a root language index, the "back" button might just point to itself or a predefined higher level.
-      // Let's refine this: if it's a root index page, the "back" link will just go to the /posts/[lang] root.
-    } else {
-      // If it's a regular post (e.g., /posts/en/blog/mypost), link to its parent directory
-      const parentSlugParts = slugPartsForLinks.slice(0, -1);
-       if (parentSlugParts.length > 0) {
-        backLinkHref = `/posts/${langForLinks}/${parentSlugParts.join('/')}`;
-      }
-      // If parentSlugParts is empty (e.g. /posts/en/mypost from content/mypost.md), backLinkHref remains /posts/en
-    }
-  }
-  
-  // Normalize trailing slashes
-  if (backLinkHref !== `/posts/${langForLinks}`) {
-    backLinkHref = backLinkHref.replace(/\/$/, '');
-  }
-   if (backLinkHref === `/posts/${langForLinks}/`) { 
-      backLinkHref = `/posts/${langForLinks}`;
-  }
+  // For now, always link back to the language root posts page
+  // This ensures the back button always works and doesn't lead to 404s
+  const backLinkHref = `/posts/${langForLinks}`;
 
 
   return (
@@ -109,7 +161,7 @@ export default async function PostPage({ params: pageParams }: PostPageProps) {
             {postData.title}
           </CardTitle>
           <CardDescription className="text-md text-muted-foreground pt-2">
-            {postData.date && isValid(parseISO(postData.date)) ? format(parseISO(postData.date), 'LLLL d, yyyy') : 'Date not available'}
+            {postData.date && typeof postData.date === 'string' && isValid(parseISO(postData.date)) ? format(parseISO(postData.date), 'LLLL d, yyyy') : 'Date not available'}
             {postData.author && ` by ${postData.author}`}
           </CardDescription>
         </CardHeader>
