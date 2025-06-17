@@ -22,6 +22,7 @@ interface PostPageProps {
 
 export async function generateStaticParams() {
   console.log("[PostPage generateStaticParams] Starting...");
+  // Dynamically import to ensure it's treated as a module that can be re-evaluated if changed.
   const { getAllPostSlugsForStaticParams } = await import('@/lib/markdown');
   let paramsList: Array<{ lang: string; slugParts?: string[] | undefined }> = [];
   try {
@@ -30,22 +31,23 @@ export async function generateStaticParams() {
       lang: s.lang,
       slugParts: s.slugParts && s.slugParts.length > 0 ? s.slugParts : undefined
     }));
-    console.log(`[PostPage generateStaticParams] Successfully generated ${paramsList.length} static params. Sample:`, paramsList.slice(0, 3));
+    console.log(`[PostPage generateStaticParams] Successfully generated ${paramsList.length} static params. Sample (first 3):`, paramsList.slice(0, 3));
   } catch (e: any) {
-    console.error("[PostPage generateStaticParams] CRITICAL ERROR:", e);
+    console.error("[PostPage generateStaticParams] CRITICAL ERROR:", e.message, e.stack);
+    // Provide a minimal fallback if slug generation fails, to allow build to proceed for other pages.
     paramsList = [{ lang: 'en', slugParts: undefined }, { lang: 'gu', slugParts: undefined }];
   }
   return paramsList;
 }
 
 export default async function PostPage({ params: pageParams }: PostPageProps) {
-  // Avoid using pageParams directly here for logging if it causes issues.
-  // The main data fetching will use them.
+  // Log the raw params received by the page component.
+  // Avoid directly interpolating pageParams.lang or pageParams.slugParts here if it causes issues.
   console.log(`[PostPage Rendering] Received raw pageParams: ${JSON.stringify(pageParams)}`);
 
-  const postData = await getPostData({
-    lang: pageParams.lang, // Access directly when passing to async function
-    slugParts: pageParams.slugParts, 
+  const postData = await getPostData({ 
+    lang: pageParams.lang, // Access directly here for the call
+    slugParts: pageParams.slugParts // Pass directly, getPostData will default if undefined
   });
 
   if (!postData) {
@@ -53,10 +55,10 @@ export default async function PostPage({ params: pageParams }: PostPageProps) {
     notFound();
   }
   
-  // Now that postData is available, we can safely use its properties or fall back to pageParams if needed.
   console.log(`[PostPage Rendering] Successfully fetched post data for "${postData.title}". Actual Lang: ${postData.lang}, Actual SlugParts: ${JSON.stringify(postData.slugParts)}`);
   
-  const langForLinks = postData.lang; // Use lang from postData as it might be a fallback
+  // Derive lang and slugParts for links FROM postData, as it might be a fallback
+  const langForLinks = postData.lang;
   const slugPartsFromPostData = postData.slugParts || [];
 
   const backLinkText = langForLinks === 'gu' ? 'બધા લેખો પર પાછા જાઓ' : 'Back to all articles';
@@ -70,7 +72,6 @@ export default async function PostPage({ params: pageParams }: PostPageProps) {
     backLinkHref = backLinkHref.replace(/\/$/, '');
   }
   console.log(`[PostPage Rendering] Back link href generated: ${backLinkHref}`);
-
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -91,6 +92,7 @@ export default async function PostPage({ params: pageParams }: PostPageProps) {
         </CardHeader>
         <CardContent className="py-6">
           <article className="prose prose-lg dark:prose-invert max-w-none">
+            {/* Ensure PostRenderer can handle potentially complex HTML */}
             <PostRenderer contentHtml={postData.contentHtml} />
           </article>
         </CardContent>
