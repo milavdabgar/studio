@@ -1,4 +1,3 @@
-
 // src/app/posts/[lang]/[[...slugParts]]/page.tsx
 
 import { getPostData, getAllPostSlugsForStaticParams, type PostData } from '@/lib/markdown';
@@ -23,10 +22,9 @@ export async function generateStaticParams() {
   let params: Array<{ lang: string; slugParts: string[] }> = [];
   try {
     params = getAllPostSlugsForStaticParams();
-    console.log(`[PostPage generateStaticParams] Successfully generated ${params.length} static params.`);
-    // if (params.length > 0) {
-    //   console.log("[PostPage generateStaticParams] Sample param:", JSON.stringify(params[0]));
-    // }
+    console.log(`[PostPage generateStaticParams] Successfully generated ${params.length} static params. Sample (up to 5):`);
+    params.slice(0, 5).forEach((p, i) => console.log(`  Param ${i}: ${JSON.stringify(p)}`));
+    if (params.length > 5) console.log(`  ... and ${params.length - 5} more.`);
   } catch (e: any) {
     console.error("[PostPage generateStaticParams] CRITICAL ERROR during static param generation:", e);
   }
@@ -34,17 +32,17 @@ export async function generateStaticParams() {
 }
 
 async function getPost(lang: string, slugParts: string[]): Promise<PostData | null> {
-  console.log(`[PostPage getPost] Attempting to get post for lang: "${lang}", slugParts: ${JSON.stringify(slugParts)}`);
+  console.log(`[PostPage getPost wrapper] ENTER. Lang: "${lang}", SlugParts: ${JSON.stringify(slugParts)}`);
   try {
-    const data = await getPostData(lang, slugParts);
+    const data = await getPostData(lang, slugParts); // getPostData itself has extensive try-catch
     if (!data) {
-      console.warn(`[PostPage getPost] getPostData returned null for lang: "${lang}", slugParts: ${JSON.stringify(slugParts)}`);
+      console.warn(`[PostPage getPost wrapper] getPostData returned null. Lang: "${lang}", SlugParts: ${JSON.stringify(slugParts)}`);
     } else {
-      // console.log(`[PostPage getPost] Successfully fetched post data for: ${data.title}`);
+      // console.log(`[PostPage getPost wrapper] getPostData returned data for title: "${data.title}".`);
     }
     return data;
-  } catch (e: any) {
-    console.error(`[PostPage getPost] Error fetching post data for lang: "${lang}", slugParts: ${JSON.stringify(slugParts)}:`, e);
+  } catch (e: any) { // This catch is for errors *in calling* getPostData or if getPostData re-throws an error (which it shouldn't)
+    console.error(`[PostPage getPost wrapper] CRITICAL UNEXPECTED ERROR calling getPostData. Lang: "${lang}", SlugParts: ${JSON.stringify(slugParts)}. Error:`, e);
     return null;
   }
 }
@@ -63,12 +61,14 @@ export default async function PostPage({ params }: PostPageProps) {
     notFound();
   }
   
-  console.log(`[PostPage Rendering] Successfully fetched post data: "${postData.title}". Ready to render.`);
+  // console.log(`[PostPage Rendering] Successfully fetched post data: "${postData.title}". Ready to render.`);
   
   const backLinkText = lang === 'gu' ? 'બધા લેખો પર પાછા જાઓ' : 'Back to all articles';
   
   let backLinkHref = `/posts/${lang}`;
   if (effectiveSlugParts.length > 1) { 
+    // For nested posts like /blog/category/my-post, link to /blog/category (_index.md or index.md there)
+    // If no index, this will 404, but that's a content structure issue.
     backLinkHref = `/posts/${lang}/${effectiveSlugParts.slice(0, -1).join('/')}`;
   } else if (effectiveSlugParts.length === 1 && effectiveSlugParts[0] !== '_index' && effectiveSlugParts[0] !== 'index') {
     // For a top-level post like /posts/en/some-topic (not an index), link back to /posts/en
@@ -76,7 +76,8 @@ export default async function PostPage({ params }: PostPageProps) {
     // it would mean the current page is /posts/en/blog, and the backlink should be /posts/en.
     // The current logic already handles this case by falling through to the default /posts/lang.
   }
-  backLinkHref = backLinkHref.replace(/\/$/, ''); // Ensure no trailing slash for root language index, e.g. /posts/en
+  // Ensure no trailing slash for root language index (e.g. /posts/en) or section index (e.g. /posts/en/blog)
+  backLinkHref = backLinkHref.replace(/\/$/, '');
 
 
   return (
