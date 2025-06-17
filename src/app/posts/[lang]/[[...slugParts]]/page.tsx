@@ -34,49 +34,42 @@ export async function generateStaticParams() {
 async function getPost(lang: string, slugParts: string[]): Promise<PostData | null> {
   console.log(`[PostPage getPost wrapper] ENTER. Lang: "${lang}", SlugParts: ${JSON.stringify(slugParts)}`);
   try {
-    const data = await getPostData(lang, slugParts); // getPostData itself has extensive try-catch
+    const data = await getPostData(lang, slugParts);
     if (!data) {
       console.warn(`[PostPage getPost wrapper] getPostData returned null. Lang: "${lang}", SlugParts: ${JSON.stringify(slugParts)}`);
     } else {
       // console.log(`[PostPage getPost wrapper] getPostData returned data for title: "${data.title}".`);
     }
     return data;
-  } catch (e: any) { // This catch is for errors *in calling* getPostData or if getPostData re-throws an error (which it shouldn't)
+  } catch (e: any) {
     console.error(`[PostPage getPost wrapper] CRITICAL UNEXPECTED ERROR calling getPostData. Lang: "${lang}", SlugParts: ${JSON.stringify(slugParts)}. Error:`, e);
     return null;
   }
 }
 
-export default async function PostPage({ params }: PostPageProps) {
-  console.log(`[PostPage Rendering] Received params in component: ${JSON.stringify(params)}`);
-  const { lang, slugParts } = params;
-  
-  const effectiveSlugParts = slugParts || []; 
+export default async function PostPage({ params: pageParams }: PostPageProps) {
+  console.log(`[PostPage Rendering] Received params in component: lang=${pageParams.lang}, slugParts=${JSON.stringify(pageParams.slugParts)}`);
+
+  const effectiveSlugParts = pageParams.slugParts || []; 
   console.log(`[PostPage Rendering] Effective slugParts for getPost call: ${JSON.stringify(effectiveSlugParts)}`);
 
-  const postData = await getPost(lang, effectiveSlugParts);
+  const postData = await getPost(pageParams.lang, effectiveSlugParts);
 
   if (!postData) {
-    console.warn(`[PostPage Rendering] Post data is null after getPost call. Lang: "${lang}", slugParts: ${JSON.stringify(effectiveSlugParts)}. Triggering notFound().`);
+    console.warn(`[PostPage Rendering] Post data is null after getPost call. Lang: "${pageParams.lang}", slugParts: ${JSON.stringify(effectiveSlugParts)}. Triggering notFound().`);
     notFound();
   }
   
   // console.log(`[PostPage Rendering] Successfully fetched post data: "${postData.title}". Ready to render.`);
   
-  const backLinkText = lang === 'gu' ? 'બધા લેખો પર પાછા જાઓ' : 'Back to all articles';
+  const backLinkText = pageParams.lang === 'gu' ? 'બધા લેખો પર પાછા જાઓ' : 'Back to all articles';
   
-  let backLinkHref = `/posts/${lang}`;
+  let backLinkHref = `/posts/${pageParams.lang}`;
   if (effectiveSlugParts.length > 1) { 
-    // For nested posts like /blog/category/my-post, link to /blog/category (_index.md or index.md there)
-    // If no index, this will 404, but that's a content structure issue.
-    backLinkHref = `/posts/${lang}/${effectiveSlugParts.slice(0, -1).join('/')}`;
+    backLinkHref = `/posts/${pageParams.lang}/${effectiveSlugParts.slice(0, -1).join('/')}`;
   } else if (effectiveSlugParts.length === 1 && effectiveSlugParts[0] !== '_index' && effectiveSlugParts[0] !== 'index') {
-    // For a top-level post like /posts/en/some-topic (not an index), link back to /posts/en
-    // If effectiveSlugParts[0] IS an index (e.g., 'blog' for content/blog/_index.md),
-    // it would mean the current page is /posts/en/blog, and the backlink should be /posts/en.
-    // The current logic already handles this case by falling through to the default /posts/lang.
+    // For a top-level post like /posts/en/some-topic, link back to /posts/en (already set)
   }
-  // Ensure no trailing slash for root language index (e.g. /posts/en) or section index (e.g. /posts/en/blog)
   backLinkHref = backLinkHref.replace(/\/$/, '');
 
 
@@ -106,4 +99,3 @@ export default async function PostPage({ params }: PostPageProps) {
     </div>
   );
 }
-
