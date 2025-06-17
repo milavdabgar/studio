@@ -30,28 +30,22 @@ export function PostCard({
 
   const formatDate = (dateInput: any) => {
     try {
-      // Handle different date formats
       if (!dateInput) {
         return t('date_not_available' as any) || 'Date not available';
       }
       
-      // If it's already a Date object
       if (dateInput instanceof Date && !isNaN(dateInput.getTime())) {
         return format(dateInput, 'LLLL d, yyyy');
       }
       
-      // Convert to string first to avoid parseISO errors
       let dateString = String(dateInput);
       
-      // Handle common date formats
       if (dateString && dateString.length > 0 && dateString !== 'undefined' && dateString !== 'null') {
-        // Try parsing as ISO string
         const parsedDate = parseISO(dateString);
         if (isValid(parsedDate)) {
           return format(parsedDate, 'LLLL d, yyyy');
         }
         
-        // Try creating new Date
         const fallbackDate = new Date(dateString);
         if (isValid(fallbackDate) && !isNaN(fallbackDate.getTime())) {
           return format(fallbackDate, 'LLLL d, yyyy');
@@ -78,13 +72,11 @@ export function PostCard({
         </CardTitle>
         
         <CardDescription className="flex flex-wrap items-center gap-4 text-sm">
-          {/* Date */}
           <div className="flex items-center gap-1">
             <Calendar className="h-4 w-4" />
             <span>{formatDate(post.date)}</span>
           </div>
           
-          {/* Author */}
           {showAuthor && post.author && (
             <div className="flex items-center gap-1">
               <User className="h-4 w-4" />
@@ -92,7 +84,6 @@ export function PostCard({
             </div>
           )}
           
-          {/* Reading time */}
           {showReadingTime && post.readingTime && (
             <div className="flex items-center gap-1">
               <Clock className="h-4 w-4" />
@@ -102,48 +93,60 @@ export function PostCard({
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="space-y-4">
-        {/* Excerpt */}
+      <CardContent>
         {showExcerpt && post.excerpt && (
-          <p className="text-muted-foreground leading-relaxed">
+          <p className="text-muted-foreground mb-4 line-clamp-3">
             {post.excerpt}
           </p>
         )}
 
-        {/* Tags and Categories */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 mb-4">
           {showCategories && post.categories && post.categories.length > 0 && (
             <>
-              {post.categories.map(category => (
-                <Link key={category} href={`/categories/${post.lang}/${category}`}>
-                  <Badge variant="secondary" className="hover:bg-secondary/80">
-                    {category}
-                  </Badge>
-                </Link>
+              {post.categories.slice(0, 2).map((category) => (
+                <Badge key={category} variant="secondary" className="text-xs">
+                  {category}
+                </Badge>
               ))}
+              {post.categories.length > 2 && (
+                <Badge variant="outline" className="text-xs">
+                  +{post.categories.length - 2}
+                </Badge>
+              )}
             </>
           )}
-          
+
           {showTags && post.tags && post.tags.length > 0 && (
             <>
-              {post.tags.map(tag => (
-                <Link key={tag} href={`/tags/${post.lang}/${tag}`}>
-                  <Badge variant="outline" className="hover:bg-accent">
-                    <TagIcon className="h-3 w-3 mr-1" />
-                    {tag}
-                  </Badge>
-                </Link>
+              {post.tags.slice(0, 3).map((tag) => (
+                <Badge key={tag} variant="outline" className="text-xs">
+                  <TagIcon className="h-3 w-3 mr-1" />
+                  {tag}
+                </Badge>
               ))}
+              {post.tags.length > 3 && (
+                <Badge variant="outline" className="text-xs">
+                  +{post.tags.length - 3}
+                </Badge>
+              )}
             </>
           )}
         </div>
 
-        {/* Draft indicator */}
-        {post.draft && (
-          <Badge variant="destructive" className="w-fit">
-            {t('draft')}
-          </Badge>
-        )}
+        <div className="flex justify-between items-center">
+          <Link 
+            href={post.href}
+            className="text-sm text-primary hover:text-primary/80 transition-colors"
+          >
+            {t('read_more') || 'Read more'} →
+          </Link>
+          
+          {post.wordCount && (
+            <span className="text-xs text-muted-foreground">
+              {post.wordCount} {t('words') || 'words'}
+            </span>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

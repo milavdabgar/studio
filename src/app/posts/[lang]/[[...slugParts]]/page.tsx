@@ -3,7 +3,8 @@
 import { getPostData, getSortedPostsData, getSubPostsForDirectory, getDirectSubsections, type PostData, type PostPreview } from '@/lib/markdown'; 
 import { format, parseISO, isValid } from 'date-fns';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { ArrowLeft, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import 'katex/dist/katex.min.css'; // Ensure KaTeX CSS is imported
@@ -123,44 +124,60 @@ export default async function PostPage({ params }: PostPageProps) {
 
       return (
         <BlogLayout currentLang={pageParams.lang}>
-          <div className="container mx-auto px-4 py-8">
-            <Link href={parentPath} className="mb-6 inline-block">
-              <Button variant="outline">
-                <ArrowLeft className="mr-2 h-4 w-4" /> {backText}
-              </Button>
-            </Link>
-            
-            <div className="mb-8">
-              <h1 className="text-4xl font-bold text-primary mb-2">
-                {postData?.title || pageTitle}
-              </h1>
-              <p className="text-muted-foreground">
-                {pageParams.lang === 'gu' 
-                  ? 'આ વિભાગમાં ઉપલબ્ધ પેટા-વિભાગો' 
-                  : 'Available subsections in this section'
-                }
-              </p>
-            </div>
-
-            {/* Section content if it exists */}
-            {sectionContent && (
-              <div className="prose prose-lg dark:prose-invert max-w-none mb-8 border-b pb-6">
-                <PostRenderer contentHtml={sectionContent} />
+          <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
+            <div className="container mx-auto px-4 py-8 max-w-7xl">
+              {/* Header Section */}
+              <div className="mb-8">
+                <Link href={parentPath} className="mb-6 inline-block">
+                  <Button variant="outline" className="shadow-sm hover:shadow-md transition-shadow">
+                    <ArrowLeft className="mr-2 h-4 w-4" /> {backText}
+                  </Button>
+                </Link>
+                
+                <div className="mb-8 text-center">
+                  <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+                    {postData?.title || pageTitle}
+                  </h1>
+                  <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                    {pageParams.lang === 'gu' 
+                      ? 'આ વિભાગમાં ઉપલબ્ધ પેટા-વિભાગો' 
+                      : 'Available subsections in this section'
+                    }
+                  </p>
+                </div>
               </div>
-            )}
 
-            {/* Subsections grid */}
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {subsections.map((subsection) => (
-                <SubsectionCard
-                  key={subsection.slug}
-                  name={subsection.name}
-                  slug={subsection.slug}
-                  postCount={subsection.posts.length}
-                  lang={pageParams.lang}
-                  description={subsection.description}
-                />
-              ))}
+              {/* Section content if it exists */}
+              {sectionContent && (
+                <div className="mb-12">
+                  <Card className="shadow-lg border-0 bg-gradient-to-r from-card to-card/80">
+                    <CardHeader>
+                      <CardTitle className="text-xl text-primary">
+                        {pageParams.lang === 'gu' ? 'વિભાગ માહિતી' : 'Section Information'}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="prose prose-lg dark:prose-invert max-w-none">
+                        <PostRenderer contentHtml={sectionContent} />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+
+              {/* Subsections grid */}
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {subsections.map((subsection) => (
+                  <SubsectionCard
+                    key={subsection.slug}
+                    name={subsection.name}
+                    slug={subsection.slug}
+                    postCount={subsection.posts.length}
+                    lang={pageParams.lang}
+                    description={subsection.description}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </BlogLayout>
@@ -193,25 +210,28 @@ export default async function PostPage({ params }: PostPageProps) {
   if (showHybridView) {
     return (
       <BlogLayout currentLang={langForLinks}>
-        <div className="container mx-auto px-4 py-8">
-          <Link href={backLinkHref} passHref className="mb-6 inline-block">
-            <Button variant="outline">
-              <ArrowLeft className="mr-2 h-4 w-4" /> {backLinkText}
-            </Button>
-          </Link>
-          
-          {/* Directory header with _index.md content */}
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold text-primary mb-4">{postData.title}</h1>
-            {postData.date && (
-              <p className="text-sm text-muted-foreground mb-4">
-                {(() => {
-                  try {
-                    const dateValue = postData.date as any;
-                    if (dateValue instanceof Date) {
-                      return format(dateValue, 'LLLL d, yyyy');
-                    }
-                    if (typeof dateValue === 'string' && isValid(parseISO(dateValue))) {
+        <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
+          <div className="container mx-auto px-4 py-8 max-w-7xl">
+            <Link href={backLinkHref} passHref className="mb-6 inline-block">
+              <Button variant="outline" className="shadow-sm hover:shadow-md transition-shadow">
+                <ArrowLeft className="mr-2 h-4 w-4" /> {backLinkText}
+              </Button>
+            </Link>
+            
+            {/* Directory header with _index.md content */}
+            <div className="mb-12 text-center">
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+                {postData.title}
+              </h1>
+              {postData.date && (
+                <p className="text-sm text-muted-foreground mb-6">
+                  {(() => {
+                    try {
+                      const dateValue = postData.date as any;
+                      if (dateValue instanceof Date) {
+                        return format(dateValue, 'LLLL d, yyyy');
+                      }
+                      if (typeof dateValue === 'string' && isValid(parseISO(dateValue))) {
                       return format(parseISO(dateValue), 'LLLL d, yyyy');
                     }
                     return 'Date not available';
@@ -220,39 +240,49 @@ export default async function PostPage({ params }: PostPageProps) {
                   }
                 })()}
                 {postData.author && ` by ${postData.author}`}
-              </p>
-            )}
-            {postData.contentHtml && postData.contentHtml.trim() && (
-              <div className="prose prose-lg dark:prose-invert max-w-none mb-8 border-b pb-6">
-                <PostRenderer contentHtml={postData.contentHtml} />
-              </div>
-            )}
-          </div>
+              </p>              )}
+              {postData.contentHtml && postData.contentHtml.trim() && (
+                <Card className="shadow-lg border-0 bg-gradient-to-r from-card to-card/80 mb-8">
+                  <CardContent className="p-8">
+                    <div className="prose prose-lg dark:prose-invert max-w-none">
+                      <PostRenderer contentHtml={postData.contentHtml} />
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
 
-          {/* Directory listing - main content */}
-          <div className="space-y-6">
-            <h2 className="text-2xl font-semibold text-foreground mb-6">
-              {pageParams.lang === 'gu' ? 'પોસ્ટ્સ' : 'Posts'}
-            </h2>
-            
-            {subPosts.length === 0 ? (
-              <Card>
-                <CardContent className="py-8 text-center">
-                  <p className="text-muted-foreground">
-                    {pageParams.lang === 'gu' 
-                      ? 'કોઈ પોસ્ટ્સ મળ્યા નથી' 
-                      : 'No posts found'
-                    }
-                  </p>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid gap-6">
-                {subPosts.map((post) => (
-                  <PostCard key={`${post.lang}-${post.id}`} post={post} />
-                ))}
-              </div>
-            )}
+            {/* Directory listing - main content */}
+            <div className="space-y-6">
+              <h2 className="text-2xl font-semibold text-foreground mb-6 flex items-center gap-2">
+                <span>{pageParams.lang === 'gu' ? 'પોસ્ટ્સ' : 'Posts'}</span>
+                <Badge variant="outline" className="text-xs">
+                  {subPosts.length}
+                </Badge>
+              </h2>
+              
+              {subPosts.length === 0 ? (
+                <Card className="shadow-lg border-0">
+                  <CardContent className="py-12 text-center">
+                    <div className="mb-4 opacity-50">
+                      <FileText className="h-12 w-12 mx-auto text-muted-foreground" />
+                    </div>
+                    <p className="text-lg text-muted-foreground">
+                      {pageParams.lang === 'gu' 
+                        ? 'કોઈ પોસ્ટ્સ મળ્યા નથી' 
+                        : 'No posts found'
+                      }
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid gap-6">
+                  {subPosts.map((post) => (
+                    <PostCard key={`${post.lang}-${post.id}`} post={post} />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </BlogLayout>
@@ -262,41 +292,50 @@ export default async function PostPage({ params }: PostPageProps) {
   // Single post view (non-directory)
   return (
     <BlogLayout currentLang={langForLinks}>
-      <div className="container mx-auto px-4 py-8">
-        <Link href={backLinkHref} passHref className="mb-6 inline-block">
-          <Button variant="outline">
-            <ArrowLeft className="mr-2 h-4 w-4" /> {backLinkText}
-          </Button>
-        </Link>
-        <Card className="shadow-xl">
-          <CardHeader className="border-b">
-            <CardTitle className="text-4xl font-bold text-primary leading-tight">
-              {postData.title}
-            </CardTitle>
-            <CardDescription className="text-md text-muted-foreground pt-2">
-              {(() => {
-                try {
-                  const dateValue = postData.date as any;
-                  if (dateValue instanceof Date) {
-                    return format(dateValue, 'LLLL d, yyyy');
-                  }
-                  if (typeof dateValue === 'string' && isValid(parseISO(dateValue))) {
-                    return format(parseISO(dateValue), 'LLLL d, yyyy');
-                  }
-                  return 'Date not available';
-                } catch (e) {
-                  return 'Date not available';
-                }
-              })()}
-              {postData.author && ` by ${postData.author}`}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="py-6">
-            <article className="prose prose-lg dark:prose-invert max-w-none">
-              <PostRenderer contentHtml={postData.contentHtml} />
-            </article>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
+        <div className="container mx-auto px-4 py-8 max-w-4xl">
+          <Link href={backLinkHref} passHref className="mb-8 inline-block">
+            <Button variant="outline" className="shadow-sm hover:shadow-md transition-shadow">
+              <ArrowLeft className="mr-2 h-4 w-4" /> {backLinkText}
+            </Button>
+          </Link>
+          
+          <article>
+            <Card className="shadow-xl border-0 bg-gradient-to-br from-card to-card/90 overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5 border-b border-border/50">
+                <div className="text-center space-y-4">
+                  <CardTitle className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-tight">
+                    {postData.title}
+                  </CardTitle>
+                  <CardDescription className="text-base text-muted-foreground flex items-center justify-center gap-2">
+                    <span>
+                      {(() => {
+                        try {
+                          const dateValue = postData.date as any;
+                          if (dateValue instanceof Date) {
+                            return format(dateValue, 'LLLL d, yyyy');
+                          }
+                          if (typeof dateValue === 'string' && isValid(parseISO(dateValue))) {
+                            return format(parseISO(dateValue), 'LLLL d, yyyy');
+                          }
+                          return 'Date not available';
+                        } catch (e) {
+                          return 'Date not available';
+                        }
+                      })()}
+                    </span>
+                    {postData.author && <span className="text-sm">by {postData.author}</span>}
+                  </CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent className="p-8">
+                <div className="prose prose-lg dark:prose-invert max-w-none">
+                  <PostRenderer contentHtml={postData.contentHtml} />
+                </div>
+              </CardContent>
+            </Card>
+          </article>
+        </div>
       </div>
     </BlogLayout>
   );

@@ -27,22 +27,22 @@ export function SubsectionCard({ name, slug, postCount, lang, description }: Sub
     : `${postCount} item${postCount !== 1 ? 's' : ''}`;
 
   return (
-    <Card className="hover:shadow-lg transition-shadow group">
-      <CardHeader>
-        <div className="flex items-start gap-3">
-          <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-            <Folder className="h-5 w-5" />
+    <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-card to-card/80 hover:scale-[1.02]">
+      <CardHeader className="pb-3">
+        <div className="flex items-start gap-4">
+          <div className="p-3 rounded-xl bg-gradient-to-br from-primary/10 to-secondary/10 text-primary group-hover:from-primary group-hover:to-secondary group-hover:text-white transition-all duration-300 shadow-sm">
+            <Folder className="h-6 w-6" />
           </div>
-          <div className="flex-1">
-            <CardTitle className="text-lg">
+          <div className="flex-1 min-w-0">
+            <CardTitle className="text-xl font-semibold">
               <Link 
                 href={`/posts/${lang}/${slug}`}
-                className="text-primary hover:text-primary/80 transition-colors block"
+                className="text-primary hover:text-secondary transition-colors block truncate group-hover:text-primary"
               >
                 {displayName}
               </Link>
             </CardTitle>
-            <CardDescription className="mt-1">
+            <CardDescription className="mt-2 text-sm leading-relaxed">
               {description || itemText}
             </CardDescription>
           </div>
@@ -50,15 +50,16 @@ export function SubsectionCard({ name, slug, postCount, lang, description }: Sub
       </CardHeader>
       <CardContent className="pt-0">
         <div className="flex items-center justify-between">
-          <Badge variant="secondary" className="text-xs">
-            <FileText className="h-3 w-3 mr-1" />
+          <Badge variant="secondary" className="text-xs font-medium bg-gradient-to-r from-secondary/10 to-accent/10 text-secondary-foreground border-0">
+            <FileText className="h-3 w-3 mr-1.5" />
             {itemText}
           </Badge>
           <Link 
             href={`/posts/${lang}/${slug}`}
-            className="text-sm text-muted-foreground hover:text-primary transition-colors"
+            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 group/link"
           >
-            {lang === 'gu' ? 'જુઓ →' : 'View →'}
+            {lang === 'gu' ? 'જુઓ' : 'View'}
+            <span className="transition-transform group-hover/link:translate-x-1">→</span>
           </Link>
         </div>
       </CardContent>
