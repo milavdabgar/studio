@@ -15,9 +15,7 @@ const PostRenderer: React.FC<PostRendererProps> = ({ contentHtml }) => {
   const { theme } = useTheme();
 
   useEffect(() => {
-    if (!containerRef.current) return;
-
-    // Enhanced code block styling with syntax highlighting
+    if (!containerRef.current) return;    // Enhanced code block styling with syntax highlighting
     const enhanceCodeBlocks = () => {
       const codeBlocks = containerRef.current?.querySelectorAll('pre code');
       
@@ -30,6 +28,11 @@ const PostRenderer: React.FC<PostRendererProps> = ({ contentHtml }) => {
         const languageMatch = className.match(/language-(\w+)/);
         const language = languageMatch ? languageMatch[1] : 'text';
         
+        // Skip mermaid blocks - they should be handled by the mermaid library
+        if (language === 'mermaid') {
+          return;
+        }
+
         // Get the code content
         const code = codeBlock.textContent || '';
         

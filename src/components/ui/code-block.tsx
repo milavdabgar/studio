@@ -21,12 +21,33 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language, className = '' })
   useEffect(() => {
     const highlightCode = async () => {
       try {
+        // Handle special cases that Shiki doesn't support
+        const unsupportedLanguages = ['goat', 'ascii', 'diagram', 'text', 'plain'];
+        
+        if (unsupportedLanguages.includes(language.toLowerCase())) {
+          // For ASCII diagrams and plain text, render without syntax highlighting
+          const escapedCode = code
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+          
+          const cssClass = language === 'goat' ? 'goat-diagram' : 'plain-text';
+          setHighlightedCode(`<pre class="${cssClass}"><code>${escapedCode}</code></pre>`);
+          return;
+        }
+
         const lightTheme: BundledTheme = 'github-light';
         const darkTheme: BundledTheme = 'github-dark';
         const selectedTheme = theme === 'dark' ? darkTheme : lightTheme;
         
+        // Handle language aliases
+        let actualLanguage = language;
+        if (language === 'yml') {
+          actualLanguage = 'yaml';
+        }
+        
         const html = await codeToHtml(code, {
-          lang: language as BundledLanguage,
+          lang: actualLanguage as BundledLanguage,
           theme: selectedTheme,
         });
         
@@ -38,7 +59,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language, className = '' })
           .replace(/&/g, '&amp;')
           .replace(/</g, '&lt;')
           .replace(/>/g, '&gt;');
-        setHighlightedCode(`<pre><code>${escapedCode}</code></pre>`);
+        setHighlightedCode(`<pre class="plain-text"><code>${escapedCode}</code></pre>`);
       }
     };
 
@@ -55,10 +76,28 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language, className = '' })
     }
   };
 
+  const getDisplayLanguage = (lang: string) => {
+    switch (lang.toLowerCase()) {
+      case 'goat':
+        return 'ASCII Diagram';
+      case 'ascii':
+        return 'ASCII Art';
+      case 'diagram':
+        return 'Diagram';
+      case 'text':
+      case 'plain':
+        return 'Plain Text';
+      default:
+        return lang;
+    }
+  };
+
   return (
     <div className={`relative group ${className}`}>
       <div className="flex justify-between items-center bg-muted/50 border-b px-4 py-2 text-sm">
-        <span className="text-muted-foreground font-mono">{language}</span>
+        <span className="text-muted-foreground font-mono">
+          {getDisplayLanguage(language)}
+        </span>
         <Button
           variant="ghost"
           size="sm"

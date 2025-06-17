@@ -221,6 +221,32 @@ body {
   @apply px-3 py-1 text-xs bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors cursor-pointer border-0;
 }
 
+/* Special styling for goat ASCII diagrams */
+.goat-diagram {
+  @apply font-mono text-sm leading-tight bg-muted/30 p-4 rounded border border-border;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.goat-diagram code {
+  @apply bg-transparent p-0 text-foreground;
+  font-family: inherit;
+}
+
+/* Plain text styling */
+.plain-text {
+  @apply font-mono text-sm leading-relaxed bg-muted/20 p-4 rounded border border-border;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+.plain-text code {
+  @apply bg-transparent p-0 text-foreground;
+  font-family: inherit;
+}
+
 .enhanced-pre {
   @apply bg-muted/30 p-4 overflow-x-auto text-sm;
 }
