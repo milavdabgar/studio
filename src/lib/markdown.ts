@@ -10,7 +10,8 @@ import rehypeKatex from 'rehype-katex';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
 
-const postsRootDirectory = path.join(process.cwd(), 'content/posts');
+// Posts are now directly in content/posts, language is part of the filename
+const postsDirectory = path.join(process.cwd(), 'content/posts');
 export const availableLanguages = ['en', 'gu'];
 
 export interface PostData {
@@ -32,25 +33,45 @@ export interface PostPreview {
   [key: string]: any;
 }
 
+function parseFileName(fileName: string): { slug: string; lang: string } {
+  const langMatch = fileName.match(/\.([a-z]{2})\.md$/);
+  if (langMatch) {
+    return {
+      slug: fileName.replace(/\.([a-z]{2})\.md$/, ''),
+      lang: langMatch[1],
+    };
+  }
+  // Default to 'en' if no language code is found in the filename (e.g., 'hello-world.md')
+  return {
+    slug: fileName.replace(/\.md$/, ''),
+    lang: 'en',
+  };
+}
+
 export async function getSortedPostsData(lang: string = 'en'): Promise<PostPreview[]> {
-  const postsDirectory = path.join(postsRootDirectory, lang);
   let fileNames: string[] = [];
   try {
     if (!fs.existsSync(postsDirectory)) {
-      console.warn(`Directory not found for language "${lang}": ${postsDirectory}`);
+      console.warn(`Posts directory not found: ${postsDirectory}`);
       return [];
     }
     fileNames = fs.readdirSync(postsDirectory);
   } catch (e) {
     const error = e as Error;
-    console.warn(`Error reading posts directory for language "${lang}" (${postsDirectory}): ${error.message}`);
+    console.warn(`Error reading posts directory (${postsDirectory}): ${error.message}`);
     return [];
   }
   
   const allPostsData = fileNames
     .filter(fileName => fileName.endsWith('.md'))
     .map(fileName => {
-      const id = fileName.replace(/\.md$/, ''); // slug
+      const { slug, lang: fileLang } = parseFileName(fileName);
+      
+      // Only process files matching the requested language
+      if (fileLang !== lang) {
+        return null;
+      }
+
       const fullPath = path.join(postsDirectory, fileName);
       const fileContents = fs.readFileSync(fullPath, 'utf8');
       const matterResult = matter(fileContents);
@@ -59,14 +80,15 @@ export async function getSortedPostsData(lang: string = 'en'): Promise<PostPrevi
       const excerpt = plainContent.substring(0, 150) + (plainContent.length > 150 ? '...' : '');
 
       return {
-        id,
-        lang,
+        id: slug,
+        lang: fileLang,
         title: matterResult.data.title || 'Untitled Post',
         date: matterResult.data.date || new Date().toISOString(),
         excerpt,
         ...matterResult.data,
       };
-    });
+    })
+    .filter(post => post !== null) as PostPreview[]; // Filter out nulls and cast
 
   return allPostsData.sort((a, b) => {
     if (new Date(a.date) < new Date(b.date)) {
@@ -77,14 +99,25 @@ export async function getSortedPostsData(lang: string = 'en'): Promise<PostPrevi
   });
 }
 
-export async function getPostData(lang: string, id: string): Promise<PostData> {
-  const postsDirectory = path.join(postsRootDirectory, lang);
-  const fullPath = path.join(postsDirectory, `${id}.md`);
+export async function getPostData(lang: string, slug: string): Promise<PostData> {
+  const fileNameToRead = lang === 'en' ? `${slug}.md` : `${slug}.${lang}.md`;
+  const fullPath = path.join(postsDirectory, fileNameToRead);
+  
   let fileContents = '';
   try {
     fileContents = fs.readFileSync(fullPath, 'utf8');
   } catch (e) {
-    throw new Error(`Post with lang "${lang}" and id "${id}" not found at ${fullPath}.`);
+    // Fallback for English: if 'slug.en.md' doesn't exist but 'slug.md' does (and lang is 'en'), use 'slug.md'
+    if (lang === 'en' && fileNameToRead === `${slug}.en.md`) {
+        const defaultEnPath = path.join(postsDirectory, `${slug}.md`);
+        try {
+            fileContents = fs.readFileSync(defaultEnPath, 'utf8');
+        } catch (e2) {
+            throw new Error(`Post with lang "${lang}" and slug "${slug}" not found at ${fullPath} or ${defaultEnPath}.`);
+        }
+    } else {
+        throw new Error(`Post with lang "${lang}" and slug "${slug}" not found at ${fullPath}.`);
+    }
   }
 
   const matterResult = matter(fileContents);
@@ -102,7 +135,7 @@ export async function getPostData(lang: string, id: string): Promise<PostData> {
   const excerpt = plainContent.substring(0, 150) + (plainContent.length > 150 ? '...' : '');
 
   return {
-    id,
+    id: slug,
     lang,
     contentHtml,
     title: matterResult.data.title || 'Untitled Post',
@@ -114,19 +147,19 @@ export async function getPostData(lang: string, id: string): Promise<PostData> {
 
 export function getAllPostSlugsWithLang(): { params: { lang: string; slug: string } }[] {
   const paths: { params: { lang: string; slug: string } }[] = [];
-  availableLanguages.forEach(lang => {
-    const postsDirectory = path.join(postsRootDirectory, lang);
-    if (fs.existsSync(postsDirectory)) {
-      const fileNames = fs.readdirSync(postsDirectory).filter(fileName => fileName.endsWith('.md'));
-      fileNames.forEach(fileName => {
+  if (fs.existsSync(postsDirectory)) {
+    const fileNames = fs.readdirSync(postsDirectory).filter(fileName => fileName.endsWith('.md'));
+    fileNames.forEach(fileName => {
+      const { slug, lang } = parseFileName(fileName);
+      if (availableLanguages.includes(lang)) { // Ensure we only generate paths for supported languages
         paths.push({
           params: {
             lang,
-            slug: fileName.replace(/\.md$/, ''),
+            slug,
           },
         });
-      });
-    }
-  });
+      }
+    });
+  }
   return paths;
 }
