@@ -401,6 +401,68 @@ export async function getSubPostsForDirectory(dirPath: string[], lang: string = 
   }
 }
 
+// Hugo-like section listing: only direct subsections, not deeply nested posts
+export async function getDirectSubsections(dirPath: string[], lang: string = 'en'): Promise<{ name: string; slug: string; posts: PostPreview[]; description?: string }[]> {
+  try {
+    const directoryPath = path.join(contentDirectory, ...dirPath);
+    
+    if (!fs.existsSync(directoryPath)) {
+      return [];
+    }
+
+    const allPostsData = await getSortedPostsData(lang);
+    
+    // Group posts by their immediate subdirectory
+    const subsectionMap: Record<string, PostPreview[]> = {};
+    
+    allPostsData.forEach(post => {
+      if (!post.id) return;
+      
+      const postPathParts = post.id.split('/');
+      
+      // Check if post is within this directory and has at least one more level
+      if (postPathParts.length <= dirPath.length) return;
+      
+      // Check if the directory path matches
+      let matches = true;
+      for (let i = 0; i < dirPath.length; i++) {
+        if (postPathParts[i] !== dirPath[i]) {
+          matches = false;
+          break;
+        }
+      }
+      
+      if (!matches) return;
+      
+      // Get the immediate next level (subsection name)
+      const subsectionName = postPathParts[dirPath.length];
+      
+      if (!subsectionMap[subsectionName]) {
+        subsectionMap[subsectionName] = [];
+      }
+      
+      subsectionMap[subsectionName].push(post);
+    });
+
+    // Convert to array and add metadata
+    const subsections = Object.entries(subsectionMap).map(([name, posts]) => ({
+      name,
+      slug: [...dirPath, name].join('/'),
+      posts,
+      description: `${posts.length} item${posts.length !== 1 ? 's' : ''}`
+    }));
+
+    // Sort subsections by name
+    subsections.sort((a, b) => a.name.localeCompare(b.name));
+
+    console.log(`[getDirectSubsections] Found ${subsections.length} direct subsections for directory: ${dirPath.join('/')}`);
+    return subsections;
+  } catch (error) {
+    console.error(`[getDirectSubsections] Error getting subsections for ${dirPath.join('/')}:`, error);
+    return [];
+  }
+}
+
 // Taxonomy functions
 export async function getAllTags(lang?: string): Promise<{ name: string; count: number }[]> {
   const posts = await getSortedPostsData(lang);

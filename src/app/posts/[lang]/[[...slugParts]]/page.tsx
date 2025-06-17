@@ -1,6 +1,6 @@
 // src/app/posts/[lang]/[[...slugParts]]/page.tsx
 
-import { getPostData, getSortedPostsData, getSubPostsForDirectory, type PostData, type PostPreview } from '@/lib/markdown'; 
+import { getPostData, getSortedPostsData, getSubPostsForDirectory, getDirectSubsections, type PostData, type PostPreview } from '@/lib/markdown'; 
 import { format, parseISO, isValid } from 'date-fns';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
@@ -10,6 +10,7 @@ import 'katex/dist/katex.min.css'; // Ensure KaTeX CSS is imported
 import PostRenderer from '@/components/blog/PostRenderer';
 import { BlogLayout } from '@/components/blog/BlogLayout';
 import { PostCard } from '@/components/blog/PostCard';
+import { SubsectionCard } from '@/components/blog/SubsectionCard';
 import { notFound } from 'next/navigation';
 // import path from 'path'; // Not strictly needed here anymore
 
@@ -103,8 +104,72 @@ export default async function PostPage({ params }: PostPageProps) {
     slugParts: pageParams.slugParts, // Pass slugParts directly, getPostData will handle if undefined
   });
 
+  // Check if this is a directory with subsections that should show Hugo-like section listing
+  if (pageParams.slugParts && pageParams.slugParts.length > 0) {
+    const subsections = await getDirectSubsections(pageParams.slugParts, pageParams.lang);
+    
+    if (subsections.length > 0) {
+      // Show subsection listing (Hugo-like behavior) instead of individual posts
+      const sectionTitle = pageParams.slugParts[pageParams.slugParts.length - 1];
+      const pageTitle = pageParams.lang === 'gu' ? `વિભાગ: ${sectionTitle}` : `Section: ${sectionTitle}`;
+      const backText = pageParams.lang === 'gu' ? 'પાછળ જાઓ' : 'Go Back';
+      
+      const parentPath = pageParams.slugParts.length > 1 
+        ? `/posts/${pageParams.lang}/${pageParams.slugParts.slice(0, -1).join('/')}`
+        : `/posts/${pageParams.lang}`;
+
+      // If there's also an index file, show its content at the top
+      const sectionContent = postData?.contentHtml;
+
+      return (
+        <BlogLayout currentLang={pageParams.lang}>
+          <div className="container mx-auto px-4 py-8">
+            <Link href={parentPath} className="mb-6 inline-block">
+              <Button variant="outline">
+                <ArrowLeft className="mr-2 h-4 w-4" /> {backText}
+              </Button>
+            </Link>
+            
+            <div className="mb-8">
+              <h1 className="text-4xl font-bold text-primary mb-2">
+                {postData?.title || pageTitle}
+              </h1>
+              <p className="text-muted-foreground">
+                {pageParams.lang === 'gu' 
+                  ? 'આ વિભાગમાં ઉપલબ્ધ પેટા-વિભાગો' 
+                  : 'Available subsections in this section'
+                }
+              </p>
+            </div>
+
+            {/* Section content if it exists */}
+            {sectionContent && (
+              <div className="prose prose-lg dark:prose-invert max-w-none mb-8 border-b pb-6">
+                <PostRenderer contentHtml={sectionContent} />
+              </div>
+            )}
+
+            {/* Subsections grid */}
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {subsections.map((subsection) => (
+                <SubsectionCard
+                  key={subsection.slug}
+                  name={subsection.name}
+                  slug={subsection.slug}
+                  postCount={subsection.posts.length}
+                  lang={pageParams.lang}
+                  description={subsection.description}
+                />
+              ))}
+            </div>
+          </div>
+        </BlogLayout>
+      );
+    }
+  }
+
   if (!postData) {
-    // Logging here is fine because getPostData has completed (or returned null)
+    // If no subsections found, show 404
     console.log(`[PostPage Rendering] Post data is null for lang: "${pageParams.lang}", slugParts: ${JSON.stringify(pageParams.slugParts || [])}. Triggering notFound().`);
     notFound();
   }
