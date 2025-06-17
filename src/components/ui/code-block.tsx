@@ -37,7 +37,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language, className = '' })
         }
 
         const lightTheme: BundledTheme = 'github-light';
-        const darkTheme: BundledTheme = 'github-dark';
+        const darkTheme: BundledTheme = 'one-dark-pro'; // Using a high-contrast dark theme
         const selectedTheme = theme === 'dark' ? darkTheme : lightTheme;
         
         // Handle language aliases
@@ -48,7 +48,11 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language, className = '' })
         
         const html = await codeToHtml(code, {
           lang: actualLanguage as BundledLanguage,
-          theme: selectedTheme,
+          themes: {
+            light: 'github-light',
+            dark: 'one-dark-pro'
+          },
+          defaultColor: false
         });
         
         setHighlightedCode(html);

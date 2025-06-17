@@ -260,6 +260,60 @@ body {
   @apply bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-foreground border;
 }
 
+/* Shiki syntax highlighting - dual theme support */
+pre.shiki {
+  @apply rounded-lg border border-border overflow-x-auto;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'SF Mono', Consolas, 'Liberation Mono', 'Courier New', monospace !important;
+  padding: 1rem !important;
+  margin: 0 !important;
+  font-size: 0.875rem !important;
+  line-height: 1.5 !important;
+}
+
+pre.shiki code {
+  font-family: inherit !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+/* Shiki dual theme support */
+.dark .shiki,
+.dark .shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}
+
+.shiki,
+.shiki span {
+  color: var(--shiki-light) !important;
+  background-color: var(--shiki-light-bg) !important;
+}
+
+/* Ensure proper background colors */
+.dark pre.shiki {
+  background-color: var(--shiki-dark-bg) !important;
+}
+
+pre.shiki {
+  background-color: var(--shiki-light-bg) !important;
+}
+
+/* Fallback styling if Shiki doesn't load properly */
+.code-fallback {
+  @apply font-mono text-sm bg-muted/30 p-4 rounded border border-border;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.code-fallback code {
+  @apply bg-transparent p-0 text-foreground;
+  font-family: inherit;
+}
+
 /* Table Styles */
 .table-wrapper {
   @apply overflow-x-auto my-6 rounded-lg border border-border;
