@@ -1,3 +1,4 @@
+
 // src/lib/markdown.ts
 
 import fs from 'fs';
@@ -71,13 +72,13 @@ function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir, curren
     if (entry.isDirectory()) {
       files = files.concat(getAllMarkdownFilesRecursive(fullEntryPath, baseDir, [...currentPathParts, entry.name]));
     } else if (entry.isFile() && entry.name.endsWith('.md')) {
-      let lang = 'en'; // Default to 'en'
-      let baseNameWithoutLangSuffix = entry.name.substring(0, entry.name.length - 3); // remove .md
+      let lang = 'en'; 
+      let baseNameWithoutLangSuffix = entry.name.substring(0, entry.name.length - 3); 
 
       const langMatch = baseNameWithoutLangSuffix.match(/\.([a-z]{2})$/);
       if (langMatch && availableLanguages.includes(langMatch[1])) {
         lang = langMatch[1];
-        baseNameWithoutLangSuffix = baseNameWithoutLangSuffix.substring(0, baseNameWithoutLangSuffix.length - 3); // remove .[lang]
+        baseNameWithoutLangSuffix = baseNameWithoutLangSuffix.substring(0, baseNameWithoutLangSuffix.length - 3); 
       }
 
       let slugPartsForFile: string[];
@@ -99,43 +100,70 @@ function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir, curren
         relativePath: path.relative(baseDir, fullEntryPath).replace(/\\/g, '/'),
       };
       files.push(fileDetail);
-      // console.log(`[getAllMarkdownFilesRecursive DEBUG] Processed file: ${entry.name} in dir ${currentPathParts.join('/') || '.'}. Determined lang: ${lang}, slugParts: ${JSON.stringify(slugPartsForFile)}, id: ${id}`);
     }
   }
   return files;
 }
 
 
-export async function getPostData(langParam: string, slugParts: string[]): Promise<PostData | null> {
+export async function getPostData({
+  lang: langParam,
+  slugParts = [], // Default slugParts here if not provided
+}: {
+  lang: string;
+  slugParts?: string[]; // Mark slugParts as optional in the type definition
+}): Promise<PostData | null> {
   const normalizedSlug = slugParts.join('/');
-  console.log(`\n[getPostData DEBUG] Attempting to get post for lang: "${langParam}", slug: "${normalizedSlug}", slugParts: ${JSON.stringify(slugParts)}, contentDirectory: ${contentDirectory}`);
-
   const baseSlugPathForFs = slugParts.join(path.sep);
+
+  console.log(`\n[getPostData DEBUG] Attempting to get post for lang: "${langParam}", slug: "${normalizedSlug}", slugParts: ${JSON.stringify(slugParts)}, contentDirectory: ${contentDirectory}`);
   console.log(`[getPostData DEBUG] baseSlugPathForFs: "${baseSlugPathForFs}"`);
 
   const possibleFileChecks: { filePathToCheck: string, resolvedLang: string, description: string }[] = [];
 
-  // Case 1: Direct file match (e.g., /content/section/my-post.en.md or /content/section/my-post.md)
-  possibleFileChecks.push({
-    filePathToCheck: path.join(contentDirectory, `${baseSlugPathForFs}.${langParam}.md`),
-    resolvedLang: langParam,
-    description: `Exact lang file: ${baseSlugPathForFs}.${langParam}.md`
-  });
-  if (langParam === 'en') { // Only add default .md check if the requested lang is 'en'
-    possibleFileChecks.push({
-      filePathToCheck: path.join(contentDirectory, `${baseSlugPathForFs}.md`),
-      resolvedLang: 'en',
-      description: `Default English file (no lang suffix): ${baseSlugPathForFs}.md`
+  // Diagnostic: Hardcoded path for hello-world specifically for 'en' and 'blog/hello-world'
+  if (langParam === 'en' && normalizedSlug === 'blog/hello-world') {
+    const hardcodedPath = path.join(contentDirectory, 'blog', 'hello-world.md');
+    possibleFileChecks.push({ 
+        filePathToCheck: hardcodedPath,
+        resolvedLang: 'en',
+        description: `[DIAGNOSTIC HARDCODED] ${hardcodedPath}`
     });
+    try {
+      const parentDir = path.join(contentDirectory, 'blog');
+      console.log(`[getPostData DIAGNOSTIC for blog/hello-world] Listing files in ${parentDir}:`);
+      if (fs.existsSync(parentDir) && fs.statSync(parentDir).isDirectory()) {
+          const filesInDir = fs.readdirSync(parentDir);
+          filesInDir.forEach(f => console.log(`  - ${f}`));
+      } else {
+          console.log(`  Parent directory ${parentDir} does not exist or is not a directory.`);
+      }
+    } catch (e: any) {
+      console.warn(`[getPostData DIAGNOSTIC for blog/hello-world] Could not list files in blog directory: `, e.message);
+    }
   }
-
-  // Case 2: Index file in a directory that matches the slug (e.g., slug is 'section', looks for /content/section/_index.en.md)
+  
+  if (slugParts.length > 0) { 
+      possibleFileChecks.push({
+        filePathToCheck: path.join(contentDirectory, `${baseSlugPathForFs}.${langParam}.md`),
+        resolvedLang: langParam,
+        description: `Exact lang file: ${baseSlugPathForFs}.${langParam}.md`
+      });
+      if (langParam === 'en') { // Only add this fallback for English
+        possibleFileChecks.push({
+          filePathToCheck: path.join(contentDirectory, `${baseSlugPathForFs}.md`),
+          resolvedLang: 'en',
+          description: `Default English file (no lang suffix): ${baseSlugPathForFs}.md`
+        });
+      }
+  }
+  
   possibleFileChecks.push({
     filePathToCheck: path.join(contentDirectory, baseSlugPathForFs, `_index.${langParam}.md`),
     resolvedLang: langParam,
     description: `Directory index with lang: ${baseSlugPathForFs}/_index.${langParam}.md`
   });
-  if (langParam === 'en') {
+  if (langParam === 'en') { // Only add this fallback for English
     possibleFileChecks.push({
       filePathToCheck: path.join(contentDirectory, baseSlugPathForFs, `_index.md`),
       resolvedLang: 'en',
@@ -147,36 +175,13 @@ export async function getPostData(langParam: string, slugParts: string[]): Promi
     resolvedLang: langParam,
     description: `Directory index (alt) with lang: ${baseSlugPathForFs}/index.${langParam}.md`
   });
-  if (langParam === 'en') {
+  if (langParam === 'en') { // Only add this fallback for English
     possibleFileChecks.push({
       filePathToCheck: path.join(contentDirectory, baseSlugPathForFs, `index.md`),
       resolvedLang: 'en',
       description: `Default English directory index (alt): ${baseSlugPathForFs}/index.md`
     });
   }
-  
-  // Diagnostic check: hardcoded path for the problematic file
-  if (langParam === 'en' && normalizedSlug === 'blog/hello-world') {
-      const hardcodedPath = path.join(contentDirectory, 'blog', 'hello-world.md');
-      possibleFileChecks.unshift({ // Add to the beginning to test it first
-          filePathToCheck: hardcodedPath,
-          resolvedLang: 'en',
-          description: `[DIAGNOSTIC HARDCODED] ${hardcodedPath}`
-      });
-      try {
-        const parentDir = path.join(contentDirectory, 'blog');
-        console.log(`[getPostData DIAGNOSTIC for blog/hello-world] Listing files in ${parentDir}:`);
-        if (fs.existsSync(parentDir) && fs.statSync(parentDir).isDirectory()) {
-            const filesInDir = fs.readdirSync(parentDir);
-            filesInDir.forEach(f => console.log(`  - ${f}`));
-        } else {
-            console.log(`  Parent directory ${parentDir} does not exist or is not a directory.`);
-        }
-      } catch (e: any) {
-        console.warn(`[getPostData DIAGNOSTIC for blog/hello-world] Could not list files in blog directory: `, e.message);
-      }
-  }
-
 
   console.log(`[getPostData DEBUG] Possible file paths to check (in order):`);
   possibleFileChecks.forEach((pfc, idx) => console.log(`  [${idx}] Desc: ${pfc.description}, Path: ${pfc.filePathToCheck}, Expected Lang: ${pfc.resolvedLang}`));
@@ -189,7 +194,7 @@ export async function getPostData(langParam: string, slugParts: string[]): Promi
     try {
       if (fs.existsSync(check.filePathToCheck) && fs.statSync(check.filePathToCheck).isFile()) {
         filePath = check.filePathToCheck;
-        resolvedLang = check.resolvedLang;
+        resolvedLang = check.resolvedLang; // Update resolvedLang if a fallback was used
         console.log(`[getPostData DEBUG] File FOUND: ${filePath}, Resolved Language: ${resolvedLang}`);
         break;
       } else {
@@ -209,68 +214,57 @@ export async function getPostData(langParam: string, slugParts: string[]): Promi
     return null;
   }
 
-  // --- Start processing file ---
-  let fileContents;
   try {
     console.log(`[getPostData DEBUG] Reading file contents from: ${filePath}`);
-    fileContents = fs.readFileSync(filePath, 'utf8');
+    const fileContents = fs.readFileSync(filePath, 'utf8');
     console.log(`[getPostData DEBUG] Successfully read file: ${filePath}. Length: ${fileContents.length}.`);
-    // console.log(`[getPostData DEBUG] Content snippet (first 100 chars): "${fileContents.substring(0,100).replace(/\n/g, '\\n')}"`);
-  } catch (readError: any) {
-    console.error(`[getPostData] CRITICAL ERROR reading file ${filePath}:`, readError);
-    return null;
-  }
 
-  let matterResult;
-  try {
-    matterResult = matter(fileContents);
-    // console.log(`[getPostData DEBUG] Successfully parsed frontmatter for: ${filePath}. Title: ${matterResult.data.title}`);
-  } catch (fmError: any) {
-    console.error(`[getPostData] CRITICAL ERROR parsing frontmatter for file ${filePath}:`, fmError);
-    return null; 
-  }
+    console.log(`[getPostData DEBUG] Parsing frontmatter for: ${filePath}`);
+    const matterResult = matter(fileContents);
+    console.log(`[getPostData DEBUG] Successfully parsed frontmatter for: ${filePath}. Title: ${matterResult.data.title}`);
 
-  let contentToProcess = matterResult.content;
-  // console.log(`[getPostData DEBUG] Content before shortcode removal for ${filePath} (first 100 chars): ${contentToProcess.substring(0, 100)}`);
-  contentToProcess = contentToProcess.replace(/{{<.*?>.*?{{\s*<\s*\/\s*.*?\s*>\s*}}/gs, (match) => `<!-- HUGO_PAIRED_SHORTCODE_FILTERED: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`);
-  contentToProcess = contentToProcess.replace(/{{<\s*mermaid\s*>([\s\S]*?){{\s*<\s*\/\s*mermaid\s*>\s*}}/gi, (match, mermaidContent) => `\n\`\`\`mermaid\n${mermaidContent.trim()}\n\`\`\`\n`);
-  contentToProcess = contentToProcess.replace(/{{<.*?>}}/g, (match) => `<!-- HUGO_SINGLE_SHORTCODE_FILTERED: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`);
-  contentToProcess = contentToProcess.replace(/{{%(?:.|\n)*?%}}/gs, (match) => `<!-- HUGO_PERCENT_SHORTCODE_FILTERED: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`);
-  // console.log(`[getPostData DEBUG] Content after shortcode removal for ${filePath} (first 100 chars): ${contentToProcess.substring(0, 100)}`);
+    let contentToProcess = matterResult.content;
+    console.log(`[getPostData DEBUG] Content before shortcode removal for ${filePath} (first 100 chars): "${contentToProcess.substring(0,100).replace(/\n/g, '\\\\n')}"`);
+    // Convert Mermaid shortcodes to fenced code blocks
+    contentToProcess = contentToProcess.replace(/{{< mermaid >}}([\s\S]*?){{< \/mermaid >}}/gi, (match, mermaidContent) => `\n\`\`\`mermaid\n${mermaidContent.trim()}\n\`\`\`\n`);
+    // More aggressively filter out other Hugo-like shortcodes (both {{< >}} and {{% %}})
+    contentToProcess = contentToProcess.replace(/{{[<%\/?][\s\S]*?[%?>]}}/g, (match) => `<!-- HUGO_SHORTCODE_FILTERED: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`);
+    console.log(`[getPostData DEBUG] Content after shortcode removal for ${filePath} (first 100 chars): "${contentToProcess.substring(0,100).replace(/\n/g, '\\\\n')}"`);
 
-  let processedContent;
-  try {
-    // console.log(`[getPostData DEBUG] Starting remark processing for: ${filePath}`);
-    processedContent = await remark()
+
+    console.log(`[getPostData DEBUG] Starting remark processing for: ${filePath}`);
+    const processedContent = await remark()
       .use(gfm)
       .use(remarkMath)
       .use(remarkRehype, { allowDangerousHtml: true })
-      .use(rehypeKatex, { output: 'htmlAndMathml', throwOnError: false }) // Important for KaTeX errors
+      .use(rehypeKatex, { output: 'htmlAndMathml', throwOnError: false }) // Set throwOnError to false
       .use(rehypeStringify, { allowDangerousHtml: true })
       .process(contentToProcess);
-    // console.log(`[getPostData DEBUG] Successfully processed markdown to HTML for: ${filePath}`);
-  } catch (remarkError: any) {
-    console.error(`[getPostData] CRITICAL ERROR during remark/rehype processing for file ${filePath}:`, remarkError);
-    return null; 
+    console.log(`[getPostData DEBUG] Successfully processed markdown to HTML for: ${filePath}`);
+
+    const contentHtml = processedContent.toString();
+    
+    // Generate excerpt from plain text (after shortcode removal, before HTML conversion)
+    const plainContentForExcerpt = contentToProcess
+        .replace(/<\/?[^>]+(>|$)/g, "") // Basic HTML tag stripping
+        .replace(/<!--.*?-->/gs, "")      // Remove comments
+        .replace(/```[\s\S]*?```/g, "[Code Block]"); // Replace code blocks
+    const excerpt = plainContentForExcerpt.substring(0, 150) + (plainContentForExcerpt.length > 150 ? '...' : '');
+
+    return {
+      id: slugParts.join('/'), // Use original slugParts for ID
+      slugParts,
+      lang: resolvedLang, // Use the language of the file that was actually found
+      contentHtml,
+      title: matterResult.data.title || path.basename(filePath, path.extname(filePath)).replace(/\.(en|gu)$/, '').replace(/^_index$|^index$/, slugParts[slugParts.length -1] || 'Section Index') || 'Untitled Post',
+      date: matterResult.data.date || new Date().toISOString(),
+      excerpt,
+      ...matterResult.data,
+    };
+  } catch (e: any) {
+    console.error(`[getPostData] CRITICAL ERROR processing markdown file ${filePath}:`, e);
+    return null;
   }
-
-  const contentHtml = processedContent.toString();
-  const plainContentForExcerpt = contentToProcess
-      .replace(/<\/?[^>]+(>|$)/g, "") 
-      .replace(/<!--.*?-->/gs, "")     
-      .replace(/```[\s\S]*?```/g, "[Code Block]"); 
-  const excerpt = plainContentForExcerpt.substring(0, 150) + (plainContentForExcerpt.length > 150 ? '...' : '');
-
-  return {
-    id: slugParts.join('/'),
-    slugParts,
-    lang: resolvedLang,
-    contentHtml,
-    title: matterResult.data.title || path.basename(filePath, path.extname(filePath)).replace(/\.(en|gu)$/, '').replace(/^_index$|^index$/, slugParts[slugParts.length -1] || 'Section Index') || 'Untitled Post',
-    date: matterResult.data.date || new Date().toISOString(),
-    excerpt,
-    ...matterResult.data,
-  };
 }
 
 export async function getSortedPostsData(langToFilter?: string): Promise<PostPreview[]> {
@@ -285,10 +279,8 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
       const matterResult = matter(fileContents);
 
       let contentForExcerpt = matterResult.content;
-      contentForExcerpt = contentForExcerpt.replace(/{{<.*?>.*?{{\s*<\s*\/\s*.*?\s*>\s*}}/gs, '[Shortcode Block]');
-      contentForExcerpt = contentForExcerpt.replace(/{{<\s*mermaid\s*>([\s\S]*?){{\s*<\s*\/\s*mermaid\s*>\s*}}/gi, (match, mermaidContent) => `\n\`\`\`mermaid\n${mermaidContent.trim()}\n\`\`\`\n`);
-      contentForExcerpt = contentForExcerpt.replace(/{{<.*?>}}/g, '[Shortcode]');
-      contentForExcerpt = contentForExcerpt.replace(/{{%(?:.|\n)*?%}}/gs, '[Shortcode Block]');
+      contentForExcerpt = contentForExcerpt.replace(/{{< mermaid >}}([\s\S]*?){{< \/mermaid >}}/gi, (match, mermaidContent) => `\n\`\`\`mermaid\n${mermaidContent.trim()}\n\`\`\`\n`);
+      contentForExcerpt = contentForExcerpt.replace(/{{[<%\/?][\s\S]*?[%?>]}}/g, '[Shortcode]');
       contentForExcerpt = contentForExcerpt.replace(/```mermaid(?:.|\n)*?```/gs, '[Mermaid Diagram]');
 
       const plainContent = contentForExcerpt
@@ -325,6 +317,7 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
         if (dateA > dateB) return -1;
         return 0;
     } catch (e) {
+        // Fallback sort by title if dates are invalid or missing
         return a.title.localeCompare(b.title);
     }
   });
@@ -332,21 +325,20 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
 
 export function getAllPostSlugsForStaticParams(): Array<{ lang: string; slugParts: string[] } > {
   try {
-    // console.log("[getAllPostSlugsForStaticParams] Starting. Content directory:", contentDirectory);
+    console.log("[getAllPostSlugsForStaticParams] Starting. Content directory:", contentDirectory);
     const allFileDetails = getAllMarkdownFilesRecursive(contentDirectory);
-    // console.log(`[getAllPostSlugsForStaticParams] Found ${allFileDetails.length} raw file details.`);
+    console.log(`[getAllPostSlugsForStaticParams] Found ${allFileDetails.length} raw file details.`);
 
     const validSlugs = allFileDetails.map(fileDetail => {
       return {
         lang: fileDetail.lang,
-        slugParts: fileDetail.slugParts, 
+        slugParts: fileDetail.slugParts, // These are already correctly formed (empty for _index/index)
       };
     });
-    // console.log(`[getAllPostSlugsForStaticParams] Processed ${validSlugs.length} valid slugs for static params.`);
+    console.log(`[getAllPostSlugsForStaticParams] Processed ${validSlugs.length} valid slugs for static params. Sample (first 5):`, validSlugs.slice(0,5));
     return validSlugs;
   } catch (e: any) {
     console.error("[getAllPostSlugsForStaticParams] CRITICAL ERROR generating static params:", e);
-    return [];
+    return []; // Return empty array on error to prevent build crash
   }
 }
-
