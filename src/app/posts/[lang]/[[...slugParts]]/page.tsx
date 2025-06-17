@@ -1,7 +1,7 @@
 
 // src/app/posts/[lang]/[[...slugParts]]/page.tsx
 
-import { getPostData, getAllPostSlugsForStaticParams, type PostData } from '@/lib/markdown';
+import { getPostData, type PostData } from '@/lib/markdown'; 
 import { format, parseISO, isValid } from 'date-fns';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
@@ -11,37 +11,44 @@ import 'katex/dist/katex.min.css';
 import PostRenderer from '@/components/blog/PostRenderer';
 import { notFound } from 'next/navigation';
 
-interface PostPageProps {
-  params: {
-    lang: string;
-    slugParts?: string[];
-  };
+interface PostPageParams {
+  lang: string;
+  slugParts?: string[];
 }
 
-console.log("[PostPage Module] Loaded.");
+interface PostPageProps {
+  params: PostPageParams;
+}
 
 export async function generateStaticParams() {
   console.log("[PostPage generateStaticParams] Starting...");
-  let params: Array<{ lang: string; slugParts?: string[] | undefined }> = [];
+  const { getAllPostSlugsForStaticParams } = await import('@/lib/markdown');
+  let paramsList: Array<{ lang: string; slugParts?: string[] | undefined }> = [];
   try {
     const rawSlugs = getAllPostSlugsForStaticParams();
-    params = rawSlugs.map(s => ({
+    paramsList = rawSlugs.map(s => ({
       lang: s.lang,
       slugParts: s.slugParts && s.slugParts.length > 0 ? s.slugParts : undefined
     }));
-    console.log(`[PostPage generateStaticParams] Successfully generated ${params.length} static params. Sample (first 5):`, params.slice(0, 5));
+    console.log(`[PostPage generateStaticParams] Successfully generated ${paramsList.length} static params. Sample:`, paramsList.slice(0, 3));
   } catch (e: any) {
-    console.error("[PostPage generateStaticParams] CRITICAL ERROR:", e.message, e.stack);
+    console.error("[PostPage generateStaticParams] CRITICAL ERROR:", e);
   }
-  return params;
+  return paramsList;
 }
 
-async function getPost({ lang, slugParts }: { lang: string; slugParts?: string[] }) {
-  console.log(`[PostPage getPost wrapper] ENTER. Lang: "${lang}", SlugParts: ${JSON.stringify(slugParts)}`);
-  // Ensure slugParts is an array, even if undefined, before passing to getPostData
-  const post = await getPostData({ lang, slugParts: slugParts || [] });
+// Wrapper function to call getPostData and handle parameter extraction
+async function getPost(pageParams: PostPageParams): Promise<PostData | null> {
+  const lang = pageParams.lang;
+  // Ensure slugParts passed to getPostData is always an array
+  const slugPartsForGetData = pageParams.slugParts || []; 
+  
+  console.log(`[PostPage getPost wrapper] ENTER. Lang: "${lang}", slugParts for getPostData: ${JSON.stringify(slugPartsForGetData)}`);
+  
+  const post = await getPostData({ lang, slugParts: slugPartsForGetData });
+  
   if (!post) {
-    console.warn(`[PostPage getPost wrapper] getPostData returned null. Lang: "${lang}", SlugParts: ${JSON.stringify(slugParts || [])}`);
+    console.warn(`[PostPage getPost wrapper] getPostData returned null. Lang: "${lang}", slugParts: ${JSON.stringify(slugPartsForGetData)}`);
   } else {
     console.log(`[PostPage getPost wrapper] getPostData returned post: "${post.title}"`);
   }
@@ -50,37 +57,37 @@ async function getPost({ lang, slugParts }: { lang: string; slugParts?: string[]
 
 
 export default async function PostPage({ params: pageParams }: PostPageProps) {
-  console.log(`[PostPage Rendering] Received params in component: lang=${pageParams.lang}, slugParts=${JSON.stringify(pageParams.slugParts)}`);
-
-  const effectiveSlugParts = pageParams.slugParts || [];
-  console.log(`[PostPage Rendering] Effective slugParts for getPost call: ${JSON.stringify(effectiveSlugParts)}`);
-
-  const postData = await getPost({ lang: pageParams.lang, slugParts: effectiveSlugParts });
+  // Log received params immediately. This is where the error seems to happen.
+  // The error "params should be awaited" is tricky because `pageParams` itself is not a promise.
+  // This log itself, if it tries to access pageParams.lang or pageParams.slugParts too early, might be an issue for Turbopack.
+  // We will defer actual usage of pageParams.lang and pageParams.slugParts as much as possible.
+  console.log(`[PostPage Rendering] Received raw pageParams: ${JSON.stringify(pageParams)}`);
+  
+  const postData = await getPost(pageParams);
 
   if (!postData) {
-    console.warn(`[PostPage Rendering] Post data is null after getPost call. Lang: "${pageParams.lang}", slugParts: ${JSON.stringify(effectiveSlugParts)}. Triggering notFound().`);
+    // If getPost returns null (which happens if getPostData returns null), call notFound.
+    // The logging for this case is now inside the getPost wrapper and getPostData.
     notFound();
   }
   
   console.log(`[PostPage Rendering] Successfully fetched post data for "${postData.title}".`);
   
-  const backLinkText = pageParams.lang === 'gu' ? 'બધા લેખો પર પાછા જાઓ' : 'Back to all articles';
+  // Use postData.lang and postData.slugParts for consistency if available, fallback to pageParams
+  const langForLinks = postData.lang || pageParams.lang;
+  const slugPartsForLinks = postData.slugParts || pageParams.slugParts || [];
+
+  const backLinkText = langForLinks === 'gu' ? 'બધા લેખો પર પાછા જાઓ' : 'Back to all articles';
   
-  let backLinkHref = `/posts/${pageParams.lang}`;
-  if (effectiveSlugParts.length > 0) { 
-    if (effectiveSlugParts.length > 1) { 
-        backLinkHref = `/posts/${pageParams.lang}/${effectiveSlugParts.slice(0, -1).join('/')}`;
+  let backLinkHref = `/posts/${langForLinks}`;
+  if (slugPartsForLinks.length > 0) { 
+    if (slugPartsForLinks.length > 1) { 
+        backLinkHref = `/posts/${langForLinks}/${slugPartsForLinks.slice(0, -1).join('/')}`;
     }
-    // If slugParts.length is 1, backLinkHref remains /posts/[lang], which is correct
-    // For /posts/en (slugParts = []), backLinkHref remains /posts/en
-  } else {
-    // This case handles root _index.md files for a language, e.g. /posts/en
-    // No further adjustment to backLinkHref needed, it's already /posts/[lang]
+    // If slugPartsForLinks.length is 1, backLinkHref remains /posts/[lang] (correct for parent section)
   }
-  backLinkHref = backLinkHref.replace(/\/$/, ''); // Remove trailing slash if any
-
+  backLinkHref = backLinkHref.replace(/\/$/, ''); 
   console.log(`[PostPage Rendering] Back link href: ${backLinkHref}`);
-
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -108,3 +115,5 @@ export default async function PostPage({ params: pageParams }: PostPageProps) {
     </div>
   );
 }
+
+    
