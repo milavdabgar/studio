@@ -1,33 +1,142 @@
 // src/components/blog/PostRenderer.tsx
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark, oneLight } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { useTheme } from 'next-themes';
 
 interface PostRendererProps {
   contentHtml: string;
 }
 
 const PostRenderer: React.FC<PostRendererProps> = ({ contentHtml }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
+
   useEffect(() => {
-    // Dynamically import Mermaid to avoid SSR issues and ensure it runs client-side
+    if (!containerRef.current) return;
+
+    // Enhanced code block styling with syntax highlighting
+    const enhanceCodeBlocks = () => {
+      const codeBlocks = containerRef.current?.querySelectorAll('pre code');
+      
+      codeBlocks?.forEach((codeBlock) => {
+        const pre = codeBlock.parentElement;
+        if (!pre || pre.classList.contains('enhanced')) return;
+
+        // Extract language from class name
+        const className = codeBlock.className;
+        const languageMatch = className.match(/language-(\w+)/);
+        const language = languageMatch ? languageMatch[1] : 'text';
+        
+        // Get the code content
+        const code = codeBlock.textContent || '';
+        
+        // Create a wrapper for the enhanced code block
+        const wrapper = document.createElement('div');
+        wrapper.className = 'enhanced-code-block';
+        
+        // Mark as enhanced to avoid double processing
+        pre.classList.add('enhanced');
+        
+        // Replace the pre element with our enhanced version
+        pre.parentNode?.insertBefore(wrapper, pre);
+        pre.remove();
+        
+        // Create React component container
+        const reactContainer = document.createElement('div');
+        wrapper.appendChild(reactContainer);
+        
+        // We'll use CSS classes for styling instead of React component
+        // to avoid hydration issues
+        wrapper.innerHTML = `
+          <div class="code-block-header">
+            <span class="code-language">${language}</span>
+            <button class="copy-button" onclick="navigator.clipboard.writeText(\`${code.replace(/`/g, '\\`')}\`)">
+              Copy
+            </button>
+          </div>
+          <pre class="enhanced-pre"><code class="language-${language}">${codeBlock.innerHTML}</code></pre>
+        `;
+      });
+    };
+
+    // Enhance links to open external ones in new tab
+    const enhanceLinks = () => {
+      const links = containerRef.current?.querySelectorAll('a');
+      links?.forEach((link) => {
+        const href = link.getAttribute('href') || '';
+        if (href.startsWith('http') && !href.includes(window.location.hostname)) {
+          link.setAttribute('target', '_blank');
+          link.setAttribute('rel', 'noopener noreferrer');
+        }
+      });
+    };
+
+    // Add table wrappers for responsive tables
+    const enhanceTables = () => {
+      const tables = containerRef.current?.querySelectorAll('table');
+      tables?.forEach((table) => {
+        if (table.parentElement?.classList.contains('table-wrapper')) return;
+        
+        const wrapper = document.createElement('div');
+        wrapper.className = 'table-wrapper';
+        table.parentNode?.insertBefore(wrapper, table);
+        wrapper.appendChild(table);
+      });
+    };
+
+    // Enhance images with lazy loading and captions
+    const enhanceImages = () => {
+      const images = containerRef.current?.querySelectorAll('img');
+      images?.forEach((img) => {
+        img.setAttribute('loading', 'lazy');
+        const alt = img.getAttribute('alt');
+        if (alt && !img.nextElementSibling?.classList.contains('image-caption')) {
+          const caption = document.createElement('figcaption');
+          caption.className = 'image-caption';
+          caption.textContent = alt;
+          img.parentNode?.insertBefore(caption, img.nextSibling);
+        }
+      });
+    };
+
+    enhanceCodeBlocks();
+    enhanceLinks();
+    enhanceTables();
+    enhanceImages();
+
+    // Initialize Mermaid for diagrams
     import('mermaid').then(mermaid => {
       try {
-        mermaid.default.initialize({ startOnLoad: false, theme: 'default' });
+        mermaid.default.initialize({ 
+          startOnLoad: false, 
+          theme: theme === 'dark' ? 'dark' : 'default',
+          securityLevel: 'loose',
+        });
         const elementsToRender = Array.from(
-          document.querySelectorAll('pre.mermaid, code.language-mermaid, div.mermaid')
+          containerRef.current?.querySelectorAll('pre.mermaid, code.language-mermaid, div.mermaid') || []
         );
         if (elementsToRender.length > 0) {
            mermaid.default.run({
-              nodes: elementsToRender as HTMLElement[], // Cast to HTMLElement[]
+              nodes: elementsToRender as HTMLElement[],
             });
         }
       } catch (e) {
           console.error("Mermaid initialization or run error:", e);
       }
     }).catch(e => console.error("Failed to load Mermaid library:", e));
-  }, [contentHtml]); // Re-run if contentHtml changes, though typically it won't for a static post
 
-  return <div dangerouslySetInnerHTML={{ __html: contentHtml }} />;
+  }, [contentHtml, theme]);
+
+  return (
+    <div 
+      ref={containerRef}
+      className="prose prose-lg dark:prose-invert max-w-none markdown-content"
+      dangerouslySetInnerHTML={{ __html: contentHtml }} 
+    />
+  );
 };
 
 export default PostRenderer;
