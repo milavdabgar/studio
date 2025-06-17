@@ -59,7 +59,7 @@ export default async function PostPage({ params }: PostPageProps) {
     return (
       <BlogLayout currentLang={pageParams.lang}>
         <div className="container mx-auto px-4 py-8">
-          <Link href="/" className="mb-6 inline-block">
+          <Link href="/" className="mb-6 inline-block" legacyBehavior>
             <Button variant="outline">
               <ArrowLeft className="mr-2 h-4 w-4" /> {backText}
             </Button>
@@ -128,7 +128,7 @@ export default async function PostPage({ params }: PostPageProps) {
             <div className="container mx-auto px-4 py-8 max-w-7xl">
               {/* Header Section */}
               <div className="mb-8">
-                <Link href={parentPath} className="mb-6 inline-block">
+                <Link href={parentPath} className="mb-6 inline-block" legacyBehavior>
                   <Button variant="outline" className="shadow-sm hover:shadow-md transition-shadow">
                     <ArrowLeft className="mr-2 h-4 w-4" /> {backText}
                   </Button>
@@ -212,7 +212,7 @@ export default async function PostPage({ params }: PostPageProps) {
       <BlogLayout currentLang={langForLinks}>
         <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
           <div className="container mx-auto px-4 py-8 max-w-7xl">
-            <Link href={backLinkHref} passHref className="mb-6 inline-block">
+            <Link href={backLinkHref} passHref className="mb-6 inline-block" legacyBehavior>
               <Button variant="outline" className="shadow-sm hover:shadow-md transition-shadow">
                 <ArrowLeft className="mr-2 h-4 w-4" /> {backLinkText}
               </Button>
@@ -294,7 +294,7 @@ export default async function PostPage({ params }: PostPageProps) {
     <BlogLayout currentLang={langForLinks}>
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
         <div className="container mx-auto px-4 py-8 max-w-4xl">
-          <Link href={backLinkHref} passHref className="mb-8 inline-block">
+          <Link href={backLinkHref} passHref className="mb-8 inline-block" legacyBehavior>
             <Button variant="outline" className="shadow-sm hover:shadow-md transition-shadow">
               <ArrowLeft className="mr-2 h-4 w-4" /> {backLinkText}
             </Button>

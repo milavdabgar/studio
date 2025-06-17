@@ -67,9 +67,9 @@ test.describe('Authentication Flows', () => {
       const passwordField = page.locator(passwordFieldSelector).first();
       const loginButton = page.getByRole('button').filter({ hasText: /Login|Sign In|Log in|Submit/i }).first();
       
-      const hasEmailField = await emailField.count() > 0;
-      const hasPasswordField = await passwordField.count() > 0;
-      const hasLoginButton = await loginButton.count() > 0;
+      const hasEmailField = (await emailField.count()) > 0;
+      const hasPasswordField = (await passwordField.count()) > 0;
+      const hasLoginButton = (await loginButton.count()) > 0;
       
       expect(hasEmailField && hasPasswordField || hasLoginButton).toBeTruthy();
       if (hasEmailField) await expect(emailField).toBeVisible({ timeout: 5000 });
@@ -81,7 +81,7 @@ test.describe('Authentication Flows', () => {
       const emailField = page.locator('input[type="email"], input[placeholder*="Email"]').first();
       const passwordField = page.locator('input[type="password"], input[placeholder*="Password"]').first();
       
-      if (await emailField.count() === 0 || await passwordField.count() === 0) {
+      if ((await emailField.count()) === 0 || (await passwordField.count()) === 0) {
         console.log('Login form fields not found, skipping typing test');
         test.skip();
         return;

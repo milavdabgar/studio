@@ -209,7 +209,7 @@ export default function DepartmentManagementPage() {
           dept.establishmentYear || "",
           dept.status,
           dept.instituteId || "inst1" // Example default
-        ].join(',')
+        ].join(',');
       })
     ];
     const csvString = csvRows.join('\r\n');

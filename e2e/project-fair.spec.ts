@@ -112,7 +112,7 @@ test.describe('Project Fair Management (Admin)', () => {
       // This is a common pattern but depends on your UI structure.
       // Example: if there's a link to an edit page like /admin/project-fair/events/edit/EVENT_ID
       const editLink = eventRow.getByRole('link', { name: /edit/i }); // Or "Manage", "Dashboard"
-      if (await editLink.count() > 0) {
+      if ((await editLink.count()) > 0) {
         const href = await editLink.getAttribute('href');
         if (href) {
             // Assuming URL structure like /.../edit/EVENT_ID or /.../EVENT_ID/dashboard

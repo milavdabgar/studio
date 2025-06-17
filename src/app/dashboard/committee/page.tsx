@@ -113,7 +113,6 @@ export default function CommitteeDashboardPage() {
           Welcome, {currentUser.name}. Role: {activeRoleName}. Manage your committee activities here.
         </p>
       </section>
-
       <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -122,7 +121,7 @@ export default function CommitteeDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">2</div> {/* Placeholder */}
-            <Link href="/committee/meetings" passHref>
+            <Link href="/committee/meetings" passHref legacyBehavior>
               <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground">
                 View Schedule
               </Button>
@@ -137,7 +136,7 @@ export default function CommitteeDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">5</div> {/* Placeholder */}
-             <Link href="#" passHref>
+             <Link href="#" passHref legacyBehavior>
                 <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground">
                     View Tasks
                 </Button>
@@ -152,7 +151,7 @@ export default function CommitteeDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">12</div> {/* Placeholder */}
-             <Link href="#" passHref>
+             <Link href="#" passHref legacyBehavior>
                 <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground">
                     View Members
                 </Button>
@@ -160,7 +159,6 @@ export default function CommitteeDashboardPage() {
           </CardContent>
         </Card>
       </section>
-
       <section>
         <Card className="shadow-lg">
           <CardHeader>

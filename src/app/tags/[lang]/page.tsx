@@ -30,7 +30,7 @@ export default async function TagsPage({ params }: TagsPageProps) {
   return (
     <BlogLayout currentLang={lang}>
       <div className="container mx-auto px-4 py-8">
-        <Link href={`/posts/${lang}`} className="mb-6 inline-block">
+        <Link href={`/posts/${lang}`} className="mb-6 inline-block" legacyBehavior>
           <Button variant="outline">
             <ArrowLeft className="mr-2 h-4 w-4" /> {backText}
           </Button>
@@ -59,10 +59,10 @@ export default async function TagsPage({ params }: TagsPageProps) {
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-lg">
                     <Tag className="h-5 w-5 text-primary" />
-                    <Link 
+                    <Link
                       href={`/tags/${lang}/${encodeURIComponent(name)}`}
                       className="text-primary hover:text-primary/80 transition-colors"
-                    >
+                      legacyBehavior>
                       {name}
                     </Link>
                   </CardTitle>

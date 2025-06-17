@@ -42,12 +42,12 @@ test.describe('Admin System Settings', () => {
 
     // Toggle Maintenance Mode
     const maintenanceModeSwitch = page.locator('button[role="switch"][aria-label*="maintenance mode"]'); // More specific selector for ShadCN switch
-    const isMaintenanceModeEnabled = await maintenanceModeSwitch.getAttribute('aria-checked') === 'true';
+    const isMaintenanceModeEnabled = (await maintenanceModeSwitch.getAttribute('aria-checked')) === 'true';
     await maintenanceModeSwitch.click(); // Click to toggle
 
     // Toggle New User Registrations
     const registrationSwitch = page.locator('button[role="switch"][aria-label*="user registrations"]');
-    const isRegistrationEnabled = await registrationSwitch.getAttribute('aria-checked') === 'true';
+    const isRegistrationEnabled = (await registrationSwitch.getAttribute('aria-checked')) === 'true';
     await registrationSwitch.click();
 
     // Save settings
@@ -59,16 +59,16 @@ test.describe('Admin System Settings', () => {
     await page.waitForLoadState('networkidle');
     
     await expect(page.getByLabel(/notifications email/i)).toHaveValue(newEmail);
-    expect(await page.locator('button[role="switch"][aria-label*="maintenance mode"]').getAttribute('aria-checked') === 'true').toBe(!isMaintenanceModeEnabled);
-    expect(await page.locator('button[role="switch"][aria-label*="user registrations"]').getAttribute('aria-checked') === 'true').toBe(!isRegistrationEnabled);
+    expect((await page.locator('button[role="switch"][aria-label*="maintenance mode"]').getAttribute('aria-checked')) === 'true').toBe(!isMaintenanceModeEnabled);
+    expect((await page.locator('button[role="switch"][aria-label*="user registrations"]').getAttribute('aria-checked')) === 'true').toBe(!isRegistrationEnabled);
 
     // Revert changes 
     await page.getByLabel(/notifications email/i).fill(originalEmail);
     // Click to revert to original states
-    if ((await page.locator('button[role="switch"][aria-label*="maintenance mode"]').getAttribute('aria-checked') === 'true') !== isMaintenanceModeEnabled) {
+    if (((await page.locator('button[role="switch"][aria-label*="maintenance mode"]').getAttribute('aria-checked')) === 'true') !== isMaintenanceModeEnabled) {
       await page.locator('button[role="switch"][aria-label*="maintenance mode"]').click();
     }
-    if ((await page.locator('button[role="switch"][aria-label*="user registrations"]').getAttribute('aria-checked') === 'true') !== isRegistrationEnabled) {
+    if (((await page.locator('button[role="switch"][aria-label*="user registrations"]').getAttribute('aria-checked')) === 'true') !== isRegistrationEnabled) {
       await page.locator('button[role="switch"][aria-label*="user registrations"]').click();
     }
     await page.getByRole('button', { name: /save settings/i }).click();

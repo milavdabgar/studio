@@ -75,7 +75,6 @@ export default function StudentCourseDetailPage() {
       <Button variant="outline" onClick={() => router.push('/student/courses')} className="mb-4">
         <ArrowLeft className="mr-2 h-4 w-4" /> Back to My Courses
       </Button>
-
       <Card className="shadow-xl">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-primary flex items-center gap-3">
@@ -132,14 +131,17 @@ export default function StudentCourseDetailPage() {
                     {relatedAssessments.map(assessment => (
                         <li key={assessment.id} className="p-3 rounded-md border flex justify-between items-center">
                             <div>
-                                <Link href={`/student/assignments/${assessment.id}`} className="font-medium text-primary hover:underline">
+                                <Link
+                                  href={`/student/assignments/${assessment.id}`}
+                                  className="font-medium text-primary hover:underline"
+                                  legacyBehavior>
                                     {assessment.name}
                                 </Link>
                                 <p className="text-xs text-muted-foreground">
                                     Type: {assessment.type} | Due: {assessment.dueDate ? format(new Date(assessment.dueDate), "PPP") : "N/A"}
                                 </p>
                             </div>
-                            <Link href={`/student/assignments/${assessment.id}`} passHref>
+                            <Link href={`/student/assignments/${assessment.id}`} passHref legacyBehavior>
                                 <Button variant="outline" size="sm">View</Button>
                             </Link>
                         </li>
@@ -153,7 +155,7 @@ export default function StudentCourseDetailPage() {
 
           <div>
             <h3 className="text-lg font-semibold mb-2 text-secondary">Study Materials</h3>
-            <Link href="/student/materials" passHref>
+            <Link href="/student/materials" passHref legacyBehavior>
               <Button variant="outline">
                 <Paperclip className="mr-2 h-4 w-4" /> Access Course Materials
               </Button>

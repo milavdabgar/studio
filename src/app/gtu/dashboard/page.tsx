@@ -65,7 +65,6 @@ export default function GtuDashboardPage() {
           University-level academic operations and oversight.
         </p>
       </section>
-
       <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {dashboardCards.map((card, idx) => (
           <Card key={idx} className="shadow-lg hover:shadow-xl transition-shadow duration-300">
@@ -76,7 +75,7 @@ export default function GtuDashboardPage() {
             <CardContent>
               <div className="text-2xl font-bold">{card.value}</div>
               {card.href && (
-                <Link href={card.href} passHref>
+                <Link href={card.href} passHref legacyBehavior>
                   <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground">
                     View/Manage
                   </Button>
@@ -86,7 +85,6 @@ export default function GtuDashboardPage() {
           </Card>
         ))}
       </section>
-
       <section>
         <Card className="shadow-lg">
           <CardHeader>
@@ -94,13 +92,13 @@ export default function GtuDashboardPage() {
             <CardDescription>Quick links to common GTU management tasks.</CardDescription>
           </CardHeader>
           <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <Link href="/admin/programs" passHref>
+            <Link href="/admin/programs" passHref legacyBehavior>
               <Button variant="outline" className="w-full justify-start gap-2"><BookCopy className="h-4 w-4"/>Manage Programs</Button>
             </Link>
-            <Link href="/admin/curriculum" passHref>
+            <Link href="/admin/curriculum" passHref legacyBehavior>
               <Button variant="outline" className="w-full justify-start gap-2"><BookOpenText className="h-4 w-4"/>Manage Curricula</Button>
             </Link>
-             <Link href="/admin/results" passHref>
+             <Link href="/admin/results" passHref legacyBehavior>
               <Button variant="outline" className="w-full justify-start gap-2"><BarChart3 className="h-4 w-4"/>Oversee Results</Button>
             </Link>
             {/* Add more GTU-specific links as features develop */}

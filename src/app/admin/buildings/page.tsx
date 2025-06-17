@@ -222,7 +222,7 @@ export default function BuildingManagementPage() {
           `"${(inst?.code || "").replace(/"/g, '""')}"`,
           b.status, b.constructionYear || "", 
           b.numberOfFloors || "", b.totalAreaSqFt || ""
-        ].join(',')
+        ].join(',');
       })
     ];
     const csvString = csvRows.join('\r\n');

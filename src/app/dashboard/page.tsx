@@ -302,7 +302,6 @@ export default function DashboardPage() {
         <h1 className="text-3xl font-bold tracking-tight text-primary mb-2">Welcome to your Dashboard, {currentUser.name}!</h1>
         <p className="text-muted-foreground">You are currently viewing as: <span className="font-semibold">{displayActiveRole}</span>. Here&apos;s a quick overview of your activities and key metrics.</p>
       </section>
-
       <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {dashboardCards.map((card) => (
           <Card key={card.id} className="shadow-lg hover:shadow-xl transition-shadow duration-300">
@@ -313,7 +312,7 @@ export default function DashboardPage() {
             <CardContent>
               <div className="text-2xl font-bold">{card.value}</div>
               {card.href && (
-                <Link href={card.href} passHref>
+                <Link href={card.href} passHref legacyBehavior>
                   <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground">
                     View Details
                   </Button>
@@ -343,7 +342,6 @@ export default function DashboardPage() {
             </Card>
         )}
       </section>
-
       <section className="grid gap-6 md:grid-cols-2">
         <Card className="shadow-lg">
           <CardHeader>
@@ -394,7 +392,6 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </section>
-
       {(currentUser.activeRole === 'admin' || currentUser.activeRole === 'super_admin') && (
         <section>
           <Card className="shadow-lg">
@@ -404,7 +401,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {adminQuickLinks.map(item => (
-                <Link href={item.href} passHref key={item.id}>
+                <Link href={item.href} passHref key={item.id} legacyBehavior>
                   <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
                     <item.icon className="h-5 w-5" /> {item.label}
                   </Button>

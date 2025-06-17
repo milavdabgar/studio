@@ -330,7 +330,6 @@ export default function StudentProfilePage() {
            </Dialog>
         </CardFooter>
       </Card>
-
       <Card className="shadow-xl">
         <CardHeader>
             <CardTitle className="text-xl font-bold text-primary flex items-center gap-2">
@@ -386,7 +385,7 @@ export default function StudentProfilePage() {
                 </div>
             )}
              <div className="mt-4">
-                <Link href="/student/results" passHref>
+                <Link href="/student/results" passHref legacyBehavior>
                     <Button variant="outline"><BookOpen className="mr-2 h-4 w-4" /> View Detailed Marksheets</Button>
                 </Link>
             </div>

@@ -237,7 +237,7 @@ export default function CommitteeManagementPage() {
           `"${(inst?.code || "").replace(/"/g, '""')}"`,
           c.formationDate, c.dissolutionDate || "", c.status,
           c.convenerId || "", `"${(convener?.displayName || "").replace(/"/g, '""')}"`
-        ].join(',')
+        ].join(',');
       })
     ];
     const csvString = csvRows.join('\r\n');

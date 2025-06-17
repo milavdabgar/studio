@@ -77,69 +77,69 @@ export default function GradeHistoryView({ studentEnrollmentNo }: GradeHistoryVi
   }
 
   return (
-    <Card className="shadow-xl">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
-            <User className="h-6 w-6" /> Grade History: {student.firstName} {student.lastName}
-        </CardTitle>
-        <CardDescription>
-            Enrollment: {student.enrollmentNumber} | Program: {program?.name || 'N/A'} <br/>
-            Overall CPI: <span className="font-semibold">{overallCpi.toFixed(2)}</span>
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {resultsBySemester.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">No results found for this student.</p>
-        ) : (
-            resultsBySemester.map(([semester, semesterResults]) => (
-                <Card key={semester} className="bg-card shadow">
-                    <CardHeader>
-                        <CardTitle className="text-lg text-secondary">Semester {semester}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Exam</TableHead>
-                                    <TableHead className="text-center">SPI</TableHead>
-                                    <TableHead className="text-center">Result</TableHead>
-                                    <TableHead className="text-right">Declaration Date</TableHead>
-                                    <TableHead className="text-right">Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {semesterResults.sort((a,b) => new Date(b.declarationDate || 0).getTime() - new Date(a.declarationDate || 0).getTime()).map(result => (
-                                    <TableRow key={result._id}>
-                                        <TableCell className="font-medium">{result.exam || 'N/A'}</TableCell>
-                                        <TableCell className="text-center">{result.spi.toFixed(2)}</TableCell>
-                                        <TableCell className="text-center">
-                                            <span className={`px-2 py-1 text-xs font-semibold rounded-full ${result.result === 'PASS' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                                                {result.result}
-                                            </span>
-                                        </TableCell>
-                                        <TableCell className="text-right">{result.declarationDate ? format(new Date(result.declarationDate), "PPP") : 'N/A'}</TableCell>
-                                        <TableCell className="text-right">
-                                            <Link href={`/admin/results/detailed/${result._id}`} passHref>
-                                                <Button variant="outline" size="sm">View Details</Button>
-                                            </Link>
-                                        </TableCell>
+      <Card className="shadow-xl">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
+                <User className="h-6 w-6" /> Grade History: {student.firstName} {student.lastName}
+            </CardTitle>
+            <CardDescription>
+                Enrollment: {student.enrollmentNumber} | Program: {program?.name || 'N/A'} <br/>
+                Overall CPI: <span className="font-semibold">{overallCpi.toFixed(2)}</span>
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {resultsBySemester.length === 0 ? (
+                <p className="text-center text-muted-foreground py-8">No results found for this student.</p>
+            ) : (
+                resultsBySemester.map(([semester, semesterResults]) => (
+                    <Card key={semester} className="bg-card shadow">
+                        <CardHeader>
+                            <CardTitle className="text-lg text-secondary">Semester {semester}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Exam</TableHead>
+                                        <TableHead className="text-center">SPI</TableHead>
+                                        <TableHead className="text-center">Result</TableHead>
+                                        <TableHead className="text-right">Declaration Date</TableHead>
+                                        <TableHead className="text-right">Actions</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                </Card>
-            ))
-        )}
-         {results.length > 0 && (
-             <div className="mt-6 p-4 border rounded-lg bg-muted/30">
-                <h3 className="text-md font-semibold mb-2 flex items-center gap-2"><BarChart3 className="text-primary"/>Performance Trend (Placeholder)</h3>
-                <div className="h-40 flex items-center justify-center text-muted-foreground bg-background rounded">
-                    Graph/Chart visualizing CPI/SPI trend over semesters will be shown here.
-                </div>
-             </div>
-         )}
-      </CardContent>
-    </Card>
+                                </TableHeader>
+                                <TableBody>
+                                    {semesterResults.sort((a,b) => new Date(b.declarationDate || 0).getTime() - new Date(a.declarationDate || 0).getTime()).map(result => (
+                                        <TableRow key={result._id}>
+                                            <TableCell className="font-medium">{result.exam || 'N/A'}</TableCell>
+                                            <TableCell className="text-center">{result.spi.toFixed(2)}</TableCell>
+                                            <TableCell className="text-center">
+                                                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${result.result === 'PASS' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                                    {result.result}
+                                                </span>
+                                            </TableCell>
+                                            <TableCell className="text-right">{result.declarationDate ? format(new Date(result.declarationDate), "PPP") : 'N/A'}</TableCell>
+                                            <TableCell className="text-right">
+                                                <Link href={`/admin/results/detailed/${result._id}`} passHref legacyBehavior>
+                                                    <Button variant="outline" size="sm">View Details</Button>
+                                                </Link>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                ))
+            )}
+             {results.length > 0 && (
+                 <div className="mt-6 p-4 border rounded-lg bg-muted/30">
+                    <h3 className="text-md font-semibold mb-2 flex items-center gap-2"><BarChart3 className="text-primary"/>Performance Trend (Placeholder)</h3>
+                    <div className="h-40 flex items-center justify-center text-muted-foreground bg-background rounded">
+                        Graph/Chart visualizing CPI/SPI trend over semesters will be shown here.
+                    </div>
+                 </div>
+             )}
+          </CardContent>
+      </Card>
   );
 }

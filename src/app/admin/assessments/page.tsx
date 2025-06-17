@@ -292,7 +292,7 @@ export default function AssessmentManagementPage() {
           a.id, `"${a.name.replace(/"/g, '""')}"`, a.courseId, course?.subcode || '', a.programId, program?.code || '', a.batchId || '', batch?.name || '',
           a.type, `"${(a.description || "").replace(/"/g, '""')}"`, a.maxMarks, a.passingMarks || '', a.weightage || '',
           a.assessmentDate || '', a.dueDate || '', a.status, `"${(a.instructions || "").replace(/"/g, '""')}"`, a.facultyId || '', faculty?.displayName || ''
-        ].join(',')
+        ].join(',');
       })
     ];
     const csvString = csvRows.join('\r\n');

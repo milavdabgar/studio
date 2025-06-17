@@ -258,7 +258,7 @@ export default function LoginPage() {
                 <SelectContent>
                   {roleOptionsForDropdown.length > 0 ? (
                     roleOptionsForDropdown.map(role => (
-                      <SelectItem key={role.id} value={role.code}>{role.name}</SelectItem> // Value is role.code, display is role.name
+                      (<SelectItem key={role.id} value={role.code}>{role.name}</SelectItem>) // Value is role.code, display is role.name
                     ))
                   ) : (
                     <SelectItem value="unknown" disabled>

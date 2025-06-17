@@ -63,10 +63,10 @@ export function PostCard({
     <Card className="hover:shadow-lg transition-shadow">
       <CardHeader>
         <CardTitle className="text-xl">
-          <Link 
-            href={post.href} 
+          <Link
+            href={post.href}
             className="text-primary hover:text-primary/80 transition-colors"
-          >
+            legacyBehavior>
             {post.title}
           </Link>
         </CardTitle>
@@ -92,7 +92,6 @@ export function PostCard({
           )}
         </CardDescription>
       </CardHeader>
-
       <CardContent>
         {showExcerpt && post.excerpt && (
           <p className="text-muted-foreground mb-4 line-clamp-3">
@@ -134,10 +133,10 @@ export function PostCard({
         </div>
 
         <div className="flex justify-between items-center">
-          <Link 
+          <Link
             href={post.href}
             className="text-sm text-primary hover:text-primary/80 transition-colors"
-          >
+            legacyBehavior>
             {t('read_more') || 'Read more'} →
           </Link>
           

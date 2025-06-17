@@ -85,10 +85,9 @@ export default function ProjectEventDashboardPage() {
 
   return (
     <div className="space-y-8">
-       <Button variant="outline" onClick={() => router.push('/admin/project-fair/events')} className="mb-4 print:hidden">
-        <ArrowLeft className="mr-2 h-4 w-4" /> Back to All Events
-      </Button>
-
+      <Button variant="outline" onClick={() => router.push('/admin/project-fair/events')} className="mb-4 print:hidden">
+       <ArrowLeft className="mr-2 h-4 w-4" /> Back to All Events
+     </Button>
       <Card className="shadow-xl">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-primary">{event.name}</CardTitle>
@@ -109,7 +108,7 @@ export default function ProjectEventDashboardPage() {
                 <CardContent>
                   <div className="text-2xl font-bold">{card.value}</div>
                   {card.href && (
-                    <Link href={card.href} passHref>
+                    <Link href={card.href} passHref legacyBehavior>
                       <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground">View/Manage</Button>
                     </Link>
                   )}
@@ -125,7 +124,7 @@ export default function ProjectEventDashboardPage() {
             </CardHeader>
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {managementLinks.map(link => (
-                    <Link key={link.href} href={link.href} passHref>
+                    <Link key={link.href} href={link.href} passHref legacyBehavior>
                         <Button variant="outline" className="w-full justify-start gap-3 p-4 h-auto">
                             <link.icon className="h-5 w-5 text-primary"/>
                             <span className="text-sm">{link.label}</span>

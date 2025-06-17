@@ -138,7 +138,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
               <SidebarMenu>
                 {baseNavItems[currentUser.activeRole]?.map((item) => (
                   <SidebarMenuItem key={item.id} active={pathname === item.href}>
-                    <Link href={item.href} passHref>
+                    <Link href={item.href} passHref legacyBehavior>
                       <SidebarMenuButton>
                         <item.icon className="w-5 h-5" />
                         <span>{item.label}</span>
@@ -152,7 +152,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
               <div className="flex items-center gap-3 mb-4">
                 {currentUser.avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={currentUser.avatarUrl} alt={currentUser.name} data-ai-hint={currentUser.dataAiHint} className="h-10 w-10 rounded-full" />
+                  (<img src={currentUser.avatarUrl} alt={currentUser.name} data-ai-hint={currentUser.dataAiHint} className="h-10 w-10 rounded-full" />)
                 ) : (
                   <UserCircle className="h-10 w-10 rounded-full text-sidebar-foreground" />
                 )}
@@ -184,7 +184,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                 </div>
               )}
               <div className="flex items-center justify-between">
-                <Link href="/admin/settings" passHref>
+                <Link href="/admin/settings" passHref legacyBehavior>
                   <Button variant="ghost" size="icon" className="text-sidebar-foreground hover:bg-sidebar-accent">
                     <Settings />
                   </Button>

@@ -26,7 +26,7 @@ export function BlogLayout({ children, currentLang }: BlogLayoutProps) {
           <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container flex h-14 items-center">
               {/* Logo/Brand */}
-              <Link href="/" className="mr-6 flex items-center space-x-2">
+              <Link href="/" className="mr-6 flex items-center space-x-2" legacyBehavior>
                 <BookOpen className="h-6 w-6" />
                 <span className="hidden font-bold sm:inline-block">
                   {siteConfig.name}
@@ -57,7 +57,7 @@ export function BlogLayout({ children, currentLang }: BlogLayoutProps) {
 
               {/* Right side actions */}
               <div className="ml-auto flex items-center space-x-2">
-                <Link href={`/search/${currentLang}`}>
+                <Link href={`/search/${currentLang}`} legacyBehavior>
                   <Button variant="ghost" size="icon" aria-label="Search">
                     <Search className="h-[1.2rem] w-[1.2rem]" />
                   </Button>
@@ -84,7 +84,7 @@ export function BlogLayout({ children, currentLang }: BlogLayoutProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-medium underline underline-offset-4"
-                  >
+                    legacyBehavior>
                     {siteConfig.author.name}
                   </Link>
                 </p>
@@ -97,7 +97,7 @@ export function BlogLayout({ children, currentLang }: BlogLayoutProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-muted-foreground hover:text-foreground"
-                  >
+                    legacyBehavior>
                     <span className="sr-only">{platform}</span>
                     {/* You can add icons here for each platform */}
                   </Link>

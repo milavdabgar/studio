@@ -163,7 +163,7 @@ export default function StudentMyCoursesPage() {
             <div className="text-center py-10 text-muted-foreground">
               <AlertTriangle className="mx-auto h-12 w-12 mb-4" />
               You are not currently enrolled in any courses. 
-              <Link href="/student/courses/enroll" passHref className="ml-1">
+              <Link href="/student/courses/enroll" passHref className="ml-1" legacyBehavior>
                 <Button variant="link" className="p-0 h-auto">Enroll in courses?</Button>
               </Link>
             </div>
@@ -192,7 +192,7 @@ export default function StudentMyCoursesPage() {
                     </p>
                   </CardContent>
                   <CardFooter>
-                    <Link href={`/student/courses/${courseInfo.courseId}`} passHref>
+                    <Link href={`/student/courses/${courseInfo.courseId}`} passHref legacyBehavior>
                       <Button variant="outline" className="w-full">
                         <ExternalLink className="mr-2 h-4 w-4" /> View Course Details
                       </Button>

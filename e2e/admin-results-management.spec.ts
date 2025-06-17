@@ -84,7 +84,7 @@ test.describe('Admin Results Management', () => {
     // Click on the "Results" tab if not already active
     const resultsTabButton = page.getByRole('tab', { name: /results/i, exact: true }); // ShadCN tabs use role="tab"
     if (await resultsTabButton.isVisible()) {
-        if(await resultsTabButton.getAttribute('aria-selected') !== 'true') {
+        if((await resultsTabButton.getAttribute('aria-selected')) !== 'true') {
             await resultsTabButton.click();
         }
     }
@@ -97,7 +97,7 @@ test.describe('Admin Results Management', () => {
     
     const resultsTabButton = page.getByRole('tab', { name: /results/i, exact: true });
     if (await resultsTabButton.isVisible()) {
-         if(await resultsTabButton.getAttribute('aria-selected') !== 'true') {
+         if((await resultsTabButton.getAttribute('aria-selected')) !== 'true') {
             await resultsTabButton.click();
         }
     }

@@ -250,7 +250,7 @@ export default function StudentAssignmentsPage() {
                       </span>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Link href={`/student/assignments/${assignment.id}`} passHref>
+                      <Link href={`/student/assignments/${assignment.id}`} passHref legacyBehavior>
                         <Button variant="outline" size="sm">
                           {assignment.submissionStatus === 'Graded' || assignment.submissionStatus === 'Submitted' || assignment.submissionStatus === 'Late Submission' ? 'View Details' : 'Submit/View'}
                         </Button>

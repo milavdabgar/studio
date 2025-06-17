@@ -139,7 +139,7 @@ test.describe('Admin Infrastructure Management', () => {
       await buildingSelect.click();
       // Try to select the building by its name/code used as proxy ID
       const buildingOption = page.getByRole('option', { name: new RegExp(testBuildingIdForRooms, 'i') });
-      if (await buildingOption.count() > 0) {
+      if ((await buildingOption.count()) > 0) {
         await buildingOption.first().click();
       } else {
         await page.getByRole('option').first().click(); // Fallback to first if not found by name/code
@@ -190,7 +190,7 @@ test.describe('Admin Infrastructure Management', () => {
             const buildingSelect = page.locator('form').getByLabel('Building *', { exact: true });
             await buildingSelect.click();
             const buildingOption = page.getByRole('option', { name: new RegExp(testBuildingIdForRooms, 'i') });
-             if (await buildingOption.count() > 0) {
+             if ((await buildingOption.count()) > 0) {
                 await buildingOption.first().click();
              } else {
                 await page.getByRole('option').first().click();
@@ -219,7 +219,7 @@ test.describe('Admin Infrastructure Management', () => {
       const roomSelect = page.locator('form').getByLabel('Room *', { exact: true });
       await roomSelect.click();
       const roomOption = page.getByRole('option', { name: new RegExp(testRoomIdForAllocation, 'i') });
-      if(await roomOption.count() > 0){
+      if((await roomOption.count()) > 0){
           await roomOption.first().click();
       } else {
           await page.getByRole('option').first().click(); // Fallback

@@ -283,7 +283,7 @@ export default function UserManagementPage() {
           user.instituteId || "",
           `"${(inst?.name || "").replace(/"/g, '""')}"`,
           `"${(inst?.code || "").replace(/"/g, '""')}"`,
-        ].join(',')
+        ].join(',');
       })
     ];
     const csvString = csvRows.join('\r\n');

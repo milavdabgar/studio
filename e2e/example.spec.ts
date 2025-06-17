@@ -37,7 +37,7 @@ test.describe('Landing Page', () => {
     const loginHeading = page.getByRole('heading').filter({ hasText: /Login|Sign In|Welcome|Authentication/i }).first();
     
     // If it exists, expect it to be visible, otherwise check for login form elements
-    if (await loginHeading.count() > 0) {
+    if ((await loginHeading.count()) > 0) {
       await expect(loginHeading).toBeVisible();
     } else {
       // If there's no heading, check for login form elements like email/password fields

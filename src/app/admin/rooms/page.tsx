@@ -225,7 +225,7 @@ export default function RoomManagementPage() {
           `"${(bldg?.name || "").replace(/"/g, '""')}"`, `"${(bldg?.code || "").replace(/"/g, '""')}"`,
           r.floor === undefined ? "" : r.floor, r.type, r.capacity === undefined ? "" : r.capacity,
           r.areaSqFt === undefined ? "" : r.areaSqFt, r.status, `"${(r.notes || "").replace(/"/g, '""')}"`
-        ].join(',')
+        ].join(',');
       })
     ];
     const csvString = csvRows.join('\r\n');

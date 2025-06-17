@@ -216,7 +216,7 @@ export default function ProgramManagementPage() {
           prog.durationYears || "",
           prog.totalSemesters || "",
           prog.status
-        ].join(',')
+        ].join(',');
       })
     ];
     const csvString = csvRows.join('\r\n');

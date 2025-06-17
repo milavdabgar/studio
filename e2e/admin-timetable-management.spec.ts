@@ -23,7 +23,7 @@ async function ensureTestData(page: Page, entityName: string, checkUrl: string, 
   await page.goto(checkUrl);
   // Check if any data exists (e.g., by looking for table rows excluding header)
   const rowCount = await page.locator('table tbody tr').count();
-  if (rowCount === 0 || (rowCount === 1 && await page.locator('table tbody tr td:has-text("No data")').count() === 1) ) {
+  if (rowCount === 0 || (rowCount === 1 && (await page.locator('table tbody tr td:has-text("No data")').count()) === 1) ) {
     console.warn(`No ${entityName} found. Some timetable tests might be skipped or fail if dependent data is needed via UI selection.`);
     return false;
   }

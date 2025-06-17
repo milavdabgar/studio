@@ -172,7 +172,7 @@ const NotificationBell: React.FC = () => {
                     )}
                   </div>
                   {notification.link && (
-                    <Link href={notification.link} passHref>
+                    <Link href={notification.link} passHref legacyBehavior>
                       <Button variant="link" size="sm" className="text-xs p-0 h-auto mt-1 flex items-center" onClick={() => setIsOpen(false)}>
                         <ExternalLink className="h-3 w-3 mr-1"/> View Details
                       </Button>
@@ -185,7 +185,7 @@ const NotificationBell: React.FC = () => {
           )}
         </ScrollArea>
         <div className="p-2 border-t text-center">
-            <Link href="/notifications" passHref>
+            <Link href="/notifications" passHref legacyBehavior>
                 <Button variant="link" size="sm" className="text-xs w-full" onClick={() => setIsOpen(false)}>
                     View All Notifications
                 </Button>

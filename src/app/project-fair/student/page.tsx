@@ -181,138 +181,134 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
   };
 
   return (
-    <div className="p-4">
-      {event && (
-        <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-          {/* ... event banner ... */}
-        </div>
-      )}
-
-      <div className="mb-6">
-        {/* ... navigation tabs ... */}
-      </div>
-
-      {viewMode === 'list' ? (
-        <ProjectList onViewProject={handleViewProject} event={event} />
-      ) : viewMode === 'my-projects' ? (
-        <div>
-          <h2 className="text-xl font-bold mb-4">My Projects</h2>
-          {loading ? (
-            <p>Loading your projects...</p>
-          ) : myProjects.length === 0 ? (
-            <p>You haven&apos;t registered any projects yet.</p>
-          ) : (
-            <div className="grid gap-6">
-              {myProjects.map((project) => (
-                <div key={project.id} className="bg-white rounded-lg shadow p-6">
-                  {/* ... project summary ... */}
-                  <div className="flex justify-end space-x-2 mt-2">
-                    <Button variant="outline" size="sm" onClick={() => openTeamManagementModal(project)}>
-                        <UsersIconLucide className="mr-2 h-4 w-4"/> Manage Team
-                    </Button>
-                    <Button size="sm" onClick={() => handleViewProject(project.id)}>View Details</Button>
-                  </div>
-                </div>
-              ))}
+      <div className="p-4">
+          {event && (
+            <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+              {/* ... event banner ... */}
             </div>
           )}
-        </div>
-      ) : (
-        <div>
-          <button
-            onClick={handleBackToList}
-            className="mb-4 px-4 py-2 text-gray-600 hover:text-gray-900 flex items-center"
-          >
-            <ChevronLeft size={20} className="mr-1" />
-            Back to Projects
-          </button>
-          <ProjectView projectId={selectedProjectId} event={event} />
-        </div>
-      )}
-
-      {/* Team Management Modal */}
-      <Dialog open={isTeamModalOpen} onOpenChange={setIsTeamModalOpen}>
-          <DialogContent className="sm:max-w-[625px]">
-              <DialogHeader>
-                  <DialogTitle>Manage Team: {editingTeam?.name}</DialogTitle>
-                  <DialogDescription>Add, remove, or change roles for your team members.</DialogDescription>
-              </DialogHeader>
-              {editingTeam && (
-                  <div className="py-4 space-y-4">
-                      <div>
-                          <h4 className="font-semibold mb-2">Current Members:</h4>
-                          <ul className="space-y-2">
-                              {editingTeam.members.map(member => (
-                                  <li key={member.userId} className="flex justify-between items-center p-2 border rounded-md">
-                                      <div>
-                                          <p className="font-medium">{member.name} ({member.enrollmentNo})</p>
-                                          <p className="text-xs text-muted-foreground">{member.role} {member.isLeader && "(Leader)"}</p>
-                                      </div>
-                                      <div className="space-x-1">
-                                          {!member.isLeader && (
-                                                <Button variant="outline" size="xs" onClick={() => handleSetTeamLeader(member.userId)}>Make Leader</Button>
-                                          )}
-                                          {editingTeam.members.length > 1 && !member.isLeader && ( // Ensure at least one member and not removing self if leader
-                                            <Button variant="destructive" size="xs" onClick={() => handleRemoveMemberFromTeam(member.userId)}>Remove</Button>
-                                          )}
-                                      </div>
-                                  </li>
-                              ))}
-                          </ul>
+          <div className="mb-6">
+            {/* ... navigation tabs ... */}
+          </div>
+          {viewMode === 'list' ? (
+            <ProjectList onViewProject={handleViewProject} event={event} />
+          ) : viewMode === 'my-projects' ? (
+            <div>
+              <h2 className="text-xl font-bold mb-4">My Projects</h2>
+              {loading ? (
+                <p>Loading your projects...</p>
+              ) : myProjects.length === 0 ? (
+                <p>You haven&apos;t registered any projects yet.</p>
+              ) : (
+                <div className="grid gap-6">
+                  {myProjects.map((project) => (
+                    <div key={project.id} className="bg-white rounded-lg shadow p-6">
+                      {/* ... project summary ... */}
+                      <div className="flex justify-end space-x-2 mt-2">
+                        <Button variant="outline" size="sm" onClick={() => openTeamManagementModal(project)}>
+                            <UsersIconLucide className="mr-2 h-4 w-4"/> Manage Team
+                        </Button>
+                        <Button size="sm" onClick={() => handleViewProject(project.id)}>View Details</Button>
                       </div>
-                      {editingTeam.members.length < 4 && (
-                        <div className="pt-4 border-t">
-                            <h4 className="font-semibold mb-2">Add New Member:</h4>
-                            <div className="flex gap-2 mb-2">
-                                <Input 
-                                    placeholder="Search user by name or email" 
-                                    value={teamMemberSearch} 
-                                    onChange={(e) => setTeamMemberSearch(e.target.value)}
-                                />
-                                <Button onClick={handleSearchUsers} type="button">Search</Button>
-                            </div>
-                            {searchedUsers.length > 0 && (
-                                <Select 
-                                    onValueChange={(userId) => {
-                                        const selectedUser = searchedUsers.find(u => u.id === userId);
-                                        setNewMemberFormData(prev => ({...prev, userId, name: selectedUser?.displayName || ''}));
-                                    }}
-                                    value={newMemberFormData.userId}
-                                >
-                                    <SelectTrigger><SelectValue placeholder="Select User to Add" /></SelectTrigger>
-                                    <SelectContent>
-                                        {searchedUsers.map(u => (
-                                            <SelectItem key={u.id} value={u.id}>{u.displayName} ({u.email})</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            )}
-                             <Input 
-                                placeholder="Enrollment No." 
-                                className="mt-2"
-                                value={newMemberFormData.enrollmentNo}
-                                onChange={(e) => setNewMemberFormData(prev => ({...prev, enrollmentNo: e.target.value}))}
-                            />
-                            <Input 
-                                placeholder="Role (e.g., Developer)" 
-                                className="mt-2"
-                                value={newMemberFormData.role}
-                                onChange={(e) => setNewMemberFormData(prev => ({...prev, role: e.target.value}))}
-                            />
-                            <Button onClick={handleAddMemberToTeam} className="mt-2" type="button" disabled={!newMemberFormData.userId || !newMemberFormData.enrollmentNo}>Add to Team</Button>
-                        </div>
-                      )}
-                  </div>
+                    </div>
+                  ))}
+                </div>
               )}
-              <DialogFooter>
-                  <DialogClose asChild>
-                      <Button type="button" variant="outline">Close</Button>
-                  </DialogClose>
-              </DialogFooter>
-          </DialogContent>
-      </Dialog>
-
-    </div>
+            </div>
+          ) : (
+            <div>
+              <button
+                onClick={handleBackToList}
+                className="mb-4 px-4 py-2 text-gray-600 hover:text-gray-900 flex items-center"
+              >
+                <ChevronLeft size={20} className="mr-1" />
+                Back to Projects
+              </button>
+              <ProjectView projectId={selectedProjectId} event={event} />
+            </div>
+          )}
+          {/* Team Management Modal */}
+          <Dialog open={isTeamModalOpen} onOpenChange={setIsTeamModalOpen}>
+              <DialogContent className="sm:max-w-[625px]">
+                  <DialogHeader>
+                      <DialogTitle>Manage Team: {editingTeam?.name}</DialogTitle>
+                      <DialogDescription>Add, remove, or change roles for your team members.</DialogDescription>
+                  </DialogHeader>
+                  {editingTeam && (
+                      <div className="py-4 space-y-4">
+                          <div>
+                              <h4 className="font-semibold mb-2">Current Members:</h4>
+                              <ul className="space-y-2">
+                                  {editingTeam.members.map(member => (
+                                      <li key={member.userId} className="flex justify-between items-center p-2 border rounded-md">
+                                          <div>
+                                              <p className="font-medium">{member.name} ({member.enrollmentNo})</p>
+                                              <p className="text-xs text-muted-foreground">{member.role} {member.isLeader && "(Leader)"}</p>
+                                          </div>
+                                          <div className="space-x-1">
+                                              {!member.isLeader && (
+                                                    <Button variant="outline" size="xs" onClick={() => handleSetTeamLeader(member.userId)}>Make Leader</Button>
+                                              )}
+                                              {editingTeam.members.length > 1 && !member.isLeader && ( // Ensure at least one member and not removing self if leader
+                                                (<Button variant="destructive" size="xs" onClick={() => handleRemoveMemberFromTeam(member.userId)}>Remove</Button>)
+                                              )}
+                                          </div>
+                                      </li>
+                                  ))}
+                              </ul>
+                          </div>
+                          {editingTeam.members.length < 4 && (
+                            <div className="pt-4 border-t">
+                                <h4 className="font-semibold mb-2">Add New Member:</h4>
+                                <div className="flex gap-2 mb-2">
+                                    <Input 
+                                        placeholder="Search user by name or email" 
+                                        value={teamMemberSearch} 
+                                        onChange={(e) => setTeamMemberSearch(e.target.value)}
+                                    />
+                                    <Button onClick={handleSearchUsers} type="button">Search</Button>
+                                </div>
+                                {searchedUsers.length > 0 && (
+                                    <Select 
+                                        onValueChange={(userId) => {
+                                            const selectedUser = searchedUsers.find(u => u.id === userId);
+                                            setNewMemberFormData(prev => ({...prev, userId, name: selectedUser?.displayName || ''}));
+                                        }}
+                                        value={newMemberFormData.userId}
+                                    >
+                                        <SelectTrigger><SelectValue placeholder="Select User to Add" /></SelectTrigger>
+                                        <SelectContent>
+                                            {searchedUsers.map(u => (
+                                                <SelectItem key={u.id} value={u.id}>{u.displayName} ({u.email})</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                                 <Input 
+                                    placeholder="Enrollment No." 
+                                    className="mt-2"
+                                    value={newMemberFormData.enrollmentNo}
+                                    onChange={(e) => setNewMemberFormData(prev => ({...prev, enrollmentNo: e.target.value}))}
+                                />
+                                <Input 
+                                    placeholder="Role (e.g., Developer)" 
+                                    className="mt-2"
+                                    value={newMemberFormData.role}
+                                    onChange={(e) => setNewMemberFormData(prev => ({...prev, role: e.target.value}))}
+                                />
+                                <Button onClick={handleAddMemberToTeam} className="mt-2" type="button" disabled={!newMemberFormData.userId || !newMemberFormData.enrollmentNo}>Add to Team</Button>
+                            </div>
+                          )}
+                      </div>
+                  )}
+                  <DialogFooter>
+                      <DialogClose asChild>
+                          <Button type="button" variant="outline">Close</Button>
+                      </DialogClose>
+                  </DialogFooter>
+              </DialogContent>
+          </Dialog>
+      </div>
   );
 };
 

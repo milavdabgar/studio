@@ -80,7 +80,6 @@ export default function DteDashboardPage() {
           Overview of technical education institutions and programs.
         </p>
       </section>
-
       <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {dashboardCards.map((card, idx) => (
           <Card key={idx} className="shadow-lg hover:shadow-xl transition-shadow duration-300">
@@ -91,7 +90,7 @@ export default function DteDashboardPage() {
             <CardContent>
               <div className="text-2xl font-bold">{card.value}</div>
               {card.href && (
-                <Link href={card.href} passHref>
+                <Link href={card.href} passHref legacyBehavior>
                   <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground">
                     View/Manage
                   </Button>
@@ -101,27 +100,26 @@ export default function DteDashboardPage() {
           </Card>
         ))}
       </section>
-
-       <section>
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle>Key DTE Operations</CardTitle>
-            <CardDescription>Quick links to common DTE management tasks.</CardDescription>
-          </CardHeader>
-          <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <Link href="/admin/institutes" passHref>
-              <Button variant="outline" className="w-full justify-start gap-2"><Landmark className="h-4 w-4"/>Manage Institutes</Button>
-            </Link>
-            <Link href="/admin/programs" passHref>
-              <Button variant="outline" className="w-full justify-start gap-2"><BookCopy className="h-4 w-4"/>Oversee Programs</Button>
-            </Link>
-            <Link href="/admin/reporting-analytics" passHref>
-              <Button variant="outline" className="w-full justify-start gap-2"><BarChart3 className="h-4 w-4"/>View System Reports</Button>
-            </Link>
-            {/* Add more DTE-specific links as features develop, e.g., Staff Transfers, CAS Management */}
-          </CardContent>
-        </Card>
-      </section>
+      <section>
+       <Card className="shadow-lg">
+         <CardHeader>
+           <CardTitle>Key DTE Operations</CardTitle>
+           <CardDescription>Quick links to common DTE management tasks.</CardDescription>
+         </CardHeader>
+         <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+           <Link href="/admin/institutes" passHref legacyBehavior>
+             <Button variant="outline" className="w-full justify-start gap-2"><Landmark className="h-4 w-4"/>Manage Institutes</Button>
+           </Link>
+           <Link href="/admin/programs" passHref legacyBehavior>
+             <Button variant="outline" className="w-full justify-start gap-2"><BookCopy className="h-4 w-4"/>Oversee Programs</Button>
+           </Link>
+           <Link href="/admin/reporting-analytics" passHref legacyBehavior>
+             <Button variant="outline" className="w-full justify-start gap-2"><BarChart3 className="h-4 w-4"/>View System Reports</Button>
+           </Link>
+           {/* Add more DTE-specific links as features develop, e.g., Staff Transfers, CAS Management */}
+         </CardContent>
+       </Card>
+     </section>
     </div>
   );
 }

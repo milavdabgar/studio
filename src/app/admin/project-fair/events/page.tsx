@@ -224,7 +224,7 @@ export default function ProjectEventManagementPage() {
           e.isActive, e.publishResults || false,
           `"${eventDepts.map(d => d!.name).join(';')}"`,
           `"${eventDepts.map(d => d!.code).join(';')}"`
-        ].join(',')
+        ].join(',');
       })
     ];
     const csvString = csvRows.join('\r\n');
@@ -533,19 +533,34 @@ evt_s1,TechFest 2025,"Annual technical festival",2024-25,2025-03-15T10:00:00Z,20
                     </span>
                   </TableCell>
                   <TableCell className="text-right space-x-2">
-                    <Link href={`/admin/project-fair/events/${eventItem.id}/dashboard`} passHref>
+                    <Link
+                      href={`/admin/project-fair/events/${eventItem.id}/dashboard`}
+                      passHref
+                      legacyBehavior>
                         <Button variant="ghost" size="sm" title="Event Dashboard"><Briefcase className="h-4 w-4" /></Button>
                     </Link>
-                     <Link href={`/admin/project-fair/events/${eventItem.id}/projects`} passHref>
+                     <Link
+                       href={`/admin/project-fair/events/${eventItem.id}/projects`}
+                       passHref
+                       legacyBehavior>
                         <Button variant="ghost" size="sm" title="Manage Projects"><UsersIcon className="h-4 w-4" /></Button>
                     </Link>
-                     <Link href={`/admin/project-fair/events/${eventItem.id}/locations`} passHref>
+                     <Link
+                       href={`/admin/project-fair/events/${eventItem.id}/locations`}
+                       passHref
+                       legacyBehavior>
                         <Button variant="ghost" size="sm" title="Manage Locations"><MapPin className="h-4 w-4" /></Button>
                     </Link>
-                     <Link href={`/admin/project-fair/events/${eventItem.id}/schedule`} passHref>
+                     <Link
+                       href={`/admin/project-fair/events/${eventItem.id}/schedule`}
+                       passHref
+                       legacyBehavior>
                         <Button variant="ghost" size="sm" title="Manage Schedule"><ListChecks className="h-4 w-4" /></Button>
                     </Link>
-                     <Link href={`/admin/project-fair/events/${eventItem.id}/results`} passHref>
+                     <Link
+                       href={`/admin/project-fair/events/${eventItem.id}/results`}
+                       passHref
+                       legacyBehavior>
                         <Button variant="ghost" size="sm" title="Manage Results"><AwardIcon className="h-4 w-4" /></Button>
                     </Link>
                     <Button variant="outline" size="icon" onClick={() => handleEdit(eventItem)} disabled={isSubmitting}><Edit className="h-4 w-4" /><span className="sr-only">Edit Event</span></Button>

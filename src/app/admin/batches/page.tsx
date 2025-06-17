@@ -219,7 +219,7 @@ export default function BatchManagementPage() {
           `"${(prog?.name || "").replace(/"/g, '""')}"`,
           `"${(prog?.code || "").replace(/"/g, '""')}"`,
           b.startAcademicYear, b.endAcademicYear || "", b.maxIntake || "", b.status
-        ].join(',')
+        ].join(',');
       })
     ];
     const csvString = csvRows.join('\r\n');

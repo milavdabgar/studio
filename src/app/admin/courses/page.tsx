@@ -266,7 +266,7 @@ export default function CourseManagementPage() {
           c.isFunctional, c.isSemiPractical || false, `"${(c.remarks || "").replace(/"/g, '""')}"`,
           c.departmentId, `"${(dept?.name || "").replace(/"/g, '""')}"`, `"${(dept?.code || "").replace(/"/g, '""')}"`,
           c.programId, `"${(prog?.name || "").replace(/"/g, '""')}"`, `"${(prog?.code || "").replace(/"/g, '""')}"`
-        ].join(',')
+        ].join(',');
       })
     ];
     const csvString = csvRows.join('\r\n');
