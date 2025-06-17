@@ -58,8 +58,8 @@ function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir): FileD
   try {
     entries = fs.readdirSync(dir, { withFileTypes: true });
   } catch (e) {
-    console.warn(`Could not read directory ${dir}:`, e);
-    return files; // Skip this directory
+    console.warn(`Could not read directory ${dir}:`, e); 
+    return files; 
   }
 
 
@@ -79,7 +79,9 @@ function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir): FileD
         slugPath = slugPath.substring(0, slugPath.length - 3); 
       }
       
-      const slugParts = slugPath.split(path.sep).filter(p => p);
+      // Normalize path separators to always use '/' for slug parts and id
+      const normalizedSlugPath = slugPath.replace(/\\/g, '/');
+      const slugParts = normalizedSlugPath.split('/').filter(p => p && p !== '.');
       const id = slugParts.join('/'); 
 
       files.push({
@@ -87,7 +89,7 @@ function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir): FileD
         lang,
         id,
         fullPath,
-        relativePath: relativePathWithExt,
+        relativePath: relativePathWithExt.replace(/\\/g, '/'), // Normalize relativePath too
       });
     }
   }
@@ -105,22 +107,30 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
       const fileContents = fs.readFileSync(fileDetail.fullPath, 'utf8');
       const matterResult = matter(fileContents);
 
-      const plainContent = matterResult.content.replace(/<\/?[^>]+(>|$)/g, "");
+      // Generate a plain text excerpt
+      const plainContent = matterResult.content
+        .replace(/{{.*?}}/g, '') // Remove Hugo shortcodes for excerpt
+        .replace(/<\/?[^>]+(>|$)/g, ""); // Remove HTML tags
       const excerpt = plainContent.substring(0, 150) + (plainContent.length > 150 ? '...' : '');
+      
+      // Ensure title and date have default values
+      const title = matterResult.data.title || 'Untitled Post';
+      const date = matterResult.data.date || new Date().toISOString();
+
 
       return {
         id: fileDetail.id,
         slugParts: fileDetail.slugParts,
         lang: fileDetail.lang,
-        title: matterResult.data.title || 'Untitled Post',
-        date: matterResult.data.date || new Date().toISOString(),
+        title,
+        date,
         excerpt,
         href: `/posts/${fileDetail.lang}/${fileDetail.id}`,
         ...matterResult.data,
       };
     } catch (e) {
-      console.error(`Error processing file ${fileDetail.fullPath}:`, e);
-      return null; // Skip this post if there's an error reading/parsing it
+      console.error(`Error processing file for sorted list ${fileDetail.fullPath}:`, e);
+      return null; 
     }
   });
 
@@ -134,61 +144,88 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
         if (dateA > dateB) return -1;
         return 0;
     } catch (e) {
-        return 0; 
+        // If dates are invalid, keep original order or sort by title
+        return a.title.localeCompare(b.title);
     }
   });
 }
 
 export async function getPostData(langParam: string, slugParts: string[]): Promise<PostData | null> {
-  const baseSlugPath = slugParts.join(path.sep); 
+  console.log(`getPostData called with lang: "${langParam}", slugParts: ["${slugParts.join('", "')}"]`);
   
-  const possibleFileNamesWithLang = [
-    `${baseSlugPath}.${langParam}.md`,
+  // Join slugParts with '/' for internal consistency, then convert to OS-specific for fs
+  const normalizedSlug = slugParts.join('/');
+  const baseSlugPathForFs = normalizedSlug.split('/').join(path.sep);
+  
+  const possibleFileNames = [
+    `${baseSlugPathForFs}.${langParam}.md`, // e.g. blog/my-post.en.md
   ];
   if (langParam === 'en') {
-    possibleFileNamesWithLang.push(`${baseSlugPath}.md`);
+    possibleFileNames.push(`${baseSlugPathForFs}.md`); // e.g. blog/my-post.md
   }
 
   let filePath: string | undefined;
   let resolvedLang = langParam;
 
-  for (const fileName of possibleFileNamesWithLang) {
+  for (const fileName of possibleFileNames) {
     const fullPath = path.join(contentDirectory, fileName);
     if (fs.existsSync(fullPath)) {
       filePath = fullPath;
-      const langMatch = fileName.match(/\.([a-z]{2})\.md$/);
-      if (langMatch && availableLanguages.includes(langMatch[1])) {
-        resolvedLang = langMatch[1];
-      } else if (fileName.endsWith('.md') && !langMatch) {
-        resolvedLang = 'en';
+      // Re-determine language from the found file to be absolutely sure
+      const ext = path.extname(fileName); // .md
+      const nameWithoutExt = path.basename(fileName, ext); // my-post.en or my-post
+      const langSuffixMatch = nameWithoutExt.match(/\.([a-z]{2})$/);
+      if (langSuffixMatch && availableLanguages.includes(langSuffixMatch[1])) {
+        resolvedLang = langSuffixMatch[1];
+      } else {
+        resolvedLang = 'en'; // Default to 'en' if no specific lang suffix found
       }
+      console.log(`Found file for post: ${fullPath} with resolvedLang: ${resolvedLang}`);
       break;
     }
   }
 
   if (!filePath) {
-    console.warn(`Post not found for lang "${langParam}" and slugParts "${slugParts.join('/')}". Looked in content directory using patterns like ${possibleFileNamesWithLang.join(', ')}`);
-    return null;
+    console.warn(`Markdown file not found. \nContent directory: ${contentDirectory}\nNormalized slug: ${normalizedSlug}\nAttempted FS base path: ${baseSlugPathForFs}\nLooked for names like: ${possibleFileNames.join(', ')}`);
+    return null; 
   }
 
   try {
     const fileContents = fs.readFileSync(filePath, 'utf8');
     const matterResult = matter(fileContents);
 
+    // Neutralize Hugo shortcodes by converting them to HTML comments
+    // This regex targets {{< ... >}} and {{% ... %}}
+    let contentToProcess = matterResult.content.replace(/{{([%<])\s*.*?\s*([%>])}}/gs, (match) => {
+      // console.log(`Neutralizing Hugo shortcode: ${match}`);
+      return `<!-- Hugo Shortcode Filtered: ${match
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')} -->`;
+    });
+    
+    // Additionally, handle potential mermaid blocks if they are not using the fenced code block syntax
+    contentToProcess = contentToProcess.replace(/{{< mermaid >}}([\s\S]*?){{< \/mermaid >}}/gs, (match, mermaidContent) => {
+      return '```mermaid\n' + mermaidContent.trim() + '\n```';
+    });
+
+
     const processedContent = await remark()
-      .use(gfm)
-      .use(remarkMath)
-      .use(remarkRehype, { allowDangerousHtml: true })
-      .use(rehypeKatex, { output: 'htmlAndMathml' })
-      .use(rehypeStringify, { allowDangerousHtml: true })
-      .process(matterResult.content);
+      .use(gfm) // GitHub Flavored Markdown (tables, strikethrough, etc.)
+      .use(remarkMath) // Support for math syntax
+      .use(remarkRehype, { allowDangerousHtml: true }) // Convert markdown to HTML AST
+      .use(rehypeKatex, { output: 'htmlAndMathml' }) // Render math with KaTeX
+      .use(rehypeStringify, { allowDangerousHtml: true }) // Convert HTML AST to string
+      .process(contentToProcess);
+      
     const contentHtml = processedContent.toString();
 
-    const plainContent = matterResult.content.replace(/<\/?[^>]+(>|$)/g, "");
-    const excerpt = plainContent.substring(0, 150) + (plainContent.length > 150 ? '...' : '');
+    // Generate a plain text excerpt
+    const plainContentForExcerpt = contentToProcess
+        .replace(/<\/?[^>]+(>|$)/g, ""); // Remove HTML tags after processing
+    const excerpt = plainContentForExcerpt.substring(0, 150) + (plainContentForExcerpt.length > 150 ? '...' : '');
 
     return {
-      id: slugParts.join('/'),
+      id: slugParts.join('/'), // Use normalized slug for ID
       slugParts,
       lang: resolvedLang,
       contentHtml,
@@ -198,19 +235,15 @@ export async function getPostData(langParam: string, slugParts: string[]): Promi
       ...matterResult.data,
     };
   } catch (e) {
-    console.error(`Error processing markdown file ${filePath}:`, e);
-    return null; // Gracefully return null if processing fails
+    console.error(`Error processing markdown file ${filePath}:`, e); 
+    return null; 
   }
 }
 
 export function getAllPostSlugsForStaticParams(): Array<{ lang: string; slugParts: string[] } > {
   const allFileDetails = getAllMarkdownFilesRecursive(contentDirectory);
-  
-  // The params object must match the dynamic route segment names.
-  // Our route is /posts/[lang]/[[...slugParts]]/page.tsx
-  // So, params should be { lang: '...', slugParts: ['part1', 'part2'] }
   return allFileDetails.map(fileDetail => ({
-    lang: fileDetail.lang, // This directly maps to the [lang] segment
-    slugParts: fileDetail.slugParts, // This maps to the [[...slugParts]] segment
+    lang: fileDetail.lang, 
+    slugParts: fileDetail.slugParts, 
   }));
 }
