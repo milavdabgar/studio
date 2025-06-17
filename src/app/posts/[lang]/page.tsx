@@ -31,12 +31,10 @@ export default async function BlogIndexPage(
     notFound();
   }
   
-
-
   const allPostsData: PostPreview[] = await getSortedPostsData(language);
   const pageTitle = language === 'gu' ? 'બ્લોગ / લેખો' : 'Blog / Articles';
   const pageDescription = language === 'gu' ? 'પોલીમેનેજર તરફથી નવીનતમ લેખો અને અપડેટ્સ વાંચો.' : 'Read the latest articles and updates from PolyManager.';
-  const noPostsMessage = language === 'gu' ? 'કોઈ પોસ્ટ મળી નથી.' : 'No posts found.';
+  const noPostsMessage = language === 'gu' ? 'આ ભાષામાં કોઈ પોસ્ટ મળી નથી.' : 'No posts found for this language.';
   const readMoreText = language === 'gu' ? 'વધુ વાંચો →' : 'Read more →';
 
   return (
@@ -56,26 +54,26 @@ export default async function BlogIndexPage(
             <p className="text-muted-foreground">{noPostsMessage}</p>
           ) : (
             <ul className="space-y-6">
-              {allPostsData.map(({ id, date, title, excerpt }) => (
-                <li key={id}>
+              {allPostsData.map((post) => (
+                <li key={post.href}> {/* Use post.href as key as it should be unique */}
                   <Card className="hover:shadow-lg transition-shadow">
                     <CardHeader>
-                      <Link href={`/posts/${language}/${id}`} legacyBehavior>
+                      <Link href={post.href} legacyBehavior>
                         <a className="text-2xl font-semibold text-primary hover:underline">
-                          {title}
+                          {post.title}
                         </a>
                       </Link>
                       <CardDescription className="text-sm text-muted-foreground">
-                        {date && isValid(parseISO(date)) ? format(parseISO(date), 'LLLL d, yyyy') : 'Date not available'}
+                        {post.date && isValid(parseISO(post.date)) ? format(parseISO(post.date), 'LLLL d, yyyy') : 'Date not available'}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <p className="text-muted-foreground line-clamp-3">
-                        {excerpt || (language === 'gu' ? 'વધુ વાંચો...' : 'Read more...')}
+                        {post.excerpt || (language === 'gu' ? 'વધુ વાંચો...' : 'Read more...')}
                       </p>
                     </CardContent>
                     <CardFooter>
-                      <Link href={`/posts/${language}/${id}`} passHref>
+                      <Link href={post.href} passHref>
                         <Button variant="link" className="p-0">{readMoreText}</Button>
                       </Link>
                     </CardFooter>
@@ -89,4 +87,3 @@ export default async function BlogIndexPage(
     </div>
   );
 }
-
