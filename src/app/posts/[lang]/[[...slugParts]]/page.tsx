@@ -20,6 +20,10 @@ interface PostPageProps {
   params: PostPageParams;
 }
 
+// This async function is for generating static paths if you're using SSG.
+// For SSR (which is the default with dynamic segments unless generateStaticParams is used), 
+// this function might not be strictly necessary for this specific error, 
+// but it's good practice for dynamic routes that can be statically generated.
 export async function generateStaticParams() {
   console.log("[PostPage generateStaticParams] Starting...");
   // Dynamically import to ensure it's treated as a module that can be re-evaluated if changed.
@@ -31,43 +35,43 @@ export async function generateStaticParams() {
       lang: s.lang,
       slugParts: s.slugParts && s.slugParts.length > 0 ? s.slugParts : undefined
     }));
-    console.log(`[PostPage generateStaticParams] Successfully generated ${paramsList.length} static params. Sample (first 3):`, paramsList.slice(0, 3));
+    console.log(`[PostPage generateStaticParams] Successfully generated ${paramsList.length} static params. Sample:`, paramsList.slice(0, 2));
   } catch (e: any) {
-    console.error("[PostPage generateStaticParams] CRITICAL ERROR:", e.message, e.stack);
-    // Provide a minimal fallback if slug generation fails, to allow build to proceed for other pages.
+    console.error("[PostPage generateStaticParams] CRITICAL ERROR:", e.message);
+    // Provide a minimal fallback if slug generation fails.
     paramsList = [{ lang: 'en', slugParts: undefined }, { lang: 'gu', slugParts: undefined }];
   }
   return paramsList;
 }
 
-export default async function PostPage({ params: pageParams }: PostPageProps) {
-  // Log the raw params received by the page component.
-  // Avoid directly interpolating pageParams.lang or pageParams.slugParts here if it causes issues.
-  console.log(`[PostPage Rendering] Received raw pageParams: ${JSON.stringify(pageParams)}`);
 
-  const postData = await getPostData({ 
-    lang: pageParams.lang, // Access directly here for the call
-    slugParts: pageParams.slugParts // Pass directly, getPostData will default if undefined
+export default async function PostPage({ params: pageParams }: PostPageProps) {
+  // Log the raw params received by the page component minimally.
+  // Avoid directly interpolating pageParams.lang or pageParams.slugParts here if it might cause issues.
+  console.log(`[PostPage Rendering] Received raw pageParams: lang=${pageParams.lang}, slugParts=${JSON.stringify(pageParams.slugParts)}`);
+
+  const postData = await getPostData({
+    lang: pageParams.lang,
+    slugParts: pageParams.slugParts || [], // Ensure an array is passed
   });
 
   if (!postData) {
-    console.log(`[PostPage Rendering] Post data is null. Lang from params: "${pageParams.lang}", slugParts from params: ${JSON.stringify(pageParams.slugParts)}. Triggering notFound().`);
+    console.log(`[PostPage Rendering] Post data is null for lang=${pageParams.lang}, slugParts=${JSON.stringify(pageParams.slugParts)}. Triggering notFound().`);
     notFound();
   }
   
   console.log(`[PostPage Rendering] Successfully fetched post data for "${postData.title}". Actual Lang: ${postData.lang}, Actual SlugParts: ${JSON.stringify(postData.slugParts)}`);
   
-  // Derive lang and slugParts for links FROM postData, as it might be a fallback
   const langForLinks = postData.lang;
-  const slugPartsFromPostData = postData.slugParts || [];
+  const slugPartsForLinks = postData.slugParts || [];
 
   const backLinkText = langForLinks === 'gu' ? 'બધા લેખો પર પાછા જાઓ' : 'Back to all articles';
   
   let backLinkHref = `/posts/${langForLinks}`;
-  if (slugPartsFromPostData.length > 1) { 
-      backLinkHref = `/posts/${langForLinks}/${slugPartsFromPostData.slice(0, -1).join('/')}`;
+  if (slugPartsForLinks.length > 1) { 
+      backLinkHref = `/posts/${langForLinks}/${slugPartsForLinks.slice(0, -1).join('/')}`;
   }
-  // Ensure no trailing slash for consistency, unless it's just /posts/[lang]
+  
   if (backLinkHref !== `/posts/${langForLinks}`) {
     backLinkHref = backLinkHref.replace(/\/$/, '');
   }
@@ -92,7 +96,6 @@ export default async function PostPage({ params: pageParams }: PostPageProps) {
         </CardHeader>
         <CardContent className="py-6">
           <article className="prose prose-lg dark:prose-invert max-w-none">
-            {/* Ensure PostRenderer can handle potentially complex HTML */}
             <PostRenderer contentHtml={postData.contentHtml} />
           </article>
         </CardContent>
@@ -100,3 +103,6 @@ export default async function PostPage({ params: pageParams }: PostPageProps) {
     </div>
   );
 }
+
+
+  
