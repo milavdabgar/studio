@@ -431,17 +431,17 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-       <head>
-            <title>PolyManager</title>
-            <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
-            <link rel="manifest" href="/manifest.json" />
-            <meta name="theme-color" content="#1E40AF" />
-            <meta name="mobile-web-app-capable" content="yes" />
-            <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
-            <meta name="apple-mobile-web-app-capable" content="yes" />
-            <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-            <meta name="apple-mobile-web-app-title" content="PolyManager" />
-        </head>
+      <head>
+           <title>PolyManager</title>
+           <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
+           <link rel="manifest" href="/manifest.json" />
+           <meta name="theme-color" content="#1E40AF" />
+           <meta name="mobile-web-app-capable" content="yes" />
+           <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+           <meta name="apple-mobile-web-app-capable" content="yes" />
+           <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+           <meta name="apple-mobile-web-app-title" content="PolyManager" />
+       </head>
       <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
         <ThemeProvider>
           <SidebarProvider>
@@ -456,12 +456,12 @@ export default function RootLayout({
               <SidebarMenu>
                 {currentNavItems.map((item) => (
                   <SidebarMenuItem key={item.id}>
-                    <Link href={item.href} passHref legacyBehavior>
-                      <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href || (pathname.startsWith(item.href + '/') && item.href !== '/dashboard' && item.href !== '/dashboard/hod' && item.href !== '/dashboard/committee')} >
+                    <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href || (pathname.startsWith(item.href + '/') && item.href !== '/dashboard' && item.href !== '/dashboard/hod' && item.href !== '/dashboard/committee')} asChild>
+                      <Link href={item.href}>
                         <item.icon />
                         <span>{item.label}</span>
-                      </SidebarMenuButton>
-                    </Link>
+                      </Link>
+                    </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
               </SidebarMenu>
@@ -470,7 +470,7 @@ export default function RootLayout({
               <div className="flex items-center gap-3 mb-4">
                 {currentUser.avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={currentUser.avatarUrl} alt={currentUser.name} data-ai-hint={currentUser.dataAiHint} className="h-10 w-10 rounded-full" />
+                  (<img src={currentUser.avatarUrl} alt={currentUser.name} data-ai-hint={currentUser.dataAiHint} className="h-10 w-10 rounded-full" />)
                 ) : (
                   <UserCircle className="h-10 w-10 rounded-full text-sidebar-foreground" />
                 )}
@@ -502,11 +502,11 @@ export default function RootLayout({
                 </div>
               )}
               <div className="flex items-center justify-between">
-                <Link href="/admin/settings" passHref>
-                  <Button variant="ghost" size="icon" className="text-sidebar-foreground hover:bg-sidebar-accent">
+                <Button variant="ghost" size="icon" className="text-sidebar-foreground hover:bg-sidebar-accent" asChild>
+                  <Link href="/admin/settings">
                     <Settings />
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
                 <ThemeToggle />
                 <Button 
                     variant="ghost" 

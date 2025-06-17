@@ -15,16 +15,15 @@ export default function LandingPage() {
             <h1 className="text-2xl font-bold text-foreground">PolyManager</h1>
           </div>
           <nav className="flex gap-4">
-            <Link href="/login" passHref>
-              <Button variant="outline">Login</Button>
-            </Link>
-            <Link href="/signup" passHref>
-              <Button>Sign Up</Button>
-            </Link>
+            <Button variant="outline" asChild>
+              <Link href="/login">Login</Link>
+            </Button>
+            <Button asChild>
+              <Link href="/signup">Sign Up</Link>
+            </Button>
           </nav>
         </div>
       </header>
-
       <main className="flex-1 container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
         <section className="text-center">
           <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-primary mb-6">
@@ -34,12 +33,12 @@ export default function LandingPage() {
             PolyManager is a comprehensive platform for Government Polytechnic Palanpur, designed to enhance academic and administrative efficiency.
           </p>
           <div className="flex justify-center gap-4 mb-16">
-            <Link href="/signup" passHref>
-              <Button size="lg" className="text-lg px-8 py-6">Get Started</Button>
-            </Link>
-            <Link href="/login" passHref>
-              <Button variant="secondary" size="lg" className="text-lg px-8 py-6">Access Your Portal</Button>
-            </Link>
+            <Button size="lg" className="text-lg px-8 py-6" asChild>
+              <Link href="/signup">Get Started</Link>
+            </Button>
+            <Button variant="secondary" size="lg" className="text-lg px-8 py-6" asChild>
+              <Link href="/login">Access Your Portal</Link>
+            </Button>
           </div>
         </section>
 
@@ -110,7 +109,6 @@ export default function LandingPage() {
           </div>
         </section>
       </main>
-
       <footer className="py-8 bg-background border-t">
         <div className="container mx-auto text-center text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} PolyManager. Government Polytechnic Palanpur. All rights reserved.</p>
