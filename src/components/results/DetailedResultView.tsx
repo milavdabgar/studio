@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Loader2, FileText, CheckCircle, AlertTriangle } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label"; // Added Label import
 import type { Result, Student, Program, Course } from '@/types/entities';
 import { resultService } from '@/lib/api/results';
@@ -51,7 +51,7 @@ export default function DetailedResultView({ resultId }: DetailedResultViewProps
         // Fetch details for all courses in the result subjects
         if (resultData.subjects && resultData.subjects.length > 0) {
             const courseSubcodes = resultData.subjects.map(s => s.code); // Assuming subject.code is course.subcode
-            const allCourses = await courseService.getAllCourses({}); // Pass an empty object for query options
+            const allCourses = await courseService.getAllCourses(); // Pass an empty object for query options
             const details: Record<string, Course> = {};const courseIds = courseSubcodes; // Assuming courseSubcodes is the intended variable name
             courseIds.forEach(subcode => {
                 const course = allCourses.find(c => c.subcode === subcode && c.programId === resultData.programId && c.semester === resultData.semester);

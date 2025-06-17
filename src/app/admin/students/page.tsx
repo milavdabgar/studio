@@ -46,4 +46,5 @@ const STATUS_OPTIONS: { value: StudentStatus; label: string }[] = [
 const SEMESTER_STATUS_OPTIONS: { value: SemesterStatus; label: string }[] = [
     { value: "N/A", label: "N/A" },
     { value: "Passed", label: "Passed" },
-    { value: "Pending" }
+    { value: "Pending", label: "Pending" }
+];

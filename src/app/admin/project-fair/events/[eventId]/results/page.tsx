@@ -245,7 +245,7 @@ export default function EventResultsPage() {
                                         <p>Downloaded: {certificateStats.participation.downloaded}</p>
                                         <p>Emailed: {certificateStats.participation.emailSent}</p>
                                     </CardContent>
-                                    <CardFooter className="gap-2"><Button size="xs" onClick={() => handleSimulatedAction('download', 'participation')} disabled={isSubmitting}><Download className="mr-1 h-3 w-3"/>Download All</Button><Button size="xs" onClick={() => handleSimulatedAction('email', 'participation')} disabled={isSubmitting}><Mail className="mr-1 h-3 w-3"/>Email All</Button></CardFooter>
+                                    <CardFooter className="gap-2"><Button size="sm" onClick={() => handleSimulatedAction('download', 'participation')} disabled={isSubmitting}><Download className="mr-1 h-3 w-3"/>Download All</Button><Button size="sm" onClick={() => handleSimulatedAction('email', 'participation')} disabled={isSubmitting}><Mail className="mr-1 h-3 w-3"/>Email All</Button></CardFooter>
                                 </Card>
                                 {/* Department Winner Certificates */}
                                 <Card>
@@ -256,7 +256,7 @@ export default function EventResultsPage() {
                                         <p>Downloaded: {certificateStats.department.downloaded}</p>
                                         <p>Emailed: {certificateStats.department.emailSent}</p>
                                     </CardContent>
-                                    <CardFooter className="gap-2"><Button size="xs" onClick={() => handleSimulatedAction('download', 'department')} disabled={isSubmitting}><Download className="mr-1 h-3 w-3"/>Download All</Button><Button size="xs" onClick={() => handleSimulatedAction('email', 'department')} disabled={isSubmitting}><Mail className="mr-1 h-3 w-3"/>Email All</Button></CardFooter>
+                                    <CardFooter className="gap-2"><Button size="sm" onClick={() => handleSimulatedAction('download', 'department')} disabled={isSubmitting}><Download className="mr-1 h-3 w-3"/>Download All</Button><Button size="sm" onClick={() => handleSimulatedAction('email', 'department')} disabled={isSubmitting}><Mail className="mr-1 h-3 w-3"/>Email All</Button></CardFooter>
                                 </Card>
                                 {/* Institute Winner Certificates */}
                                 <Card>
@@ -267,7 +267,7 @@ export default function EventResultsPage() {
                                         <p>Downloaded: {certificateStats.institute.downloaded}</p>
                                         <p>Emailed: {certificateStats.institute.emailSent}</p>
                                     </CardContent>
-                                    <CardFooter className="gap-2"><Button size="xs" onClick={() => handleSimulatedAction('download', 'institute')} disabled={isSubmitting}><Download className="mr-1 h-3 w-3"/>Download All</Button><Button size="xs" onClick={() => handleSimulatedAction('email', 'institute')} disabled={isSubmitting}><Mail className="mr-1 h-3 w-3"/>Email All</Button></CardFooter>
+                                    <CardFooter className="gap-2"><Button size="sm" onClick={() => handleSimulatedAction('download', 'institute')} disabled={isSubmitting}><Download className="mr-1 h-3 w-3"/>Download All</Button><Button size="sm" onClick={() => handleSimulatedAction('email', 'institute')} disabled={isSubmitting}><Mail className="mr-1 h-3 w-3"/>Email All</Button></CardFooter>
                                 </Card>
                             </div>
                              <Card className="mt-6">
@@ -287,5 +287,3 @@ export default function EventResultsPage() {
     </div>
   );
 }
-
-```

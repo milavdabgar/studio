@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog"; 
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogClose, DialogFooter } from "@/components/ui/dialog"; 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PlusCircle, Edit, Trash2, FileText as ResultIcon, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, ExternalLink, User, Filter, BookCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -33,7 +33,7 @@ export default function AdminResultsPage() {
   const [examinations, setExaminations] = useState<Examination[]>([]);
   
   const [isLoading, setIsLoading] = useState(false);
-  const [isSubmitting, setIsSubmitting = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState<ResultFilterParams>({
@@ -53,10 +53,10 @@ export default function AdminResultsPage() {
   });
 
   const [selectedBatchIdForDelete, setSelectedBatchIdForDelete] = useState<string | null>(null);
-  const [showDeleteConfirm, setShowDeleteConfirm = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const [sortField, setSortField] = useState<SortField>('declarationDate'); 
-  const [sortDirection, setSortDirection = useState<SortDirection>('desc');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
 
   useEffect(() => {
@@ -411,8 +411,7 @@ export default function AdminResultsPage() {
     </>
   );
 
-
-  return (
+    {/* Dialog for batch deletion confirmation */}
     <div className="space-y-6">
       <Card className="shadow-xl">
         <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
