@@ -152,6 +152,96 @@ export default async function PostPage({ params }: PostPageProps) {
   const backLinkHref = `/posts/${langForLinks}`;
 
 
+  // Check if this is a directory listing (Hugo-style _index.md behavior)
+  if (showHybridView) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Link href={backLinkHref} passHref className="mb-6 inline-block">
+          <Button variant="outline">
+            <ArrowLeft className="mr-2 h-4 w-4" /> {backLinkText}
+          </Button>
+        </Link>
+        
+        {/* Directory header with _index.md content */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-primary mb-4">{postData.title}</h1>
+          {postData.date && (
+            <p className="text-sm text-muted-foreground mb-4">
+              {typeof postData.date === 'string' && isValid(parseISO(postData.date)) 
+                ? format(parseISO(postData.date), 'LLLL d, yyyy') 
+                : 'Date not available'}
+              {postData.author && ` by ${postData.author}`}
+            </p>
+          )}
+          {postData.contentHtml && postData.contentHtml.trim() && (
+            <div className="prose prose-lg dark:prose-invert max-w-none mb-8 border-b pb-6">
+              <PostRenderer contentHtml={postData.contentHtml} />
+            </div>
+          )}
+        </div>
+
+        {/* Directory listing - main content */}
+        <div className="space-y-6">
+          <h2 className="text-2xl font-semibold text-foreground mb-6">
+            {pageParams.lang === 'gu' ? 'પોસ્ટ્સ' : 'Posts'}
+          </h2>
+          
+          {subPosts.length === 0 ? (
+            <Card>
+              <CardContent className="py-8 text-center">
+                <p className="text-muted-foreground">
+                  {pageParams.lang === 'gu' 
+                    ? 'કોઈ પોસ્ટ્સ મળ્યા નથી' 
+                    : 'No posts found'
+                  }
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid gap-6">
+              {subPosts.map((post) => (
+                <Card key={`${post.lang}-${post.id}`} className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <CardTitle className="text-xl">
+                      <Link 
+                        href={post.href} 
+                        className="text-primary hover:text-primary/80 transition-colors"
+                      >
+                        {post.title}
+                      </Link>
+                    </CardTitle>
+                    <CardDescription className="flex flex-col gap-1">
+                      <span>
+                        {post.date && typeof post.date === 'string' && isValid(parseISO(post.date)) 
+                          ? format(parseISO(post.date), 'LLLL d, yyyy') 
+                          : 'Date not available'
+                        }
+                        {post.author && ` by ${post.author}`}
+                      </span>
+                      {post.lang && (
+                        <span className="text-xs text-muted-foreground">
+                          {post.lang === 'gu' ? 'ગુજરાતી' : 'English'}
+                        </span>
+                      )}
+                    </CardDescription>
+                  </CardHeader>
+                  {post.excerpt && (
+                    <CardContent>
+                      <p className="text-muted-foreground">
+                        {post.excerpt}
+                      </p>
+                    </CardContent>
+                  )}
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Single post view (non-directory)
   return (
     <div className="container mx-auto px-4 py-8">
       <Link href={backLinkHref} passHref className="mb-6 inline-block">
@@ -175,52 +265,6 @@ export default async function PostPage({ params }: PostPageProps) {
           </article>
         </CardContent>
       </Card>
-
-      {/* Show sub-posts if this is a directory with children */}
-      {showHybridView && (
-        <div className="mt-8">
-          <h2 className="text-2xl font-bold text-primary mb-6">
-            {pageParams.lang === 'gu' ? 'સંબંધિત પોસ્ટ્સ' : 'Related Posts'}
-          </h2>
-          <div className="grid gap-6">
-            {subPosts.map((post) => (
-              <Card key={`${post.lang}-${post.id}`} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle className="text-xl">
-                    <Link 
-                      href={post.href} 
-                      className="text-primary hover:text-primary/80 transition-colors"
-                    >
-                      {post.title}
-                    </Link>
-                  </CardTitle>
-                  <CardDescription className="flex flex-col gap-1">
-                    <span>
-                      {post.date && typeof post.date === 'string' && isValid(parseISO(post.date)) 
-                        ? format(parseISO(post.date), 'LLLL d, yyyy') 
-                        : 'Date not available'
-                      }
-                      {post.author && ` by ${post.author}`}
-                    </span>
-                    {post.lang && (
-                      <span className="text-xs text-muted-foreground">
-                        {post.lang === 'gu' ? 'ગુજરાતી' : 'English'}
-                      </span>
-                    )}
-                  </CardDescription>
-                </CardHeader>
-                {post.excerpt && (
-                  <CardContent>
-                    <p className="text-muted-foreground">
-                      {post.excerpt}
-                    </p>
-                  </CardContent>
-                )}
-              </Card>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
