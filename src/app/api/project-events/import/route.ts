@@ -164,8 +164,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Critical error during project event import process.', error: (error as Error).message }, { status: 500 });
   }
 }
-
-```
-  </change>
-  <change>
-    <file>src/app/admin/project-fair/events/[eventId]/dashboard

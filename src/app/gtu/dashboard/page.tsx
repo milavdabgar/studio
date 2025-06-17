@@ -95,13 +95,17 @@ export default function GtuDashboardPage() {
           <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <Button variant="outline" className="w-full justify-start gap-2" asChild>
               <Link href="/admin/programs">
-                <BookCopy className="h-4 w-4"/>Manage Programs</Button>
-            </Link>
-            <Link href="/admin/curriculum" >
-              <Button variant="outline" className="w-full justify-start gap-2"><BookOpenText className="h-4 w-4"/>Manage Curricula</Button>
-            </Link>
-             <Link href="/admin/results" >
-              <Button variant="outline" className="w-full justify-start gap-2"><BarChart3 className="h-4 w-4"/>Oversee Results
+                <BookCopy className="h-4 w-4"/>Manage Programs
+              </Link>
+            </Button>
+            <Button variant="outline" className="w-full justify-start gap-2" asChild>
+              <Link href="/admin/curriculum">
+                <BookOpenText className="h-4 w-4"/>Manage Curricula
+              </Link>
+            </Button>
+            <Button variant="outline" className="w-full justify-start gap-2" asChild>
+              <Link href="/admin/results">
+                <BarChart3 className="h-4 w-4"/>Oversee Results
               </Link>
             </Button>
             {/* Add more GTU-specific links as features develop */}

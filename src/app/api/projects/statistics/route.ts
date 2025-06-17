@@ -115,3 +115,4 @@ export async function GET(request: NextRequest) {
     console.error("Error fetching project statistics:", error);
     return NextResponse.json({ message: "Error fetching project statistics", error: (error as Error).message }, { status: 500 });
   }
+}

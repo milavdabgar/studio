@@ -116,3 +116,4 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     console.error(`Error adding member to team ${teamId}:`, error);
     return NextResponse.json({ message: 'Error adding member to team', error: (error as Error).message }, { status: 500 });
   }
+}

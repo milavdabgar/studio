@@ -123,3 +123,4 @@ export async function POST(request: NextRequest) {
     console.error('Error creating project team:', error);
     return NextResponse.json({ message: 'Error creating project team', error: (error as Error).message }, { status: 500 });
   }
+}

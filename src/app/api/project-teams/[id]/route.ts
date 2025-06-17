@@ -101,4 +101,5 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
   global.__API_PROJECT_TEAMS_STORE__ = newStore; 
   projectTeamsStore = newStore; 
 
-  return NextResponse.json({ status: 'success', data: null
+  return NextResponse.json({ status: 'success', data: null }, { status: 200 });
+}

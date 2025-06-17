@@ -143,3 +143,14 @@ export async function updateExamination(id: string, updates: Partial<Examination
 export async function deleteExamination(id: string): Promise<boolean> {
   return Promise.resolve(true);
 }
+
+// Service object that groups all examination-related functions
+export const examinationService = {
+  getAllExaminations: getExaminations,
+  getExaminationById: getExamination,
+  getExaminationResults,
+  getExaminationTimetable,
+  createExamination,
+  updateExamination,
+  deleteExamination,
+};

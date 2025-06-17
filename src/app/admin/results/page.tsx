@@ -410,8 +410,8 @@ export default function AdminResultsPage() {
     </div>
     </>
   );
-
-    {/* Dialog for batch deletion confirmation */}
+  
+  return (
     <div className="space-y-6">
       <Card className="shadow-xl">
         <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -488,7 +488,7 @@ export default function AdminResultsPage() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowDeleteConfirm(false)} disabled={isSubmitting}>Cancel</Button>
             <Button variant="destructive" onClick={handleDeleteBatch} disabled={isSubmitting}>
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin/>}/> Delete
+              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Delete
             </Button>
           </DialogFooter>
         </DialogContent>

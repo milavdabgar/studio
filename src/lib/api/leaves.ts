@@ -147,3 +147,34 @@ export async function cancelLeaveRequest(id: string): Promise<LeaveRequest | nul
 export async function deleteLeaveRequest(id: string): Promise<boolean> {
   return Promise.resolve(true);
 }
+
+// Additional service functions
+export async function getLeaveRequestsForManagement(params: { facultyId?: string; status?: string; department?: string } = {}): Promise<LeaveRequest[]> {
+  // Get all leave requests, could filter by params in real implementation
+  return getLeaveRequests();
+}
+
+export async function getFacultyLeaveRequests(facultyId: string): Promise<LeaveRequest[]> {
+  return getLeaveRequests(facultyId);
+}
+
+export async function cancelLeaveRequestByFaculty(leaveId: string, facultyId: string): Promise<LeaveRequest | null> {
+  // Could add faculty validation logic here
+  return cancelLeaveRequest(leaveId);
+}
+
+// Service object that groups all leave-related functions
+export const leaveService = {
+  getLeaveRequests,
+  getLeaveRequest,
+  getLeaveBalance,
+  createLeaveRequest,
+  updateLeaveRequest,
+  approveLeaveRequest,
+  rejectLeaveRequest,
+  cancelLeaveRequest,
+  deleteLeaveRequest,
+  getLeaveRequestsForManagement,
+  getFacultyLeaveRequests,
+  cancelLeaveRequestByFaculty,
+};

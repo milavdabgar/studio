@@ -50,6 +50,3 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
   return NextResponse.json({ status: 'success', data: { team } }, { status: 200 });
 }
-```
-  </change>
-</changes>

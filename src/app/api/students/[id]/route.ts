@@ -171,8 +171,3 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
   return NextResponse.json({ message: 'Student deleted successfully' }, { status: 200 });
 }
-
-```
-  </change>
-  <change>
-    <file>/

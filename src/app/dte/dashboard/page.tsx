@@ -110,15 +110,19 @@ export default function DteDashboardPage() {
          <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
            <Button variant="outline" className="w-full justify-start gap-2" asChild>
               <Link href="/admin/institutes">
-                <Landmark className="h-4 w-4"/>Manage Institutes</Button>
-           </Link>
-           <Link href="/admin/programs" >
-             <Button variant="outline" className="w-full justify-start gap-2"><BookCopy className="h-4 w-4"/>Oversee Programs</Button>
-           </Link>
-           <Link href="/admin/reporting-analytics" >
-             <Button variant="outline" className="w-full justify-start gap-2"><BarChart3 className="h-4 w-4"/>View System Reports
+                <Landmark className="h-4 w-4"/>Manage Institutes
               </Link>
-            </Button>
+           </Button>
+           <Button variant="outline" className="w-full justify-start gap-2" asChild>
+             <Link href="/admin/programs">
+               <BookCopy className="h-4 w-4"/>Oversee Programs
+             </Link>
+           </Button>
+           <Button variant="outline" className="w-full justify-start gap-2" asChild>
+             <Link href="/admin/reporting-analytics">
+               <BarChart3 className="h-4 w-4"/>View System Reports
+             </Link>
+           </Button>
            {/* Add more DTE-specific links as features develop, e.g., Staff Transfers, CAS Management */}
          </CardContent>
        </Card>

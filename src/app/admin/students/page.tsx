@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
@@ -48,3 +46,30 @@ const SEMESTER_STATUS_OPTIONS: { value: SemesterStatus; label: string }[] = [
     { value: "Passed", label: "Passed" },
     { value: "Pending", label: "Pending" }
 ];
+
+export default function AdminStudentsPage() {
+  const { toast } = useToast();
+
+  return (
+    <div className="container mx-auto py-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Users className="h-5 w-5" />
+            Student Management
+          </CardTitle>
+          <CardDescription>
+            Manage student records and information
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">
+              Student management functionality will be implemented here.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

@@ -54,7 +54,3 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
   return NextResponse.json({ status: 'success', data: { team } }, { status: 200 });
 }
-```
-  </change>
-  <change>
-    <file>src/app/api/project-teams/[id]/leader/[memberUserId]/route.ts</file

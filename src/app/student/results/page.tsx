@@ -153,8 +153,8 @@ export default function StudentResultsPage() {
             <Award className="h-8 w-8" /> My Academic Results
           </CardTitle>
           <CardDescription>
-            Enrollment: {student.enrollmentNumber} | Program: {program?.name || 'N/A'} &lt;br/&gt;
-            Overall CPI: &lt;span className="font-semibold"&gt;{overallCpi.toFixed(2)}&lt;/span&gt;
+            Enrollment: {student.enrollmentNumber} | Program: {program?.name || 'N/A'} <br/>
+            Overall CPI: <span className="font-semibold">{overallCpi.toFixed(2)}</span>
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -173,57 +173,57 @@ export default function StudentResultsPage() {
                 const sgpa = latestSemesterResult?.spi?.toFixed(2) || "N/A";
 
                 return (
-                    &lt;Card key={semesterKey} className="bg-card shadow-md"&gt;
-                        &lt;CardHeader&gt;
-                            &lt;CardTitle className="text-xl text-secondary flex items-center justify-between"&gt;
-                                &lt;span&gt;Semester {semesterKey} Results&lt;/span&gt;
-                                &lt;span className="text-lg font-medium"&gt;SGPA: &lt;span className="text-primary"&gt;{sgpa}&lt;/span&gt;&lt;/span&gt;
-                            &lt;/CardTitle&gt;
-                        &lt;/CardHeader&gt;
-                        &lt;CardContent&gt;
+                    <Card key={semesterKey} className="bg-card shadow-md">
+                        <CardHeader>
+                            <CardTitle className="text-xl text-secondary flex items-center justify-between">
+                                <span>Semester {semesterKey} Results</span>
+                                <span className="text-lg font-medium">SGPA: <span className="text-primary">{sgpa}</span></span>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
                              {semesterResults.sort((a,b) => new Date(b.declarationDate || 0).getTime() - new Date(a.declarationDate || 0).getTime()).map(result => (
-                                &lt;div key={result._id} className="mb-4 p-3 border rounded-md bg-background"&gt;
-                                    &lt;div className="flex justify-between items-center mb-2"&gt;
-                                        &lt;h4 className="font-semibold"&gt;{result.exam || 'Exam Result'}&lt;/h4&gt;
-                                        &lt;span className={`text-xs px-2 py-0.5 rounded-full font-medium ${result.result === 'PASS' ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'}`}&gt;
+                                <div key={result._id} className="mb-4 p-3 border rounded-md bg-background">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <h4 className="font-semibold">{result.exam || 'Exam Result'}</h4>
+                                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${result.result === 'PASS' ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'}`}>
                                             {result.result}
-                                        &lt;/span&gt;
-                                    &lt;/div&gt;
-                                    &lt;p className="text-xs text-muted-foreground mb-2"&gt;Declared: {result.declarationDate ? format(parseISO(result.declarationDate), "PPP") : 'N/A'}&lt;/p&gt;
-                                    &lt;Table size="sm"&gt;
-                                        &lt;TableHeader&gt;
-                                        &lt;TableRow&gt;
-                                            &lt;TableHead className="w-1/4"&gt;Subject Code&lt;/TableHead&gt;
-                                            &lt;TableHead className="w-2/4"&gt;Subject Name&lt;/TableHead&gt;
-                                            &lt;TableHead className="text-center w-1/12"&gt;Credits&lt;/TableHead&gt;
-                                            &lt;TableHead className="text-center w-1/12"&gt;Grade&lt;/TableHead&gt;
-                                        &lt;/TableRow&gt;
-                                        &lt;/TableHeader&gt;
-                                        &lt;TableBody&gt;
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground mb-2">Declared: {result.declarationDate ? format(parseISO(result.declarationDate), "PPP") : 'N/A'}</p>
+                                    <Table size="sm">
+                                        <TableHeader>
+                                        <TableRow>
+                                            <TableHead className="w-1/4">Subject Code</TableHead>
+                                            <TableHead className="w-2/4">Subject Name</TableHead>
+                                            <TableHead className="text-center w-1/12">Credits</TableHead>
+                                            <TableHead className="text-center w-1/12">Grade</TableHead>
+                                        </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
                                         {result.subjects.map((subject, index) => (
-                                            &lt;TableRow key={`${result._id}-sub-${index}`} className={subject.isBacklog ? "bg-red-50 dark:bg-red-900/20" : ""}&gt;
-                                                &lt;TableCell&gt;{subject.code}&lt;/TableCell&gt;
-                                                &lt;TableCell className="font-medium"&gt;{subject.name || coursesDetails[subject.code]?.subjectName || 'N/A'}&lt;/TableCell&gt;
-                                                &lt;TableCell className="text-center"&gt;{subject.credits || coursesDetails[subject.code]?.credits || 'N/A'}&lt;/TableCell&gt;
-                                                &lt;TableCell className="text-center font-semibold"&gt;{subject.grade}&lt;/TableCell&gt;
-                                            &lt;/TableRow&gt;
+                                            <TableRow key={`${result._id}-sub-${index}`} className={subject.isBacklog ? "bg-red-50 dark:bg-red-900/20" : ""}>
+                                                <TableCell>{subject.code}</TableCell>
+                                                <TableCell className="font-medium">{subject.name || coursesDetails[subject.code]?.subjectName || 'N/A'}</TableCell>
+                                                <TableCell className="text-center">{subject.credits || coursesDetails[subject.code]?.credits || 'N/A'}</TableCell>
+                                                <TableCell className="text-center font-semibold">{subject.grade}</TableCell>
+                                            </TableRow>
                                         ))}
-                                        &lt;/TableBody&gt;
-                                    &lt;/Table&gt;
-                                     &lt;div className="mt-3 text-right"&gt;
-                                        &lt;Link href={`/admin/results/detailed/${result._id}`} passHref&gt;
-                                            &lt;Button variant="link" size="sm" className="text-xs"&gt;View Full Marksheet&lt;/Button&gt;
-                                        &lt;/Link&gt;
-                                    &lt;/div&gt;
-                                &lt;/div&gt;
+                                        </TableBody>
+                                    </Table>
+                                     <div className="mt-3 text-right">
+                                        <Link href={`/admin/results/detailed/${result._id}`} passHref>
+                                            <Button variant="link" size="sm" className="text-xs">View Full Marksheet</Button>
+                                        </Link>
+                                    </div>
+                                </div>
                              ))}
-                        &lt;/CardContent&gt;
-                    &lt;/Card&gt;
+                        </CardContent>
+                    </Card>
                 );
             })
           )}
-        &lt;/CardContent&gt;
-      &lt;/Card&gt;
-    &lt;/div&gt;
+        </CardContent>
+      </Card>
+    </div>
   );
 }
