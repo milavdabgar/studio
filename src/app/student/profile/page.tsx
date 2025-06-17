@@ -385,9 +385,11 @@ export default function StudentProfilePage() {
                 </div>
             )}
              <div className="mt-4">
-                <Link href="/student/results" passHref legacyBehavior>
-                    <Button variant="outline"><BookOpen className="mr-2 h-4 w-4" /> View Detailed Marksheets</Button>
-                </Link>
+                <Button variant="outline" asChild>
+              <Link href="/student/results">
+                <BookOpen className="mr-2 h-4 w-4" /> View Detailed Marksheets
+              </Link>
+            </Button>
             </div>
         </CardContent>
       </Card>

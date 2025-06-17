@@ -172,11 +172,11 @@ const NotificationBell: React.FC = () => {
                     )}
                   </div>
                   {notification.link && (
-                    <Link href={notification.link} passHref legacyBehavior>
-                      <Button variant="link" size="sm" className="text-xs p-0 h-auto mt-1 flex items-center" onClick={() => setIsOpen(false)}>
+                    <Button variant="link" size="sm" className="text-xs p-0 h-auto mt-1 flex items-center" onClick={() => setIsOpen(false)} asChild>
+                      <Link href={notification.link}>
                         <ExternalLink className="h-3 w-3 mr-1"/> View Details
-                      </Button>
-                    </Link>
+                      </Link>
+                    </Button>
                   )}
                 </div>
                 <Separator />
@@ -185,11 +185,11 @@ const NotificationBell: React.FC = () => {
           )}
         </ScrollArea>
         <div className="p-2 border-t text-center">
-            <Link href="/notifications" passHref legacyBehavior>
-                <Button variant="link" size="sm" className="text-xs w-full" onClick={() => setIsOpen(false)}>
+            <Button variant="link" size="sm" className="text-xs w-full" onClick={() => setIsOpen(false)} asChild>
+                <Link href="/notifications">
                     View All Notifications
-                </Button>
-            </Link>
+                </Link>
+            </Button>
         </div>
       </PopoverContent>
     </Popover>

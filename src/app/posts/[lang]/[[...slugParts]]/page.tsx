@@ -59,11 +59,11 @@ export default async function PostPage({ params }: PostPageProps) {
     return (
       <BlogLayout currentLang={pageParams.lang}>
         <div className="container mx-auto px-4 py-8">
-          <Link href="/" className="mb-6 inline-block" legacyBehavior>
-            <Button variant="outline">
+          <Button variant="outline" className="mb-6 inline-block" asChild>
+            <Link href="/">
               <ArrowLeft className="mr-2 h-4 w-4" /> {backText}
-            </Button>
-          </Link>
+            </Link>
+          </Button>
           
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-primary mb-2">{pageTitle}</h1>
@@ -128,11 +128,11 @@ export default async function PostPage({ params }: PostPageProps) {
             <div className="container mx-auto px-4 py-8 max-w-7xl">
               {/* Header Section */}
               <div className="mb-8">
-                <Link href={parentPath} className="mb-6 inline-block" legacyBehavior>
-                  <Button variant="outline" className="shadow-sm hover:shadow-md transition-shadow">
+                <Button variant="outline" className="mb-6 inline-block shadow-sm hover:shadow-md transition-shadow" asChild>
+                  <Link href={parentPath}>
                     <ArrowLeft className="mr-2 h-4 w-4" /> {backText}
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
                 
                 <div className="mb-8 text-center">
                   <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
@@ -212,11 +212,11 @@ export default async function PostPage({ params }: PostPageProps) {
       <BlogLayout currentLang={langForLinks}>
         <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
           <div className="container mx-auto px-4 py-8 max-w-7xl">
-            <Link href={backLinkHref} passHref className="mb-6 inline-block" legacyBehavior>
-              <Button variant="outline" className="shadow-sm hover:shadow-md transition-shadow">
+            <Button variant="outline" className="mb-6 inline-block shadow-sm hover:shadow-md transition-shadow" asChild>
+              <Link href={backLinkHref}>
                 <ArrowLeft className="mr-2 h-4 w-4" /> {backLinkText}
-              </Button>
-            </Link>
+              </Link>
+            </Button>
             
             {/* Directory header with _index.md content */}
             <div className="mb-12 text-center">
@@ -294,11 +294,11 @@ export default async function PostPage({ params }: PostPageProps) {
     <BlogLayout currentLang={langForLinks}>
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
         <div className="container mx-auto px-4 py-8 max-w-4xl">
-          <Link href={backLinkHref} passHref className="mb-8 inline-block" legacyBehavior>
-            <Button variant="outline" className="shadow-sm hover:shadow-md transition-shadow">
+          <Button variant="outline" className="mb-8 inline-block shadow-sm hover:shadow-md transition-shadow" asChild>
+            <Link href={backLinkHref}>
               <ArrowLeft className="mr-2 h-4 w-4" /> {backLinkText}
-            </Button>
-          </Link>
+            </Link>
+          </Button>
           
           <article>
             <Card className="shadow-xl border-0 bg-gradient-to-br from-card to-card/90 overflow-hidden">

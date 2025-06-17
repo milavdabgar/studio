@@ -134,14 +134,14 @@ export default function StudentCourseDetailPage() {
                                 <Link
                                   href={`/student/assignments/${assessment.id}`}
                                   className="font-medium text-primary hover:underline"
-                                  legacyBehavior>
+                                  >
                                     {assessment.name}
                                 </Link>
                                 <p className="text-xs text-muted-foreground">
                                     Type: {assessment.type} | Due: {assessment.dueDate ? format(new Date(assessment.dueDate), "PPP") : "N/A"}
                                 </p>
                             </div>
-                            <Link href={`/student/assignments/${assessment.id}`} passHref legacyBehavior>
+                            <Link href={`/student/assignments/${assessment.id}`} >
                                 <Button variant="outline" size="sm">View</Button>
                             </Link>
                         </li>
@@ -155,11 +155,11 @@ export default function StudentCourseDetailPage() {
 
           <div>
             <h3 className="text-lg font-semibold mb-2 text-secondary">Study Materials</h3>
-            <Link href="/student/materials" passHref legacyBehavior>
-              <Button variant="outline">
+            <Button variant="outline" asChild>
+              <Link href="/student/materials">
                 <Paperclip className="mr-2 h-4 w-4" /> Access Course Materials
-              </Button>
-            </Link>
+              </Link>
+            </Button>
             <p className="text-xs text-muted-foreground mt-1">
               Find lecture notes, presentations, and other resources for all your courses on the Study Materials page.
             </p>

@@ -257,7 +257,7 @@ export default function AdminStudentAcademicProgressPage() {
                                     <div key={res._id} className="p-2 border rounded-md mb-2 bg-background">
                                         <div className="flex justify-between items-baseline"><h4 className="font-medium">{res.exam}</h4><span className="text-xs text-muted-foreground">Declared: {res.declarationDate ? format(parseISO(res.declarationDate), "PPP") : "N/A"}</span></div>
                                         <p className="text-sm">SPI: <span className="font-semibold">{res.spi.toFixed(2)}</span> | CPI: <span className="font-semibold">{res.cpi.toFixed(2)}</span> | Result: <span className={`font-semibold ${res.result === 'PASS' ? 'text-success' : 'text-destructive'}`}>{res.result}</span></p>
-                                        <Link href={`/admin/results/detailed/${res._id}`} passHref legacyBehavior><Button variant="link" size="sm" className="p-0 h-auto text-xs">View Full Marksheet</Button></Link>
+                                        <Link href={`/admin/results/detailed/${res._id}`} ><Button variant="link" size="sm" className="p-0 h-auto text-xs">View Full Marksheet</Button></Link>
                                     </div>
                                 ))}
                             </div>

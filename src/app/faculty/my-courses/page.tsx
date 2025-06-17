@@ -169,32 +169,27 @@ export default function MyCoursesPage() {
                   <CardFooter className="flex flex-col items-stretch gap-2 pt-4 border-t">
                     <Link
                       href={`/faculty/course-offerings/${offering.id}/students`}
-                      passHref
-                      legacyBehavior>
+                      >
                         <Button variant="outline" className="w-full justify-start"><Users className="mr-2 h-4 w-4"/>Enrolled Students</Button>
                     </Link>
                     <Link
                       href={`/faculty/attendance/mark?offeringId=${offering.id}`}
-                      passHref
-                      legacyBehavior>
+                      >
                        <Button variant="outline" className="w-full justify-start"><CalendarCheck className="mr-2 h-4 w-4"/>Mark Attendance</Button>
                     </Link>
                     <Link
                       href={`/faculty/course-offerings/${offering.id}/assessments`}
-                      passHref
-                      legacyBehavior>
+                      >
                        <Button variant="outline" className="w-full justify-start"><AssessmentIcon className="mr-2 h-4 w-4"/>Manage Assessments</Button>
                     </Link>
                     <Link
                       href={`/faculty/assessments/grade?offeringId=${offering.id}`}
-                      passHref
-                      legacyBehavior>
+                      >
                        <Button variant="outline" className="w-full justify-start"><Edit3 className="mr-2 h-4 w-4"/>Grade Assessments</Button>
                     </Link>
                     <Link
                       href={`/faculty/course-offerings/${offering.id}/materials`}
-                      passHref
-                      legacyBehavior>
+                      >
                        <Button variant="outline" className="w-full justify-start"><Paperclip className="mr-2 h-4 w-4"/>Manage Materials</Button>
                     </Link>
                   </CardFooter>

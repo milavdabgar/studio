@@ -38,7 +38,7 @@ export function SubsectionCard({ name, slug, postCount, lang, description }: Sub
               <Link
                 href={`/posts/${lang}/${slug}`}
                 className="text-primary hover:text-secondary transition-colors block truncate group-hover:text-primary"
-                legacyBehavior>
+              >
                 {displayName}
               </Link>
             </CardTitle>
@@ -57,7 +57,7 @@ export function SubsectionCard({ name, slug, postCount, lang, description }: Sub
           <Link
             href={`/posts/${lang}/${slug}`}
             className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 group/link"
-            legacyBehavior>
+          >
             {lang === 'gu' ? 'જુઓ' : 'View'}
             <span className="transition-transform group-hover/link:translate-x-1">→</span>
           </Link>

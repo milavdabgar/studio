@@ -108,9 +108,11 @@ export default function ProjectEventDashboardPage() {
                 <CardContent>
                   <div className="text-2xl font-bold">{card.value}</div>
                   {card.href && (
-                    <Link href={card.href} passHref legacyBehavior>
-                      <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground">View/Manage</Button>
-                    </Link>
+                    <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground" asChild>
+              <Link href={card.href}>
+                View/Manage
+              </Link>
+            </Button>
                   )}
                 </CardContent>
               </Card>
@@ -124,7 +126,7 @@ export default function ProjectEventDashboardPage() {
             </CardHeader>
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {managementLinks.map(link => (
-                    <Link key={link.href} href={link.href} passHref legacyBehavior>
+                    <Link key={link.href} href={link.href} >
                         <Button variant="outline" className="w-full justify-start gap-3 p-4 h-auto">
                             <link.icon className="h-5 w-5 text-primary"/>
                             <span className="text-sm">{link.label}</span>

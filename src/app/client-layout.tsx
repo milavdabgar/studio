@@ -138,7 +138,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
               <SidebarMenu>
                 {baseNavItems[currentUser.activeRole]?.map((item) => (
                   <SidebarMenuItem key={item.id} active={pathname === item.href}>
-                    <Link href={item.href} passHref legacyBehavior>
+                    <Link href={item.href} >
                       <SidebarMenuButton>
                         <item.icon className="w-5 h-5" />
                         <span>{item.label}</span>
@@ -184,11 +184,11 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                 </div>
               )}
               <div className="flex items-center justify-between">
-                <Link href="/admin/settings" passHref legacyBehavior>
-                  <Button variant="ghost" size="icon" className="text-sidebar-foreground hover:bg-sidebar-accent">
-                    <Settings />
-                  </Button>
-                </Link>
+                <Button variant="ghost" size="icon" className="text-sidebar-foreground hover:bg-sidebar-accent" asChild>
+              <Link href="/admin/settings">
+                <Settings />
+              </Link>
+            </Button>
                 <ThemeToggle />
                 <Button 
                   variant="ghost" 

@@ -19,7 +19,7 @@ export default function ResourceAllocationPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Link href="/admin/resource-allocation/rooms" passHref legacyBehavior>
+          <Link href="/admin/resource-allocation/rooms" >
             <Card className="hover:shadow-lg transition-shadow cursor-pointer">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Room Allocation</CardTitle>

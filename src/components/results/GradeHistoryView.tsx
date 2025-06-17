@@ -119,9 +119,9 @@ export default function GradeHistoryView({ studentEnrollmentNo }: GradeHistoryVi
                                             </TableCell>
                                             <TableCell className="text-right">{result.declarationDate ? format(new Date(result.declarationDate), "PPP") : 'N/A'}</TableCell>
                                             <TableCell className="text-right">
-                                                <Link href={`/admin/results/detailed/${result._id}`} passHref legacyBehavior>
-                                                    <Button variant="outline" size="sm">View Details</Button>
-                                                </Link>
+                                                <Button variant="outline" size="sm" asChild>
+                                                    <Link href={`/admin/results/detailed/${result._id}`}>View Details</Link>
+                                                </Button>
                                             </TableCell>
                                         </TableRow>
                                     ))}
