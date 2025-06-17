@@ -1,4 +1,3 @@
-
 // src/lib/markdown.ts
 
 import fs from 'fs';
@@ -16,37 +15,40 @@ import rehypeStringify from 'rehype-stringify';
 const contentDirectory = path.join(process.cwd(), 'content');
 export const availableLanguages = ['en', 'gu']; // Supported languages
 
+console.log(`[markdown.ts] Initialized. process.cwd(): ${process.cwd()}`);
+console.log(`[markdown.ts] Content directory set to: ${contentDirectory}`);
+
+
 export interface PostData {
-  id: string; // Combined slug, e.g., "section/my-post"
-  slugParts: string[]; // e.g., ['section', 'my-post']
+  id: string;
+  slugParts: string[];
   lang: string;
   title: string;
   date: string;
   contentHtml: string;
   excerpt?: string;
-  [key: string]: any; // For other frontmatter fields
+  [key: string]: any;
 }
 
 export interface PostPreview {
-  id: string; // Combined slug, e.g., "section/my-post"
+  id: string;
   slugParts: string[];
   lang: string;
   title: string;
   date: string;
   excerpt?: string;
-  href: string; // Full path for linking, e.g., /posts/en/section/my-post
+  href: string;
   [key: string]: any;
 }
 
 interface FileDetails {
-  slugParts: string[]; // e.g., ['my-section', 'my-post'] or ['my-section'] for _index.md
-  lang: string;        // e.g., 'en' or 'gu'
-  id: string;          // e.g., 'my-section/my-post' or 'my-section' for _index.md
-  fullPath: string;    // Absolute path to the .md file
-  relativePath: string;// Path relative to contentDirectory e.g., section/my-post.gu.md
+  slugParts: string[];
+  lang: string;
+  id: string;
+  fullPath: string;
+  relativePath: string;
 }
 
-// Helper function to recursively get all markdown files and their details
 function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir, currentPathParts: string[] = []): FileDetails[] {
   let files: FileDetails[] = [];
   if (!fs.existsSync(dir)) {
@@ -62,41 +64,42 @@ function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir, curren
     return files;
   }
 
+
   for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name);
+    const fullEntryPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      files = files.concat(getAllMarkdownFilesRecursive(fullPath, baseDir, [...currentPathParts, entry.name]));
+      files = files.concat(getAllMarkdownFilesRecursive(fullEntryPath, baseDir, [...currentPathParts, entry.name]));
     } else if (entry.isFile() && entry.name.endsWith('.md')) {
-      let lang = 'en';
-      let baseName = entry.name.substring(0, entry.name.length - 3); // Remove .md
+      let lang = 'en'; // Default to English
+      let baseName = entry.name.substring(0, entry.name.length - 3);
 
       const langMatch = baseName.match(/\.([a-z]{2})$/);
       if (langMatch && availableLanguages.includes(langMatch[1])) {
         lang = langMatch[1];
-        baseName = baseName.substring(0, baseName.length - 3); // Remove .[lang]
+        baseName = baseName.substring(0, baseName.length - 3);
       }
 
-      let slugParts: string[];
+      let slugPartsForFile: string[];
       let id: string;
 
-      if (baseName === '_index' || baseName === 'index') {
-        slugParts = [...currentPathParts]; // For content/blog/_index.md, slugParts = ['blog']
-        id = slugParts.join('/');
+      if (baseName.toLowerCase() === '_index' || baseName.toLowerCase() === 'index') {
+        slugPartsForFile = [...currentPathParts];
+        id = slugPartsForFile.join('/');
       } else {
-        slugParts = [...currentPathParts, baseName];
-        id = slugParts.join('/');
+        slugPartsForFile = [...currentPathParts, baseName];
+        id = slugPartsForFile.join('/');
       }
       
-      // Skip if ID becomes empty (e.g. root _index.md if not desired as a route)
-      // if (id === '' && baseName === '_index') continue;
-
+      // If currentPathParts is empty and baseName is _index or index, the id will be ""
+      // This represents the root index file for a language, e.g. /posts/en/
+      // slugPartsForFile should be an empty array for this case.
 
       files.push({
-        slugParts,
+        slugParts: slugPartsForFile,
         lang,
         id,
-        fullPath,
-        relativePath: path.relative(baseDir, fullPath).replace(/\\/g, '/'),
+        fullPath: fullEntryPath,
+        relativePath: path.relative(baseDir, fullEntryPath).replace(/\\/g, '/'),
       });
     }
   }
@@ -104,6 +107,7 @@ function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir, curren
 }
 
 export async function getSortedPostsData(langToFilter?: string): Promise<PostPreview[]> {
+  // console.log(`[getSortedPostsData] Called with langToFilter: ${langToFilter}. Content directory: ${contentDirectory}`);
   const allFileDetails = getAllMarkdownFilesRecursive(contentDirectory);
   // console.log(`[getSortedPostsData] Found ${allFileDetails.length} total markdown files.`);
 
@@ -111,11 +115,6 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
     if (langToFilter && fileDetail.lang !== langToFilter) {
       return null;
     }
-    // Skip _index files for the main post listing if they represent section overviews not individual posts
-    // This depends on desired behavior. For now, let's include them.
-    // if (fileDetail.relativePath.endsWith('_index.md') || fileDetail.relativePath.endsWith('index.md')) {
-    //    // if you want to exclude section index pages from the main list
-    // }
 
     const filePath = fileDetail.fullPath;
     try {
@@ -123,10 +122,13 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
       const matterResult = matter(fileContents);
 
       let contentForExcerpt = matterResult.content;
-      contentForExcerpt = contentForExcerpt.replace(/{{([%<])(?:.|\n)*?([%>])}}/gs, (match) => {
-        if (match.includes('```mermaid')) return match; 
-        return `<!-- HUGO_SHORTCODE_FILTERED_EXCERPT: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`;
-      });
+      // More aggressive shortcode filtering for excerpts
+      contentForExcerpt = contentForExcerpt.replace(/{{<.*?>.*?{{\s*<\s*\/\s*.*?\s*>\s*}}/gs, '[Shortcode Block]'); // Paired shortcodes
+      contentForExcerpt = contentForExcerpt.replace(/{{<.*?>}}/g, '[Shortcode]'); // Self-closing shortcodes
+      contentForExcerpt = contentForExcerpt.replace(/{{%(?:.|\n)*?%}}/gs, '[Shortcode Block]');
+      contentForExcerpt = contentForExcerpt.replace(/```mermaid(?:.|\n)*?```/gs, '[Mermaid Diagram]');
+
+
       const plainContent = contentForExcerpt.replace(/<\/?[^>]+(>|$)/g, "").replace(/<!--.*?-->/gs, "").replace(/```[\s\S]*?```/g, "[Code Block]");
       const excerpt = plainContent.substring(0, 150) + (plainContent.length > 150 ? '...' : '');
       
@@ -134,7 +136,7 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
       const date = matterResult.data.date || new Date().toISOString();
 
       return {
-        id: fileDetail.id, // id is now 'section/slug' or 'slug' or 'section' for _index.md
+        id: fileDetail.id,
         slugParts: fileDetail.slugParts,
         lang: fileDetail.lang,
         title,
@@ -167,29 +169,35 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
 export async function getPostData(langParam: string, slugParts: string[]): Promise<PostData | null> {
   const normalizedSlug = slugParts.join('/');
   console.log(`[getPostData DEBUG] =================================================================`);
-  console.log(`[getPostData DEBUG] Attempting to get post for lang: "${langParam}", slug: "${normalizedSlug}"`);
+  console.log(`[getPostData DEBUG] Attempting to get post for lang: "${langParam}", slugParts: ${JSON.stringify(slugParts)}, normalizedSlug: "${normalizedSlug}"`);
   console.log(`[getPostData DEBUG] Content Directory Root: ${contentDirectory}`);
-  
-  const baseSlugPathForFs = slugParts.join(path.sep); // Use platform-specific separator for fs operations
-  
-  // Order matters: specific language file, then generic, then index files
-  const possibleFileNames = [
-    `${baseSlugPathForFs}.${langParam}.md`,         // section/my-post.en.md
-    path.join(baseSlugPathForFs, `_index.${langParam}.md`), // section/my-post/_index.en.md (if my-post is a section)
-    path.join(baseSlugPathForFs, `index.${langParam}.md`),  // section/my-post/index.en.md
-  ];
 
-  if (langParam === 'en') { // Only for English, check for non-suffixed files
-    possibleFileNames.push(`${baseSlugPathForFs}.md`);      // section/my-post.md
-    possibleFileNames.push(path.join(baseSlugPathForFs, `_index.md`)); // section/my-post/_index.md
-    possibleFileNames.push(path.join(baseSlugPathForFs, `index.md`));  // section/my-post/index.md
+  const baseSlugPathForFs = slugParts.length > 0 ? slugParts.join(path.sep) : '';
+  
+  const possibleFileChecks: { filePathToCheck: string, resolvedLang: string }[] = [];
+
+  // Case 1: slugParts lead to a directory, check for _index.lang.md or index.lang.md inside it
+  if (slugParts.length > 0) {
+    possibleFileChecks.push({ filePathToCheck: path.join(contentDirectory, baseSlugPathForFs, `_index.${langParam}.md`), resolvedLang: langParam});
+    possibleFileChecks.push({ filePathToCheck: path.join(contentDirectory, baseSlugPathForFs, `index.${langParam}.md`), resolvedLang: langParam});
+    if (langParam === 'en') {
+      possibleFileChecks.push({ filePathToCheck: path.join(contentDirectory, baseSlugPathForFs, `_index.md`), resolvedLang: 'en'});
+      possibleFileChecks.push({ filePathToCheck: path.join(contentDirectory, baseSlugPathForFs, `index.md`), resolvedLang: 'en'});
+    }
+  }
+
+  // Case 2: slugParts lead to a file like slug.lang.md or slug.md
+  possibleFileChecks.push({ filePathToCheck: path.join(contentDirectory, `${baseSlugPathForFs}.${langParam}.md`), resolvedLang: langParam});
+  if (langParam === 'en') {
+    possibleFileChecks.push({ filePathToCheck: path.join(contentDirectory, `${baseSlugPathForFs}.md`), resolvedLang: 'en'});
   }
   
-  // If slugParts is empty (e.g. /posts/en/), look for root _index files
+  // Case 3: Root index files (_index.lang.md or _index.md in contentDirectory)
+  // This is typically for when slugParts is empty (e.g., /posts/en/)
   if (slugParts.length === 0) {
-    possibleFileNames.unshift(`_index.${langParam}.md`);
+    possibleFileChecks.push({ filePathToCheck: path.join(contentDirectory, `_index.${langParam}.md`), resolvedLang: langParam});
     if (langParam === 'en') {
-      possibleFileNames.unshift(`_index.md`);
+      possibleFileChecks.push({ filePathToCheck: path.join(contentDirectory, `_index.md`), resolvedLang: 'en'});
     }
   }
 
@@ -197,48 +205,40 @@ export async function getPostData(langParam: string, slugParts: string[]): Promi
   let filePath: string | undefined;
   let resolvedLang = langParam;
 
-  console.log(`[getPostData DEBUG] Base slug for FS operations: ${baseSlugPathForFs}`);
-  console.log(`[getPostData DEBUG] Possible relative filenames to check:`);
-  possibleFileNames.forEach(fn => console.log(`  - ${fn}`));
+  console.log(`[getPostData DEBUG] Base slug for FS operations: "${baseSlugPathForFs}"`);
+  console.log(`[getPostData DEBUG] Possible file checks (absolute paths):`);
+  possibleFileChecks.forEach(check => console.log(`  - Path: ${check.filePathToCheck}, Expected Lang: ${check.resolvedLang}`));
 
-  for (const fileName of possibleFileNames) {
-    const fullPath = path.join(contentDirectory, fileName);
-    console.log(`[getPostData DEBUG] Checking for file at (absolute): ${fullPath}`);
+
+  for (const check of possibleFileChecks) {
+    console.log(`[getPostData DEBUG] Trying path: ${check.filePathToCheck}`);
     try {
-      if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
-        filePath = fullPath;
-        console.log(`[getPostData DEBUG] File FOUND: ${filePath}`);
-        
-        const ext = path.extname(fileName);
-        const nameWithoutExt = path.basename(fileName, ext);
-        const langSuffixMatch = nameWithoutExt.match(/\.([a-z]{2})$/);
-        if (langSuffixMatch && availableLanguages.includes(langSuffixMatch[1])) {
-          resolvedLang = langSuffixMatch[1];
-        } else if (ext === '.md' && !langSuffixMatch) {
-          resolvedLang = 'en';
-        }
-        console.log(`[getPostData DEBUG] Resolved language for found file: ${resolvedLang}`);
+      if (fs.existsSync(check.filePathToCheck) && fs.statSync(check.filePathToCheck).isFile()) {
+        filePath = check.filePathToCheck;
+        resolvedLang = check.resolvedLang;
+        console.log(`[getPostData DEBUG] File FOUND: ${filePath}, Resolved Language: ${resolvedLang}`);
         break;
       } else {
-        // console.log(`[getPostData DEBUG] File does NOT exist or is not a file at: ${fullPath}`);
+         // console.log(`[getPostData DEBUG] File NOT found or not a file at: ${check.filePathToCheck}`);
       }
     } catch(e) {
-      console.warn(`[getPostData DEBUG] Error checking stat for ${fullPath}: ${(e as Error).message}`);
+      console.warn(`[getPostData DEBUG] Error checking stat for ${check.filePathToCheck}: ${(e as Error).message}`);
     }
   }
 
   if (!filePath) {
     console.error(`\n🛑🛑🛑 [getPostData] FILE NOT FOUND! 🛑🛑🛑`);
-    console.error(`Slug: "${normalizedSlug}", Lang: "${langParam}"`);
+    console.error(`Original slug: "${normalizedSlug}", Lang: "${langParam}"`);
+    console.error(`Based on slugParts: ${JSON.stringify(slugParts)}`);
     console.error(`Content Directory: ${contentDirectory}`);
-    console.error(`Checked paths (relative to content dir):`);
-    possibleFileNames.forEach(pfn => console.error(`  - ${pfn} (resolved to: ${path.join(contentDirectory, pfn)})`));
+    console.error(`Checked paths (absolute):`);
+    possibleFileChecks.forEach(pfc => console.error(`  - ${pfc.filePathToCheck} (expected lang: ${pfc.resolvedLang})`));
     return null; 
   }
   
   let fileContents;
   try {
-    console.log(`[getPostData DEBUG] Reading file contents from: ${filePath}`);
+    // console.log(`[getPostData DEBUG] Reading file contents from: ${filePath}`);
     fileContents = fs.readFileSync(filePath, 'utf8');
   } catch (e: any) {
     console.error(`[getPostData] CRITICAL ERROR reading file ${filePath}:`, e);
@@ -254,30 +254,30 @@ export async function getPostData(langParam: string, slugParts: string[]): Promi
   }
     
   let contentToProcess = matterResult.content;
-  // console.log(`[getPostData DEBUG] Content before shortcode removal (first 150 chars) for ${filePath}: ${contentToProcess.substring(0, 150)}`);
+  // console.log(`[getPostData DEBUG] Content before shortcode removal for ${filePath} (first 100 chars): ${contentToProcess.substring(0, 100)}`);
   
-  contentToProcess = contentToProcess.replace(/{{([%<])(?:.|\n)*?([%>])}}/gs, (match) => {
-    if (match.includes('```mermaid')) return match;
-    return `<!-- HUGO_SHORTCODE_FILTERED: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`;
-  });
-  // console.log(`[getPostData DEBUG] Content after shortcode removal (first 150 chars) for ${filePath}: ${contentToProcess.substring(0, 150)}`);
+  // More aggressive shortcode filtering
+  contentToProcess = contentToProcess.replace(/{{<.*?>.*?{{\s*<\s*\/\s*.*?\s*>\s*}}/gs, (match) => `<!-- HUGO_PAIRED_SHORTCODE_FILTERED: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`);
+  contentToProcess = contentToProcess.replace(/{{<.*?>}}/g, (match) => `<!-- HUGO_SINGLE_SHORTCODE_FILTERED: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`);
+  contentToProcess = contentToProcess.replace(/{{%(?:.|\n)*?%}}/gs, (match) => `<!-- HUGO_PERCENT_SHORTCODE_FILTERED: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`);
+  
+  // console.log(`[getPostData DEBUG] Content after shortcode removal for ${filePath} (first 100 chars): ${contentToProcess.substring(0, 100)}`);
 
   let processedContent;
   try {
-      processedContent = await remark()
-        .use(gfm)
-        .use(remarkMath)
-        .use(remarkRehype, { allowDangerousHtml: true })
-        .use(rehypeKatex, { output: 'htmlAndMathml', throwOnError: false })
-        .use(rehypeStringify, { allowDangerousHtml: true })
-        .process(contentToProcess);
+    processedContent = await remark()
+      .use(gfm)
+      .use(remarkMath)
+      .use(remarkRehype, { allowDangerousHtml: true })
+      .use(rehypeKatex, { output: 'htmlAndMathml', throwOnError: false }) // Keep throwOnError: false
+      .use(rehypeStringify, { allowDangerousHtml: true })
+      .process(contentToProcess);
   } catch (e: any) {
-      console.error(`[getPostData] CRITICAL ERROR during remark/rehype processing for file ${filePath}:`, e);
-      return null;
+    console.error(`[getPostData] CRITICAL ERROR during remark/rehype processing for file ${filePath}:`, e);
+    return null;
   }
         
   const contentHtml = processedContent.toString();
-  // console.log(`[getPostData DEBUG] Processed HTML (first 200 chars) for ${filePath}: ${contentHtml.substring(0, 200)}`);
 
   const plainContentForExcerpt = contentToProcess
       .replace(/<\/?[^>]+(>|$)/g, "")
@@ -297,28 +297,28 @@ export async function getPostData(langParam: string, slugParts: string[]): Promi
   };
 }
 
+
 export function getAllPostSlugsForStaticParams(): Array<{ lang: string; slugParts: string[] } > {
   try {
+    console.log("[getAllPostSlugsForStaticParams] Starting. Content directory:", contentDirectory);
     const allFileDetails = getAllMarkdownFilesRecursive(contentDirectory);
-    // Filter out entries where id is empty AND slugParts is also empty (e.g. a root _index.md without further path parts)
-    // unless we specifically want a route like /posts/en/ for content/_index.en.md
-    const validFileDetails = allFileDetails.filter(detail => {
-      if (detail.id === '' && detail.slugParts.length === 0) {
-        // This is a root _index.md or _index.lang.md
-        // It should be included if it's intended to be a page (e.g., for /posts/en/)
-        return true; 
-      }
-      return detail.id && detail.id.length > 0;
-    });
-    
-    return validFileDetails.map(fileDetail => ({
-      lang: fileDetail.lang, 
-      // For root index files (id=''), slugParts should be an empty array
-      slugParts: fileDetail.id === '' ? [] : fileDetail.slugParts, 
-    }));
+    console.log(`[getAllPostSlugsForStaticParams] Found ${allFileDetails.length} raw file details.`);
+
+    const validSlugs = allFileDetails.map(fileDetail => {
+      const slugParts = fileDetail.id === '' ? [] : fileDetail.slugParts;
+      return {
+        lang: fileDetail.lang,
+        slugParts: slugParts,
+      };
+    }).filter(Boolean) as Array<{ lang: string; slugParts: string[] }>; // Filter out any nulls just in case
+
+    console.log(`[getAllPostSlugsForStaticParams] Processed ${validSlugs.length} valid slugs for static params:`);
+    // validSlugs.slice(0, 20).forEach(s => console.log(`  - lang: ${s.lang}, slugParts: [${s.slugParts.join(', ')}]`)); // Log first 20
+    // if (validSlugs.length > 20) console.log("  ... and more.");
+
+    return validSlugs;
   } catch (e: any) {
     console.error("[getAllPostSlugsForStaticParams] CRITICAL ERROR generating static params:", e);
     return [];
   }
 }
-
