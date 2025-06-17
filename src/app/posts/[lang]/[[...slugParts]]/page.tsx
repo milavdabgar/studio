@@ -20,37 +20,48 @@ interface PostPageProps {
 }
 
 export async function generateStaticParams() {
-  return getAllPostSlugsForStaticParams();
+  console.log("[PostPage] Generating static params...");
+  try {
+    const params = getAllPostSlugsForStaticParams();
+    console.log(`[PostPage] Generated ${params.length} static params.`);
+    return params;
+  } catch (e) {
+    console.error("[PostPage] Error in generateStaticParams:", e);
+    return [];
+  }
 }
 
 async function getPost(lang: string, slugParts: string[]): Promise<PostData | null> {
   try {
+    // console.log(`[PostPage getPost] Attempting to get post data for lang: ${lang}, slugParts: ${slugParts.join('/')}`);
     const data = await getPostData(lang, slugParts);
+    // if (!data) {
+    //   console.warn(`[PostPage getPost] getPostData returned null for lang: ${lang}, slugParts: ${slugParts.join('/')}`);
+    // }
     return data;
   } catch (e) {
-    console.error("Error fetching post data in page component:", e);
+    console.error(`[PostPage getPost] Error fetching post data for lang: ${lang}, slugParts: ${slugParts.join('/')}:`, e);
     return null;
   }
 }
 
 export default async function PostPage({ params }: PostPageProps) {
   const { lang, slugParts } = params;
+  // console.log(`[PostPage Rendering] lang: ${lang}, slugParts: ${JSON.stringify(slugParts)}`);
 
   if (!slugParts || slugParts.length === 0) {
-    // This case should ideally be handled by src/app/posts/[lang]/page.tsx
-    // or redirect to the posts index for that language.
-    // For now, let's treat it as not found if slugParts are missing for a post page.
-    console.warn(`PostPage called without slugParts for lang: ${lang}`);
+    console.warn(`[PostPage Rendering] Invalid slugParts. lang: ${lang}, slugParts: ${JSON.stringify(slugParts)}. Triggering notFound().`);
     notFound();
   }
 
   const postData = await getPost(lang, slugParts);
 
   if (!postData) {
-    console.warn(`Post data not found for lang: ${lang}, slugParts: ${slugParts.join('/')}`);
+    console.warn(`[PostPage Rendering] Post data is null. lang: ${lang}, slugParts: ${slugParts.join('/')}. Triggering notFound().`);
     notFound();
   }
   
+  // console.log(`[PostPage Rendering] Successfully fetched post: ${postData.title}. Ready to render.`);
   const backLinkText = lang === 'gu' ? 'બધા લેખો પર પાછા જાઓ' : 'Back to all articles';
 
   return (
