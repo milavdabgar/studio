@@ -1,6 +1,6 @@
 // src/app/posts/[lang]/[[...slugParts]]/page.tsx
 
-import { getPostData, getSortedPostsData, type PostData, type PostPreview } from '@/lib/markdown'; 
+import { getPostData, getSortedPostsData, getSubPostsForDirectory, type PostData, type PostPreview } from '@/lib/markdown'; 
 import { format, parseISO, isValid } from 'date-fns';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft } from 'lucide-react';
@@ -136,6 +136,10 @@ export default async function PostPage({ params }: PostPageProps) {
     console.log(`[PostPage Rendering] Post data is null for lang: "${pageParams.lang}", slugParts: ${JSON.stringify(pageParams.slugParts || [])}. Triggering notFound().`);
     notFound();
   }
+
+  // Check if this is a directory with sub-posts that should show a hybrid view
+  const subPosts = pageParams.slugParts ? await getSubPostsForDirectory(pageParams.slugParts, pageParams.lang) : [];
+  const showHybridView = subPosts.length > 0;
   
   // Now that postData is confirmed, use its properties for links and display
   const langForLinks = postData.lang;
@@ -171,6 +175,52 @@ export default async function PostPage({ params }: PostPageProps) {
           </article>
         </CardContent>
       </Card>
+
+      {/* Show sub-posts if this is a directory with children */}
+      {showHybridView && (
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold text-primary mb-6">
+            {pageParams.lang === 'gu' ? 'સંબંધિત પોસ્ટ્સ' : 'Related Posts'}
+          </h2>
+          <div className="grid gap-6">
+            {subPosts.map((post) => (
+              <Card key={`${post.lang}-${post.id}`} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <CardTitle className="text-xl">
+                    <Link 
+                      href={post.href} 
+                      className="text-primary hover:text-primary/80 transition-colors"
+                    >
+                      {post.title}
+                    </Link>
+                  </CardTitle>
+                  <CardDescription className="flex flex-col gap-1">
+                    <span>
+                      {post.date && typeof post.date === 'string' && isValid(parseISO(post.date)) 
+                        ? format(parseISO(post.date), 'LLLL d, yyyy') 
+                        : 'Date not available'
+                      }
+                      {post.author && ` by ${post.author}`}
+                    </span>
+                    {post.lang && (
+                      <span className="text-xs text-muted-foreground">
+                        {post.lang === 'gu' ? 'ગુજરાતી' : 'English'}
+                      </span>
+                    )}
+                  </CardDescription>
+                </CardHeader>
+                {post.excerpt && (
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      {post.excerpt}
+                    </p>
+                  </CardContent>
+                )}
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

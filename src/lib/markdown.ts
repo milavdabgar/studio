@@ -1,4 +1,3 @@
-
 // src/lib/markdown.ts
 
 import fs from 'fs';
@@ -350,6 +349,41 @@ export function getAllPostSlugsForStaticParams(): Array<{ lang: string; slugPart
   } catch (e: any) {
     console.error("[getAllPostSlugsForStaticParams] CRITICAL ERROR generating static params:", e);
     return [{ lang: 'en', slugParts: undefined }, { lang: 'gu', slugParts: undefined }]; // Fallback
+  }
+}
+
+export async function getSubPostsForDirectory(dirPath: string[], lang: string = 'en'): Promise<PostPreview[]> {
+  try {
+    const directoryPath = path.join(contentDirectory, ...dirPath);
+    
+    if (!fs.existsSync(directoryPath)) {
+      return [];
+    }
+
+    const allPostsData = await getSortedPostsData(lang);
+    
+    // Filter posts that are direct children or descendants of the directory
+    const subPosts = allPostsData.filter(post => {
+      if (!post.id) return false;
+      
+      const postPathParts = post.id.split('/');
+      
+      // Check if post is within this directory
+      if (postPathParts.length <= dirPath.length) return false;
+      
+      // Check if the directory path matches
+      for (let i = 0; i < dirPath.length; i++) {
+        if (postPathParts[i] !== dirPath[i]) return false;
+      }
+      
+      return true;
+    });
+
+    console.log(`[getSubPostsForDirectory] Found ${subPosts.length} sub-posts for directory: ${dirPath.join('/')}`);
+    return subPosts;
+  } catch (error) {
+    console.error(`[getSubPostsForDirectory] Error getting sub-posts for ${dirPath.join('/')}:`, error);
+    return [];
   }
 }
 
