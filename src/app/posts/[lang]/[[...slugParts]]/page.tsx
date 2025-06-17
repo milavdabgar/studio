@@ -1,4 +1,3 @@
-
 // src/app/posts/[lang]/[[...slugParts]]/page.tsx
 
 import { getPostData, type PostData } from '@/lib/markdown'; 
@@ -7,9 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import 'katex/dist/katex.min.css';
+import 'katex/dist/katex.min.css'; // Ensure KaTeX CSS is imported
 import PostRenderer from '@/components/blog/PostRenderer';
 import { notFound } from 'next/navigation';
+// import path from 'path'; // Not strictly needed here anymore
 
 interface PostPageParams {
   lang: string;
@@ -20,20 +20,16 @@ interface PostPageProps {
   params: PostPageParams;
 }
 
-// This async function is for generating static paths if you're using SSG.
-// For SSR (which is the default with dynamic segments unless generateStaticParams is used), 
-// this function might not be strictly necessary for this specific error, 
-// but it's good practice for dynamic routes that can be statically generated.
 export async function generateStaticParams() {
   console.log("[PostPage generateStaticParams] Starting...");
   // Dynamically import to ensure it's treated as a module that can be re-evaluated if changed.
   const { getAllPostSlugsForStaticParams } = await import('@/lib/markdown');
   let paramsList: Array<{ lang: string; slugParts?: string[] | undefined }> = [];
   try {
-    const rawSlugs = getAllPostSlugsForStaticParams();
+    const rawSlugs = getAllPostSlugsForStaticParams(); // This is synchronous
     paramsList = rawSlugs.map(s => ({
       lang: s.lang,
-      slugParts: s.slugParts && s.slugParts.length > 0 ? s.slugParts : undefined
+      slugParts: s.slugParts && s.slugParts.length > 0 ? s.slugParts : undefined, // Pass undefined if slugParts is empty
     }));
     console.log(`[PostPage generateStaticParams] Successfully generated ${paramsList.length} static params. Sample:`, paramsList.slice(0, 2));
   } catch (e: any) {
@@ -46,36 +42,59 @@ export async function generateStaticParams() {
 
 
 export default async function PostPage({ params: pageParams }: PostPageProps) {
-  // Log the raw params received by the page component minimally.
-  // Avoid directly interpolating pageParams.lang or pageParams.slugParts here if it might cause issues.
-  console.log(`[PostPage Rendering] Received raw pageParams: lang=${pageParams.lang}, slugParts=${JSON.stringify(pageParams.slugParts)}`);
+  // console.log(`[PostPage Rendering] Received raw pageParams in component: ${JSON.stringify(pageParams)}`);
 
   const postData = await getPostData({
-    lang: pageParams.lang,
-    slugParts: pageParams.slugParts || [], // Ensure an array is passed
+    lang: pageParams.lang, // Access lang directly here
+    slugParts: pageParams.slugParts, // Pass slugParts directly, getPostData will handle if undefined
   });
 
   if (!postData) {
-    console.log(`[PostPage Rendering] Post data is null for lang=${pageParams.lang}, slugParts=${JSON.stringify(pageParams.slugParts)}. Triggering notFound().`);
+    // Logging here is fine because getPostData has completed (or returned null)
+    console.log(`[PostPage Rendering] Post data is null for lang: "${pageParams.lang}", slugParts: ${JSON.stringify(pageParams.slugParts || [])}. Triggering notFound().`);
     notFound();
   }
   
-  console.log(`[PostPage Rendering] Successfully fetched post data for "${postData.title}". Actual Lang: ${postData.lang}, Actual SlugParts: ${JSON.stringify(postData.slugParts)}`);
-  
+  // Now that postData is confirmed, use its properties for links and display
   const langForLinks = postData.lang;
   const slugPartsForLinks = postData.slugParts || [];
 
   const backLinkText = langForLinks === 'gu' ? 'બધા લેખો પર પાછા જાઓ' : 'Back to all articles';
   
   let backLinkHref = `/posts/${langForLinks}`;
-  if (slugPartsForLinks.length > 1) { 
-      backLinkHref = `/posts/${langForLinks}/${slugPartsForLinks.slice(0, -1).join('/')}`;
+  if (slugPartsForLinks.length > 0) {
+    // Check if the current post is an index page for its directory
+    // This heuristic assumes _index.md or index.md implies it's a section page
+    const isIndexPage = postData.id.endsWith('_index') || postData.id.endsWith('/index') || (slugPartsForLinks.length > 0 && (slugPartsForLinks[slugPartsForLinks.length - 1] === '_index' || slugPartsForLinks[slugPartsForLinks.length - 1] === 'index'));
+
+    if (isIndexPage) {
+      // If it's an index page (e.g., /posts/en/blog from content/blog/_index.md), link to parent of the directory
+      const parentDirParts = slugPartsForLinks.slice(0, -1);
+      if (parentDirParts.length > 0) {
+        backLinkHref = `/posts/${langForLinks}/${parentDirParts.join('/')}`;
+      }
+      // If parentDirParts is empty, it means this index is at the language root (e.g. /posts/en from content/_index.en.md), so backLinkHref remains /posts/en (which is not quite right for a "back" button, but correct as a section root)
+      // A better approach for a "back" button from a root index might be to go to `/posts` or a higher level page if applicable.
+      // For simplicity, if it's a root language index, the "back" button might just point to itself or a predefined higher level.
+      // Let's refine this: if it's a root index page, the "back" link will just go to the /posts/[lang] root.
+    } else {
+      // If it's a regular post (e.g., /posts/en/blog/mypost), link to its parent directory
+      const parentSlugParts = slugPartsForLinks.slice(0, -1);
+       if (parentSlugParts.length > 0) {
+        backLinkHref = `/posts/${langForLinks}/${parentSlugParts.join('/')}`;
+      }
+      // If parentSlugParts is empty (e.g. /posts/en/mypost from content/mypost.md), backLinkHref remains /posts/en
+    }
   }
   
+  // Normalize trailing slashes
   if (backLinkHref !== `/posts/${langForLinks}`) {
     backLinkHref = backLinkHref.replace(/\/$/, '');
   }
-  console.log(`[PostPage Rendering] Back link href generated: ${backLinkHref}`);
+   if (backLinkHref === `/posts/${langForLinks}/`) { 
+      backLinkHref = `/posts/${langForLinks}`;
+  }
+
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -103,6 +122,3 @@ export default async function PostPage({ params: pageParams }: PostPageProps) {
     </div>
   );
 }
-
-
-  
