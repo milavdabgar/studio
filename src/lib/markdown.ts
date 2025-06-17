@@ -10,38 +10,13 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
+import { PostData, PostPreview } from './types';
 
 const contentDirectory = path.join(process.cwd(), 'content');
 export const availableLanguages = ['en', 'gu'];
 
-console.log(`[markdown.ts TOP LEVEL] process.cwd(): ${process.cwd()}`);
-console.log(`[markdown.ts TOP LEVEL] Content directory set to: ${contentDirectory}`);
-if (!fs.existsSync(contentDirectory)) {
-  console.warn(`[markdown.ts TOP LEVEL] WARNING: Content directory DOES NOT EXIST: ${contentDirectory}`);
-}
-
-
-export interface PostData {
-  id: string;
-  slugParts: string[];
-  lang: string;
-  title: string;
-  date: string;
-  contentHtml: string;
-  excerpt?: string;
-  [key: string]: any;
-}
-
-export interface PostPreview {
-  id: string;
-  slugParts: string[];
-  lang: string;
-  title: string;
-  date: string;
-  excerpt?: string;
-  href: string;
-  [key: string]: any;
-}
+// Re-export types for backward compatibility
+export type { PostData, PostPreview } from './types';
 
 interface FileDetails {
   slugParts: string[];
@@ -257,11 +232,24 @@ export async function getPostData({
 
   const contentHtml = processedContent.toString();
   
-  const plainContentForExcerpt = contentToProcess
-      .replace(/<\/?[^>]+(>|$)/g, "") 
-      .replace(/<!--[\s\S]*?-->/g, "")      
-      .replace(/```[\s\S]*?```/g, "[Code Block]"); 
-  const excerpt = plainContentForExcerpt.substring(0, 150) + (plainContentForExcerpt.length > 150 ? '...' : '');
+  // Extract better excerpt
+  const excerpt = matterResult.data.excerpt || extractExcerpt(contentToProcess);
+  
+  // Normalize date to string format
+  let normalizedDate = matterResult.data.date;
+  
+  if (normalizedDate instanceof Date) {
+    normalizedDate = normalizedDate.toISOString();
+  } else if (normalizedDate && typeof normalizedDate !== 'string') {
+    try {
+      normalizedDate = new Date(normalizedDate).toISOString();
+    } catch (e) {
+      console.warn('Failed to convert date, using current date:', e);
+      normalizedDate = new Date().toISOString();
+    }
+  } else if (!normalizedDate) {
+    normalizedDate = new Date().toISOString();
+  }
 
   return {
     id: internalSlugParts.join('/') || '', 
@@ -269,10 +257,36 @@ export async function getPostData({
     lang: resolvedLang, 
     contentHtml,
     title: matterResult.data.title || path.basename(filePath, path.extname(filePath)).replace(/\.(en|gu)$/, '').replace(/^_index$|^index$/, internalSlugParts[internalSlugParts.length -1] || 'Section Index') || 'Untitled Post',
-    date: matterResult.data.date || new Date().toISOString(),
+    date: normalizedDate,
     excerpt,
+    tags: Array.isArray(matterResult.data.tags) ? matterResult.data.tags : [],
+    categories: Array.isArray(matterResult.data.categories) ? matterResult.data.categories : [],
+    series: matterResult.data.series || '',
+    author: matterResult.data.author || '',
+    draft: matterResult.data.draft || false,
+    featured: matterResult.data.featured || false,
+    readingTime: calculateReadingTime(contentToProcess),
+    wordCount: calculateWordCount(contentToProcess),
     ...matterResult.data,
   };
+}
+
+// Utility functions
+function calculateReadingTime(text: string): number {
+  const wordsPerMinute = 200;
+  const words = text.trim().split(/\s+/).length;
+  return Math.ceil(words / wordsPerMinute);
+}
+
+function calculateWordCount(text: string): number {
+  return text.trim().split(/\s+/).length;
+}
+
+function extractExcerpt(content: string, maxLength: number = 150): string {
+  // Remove HTML tags for excerpt
+  const plainText = content.replace(/<[^>]*>/g, '');
+  if (plainText.length <= maxLength) return plainText;
+  return plainText.slice(0, maxLength).trim() + '...';
 }
 
 export async function getSortedPostsData(langToFilter?: string): Promise<PostPreview[]> {
@@ -385,5 +399,72 @@ export async function getSubPostsForDirectory(dirPath: string[], lang: string = 
     console.error(`[getSubPostsForDirectory] Error getting sub-posts for ${dirPath.join('/')}:`, error);
     return [];
   }
+}
+
+// Taxonomy functions
+export async function getAllTags(lang?: string): Promise<{ name: string; count: number }[]> {
+  const posts = await getSortedPostsData(lang);
+  const tagCounts: Record<string, number> = {};
+  
+  posts.forEach(post => {
+    if (post.tags && Array.isArray(post.tags)) {
+      post.tags.forEach(tag => {
+        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+      });
+    }
+  });
+  
+  return Object.entries(tagCounts)
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+}
+
+export async function getAllCategories(lang?: string): Promise<{ name: string; count: number }[]> {
+  const posts = await getSortedPostsData(lang);
+  const categoryCounts: Record<string, number> = {};
+  
+  posts.forEach(post => {
+    if (post.categories && Array.isArray(post.categories)) {
+      post.categories.forEach(category => {
+        categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+      });
+    }
+  });
+  
+  return Object.entries(categoryCounts)
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+}
+
+export async function getPostsByTag(tag: string, lang?: string): Promise<PostPreview[]> {
+  const posts = await getSortedPostsData(lang);
+  return posts.filter(post => 
+    post.tags && Array.isArray(post.tags) && post.tags.includes(tag)
+  );
+}
+
+export async function getPostsByCategory(category: string, lang?: string): Promise<PostPreview[]> {
+  const posts = await getSortedPostsData(lang);
+  return posts.filter(post => 
+    post.categories && Array.isArray(post.categories) && post.categories.includes(category)
+  );
+}
+
+// Search function
+export async function searchPosts(query: string, lang?: string): Promise<PostPreview[]> {
+  const posts = await getSortedPostsData(lang);
+  const lowercaseQuery = query.toLowerCase();
+  
+  return posts.filter(post => {
+    const searchableContent = [
+      post.title,
+      post.excerpt || '',
+      ...(post.tags || []),
+      ...(post.categories || []),
+      post.author || ''
+    ].join(' ').toLowerCase();
+    
+    return searchableContent.includes(lowercaseQuery);
+  });
 }
 

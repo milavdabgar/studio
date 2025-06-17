@@ -16,6 +16,7 @@ import {
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { ThemeProvider } from '@/lib/contexts/ThemeContext';
 import { AppLogo } from '@/components/app-logo';
 import React, { useEffect, useState, useCallback } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
@@ -392,10 +393,12 @@ export default function RootLayout({
             <meta name="apple-mobile-web-app-title" content="PolyManager" />
         </head>
         <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
-          <div className="flex items-center justify-center min-h-screen">
-            <Loader2 className="h-12 w-12 animate-spin text-primary" />
-          </div>
-          <Toaster />
+          <ThemeProvider>
+            <div className="flex items-center justify-center min-h-screen">
+              <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            </div>
+            <Toaster />
+          </ThemeProvider>
         </body>
       </html>
     )
@@ -416,8 +419,10 @@ export default function RootLayout({
             <meta name="apple-mobile-web-app-title" content="PolyManager" />
         </head>
         <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
-          {children}
-          <Toaster />
+          <ThemeProvider>
+            {children}
+            <Toaster />
+          </ThemeProvider>
         </body>
       </html>
     );
@@ -438,14 +443,15 @@ export default function RootLayout({
             <meta name="apple-mobile-web-app-title" content="PolyManager" />
         </head>
       <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
-        <SidebarProvider>
-          <Sidebar>
-            <SidebarHeader className="p-4 border-b border-sidebar-border">
-              <div className="flex items-center gap-3">
-                <AppLogo className="h-8 w-auto text-sidebar-primary" />
-                <h1 className="text-xl font-semibold text-sidebar-foreground">PolyManager</h1>
-              </div>
-            </SidebarHeader>
+        <ThemeProvider>
+          <SidebarProvider>
+            <Sidebar>
+              <SidebarHeader className="p-4 border-b border-sidebar-border">
+                <div className="flex items-center gap-3">
+                  <AppLogo className="h-8 w-auto text-sidebar-primary" />
+                  <h1 className="text-xl font-semibold text-sidebar-foreground">PolyManager</h1>
+                </div>
+              </SidebarHeader>
             <SidebarContent className="p-2">
               <SidebarMenu>
                 {currentNavItems.map((item) => (
@@ -529,9 +535,9 @@ export default function RootLayout({
             </header>
             <main className="flex-1 p-4 md:p-6 lg:p-8">
               {children}
-            </main>
-          </SidebarInset>
-        </SidebarProvider>
+            </main>            </SidebarInset>
+          </SidebarProvider>
+        </ThemeProvider>
         <Toaster />
       </body>
     </html>
