@@ -39,18 +39,18 @@ export interface PostPreview {
 }
 
 interface FileDetails {
-  slugParts: string[]; // e.g., ['my-section', 'my-post']
+  slugParts: string[]; // e.g., ['my-section', 'my-post'] or ['my-section'] for _index.md
   lang: string;        // e.g., 'en' or 'gu'
-  id: string;          // e.g., 'my-section/my-post' (this is slugParts.join('/'))
+  id: string;          // e.g., 'my-section/my-post' or 'my-section' for _index.md
   fullPath: string;    // Absolute path to the .md file
   relativePath: string;// Path relative to contentDirectory e.g., section/my-post.gu.md
 }
 
 // Helper function to recursively get all markdown files and their details
-function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir): FileDetails[] {
+function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir, currentPathParts: string[] = []): FileDetails[] {
   let files: FileDetails[] = [];
   if (!fs.existsSync(dir)) {
-    console.warn(`[markdown.ts getAllMarkdownFilesRecursive] Content directory or subdirectory not found during scan: ${dir}`);
+    console.warn(`[markdown.ts getAllMarkdownFilesRecursive] Directory not found: ${dir}`);
     return files;
   }
 
@@ -58,43 +58,45 @@ function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir): FileD
   try {
     entries = fs.readdirSync(dir, { withFileTypes: true });
   } catch (e: any) {
-    console.warn(`[markdown.ts getAllMarkdownFilesRecursive] Could not read directory ${dir}:`, e.message, e);
+    console.warn(`[markdown.ts getAllMarkdownFilesRecursive] Could not read directory ${dir}:`, e.message);
     return files;
   }
 
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      files = files.concat(getAllMarkdownFilesRecursive(fullPath, baseDir));
+      files = files.concat(getAllMarkdownFilesRecursive(fullPath, baseDir, [...currentPathParts, entry.name]));
     } else if (entry.isFile() && entry.name.endsWith('.md')) {
-      const relativePathWithExt = path.relative(baseDir, fullPath); 
-      
-      let lang = 'en'; 
-      let slugPath = relativePathWithExt.substring(0, relativePathWithExt.length - 3); 
+      let lang = 'en';
+      let baseName = entry.name.substring(0, entry.name.length - 3); // Remove .md
 
-      const langMatch = slugPath.match(/\.([a-z]{2})$/);
+      const langMatch = baseName.match(/\.([a-z]{2})$/);
       if (langMatch && availableLanguages.includes(langMatch[1])) {
         lang = langMatch[1];
-        slugPath = slugPath.substring(0, slugPath.length - 3); 
+        baseName = baseName.substring(0, baseName.length - 3); // Remove .[lang]
+      }
+
+      let slugParts: string[];
+      let id: string;
+
+      if (baseName === '_index' || baseName === 'index') {
+        slugParts = [...currentPathParts]; // For content/blog/_index.md, slugParts = ['blog']
+        id = slugParts.join('/');
+      } else {
+        slugParts = [...currentPathParts, baseName];
+        id = slugParts.join('/');
       }
       
-      const normalizedSlugPath = slugPath.replace(/\\/g, '/');
-      const slugParts = normalizedSlugPath.split('/').filter(p => p && p !== '.' && p !== '_index'); // Exclude _index from slug parts
-      if (entry.name === '_index.md' && slugParts.length > 0) { // Special handling for _index.md if it's meant for section route
-        // slugParts would be like ['sectionName'] for content/sectionName/_index.md
-        // We want its id to be 'sectionName' not 'sectionName/_index'
-      } else if (entry.name === '_index.md' && slugParts.length === 0) {
-        // Root _index.md, id can be empty or a special marker if needed, or skip
-        continue; // Skip root _index.md for now, or define how to handle it
-      }
-      const id = slugParts.join('/'); 
+      // Skip if ID becomes empty (e.g. root _index.md if not desired as a route)
+      // if (id === '' && baseName === '_index') continue;
+
 
       files.push({
         slugParts,
         lang,
         id,
         fullPath,
-        relativePath: relativePathWithExt.replace(/\\/g, '/'),
+        relativePath: path.relative(baseDir, fullPath).replace(/\\/g, '/'),
       });
     }
   }
@@ -103,37 +105,36 @@ function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir): FileD
 
 export async function getSortedPostsData(langToFilter?: string): Promise<PostPreview[]> {
   const allFileDetails = getAllMarkdownFilesRecursive(contentDirectory);
+  // console.log(`[getSortedPostsData] Found ${allFileDetails.length} total markdown files.`);
 
   const allPostsDataPromises = allFileDetails.map(async (fileDetail) => {
     if (langToFilter && fileDetail.lang !== langToFilter) {
       return null;
     }
+    // Skip _index files for the main post listing if they represent section overviews not individual posts
+    // This depends on desired behavior. For now, let's include them.
+    // if (fileDetail.relativePath.endsWith('_index.md') || fileDetail.relativePath.endsWith('index.md')) {
+    //    // if you want to exclude section index pages from the main list
+    // }
+
     const filePath = fileDetail.fullPath;
     try {
       const fileContents = fs.readFileSync(filePath, 'utf8');
       const matterResult = matter(fileContents);
 
-      // Pre-process content to handle Hugo shortcodes before excerpt generation
       let contentForExcerpt = matterResult.content;
-      // Convert mermaid shortcodes to markdown code blocks
-      contentForExcerpt = contentForExcerpt.replace(/{{<\s*mermaid\s*>}}([\s\S]*?){{<\s*\/mermaid\s*>}}/gs, (match, mermaidContent) => {
-        return '```mermaid\n' + mermaidContent.trim() + '\n```';
+      contentForExcerpt = contentForExcerpt.replace(/{{([%<])(?:.|\n)*?([%>])}}/gs, (match) => {
+        if (match.includes('```mermaid')) return match; 
+        return `<!-- HUGO_SHORTCODE_FILTERED_EXCERPT: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`;
       });
-      // Aggressively filter other Hugo shortcodes
-      contentForExcerpt = contentForExcerpt.replace(/{{.*?}}/gs, (match) => {
-        if (match.startsWith('```mermaid') || match.endsWith('```')) return match; // Don't touch our converted mermaid
-        return `<!-- HUGO_SHORTCODE_FILTERED_EXCERPT -->`; 
-      });
-      // Add more specific shortcode replacements if needed for excerpt generation here
-
-      const plainContent = contentForExcerpt.replace(/<\/?[^>]+(>|$)/g, "").replace(/```[\s\S]*?```/g, "[Code Block]"); // Remove HTML and code blocks for excerpt
+      const plainContent = contentForExcerpt.replace(/<\/?[^>]+(>|$)/g, "").replace(/<!--.*?-->/gs, "").replace(/```[\s\S]*?```/g, "[Code Block]");
       const excerpt = plainContent.substring(0, 150) + (plainContent.length > 150 ? '...' : '');
       
       const title = matterResult.data.title || fileDetail.slugParts[fileDetail.slugParts.length -1] || 'Untitled Post';
       const date = matterResult.data.date || new Date().toISOString();
 
       return {
-        id: fileDetail.id,
+        id: fileDetail.id, // id is now 'section/slug' or 'slug' or 'section' for _index.md
         slugParts: fileDetail.slugParts,
         lang: fileDetail.lang,
         title,
@@ -143,7 +144,7 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
         ...matterResult.data,
       };
     } catch (e: any) { 
-      console.error(`[getSortedPostsData] CRITICAL ERROR processing file ${filePath} for preview list:`, e);
+      console.error(`[getSortedPostsData] ERROR processing file ${filePath} for preview list:`, e);
       return null; 
     }
   });
@@ -165,115 +166,159 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
 
 export async function getPostData(langParam: string, slugParts: string[]): Promise<PostData | null> {
   const normalizedSlug = slugParts.join('/');
+  console.log(`[getPostData DEBUG] =================================================================`);
   console.log(`[getPostData DEBUG] Attempting to get post for lang: "${langParam}", slug: "${normalizedSlug}"`);
+  console.log(`[getPostData DEBUG] Content Directory Root: ${contentDirectory}`);
   
-  const baseSlugPathForFs = normalizedSlug.split('/').join(path.sep);
+  const baseSlugPathForFs = slugParts.join(path.sep); // Use platform-specific separator for fs operations
   
+  // Order matters: specific language file, then generic, then index files
   const possibleFileNames = [
-    `${baseSlugPathForFs}.${langParam}.md`,
-    path.join(baseSlugPathForFs, `_index.${langParam}.md`), // For section pages e.g. /section-name/
-    path.join(baseSlugPathForFs, `index.${langParam}.md`),  // Alternative for section pages
+    `${baseSlugPathForFs}.${langParam}.md`,         // section/my-post.en.md
+    path.join(baseSlugPathForFs, `_index.${langParam}.md`), // section/my-post/_index.en.md (if my-post is a section)
+    path.join(baseSlugPathForFs, `index.${langParam}.md`),  // section/my-post/index.en.md
   ];
 
-  if (langParam === 'en') {
-    possibleFileNames.push(`${baseSlugPathForFs}.md`);
-    possibleFileNames.push(path.join(baseSlugPathForFs, `_index.md`));
-    possibleFileNames.push(path.join(baseSlugPathForFs, `index.md`));
+  if (langParam === 'en') { // Only for English, check for non-suffixed files
+    possibleFileNames.push(`${baseSlugPathForFs}.md`);      // section/my-post.md
+    possibleFileNames.push(path.join(baseSlugPathForFs, `_index.md`)); // section/my-post/_index.md
+    possibleFileNames.push(path.join(baseSlugPathForFs, `index.md`));  // section/my-post/index.md
   }
+  
+  // If slugParts is empty (e.g. /posts/en/), look for root _index files
+  if (slugParts.length === 0) {
+    possibleFileNames.unshift(`_index.${langParam}.md`);
+    if (langParam === 'en') {
+      possibleFileNames.unshift(`_index.md`);
+    }
+  }
+
 
   let filePath: string | undefined;
   let resolvedLang = langParam;
 
+  console.log(`[getPostData DEBUG] Base slug for FS operations: ${baseSlugPathForFs}`);
+  console.log(`[getPostData DEBUG] Possible relative filenames to check:`);
+  possibleFileNames.forEach(fn => console.log(`  - ${fn}`));
+
   for (const fileName of possibleFileNames) {
     const fullPath = path.join(contentDirectory, fileName);
-    if (fs.existsSync(fullPath)) {
-      filePath = fullPath;
-      // Determine actual language from filename suffix if present
-      const ext = path.extname(fileName); // .md
-      const nameWithoutExt = path.basename(fileName, ext); // e.g., my-post.gu or _index.en
-      const langSuffixMatch = nameWithoutExt.match(/\.([a-z]{2})$/);
-      if (langSuffixMatch && availableLanguages.includes(langSuffixMatch[1])) {
-        resolvedLang = langSuffixMatch[1];
-      } else if (ext === '.md' && !langSuffixMatch) { // File is like my-post.md or _index.md
-        resolvedLang = 'en';
+    console.log(`[getPostData DEBUG] Checking for file at (absolute): ${fullPath}`);
+    try {
+      if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
+        filePath = fullPath;
+        console.log(`[getPostData DEBUG] File FOUND: ${filePath}`);
+        
+        const ext = path.extname(fileName);
+        const nameWithoutExt = path.basename(fileName, ext);
+        const langSuffixMatch = nameWithoutExt.match(/\.([a-z]{2})$/);
+        if (langSuffixMatch && availableLanguages.includes(langSuffixMatch[1])) {
+          resolvedLang = langSuffixMatch[1];
+        } else if (ext === '.md' && !langSuffixMatch) {
+          resolvedLang = 'en';
+        }
+        console.log(`[getPostData DEBUG] Resolved language for found file: ${resolvedLang}`);
+        break;
+      } else {
+        // console.log(`[getPostData DEBUG] File does NOT exist or is not a file at: ${fullPath}`);
       }
-      break;
+    } catch(e) {
+      console.warn(`[getPostData DEBUG] Error checking stat for ${fullPath}: ${(e as Error).message}`);
     }
   }
 
   if (!filePath) {
-    console.warn(`[getPostData DEBUG] Markdown file not found for slug "${normalizedSlug}" and lang "${langParam}". Looked in content directory: ${contentDirectory}. Possible files checked: ${possibleFileNames.join(', ')}`);
+    console.error(`\n🛑🛑🛑 [getPostData] FILE NOT FOUND! 🛑🛑🛑`);
+    console.error(`Slug: "${normalizedSlug}", Lang: "${langParam}"`);
+    console.error(`Content Directory: ${contentDirectory}`);
+    console.error(`Checked paths (relative to content dir):`);
+    possibleFileNames.forEach(pfn => console.error(`  - ${pfn} (resolved to: ${path.join(contentDirectory, pfn)})`));
     return null; 
   }
   
+  let fileContents;
   try {
-    console.log(`[getPostData DEBUG] Reading file: ${filePath}`);
-    const fileContents = fs.readFileSync(filePath, 'utf8');
-    const matterResult = matter(fileContents);
-    
-    console.log(`[getPostData DEBUG] Original content (first 150 chars) for ${filePath}: ${matterResult.content.substring(0, 150)}`);
-
-    let contentToProcess = matterResult.content;
-    
-    // Convert mermaid shortcodes to markdown code blocks first
-    contentToProcess = contentToProcess.replace(/{{<\s*mermaid\s*>}}([\s\S]*?){{<\s*\/mermaid\s*>}}/gs, (match, mermaidContent) => {
-      return '```mermaid\n' + mermaidContent.trim() + '\n```';
-    });
-
-    // Aggressively try to remove/neutralize anything that looks like a Hugo shortcode {{< ... >}} or {{% ... %}}
-    contentToProcess = contentToProcess.replace(/{{([%<])(?:.|\n)*?([%>])}}/gs, (match) => {
-        // Avoid replacing our already converted mermaid blocks or other legit ``` blocks
-        if (match.includes('```')) return match; 
-        return `<!-- HUGO_SHORTCODE_FILTERED: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`;
-    });
-    
-    console.log(`[getPostData DEBUG] Content after shortcode removal (first 150 chars) for ${filePath}: ${contentToProcess.substring(0, 150)}`);
-
-    const processedContent = await remark()
-      .use(gfm)
-      .use(remarkMath)
-      .use(remarkRehype, { allowDangerousHtml: true })
-      .use(rehypeKatex, { output: 'htmlAndMathml', throwOnError: false }) 
-      .use(rehypeStringify, { allowDangerousHtml: true })
-      .process(contentToProcess);
-      
-    const contentHtml = processedContent.toString();
-    // console.log(`[getPostData DEBUG] Processed HTML (first 200 chars) for ${filePath}: ${contentHtml.substring(0, 200)}`);
-
-    const plainContentForExcerpt = contentToProcess
-        .replace(/<\/?[^>]+(>|$)/g, "")
-        .replace(/<!--.*?-->/gs, "") // Remove HTML comments
-        .replace(/```[\s\S]*?```/g, "[Code Block]"); 
-    const excerpt = plainContentForExcerpt.substring(0, 150) + (plainContentForExcerpt.length > 150 ? '...' : '');
-
-    return {
-      id: slugParts.join('/'),
-      slugParts,
-      lang: resolvedLang,
-      contentHtml,
-      title: matterResult.data.title || path.basename(filePath, path.extname(filePath)).replace(/\.(en|gu)$/, '') || 'Untitled Post',
-      date: matterResult.data.date || new Date().toISOString(),
-      excerpt,
-      ...matterResult.data,
-    };
-  } catch (e: any) { 
-    console.error(`[getPostData] CRITICAL ERROR processing markdown file ${filePath}:`, e);
-    return null; 
+    console.log(`[getPostData DEBUG] Reading file contents from: ${filePath}`);
+    fileContents = fs.readFileSync(filePath, 'utf8');
+  } catch (e: any) {
+    console.error(`[getPostData] CRITICAL ERROR reading file ${filePath}:`, e);
+    return null;
   }
+    
+  let matterResult;
+  try {
+    matterResult = matter(fileContents);
+  } catch (e: any) {
+    console.error(`[getPostData] CRITICAL ERROR parsing frontmatter for file ${filePath}:`, e);
+    return null;
+  }
+    
+  let contentToProcess = matterResult.content;
+  // console.log(`[getPostData DEBUG] Content before shortcode removal (first 150 chars) for ${filePath}: ${contentToProcess.substring(0, 150)}`);
+  
+  contentToProcess = contentToProcess.replace(/{{([%<])(?:.|\n)*?([%>])}}/gs, (match) => {
+    if (match.includes('```mermaid')) return match;
+    return `<!-- HUGO_SHORTCODE_FILTERED: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`;
+  });
+  // console.log(`[getPostData DEBUG] Content after shortcode removal (first 150 chars) for ${filePath}: ${contentToProcess.substring(0, 150)}`);
+
+  let processedContent;
+  try {
+      processedContent = await remark()
+        .use(gfm)
+        .use(remarkMath)
+        .use(remarkRehype, { allowDangerousHtml: true })
+        .use(rehypeKatex, { output: 'htmlAndMathml', throwOnError: false })
+        .use(rehypeStringify, { allowDangerousHtml: true })
+        .process(contentToProcess);
+  } catch (e: any) {
+      console.error(`[getPostData] CRITICAL ERROR during remark/rehype processing for file ${filePath}:`, e);
+      return null;
+  }
+        
+  const contentHtml = processedContent.toString();
+  // console.log(`[getPostData DEBUG] Processed HTML (first 200 chars) for ${filePath}: ${contentHtml.substring(0, 200)}`);
+
+  const plainContentForExcerpt = contentToProcess
+      .replace(/<\/?[^>]+(>|$)/g, "")
+      .replace(/<!--.*?-->/gs, "")
+      .replace(/```[\s\S]*?```/g, "[Code Block]"); 
+  const excerpt = plainContentForExcerpt.substring(0, 150) + (plainContentForExcerpt.length > 150 ? '...' : '');
+
+  return {
+    id: slugParts.join('/'),
+    slugParts,
+    lang: resolvedLang,
+    contentHtml,
+    title: matterResult.data.title || path.basename(filePath, path.extname(filePath)).replace(/\.(en|gu)$/, '').replace(/^_index$|^index$/, slugParts[slugParts.length -1] || 'Section Index') || 'Untitled Post',
+    date: matterResult.data.date || new Date().toISOString(),
+    excerpt,
+    ...matterResult.data,
+  };
 }
 
 export function getAllPostSlugsForStaticParams(): Array<{ lang: string; slugParts: string[] } > {
   try {
     const allFileDetails = getAllMarkdownFilesRecursive(contentDirectory);
-    // Filter out any entries where id is empty, which might happen for root _index.md files if not handled specifically for listing.
-    const validFileDetails = allFileDetails.filter(detail => detail.id && detail.id.length > 0);
+    // Filter out entries where id is empty AND slugParts is also empty (e.g. a root _index.md without further path parts)
+    // unless we specifically want a route like /posts/en/ for content/_index.en.md
+    const validFileDetails = allFileDetails.filter(detail => {
+      if (detail.id === '' && detail.slugParts.length === 0) {
+        // This is a root _index.md or _index.lang.md
+        // It should be included if it's intended to be a page (e.g., for /posts/en/)
+        return true; 
+      }
+      return detail.id && detail.id.length > 0;
+    });
     
     return validFileDetails.map(fileDetail => ({
       lang: fileDetail.lang, 
-      slugParts: fileDetail.slugParts, 
+      // For root index files (id=''), slugParts should be an empty array
+      slugParts: fileDetail.id === '' ? [] : fileDetail.slugParts, 
     }));
   } catch (e: any) {
     console.error("[getAllPostSlugsForStaticParams] CRITICAL ERROR generating static params:", e);
-    return []; // Return empty array on error to prevent build crash
+    return [];
   }
 }
+
