@@ -50,7 +50,7 @@ interface FileDetails {
 function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir): FileDetails[] {
   let files: FileDetails[] = [];
   if (!fs.existsSync(dir)) {
-    console.warn(`Content directory or subdirectory not found during scan: ${dir}`);
+    console.warn(`[markdown.ts] Content directory or subdirectory not found during scan: ${dir}`);
     return files;
   }
 
@@ -58,10 +58,9 @@ function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir): FileD
   try {
     entries = fs.readdirSync(dir, { withFileTypes: true });
   } catch (e) {
-    console.warn(`Could not read directory ${dir}:`, e); 
+    console.warn(`[markdown.ts] Could not read directory ${dir}:`, e);
     return files; 
   }
-
 
   for (const entry of entries) {
     const fullPath = path.join(dir, entry.name);
@@ -103,23 +102,35 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
       return null;
     }
     try {
+      // console.log(`[getSortedPostsData] Processing file: ${fileDetail.fullPath}`);
       const fileContents = fs.readFileSync(fileDetail.fullPath, 'utf8');
       const matterResult = matter(fileContents);
 
       let contentToProcess = matterResult.content.replace(/{{< mermaid >}}([\s\S]*?){{< \/mermaid >}}/gs, (match, mermaidContent) => {
         return '```mermaid\n' + mermaidContent.trim() + '\n```';
       });
-      contentToProcess = contentToProcess.replace(/{{([%<])\s*.*?\s*([%>])}}/gs, (match) => {
+      // More aggressive shortcode filtering
+      contentToProcess = contentToProcess.replace(/{{< \/?\w+.*?>}}/gs, (match) => {
         return `<!-- Hugo Shortcode Filtered: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`;
       });
-      
+      contentToProcess = contentToProcess.replace(/{{%\s*ref\s*"([^"]+)"\s*%}}/g, (match, refPath) => {
+        return `[Internal Link: ${refPath}](${refPath})`; // Basic placeholder
+      });
+      contentToProcess = contentToProcess.replace(/{{< \/?figure.*?>}}/gs, (match) => {
+        return `<!-- Hugo Figure Shortcode Filtered: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`;
+      });
+      // General catch-all for Hugo-like shortcodes ( {{< ... >}} or {{% ... %}} )
+      contentToProcess = contentToProcess.replace(/{{[<%][\s\S]*?[%>]}}/g, (match) => {
+        return `<!-- Hugo Shortcode Filtered: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`;
+      });
+
+
       const plainContent = contentToProcess
         .replace(/<\/?[^>]+(>|$)/g, ""); // Remove HTML tags
       const excerpt = plainContent.substring(0, 150) + (plainContent.length > 150 ? '...' : '');
       
       const title = matterResult.data.title || 'Untitled Post';
       const date = matterResult.data.date || new Date().toISOString();
-
 
       return {
         id: fileDetail.id,
@@ -132,7 +143,7 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
         ...matterResult.data,
       };
     } catch (e) {
-      console.error(`Error processing file for sorted list ${fileDetail.fullPath}:`, e);
+      console.error(`[getSortedPostsData] Error processing file ${fileDetail.fullPath} for preview list:`, e);
       return null; 
     }
   });
@@ -153,9 +164,9 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
 }
 
 export async function getPostData(langParam: string, slugParts: string[]): Promise<PostData | null> {
-  console.log(`Attempting to getPostData for lang: "${langParam}", slugParts: ["${slugParts.join('", "')}"]`);
-  
   const normalizedSlug = slugParts.join('/');
+  console.log(`[getPostData] Attempting to get post for lang: "${langParam}", slug: "${normalizedSlug}"`);
+  
   const baseSlugPathForFs = normalizedSlug.split('/').join(path.sep);
   
   const possibleFileNames = [
@@ -177,46 +188,59 @@ export async function getPostData(langParam: string, slugParts: string[]): Promi
       const langSuffixMatch = nameWithoutExt.match(/\.([a-z]{2})$/);
       if (langSuffixMatch && availableLanguages.includes(langSuffixMatch[1])) {
         resolvedLang = langSuffixMatch[1];
-      } else {
+      } else if (ext === '.md' && !langSuffixMatch) { // If it's just .md, it's English
         resolvedLang = 'en';
       }
-      console.log(`SUCCESS: Found file for post: ${fullPath} with resolvedLang: ${resolvedLang}`);
+      console.log(`[getPostData] Found file: ${fullPath} with resolvedLang: ${resolvedLang}`);
       break;
     } else {
-      console.log(`INFO: File not found at ${fullPath}`);
+      // console.log(`[getPostData] File not found at ${fullPath}`);
     }
   }
 
   if (!filePath) {
-    console.warn(`WARN: Markdown file not found. Content directory: ${contentDirectory}, Normalized slug: ${normalizedSlug}, Looked for: ${possibleFileNames.join(', ')}`);
+    console.warn(`[getPostData] Markdown file not found. Content directory: ${contentDirectory}, Normalized slug: ${normalizedSlug}, Looked for: ${possibleFileNames.join(', ')}`);
     return null; 
   }
   
-  console.log(`Processing file: ${filePath}`); // Log the file being processed
-
   try {
+    // console.log(`[getPostData] Reading file: ${filePath}`);
     const fileContents = fs.readFileSync(filePath, 'utf8');
+    // console.log(`[getPostData] Parsing frontmatter for: ${filePath}`);
     const matterResult = matter(fileContents);
 
     let contentToProcess = matterResult.content.replace(/{{< mermaid >}}([\s\S]*?){{< \/mermaid >}}/gs, (match, mermaidContent) => {
       return '```mermaid\n' + mermaidContent.trim() + '\n```';
     });
-    contentToProcess = contentToProcess.replace(/{{([%<])\s*.*?\s*([%>])}}/gs, (match) => {
+    // More aggressive shortcode filtering
+    contentToProcess = contentToProcess.replace(/{{< \/?\w+.*?>}}/gs, (match) => {
+      return `<!-- Hugo Shortcode Filtered: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`;
+    });
+    contentToProcess = contentToProcess.replace(/{{%\s*ref\s*"([^"]+)"\s*%}}/g, (match, refPath) => {
+      return `[Internal Link: ${refPath}](${refPath})`; // Basic placeholder
+    });
+    contentToProcess = contentToProcess.replace(/{{< \/?figure.*?>}}/gs, (match) => {
+      return `<!-- Hugo Figure Shortcode Filtered: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`;
+    });
+    // General catch-all for Hugo-like shortcodes ( {{< ... >}} or {{% ... %}} )
+    contentToProcess = contentToProcess.replace(/{{[<%][\s\S]*?[%>]}}/g, (match) => {
       return `<!-- Hugo Shortcode Filtered: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`;
     });
 
+
+    // console.log(`[getPostData] Processing markdown to HTML for: ${filePath}`);
     const processedContent = await remark()
       .use(gfm)
       .use(remarkMath)
       .use(remarkRehype, { allowDangerousHtml: true })
-      .use(rehypeKatex, { output: 'htmlAndMathml', throwOnError: false }) // Key change: throwOnError: false
+      .use(rehypeKatex, { output: 'htmlAndMathml', throwOnError: false }) // Critical: don't throw on KaTeX errors
       .use(rehypeStringify, { allowDangerousHtml: true })
       .process(contentToProcess);
       
     const contentHtml = processedContent.toString();
 
     const plainContentForExcerpt = contentToProcess
-        .replace(/<\/?[^>]+(>|$)/g, "");
+        .replace(/<\/?[^>]+(>|$)/g, ""); // Remove HTML tags
     const excerpt = plainContentForExcerpt.substring(0, 150) + (plainContentForExcerpt.length > 150 ? '...' : '');
 
     return {
@@ -229,9 +253,9 @@ export async function getPostData(langParam: string, slugParts: string[]): Promi
       excerpt,
       ...matterResult.data,
     };
-  } catch (e) {
-    console.error(`ERROR: Error processing markdown file ${filePath}:`, e); 
-    return null; 
+  } catch (e: any) { // Catch any error during file read, matter parse, or remark processing
+    console.error(`[getPostData] CRITICAL ERROR processing markdown file ${filePath}:`, e.message, e.stack);
+    return null; // Gracefully return null
   }
 }
 
@@ -243,5 +267,3 @@ export function getAllPostSlugsForStaticParams(): Array<{ lang: string; slugPart
   }));
 }
 
-
-    
