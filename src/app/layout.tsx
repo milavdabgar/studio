@@ -310,7 +310,7 @@ export default function RootLayout({
       });
     } else {
       setCurrentUser(DEFAULT_USER);
-       if (!['/login', '/signup', '/'].includes(pathname)) {
+       if (!['/login', '/signup', '/'].includes(pathname) && !pathname.startsWith('/posts')) { // Allow /posts
          router.push('/login');
        }
     }
@@ -374,7 +374,7 @@ export default function RootLayout({
   
   const activeRoleObject = allSystemRoles.find(r => r.code === currentUser.activeRole);
   const currentNavItems = getNavItemsForRoleCode(currentUser.activeRole);
-  const hideSidebar = ['/login', '/signup', '/'].includes(pathname);
+  const hideSidebar = ['/login', '/signup', '/'].includes(pathname) || pathname.startsWith('/posts');
 
 
   if (!isMounted) { 
@@ -384,7 +384,8 @@ export default function RootLayout({
             <title>PolyManager - Loading...</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
             <link rel="manifest" href="/manifest.json" />
-            <meta name="theme-color" content="#1e40af" />
+            <meta name="theme-color" content="#1E40AF" />
+            <meta name="mobile-web-app-capable" content="yes" />
             <link rel="apple-touch-icon" href="/icons/icon-192x192.png" /> 
             <meta name="apple-mobile-web-app-capable" content="yes" />
             <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -407,7 +408,8 @@ export default function RootLayout({
             <title>PolyManager</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
             <link rel="manifest" href="/manifest.json" />
-            <meta name="theme-color" content="#1e40af" />
+            <meta name="theme-color" content="#1E40AF" />
+            <meta name="mobile-web-app-capable" content="yes" />
             <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
             <meta name="apple-mobile-web-app-capable" content="yes" />
             <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -428,7 +430,8 @@ export default function RootLayout({
             <title>PolyManager</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
             <link rel="manifest" href="/manifest.json" />
-            <meta name="theme-color" content="#1e40af" />
+            <meta name="theme-color" content="#1E40AF" />
+            <meta name="mobile-web-app-capable" content="yes" />
             <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
             <meta name="apple-mobile-web-app-capable" content="yes" />
             <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
