@@ -312,11 +312,11 @@ export default function DashboardPage() {
             <CardContent>
               <div className="text-2xl font-bold">{card.value}</div>
               {card.href && (
-                <Link href={card.href} passHref legacyBehavior>
-                  <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground">
+                <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground" asChild>
+                  <Link href={card.href}>
                     View Details
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               )}
             </CardContent>
           </Card>
@@ -401,11 +401,11 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {adminQuickLinks.map(item => (
-                <Link href={item.href} passHref key={item.id} legacyBehavior>
-                  <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left">
+                <Button variant="outline" className="w-full justify-start gap-2 p-4 h-auto text-left" key={item.id} asChild>
+                  <Link href={item.href}>
                     <item.icon className="h-5 w-5" /> {item.label}
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               ))}
             </CardContent>
           </Card>

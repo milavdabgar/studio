@@ -121,11 +121,11 @@ export default function CommitteeDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">2</div> {/* Placeholder */}
-            <Link href="/committee/meetings" passHref legacyBehavior>
-              <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground">
+            <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground" asChild>
+              <Link href="/committee/meetings">
                 View Schedule
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </CardContent>
         </Card>
 
@@ -136,11 +136,11 @@ export default function CommitteeDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">5</div> {/* Placeholder */}
-             <Link href="#" passHref legacyBehavior>
-                <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground">
+             <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground" asChild>
+                <Link href="#">
                     View Tasks
-                </Button>
-            </Link>
+                </Link>
+            </Button>
           </CardContent>
         </Card>
 
@@ -151,11 +151,11 @@ export default function CommitteeDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">12</div> {/* Placeholder */}
-             <Link href="#" passHref legacyBehavior>
-                <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground">
+             <Button variant="link" className="p-0 h-auto text-xs text-muted-foreground" asChild>
+                <Link href="#">
                     View Members
-                </Button>
-            </Link>
+                </Link>
+            </Button>
           </CardContent>
         </Card>
       </section>

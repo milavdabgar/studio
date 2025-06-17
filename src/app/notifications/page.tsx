@@ -206,11 +206,11 @@ export default function AllNotificationsPage() {
                        ` (read ${formatDistanceToNow(parseISO(notification.updatedAt), { addSuffix: true })})`}
                     </p>
                     {notification.link && (
-                      <Link href={notification.link} passHref legacyBehavior>
-                        <Button variant="link" size="sm" className="text-xs p-0 h-auto mt-1 text-primary flex items-center gap-1">
+                      <Button variant="link" size="sm" className="text-xs p-0 h-auto mt-1 text-primary flex items-center gap-1" asChild>
+                        <Link href={notification.link}>
                             <ExternalLink className="h-3 w-3"/> View Details
-                        </Button>
-                      </Link>
+                        </Link>
+                      </Button>
                     )}
                   </div>
                   <div className="flex-shrink-0 space-x-1">
