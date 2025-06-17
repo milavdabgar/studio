@@ -11,9 +11,38 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Languages } from 'lucide-react';
+import { useRouter, usePathname } from 'next/navigation';
 
 export function LanguageSwitcher() {
   const { language, setLanguage, availableLanguages } = useLanguage();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const handleLanguageChange = (newLang: Language) => {
+    // Update the context state
+    setLanguage(newLang);
+    
+    // Handle URL navigation
+    if (pathname) {
+      // Check if current path is a blog post URL pattern
+      const pathSegments = pathname.split('/').filter(Boolean);
+      
+      if (pathSegments.length > 0 && pathSegments[0] === 'posts') {
+        // Replace the language in the URL
+        // Current URL: /posts/en/some/path or /posts/gu/some/path
+        // New URL: /posts/newLang/some/path
+        const newPathSegments = [pathSegments[0], newLang, ...pathSegments.slice(2)];
+        const newPath = '/' + newPathSegments.join('/');
+        router.push(newPath);
+      } else {
+        // For non-blog pages, redirect to the blog home for the new language
+        router.push(`/posts/${newLang}`);
+      }
+    } else {
+      // Fallback: redirect to blog home
+      router.push(`/posts/${newLang}`);
+    }
+  };
 
   return (
     <DropdownMenu>
@@ -27,7 +56,7 @@ export function LanguageSwitcher() {
         {availableLanguages.map((lang) => (
           <DropdownMenuItem
             key={lang}
-            onClick={() => setLanguage(lang)}
+            onClick={() => handleLanguageChange(lang)}
             className={`cursor-pointer ${language === lang ? 'bg-accent' : ''}`}
           >
             <span className="mr-2">{languages[lang].flag}</span>

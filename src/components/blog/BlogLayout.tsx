@@ -4,6 +4,7 @@
 import { LanguageProvider } from '@/lib/contexts/LanguageContext';
 import { ThemeProvider } from '@/lib/contexts/ThemeContext';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { LanguageSync } from './LanguageSync';
 import { ThemeToggle } from '../theme-toggle';
 import { Button } from '@/components/ui/button';
 import { Search, Home, Archive, Tag, BookOpen } from 'lucide-react';
@@ -19,6 +20,7 @@ export function BlogLayout({ children, currentLang }: BlogLayoutProps) {
   return (
     <ThemeProvider>
       <LanguageProvider>
+        <LanguageSync currentLang={currentLang} />
         <div className="min-h-screen bg-background">
           {/* Header */}
           <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
