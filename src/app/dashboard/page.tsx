@@ -1,5 +1,4 @@
- ⨯ upstream image response failed for https://source.unsplash.com/600x400/code 503
- ⨯ upstream image response failed for https://source.unsplash.com/600x400/software 503// src/app/dashboard/page.tsx
+// src/app/dashboard/page.tsx
 "use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
