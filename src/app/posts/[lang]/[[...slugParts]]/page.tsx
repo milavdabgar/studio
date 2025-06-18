@@ -1,6 +1,6 @@
 // src/app/posts/[lang]/[[...slugParts]]/page.tsx
 
-import { getPostData, getSortedPostsData, getSubPostsForDirectory, getDirectSubsections, type PostData, type PostPreview } from '@/lib/markdown'; 
+import { getPostData, getSortedPostsData, getSubPostsForDirectory, getDirectSubsections, getRelatedPosts, getAdjacentPosts, type PostData, type PostPreview } from '@/lib/markdown'; 
 import { format, parseISO, isValid } from 'date-fns';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -15,6 +15,9 @@ import { SubsectionCard } from '@/components/blog/SubsectionCard';
 import { Breadcrumbs } from '@/components/blog/Breadcrumbs';
 import { TableOfContents } from '@/components/blog/TableOfContents';
 import { PostMeta } from '@/components/blog/PostMeta';
+import { RelatedPosts } from '@/components/blog/RelatedPosts';
+import { PostNavigation } from '@/components/blog/PostNavigation';
+import { PostFooter } from '@/components/blog/PostFooter';
 import { calculateReadingTime } from '@/lib/markdown';
 import { notFound } from 'next/navigation';
 // import path from 'path'; // Not strictly needed here anymore
@@ -355,6 +358,10 @@ export default async function PostPage({ params }: PostPageProps) {
   // Calculate reading time from content
   const readingTime = postData.contentHtml ? calculateReadingTime(postData.contentHtml.replace(/<[^>]*>/g, '')) : 0;
 
+  // Get related posts and navigation
+  const relatedPosts = await getRelatedPosts(postData, langForLinks);
+  const { previousPost, nextPost } = await getAdjacentPosts(postData, langForLinks);
+
   return (
     <BlogLayout currentLang={langForLinks}>
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
@@ -398,6 +405,22 @@ export default async function PostPage({ params }: PostPageProps) {
                   </CardContent>
                 </Card>
               </article>
+
+              {/* Post Navigation */}
+              <PostNavigation 
+                previousPost={previousPost}
+                nextPost={nextPost}
+                lang={langForLinks}
+              />
+
+              {/* Related Posts */}
+              <RelatedPosts 
+                posts={relatedPosts}
+                lang={langForLinks}
+              />
+
+              {/* Footer */}
+              <PostFooter lang={langForLinks} />
             </div>
             
             {/* Desktop Table of Contents Sidebar */}

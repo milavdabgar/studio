@@ -559,3 +559,61 @@ export async function searchPosts(query: string, lang?: string): Promise<PostPre
   });
 }
 
+// Related posts and navigation functions
+export async function getRelatedPosts(currentPost: PostData, lang?: string, limit: number = 3): Promise<PostPreview[]> {
+  const allPosts = await getSortedPostsData(lang);
+  
+  // Filter out the current post
+  const otherPosts = allPosts.filter(post => post.id !== currentPost.id);
+  
+  // Score posts based on shared tags and categories
+  const scoredPosts = otherPosts.map(post => {
+    let score = 0;
+    
+    // Score for shared tags
+    const currentTags = currentPost.tags || [];
+    const postTags = post.tags || [];
+    const sharedTags = currentTags.filter(tag => postTags.includes(tag));
+    score += sharedTags.length * 3; // Weight tags heavily
+    
+    // Score for shared categories
+    const currentCategories = currentPost.categories || [];
+    const postCategories = post.categories || [];
+    const sharedCategories = currentCategories.filter(category => postCategories.includes(category));
+    score += sharedCategories.length * 2; // Weight categories moderately
+    
+    // Score for same author
+    if (currentPost.author && post.author === currentPost.author) {
+      score += 1;
+    }
+    
+    return { ...post, score };
+  });
+  
+  // Sort by score (descending) and take the top posts
+  return scoredPosts
+    .filter(post => post.score > 0) // Only posts with some relation
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
+}
+
+export async function getAdjacentPosts(currentPost: PostData, lang?: string): Promise<{
+  previousPost: PostPreview | null;
+  nextPost: PostPreview | null;
+}> {
+  const allPosts = await getSortedPostsData(lang);
+  
+  // Find the current post index
+  const currentIndex = allPosts.findIndex(post => post.id === currentPost.id);
+  
+  if (currentIndex === -1) {
+    return { previousPost: null, nextPost: null };
+  }
+  
+  // Get adjacent posts (posts are sorted by date descending)
+  const previousPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+  const nextPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+  
+  return { previousPost, nextPost };
+}
+
