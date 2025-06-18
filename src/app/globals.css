@@ -365,6 +365,46 @@ pre.shiki {
   @apply flex justify-center my-8;
 }
 
+/* Dark mode Mermaid improvements */
+.dark .markdown-content .mermaid {
+  /* Ensure proper background for diagram container */
+  background-color: transparent !important;
+}
+
+.dark .markdown-content .mermaid svg {
+  /* Force high contrast text in dark mode */
+  color: rgb(241 245 249) !important; /* slate-100 */
+  background-color: transparent !important;
+}
+
+/* Force visibility of text elements in dark mode */
+.dark .markdown-content .mermaid text {
+  fill: rgb(241 245 249) !important; /* slate-100 */
+  color: rgb(241 245 249) !important; /* slate-100 */
+}
+
+/* Ensure diagram borders are visible in dark mode */
+.dark .markdown-content .mermaid rect,
+.dark .markdown-content .mermaid path,
+.dark .markdown-content .mermaid line {
+  stroke: rgb(100 116 139) !important; /* slate-500 */
+}
+
+/* Fix node backgrounds in dark mode */
+.dark .markdown-content .mermaid .node rect,
+.dark .markdown-content .mermaid .node circle,
+.dark .markdown-content .mermaid .node ellipse,
+.dark .markdown-content .mermaid .node polygon {
+  fill: rgb(55 65 81) !important; /* gray-700 */
+  stroke: rgb(107 114 128) !important; /* gray-500 */
+}
+
+/* Improve edge label readability */
+.dark .markdown-content .mermaid .edgeLabel {
+  background-color: rgb(30 41 59) !important; /* slate-800 */
+  color: rgb(241 245 249) !important; /* slate-100 */
+}
+
 /* Print styles */
 @media print {
   .markdown-content {
