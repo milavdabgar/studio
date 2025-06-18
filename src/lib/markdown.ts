@@ -498,6 +498,26 @@ export async function getAllCategories(lang?: string): Promise<{ name: string; c
     .sort((a, b) => b.count - a.count);
 }
 
+export async function getAllAuthors(lang?: string): Promise<{ name: string; count: number }[]> {
+  const posts = await getSortedPostsData(lang);
+  const authorCounts: Record<string, number> = {};
+  
+  posts.forEach(post => {
+    if (post.author) {
+      const authors = Array.isArray(post.author) ? post.author : [post.author];
+      authors.forEach(author => {
+        if (author && author.trim()) {
+          authorCounts[author] = (authorCounts[author] || 0) + 1;
+        }
+      });
+    }
+  });
+  
+  return Object.entries(authorCounts)
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+}
+
 export async function getPostsByTag(tag: string, lang?: string): Promise<PostPreview[]> {
   const posts = await getSortedPostsData(lang);
   return posts.filter(post => 
@@ -510,6 +530,15 @@ export async function getPostsByCategory(category: string, lang?: string): Promi
   return posts.filter(post => 
     post.categories && Array.isArray(post.categories) && post.categories.includes(category)
   );
+}
+
+export async function getPostsByAuthor(author: string, lang?: string): Promise<PostPreview[]> {
+  const posts = await getSortedPostsData(lang);
+  return posts.filter(post => {
+    if (!post.author) return false;
+    const authors = Array.isArray(post.author) ? post.author : [post.author];
+    return authors.includes(author);
+  });
 }
 
 // Search function

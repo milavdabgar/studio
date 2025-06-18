@@ -85,7 +85,12 @@ export function PostMeta({
       {showAuthor && author && (
         <div className="flex items-center gap-1">
           <User className="h-4 w-4" />
-          <span>{formatAuthors(author)}</span>
+          <Link 
+            href={`/authors/${lang}/${encodeURIComponent(Array.isArray(author) ? author[0] : author)}`}
+            className="hover:text-foreground transition-colors hover:underline"
+          >
+            {formatAuthors(author)}
+          </Link>
         </div>
       )}
 
