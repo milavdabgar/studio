@@ -142,11 +142,25 @@ export async function GET(request: NextRequest) {
             category: 'document'
           },
           {
+            id: 'odt',
+            name: 'OpenDocument Text',
+            description: 'LibreOffice/OpenOffice text document format',
+            extension: 'odt',
+            category: 'document'
+          },
+          {
             id: 'epub',
             name: 'EPUB',
             description: 'Electronic book format for e-readers',
             extension: 'epub',
             category: 'ebook'
+          },
+          {
+            id: 'pptx',
+            name: 'PowerPoint Presentation',
+            description: 'Microsoft PowerPoint presentation format',
+            extension: 'pptx',
+            category: 'presentation'
           },
           {
             id: 'latex',
@@ -210,9 +224,19 @@ function getFileDetails(baseFilename: string, format: string) {
       contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
       isBuffer: true 
     },
+    'odt': { 
+      extension: 'odt', 
+      contentType: 'application/vnd.oasis.opendocument.text', 
+      isBuffer: true 
+    },
     'epub': { 
       extension: 'epub', 
       contentType: 'application/epub+zip', 
+      isBuffer: true 
+    },
+    'pptx': { 
+      extension: 'pptx', 
+      contentType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 
       isBuffer: true 
     },
     'latex': { 

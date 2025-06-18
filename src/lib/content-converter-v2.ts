@@ -174,8 +174,14 @@ export class ContentConverterV2 {
             case 'docx':
                 return await this.convertToDocx(content, frontmatter, options);
             
+            case 'odt':
+                return await this.convertToOdt(content, frontmatter, options);
+            
             case 'epub':
                 return await this.convertToEpub(content, frontmatter, options);
+            
+            case 'pptx':
+                return await this.convertToPptx(content, frontmatter, options);
             
             case 'latex':
             case 'tex':
@@ -645,6 +651,136 @@ ${content}`;
                 fs.unlinkSync(tempTexPath);
             }
             throw error;
+        }
+    }
+
+    private async convertToOdt(content: string, frontmatter: any, options: ConversionOptions): Promise<Buffer> {
+        // Generate temporary markdown file
+        const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
+        const tempOdtPath = path.join(this.tempDir, `output-${Date.now()}.odt`);
+        
+        // Create complete markdown with frontmatter
+        const title = options.title || frontmatter.title || 'Document';
+        const author = options.author || frontmatter.author || 'Unknown Author';
+        const date = frontmatter.date || new Date().toISOString().split('T')[0];
+        
+        const fullMarkdown = `---
+title: "${title}"
+author: "${author}"
+date: ${date}
+lang: ${options.language || 'en'}
+---
+
+${content}`;
+        
+        try {
+            fs.writeFileSync(tempMdPath, fullMarkdown);
+            
+            // Use pandoc to convert to ODT (OpenDocument Text)
+            const pandocCommand = [
+                'pandoc',
+                `"${tempMdPath}"`,
+                '-o', `"${tempOdtPath}"`,
+                '--standalone',
+                '--toc',
+                '--toc-depth=3'
+            ].join(' ');
+            
+            await execAsync(pandocCommand);
+            
+            if (!fs.existsSync(tempOdtPath)) {
+                throw new Error('ODT generation failed - output file not created');
+            }
+            
+            // Read the generated ODT file
+            const odtBuffer = fs.readFileSync(tempOdtPath);
+            
+            // Clean up temporary files
+            fs.unlinkSync(tempMdPath);
+            fs.unlinkSync(tempOdtPath);
+            
+            return odtBuffer;
+        } catch (error) {
+            // Clean up temporary files in case of error
+            if (fs.existsSync(tempMdPath)) {
+                fs.unlinkSync(tempMdPath);
+            }
+            if (fs.existsSync(tempOdtPath)) {
+                fs.unlinkSync(tempOdtPath);
+            }
+            throw new Error(`ODT conversion failed: ${error instanceof Error ? error.message : String(error)}`);
+        }
+    }
+
+    private async convertToPptx(content: string, frontmatter: any, options: ConversionOptions): Promise<Buffer> {
+        // Generate temporary markdown file
+        const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
+        const tempPptxPath = path.join(this.tempDir, `output-${Date.now()}.pptx`);
+        
+        // Create complete markdown with frontmatter optimized for presentation
+        const title = options.title || frontmatter.title || 'Presentation';
+        const author = options.author || frontmatter.author || 'Unknown Author';
+        const date = frontmatter.date || new Date().toISOString().split('T')[0];
+        
+        // Process content to be more presentation-friendly
+        let presentationContent = content;
+        
+        // Convert main headings (# and ##) to slide breaks
+        presentationContent = presentationContent.replace(/^# /gm, '\n---\n\n# ');
+        presentationContent = presentationContent.replace(/^## /gm, '\n---\n\n## ');
+        
+        const fullMarkdown = `---
+title: "${title}"
+author: "${author}"
+date: ${date}
+---
+
+# ${title}
+
+**${author}**
+
+${date}
+
+---
+
+${presentationContent}`;
+        
+        try {
+            fs.writeFileSync(tempMdPath, fullMarkdown);
+            
+            // Use pandoc to convert to PPTX with presentation-specific options
+            const pandocCommand = [
+                'pandoc',
+                `"${tempMdPath}"`,
+                '-o', `"${tempPptxPath}"`,
+                '--standalone',
+                '-t', 'pptx',
+                '--slide-level=2'  // Use level 2 headings as slides
+            ].join(' ');
+            
+            await execAsync(pandocCommand);
+            
+            if (!fs.existsSync(tempPptxPath)) {
+                throw new Error('PPTX generation failed - output file not created');
+            }
+            
+            // Read the generated PPTX file
+            const pptxBuffer = fs.readFileSync(tempPptxPath);
+            
+            // Clean up temporary files
+            fs.unlinkSync(tempMdPath);
+            fs.unlinkSync(tempPptxPath);
+            
+            return pptxBuffer;
+        } catch (error) {
+            // Clean up temporary files in case of error
+            if (fs.existsSync(tempMdPath)) {
+                fs.unlinkSync(tempMdPath);
+            }
+            if (fs.existsSync(tempPptxPath)) {
+                fs.unlinkSync(tempPptxPath);
+            }
+            throw new Error(`PPTX conversion failed: ${error instanceof Error ? error.message : String(error)}`);
         }
     }
 
