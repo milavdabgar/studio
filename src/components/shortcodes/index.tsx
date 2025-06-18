@@ -8,6 +8,7 @@ import { TwitterEmbed } from './TwitterEmbed';
 import { Instagram } from './Instagram';
 import { QRCode } from './QRCode';
 import { CodeBlock } from './CodeBlock';
+import { Carousel } from './Carousel';
 
 // Named exports
 export { YouTube } from './YouTube';
@@ -17,6 +18,7 @@ export { TwitterEmbed } from './TwitterEmbed';
 export { Instagram } from './Instagram';
 export { QRCode } from './QRCode';
 export { CodeBlock } from './CodeBlock';
+export { Carousel } from './Carousel';
 
 // Shortcode aliases for Hugo compatibility
 export { TwitterEmbed as X } from './TwitterEmbed';
@@ -25,6 +27,7 @@ export { YouTube as youtube } from './YouTube';
 export { Instagram as instagram } from './Instagram';
 export { QRCode as qr } from './QRCode';
 export { ImageGallery as gallery } from './ImageGallery';
+export { Carousel as carousel } from './Carousel';
 
 // Default export with all shortcodes
 export const shortcodes = {
@@ -44,6 +47,8 @@ export const shortcodes = {
   figure: Figure,
   ImageGallery,
   gallery: ImageGallery,
+  Carousel,
+  carousel: Carousel,
   
   // Utilities
   QRCode,

@@ -2,7 +2,7 @@
 // Hugo Shortcode Parser for React/Next.js
 
 import React from 'react';
-import { YouTube, Figure, ImageGallery, TwitterEmbed, Instagram, QRCode, CodeBlock } from '@/components/shortcodes';
+import { YouTube, Figure, ImageGallery, TwitterEmbed, Instagram, QRCode, CodeBlock, Carousel } from '@/components/shortcodes';
 
 // Type for shortcode components
 type ShortcodeComponent = React.ComponentType<any>;
@@ -27,6 +27,8 @@ const shortcodeRegistry: Record<string, ShortcodeComponent> = {
   gallery: ImageGallery,
   'image-gallery': ImageGallery,
   ImageGallery: ImageGallery,
+  carousel: Carousel,
+  Carousel: Carousel,
   
   // Utilities
   qr: QRCode,

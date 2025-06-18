@@ -1,18 +1,13 @@
 // src/components/shortcodes/TwitterEmbed.tsx
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ExternalLink, Twitter } from 'lucide-react';
 
 interface TwitterEmbedProps {
   user: string;
   id: string;
   theme?: 'light' | 'dark';
-  lang?: string;
-  width?: number;
-  height?: number;
-  cards?: 'hidden' | 'visible';
-  conversation?: 'none' | 'all';
   align?: 'left' | 'center' | 'right';
   className?: string;
 }
@@ -21,16 +16,11 @@ export function TwitterEmbed({
   user,
   id,
   theme = 'light',
-  lang = 'en',
-  width = 550,
-  height,
-  cards = 'visible',
-  conversation = 'all',
   align = 'center',
   className = ''
 }: TwitterEmbedProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
+  const [embedLoaded, setEmbedLoaded] = useState(false);
+  const [showFallback, setShowFallback] = useState(false);
 
   const tweetUrl = `https://twitter.com/${user}/status/${id}`;
   
@@ -40,96 +30,113 @@ export function TwitterEmbed({
     right: 'text-right ml-auto'
   }[align];
 
-  // Build embed parameters
-  const params = new URLSearchParams({
-    url: tweetUrl,
-    theme,
-    lang,
-    width: width.toString(),
-    ...(height && { height: height.toString() }),
-    hide_media: cards === 'hidden' ? 'true' : 'false',
-    conversation: conversation,
-    chrome: 'nofooter',
-    dnt: 'true' // Do not track
-  });
+  useEffect(() => {
+    // Try to load Twitter widgets script
+    if (typeof window !== 'undefined' && !document.getElementById('twitter-widgets')) {
+      const script = document.createElement('script');
+      script.id = 'twitter-widgets';
+      script.src = 'https://platform.twitter.com/widgets.js';
+      script.async = true;
+      script.onload = () => {
+        // @ts-ignore
+        if (window.twttr && window.twttr.widgets) {
+          // @ts-ignore
+          window.twttr.widgets.load();
+          setEmbedLoaded(true);
+        } else {
+          setShowFallback(true);
+        }
+      };
+      script.onerror = () => {
+        setShowFallback(true);
+      };
+      document.head.appendChild(script);
+    } else {
+      // Script already loaded
+      // @ts-ignore
+      if (window.twttr && window.twttr.widgets) {
+        // @ts-ignore
+        window.twttr.widgets.load();
+        setEmbedLoaded(true);
+      } else {
+        setShowFallback(true);
+      }
+    }
 
-  const embedUrl = `https://platform.twitter.com/embed/Tweet.html?${params}`;
+    // Fallback timeout
+    const timer = setTimeout(() => {
+      if (!embedLoaded) {
+        setShowFallback(true);
+      }
+    }, 5000);
 
-  const handleLoad = () => {
-    setIsLoaded(true);
-  };
-
-  const handleError = () => {
-    setHasError(true);
-    setIsLoaded(true);
-  };
-
-  if (hasError) {
-    return (
-      <div className={`border border-gray-300 dark:border-gray-600 rounded-lg p-6 bg-gray-50 dark:bg-gray-800 ${alignmentClass} ${className}`}>
-        <div className="flex flex-col items-center gap-4">
-          <Twitter className="h-12 w-12 text-blue-400" />
-          <div className="text-center">
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              Unable to load tweet
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              This tweet might be deleted, private, or there might be a network issue.
-            </p>
-            <a
-              href={tweetUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:underline text-sm"
-            >
-              <ExternalLink className="h-4 w-4" />
-              View on Twitter
-            </a>
-          </div>
-        </div>
-      </div>
-    );
-  }
+    return () => clearTimeout(timer);
+  }, [embedLoaded]);
 
   return (
-    <div className={`${alignmentClass} ${className}`}>
-      <div className="relative">
-        {!isLoaded && (
-          <div 
-            className="flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg border"
-            style={{ width, height: height || 400 }}
+    <div className={`max-w-lg mx-auto ${alignmentClass} ${className}`}>
+      {!showFallback ? (
+        <div className="relative">
+          {/* Twitter embed container */}
+          <blockquote 
+            className="twitter-tweet" 
+            data-theme={theme}
+            data-dnt="true"
           >
-            <div className="flex flex-col items-center gap-3">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-              <span className="text-sm text-gray-600 dark:text-gray-400">Loading tweet...</span>
+            <p lang="en" dir="ltr">
+              Loading tweet...
+            </p>
+            <a href={tweetUrl}>
+              {new Date().toLocaleDateString()}
+            </a>
+          </blockquote>
+          
+          {/* Loading state */}
+          {!embedLoaded && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-50 dark:bg-gray-800 rounded-lg border">
+              <div className="flex flex-col items-center gap-3">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                <span className="text-sm text-gray-600 dark:text-gray-400">Loading tweet...</span>
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        // Fallback UI
+        <div className="border border-gray-300 dark:border-gray-600 rounded-lg p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-700 max-w-lg">
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0">
+              <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+                <Twitter className="h-6 w-6 text-white" />
+              </div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="mb-3">
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
+                  Twitter/X Post
+                </h4>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  @{user}
+                </p>
+              </div>
+              
+              <p className="text-gray-700 dark:text-gray-300 text-sm mb-4">
+                This tweet is hosted by Twitter. By viewing it, you agree to Twitter's privacy policy and terms of service.
+              </p>
+              
+              <a
+                href={tweetUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+              >
+                <ExternalLink className="h-4 w-4" />
+                View on Twitter
+              </a>
             </div>
           </div>
-        )}
-        
-        <iframe
-          src={embedUrl}
-          width={width}
-          height={height || 400}
-          className={`border-0 rounded-lg ${!isLoaded ? 'absolute opacity-0' : ''}`}
-          scrolling="no"
-          onLoad={handleLoad}
-          onError={handleError}
-          title={`Tweet by @${user}`}
-        />
-      </div>
-      
-      {/* Fallback link */}
-      <div className="mt-2 text-center">
-        <a
-          href={tweetUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 inline-flex items-center gap-1"
-        >
-          <ExternalLink className="h-3 w-3" />
-          View original tweet
-        </a>
-      </div>
+        </div>
+      )}
     </div>
   );
 }

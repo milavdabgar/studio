@@ -23,7 +23,7 @@ This page demonstrates all the Hugo shortcodes that have been converted to React
 ## Social Media Embeds
 
 ### Twitter/X Post
-{{< x user="vercel" id="1234567890" >}}
+{{< x user="vercel" id="1724414854348357922" >}}
 
 ### Instagram Post
 {{< instagram "CxOWiQNP2MO" >}}
