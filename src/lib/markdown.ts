@@ -11,6 +11,7 @@ import rehypeKatex from 'rehype-katex';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
 import { PostData, PostPreview } from './types';
+import { processMarkdownWithShortcodes } from './shortcodes';
 
 const contentDirectory = path.join(process.cwd(), 'content');
 export const availableLanguages = ['en', 'gu'];
@@ -208,11 +209,17 @@ export async function getPostData({
   let contentToProcess = matterResult.content;
   console.log(`[getPostData DEBUG] Content before shortcode removal for ${filePath} (first 100 chars): "${contentToProcess.substring(0,100).replace(/\n/g, '\\\\n')}"`);
   
+  // Handle Hugo shortcodes first - convert to React component placeholders
+  contentToProcess = processMarkdownWithShortcodes(contentToProcess);
+  
+  // Then handle legacy mermaid shortcodes
   contentToProcess = contentToProcess.replace(/{{< mermaid >}}([\s\S]*?){{< \/mermaid >}}/gi, (match, mermaidContent) => `\n\`\`\`mermaid\n${mermaidContent.trim()}\n\`\`\`\n`);
+  
+  // Filter out any remaining unsupported Hugo shortcodes
   contentToProcess = contentToProcess.replace(/{{% .*? %}}/g, (match) => `<!-- HUGO_SHORTCODE_FILTERED_PERCENT: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`);
   contentToProcess = contentToProcess.replace(/{{< \/?\w+[^>]* >}}/g, (match) => `<!-- HUGO_SHORTCODE_FILTERED_ANGLE: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`);
   
-  console.log(`[getPostData DEBUG] Content after shortcode removal for ${filePath} (first 100 chars): "${contentToProcess.substring(0,100).replace(/\n/g, '\\\\n')}"`);
+  console.log(`[getPostData DEBUG] Content after shortcode processing for ${filePath} (first 100 chars): "${contentToProcess.substring(0,100).replace(/\n/g, '\\\\n')}"`);
 
   let processedContent;
   try {

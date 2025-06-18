@@ -5,6 +5,7 @@ import React, { useEffect, useRef } from 'react';
 import { useTheme } from 'next-themes';
 import { createRoot } from 'react-dom/client';
 import CodeBlock from '../ui/code-block';
+import { useShortcodeProcessor } from '@/lib/shortcodes';
 
 interface PostRendererProps {
   contentHtml: string;
@@ -13,6 +14,7 @@ interface PostRendererProps {
 const PostRenderer: React.FC<PostRendererProps> = ({ contentHtml }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { theme, resolvedTheme } = useTheme();
+  const { processShortcodes: processShortcodeElements } = useShortcodeProcessor();
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -119,11 +121,18 @@ const PostRenderer: React.FC<PostRendererProps> = ({ contentHtml }) => {
       });
     };
 
+    // Process shortcodes in the content
+    const processShortcodesInContent = () => {
+      if (!containerRef.current) return;
+      processShortcodeElements(containerRef);
+    };
+
     generateHeadingIds();
     enhanceCodeBlocks();
     enhanceLinks();
     enhanceTables();
     enhanceImages();
+    processShortcodesInContent();
 
     // Initialize Mermaid for diagrams
     import('mermaid').then((mermaid) => {
