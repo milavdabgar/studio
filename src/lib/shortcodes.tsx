@@ -91,10 +91,40 @@ function parseValue(value: string): any {
 
 // Convert Hugo shortcode syntax to React components
 export function parseShortcodes(content: string): string {
-  // Match Hugo shortcode syntax: {{< shortcode params >}}
+  // First handle paired shortcodes: {{< shortcode params >}}content{{< /shortcode >}}
+  const pairedShortcodeRegex = /\{\{<\s*(\w+(?:-\w+)*)\s+([^>]*?)\s*>\}\}([\s\S]*?)\{\{<\s*\/\1\s*>\}\}/g;
+  
+  let result = content.replace(pairedShortcodeRegex, (match, shortcodeName, paramString, innerContent) => {
+    // Find the corresponding React component
+    const Component = shortcodeRegistry[shortcodeName];
+    
+    if (!Component) {
+      console.warn(`Unknown paired shortcode: ${shortcodeName}`);
+      return match; // Return original if shortcode not found
+    }
+    
+    try {
+      // Parse parameters
+      const params = parseShortcodeParams(paramString.trim());
+      
+      // Add the inner content as children prop
+      params.children = innerContent.trim();
+      
+      // Generate a unique key for the component
+      const key = `shortcode-${shortcodeName}-${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Create placeholder that will be replaced in PostRenderer
+      return `<div data-shortcode="${shortcodeName}" data-params="${encodeURIComponent(JSON.stringify(params))}" data-key="${key}"></div>`;
+    } catch (error) {
+      console.error(`Error parsing paired shortcode ${shortcodeName}:`, error);
+      return match; // Return original on error
+    }
+  });
+  
+  // Then handle self-closing shortcodes: {{< shortcode params >}}
   const shortcodeRegex = /\{\{<\s*(\w+(?:-\w+)*)\s+([^>]*?)\s*>\}\}/g;
   
-  return content.replace(shortcodeRegex, (match, shortcodeName, paramString) => {
+  result = result.replace(shortcodeRegex, (match, shortcodeName, paramString) => {
     // Find the corresponding React component
     const Component = shortcodeRegistry[shortcodeName];
     
@@ -117,6 +147,10 @@ export function parseShortcodes(content: string): string {
       return match; // Return original on error
     }
   });
+  
+  return result;
+  
+  return result;
 }
 
 // Render shortcodes in React components
@@ -162,27 +196,28 @@ export function useShortcodeProcessor() {
         const component = renderShortcode(shortcodeName, params, key);
         
         if (component) {
-          // Create a temporary container to render the React component
-          const tempContainer = document.createElement('div');
+          // Create a wrapper div for the React component
+          const wrapper = document.createElement('div');
+          wrapper.className = 'shortcode-wrapper not-prose w-full overflow-hidden';
+          wrapper.style.cssText = 'margin: 8px 0 !important; padding: 0 !important;';
           
-          // Use ReactDOM.render or createRoot to render the component
-          // Note: This is a simplified approach. In production, you might want to use
-          // a more sophisticated method like React portals or a custom renderer
+          // Replace the placeholder with the wrapper
+          placeholder.parentNode?.replaceChild(wrapper, placeholder);
           
-          // For now, we'll replace with a simpler HTML representation
-          placeholder.innerHTML = `
-            <div class="shortcode-placeholder bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 my-4">
-              <div class="text-sm text-blue-600 dark:text-blue-400 font-medium">
-                📝 ${shortcodeName.toUpperCase()} Shortcode
-              </div>
-              <div class="text-xs text-blue-500 dark:text-blue-500 mt-1">
-                ${JSON.stringify(params, null, 2)}
-              </div>
-              <div class="text-xs text-gray-500 mt-2">
-                This will be rendered as an interactive component in the final version.
-              </div>
-            </div>
-          `;
+          // Use dynamic import to load createRoot only on client side
+          import('react-dom/client').then(({ createRoot }) => {
+            try {
+              const root = createRoot(wrapper);
+              root.render(component);
+            } catch (error) {
+              console.error('Error creating React root:', error);
+              // Fallback to a simple error message
+              wrapper.innerHTML = `<div class="p-4 bg-red-50 border border-red-200 rounded">Error loading ${shortcodeName} component</div>`;
+            }
+          }).catch((error) => {
+            console.error('Error loading React DOM client:', error);
+            wrapper.innerHTML = `<div class="p-4 bg-red-50 border border-red-200 rounded">Error loading ${shortcodeName} component</div>`;
+          });
         }
       } catch (error) {
         console.error('Error processing shortcode placeholder:', error);

@@ -31,10 +31,10 @@ This page demonstrates all the Hugo shortcodes that have been converted to React
 ## Images and Galleries
 
 ### Figure Shortcode
-{{< figure src="https://source.unsplash.com/800x600/nature" alt="Beautiful nature landscape" caption="A stunning view of nature" attr="Photo by [Photographer](https://unsplash.com)" link="https://unsplash.com" >}}
+{{< figure src="https://picsum.photos/800/600?random=1" alt="Beautiful nature landscape" caption="A stunning view of nature" attr="Photo by [Photographer](https://picsum.photos)" link="https://picsum.photos" >}}
 
-### Image Gallery
-{{< gallery images="https://source.unsplash.com/400x300/forest,https://source.unsplash.com/400x300/mountain,https://source.unsplash.com/400x300/ocean" captions="Forest Scene,Mountain View,Ocean Waves" >}}
+### Basic Image Gallery
+{{< gallery images="https://picsum.photos/400/300?random=2,https://picsum.photos/400/300?random=3,https://picsum.photos/400/300?random=4" captions="Forest Scene,Mountain View,Ocean Waves" >}}
 
 ## Utilities
 
@@ -65,22 +65,22 @@ export default MyComponent;
 
 ### Figure with All Options
 {{< figure 
-  src="https://source.unsplash.com/1200x800/technology" 
+  src="https://picsum.photos/1200/800?random=5" 
   alt="Technology workspace" 
   caption="Modern development environment" 
   title="Developer Workspace"
   width=800 
   height=600 
   align="center"
-  link="https://unsplash.com/photos/technology"
+  link="https://picsum.photos"
   target="_blank"
-  attr="Photo by [John Doe](https://example.com)"
+  attr="Photo by [Lorem Picsum](https://picsum.photos)"
   zoom=true
 >}}
 
-### Gallery with Autoplay
+### Advanced Image Gallery
 {{< gallery 
-  images="https://source.unsplash.com/600x400/programming,https://source.unsplash.com/600x400/code,https://source.unsplash.com/600x400/software,https://source.unsplash.com/600x400/developer"
+  images="https://picsum.photos/600/400?random=6,https://picsum.photos/600/400?random=7,https://picsum.photos/600/400?random=8,https://picsum.photos/600/400?random=9"
   height=300
   autoplay=true
   interval=3000
@@ -113,7 +113,7 @@ You can mix shortcodes with regular markdown content:
 
 This is a regular paragraph with **bold text** and *italic text*.
 
-{{< figure src="https://source.unsplash.com/400x300/books" alt="Books" caption="Knowledge is power" >}}
+{{< figure src="https://picsum.photos/400/300?random=10" alt="Books" caption="Knowledge is power" >}}
 
 And here's some code:
 

@@ -215,9 +215,12 @@ export async function getPostData({
   // Then handle legacy mermaid shortcodes
   contentToProcess = contentToProcess.replace(/{{< mermaid >}}([\s\S]*?){{< \/mermaid >}}/gi, (match, mermaidContent) => `\n\`\`\`mermaid\n${mermaidContent.trim()}\n\`\`\`\n`);
   
-  // Filter out any remaining unsupported Hugo shortcodes
+  // Filter out any remaining unsupported Hugo shortcodes (but NOT the ones already processed)
   contentToProcess = contentToProcess.replace(/{{% .*? %}}/g, (match) => `<!-- HUGO_SHORTCODE_FILTERED_PERCENT: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`);
-  contentToProcess = contentToProcess.replace(/{{< \/?\w+[^>]* >}}/g, (match) => `<!-- HUGO_SHORTCODE_FILTERED_ANGLE: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`);
+  
+  // Only filter out shortcodes that are not supported by our shortcode registry
+  // Use negative lookahead to avoid filtering known shortcodes that have been processed into placeholders
+  contentToProcess = contentToProcess.replace(/{{< (?!\/?(youtube|YouTube|figure|Figure|gallery|image-gallery|ImageGallery|x|X|twitter|Twitter|instagram|Instagram|qr|QRCode|code|CodeBlock)\b)[^>]* >}}/g, (match) => `<!-- HUGO_SHORTCODE_FILTERED_ANGLE: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`);
   
   console.log(`[getPostData DEBUG] Content after shortcode processing for ${filePath} (first 100 chars): "${contentToProcess.substring(0,100).replace(/\n/g, '\\\\n')}"`);
 

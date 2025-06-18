@@ -112,7 +112,6 @@ export function TwitterEmbed({
           height={height || 400}
           className={`border-0 rounded-lg ${!isLoaded ? 'absolute opacity-0' : ''}`}
           scrolling="no"
-          allowTransparency
           onLoad={handleLoad}
           onError={handleError}
           title={`Tweet by @${user}`}

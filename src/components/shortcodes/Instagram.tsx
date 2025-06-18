@@ -82,7 +82,6 @@ export function Instagram({
           height={caption && !hidecaption ? 840 : 600}
           className={`border-0 rounded-lg ${!isLoaded ? 'absolute opacity-0' : ''}`}
           scrolling="no"
-          allowTransparency
           onLoad={handleLoad}
           onError={handleError}
           title={`Instagram post ${id}`}

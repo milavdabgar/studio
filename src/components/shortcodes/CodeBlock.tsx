@@ -32,7 +32,9 @@ export function CodeBlock({
 }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
 
-  const lines = children.trim().split('\n');
+  // Safety check for children prop
+  const codeContent = (children || '').toString();
+  const lines = codeContent.trim().split('\n');
   
   // Parse highlight string (e.g., "1,3-5,7" -> [1, 3, 4, 5, 7])
   const highlightedLines = highlight
@@ -47,7 +49,7 @@ export function CodeBlock({
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(children);
+      await navigator.clipboard.writeText(codeContent);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -56,7 +58,7 @@ export function CodeBlock({
   };
 
   const handleDownload = () => {
-    const blob = new Blob([children], { type: 'text/plain' });
+    const blob = new Blob([codeContent], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -130,7 +132,7 @@ export function CodeBlock({
   };
 
   return (
-    <div className={`relative bg-gray-900 rounded-lg overflow-hidden my-6 ${className}`}>
+    <div className={`relative bg-gray-900 rounded-lg overflow-hidden m-0 ${className}`}>
       {/* Header */}
       <div className="flex items-center justify-between bg-gray-800 px-4 py-2 border-b border-gray-700">
         <div className="flex items-center gap-3">

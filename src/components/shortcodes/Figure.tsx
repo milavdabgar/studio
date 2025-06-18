@@ -31,8 +31,8 @@ export function Figure({
   title,
   link,
   target = '_blank',
-  width = 800,
-  height = 600,
+  width = 400,
+  height = 300,
   align = 'center',
   class: className = '',
   attr,
@@ -76,7 +76,7 @@ export function Figure({
           title={title}
           width={width}
           height={height}
-          className={`rounded-lg transition-transform duration-200 ${zoom && !link ? 'cursor-zoom-in hover:scale-105' : ''} ${className}`}
+          className={`rounded-lg transition-transform duration-200 max-w-full h-auto ${zoom && !link ? 'cursor-zoom-in hover:scale-105' : ''} ${className}`}
           loading={loading}
           onError={() => setImageError(true)}
           onClick={handleImageClick}
@@ -94,29 +94,30 @@ export function Figure({
   );
 
   const content = (
-    <figure className={`my-6 ${alignmentClass}`}>
-      {link ? (
-        <Link 
-          href={link} 
-          target={target}
-          rel={target === '_blank' ? rel : undefined}
-          className="inline-block relative group"
-        >
-          {imageElement}
-          {target === '_blank' && (
-            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <div className="bg-black bg-opacity-50 text-white p-1 rounded-full">
-                <ExternalLink className="h-4 w-4" />
+    <div className="w-full max-w-lg sm:max-w-xl mx-auto">
+      <figure className={`m-0 ${alignmentClass}`}>
+        {link ? (
+          <Link 
+            href={link} 
+            target={target}
+            rel={target === '_blank' ? rel : undefined}
+            className="inline-block relative group"
+          >
+            {imageElement}
+            {target === '_blank' && (
+              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="bg-black bg-opacity-50 text-white p-1 rounded-full">
+                  <ExternalLink className="h-4 w-4" />
+                </div>
               </div>
-            </div>
-          )}
-        </Link>
-      ) : (
-        imageElement
-      )}
-      
-      {(caption || attr) && (
-        <figcaption className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+            )}
+          </Link>
+        ) : (
+          imageElement
+        )}
+        
+        {(caption || attr) && (
+          <figcaption className="mt-3 text-sm text-gray-600 dark:text-gray-400">
           {caption && <span>{caption}</span>}
           {caption && attr && <span> - </span>}
           {attr && (
@@ -134,7 +135,8 @@ export function Figure({
           )}
         </figcaption>
       )}
-    </figure>
+      </figure>
+    </div>
   );
 
   return (

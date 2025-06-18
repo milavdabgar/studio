@@ -48,7 +48,17 @@ export function TableOfContents({
             .replace(/[^\w\s-]/g, '')
             .replace(/\s+/g, '-')
             .trim();
-          heading.id = id;
+          
+          // Ensure uniqueness by checking if ID already exists
+          let counter = 1;
+          let uniqueId = id;
+          while (document.getElementById(uniqueId)) {
+            uniqueId = `${id}-${counter}`;
+            counter++;
+          }
+          
+          heading.id = uniqueId;
+          id = uniqueId;
         }
         
         if (id && level <= 4) { // Only include h1-h4 in TOC
@@ -178,9 +188,9 @@ export function TableOfContents({
               </CardHeader>
               <CardContent>
                 <nav className="space-y-2">
-                  {tocItems.map((item) => (
+                  {tocItems.map((item, index) => (
                     <button
-                      key={item.id}
+                      key={`mobile-toc-${item.id}-${index}`}
                       onClick={() => scrollToHeading(item.id)}
                       className={cn(
                         'block w-full text-left text-sm hover:text-primary transition-colors py-1',
@@ -212,9 +222,9 @@ export function TableOfContents({
           </CardHeader>
           <CardContent className="pt-0">
             <nav className="space-y-2">
-              {tocItems.map((item) => (
+              {tocItems.map((item, index) => (
                 <button
-                  key={item.id}
+                  key={`desktop-toc-${item.id}-${index}`}
                   onClick={() => scrollToHeading(item.id)}
                   className={cn(
                     'group flex items-start w-full text-left text-sm hover:text-primary transition-colors py-1 leading-tight',

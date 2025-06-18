@@ -20,7 +20,7 @@ export function ImageGallery({
   images,
   captions,
   titles,
-  height = 400,
+  height = 250,
   className = '',
   autoplay = false,
   interval = 5000
@@ -114,11 +114,11 @@ export function ImageGallery({
   return (
     <>
       {/* Gallery Container */}
-      <div className={`relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden ${className}`}>
+      <div className={`relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden w-full max-w-xl sm:max-w-2xl mx-auto ${className}`}>
         {/* Main Image */}
         <div 
           className="relative group cursor-zoom-in"
-          style={{ height }}
+          style={{ height: Math.min(height, 400) }}
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
