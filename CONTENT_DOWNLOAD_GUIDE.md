@@ -77,12 +77,13 @@ Returns available download formats.
 
 ### Features
 
-✅ **Math Expression Support** - LaTeX math rendered with KaTeX
-✅ **Mermaid Diagrams** - Interactive diagrams in HTML, properly rendered in PDF
-✅ **Professional Styling** - Clean, print-ready layouts
-✅ **Multiple Formats** - Markdown, HTML, and PDF export
-✅ **Error Handling** - Graceful fallbacks and user feedback
-✅ **Responsive UI** - Works on desktop and mobile devices
+✅ **Math Expression Support** - LaTeX math rendered with KaTeX  
+✅ **Mermaid Diagrams** - Interactive diagrams in HTML, properly rendered in PDF  
+✅ **Professional Styling** - Clean, print-ready layouts  
+✅ **Multiple Formats** - Markdown, HTML, PDF, TXT, RTF, DOCX, EPUB, and LaTeX export  
+✅ **Error Handling** - Graceful fallbacks and user feedback  
+✅ **Responsive UI** - Works on desktop and mobile devices  
+✅ **Academic Support** - LaTeX and EPUB for academic and publishing workflows
 
 ### Technical Details
 

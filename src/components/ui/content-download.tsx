@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Download, FileText, Globe, FileIcon } from 'lucide-react';
+import { Download, FileText, Globe, FileIcon, Book, Code } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface DownloadFormat {
@@ -27,6 +27,11 @@ const formatIcons: Record<string, React.ComponentType<any>> = {
   md: FileText,
   html: Globe,
   pdf: FileIcon,
+  txt: FileText,
+  rtf: FileText,
+  docx: FileIcon,
+  epub: Book,
+  latex: Code,
 };
 
 export function ContentDownload({ 

@@ -64,6 +64,22 @@ export class ContentConverterV2 {
             case 'pdf-chrome':
                 return await this.convertToPdf(content, frontmatter, options);
             
+            case 'txt':
+                return this.convertToPlainText(content, frontmatter, options);
+            
+            case 'rtf':
+                return this.convertToRtf(content, frontmatter, options);
+            
+            case 'docx':
+                return await this.convertToDocx(content, frontmatter, options);
+            
+            case 'epub':
+                return await this.convertToEpub(content, frontmatter, options);
+            
+            case 'latex':
+            case 'tex':
+                return await this.convertToLatex(content, frontmatter, options);
+            
             default:
                 throw new Error(`Unsupported format: ${format}`);
         }
@@ -139,6 +155,225 @@ export class ContentConverterV2 {
             // Clean up temp HTML file
             if (fs.existsSync(tempHtmlPath)) {
                 fs.unlinkSync(tempHtmlPath);
+            }
+            throw error;
+        }
+    }
+
+    private convertToPlainText(content: string, frontmatter: any, options: ConversionOptions): string {
+        // Strip markdown formatting and return plain text
+        let text = content
+            .replace(/!\[.*?\]\(.*?\)/g, '') // Remove images
+            .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Convert links to just text
+            .replace(/```[\s\S]*?```/g, '') // Remove code blocks first
+            .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
+            .replace(/\*(.*?)\*/g, '$1') // Remove italic
+            .replace(/`([^`]+)`/g, '$1') // Remove inline code
+            .replace(/#{1,6}\s*/g, '') // Remove headers
+            .replace(/^\s*[-*+]\s+/gm, '• ') // Convert bullet lists
+            .replace(/^\s*\d+\.\s+/gm, '') // Remove numbered lists
+            .replace(/^\s*>\s*/gm, '') // Remove blockquotes
+            .replace(/\$\$[\s\S]*?\$\$/g, '[Math Expression]') // Replace display math
+            .replace(/\$([^$\n]+)\$/g, '[Math: $1]') // Replace inline math
+            .replace(/\n{3,}/g, '\n\n') // Normalize newlines
+            .trim();
+
+        const title = options.title || frontmatter.title || 'Document';
+        const author = options.author || frontmatter.author || '';
+        const date = frontmatter.date ? new Date(frontmatter.date).toLocaleDateString() : '';
+        
+        let header = title;
+        if (author) header += `\nBy: ${author}`;
+        if (date) header += `\nDate: ${date}`;
+        header += '\n' + '='.repeat(title.length) + '\n\n';
+        
+        return header + text;
+    }
+
+    private convertToRtf(content: string, frontmatter: any, options: ConversionOptions): string {
+        // Convert markdown to RTF (Rich Text Format)
+        let rtf = this.markdownToRtf(content);
+        
+        const title = options.title || frontmatter.title || 'Document';
+        const author = options.author || frontmatter.author || '';
+        
+        return `{\\rtf1\\ansi\\deff0 {\\fonttbl {\\f0 Times New Roman;}}
+{\\info{\\title ${title}}{\\author ${author}}}
+\\f0\\fs24
+{\\b\\fs32 ${title}\\par}
+{\\i ${author}\\par}
+\\par
+${rtf}
+}`;
+    }
+
+    private markdownToRtf(markdown: string): string {
+        // Basic markdown to RTF conversion
+        return markdown
+            .replace(/^# (.*?)$/gm, '{\\b\\fs28 $1\\par}')
+            .replace(/^## (.*?)$/gm, '{\\b\\fs24 $1\\par}')
+            .replace(/^### (.*?)$/gm, '{\\b\\fs20 $1\\par}')
+            .replace(/\*\*(.*?)\*\*/g, '{\\b $1}')
+            .replace(/\*(.*?)\*/g, '{\\i $1}')
+            .replace(/`([^`]+)`/g, '{\\f1 $1}')
+            .replace(/```[\s\S]*?```/g, '{\\f1 $1\\par}')
+            .replace(/^\* (.*?)$/gm, '\\bullet $1\\par')
+            .replace(/\$\$[\s\S]*?\$\$/g, '[Math Expression]\\par')
+            .replace(/\$([^$\n]+)\$/g, '[Math: $1]')
+            .replace(/\n/g, '\\par\n');
+    }
+
+    private async convertToDocx(content: string, frontmatter: any, options: ConversionOptions): Promise<Buffer> {
+        // Use pandoc to convert markdown to docx
+        const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
+        const tempDocxPath = path.join(this.tempDir, `temp-${Date.now()}.docx`);
+        
+        try {
+            // Create frontmatter content
+            const title = options.title || frontmatter.title || 'Document';
+            const author = options.author || frontmatter.author || '';
+            const date = frontmatter.date ? new Date(frontmatter.date).toLocaleDateString() : '';
+            
+            const markdownWithMeta = `---
+title: "${title}"
+author: "${author}"
+date: "${date}"
+---
+
+${content}`;
+            
+            fs.writeFileSync(tempMdPath, markdownWithMeta);
+            
+            // Convert using pandoc
+            const pandocCommand = `pandoc "${tempMdPath}" -o "${tempDocxPath}" --from markdown --to docx`;
+            await execAsync(pandocCommand);
+            
+            if (!fs.existsSync(tempDocxPath)) {
+                throw new Error('DOCX generation failed - output file not created');
+            }
+            
+            const docxBuffer = fs.readFileSync(tempDocxPath);
+            
+            // Clean up temporary files
+            fs.unlinkSync(tempMdPath);
+            fs.unlinkSync(tempDocxPath);
+            
+            return docxBuffer;
+        } catch (error) {
+            // Clean up temp files
+            if (fs.existsSync(tempMdPath)) {
+                fs.unlinkSync(tempMdPath);
+            }
+            if (fs.existsSync(tempDocxPath)) {
+                fs.unlinkSync(tempDocxPath);
+            }
+            throw new Error(`DOCX conversion failed: ${error instanceof Error ? error.message : String(error)}`);
+        }
+    }
+
+    private async convertToEpub(content: string, frontmatter: any, options: ConversionOptions): Promise<Buffer> {
+        // Generate temporary markdown file
+        const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
+        const tempEpubPath = path.join(this.tempDir, `output-${Date.now()}.epub`);
+        
+        // Create complete markdown with frontmatter
+        const title = options.title || frontmatter.title || 'Document';
+        const author = options.author || frontmatter.author || 'Unknown Author';
+        const date = frontmatter.date || new Date().toISOString().split('T')[0];
+        
+        const fullMarkdown = `---
+title: "${title}"
+author: "${author}"
+date: ${date}
+lang: ${options.language || 'en'}
+---
+
+${content}`;
+        
+        try {
+            fs.writeFileSync(tempMdPath, fullMarkdown);
+            
+            // Use pandoc to convert to EPUB with custom styling
+            const pandocCommand = [
+                'pandoc',
+                `"${tempMdPath}"`,
+                '-o', `"${tempEpubPath}"`,
+                '--toc',
+                '--toc-depth=3',
+                '--epub-chapter-level=2'
+            ].join(' ');
+            
+            await execAsync(pandocCommand);
+            
+            // Read the generated EPUB file
+            const epubBuffer = fs.readFileSync(tempEpubPath);
+            
+            // Clean up temporary files
+            fs.unlinkSync(tempMdPath);
+            fs.unlinkSync(tempEpubPath);
+            
+            return epubBuffer;
+        } catch (error) {
+            // Clean up temporary files in case of error
+            if (fs.existsSync(tempMdPath)) {
+                fs.unlinkSync(tempMdPath);
+            }
+            if (fs.existsSync(tempEpubPath)) {
+                fs.unlinkSync(tempEpubPath);
+            }
+            throw error;
+        }
+    }
+
+    private async convertToLatex(content: string, frontmatter: any, options: ConversionOptions): Promise<string> {
+        // Generate temporary markdown file
+        const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
+        const tempTexPath = path.join(this.tempDir, `output-${Date.now()}.tex`);
+        
+        // Create complete markdown with frontmatter
+        const title = options.title || frontmatter.title || 'Document';
+        const author = options.author || frontmatter.author || 'Unknown Author';
+        const date = frontmatter.date || new Date().toISOString().split('T')[0];
+        
+        const fullMarkdown = `---
+title: "${title}"
+author: "${author}"
+date: ${date}
+---
+
+${content}`;
+        
+        try {
+            fs.writeFileSync(tempMdPath, fullMarkdown);
+            
+            // Use pandoc to convert to LaTeX
+            const pandocCommand = [
+                'pandoc',
+                `"${tempMdPath}"`,
+                '-o', `"${tempTexPath}"`,
+                '--standalone',
+                '--variable=geometry:margin=1in',
+                '--variable=fontsize=11pt',
+                '--variable=documentclass=article'
+            ].join(' ');
+            
+            await execAsync(pandocCommand);
+            
+            // Read the generated LaTeX file
+            const latexContent = fs.readFileSync(tempTexPath, 'utf8');
+            
+            // Clean up temporary files
+            fs.unlinkSync(tempMdPath);
+            fs.unlinkSync(tempTexPath);
+            
+            return latexContent;
+        } catch (error) {
+            // Clean up temporary files in case of error
+            if (fs.existsSync(tempMdPath)) {
+                fs.unlinkSync(tempMdPath);
+            }
+            if (fs.existsSync(tempTexPath)) {
+                fs.unlinkSync(tempTexPath);
             }
             throw error;
         }

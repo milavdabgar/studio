@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ChromePdfConverter } from '@/lib/chrome-pdf-converter';
+import { ContentConverterV2 } from '@/lib/content-converter-v2';
 import fs from 'fs';
 import path from 'path';
 
@@ -52,9 +52,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Convert to PDF using Chrome headless (exact copy of Hugo method)
-    const converter = new ChromePdfConverter();
-    const pdfBuffer = await converter.convertMarkdownToPdf(contentPath, slug);
+    // Convert to PDF using our enhanced converter
+    const converter = new ContentConverterV2();
+    const markdownContent = fs.readFileSync(contentPath, 'utf8');
+    const pdfBuffer = await converter.convert(markdownContent, 'pdf', {
+      title: slug.split('/').pop(),
+      author: 'Content Author'
+    });
 
     // Return PDF
     const response = new NextResponse(pdfBuffer);

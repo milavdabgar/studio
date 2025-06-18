@@ -105,6 +105,41 @@ export async function GET(request: NextRequest) {
             description: 'High-quality PDF with diagrams and math support',
             extension: 'pdf',
             category: 'document'
+          },
+          {
+            id: 'txt',
+            name: 'Plain Text',
+            description: 'Clean plain text format',
+            extension: 'txt',
+            category: 'text'
+          },
+          {
+            id: 'rtf',
+            name: 'Rich Text Format',
+            description: 'RTF format for word processors',
+            extension: 'rtf',
+            category: 'document'
+          },
+          {
+            id: 'docx',
+            name: 'Word Document',
+            description: 'Microsoft Word DOCX format',
+            extension: 'docx',
+            category: 'document'
+          },
+          {
+            id: 'epub',
+            name: 'EPUB',
+            description: 'Electronic book format for e-readers',
+            extension: 'epub',
+            category: 'ebook'
+          },
+          {
+            id: 'latex',
+            name: 'LaTeX',
+            description: 'LaTeX typesetting format for academic documents',
+            extension: 'tex',
+            category: 'document'
           }
         ]
       });
@@ -136,7 +171,7 @@ function getFileDetails(baseFilename: string, format: string) {
       contentType: 'text/html', 
       isBuffer: false 
     },
-    'pdf-puppeteer': { 
+    'pdf': { 
       extension: 'pdf', 
       contentType: 'application/pdf', 
       isBuffer: true 
@@ -146,14 +181,14 @@ function getFileDetails(baseFilename: string, format: string) {
       contentType: 'application/pdf', 
       isBuffer: true 
     },
-    'pdf-latex': { 
-      extension: 'pdf', 
-      contentType: 'application/pdf', 
-      isBuffer: true 
+    'txt': { 
+      extension: 'txt', 
+      contentType: 'text/plain', 
+      isBuffer: false 
     },
-    'latex': { 
-      extension: 'tex', 
-      contentType: 'application/x-latex', 
+    'rtf': { 
+      extension: 'rtf', 
+      contentType: 'application/rtf', 
       isBuffer: false 
     },
     'docx': { 
@@ -166,20 +201,10 @@ function getFileDetails(baseFilename: string, format: string) {
       contentType: 'application/epub+zip', 
       isBuffer: true 
     },
-    'rtf': { 
-      extension: 'rtf', 
-      contentType: 'application/rtf', 
+    'latex': { 
+      extension: 'tex', 
+      contentType: 'application/x-latex', 
       isBuffer: false 
-    },
-    'txt': { 
-      extension: 'txt', 
-      contentType: 'text/plain', 
-      isBuffer: false 
-    },
-    'mp3': { 
-      extension: 'mp3', 
-      contentType: 'audio/mpeg', 
-      isBuffer: true 
     }
   };
 
