@@ -63,12 +63,6 @@ export class ContentConverterV2 {
         this.ensureDirectoryExists(this.tempDir);
     }
 
-    private ensureDirectoryExists(dirPath: string): void {
-        if (!fs.existsSync(dirPath)) {
-            fs.mkdirSync(dirPath, { recursive: true });
-        }
-    }
-
     private async processCodeBlocks(content: string): Promise<string> {
         // Enhanced code block processing with Shiki syntax highlighting
         const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
@@ -504,6 +498,9 @@ ${rtf}
         const tempDocxPath = path.join(this.tempDir, `temp-${Date.now()}.docx`);
         
         try {
+            // Convert Mermaid diagrams to images first
+            const processedContent = await this.convertMermaidToImages(content);
+            
             // Create frontmatter content
             const title = options.title || frontmatter.title || 'Document';
             const author = options.author || frontmatter.author || '';
@@ -515,7 +512,7 @@ author: "${author}"
 date: "${date}"
 ---
 
-${content}`;
+${processedContent}`;
             
             fs.writeFileSync(tempMdPath, markdownWithMeta);
             
@@ -659,21 +656,24 @@ ${content}`;
         const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
         const tempOdtPath = path.join(this.tempDir, `output-${Date.now()}.odt`);
         
-        // Create complete markdown with frontmatter
-        const title = options.title || frontmatter.title || 'Document';
-        const author = options.author || frontmatter.author || 'Unknown Author';
-        const date = frontmatter.date || new Date().toISOString().split('T')[0];
-        
-        const fullMarkdown = `---
+        try {
+            // Convert Mermaid diagrams to images first
+            const processedContent = await this.convertMermaidToImages(content);
+            
+            // Create complete markdown with frontmatter
+            const title = options.title || frontmatter.title || 'Document';
+            const author = options.author || frontmatter.author || 'Unknown Author';
+            const date = frontmatter.date || new Date().toISOString().split('T')[0];
+            
+            const fullMarkdown = `---
 title: "${title}"
 author: "${author}"
 date: ${date}
 lang: ${options.language || 'en'}
 ---
 
-${content}`;
-        
-        try {
+${processedContent}`;
+            
             fs.writeFileSync(tempMdPath, fullMarkdown);
             
             // Use pandoc to convert to ODT (OpenDocument Text)
@@ -717,19 +717,23 @@ ${content}`;
         const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
         const tempPptxPath = path.join(this.tempDir, `output-${Date.now()}.pptx`);
         
-        // Create complete markdown with frontmatter optimized for presentation
-        const title = options.title || frontmatter.title || 'Presentation';
-        const author = options.author || frontmatter.author || 'Unknown Author';
-        const date = frontmatter.date || new Date().toISOString().split('T')[0];
-        
-        // Process content to be more presentation-friendly
-        let presentationContent = content;
-        
-        // Convert main headings (# and ##) to slide breaks
-        presentationContent = presentationContent.replace(/^# /gm, '\n---\n\n# ');
-        presentationContent = presentationContent.replace(/^## /gm, '\n---\n\n## ');
-        
-        const fullMarkdown = `---
+        try {
+            // Convert Mermaid diagrams to images first
+            const processedContent = await this.convertMermaidToImages(content);
+            
+            // Create complete markdown with frontmatter optimized for presentation
+            const title = options.title || frontmatter.title || 'Presentation';
+            const author = options.author || frontmatter.author || 'Unknown Author';
+            const date = frontmatter.date || new Date().toISOString().split('T')[0];
+            
+            // Process content to be more presentation-friendly
+            let presentationContent = processedContent;
+            
+            // Convert main headings (# and ##) to slide breaks
+            presentationContent = presentationContent.replace(/^# /gm, '\n---\n\n# ');
+            presentationContent = presentationContent.replace(/^## /gm, '\n---\n\n## ');
+            
+            const fullMarkdown = `---
 title: "${title}"
 author: "${author}"
 date: ${date}
@@ -744,8 +748,7 @@ ${date}
 ---
 
 ${presentationContent}`;
-        
-        try {
+            
             fs.writeFileSync(tempMdPath, fullMarkdown);
             
             // Use pandoc to convert to PPTX with presentation-specific options
@@ -1327,5 +1330,77 @@ ${presentationContent}`;
     </script>
 </body>
 </html>`;
+    }
+
+    private async convertMermaidToImages(content: string): Promise<string> {
+        // Convert Mermaid diagrams to PNG images for formats that don't support interactive diagrams
+        const mermaidRegex = /```mermaid\n([\s\S]*?)```/g;
+        
+        let processedContent = content;
+        const matches = Array.from(content.matchAll(mermaidRegex));
+        
+        // Process in reverse order to maintain string positions
+        for (let i = matches.length - 1; i >= 0; i--) {
+            const match = matches[i];
+            const [fullMatch, diagramCode] = match;
+            const startIndex = match.index!;
+            const endIndex = startIndex + fullMatch.length;
+            
+            try {
+                // Generate a unique filename for this diagram
+                const diagramId = `mermaid-${Date.now()}-${i}`;
+                const mermaidFile = path.join(this.tempDir, `${diagramId}.mmd`);
+                const pngPath = path.join(this.tempDir, `${diagramId}.png`);
+                
+                // Write the Mermaid code to a file
+                fs.writeFileSync(mermaidFile, diagramCode.trim());
+                
+                try {
+                    // Use mermaid CLI to generate PNG (better compatibility in documents)
+                    await execAsync(`npx @mermaid-js/mermaid-cli -i "${mermaidFile}" -o "${pngPath}" -t neutral -b white --width 800 --height 600`);
+                    
+                    // Check if PNG was created successfully
+                    if (fs.existsSync(pngPath)) {
+                        // Replace the Mermaid code block with an image reference
+                        const imageMarkdown = `![Mermaid Diagram](${pngPath})`;
+                        processedContent = processedContent.slice(0, startIndex) + 
+                                         imageMarkdown + 
+                                         processedContent.slice(endIndex);
+                        console.log(`✅ Converted Mermaid diagram ${i + 1} to PNG`);
+                    } else {
+                        throw new Error('PNG file was not created');
+                    }
+                } catch (cliError) {
+                    console.warn(`Failed to convert Mermaid diagram ${i + 1} to PNG:`, cliError);
+                    // Fallback to descriptive text
+                    const diagramType = diagramCode.trim().split('\n')[0] || 'diagram';
+                    const textFallback = `[Mermaid ${diagramType} - Image conversion not available]`;
+                    processedContent = processedContent.slice(0, startIndex) + 
+                                     textFallback + 
+                                     processedContent.slice(endIndex);
+                }
+                
+                // Clean up temporary mermaid file
+                if (fs.existsSync(mermaidFile)) {
+                    fs.unlinkSync(mermaidFile);
+                }
+                
+            } catch (error) {
+                console.warn(`Error processing Mermaid diagram ${i + 1}:`, error);
+                // Replace with simple text fallback
+                const textFallback = `[Mermaid Diagram]`;
+                processedContent = processedContent.slice(0, startIndex) + 
+                                 textFallback + 
+                                 processedContent.slice(endIndex);
+            }
+        }
+        
+        return processedContent;
+    }
+
+    private ensureDirectoryExists(dirPath: string): void {
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath, { recursive: true });
+        }
     }
 }

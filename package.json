@@ -94,6 +94,7 @@
     "@babel/preset-env": "^7.27.2",
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
+    "@mermaid-js/mermaid-cli": "^11.4.3",
     "@playwright/test": "^1.45.3",
     "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/react": "^16.3.0",
