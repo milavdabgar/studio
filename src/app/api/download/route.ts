@@ -101,8 +101,22 @@ export async function GET(request: NextRequest) {
           },
           {
             id: 'pdf',
-            name: 'PDF (Enhanced)',
-            description: 'High-quality PDF with diagrams and math support',
+            name: 'PDF (Puppeteer)',
+            description: 'High-quality PDF with diagrams and math support using Puppeteer',
+            extension: 'pdf',
+            category: 'document'
+          },
+          {
+            id: 'pdf-chrome',
+            name: 'PDF (Chrome)',
+            description: 'PDF generated using Chrome headless',
+            extension: 'pdf',
+            category: 'document'
+          },
+          {
+            id: 'pdf-puppeteer',
+            name: 'PDF (Puppeteer Enhanced)',
+            description: 'Premium PDF with enhanced rendering and network waiting',
             extension: 'pdf',
             category: 'document'
           },

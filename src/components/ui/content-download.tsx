@@ -27,6 +27,8 @@ const formatIcons: Record<string, React.ComponentType<any>> = {
   md: FileText,
   html: Globe,
   pdf: FileIcon,
+  'pdf-chrome': FileIcon,
+  'pdf-puppeteer': FileIcon,
   txt: FileText,
   rtf: FileText,
   docx: FileIcon,

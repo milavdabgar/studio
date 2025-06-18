@@ -12,6 +12,21 @@ import { promisify } from 'util';
 
 const execAsync = promisify(exec);
 
+// Import Puppeteer for PDF generation
+let puppeteer: any;
+let chromium: any;
+try {
+    puppeteer = require('puppeteer');
+    // For production environments, also try chromium
+    try {
+        chromium = require('@sparticuz/chromium-min');
+    } catch (e) {
+        console.log('Chromium package not available, using default Puppeteer');
+    }
+} catch (error) {
+    console.log('Puppeteer not available, PDF generation will use Chrome headless fallback');
+}
+
 // Import KaTeX for math rendering
 let katex: any;
 try {
@@ -25,6 +40,7 @@ interface ConversionOptions {
     author?: string;
     language?: string;
     includeStyles?: boolean;
+    pdfEngine?: 'puppeteer' | 'chrome';  // Choose PDF generation engine
     pdfOptions?: {
         format?: 'A4' | 'Letter';
         margin?: {
@@ -33,6 +49,8 @@ interface ConversionOptions {
             bottom?: string;
             left?: string;
         };
+        waitForNetwork?: boolean;  // Wait for network requests to complete
+        timeout?: number;          // Timeout for PDF generation
     };
 }
 
@@ -61,8 +79,16 @@ export class ContentConverterV2 {
                 return await this.convertToHtml(content, frontmatter, options);
             
             case 'pdf':
+                // Use Puppeteer by default, fallback to Chrome if not available
+                return await this.convertToPdfPuppeteer(content, frontmatter, options);
+            
             case 'pdf-chrome':
-                return await this.convertToPdf(content, frontmatter, options);
+                // Explicitly use Chrome headless
+                return await this.convertToPdfChrome(content, frontmatter, options);
+            
+            case 'pdf-puppeteer':
+                // Explicitly use Puppeteer
+                return await this.convertToPdfPuppeteer(content, frontmatter, options);
             
             case 'txt':
                 return this.convertToPlainText(content, frontmatter, options);
@@ -102,7 +128,7 @@ export class ContentConverterV2 {
         return this.generateHtmlTemplate(htmlContent, title, author, options);
     }
 
-    private async convertToPdf(content: string, frontmatter: any, options: ConversionOptions): Promise<Buffer> {
+    private async convertToPdfChrome(content: string, frontmatter: any, options: ConversionOptions): Promise<Buffer> {
         // First convert to HTML
         const htmlContent = await this.convertToHtml(content, frontmatter, options);
         
@@ -157,6 +183,171 @@ export class ContentConverterV2 {
                 fs.unlinkSync(tempHtmlPath);
             }
             throw error;
+        }
+    }
+
+    private async convertToPdfPuppeteer(content: string, frontmatter: any, options: ConversionOptions): Promise<Buffer> {
+        if (!puppeteer) {
+            console.log('Puppeteer not available, falling back to Chrome headless');
+            return this.convertToPdfChrome(content, frontmatter, options);
+        }
+
+        // First convert to HTML
+        const htmlContent = await this.convertToHtml(content, frontmatter, options);
+        
+        let browser;
+        try {
+            const isProduction = process.env.NODE_ENV === 'production';
+            
+            // Configure browser launch options
+            const launchOptions: any = {
+                headless: true,
+                args: [
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--disable-web-security',
+                    '--font-render-hinting=none',
+                    '--disable-features=VizDisplayCompositor',
+                    '--run-all-compositor-stages-before-draw',
+                    '--disable-background-timer-throttling',
+                    '--disable-renderer-backgrounding',
+                    '--disable-backgrounding-occluded-windows'
+                ]
+            };
+
+            // Use chromium package if available in production
+            if (isProduction && chromium) {
+                launchOptions.executablePath = await chromium.executablePath('/opt/nodejs/node_modules/@sparticuz/chromium-min/bin');
+                launchOptions.args = [...launchOptions.args, ...chromium.args];
+                launchOptions.defaultViewport = chromium.defaultViewport;
+            }
+
+            browser = await puppeteer.launch(launchOptions);
+            const page = await browser.newPage();
+
+            // Set viewport for consistent rendering
+            await page.setViewport({
+                width: 1200,
+                height: 800,
+                deviceScaleFactor: 1
+            });
+
+            // Configure page for better rendering
+            await page.evaluateOnNewDocument(() => {
+                // Disable animations for consistent rendering
+                const style = document.createElement('style');
+                style.textContent = `
+                    *, *::before, *::after {
+                        animation-duration: 0s !important;
+                        animation-delay: 0s !important;
+                        transition-duration: 0s !important;
+                        transition-delay: 0s !important;
+                    }
+                `;
+                document.head.appendChild(style);
+            });
+
+            // Set content and wait for resources
+            await page.setContent(htmlContent, { 
+                waitUntil: options.pdfOptions?.waitForNetwork ? 'networkidle0' : 'domcontentloaded',
+                timeout: options.pdfOptions?.timeout || 30000
+            });
+
+            // Wait for fonts to load
+            await page.evaluateHandle('document.fonts.ready');
+
+            // Wait for Mermaid diagrams to render
+            try {
+                await page.evaluate(() => {
+                    return new Promise<void>((resolve) => {
+                        const diagrams = document.querySelectorAll('.mermaid-diagram');
+                        if (diagrams.length === 0) {
+                            resolve();
+                            return;
+                        }
+
+                        // Check if Mermaid is available
+                        if (typeof (window as any).mermaid !== 'undefined') {
+                            (window as any).mermaid.initialize({
+                                startOnLoad: false,
+                                theme: 'default',
+                                flowchart: { 
+                                    useMaxWidth: true, 
+                                    htmlLabels: true
+                                },
+                                securityLevel: 'loose'
+                            });
+
+                            let rendered = 0;
+                            const total = diagrams.length;
+
+                            diagrams.forEach((diagram: any, index: number) => {
+                                const codeEl = diagram.querySelector('.mermaid-code');
+                                const renderEl = diagram.querySelector('.mermaid-render');
+                                if (codeEl && renderEl && codeEl.textContent) {
+                                    try {
+                                        (window as any).mermaid.render(`diagram-${index}`, codeEl.textContent, (svgCode: string) => {
+                                            renderEl.innerHTML = svgCode;
+                                            rendered++;
+                                            if (rendered === total) {
+                                                setTimeout(() => resolve(), 500);
+                                            }
+                                        });
+                                    } catch (error) {
+                                        rendered++;
+                                        if (rendered === total) {
+                                            setTimeout(() => resolve(), 500);
+                                        }
+                                    }
+                                } else {
+                                    rendered++;
+                                    if (rendered === total) {
+                                        setTimeout(() => resolve(), 500);
+                                    }
+                                }
+                            });
+
+                            // Timeout fallback
+                            setTimeout(() => resolve(), 5000);
+                        } else {
+                            // No Mermaid, continue
+                            resolve();
+                        }
+                    });
+                });
+            } catch (error) {
+                console.log('Mermaid rendering skipped:', error);
+            }
+
+            // Additional wait for any remaining rendering
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Configure PDF options
+            const pdfOptions: any = {
+                format: options.pdfOptions?.format || 'A4',
+                printBackground: true,
+                margin: options.pdfOptions?.margin || {
+                    top: '20mm',
+                    right: '20mm',
+                    bottom: '20mm',
+                    left: '20mm'
+                },
+                preferCSSPageSize: true
+            };
+
+            // Generate PDF
+            const pdfBuffer = await page.pdf(pdfOptions);
+
+            return Buffer.from(pdfBuffer);
+
+        } catch (error: any) {
+            console.error('Puppeteer PDF generation error:', error);
+            throw new Error(`PDF generation failed: ${error.message || error}`);
+        } finally {
+            if (browser) {
+                await browser.close();
+            }
         }
     }
 
