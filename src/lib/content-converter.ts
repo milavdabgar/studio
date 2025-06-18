@@ -1,0 +1,1259 @@
+import fs from 'fs';
+import path from 'path';
+import { marked } from 'marked';
+import matter from 'gray-matter';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium-min';
+
+const execAsync = promisify(exec);
+
+interface ConversionOptions {
+  title?: string;
+  author?: string;
+  date?: string;
+  lang?: string;
+  theme?: string;
+  paperSize?: 'A4' | 'Letter' | 'Legal';
+  margin?: string;
+  fontSize?: string;
+  [key: string]: any;
+}
+
+interface PostData {
+  title?: string;
+  author?: string;
+  date?: string;
+  tags?: string[];
+  categories?: string[];
+  description?: string;
+  [key: string]: any;
+}
+
+export class ContentConverter {
+  private isProduction: boolean;
+  private tempDir: string;
+
+  constructor() {
+    this.isProduction = process.env.NODE_ENV === 'production';
+    this.tempDir = path.join(process.cwd(), 'tmp');
+    this.ensureDirectoryExists(this.tempDir);
+  }
+
+  private ensureDirectoryExists(dirPath: string) {
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+  }
+
+  async convert(markdownContent: string, format: string, options: ConversionOptions = {}): Promise<Buffer | string> {
+    const { data: frontmatter, content } = matter(markdownContent);
+    
+    switch (format) {
+      case 'md':
+        return this.convertToMarkdown(markdownContent, options);
+      
+      case 'html':
+        return this.convertToHtml(content, frontmatter, options);
+      
+      case 'pdf-puppeteer':
+        return this.convertToPdfPuppeteer(content, frontmatter, options);
+      
+      case 'pdf-chrome':
+        return this.convertToPdfChrome(content, frontmatter, options);
+      
+      case 'pdf-latex':
+        return this.convertToPdfLatex(content, frontmatter, options);
+      
+      case 'latex':
+        return this.convertToLatex(content, frontmatter, options);
+      
+      case 'docx':
+        return this.convertToDocx(content, frontmatter, options);
+      
+      case 'epub':
+        return this.convertToEpub(content, frontmatter, options);
+      
+      case 'rtf':
+        return this.convertToRtf(content, frontmatter, options);
+      
+      case 'txt':
+        return this.convertToPlainText(content, frontmatter, options);
+      
+      case 'mp3':
+        return this.convertToMp3(content, frontmatter, options);
+      
+      default:
+        throw new Error(`Unsupported format: ${format}`);
+    }
+  }
+
+  private convertToMarkdown(markdownContent: string, options: ConversionOptions): string {
+    // Return original markdown, potentially with modifications
+    return markdownContent;
+  }
+
+  private async convertToHtml(content: string, frontmatter: PostData, options: ConversionOptions): Promise<string> {
+    // Pre-process content for math and diagrams
+    const processedContent = await this.preprocessContent(content);
+    
+    // Configure marked with custom renderer
+    const renderer = new marked.Renderer();
+    this.setupCustomRenderer(renderer);
+    
+    // Convert markdown to HTML
+    const htmlContent = await marked(processedContent, { renderer });
+    
+    // Post-process for any remaining issues
+    const finalHtml = this.postProcessHtml(htmlContent);
+    
+    // Detect language
+    const hasGujarati = /[\u0A80-\u0AFF]/.test(content);
+    const lang = options.lang || (hasGujarati ? 'gu' : 'en');
+    
+    // Create complete HTML document
+    return this.createStyledHtml(finalHtml, frontmatter, lang, 'html');
+  }
+
+  private async convertToPdfPuppeteer(content: string, frontmatter: PostData, options: ConversionOptions): Promise<Buffer> {
+    const html = await this.convertToHtml(content, frontmatter, options);
+    return this.generatePdfWithPuppeteer(html, options);
+  }
+
+  private async convertToPdfChrome(content: string, frontmatter: PostData, options: ConversionOptions): Promise<Buffer> {
+    const html = await this.convertToHtml(content, frontmatter, options);
+    return this.generatePdfWithChrome(html, options);
+  }
+
+  private async convertToLatex(content: string, frontmatter: PostData, options: ConversionOptions): Promise<string> {
+    // Convert markdown to LaTeX
+    let latex = this.markdownToLatex(content);
+    
+    // Wrap in LaTeX document
+    const title = frontmatter.title || 'Document';
+    const author = frontmatter.author || '';
+    const date = frontmatter.date ? new Date(frontmatter.date).toLocaleDateString() : '';
+    
+    const hasGujarati = /[\u0A80-\u0AFF]/.test(content);
+    const lang = options.lang || (hasGujarati ? 'gu' : 'en');
+    
+    return `\\documentclass[12pt,a4paper]{article}
+\\usepackage[utf8]{inputenc}
+\\usepackage[T1]{fontenc}
+${lang === 'gu' ? '\\usepackage{fontspec}\n\\setmainfont{Noto Sans Gujarati}' : ''}
+\\usepackage{geometry}
+\\usepackage{amsmath}
+\\usepackage{amsfonts}
+\\usepackage{amssymb}
+\\usepackage{graphicx}
+\\usepackage{hyperref}
+\\usepackage{listings}
+\\usepackage{xcolor}
+
+\\geometry{margin=2.5cm}
+
+\\title{${this.escapeLatex(title)}}
+${author ? `\\author{${this.escapeLatex(author)}}` : ''}
+${date ? `\\date{${this.escapeLatex(date)}}` : '\\date{}'}
+
+\\begin{document}
+
+\\maketitle
+
+${latex}
+
+\\end{document}`;
+  }
+
+  private async convertToDocx(content: string, frontmatter: PostData, options: ConversionOptions): Promise<Buffer> {
+    // Use pandoc to convert markdown to docx
+    const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
+    const tempDocxPath = path.join(this.tempDir, `temp-${Date.now()}.docx`);
+    
+    try {
+      // Write markdown to temp file
+      const fullMarkdown = `---
+title: ${frontmatter.title || 'Document'}
+author: ${frontmatter.author || ''}
+date: ${frontmatter.date || ''}
+---
+
+${content}`;
+      
+      fs.writeFileSync(tempMdPath, fullMarkdown);
+      
+      // Convert using pandoc
+      await execAsync(`pandoc "${tempMdPath}" -o "${tempDocxPath}" --from markdown --to docx`);
+      
+      // Read the generated file
+      const buffer = fs.readFileSync(tempDocxPath);
+      
+      // Cleanup
+      fs.unlinkSync(tempMdPath);
+      fs.unlinkSync(tempDocxPath);
+      
+      return buffer;
+    } catch (error) {
+      // Cleanup on error
+      if (fs.existsSync(tempMdPath)) fs.unlinkSync(tempMdPath);
+      if (fs.existsSync(tempDocxPath)) fs.unlinkSync(tempDocxPath);
+      throw new Error(`DOCX conversion failed: ${error}`);
+    }
+  }
+
+  private async convertToEpub(content: string, frontmatter: PostData, options: ConversionOptions): Promise<Buffer> {
+    // Use pandoc to convert markdown to epub
+    const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
+    const tempEpubPath = path.join(this.tempDir, `temp-${Date.now()}.epub`);
+    
+    try {
+      const fullMarkdown = `---
+title: ${frontmatter.title || 'Document'}
+author: ${frontmatter.author || ''}
+date: ${frontmatter.date || ''}
+---
+
+${content}`;
+      
+      fs.writeFileSync(tempMdPath, fullMarkdown);
+      
+      // Convert using pandoc
+      await execAsync(`pandoc "${tempMdPath}" -o "${tempEpubPath}" --from markdown --to epub`);
+      
+      const buffer = fs.readFileSync(tempEpubPath);
+      
+      // Cleanup
+      fs.unlinkSync(tempMdPath);
+      fs.unlinkSync(tempEpubPath);
+      
+      return buffer;
+    } catch (error) {
+      if (fs.existsSync(tempMdPath)) fs.unlinkSync(tempMdPath);
+      if (fs.existsSync(tempEpubPath)) fs.unlinkSync(tempEpubPath);
+      throw new Error(`EPUB conversion failed: ${error}`);
+    }
+  }
+
+  private async convertToRtf(content: string, frontmatter: PostData, options: ConversionOptions): Promise<string> {
+    // Convert markdown to RTF (Rich Text Format)
+    let rtf = this.markdownToRtf(content);
+    
+    const title = frontmatter.title || 'Document';
+    const author = frontmatter.author || '';
+    
+    return `{\\rtf1\\ansi\\deff0 {\\fonttbl {\\f0 Times New Roman;}}
+{\\info{\\title ${title}}{\\author ${author}}}
+\\f0\\fs24
+{\\b\\fs32 ${title}\\par}
+{\\i ${author}\\par}
+\\par
+${rtf}
+}`;
+  }
+
+  private convertToPlainText(content: string, frontmatter: PostData, options: ConversionOptions): string {
+    // Strip markdown formatting and return plain text
+    let text = content
+      .replace(/!\[.*?\]\(.*?\)/g, '') // Remove images
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Convert links to just text
+      .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
+      .replace(/\*(.*?)\*/g, '$1') // Remove italic
+      .replace(/`([^`]+)`/g, '$1') // Remove inline code
+      .replace(/```[\s\S]*?```/g, '') // Remove code blocks
+      .replace(/#{1,6}\s*/g, '') // Remove headers
+      .replace(/^\s*[-*+]\s+/gm, '• ') // Convert lists
+      .replace(/^\s*\d+\.\s+/gm, '') // Remove numbered lists
+      .replace(/^\s*>\s*/gm, '') // Remove blockquotes
+      .replace(/\n{3,}/g, '\n\n') // Normalize line breaks
+      .trim();
+
+    const title = frontmatter.title || 'Document';
+    const author = frontmatter.author || '';
+    const date = frontmatter.date ? new Date(frontmatter.date).toLocaleDateString() : '';
+    
+    let header = title;
+    if (author) header += `\nBy: ${author}`;
+    if (date) header += `\nDate: ${date}`;
+    header += '\n' + '='.repeat(title.length) + '\n\n';
+    
+    return header + text;
+  }
+
+  // Helper methods from the existing PDF converter
+  private async preprocessContent(content: string): Promise<string> {
+    let processed = content;
+    
+    // Handle Mermaid diagrams
+    processed = await this.processMermaidDiagrams(processed);
+    
+    // Handle math expressions
+    processed = this.processMathExpressions(processed);
+    
+    return processed;
+  }
+
+  private async processMermaidDiagrams(content: string): Promise<string> {
+    const mermaidRegex = /```mermaid\n([\s\S]*?)\n```/g;
+    let processed = content;
+    let match;
+    let diagramId = 0;
+
+    while ((match = mermaidRegex.exec(content)) !== null) {
+      const diagramCode = match[1].trim();
+      diagramId++;
+      
+      const placeholder = `
+<div class="mermaid-diagram" data-diagram-id="${diagramId}">
+<pre class="mermaid-code">${diagramCode}</pre>
+<div class="mermaid-render" id="mermaid-${diagramId}"></div>
+</div>`;
+      
+      processed = processed.replace(match[0], placeholder);
+    }
+
+    return processed;
+  }
+
+  private processMathExpressions(content: string): string {
+    // Handle block math
+    content = content.replace(/\$\$([\s\S]*?)\$\$/g, (match, math) => {
+      return `<div class="math-block" data-math="${encodeURIComponent(math.trim())}">${math.trim()}</div>`;
+    });
+
+    // Handle inline math
+    content = content.replace(/\$([^$\n]+?)\$/g, (match, math) => {
+      return `<span class="math-inline" data-math="${encodeURIComponent(math.trim())}">${math.trim()}</span>`;
+    });
+
+    return content;
+  }
+
+  private setupCustomRenderer(renderer: any) {
+    renderer.code = (code: string, language?: string) => {
+      const lang = language || '';
+      const escapedCode = code
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/\n/g, '\n');
+      
+      return `<pre class="code-block"><code class="language-${lang}">${escapedCode}</code></pre>`;
+    };
+
+    renderer.table = (header: string, body: string) => {
+      return `<div class="table-wrapper"><table class="data-table">${header}${body}</table></div>`;
+    };
+
+    renderer.image = (href: string, title?: string, text?: string) => {
+      const titleAttr = title ? ` title="${title}"` : '';
+      const altAttr = text ? ` alt="${text}"` : '';
+      return `<div class="image-wrapper"><img src="${href}"${titleAttr}${altAttr} /></div>`;
+    };
+  }
+
+  private postProcessHtml(html: string): string {
+    return html
+      .replace(/<br\s*\/?>/gi, '<br />')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  private async generatePdfWithPuppeteer(html: string, options: ConversionOptions): Promise<Buffer> {
+    let browser;
+    
+    try {
+      const executablePath = this.isProduction
+        ? await chromium.executablePath('/opt/nodejs/node_modules/@sparticuz/chromium-min/bin')
+        : '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+
+      browser = await puppeteer.launch({
+        args: this.isProduction ? chromium.args : [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-web-security',
+          '--font-render-hinting=none'
+        ],
+        defaultViewport: chromium.defaultViewport,
+        executablePath,
+        headless: true,
+      });
+
+      const page = await browser.newPage();
+      
+      await page.setContent(html, {
+        waitUntil: ['networkidle0', 'domcontentloaded'],
+      });
+
+      await page.evaluateHandle('document.fonts.ready');
+      
+      // Add Mermaid and render diagrams
+      await page.addScriptTag({
+        url: 'https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js'
+      });
+      
+      await page.evaluate(() => {
+        return new Promise<void>((resolve) => {
+          if (typeof (window as any).mermaid === 'undefined') {
+            resolve();
+            return;
+          }
+
+          (window as any).mermaid.initialize({
+            startOnLoad: false,
+            theme: 'default',
+            flowchart: { 
+              useMaxWidth: true, 
+              htmlLabels: true,
+              nodeSpacing: 30,
+              rankSpacing: 40
+            },
+            fontSize: 12,
+            securityLevel: 'loose'
+          });
+
+          const diagrams = document.querySelectorAll('.mermaid-diagram .mermaid-code');
+          
+          if (diagrams.length === 0) {
+            resolve();
+            return;
+          }
+          
+          let completed = 0;
+          diagrams.forEach((codeEl: Element, index: number) => {
+            const renderDiv = codeEl.parentNode?.querySelector('.mermaid-render') as HTMLElement;
+            const code = codeEl.textContent || '';
+            
+            try {
+              (window as any).mermaid.render('diagram-' + index, code, (svgCode: string) => {
+                if (renderDiv) {
+                  renderDiv.innerHTML = svgCode;
+                }
+                completed++;
+                
+                if (completed === diagrams.length) {
+                  setTimeout(() => resolve(), 1000);
+                }
+              });
+            } catch (error) {
+              completed++;
+              if (completed === diagrams.length) {
+                setTimeout(() => resolve(), 1000);
+              }
+            }
+          });
+        });
+      });
+
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      const pdfBuffer = await page.pdf({
+        format: (options.paperSize as any) || 'A4',
+        printBackground: true,
+        margin: {
+          top: '20mm',
+          right: '15mm',
+          bottom: '20mm',
+          left: '15mm',
+        },
+        displayHeaderFooter: true,
+        headerTemplate: `
+          <div style="font-size: 10px; width: 100%; text-align: center; margin: 0 15mm;">
+            <span style="color: #666;">${options.title || 'Document'}</span>
+          </div>
+        `,
+        footerTemplate: `
+          <div style="font-size: 10px; width: 100%; text-align: center; margin: 0 15mm;">
+            <span style="color: #666;">Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
+          </div>
+        `,
+      });
+
+      return pdfBuffer;
+    } finally {
+      if (browser) {
+        await browser.close();
+      }
+    }
+  }
+
+  private async generatePdfWithChrome(html: string, options: ConversionOptions): Promise<Buffer> {
+    // Create optimized HTML for Chrome headless (copying Hugo approach)
+    const tempHtmlPath = path.join(this.tempDir, `temp-${Date.now()}.html`);
+    const mermaidOptimizedPath = path.join(this.tempDir, `temp-${Date.now()}-mermaid.html`);
+    const tempPdfPath = path.join(this.tempDir, `temp-${Date.now()}.pdf`);
+    
+    try {
+      // Write HTML to temp file
+      fs.writeFileSync(tempHtmlPath, html);
+      
+      // Create Mermaid-optimized version for Chrome
+      await this.createMermaidOptimizedHtml(tempHtmlPath, mermaidOptimizedPath);
+      
+      const chromePaths = [
+        '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+        '/usr/bin/google-chrome',
+        '/usr/bin/chromium-browser'
+      ];
+      
+      for (const chromePath of chromePaths) {
+        try {
+          if (fs.existsSync(chromePath) || chromePath.includes('google-chrome') || chromePath.includes('chromium')) {
+            // Use the optimized HTML file for Chrome with increased virtual time budget for Mermaid rendering
+            const cmd = `"${chromePath}" --headless --disable-gpu --virtual-time-budget=60000 --run-all-compositor-stages-before-draw --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-renderer-backgrounding --disable-extensions --disable-plugins --no-first-run --no-default-browser-check --print-to-pdf="${tempPdfPath}" "file://${path.resolve(mermaidOptimizedPath)}"`;
+            await execAsync(cmd);
+            
+            if (fs.existsSync(tempPdfPath)) {
+              const buffer = fs.readFileSync(tempPdfPath);
+              
+              // Cleanup
+              fs.unlinkSync(tempHtmlPath);
+              fs.unlinkSync(mermaidOptimizedPath);
+              fs.unlinkSync(tempPdfPath);
+              
+              return buffer;
+            }
+          }
+        } catch (error) {
+          continue;
+        }
+      }
+      
+      throw new Error('Chrome not found or PDF generation failed');
+    } catch (error) {
+      // Cleanup on error
+      if (fs.existsSync(tempHtmlPath)) fs.unlinkSync(tempHtmlPath);
+      if (fs.existsSync(mermaidOptimizedPath)) fs.unlinkSync(mermaidOptimizedPath);
+      if (fs.existsSync(tempPdfPath)) fs.unlinkSync(tempPdfPath);
+      throw error;
+    }
+  }
+
+  private async createMermaidOptimizedHtml(originalHtmlPath: string, optimizedHtmlPath: string): Promise<void> {
+    const originalHtml = fs.readFileSync(originalHtmlPath, 'utf8');
+    
+    // Create a completely new HTML with Hugo's proven Mermaid approach
+    // Extract the content between body tags
+    const bodyMatch = originalHtml.match(/<body[^>]*>([\s\S]*)<\/body>/);
+    const bodyContent = bodyMatch ? bodyMatch[1] : originalHtml;
+    
+    // Extract title from original
+    const titleMatch = originalHtml.match(/<title>(.*?)<\/title>/);
+    const title = titleMatch ? titleMatch[1] : 'Document';
+    
+    const optimizedHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    
+    <!-- Mermaid -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <!-- Font imports -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a202c;
+            font-size: 11pt;
+            max-width: none;
+            margin: 0;
+            padding: 0;
+            background: white;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #2d3748;
+            border-bottom: 3px solid #3182ce;
+            padding-bottom: 10px;
+            font-size: 20pt;
+            margin-top: 0;
+            margin-bottom: 30px;
+            page-break-after: avoid;
+        }
+        
+        h2 {
+            color: #2c5282;
+            background: linear-gradient(to right, #e2e8f0, transparent);
+            padding: 10px 15px;
+            border-left: 4px solid #3182ce;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            font-size: 14pt;
+            page-break-after: avoid;
+        }
+        
+        h3 {
+            color: #4a5568;
+            font-size: 12pt;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            page-break-after: avoid;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+            orphans: 3;
+            widows: 3;
+        }
+        
+        pre {
+            background-color: #f7fafc;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #3182ce;
+            overflow-x: auto;
+            font-size: 9pt;
+            margin: 15px 0;
+            page-break-inside: avoid;
+        }
+        
+        code {
+            background-color: #edf2f7;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 9pt;
+        }
+        
+        /* Mermaid diagram styling */
+        .mermaid-diagram {
+            margin: 20px 0;
+            page-break-inside: avoid;
+            text-align: center;
+        }
+        
+        .mermaid-render {
+            background-color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .mermaid-render svg {
+            max-width: 100%;
+            max-height: 400px;
+            height: auto;
+            width: auto;
+        }
+        
+        .mermaid-code {
+            display: none;
+            background-color: #f7fafc;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 9pt;
+            white-space: pre-wrap;
+            margin-top: 10px;
+        }
+        
+        @media print {
+            body {
+                font-size: 10pt;
+            }
+            
+            h1 { font-size: 18pt; }
+            h2 { font-size: 13pt; }
+            h3 { font-size: 11pt; }
+            
+            /* Show rendered diagrams in print, hide code */
+            .mermaid-code {
+                display: none !important;
+            }
+            
+            .mermaid-render {
+                display: block !important;
+                padding: 10px !important;
+                page-break-inside: avoid;
+            }
+            
+            /* Ensure SVG diagrams are visible and properly sized for print */
+            .mermaid-render svg {
+                max-width: 90% !important;
+                max-height: 300px !important;
+                height: auto !important;
+                width: auto !important;
+                display: block !important;
+                margin: 0 auto !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    ${bodyContent}
+    
+    <script>
+        // Enhanced Mermaid rendering for PDF generation
+        window.addEventListener('load', function() {
+            console.log('Page loaded, initializing Mermaid...');
+            setTimeout(initializeMermaid, 2000);
+        });
+        
+        function initializeMermaid() {
+            if (typeof mermaid === 'undefined') {
+                console.log('Mermaid not loaded, retrying...');
+                setTimeout(initializeMermaid, 1000);
+                return;
+            }
+            
+            // Configure Mermaid for PDF rendering
+            mermaid.initialize({
+                startOnLoad: false,
+                theme: 'default',
+                themeVariables: {
+                    primaryColor: '#3182ce',
+                    primaryTextColor: '#1a202c',
+                    primaryBorderColor: '#2c5282',
+                    lineColor: '#4a5568',
+                    secondaryColor: '#e2e8f0',
+                    tertiaryColor: '#f7fafc'
+                },
+                fontFamily: 'Inter, sans-serif',
+                fontSize: 12,
+                flowchart: { 
+                    useMaxWidth: true, 
+                    htmlLabels: true,
+                    nodeSpacing: 30,
+                    rankSpacing: 40
+                },
+                sequence: {
+                    useMaxWidth: true,
+                    width: 150
+                },
+                gantt: {
+                    useMaxWidth: true
+                },
+                securityLevel: 'loose'
+            });
+            
+            const diagrams = document.querySelectorAll('.mermaid-diagram .mermaid-code');
+            console.log('Found ' + diagrams.length + ' diagrams to render');
+            
+            if (diagrams.length === 0) {
+                document.body.classList.add('mermaid-ready');
+                return;
+            }
+            
+            let completed = 0;
+            diagrams.forEach(function(codeEl, index) {
+                const renderDiv = codeEl.parentNode.querySelector('.mermaid-render');
+                const code = codeEl.textContent.trim();
+                
+                try {
+                    // Use modern Promise-based API instead of callback
+                    mermaid.render('chrome-diagram-' + index, code)
+                        .then(function(result) {
+                            renderDiv.innerHTML = result.svg;
+                            
+                            // Ensure SVG is properly styled for Chrome PDF
+                            const svg = renderDiv.querySelector('svg');
+                            if (svg) {
+                                svg.style.maxWidth = '100%';
+                                svg.style.height = 'auto';
+                                svg.style.display = 'block';
+                                svg.style.margin = '0 auto';
+                            }
+                            
+                            completed++;
+                            console.log('Rendered diagram ' + (index + 1) + '/' + diagrams.length);
+                            
+                            if (completed === diagrams.length) {
+                                document.body.classList.add('mermaid-ready');
+                                console.log('All Mermaid diagrams rendered successfully');
+                            }
+                        })
+                        .catch(function(error) {
+                            console.error('Mermaid rendering error:', error);
+                            renderDiv.innerHTML = '<div style="color: #c53030; padding: 15px; border: 2px solid #fed7d7; background: #fff5f5; border-radius: 6px; text-align: center;">Diagram rendering failed: ' + error.message + '</div>';
+                            completed++;
+                            
+                            if (completed === diagrams.length) {
+                                document.body.classList.add('mermaid-ready');
+                            }
+                        });
+                } catch (error) {
+                    console.error('Mermaid setup error:', error);
+                    renderDiv.innerHTML = '<div style="color: #c53030; padding: 15px; border: 2px solid #fed7d7; background: #fff5f5; border-radius: 6px; text-align: center;">Diagram setup failed: ' + error.message + '</div>';
+                    completed++;
+                    
+                    if (completed === diagrams.length) {
+                        document.body.classList.add('mermaid-ready');
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>`;
+    
+    fs.writeFileSync(optimizedHtmlPath, optimizedHtml);
+  }
+
+  private markdownToLatex(markdown: string): string {
+    // Basic markdown to LaTeX conversion
+    return markdown
+      .replace(/^# (.*?)$/gm, '\\section{$1}')
+      .replace(/^## (.*?)$/gm, '\\subsection{$1}')
+      .replace(/^### (.*?)$/gm, '\\subsubsection{$1}')
+      .replace(/\*\*(.*?)\*\*/g, '\\textbf{$1}')
+      .replace(/\*(.*?)\*/g, '\\textit{$1}')
+      .replace(/`([^`]+)`/g, '\\texttt{$1}')
+      .replace(/```([\s\S]*?)```/g, '\\begin{verbatim}\n$1\n\\end{verbatim}')
+      .replace(/^\* (.*?)$/gm, '\\item $1');
+  }
+
+  private markdownToRtf(markdown: string): string {
+    // Basic markdown to RTF conversion
+    return markdown
+      .replace(/^# (.*?)$/gm, '{\\b\\fs28 $1\\par}')
+      .replace(/^## (.*?)$/gm, '{\\b\\fs24 $1\\par}')
+      .replace(/^### (.*?)$/gm, '{\\b\\fs20 $1\\par}')
+      .replace(/\*\*(.*?)\*\*/g, '{\\b $1}')
+      .replace(/\*(.*?)\*/g, '{\\i $1}')
+      .replace(/`([^`]+)`/g, '{\\f1 $1}')
+      .replace(/```([\s\S]*?)```/g, '{\\f1 $1\\par}')
+      .replace(/^\* (.*?)$/gm, '\\bullet $1\\par')
+      .replace(/\n/g, '\\par\n');
+  }
+
+  private escapeLatex(text: string): string {
+    return text
+      .replace(/\\/g, '\\textbackslash{}')
+      .replace(/[&%$#_{}]/g, '\\$&')
+      .replace(/~/g, '\\textasciitilde{}')
+      .replace(/\^/g, '\\textasciicircum{}');
+  }
+
+  private createStyledHtml(content: string, frontmatter: PostData, lang: string = 'en', outputFormat: string = 'html'): string {
+    const title = frontmatter.title || 'Document';
+    const author = frontmatter.author || '';
+    const date = frontmatter.date ? new Date(frontmatter.date).toLocaleDateString() : '';
+    
+    return `<!DOCTYPE html>
+<html lang="${lang}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        ${lang === 'gu' ? `@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@300;400;500;600;700&display=swap');` : ''}
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: ${lang === 'gu' ? "'Noto Sans Gujarati', " : ""}'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+        }
+        
+        .article-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .article-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #1a202c;
+        }
+        
+        .article-meta {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-bottom: 1rem;
+        }
+        
+        .article-meta span {
+            margin-right: 1rem;
+        }
+        
+        .article-content {
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        h1 { font-size: 1.8rem; }
+        h2 { font-size: 1.6rem; }
+        h3 { font-size: 1.4rem; }
+        h4 { font-size: 1.2rem; }
+        h5 { font-size: 1.1rem; }
+        h6 { font-size: 1rem; }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        ul, ol {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        blockquote {
+            border-left: 4px solid #3182ce;
+            padding-left: 1rem;
+            margin: 1rem 0;
+            color: #4a5568;
+            font-style: italic;
+        }
+        
+        .code-block {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            border-left: 4px solid #3182ce;
+            padding: 15px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 9pt;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            page-break-inside: avoid;
+        }
+        
+        .code-block code {
+            background: none;
+            padding: 0;
+            border: none;
+            border-radius: 0;
+            font-family: inherit;
+            font-size: inherit;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        code {
+            background: #edf2f7;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 9pt;
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .data-table th {
+            background: #f7fafc;
+            font-weight: 600;
+        }
+        
+        .image-wrapper {
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+        
+        .image-wrapper img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .math-block {
+            text-align: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f7fafc;
+            border-radius: 6px;
+        }
+        
+        .math-inline {
+            background: #edf2f7;
+            padding: 0.1rem 0.3rem;
+            border-radius: 3px;
+        }
+        
+        /* Mermaid diagram styling */
+        .mermaid-diagram {
+            margin: 20px 0;
+            page-break-inside: avoid;
+            text-align: center;
+        }
+        
+        .mermaid-render {
+            background-color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .mermaid-render svg {
+            max-width: 100%;
+            max-height: 400px;
+            height: auto;
+            width: auto;
+        }
+        
+        .mermaid-code {
+            display: none;
+            background-color: #f7fafc;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 9pt;
+            white-space: pre-wrap;
+            margin-top: 10px;
+        }
+        
+        a {
+            color: #3182ce;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        strong {
+            font-weight: 600;
+        }
+        
+        em {
+            font-style: italic;
+        }
+        
+        hr {
+            border: none;
+            border-top: 1px solid #e2e8f0;
+            margin: 2rem 0;
+        }
+        
+        @media print {
+            body {
+                print-color-adjust: exact;
+                font-size: 10pt;
+            }
+            
+            .mermaid-code {
+                display: none !important;
+            }
+            
+            .mermaid-render {
+                display: block !important;
+                padding: 10px !important;
+                page-break-inside: avoid;
+            }
+            
+            .mermaid-render svg {
+                max-width: 90% !important;
+                max-height: 300px !important;
+                height: auto !important;
+                width: auto !important;
+                display: block !important;
+                margin: 0 auto !important;
+            }
+            
+            .code-block {
+                page-break-inside: avoid;
+                font-size: 8pt !important;
+                line-height: 1.3 !important;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+</head>
+<body>
+    <div class="article-header">
+        <h1 class="article-title">${title}</h1>
+        <div class="article-meta">
+            ${author ? `<span><strong>Author:</strong> ${author}</span>` : ''}
+            ${date ? `<span><strong>Date:</strong> ${date}</span>` : ''}
+            ${frontmatter.tags && frontmatter.tags.length ? `<span><strong>Tags:</strong> ${frontmatter.tags.join(', ')}</span>` : ''}
+        </div>
+    </div>
+    <div class="article-content">
+        ${content}
+    </div>
+    
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({ 
+            startOnLoad: false,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                nodeSpacing: 30,
+                rankSpacing: 40
+            },
+            fontSize: 12,
+            securityLevel: 'loose'
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const diagrams = document.querySelectorAll('.mermaid-diagram .mermaid-code');
+            
+            let renderedCount = 0;
+            diagrams.forEach((codeElement, index) => {
+                const renderDiv = codeElement.parentNode.querySelector('.mermaid-render');
+                const code = codeElement.textContent.trim();
+                const renderId = 'mermaid-svg-' + (index + 1);
+                
+                try {
+                    mermaid.render(renderId, code).then(result => {
+                        renderDiv.innerHTML = result.svg;
+                        renderedCount++;
+                        
+                        if (renderedCount === diagrams.length) {
+                            document.body.classList.add('mermaid-ready');
+                        }
+                    }).catch(error => {
+                        console.error('Mermaid rendering error:', error);
+                        renderDiv.innerHTML = '<p style="color: #c53030;">Diagram rendering failed</p>';
+                        codeElement.style.display = 'block';
+                        renderedCount++;
+                        
+                        if (renderedCount === diagrams.length) {
+                            document.body.classList.add('mermaid-ready');
+                        }
+                    });
+                } catch (error) {
+                    console.error('Mermaid setup error:', error);
+                    renderDiv.innerHTML = '<p style="color: #c53030;">Diagram setup failed</p>';
+                    codeElement.style.display = 'block';
+                    renderedCount++;
+                    
+                    if (renderedCount === diagrams.length) {
+                        document.body.classList.add('mermaid-ready');
+                    }
+                }
+            });
+            
+            if (diagrams.length === 0) {
+                document.body.classList.add('mermaid-ready');
+            }
+        });
+    </script>
+</body>
+</html>`;
+  }
+
+  private async convertToPdfLatex(content: string, frontmatter: PostData, options: ConversionOptions = {}): Promise<Buffer> {
+    try {
+      // First convert to LaTeX
+      const latexContent = await this.convertToLatex(content, frontmatter, options);
+      
+      // Write LaTeX to temporary file
+      const tempFile = path.join(this.tempDir, `temp-${Date.now()}.tex`);
+      fs.writeFileSync(tempFile, latexContent);
+      
+      // Compile LaTeX to PDF using XeLaTeX
+      const outputDir = path.dirname(tempFile);
+      const baseName = path.basename(tempFile, '.tex');
+      
+      try {
+        // Use XeLaTeX for better Unicode support
+        await execAsync(`xelatex -output-directory="${outputDir}" -interaction=nonstopmode "${tempFile}"`);
+        
+        const pdfFile = path.join(outputDir, `${baseName}.pdf`);
+        
+        if (!fs.existsSync(pdfFile)) {
+          throw new Error('PDF compilation failed - output file not created');
+        }
+        
+        const pdfBuffer = fs.readFileSync(pdfFile);
+        
+        // Cleanup temporary files
+        const extensions = ['.tex', '.pdf', '.aux', '.log', '.out'];
+        extensions.forEach(ext => {
+          const file = path.join(outputDir, `${baseName}${ext}`);
+          if (fs.existsSync(file)) {
+            fs.unlinkSync(file);
+          }
+        });
+        
+        return pdfBuffer;
+        
+      } catch (execError) {
+        // Cleanup on error
+        if (fs.existsSync(tempFile)) {
+          fs.unlinkSync(tempFile);
+        }
+        throw new Error(`LaTeX compilation failed: ${execError instanceof Error ? execError.message : String(execError)}`);
+      }
+      
+    } catch (error) {
+      throw new Error(`PDF via LaTeX conversion failed: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
+  private async convertToMp3(content: string, frontmatter: PostData, options: ConversionOptions = {}): Promise<Buffer> {
+    // This is a placeholder for future MP3/audio podcast generation
+    // Will integrate with text-to-speech services like Azure Speech Services, Amazon Polly, or Google Cloud Text-to-Speech
+    
+    throw new Error('MP3/Audio conversion is not yet implemented. This feature is coming soon and will include AI-generated podcast-style audio from your content.');
+  }
+}

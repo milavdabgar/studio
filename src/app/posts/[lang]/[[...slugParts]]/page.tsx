@@ -18,6 +18,7 @@ import { PostMeta } from '@/components/blog/PostMeta';
 import { RelatedPosts } from '@/components/blog/RelatedPosts';
 import { PostNavigation } from '@/components/blog/PostNavigation';
 import { PostFooter } from '@/components/blog/PostFooter';
+import { PdfDownloadButton } from '@/components/pdf-download-button';
 import { Pagination, PaginationInfo } from '@/components/ui/pagination';
 import { StructuredData } from '@/components/seo/StructuredData';
 import { generateSEOMetadata, generateArticleJsonLD, generateBreadcrumbJsonLD } from '@/components/seo/SEOMetaTags';
@@ -490,6 +491,17 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
                         lang={langForLinks}
                         className="justify-center md:justify-start"
                       />
+                      
+                      {/* PDF Download Button */}
+                      <div className="flex justify-center md:justify-start">
+                        <PdfDownloadButton 
+                          slug={slugPartsForLinks.join('/')}
+                          lang={langForLinks}
+                          title={postData.title}
+                          variant="outline"
+                          size="default"
+                        />
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent className="p-8">
