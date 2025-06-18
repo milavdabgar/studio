@@ -400,21 +400,27 @@ export default async function PostPage({ params }: PostPageProps) {
               </article>
             </div>
             
-            {/* Table of Contents Sidebar */}
+            {/* Desktop Table of Contents Sidebar */}
             {postData.contentHtml && (
               <div className="hidden lg:block w-64 shrink-0">
                 <div className="sticky top-8">
-                  <TableOfContents content={postData.contentHtml} />
+                  <TableOfContents 
+                    content={postData.contentHtml} 
+                    showDesktopSidebar={true}
+                    showMobileToggle={false}
+                  />
                 </div>
               </div>
             )}
           </div>
           
-          {/* Mobile TOC Toggle (visible on smaller screens) */}
+          {/* Mobile TableOfContents (only shows toggle button and overlay) */}
           {postData.contentHtml && (
-            <div className="lg:hidden mt-6">
-              <TableOfContents content={postData.contentHtml} />
-            </div>
+            <TableOfContents 
+              content={postData.contentHtml} 
+              showDesktopSidebar={false}
+              showMobileToggle={true}
+            />
           )}
         </div>
       </div>
