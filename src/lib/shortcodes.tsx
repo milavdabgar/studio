@@ -198,8 +198,8 @@ export function useShortcodeProcessor() {
         if (component) {
           // Create a wrapper div for the React component
           const wrapper = document.createElement('div');
-          wrapper.className = 'shortcode-wrapper not-prose w-full overflow-hidden';
-          wrapper.style.cssText = 'margin: 8px 0 !important; padding: 0 !important;';
+          wrapper.className = 'shortcode-wrapper not-prose max-w-3xl mx-auto overflow-hidden';
+          wrapper.style.cssText = 'margin: 16px auto !important; padding: 0 !important;';
           
           // Replace the placeholder with the wrapper
           placeholder.parentNode?.replaceChild(wrapper, placeholder);

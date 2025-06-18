@@ -273,7 +273,7 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="prose prose-lg dark:prose-invert max-w-none">
+                      <div className="prose prose-lg dark:prose-invert max-w-4xl mx-auto">
                         <PostRenderer contentHtml={sectionContent} />
                       </div>
                     </CardContent>
@@ -376,7 +376,7 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
               {postData.contentHtml && postData.contentHtml.trim() && (
                 <Card className="shadow-lg border-0 bg-gradient-to-r from-card to-card/80 mb-8">
                   <CardContent className="p-8">
-                    <div className="prose prose-lg dark:prose-invert max-w-none">
+                    <div className="prose prose-lg dark:prose-invert max-w-4xl mx-auto">
                       <PostRenderer contentHtml={postData.contentHtml} />
                     </div>
                   </CardContent>
@@ -493,7 +493,7 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
                     </div>
                   </CardHeader>
                   <CardContent className="p-8">
-                    <div className="prose prose-lg dark:prose-invert max-w-none">
+                    <div className="prose prose-lg dark:prose-invert max-w-4xl mx-auto">
                       <PostRenderer contentHtml={postData.contentHtml} />
                     </div>
                   </CardContent>
