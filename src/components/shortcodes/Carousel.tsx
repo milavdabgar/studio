@@ -27,10 +27,19 @@ export function Carousel({
   showArrows = true,
   className = ''
 }: CarouselProps) {
-  // Parse images array
+  // Parse images array and normalize paths
   const imageArray = Array.isArray(images) 
     ? images 
     : images.split(',').map(img => img.trim());
+  
+  // Convert relative image paths to API paths for content images
+  const normalizedImages = imageArray.map(img => {
+    if (img.startsWith('http://') || img.startsWith('https://') || img.startsWith('/')) {
+      return img; // Already absolute URL or properly formatted path
+    }
+    // Convert relative path to API route
+    return `/api/content/images/portfolio/${img}`;
+  });
   
   const captionArray = captions 
     ? (Array.isArray(captions) ? captions : captions.split(',').map(cap => cap.trim()))
@@ -41,9 +50,9 @@ export function Carousel({
 
   // Autoplay effect
   useEffect(() => {
-    if (autoplay && imageArray.length > 1) {
+    if (autoplay && normalizedImages.length > 1) {
       intervalRef.current = setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % imageArray.length);
+        setCurrentIndex((prev) => (prev + 1) % normalizedImages.length);
       }, interval);
     } else {
       if (intervalRef.current) {
@@ -57,21 +66,21 @@ export function Carousel({
         clearInterval(intervalRef.current);
       }
     };
-  }, [autoplay, interval, imageArray.length]);
+  }, [autoplay, interval, normalizedImages.length]);
 
   const nextImage = () => {
-    setCurrentIndex((prev) => (prev + 1) % imageArray.length);
+    setCurrentIndex((prev) => (prev + 1) % normalizedImages.length);
   };
 
   const prevImage = () => {
-    setCurrentIndex((prev) => (prev - 1 + imageArray.length) % imageArray.length);
+    setCurrentIndex((prev) => (prev - 1 + normalizedImages.length) % normalizedImages.length);
   };
 
   const goToSlide = (index: number) => {
     setCurrentIndex(index);
   };
 
-  if (imageArray.length === 0) {
+  if (normalizedImages.length === 0) {
     return <div className="text-gray-500">No images provided</div>;
   }
 
@@ -85,7 +94,7 @@ export function Carousel({
         style={{ height }}
       >
         <Image
-          src={imageArray[currentIndex]}
+          src={normalizedImages[currentIndex]}
           alt={currentCaption || `Slide ${currentIndex + 1}`}
           fill
           className="object-cover transition-opacity duration-300"
@@ -93,7 +102,7 @@ export function Carousel({
         />
         
         {/* Navigation arrows */}
-        {showArrows && imageArray.length > 1 && (
+        {showArrows && normalizedImages.length > 1 && (
           <>
             <Button
               variant="ghost"
@@ -116,9 +125,9 @@ export function Carousel({
         )}
 
         {/* Slide counter */}
-        {imageArray.length > 1 && (
+        {normalizedImages.length > 1 && (
           <div className="absolute top-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
-            {currentIndex + 1} / {imageArray.length}
+            {currentIndex + 1} / {normalizedImages.length}
           </div>
         )}
       </div>
@@ -131,9 +140,9 @@ export function Carousel({
       )}
 
       {/* Dots indicator */}
-      {showDots && imageArray.length > 1 && (
+      {showDots && normalizedImages.length > 1 && (
         <div className="flex justify-center gap-2 p-3">
-          {imageArray.map((_, index) => (
+          {normalizedImages.map((_, index) => (
             <button
               key={index}
               className={`w-2 h-2 rounded-full transition-colors ${
