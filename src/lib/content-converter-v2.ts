@@ -1,9 +1,213 @@
-<!DOCTYPE html>
-<html lang="en">
+/**
+ * Enhanced Content Converter v2 - Based on working pdf-converter.js
+ * Supports multiple output formats with robust Mermaid and math rendering
+ */
+
+import fs from 'fs';
+import path from 'path';
+import { marked } from 'marked';
+import matter from 'gray-matter';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+
+const execAsync = promisify(exec);
+
+// Import KaTeX for math rendering
+let katex: any;
+try {
+    katex = require('katex');
+} catch (error) {
+    console.log('KaTeX not available, math rendering will be limited');
+}
+
+interface ConversionOptions {
+    title?: string;
+    author?: string;
+    language?: string;
+    includeStyles?: boolean;
+    pdfOptions?: {
+        format?: 'A4' | 'Letter';
+        margin?: {
+            top?: string;
+            right?: string;
+            bottom?: string;
+            left?: string;
+        };
+    };
+}
+
+export class ContentConverterV2 {
+    private tempDir: string;
+
+    constructor() {
+        this.tempDir = path.resolve(process.cwd(), 'tmp');
+        this.ensureDirectoryExists(this.tempDir);
+    }
+
+    private ensureDirectoryExists(dirPath: string): void {
+        if (!fs.existsSync(dirPath)) {
+            fs.mkdirSync(dirPath, { recursive: true });
+        }
+    }
+
+    async convert(markdownContent: string, format: string, options: ConversionOptions = {}): Promise<Buffer | string> {
+        const { data: frontmatter, content } = matter(markdownContent);
+        
+        switch (format) {
+            case 'md':
+                return markdownContent;
+            
+            case 'html':
+                return await this.convertToHtml(content, frontmatter, options);
+            
+            case 'pdf':
+            case 'pdf-chrome':
+                return await this.convertToPdf(content, frontmatter, options);
+            
+            default:
+                throw new Error(`Unsupported format: ${format}`);
+        }
+    }
+
+    private async convertToHtml(content: string, frontmatter: any, options: ConversionOptions): Promise<string> {
+        // Process math expressions first (before markdown)
+        let processedContent = this.processMathExpressions(content);
+        
+        // Convert markdown to HTML
+        let htmlContent = await marked(processedContent);
+        
+        // Process Mermaid diagrams
+        htmlContent = this.processMermaidDiagrams(htmlContent);
+        
+        // Generate the complete HTML
+        const title = options.title || frontmatter.title || 'Document';
+        const author = options.author || frontmatter.author || 'Unknown';
+        
+        return this.generateHtmlTemplate(htmlContent, title, author, options);
+    }
+
+    private async convertToPdf(content: string, frontmatter: any, options: ConversionOptions): Promise<Buffer> {
+        // First convert to HTML
+        const htmlContent = await this.convertToHtml(content, frontmatter, options);
+        
+        // Save HTML to temporary file
+        const tempHtmlPath = path.join(this.tempDir, `temp-${Date.now()}.html`);
+        fs.writeFileSync(tempHtmlPath, htmlContent);
+        
+        try {
+            // Use Chrome headless to convert to PDF
+            const outputPath = path.join(this.tempDir, `output-${Date.now()}.pdf`);
+            
+            const chromeArgs = [
+                '--headless',
+                '--disable-gpu',
+                '--disable-software-rasterizer',
+                '--disable-dev-shm-usage',
+                '--no-sandbox',
+                '--disable-extensions',
+                '--disable-plugins',
+                '--disable-images',
+                '--run-all-compositor-stages-before-draw',
+                '--disable-background-timer-throttling',
+                '--disable-renderer-backgrounding',
+                '--disable-backgrounding-occluded-windows',
+                '--disable-features=TranslateUI,VizDisplayCompositor',
+                `--print-to-pdf=${outputPath}`,
+                '--print-to-pdf-no-header',
+                '--virtual-time-budget=10000'
+            ];
+            
+            const command = `/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome ${chromeArgs.join(' ')} "${tempHtmlPath}"`;
+            
+            await execAsync(command);
+            
+            // Wait a bit for file to be written
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            if (!fs.existsSync(outputPath)) {
+                throw new Error('PDF generation failed - output file not created');
+            }
+            
+            const pdfBuffer = fs.readFileSync(outputPath);
+            
+            // Clean up temporary files
+            fs.unlinkSync(tempHtmlPath);
+            fs.unlinkSync(outputPath);
+            
+            return pdfBuffer;
+        } catch (error) {
+            // Clean up temp HTML file
+            if (fs.existsSync(tempHtmlPath)) {
+                fs.unlinkSync(tempHtmlPath);
+            }
+            throw error;
+        }
+    }
+
+    private processMathExpressions(content: string): string {
+        if (!katex) return content;
+
+        // Process display math ($$...$$)
+        content = content.replace(/\$\$([^$]+)\$\$/g, (match, math) => {
+            try {
+                const rendered = katex.renderToString(math.trim(), {
+                    displayMode: true,
+                    throwOnError: false,
+                    strict: false
+                });
+                return `<div class="math-display">${rendered}</div>`;
+            } catch (error) {
+                console.warn('Math rendering error:', error);
+                return `<div class="math-display">${math}</div>`;
+            }
+        });
+
+        // Process inline math ($...$)
+        content = content.replace(/\$([^$\n]+)\$/g, (match, math) => {
+            try {
+                const rendered = katex.renderToString(math.trim(), {
+                    displayMode: false,
+                    throwOnError: false,
+                    strict: false
+                });
+                return `<span class="math-inline">${rendered}</span>`;
+            } catch (error) {
+                console.warn('Math rendering error:', error);
+                return `<span class="math-inline">${math}</span>`;
+            }
+        });
+
+        return content;
+    }
+
+    private processMermaidDiagrams(html: string): string {
+        let diagramCounter = 0;
+        
+        // Process mermaid code blocks
+        return html.replace(/<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g, (match, code) => {
+            diagramCounter++;
+            const cleanCode = code.trim()
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>')
+                .replace(/&amp;/g, '&')
+                .replace(/&quot;/g, '"');
+            
+            return `<div class="mermaid-diagram" data-diagram-id="${diagramCounter}">
+<pre class="mermaid-code">${cleanCode}</pre>
+<div class="mermaid-render" id="mermaid-${diagramCounter}"></div>
+</div>`;
+        });
+    }
+
+    private generateHtmlTemplate(content: string, title: string, author: string, options: ConversionOptions): string {
+        const currentDate = new Date().toLocaleDateString('en-GB');
+        
+        return `<!DOCTYPE html>
+<html lang="${options.language || 'en'}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mixed Diagram Test</title>
+    <title>${title}</title>
     
     <!-- KaTeX CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
@@ -14,8 +218,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Gujarati:wght@300;400;500;600;700&display=swap');
         
         @page {
-            size: A4;
-            margin: 2cm;
+            size: ${options.pdfOptions?.format || 'A4'};
+            margin: ${options.pdfOptions?.margin?.top || '2cm'} ${options.pdfOptions?.margin?.right || '2cm'} ${options.pdfOptions?.margin?.bottom || '2cm'} ${options.pdfOptions?.margin?.left || '2cm'};
         }
         
         * {
@@ -298,59 +502,13 @@
 <body>
     <div class="container">
         <div class="header-info">
-            <strong>Mixed Diagram Test</strong><br>
-            Generated on 18/06/2025 | Automated PDF Generation System
+            <strong>${title}</strong><br>
+            By: ${author}<br>
+            Generated on ${currentDate} | Content Converter System
         </div>
         
         <div class="content">
-            <h1>Mixed Diagram Test</h1>
-<p>This page tests both mermaid and goat diagrams to ensure they render correctly.</p>
-<h2>Mermaid Flowchart</h2>
-<div class="mermaid-diagram" data-diagram-id="1">
-<pre class="mermaid-code">graph TD
-    A[Start] --> B{Is it working?}
-    B -->|Yes| C[Great!]
-    B -->|No| D[Debug]
-    D --> B
-    C --> E[End]</pre>
-<div class="mermaid-render" id="mermaid-1"></div>
-</div>
-
-<h2>Goat ASCII Diagram</h2>
-<pre><code class="language-goat">+--------------------+
-| Mermaid Diagrams   |
-| (Rendered as SVG)  |
-+--------------------+
-          |
-          v
-+--------------------+
-| Goat Diagrams      |
-| (ASCII Art)        |
-+--------------------+</code></pre><h2>Another Mermaid Diagram</h2>
-<div class="mermaid-diagram" data-diagram-id="2">
-<pre class="mermaid-code">sequenceDiagram
-    participant A as Alice
-    participant B as Bob
-    A->>B: Hello Bob!
-    B-->>A: Hello Alice!</pre>
-<div class="mermaid-render" id="mermaid-2"></div>
-</div>
-
-<h2>Another Goat Diagram</h2>
-<pre><code class="language-goat">[Frontend] --&gt; [Backend] --&gt; [Database]
-    ^             |
-    |             v
-[Cache] &lt;----  [Queue]</code></pre><h2>Regular Code Block</h2>
-<pre><code class="language-javascript">function test() {
-    console.log(&quot;This should be syntax highlighted&quot;);
-    return &quot;success&quot;;
-}</code></pre><p>This test should show:</p>
-<ul>
-<li>✅ Mermaid diagrams rendered as interactive SVG</li>
-<li>✅ Goat diagrams rendered as styled ASCII art</li>
-<li>✅ Regular code blocks with syntax highlighting</li>
-</ul>
-
+            ${content}
         </div>
     </div>
     
@@ -447,4 +605,6 @@
         });
     </script>
 </body>
-</html>
+</html>`;
+    }
+}

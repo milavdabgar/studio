@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ContentConverter } from '@/lib/content-converter';
+import { ContentConverterV2 } from '@/lib/content-converter-v2';
 import fs from 'fs';
 import path from 'path';
 
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const converter = new ContentConverter();
+    const converter = new ContentConverterV2();
     
     let filePath: string;
     let markdownContent: string;
@@ -95,72 +95,16 @@ export async function GET(request: NextRequest) {
           {
             id: 'html',
             name: 'HTML',
-            description: 'Web-ready HTML format',
+            description: 'Web-ready HTML with Mermaid diagrams and math',
             extension: 'html',
             category: 'web'
           },
           {
-            id: 'pdf-puppeteer',
-            name: 'PDF (Puppeteer)',
-            description: 'PDF using Puppeteer engine',
+            id: 'pdf',
+            name: 'PDF (Enhanced)',
+            description: 'High-quality PDF with diagrams and math support',
             extension: 'pdf',
             category: 'document'
-          },
-          {
-            id: 'pdf-chrome',
-            name: 'PDF (Chrome Headless)',
-            description: 'PDF using Chrome headless',
-            extension: 'pdf',
-            category: 'document'
-          },
-          {
-            id: 'pdf-latex',
-            name: 'PDF (LaTeX)',
-            description: 'PDF using XeLaTeX engine',
-            extension: 'pdf',
-            category: 'document'
-          },
-          {
-            id: 'latex',
-            name: 'LaTeX',
-            description: 'LaTeX typesetting format',
-            extension: 'tex',
-            category: 'document'
-          },
-          {
-            id: 'docx',
-            name: 'Word Document',
-            description: 'Microsoft Word format',
-            extension: 'docx',
-            category: 'document'
-          },
-          {
-            id: 'epub',
-            name: 'EPUB',
-            description: 'Electronic book format',
-            extension: 'epub',
-            category: 'ebook'
-          },
-          {
-            id: 'rtf',
-            name: 'Rich Text Format',
-            description: 'Universal rich text format',
-            extension: 'rtf',
-            category: 'document'
-          },
-          {
-            id: 'txt',
-            name: 'Plain Text',
-            description: 'Plain text format',
-            extension: 'txt',
-            category: 'text'
-          },
-          {
-            id: 'mp3',
-            name: 'Audio Podcast (MP3)',
-            description: 'AI-generated audio version (coming soon)',
-            extension: 'mp3',
-            category: 'audio'
           }
         ]
       });

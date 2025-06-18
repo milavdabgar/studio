@@ -7,6 +7,14 @@ import { promisify } from 'util';
 import puppeteer from 'puppeteer-core';
 import chromium from '@sparticuz/chromium-min';
 
+// Import KaTeX like in the working pdf-converter.js
+let katex: any;
+try {
+  katex = require('katex');
+} catch (error) {
+  console.log('KaTeX not available, math rendering will be limited');
+}
+
 const execAsync = promisify(exec);
 
 interface ConversionOptions {
@@ -294,7 +302,8 @@ ${rtf}
   }
 
   private async processMermaidDiagrams(content: string): Promise<string> {
-    const mermaidRegex = /```mermaid\n([\s\S]*?)\n```/g;
+    // Find mermaid code blocks - exact same as working pdf-converter.js
+    const mermaidRegex = /```mermaid\n([\s\S]*?)```/g;
     let processed = content;
     let match;
     let diagramId = 0;
@@ -303,6 +312,7 @@ ${rtf}
       const diagramCode = match[1].trim();
       diagramId++;
       
+      // Create a placeholder div structure for Mermaid - exact same as working version
       const placeholder = `
 <div class="mermaid-diagram" data-diagram-id="${diagramId}">
 <pre class="mermaid-code">${diagramCode}</pre>
@@ -311,22 +321,40 @@ ${rtf}
       
       processed = processed.replace(match[0], placeholder);
     }
-
+    
     return processed;
   }
 
   private processMathExpressions(content: string): string {
-    // Handle block math
-    content = content.replace(/\$\$([\s\S]*?)\$\$/g, (match, math) => {
-      return `<div class="math-block" data-math="${encodeURIComponent(math.trim())}">${math.trim()}</div>`;
+    if (!katex) return content;
+    
+    let processed = content;
+    
+    // Handle display math ($$...$$) - exact same as working pdf-converter.js
+    const displayMathRegex = /\$\$([^$]+)\$\$/g;
+    processed = processed.replace(displayMathRegex, (match, math) => {
+      try {
+        const rendered = katex.renderToString(math.trim(), { displayMode: true });
+        return `<div class="math-display">${rendered}</div>`;
+      } catch (error) {
+        console.log(`Math rendering error: ${error}`);
+        return match;
+      }
     });
-
-    // Handle inline math
-    content = content.replace(/\$([^$\n]+?)\$/g, (match, math) => {
-      return `<span class="math-inline" data-math="${encodeURIComponent(math.trim())}">${math.trim()}</span>`;
+    
+    // Handle inline math ($...$) - exact same as working pdf-converter.js
+    const inlineMathRegex = /(?<!\$)\$([^$\n]+)\$(?!\$)/g;
+    processed = processed.replace(inlineMathRegex, (match, math) => {
+      try {
+        const rendered = katex.renderToString(math.trim(), { displayMode: false });
+        return `<span class="math-inline">${rendered}</span>`;
+      } catch (error) {
+        console.log(`Math rendering error: ${error}`);
+        return match;
+      }
     });
-
-    return content;
+    
+    return processed;
   }
 
   private setupCustomRenderer(renderer: any) {
@@ -385,17 +413,20 @@ ${rtf}
 
       const page = await browser.newPage();
       
+      // Set content with proper wait conditions
       await page.setContent(html, {
         waitUntil: ['networkidle0', 'domcontentloaded'],
       });
 
+      // Wait for fonts to load
       await page.evaluateHandle('document.fonts.ready');
       
-      // Add Mermaid and render diagrams
+      // Enhanced Mermaid initialization using the proven approach
       await page.addScriptTag({
         url: 'https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js'
       });
       
+      // Wait for Mermaid to render all diagrams using the working approach
       await page.evaluate(() => {
         return new Promise<void>((resolve) => {
           if (typeof (window as any).mermaid === 'undefined') {
@@ -403,45 +434,80 @@ ${rtf}
             return;
           }
 
+          // Use the exact configuration that works
           (window as any).mermaid.initialize({
             startOnLoad: false,
             theme: 'default',
-            flowchart: { 
-              useMaxWidth: true, 
+            themeVariables: {
+              primaryColor: '#3182ce',
+              primaryTextColor: '#1a202c',
+              primaryBorderColor: '#2c5282',
+              lineColor: '#4a5568',
+              secondaryColor: '#e2e8f0',
+              tertiaryColor: '#f7fafc'
+            },
+            fontFamily: 'Inter, sans-serif',
+            fontSize: 12,
+            flowchart: {
+              useMaxWidth: true,
               htmlLabels: true,
               nodeSpacing: 30,
               rankSpacing: 40
             },
-            fontSize: 12,
+            sequence: {
+              useMaxWidth: true,
+              width: 150
+            },
+            gantt: {
+              useMaxWidth: true
+            },
             securityLevel: 'loose'
           });
 
-          const diagrams = document.querySelectorAll('.mermaid-diagram .mermaid-code');
+          const diagrams = document.querySelectorAll('.mermaid-diagram');
           
           if (diagrams.length === 0) {
             resolve();
             return;
           }
           
-          let completed = 0;
-          diagrams.forEach((codeEl: Element, index: number) => {
-            const renderDiv = codeEl.parentNode?.querySelector('.mermaid-render') as HTMLElement;
-            const code = codeEl.textContent || '';
+          let renderedCount = 0;
+          diagrams.forEach((diagram: Element, index: number) => {
+            const codeElement = diagram.querySelector('.mermaid-code');
+            const renderDiv = diagram.querySelector('.mermaid-render') as HTMLElement;
+            
+            if (!codeElement || !renderDiv) {
+              renderedCount++;
+              if (renderedCount === diagrams.length) {
+                setTimeout(() => resolve(), 1000);
+              }
+              return;
+            }
+            
+            const code = codeElement.textContent?.trim() || '';
+            const renderId = 'mermaid-svg-' + (index + 1);
             
             try {
-              (window as any).mermaid.render('diagram-' + index, code, (svgCode: string) => {
-                if (renderDiv) {
-                  renderDiv.innerHTML = svgCode;
-                }
-                completed++;
+              (window as any).mermaid.render(renderId, code).then((result: any) => {
+                renderDiv.innerHTML = result.svg;
+                renderedCount++;
                 
-                if (completed === diagrams.length) {
+                if (renderedCount === diagrams.length) {
+                  setTimeout(() => resolve(), 1000);
+                }
+              }).catch((error: any) => {
+                console.error('Mermaid rendering error:', error);
+                renderedCount++;
+                
+                if (renderedCount === diagrams.length) {
                   setTimeout(() => resolve(), 1000);
                 }
               });
             } catch (error) {
-              completed++;
-              if (completed === diagrams.length) {
+              console.error('Mermaid setup error:', error);
+              renderedCount++;
+              
+              if (renderedCount === diagrams.length) {
                 setTimeout(() => resolve(), 1000);
               }
             }
@@ -449,7 +515,8 @@ ${rtf}
         });
       });
 
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Additional wait to ensure all content is properly rendered
+      await new Promise(resolve => setTimeout(resolve, 3000));
 
       const pdfBuffer = await page.pdf({
         format: (options.paperSize as any) || 'A4',
@@ -482,7 +549,6 @@ ${rtf}
   }
 
   private async generatePdfWithChrome(html: string, options: ConversionOptions): Promise<Buffer> {
-    // Use the exact Hugo implementation that works perfectly
     const tempHtmlPath = path.join(this.tempDir, `temp-${Date.now()}.html`);
     const mermaidOptimizedPath = path.join(this.tempDir, `temp-${Date.now()}-mermaid.html`);
     const tempPdfPath = path.join(this.tempDir, `temp-${Date.now()}.pdf`);
@@ -491,7 +557,7 @@ ${rtf}
       // Write HTML to temp file
       fs.writeFileSync(tempHtmlPath, html);
       
-      // Create Mermaid-optimized version using Hugo's proven approach
+      // Create Mermaid-optimized version using proven approach
       await this.createMermaidOptimizedHtml(tempHtmlPath, mermaidOptimizedPath);
       
       const chromePaths = [
@@ -503,22 +569,30 @@ ${rtf}
       for (const chromePath of chromePaths) {
         try {
           if (fs.existsSync(chromePath) || chromePath.includes('google-chrome') || chromePath.includes('chromium')) {
-            // Use exact Hugo Chrome command
+            // Use exact working Chrome command with optimal flags
             const cmd = `"${chromePath}" --headless --disable-gpu --virtual-time-budget=45000 --run-all-compositor-stages-before-draw --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-renderer-backgrounding --print-to-pdf="${tempPdfPath}" "file://${path.resolve(mermaidOptimizedPath)}"`;
             await execAsync(cmd);
+            
+            // Clean up optimized file immediately after Chrome execution
+            try {
+              fs.unlinkSync(mermaidOptimizedPath);
+            } catch (e) {}
             
             if (fs.existsSync(tempPdfPath)) {
               const buffer = fs.readFileSync(tempPdfPath);
               
-              // Cleanup
+              // Cleanup temp files
               fs.unlinkSync(tempHtmlPath);
-              fs.unlinkSync(mermaidOptimizedPath);
               fs.unlinkSync(tempPdfPath);
               
               return buffer;
             }
           }
         } catch (error) {
+          // Clean up optimized file on error
+          try {
+            fs.unlinkSync(mermaidOptimizedPath);
+          } catch (e) {}
           continue;
         }
       }
@@ -536,15 +610,14 @@ ${rtf}
   private async createMermaidOptimizedHtml(originalHtmlPath: string, optimizedHtmlPath: string): Promise<void> {
     const originalHtml = fs.readFileSync(originalHtmlPath, 'utf8');
     
-    // Create a completely new HTML with Hugo's proven Mermaid approach
-    // Extract the content between body tags
+    // Extract body content and title from original HTML
     const bodyMatch = originalHtml.match(/<body[^>]*>([\s\S]*)<\/body>/);
     const bodyContent = bodyMatch ? bodyMatch[1] : originalHtml;
     
-    // Extract title from original
     const titleMatch = originalHtml.match(/<title>(.*?)<\/title>/);
     const title = titleMatch ? titleMatch[1] : 'Document';
     
+    // Create optimized HTML using the proven working approach
     const optimizedHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -552,6 +625,10 @@ ${rtf}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
     
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <!-- KaTeX JS -->
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
     <!-- Mermaid -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
     <!-- Font imports -->
@@ -613,6 +690,13 @@ ${rtf}
             page-break-after: avoid;
         }
         
+        h4, h5, h6 {
+            color: #718096;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            page-break-after: avoid;
+        }
+        
         p {
             margin-bottom: 15px;
             text-align: justify;
@@ -637,6 +721,53 @@ ${rtf}
             border-radius: 3px;
             font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
             font-size: 9pt;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        blockquote {
+            border-left: 4px solid #3182ce;
+            margin: 15px 0;
+            padding: 10px 20px;
+            background-color: #edf2f7;
+            font-style: italic;
+            page-break-inside: avoid;
+        }
+        
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10pt;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            border: 1px solid #cbd5e0;
+            padding: 8px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        
+        th {
+            background-color: #3182ce;
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f7fafc;
         }
         
         /* Mermaid diagram styling */
@@ -709,60 +840,124 @@ ${rtf}
     </style>
 </head>
 <body>
-    ${bodyContent}
+    <div class="container">
+        ${bodyContent}
+    </div>
     
     <script>
-        // Enhanced Mermaid rendering for PDF generation
-        window.addEventListener('load', function() {
-            console.log('Page loaded, initializing Mermaid...');
-            setTimeout(initializeMermaid, 2000);
-        });
-        
-        function initializeMermaid() {
-            if (typeof mermaid === 'undefined') {
-                console.log('Mermaid not loaded, retrying...');
-                setTimeout(initializeMermaid, 1000);
-                return;
-            }
+        // Initialize KaTeX and Mermaid for PDF generation
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, starting KaTeX and Mermaid rendering...');
             
-            // Configure Mermaid for PDF rendering
+            // Render KaTeX math first
+            document.querySelectorAll('.math-inline').forEach(function(element) {
+                const mathText = decodeURIComponent(element.getAttribute('data-math') || element.textContent);
+                try {
+                    katex.render(mathText, element, {displayMode: false});
+                    console.log('Rendered inline math:', mathText.substring(0, 20) + '...');
+                } catch (error) {
+                    console.error('KaTeX inline error:', error);
+                }
+            });
+            
+            document.querySelectorAll('.math-display').forEach(function(element) {
+                const mathText = decodeURIComponent(element.getAttribute('data-math') || element.textContent);
+                try {
+                    katex.render(mathText, element, {displayMode: true});
+                    console.log('Rendered display math:', mathText.substring(0, 20) + '...');
+                } catch (error) {
+                    console.error('KaTeX display error:', error);
+                }
+            });
+            
+            // Configure Mermaid with the exact settings that work
             mermaid.initialize({
                 startOnLoad: false,
                 theme: 'default',
-                flowchart: { 
-                  useMaxWidth: true, 
-                  htmlLabels: true,
-                  nodeSpacing: 30,
-                  rankSpacing: 40
+                themeVariables: {
+                    primaryColor: '#3182ce',
+                    primaryTextColor: '#1a202c',
+                    primaryBorderColor: '#2c5282',
+                    lineColor: '#4a5568',
+                    secondaryColor: '#e2e8f0',
+                    tertiaryColor: '#f7fafc'
                 },
+                fontFamily: 'Inter, sans-serif',
                 fontSize: 12,
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    nodeSpacing: 30,
+                    rankSpacing: 40
+                },
+                sequence: {
+                    useMaxWidth: true,
+                    width: 150
+                },
+                gantt: {
+                    useMaxWidth: true
+                },
                 securityLevel: 'loose'
             });
             
-            const diagrams = document.querySelectorAll('.mermaid-diagram .mermaid-code');
-            console.log('Found ' + diagrams.length + ' diagrams to render');
+            const diagrams = document.querySelectorAll('.mermaid-diagram');
+            console.log('Found', diagrams.length, 'Mermaid diagrams');
             
             if (diagrams.length === 0) {
-              return;
+                document.body.classList.add('mermaid-ready');
+                console.log('No Mermaid diagrams found, marking as ready');
+                return;
             }
             
-            let completed = 0;
-            diagrams.forEach(function(codeEl, index) {
-              const renderDiv = codeEl.parentNode.querySelector('.mermaid-render');
-              const code = codeEl.textContent;
-              
-              try {
-                mermaid.render('diagram-' + index, code, function(svgCode) {
-                  renderDiv.innerHTML = svgCode;
-                  completed++;
-                  console.log('Rendered diagram ' + (index + 1) + '/' + diagrams.length);
-                });
-              } catch (error) {
-                console.error('Mermaid rendering error:', error);
-                completed++;
-              }
+            let renderedCount = 0;
+            
+            diagrams.forEach((diagram, index) => {
+                const codeElement = diagram.querySelector('.mermaid-code');
+                const renderDiv = diagram.querySelector('.mermaid-render');
+                
+                if (!codeElement || !renderDiv) {
+                    console.log('Missing elements for diagram', index);
+                    return;
+                }
+                
+                const code = codeElement.textContent.trim();
+                const renderId = 'mermaid-svg-' + (index + 1);
+                
+                console.log('Rendering diagram', index + 1, 'with code:', code.substring(0, 50) + '...');
+                
+                try {
+                    mermaid.render(renderId, code).then(result => {
+                        console.log('Successfully rendered diagram', index + 1);
+                        renderDiv.innerHTML = result.svg;
+                        diagram.classList.add('rendered');
+                        renderedCount++;
+                        
+                        if (renderedCount === diagrams.length) {
+                            document.body.classList.add('mermaid-ready');
+                            console.log('All Mermaid diagrams rendered');
+                        }
+                    }).catch(error => {
+                        console.error('Mermaid rendering error for diagram', index + 1, ':', error);
+                        renderDiv.innerHTML = '<p style="color: #c53030; font-style: italic;">Diagram rendering failed: ' + error.message + '</p>';
+                        codeElement.style.display = 'block';
+                        renderedCount++;
+                        
+                        if (renderedCount === diagrams.length) {
+                            document.body.classList.add('mermaid-ready');
+                        }
+                    });
+                } catch (error) {
+                    console.error('Mermaid setup error for diagram', index + 1, ':', error);
+                    renderDiv.innerHTML = '<p style="color: #c53030; font-style: italic;">Diagram setup failed: ' + error.message + '</p>';
+                    codeElement.style.display = 'block';
+                    renderedCount++;
+                    
+                    if (renderedCount === diagrams.length) {
+                        document.body.classList.add('mermaid-ready');
+                    }
+                }
             });
-        }
+        });
     </script>
 </body>
 </html>`;
@@ -816,6 +1011,14 @@ ${rtf}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
+    
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <!-- KaTeX JS -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <!-- KaTeX auto-render extension -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         ${lang === 'gu' ? `@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@300;400;500;600;700&display=swap');` : ''}
@@ -969,18 +1172,29 @@ ${rtf}
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
-        .math-block {
+        /* Math styling */
+        .math-display {
             text-align: center;
             margin: 1rem 0;
             padding: 1rem;
-            background: #f7fafc;
+            background: #f0f8ff;
             border-radius: 6px;
+            border-left: 4px solid #4299e1;
         }
         
         .math-inline {
-            background: #edf2f7;
+            background: #f0f8ff;
             padding: 0.1rem 0.3rem;
             border-radius: 3px;
+        }
+        
+        .katex {
+            font-size: 1.1em;
+        }
+        
+        .katex-display {
+            margin: 15px 0;
+            text-align: center;
         }
         
         /* Mermaid diagram styling */
@@ -1091,21 +1305,58 @@ ${rtf}
     </div>
     
     <script>
-        // Initialize Mermaid
-        mermaid.initialize({ 
-            startOnLoad: false,
-            theme: 'default',
-            flowchart: {
-                useMaxWidth: true,
-                htmlLabels: true,
-                nodeSpacing: 30,
-                rankSpacing: 40
-            },
-            fontSize: 12,
-            securityLevel: 'loose'
-        });
-        
+        // Initialize KaTeX rendering
         document.addEventListener('DOMContentLoaded', function() {
+            // Render inline math
+            document.querySelectorAll('.math-inline').forEach(function(element) {
+                const mathText = decodeURIComponent(element.getAttribute('data-math') || element.textContent);
+                try {
+                    katex.render(mathText, element, {displayMode: false});
+                } catch (error) {
+                    console.error('KaTeX inline error:', error);
+                }
+            });
+            
+            // Render display math
+            document.querySelectorAll('.math-display').forEach(function(element) {
+                const mathText = decodeURIComponent(element.getAttribute('data-math') || element.textContent);
+                try {
+                    katex.render(mathText, element, {displayMode: true});
+                } catch (error) {
+                    console.error('KaTeX display error:', error);
+                }
+            });
+            
+            // Initialize Mermaid
+            mermaid.initialize({ 
+                startOnLoad: false,
+                theme: 'default',
+                themeVariables: {
+                    primaryColor: '#3182ce',
+                    primaryTextColor: '#1a202c',
+                    primaryBorderColor: '#2c5282',
+                    lineColor: '#4a5568',
+                    secondaryColor: '#e2e8f0',
+                    tertiaryColor: '#f7fafc'
+                },
+                fontFamily: 'Inter, sans-serif',
+                fontSize: 12,
+                flowchart: {
+                    useMaxWidth: true,
+                    htmlLabels: true,
+                    nodeSpacing: 30,
+                    rankSpacing: 40
+                },
+                sequence: {
+                    useMaxWidth: true,
+                    width: 150
+                },
+                gantt: {
+                    useMaxWidth: true
+                },
+                securityLevel: 'loose'
+            });
+            
             const diagrams = document.querySelectorAll('.mermaid-diagram .mermaid-code');
             
             let renderedCount = 0;
@@ -1124,7 +1375,7 @@ ${rtf}
                         }
                     }).catch(error => {
                         console.error('Mermaid rendering error:', error);
-                        renderDiv.innerHTML = '<p style="color: #c53030;">Diagram rendering failed</p>';
+                        renderDiv.innerHTML = '<p style="color: #c53030;">Diagram rendering failed: ' + error.message + '</p>';
                         codeElement.style.display = 'block';
                         renderedCount++;
                         
@@ -1134,7 +1385,7 @@ ${rtf}
                     });
                 } catch (error) {
                     console.error('Mermaid setup error:', error);
-                    renderDiv.innerHTML = '<p style="color: #c53030;">Diagram setup failed</p>';
+                    renderDiv.innerHTML = '<p style="color: #c53030;">Diagram setup failed: ' + error.message + '</p>';
                     codeElement.style.display = 'block';
                     renderedCount++;
                     
@@ -1153,52 +1404,47 @@ ${rtf}
 </html>`;
   }
 
-  private async convertToPdfLatex(content: string, frontmatter: PostData, options: ConversionOptions = {}): Promise<Buffer> {
+  private async convertToPdfLatex(content: string, frontmatter: PostData, options: ConversionOptions): Promise<Buffer> {
+    const latexContent = await this.convertToLatex(content, frontmatter, options);
+    
+    const tempTexPath = path.join(this.tempDir, `temp-${Date.now()}.tex`);
+    const tempPdfPath = path.join(this.tempDir, `temp-${Date.now()}.pdf`);
+    
     try {
-      // First convert to LaTeX
-      const latexContent = await this.convertToLatex(content, frontmatter, options);
+      // Write LaTeX to temp file
+      fs.writeFileSync(tempTexPath, latexContent);
       
-      // Write LaTeX to temporary file
-      const tempFile = path.join(this.tempDir, `temp-${Date.now()}.tex`);
-      fs.writeFileSync(tempFile, latexContent);
+      // Convert LaTeX to PDF using pdflatex
+      const texDir = path.dirname(tempTexPath);
+      const texFile = path.basename(tempTexPath);
+      const pdfFile = texFile.replace('.tex', '.pdf');
       
-      // Compile LaTeX to PDF using XeLaTeX
-      const outputDir = path.dirname(tempFile);
-      const baseName = path.basename(tempFile, '.tex');
+      await execAsync(`cd "${texDir}" && pdflatex -interaction=nonstopmode "${texFile}"`);
       
-      try {
-        // Use XeLaTeX for better Unicode support
-        await execAsync(`xelatex -output-directory="${outputDir}" -interaction=nonstopmode "${tempFile}"`);
+      const finalPdfPath = path.join(texDir, pdfFile);
+      
+      if (fs.existsSync(finalPdfPath)) {
+        const buffer = fs.readFileSync(finalPdfPath);
         
-        const pdfFile = path.join(outputDir, `${baseName}.pdf`);
+        // Cleanup temp files
+        fs.unlinkSync(tempTexPath);
+        fs.unlinkSync(finalPdfPath);
         
-        if (!fs.existsSync(pdfFile)) {
-          throw new Error('PDF compilation failed - output file not created');
-        }
-        
-        const pdfBuffer = fs.readFileSync(pdfFile);
-        
-        // Cleanup temporary files
-        const extensions = ['.tex', '.pdf', '.aux', '.log', '.out'];
-        extensions.forEach(ext => {
-          const file = path.join(outputDir, `${baseName}${ext}`);
-          if (fs.existsSync(file)) {
-            fs.unlinkSync(file);
-          }
+        // Clean up auxiliary LaTeX files
+        const auxFiles = ['.aux', '.log', '.out'].map(ext => tempTexPath.replace('.tex', ext));
+        auxFiles.forEach(file => {
+          if (fs.existsSync(file)) fs.unlinkSync(file);
         });
         
-        return pdfBuffer;
-        
-      } catch (execError) {
-        // Cleanup on error
-        if (fs.existsSync(tempFile)) {
-          fs.unlinkSync(tempFile);
-        }
-        throw new Error(`LaTeX compilation failed: ${execError instanceof Error ? execError.message : String(execError)}`);
+        return buffer;
+      } else {
+        throw new Error('PDF generation failed');
       }
-      
     } catch (error) {
-      throw new Error(`PDF via LaTeX conversion failed: ${error instanceof Error ? error.message : String(error)}`);
+      // Cleanup on error
+      if (fs.existsSync(tempTexPath)) fs.unlinkSync(tempTexPath);
+      if (fs.existsSync(tempPdfPath)) fs.unlinkSync(tempPdfPath);
+      throw new Error(`LaTeX to PDF conversion failed: ${error}`);
     }
   }
 
