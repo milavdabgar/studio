@@ -15,7 +15,25 @@ const PostRenderer: React.FC<PostRendererProps> = ({ contentHtml }) => {
   const { theme, resolvedTheme } = useTheme();
 
   useEffect(() => {
-    if (!containerRef.current) return;    // Enhanced code block styling with syntax highlighting
+    if (!containerRef.current) return;
+
+    // Generate IDs for headings to enable TOC functionality
+    const generateHeadingIds = () => {
+      const headings = containerRef.current?.querySelectorAll('h1, h2, h3, h4, h5, h6');
+      headings?.forEach((heading) => {
+        if (!heading.id) {
+          const text = heading.textContent || '';
+          const id = text
+            .toLowerCase()
+            .replace(/[^\w\s-]/g, '') // Remove special characters
+            .replace(/\s+/g, '-') // Replace spaces with hyphens
+            .trim();
+          heading.id = id;
+        }
+      });
+    };
+
+    // Enhanced code block styling with syntax highlighting
     const enhanceCodeBlocks = () => {
       const codeBlocks = containerRef.current?.querySelectorAll('pre code');
       
@@ -101,6 +119,7 @@ const PostRenderer: React.FC<PostRendererProps> = ({ contentHtml }) => {
       });
     };
 
+    generateHeadingIds();
     enhanceCodeBlocks();
     enhanceLinks();
     enhanceTables();

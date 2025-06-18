@@ -272,17 +272,17 @@ export async function getPostData({
 }
 
 // Utility functions
-function calculateReadingTime(text: string): number {
+export function calculateReadingTime(text: string): number {
   const wordsPerMinute = 200;
   const words = text.trim().split(/\s+/).length;
   return Math.ceil(words / wordsPerMinute);
 }
 
-function calculateWordCount(text: string): number {
+export function calculateWordCount(text: string): number {
   return text.trim().split(/\s+/).length;
 }
 
-function extractExcerpt(content: string, maxLength: number = 150): string {
+export function extractExcerpt(content: string, maxLength: number = 150): string {
   // Remove HTML tags for excerpt
   const plainText = content.replace(/<[^>]*>/g, '');
   if (plainText.length <= maxLength) return plainText;

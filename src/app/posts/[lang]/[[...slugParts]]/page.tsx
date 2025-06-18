@@ -12,6 +12,10 @@ import PostRenderer from '@/components/blog/PostRenderer';
 import { BlogLayout } from '@/components/blog/BlogLayout';
 import { PostCard } from '@/components/blog/PostCard';
 import { SubsectionCard } from '@/components/blog/SubsectionCard';
+import { Breadcrumbs } from '@/components/blog/Breadcrumbs';
+import { TableOfContents } from '@/components/blog/TableOfContents';
+import { PostMeta } from '@/components/blog/PostMeta';
+import { calculateReadingTime } from '@/lib/markdown';
 import { notFound } from 'next/navigation';
 // import path from 'path'; // Not strictly needed here anymore
 
@@ -56,6 +60,12 @@ export default async function PostPage({ params }: PostPageProps) {
     const pageTitle = pageParams.lang === 'gu' ? 'બ્લોગ પોસ્ટ્સ' : 'Blog Posts';
     const backText = pageParams.lang === 'gu' ? 'હોમ પર પાછા જાઓ' : 'Back to Home';
     
+    // Breadcrumb for main blog listing - just shows current page
+    const breadcrumbItems = [{
+      label: pageTitle,
+      href: ''
+    }];
+    
     return (
       <BlogLayout currentLang={pageParams.lang}>
         <div className="container mx-auto px-4 py-8">
@@ -64,6 +74,9 @@ export default async function PostPage({ params }: PostPageProps) {
               <ArrowLeft className="mr-2 h-4 w-4" /> {backText}
             </Link>
           </Button>
+          
+          {/* Breadcrumbs */}
+          <Breadcrumbs items={breadcrumbItems} currentLang={pageParams.lang} />
           
           <div className="mb-8">
             <h1 className="text-4xl font-bold text-primary mb-2">{pageTitle}</h1>
@@ -122,6 +135,18 @@ export default async function PostPage({ params }: PostPageProps) {
       // If there's also an index file, show its content at the top
       const sectionContent = postData?.contentHtml;
 
+      // Generate breadcrumb items for subsection view
+      const breadcrumbItems = [];
+      let currentPath = `/posts/${pageParams.lang}`;
+      
+      for (let i = 0; i < pageParams.slugParts.length; i++) {
+        currentPath += `/${pageParams.slugParts[i]}`;
+        breadcrumbItems.push({
+          label: pageParams.slugParts[i],
+          href: i === pageParams.slugParts.length - 1 ? '' : currentPath
+        });
+      }
+
       return (
         <BlogLayout currentLang={pageParams.lang}>
           <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
@@ -133,6 +158,9 @@ export default async function PostPage({ params }: PostPageProps) {
                     <ArrowLeft className="mr-2 h-4 w-4" /> {backText}
                   </Link>
                 </Button>
+                
+                {/* Breadcrumbs */}
+                <Breadcrumbs items={breadcrumbItems} currentLang={pageParams.lang} />
                 
                 <div className="mb-8 text-center">
                   <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
@@ -208,6 +236,21 @@ export default async function PostPage({ params }: PostPageProps) {
 
   // Check if this is a directory listing (Hugo-style _index.md behavior)
   if (showHybridView) {
+    // Generate breadcrumb items for directory view
+    const breadcrumbItems = [];
+    let currentPath = `/posts/${langForLinks}`;
+    
+    for (let i = 0; i < slugPartsForLinks.length; i++) {
+      currentPath += `/${slugPartsForLinks[i]}`;
+      breadcrumbItems.push({
+        label: slugPartsForLinks[i],
+        href: i === slugPartsForLinks.length - 1 ? '' : currentPath
+      });
+    }
+
+    // Calculate reading time for directory content if it exists
+    const readingTime = postData.contentHtml ? calculateReadingTime(postData.contentHtml.replace(/<[^>]*>/g, '')) : 0;
+
     return (
       <BlogLayout currentLang={langForLinks}>
         <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
@@ -218,29 +261,30 @@ export default async function PostPage({ params }: PostPageProps) {
               </Link>
             </Button>
             
+            {/* Breadcrumbs */}
+            <Breadcrumbs items={breadcrumbItems} currentLang={langForLinks} />
+            
             {/* Directory header with _index.md content */}
             <div className="mb-12 text-center">
               <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
                 {postData.title}
               </h1>
-              {postData.date && (
-                <p className="text-sm text-muted-foreground mb-6">
-                  {(() => {
-                    try {
-                      const dateValue = postData.date as any;
-                      if (dateValue instanceof Date) {
-                        return format(dateValue, 'LLLL d, yyyy');
-                      }
-                      if (typeof dateValue === 'string' && isValid(parseISO(dateValue))) {
-                      return format(parseISO(dateValue), 'LLLL d, yyyy');
-                    }
-                    return 'Date not available';
-                  } catch (e) {
-                    return 'Date not available';
-                  }
-                })()}
-                {postData.author && ` by ${postData.author}`}
-              </p>              )}
+              
+              {/* Directory Post Meta Information */}
+              {(postData.date || postData.author || readingTime > 0) && (
+                <div className="mb-6">
+                  <PostMeta
+                    date={postData.date}
+                    author={postData.author}
+                    readingTime={readingTime}
+                    tags={postData.tags}
+                    categories={postData.categories}
+                    lang={langForLinks}
+                    className="justify-center"
+                  />
+                </div>
+              )}
+              
               {postData.contentHtml && postData.contentHtml.trim() && (
                 <Card className="shadow-lg border-0 bg-gradient-to-r from-card to-card/80 mb-8">
                   <CardContent className="p-8">
@@ -290,51 +334,88 @@ export default async function PostPage({ params }: PostPageProps) {
   }
 
   // Single post view (non-directory)
+  // Generate breadcrumb items
+  const breadcrumbItems = [];
+  let currentPath = `/posts/${langForLinks}`;
+  
+  for (let i = 0; i < slugPartsForLinks.length - 1; i++) {
+    currentPath += `/${slugPartsForLinks[i]}`;
+    breadcrumbItems.push({
+      label: slugPartsForLinks[i],
+      href: currentPath
+    });
+  }
+  
+  // Add current post (will be styled differently as last item)
+  breadcrumbItems.push({
+    label: postData.title,
+    href: '' // Current page, no link needed
+  });
+
+  // Calculate reading time from content
+  const readingTime = postData.contentHtml ? calculateReadingTime(postData.contentHtml.replace(/<[^>]*>/g, '')) : 0;
+
   return (
     <BlogLayout currentLang={langForLinks}>
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
-        <div className="container mx-auto px-4 py-8 max-w-4xl">
-          <Button variant="outline" className="mb-8 inline-block shadow-sm hover:shadow-md transition-shadow" asChild>
+        <div className="container mx-auto px-4 py-8 max-w-6xl">
+          <Button variant="outline" className="mb-6 inline-block shadow-sm hover:shadow-md transition-shadow" asChild>
             <Link href={backLinkHref}>
               <ArrowLeft className="mr-2 h-4 w-4" /> {backLinkText}
             </Link>
           </Button>
           
-          <article>
-            <Card className="shadow-xl border-0 bg-gradient-to-br from-card to-card/90 overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5 border-b border-border/50">
-                <div className="text-center space-y-4">
-                  <CardTitle className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-tight">
-                    {postData.title}
-                  </CardTitle>
-                  <CardDescription className="text-base text-muted-foreground flex items-center justify-center gap-2">
-                    <span>
-                      {(() => {
-                        try {
-                          const dateValue = postData.date as any;
-                          if (dateValue instanceof Date) {
-                            return format(dateValue, 'LLLL d, yyyy');
-                          }
-                          if (typeof dateValue === 'string' && isValid(parseISO(dateValue))) {
-                            return format(parseISO(dateValue), 'LLLL d, yyyy');
-                          }
-                          return 'Date not available';
-                        } catch (e) {
-                          return 'Date not available';
-                        }
-                      })()}
-                    </span>
-                    {postData.author && <span className="text-sm">by {postData.author}</span>}
-                  </CardDescription>
+          {/* Breadcrumbs */}
+          <Breadcrumbs items={breadcrumbItems} currentLang={langForLinks} />
+          
+          <div className="flex gap-8">
+            {/* Main content */}
+            <div className="flex-1">
+              <article>
+                <Card className="shadow-xl border-0 bg-gradient-to-br from-card to-card/90 overflow-hidden">
+                  <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5 border-b border-border/50">
+                    <div className="space-y-4">
+                      <CardTitle className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-tight">
+                        {postData.title}
+                      </CardTitle>
+                      
+                      {/* Post Meta Information */}
+                      <PostMeta
+                        date={postData.date}
+                        author={postData.author}
+                        readingTime={readingTime}
+                        tags={postData.tags}
+                        categories={postData.categories}
+                        lang={langForLinks}
+                        className="justify-center md:justify-start"
+                      />
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-8">
+                    <div className="prose prose-lg dark:prose-invert max-w-none">
+                      <PostRenderer contentHtml={postData.contentHtml} />
+                    </div>
+                  </CardContent>
+                </Card>
+              </article>
+            </div>
+            
+            {/* Table of Contents Sidebar */}
+            {postData.contentHtml && (
+              <div className="hidden lg:block w-64 shrink-0">
+                <div className="sticky top-8">
+                  <TableOfContents content={postData.contentHtml} />
                 </div>
-              </CardHeader>
-              <CardContent className="p-8">
-                <div className="prose prose-lg dark:prose-invert max-w-none">
-                  <PostRenderer contentHtml={postData.contentHtml} />
-                </div>
-              </CardContent>
-            </Card>
-          </article>
+              </div>
+            )}
+          </div>
+          
+          {/* Mobile TOC Toggle (visible on smaller screens) */}
+          {postData.contentHtml && (
+            <div className="lg:hidden mt-6">
+              <TableOfContents content={postData.contentHtml} />
+            </div>
+          )}
         </div>
       </div>
     </BlogLayout>
