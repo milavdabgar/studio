@@ -1,6 +1,7 @@
 ---
 title: "Arch Linux Minimal Installation with KDE Plasma"
 date: 2023-03-05
+author: "Milav Dhaagar"
 description: "A comprehensive guide for installing Arch Linux with KDE Plasma desktop environment"
 summary: "Learn how to install and configure Arch Linux with a complete KDE Plasma desktop environment from scratch."
 tags: ["linux", "arch", "kde", "installation", "tutorial"]
