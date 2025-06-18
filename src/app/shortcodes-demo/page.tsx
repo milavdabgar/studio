@@ -37,7 +37,7 @@ export default function ShortcodesDemo() {
               </CardHeader>
               <CardContent>
                 <Figure
-                  src="https://source.unsplash.com/800x600/technology"
+                  src="https://picsum.photos/800/600?random=1"
                   alt="Technology workspace"
                   caption="Modern development environment"
                   width={800}
@@ -56,9 +56,9 @@ export default function ShortcodesDemo() {
               <CardContent>
                 <ImageGallery
                   images={[
-                    "https://source.unsplash.com/600x400/programming",
-                    "https://source.unsplash.com/600x400/code",
-                    "https://source.unsplash.com/600x400/software"
+                    "https://picsum.photos/600/400?random=2",
+                    "https://picsum.photos/600/400?random=3",
+                    "https://picsum.photos/600/400?random=4"
                   ]}
                   captions={["Programming", "Code", "Software"]}
                   height={400}
