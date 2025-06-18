@@ -1,8 +1,9 @@
 // src/app/tags/[lang]/[tag]/page.tsx
 
-import { getPostsByTag, getAllTags } from '@/lib/markdown';
+import { getPostsByTag, getPaginatedPostsByTag, getAllTags } from '@/lib/markdown';
 import { BlogLayout } from '@/components/blog/BlogLayout';
 import { PostCard } from '@/components/blog/PostCard';
+import { Pagination, PaginationInfo } from '@/components/ui/pagination';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, Tag } from 'lucide-react';
@@ -12,6 +13,7 @@ import { languages } from '@/lib/config';
 
 interface TagPageProps {
   params: Promise<{ lang: string; tag: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export async function generateStaticParams() {
@@ -30,18 +32,22 @@ export async function generateStaticParams() {
   return staticParams;
 }
 
-export default async function TagPage({ params }: TagPageProps) {
+export default async function TagPage({ params, searchParams }: TagPageProps) {
   const { lang, tag } = await params;
+  const searchParamsData = await searchParams;
   const decodedTag = decodeURIComponent(tag);
-  const posts = await getPostsByTag(decodedTag, lang);
   
-  if (posts.length === 0) {
+  // Handle pagination
+  const currentPage = parseInt((searchParamsData.page as string) || '1', 10);
+  const paginatedData = await getPaginatedPostsByTag(decodedTag, lang, currentPage, 10);
+  const { posts, pagination } = paginatedData;
+  
+  if (pagination.totalItems === 0) {
     notFound();
   }
   
   const pageTitle = `${lang === 'gu' ? 'ટેગ' : 'Tag'}: ${decodedTag}`;
   const backText = lang === 'gu' ? 'બધા ટેગ્સ પર પાછા જાઓ' : 'Back to all tags';
-  const noPostsText = lang === 'gu' ? 'આ ટેગ માટે કોઈ પોસ્ટ્સ મળ્યા નથી' : 'No posts found for this tag';
 
   return (
     <BlogLayout currentLang={lang}>
@@ -58,23 +64,34 @@ export default async function TagPage({ params }: TagPageProps) {
             {decodedTag}
           </h1>
           <p className="text-muted-foreground">
-            {posts.length} {posts.length === 1 ? 'post' : 'posts'} {lang === 'gu' ? 'મળ્યા' : 'found'}
+            {pagination.totalItems} {pagination.totalItems === 1 ? 'post' : 'posts'} {lang === 'gu' ? 'મળ્યા' : 'found'}
           </p>
         </div>
 
-        {posts.length === 0 ? (
-          <Card>
-            <CardContent className="py-8 text-center">
-              <p className="text-muted-foreground">{noPostsText}</p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid gap-6">
-            {posts.map((post) => (
-              <PostCard key={`${post.lang}-${post.id}`} post={post} />
-            ))}
-          </div>
-        )}
+        {/* Pagination Info */}
+        <div className="mb-6 flex justify-between items-center">
+          <PaginationInfo
+            currentPage={pagination.currentPage}
+            totalPages={pagination.totalPages}
+            itemsPerPage={pagination.itemsPerPage}
+            totalItems={pagination.totalItems}
+          />
+        </div>
+
+        {/* Posts Grid */}
+        <div className="grid gap-6 mb-8">
+          {posts.map((post) => (
+            <PostCard key={`${post.lang}-${post.id}`} post={post} />
+          ))}
+        </div>
+
+        {/* Pagination Controls */}
+        <Pagination
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          baseUrl={`/tags/${lang}/${encodeURIComponent(decodedTag)}`}
+          className="mt-8"
+        />
       </div>
     </BlogLayout>
   );

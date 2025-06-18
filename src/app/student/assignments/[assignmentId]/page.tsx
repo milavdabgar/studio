@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { FileText, UploadCloud, Loader2, ArrowLeft, CheckCircle, AlertTriangle, Info, Paperclip } from "lucide-react";
+import { FileText, UploadCloud, Loader2, ArrowLeft, CheckCircle, AlertTriangle, Info, Paperclip, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Assessment, Student, Course, StudentAssessmentScore } from '@/types/entities';
 import { assessmentService } from '@/lib/api/assessments';

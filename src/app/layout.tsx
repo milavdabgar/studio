@@ -391,6 +391,8 @@ export default function RootLayout({
             <meta name="apple-mobile-web-app-capable" content="yes" />
             <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
             <meta name="apple-mobile-web-app-title" content="PolyManager" />
+            <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (English)" href="/feed.xml?lang=en" />
+            <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (Gujarati)" href="/feed.xml?lang=gu" />
         </head>
         <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           <ThemeProvider>
@@ -417,6 +419,8 @@ export default function RootLayout({
             <meta name="apple-mobile-web-app-capable" content="yes" />
             <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
             <meta name="apple-mobile-web-app-title" content="PolyManager" />
+            <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (English)" href="/feed.xml?lang=en" />
+            <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (Gujarati)" href="/feed.xml?lang=gu" />
         </head>
         <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
           <ThemeProvider>
@@ -441,6 +445,8 @@ export default function RootLayout({
            <meta name="apple-mobile-web-app-capable" content="yes" />
            <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
            <meta name="apple-mobile-web-app-title" content="PolyManager" />
+           <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (English)" href="/feed.xml?lang=en" />
+           <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (Gujarati)" href="/feed.xml?lang=gu" />
        </head>
       <body className={`${GeistSans.variable} antialiased`} suppressHydrationWarning={true}>
         <ThemeProvider>

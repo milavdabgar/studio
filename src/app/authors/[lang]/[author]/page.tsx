@@ -1,8 +1,9 @@
 // src/app/authors/[lang]/[author]/page.tsx
 
-import { getPostsByAuthor, getAllAuthors, getPostData } from '@/lib/markdown';
+import { getPostsByAuthor, getPaginatedPostsByAuthor, getAllAuthors, getPostData } from '@/lib/markdown';
 import { BlogLayout } from '@/components/blog/BlogLayout';
 import { PostCard } from '@/components/blog/PostCard';
+import { Pagination, PaginationInfo } from '@/components/ui/pagination';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, User } from 'lucide-react';
@@ -15,6 +16,7 @@ import matter from 'gray-matter';
 
 interface AuthorPageProps {
   params: Promise<{ lang: string; author: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export async function generateStaticParams() {
@@ -64,12 +66,17 @@ async function getAuthorInfo(authorName: string, lang: string) {
   };
 }
 
-export default async function AuthorPage({ params }: AuthorPageProps) {
+export default async function AuthorPage({ params, searchParams }: AuthorPageProps) {
   const { lang, author } = await params;
+  const searchParamsData = await searchParams;
   const decodedAuthor = decodeURIComponent(author);
-  const posts = await getPostsByAuthor(decodedAuthor, lang);
   
-  if (posts.length === 0) {
+  // Handle pagination
+  const currentPage = parseInt((searchParamsData.page as string) || '1', 10);
+  const paginatedData = await getPaginatedPostsByAuthor(decodedAuthor, lang, currentPage, 10);
+  const { posts, pagination } = paginatedData;
+  
+  if (pagination.totalItems === 0) {
     notFound();
   }
 
@@ -103,7 +110,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
           )}
           
           <p className="text-sm text-muted-foreground">
-            {posts.length} {postsCountText}
+            {pagination.totalItems} {postsCountText}
           </p>
         </div>
 
@@ -119,22 +126,30 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
           </Card>
         )}
 
-        {posts.length === 0 ? (
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <User className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <p className="text-lg text-muted-foreground">{noPostsText}</p>
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {posts.map((post) => (
-              <PostCard key={`${post.lang}-${post.id}`} post={post} />
-            ))}
-          </div>
-        )}
+        {/* Pagination Info */}
+        <div className="mb-6 flex justify-between items-center">
+          <PaginationInfo
+            currentPage={pagination.currentPage}
+            totalPages={pagination.totalPages}
+            itemsPerPage={pagination.itemsPerPage}
+            totalItems={pagination.totalItems}
+          />
+        </div>
+
+        {/* Posts Grid */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
+          {posts.map((post) => (
+            <PostCard key={`${post.lang}-${post.id}`} post={post} />
+          ))}
+        </div>
+
+        {/* Pagination Controls */}
+        <Pagination
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          baseUrl={`/authors/${lang}/${encodeURIComponent(decodedAuthor)}`}
+          className="mt-8"
+        />
       </div>
     </BlogLayout>
   );

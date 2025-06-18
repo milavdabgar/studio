@@ -163,7 +163,7 @@ const baseDashboardData: Record<UserRoleCode, DashboardCardItem[]> = {
   institute_admin: [
     ...adminQuickLinks.filter(item => ![
       '/admin/users', '/admin/roles', '/admin/institutes' 
-    ].includes(item.href) && item.label !== 'Dashboard').map(item => ({...item, title: item.label, value: 'Manage', id: `iadmin-${item.id}`})), 
+    ].includes(item.href) && item.label !== 'Dashboard').map(item => ({...item, title: item.label, value: 'Manage', color: "text-gray-500", id: `iadmin-${item.id}`})), 
     { id: "iadmin-institute-faculty", title: "Institute Faculty", value: "Manage", icon: UserCog, color: "text-indigo-500", href: "/admin/faculty"},
     { id: "iadmin-institute-students", title: "Institute Students", value: "Manage", icon: BookUser, color: "text-green-500", href: "/admin/students"},
     { id: "iadmin-institute-depts", title: "Departments", value: "Manage", icon: Building2, color: "text-orange-500", href: "/admin/departments" },

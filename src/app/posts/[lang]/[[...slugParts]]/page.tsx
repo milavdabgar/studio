@@ -1,6 +1,6 @@
 // src/app/posts/[lang]/[[...slugParts]]/page.tsx
 
-import { getPostData, getSortedPostsData, getSubPostsForDirectory, getDirectSubsections, getRelatedPosts, getAdjacentPosts, type PostData, type PostPreview } from '@/lib/markdown'; 
+import { getPostData, getSortedPostsData, getPaginatedPosts, getSubPostsForDirectory, getDirectSubsections, getRelatedPosts, getAdjacentPosts, type PostData, type PostPreview } from '@/lib/markdown'; 
 import { format, parseISO, isValid } from 'date-fns';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -18,6 +18,9 @@ import { PostMeta } from '@/components/blog/PostMeta';
 import { RelatedPosts } from '@/components/blog/RelatedPosts';
 import { PostNavigation } from '@/components/blog/PostNavigation';
 import { PostFooter } from '@/components/blog/PostFooter';
+import { Pagination, PaginationInfo } from '@/components/ui/pagination';
+import { StructuredData } from '@/components/seo/StructuredData';
+import { generateSEOMetadata, generateArticleJsonLD, generateBreadcrumbJsonLD } from '@/components/seo/SEOMetaTags';
 import { calculateReadingTime } from '@/lib/markdown';
 import { notFound } from 'next/navigation';
 // import path from 'path'; // Not strictly needed here anymore
@@ -28,7 +31,8 @@ interface PostPageParams {
 }
 
 interface PostPageProps {
-  params: PostPageParams;
+  params: Promise<PostPageParams>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export async function generateStaticParams() {
@@ -51,14 +55,74 @@ export async function generateStaticParams() {
   return paramsList;
 }
 
+// Generate metadata for SEO
+export async function generateMetadata({ params }: { params: Promise<PostPageParams> }) {
+  const pageParams = await params;
+  const slugPartsArray = Array.isArray(pageParams.slugParts) ? pageParams.slugParts : [];
+  
+  try {
+    const postData = await getPostData({
+      lang: pageParams.lang,
+      slugParts: slugPartsArray,
+    });
 
-export default async function PostPage({ params }: PostPageProps) {
+    if (!postData) {
+      return generateSEOMetadata({
+        title: '404 - Page Not Found',
+        description: 'The requested page could not be found.',
+        lang: pageParams.lang,
+        path: `/posts/${pageParams.lang}/${slugPartsArray.join('/')}`,
+      });
+    }
+
+    const isDirectory = slugPartsArray.length === 0 || !postData.contentHtml;
+    const path = `/posts/${pageParams.lang}/${slugPartsArray.join('/')}`;
+    
+    if (isDirectory) {
+      const title = pageParams.lang === 'gu' ? 'બ્લોગ પોસ્ટ્સ' : 'Blog Posts';
+      const description = pageParams.lang === 'gu' 
+        ? 'ઇલેક્ટ્રોનિક્સ, ડેટા સાયન્સ અને ટેકનોલોજી વિશેના બ્લોગ પોસ્ટ્સ'
+        : 'Blog posts about Electronics, Data Science, and Technology';
+
+      return generateSEOMetadata({
+        title,
+        description,
+        lang: pageParams.lang,
+        path,
+      });
+    } else {
+      return generateSEOMetadata({
+        title: postData.title,
+        description: postData.excerpt || `Read ${postData.title} - ${postData.title}`,
+        lang: pageParams.lang,
+        path,
+        post: postData,
+        type: 'article',
+      });
+    }
+  } catch (error) {
+    console.error('Error generating metadata:', error);
+    return generateSEOMetadata({
+      title: 'Blog',
+      description: 'Blog posts and articles',
+      lang: pageParams.lang,
+      path: `/posts/${pageParams.lang}`,
+    });
+  }
+}
+
+export default async function PostPage({ params, searchParams }: PostPageProps) {
   // Await params to comply with Next.js 15 requirements
   const pageParams = await params;
+  const searchParamsData = await searchParams;
   
   // If no slugParts provided, show posts listing
   if (!pageParams.slugParts || pageParams.slugParts.length === 0) {
-    const posts = await getSortedPostsData(pageParams.lang);
+    // Handle pagination from search params
+    const currentPage = parseInt((searchParamsData.page as string) || '1', 10);
+    
+    const paginatedData = await getPaginatedPosts(pageParams.lang, currentPage, 10);
+    const { posts, pagination } = paginatedData;
     
     const pageTitle = pageParams.lang === 'gu' ? 'બ્લોગ પોસ્ટ્સ' : 'Blog Posts';
     const backText = pageParams.lang === 'gu' ? 'હોમ પર પાછા જાઓ' : 'Back to Home';
@@ -91,7 +155,7 @@ export default async function PostPage({ params }: PostPageProps) {
             </p>
           </div>
 
-          {posts.length === 0 ? (
+          {pagination.totalItems === 0 ? (
             <Card>
               <CardContent className="py-8 text-center">
                 <p className="text-muted-foreground">
@@ -103,11 +167,32 @@ export default async function PostPage({ params }: PostPageProps) {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-6">
-              {posts.map((post) => (
-                <PostCard key={`${post.lang}-${post.id}`} post={post} />
-              ))}
-            </div>
+            <>
+              {/* Pagination Info */}
+              <div className="mb-6 flex justify-between items-center">
+                <PaginationInfo
+                  currentPage={pagination.currentPage}
+                  totalPages={pagination.totalPages}
+                  itemsPerPage={pagination.itemsPerPage}
+                  totalItems={pagination.totalItems}
+                />
+              </div>
+
+              {/* Posts Grid */}
+              <div className="grid gap-6 mb-8">
+                {posts.map((post) => (
+                  <PostCard key={`${post.lang}-${post.id}`} post={post} />
+                ))}
+              </div>
+
+              {/* Pagination Controls */}
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalPages={pagination.totalPages}
+                baseUrl={`/posts/${pageParams.lang}`}
+                className="mt-8"
+              />
+            </>
           )}
         </div>
       </BlogLayout>
@@ -362,8 +447,17 @@ export default async function PostPage({ params }: PostPageProps) {
   const relatedPosts = await getRelatedPosts(postData, langForLinks);
   const { previousPost, nextPost } = await getAdjacentPosts(postData, langForLinks);
 
+  // Generate structured data
+  const currentUrl = `https://polymanager.app/posts/${langForLinks}/${slugPartsForLinks.join('/')}`;
+  const articleJsonLD = generateArticleJsonLD(postData, langForLinks, currentUrl);
+  const breadcrumbJsonLD = generateBreadcrumbJsonLD(breadcrumbItems, 'https://polymanager.app');
+
   return (
     <BlogLayout currentLang={langForLinks}>
+      {/* Structured Data */}
+      <StructuredData data={articleJsonLD} />
+      <StructuredData data={breadcrumbJsonLD} />
+      
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
         <div className="container mx-auto px-4 py-8 max-w-6xl">
           <Button variant="outline" className="mb-6 inline-block shadow-sm hover:shadow-md transition-shadow" asChild>

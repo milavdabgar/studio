@@ -1,6 +1,6 @@
 // src/app/search/[lang]/page.tsx
 
-import { SearchBox } from '@/components/blog/SearchBox';
+import { AdvancedSearch } from '@/components/blog/AdvancedSearch';
 import { BlogLayout } from '@/components/blog/BlogLayout';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
@@ -42,7 +42,7 @@ export default async function SearchPage({ params }: SearchPageProps) {
           </p>
         </div>
 
-        <SearchBox language={lang} />
+        <AdvancedSearch language={lang} />
       </div>
     </BlogLayout>
   );

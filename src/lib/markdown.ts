@@ -617,3 +617,114 @@ export async function getAdjacentPosts(currentPost: PostData, lang?: string): Pr
   return { previousPost, nextPost };
 }
 
+// Pagination types and utilities
+export interface PaginationInfo {
+  currentPage: number;
+  totalPages: number;
+  itemsPerPage: number;
+  totalItems: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface PaginatedPosts {
+  posts: PostPreview[];
+  pagination: PaginationInfo;
+}
+
+export function calculatePagination(
+  totalItems: number,
+  currentPage: number,
+  itemsPerPage: number = 10
+): PaginationInfo {
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const validCurrentPage = Math.max(1, Math.min(currentPage, totalPages));
+  
+  return {
+    currentPage: validCurrentPage,
+    totalPages,
+    itemsPerPage,
+    totalItems,
+    hasNextPage: validCurrentPage < totalPages,
+    hasPreviousPage: validCurrentPage > 1,
+  };
+}
+
+export async function getPaginatedPosts(
+  langToFilter?: string,
+  page: number = 1,
+  itemsPerPage: number = 10
+): Promise<PaginatedPosts> {
+  const allPosts = await getSortedPostsData(langToFilter);
+  const pagination = calculatePagination(allPosts.length, page, itemsPerPage);
+  
+  const startIndex = (pagination.currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const posts = allPosts.slice(startIndex, endIndex);
+  
+  return {
+    posts,
+    pagination,
+  };
+}
+
+// Pagination for categories
+export async function getPaginatedPostsByCategory(
+  category: string,
+  lang?: string,
+  page: number = 1,
+  itemsPerPage: number = 10
+): Promise<PaginatedPosts> {
+  const allPosts = await getPostsByCategory(category, lang);
+  const pagination = calculatePagination(allPosts.length, page, itemsPerPage);
+  
+  const startIndex = (pagination.currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const posts = allPosts.slice(startIndex, endIndex);
+  
+  return {
+    posts,
+    pagination,
+  };
+}
+
+// Pagination for tags
+export async function getPaginatedPostsByTag(
+  tag: string,
+  lang?: string,
+  page: number = 1,
+  itemsPerPage: number = 10
+): Promise<PaginatedPosts> {
+  const allPosts = await getPostsByTag(tag, lang);
+  const pagination = calculatePagination(allPosts.length, page, itemsPerPage);
+  
+  const startIndex = (pagination.currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const posts = allPosts.slice(startIndex, endIndex);
+  
+  return {
+    posts,
+    pagination,
+  };
+}
+
+// Pagination for author posts
+export async function getPaginatedPostsByAuthor(
+  author: string,
+  lang?: string,
+  page: number = 1,
+  itemsPerPage: number = 10
+): Promise<PaginatedPosts> {
+  const allPosts = await getPostsByAuthor(author, lang);
+  const pagination = calculatePagination(allPosts.length, page, itemsPerPage);
+  
+  const startIndex = (pagination.currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const posts = allPosts.slice(startIndex, endIndex);
+  
+  return {
+    posts,
+    pagination,
+  };
+}
+

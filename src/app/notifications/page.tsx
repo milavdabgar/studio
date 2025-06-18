@@ -4,7 +4,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, BellRing, CheckCheck, XCircle, Info, AlertTriangle, CheckCircle as CheckCircleIcon, Filter, Trash2, Clock } from "lucide-react"; // Renamed CheckCircle to CheckCircleIcon, AlertTriangle to AlertTriangleIcon
+import { Loader2, BellRing, CheckCheck, XCircle, Info, AlertTriangle as AlertTriangleIcon, CheckCircle as CheckCircleIcon, Filter, Trash2, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Notification, NotificationType } from '@/types/entities';
 import { notificationService } from '@/lib/api/notifications';

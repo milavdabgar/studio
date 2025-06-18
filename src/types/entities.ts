@@ -1,5 +1,3 @@
-
-
 export type Timestamp = string; // ISO 8601 format: "YYYY-MM-DDTHH:mm:ss.sssZ"
 
 // User and Authentication
@@ -994,7 +992,7 @@ export interface Notification {
   isRead: boolean;
   link?: string; 
   createdAt: Timestamp;
-  updatedAt?: Timestamp;
+  updatedAt: Timestamp;
   relatedEntityId?: string; 
   relatedEntityType?: string; 
 }
@@ -1271,5 +1269,40 @@ export interface CourseEnrollmentData {
     facultyNames: string[];
     enrolledStudents: number;
     maxIntake?: number; 
+}
+
+// Leave Management Types
+export type LeaveType = 
+  | 'casual' 
+  | 'sick' 
+  | 'earned' 
+  | 'maternity' 
+  | 'paternity' 
+  | 'duty' 
+  | 'unpaid' 
+  | 'other';
+
+export type LeaveRequestStatus = 
+  | 'pending' 
+  | 'approved' 
+  | 'rejected' 
+  | 'cancelled';
+
+export interface LeaveRequest {
+  id: string;
+  userId: string;
+  type: LeaveType;
+  reason: string;
+  startDate: string; // ISO date string
+  endDate: string; // ISO date string
+  isHalfDay?: boolean;
+  totalDays: number;
+  status: LeaveRequestStatus;
+  appliedAt: Timestamp;
+  actionTakenAt?: Timestamp;
+  actionTakenBy?: string; // User ID of the person who approved/rejected
+  rejectionReason?: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
 }
 
