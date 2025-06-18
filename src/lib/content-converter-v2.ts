@@ -9,6 +9,7 @@ import { marked } from 'marked';
 import matter from 'gray-matter';
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import { codeToHtml, BundledLanguage, BundledTheme } from 'shiki';
 
 const execAsync = promisify(exec);
 
@@ -68,6 +69,80 @@ export class ContentConverterV2 {
         }
     }
 
+    private async processCodeBlocks(content: string): Promise<string> {
+        // Enhanced code block processing with Shiki syntax highlighting
+        const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
+        
+        const processCodeBlock = async (match: string, language: string = '', code: string): Promise<string> => {
+            try {
+                // Skip Mermaid diagrams - they will be processed separately
+                if (language && language.toLowerCase() === 'mermaid') {
+                    return match; // Return original Mermaid block unchanged
+                }
+                
+                // Handle special cases that Shiki doesn't support
+                const unsupportedLanguages = ['goat', 'ascii', 'diagram', 'text', 'plain'];
+                
+                if (!language || unsupportedLanguages.includes(language.toLowerCase())) {
+                    // For ASCII diagrams and plain text, render without syntax highlighting
+                    const escapedCode = code
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;');
+                    
+                    const cssClass = language === 'goat' ? 'goat-diagram' : 'plain-text';
+                    return `<pre class="${cssClass}"><code>${escapedCode}</code></pre>`;
+                }
+
+                // Handle language aliases
+                let actualLanguage = language;
+                if (language === 'yml') {
+                    actualLanguage = 'yaml';
+                }
+                
+                // Generate syntax highlighted HTML with dual theme support
+                const html = await codeToHtml(code, {
+                    lang: actualLanguage as BundledLanguage,
+                    themes: {
+                        light: 'github-light',
+                        dark: 'one-dark-pro'
+                    },
+                    defaultColor: false
+                });
+                
+                return html;
+            } catch (error) {
+                console.error('Error highlighting code for language:', language, error);
+                // Fallback to plain text with basic HTML escaping
+                const escapedCode = code
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+                return `<pre class="plain-text"><code>${escapedCode}</code></pre>`;
+            }
+        };
+
+        // Process all code blocks
+        const matches = Array.from(content.matchAll(codeBlockRegex));
+        let processedContent = content;
+        
+        // Process in reverse order to maintain string positions
+        for (let i = matches.length - 1; i >= 0; i--) {
+            const match = matches[i];
+            const [fullMatch, language, code] = match;
+            const startIndex = match.index!;
+            const endIndex = startIndex + fullMatch.length;
+            
+            const highlightedCode = await processCodeBlock(fullMatch, language, code);
+            
+            processedContent = processedContent.slice(0, startIndex) + 
+                             highlightedCode + 
+                             processedContent.slice(endIndex);
+        }
+        
+        return processedContent;
+    }
+
     async convert(markdownContent: string, format: string, options: ConversionOptions = {}): Promise<Buffer | string> {
         const { data: frontmatter, content } = matter(markdownContent);
         
@@ -112,10 +187,13 @@ export class ContentConverterV2 {
     }
 
     private async convertToHtml(content: string, frontmatter: any, options: ConversionOptions): Promise<string> {
-        // Process math expressions first (before markdown)
-        let processedContent = this.processMathExpressions(content);
+        // Process code blocks with syntax highlighting first
+        let processedContent = await this.processCodeBlocks(content);
         
-        // Convert markdown to HTML
+        // Process math expressions (before markdown)
+        processedContent = this.processMathExpressions(processedContent);
+        
+        // Convert markdown to HTML (excluding code blocks that are already processed)
         let htmlContent = await marked(processedContent);
         
         // Process Mermaid diagrams
@@ -609,8 +687,20 @@ ${content}`;
     private processMermaidDiagrams(html: string): string {
         let diagramCounter = 0;
         
-        // Process mermaid code blocks
-        return html.replace(/<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g, (match, code) => {
+        // Process mermaid code blocks - handle both already converted and original markdown
+        // First handle any remaining markdown mermaid blocks that weren't processed by marked
+        html = html.replace(/```mermaid\n([\s\S]*?)```/g, (match, code) => {
+            diagramCounter++;
+            const cleanCode = code.trim();
+            
+            return `<div class="mermaid-diagram" data-diagram-id="${diagramCounter}">
+<pre class="mermaid-code">${cleanCode}</pre>
+<div class="mermaid-render" id="mermaid-${diagramCounter}"></div>
+</div>`;
+        });
+        
+        // Then handle any that were converted by marked to HTML code blocks
+        html = html.replace(/<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g, (match, code) => {
             diagramCounter++;
             const cleanCode = code.trim()
                 .replace(/&lt;/g, '<')
@@ -623,6 +713,8 @@ ${content}`;
 <div class="mermaid-render" id="mermaid-${diagramCounter}"></div>
 </div>`;
         });
+        
+        return html;
     }
 
     private generateHtmlTemplate(content: string, title: string, author: string, options: ConversionOptions): string {
@@ -921,6 +1013,73 @@ ${content}`;
             .mermaid-diagram {
                 margin: 10px 0 !important;
                 page-break-inside: avoid;
+            }
+        }
+        
+        /* Shiki syntax highlighting styles for export */
+        pre.shiki {
+            background-color: #f8fafc !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 6px !important;
+            padding: 15px !important;
+            overflow-x: auto;
+            margin: 15px 0;
+            page-break-inside: avoid;
+            font-size: 9pt;
+            line-height: 1.4;
+        }
+        
+        pre.shiki code {
+            background: none !important;
+            padding: 0 !important;
+            border-radius: 0 !important;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+            font-size: inherit !important;
+        }
+        
+        /* Shiki theme support - defaults to light theme for print/export */
+        .shiki,
+        .shiki span {
+            color: var(--shiki-light) !important;
+            background-color: var(--shiki-light-bg) !important;
+        }
+        
+        /* Special handling for unsupported languages */
+        pre.plain-text,
+        pre.goat-diagram {
+            background-color: #f7fafc !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 6px !important;
+            padding: 15px !important;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+            font-size: 9pt !important;
+            line-height: 1.4 !important;
+            overflow-x: auto;
+            margin: 15px 0;
+            page-break-inside: avoid;
+        }
+        
+        pre.goat-diagram {
+            border-left: 4px solid #38b2ac !important;
+            background-color: #e6fffa !important;
+        }
+        
+        /* Override default pre/code styles for syntax highlighted blocks */
+        pre:has(.shiki),
+        pre.shiki {
+            background-color: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            border-left: none !important;
+        }
+        
+        @media print {
+            pre.shiki,
+            pre.plain-text,
+            pre.goat-diagram {
+                background-color: #f8f9fa !important;
+                border: 1px solid #dee2e6 !important;
+                font-size: 8pt !important;
             }
         }
     </style>

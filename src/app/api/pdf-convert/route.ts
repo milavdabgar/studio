@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { MarkdownToPdfConverter } from '@/lib/pdf-converter';
+import { ContentConverterV2 } from '@/lib/content-converter-v2';
 import fs from 'fs';
 import path from 'path';
 
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const converter = new MarkdownToPdfConverter();
+        const converter = new ContentConverterV2();
         
         // Read the markdown content from the file
         const fullPath = path.join(process.cwd(), 'content', contentPath);
@@ -29,8 +29,11 @@ export async function POST(request: NextRequest) {
         
         const markdownContent = fs.readFileSync(fullPath, 'utf8');
         
-        // Convert the content to PDF
-        const pdfBuffer = await converter.convertMarkdownToPdf(markdownContent, path.basename(contentPath, '.md'));
+        // Convert the content to PDF using the new converter
+        const pdfBuffer = await converter.convert(markdownContent, 'pdf', {
+            title: path.basename(contentPath, '.md'),
+            ...options
+        });
         
         // Create response with PDF buffer
         const fileName = `${path.basename(contentPath, '.md')}.pdf`;

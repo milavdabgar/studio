@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { MarkdownToPdfConverter } from '@/lib/pdf-converter';
+import { ContentConverterV2 } from '@/lib/content-converter-v2';
 import fs from 'fs';
 import path from 'path';
 
@@ -46,8 +46,10 @@ export async function POST(request: NextRequest) {
     const markdownContent = fs.readFileSync(filePath, 'utf8');
 
     // Convert to PDF
-    const converter = new MarkdownToPdfConverter();
-    const pdfBuffer = await converter.convertMarkdownToPdf(markdownContent, slug);
+    const converter = new ContentConverterV2();
+    const pdfBuffer = await converter.convert(markdownContent, 'pdf', {
+        title: slug
+    });
 
     // Return the PDF as a downloadable file
     return new NextResponse(pdfBuffer, {
@@ -108,8 +110,10 @@ export async function GET(request: NextRequest) {
     }
 
     const markdownContent = fs.readFileSync(filePath, 'utf8');
-    const converter = new MarkdownToPdfConverter();
-    const pdfBuffer = await converter.convertMarkdownToPdf(markdownContent, slug);
+    const converter = new ContentConverterV2();
+    const pdfBuffer = await converter.convert(markdownContent, 'pdf', {
+        title: slug
+    });
 
     return new NextResponse(pdfBuffer, {
       headers: {
