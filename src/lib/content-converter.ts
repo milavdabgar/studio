@@ -482,7 +482,7 @@ ${rtf}
   }
 
   private async generatePdfWithChrome(html: string, options: ConversionOptions): Promise<Buffer> {
-    // Create optimized HTML for Chrome headless (copying Hugo approach)
+    // Use the exact Hugo implementation that works perfectly
     const tempHtmlPath = path.join(this.tempDir, `temp-${Date.now()}.html`);
     const mermaidOptimizedPath = path.join(this.tempDir, `temp-${Date.now()}-mermaid.html`);
     const tempPdfPath = path.join(this.tempDir, `temp-${Date.now()}.pdf`);
@@ -491,7 +491,7 @@ ${rtf}
       // Write HTML to temp file
       fs.writeFileSync(tempHtmlPath, html);
       
-      // Create Mermaid-optimized version for Chrome
+      // Create Mermaid-optimized version using Hugo's proven approach
       await this.createMermaidOptimizedHtml(tempHtmlPath, mermaidOptimizedPath);
       
       const chromePaths = [
@@ -503,8 +503,8 @@ ${rtf}
       for (const chromePath of chromePaths) {
         try {
           if (fs.existsSync(chromePath) || chromePath.includes('google-chrome') || chromePath.includes('chromium')) {
-            // Use the optimized HTML file for Chrome with increased virtual time budget for Mermaid rendering
-            const cmd = `"${chromePath}" --headless --disable-gpu --virtual-time-budget=60000 --run-all-compositor-stages-before-draw --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-renderer-backgrounding --disable-extensions --disable-plugins --no-first-run --no-default-browser-check --print-to-pdf="${tempPdfPath}" "file://${path.resolve(mermaidOptimizedPath)}"`;
+            // Use exact Hugo Chrome command
+            const cmd = `"${chromePath}" --headless --disable-gpu --virtual-time-budget=45000 --run-all-compositor-stages-before-draw --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-renderer-backgrounding --print-to-pdf="${tempPdfPath}" "file://${path.resolve(mermaidOptimizedPath)}"`;
             await execAsync(cmd);
             
             if (fs.existsSync(tempPdfPath)) {
@@ -729,29 +729,13 @@ ${rtf}
             mermaid.initialize({
                 startOnLoad: false,
                 theme: 'default',
-                themeVariables: {
-                    primaryColor: '#3182ce',
-                    primaryTextColor: '#1a202c',
-                    primaryBorderColor: '#2c5282',
-                    lineColor: '#4a5568',
-                    secondaryColor: '#e2e8f0',
-                    tertiaryColor: '#f7fafc'
-                },
-                fontFamily: 'Inter, sans-serif',
-                fontSize: 12,
                 flowchart: { 
-                    useMaxWidth: true, 
-                    htmlLabels: true,
-                    nodeSpacing: 30,
-                    rankSpacing: 40
+                  useMaxWidth: true, 
+                  htmlLabels: true,
+                  nodeSpacing: 30,
+                  rankSpacing: 40
                 },
-                sequence: {
-                    useMaxWidth: true,
-                    width: 150
-                },
-                gantt: {
-                    useMaxWidth: true
-                },
+                fontSize: 12,
                 securityLevel: 'loose'
             });
             
@@ -759,56 +743,24 @@ ${rtf}
             console.log('Found ' + diagrams.length + ' diagrams to render');
             
             if (diagrams.length === 0) {
-                document.body.classList.add('mermaid-ready');
-                return;
+              return;
             }
             
             let completed = 0;
             diagrams.forEach(function(codeEl, index) {
-                const renderDiv = codeEl.parentNode.querySelector('.mermaid-render');
-                const code = codeEl.textContent.trim();
-                
-                try {
-                    // Use modern Promise-based API instead of callback
-                    mermaid.render('chrome-diagram-' + index, code)
-                        .then(function(result) {
-                            renderDiv.innerHTML = result.svg;
-                            
-                            // Ensure SVG is properly styled for Chrome PDF
-                            const svg = renderDiv.querySelector('svg');
-                            if (svg) {
-                                svg.style.maxWidth = '100%';
-                                svg.style.height = 'auto';
-                                svg.style.display = 'block';
-                                svg.style.margin = '0 auto';
-                            }
-                            
-                            completed++;
-                            console.log('Rendered diagram ' + (index + 1) + '/' + diagrams.length);
-                            
-                            if (completed === diagrams.length) {
-                                document.body.classList.add('mermaid-ready');
-                                console.log('All Mermaid diagrams rendered successfully');
-                            }
-                        })
-                        .catch(function(error) {
-                            console.error('Mermaid rendering error:', error);
-                            renderDiv.innerHTML = '<div style="color: #c53030; padding: 15px; border: 2px solid #fed7d7; background: #fff5f5; border-radius: 6px; text-align: center;">Diagram rendering failed: ' + error.message + '</div>';
-                            completed++;
-                            
-                            if (completed === diagrams.length) {
-                                document.body.classList.add('mermaid-ready');
-                            }
-                        });
-                } catch (error) {
-                    console.error('Mermaid setup error:', error);
-                    renderDiv.innerHTML = '<div style="color: #c53030; padding: 15px; border: 2px solid #fed7d7; background: #fff5f5; border-radius: 6px; text-align: center;">Diagram setup failed: ' + error.message + '</div>';
-                    completed++;
-                    
-                    if (completed === diagrams.length) {
-                        document.body.classList.add('mermaid-ready');
-                    }
-                }
+              const renderDiv = codeEl.parentNode.querySelector('.mermaid-render');
+              const code = codeEl.textContent;
+              
+              try {
+                mermaid.render('diagram-' + index, code, function(svgCode) {
+                  renderDiv.innerHTML = svgCode;
+                  completed++;
+                  console.log('Rendered diagram ' + (index + 1) + '/' + diagrams.length);
+                });
+              } catch (error) {
+                console.error('Mermaid rendering error:', error);
+                completed++;
+              }
             });
         }
     </script>
