@@ -13,61 +13,20 @@ import {
   Calendar, Star, Trophy, Lightbulb, Target, Rocket
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { newsletterData } from '@/lib/newsletter-data';
 
-const statsData = [
-  { label: 'Placement Rate', value: 100, icon: TrendingUp, color: 'bg-blue-500' },
-  { label: 'Research Papers', value: 20, icon: BookOpen, color: 'bg-green-500' },
-  { label: 'Students Placed', value: 4, icon: Users, color: 'bg-purple-500' },
-  { label: 'Highest Package (L)', value: 4.5, icon: Award, color: 'bg-orange-500' },
-];
+// Using centralized newsletter data
+const statsData = newsletterData.stats.map((stat, index) => ({
+  ...stat,
+  icon: [TrendingUp, BookOpen, Users, Award][index] || TrendingUp
+}));
 
-const achievements = [
-  {
-    category: 'Faculty Excellence',
-    icon: Award,
-    items: [
-      'Prof. Nirav J. Chauhan - Best Paper Award at NCET-2024',
-      'Dr. Meera R. Patel - Outstanding Faculty Researcher Award',
-      'Prof. Kiran B. Shah - Patent grant for Energy Harvesting System',
-      'Ms. Mittal K. Pedhadiya - Ph.D. completion in Digital Signal Processing'
-    ]
-  },
-  {
-    category: 'Student Success',
-    icon: Trophy,
-    items: [
-      'Ravi Kumar Patel - 1st Rank in GTU BE-EC (CGPA: 9.85)',
-      'Team TechInnovators - 1st Prize in Smart India Hackathon 2024',
-      'Rohit Desai - 2nd Prize in IEEE National Student Competition',
-      'Best Innovation Award at Gujarat Technical Festival 2024'
-    ]
-  },
-  {
-    category: 'Infrastructure',
-    icon: Building,
-    items: [
-      'New IoT & Embedded Systems Lab (₹15 lakhs)',
-      '5G Communication Systems Lab Upgrade (₹18 lakhs)',
-      'Advanced Microprocessor Lab with ARM Cortex boards',
-      'High-frequency Signal Generator and Spectrum Analyzer'
-    ]
-  },
-  {
-    category: 'Research & Innovation',
-    icon: Lightbulb,
-    items: [
-      '12 research papers published in SCI/Scopus journals',
-      '3 patents filed in Electronics & Communication domain',
-      'Collaboration with ISRO for satellite communication project',
-      'Industry partnership with Qualcomm for 5G research'
-    ]
-  }
-];
+const achievements = newsletterData.achievements.map((achievement, index) => ({
+  ...achievement,
+  icon: [Award, Trophy, Building][index] || Award
+}));
 
-const placementCompanies = [
-  { name: 'Micron Technology', selections: 2, package: '₹4.5 LPA', position: 'Process Technician / Manufacturing Associate' },
-  { name: 'TDSC Becharaji', selections: 2, package: '₹3.0 LPA', position: 'Trainee Engineer' },
-];
+const placementCompanies = newsletterData.placements;
 
 export default function InteractiveNewsletterPage() {
   const [isExporting, setIsExporting] = useState<string | null>(null);
@@ -78,7 +37,7 @@ export default function InteractiveNewsletterPage() {
     
     try {
       // Create a comprehensive data object for export
-      const newsletterData = {
+      const exportData = {
         title: 'Spectrum Newsletter - Band III',
         edition: 'Band III',
         academicYear: '2023-24',
@@ -92,7 +51,7 @@ export default function InteractiveNewsletterPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newsletterData),
+        body: JSON.stringify(exportData),
       });
 
       if (!response.ok) {
@@ -608,199 +567,68 @@ export default function InteractiveNewsletterPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-8">
-                  {/* NCET-2024 Conference */}
-                  <div className="border border-gray-200 rounded-lg p-6 bg-gradient-to-r from-blue-50 to-indigo-50">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <Badge variant="outline" className="mb-2 text-blue-700 border-blue-300">
-                          December 15-16, 2023
-                        </Badge>
-                        <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                          National Conference on Emerging Technologies (NCET-2024)
-                        </h3>
-                        <p className="text-gray-700 leading-relaxed mb-4">
-                          Two-day national conference focusing on cutting-edge technologies in electronics and communication. 
-                          The event featured keynote speeches, technical paper presentations, and workshops on IoT, 
-                          5G communications, and AI applications in electronics.
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          <Badge variant="secondary">Research Papers</Badge>
-                          <Badge variant="secondary">Industry Speakers</Badge>
-                          <Badge variant="secondary">Student Participation</Badge>
-                          <Badge variant="secondary">Innovation Showcase</Badge>
-                        </div>
-                      </div>
-                    </div>
+                  {newsletterData.events.map((event, index) => {
+                    // Category-based styling
+                    const categoryStyles = {
+                      workshop: 'from-violet-50 to-purple-50 text-violet-700 border-violet-300',
+                      orientation: 'from-green-50 to-emerald-50 text-green-700 border-green-300',
+                      training: 'from-orange-50 to-red-50 text-orange-700 border-orange-300',
+                      awareness: 'from-pink-50 to-rose-50 text-pink-700 border-pink-300',
+                      community: 'from-blue-50 to-cyan-50 text-blue-700 border-blue-300',
+                      visit: 'from-yellow-50 to-amber-50 text-yellow-700 border-yellow-300'
+                    };
                     
-                    <div className="mt-6">
-                      <h4 className="text-sm font-medium text-gray-600 mb-3">Conference Gallery</h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div className="group relative overflow-hidden rounded-lg bg-gray-100">
-                          <img 
-                            src="/newsletters/imgs/WhatsApp Image 2024-05-03 at 17.40.56.jpeg"
-                            alt="NCET-2024 Inauguration"
-                            className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNvbmZlcmVuY2UgSW5hdWd1cmF0aW9uPC90ZXh0Pjwvc3ZnPg==";
-                            }}
-                          />
-                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                        </div>
-                        <div className="group relative overflow-hidden rounded-lg bg-gray-100">
-                          <img 
-                            src="/newsletters/imgs/WhatsApp Image 2024-05-03 at 17.40.59.jpeg"
-                            alt="NCET-2024 Technical Session"
-                            className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNvbmZlcmVuY2UgU2Vzc2lvbjwvdGV4dD48L3N2Zz4=";
-                            }}
-                          />
-                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                        </div>
-                        <div className="group relative overflow-hidden rounded-lg bg-gray-100">
-                          <img 
-                            src="/newsletters/imgs/WhatsApp Image 2024-05-03 at 17.41.00.jpeg"
-                            alt="NCET-2024 Award Ceremony"
-                            className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkF3YXJkIENlcmVtb255PC90ZXh0Pjwvc3ZnPg==";
-                            }}
-                          />
-                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <Separator />
-
-                  {/* Orientation Program */}
-                  <div className="border border-gray-200 rounded-lg p-6 bg-gradient-to-r from-green-50 to-emerald-50">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <Badge variant="outline" className="mb-2 text-green-700 border-green-300">
-                          June 3, 2024
-                        </Badge>
-                        <h3 className="text-xl font-semibold text-gray-900 mb-2">Orientation Program 2024</h3>
-                        <p className="text-gray-700 leading-relaxed">
-                          Comprehensive orientation program for newly admitted students, introducing them to department 
-                          facilities, curriculum, and career opportunities in electronics and communication engineering.
-                        </p>
-                      </div>
-                    </div>
+                    const style = categoryStyles[event.category as keyof typeof categoryStyles] || 'from-gray-50 to-slate-50 text-gray-700 border-gray-300';
+                    const [gradientFrom, gradientTo, textColor, borderColor] = style.split(' ');
                     
-                    <div className="mt-6">
-                      <h4 className="text-sm font-medium text-gray-600 mb-3">Event Gallery</h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div className="group relative overflow-hidden rounded-lg bg-gray-100">
-                          <img 
-                            src="https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240603-WA0035-1024x766.jpg"
-                            alt="Orientation Welcome"
-                            className="w-full h-32 object-cover transition-transform duration-300 group-hover:scale-105"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk9yaWVudGF0aW9uIFdlbGNvbWU8L3RleHQ+PC9zdmc+";
-                            }}
-                          />
-                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                    return (
+                      <div key={index}>
+                        <div className={`border border-gray-200 rounded-lg p-6 bg-gradient-to-r ${gradientFrom} ${gradientTo}`}>
+                          <div className="flex items-start justify-between mb-4">
+                            <div>
+                              <Badge variant="outline" className={`mb-2 ${textColor} ${borderColor}`}>
+                                {event.date}
+                              </Badge>
+                              <h3 className="text-xl font-semibold text-gray-900 mb-2">{event.title}</h3>
+                              <p className="text-gray-700 leading-relaxed">
+                                {event.description}
+                              </p>
+                              {event.tags && (
+                                <div className="flex flex-wrap gap-2 mt-4">
+                                  {event.tags.map((tag, tagIndex) => (
+                                    <Badge key={tagIndex} variant="secondary">{tag}</Badge>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          
+                          {event.images && event.images.length > 0 && (
+                            <div className="mt-6">
+                              <h4 className="text-sm font-medium text-gray-600 mb-3">Event Gallery</h4>
+                              <div className={`grid grid-cols-1 sm:grid-cols-2 ${event.images.length > 2 ? 'lg:grid-cols-4' : 'lg:grid-cols-2'} gap-4`}>
+                                {event.images.map((image, imgIndex) => (
+                                  <div key={imgIndex} className="group relative overflow-hidden rounded-lg bg-gray-100">
+                                    <img 
+                                      src={image.src}
+                                      alt={image.alt}
+                                      className={`w-full ${event.images.length > 2 ? 'h-32' : 'h-48'} object-cover transition-transform duration-300 group-hover:scale-105`}
+                                      onError={(e) => {
+                                        const target = e.target as HTMLImageElement;
+                                        target.src = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPiR7aW1hZ2UuY2FwdGlvbn08L3RleHQ+PC9zdmc+`;
+                                      }}
+                                    />
+                                    <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
-                        <div className="group relative overflow-hidden rounded-lg bg-gray-100">
-                          <img 
-                            src="https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240603-WA0037-1024x766.jpg"
-                            alt="Orientation Session"
-                            className="w-full h-32 object-cover transition-transform duration-300 group-hover:scale-105"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk9yaWVudGF0aW9uIFNlc3Npb248L3RleHQ+PC9zdmc+";
-                            }}
-                          />
-                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                        </div>
-                        <div className="group relative overflow-hidden rounded-lg bg-gray-100">
-                          <img 
-                            src="https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240603-WA0038-1024x766.jpg"
-                            alt="Student Interaction"
-                            className="w-full h-32 object-cover transition-transform duration-300 group-hover:scale-105"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlN0dWRlbnQgSW50ZXJhY3Rpb248L3RleHQ+PC9zdmc+";
-                            }}
-                          />
-                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                        </div>
-                        <div className="group relative overflow-hidden rounded-lg bg-gray-100">
-                          <img 
-                            src="https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240603-WA0040-1024x766.jpg"
-                            alt="Faculty Address"
-                            className="w-full h-32 object-cover transition-transform duration-300 group-hover:scale-105"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkZhY3VsdHkgQWRkcmVzczwvdGV4dD48L3N2Zz4=";
-                            }}
-                          />
-                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                        </div>
+                        {index < newsletterData.events.length - 1 && <Separator />}
                       </div>
-                    </div>
-                  </div>
-
-                  <Separator />
-
-                  {/* RTL Design Workshop */}
-                  <div className="border border-gray-200 rounded-lg p-6 bg-gradient-to-r from-violet-50 to-purple-50">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <Badge variant="outline" className="mb-2 text-violet-700 border-violet-300">
-                          June 11, 2024
-                        </Badge>
-                        <h3 className="text-xl font-semibold text-gray-900 mb-2">RTL Design Workshop</h3>
-                        <p className="text-gray-700 leading-relaxed">
-                          Intensive hands-on workshop on Register Transfer Level (RTL) design using industry-standard 
-                          tools and methodologies. Students learned VLSI design flow, HDL programming, and 
-                          digital circuit synthesis techniques.
-                        </p>
-                        <div className="flex flex-wrap gap-2 mt-4">
-                          <Badge variant="secondary">VLSI Design</Badge>
-                          <Badge variant="secondary">RTL Programming</Badge>
-                          <Badge variant="secondary">HDL</Badge>
-                          <Badge variant="secondary">Circuit Synthesis</Badge>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-6">
-                      <h4 className="text-sm font-medium text-gray-600 mb-3">Workshop Sessions</h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="group relative overflow-hidden rounded-lg bg-gray-100">
-                          <img 
-                            src="https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240611-WA0048-1024x459.jpg"
-                            alt="RTL Workshop Session 3"
-                            className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlJUTCBXb3Jrc2hvcDwvdGV4dD48L3N2Zz4=";
-                            }}
-                          />
-                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                        </div>
-                        <div className="group relative overflow-hidden rounded-lg bg-gray-100">
-                          <img 
-                            src="https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240611-WA0055-1024x459.jpg"
-                            alt="RTL Workshop Session 4"
-                            className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlJUTCBXb3Jrc2hvcDwvdGV4dD48L3N2Zz4=";
-                            }}
-                          />
-                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>

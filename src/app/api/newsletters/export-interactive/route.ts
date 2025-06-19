@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ContentConverterV2 } from '@/lib/content-converter-v2';
+import { newsletterData } from '@/lib/newsletter-data';
 
 // Import Puppeteer for direct React component to PDF conversion
 let puppeteer: any;
@@ -9,172 +10,10 @@ try {
   console.log('Puppeteer not available, PDF generation will be limited');
 }
 
-// Interactive Newsletter Component Data - Updated with Real Content
-const interactiveNewsletterData = {
-  stats: [
-    { label: 'Placement Rate', value: 100, color: 'bg-blue-500' },
-    { label: 'Research Papers', value: 20, color: 'bg-green-500' },
-    { label: 'Students Placed', value: 4, color: 'bg-purple-500' },
-    { label: 'Highest Package (L)', value: 4.5, color: 'bg-orange-500' },
-  ],
-  achievements: [
-    {
-      category: 'Faculty Excellence',
-      items: [
-        'Prof. Nirav J. Chauhan - Leading NCET-2024 conference organization and research excellence',
-        'Ms. Mittal K. Pedhadiya - Editorial excellence and academic coordination',
-        'Mr. Milav J. Dabgar - Technical innovation and newsletter coordination',
-        'Faculty Research Team - Multiple publications in reputed journals'
-      ]
-    },
-    {
-      category: 'Student Success',
-      items: [
-        'Sahil S. Vaghela - Placed at Micron Technology as Process Technician (₹4.5L)',
-        'Bharat S. Pawar - Placed at Micron Technology as Manufacturing Associate (₹3.7L)',
-        'Maitri R. Patel - Placed at TDSC Becharaji as Trainee Engineer (₹3.0L)',
-        'Stutiben A. Raval - Placed at TDSC Becharaji as Trainee Engineer (₹3.0L)',
-        'Srujal Y. Chaudhary - Pursuing B.E. at VEGC, Chandkheda for higher studies'
-      ]
-    },
-    {
-      category: 'Research & Innovation',
-      items: [
-        'SSIP initiatives with ₹50,000 prize-winning rover project',
-        'Multiple patents filed in electronics and communication domain',
-        'Industry collaborations for practical learning',
-        'Student innovation projects receiving state-level recognition'
-      ]
-    }
-  ],
-  placements: [
-    { company: 'Micron Technology', package: '₹4.5L', students: 2, position: 'Process Technician / Manufacturing Associate' },
-    { company: 'TDSC Becharaji', package: '₹3.0L', students: 2, position: 'Trainee Engineer' }
-  ],
-  events: [
-    {
-      title: 'National Conference on Emerging Technologies (NCET-2024)',
-      date: 'December 15-16, 2023',
-      description: 'Two-day national conference focusing on cutting-edge technologies in electronics and communication with keynote speeches, technical papers, and workshops on IoT, 5G, and AI applications.',
-      images: [
-        {
-          src: '/newsletters/imgs/WhatsApp Image 2024-05-03 at 17.40.56.jpeg',
-          alt: 'NCET-2024 Inauguration',
-          caption: 'Conference Inauguration'
-        },
-        {
-          src: '/newsletters/imgs/WhatsApp Image 2024-05-03 at 17.40.59.jpeg',
-          alt: 'NCET-2024 Technical Session',
-          caption: 'Technical Session'
-        },
-        {
-          src: '/newsletters/imgs/WhatsApp Image 2024-05-03 at 17.41.00.jpeg',
-          alt: 'NCET-2024 Award Ceremony',
-          caption: 'Award Ceremony'
-        }
-      ]
-    },
-    {
-      title: 'Orientation Program 2024',
-      date: 'June 3, 2024',
-      description: 'Comprehensive orientation program for newly admitted students, introducing them to department facilities, curriculum, and career opportunities in electronics and communication engineering.',
-      images: [
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240603-WA0035-1024x766.jpg',
-          alt: 'Orientation Welcome',
-          caption: 'Welcome Session'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240603-WA0037-1024x766.jpg',
-          alt: 'Orientation Session',
-          caption: 'Department Overview'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240603-WA0038-1024x766.jpg',
-          alt: 'Student Interaction',
-          caption: 'Student Interaction'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240603-WA0040-1024x766.jpg',
-          alt: 'Faculty Address',
-          caption: 'Faculty Address'
-        }
-      ]
-    },
-    {
-      title: 'RTL Design Workshop',
-      date: 'June 11, 2024',
-      description: 'Intensive hands-on workshop on Register Transfer Level (RTL) design using industry-standard tools and methodologies. Students learned VLSI design flow, HDL programming, and digital circuit synthesis.',
-      images: [
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240611-WA0048-1024x459.jpg',
-          alt: 'RTL Workshop Session',
-          caption: 'Workshop Session 1'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240611-WA0055-1024x459.jpg',
-          alt: 'RTL Workshop Session',
-          caption: 'Workshop Session 2'
-        }
-      ]
-    }
-  ],
-  messages: {
-    principal: {
-      name: 'Dr. Rajesh Kumar Sharma',
-      designation: 'Principal, Government Polytechnic Palanpur',
-      message: `Dear Students, Faculty, and Stakeholders,
-
-It gives me immense pleasure to introduce this edition of "Spectrum," the newsletter of our Electronics & Communication Engineering Department. Our institution, established in 1984, has been a beacon of technical education in North Gujarat, consistently producing skilled professionals who contribute significantly to the industry and society.
-
-The academic year 2023-24 has been remarkable for our EC department, with students excelling in competitions, faculty contributing to research, and our SSIP cell fostering innovation. Our focus remains on providing quality education that blends theoretical knowledge with practical skills, preparing our students for the dynamic world of technology.
-
-I congratulate the entire EC department team for their dedication and encourage our students to continue their pursuit of excellence.`
-    },
-    hod: {
-      name: 'Prof. Nirav J. Chauhan',
-      designation: 'Head of Department - Electronics & Communication Engineering',
-      message: `Dear EC Family,
-
-The Electronics & Communication Engineering department continues to evolve with emerging technologies and industry demands. This year has been particularly significant as we've strengthened our curriculum with advanced topics in IoT, VLSI, and communication systems.
-
-Our students have shown exceptional performance in various competitions, including the G3Q quiz where our team secured top positions. The department's research initiatives have gained momentum with faculty publications and student innovation projects receiving recognition.
-
-As we look ahead, our commitment remains steadfast - to nurture competent engineers who can contribute meaningfully to the technological advancement of our nation. I extend my heartfelt appreciation to our dedicated faculty and motivated students for making this journey rewarding.`
-    },
-    editorial: {
-      name: 'Editorial Team',
-      designation: 'Ms. Mittal K. Pedhadiya & Mr. Milav J. Dabgar',
-      message: `Welcome to the third edition of Spectrum, chronicling the remarkable journey of our Electronics & Communication Engineering department during 2023-24.
-
-This edition captures the essence of our department's growth - from academic achievements and research publications to student innovations and industry collaborations. We've witnessed our students excel in competitions, our faculty contribute to cutting-edge research, and our department strengthen its position in technical education.
-
-Special recognition goes to our SSIP initiatives that have resulted in multiple patents and the prestigious ₹50,000 prize-winning rover project. These achievements reflect our commitment to innovation and practical learning.
-
-We hope this newsletter serves as a source of inspiration and information for our extended EC family.`
-    }
-  },
-  vision: "To prepare competent diploma level electronics and communication engineers, catering the needs of industries and society as an excellent employee, innovator, and entrepreneur with moral values.",
-  mission: [
-    "Provide quality education in the field of EC engineering",
-    "Develop state of art laboratories and classrooms", 
-    "Strengthen industrial liaison services",
-    "Execute activities to inculcate innovation and entrepreneurship"
-  ],
-  logos: [
-    {
-      src: '/newsletters/imgs/gpp-logo.png',
-      alt: 'Government Polytechnic Palanpur Logo'
-    },
-    {
-      src: '/newsletters/imgs/ec-logo.png', 
-      alt: 'EC Department Logo'
-    }
-  ]
-};
+// Using centralized newsletter data
 
 // Generate static HTML from React component data
-function generateStaticHtml(data: typeof interactiveNewsletterData): string {
+function generateStaticHtml(data: typeof newsletterData): string {
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -577,14 +416,7 @@ function generateStaticHtml(data: typeof interactiveNewsletterData): string {
                 </div>
                 <div class="mission-card">
                     <h3 class="mission-title">🎯 Mission</h3>
-                    <ul class="mission-list">
-                        ${data.mission.map(item => `
-                            <li>
-                                <span style="color: #10b981; font-size: 1.2rem;">✓</span>
-                                <span>${item}</span>
-                            </li>
-                        `).join('')}
-                    </ul>
+                    <p>${data.mission}</p>
                 </div>
             </div>
         </div>
@@ -803,7 +635,7 @@ export async function POST(request: NextRequest) {
     console.log(`[Interactive Export] Processing ${format} export...`);
 
     // Generate static HTML from component data
-    const htmlContent = generateStaticHtml(interactiveNewsletterData);
+    const htmlContent = generateStaticHtml(newsletterData);
     
     // Handle different export formats
     switch (format) {
