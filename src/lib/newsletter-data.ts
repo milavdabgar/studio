@@ -40,6 +40,18 @@ export interface Message {
   message: string;
 }
 
+export interface SpotlightItem {
+  title: string;
+  author: string;
+  designation?: string; // For faculty
+  studentId?: string; // For students
+  semester?: string; // For students
+  content: string;
+  date?: string;
+  type: 'tech-news' | 'innovation' | 'research' | 'poem' | 'article' | 'project' | 'experience' | 'story' | 'achievement';
+  authorType: 'faculty' | 'student';
+}
+
 export interface NewsletterData {
   stats: Stat[];
   achievements: Achievement[];
@@ -50,6 +62,7 @@ export interface NewsletterData {
     hod: Message;
     editorial: Message;
   };
+  spotlight: SpotlightItem[];
   vision: string;
   mission: string;
   logos?: Array<{

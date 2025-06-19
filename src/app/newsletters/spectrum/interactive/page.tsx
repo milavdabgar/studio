@@ -199,7 +199,7 @@ export default function InteractiveNewsletterPage() {
             <TabsTrigger value="achievements">Achievements</TabsTrigger>
             <TabsTrigger value="placements">Placements</TabsTrigger>
             <TabsTrigger value="events">Events</TabsTrigger>
-            <TabsTrigger value="labs">Labs & Infrastructure</TabsTrigger>
+            <TabsTrigger value="spotlight">Spotlight</TabsTrigger>
             <TabsTrigger value="contact">Contact</TabsTrigger>
           </TabsList>
 
@@ -646,200 +646,73 @@ export default function InteractiveNewsletterPage() {
             </Card>
           </TabsContent>
 
-          {/* Labs & Infrastructure Tab */}
-          <TabsContent value="labs">
+          {/* Spotlight Tab */}
+          <TabsContent value="spotlight">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <Building className="w-5 h-5 text-blue-600" />
-                  <span>Laboratory Facilities & Infrastructure</span>
+                  <Star className="w-5 h-5 text-yellow-600" />
+                  <span>Spotlight</span>
                 </CardTitle>
-                <CardDescription>State-of-the-art facilities supporting hands-on learning</CardDescription>
+                <CardDescription>Faculty insights and student contributions</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-8">
-                  {/* Infrastructure Overview */}
-                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200">
-                    <h3 className="text-lg font-semibold text-blue-900 mb-4 flex items-center">
-                      <Building className="w-5 h-5 mr-2" />
-                      Infrastructure Overview
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className="bg-white p-4 rounded-lg border border-blue-100">
-                        <div className="text-2xl font-bold text-blue-600 mb-1">8</div>
-                        <div className="text-sm text-gray-600">Modern Laboratories</div>
-                      </div>
-                      <div className="bg-white p-4 rounded-lg border border-blue-100">
-                        <div className="text-2xl font-bold text-green-600 mb-1">₹35L+</div>
-                        <div className="text-sm text-gray-600">Equipment Value</div>
-                      </div>
-                      <div className="bg-white p-4 rounded-lg border border-blue-100">
-                        <div className="text-2xl font-bold text-purple-600 mb-1">150+</div>
-                        <div className="text-sm text-gray-600">Students Capacity</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Laboratory Details */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Electronics Lab */}
-                    <div className="bg-white p-6 rounded-lg border border-gray-200">
-                      <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
-                        <span className="bg-blue-600 text-white p-2 rounded-lg mr-3">
-                          <Award className="w-4 h-4" />
-                        </span>
-                        Electronics & Circuits Lab
-                      </h4>
-                      <p className="text-gray-600 text-sm mb-3">
-                        Comprehensive facility for analog and digital circuit analysis, equipped with advanced oscilloscopes, function generators, and power supplies.
-                      </p>
-                      <div className="space-y-2">
-                        <div className="flex items-center text-sm">
-                          <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                          <span>Digital Storage Oscilloscopes (20 MHz - 100 MHz)</span>
+                <div className="space-y-6">
+                  {currentData.spotlight?.map((item, index) => (
+                    <div key={index} className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.title}</h3>
+                          <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
+                            <span className="flex items-center">
+                              <Users className="w-4 h-4 mr-1" />
+                              {item.author}
+                              {item.designation && ` - ${item.designation}`}
+                              {item.studentId && ` (${item.studentId})`}
+                              {item.semester && ` - ${item.semester}`}
+                            </span>
+                            {item.date && (
+                              <span className="flex items-center">
+                                <Calendar className="w-4 h-4 mr-1" />
+                                {item.date}
+                              </span>
+                            )}
+                          </div>
                         </div>
-                        <div className="flex items-center text-sm">
-                          <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                          <span>Function Generators & Signal Analyzers</span>
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                          <span>Power Supplies & Multimeters</span>
+                        <div className="flex items-center space-x-2">
+                          <Badge 
+                            variant="secondary" 
+                            className={`${
+                              item.authorType === 'faculty' 
+                                ? 'bg-blue-100 text-blue-800' 
+                                : 'bg-green-100 text-green-800'
+                            }`}
+                          >
+                            {item.authorType === 'faculty' ? 'Faculty' : 'Student'}
+                          </Badge>
+                          <Badge variant="outline" className="capitalize">
+                            {item.type.replace('-', ' ')}
+                          </Badge>
                         </div>
                       </div>
-                    </div>
-
-                    {/* Communication Lab */}
-                    <div className="bg-white p-6 rounded-lg border border-gray-200">
-                      <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
-                        <span className="bg-green-600 text-white p-2 rounded-lg mr-3">
-                          <Trophy className="w-4 h-4" />
-                        </span>
-                        Communication Systems Lab
-                      </h4>
-                      <p className="text-gray-600 text-sm mb-3">
-                        Advanced communication lab featuring modern equipment for analog & digital communication, microwave, and antenna studies.
-                      </p>
-                      <div className="space-y-2">
-                        <div className="flex items-center text-sm">
-                          <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-                          <span>AM/FM Modulation & Demodulation Kits</span>
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-                          <span>Digital Communication Trainers</span>
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-                          <span>Microwave Test Bench & Antenna Array</span>
-                        </div>
+                      <div className="prose prose-sm max-w-none">
+                        {item.type === 'poem' ? (
+                          <pre className="whitespace-pre-wrap font-sans text-sm text-gray-700 leading-relaxed">
+                            {item.content}
+                          </pre>
+                        ) : (
+                          <p className="text-gray-700 leading-relaxed">
+                            {item.content}
+                          </p>
+                        )}
                       </div>
                     </div>
-
-                    {/* Microprocessor Lab */}
-                    <div className="bg-white p-6 rounded-lg border border-gray-200">
-                      <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
-                        <span className="bg-purple-600 text-white p-2 rounded-lg mr-3">
-                          <Lightbulb className="w-4 h-4" />
-                        </span>
-                        Microprocessor & Embedded Systems Lab
-                      </h4>
-                      <p className="text-gray-600 text-sm mb-3">
-                        State-of-the-art facility for microprocessor programming, embedded system design, and IoT applications.
-                      </p>
-                      <div className="space-y-2">
-                        <div className="flex items-center text-sm">
-                          <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
-                          <span>8085/8086 Microprocessor Trainers</span>
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
-                          <span>ARM Cortex Development Boards</span>
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
-                          <span>Arduino & Raspberry Pi Kits</span>
-                        </div>
-                      </div>
+                  )) || (
+                    <div className="text-center py-8 text-gray-500">
+                      <Star className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                      <p>No spotlight content available for this year.</p>
                     </div>
-
-                    {/* VLSI Lab */}
-                    <div className="bg-white p-6 rounded-lg border border-gray-200">
-                      <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
-                        <span className="bg-orange-600 text-white p-2 rounded-lg mr-3">
-                          <Rocket className="w-4 h-4" />
-                        </span>
-                        VLSI Design Lab
-                      </h4>
-                      <p className="text-gray-600 text-sm mb-3">
-                        Advanced VLSI design facility with industry-standard EDA tools for digital circuit design and verification.
-                      </p>
-                      <div className="space-y-2">
-                        <div className="flex items-center text-sm">
-                          <span className="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
-                          <span>Xilinx Vivado Design Suite</span>
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <span className="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
-                          <span>ModelSim & QuestaSim Simulators</span>
-                        </div>
-                        <div className="flex items-center text-sm">
-                          <span className="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
-                          <span>FPGA Development Boards</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Research & Development Facilities */}
-                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-lg border border-green-200">
-                    <h3 className="text-lg font-semibold text-green-900 mb-4 flex items-center">
-                      <Target className="w-5 h-5 mr-2" />
-                      Research & Development Facilities
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <h4 className="font-semibold text-gray-900 mb-3">Project Development Lab</h4>
-                        <ul className="space-y-2 text-sm text-gray-600">
-                          <li>• Student Innovation & Project Development</li>
-                          <li>• SSIP (Student Startup & Innovation Policy) Support</li>
-                          <li>• Prototype Development Facilities</li>
-                          <li>• 3D Printing & PCB Fabrication</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-900 mb-3">Advanced Research Areas</h4>
-                        <ul className="space-y-2 text-sm text-gray-600">
-                          <li>• IoT & Sensor Networks</li>
-                          <li>• 5G Communication Systems</li>
-                          <li>• Machine Learning for Signal Processing</li>
-                          <li>• Renewable Energy Systems</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Library & Digital Resources */}
-                  <div className="bg-gradient-to-r from-purple-50 to-violet-50 p-6 rounded-lg border border-purple-200">
-                    <h3 className="text-lg font-semibold text-purple-900 mb-4 flex items-center">
-                      <BookOpen className="w-5 h-5 mr-2" />
-                      Library & Digital Resources
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className="bg-white p-4 rounded-lg border border-purple-100">
-                        <div className="text-2xl font-bold text-purple-600 mb-1">2000+</div>
-                        <div className="text-sm text-gray-600">Technical Books</div>
-                      </div>
-                      <div className="bg-white p-4 rounded-lg border border-purple-100">
-                        <div className="text-2xl font-bold text-blue-600 mb-1">50+</div>
-                        <div className="text-sm text-gray-600">Journals & Magazines</div>
-                      </div>
-                      <div className="bg-white p-4 rounded-lg border border-purple-100">
-                        <div className="text-2xl font-bold text-green-600 mb-1">24/7</div>
-                        <div className="text-sm text-gray-600">Digital Access</div>
-                      </div>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

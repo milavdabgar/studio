@@ -590,6 +590,65 @@ export const newsletterData2023_24: NewsletterData = {
     }
   ],
   
+  spotlight: [
+    {
+      title: "6G Technology: Beyond Imagination",
+      author: "Prof. Advanced Faculty",
+      designation: "Senior Lecturer, EC Department",
+      content: "While 5G is still being deployed, research into 6G technology is already underway. Expected by 2030, 6G will offer terabit speeds, holographic communications, and brain-computer interfaces. As EC engineers, we must prepare for this technological revolution that will redefine human-machine interaction.",
+      date: "March 2024",
+      type: "tech-news",
+      authorType: "faculty"
+    },
+    {
+      title: "Neuromorphic Computing: The Brain-Inspired Approach",
+      author: "Dr. Research Innovator",
+      designation: "Research Faculty, EC Department",
+      content: "Neuromorphic computing mimics the neural structure of the human brain, offering ultra-low power consumption and real-time learning capabilities. This emerging field combines neuroscience, computer science, and electronics to create next-generation computing systems.",
+      date: "February 2024",
+      type: "research",
+      authorType: "faculty"
+    },
+    {
+      title: "My Robotics Competition Experience",
+      author: "Innovative Student",
+      studentId: "236260311xxx",
+      semester: "5th Semester",
+      content: "Participating in the national robotics competition was a dream come true. Our team developed an autonomous navigation robot using computer vision and machine learning. The experience taught me the importance of interdisciplinary knowledge in modern electronics engineering.",
+      date: "January 2024",
+      type: "experience",
+      authorType: "student"
+    },
+    {
+      title: "Sustainable Electronics Design",
+      author: "Green Tech Advocate",
+      designation: "Environmental Engineering Lecturer",
+      content: "The future of electronics lies in sustainable design practices. From biodegradable circuits to energy harvesting systems, we must innovate responsibly. Our students are exploring eco-friendly materials and circular economy principles in electronic product design.",
+      date: "December 2023",
+      type: "innovation",
+      authorType: "faculty"
+    },
+    {
+      title: "Digital Dreams",
+      author: "Creative Writer",
+      studentId: "236260311yyy",
+      semester: "3rd Semester",
+      content: "In the realm of bits and bytes,\nWhere digital dreams take flight,\nWe craft the future with our hands,\nGuided by electronic light.\n\nFrom sensors smart to AI bright,\nEach circuit tells a tale,\nOf innovation, dedication,\nWhere human spirits never fail.",
+      date: "November 2023",
+      type: "poem",
+      authorType: "student"
+    },
+    {
+      title: "Quantum Sensors and Measurement",
+      author: "Quantum Research Team",
+      designation: "Advanced Research Group",
+      content: "Quantum sensors are revolutionizing precision measurement across multiple domains. From gravitational wave detection to medical imaging, these ultra-sensitive devices offer unprecedented accuracy. Understanding quantum principles is becoming essential for next-generation sensor design.",
+      date: "October 2023",
+      type: "research",
+      authorType: "faculty"
+    }
+  ],
+
   messages: {
     principal: {
       name: 'Sureshkumar D Dabhi',

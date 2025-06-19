@@ -260,6 +260,65 @@ export const newsletterData2021_22: NewsletterData = {
     }
   ],
   
+  spotlight: [
+    {
+      title: "5G Technology: The Future of Communication",
+      author: "Faculty Member",
+      designation: "Lecturer, EC Department", 
+      content: "5G technology represents a quantum leap in wireless communication, offering unprecedented speeds, ultra-low latency, and massive device connectivity. This revolutionary technology will enable innovations like autonomous vehicles, smart cities, and IoT applications that were previously impossible. As EC engineers, understanding 5G architecture and implementation is crucial for future career prospects.",
+      date: "March 2022",
+      type: "tech-news",
+      authorType: "faculty"
+    },
+    {
+      title: "Artificial Intelligence in Electronics",
+      author: "Dr. R. N. Patel",
+      designation: "Lecturer, EC Department",
+      content: "AI integration in electronics is transforming how we design and manufacture electronic systems. From automated PCB design to predictive maintenance in electronic equipment, AI is revolutionizing our field. Students should focus on learning AI fundamentals alongside traditional electronics to stay competitive in the evolving industry.",
+      date: "January 2022",
+      type: "innovation",
+      authorType: "faculty"
+    },
+    {
+      title: "My Journey Through Electronics",
+      author: "Tirth Panchal",
+      studentId: "196260311008",
+      semester: "6th Semester",
+      content: "Electronics has always fascinated me since childhood. During my time at GPP, I've learned not just the theoretical concepts but also practical applications through our well-equipped labs. The industrial visits and expert lectures have given me insights into real-world applications. I'm grateful for the placement opportunity at Webilok IT Services and look forward to contributing to the tech industry.",
+      date: "April 2022",
+      type: "experience",
+      authorType: "student"
+    },
+    {
+      title: "Innovation in Antenna Design",
+      author: "Mr. L. K. Patel",
+      designation: "Lecturer, EC Department",
+      content: "Recent advancements in antenna technology are opening new possibilities in wireless communication. Fractal antennas, metamaterial-based designs, and MIMO systems are reshaping the communication landscape. Our department's research in wideband bow tie antennas and tree-fractal structures demonstrates our commitment to cutting-edge antenna research.",
+      date: "February 2022", 
+      type: "research",
+      authorType: "faculty"
+    },
+    {
+      title: "Dreams and Circuits",
+      author: "Stuti Raval",
+      studentId: "216260311005",
+      semester: "2nd Semester",
+      content: "In the world of resistors and capacitors,\nWhere electrons dance and current flows,\nI find my passion, my calling true,\nIn circuits where innovation grows.\n\nFrom simple LEDs to complex designs,\nEach component tells a story,\nOf human ingenuity and endless dreams,\nBuilding tomorrow's electronic glory.",
+      date: "December 2021",
+      type: "poem",
+      authorType: "student"
+    },
+    {
+      title: "Sustainable Electronics: Green Technology",
+      author: "Ms. M. K. Pedhadiya",
+      designation: "Lecturer, EC Department",
+      content: "The electronics industry is moving towards sustainable practices with eco-friendly materials, energy-efficient designs, and recycling initiatives. As future engineers, we must consider environmental impact in our designs. Green electronics not only reduce carbon footprint but also create new market opportunities for innovative solutions.",
+      date: "November 2021",
+      type: "innovation",
+      authorType: "faculty"
+    }
+  ],
+
   messages: {
     principal: {
       name: 'Principal Name (Not specified in PDF)',

@@ -181,6 +181,65 @@ export const newsletterData2022_23: NewsletterData = {
     }
   ],
   
+  spotlight: [
+    {
+      title: "IoT Revolution in Electronics Engineering",
+      author: "Prof. Sunilkumar J Chauhan",
+      designation: "Head of Department, EC Engineering",
+      content: "The Internet of Things is transforming how we design and implement electronic systems. From smart homes to industrial automation, IoT applications are creating new opportunities for EC engineers. Our students are working on innovative IoT projects including agricultural monitoring systems and smart healthcare solutions.",
+      date: "February 2023",
+      type: "tech-news",
+      authorType: "faculty"
+    },
+    {
+      title: "Machine Learning in Signal Processing",
+      author: "Ms. Mittal K. Pedhadiya",
+      designation: "Lecturer, EC Department",
+      content: "The integration of machine learning algorithms with digital signal processing is opening new frontiers in communications, image processing, and audio systems. Recent developments in neural networks for signal denoising and pattern recognition are particularly promising for our field.",
+      date: "December 2022",
+      type: "innovation",
+      authorType: "faculty"
+    },
+    {
+      title: "My Smart Healthcare Project Journey",
+      author: "Krish Modi",
+      studentId: "GJPO765432",
+      semester: "6th Semester",
+      content: "Developing a smart healthcare monitoring system has been an incredible learning experience. Using Arduino, sensors, and IoT connectivity, we created a system that monitors vital signs and sends alerts to healthcare providers. Winning the state-level competition boosted my confidence in pursuing innovation.",
+      date: "March 2023",
+      type: "project",
+      authorType: "student"
+    },
+    {
+      title: "Quantum Computing and Electronics",
+      author: "Mr. Milav J. Dabgar",
+      designation: "Lecturer, EC Department",
+      content: "Quantum computing represents the next paradigm shift in computing technology. Understanding quantum principles and their applications in electronics will be crucial for future engineers. The development of quantum processors and quantum communication systems offers exciting research opportunities.",
+      date: "January 2023",
+      type: "research",
+      authorType: "faculty"
+    },
+    {
+      title: "The Circuit's Song",
+      author: "Harsh Trivedi",
+      studentId: "GJK0876543",
+      semester: "4th Semester",
+      content: "Electrons flow like rivers of light,\nThrough pathways etched in silicon bright,\nEach component plays its vital part,\nIn the symphony of electronic art.\n\nFrom simple gates to complex design,\nWhere logic meets the divine,\nWe learn to build tomorrow's dreams,\nWith circuits, codes, and engineering schemes.",
+      date: "November 2022",
+      type: "poem",
+      authorType: "student"
+    },
+    {
+      title: "Edge Computing in Electronics",
+      author: "Faculty Contributor",
+      designation: "EC Department",
+      content: "Edge computing is bringing processing power closer to data sources, reducing latency and improving efficiency. This technology is particularly relevant for real-time applications in autonomous vehicles, industrial IoT, and smart cities. EC engineers need to understand both the hardware and software aspects of edge computing.",
+      date: "October 2022",
+      type: "tech-news",
+      authorType: "faculty"
+    }
+  ],
+
   messages: {
     principal: {
       name: 'Sureshkumar D Dabhi',
