@@ -228,8 +228,8 @@ export default function InteractiveNewsletterPage() {
                       <h4 className="font-semibold text-gray-900 mb-2">Key Highlights 2023-24</h4>
                       <ul className="space-y-1 text-sm text-gray-600">
                         <li>• 150+ students across all semesters</li>
-                        <li>• 100% placement rate for eligible students</li>
-                        <li>• 20+ research publications</li>
+                        <li>• {statsData[0].value}% placement rate for eligible students</li>
+                        <li>• {statsData[1].value} conference papers published</li>
                         <li>• Modern lab infrastructure worth ₹35+ lakhs</li>
                       </ul>
                     </div>
@@ -430,15 +430,15 @@ export default function InteractiveNewsletterPage() {
                   <h3 className="text-lg font-semibold mb-4 text-center">🎯 Career Success Metrics</h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="bg-white/10 backdrop-blur p-4 rounded-lg text-center">
-                      <div className="text-2xl font-bold mb-1">4</div>
+                      <div className="text-2xl font-bold mb-1">{statsData[2].value}</div>
                       <div className="text-sm opacity-90">Students Placed</div>
                     </div>
                     <div className="bg-white/10 backdrop-blur p-4 rounded-lg text-center">
-                      <div className="text-2xl font-bold mb-1">₹4.5L</div>
+                      <div className="text-2xl font-bold mb-1">₹{statsData[3].value}L</div>
                       <div className="text-sm opacity-90">Highest Package</div>
                     </div>
                     <div className="bg-white/10 backdrop-blur p-4 rounded-lg text-center">
-                      <div className="text-2xl font-bold mb-1">100%</div>
+                      <div className="text-2xl font-bold mb-1">{statsData[0].value}%</div>
                       <div className="text-sm opacity-90">Placement Rate</div>
                     </div>
                     <div className="bg-white/10 backdrop-blur p-4 rounded-lg text-center">
@@ -457,45 +457,25 @@ export default function InteractiveNewsletterPage() {
                     </h3>
                     
                     <div className="space-y-4">
-                      <div className="bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-lg border-l-4 border-green-500">
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <div className="font-semibold text-gray-900">Sahil S. Vaghela</div>
-                            <div className="text-green-600 font-medium text-sm">Micron Technology • Process Technician</div>
+                      {placementCompanies.map((placement, index) => {
+                        const colors = ['green', 'blue', 'purple', 'orange'];
+                        const color = colors[index % colors.length];
+                        const students = placement.position === 'Diploma Trainee Engineer' ? 
+                          ['Stutiben A. Raval'] : 
+                          ['Bharat S. Pawar'];
+                        
+                        return students.map((student, studentIndex) => (
+                          <div key={`${index}-${studentIndex}`} className={`bg-gradient-to-r from-${color}-50 to-${color}-100 p-4 rounded-lg border-l-4 border-${color}-500`}>
+                            <div className="flex justify-between items-start mb-2">
+                              <div>
+                                <div className="font-semibold text-gray-900">{student}</div>
+                                <div className={`text-${color}-600 font-medium text-sm`}>{placement.company} • {placement.position}</div>
+                              </div>
+                              <Badge className={`bg-${color}-600`}>{placement.package}</Badge>
+                            </div>
                           </div>
-                          <Badge className="bg-green-600">₹4.5L</Badge>
-                        </div>
-                      </div>
-                      
-                      <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg border-l-4 border-blue-500">
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <div className="font-semibold text-gray-900">Bharat S. Pawar</div>
-                            <div className="text-blue-600 font-medium text-sm">Micron Technology • Manufacturing Associate</div>
-                          </div>
-                          <Badge className="bg-blue-600">₹3.7L</Badge>
-                        </div>
-                      </div>
-                      
-                      <div className="bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-lg border-l-4 border-purple-500">
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <div className="font-semibold text-gray-900">Maitri R. Patel</div>
-                            <div className="text-purple-600 font-medium text-sm">TDSC Becharaji • Trainee Engineer</div>
-                          </div>
-                          <Badge className="bg-purple-600">₹3.0L</Badge>
-                        </div>
-                      </div>
-                      
-                      <div className="bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg border-l-4 border-orange-500">
-                        <div className="flex justify-between items-start mb-2">
-                          <div>
-                            <div className="font-semibold text-gray-900">Stutiben A. Raval</div>
-                            <div className="text-orange-600 font-medium text-sm">TDSC Becharaji • Trainee Engineer</div>
-                          </div>
-                          <Badge className="bg-orange-600">₹3.0L</Badge>
-                        </div>
-                      </div>
+                        ));
+                      })}
                     </div>
                   </div>
                   
