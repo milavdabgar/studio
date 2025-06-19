@@ -198,23 +198,6 @@ function parseValue(value: string): any {
 
 // Convert Hugo shortcode syntax to React components
 export function parseShortcodes(content: string): string {
-  console.log('parseShortcodes called with content (first 500 chars):', content.substring(0, 500));
-  console.log('parseShortcodes called with content (around chart - chars 15000-16000):', content.substring(15000, 16000));
-  console.log('parseShortcodes called with content (around mermaid - chars 25000-26000):', content.substring(25000, 26000));
-  
-  // Let's check specifically for mermaid content
-  const mermaidTest = content.includes('mermaid');
-  console.log('Content contains mermaid:', mermaidTest);
-  if (mermaidTest) {
-    const mermaidMatches = content.match(/\{\{<\s*mermaid[\s\S]*?\/mermaid\s*>\}\}/g);
-    console.log('Mermaid matches found:', mermaidMatches?.length || 0);
-    if (mermaidMatches) {
-      mermaidMatches.forEach((match, i) => {
-        console.log(`Mermaid match ${i}:`, match.substring(0, 200));
-      });
-    }
-  }
-  
   // First handle self-closing shortcodes: {{< shortcode params >}}
   const selfClosingShortcodeRegex = /\{\{<\s*(\w+(?:-\w+)*)\s+([^>]*?)\s*>\}\}/g;
   
@@ -246,22 +229,10 @@ export function parseShortcodes(content: string): string {
   // Use a more flexible regex to handle whitespace and newlines better
   const pairedShortcodeRegex = /\{\{<\s*(\w+(?:-\w+)*)\s*([^>]*?)\s*>\}\}([\s\S]*?)\{\{<\s*\/\1\s*>\}\}/g;
   
-  console.log('About to process paired shortcodes. Looking for pattern in content...');
-  console.log('Testing for chart pattern specifically...');
-  const chartPattern = /\{\{<\s*(chart|Chart)\s*([^>]*?)\s*>\}\}([\s\S]*?)\{\{<\s*\/(chart|Chart)\s*>\}\}/g;
-  const chartMatches = content.match(chartPattern);
-  console.log('Chart matches found:', chartMatches?.length || 0);
-  
-  console.log('Testing for mermaid pattern specifically...');
-  const mermaidPattern = /\{\{<\s*(mermaid|Mermaid)\s*([^>]*?)\s*>\}\}([\s\S]*?)\{\{<\s*\/(mermaid|Mermaid)\s*>\}\}/g;
-  const mermaidMatches = content.match(mermaidPattern);
-  console.log('Mermaid matches found:', mermaidMatches?.length || 0);
-  
   let foundPaired = false;
   
   result = result.replace(pairedShortcodeRegex, (match, shortcodeName, paramString, innerContent) => {
     foundPaired = true;
-    console.log(`Found paired shortcode: ${shortcodeName} with content: ${innerContent.substring(0, 100)}`);
     
     // Find the corresponding React component
     const Component = shortcodeRegistry[shortcodeName];
@@ -279,11 +250,9 @@ export function parseShortcodes(content: string): string {
       if (shortcodeName === 'mermaid' || shortcodeName === 'Mermaid') {
         // For Mermaid, pass raw content as children
         params.children = innerContent.trim();
-        console.log(`Mermaid content captured: "${innerContent.trim()}"`);
       } else if (shortcodeName === 'chart' || shortcodeName === 'Chart') {
         // For Chart, pass raw content as children  
         params.children = innerContent.trim();
-        console.log(`Chart content captured: "${innerContent.trim()}"`);
       } else if (shortcodeName === 'timeline' || shortcodeName === 'Timeline') {
         // For Timeline, we need to process nested shortcodes and pass as React children
         // We'll handle this specially in the Timeline component itself
@@ -304,9 +273,6 @@ export function parseShortcodes(content: string): string {
       return match; // Return original on error
     }
   });
-  
-  console.log(`Paired shortcode processing complete. Found: ${foundPaired}`);
-  console.log('Final result (first 500 chars):', result.substring(0, 500));
   
   return result;
 }

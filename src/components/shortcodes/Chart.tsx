@@ -34,14 +34,12 @@ export function Chart({ children, type, data, options, className }: ChartProps) 
         // Parse configuration from children content or props
         if (children && children.trim()) {
           try {
-            console.log('Chart received content:', children);
             // Parse the chart configuration from the shortcode content
             const configString = children.trim();
             // Handle both object notation and JSON
             if (configString.includes('type:') && configString.includes('data:')) {
               // This looks like a Chart.js config - try to parse it as a JavaScript object
               const wrappedConfig = `({${configString}})`;
-              console.log('Attempting to parse wrapped config:', wrappedConfig);
               chartConfig = new Function('return ' + wrappedConfig)();
             } else if (configString.startsWith('{')) {
               chartConfig = new Function('return ' + configString)();
@@ -49,10 +47,8 @@ export function Chart({ children, type, data, options, className }: ChartProps) 
               // Handle YAML-like or simple key-value format
               chartConfig = parseSimpleConfig(configString);
             }
-            console.log('Parsed chart config:', chartConfig);
           } catch (error) {
             console.error('Error parsing chart configuration:', error);
-            console.log('Raw content was:', children);
             return;
           }
         } else if (type && data) {
@@ -64,7 +60,7 @@ export function Chart({ children, type, data, options, className }: ChartProps) 
           };
         } else {
           // Provide a default chart if no content is provided
-          console.warn('Chart component received no content, using default chart');
+          // Provide fallback chart when no configuration is provided
           chartConfig = {
             type: 'bar',
             data: {

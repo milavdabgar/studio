@@ -22,10 +22,8 @@ export function Mermaid({ children }: MermaidProps) {
           securityLevel: 'loose',
         });
 
-        console.log('Mermaid received content:', JSON.stringify(children));
-
         if (!children || !children.trim()) {
-          console.warn('Mermaid component received empty content, using default diagram');
+          // Provide fallback diagram when no content is provided
           // Provide a default diagram if no content is provided
           const defaultDiagram = `graph LR;
     A[Start] --> B[Process];
