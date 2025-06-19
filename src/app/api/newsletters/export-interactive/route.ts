@@ -55,17 +55,68 @@ const interactiveNewsletterData = {
     {
       title: 'National Conference on Emerging Technologies (NCET-2024)',
       date: 'December 15-16, 2023',
-      description: 'Two-day national conference focusing on cutting-edge technologies in electronics and communication with keynote speeches, technical papers, and workshops on IoT, 5G, and AI applications.'
+      description: 'Two-day national conference focusing on cutting-edge technologies in electronics and communication with keynote speeches, technical papers, and workshops on IoT, 5G, and AI applications.',
+      images: [
+        {
+          src: '/newsletters/imgs/WhatsApp Image 2024-05-03 at 17.40.56.jpeg',
+          alt: 'NCET-2024 Inauguration',
+          caption: 'Conference Inauguration'
+        },
+        {
+          src: '/newsletters/imgs/WhatsApp Image 2024-05-03 at 17.40.59.jpeg',
+          alt: 'NCET-2024 Technical Session',
+          caption: 'Technical Session'
+        },
+        {
+          src: '/newsletters/imgs/WhatsApp Image 2024-05-03 at 17.41.00.jpeg',
+          alt: 'NCET-2024 Award Ceremony',
+          caption: 'Award Ceremony'
+        }
+      ]
     },
     {
       title: 'Orientation Program 2024',
       date: 'June 3, 2024',
-      description: 'Comprehensive orientation program for newly admitted students, introducing them to department facilities, curriculum, and career opportunities in electronics and communication engineering.'
+      description: 'Comprehensive orientation program for newly admitted students, introducing them to department facilities, curriculum, and career opportunities in electronics and communication engineering.',
+      images: [
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240603-WA0035-1024x766.jpg',
+          alt: 'Orientation Welcome',
+          caption: 'Welcome Session'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240603-WA0037-1024x766.jpg',
+          alt: 'Orientation Session',
+          caption: 'Department Overview'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240603-WA0038-1024x766.jpg',
+          alt: 'Student Interaction',
+          caption: 'Student Interaction'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240603-WA0040-1024x766.jpg',
+          alt: 'Faculty Address',
+          caption: 'Faculty Address'
+        }
+      ]
     },
     {
       title: 'RTL Design Workshop',
       date: 'June 11, 2024',
-      description: 'Intensive hands-on workshop on Register Transfer Level (RTL) design using industry-standard tools and methodologies. Students learned VLSI design flow, HDL programming, and digital circuit synthesis.'
+      description: 'Intensive hands-on workshop on Register Transfer Level (RTL) design using industry-standard tools and methodologies. Students learned VLSI design flow, HDL programming, and digital circuit synthesis.',
+      images: [
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240611-WA0048-1024x459.jpg',
+          alt: 'RTL Workshop Session',
+          caption: 'Workshop Session 1'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240611-WA0055-1024x459.jpg',
+          alt: 'RTL Workshop Session',
+          caption: 'Workshop Session 2'
+        }
+      ]
     }
   ],
   messages: {
@@ -109,6 +160,16 @@ We hope this newsletter serves as a source of inspiration and information for ou
     "Develop state of art laboratories and classrooms", 
     "Strengthen industrial liaison services",
     "Execute activities to inculcate innovation and entrepreneurship"
+  ],
+  logos: [
+    {
+      src: '/newsletters/imgs/gpp-logo.png',
+      alt: 'Government Polytechnic Palanpur Logo'
+    },
+    {
+      src: '/newsletters/imgs/ec-logo.png', 
+      alt: 'EC Department Logo'
+    }
   ]
 };
 
@@ -403,6 +464,46 @@ function generateStaticHtml(data: typeof interactiveNewsletterData): string {
             border-bottom: none;
         }
         
+        .header-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .header-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        
+        .event-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .event-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+        }
+        
+        .event-image-caption {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        
         @media print {
             body {
                 background: white;
@@ -421,6 +522,13 @@ function generateStaticHtml(data: typeof interactiveNewsletterData): string {
 <body>
     <div class="container">
         <div class="header">
+            ${data.logos ? `
+            <div class="header-logos">
+                ${data.logos.map(logo => `
+                    <img src="${logo.src}" alt="${logo.alt}" class="header-logo" />
+                `).join('')}
+            </div>
+            ` : ''}
             <h1>Spectrum Newsletter</h1>
             <p>Department of Electronics & Communication Engineering</p>
             <p>Government Polytechnic, Palanpur</p>
@@ -513,13 +621,23 @@ function generateStaticHtml(data: typeof interactiveNewsletterData): string {
         </div>
         
         <div class="section">
-            <h2 class="section-title">📅 Key Events</h2>
+            <h2 class="section-title">📅 Key Events & Activities</h2>
             <div class="events-list">
                 ${data.events.map(event => `
                     <div class="event-card">
                         <div class="event-title">${event.title}</div>
                         <div class="event-date">${event.date}</div>
                         <div class="event-description">${event.description}</div>
+                        ${event.images ? `
+                        <div class="event-images">
+                            ${event.images.map(image => `
+                                <div>
+                                    <img src="${image.src}" alt="${image.alt}" class="event-image" />
+                                    <div class="event-image-caption">${image.caption}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
                     </div>
                 `).join('')}
             </div>
