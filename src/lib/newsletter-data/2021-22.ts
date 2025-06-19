@@ -6,186 +6,281 @@ import { NewsletterData } from '../newsletter-data';
 
 export const newsletterData2021_22: NewsletterData = {
   stats: [
-    { label: 'Placement Rate', value: 45, color: 'bg-blue-500' },
-    { label: 'Conference Papers', value: 0, color: 'bg-green-500' },
-    { label: 'Students Placed', value: 3, color: 'bg-purple-500' },
-    { label: 'Highest Package (L)', value: 2.8, color: 'bg-orange-500' },
+    { label: 'Students Placed', value: 8, color: 'bg-blue-500' },
+    { label: 'Higher Education', value: 2, color: 'bg-green-500' },
+    { label: 'Faculty Publications', value: 3, color: 'bg-purple-500' },
+    { label: 'Expert Lectures', value: 2, color: 'bg-orange-500' },
   ],
   
   achievements: [
     {
-      category: 'Faculty Excellence',
+      category: 'Faculty Excellence & Publications',
       items: [
-        'Prof. Sunilkumar J Chauhan - Completed AICTE approved Faculty Development Program on "Emerging Technologies in Electronics"',
-        'Ms. Mittal K. Pedhadiya - Appointed as Academic Coordinator for EC Department',
-        'Mr. Milav J. Dabgar - Joined as Lecturer in Electronics & Communication Engineering',
-        'Department infrastructure development with new laboratory equipment and modern teaching aids'
+        'Dr. R. N. Patel - Published patent on 25/02/2022 titled "Design of wideband bow tie antenna using tapered balun for industrial, scientific and medical band application"',
+        'Dr. R. N. Patel - Published patent on 21/01/2022 titled "Rectangular patch antenna with Tree-Fractal structure"',
+        'Mr. L. K. Patel - Presented paper in 3rd National Conference on "Recent Trends in Engineering, Management, Pharmacy, Architecture And Science" on 22/10/2021 titled "Analysis of matched key points of image registration using SIFT, SURF with different layers of CNN" and won best paper Runner-up',
+        'Dr. R. N. Patel - Editorial board member in "Global Research and Development Journal (ISSN: 24555703)", completed training on "Antenna Design"',
+        'Mr. L. K. Patel - GTU coordinator of the institute, contributed to GTU syllabus for "Fundamentals of Electronics (4311102)"'
       ]
     },
     {
-      category: 'Student Achievements',
+      category: 'Faculty Contributions & Administrative Roles',
       items: [
-        'Shri Patel Jaydeepkumar Ramanbhai (GJR1234567) - Winner in State Level Technical Quiz Competition',
-        'Shri Chauhan Hiteshkumar Manilal (GJK0987654) - Second prize in Circuit Design Competition organized by GTU',
-        'Shri Desai Neel Bharatkumar (GJPO654321) - Best Project Award for IoT based Home Automation System',
-        'Student team participation in SSIP 1.0 initiative gaining recognition for innovative ideas'
+        'Mr. S. J. Chauhan - Head of Department, contributed as lead member in GTU syllabus development for "Electronics Workshop (4321101)", Institute coordinator for AICTE accreditation and GTU affiliation, served as Hostel Rector',
+        'Mrs. G. N. Acharya - Coordinator of housekeeping committee in the institute',
+        'Ms. M. K. Pedhadiya - Contributed to GTU syllabus for "Electronic Circuits & Applications (4321104)", Co-coordinator of Student Section, completed training on "Embedded Systems"',
+        'Mr. N. M. Patel - Contributed to GTU syllabus for "Fundamentals Electronic Circuits & Applications (4321104)", Co-coordinator in Gymkhana committee and training & placement cell',
+        'Mr. R. N. Patel - Serving as administrative officer of the institute',
+        'Mr. M. J. Dabgar - Coordinator of CWAN committee & Co-coordinator of SSIP Cell, completed "Induction Phase – II" training',
+        'Mr. R. C. Parmar - Contributed to GTU syllabus for "Industrial Electronics (4331103)", Co-coordinator of Student Section, completed "Induction Phase – II" training',
+        'Mr. S. P. Joshiara - Co-coordinator of CWAN, Website & GTU Committees, completed "Induction Phase – II" training',
+        'Mr. N. J. Chauhan - Contributed to GTU syllabus for "Digital Electronics (4321103)", Co-coordinator of AICTE accreditation Committee, completed "Induction Phase – II" training'
       ]
     },
     {
-      category: 'Placements & Higher Studies (2021-22)',
+      category: 'Star Performers (Academic Excellence)',
       items: [
-        'Patel Vijaykumar Kishorbhai (Enr: 186260311001) - Placed at Foxconn India, Sriperumbudur as Trainee Engineer with ₹2.8L annual salary',
-        'Sharma Priyanka Rameshkumar (Enr: 186260311003) - Placed at Reliance Jio, Ahmedabad as Network Trainee with ₹2.4L annual salary',
-        'Joshi Rahul Narendrakumar (Enr: 186260311007) - Pursuing B.E. at LDCE, Ahmedabad (Admission Year: 2022)',
-        'Placement Rate: 45% (3 out of 7 eligible students placed/admitted to higher studies)'
+        'Stuti Raval (216260311005) - 7.41 CGPA (Sem 1 - Winter 2021)',
+        'Chaudhary Adarsh (206260311005) - 8.19 CGPA (Sem 3 - Winter 2021)',
+        'Chaudhary Piyush (206260311003) - 7.68 CGPA (Sem 3 - Winter 2021)',
+        'Panchal Tirth (196260311008) - 8.2 CGPA (Sem 5 - Winter 2021)',
+        'Umatiya Anas (196260311016) - 8.07 CGPA (Sem 5 - Winter 2021)',
+        'Chaudhary Piyush (206260311003) - 9.26 CGPA (Sem 2 - Summer 2021)',
+        'Chaudhary Adarsh (206260311005) - 8.87 CGPA (Sem 2 - Summer 2021)',
+        'Solanki Niravbhai (196260311505) - 8.21 CGPA (Sem 4 - Summer 2021)',
+        'Prajapati Rohit (196260311013) - 8.13 CGPA (Sem 6 - Summer 2022)',
+        'Panchal Tirth (196260311008) - 8.07 CGPA (Sem 6 - Summer 2022)',
+        'Solanki Niravbhai (196260311505) - 8.07 CGPA (Sem 6 - Summer 2022)'
+      ]
+    },
+    {
+      category: 'Student Placements (2021-22)',
+      items: [
+        'Nirav Solanki (196260311505) - Placed at Mehta Expai Technologies Pvt. Ltd.',
+        'Darshil Modi (196260311006) - Placed at Mehta Expai Technologies Pvt. Ltd.',
+        'Dabhi Ashwin (196260311002) - Placed at Webilok IT Services, Deesa',
+        'Damor Bhargav (196260311503) - Placed at Webilok IT Services, Deesa',
+        'Chhayank Mevada (196260311005) - Placed at Webilok IT Services, Deesa',
+        'Tirth Panchal (196260311008) - Placed at Webilok IT Services, Deesa',
+        'Rohit Prajapati (196260311013) - Placed at Webilok IT Services, Deesa',
+        'Mohammed Kaif (156260311501) - Placed at Asahi Glass, Patan'
+      ]
+    },
+    {
+      category: 'Higher Education Admissions',
+      items: [
+        'Nirajkumar Prajapati (186260311002) - Admitted to VGEC, Chandkheda for Degree Engineering',
+        'Jaydip Kadiya (166260311010) - Admitted to GEC, Gandhinagar for Degree Engineering'
       ]
     }
   ],
   
   placements: [
-    { company: 'Foxconn India, Sriperumbudur', package: '₹2.8L', students: 1, position: 'Trainee Engineer' },
-    { company: 'Reliance Jio, Ahmedabad', package: '₹2.4L', students: 1, position: 'Network Trainee' },
-    { company: 'Self Employment/Startup', package: '₹2.0L', students: 1, position: 'Entrepreneur' }
+    { company: 'Mehta Expai Technologies Pvt. Ltd.', package: 'Not specified', students: 2, position: 'Technical Role' },
+    { company: 'Webilok IT Services, Deesa', package: 'Not specified', students: 5, position: 'Software Developer' },
+    { company: 'Asahi Glass, Patan', package: 'Not specified', students: 1, position: 'Technical Assistant' }
   ],
   
   events: [
     {
-      title: 'Orientation Program 2021',
-      date: 'September 15, 2021',
-      category: 'orientation',
-      description: 'Welcome session for newly admitted students in Electronics & Communication Engineering, introducing them to department facilities, curriculum structure, and career opportunities during the pandemic era.',
-      tags: ['Orientation', 'New Students', 'COVID-19 Adaptation', 'Online Learning'],
-      images: []
-    },
-    {
-      title: 'Online Expert Session on Digital Communication',
-      date: 'October 20, 2021',
+      title: 'Expert Lecture on "Importance of Programming"',
+      date: 'August 9, 2021',
       category: 'workshop',
-      description: 'Virtual expert session conducted by industry professional on advanced digital communication techniques, covering modulation schemes and signal processing fundamentals.',
-      tags: ['Digital Communication', 'Online Session', 'Signal Processing', 'Industry Expert'],
+      description: 'Expert lecture delivered by Mr. Pranav Dave, Tech Lead (Associate consultant), Tata Consultancy Services (TCS), Gandhinagar in online mode. The session covered basics of programming, real-time examples, and motivation for students to start programming and build careers.',
+      tags: ['Programming', 'TCS', 'Career Development', 'Online Session'],
       images: []
     },
     {
-      title: 'Circuit Design Competition',
-      date: 'November 8, 2021',
+      title: 'Expert Lecture on "Navigation with Indian Constellation (NavIC) and Its Application"',
+      date: 'January 29, 2022',
       category: 'workshop',
-      description: 'Intra-college competition for designing innovative electronic circuits, encouraging students to apply theoretical knowledge in practical implementations.',
-      tags: ['Circuit Design', 'Innovation', 'Competition', 'Practical Learning'],
+      description: 'Expert lecture delivered by Dr. Mehulkumar Desai, Lecturer in EC, Government Polytechnic for Girls, Surat in online mode. Session covered satellite-based navigation system, NavIC architecture, and various applications.',
+      tags: ['NavIC', 'Navigation Systems', 'Satellite Technology', 'Make in India'],
       images: []
     },
     {
-      title: 'Online Webinar on IoT Applications',
-      date: 'December 5, 2021',
-      category: 'workshop',
-      description: 'Comprehensive webinar on Internet of Things applications in smart cities, healthcare, and industrial automation, delivered by IIT alumni.',
-      tags: ['IoT', 'Smart Cities', 'Healthcare Technology', 'Industrial Automation'],
-      images: []
-    },
-    {
-      title: 'Project Exhibition - Semester 6',
-      date: 'January 20, 2022',
-      category: 'workshop',
-      description: 'Final year project presentations showcasing innovative solutions in electronics and communication, including IoT, embedded systems, and communication projects.',
-      tags: ['Project Exhibition', 'Innovation', 'IoT Projects', 'Embedded Systems'],
-      images: []
-    },
-    {
-      title: 'Virtual Industrial Visit - ISRO',
-      date: 'February 10, 2022',
+      title: 'Industrial Visit - Community Radio Palanpur',
+      date: 'March 26, 2022',
       category: 'visit',
-      description: 'Virtual tour and interactive session with ISRO scientists, providing insights into space communication technologies and satellite systems.',
-      tags: ['ISRO', 'Space Technology', 'Satellite Communication', 'Virtual Visit'],
+      description: 'Students experienced live radio broadcast, visited recording studio, observed FM transmission equipment and antennas. Met Radio Jockey and manager who shared their experiences in setting up community radio station.',
+      tags: ['Radio Broadcasting', 'FM Transmission', 'Community Radio', 'Industry Visit'],
       images: []
     },
     {
-      title: 'COVID-19 Vaccination Drive',
-      date: 'March 15, 2022',
-      category: 'awareness',
-      description: 'Vaccination awareness campaign and facility provided at college campus for students and staff during the COVID-19 pandemic.',
-      tags: ['COVID-19', 'Vaccination', 'Health Awareness', 'Campus Safety'],
+      title: 'Industrial Visit - Samsung Customer Care',
+      date: 'March 29, 2022',
+      category: 'visit',
+      description: 'Students observed smartphone, laptop and tablet servicing at Samsung service center. Technician demonstrated disassembly and component soldering. Manager guided students about career opportunities.',
+      tags: ['Electronics Repair', 'Samsung', 'Mobile Technology', 'Career Guidance'],
       images: []
     },
     {
-      title: 'Online Faculty Development Program',
-      date: 'April 5, 2022',
-      category: 'training',
-      description: 'AICTE sponsored Faculty Development Program on emerging technologies in electronics, conducted in hybrid mode for continuous professional development.',
-      tags: ['Faculty Development', 'Emerging Technologies', 'Professional Development', 'AICTE'],
+      title: 'Industrial Visit - Sahajanand Laser Technologies',
+      date: 'April 12, 2022',
+      category: 'visit',
+      description: 'Visit to SLTL, a technology-driven company manufacturing solutions in Laser Systems, Medical, Diamond & Jewellery, RF & Microwave, and Renewable Energy. Students observed LASER cutting/engraving machines, robotic equipment, and RF/microwave manufacturing.',
+      tags: ['Laser Technology', 'Manufacturing', 'RF Technology', 'Automation'],
       images: []
     },
     {
-      title: 'Student Placement Drive',
-      date: 'April 25, 2022',
-      category: 'orientation',
-      description: 'Campus placement drives conducted with multiple companies offering opportunities in electronics manufacturing and telecommunications sectors.',
-      tags: ['Campus Placement', 'Electronics Manufacturing', 'Telecommunications', 'Career Opportunities'],
+      title: 'Industrial Visit - JK Industries, Chandisar',
+      date: 'May 2, 2022',
+      category: 'visit',
+      description: 'JK Industries works on manufacturing and servicing high voltage transformers for power distribution by GEB. Students learned about transformer repairing and witnessed live troubleshooting.',
+      tags: ['Power Systems', 'Transformers', 'High Voltage', 'Power Distribution'],
       images: []
     },
     {
-      title: 'SSIP 1.0 Innovation Fair',
-      date: 'May 8, 2022',
+      title: 'Farewell for 2022 Pass-outs',
+      date: 'April 4, 2022',
       category: 'community',
-      description: 'Student Startup and Innovation Policy fair showcasing innovative projects by students, promoting entrepreneurship and innovation culture.',
-      tags: ['SSIP', 'Innovation Fair', 'Entrepreneurship', 'Student Projects'],
+      description: 'Farewell ceremony organized for 2022 graduating batch with keynote by HoD and kind words by all staff members.',
+      tags: ['Farewell', 'Graduation', 'Community Event', 'Students'],
       images: []
     },
     {
-      title: 'Online Technical Quiz Competition',
-      date: 'May 20, 2022',
-      category: 'workshop',
-      description: 'State-level technical quiz competition covering electronics, communication systems, and emerging technologies, conducted in online mode.',
-      tags: ['Technical Quiz', 'State Level', 'Electronics', 'Communication Systems'],
-      images: []
-    },
-    {
-      title: 'Digital India Awareness Session',
-      date: 'June 5, 2022',
+      title: 'Tree Plantation Drive',
+      date: 'July 31, 2021',
       category: 'awareness',
-      description: 'Awareness session on Digital India initiatives, covering digital literacy, e-governance, and technology adoption for rural development.',
-      tags: ['Digital India', 'Digital Literacy', 'E-Governance', 'Rural Development'],
+      description: 'Institute organized tree plantation in college campus with approximately 150 different types of trees planted. Mr. Lalitbhai Vasvani and his team from Society for clean and green environment joined the event.',
+      tags: ['Environment', 'Tree Plantation', 'Green Campus', 'Sustainability'],
+      images: []
+    },
+    {
+      title: '75th Independence Day Celebration',
+      date: 'August 15, 2021',
+      category: 'community',
+      description: 'Flag hoisting ceremony organized at Government Polytechnic Palanpur with enthusiastic participation from all students and staff members.',
+      tags: ['Independence Day', 'Patriotic', 'Flag Hoisting', 'National Festival'],
+      images: []
+    },
+    {
+      title: 'NBA Visit for Accreditation',
+      date: 'September 24-26, 2021',
+      category: 'training',
+      description: 'NBA accreditation visit for Civil, Mechanical and Electrical departments. EC staff members played key role in successful completion of the visit.',
+      tags: ['NBA Accreditation', 'Quality Assurance', 'Department Support', 'Academic Excellence'],
+      images: []
+    },
+    {
+      title: 'Thalassemia Awareness Camp',
+      date: 'October 7, 2021',
+      category: 'awareness',
+      description: 'Thalassemia camp organized for students with awareness and counseling program by Indian Red Cross Society, Ahmedabad team.',
+      tags: ['Health Awareness', 'Thalassemia', 'Medical Camp', 'Student Welfare'],
+      images: []
+    },
+    {
+      title: 'Garba Mahotsav',
+      date: 'October 21, 2021',
+      category: 'community',
+      description: 'One day Garba Mahotsav organized for Navaratri celebration with enthusiastic participation from students and staff.',
+      tags: ['Cultural Event', 'Garba', 'Navaratri', 'Festival Celebration'],
+      images: []
+    },
+    {
+      title: 'Drug Awareness Program (Vyasan Mukti Abhiyan)',
+      date: 'October 22, 2021',
+      category: 'awareness',
+      description: 'Seminar on Tobacco free movement and Drug Awareness organized by Drug enforcement department Palanpur. Speakers included PI N.A.Devani, PSI G.D.Ahir, and counselor Jigishaben Tarar.',
+      tags: ['Drug Awareness', 'Health Campaign', 'Social Awareness', 'Student Safety'],
+      images: []
+    },
+    {
+      title: 'Clean India Movement',
+      date: 'October 28, 2021',
+      category: 'awareness',
+      description: 'Cleanliness drive carried out for clean campus and surroundings under the Clean India Movement campaign.',
+      tags: ['Cleanliness', 'Swachh Bharat', 'Campus Cleaning', 'Social Responsibility'],
+      images: []
+    },
+    {
+      title: 'National Unity Day',
+      date: 'October 31, 2021',
+      category: 'community',
+      description: 'Birth anniversary of Sardar Vallabhbhai Patel celebrated as National Unity Day with pledge taking ceremony in seminar hall.',
+      tags: ['National Unity', 'Sardar Patel', 'Unity Day', 'Patriotic Event'],
+      images: []
+    },
+    {
+      title: '73rd Republic Day Celebration',
+      date: 'January 26, 2022',
+      category: 'community',
+      description: 'Flag salute program organized in presence of Hon\'ble former MLA Rekhaben Khanesha with enthusiastic participation from officials and students.',
+      tags: ['Republic Day', 'Flag Salute', 'National Festival', 'Guest Speaker'],
+      images: []
+    },
+    {
+      title: 'Martyrs\' Day Commemoration',
+      date: 'January 29, 2022',
+      category: 'awareness',
+      description: 'Online talk organized by History Coordinating Committee, Gujarat. Shri Girishbhai Thacker, Vice Chairman spoke on "Indian Freedom Struggle (Bhartiya Swatantra Sangram)".',
+      tags: ['Martyrs Day', 'Freedom Struggle', 'Historical Awareness', 'Online Event'],
+      images: []
+    },
+    {
+      title: 'Women\'s Day Celebration',
+      date: 'March 5, 2022',
+      category: 'awareness',
+      description: 'Women Development cell conducted various activities. Expert lectures on "Laws related to women safety" by Ms. Yashashvi Mehta Pandya and "Disadvantages of mobile and internet" by Ms. Geeta Acharya. "Food without flame contest" organized.',
+      tags: ['Women\'s Day', 'Women Safety', 'Expert Lectures', 'Competition'],
+      images: []
+    },
+    {
+      title: 'District Level Placement Fair',
+      date: 'March 23, 2022',
+      category: 'orientation',
+      description: 'District level mega placement fair organized as per government directives. 22 industries participated conducting interviews across Banaskantha district. 9 students from EC department were shortlisted/selected by companies like Webilok IT Services and Mehta Expai.',
+      tags: ['Placement Fair', 'Industry Connect', 'Career Opportunities', 'District Level'],
+      images: []
+    },
+    {
+      title: 'Voter Awareness Program',
+      date: 'May 5, 2022',
+      category: 'awareness',
+      description: 'NSS unit organized drawing and essay competitions to create voting awareness among students. Winners were encouraged with certificates and prizes.',
+      tags: ['Voter Awareness', 'NSS Activity', 'Democracy', 'Student Competition'],
+      images: []
+    },
+    {
+      title: 'International Yoga Day Celebration',
+      date: 'June 21, 2022',
+      category: 'awareness',
+      description: 'Various yoga asanas demonstrated by yoga teacher with enthusiastic participation from officials, employees and students.',
+      tags: ['Yoga Day', 'Health Awareness', 'Wellness', 'International Day'],
+      images: []
+    },
+    {
+      title: 'SSIP Activities - School Outreach',
+      date: 'Throughout the year',
+      category: 'community',
+      description: 'Students contributed as experts in practical sessions at Vidhya Mandir School, Palanpur for 5th to 8th standard students. Sessions on robotics and drone making conducted. Bootcamp at Jasra Primary School also organized.',
+      tags: ['SSIP', 'School Outreach', 'Robotics', 'Community Service'],
       images: []
     }
   ],
   
   messages: {
     principal: {
-      name: 'Sureshkumar D Dabhi',
+      name: 'Principal Name (Not specified in PDF)',
       designation: 'Principal, Government Polytechnic Palanpur',
-      message: `Dear Students and Faculty,
-
-The academic year 2021-22 has been a year of adaptation and resilience. Despite the challenges posed by the pandemic, our Electronics & Communication Engineering department has successfully navigated through online learning, maintaining the quality of education and ensuring student engagement.
-
-Our commitment to excellence remains unwavering, and I am proud of how our faculty and students have embraced technology to continue their academic journey. The innovative projects and research initiatives undertaken during this period demonstrate our collective determination to overcome obstacles and emerge stronger.
-
-As we move forward, we will continue to adapt and innovate, ensuring that our students receive the best possible education in this rapidly evolving field of electronics and communication technology.`
+      message: `Technology is the fuel for the society; it provides means to ease human lives, and Government Polytechnic, Palanpur is one of the institutes that provide skilled and ethical engineers to the society. This institute runs basic to advance engineering programs. Electronics and communication engineering department is one which stands ahead in terms of technology and advancements. The department is well equipped with the resources to prepare competent and industry ready EC engineers catering the needs of industries, innovators, and entrepreneurs with moral values. It is my great pleasure to see the first band (Volume 1) of the "Spectrum", e-newsletter of Electronics and Communication Department being published.`
     },
     hod: {
-      name: 'Sunilkumar J Chauhan',
+      name: 'S. J. Chauhan',
       designation: 'Head of Department - Electronics & Communication Engineering',
-      message: `Dear EC Department Family,
-
-The year 2021-22 marked a significant transition for our department as we adapted to new teaching methodologies and embraced digital transformation. Our faculty demonstrated exceptional dedication in delivering quality education through online platforms while maintaining practical learning through innovative approaches.
-
-Student engagement in various competitions and projects has been commendable, with several achievements in state-level competitions and innovation fairs. The SSIP initiative has opened new avenues for student entrepreneurship and innovation.
-
-I appreciate the continuous efforts of our faculty members and the enthusiasm of our students in making this challenging year a successful one. Together, we will continue to strive for excellence in technical education.`
+      message: `Electronics and communication engineering field has witnessed the evolution of semiconductor from vacuum tubes to MOSFETs, from telephones to 5G smart phones. Continuing the evolutionary tradition of the branch, it gives me immense pleasure to present its first yearly newsletter "Spectrum". Spectrum intends to provide a platform for faculties, students, and all other stakeholders to share and receive news of latest updates of the activities carried out in the department. This newsletter will also be publishing achievements of staff members and students. I expect students to take the 'Spectrum' to new heights. A lot of hard work has gone into publishing this, and every stakeholder's involvement will encourage us further. I extend my full cooperation and best wishes to the entire team behind Spectrum.`
     },
     editorial: {
       name: 'Editorial Team',
-      designation: 'Ms. Mittal K. Pedhadiya & Mr. Milav J. Dabgar',
-      message: `Dear Readers,
-
-This edition of "Spectrum" represents our journey through an unprecedented year. The academic year 2021-22 tested our adaptability and resilience, and we emerged stronger with innovative teaching methods and enhanced digital capabilities.
-
-Our students and faculty have shown remarkable determination in pursuing excellence despite challenges. From virtual industrial visits to online expert sessions, we have reimagined education delivery while maintaining our commitment to quality.
-
-We hope this newsletter serves as a testament to our collective efforts and inspires our community to continue striving for excellence in all endeavors.`
+      designation: 'Ms. Mittal K Pedhadiya & Mr. Milav J Dabgar, Lecturers, EC Department',
+      message: `It gives us an immense pleasure to release the first band of "Spectrum" a Newsletter of EC Engineering. Continuous motivation and guidance by HoD made the first release of this band a success. We are also thankful to the principal of our institute to provide us a platform. To make upcoming Band's of our Spectrum more informative and innovative feedbacks are welcome from all the stakeholders.`
     }
   },
   
-  vision: "To be a premier department of Electronics & Communication Engineering, recognized for excellence in technical education, innovation, and research, contributing to the technological advancement of society.",
+  vision: "To prepare competent diploma level electronics and communication engineers, catering the needs of industries and society as an excellent employee, innovator, and entrepreneur with moral values.",
   
-  mission: "To provide quality technical education in Electronics & Communication Engineering, foster innovation and research, develop industry-ready professionals, and contribute to the socio-economic development of the region through knowledge creation and dissemination.",
+  mission: "• Provide quality education in the field of EC engineering.\n• Develop state of art laboratories, classrooms, and up gradation of Faculties.\n• Strengthen industrial liaison by offering mutual beneficiaries services.\n• Execute extra-curricular and co-curricular activities to inculcate innovation, entrepreneurship, and moral values.",
   
   logos: [
     {

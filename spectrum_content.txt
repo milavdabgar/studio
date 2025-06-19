@@ -1,0 +1,588 @@
+July 2021- June 2022 | Band -I
+
+Diploma in Electronics &
+Communication Engineering
+Department
+To prepare competent
+diploma
+level electronics and
+Government
+Polytechnic,
+Palanpur
+
+Spectrum
+Yearly e-Newsletter by EC
+department
+
+Vision
+To prepare competent diploma level electronics and communication engineers,
+catering the needs of industries and society as an excellent employee, innovator,
+and entrepreneur with moral values.
+
+Mission
+ Provide quality education in the field of EC engineering.
+ Develop state of art laboratories, classrooms, and up gradation of Faculties.
+ Strengthen industrial liaison by offering mutual beneficiaries services.
+ Execute extra-curricular and co-curricular activities to inculcate innovation,
+entrepreneurship, and moral values
+
+Highlights of this issue
+ Faculty Achievements
+ Star Performers
+ Placement &
+Higher Education
+
+ Tech Talk
+ Student’s Corner
+ Department &
+Institute Level Activities
+
+From the desk of Principal
+Technology is the fuel for the society; it provides means to
+ease human lives, and Government Polytechnic, Palanpur is
+one of the institutes that provide skilled and ethical
+engineers to the society. This institute runs basic to advance
+engineering programs. Electronics and communication
+engineering department is one which stands ahead in terms
+of technology and advancements. The department is well
+equipped with the resources to prepare competent and
+industry ready EC engineers catering the needs of
+industries, innovators, and entrepreneurs with moral
+values. It is my great pleasure to see the first band (Volume
+1) of the “Spectrum”, e-newsletter of Electronics and
+Communication Department being published.
+
+From the desk of Head of Department
+Electronics and communication engineering field has
+witnessed the evolution of semiconductor from vacuum
+tubes to MOSFETs, from telephones to 5G smart
+phones. Continuing the evolutionary tradition of the
+branch, it gives me immense pleasure to present its first
+yearly newsletter “Spectrum”. Spectrum intends to
+provide a platform for faculties, students, and all other
+stakeholders to share and receive news of latest updates
+of the activities carried out in the department. This
+newsletter will also be publishing achievements of staff
+members and students. I expect students to take the
+‘Spectrum’ to new heights. A lot of hard work has gone into publishing this, and every
+stakeholder’s involvement will encourage us further. I extend my full cooperation and
+best wishes to the entire team behind Spectrum
+
+Spectrum | Band I (July 2021- June 2022)
+
+1
+
+Faculty Achievements
+Dr. R. N. Patel has published a patent on 25/02/2022 titled
+“Design of wideband bow tie antenna using tapered balun for
+industrial, scientific and medical band application”. He has also
+published a patent on 21/01/2022 titled “Rectangular patch
+antenna with Tree-Fractal structure”
+Mr. L. K. Patel has presented a paper in 3rd
+National Conference on “Recent Trends in Engineering,
+Management, Pharmacy, Architecture And Science” on
+22/10/2021 titled “Analysis of matched key points of image
+registration using SIFT, SURF with different layers of CNN” and
+he has won best paper Runner-up.
+
+Faculty Contributions & Trainings
+Mr. S. J. Chauhan has contributed as lead member in the development of GTU
+syllabus for the subject ‘Electronics Workshop (4321101)’. He is institute coordinator for
+AICTE accreditation and GTU affiliation. He rendered his services as Hostel Rector.
+Mrs. G. N. Acharya is coordinator of housekeeping committee in the institute.
+Ms. M. K. Pedhadiya has contributed to the syllabus making process of the GTU
+subject ‘Electronic Circuits & Applications (4321104)’. She is co–coordinator of Student
+Section. She has completed a training on ‘Embedded Systems’.
+Mr. L. K. Patel has contributed to the syllabus making process of the GTU subject
+‘Fundamentals of Electronics (4311102)’. He is GTU coordinator of the institute.
+Mr. N. M. Patel has contributed to the syllabus making process of the GTU subject
+‘Fundamentals Electronic Circuits & Applications (4321104)’. He is working as cocoordinator in Gymkhana committee, training and placement cell.
+Mr. R. N. Patel is serving as an administrative officer of the institute. He is editorial
+board member in ‘Global Research and Development Journal (ISSN: 24555703)’. He
+has completed a training on ‘Antenna Design’.
+Mr. M. J. Dabgar is serving as coordinator of CWAN committee & co–coordinator of
+SSIP Cell. This year, he has taken Training on ‘Induction Phase – II’
+Mr. R. C. Parmar has contributed to the syllabus making process of the GTU subject
+‘Industrial Electronics (4331103)’. He is serving as co–coordinator of Student Section.
+This year, he has undergone Training titled ‘Induction Phase – II’.
+Spectrum | Band I (July 2021- June 2022)
+
+2
+
+Mr. S. P. Joshiara is serving as co-coordinator of CWAN, Website & GTU
+Committees. He has completed ‘Induction Phase – II’ Training.
+Mr. N. J. Chauhan has contributed to the syllabus making process of the GTU subject
+‘Digital Electronics (4321103)’. He is serving as co-coordinator of AICTE accreditation
+Committee. This year, he has taken Training on ‘Induction Phase – II’.
+
+Star Performers
+1. Stuti Raval (216260311005)
+
+7.41 (Sem 1 - Winter 2021)
+
+1. Chaudhary Adarsh (206260311005)
+2. Chaudhary Piyush (206260311003)
+
+8.19 (Sem 3 - Winter 2021)
+7.68 (Sem 3 - Winter 2021)
+
+1. Panchal Tirth (196260311008)
+2. Umatiya Anas (196260311016)
+
+8.2 (Sem 5- Winter 2021)
+8.07 (Sem 5- Winter 2021)
+
+1. Chaudhary Piyush (206260311003)
+2. Chaudhary Adarsh (206260311005)
+
+9.26 (Sem 2- Summer 2021)
+8.87 (Sem 2- Summer 2021)
+
+1. Solanki Niravbhai (196260311505)
+2. Umatiya Anas (196260311016)
+
+8.21 (Sem 4- Summer 2021)
+7.11 (Sem 4- Summer 2021)
+
+1. Prajapati Rohit (196260311013)
+2. Panchal Tirth (196260311008)
+3. Solanki Niravbhai (196260311505)
+
+8.13 (Sem 6- Summer 2022)
+8.07 (Sem 6- Summer 2022)
+8.07 (Sem 6- Summer 2022)
+
+Placements
+1.
+2.
+3.
+4.
+5.
+6.
+7.
+8.
+
+Nirav Solanki (1962603110505)
+Darshil Modi (196260311006)
+Dabhi Ashwin (196260311002)
+Damor Bhargav (196260311503)
+Chhayank Mevada (196260311005)
+Tirth Panchal (196260311008)
+Rohit Prajapati (196260311013)
+Mohammed Kaif (156260311501)
+
+-
+
+Mehta Expai Technologies Pvt. Ltd.
+Mehta Expai Technologies Pvt. Ltd.
+Webilok IT services, Deesa
+Webilok IT services, Deesa
+Webilok IT services, Deesa
+Webilok IT services, Deesa
+Webilok IT services, Deesa
+Asahi Glass, Patan
+
+Higher Education
+Following students were admitted to Degree engineering program
+1. Nirajkumar Prajapati (186260311002) – VGEC, Chandkheda
+2. Jaydip Kadiya (166260311010) – GEC, Gandhinagar
+Spectrum | Band I (July 2021- June 2022)
+
+3
+
+Expert Lectures
+Expert lecture on “Importance of Programming” (09/08/2021)
+This expert lecture was delivered by Mr. Pranav Dave, Tech Lead (Associate
+consultant), Tata Consultancy Services (TCS), Gandhinagar in online
+mode. The session was conducted on the basics of programming, with details on the
+uses of programming with real time examples. The need of programming in different
+areas was also discussed. Speaker talked about “How the programming is used to
+solve and simplify complex problems”. The session was ended with the motivation to
+the students to start programming and build up career.
+
+Spectrum | Band I (July 2021- June 2022)
+
+4
+
+Expert lecture on “Navigation with Indian Constellation (NavIC) and Its
+Application” (29/01/2022)
+This expert lecture was delivered by Dr. Mehulkumar Desai, Lecturer in EC,
+Government Polytechnic for Girls, Surat in online mode. In this session the
+basics of satellite-based navigation system, different terminologies and NavIC
+architecture was explained to the participants. In it effects of positional accuracy and
+how the navigation system works were discussed. Various applications of satellitebased navigation system were discussed in depth. The session motivated students to
+work towards make in India by using the NavIC made in India and for India.
+
+Spectrum | Band I (July 2021- June 2022)
+
+5
+
+Industrial Visit
+Community Radio Palanpur (26/03/2022)
+
+In this visit students got a chance to experience live radio broadcast. In addition, they
+have seen recording studio, studio equipments, FM transmission equipments and
+antennas. Students also got opportunity to meet Radio Jockey and manager of Radio
+Palanpur. They shared their journey and experiences in setting up community radio
+station at Palanpur.
+
+Spectrum | Band I (July 2021- June 2022)
+
+6
+
+Samsung Customer Care (29/03/2022)
+In this visit students observed how smart phone, laptops and tablets are serviced at
+Samsung service center. Technician of Samsung care demonstrated how to disassemble
+various parts of Smartphone, Tablets, and laptops, then he also demonstrated how
+desolder and solder back the tiny components. At last, The Manager at Samsung care
+guided students about career scope in this segment of industry.
+
+Sahajanand Laser Technologies (12/04/2022)
+As a technology driven group of companies, Sahajanand Laser Technologies (SLTL)
+undertakes manufacturing of solutions in the fields of Laser Systems, Medical, Diamond
+& Jewellery, RF & Microwave, and Renewable Energy Machine Tools. Their innovative
+solutions are designed to match industrial requirements and beyond. During their visit
+to SLTL, students observed LASER cutting machines, LASER engraving machines,
+Robotic equipments, RF and microwave equipments manufacturing chain of STLT.
+
+Spectrum | Band I (July 2021- June 2022)
+
+7
+
+JK Industries, Chandisar (02/05/2022)
+JK industries majorly works on manufacturing and servicing of High voltage
+transformers used in power distribution by GEB. Assigned engineer explained repairing
+of Transformer to the students. Students also got the opportunity to see live
+troubleshooting and repairing of damaged transformers.
+
+Farewell for 2022 pass-outs (04/04/2022)
+A farewell was given to the 2022 pass-outs with a keynote by HoD, and kind words by all
+the staff members.
+
+Participation in SSIP activities
+Students from our department actively participate in various activities of SSIP Cell, GP
+Palanpur. Here are glimpse of some of the activities…
+Spectrum | Band I (July 2021- June 2022)
+
+8
+
+Students from our department contributed as experts in practical sessions organized at
+Vidhya mandir School, Palanpur for 5 to 8 standard students by SSIP Cell. The sessions
+were aimed to give basic ideas of robotics and drone making to school students. It was a
+wonderful experience for our students to perform the role of teacher and demonstrate
+their skills to school children.
+
+Total 80 students benefited from this session. Whole event was managed by: YUVRAJ
+RAJPUT (6th EC) & few other students. A Similar kind of events covering Robotics,
+Drone & RC Plane making were also conducted at Jasra Primary School Vidhya mandir
+school and few other schools.
+Bootcamp on Robotics and Drone making at Jasra Primary School
+(25/05/2022)
+
+Spectrum | Band I (July 2021- June 2022)
+
+9
+
+College Level Activities
+Tree Plantation (31/07/2021)
+Institute organized Tree Plantation on 31 July 2021 in college campus and
+Approximately 150 different types of trees were planted in campus. Mr. Lalitbhai
+Vasvani and his team (Society for clean and green environment) are also joined with us
+for this event.
+
+Use of Technology in Education (10/08/2021)
+An Online Seminar for the students on “Use of Technology in Education” by Mr.
+S.R.Modi and Mr. R.H.Prajapati (Lecturer in Mechanical Engineering Department,
+G.P.Palanpur.
+
+Spectrum | Band I (July 2021- June 2022)
+
+10
+
+75th Independence Day (15/08/2021)
+A flag hoisting ceremony was organized at Government Polytechnic Palanpur on 15th
+August 2021 to celebrate75th Independence Day in which all students and staff
+members participated enthusiastically.
+
+NBA Visit at the Institute (24- 26/09/2021)
+Three departments namely Civil, Mechanical and Electrical department applied for the
+NBA accreditation. And for the successful completion of the visit all the EC staff
+members played a key role in it.
+
+Spectrum | Band I (July 2021- June 2022)
+
+11
+
+Thalassemia Camp (07/10/2021)
+Institute has organized a Thalassemia camp for students on 7-10-2021. Awareness and
+counseling program is also carried out from the team of Indian Red Cross society,
+Ahmadabad for Thalassemia.
+
+Garba Mahotsav (21/10/2021)
+One day Garba Mahotsav is organized in institute for celebration of Navaratri. All the
+students and staff members participated enthusiastically.
+
+Spectrum | Band I (July 2021- June 2022)
+
+12
+
+Vyasan Mukti Abhiyan (22/10/2021)
+
+A Seminar on Tobacco free movement-Drug Awareness is organized by Drug
+enforcement and reception department Palanpur at institute on 22-10-2021. Shree.
+N.A.Devani (PI, Drug Excise Department), Smt. G.D.Ahir (PSI, Women PoliceStation)
+and Smt. Jigishaben Tarar (Women counsellor, Women based support center) has given
+their valuable speech for Drug awareness.
+
+Spectrum | Band I (July 2021- June 2022)
+
+13
+
+Clean India Movement (28/10/2021)
+
+Cleanliness drive was carried out for clean campus and surroundings under the clean
+India movement campaign on 28-10-2021.
+
+Spectrum | Band I (July 2021- June 2022)
+
+14
+
+National Unity Day (31/10/2021)
+The birth anniversary of Iron man Shri Sardar Vallabhbhai Patel is celebrated on 31st
+October every year as “National Unity Day”. As a part of the day Pledge taking ceremony
+was arranged in seminar hall.
+
+Republic Day (26/01/2022)
+At Government Polytechnic Palanpur, On 26th January 2022, the occasion of 73rd
+Republic Day, a flag salute program was organized in the presence of “Hon'ble former
+MLA Rekhaben Khanesha”. In which all the officials and students of the institute
+enthusiastically participated.
+
+Spectrum | Band I (July 2021- June 2022)
+
+15
+
+Martyrs' Day (29/01/2022)
+On Martyrs' Day on 30th January 2022, the opportunity to pay tribute to the martyred
+heroes who sacrificed their lives in the freedom struggle of India should be taken
+seriously and the spirit of faith and respect towards the martyrs should be awakened
+and the country should realize its importance for which an online talk was organized by
+History Coordinating Committee, Gujarat on 29th January 2020 at 3:00 pm at the
+institute. In this program, Shri Girishbhai Thacker, Vice Chairman, History
+Coordinating Committee, Gujarat gave a speech on the subject of “Indian Freedom
+Struggle (Bhartiya Swatantra Sangram)”. The program was also broadcast online
+through Google meet.
+
+Women’s Day (05/03/2022)
+Women Development cell has conducted various activities in co-ordination with RUSA.
+On account of Woman’s Day celebration on 05/03/2022 an expert lecture on “Laws
+related to women safety” by MS. YASHASHVI MEHTA PANDYA also an expert lecture
+on “Disadvantages of mobile and internet” was delivered by MS. GEETA ACHARYA (Sr.
+Lecturer in EC).
+Spectrum | Band I (July 2021- June 2022)
+
+16
+
+An event named “Food without flame contest” was also organized. In this event students
+took part enthusiastically and prepared ready to serve dishes without using the flame.
+Stuti Raval and Bijal Suthar (Sem 1 EC) won first prize and Khushbu Garasiya and
+Khushi Patel (Sem 6 EC) won second prize in the event.
+
+Expert lecture on “Self-employment enhancement” was delivered by Tithi Vakil
+(Interior Designer). She gave a demo of how to enhance employment by developing a
+hobby. Speaker demonstrated steps for making a pastry/cake, inspiring students to
+develop hobby along with their profession.
+
+Spectrum | Band I (July 2021- June 2022)
+
+17
+
+District Level Placement Fair (23/03/2022)
+
+A district level mega placement fair was organized as per directives of the government.
+Total 22 industries participated and conducted interviews of candidates from Science
+Colleges, Commerce Colleges, Arts Colleges Degree and Diploma Engineering Colleges
+across Banaskantha district. Total 9 students were shortlisted/selected by reputed
+industries like Webilok IT services and Mehta Expai company from our department.
+Team EC played a key role in smooth execution of Placement Fair.
+
+Voter
+Spectrum | Band I (July 2021- June 2022)
+
+Awareness
+
+Program
+18
+
+(05/05/2022)
+As part of extra-curricular activities at Government Polytechnic Palanpur, NSS unit
+organized drawing competition and essay competition to create awareness among
+students about voting. The students enthusiastically participated in this competition
+and brought out their inner skill. The winning students were encouraged by giving
+certificates and prizes.
+
+Yoga Day Celebration (21/06/2022)
+At Government Polytechnic Palanpur, On 21st June 2022, the occasion of international
+yoga day various yoga represented by yoga teacher. In which all the officials, employees
+and students of the institute enthusiastically participated.
+
+Spectrum | Band I (July 2021- June 2022)
+
+19
+
+Tech Talk
+Device to device communication in 5G
+Introduction of Android as an operating system and open source software’s, free wares
+and ample of bandwidth-hungry applications results in scarcity of spectrum for
+communication. The growth of mobile devices, voice, and video over IP (VoIP) resulted
+in an exponential growth of data traffic; mobile data traffic expected to increase 1000
+times over ten years. The forecast says that the 100 billion devices would be connected
+by 2030 by the onset of the internet of things. The massive increment in the connected
+devices causes overcrowded electromagnetic spectrum. In the 5G device to device,
+communication provides a prominent solution. Device to device communication (D2D)
+is defined as the communication among devices in close proximity, open to use cellular
+licensed as well as unlicensed frequency spectrum without the need to traverse the core
+network.
+Vehicular
+communication(M2M)
+
+Gaming, data transfer
+
+DTX2
+
+DTX
+DRX
+
+Content distribution
+DRX2
+
+relaying
+
+DRX2
+
+DTX2
+lin
+ol
+ntr
+
+K
+LIN
+OL
+
+DTX
+RELAY
+
+NTR
+CO
+
+Cellular offloading
+Video streaming
+
+Relay
+
+k
+
+Co
+
+Base Station
+
+rol lin
+Cont
+
+k
+
+DRX2
+
+DRLY
+
+DRLY
+
+DRX2
+
+DRX
+
+Use cases of D2D communication
+
+D2D communication is a prime technology of 5G, which supports a variety of use cases
+as described in above figure. D2D communication will be an alternative to mobile
+communication demanding higher rate services as vehicular communication, content
+distribution in conferences, concerts, gaming, cellular offloading, relaying of data, and
+advertisement broadcasting in the streets. The use case of D2D communication of
+significance is public safety and disaster.
+Spectrum | Band I (July 2021- June 2022)
+
+20
+
+The devices close to, enables higher throughput, lower latency, lower transmission
+power, higher data rate and higher spectral efficiency and energy efficiency.
+D2D communication exists on unlicensed as well as on the licensed frequency spectrum.
+Majority of the research is on the licensed spectrum (inband D2D) as it provides a
+higher level of security. Resources of cellular devices reused by the D2D devices in
+inband D2D communication (underlay inband D2D).
+D2D
+COMMUNICATION
+
+INBAND
+
+UNDERLAY
+
+OUTBAND
+
+OVERLAY
+
+CONTROLLED
+
+AUTONOMOUS
+
+Reusing the resources certainly improves the spectral efficiency, but interference
+between the D2D user and cellular user introduced nevertheless. The eventual
+reduction in the spectral efficiency by using part of dedicated licensed spectrum for D2D
+users, however, provides fairness in provisioning of resources to D2D users and cellular
+users (overlay inband D2D). There are researchers recommending the use of unlicensed
+band for D2D users with Wi-Fi direct or Bluetooth (outband D2D) against licensed
+spectrum. The complexity increases in unlicensed spectrum, on account of interference.
+Above figure summarizes the D2D communication with respect to the spectrum usage.
+For Further Study - https://doi.org/10.1016/j.jnca.2018.10.012
+- Ms. M. K. Pedhadiya
+Lecturer in EC,
+GP, Palanpur
+
+Spectrum | Band I (July 2021- June 2022)
+
+21
+
+Student’s Corner
+A poem on Teacher’s written by Arman Ghasura (166260311008)
+
+Spectrum | Band I (July 2021- June 2022)
+
+22
+
+A poem on Teacher’s written by Stuti Raval (216260311005) and Bijal
+Suthar (216260311006)
+
+Editor’s Note
+It gives us an immense pleasure to release the first band of “Spectrum” a Newsletter of
+EC Engineering. Continuous motivation and guidance by HoD made the first release of
+this band a success. We are also thankful to the principal of our institute to provide us a
+platform. To make upcoming Band’s of our Spectrum more informative and innovative
+feedbacks are welcome from all the stakeholders.
+Ms. Mittal K Pedhadiya,
+Mr. Milav J Dabgar,
+Lecturer,
+EC Department,
+GP Palanpur.
+
+Spectrum | Band I (July 2021- June 2022)
+
+Contact Us
+Department of EC Engineering,
+Government Polytechnic Palanpur,
+Opp. Malan Darwaja, Ambaji Road,
+Palanpur - 385001
+Phone: 02742-245219
+E-mail: gppec11@gmail.com
+
+23
+
+
