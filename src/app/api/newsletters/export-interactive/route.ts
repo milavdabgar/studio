@@ -9,67 +9,106 @@ try {
   console.log('Puppeteer not available, PDF generation will be limited');
 }
 
-// Interactive Newsletter Component Data
+// Interactive Newsletter Component Data - Updated with Real Content
 const interactiveNewsletterData = {
   stats: [
-    { label: 'Placement Rate', value: 85, color: 'bg-blue-500' },
+    { label: 'Placement Rate', value: 100, color: 'bg-blue-500' },
     { label: 'Research Papers', value: 20, color: 'bg-green-500' },
-    { label: 'Students', value: 150, color: 'bg-purple-500' },
-    { label: 'Avg Package (L)', value: 4.8, color: 'bg-orange-500' },
+    { label: 'Students Placed', value: 4, color: 'bg-purple-500' },
+    { label: 'Highest Package (L)', value: 4.5, color: 'bg-orange-500' },
   ],
   achievements: [
     {
       category: 'Faculty Excellence',
       items: [
-        'Prof. Nirav J. Chauhan - Best Paper Award at NCET-2024',
-        'Dr. Meera R. Patel - Outstanding Faculty Researcher Award',
-        'Prof. Kiran B. Shah - Patent grant for Energy Harvesting System',
-        'Ms. Mittal K. Pedhadiya - Ph.D. completion in Digital Signal Processing'
+        'Prof. Nirav J. Chauhan - Leading NCET-2024 conference organization and research excellence',
+        'Ms. Mittal K. Pedhadiya - Editorial excellence and academic coordination',
+        'Mr. Milav J. Dabgar - Technical innovation and newsletter coordination',
+        'Faculty Research Team - Multiple publications in reputed journals'
       ]
     },
     {
       category: 'Student Success',
       items: [
-        'Ravi Kumar Patel - 1st Rank in GTU BE-EC (CGPA: 9.85)',
-        'Team TechInnovators - 1st Prize in Smart India Hackathon 2024',
-        'Rohit Desai - 2nd Prize in IEEE National Student Competition',
-        'Best Innovation Award at Gujarat Technical Festival 2024'
+        'Sahil S. Vaghela - Placed at Micron Technology as Process Technician (₹4.5L)',
+        'Bharat S. Pawar - Placed at Micron Technology as Manufacturing Associate (₹3.7L)',
+        'Maitri R. Patel - Placed at TDSC Becharaji as Trainee Engineer (₹3.0L)',
+        'Stutiben A. Raval - Placed at TDSC Becharaji as Trainee Engineer (₹3.0L)',
+        'Srujal Y. Chaudhary - Pursuing B.E. at VEGC, Chandkheda for higher studies'
       ]
     },
     {
-      category: 'Infrastructure',
+      category: 'Research & Innovation',
       items: [
-        'New IoT & Embedded Systems Lab (₹15 lakhs)',
-        '5G Communication Systems Lab Upgrade (₹18 lakhs)',
-        'State-of-the-art Testing Equipment Installation',
-        'Digital Signal Processing Lab Enhancement'
+        'SSIP initiatives with ₹50,000 prize-winning rover project',
+        'Multiple patents filed in electronics and communication domain',
+        'Industry collaborations for practical learning',
+        'Student innovation projects receiving state-level recognition'
       ]
     }
   ],
   placements: [
-    { company: 'Infosys', package: '6.5 LPA', students: 12 },
-    { company: 'TCS', package: '4.2 LPA', students: 18 },
-    { company: 'Wipro', package: '5.8 LPA', students: 8 },
-    { company: 'Tech Mahindra', package: '5.2 LPA', students: 6 },
-    { company: 'L&T Infotech', package: '7.2 LPA', students: 4 },
-    { company: 'Accenture', package: '6.8 LPA', students: 7 }
+    { company: 'Micron Technology', package: '₹4.5L', students: 2, position: 'Process Technician / Manufacturing Associate' },
+    { company: 'TDSC Becharaji', package: '₹3.0L', students: 2, position: 'Trainee Engineer' }
   ],
   events: [
     {
       title: 'National Conference on Emerging Technologies (NCET-2024)',
-      date: 'March 15-16, 2024',
-      description: 'Two-day conference featuring latest research in Electronics & Communication'
+      date: 'December 15-16, 2023',
+      description: 'Two-day national conference focusing on cutting-edge technologies in electronics and communication with keynote speeches, technical papers, and workshops on IoT, 5G, and AI applications.'
     },
     {
-      title: 'Industry-Academia Meet 2024',
-      date: 'January 20, 2024',
-      description: 'Interactive session with industry experts from leading tech companies'
+      title: 'Orientation Program 2024',
+      date: 'June 3, 2024',
+      description: 'Comprehensive orientation program for newly admitted students, introducing them to department facilities, curriculum, and career opportunities in electronics and communication engineering.'
     },
     {
-      title: 'Technical Symposium - TechFest 2024',
-      date: 'February 8-9, 2024',
-      description: 'Student-organized technical event with competitions and workshops'
+      title: 'RTL Design Workshop',
+      date: 'June 11, 2024',
+      description: 'Intensive hands-on workshop on Register Transfer Level (RTL) design using industry-standard tools and methodologies. Students learned VLSI design flow, HDL programming, and digital circuit synthesis.'
     }
+  ],
+  messages: {
+    principal: {
+      name: 'Dr. Rajesh Kumar Sharma',
+      designation: 'Principal, Government Polytechnic Palanpur',
+      message: `Dear Students, Faculty, and Stakeholders,
+
+It gives me immense pleasure to introduce this edition of "Spectrum," the newsletter of our Electronics & Communication Engineering Department. Our institution, established in 1984, has been a beacon of technical education in North Gujarat, consistently producing skilled professionals who contribute significantly to the industry and society.
+
+The academic year 2023-24 has been remarkable for our EC department, with students excelling in competitions, faculty contributing to research, and our SSIP cell fostering innovation. Our focus remains on providing quality education that blends theoretical knowledge with practical skills, preparing our students for the dynamic world of technology.
+
+I congratulate the entire EC department team for their dedication and encourage our students to continue their pursuit of excellence.`
+    },
+    hod: {
+      name: 'Prof. Nirav J. Chauhan',
+      designation: 'Head of Department - Electronics & Communication Engineering',
+      message: `Dear EC Family,
+
+The Electronics & Communication Engineering department continues to evolve with emerging technologies and industry demands. This year has been particularly significant as we've strengthened our curriculum with advanced topics in IoT, VLSI, and communication systems.
+
+Our students have shown exceptional performance in various competitions, including the G3Q quiz where our team secured top positions. The department's research initiatives have gained momentum with faculty publications and student innovation projects receiving recognition.
+
+As we look ahead, our commitment remains steadfast - to nurture competent engineers who can contribute meaningfully to the technological advancement of our nation. I extend my heartfelt appreciation to our dedicated faculty and motivated students for making this journey rewarding.`
+    },
+    editorial: {
+      name: 'Editorial Team',
+      designation: 'Ms. Mittal K. Pedhadiya & Mr. Milav J. Dabgar',
+      message: `Welcome to the third edition of Spectrum, chronicling the remarkable journey of our Electronics & Communication Engineering department during 2023-24.
+
+This edition captures the essence of our department's growth - from academic achievements and research publications to student innovations and industry collaborations. We've witnessed our students excel in competitions, our faculty contribute to cutting-edge research, and our department strengthen its position in technical education.
+
+Special recognition goes to our SSIP initiatives that have resulted in multiple patents and the prestigious ₹50,000 prize-winning rover project. These achievements reflect our commitment to innovation and practical learning.
+
+We hope this newsletter serves as a source of inspiration and information for our extended EC family.`
+    }
+  },
+  vision: "To prepare competent diploma level electronics and communication engineers, catering the needs of industries and society as an excellent employee, innovator, and entrepreneur with moral values.",
+  mission: [
+    "Provide quality education in the field of EC engineering",
+    "Develop state of art laboratories and classrooms", 
+    "Strengthen industrial liaison services",
+    "Execute activities to inculcate innovation and entrepreneurship"
   ]
 };
 
@@ -279,6 +318,91 @@ function generateStaticHtml(data: typeof interactiveNewsletterData): string {
             color: #3b82f6;
         }
         
+        .message-section {
+            background: white;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .message-author {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .message-designation {
+            font-size: 1rem;
+            color: #6b7280;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+        
+        .message-text {
+            color: #4b5563;
+            line-height: 1.7;
+            white-space: pre-line;
+        }
+        
+        .vision-mission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        
+        .vision-card, .mission-card {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .vision-card {
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .mission-card {
+            border-left: 4px solid #10b981;
+        }
+        
+        .vision-title, .mission-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .vision-title {
+            color: #1e40af;
+        }
+        
+        .mission-title {
+            color: #065f46;
+        }
+        
+        .mission-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .mission-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .mission-list li:last-child {
+            border-bottom: none;
+        }
+        
         @media print {
             body {
                 background: white;
@@ -286,9 +410,10 @@ function generateStaticHtml(data: typeof interactiveNewsletterData): string {
             .container {
                 padding: 1rem;
             }
-            .section {
+            .section, .message-section {
                 box-shadow: none;
                 border: 1px solid #e5e7eb;
+                page-break-inside: avoid;
             }
         }
     </style>
@@ -298,7 +423,8 @@ function generateStaticHtml(data: typeof interactiveNewsletterData): string {
         <div class="header">
             <h1>Spectrum Newsletter</h1>
             <p>Department of Electronics & Communication Engineering</p>
-            <p>Band 3 • Academic Year 2023-24</p>
+            <p>Government Polytechnic, Palanpur</p>
+            <p>Band III • Academic Year 2023-24</p>
         </div>
         
         <div class="stats-grid">
@@ -310,8 +436,54 @@ function generateStaticHtml(data: typeof interactiveNewsletterData): string {
             `).join('')}
         </div>
         
+        ${data.messages ? `
+        <div class="message-section">
+            <h2 class="section-title">� Principal's Message</h2>
+            <div class="message-author">${data.messages.principal.name}</div>
+            <div class="message-designation">${data.messages.principal.designation}</div>
+            <div class="message-text">${data.messages.principal.message}</div>
+        </div>
+        
+        <div class="message-section">
+            <h2 class="section-title">👨‍🏫 Head of Department's Message</h2>
+            <div class="message-author">${data.messages.hod.name}</div>
+            <div class="message-designation">${data.messages.hod.designation}</div>
+            <div class="message-text">${data.messages.hod.message}</div>
+        </div>
+        
+        <div class="message-section">
+            <h2 class="section-title">✍️ Editor's Note</h2>
+            <div class="message-author">${data.messages.editorial.name}</div>
+            <div class="message-designation">${data.messages.editorial.designation}</div>
+            <div class="message-text">${data.messages.editorial.message}</div>
+        </div>
+        ` : ''}
+        
+        ${data.vision && data.mission ? `
         <div class="section">
-            <h2 class="section-title">🏆 Achievements & Recognition</h2>
+            <h2 class="section-title">🎯 Vision & Mission</h2>
+            <div class="vision-mission-grid">
+                <div class="vision-card">
+                    <h3 class="vision-title">🔭 Vision</h3>
+                    <p>${data.vision}</p>
+                </div>
+                <div class="mission-card">
+                    <h3 class="mission-title">🎯 Mission</h3>
+                    <ul class="mission-list">
+                        ${data.mission.map(item => `
+                            <li>
+                                <span style="color: #10b981; font-size: 1.2rem;">✓</span>
+                                <span>${item}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        ` : ''}
+        
+        <div class="section">
+            <h2 class="section-title">�🏆 Achievements & Recognition</h2>
             <div class="achievements-grid">
                 ${data.achievements.map(achievement => `
                     <div class="achievement-category">
@@ -325,15 +497,18 @@ function generateStaticHtml(data: typeof interactiveNewsletterData): string {
         </div>
         
         <div class="section">
-            <h2 class="section-title">💼 Placements 2023-24</h2>
+            <h2 class="section-title">💼 Placements & Higher Studies 2023-24</h2>
             <div class="placements-grid">
                 ${data.placements.map(placement => `
                     <div class="placement-card">
                         <div class="placement-company">${placement.company}</div>
                         <div class="placement-package">Package: ${placement.package}</div>
                         <div class="placement-students">${placement.students} students placed</div>
+                        ${placement.position ? `<div style="font-size: 0.875rem; color: #6b7280; margin-top: 0.25rem;">${placement.position}</div>` : ''}
                     </div>
                 `).join('')}
+            </div>
+        </div>
             </div>
         </div>
         
