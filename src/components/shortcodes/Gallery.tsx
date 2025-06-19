@@ -21,14 +21,17 @@ const Gallery: React.FC<GalleryProps> = ({ children }) => {
   // If children is a string (HTML), fix the image paths
   let content = children;
   if (typeof children === 'string') {
-    // Fix relative image paths to use content-images API
-    content = children.replace(/src="([^"]*(?:gallery|images?)\/[^"]*\.(?:jpg|jpeg|png|gif|svg|webp))"/gi, (match, src) => {
+    // Fix ALL image src attributes to use content-images API
+    content = children.replace(/src="([^"]*)"/g, (match, src) => {
       // If the src doesn't start with http/https or /api/, use content-images API
       if (!src.startsWith('http') && !src.startsWith('/api/')) {
+        let newSrc;
         if (!src.startsWith('/')) {
-          return `src="/api/content-images/development/shortcodes/${src}"`;
+          newSrc = `/api/content-images/development/shortcodes/${src}`;
+        } else {
+          newSrc = `/api/content-images${src}`;
         }
-        return `src="/api/content-images${src}"`;
+        return `src="${newSrc}"`;
       }
       return match;
     });

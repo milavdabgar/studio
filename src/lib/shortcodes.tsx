@@ -253,6 +253,9 @@ export function parseShortcodes(content: string): string {
       } else if (shortcodeName === 'chart' || shortcodeName === 'Chart') {
         // For Chart, pass raw content as children  
         params.children = innerContent.trim();
+      } else if (shortcodeName === 'gallery' || shortcodeName === 'Gallery') {
+        // For Gallery, pass raw HTML content as children
+        params.children = innerContent.trim();
       } else if (shortcodeName === 'timeline' || shortcodeName === 'Timeline') {
         // For Timeline, we need to process nested shortcodes and pass as React children
         // We'll handle this specially in the Timeline component itself
