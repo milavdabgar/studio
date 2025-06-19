@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ContentConverterV2 } from '@/lib/content-converter-v2';
 import { newsletterData } from '@/lib/newsletter-data';
+import fs from 'fs';
+import path from 'path';
 
 // Import Puppeteer for direct React component to PDF conversion
 let puppeteer: any;
@@ -8,6 +10,29 @@ try {
   puppeteer = require('puppeteer');
 } catch (error) {
   console.log('Puppeteer not available, PDF generation will be limited');
+}
+
+// Helper function to convert local images to base64 data URLs
+function getImageAsBase64(imagePath: string): string {
+  try {
+    const fullPath = path.join(process.cwd(), 'public', imagePath);
+    console.log(`Attempting to load image from: ${fullPath}`);
+    
+    if (!fs.existsSync(fullPath)) {
+      console.error(`Image file not found: ${fullPath}`);
+      return '';
+    }
+    
+    const imageBuffer = fs.readFileSync(fullPath);
+    const base64 = imageBuffer.toString('base64');
+    const ext = path.extname(imagePath).toLowerCase();
+    const mimeType = ext === '.png' ? 'image/png' : ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : 'image/png';
+    console.log(`Successfully converted image to base64: ${imagePath}`);
+    return `data:${mimeType};base64,${base64}`;
+  } catch (error) {
+    console.error(`Failed to load image: ${imagePath}`, error);
+    return '';
+  }
 }
 
 // Using centralized newsletter data
@@ -363,9 +388,10 @@ function generateStaticHtml(data: typeof newsletterData): string {
         <div class="header">
             ${data.logos ? `
             <div class="header-logos">
-                ${data.logos.map(logo => `
-                    <img src="${logo.src}" alt="${logo.alt}" class="header-logo" />
-                `).join('')}
+                ${data.logos.map(logo => {
+                  const base64Src = getImageAsBase64(logo.src);
+                  return base64Src ? `<img src="${base64Src}" alt="${logo.alt}" class="header-logo" />` : '';
+                }).join('')}
             </div>
             ` : ''}
             <h1>Spectrum Newsletter</h1>
