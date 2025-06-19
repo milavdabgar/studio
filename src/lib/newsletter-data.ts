@@ -67,49 +67,144 @@ export interface NewsletterData {
 // Centralized Newsletter Data - Single Source of Truth
 export const newsletterData: NewsletterData = {
   stats: [
-    { label: 'Placement Rate', value: 100, color: 'bg-blue-500' },
-    { label: 'Research Papers', value: 20, color: 'bg-green-500' },
-    { label: 'Students Placed', value: 4, color: 'bg-purple-500' },
-    { label: 'Highest Package (L)', value: 4.5, color: 'bg-orange-500' },
+    { label: 'Placement Rate', value: 67, color: 'bg-blue-500' },
+    { label: 'Conference Papers', value: 1, color: 'bg-green-500' },
+    { label: 'Students Placed', value: 2, color: 'bg-purple-500' },
+    { label: 'Highest Package (L)', value: 3.72, color: 'bg-orange-500' },
   ],
   
   achievements: [
     {
       category: 'Faculty Excellence',
       items: [
-        'Prof. Nirav J. Chauhan - Leading NCET-2024 conference organization and research excellence',
+        'Prof. Nirav Jashvantkumar Chauhan - Paper presentation at 2nd International Conference on Emerging Trends & Contemporary Practices (ICETCP 2024) at Atmiya University on "Analysis of Vedic Shaped Microstrip Patch Antenna (MPA) Design for Wireless Applications", February 9-10, 2024',
         'Ms. Mittal K. Pedhadiya - Editorial excellence and academic coordination',
         'Mr. Milav J. Dabgar - Technical innovation and newsletter coordination',
-        'Faculty Research Team - Multiple publications in reputed journals'
+        'Department faculty commitment to cutting-edge research in wireless communication and antenna design'
       ]
     },
     {
-      category: 'Student Success',
+      category: 'Student Achievements',
       items: [
-        'Sahil S. Vaghela - Placed at Micron Technology as Process Technician (₹4.5L)',
-        'Bharat S. Pawar - Placed at Micron Technology as Manufacturing Associate (₹3.7L)',
-        'Maitri R. Patel - Placed at TDSC Becharaji as Trainee Engineer (₹3.0L)',
-        'Stutiben A. Raval - Placed at TDSC Becharaji as Trainee Engineer (₹3.0L)',
-        'Srujal Y. Chaudhary - Pursuing B.E. at VEGC, Chandkheda for higher studies'
+        'Shri Indrajit Rameshbhai Chauhan (GJR1289533) - Winner in Gujarat Gyan Guru Quiz (G3Q) 2.0 Week 12, College/University Category',
+        'Shri Mali Paresh Rameshbhai (GJPO524721) - Winner in Gujarat Gyan Guru Quiz (G3Q) 2.0 Week 4, College/University Category', 
+        'Shri Prajapati Sailesh (GJK0798157) - Winner in Gujarat Gyan Guru Quiz (G3Q) 2.0 Week 4, College/University Category',
+        'Students from EC and ICT departments excelling in state-level knowledge competitions'
       ]
     },
     {
-      category: 'Research & Innovation',
+      category: 'Placements & Higher Studies (2023-24)',
       items: [
-        'SSIP initiatives with ₹50,000 prize-winning rover project',
-        'Multiple patents filed in electronics and communication domain',
-        'Industry collaborations for practical learning',
-        'Student innovation projects receiving state-level recognition'
+        'Bharat Shankarlal Pawar (Enr: 216260311003) - Placed at Micron Technology, Sanand as Manufacturing Associate with ₹3.72L annual salary',
+        'Stutiben Amitkumar Raval (Enr: 216260311005) - Placed at TDSC, Becharaji as Diploma Trainee Engineer with ₹3.00L annual salary',
+        'Srujal Yashvantbhai Chaudhary (Enr: 216260311012) - Pursuing B.E. at VEGC, Chandkheda (Admission Year: 2024)',
+        'Placement Rate: 67% (2 out of 3 eligible students placed)'
       ]
     }
   ],
   
   placements: [
-    { company: 'Micron Technology', package: '₹4.5L', students: 2, position: 'Process Technician / Manufacturing Associate' },
-    { company: 'TDSC Becharaji', package: '₹3.0L', students: 2, position: 'Trainee Engineer' }
+    { company: 'Micron Technology, Sanand', package: '₹3.72L', students: 1, position: 'Manufacturing Associate' },
+    { company: 'TDSC, Becharaji', package: '₹3.00L', students: 1, position: 'Diploma Trainee Engineer' }
   ],
   
   events: [
+    {
+      title: 'Industrial Training at Duke Pipes',
+      date: 'July 27, 2024',
+      category: 'training',
+      description: 'Industrial training program for students at Duke Pipes, providing practical exposure to manufacturing processes and industrial operations in the field of electronics and communication.',
+      tags: ['Industrial Training', 'Manufacturing', 'Practical Exposure', 'Industry Visit'],
+      images: [
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20240727_145950-1024x577.jpg',
+          alt: 'Industrial Training at Duke Pipes',
+          caption: 'Industrial Training Session'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20240727_145947-577x1024.jpg',
+          alt: 'Students at Duke Pipes',
+          caption: 'Students During Training'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20240727_144258-577x1024.jpg',
+          alt: 'Manufacturing Process',
+          caption: 'Manufacturing Process'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20240727_144231-1024x577.jpg',
+          alt: 'Industrial Equipment',
+          caption: 'Industrial Equipment'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20240727_144216-1024x577.jpg',
+          alt: 'Factory Operations',
+          caption: 'Factory Operations'
+        }
+      ]
+    },
+    {
+      title: 'SSIP 2.0 Appreciation Meet',
+      date: 'August 11, 2023',
+      category: 'orientation',
+      description: 'Student Startup and Innovation Policy (SSIP) 2.0 appreciation meeting to recognize and celebrate student innovation projects and entrepreneurial initiatives, encouraging research and development activities.',
+      tags: ['SSIP', 'Innovation', 'Startup Policy', 'Student Recognition'],
+      images: [
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230811-WA0002-1024x576.jpg',
+          alt: 'SSIP Appreciation Meet',
+          caption: 'SSIP Appreciation Ceremony'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230811-WA0000-576x1024.jpg',
+          alt: 'Innovation Recognition',
+          caption: 'Student Innovation Recognition'
+        }
+      ]
+    },
+    {
+      title: 'Rakhi & Rangoli 2023',
+      date: 'October 27, 2023',
+      category: 'community',
+      description: 'Cultural celebration of Rakhi and Rangoli festival showcasing student creativity and cultural heritage, promoting cultural values and artistic expression among students.',
+      tags: ['Cultural Event', 'Festival Celebration', 'Student Creativity', 'Cultural Heritage'],
+      images: [
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231030-WA0001-1024x766.jpg',
+          alt: 'Rakhi & Rangoli Celebration',
+          caption: 'Cultural Celebration'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231027-WA0004-1024x576.jpg',
+          alt: 'Rangoli Competition',
+          caption: 'Rangoli Art Competition'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231027-WA0005-1024x576.jpg',
+          alt: 'Student Participation',
+          caption: 'Student Participation'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230829-WA0012-766x1024.jpg',
+          alt: 'Festival Activities',
+          caption: 'Festival Activities'
+        }
+      ]
+    },
+    {
+      title: 'Orientation Session (2023)',
+      date: 'July 18, 2023',
+      category: 'orientation',
+      description: 'Comprehensive orientation program for newly admitted students in 2023, introducing them to department facilities, curriculum, faculty, and career opportunities in electronics and communication engineering.',
+      tags: ['Orientation', 'New Students', 'Department Introduction', 'Academic Program'],
+      images: [
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230718-WA0035-1024x462.jpg',
+          alt: 'Orientation Session 2023',
+          caption: 'Orientation Program 2023'
+        }
+      ]
+    },
     {
       title: 'RTL Design Workshop',
       date: 'June 11, 2024',
@@ -557,7 +652,7 @@ export const newsletterData: NewsletterData = {
   
   messages: {
     principal: {
-      name: 'Dr. Rajesh Kumar Sharma',
+      name: 'Sureshkumar D Dabhi',
       designation: 'Principal, Government Polytechnic Palanpur',
       message: `Dear Students, Faculty, and Stakeholders,
 
@@ -568,7 +663,7 @@ The academic year 2023-24 has been remarkable for our EC department, with studen
 I congratulate the entire EC department team for their dedication and encourage our students to continue their pursuit of excellence.`
     },
     hod: {
-      name: 'Prof. Nirav J. Chauhan',
+      name: 'Sunilkumar J Chauhan',
       designation: 'Head of Department - Electronics & Communication Engineering',
       message: `Dear EC Family,
 
