@@ -162,11 +162,13 @@ export default function InteractiveNewsletterPage() {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-12">
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="messages">Messages</TabsTrigger>
             <TabsTrigger value="achievements">Achievements</TabsTrigger>
             <TabsTrigger value="placements">Placements</TabsTrigger>
             <TabsTrigger value="events">Events</TabsTrigger>
+            <TabsTrigger value="labs">Labs & Infrastructure</TabsTrigger>
             <TabsTrigger value="contact">Contact</TabsTrigger>
           </TabsList>
 
@@ -204,60 +206,6 @@ export default function InteractiveNewsletterPage() {
               })}
             </div>
 
-            {/* Principal's Message */}
-            <Card className="mb-8">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Trophy className="w-5 h-5 text-blue-600" />
-                  <span>Principal's Message</span>
-                </CardTitle>
-                <CardDescription>Dr. Rajesh Kumar Sharma - Principal, Government Polytechnic Palanpur</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="prose max-w-none">
-                  <p className="text-gray-700 leading-relaxed mb-4">
-                    Dear Students, Faculty, and Stakeholders,
-                  </p>
-                  <p className="text-gray-700 leading-relaxed mb-4">
-                    It gives me immense pleasure to introduce this edition of "Spectrum," the newsletter of our Electronics & Communication Engineering Department. Our institution, established in 1984, has been a beacon of technical education in North Gujarat, consistently producing skilled professionals who contribute significantly to the industry and society.
-                  </p>
-                  <p className="text-gray-700 leading-relaxed mb-4">
-                    The academic year 2023-24 has been remarkable for our EC department, with students excelling in competitions, faculty contributing to research, and our SSIP cell fostering innovation. Our focus remains on providing quality education that blends theoretical knowledge with practical skills, preparing our students for the dynamic world of technology.
-                  </p>
-                  <p className="text-gray-700 leading-relaxed">
-                    I congratulate the entire EC department team for their dedication and encourage our students to continue their pursuit of excellence.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* HOD's Message */}
-            <Card className="mb-8">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Users className="w-5 h-5 text-green-600" />
-                  <span>Head of Department's Message</span>
-                </CardTitle>
-                <CardDescription>Prof. Nirav J. Chauhan - Head of Department, Electronics & Communication Engineering</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="prose max-w-none">
-                  <p className="text-gray-700 leading-relaxed mb-4">
-                    Dear EC Family,
-                  </p>
-                  <p className="text-gray-700 leading-relaxed mb-4">
-                    The Electronics & Communication Engineering department continues to evolve with emerging technologies and industry demands. This year has been particularly significant as we've strengthened our curriculum with advanced topics in IoT, VLSI, and communication systems.
-                  </p>
-                  <p className="text-gray-700 leading-relaxed mb-4">
-                    Our students have shown exceptional performance in various competitions, including the G3Q quiz where our team secured top positions. The department's research initiatives have gained momentum with faculty publications and student innovation projects receiving recognition.
-                  </p>
-                  <p className="text-gray-700 leading-relaxed">
-                    As we look ahead, our commitment remains steadfast - to nurture competent engineers who can contribute meaningfully to the technological advancement of our nation. I extend my heartfelt appreciation to our dedicated faculty and motivated students for making this journey rewarding.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
             {/* Vision & Mission */}
             <Card className="mb-8">
               <CardHeader>
@@ -278,7 +226,7 @@ export default function InteractiveNewsletterPage() {
                       <h3 className="text-lg font-semibold text-blue-900">Vision</h3>
                     </div>
                     <p className="text-blue-800 leading-relaxed">
-                      To prepare competent diploma level electronics and communication engineers, catering the needs of industries and society as an excellent employee, innovator, and entrepreneur with moral values.
+                      {newsletterData.vision}
                     </p>
                   </div>
 
@@ -290,53 +238,9 @@ export default function InteractiveNewsletterPage() {
                       </div>
                       <h3 className="text-lg font-semibold text-green-900">Mission</h3>
                     </div>
-                    <ul className="space-y-2 text-green-800">
-                      <li className="flex items-center">
-                        <span className="text-green-600 mr-2">✓</span>
-                        Provide quality education in the field of EC engineering
-                      </li>
-                      <li className="flex items-center">
-                        <span className="text-green-600 mr-2">✓</span>
-                        Develop state of art laboratories and classrooms
-                      </li>
-                      <li className="flex items-center">
-                        <span className="text-green-600 mr-2">✓</span>
-                        Strengthen industrial liaison services
-                      </li>
-                      <li className="flex items-center">
-                        <span className="text-green-600 mr-2">✓</span>
-                        Execute activities to inculcate innovation and entrepreneurship
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Editor's Note */}
-            <Card className="mb-8">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <FileText className="w-5 h-5 text-purple-600" />
-                  <span>Editor's Note</span>
-                </CardTitle>
-                <CardDescription>Editorial Team - Ms. Mittal K. Pedhadiya & Mr. Milav J. Dabgar</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-6 rounded-lg border border-purple-200">
-                  <div className="prose max-w-none">
-                    <p className="text-gray-700 leading-relaxed mb-4">
-                      Welcome to the third edition of Spectrum, chronicling the remarkable journey of our Electronics & Communication Engineering department during 2023-24.
-                    </p>
-                    <p className="text-gray-700 leading-relaxed mb-4">
-                      This edition captures the essence of our department's growth - from academic achievements and research publications to student innovations and industry collaborations. We've witnessed our students excel in competitions, our faculty contribute to cutting-edge research, and our department strengthen its position in technical education.
-                    </p>
-                    <p className="text-gray-700 leading-relaxed mb-4">
-                      Special recognition goes to our SSIP initiatives that have resulted in multiple patents and the prestigious ₹50,000 prize-winning rover project. These achievements reflect our commitment to innovation and practical learning.
-                    </p>
-                    <p className="text-gray-700 leading-relaxed">
-                      We hope this newsletter serves as a source of inspiration and information for our extended EC family.
-                    </p>
+                    <div className="text-green-800 leading-relaxed">
+                      {newsletterData.mission}
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -377,6 +281,103 @@ export default function InteractiveNewsletterPage() {
                         <li>• Digital Signal Processing</li>
                         <li>• VLSI Design & Testing</li>
                       </ul>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+          </TabsContent>
+
+          {/* Messages Tab */}
+          <TabsContent value="messages" className="space-y-8">
+            {/* Principal's Message */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Users className="w-5 h-5 text-blue-600" />
+                  <span>Principal's Message</span>
+                </CardTitle>
+                <CardDescription>Message from the Principal</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200">
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-blue-600 text-white p-3 rounded-full">
+                      <Users className="w-6 h-6" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                        {newsletterData.messages.principal.name}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        {newsletterData.messages.principal.designation}
+                      </p>
+                      <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                        {newsletterData.messages.principal.message}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* HOD's Message */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <BookOpen className="w-5 h-5 text-blue-600" />
+                  <span>Head of Department's Message</span>
+                </CardTitle>
+                <CardDescription>Message from the HOD</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-lg border border-green-200">
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-green-600 text-white p-3 rounded-full">
+                      <BookOpen className="w-6 h-6" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                        {newsletterData.messages.hod.name}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        {newsletterData.messages.hod.designation}
+                      </p>
+                      <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                        {newsletterData.messages.hod.message}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Editorial Message */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <FileText className="w-5 h-5 text-blue-600" />
+                  <span>Editorial Note</span>
+                </CardTitle>
+                <CardDescription>Message from the Editorial Team</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-gradient-to-r from-purple-50 to-violet-50 p-6 rounded-lg border border-purple-200">
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-purple-600 text-white p-3 rounded-full">
+                      <FileText className="w-6 h-6" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                        {newsletterData.messages.editorial.name}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        {newsletterData.messages.editorial.designation}
+                      </p>
+                      <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                        {newsletterData.messages.editorial.message}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -629,6 +630,205 @@ export default function InteractiveNewsletterPage() {
                       </div>
                     );
                   })}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Labs & Infrastructure Tab */}
+          <TabsContent value="labs">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Building className="w-5 h-5 text-blue-600" />
+                  <span>Laboratory Facilities & Infrastructure</span>
+                </CardTitle>
+                <CardDescription>State-of-the-art facilities supporting hands-on learning</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-8">
+                  {/* Infrastructure Overview */}
+                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200">
+                    <h3 className="text-lg font-semibold text-blue-900 mb-4 flex items-center">
+                      <Building className="w-5 h-5 mr-2" />
+                      Infrastructure Overview
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="bg-white p-4 rounded-lg border border-blue-100">
+                        <div className="text-2xl font-bold text-blue-600 mb-1">8</div>
+                        <div className="text-sm text-gray-600">Modern Laboratories</div>
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border border-blue-100">
+                        <div className="text-2xl font-bold text-green-600 mb-1">₹35L+</div>
+                        <div className="text-sm text-gray-600">Equipment Value</div>
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border border-blue-100">
+                        <div className="text-2xl font-bold text-purple-600 mb-1">150+</div>
+                        <div className="text-sm text-gray-600">Students Capacity</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Laboratory Details */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Electronics Lab */}
+                    <div className="bg-white p-6 rounded-lg border border-gray-200">
+                      <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                        <span className="bg-blue-600 text-white p-2 rounded-lg mr-3">
+                          <Award className="w-4 h-4" />
+                        </span>
+                        Electronics & Circuits Lab
+                      </h4>
+                      <p className="text-gray-600 text-sm mb-3">
+                        Comprehensive facility for analog and digital circuit analysis, equipped with advanced oscilloscopes, function generators, and power supplies.
+                      </p>
+                      <div className="space-y-2">
+                        <div className="flex items-center text-sm">
+                          <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                          <span>Digital Storage Oscilloscopes (20 MHz - 100 MHz)</span>
+                        </div>
+                        <div className="flex items-center text-sm">
+                          <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                          <span>Function Generators & Signal Analyzers</span>
+                        </div>
+                        <div className="flex items-center text-sm">
+                          <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                          <span>Power Supplies & Multimeters</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Communication Lab */}
+                    <div className="bg-white p-6 rounded-lg border border-gray-200">
+                      <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                        <span className="bg-green-600 text-white p-2 rounded-lg mr-3">
+                          <Trophy className="w-4 h-4" />
+                        </span>
+                        Communication Systems Lab
+                      </h4>
+                      <p className="text-gray-600 text-sm mb-3">
+                        Advanced communication lab featuring modern equipment for analog & digital communication, microwave, and antenna studies.
+                      </p>
+                      <div className="space-y-2">
+                        <div className="flex items-center text-sm">
+                          <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                          <span>AM/FM Modulation & Demodulation Kits</span>
+                        </div>
+                        <div className="flex items-center text-sm">
+                          <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                          <span>Digital Communication Trainers</span>
+                        </div>
+                        <div className="flex items-center text-sm">
+                          <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                          <span>Microwave Test Bench & Antenna Array</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Microprocessor Lab */}
+                    <div className="bg-white p-6 rounded-lg border border-gray-200">
+                      <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                        <span className="bg-purple-600 text-white p-2 rounded-lg mr-3">
+                          <Lightbulb className="w-4 h-4" />
+                        </span>
+                        Microprocessor & Embedded Systems Lab
+                      </h4>
+                      <p className="text-gray-600 text-sm mb-3">
+                        State-of-the-art facility for microprocessor programming, embedded system design, and IoT applications.
+                      </p>
+                      <div className="space-y-2">
+                        <div className="flex items-center text-sm">
+                          <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+                          <span>8085/8086 Microprocessor Trainers</span>
+                        </div>
+                        <div className="flex items-center text-sm">
+                          <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+                          <span>ARM Cortex Development Boards</span>
+                        </div>
+                        <div className="flex items-center text-sm">
+                          <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+                          <span>Arduino & Raspberry Pi Kits</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* VLSI Lab */}
+                    <div className="bg-white p-6 rounded-lg border border-gray-200">
+                      <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+                        <span className="bg-orange-600 text-white p-2 rounded-lg mr-3">
+                          <Rocket className="w-4 h-4" />
+                        </span>
+                        VLSI Design Lab
+                      </h4>
+                      <p className="text-gray-600 text-sm mb-3">
+                        Advanced VLSI design facility with industry-standard EDA tools for digital circuit design and verification.
+                      </p>
+                      <div className="space-y-2">
+                        <div className="flex items-center text-sm">
+                          <span className="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+                          <span>Xilinx Vivado Design Suite</span>
+                        </div>
+                        <div className="flex items-center text-sm">
+                          <span className="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+                          <span>ModelSim & QuestaSim Simulators</span>
+                        </div>
+                        <div className="flex items-center text-sm">
+                          <span className="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+                          <span>FPGA Development Boards</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Research & Development Facilities */}
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-lg border border-green-200">
+                    <h3 className="text-lg font-semibold text-green-900 mb-4 flex items-center">
+                      <Target className="w-5 h-5 mr-2" />
+                      Research & Development Facilities
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-3">Project Development Lab</h4>
+                        <ul className="space-y-2 text-sm text-gray-600">
+                          <li>• Student Innovation & Project Development</li>
+                          <li>• SSIP (Student Startup & Innovation Policy) Support</li>
+                          <li>• Prototype Development Facilities</li>
+                          <li>• 3D Printing & PCB Fabrication</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-3">Advanced Research Areas</h4>
+                        <ul className="space-y-2 text-sm text-gray-600">
+                          <li>• IoT & Sensor Networks</li>
+                          <li>• 5G Communication Systems</li>
+                          <li>• Machine Learning for Signal Processing</li>
+                          <li>• Renewable Energy Systems</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Library & Digital Resources */}
+                  <div className="bg-gradient-to-r from-purple-50 to-violet-50 p-6 rounded-lg border border-purple-200">
+                    <h3 className="text-lg font-semibold text-purple-900 mb-4 flex items-center">
+                      <BookOpen className="w-5 h-5 mr-2" />
+                      Library & Digital Resources
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="bg-white p-4 rounded-lg border border-purple-100">
+                        <div className="text-2xl font-bold text-purple-600 mb-1">2000+</div>
+                        <div className="text-sm text-gray-600">Technical Books</div>
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border border-purple-100">
+                        <div className="text-2xl font-bold text-blue-600 mb-1">50+</div>
+                        <div className="text-sm text-gray-600">Journals & Magazines</div>
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border border-purple-100">
+                        <div className="text-2xl font-bold text-green-600 mb-1">24/7</div>
+                        <div className="text-sm text-gray-600">Digital Access</div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
