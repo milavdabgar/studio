@@ -198,6 +198,9 @@ function parseValue(value: string): any {
 
 // Convert Hugo shortcode syntax to React components
 export function parseShortcodes(content: string): string {
+  console.log('parseShortcodes: Starting processing, content length:', content.length);
+  console.log('parseShortcodes: Content includes {{< gallery:', content.includes('{{< gallery'));
+  
   // First handle self-closing shortcodes: {{< shortcode params >}}
   const selfClosingShortcodeRegex = /\{\{<\s*(\w+(?:-\w+)*)\s+([^>]*?)\s*>\}\}/g;
   
@@ -255,6 +258,10 @@ export function parseShortcodes(content: string): string {
         params.children = innerContent.trim();
       } else if (shortcodeName === 'gallery' || shortcodeName === 'Gallery') {
         // For Gallery, pass raw HTML content as children
+        console.log('Gallery shortcode captured content:', innerContent);
+        console.log('Gallery shortcode captured content length:', innerContent.length);
+        console.log('Gallery shortcode captured content trimmed:', innerContent.trim());
+        console.log('Gallery shortcode captured content trimmed length:', innerContent.trim().length);
         params.children = innerContent.trim();
       } else if (shortcodeName === 'timeline' || shortcodeName === 'Timeline') {
         // For Timeline, we need to process nested shortcodes and pass as React children
@@ -300,7 +307,16 @@ export function renderShortcode(shortcodeName: string, params: Record<string, an
 // Enhanced markdown processing with shortcode support
 export function processMarkdownWithShortcodes(markdown: string): string {
   // First process shortcodes
-  return parseShortcodes(markdown);
+  console.log('processMarkdownWithShortcodes: Processing content, length:', markdown.length);
+  console.log('processMarkdownWithShortcodes: Content includes gallery:', markdown.includes('gallery'));
+  console.log('processMarkdownWithShortcodes: First 200 chars:', markdown.substring(0, 200));
+  
+  const result = parseShortcodes(markdown);
+  
+  console.log('processMarkdownWithShortcodes: Result length:', result.length);
+  console.log('processMarkdownWithShortcodes: Result different from input:', result !== markdown);
+  
+  return result;
 }
 
 // React hook for processing shortcodes in rendered content
@@ -311,15 +327,25 @@ export function useShortcodeProcessor() {
     // Find all shortcode placeholders
     const shortcodePlaceholders = containerRef.current.querySelectorAll('[data-shortcode]');
     
-    shortcodePlaceholders.forEach((placeholder) => {
+    console.log('useShortcodeProcessor: Found shortcode placeholders:', shortcodePlaceholders.length);
+    
+    shortcodePlaceholders.forEach((placeholder, index) => {
       const shortcodeName = placeholder.getAttribute('data-shortcode');
       const paramsString = placeholder.getAttribute('data-params');
       const key = placeholder.getAttribute('data-key');
+      
+      console.log(`useShortcodeProcessor: Processing placeholder ${index}:`, {
+        shortcodeName,
+        paramsString: paramsString?.substring(0, 100) + '...',
+        key
+      });
       
       if (!shortcodeName || !paramsString || !key) return;
       
       try {
         const params = JSON.parse(decodeURIComponent(paramsString));
+        console.log(`useShortcodeProcessor: Parsed params for ${shortcodeName}:`, params);
+        
         const component = renderShortcode(shortcodeName, params, key);
         
         if (component) {

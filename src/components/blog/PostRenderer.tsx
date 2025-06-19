@@ -16,6 +16,19 @@ const PostRenderer: React.FC<PostRendererProps> = ({ contentHtml }) => {
   const { theme, resolvedTheme } = useTheme();
   const { processShortcodes: processShortcodeElements } = useShortcodeProcessor();
 
+  // Debug: Log the contentHtml to see if Gallery shortcodes are present
+  console.log('PostRenderer: contentHtml includes gallery:', contentHtml.includes('gallery'));
+  console.log('PostRenderer: contentHtml includes data-shortcode:', contentHtml.includes('data-shortcode'));
+  
+  if (contentHtml.includes('gallery')) {
+    console.log('PostRenderer: Gallery-related content found in HTML');
+    // Extract gallery-related content for debugging
+    const galleryMatches = contentHtml.match(/data-shortcode="gallery"[^>]*>/g);
+    if (galleryMatches) {
+      console.log('PostRenderer: Gallery shortcode placeholders found:', galleryMatches);
+    }
+  }
+
   useEffect(() => {
     if (!containerRef.current) return;
 

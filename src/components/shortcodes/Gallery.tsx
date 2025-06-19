@@ -10,7 +10,12 @@ interface GalleryProps {
 }
 
 const Gallery: React.FC<GalleryProps> = ({ children }) => {
+  console.log('Gallery: received children:', children);
+  console.log('Gallery: children type:', typeof children);
+  console.log('Gallery: children length:', children ? String(children).length : 0);
+  
   if (!children) {
+    console.log('Gallery: No children provided');
     return (
       <div className="my-6 p-4 bg-neutral-100 dark:bg-neutral-800 rounded-lg text-center text-neutral-500 dark:text-neutral-400">
         No images provided for gallery
@@ -21,8 +26,12 @@ const Gallery: React.FC<GalleryProps> = ({ children }) => {
   // If children is a string (HTML), fix the image paths
   let content = children;
   if (typeof children === 'string') {
+    console.log('Gallery: Original HTML content:', children);
+    
     // Fix ALL image src attributes to use content-images API
     content = children.replace(/src="([^"]*)"/g, (match, src) => {
+      console.log('Gallery: Found img src:', src);
+      
       // If the src doesn't start with http/https or /api/, use content-images API
       if (!src.startsWith('http') && !src.startsWith('/api/')) {
         let newSrc;
@@ -31,10 +40,13 @@ const Gallery: React.FC<GalleryProps> = ({ children }) => {
         } else {
           newSrc = `/api/content-images${src}`;
         }
+        console.log('Gallery: Converting src:', src, '→', newSrc);
         return `src="${newSrc}"`;
       }
       return match;
     });
+    
+    console.log('Gallery: Processed HTML content:', content);
   }
 
   return (
