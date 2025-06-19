@@ -462,6 +462,23 @@ function generateStaticHtml(data: typeof newsletterData): string {
             </div>
         </div>
         
+        <!-- Vision & Mission Section - Correctly placed after Department Overview -->
+        ${data.vision && data.mission ? `
+        <div class="section">
+            <h2 class="section-title">🎯 Vision & Mission</h2>
+            <div class="vision-mission-grid">
+                <div class="vision-card">
+                    <h3 class="vision-title">🔭 Vision</h3>
+                    <p>${data.vision}</p>
+                </div>
+                <div class="mission-card">
+                    <h3 class="mission-title">🎯 Mission</h3>
+                    <p>${data.mission}</p>
+                </div>
+            </div>
+        </div>
+        ` : ''}
+        
         ${data.messages ? `
         <div class="message-section">
             <h2 class="section-title">� Principal's Message</h2>
@@ -482,22 +499,6 @@ function generateStaticHtml(data: typeof newsletterData): string {
             <div class="message-author">${data.messages.editorial.name}</div>
             <div class="message-designation">${data.messages.editorial.designation}</div>
             <div class="message-text">${data.messages.editorial.message}</div>
-        </div>
-        ` : ''}
-        
-        ${data.vision && data.mission ? `
-        <div class="section">
-            <h2 class="section-title">🎯 Vision & Mission</h2>
-            <div class="vision-mission-grid">
-                <div class="vision-card">
-                    <h3 class="vision-title">🔭 Vision</h3>
-                    <p>${data.vision}</p>
-                </div>
-                <div class="mission-card">
-                    <h3 class="mission-title">🎯 Mission</h3>
-                    <p>${data.mission}</p>
-                </div>
-            </div>
         </div>
         ` : ''}
         
