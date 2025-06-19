@@ -236,8 +236,26 @@ export const newsletterData: NewsletterData = {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240418-WA0039-1024x768.jpg',
           alt: 'Student Presentation',
           caption: 'Student Presentation'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240418-WA0040-1024x768.jpg',
+          alt: 'Project Exhibition',
+          caption: 'Project Exhibition'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240418-WA0045-1024x768.jpg',
+          alt: 'Team Collaboration',
+          caption: 'Team Collaboration'
         }
       ]
+    },
+    {
+      title: 'GPP Sportsweek Inauguration',
+      date: 'February 2024',
+      category: 'community',
+      description: 'Annual sports week celebration featuring various competitive events, promoting physical fitness and team spirit among students across all departments. The week-long event included multiple sports competitions and encouraged healthy competition.',
+      tags: ['Sports Week', 'Physical Fitness', 'Team Spirit', 'Competition'],
+      images: []
     },
     {
       title: 'Industrial Visit: PCB Power and MCBS Pvt Ltd',
@@ -257,9 +275,19 @@ export const newsletterData: NewsletterData = {
           caption: 'Industrial Equipment'
         },
         {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240316-WA0009-1024x472.jpg',
+          alt: 'Students Learning',
+          caption: 'Students Learning'
+        },
+        {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240316-WA0011-1024x472.jpg',
           alt: 'Technical Demonstration',
           caption: 'Technical Demonstration'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240316-WA0013-1024x472.jpg',
+          alt: 'Group Discussion',
+          caption: 'Group Discussion'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240316-WA0022-1024x766.jpg',
@@ -289,6 +317,239 @@ export const newsletterData: NewsletterData = {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0008-1024x459.jpg',
           alt: 'Technical Presentation',
           caption: 'Technical Presentation'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0010-1024x459.jpg',
+          alt: 'Student Engagement',
+          caption: 'Student Engagement'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0021-1024x766.jpg',
+          alt: 'Hands-on Session',
+          caption: 'Hands-on Session'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0035-1024x766.jpg',
+          alt: 'Group Photo',
+          caption: 'Group Photo'
+        }
+      ]
+    },
+    {
+      title: 'SEMIX Training at IIT Bombay',
+      date: 'November 6-10, 2023',
+      category: 'training',
+      description: 'Advanced training program on semiconductor technology and research methodologies at IIT Bombay, providing exposure to cutting-edge research facilities and industry practices.',
+      tags: ['Semiconductor Training', 'IIT Bombay', 'Research Exposure', 'SEMIX'],
+      images: [
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20231109_102102-1024x768.jpg',
+          alt: 'IIT Bombay Campus',
+          caption: 'IIT Bombay Campus'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20231109_154913-1024x768.jpg',
+          alt: 'SEMIX Training Session',
+          caption: 'SEMIX Training Session'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231108-WA0004.jpg',
+          alt: 'Lab Visit',
+          caption: 'Lab Visit'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231109-WA0010.jpg',
+          alt: 'Technical Discussion',
+          caption: 'Technical Discussion'
+        }
+      ]
+    },
+    {
+      title: 'Cultural Activities - Rakhi & Rangoli Competition',
+      date: 'October 27, 2023',
+      category: 'community',
+      description: 'Student participation in traditional cultural activities including Rakhi making and Rangoli competitions, fostering creativity and cultural awareness among students.',
+      tags: ['Cultural Activities', 'Rakhi Making', 'Rangoli Competition', 'Creativity'],
+      images: [
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230829-WA0012-766x1024.jpg',
+          alt: 'Rakhi Making',
+          caption: 'Rakhi Making'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231027-WA0003-1024x576.jpg',
+          alt: 'Rangoli Competition',
+          caption: 'Rangoli Competition'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231027-WA0005-1024x576.jpg',
+          alt: 'Cultural Event',
+          caption: 'Cultural Event'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231030-WA0001-1024x766.jpg',
+          alt: 'Award Ceremony',
+          caption: 'Award Ceremony'
+        }
+      ]
+    },
+    {
+      title: 'Solar Cell Fabrication Session',
+      date: 'October 18, 2023',
+      category: 'workshop',
+      description: 'Hands-on session on solar cell fabrication conducted by Mr. Sandip Joshi, Jr. Engineer from Adani Power Ltd., covering photovoltaic principles and fabrication processes for 7 participants.',
+      tags: ['Solar Energy', 'Cell Fabrication', 'Photovoltaic', 'Renewable Energy'],
+      images: []
+    },
+    {
+      title: 'SEMICON 2023 Exhibition',
+      date: 'September 27, 2023',
+      category: 'visit',
+      description: 'Students attended SEMICON 2023, India\'s premier semiconductor and electronics exhibition, gaining exposure to latest technologies and industry trends in semiconductor manufacturing.',
+      tags: ['Semiconductor Exhibition', 'Technology Trends', 'Industry Exposure', 'SEMICON'],
+      images: [
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230727_071846-1024x577.jpg',
+          alt: 'SEMICON Exhibition',
+          caption: 'SEMICON Exhibition'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230727_113120-1024x577.jpg',
+          alt: 'Technology Display',
+          caption: 'Technology Display'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230727_115436-1024x768.jpg',
+          alt: 'Industry Interaction',
+          caption: 'Industry Interaction'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230727_115958-768x1024.jpg',
+          alt: 'Student Learning',
+          caption: 'Student Learning'
+        }
+      ]
+    },
+    {
+      title: 'SSIP 2.0 Appreciation Meet',
+      date: 'August 14, 2023',
+      category: 'community',
+      description: 'Recognition ceremony for students and faculty involved in Student Startup and Innovation Policy (SSIP) initiatives, celebrating entrepreneurial achievements and innovative projects.',
+      tags: ['SSIP', 'Innovation', 'Startup', 'Recognition'],
+      images: []
+    },
+    {
+      title: 'Industrial Visit: Bajrang Paper Products',
+      date: 'August 1, 2023',
+      category: 'visit',
+      description: '50 students from EC and ICT departments visited Bajrang Paper Products, Palanpur, observing paper manufacturing processes and industrial automation systems.',
+      tags: ['Industrial Visit', 'Manufacturing Process', 'Automation', 'Paper Industry'],
+      images: []
+    },
+    {
+      title: 'IPR Awareness Camp at Vidhyamandir School',
+      date: 'July 26, 2023',
+      category: 'awareness',
+      description: 'Students conducted Intellectual Property Rights awareness sessions at local schools, sharing knowledge about patents, trademarks, and innovation protection.',
+      tags: ['IPR Awareness', 'Intellectual Property', 'School Outreach', 'Knowledge Sharing'],
+      images: [
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_142650-768x1024.jpg',
+          alt: 'IPR Session 1',
+          caption: 'IPR Session 1'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_142951-1024x768.jpg',
+          alt: 'School Visit',
+          caption: 'School Visit'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_143414-768x1024.jpg',
+          alt: 'Student Teaching',
+          caption: 'Student Teaching'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_143757-1024x768.jpg',
+          alt: 'Knowledge Sharing',
+          caption: 'Knowledge Sharing'
+        }
+      ]
+    },
+    {
+      title: 'Tree Plantation Drive',
+      date: 'July 19, 2023',
+      category: 'community',
+      description: 'Environmental conservation initiative with mass tree plantation in the college campus, promoting ecological awareness and green campus development.',
+      tags: ['Environment', 'Tree Plantation', 'Green Campus', 'Conservation'],
+      images: [
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230719_142931-1024x577.jpg',
+          alt: 'Tree Planting Activity',
+          caption: 'Tree Planting Activity'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230719_142939-1024x577.jpg',
+          alt: 'Environmental Drive',
+          caption: 'Environmental Drive'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230719-WA0005-1024x768.jpg',
+          alt: 'Green Initiative',
+          caption: 'Green Initiative'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230719-WA0009-1024x768.jpg',
+          alt: 'Student Participation',
+          caption: 'Student Participation'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230719-WA0012-1024x768.jpg',
+          alt: 'Campus Greening',
+          caption: 'Campus Greening'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230719-WA0016-1024x768.jpg',
+          alt: 'Tree Plantation Team',
+          caption: 'Tree Plantation Team'
+        }
+      ]
+    },
+    {
+      title: 'Orientation Session 2023',
+      date: 'July 18, 2023',
+      category: 'orientation',
+      description: 'Comprehensive orientation program for incoming students, introducing department facilities, academic programs, and career opportunities in electronics and communication engineering.',
+      tags: ['Orientation', 'New Students', 'Academic Programs', 'Career Guidance'],
+      images: [
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230718-WA0008-1024x766.jpg',
+          alt: 'Welcome Session',
+          caption: 'Welcome Session'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230718-WA0015-1024x766.jpg',
+          alt: 'Faculty Introduction',
+          caption: 'Faculty Introduction'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230718-WA0020-1024x766.jpg',
+          alt: 'Department Overview',
+          caption: 'Department Overview'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230718-WA0025-1024x766.jpg',
+          alt: 'Student Interaction',
+          caption: 'Student Interaction'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230718-WA0032-1024x462.jpg',
+          alt: 'Campus Tour',
+          caption: 'Campus Tour'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230718-WA0035-1024x462.jpg',
+          alt: 'Group Photo',
+          caption: 'Group Photo'
         }
       ]
     }
