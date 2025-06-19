@@ -44,6 +44,9 @@ export function Figure({
   const [isZoomed, setIsZoomed] = useState(false);
   const [imageError, setImageError] = useState(false);
 
+  // Fix relative image paths by ensuring they start with /
+  const fixedSrc = src && !src.startsWith('http') && !src.startsWith('/') ? `/${src}` : src;
+
   const alignmentClass = {
     left: 'text-left',
     center: 'text-center mx-auto',
@@ -71,7 +74,7 @@ export function Figure({
         </div>
       ) : (
         <Image
-          src={src}
+          src={fixedSrc}
           alt={alt}
           title={title}
           width={width}
@@ -151,7 +154,7 @@ export function Figure({
         >
           <div className="relative max-w-full max-h-full">
             <Image
-              src={src}
+              src={fixedSrc}
               alt={alt}
               width={width * 1.5}
               height={height * 1.5}

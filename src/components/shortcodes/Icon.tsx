@@ -77,6 +77,11 @@ interface IconProps {
 }
 
 export function Icon({ name, className = "w-5 h-5", size }: IconProps) {
+  if (!name) {
+    console.warn('Icon shortcode: Missing icon name');
+    return null;
+  }
+
   const IconComponent = iconMap[name] || iconMap['check']; // Fallback to check
   
   const finalClassName = size 

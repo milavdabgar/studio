@@ -216,7 +216,7 @@ export async function getPostData({
   
   // Only filter out shortcodes that are not supported by our shortcode registry
   // Use negative lookahead to avoid filtering known shortcodes that have been processed into placeholders
-  contentToProcess = contentToProcess.replace(/{{< (?!\/?(youtube|YouTube|figure|Figure|gallery|image-gallery|ImageGallery|x|X|twitter|Twitter|instagram|Instagram|qr|QRCode|code|CodeBlock|alert|Alert|badge|Badge|button|Button|timeline|Timeline|timelineItem|TimelineItem|github|GitHub|mermaid|Mermaid)\b)[^>]* >}}/g, (match) => `<!-- HUGO_SHORTCODE_FILTERED_ANGLE: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`);
+  contentToProcess = contentToProcess.replace(/{{< (?!\/?(youtube|YouTube|figure|Figure|gallery|image-gallery|ImageGallery|x|X|twitter|Twitter|instagram|Instagram|qr|QRCode|code|CodeBlock|alert|Alert|badge|Badge|button|Button|timeline|Timeline|timelineItem|TimelineItem|github|GitHub|mermaid|Mermaid|chart|Chart|icon|Icon|swatches|Swatches|article|Article)\b)[^>]* >}}/g, (match) => `<!-- HUGO_SHORTCODE_FILTERED_ANGLE: ${match.replace(/</g, '&lt;').replace(/>/g, '&gt;')} -->`);
   console.log(`[getPostData DEBUG] Content after shortcode processing for ${filePath} (first 100 chars): "${contentToProcess.substring(0,100).replace(/\n/g, '\\\\n')}"`);
 
   let processedContent;

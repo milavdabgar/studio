@@ -25,10 +25,24 @@ export function ImageGallery({
   autoplay = false,
   interval = 5000
 }: ImageGalleryProps) {
+  // Check if images is provided and handle it safely
+  if (!images) {
+    return (
+      <div className="p-4 text-center text-gray-500 border border-gray-200 rounded">
+        No images provided for gallery
+      </div>
+    );
+  }
+
   // Parse images array
   const imageArray = Array.isArray(images) 
     ? images 
     : images.split(',').map(img => img.trim());
+  
+  // Fix relative image paths
+  const fixedImageArray = imageArray.map(src => 
+    src && !src.startsWith('http') && !src.startsWith('/') ? `/${src}` : src
+  );
   
   const captionArray = captions 
     ? (Array.isArray(captions) ? captions : captions.split(',').map(cap => cap.trim()))
@@ -48,7 +62,7 @@ export function ImageGallery({
   useEffect(() => {
     if (autoplay && !isModalOpen) {
       intervalRef.current = setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % imageArray.length);
+        setCurrentIndex((prev) => (prev + 1) % fixedImageArray.length);
       }, interval);
     } else {
       if (intervalRef.current) {
@@ -62,14 +76,14 @@ export function ImageGallery({
         clearInterval(intervalRef.current);
       }
     };
-  }, [autoplay, interval, imageArray.length, isModalOpen]);
+  }, [autoplay, interval, fixedImageArray.length, isModalOpen]);
 
   const nextImage = () => {
-    setCurrentIndex((prev) => (prev + 1) % imageArray.length);
+    setCurrentIndex((prev) => (prev + 1) % fixedImageArray.length);
   };
 
   const prevImage = () => {
-    setCurrentIndex((prev) => (prev - 1 + imageArray.length) % imageArray.length);
+    setCurrentIndex((prev) => (prev - 1 + fixedImageArray.length) % fixedImageArray.length);
   };
 
   const openModal = () => {
@@ -104,7 +118,7 @@ export function ImageGallery({
     }
   };
 
-  if (imageArray.length === 0) {
+  if (fixedImageArray.length === 0) {
     return <div className="text-gray-500">No images provided</div>;
   }
 
@@ -125,7 +139,7 @@ export function ImageGallery({
           onClick={openModal}
         >
           <Image
-            src={imageArray[currentIndex]}
+            src={fixedImageArray[currentIndex]}
             alt={currentTitle || currentCaption || `Image ${currentIndex + 1}`}
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -140,7 +154,7 @@ export function ImageGallery({
           </div>
 
           {/* Navigation arrows */}
-          {imageArray.length > 1 && (
+          {fixedImageArray.length > 1 && (
             <>
               <Button
                 variant="ghost"
@@ -170,9 +184,9 @@ export function ImageGallery({
         </div>
 
         {/* Dots indicator */}
-        {imageArray.length > 1 && (
+        {fixedImageArray.length > 1 && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-            {imageArray.map((_, index) => (
+            {fixedImageArray.map((_, index) => (
               <button
                 key={index}
                 className={`w-2 h-2 rounded-full transition-colors ${
@@ -190,9 +204,9 @@ export function ImageGallery({
         )}
 
         {/* Image counter */}
-        {imageArray.length > 1 && (
+        {fixedImageArray.length > 1 && (
           <div className="absolute top-4 left-4 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
-            {currentIndex + 1} / {imageArray.length}
+            {currentIndex + 1} / {fixedImageArray.length}
           </div>
         )}
       </div>
@@ -206,9 +220,9 @@ export function ImageGallery({
       )}
 
       {/* Thumbnail strip */}
-      {imageArray.length > 1 && (
+      {fixedImageArray.length > 1 && (
         <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
-          {imageArray.map((image, index) => (
+          {fixedImageArray.map((image, index) => (
             <button
               key={index}
               className={`relative flex-shrink-0 w-16 h-16 rounded overflow-hidden border-2 transition-colors ${
@@ -235,7 +249,7 @@ export function ImageGallery({
         <div className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center p-4">
           <div className="relative max-w-full max-h-full">
             <Image
-              src={imageArray[currentIndex]}
+              src={fixedImageArray[currentIndex]}
               alt={currentTitle || currentCaption || `Image ${currentIndex + 1}`}
               width={1200}
               height={800}
@@ -253,7 +267,7 @@ export function ImageGallery({
             </Button>
 
             {/* Navigation in modal */}
-            {imageArray.length > 1 && (
+            {fixedImageArray.length > 1 && (
               <>
                 <Button
                   variant="ghost"

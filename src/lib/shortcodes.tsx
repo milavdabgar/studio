@@ -21,6 +21,31 @@ import Timeline from '@/components/shortcodes/Timeline';
 import TimelineItem from '@/components/shortcodes/TimelineItem';
 import GitHub from '@/components/shortcodes/GitHub';
 import Mermaid from '@/components/shortcodes/Mermaid';
+import Icon from '@/components/shortcodes/Icon';
+import Lead from '@/components/shortcodes/Lead';
+import Keyword from '@/components/shortcodes/Keyword';
+import KeywordList from '@/components/shortcodes/KeywordList';
+import TypeIt from '@/components/shortcodes/TypeIt';
+import Swatches from '@/components/shortcodes/Swatches';
+import YouTubeLite from '@/components/shortcodes/YouTubeLite';
+import Article from '@/components/shortcodes/Article';
+import { Chart } from '@/components/shortcodes/Chart';
+
+// Import new Blowfish shortcodes
+import BlowfishCarousel from '@/components/shortcodes/BlowfishCarousel';
+import CodeImporter from '@/components/shortcodes/CodeImporter';
+import Codeberg from '@/components/shortcodes/Codeberg';
+import Forgejo from '@/components/shortcodes/Forgejo';
+import Gist from '@/components/shortcodes/Gist';
+import Gitea from '@/components/shortcodes/Gitea';
+import GitLab from '@/components/shortcodes/GitLab';
+import KaTeX from '@/components/shortcodes/KaTeX';
+import List from '@/components/shortcodes/List';
+import Gallery from '@/components/shortcodes/Gallery';
+import LTR from '@/components/shortcodes/LTR';
+import RTL from '@/components/shortcodes/RTL';
+import MDImporter from '@/components/shortcodes/MDImporter';
+import Ref from '@/components/shortcodes/Ref';
 
 // Type for shortcode components
 type ShortcodeComponent = React.ComponentType<any>;
@@ -42,6 +67,54 @@ const shortcodeRegistry: Record<string, ShortcodeComponent> = {
   GitHub: GitHub,
   mermaid: Mermaid,
   Mermaid: Mermaid,
+  icon: Icon,
+  Icon: Icon,
+  lead: Lead,
+  Lead: Lead,
+  keyword: Keyword,
+  Keyword: Keyword,
+  keywordList: KeywordList,
+  KeywordList: KeywordList,
+  typeit: TypeIt,
+  TypeIt: TypeIt,
+  swatches: Swatches,
+  Swatches: Swatches,
+  youtubeLite: YouTubeLite,
+  YouTubeLite: YouTubeLite,
+  article: Article,
+  Article: Article,
+  chart: Chart,
+  Chart: Chart,
+  
+  // New Blowfish shortcodes
+  carousel: BlowfishCarousel,
+  Carousel: BlowfishCarousel,
+  codeimporter: CodeImporter,
+  CodeImporter: CodeImporter,
+  codeberg: Codeberg,
+  Codeberg: Codeberg,
+  forgejo: Forgejo,
+  Forgejo: Forgejo,
+  gist: Gist,
+  Gist: Gist,
+  gitea: Gitea,
+  Gitea: Gitea,
+  gitlab: GitLab,
+  GitLab: GitLab,
+  katex: KaTeX,
+  KaTeX: KaTeX,
+  list: List,
+  List: List,
+  gallery: Gallery,
+  Gallery: Gallery,
+  ltr: LTR,
+  LTR: LTR,
+  rtl: RTL,
+  RTL: RTL,
+  mdimporter: MDImporter,
+  MDImporter: MDImporter,
+  ref: Ref,
+  Ref: Ref,
   
   // Video embeds
   youtube: YouTube,
@@ -58,11 +131,8 @@ const shortcodeRegistry: Record<string, ShortcodeComponent> = {
   // Images and galleries
   figure: Figure,
   Figure: Figure,
-  gallery: ImageGallery,
   'image-gallery': ImageGallery,
   ImageGallery: ImageGallery,
-  carousel: Carousel,
-  Carousel: Carousel,
   
   // Utilities
   qr: QRCode,
@@ -101,6 +171,7 @@ function parseShortcodeParams(paramString: string): Record<string, any> {
         params.src = parseValue(value); // For figure
         params.text = parseValue(value); // For qr
         params.images = parseValue(value); // For gallery
+        params.name = parseValue(value); // For icon
       }
       positionalIndex++;
     }
@@ -128,6 +199,8 @@ function parseValue(value: string): any {
 // Convert Hugo shortcode syntax to React components
 export function parseShortcodes(content: string): string {
   console.log('parseShortcodes called with content (first 500 chars):', content.substring(0, 500));
+  console.log('parseShortcodes called with content (around chart - chars 15000-16000):', content.substring(15000, 16000));
+  console.log('parseShortcodes called with content (around mermaid - chars 25000-26000):', content.substring(25000, 26000));
   
   // Let's check specifically for mermaid content
   const mermaidTest = content.includes('mermaid');
@@ -170,10 +243,20 @@ export function parseShortcodes(content: string): string {
   });
 
   // Then handle paired shortcodes: {{< shortcode params >}}content{{< /shortcode >}}
-  // Use a recursive approach to handle nested shortcodes
+  // Use a more flexible regex to handle whitespace and newlines better
   const pairedShortcodeRegex = /\{\{<\s*(\w+(?:-\w+)*)\s*([^>]*?)\s*>\}\}([\s\S]*?)\{\{<\s*\/\1\s*>\}\}/g;
   
   console.log('About to process paired shortcodes. Looking for pattern in content...');
+  console.log('Testing for chart pattern specifically...');
+  const chartPattern = /\{\{<\s*(chart|Chart)\s*([^>]*?)\s*>\}\}([\s\S]*?)\{\{<\s*\/(chart|Chart)\s*>\}\}/g;
+  const chartMatches = content.match(chartPattern);
+  console.log('Chart matches found:', chartMatches?.length || 0);
+  
+  console.log('Testing for mermaid pattern specifically...');
+  const mermaidPattern = /\{\{<\s*(mermaid|Mermaid)\s*([^>]*?)\s*>\}\}([\s\S]*?)\{\{<\s*\/(mermaid|Mermaid)\s*>\}\}/g;
+  const mermaidMatches = content.match(mermaidPattern);
+  console.log('Mermaid matches found:', mermaidMatches?.length || 0);
+  
   let foundPaired = false;
   
   result = result.replace(pairedShortcodeRegex, (match, shortcodeName, paramString, innerContent) => {
@@ -196,6 +279,11 @@ export function parseShortcodes(content: string): string {
       if (shortcodeName === 'mermaid' || shortcodeName === 'Mermaid') {
         // For Mermaid, pass raw content as children
         params.children = innerContent.trim();
+        console.log(`Mermaid content captured: "${innerContent.trim()}"`);
+      } else if (shortcodeName === 'chart' || shortcodeName === 'Chart') {
+        // For Chart, pass raw content as children  
+        params.children = innerContent.trim();
+        console.log(`Chart content captured: "${innerContent.trim()}"`);
       } else if (shortcodeName === 'timeline' || shortcodeName === 'Timeline') {
         // For Timeline, we need to process nested shortcodes and pass as React children
         // We'll handle this specially in the Timeline component itself

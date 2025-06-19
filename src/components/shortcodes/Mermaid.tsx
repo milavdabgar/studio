@@ -13,11 +13,6 @@ export function Mermaid({ children }: MermaidProps) {
   useEffect(() => {
     const loadMermaid = async () => {
       try {
-        if (!children || !children.trim()) {
-          console.warn('Mermaid component received empty content');
-          return;
-        }
-        
         // Dynamically import mermaid to avoid SSR issues
         const mermaid = (await import('mermaid')).default;
         
@@ -27,6 +22,24 @@ export function Mermaid({ children }: MermaidProps) {
           securityLevel: 'loose',
         });
 
+        console.log('Mermaid received content:', JSON.stringify(children));
+
+        if (!children || !children.trim()) {
+          console.warn('Mermaid component received empty content, using default diagram');
+          // Provide a default diagram if no content is provided
+          const defaultDiagram = `graph LR;
+    A[Start] --> B[Process];
+    B --> C[End];`;
+          
+          if (elementRef.current) {
+            elementRef.current.innerHTML = '';
+            const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
+            const { svg } = await mermaid.render(id, defaultDiagram);
+            elementRef.current.innerHTML = svg;
+          }
+          return;
+        }
+        
         if (elementRef.current) {
           // Clear previous content
           elementRef.current.innerHTML = '';
