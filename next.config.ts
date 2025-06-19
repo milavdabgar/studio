@@ -23,6 +23,10 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+    // Allow serving images from our content API
+    domains: ['localhost'],
+    // Disable the warning about width/height when using CSS sizing
+    unoptimized: false,
   },
 };
 

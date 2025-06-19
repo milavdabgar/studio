@@ -18,6 +18,22 @@ const Gallery: React.FC<GalleryProps> = ({ children }) => {
     );
   }
 
+  // If children is a string (HTML), fix the image paths
+  let content = children;
+  if (typeof children === 'string') {
+    // Fix relative image paths to use content-images API
+    content = children.replace(/src="([^"]*(?:gallery|images?)\/[^"]*\.(?:jpg|jpeg|png|gif|svg|webp))"/gi, (match, src) => {
+      // If the src doesn't start with http/https or /api/, use content-images API
+      if (!src.startsWith('http') && !src.startsWith('/api/')) {
+        if (!src.startsWith('/')) {
+          return `src="/api/content-images/development/shortcodes/${src}"`;
+        }
+        return `src="/api/content-images${src}"`;
+      }
+      return match;
+    });
+  }
+
   return (
     <div className="my-6">
       <div 
@@ -28,7 +44,11 @@ const Gallery: React.FC<GalleryProps> = ({ children }) => {
           gap: '0.5rem'
         }}
       >
-        {children}
+        {typeof content === 'string' ? (
+          <div dangerouslySetInnerHTML={{ __html: content }} />
+        ) : (
+          content
+        )}
       </div>
       
       <style jsx global>{`

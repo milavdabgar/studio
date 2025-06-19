@@ -44,8 +44,21 @@ export function Figure({
   const [isZoomed, setIsZoomed] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  // Fix relative image paths by ensuring they start with /
-  const fixedSrc = src && !src.startsWith('http') && !src.startsWith('/') ? `/${src}` : src;
+  // Handle image paths - use content-images API for relative paths
+  const fixedSrc = (() => {
+    if (!src) return src;
+    if (src.startsWith('http')) return src; // External URL
+    if (src.startsWith('/api/')) return src; // Already an API route
+    if (src.startsWith('/') && src.includes('/content/')) return src; // Already absolute path to content
+    
+    // For relative paths, use the content-images API
+    if (!src.startsWith('/')) {
+      return `/api/content-images/development/shortcodes/${src}`;
+    }
+    
+    // For absolute paths that might be in content, use content-images API
+    return `/api/content-images${src}`;
+  })();
 
   const alignmentClass = {
     left: 'text-left',
@@ -79,7 +92,8 @@ export function Figure({
           title={title}
           width={width}
           height={height}
-          className={`rounded-lg transition-transform duration-200 max-w-full h-auto ${zoom && !link ? 'cursor-zoom-in hover:scale-105' : ''} ${className}`}
+          className={`rounded-lg transition-transform duration-200 max-w-full ${zoom && !link ? 'cursor-zoom-in hover:scale-105' : ''} ${className}`}
+          style={{ height: 'auto' }} // Maintain aspect ratio
           loading={loading}
           onError={() => setImageError(true)}
           onClick={handleImageClick}

@@ -53,10 +53,17 @@ const BlowfishCarousel: React.FC<BlowfishCarouselProps> = ({
       parsedImages = images;
     }
 
-    // Ensure images have leading slash for Next.js
+    // Use content-images API for local images
     parsedImages = parsedImages.map(img => {
-      if (img.startsWith('http')) return img;
-      return img.startsWith('/') ? img : `/${img}`;
+      if (img.startsWith('http') || img.startsWith('/api/')) return img; // Keep external URLs and API routes
+      
+      // For relative paths, use content-images API
+      if (!img.startsWith('/')) {
+        return `/api/content-images/development/shortcodes/${img}`;
+      }
+      
+      // For absolute paths, use content-images API
+      return `/api/content-images${img}`;
     });
 
     setImageList(parsedImages);
