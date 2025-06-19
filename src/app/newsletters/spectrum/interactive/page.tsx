@@ -1,36 +1,47 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Download, FileText, File, Globe, Award, Users, 
   BookOpen, TrendingUp, Building, Phone, Mail, MapPin,
   Calendar, Star, Trophy, Lightbulb, Target, Rocket
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { newsletterData } from '@/lib/newsletter-data';
-
-// Using centralized newsletter data
-const statsData = newsletterData.stats.map((stat, index) => ({
-  ...stat,
-  icon: [TrendingUp, BookOpen, Users, Award][index] || TrendingUp
-}));
-
-const achievements = newsletterData.achievements.map((achievement, index) => ({
-  ...achievement,
-  icon: [Award, Trophy, Building][index] || Award
-}));
-
-const placementCompanies = newsletterData.placements;
+import { newsletterData, getNewsletterDataByYear, availableYears, type NewsletterData } from '@/lib/newsletter-data';
 
 export default function InteractiveNewsletterPage() {
+  const [selectedYear, setSelectedYear] = useState('2023-24');
+  const [currentData, setCurrentData] = useState<NewsletterData>(newsletterData);
   const [isExporting, setIsExporting] = useState<string | null>(null);
   const { toast } = useToast();
+
+  // Update data when year changes
+  useEffect(() => {
+    const yearData = getNewsletterDataByYear(selectedYear);
+    if (yearData) {
+      setCurrentData(yearData);
+    }
+  }, [selectedYear]);
+
+  // Using current year data
+  const statsData = currentData.stats.map((stat, index) => ({
+    ...stat,
+    icon: [TrendingUp, BookOpen, Users, Award][index] || TrendingUp
+  }));
+
+  const achievements = currentData.achievements.map((achievement, index) => ({
+    ...achievement,
+    icon: [Award, Trophy, Building][index] || Award
+  }));
+
+  const placementCompanies = currentData.placements;
 
   const handleExport = async (format: string) => {
     setIsExporting(format);
@@ -40,10 +51,11 @@ export default function InteractiveNewsletterPage() {
       const exportData = {
         title: 'Spectrum Newsletter - Band III',
         edition: 'Band III',
-        academicYear: '2023-24',
+        academicYear: selectedYear,
         department: 'Electronics & Communication Engineering',
         institute: 'Government Polytechnic, Palanpur',
-        format: format
+        format: format,
+        year: selectedYear
       };
 
       const response = await fetch('/api/newsletters/export-interactive', {
@@ -126,7 +138,26 @@ export default function InteractiveNewsletterPage() {
         <div className="relative container mx-auto px-4 py-16">
           <div className="text-center text-white">
             <h1 className="text-4xl font-bold mb-4">Spectrum Newsletter</h1>
-            <p className="text-xl mb-8">Band III - Academic Year 2023-24</p>
+            <p className="text-xl mb-8">Band III - Academic Year {selectedYear}</p>
+            
+            {/* Year Selection */}
+            <div className="flex justify-center mb-8">
+              <div className="bg-white/10 backdrop-blur-md rounded-lg p-4">
+                <label className="text-white text-sm font-medium mb-2 block">Select Academic Year</label>
+                <Select value={selectedYear} onValueChange={setSelectedYear}>
+                  <SelectTrigger className="w-64 bg-white/90 text-gray-900">
+                    <SelectValue placeholder="Select academic year" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableYears.map((year) => (
+                      <SelectItem key={year.year} value={year.year}>
+                        {year.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
             
             {/* Export Buttons */}
             <div className="flex justify-center space-x-4 mb-8">
@@ -267,7 +298,7 @@ export default function InteractiveNewsletterPage() {
                       <h3 className="text-lg font-semibold text-blue-900">Vision</h3>
                     </div>
                     <p className="text-blue-800 leading-relaxed">
-                      {newsletterData.vision}
+                      {currentData.vision}
                     </p>
                   </div>
 
@@ -280,7 +311,7 @@ export default function InteractiveNewsletterPage() {
                       <h3 className="text-lg font-semibold text-green-900">Mission</h3>
                     </div>
                     <div className="text-green-800 leading-relaxed">
-                      {newsletterData.mission}
+                      {currentData.mission}
                     </div>
                   </div>
                 </div>
@@ -308,13 +339,13 @@ export default function InteractiveNewsletterPage() {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                        {newsletterData.messages.principal.name}
+                        {currentData.messages.principal.name}
                       </h3>
                       <p className="text-sm text-gray-600 mb-4">
-                        {newsletterData.messages.principal.designation}
+                        {currentData.messages.principal.designation}
                       </p>
                       <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                        {newsletterData.messages.principal.message}
+                        {currentData.messages.principal.message}
                       </p>
                     </div>
                   </div>
@@ -339,13 +370,13 @@ export default function InteractiveNewsletterPage() {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                        {newsletterData.messages.hod.name}
+                        {currentData.messages.hod.name}
                       </h3>
                       <p className="text-sm text-gray-600 mb-4">
-                        {newsletterData.messages.hod.designation}
+                        {currentData.messages.hod.designation}
                       </p>
                       <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                        {newsletterData.messages.hod.message}
+                        {currentData.messages.hod.message}
                       </p>
                     </div>
                   </div>
@@ -370,13 +401,13 @@ export default function InteractiveNewsletterPage() {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                        {newsletterData.messages.editorial.name}
+                        {currentData.messages.editorial.name}
                       </h3>
                       <p className="text-sm text-gray-600 mb-4">
-                        {newsletterData.messages.editorial.designation}
+                        {currentData.messages.editorial.designation}
                       </p>
                       <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                        {newsletterData.messages.editorial.message}
+                        {currentData.messages.editorial.message}
                       </p>
                     </div>
                   </div>
@@ -548,7 +579,7 @@ export default function InteractiveNewsletterPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-8">
-                  {newsletterData.events.map((event, index) => {
+                  {currentData.events.map((event, index) => {
                     // Category-based styling
                     const categoryStyles = {
                       workshop: 'from-violet-50 to-purple-50 text-violet-700 border-violet-300',
@@ -606,7 +637,7 @@ export default function InteractiveNewsletterPage() {
                             </div>
                           )}
                         </div>
-                        {index < newsletterData.events.length - 1 && <Separator />}
+                        {index < currentData.events.length - 1 && <Separator />}
                       </div>
                     );
                   })}

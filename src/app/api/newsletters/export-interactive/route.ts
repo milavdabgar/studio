@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ContentConverterV2 } from '@/lib/content-converter-v2';
-import { newsletterData } from '@/lib/newsletter-data';
+import { newsletterData, getNewsletterDataByYear, type NewsletterData } from '@/lib/newsletter-data';
 import fs from 'fs';
 import path from 'path';
 
@@ -38,14 +38,14 @@ function getImageAsBase64(imagePath: string): string {
 // Using centralized newsletter data
 
 // Generate static HTML from React component data
-function generateStaticHtml(data: typeof newsletterData): string {
+function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): string {
   return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spectrum Newsletter - Band 3 (2023-24)</title>
+    <title>Spectrum Newsletter - Band 3 (${year})</title>
     <style>
         * {
             margin: 0;
@@ -397,7 +397,7 @@ function generateStaticHtml(data: typeof newsletterData): string {
             <h1>Spectrum Newsletter</h1>
             <p>Department of Electronics & Communication Engineering</p>
             <p>Government Polytechnic, Palanpur</p>
-            <p>Band III • Academic Year 2023-24</p>
+            <p>Band III • Academic Year ${year}</p>
         </div>
         
         <div class="stats-grid">
@@ -778,7 +778,7 @@ function htmlToMarkdown(html: string): string {
 export async function POST(request: NextRequest) {
   try {
     const requestData = await request.json();
-    const { format } = requestData;
+    const { format, year = '2023-24' } = requestData;
     
     if (!format || !['pdf', 'docx', 'rtf', 'html'].includes(format)) {
       return NextResponse.json(
@@ -787,10 +787,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`[Interactive Export] Processing ${format} export...`);
+    console.log(`[Interactive Export] Processing ${format} export for year ${year}...`);
 
+    // Get newsletter data for the specified year
+    const yearData = getNewsletterDataByYear(year) || newsletterData;
+    
     // Generate static HTML from component data
-    const htmlContent = generateStaticHtml(newsletterData);
+    const htmlContent = generateStaticHtml(yearData, year);
     
     // Handle different export formats
     switch (format) {
@@ -803,7 +806,7 @@ export async function POST(request: NextRequest) {
           return new NextResponse(pdfBuffer, {
             headers: {
               'Content-Type': 'application/pdf',
-              'Content-Disposition': `attachment; filename="Spectrum-Interactive-Newsletter-${new Date().toISOString().split('T')[0]}.pdf"`,
+              'Content-Disposition': `attachment; filename="Spectrum-Interactive-Newsletter-${year}-${new Date().toISOString().split('T')[0]}.pdf"`,
             },
           });
         } catch (pdfError) {
@@ -824,7 +827,7 @@ export async function POST(request: NextRequest) {
         return new NextResponse(htmlContent, {
           headers: {
             'Content-Type': 'text/html',
-            'Content-Disposition': `attachment; filename="Spectrum-Interactive-Newsletter-${new Date().toISOString().split('T')[0]}.html"`,
+            'Content-Disposition': `attachment; filename="Spectrum-Interactive-Newsletter-${year}-${new Date().toISOString().split('T')[0]}.html"`,
           },
         });
       }
@@ -853,7 +856,7 @@ export async function POST(request: NextRequest) {
           return new NextResponse(convertedContent, {
             headers: {
               'Content-Type': mimeType,
-              'Content-Disposition': `attachment; filename="Spectrum-Interactive-Newsletter-${new Date().toISOString().split('T')[0]}.${format}"`,
+              'Content-Disposition': `attachment; filename="Spectrum-Interactive-Newsletter-${year}-${new Date().toISOString().split('T')[0]}.${format}"`,
             },
           });
         } catch (conversionError) {
