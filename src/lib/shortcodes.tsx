@@ -2,13 +2,47 @@
 // Hugo Shortcode Parser for React/Next.js
 
 import React from 'react';
-import { YouTube, Figure, ImageGallery, TwitterEmbed, Instagram, QRCode, CodeBlock, Carousel } from '@/components/shortcodes';
+import { 
+  YouTube, 
+  Figure, 
+  ImageGallery, 
+  TwitterEmbed, 
+  Instagram, 
+  QRCode, 
+  CodeBlock, 
+  Carousel 
+} from '@/components/shortcodes';
+
+// Import Blowfish shortcodes
+import Alert from '@/components/shortcodes/Alert';
+import Badge from '@/components/shortcodes/Badge';
+import Button from '@/components/shortcodes/Button';
+import Timeline from '@/components/shortcodes/Timeline';
+import TimelineItem from '@/components/shortcodes/TimelineItem';
+import GitHub from '@/components/shortcodes/GitHub';
+import Mermaid from '@/components/shortcodes/Mermaid';
 
 // Type for shortcode components
 type ShortcodeComponent = React.ComponentType<any>;
 
-// Shortcode registry mapping
+// Shortcode registry mapping with exact Blowfish API compatibility
 const shortcodeRegistry: Record<string, ShortcodeComponent> = {
+  // Blowfish shortcodes (exact API compatibility)
+  alert: Alert,
+  Alert: Alert,
+  badge: Badge,
+  Badge: Badge,
+  button: Button,
+  Button: Button,
+  timeline: Timeline,
+  Timeline: Timeline,
+  timelineItem: TimelineItem,
+  TimelineItem: TimelineItem,
+  github: GitHub,
+  GitHub: GitHub,
+  mermaid: Mermaid,
+  Mermaid: Mermaid,
+  
   // Video embeds
   youtube: YouTube,
   YouTube: YouTube,
@@ -93,40 +127,25 @@ function parseValue(value: string): any {
 
 // Convert Hugo shortcode syntax to React components
 export function parseShortcodes(content: string): string {
-  // First handle paired shortcodes: {{< shortcode params >}}content{{< /shortcode >}}
-  const pairedShortcodeRegex = /\{\{<\s*(\w+(?:-\w+)*)\s+([^>]*?)\s*>\}\}([\s\S]*?)\{\{<\s*\/\1\s*>\}\}/g;
+  console.log('parseShortcodes called with content (first 500 chars):', content.substring(0, 500));
   
-  let result = content.replace(pairedShortcodeRegex, (match, shortcodeName, paramString, innerContent) => {
-    // Find the corresponding React component
-    const Component = shortcodeRegistry[shortcodeName];
-    
-    if (!Component) {
-      console.warn(`Unknown paired shortcode: ${shortcodeName}`);
-      return match; // Return original if shortcode not found
+  // Let's check specifically for mermaid content
+  const mermaidTest = content.includes('mermaid');
+  console.log('Content contains mermaid:', mermaidTest);
+  if (mermaidTest) {
+    const mermaidMatches = content.match(/\{\{<\s*mermaid[\s\S]*?\/mermaid\s*>\}\}/g);
+    console.log('Mermaid matches found:', mermaidMatches?.length || 0);
+    if (mermaidMatches) {
+      mermaidMatches.forEach((match, i) => {
+        console.log(`Mermaid match ${i}:`, match.substring(0, 200));
+      });
     }
-    
-    try {
-      // Parse parameters
-      const params = parseShortcodeParams(paramString.trim());
-      
-      // Add the inner content as children prop
-      params.children = innerContent.trim();
-      
-      // Generate a unique key for the component
-      const key = `shortcode-${shortcodeName}-${Math.random().toString(36).substr(2, 9)}`;
-      
-      // Create placeholder that will be replaced in PostRenderer
-      return `<div data-shortcode="${shortcodeName}" data-params="${encodeURIComponent(JSON.stringify(params))}" data-key="${key}"></div>`;
-    } catch (error) {
-      console.error(`Error parsing paired shortcode ${shortcodeName}:`, error);
-      return match; // Return original on error
-    }
-  });
+  }
   
-  // Then handle self-closing shortcodes: {{< shortcode params >}}
-  const shortcodeRegex = /\{\{<\s*(\w+(?:-\w+)*)\s+([^>]*?)\s*>\}\}/g;
+  // First handle self-closing shortcodes: {{< shortcode params >}}
+  const selfClosingShortcodeRegex = /\{\{<\s*(\w+(?:-\w+)*)\s+([^>]*?)\s*>\}\}/g;
   
-  result = result.replace(shortcodeRegex, (match, shortcodeName, paramString) => {
+  let result = content.replace(selfClosingShortcodeRegex, (match, shortcodeName, paramString) => {
     // Find the corresponding React component
     const Component = shortcodeRegistry[shortcodeName];
     
@@ -149,8 +168,57 @@ export function parseShortcodes(content: string): string {
       return match; // Return original on error
     }
   });
+
+  // Then handle paired shortcodes: {{< shortcode params >}}content{{< /shortcode >}}
+  // Use a recursive approach to handle nested shortcodes
+  const pairedShortcodeRegex = /\{\{<\s*(\w+(?:-\w+)*)\s*([^>]*?)\s*>\}\}([\s\S]*?)\{\{<\s*\/\1\s*>\}\}/g;
   
-  return result;
+  console.log('About to process paired shortcodes. Looking for pattern in content...');
+  let foundPaired = false;
+  
+  result = result.replace(pairedShortcodeRegex, (match, shortcodeName, paramString, innerContent) => {
+    foundPaired = true;
+    console.log(`Found paired shortcode: ${shortcodeName} with content: ${innerContent.substring(0, 100)}`);
+    
+    // Find the corresponding React component
+    const Component = shortcodeRegistry[shortcodeName];
+    
+    if (!Component) {
+      console.warn(`Unknown paired shortcode: ${shortcodeName}`);
+      return match; // Return original if shortcode not found
+    }
+    
+    try {
+      // Parse parameters
+      const params = parseShortcodeParams(paramString.trim());
+      
+      // Special handling for components that need raw content
+      if (shortcodeName === 'mermaid' || shortcodeName === 'Mermaid') {
+        // For Mermaid, pass raw content as children
+        params.children = innerContent.trim();
+      } else if (shortcodeName === 'timeline' || shortcodeName === 'Timeline') {
+        // For Timeline, we need to process nested shortcodes and pass as React children
+        // We'll handle this specially in the Timeline component itself
+        params.children = innerContent.trim();
+      } else {
+        // For other components, recursively process shortcodes in the inner content
+        const processedInnerContent = parseShortcodes(innerContent.trim());
+        params.children = processedInnerContent;
+      }
+      
+      // Generate a unique key for the component
+      const key = `shortcode-${shortcodeName}-${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Create placeholder that will be replaced in PostRenderer
+      return `<div data-shortcode="${shortcodeName}" data-params="${encodeURIComponent(JSON.stringify(params))}" data-key="${key}"></div>`;
+    } catch (error) {
+      console.error(`Error parsing paired shortcode ${shortcodeName}:`, error);
+      return match; // Return original on error
+    }
+  });
+  
+  console.log(`Paired shortcode processing complete. Found: ${foundPaired}`);
+  console.log('Final result (first 500 chars):', result.substring(0, 500));
   
   return result;
 }
