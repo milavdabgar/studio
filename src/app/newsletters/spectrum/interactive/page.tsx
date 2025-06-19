@@ -93,7 +93,24 @@ export default function InteractiveNewsletterPage() {
       });
 
       if (!response.ok) {
-        throw new Error(`Export failed: ${response.statusText}`);
+        // Try to get error details from the response
+        let errorMessage = `Export failed: ${response.statusText}`;
+        let suggestion = '';
+        
+        try {
+          const errorData = await response.json();
+          if (errorData.error) {
+            errorMessage = errorData.error;
+          }
+          if (errorData.suggestion) {
+            suggestion = errorData.suggestion;
+          }
+        } catch (jsonError) {
+          // Fallback if response is not JSON
+          console.error('Could not parse error response:', jsonError);
+        }
+        
+        throw new Error(errorMessage + (suggestion ? ` ${suggestion}` : ''));
       }
 
       // Get the filename from the response headers
@@ -121,9 +138,17 @@ export default function InteractiveNewsletterPage() {
 
     } catch (error) {
       console.error('Export error:', error);
+      
+      // Show helpful error message based on format
+      let errorDescription = error instanceof Error ? error.message : 'Unknown error occurred';
+      
+      if (format === 'pdf' && errorDescription.includes('PDF generation failed')) {
+        errorDescription += ' Try HTML export as an alternative.';
+      }
+      
       toast({
         title: "Export Failed",
-        description: `Failed to export newsletter: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        description: errorDescription,
         variant: "destructive",
       });
     } finally {

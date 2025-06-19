@@ -37,15 +37,36 @@ async function generatePdfFromHtml(htmlContent: string, options: any): Promise<B
 
   let browser;
   try {
-    browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-web-security',
-      ]
-    });
+    // Try with full configuration first
+    try {
+      browser = await puppeteer.launch({
+        headless: 'new',
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-web-security',
+          '--disable-features=VizDisplayCompositor',
+          '--disable-extensions',
+          '--disable-plugins',
+          '--disable-gpu',
+          '--no-first-run',
+          '--no-default-browser-check',
+          '--disable-background-timer-throttling',
+          '--disable-renderer-backgrounding',
+          '--disable-backgrounding-occluded-windows',
+        ],
+        timeout: 60000
+      });
+    } catch (launchError) {
+      console.log('Full launch config failed, trying minimal config:', launchError);
+      // Fallback to minimal configuration
+      browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        timeout: 30000
+      });
+    }
 
     const page = await browser.newPage();
     
@@ -56,26 +77,35 @@ async function generatePdfFromHtml(htmlContent: string, options: any): Promise<B
       deviceScaleFactor: 1
     });
 
-    // Set the HTML content
+    // Set the HTML content with better options
     await page.setContent(htmlContent, { 
-      waitUntil: 'networkidle0',
-      timeout: 30000
+      waitUntil: ['load', 'domcontentloaded'],
+      timeout: 60000
     });
 
-    // Wait for fonts to load
-    await page.evaluateHandle('document.fonts.ready');
+    // Wait for fonts and images to load (with fallback)
+    try {
+      await page.evaluateHandle('document.fonts.ready');
+    } catch (fontsError) {
+      console.log('Fonts ready check failed, continuing:', fontsError);
+    }
+    
+    // Alternative to waitForTimeout - use a promise-based delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
-    // Generate PDF
+    // Generate PDF with improved settings
     const pdfBuffer = await page.pdf({
       format: options.format || 'A4',
       printBackground: true,
       margin: options.margin || {
         top: '20mm',
-        right: '20mm',
+        right: '20mm', 
         bottom: '20mm',
         left: '20mm'
       },
-      preferCSSPageSize: true
+      preferCSSPageSize: false,
+      displayHeaderFooter: false,
+      timeout: 60000,
     });
 
     return Buffer.from(pdfBuffer);
@@ -85,7 +115,11 @@ async function generatePdfFromHtml(htmlContent: string, options: any): Promise<B
     throw new Error(`PDF generation failed: ${error.message || error}`);
   } finally {
     if (browser) {
-      await browser.close();
+      try {
+        await browser.close();
+      } catch (closeError) {
+        console.error('Error closing browser:', closeError);
+      }
     }
   }
 }
@@ -124,40 +158,62 @@ export async function POST(request: NextRequest) {
 
       switch (format.toLowerCase()) {
         case 'pdf':
-          // For PDF, we'll use the existing PDF generation but with HTML content
-          result = await generatePdfFromHtml(htmlContent, {
-            title,
-            format: 'A4',
-            margin: {
-              top: '10mm',
-              right: '10mm',
-              bottom: '10mm',
-              left: '10mm'
-            }
-          });
-          contentType = 'application/pdf';
-          fileExtension = 'pdf';
+          try {
+            console.log('[HTML Export] Generating PDF...');
+            // For PDF, we'll use the existing PDF generation but with HTML content
+            result = await generatePdfFromHtml(htmlContent, {
+              title,
+              format: 'A4',
+              margin: {
+                top: '10mm',
+                right: '10mm',
+                bottom: '10mm',
+                left: '10mm'
+              }
+            });
+            contentType = 'application/pdf';
+            fileExtension = 'pdf';
+            console.log('[HTML Export] PDF generation successful');
+          } catch (pdfError) {
+            console.error('[HTML Export] PDF generation failed:', pdfError);
+            throw new Error(`PDF generation failed: ${pdfError instanceof Error ? pdfError.message : 'Unknown PDF error'}. Try exporting as HTML or DOCX instead.`);
+          }
           break;
 
         case 'html':
+          console.log('[HTML Export] Generating HTML...');
           result = htmlContent;
           contentType = 'text/html';
           fileExtension = 'html';
           break;
 
         case 'docx':
-          // For DOCX, convert to a simple markdown and use existing converter
-          const simpleMarkdown = htmlToSimpleMarkdown(htmlContent);
-          result = await converter.convert(simpleMarkdown, 'docx', { title });
-          contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-          fileExtension = 'docx';
+          try {
+            console.log('[HTML Export] Generating DOCX...');
+            // For DOCX, convert to a simple markdown and use existing converter
+            const simpleMarkdown = htmlToSimpleMarkdown(htmlContent);
+            result = await converter.convert(simpleMarkdown, 'docx', { title });
+            contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+            fileExtension = 'docx';
+            console.log('[HTML Export] DOCX generation successful');
+          } catch (docxError) {
+            console.error('[HTML Export] DOCX generation failed:', docxError);
+            throw new Error(`DOCX generation failed: ${docxError instanceof Error ? docxError.message : 'Unknown DOCX error'}. Try exporting as HTML instead.`);
+          }
           break;
 
         case 'rtf':
-          const simpleMarkdownRtf = htmlToSimpleMarkdown(htmlContent);
-          result = await converter.convert(simpleMarkdownRtf, 'rtf', { title });
-          contentType = 'application/rtf';
-          fileExtension = 'rtf';
+          try {
+            console.log('[HTML Export] Generating RTF...');
+            const simpleMarkdownRtf = htmlToSimpleMarkdown(htmlContent);
+            result = await converter.convert(simpleMarkdownRtf, 'rtf', { title });
+            contentType = 'application/rtf';
+            fileExtension = 'rtf';
+            console.log('[HTML Export] RTF generation successful');
+          } catch (rtfError) {
+            console.error('[HTML Export] RTF generation failed:', rtfError);
+            throw new Error(`RTF generation failed: ${rtfError instanceof Error ? rtfError.message : 'Unknown RTF error'}. Try exporting as HTML instead.`);
+          }
           break;
 
         default:
@@ -194,12 +250,15 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error: any) {
-    console.error('HTML export error:', error);
+    console.error('[HTML Export] General error:', error);
     
     return NextResponse.json(
       { 
         error: 'Failed to export HTML content',
-        details: error.message || 'Unknown error occurred'
+        details: error.message || 'Unknown error occurred',
+        suggestion: error.message && error.message.includes('PDF') 
+          ? 'Try exporting as HTML or DOCX format instead.'
+          : 'Please try again or contact support if the issue persists.'
       },
       { status: 500 }
     );

@@ -377,7 +377,7 @@ function generateStaticHtml(data: typeof interactiveNewsletterData): string {
   `;
 }
 
-// Generate PDF from HTML using Puppeteer
+// Generate PDF from HTML using Puppeteer with better error handling
 async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
   if (!puppeteer) {
     throw new Error('Puppeteer is not available for PDF generation');
@@ -385,23 +385,61 @@ async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
 
   let browser;
   try {
-    browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-web-security',
-      ]
-    });
+    // Try with full configuration first
+    try {
+      browser = await puppeteer.launch({
+        headless: 'new',
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-web-security',
+          '--disable-features=VizDisplayCompositor',
+          '--disable-extensions',
+          '--disable-plugins',
+          '--disable-gpu',
+          '--no-first-run',
+          '--no-default-browser-check',
+          '--disable-background-timer-throttling',
+          '--disable-renderer-backgrounding',
+          '--disable-backgrounding-occluded-windows',
+        ],
+        timeout: 60000
+      });
+    } catch (launchError) {
+      console.log('Full launch config failed, trying minimal config:', launchError);
+      // Fallback to minimal configuration
+      browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        timeout: 30000
+      });
+    }
 
     const page = await browser.newPage();
     
-    // Set content and wait for any dynamic content to load
-    await page.setContent(htmlContent, { 
-      waitUntil: 'networkidle0',
-      timeout: 30000 
+    // Set viewport and other page settings
+    await page.setViewport({
+      width: 1200,
+      height: 800,
+      deviceScaleFactor: 1,
     });
+    
+    // Set content with longer timeout and better error handling
+    await page.setContent(htmlContent, { 
+      waitUntil: ['load', 'domcontentloaded'],
+      timeout: 60000 
+    });
+
+    // Wait for fonts (with fallback)
+    try {
+      await page.evaluateHandle('document.fonts.ready');
+    } catch (fontsError) {
+      console.log('Fonts ready check failed, continuing:', fontsError);
+    }
+
+    // Wait a bit more for any CSS animations or dynamic content
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Generate PDF with optimal settings for newsletter
     const pdfBuffer = await page.pdf({
@@ -413,13 +451,22 @@ async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
         bottom: '20px',
         left: '20px',
       },
-      preferCSSPageSize: true,
+      preferCSSPageSize: false,
+      displayHeaderFooter: false,
+      timeout: 60000,
     });
 
     return Buffer.from(pdfBuffer);
+  } catch (error) {
+    console.error('PDF generation error:', error);
+    throw new Error(`PDF generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
   } finally {
     if (browser) {
-      await browser.close();
+      try {
+        await browser.close();
+      } catch (closeError) {
+        console.error('Error closing browser:', closeError);
+      }
     }
   }
 }
@@ -460,23 +507,40 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    console.log(`[Interactive Export] Processing ${format} export...`);
+
     // Generate static HTML from component data
     const htmlContent = generateStaticHtml(interactiveNewsletterData);
     
     // Handle different export formats
     switch (format) {
       case 'pdf': {
-        const pdfBuffer = await generatePdfFromHtml(htmlContent);
-        
-        return new NextResponse(pdfBuffer, {
-          headers: {
-            'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename="Spectrum-Interactive-Newsletter-${new Date().toISOString().split('T')[0]}.pdf"`,
-          },
-        });
+        try {
+          console.log('[Interactive Export] Generating PDF...');
+          const pdfBuffer = await generatePdfFromHtml(htmlContent);
+          console.log('[Interactive Export] PDF generation successful');
+          
+          return new NextResponse(pdfBuffer, {
+            headers: {
+              'Content-Type': 'application/pdf',
+              'Content-Disposition': `attachment; filename="Spectrum-Interactive-Newsletter-${new Date().toISOString().split('T')[0]}.pdf"`,
+            },
+          });
+        } catch (pdfError) {
+          console.error('[Interactive Export] PDF generation failed:', pdfError);
+          return NextResponse.json(
+            { 
+              error: 'PDF generation failed. This might be due to Puppeteer configuration issues in the development environment.',
+              details: pdfError instanceof Error ? pdfError.message : 'Unknown PDF error',
+              suggestion: 'Try exporting as HTML or DOCX format instead.'
+            },
+            { status: 500 }
+          );
+        }
       }
       
       case 'html': {
+        console.log('[Interactive Export] Generating HTML...');
         return new NextResponse(htmlContent, {
           headers: {
             'Content-Type': 'text/html',
@@ -487,26 +551,42 @@ export async function POST(request: NextRequest) {
       
       case 'docx':
       case 'rtf': {
-        // Convert HTML to Markdown for better document conversion
-        const markdownContent = htmlToMarkdown(htmlContent);
-        
-        // Use the existing content converter
-        const converter = new ContentConverterV2();
-        const convertedContent = await converter.convert(
-          markdownContent,
-          format as 'docx' | 'rtf'
-        );
-        
-        const mimeType = format === 'docx' 
-          ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-          : 'application/rtf';
+        try {
+          console.log(`[Interactive Export] Generating ${format.toUpperCase()}...`);
           
-        return new NextResponse(convertedContent, {
-          headers: {
-            'Content-Type': mimeType,
-            'Content-Disposition': `attachment; filename="Spectrum-Interactive-Newsletter-${new Date().toISOString().split('T')[0]}.${format}"`,
-          },
-        });
+          // Convert HTML to Markdown for better document conversion
+          const markdownContent = htmlToMarkdown(htmlContent);
+          
+          // Use the existing content converter
+          const converter = new ContentConverterV2();
+          const convertedContent = await converter.convert(
+            markdownContent,
+            format as 'docx' | 'rtf'
+          );
+          
+          const mimeType = format === 'docx' 
+            ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            : 'application/rtf';
+            
+          console.log(`[Interactive Export] ${format.toUpperCase()} generation successful`);
+          
+          return new NextResponse(convertedContent, {
+            headers: {
+              'Content-Type': mimeType,
+              'Content-Disposition': `attachment; filename="Spectrum-Interactive-Newsletter-${new Date().toISOString().split('T')[0]}.${format}"`,
+            },
+          });
+        } catch (conversionError) {
+          console.error(`[Interactive Export] ${format.toUpperCase()} generation failed:`, conversionError);
+          return NextResponse.json(
+            { 
+              error: `${format.toUpperCase()} generation failed`,
+              details: conversionError instanceof Error ? conversionError.message : 'Unknown conversion error',
+              suggestion: 'Try exporting as HTML format instead.'
+            },
+            { status: 500 }
+          );
+        }
       }
       
       default:
@@ -516,9 +596,13 @@ export async function POST(request: NextRequest) {
         );
     }
   } catch (error) {
-    console.error('Export error:', error);
+    console.error('[Interactive Export] General error:', error);
     return NextResponse.json(
-      { error: 'Failed to export newsletter: ' + (error as Error).message },
+      { 
+        error: 'Failed to export newsletter',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        suggestion: 'Please try again or contact support if the issue persists.'
+      },
       { status: 500 }
     );
   }
