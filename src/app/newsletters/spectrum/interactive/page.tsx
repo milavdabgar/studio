@@ -206,6 +206,47 @@ export default function InteractiveNewsletterPage() {
               })}
             </div>
 
+            {/* Department Overview */}
+            <Card className="mb-8">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Building className="w-5 h-5 text-blue-600" />
+                  <span>Department Overview</span>
+                </CardTitle>
+                <CardDescription>Electronics & Communication Engineering - Government Polytechnic, Palanpur</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="prose max-w-none">
+                  <p className="text-gray-700 leading-relaxed mb-4">
+                    The Electronics & Communication Engineering department at Government Polytechnic, Palanpur 
+                    continues to excel in providing quality technical education and fostering innovation. 
+                    With state-of-the-art laboratories and experienced faculty, we prepare students for 
+                    the rapidly evolving technology landscape.
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-2">Key Highlights 2023-24</h4>
+                      <ul className="space-y-1 text-sm text-gray-600">
+                        <li>• 150+ students across all semesters</li>
+                        <li>• 100% placement rate for eligible students</li>
+                        <li>• 20+ research publications</li>
+                        <li>• Modern lab infrastructure worth ₹35+ lakhs</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-2">Focus Areas</h4>
+                      <ul className="space-y-1 text-sm text-gray-600">
+                        <li>• 5G Communication Systems</li>
+                        <li>• IoT & Embedded Systems</li>
+                        <li>• Digital Signal Processing</li>
+                        <li>• VLSI Design & Testing</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Vision & Mission */}
             <Card className="mb-8">
               <CardHeader>
@@ -240,47 +281,6 @@ export default function InteractiveNewsletterPage() {
                     </div>
                     <div className="text-green-800 leading-relaxed">
                       {newsletterData.mission}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Department Overview */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Building className="w-5 h-5 text-blue-600" />
-                  <span>Department Overview</span>
-                </CardTitle>
-                <CardDescription>Electronics & Communication Engineering - Government Polytechnic, Palanpur</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="prose max-w-none">
-                  <p className="text-gray-700 leading-relaxed mb-4">
-                    The Electronics & Communication Engineering department at Government Polytechnic, Palanpur 
-                    continues to excel in providing quality technical education and fostering innovation. 
-                    With state-of-the-art laboratories and experienced faculty, we prepare students for 
-                    the rapidly evolving technology landscape.
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Key Highlights 2023-24</h4>
-                      <ul className="space-y-1 text-sm text-gray-600">
-                        <li>• 150+ students across all semesters</li>
-                        <li>• 100% placement rate for eligible students</li>
-                        <li>• 20+ research publications</li>
-                        <li>• Modern lab infrastructure worth ₹35+ lakhs</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Focus Areas</h4>
-                      <ul className="space-y-1 text-sm text-gray-600">
-                        <li>• 5G Communication Systems</li>
-                        <li>• IoT & Embedded Systems</li>
-                        <li>• Digital Signal Processing</li>
-                        <li>• VLSI Design & Testing</li>
-                      </ul>
                     </div>
                   </div>
                 </div>

@@ -409,6 +409,59 @@ function generateStaticHtml(data: typeof newsletterData): string {
             `).join('')}
         </div>
         
+        <!-- Department Overview Section -->
+        <div class="section">
+            <h2 class="section-title">🏢 Department Overview</h2>
+            <div class="content-card" style="padding: 1.5rem; background: #f9fafb; border-radius: 0.75rem; margin-bottom: 1.5rem;">
+                <p style="margin-bottom: 1rem; line-height: 1.6;">The Electronics & Communication Engineering department at Government Polytechnic, Palanpur continues to excel in providing quality technical education and fostering innovation. With state-of-the-art laboratories and experienced faculty, we prepare students for the rapidly evolving technology landscape.</p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1.5rem;">
+                    <div>
+                        <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 1rem;">Key Highlights 2023-24</h4>
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
+                                <span style="color: #10b981; margin-right: 0.5rem;">•</span>
+                                150+ students across all semesters
+                            </li>
+                            <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
+                                <span style="color: #10b981; margin-right: 0.5rem;">•</span>
+                                100% placement rate for eligible students
+                            </li>
+                            <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
+                                <span style="color: #10b981; margin-right: 0.5rem;">•</span>
+                                20+ research publications
+                            </li>
+                            <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
+                                <span style="color: #10b981; margin-right: 0.5rem;">•</span>
+                                Modern lab infrastructure worth ₹35+ lakhs
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 1rem;">Focus Areas</h4>
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
+                                <span style="color: #3b82f6; margin-right: 0.5rem;">•</span>
+                                5G Communication Systems
+                            </li>
+                            <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
+                                <span style="color: #3b82f6; margin-right: 0.5rem;">•</span>
+                                IoT & Embedded Systems
+                            </li>
+                            <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
+                                <span style="color: #3b82f6; margin-right: 0.5rem;">•</span>
+                                Digital Signal Processing
+                            </li>
+                            <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
+                                <span style="color: #3b82f6; margin-right: 0.5rem;">•</span>
+                                VLSI Design & Testing
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         ${data.messages ? `
         <div class="message-section">
             <h2 class="section-title">� Principal's Message</h2>
@@ -498,6 +551,81 @@ function generateStaticHtml(data: typeof newsletterData): string {
                         ` : ''}
                     </div>
                 `).join('')}
+            </div>
+        </div>
+        
+        <!-- Labs & Infrastructure Section -->
+        <div class="section">
+            <h2 class="section-title">🔬 Laboratory Facilities & Infrastructure</h2>
+            
+            <!-- Infrastructure Overview -->
+            <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 2rem; border-radius: 1rem; margin-bottom: 2rem;">
+                <h3 style="color: white; margin-bottom: 1.5rem; text-align: center; font-size: 1.25rem; font-weight: 600;">Infrastructure Overview</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 0.75rem; text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">8</div>
+                        <div style="font-size: 0.875rem; opacity: 0.9;">Modern Laboratories</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 0.75rem; text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">₹35L+</div>
+                        <div style="font-size: 0.875rem; opacity: 0.9;">Equipment Value</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 0.75rem; text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">150+</div>
+                        <div style="font-size: 0.875rem; opacity: 0.9;">Students Capacity</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Laboratory Details -->
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #e5e7eb;">
+                    <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 1rem;">📟 Electronics & Circuits Lab</h4>
+                    <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1rem; line-height: 1.5;">
+                        Comprehensive facility for analog and digital circuit analysis, equipped with advanced oscilloscopes, function generators, and power supplies.
+                    </p>
+                    <ul style="list-style: disc; padding-left: 1.5rem; margin: 0;">
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Digital Storage Oscilloscopes (20 MHz - 100 MHz)</li>
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Function Generators & Signal Analyzers</li>
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Power Supplies & Multimeters</li>
+                    </ul>
+                </div>
+                
+                <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #e5e7eb;">
+                    <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 1rem;">📡 Communication Systems Lab</h4>
+                    <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1rem; line-height: 1.5;">
+                        Advanced laboratory for studying various communication technologies and protocols.
+                    </p>
+                    <ul style="list-style: disc; padding-left: 1.5rem; margin: 0;">
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">RF Signal Generators & Spectrum Analyzers</li>
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Digital Communication Trainers</li>
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Microwave Test Equipment</li>
+                    </ul>
+                </div>
+                
+                <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #e5e7eb;">
+                    <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 1rem;">💾 Microprocessor & Embedded Systems Lab</h4>
+                    <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1rem; line-height: 1.5;">
+                        Hands-on experience with microcontrollers, embedded programming, and IoT applications.
+                    </p>
+                    <ul style="list-style: disc; padding-left: 1.5rem; margin: 0;">
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">ARM Cortex Development Boards</li>
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">IoT Development Kits</li>
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Embedded Programming Tools</li>
+                    </ul>
+                </div>
+                
+                <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #e5e7eb;">
+                    <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 1rem;">🖥️ Digital Signal Processing Lab</h4>
+                    <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1rem; line-height: 1.5;">
+                        Advanced DSP laboratory with software tools and hardware for signal analysis.
+                    </p>
+                    <ul style="list-style: disc; padding-left: 1.5rem; margin: 0;">
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">DSP Development Boards</li>
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">MATLAB & Simulink Licenses</li>
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Signal Processing Software Tools</li>
+                    </ul>
+                </div>
             </div>
         </div>
         
