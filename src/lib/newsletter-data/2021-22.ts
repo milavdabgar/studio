@@ -74,7 +74,7 @@ export const newsletterData2021_22: NewsletterData = {
   spotlight: [
     // Faculty Contributions
     {
-      category: "faculty-contribution",
+      category: "faculty-contribution" as const,
       title: "Patent Publications by Dr. R. N. Patel",
       description: "Published two patents in antenna design for industrial applications",
       person: "Dr. R. N. Patel",
@@ -88,7 +88,7 @@ export const newsletterData2021_22: NewsletterData = {
       ]
     },
     {
-      category: "faculty-contribution", 
+      category: "faculty-contribution" as const, 
       title: "Best Paper Runner-up Award",
       description: "Mr. L. K. Patel won best paper runner-up at National Conference",
       person: "Mr. L. K. Patel",
@@ -99,6 +99,96 @@ export const newsletterData2021_22: NewsletterData = {
         "3rd National Conference on Recent Trends in Engineering, Management, Pharmacy, Architecture And Science",
         "GTU coordinator and syllabus contributor"
       ]
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "GTU Syllabus Development & Administrative Leadership",
+      description: "Led development of GTU syllabus for Electronics Workshop, AICTE accreditation coordination, and Hostel Rector services",
+      person: "Mr. S. J. Chauhan",
+      designation: "Head of Department, EC Engineering",
+      details: "Institute coordinator for AICTE accreditation and GTU affiliation, Hostel Rector",
+      date: "2021-22"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "Housekeeping Committee Coordination",
+      description: "Institutional housekeeping committee coordination and management",
+      person: "Mrs. G. N. Acharya",
+      designation: "Lecturer, EC Department",
+      details: "Coordinator of housekeeping committee",
+      date: "2021-22"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "Electronic Circuits Syllabus & Student Section",
+      description: "Contributed to GTU syllabus for Electronic Circuits & Applications, Student Section coordination, Embedded Systems training",
+      person: "Ms. M. K. Pedhadiya",
+      designation: "Lecturer, EC Department",
+      details: "Co-coordinator of Student Section, Training completed: Embedded Systems",
+      date: "2021-22"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "GTU Coordination & Fundamentals Syllabus",
+      description: "GTU institutional coordination and syllabus development for Fundamentals of Electronics",
+      person: "Mr. L. K. Patel",
+      designation: "Lecturer, EC Department",
+      details: "GTU coordinator of the institute",
+      date: "2021-22"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "Electronic Circuits Syllabus & Multi-Committee Role",
+      description: "Syllabus development for Electronic Circuits & Applications, Gymkhana and placement cell coordination",
+      person: "Mr. N. M. Patel",
+      designation: "Lecturer, EC Department",
+      details: "Co-coordinator in Gymkhana committee and training & placement cell",
+      date: "2021-22"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "Administrative Officer & Editorial Board",
+      description: "Institute administrative officer, editorial board member, and antenna design training",
+      person: "Mr. R. N. Patel",
+      designation: "Administrative Officer & Lecturer",
+      details: "Editorial board member in Global Research and Development Journal, Training: Antenna Design",
+      date: "2021-22"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "CWAN Committee & SSIP Cell Coordination",
+      description: "CWAN committee coordination and SSIP Cell co-coordination with professional development training",
+      person: "Mr. M. J. Dabgar",
+      designation: "Lecturer, EC Department",
+      details: "Coordinator of CWAN committee & co-coordinator of SSIP Cell, Training: Induction Phase – II",
+      date: "2021-22"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "Industrial Electronics Syllabus & Student Section",
+      description: "Syllabus development for Industrial Electronics and Student Section co-coordination",
+      person: "Mr. R. C. Parmar",
+      designation: "Lecturer, EC Department",
+      details: "Co-coordinator of Student Section, Training: Induction Phase – II",
+      date: "2021-22"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "Multi-Committee Coordination & Training",
+      description: "CWAN, Website & GTU committees co-coordination with professional development",
+      person: "Mr. S. P. Joshiara",
+      designation: "Lecturer, EC Department",
+      details: "Co-coordinator of CWAN, Website & GTU Committees, Training: Induction Phase – II",
+      date: "2021-22"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "Digital Electronics Syllabus & AICTE Coordination",
+      description: "Syllabus development for Digital Electronics and AICTE accreditation committee coordination",
+      person: "Mr. N. J. Chauhan",
+      designation: "Lecturer, EC Department",
+      details: "Co-coordinator of AICTE accreditation Committee, Training: Induction Phase – II",
+      date: "2021-22"
     },
     // Star Performers (Academic Excellence)
     {

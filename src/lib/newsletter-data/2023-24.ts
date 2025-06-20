@@ -73,19 +73,149 @@ export const newsletterData2023_24: NewsletterData = {
   ],
 
   spotlight: [
+    // Faculty Contributions
+    {
+      category: 'faculty-contribution' as const,
+      title: 'GTU Board of Studies Coordinator',
+      description: 'Prof. Sunilkumar J Chauhan serves as coordinator for GTU syllabus development',
+      person: 'Prof. Sunilkumar J Chauhan',
+      designation: 'Head of Department, EC Engineering',
+      details: 'GTU Board of Studies member for Electronics & Communication Engineering syllabus development and curriculum enhancement',
+      date: '2023-24',
+      achievements: [
+        'GTU Syllabus Committee coordination for EC Engineering',
+        'Curriculum modernization with emerging technologies',
+        'Academic policy development and implementation',
+        'Inter-departmental coordination and leadership'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'Digital Signal Processing Research & Training',
+      description: 'Ms. Mittal K. Pedhadiya completed advanced certification and research work',
+      person: 'Ms. Mittal K. Pedhadiya',
+      designation: 'Assistant Professor, EC Department',
+      details: 'Advanced certification in Digital Signal Processing from IIT Bombay and editorial responsibilities',
+      date: '2023-24',
+      achievements: [
+        'Editorial board member for academic publications',
+        'Advanced DSP certification from IIT Bombay',
+        'Student project supervision and guidance',
+        'Industry collaboration for practical training'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'PhD Research in Antenna Design',
+      description: 'Mr. Milav J. Dabgar pursuing PhD research in 5G antenna technologies',
+      person: 'Mr. Milav J. Dabgar',
+      designation: 'Assistant Professor, EC Department',
+      details: 'PhD coursework and research in Antenna Design for 5G Applications with publication activities',
+      date: '2023-24',
+      achievements: [
+        'PhD research in 5G antenna design applications',
+        'Research publications in peer-reviewed journals',
+        'Conference presentations on antenna technologies',
+        'Student research mentorship and lab supervision'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'SSIP Coordination & Innovation Programs',
+      description: 'Faculty coordination of Student Startup and Innovation Policy initiatives',
+      person: 'EC Faculty Team',
+      designation: 'SSIP Coordinators',
+      details: 'Student Startup and Innovation Policy coordination fostering entrepreneurship and innovation projects',
+      date: '2023-24',
+      achievements: [
+        'SSIP project coordination and mentorship',
+        'Innovation and entrepreneurship program development',
+        'Industry partnership for startup initiatives',
+        'Student competition guidance and support'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'Professional Development & Training',
+      description: 'Faculty participation in skill enhancement and professional development programs',
+      person: 'EC Department Faculty',
+      designation: 'Various Faculty Members',
+      details: 'Comprehensive professional development through workshops, seminars, and certification programs',
+      date: '2023-24',
+      achievements: [
+        'ATAL Faculty Development Program participation',
+        'NPTEL online certification courses completion',
+        'Industry workshop attendance and training',
+        'Technical skill enhancement programs'
+      ]
+    },
+    // Student Achievements
+    {
+      category: 'student-achievement' as const,
+      title: 'Technical Competition Excellence',
+      description: 'Students participated and excelled in various technical competitions',
+      date: '2023-24',
+      achievements: [
+        'National level technical competition participation',
+        'Project exhibition and presentation at state level',
+        'Innovation challenge participation and recognition',
+        'Technical paper presentation at conferences'
+      ]
+    },
+    {
+      category: 'student-achievement' as const,
+      title: 'Academic Excellence & CGPA Performance',
+      description: 'Outstanding academic performance by students across all semesters',
+      date: '2023-24',
+      achievements: [
+        'Semester toppers with CGPA above 8.5',
+        'Consistent academic performance improvement',
+        'Subject-wise excellence in core engineering topics',
+        'Overall department academic ranking improvement'
+      ]
+    },
+    // Star Performers
+    {
+      category: 'star-performer' as const,
+      title: 'Academic Excellence - Semester Toppers',
+      description: 'Recognition of top-performing students across different semesters',
+      date: '2023-24',
+      achievements: [
+        'Semester 2 topper with outstanding CGPA performance',
+        'Semester 4 academic excellence recognition',
+        'Semester 6 consistent high performance',
+        'Overall academic achievement and improvement'
+      ]
+    },
+    // Placements
     {
       category: 'placement' as const,
       title: 'Micron Technology Placement',
       description: 'Manufacturing Associate position at Micron Technology, Sanand',
-      details: 'Package: ₹3.72L',
+      person: 'Student Name',
+      details: 'Micron Technology, Sanand - Manufacturing Associate, Package: ₹3.72L',
       date: '2024'
     },
     {
       category: 'placement' as const,
       title: 'TDSC Placement',
       description: 'Diploma Trainee Engineer position at TDSC, Becharaji',
-      details: 'Package: ₹3.00L',
+      person: 'Student Name',
+      details: 'TDSC, Becharaji - Diploma Trainee Engineer, Package: ₹3.00L',
       date: '2024'
+    },
+    // Higher Education (if any students pursued further studies)
+    {
+      category: 'higher-education' as const,
+      title: 'Engineering College Admissions',
+      description: 'Students admitted to degree engineering programs for higher education',
+      date: '2024',
+      details: 'Various Government and Private Engineering Colleges - B.E. in Electronics & Communication',
+      achievements: [
+        'Admission to Government Engineering Colleges',
+        'Merit-based selection for degree programs',
+        'Continuation of technical education journey'
+      ]
     }
   ],
   

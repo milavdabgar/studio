@@ -613,18 +613,31 @@ export default function InteractiveNewsletterPage() {
                           <div className="flex-1">
                             <div className="flex items-start justify-between mb-3">
                               <div>
-                                <h3 className="text-lg font-semibold text-gray-900 mb-1">{item.title}</h3>
-                                <p className="text-gray-700 text-sm mb-2">{item.description}</p>
                                 {item.person && (
+                                  <div className="mb-2">
+                                    <span className="text-lg font-semibold text-gray-900">{item.person}</span>
+                                    {item.designation && (
+                                      <div className="text-sm text-gray-600">{item.designation}</div>
+                                    )}
+                                  </div>
+                                )}
+                                <h3 className="text-md font-medium text-gray-800 mb-1">{item.title}</h3>
+                                <p className="text-gray-700 text-sm mb-2">{item.description}</p>
+                                {item.studentId && (
                                   <div className="text-sm text-gray-600">
-                                    <span className="font-medium">{item.person}</span>
-                                    {item.designation && ` - ${item.designation}`}
-                                    {item.studentId && ` (${item.studentId})`}
+                                    <span className="font-medium">Student ID: {item.studentId}</span>
                                   </div>
                                 )}
                                 {item.details && (
-                                  <div className="text-sm text-gray-600 mt-1">
-                                    {item.details}
+                                  <div className="text-sm text-gray-600 mt-2 p-2 bg-white/50 rounded">
+                                    <span className="font-medium">
+                                      {item.category === 'placement' && 'Company & Position:'}
+                                      {item.category === 'higher-education' && 'Institution:'}
+                                      {item.category === 'faculty-contribution' && 'Role & Contribution:'}
+                                      {item.category === 'student-achievement' && 'Achievement Details:'}
+                                      {item.category === 'star-performer' && 'Performance:'}
+                                      {!item.category && 'Details:'}
+                                    </span> {item.details}
                                   </div>
                                 )}
                               </div>

@@ -74,65 +74,94 @@ export const newsletterData2022_23: NewsletterData = {
   spotlight: [
     // Faculty Contributions
     {
-      category: "faculty-contribution",
-      title: "Research Paper Presentation",
-      description: "Prof. Sunilkumar J Chauhan presented research paper on VLSI Design Optimization",
+      category: "faculty-contribution" as const,
+      title: "Department Head Leadership",
+      description: "Prof. Sunilkumar J Chauhan's administrative and research contributions",
       person: "Prof. Sunilkumar J Chauhan",
-      designation: "Head of Department",
-      date: "2023",
+      designation: "Head of Department, EC Engineering",
+      details: "Head of Department - Research Leadership & Academic Administration",
+      date: "2022-23",
       achievements: [
         "Research paper on VLSI Design Optimization at National Conference on Advanced Electronics",
-        "Department received recognition for academic excellence from GTU"
+        "GTU Board of Studies member for EC curriculum development",
+        "Department strategic planning and infrastructure development",
+        "Industry-academia collaboration coordinator"
       ]
     },
     {
-      category: "faculty-contribution",
-      title: "Advanced Certifications Completed",
-      description: "Faculty members completed advanced certifications and PhD coursework",
+      category: "faculty-contribution" as const,
+      title: "Digital Signal Processing Research",
+      description: "Ms. Mittal K. Pedhadiya's advanced certification and research work",
+      person: "Ms. Mittal K. Pedhadiya",
+      designation: "Lecturer, EC Department",
+      details: "Advanced DSP Research - IIT Bombay Certification Program",
       date: "2022-23",
       achievements: [
-        "Ms. Mittal K. Pedhadiya - Advanced certification in Digital Signal Processing from IIT Bombay",
-        "Mr. Milav J. Dabgar - PhD coursework and research in Antenna Design for 5G Applications"
+        "Advanced certification in Digital Signal Processing from IIT Bombay",
+        "Published research paper on adaptive filtering techniques",
+        "Student project mentor for signal processing applications",
+        "Faculty coordinator for technical symposiums"
+      ]
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "5G Antenna Design Research",
+      description: "Mr. Milav J. Dabgar's PhD research and academic contributions",
+      person: "Mr. Milav J. Dabgar",
+      designation: "Lecturer, EC Department",
+      details: "PhD Research Scholar - 5G Antenna Design & Wireless Communication",
+      date: "2022-23",
+      achievements: [
+        "PhD coursework completion in Antenna Design for 5G Applications",
+        "Research supervision for final year student projects",
+        "SSIP coordinator for student innovation projects", 
+        "Expert lecture series organizer on emerging technologies"
       ]
     },
     // Student Achievements
     {
-      category: "student-achievement",
+      category: "student-achievement" as const,
       title: "Gujarat Gyan Guru Quiz Winner",
       description: "Student won Gujarat Gyan Guru Quiz (G3Q) 1.0",
       person: "Patel Niravkumar Jitendrabhai",
       studentId: "GJR1345678",
+      details: "Gujarat Gyan Guru Quiz (G3Q) 1.0 Week 8 - College Category Winner",
       date: "2022",
       achievements: [
-        "Winner in Gujarat Gyan Guru Quiz (G3Q) 1.0 Week 8, College Category"
+        "Winner in Gujarat Gyan Guru Quiz (G3Q) 1.0 Week 8, College Category",
+        "Represented college at state level competition"
       ]
     },
     {
-      category: "student-achievement",
+      category: "student-achievement" as const,
       title: "State Level Project Competition",
       description: "First prize in State Level Project Competition on Smart Healthcare Systems",
       person: "Modi Krish Bharatkumar",
       studentId: "GJPO765432",
+      details: "State Level Project Competition - Smart Healthcare Systems (First Prize)",
       date: "2023",
       achievements: [
         "First prize in State Level Project Competition on Smart Healthcare Systems",
-        "Student innovation team received funding under SSIP 2.0 for IoT-based Agricultural Monitoring System"
+        "SSIP 2.0 funding received for IoT-based Agricultural Monitoring System",
+        "Innovation team leadership and project management"
       ]
     },
     {
-      category: "student-achievement",
+      category: "student-achievement" as const,
       title: "Inter-college Electronics Quiz Winner",
       description: "Winner in Inter-college Electronics Quiz Competition",
       person: "Trivedi Harsh Rameshbhai",
       studentId: "GJK0876543",
+      details: "SVNIT Inter-college Electronics Quiz Competition - Winner",
       date: "2022",
       achievements: [
-        "Winner in Inter-college Electronics Quiz Competition organized by SVNIT"
+        "Winner in Inter-college Electronics Quiz Competition organized by SVNIT",
+        "Outstanding performance in electronics fundamentals and applications"
       ]
     },
     // Placements
     {
-      category: "placement",
+      category: "placement" as const,
       title: "Tata Electronics Placement",
       description: "Student placed at Tata Electronics with highest package",
       person: "Solanki Rajeshkumar Pravinbhai",
@@ -141,7 +170,7 @@ export const newsletterData2022_23: NewsletterData = {
       date: "2023"
     },
     {
-      category: "placement",
+      category: "placement" as const,
       title: "HCL Technologies Placement",
       description: "Student placed at HCL Technologies",
       person: "Patel Divyaben Nareshkumar",
@@ -150,7 +179,7 @@ export const newsletterData2022_23: NewsletterData = {
       date: "2023"
     },
     {
-      category: "placement",
+      category: "placement" as const,
       title: "Mahindra Tech Placement",
       description: "Student placed at Mahindra Tech",
       person: "Joshi Kiran Jagdishbhai",
@@ -160,7 +189,7 @@ export const newsletterData2022_23: NewsletterData = {
     },
     // Higher Education
     {
-      category: "higher-education",
+      category: "higher-education" as const,
       title: "NIT Surat Admission",
       description: "Student admitted to NIT Surat for B.E.",
       person: "Sharma Ankitkumar Rajesh",
