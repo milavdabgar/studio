@@ -676,8 +676,24 @@ export default function InteractiveNewsletterPage() {
                                 )}
                               </div>
                             </div>
+                            {item.images && item.images.length > 0 && (
+                              <div className="mt-4 space-y-3">
+                                {item.images.map((image, imgIndex) => (
+                                  <div key={imgIndex} className="relative">
+                                    <img
+                                      src={image.src}
+                                      alt={image.alt}
+                                      className="w-full max-w-md rounded-lg shadow-md border border-gray-200"
+                                    />
+                                    {image.caption && (
+                                      <p className="text-xs text-gray-600 mt-2 italic">{image.caption}</p>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
                             {item.achievements && item.achievements.length > 0 && (
-                              <div className="space-y-2">
+                              <div className="space-y-2 mt-4">
                                 {item.achievements.map((achievement, achIndex) => (
                                   <div key={achIndex} className="flex items-start space-x-2 text-sm">
                                     <Star className={`w-4 h-4 text-${color}-600 mt-0.5 flex-shrink-0`} />

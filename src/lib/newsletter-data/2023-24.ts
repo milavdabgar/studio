@@ -10,7 +10,7 @@ export const newsletterData2023_24: NewsletterData = {
     { label: 'Placement Rate', value: 67, color: 'bg-blue-500' },
     { label: 'Conference Papers', value: 1, color: 'bg-green-500' },
     { label: 'Students Placed', value: 2, color: 'bg-purple-500' },
-    { label: 'Highest Package (L)', value: 3.72, color: 'bg-orange-500' },
+    { label: 'Higher Studies', value: 1, color: 'bg-orange-500' },
   ],
   
   canvas: [
@@ -149,6 +149,31 @@ export const newsletterData2023_24: NewsletterData = {
         'Technical skill enhancement programs'
       ]
     },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'International Conference Paper Presentation - Antenna Design',
+      description: 'Prof. Nirav Jashvantkumar Chauhan presented research paper at international conference on antenna design',
+      person: 'Prof. Nirav Jashvantkumar Chauhan',
+      designation: 'Assistant Professor, EC Department',
+      details: 'Paper presentation at 2nd International Conference on Emerging Trends & Contemporary Practices (ICETCP 2024) organized by Atmiya University',
+      date: 'February 2024',
+      achievements: [
+        'Paper Title: "Analysis of Vedic Shaped Microstrip Patch Antenna (MPA) Design for Wireless Applications"',
+        'Conference: 2nd International Conference on Emerging Trends & Contemporary Practices (ICETCP 2024)',
+        'Organized by: Atmiya University, India',
+        'Sponsored by: AICTE & CSIR',
+        'Date: February 9th-10th, 2024',
+        'Research focus on wireless communication and antenna design',
+        'Contribution to cutting-edge research in microstrip patch antennas'
+      ],
+      images: [
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2024/02/Screen-Shot-2025-03-20-at-22.44.21-PM.png',
+          alt: 'Prof. Nirav Jashvantkumar Chauhan at ICETCP 2024',
+          caption: 'Prof. Nirav Jashvantkumar Chauhan presenting his research paper at ICETCP 2024, Atmiya University'
+        }
+      ]
+    },
     // Student Achievements
     {
       category: 'student-achievement' as const,
@@ -192,29 +217,44 @@ export const newsletterData2023_24: NewsletterData = {
       category: 'placement' as const,
       title: 'Micron Technology Placement',
       description: 'Manufacturing Associate position at Micron Technology, Sanand',
-      person: 'Student Name',
-      details: 'Micron Technology, Sanand - Manufacturing Associate, Package: ₹3.72L',
-      date: '2024'
+      person: 'Bharat Shankarlal Pawar',
+      studentId: '216260311003',
+      details: 'Micron Technology, Sanand - Manufacturing Associate, Package: ₹3,72,000',
+      date: '2024',
+      achievements: [
+        'Secured placement at leading semiconductor company',
+        'Manufacturing Associate role in advanced technology sector',
+        'Competitive package of ₹3,72,000 per annum'
+      ]
     },
     {
       category: 'placement' as const,
       title: 'TDSC Placement',
       description: 'Diploma Trainee Engineer position at TDSC, Becharaji',
-      person: 'Student Name',
-      details: 'TDSC, Becharaji - Diploma Trainee Engineer, Package: ₹3.00L',
-      date: '2024'
+      person: 'Stutiben Amitkumar Raval',
+      studentId: '216260311005',
+      details: 'TDSC, Becharaji - Diploma Trainee Engineer, Package: ₹3,00,000',
+      date: '2024',
+      achievements: [
+        'Engineering trainee position in reputed organization',
+        'Diploma Trainee Engineer role with growth opportunities',
+        'Package of ₹3,00,000 per annum'
+      ]
     },
-    // Higher Education (if any students pursued further studies)
+    // Higher Education
     {
       category: 'higher-education' as const,
-      title: 'Engineering College Admissions',
-      description: 'Students admitted to degree engineering programs for higher education',
+      title: 'VEGC Engineering College Admission',
+      description: 'Student admitted to degree engineering program for higher education',
+      person: 'Srujal Yashvantbhai Chaudhary',
+      studentId: '216260311012',
       date: '2024',
-      details: 'Various Government and Private Engineering Colleges - B.E. in Electronics & Communication',
+      details: 'VEGC, Chandkheda - B.E. in Electronics & Communication Engineering',
       achievements: [
-        'Admission to Government Engineering Colleges',
-        'Merit-based selection for degree programs',
-        'Continuation of technical education journey'
+        'Admission to VEGC, Chandkheda through ACPC',
+        'Pursuing B.E. in Electronics & Communication Engineering',
+        'Continuation of technical education journey',
+        'Merit-based selection for degree program'
       ]
     }  ],
 
@@ -290,7 +330,7 @@ export const newsletterData2023_24: NewsletterData = {
           caption: 'Cultural Celebration'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231027-WA0004-1024x576.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231027_WA0004-1024x576.jpg',
           alt: 'Rangoli Competition',
           caption: 'Rangoli Art Competition'
         },
