@@ -101,10 +101,11 @@ export {
   newsletterData2021_22,
   newsletterData2022_23,
   newsletterData2023_24,
+  newsletterData2024_25,
   availableYears,
   getNewsletterDataByYear,
   getAvailableYears
 } from './newsletter-data/index';
 
-// Default export - Current year data (2023-24) for backward compatibility
+// Default export - Current year data (2024-25) for backward compatibility
 export const newsletterData: NewsletterData = newsletterData2023_24;

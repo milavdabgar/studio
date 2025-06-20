@@ -5,11 +5,13 @@
 export { newsletterData2021_22 } from './2021-22';
 export { newsletterData2022_23 } from './2022-23';
 export { newsletterData2023_24 } from './2023-24';
+export { newsletterData2024_25 } from './2024-25';
 
 import { NewsletterData } from '../newsletter-data';
 import { newsletterData2021_22 } from './2021-22';
 import { newsletterData2022_23 } from './2022-23';
 import { newsletterData2023_24 } from './2023-24';
+import { newsletterData2024_25 } from './2024-25';
 
 // Available academic years with their corresponding data
 export const availableYears = [
@@ -27,6 +29,11 @@ export const availableYears = [
     year: '2023-24',
     label: 'Academic Year 2023-24',
     data: newsletterData2023_24
+  },
+  {
+    year: '2024-25',
+    label: 'Academic Year 2024-25',
+    data: newsletterData2024_25
   }
 ];
 
@@ -41,5 +48,5 @@ export function getAvailableYears(): string[] {
   return availableYears.map(y => y.year);
 }
 
-// Default export - latest year data (2023-24)
-export default newsletterData2023_24;
+// Default export - latest year data (2024-25)
+export default newsletterData2024_25;

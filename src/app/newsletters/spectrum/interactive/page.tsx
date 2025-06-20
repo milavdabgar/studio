@@ -562,21 +562,51 @@ export default function InteractiveNewsletterPage() {
                           {event.images && event.images.length > 0 && (
                             <div className="mt-6">
                               <h4 className="text-sm font-medium text-gray-600 mb-3">Event Gallery</h4>
-                              <div className={`grid grid-cols-1 sm:grid-cols-2 ${event.images.length > 2 ? 'lg:grid-cols-4' : 'lg:grid-cols-2'} gap-4`}>
-                                {event.images.map((image, imgIndex) => (
-                                  <div key={imgIndex} className="group relative overflow-hidden rounded-lg bg-gray-100">
-                                    <img 
-                                      src={image.src}
-                                      alt={image.alt}
-                                      className={`w-full ${event.images.length > 2 ? 'h-32' : 'h-48'} object-cover transition-transform duration-300 group-hover:scale-105`}
-                                      onError={(e) => {
-                                        const target = e.target as HTMLImageElement;
-                                        target.src = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPiR7aW1hZ2UuY2FwdGlvbn08L3RleHQ+PC9zdmc+`;
-                                      }}
-                                    />
-                                    <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                                  </div>
-                                ))}
+                              <div className={`gap-4 ${
+                                event.images.length === 1 
+                                  ? 'flex justify-center' 
+                                  : event.images.length === 2 
+                                    ? 'grid grid-cols-1 sm:grid-cols-2' 
+                                    : event.images.length === 3 
+                                      ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' 
+                                      : event.images.length === 4 
+                                        ? 'grid grid-cols-2 lg:grid-cols-4' 
+                                        : event.images.length <= 6 
+                                          ? 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3' 
+                                          : 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'
+                              }`}>
+                                {event.images.map((image, imgIndex) => {
+                                  // Create dynamic sizing based on position and total count
+                                  const isFirstImage = imgIndex === 0;
+                                  const isFeatured = event.images.length > 4 && isFirstImage;
+                                  const aspectClass = event.images.length === 1 
+                                    ? 'aspect-video max-w-2xl' 
+                                    : event.images.length === 2 
+                                      ? 'aspect-[4/3]' 
+                                      : isFeatured 
+                                        ? 'sm:col-span-2 aspect-video' 
+                                        : 'aspect-square';
+                                  
+                                  return (
+                                    <div key={imgIndex} className={`group relative overflow-hidden rounded-lg bg-gray-100 ${aspectClass}`}>
+                                      <img 
+                                        src={image.src}
+                                        alt={image.alt}
+                                        className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105 group-hover:brightness-110"
+                                        onError={(e) => {
+                                          const target = e.target as HTMLImageElement;
+                                          target.src = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIE5vdCBGb3VuZDwvdGV4dD48L3N2Zz4=`;
+                                        }}
+                                      />
+                                      <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                                      {image.caption && (
+                                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                          <p className="text-white text-xs font-medium">{image.caption}</p>
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
                               </div>
                             </div>
                           )}
