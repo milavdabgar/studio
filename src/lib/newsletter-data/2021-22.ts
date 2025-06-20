@@ -17,7 +17,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: "Device to Device Communication in 5G",
       author: "Ms. M. K. Pedhadiya",
       designation: "Lecturer, EC Department", 
-      content: "Device-to-Device (D2D) communication is a revolutionary feature of 5G networks that enables direct communication between devices without routing through base stations. This technology significantly reduces latency, improves spectrum efficiency, and enhances network capacity. D2D communication supports various use cases including proximity services, public safety communications, and IoT applications. As 5G networks continue to evolve, D2D communication will play a crucial role in enabling new applications like autonomous vehicles, smart cities, and industrial automation. Understanding D2D protocols, resource allocation, and interference management is essential for future communication engineers.",
+      content: "Introduction of Android as an operating system and open source software's, free wares and ample of bandwidth-hungry applications results in scarcity of spectrum for communication. The growth of mobile devices, voice, and video over IP (VoIP) resulted in an exponential growth of data traffic; mobile data traffic expected to increase 1000 times over ten years. The forecast says that the 100 billion devices would be connected by 2030 by the onset of the internet of things. The massive increment in the connected devices causes overcrowded electromagnetic spectrum. In the 5G device to device, communication provides a prominent solution. Device to device communication (D2D) is defined as the communication among devices in close proximity, open to use cellular licensed as well as unlicensed frequency spectrum without the need to traverse the core network.\n\nD2D communication is a prime technology of 5G, which supports a variety of use cases including vehicular communication, content distribution in conferences, concerts, gaming, cellular offloading, relaying of data, and advertisement broadcasting in the streets. The use case of D2D communication of significance is public safety and disaster. The devices close to, enables higher throughput, lower latency, lower transmission power, higher data rate and higher spectral efficiency and energy efficiency.\n\nD2D communication exists on unlicensed as well as on the licensed frequency spectrum. Majority of the research is on the licensed spectrum (inband D2D) as it provides a higher level of security. Resources of cellular devices reused by the D2D devices in inband D2D communication (underlay inband D2D). Reusing the resources certainly improves the spectral efficiency, but interference between the D2D user and cellular user introduced nevertheless. The eventual reduction in the spectral efficiency by using part of dedicated licensed spectrum for D2D users, however, provides fairness in provisioning of resources to D2D users and cellular users (overlay inband D2D).",
       date: "March 2022",
       type: "article",
       authorType: "faculty",
@@ -339,7 +339,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'Expert Lecture on "Importance of Programming"',
       date: 'August 9, 2021',
       category: 'workshop',
-      description: 'Expert lecture delivered by Mr. Pranav Dave, Tech Lead (Associate consultant), Tata Consultancy Services (TCS), Gandhinagar in online mode. The session covered basics of programming, real-time examples, and motivation for students to start programming and build careers.',
+      description: 'This expert lecture was delivered by Mr. Pranav Dave, Tech Lead (Associate consultant), Tata Consultancy Services (TCS), Gandhinagar in online mode. The session was conducted on the basics of programming, with details on the uses of programming with real time examples. The need of programming in different areas was also discussed. Speaker talked about "How the programming is used to solve and simplify complex problems". The session was ended with the motivation to the students to start programming and build up career.',
       tags: ['Programming', 'TCS', 'Career Development', 'Online Session'],
       images: [
         {
@@ -353,7 +353,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'Expert Lecture on "Navigation with Indian Constellation (NavIC) and Its Application"',
       date: 'January 29, 2022',
       category: 'workshop',
-      description: 'Expert lecture delivered by Dr. Mehulkumar Desai, Lecturer in EC, Government Polytechnic for Girls, Surat in online mode. Session covered satellite-based navigation system, NavIC architecture, and various applications.',
+      description: 'This expert lecture was delivered by Dr. Mehulkumar Desai, Lecturer in EC, Government Polytechnic for Girls, Surat in online mode. In this session the basics of satellite-based navigation system, different terminologies and NavIC architecture was explained to the participants. In it effects of positional accuracy and how the navigation system works were discussed. Various applications of satellite-based navigation system were discussed in depth. The session motivated students to work towards make in India by using the NavIC made in India and for India.',
       tags: ['NavIC', 'Navigation Systems', 'Satellite Technology', 'Make in India'],
       images: [
         {
@@ -367,7 +367,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'Industrial Visit - Community Radio Palanpur',
       date: 'March 26, 2022',
       category: 'visit',
-      description: 'Students experienced live radio broadcast, visited recording studio, observed FM transmission equipment and antennas. Met Radio Jockey and manager who shared their experiences in setting up community radio station.',
+      description: 'In this visit students got a chance to experience live radio broadcast. In addition, they have seen recording studio, studio equipments, FM transmission equipments and antennas. Students also got opportunity to meet Radio Jockey and manager of Radio Palanpur. They shared their journey and experiences in setting up community radio station at Palanpur.',
       tags: ['Radio Broadcasting', 'FM Transmission', 'Community Radio', 'Industry Visit'],
       images: [
         {
@@ -386,7 +386,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'Industrial Visit - Samsung Customer Care',
       date: 'March 29, 2022',
       category: 'visit',
-      description: 'Students observed smartphone, laptop and tablet servicing at Samsung service center. Technician demonstrated disassembly and component soldering. Manager guided students about career opportunities.',
+      description: 'In this visit students observed how smart phone, laptops and tablets are serviced at Samsung service center. Technician of Samsung care demonstrated how to disassemble various parts of Smartphone, Tablets, and laptops, then he also demonstrated how desolder and solder back the tiny components. At last, The Manager at Samsung care guided students about career scope in this segment of industry.',
       tags: ['Electronics Repair', 'Samsung', 'Mobile Technology', 'Career Guidance'],
       images: [
         {
@@ -400,7 +400,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'Industrial Visit - Sahajanand Laser Technologies',
       date: 'April 12, 2022',
       category: 'visit',
-      description: 'Visit to SLTL, a technology-driven company manufacturing solutions in Laser Systems, Medical, Diamond & Jewellery, RF & Microwave, and Renewable Energy. Students observed LASER cutting/engraving machines, robotic equipment, and RF/microwave manufacturing.',
+      description: 'As a technology driven group of companies, Sahajanand Laser Technologies (SLTL) undertakes manufacturing of solutions in the fields of Laser Systems, Medical, Diamond & Jewellery, RF & Microwave, and Renewable Energy Machine Tools. Their innovative solutions are designed to match industrial requirements and beyond. During their visit to SLTL, students observed LASER cutting machines, LASER engraving machines, Robotic equipments, RF and microwave equipments manufacturing chain of STLT.',
       tags: ['Laser Technology', 'Manufacturing', 'RF Technology', 'Automation'],
       images: [
         {
@@ -414,7 +414,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'Industrial Visit - JK Industries, Chandisar',
       date: 'May 2, 2022',
       category: 'visit',
-      description: 'JK Industries works on manufacturing and servicing high voltage transformers for power distribution by GEB. Students learned about transformer repairing and witnessed live troubleshooting.',
+      description: 'JK industries majorly works on manufacturing and servicing of High voltage transformers used in power distribution by GEB. Assigned engineer explained repairing of Transformer to the students. Students also got the opportunity to see live troubleshooting and repairing of damaged transformers.',
       tags: ['Power Systems', 'Transformers', 'High Voltage', 'Power Distribution'],
       images: [
         {
@@ -428,7 +428,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'Farewell for 2022 Pass-outs',
       date: 'April 4, 2022',
       category: 'community',
-      description: 'Farewell ceremony organized for 2022 graduating batch with keynote by HoD and kind words by all staff members.',
+      description: 'A farewell was given to the 2022 pass-outs with a keynote by HoD, and kind words by all the staff members.',
       tags: ['Farewell', 'Graduation', 'Community Event', 'Students'],
       images: [
         {
@@ -442,7 +442,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'Tree Plantation Drive',
       date: 'July 31, 2021',
       category: 'awareness',
-      description: 'Institute organized tree plantation in college campus with approximately 150 different types of trees planted. Mr. Lalitbhai Vasvani and his team from Society for clean and green environment joined the event.',
+      description: 'Institute organized Tree Plantation on 31 July 2021 in college campus and Approximately 150 different types of trees were planted in campus. Mr. Lalitbhai Vasvani and his team (Society for clean and green environment) are also joined with us for this event.',
       tags: ['Environment', 'Tree Plantation', 'Green Campus', 'Sustainability'],
       images: [
         {
@@ -453,10 +453,18 @@ export const newsletterData2021_22: NewsletterData = {
       ]
     },
     {
+      title: 'Use of Technology in Education',
+      date: 'August 10, 2021',
+      category: 'workshop',
+      description: 'An Online Seminar for the students on "Use of Technology in Education" by Mr. S.R.Modi and Mr. R.H.Prajapati (Lecturer in Mechanical Engineering Department, G.P.Palanpur).',
+      tags: ['Education Technology', 'Online Seminar', 'Teaching Methods', 'Digital Learning'],
+      images: []
+    },
+    {
       title: '75th Independence Day Celebration',
       date: 'August 15, 2021',
       category: 'community',
-      description: 'Flag hoisting ceremony organized at Government Polytechnic Palanpur with enthusiastic participation from all students and staff members.',
+      description: 'A flag hoisting ceremony was organized at Government Polytechnic Palanpur on 15th August 2021 to celebrate 75th Independence Day in which all students and staff members participated enthusiastically.',
       tags: ['Independence Day', 'Patriotic', 'Flag Hoisting', 'National Festival'],
       images: [
         {
@@ -470,7 +478,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'NBA Visit for Accreditation',
       date: 'September 24-26, 2021',
       category: 'training',
-      description: 'NBA accreditation visit for Civil, Mechanical and Electrical departments. EC staff members played key role in successful completion of the visit.',
+      description: 'Three departments namely Civil, Mechanical and Electrical department applied for the NBA accreditation. And for the successful completion of the visit all the EC staff members played a key role in it.',
       tags: ['NBA Accreditation', 'Quality Assurance', 'Department Support', 'Academic Excellence'],
       images: [
         {
@@ -484,7 +492,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'Thalassemia Awareness Camp',
       date: 'October 7, 2021',
       category: 'awareness',
-      description: 'Thalassemia camp organized for students with awareness and counseling program by Indian Red Cross Society, Ahmedabad team.',
+      description: 'Institute has organized a Thalassemia camp for students on 7-10-2021. Awareness and counseling program is also carried out from the team of Indian Red Cross society, Ahmadabad for Thalassemia.',
       tags: ['Health Awareness', 'Thalassemia', 'Medical Camp', 'Student Welfare'],
       images: [
         {
@@ -498,7 +506,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'Garba Mahotsav',
       date: 'October 21, 2021',
       category: 'community',
-      description: 'One day Garba Mahotsav organized for Navaratri celebration with enthusiastic participation from students and staff.',
+      description: 'One day Garba Mahotsav is organized in institute for celebration of Navaratri. All the students and staff members participated enthusiastically.',
       tags: ['Cultural Event', 'Garba', 'Navaratri', 'Festival Celebration'],
       images: [
         {
@@ -512,7 +520,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'Drug Awareness Program (Vyasan Mukti Abhiyan)',
       date: 'October 22, 2021',
       category: 'awareness',
-      description: 'Seminar on Tobacco free movement and Drug Awareness organized by Drug enforcement department Palanpur. Speakers included PI N.A.Devani, PSI G.D.Ahir, and counselor Jigishaben Tarar.',
+      description: 'A Seminar on Tobacco free movement-Drug Awareness is organized by Drug enforcement and reception department Palanpur at institute on 22-10-2021. Shree. N.A.Devani (PI, Drug Excise Department), Smt. G.D.Ahir (PSI, Women PoliceStation) and Smt. Jigishaben Tarar (Women counsellor, Women based support center) has given their valuable speech for Drug awareness.',
       tags: ['Drug Awareness', 'Health Campaign', 'Social Awareness', 'Student Safety'],
       images: [
         {
@@ -526,7 +534,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'Clean India Movement',
       date: 'October 28, 2021',
       category: 'awareness',
-      description: 'Cleanliness drive carried out for clean campus and surroundings under the Clean India Movement campaign.',
+      description: 'Cleanliness drive was carried out for clean campus and surroundings under the clean India movement campaign on 28-10-2021.',
       tags: ['Cleanliness', 'Swachh Bharat', 'Campus Cleaning', 'Social Responsibility'],
       images: [
         {
@@ -540,7 +548,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'National Unity Day',
       date: 'October 31, 2021',
       category: 'community',
-      description: 'Birth anniversary of Sardar Vallabhbhai Patel celebrated as National Unity Day with pledge taking ceremony in seminar hall.',
+      description: 'The birth anniversary of Iron man Shri Sardar Vallabhbhai Patel is celebrated on 31st October every year as "National Unity Day". As a part of the day Pledge taking ceremony was arranged in seminar hall.',
       tags: ['National Unity', 'Sardar Patel', 'Unity Day', 'Patriotic Event'],
       images: [
         {
@@ -554,7 +562,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: '73rd Republic Day Celebration',
       date: 'January 26, 2022',
       category: 'community',
-      description: 'Flag salute program organized in presence of Hon\'ble former MLA Rekhaben Khanesha with enthusiastic participation from officials and students.',
+      description: 'At Government Polytechnic Palanpur, On 26th January 2022, the occasion of 73rd Republic Day, a flag salute program was organized in the presence of "Hon\'ble former MLA Rekhaben Khanesha". In which all the officials and students of the institute enthusiastically participated.',
       tags: ['Republic Day', 'Flag Salute', 'National Festival', 'Guest Speaker'],
       images: [
         {
@@ -573,7 +581,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'Martyrs\' Day Commemoration',
       date: 'January 29, 2022',
       category: 'awareness',
-      description: 'Online talk organized by History Coordinating Committee, Gujarat. Shri Girishbhai Thacker, Vice Chairman spoke on "Indian Freedom Struggle (Bhartiya Swatantra Sangram)".',
+      description: 'On Martyrs\' Day on 30th January 2022, the opportunity to pay tribute to the martyred heroes who sacrificed their lives in the freedom struggle of India should be taken seriously and the spirit of faith and respect towards the martyrs should be awakened and the country should realize its importance for which an online talk was organized by History Coordinating Committee, Gujarat on 29th January 2020 at 3:00 pm at the institute. In this program, Shri Girishbhai Thacker, Vice Chairman, History Coordinating Committee, Gujarat gave a speech on the subject of "Indian Freedom Struggle (Bhartiya Swatantra Sangram)". The program was also broadcast online through Google meet.',
       tags: ['Martyrs Day', 'Freedom Struggle', 'Historical Awareness', 'Online Event'],
       images: [
         {
@@ -587,7 +595,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'Women\'s Day Celebration',
       date: 'March 5, 2022',
       category: 'awareness',
-      description: 'Women Development cell conducted various activities. Expert lectures on "Laws related to women safety" by Ms. Yashashvi Mehta Pandya and "Disadvantages of mobile and internet" by Ms. Geeta Acharya. "Food without flame contest" organized.',
+      description: 'Women Development cell has conducted various activities in co-ordination with RUSA. On account of Woman\'s Day celebration on 05/03/2022 an expert lecture on "Laws related to women safety" by MS. YASHASHVI MEHTA PANDYA also an expert lecture on "Disadvantages of mobile and internet" was delivered by MS. GEETA ACHARYA (Sr. Lecturer in EC). An event named "Food without flame contest" was also organized. In this event students took part enthusiastically and prepared ready to serve dishes without using the flame. Stuti Raval and Bijal Suthar (Sem 1 EC) won first prize and Khushbu Garasiya and Khushi Patel (Sem 6 EC) won second prize in the event. Expert lecture on "Self-employment enhancement" was delivered by Tithi Vakil (Interior Designer). She gave a demo of how to enhance employment by developing a hobby. Speaker demonstrated steps for making a pastry/cake, inspiring students to develop hobby along with their profession.',
       tags: ['Women\'s Day', 'Women Safety', 'Expert Lectures', 'Competition'],
       images: [
         {
@@ -606,7 +614,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'District Level Placement Fair',
       date: 'March 23, 2022',
       category: 'orientation',
-      description: 'District level mega placement fair organized as per government directives. 22 industries participated conducting interviews across Banaskantha district. 9 students from EC department were shortlisted/selected by companies like Webilok IT Services and Mehta Expai.',
+      description: 'A district level mega placement fair was organized as per directives of the government. Total 22 industries participated and conducted interviews of candidates from Science Colleges, Commerce Colleges, Arts Colleges Degree and Diploma Engineering Colleges across Banaskantha district. Total 9 students were shortlisted/selected by reputed industries like Webilok IT services and Mehta Expai company from our department. Team EC played a key role in smooth execution of Placement Fair.',
       tags: ['Placement Fair', 'Industry Connect', 'Career Opportunities', 'District Level'],
       images: [
         {
@@ -625,7 +633,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'Voter Awareness Program',
       date: 'May 5, 2022',
       category: 'awareness',
-      description: 'NSS unit organized drawing and essay competitions to create voting awareness among students. Winners were encouraged with certificates and prizes.',
+      description: 'As part of extra-curricular activities at Government Polytechnic Palanpur, NSS unit organized drawing competition and essay competition to create awareness among students about voting. The students enthusiastically participated in this competition and brought out their inner skill. The winning students were encouraged by giving certificates and prizes.',
       tags: ['Voter Awareness', 'NSS Activity', 'Democracy', 'Student Competition'],
       images: [
         {
@@ -639,7 +647,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'International Yoga Day Celebration',
       date: 'June 21, 2022',
       category: 'awareness',
-      description: 'Various yoga asanas demonstrated by yoga teacher with enthusiastic participation from officials, employees and students.',
+      description: 'At Government Polytechnic Palanpur, On 21st June 2022, the occasion of international yoga day various yoga represented by yoga teacher. In which all the officials, employees and students of the institute enthusiastically participated.',
       tags: ['Yoga Day', 'Health Awareness', 'Wellness', 'International Day'],
       images: [
         {
@@ -653,7 +661,7 @@ export const newsletterData2021_22: NewsletterData = {
       title: 'SSIP Activities - School Outreach',
       date: 'Throughout the year',
       category: 'community',
-      description: 'Students contributed as experts in practical sessions at Vidhya Mandir School, Palanpur for 5th to 8th standard students. Sessions on robotics and drone making conducted. Bootcamp at Jasra Primary School also organized.',
+      description: 'Students from our department actively participate in various activities of SSIP Cell, GP Palanpur. Students from our department contributed as experts in practical sessions organized at Vidhya mandir School, Palanpur for 5 to 8 standard students by SSIP Cell. The sessions were aimed to give basic ideas of robotics and drone making to school students. It was a wonderful experience for our students to perform the role of teacher and demonstrate their skills to school children. Total 80 students benefited from this session. Whole event was managed by: YUVRAJ RAJPUT (6th EC) & few other students. A Similar kind of events covering Robotics, Drone & RC Plane making were also conducted at Jasra Primary School Vidhya mandir school and few other schools.',
       tags: ['SSIP', 'School Outreach', 'Robotics', 'Community Service'],
       images: [
         {
@@ -672,11 +680,11 @@ export const newsletterData2021_22: NewsletterData = {
 
   reflections: {
     principal: {
-      name: 'Principal Name (Not specified in PDF)',
+      name: 'Sureshkumar D Dabhi',
       designation: 'Principal, Government Polytechnic Palanpur',
       message: `Technology is the fuel for the society; it provides means to ease human lives, and Government Polytechnic, Palanpur is one of the institutes that provide skilled and ethical engineers to the society. This institute runs basic to advance engineering programs. Electronics and communication engineering department is one which stands ahead in terms of technology and advancements. The department is well equipped with the resources to prepare competent and industry ready EC engineers catering the needs of industries, innovators, and entrepreneurs with moral values. It is my great pleasure to see the first band (Volume 1) of the "Spectrum", e-newsletter of Electronics and Communication Department being published.`,
       image: {
-        src: '/newsletters/2021-22/spectrum1.jpg',
+        src: '/newsletters/2021-22/principal-sdd.jpg',
         alt: 'Principal of Government Polytechnic Palanpur',
         caption: 'Principal\'s message for Spectrum Newsletter 2021-22'
       }
