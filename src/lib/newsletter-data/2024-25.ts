@@ -219,36 +219,36 @@ export const newsletterData2024_25: NewsletterData = {
       title: 'Visit: Banas Dairy',
       date: 'October 5, 2024',
       category: 'visit',
-      description: 'Educational visit organized by the EC Department to enhance practical learning and industry exposure for students.',
-      tags: ['Visit', 'EC Department', 'Student Activity'],
+      description: 'Educational visit to Banas Dairy, Palanpur organized by the EC Department to enhance practical learning and industry exposure for students. The visit included 37 students from Semesters 3 and 5, accompanied by faculty members MJD, RNP, and SPJ.',
+      tags: ['Visit', 'Banas Dairy', 'Industry Exposure', 'Practical Learning'],
       images: [
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0105-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0038-1024x457.jpg',
           alt: 'Visit: Banas Dairy - Image 1',
           caption: 'Visit: Banas Dairy - Image 1'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0103-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0066-1024x457.jpg',
           alt: 'Visit: Banas Dairy - Image 2',
           caption: 'Visit: Banas Dairy - Image 2'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0102-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0070-1024x457.jpg',
           alt: 'Visit: Banas Dairy - Image 3',
           caption: 'Visit: Banas Dairy - Image 3'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0101-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0111-1024x457.jpg',
           alt: 'Visit: Banas Dairy - Image 4',
           caption: 'Visit: Banas Dairy - Image 4'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0100-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0121-457x1024.jpg',
           alt: 'Visit: Banas Dairy - Image 5',
           caption: 'Visit: Banas Dairy - Image 5'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0099-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0109-1024x457.jpg',
           alt: 'Visit: Banas Dairy - Image 6',
           caption: 'Visit: Banas Dairy - Image 6'
         }
@@ -258,36 +258,36 @@ export const newsletterData2024_25: NewsletterData = {
       title: 'Ambaji: Heritage Visit',
       date: 'October 14, 2024',
       category: 'visit',
-      description: 'Educational heritage visit organized to provide students with cultural exposure and historical knowledge.',
-      tags: ['Ambaji', 'EC Department', 'Student Activity'],
+      description: 'Educational heritage visit to Ambaji organized to provide students with cultural exposure and historical knowledge about this important pilgrimage site in Gujarat.',
+      tags: ['Ambaji', 'Heritage Visit', 'Cultural Exposure', 'Historical Knowledge'],
       images: [
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241014-WA0081-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/wp-1742488361800218028667489565602-1024x768.jpg',
           alt: 'Ambaji: Heritage Visit - Image 1',
           caption: 'Ambaji: Heritage Visit - Image 1'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241014-WA0080-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/wp-17424883659207368792753606873520-1024x768.jpg',
           alt: 'Ambaji: Heritage Visit - Image 2',
           caption: 'Ambaji: Heritage Visit - Image 2'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241014-WA0079-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/wp-1742488364967372751161181101326-1024x768.jpg',
           alt: 'Ambaji: Heritage Visit - Image 3',
           caption: 'Ambaji: Heritage Visit - Image 3'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241014-WA0078-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/wp-17424883656782587977930620557353-1024x768.jpg',
           alt: 'Ambaji: Heritage Visit - Image 4',
           caption: 'Ambaji: Heritage Visit - Image 4'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241014-WA0077-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/wp-17424883654123242325079386387563-768x1024.jpg',
           alt: 'Ambaji: Heritage Visit - Image 5',
           caption: 'Ambaji: Heritage Visit - Image 5'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241014-WA0076-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/wp-17424883652066952418897765319133-1024x768.jpg',
           alt: 'Ambaji: Heritage Visit - Image 6',
           caption: 'Ambaji: Heritage Visit - Image 6'
         }
@@ -297,36 +297,36 @@ export const newsletterData2024_25: NewsletterData = {
       title: 'GPP Navratri (2024)',
       date: 'October 14, 2024',
       category: 'community',
-      description: 'Cultural celebration of Navratri festival organized by the college, showcasing traditional activities and student participation.',
-      tags: ['GPP Navratri (2024)', 'EC Department', 'Student Activity'],
+      description: 'Cultural celebration of Navratri festival organized by Government Polytechnic Palanpur, showcasing traditional activities, student participation, and cultural programs celebrating Gujarati heritage.',
+      tags: ['GPP Navratri 2024', 'Cultural Celebration', 'Traditional Activities', 'Student Participation'],
       images: [
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241014-WA0100-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/wp-17424883680788824720829223007035-768x1024.jpg',
           alt: 'GPP Navratri (2024) - Image 1',
           caption: 'GPP Navratri (2024) - Image 1'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241014-WA0099-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/wp-17424883675966107323110283871159-768x1024.jpg',
           alt: 'GPP Navratri (2024) - Image 2',
           caption: 'GPP Navratri (2024) - Image 2'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241014-WA0098-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/wp-17424883673534072222870050168177-768x1024.jpg',
           alt: 'GPP Navratri (2024) - Image 3',
           caption: 'GPP Navratri (2024) - Image 3'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241014-WA0097-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/wp-17424883679682241653355210603628-768x1024.jpg',
           alt: 'GPP Navratri (2024) - Image 4',
           caption: 'GPP Navratri (2024) - Image 4'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241014-WA0096-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/wp-17424883678391654456985091335810-1024x768.jpg',
           alt: 'GPP Navratri (2024) - Image 5',
           caption: 'GPP Navratri (2024) - Image 5'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241014-WA0095-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/wp-17424883671141432065522376397730-768x1024.jpg',
           alt: 'GPP Navratri (2024) - Image 6',
           caption: 'GPP Navratri (2024) - Image 6'
         }
@@ -336,43 +336,28 @@ export const newsletterData2024_25: NewsletterData = {
       title: 'Visit: Community Radio Station, Palanpur',
       date: 'October 16, 2024',
       category: 'visit',
-      description: 'Educational visit to community radio station to understand broadcasting technology and communication systems.',
-      tags: ['Visit', 'EC Department', 'Student Activity'],
+      description: 'Educational visit to community radio station to understand broadcasting technology and communication systems. The visit included 27 students from Semester 4, accompanied by faculty members RNP and SPJ.',
+      tags: ['Visit', 'Community Radio', 'Broadcasting Technology', 'Communication Systems'],
       images: [
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241016-WA0031-1024x575.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img-20241016-wa00193377510347962355009-1024x459.jpg',
           alt: 'Visit: Community Radio Station, Palanpur - Image 1',
           caption: 'Visit: Community Radio Station, Palanpur - Image 1'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241016-WA0019-1024x575.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img-20241016-wa00151653860351320558089-1024x459.jpg',
           alt: 'Visit: Community Radio Station, Palanpur - Image 2',
           caption: 'Visit: Community Radio Station, Palanpur - Image 2'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241016-WA0015-1024x575.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img-20241016-wa00119047071586767100942-1024x768.jpg',
           alt: 'Visit: Community Radio Station, Palanpur - Image 3',
           caption: 'Visit: Community Radio Station, Palanpur - Image 3'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241016-WA0005-1024x575.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img-20241016-wa00096629569267458144797-1024x459.jpg',
           alt: 'Visit: Community Radio Station, Palanpur - Image 4',
           caption: 'Visit: Community Radio Station, Palanpur - Image 4'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241016-WA0011-1024x575.jpg',
-          alt: 'Visit: Community Radio Station, Palanpur - Image 5',
-          caption: 'Visit: Community Radio Station, Palanpur - Image 5'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241016-WA0009-1024x575.jpg',
-          alt: 'Visit: Community Radio Station, Palanpur - Image 6',
-          caption: 'Visit: Community Radio Station, Palanpur - Image 6'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241016-WA0007-1024x575.jpg',
-          alt: 'Visit: Community Radio Station, Palanpur - Image 7',
-          caption: 'Visit: Community Radio Station, Palanpur - Image 7'
         }
       ]
     },
@@ -380,36 +365,36 @@ export const newsletterData2024_25: NewsletterData = {
       title: 'Internet of Things (IoT)',
       date: 'October 22, 2024',
       category: 'workshop',
-      description: 'Technical session on emerging technologies, providing students with insights into latest trends and applications.',
-      tags: ['Internet of Things (IoT)', 'EC Department', 'Student Activity'],
+      description: 'Technical session on IoT concepts, industrial applications, and integration of smart devices in automation. Expert: Dr. V K Thakar, Dean, Indrashil University with 59 participants. The session covered IoT concepts, its industrial applications, and the integration of smart devices in automation.',
+      tags: ['Internet of Things', 'IoT', 'Smart Devices', 'Automation', 'Industrial Applications'],
       images: [
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241022-WA0024-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/wp-17424885315953636584816384820537-1024x768.jpg',
           alt: 'Internet of Things (IoT) - Image 1',
           caption: 'Internet of Things (IoT) - Image 1'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241022-WA0023-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/wp-17424885317233630030408214762721-1024x768.jpg',
           alt: 'Internet of Things (IoT) - Image 2',
           caption: 'Internet of Things (IoT) - Image 2'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241022-WA0022-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/wp-17424885314624375434163410549868-1024x768.jpg',
           alt: 'Internet of Things (IoT) - Image 3',
           caption: 'Internet of Things (IoT) - Image 3'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241022-WA0021-768x1024.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/wp-17424885318308173111746315099678-1024x768.jpg',
           alt: 'Internet of Things (IoT) - Image 4',
           caption: 'Internet of Things (IoT) - Image 4'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241022-WA0020-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/wp-17424885324351184278091972462489-1024x768.jpg',
           alt: 'Internet of Things (IoT) - Image 5',
           caption: 'Internet of Things (IoT) - Image 5'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241022-WA0019-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/wp-17424885325568367909233053874117-1024x768.jpg',
           alt: 'Internet of Things (IoT) - Image 6',
           caption: 'Internet of Things (IoT) - Image 6'
         }
@@ -419,8 +404,8 @@ export const newsletterData2024_25: NewsletterData = {
       title: 'Career Guidance for EC Engineers',
       date: 'November 10, 2024',
       category: 'awareness',
-      description: 'Career awareness and guidance session conducted to help students explore opportunities in their field.',
-      tags: ['Career Guidance for EC Engineers', 'EC Department', 'Student Activity'],
+      description: 'Career guidance session conducted by Mr. Krishna Panchal, Associate Engineer from E-Infochips, with 34 participants. Students received comprehensive guidance on career paths in electronics and communication engineering, including job opportunities and required skill sets for success in the industry.',
+      tags: ['Career Guidance for EC Engineers', 'E-Infochips', 'Career Paths', 'Job Opportunities', 'Skill Development'],
       images: []
     },
     {
@@ -466,38 +451,68 @@ export const newsletterData2024_25: NewsletterData = {
       title: 'iACE Meet',
       date: 'December 16, 2024',
       category: 'training',
-      description: 'Department activity organized as part of the academic curriculum and student development program.',
-      tags: ['iACE Meet', 'EC Department', 'Student Activity'],
+      description: 'iACE (Innovation in Applied Computing and Electronics) Meet organized by the Electronics & Communication Engineering Department. This technical meet brought together students, faculty, and industry experts to discuss innovations, emerging technologies, and advancements in the field of applied computing and electronics. The event featured technical presentations, project showcases, and networking opportunities to foster collaboration and knowledge sharing in the EC domain.',
+      tags: ['iACE Meet', 'Innovation', 'Applied Computing', 'Electronics', 'Technical Meet', 'EC Department'],
       images: [
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241216-WA0034-1024x768.jpg',
-          alt: 'iACE Meet - Image 1',
-          caption: 'iACE Meet - Image 1'
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img_20241216_104003_8954274145279917131303-576x1024.jpg',
+          alt: 'iACE Meet - Technical Presentation Session',
+          caption: 'iACE Meet - Technical Presentation Session'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241216-WA0033-1024x768.jpg',
-          alt: 'iACE Meet - Image 2',
-          caption: 'iACE Meet - Image 2'
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img_20241216_105952_4312806814072538213385-1024x576.jpg',
+          alt: 'iACE Meet - Innovation Showcase',
+          caption: 'iACE Meet - Innovation Showcase'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241216-WA0032-1024x768.jpg',
-          alt: 'iACE Meet - Image 3',
-          caption: 'iACE Meet - Image 3'
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img_20241216_104122_9388223817230013926898-1024x576.jpg',
+          alt: 'iACE Meet - Participants and Faculty',
+          caption: 'iACE Meet - Participants and Faculty'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241216-WA0031-1024x768.jpg',
-          alt: 'iACE Meet - Image 4',
-          caption: 'iACE Meet - Image 4'
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img_20241216_131731_0006505276430652822358-576x1024.jpg',
+          alt: 'iACE Meet - Project Demonstration',
+          caption: 'iACE Meet - Project Demonstration'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241216-WA0030-1024x768.jpg',
-          alt: 'iACE Meet - Image 5',
-          caption: 'iACE Meet - Image 5'
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img_20241216_131739_9152486989411825757832-576x1024.jpg',
+          alt: 'iACE Meet - Technical Discussion',
+          caption: 'iACE Meet - Technical Discussion'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241216-WA0029-1024x768.jpg',
-          alt: 'iACE Meet - Image 6',
-          caption: 'iACE Meet - Image 6'
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img_20241216_131829_1936526003752083938445-576x1024.jpg',
+          alt: 'iACE Meet - Student Presentations',
+          caption: 'iACE Meet - Student Presentations'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img_20241216_131759_1736420146830666547387-576x1024.jpg',
+          alt: 'iACE Meet - Networking Session',
+          caption: 'iACE Meet - Networking Session'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img_20241216_131837_3806695639560423378758-1024x576.jpg',
+          alt: 'iACE Meet - Group Discussion',
+          caption: 'iACE Meet - Group Discussion'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img_20241216_141329_8085005151785746090546-1024x576.jpg',
+          alt: 'iACE Meet - Innovation Lab Tour',
+          caption: 'iACE Meet - Innovation Lab Tour'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img_20241216_131850_0088887665314308598192-576x1024.jpg',
+          alt: 'iACE Meet - Technology Exhibition',
+          caption: 'iACE Meet - Technology Exhibition'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img_20241216_141335_3846112541267892111252-1024x576.jpg',
+          alt: 'iACE Meet - Collaborative Learning',
+          caption: 'iACE Meet - Collaborative Learning'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img_20241216_133114_1404848896074941679326-1024x576.jpg',
+          alt: 'iACE Meet - Closing Session',
+          caption: 'iACE Meet - Closing Session'
         }
       ]
     },
@@ -688,29 +703,14 @@ export const newsletterData2024_25: NewsletterData = {
           caption: 'Workshop: HAM Radio - Image 1'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20250214-WA0082-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20250214-WA0080-1024x768.jpg',
           alt: 'Workshop: HAM Radio - Image 2',
           caption: 'Workshop: HAM Radio - Image 2'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20250214-WA0080-1024x768.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20250214-WA0081-1024x768.jpg',
           alt: 'Workshop: HAM Radio - Image 3',
           caption: 'Workshop: HAM Radio - Image 3'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20250214-WA0083-1024x768.jpg',
-          alt: 'Workshop: HAM Radio - Image 4',
-          caption: 'Workshop: HAM Radio - Image 4'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20250214-WA0081-1024x768.jpg',
-          alt: 'Workshop: HAM Radio - Image 5',
-          caption: 'Workshop: HAM Radio - Image 5'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20250214-WA0077-1024x768.jpg',
-          alt: 'Workshop: HAM Radio - Image 6',
-          caption: 'Workshop: HAM Radio - Image 6'
         }
       ]
     },
@@ -735,21 +735,6 @@ export const newsletterData2024_25: NewsletterData = {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20250215-WA0073-1024x768.jpg',
           alt: 'Workshop: Drone Technology - Image 3',
           caption: 'Workshop: Drone Technology - Image 3'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20250215-WA0074-1024x768.jpg',
-          alt: 'Workshop: Drone Technology - Image 4',
-          caption: 'Workshop: Drone Technology - Image 4'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20250215-WA0072-1024x768.jpg',
-          alt: 'Workshop: Drone Technology - Image 5',
-          caption: 'Workshop: Drone Technology - Image 5'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20250215-WA0068-1024x768.jpg',
-          alt: 'Workshop: Drone Technology - Image 6',
-          caption: 'Workshop: Drone Technology - Image 6'
         }
       ]
     },
@@ -810,9 +795,30 @@ export const newsletterData2024_25: NewsletterData = {
       title: 'Women\'s Day 2025',
       date: 'March 8, 2025',
       category: 'community',
-      description: 'International Women\'s Day celebration recognizing the achievements and contributions of women in society and technology.',
-      tags: ['Women\'s Day 2025', 'EC Department', 'Student Activity'],
-      images: []
+      description: 'International Women\'s Day celebration organized by Government Polytechnic Palanpur to recognize and honor the achievements, contributions, and empowerment of women in society, education, and technology. The celebration highlighted the importance of gender equality and women\'s role in building a progressive society.',
+      tags: ['Women\'s Day 2025', 'Gender Equality', 'Women Empowerment', 'Community'],
+      images: [
+        {
+          src: '/newsletters/2024-25/womens-day-1.jpeg',
+          alt: 'Women\'s Day 2025 Celebration - Main Event',
+          caption: 'Women\'s Day 2025 Celebration - Main Event'
+        },
+        {
+          src: '/newsletters/2024-25/womens-day-2.jpeg',
+          alt: 'Women\'s Day 2025 Celebration - Activities',
+          caption: 'Women\'s Day 2025 Celebration - Activities'
+        },
+        {
+          src: '/newsletters/2024-25/womens-day-3.jpeg',
+          alt: 'Women\'s Day 2025 Celebration - Participants',
+          caption: 'Women\'s Day 2025 Celebration - Participants'
+        },
+        {
+          src: '/newsletters/2024-25/womens-day-group.jpeg',
+          alt: 'Women\'s Day 2025 - Group Photo',
+          caption: 'Women\'s Day 2025 - Group Photo'
+        }
+      ]
     },
     {
       title: 'Sports Week 2025',
@@ -851,13 +857,53 @@ export const newsletterData2024_25: NewsletterData = {
       title: 'Cyber Crime Training Program at IGP - BK',
       date: 'March 17, 2025',
       category: 'training',
-      description: 'Training program on cyber crime awareness and digital security, educating participants about online threats and prevention measures.',
+      description: 'Training program on cyber crime awareness and digital security conducted at IGP - BK. The program educated participants about online threats, prevention measures, digital forensics, and cybersecurity best practices. Faculty and students gained valuable insights into protecting themselves and others from cyber crimes.',
       tags: ['Cyber Crime Training Program at IGP - BK', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img-20250318-wa00148973197549005607506.jpg',
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img-20250318-wa0003771115917890614088-1024x768.jpg',
           alt: 'Cyber Crime Training Program at IGP - BK - Image 1',
           caption: 'Cyber Crime Training Program at IGP - BK - Image 1'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img-20250318-wa00148973197549005607506-768x1024.jpg',
+          alt: 'Cyber Crime Training Program at IGP - BK - Image 2',
+          caption: 'Cyber Crime Training Program at IGP - BK - Image 2'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img-20250320-wa00002163809518286320899-768x1024.jpg',
+          alt: 'Cyber Crime Training Program at IGP - BK - Image 3',
+          caption: 'Cyber Crime Training Program at IGP - BK - Image 3'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img-20250320-wa00022056911376805706864-1024x702.jpg',
+          alt: 'Cyber Crime Training Program at IGP - BK - Image 4',
+          caption: 'Cyber Crime Training Program at IGP - BK - Image 4'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img-20250320-wa00016514387201292364585-1024x721.jpg',
+          alt: 'Cyber Crime Training Program at IGP - BK - Image 5',
+          caption: 'Cyber Crime Training Program at IGP - BK - Image 5'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img-20250318-wa0012759099033505903971-768x1024.jpg',
+          alt: 'Cyber Crime Training Program at IGP - BK - Image 6',
+          caption: 'Cyber Crime Training Program at IGP - BK - Image 6'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img-20250318-wa00073929239868787202507-1024x768.jpg',
+          alt: 'Cyber Crime Training Program at IGP - BK - Image 7',
+          caption: 'Cyber Crime Training Program at IGP - BK - Image 7'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img-20250318-wa00096683100535197690775-768x1024.jpg',
+          alt: 'Cyber Crime Training Program at IGP - BK - Image 8',
+          caption: 'Cyber Crime Training Program at IGP - BK - Image 8'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/img-20250318-wa0005982614006059643825-768x1024.jpg',
+          alt: 'Cyber Crime Training Program at IGP - BK - Image 9',
+          caption: 'Cyber Crime Training Program at IGP - BK - Image 9'
         }
       ]
     },
