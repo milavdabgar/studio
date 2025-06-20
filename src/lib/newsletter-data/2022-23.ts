@@ -12,42 +12,162 @@ export const newsletterData2022_23: NewsletterData = {
     { label: 'Highest Package (L)', value: 3.2, color: 'bg-orange-500' },
   ],
   
-  achievements: [
+  canvas: [
     {
-      category: 'Faculty Excellence',
-      items: [
-        'Prof. Sunilkumar J Chauhan - Presented research paper on "VLSI Design Optimization" at National Conference on Advanced Electronics',
-        'Ms. Mittal K. Pedhadiya - Completed advanced certification in Digital Signal Processing from IIT Bombay',
-        'Mr. Milav J. Dabgar - Completed PhD coursework and initiated research in Antenna Design for 5G Applications',
-        'Department received recognition for academic excellence from Gujarat Technological University'
-      ]
+      title: "IoT Revolution in Electronics Engineering",
+      author: "Prof. Sunilkumar J Chauhan",
+      designation: "Head of Department, EC Engineering",
+      content: "The Internet of Things is transforming how we design and implement electronic systems. From smart homes to industrial automation, IoT applications are creating new opportunities for EC engineers. Our students are working on innovative IoT projects including agricultural monitoring systems and smart healthcare solutions.",
+      date: "February 2023",
+      type: "tech-news",
+      authorType: "faculty"
     },
     {
-      category: 'Student Achievements',
-      items: [
-        'Shri Patel Niravkumar Jitendrabhai (GJR1345678) - Winner in Gujarat Gyan Guru Quiz (G3Q) 1.0 Week 8, College Category',
-        'Shri Modi Krish Bharatkumar (GJPO765432) - First prize in State Level Project Competition on Smart Healthcare Systems',
-        'Shri Trivedi Harsh Rameshbhai (GJK0876543) - Winner in Inter-college Electronics Quiz Competition organized by SVNIT',
-        'Student innovation team received funding under SSIP 2.0 for IoT-based Agricultural Monitoring System'
-      ]
+      title: "Machine Learning in Signal Processing",
+      author: "Ms. Mittal K. Pedhadiya",
+      designation: "Lecturer, EC Department",
+      content: "The integration of machine learning algorithms with digital signal processing is opening new frontiers in communications, image processing, and audio systems. Recent developments in neural networks for signal denoising and pattern recognition are particularly promising for our field.",
+      date: "December 2022",
+      type: "innovation",
+      authorType: "faculty"
     },
     {
-      category: 'Placements & Higher Studies (2022-23)',
-      items: [
-        'Solanki Rajeshkumar Pravinbhai (Enr: 196260311002) - Placed at Tata Electronics, Pune as Associate Engineer with ₹3.2L annual salary',
-        'Patel Divyaben Nareshkumar (Enr: 196260311004) - Placed at HCL Technologies, Noida as Software Trainee with ₹2.8L annual salary',
-        'Joshi Kiran Jagdishbhai (Enr: 196260311008) - Placed at Mahindra Tech, Chennai as Junior Engineer with ₹2.6L annual salary',
-        'Sharma Ankitkumar Rajesh (Enr: 196260311010) - Pursuing B.E. at NIT Surat (Admission Year: 2023)',
-        'Placement Rate: 58% (4 out of 7 eligible students placed/admitted to higher studies)'
-      ]
+      title: "My Smart Healthcare Project Journey",
+      author: "Krish Modi",
+      studentId: "GJPO765432",
+      semester: "6th Semester",
+      content: "Developing a smart healthcare monitoring system has been an incredible learning experience. Using Arduino, sensors, and IoT connectivity, we created a system that monitors vital signs and sends alerts to healthcare providers. Winning the state-level competition boosted my confidence in pursuing innovation.",
+      date: "March 2023",
+      type: "project",
+      authorType: "student"
+    },
+    {
+      title: "Quantum Computing and Electronics",
+      author: "Mr. Milav J. Dabgar",
+      designation: "Lecturer, EC Department",
+      content: "Quantum computing represents the next paradigm shift in computing technology. Understanding quantum principles and their applications in electronics will be crucial for future engineers. The development of quantum processors and quantum communication systems offers exciting research opportunities.",
+      date: "January 2023",
+      type: "research",
+      authorType: "faculty"
+    },
+    {
+      title: "The Circuit's Song",
+      author: "Harsh Trivedi",
+      studentId: "GJK0876543",
+      semester: "4th Semester",
+      content: "Electrons flow like rivers of light,\nThrough pathways etched in silicon bright,\nEach component plays its vital part,\nIn the symphony of electronic art.\n\nFrom simple gates to complex design,\nWhere logic meets the divine,\nWe learn to build tomorrow's dreams,\nWith circuits, codes, and engineering schemes.",
+      date: "November 2022",
+      type: "poem",
+      authorType: "student"
+    },
+    {
+      title: "Edge Computing in Electronics",
+      author: "Faculty Contributor",
+      designation: "EC Department",
+      content: "Edge computing is bringing processing power closer to data sources, reducing latency and improving efficiency. This technology is particularly relevant for real-time applications in autonomous vehicles, industrial IoT, and smart cities. EC engineers need to understand both the hardware and software aspects of edge computing.",
+      date: "October 2022",
+      type: "tech-news",
+      authorType: "faculty"
     }
   ],
-  
-  placements: [
-    { company: 'Tata Electronics, Pune', package: '₹3.2L', students: 1, position: 'Associate Engineer' },
-    { company: 'HCL Technologies, Noida', package: '₹2.8L', students: 1, position: 'Software Trainee' },
-    { company: 'Mahindra Tech, Chennai', package: '₹2.6L', students: 1, position: 'Junior Engineer' },
-    { company: 'Local Tech Startup', package: '₹2.4L', students: 1, position: 'Technical Associate' }
+
+  spotlight: [
+    // Faculty Contributions
+    {
+      category: "faculty-contribution",
+      title: "Research Paper Presentation",
+      description: "Prof. Sunilkumar J Chauhan presented research paper on VLSI Design Optimization",
+      person: "Prof. Sunilkumar J Chauhan",
+      designation: "Head of Department",
+      date: "2023",
+      achievements: [
+        "Research paper on VLSI Design Optimization at National Conference on Advanced Electronics",
+        "Department received recognition for academic excellence from GTU"
+      ]
+    },
+    {
+      category: "faculty-contribution",
+      title: "Advanced Certifications Completed",
+      description: "Faculty members completed advanced certifications and PhD coursework",
+      date: "2022-23",
+      achievements: [
+        "Ms. Mittal K. Pedhadiya - Advanced certification in Digital Signal Processing from IIT Bombay",
+        "Mr. Milav J. Dabgar - PhD coursework and research in Antenna Design for 5G Applications"
+      ]
+    },
+    // Student Achievements
+    {
+      category: "student-achievement",
+      title: "Gujarat Gyan Guru Quiz Winner",
+      description: "Student won Gujarat Gyan Guru Quiz (G3Q) 1.0",
+      person: "Patel Niravkumar Jitendrabhai",
+      studentId: "GJR1345678",
+      date: "2022",
+      achievements: [
+        "Winner in Gujarat Gyan Guru Quiz (G3Q) 1.0 Week 8, College Category"
+      ]
+    },
+    {
+      category: "student-achievement",
+      title: "State Level Project Competition",
+      description: "First prize in State Level Project Competition on Smart Healthcare Systems",
+      person: "Modi Krish Bharatkumar",
+      studentId: "GJPO765432",
+      date: "2023",
+      achievements: [
+        "First prize in State Level Project Competition on Smart Healthcare Systems",
+        "Student innovation team received funding under SSIP 2.0 for IoT-based Agricultural Monitoring System"
+      ]
+    },
+    {
+      category: "student-achievement",
+      title: "Inter-college Electronics Quiz Winner",
+      description: "Winner in Inter-college Electronics Quiz Competition",
+      person: "Trivedi Harsh Rameshbhai",
+      studentId: "GJK0876543",
+      date: "2022",
+      achievements: [
+        "Winner in Inter-college Electronics Quiz Competition organized by SVNIT"
+      ]
+    },
+    // Placements
+    {
+      category: "placement",
+      title: "Tata Electronics Placement",
+      description: "Student placed at Tata Electronics with highest package",
+      person: "Solanki Rajeshkumar Pravinbhai",
+      studentId: "196260311002",
+      details: "Tata Electronics, Pune - Associate Engineer - ₹3.2L annual salary",
+      date: "2023"
+    },
+    {
+      category: "placement",
+      title: "HCL Technologies Placement",
+      description: "Student placed at HCL Technologies",
+      person: "Patel Divyaben Nareshkumar",
+      studentId: "196260311004",
+      details: "HCL Technologies, Noida - Software Trainee - ₹2.8L annual salary",
+      date: "2023"
+    },
+    {
+      category: "placement",
+      title: "Mahindra Tech Placement",
+      description: "Student placed at Mahindra Tech",
+      person: "Joshi Kiran Jagdishbhai",
+      studentId: "196260311008",
+      details: "Mahindra Tech, Chennai - Junior Engineer - ₹2.6L annual salary",
+      date: "2023"
+    },
+    // Higher Education
+    {
+      category: "higher-education",
+      title: "NIT Surat Admission",
+      description: "Student admitted to NIT Surat for B.E.",
+      person: "Sharma Ankitkumar Rajesh",
+      studentId: "196260311010",
+      details: "NIT Surat - B.E. (Admission Year: 2023)",
+      date: "2023"
+    }
   ],
   
   events: [
@@ -178,65 +298,6 @@ export const newsletterData2022_23: NewsletterData = {
       description: 'Environmental conservation initiative with mass tree plantation and awareness session on sustainable development and green technology.',
       tags: ['Environment Day', 'Tree Plantation', 'Sustainable Development', 'Green Technology'],
       images: []
-    }
-  ],
-  
-  spotlight: [
-    {
-      title: "IoT Revolution in Electronics Engineering",
-      author: "Prof. Sunilkumar J Chauhan",
-      designation: "Head of Department, EC Engineering",
-      content: "The Internet of Things is transforming how we design and implement electronic systems. From smart homes to industrial automation, IoT applications are creating new opportunities for EC engineers. Our students are working on innovative IoT projects including agricultural monitoring systems and smart healthcare solutions.",
-      date: "February 2023",
-      type: "tech-news",
-      authorType: "faculty"
-    },
-    {
-      title: "Machine Learning in Signal Processing",
-      author: "Ms. Mittal K. Pedhadiya",
-      designation: "Lecturer, EC Department",
-      content: "The integration of machine learning algorithms with digital signal processing is opening new frontiers in communications, image processing, and audio systems. Recent developments in neural networks for signal denoising and pattern recognition are particularly promising for our field.",
-      date: "December 2022",
-      type: "innovation",
-      authorType: "faculty"
-    },
-    {
-      title: "My Smart Healthcare Project Journey",
-      author: "Krish Modi",
-      studentId: "GJPO765432",
-      semester: "6th Semester",
-      content: "Developing a smart healthcare monitoring system has been an incredible learning experience. Using Arduino, sensors, and IoT connectivity, we created a system that monitors vital signs and sends alerts to healthcare providers. Winning the state-level competition boosted my confidence in pursuing innovation.",
-      date: "March 2023",
-      type: "project",
-      authorType: "student"
-    },
-    {
-      title: "Quantum Computing and Electronics",
-      author: "Mr. Milav J. Dabgar",
-      designation: "Lecturer, EC Department",
-      content: "Quantum computing represents the next paradigm shift in computing technology. Understanding quantum principles and their applications in electronics will be crucial for future engineers. The development of quantum processors and quantum communication systems offers exciting research opportunities.",
-      date: "January 2023",
-      type: "research",
-      authorType: "faculty"
-    },
-    {
-      title: "The Circuit's Song",
-      author: "Harsh Trivedi",
-      studentId: "GJK0876543",
-      semester: "4th Semester",
-      content: "Electrons flow like rivers of light,\nThrough pathways etched in silicon bright,\nEach component plays its vital part,\nIn the symphony of electronic art.\n\nFrom simple gates to complex design,\nWhere logic meets the divine,\nWe learn to build tomorrow's dreams,\nWith circuits, codes, and engineering schemes.",
-      date: "November 2022",
-      type: "poem",
-      authorType: "student"
-    },
-    {
-      title: "Edge Computing in Electronics",
-      author: "Faculty Contributor",
-      designation: "EC Department",
-      content: "Edge computing is bringing processing power closer to data sources, reducing latency and improving efficiency. This technology is particularly relevant for real-time applications in autonomous vehicles, industrial IoT, and smart cities. EC engineers need to understand both the hardware and software aspects of edge computing.",
-      date: "October 2022",
-      type: "tech-news",
-      authorType: "faculty"
     }
   ],
 

@@ -40,7 +40,7 @@ export interface Message {
   message: string;
 }
 
-export interface SpotlightItem {
+export interface CanvasItem {
   title: string;
   author: string;
   designation?: string; // For faculty
@@ -48,21 +48,32 @@ export interface SpotlightItem {
   semester?: string; // For students
   content: string;
   date?: string;
-  type: 'tech-news' | 'innovation' | 'research' | 'poem' | 'article' | 'project' | 'experience' | 'story' | 'achievement';
+  type: 'tech-news' | 'innovation' | 'research' | 'poem' | 'article' | 'project' | 'experience' | 'story' | 'tutorial';
   authorType: 'faculty' | 'student';
+}
+
+export interface SpotlightItem {
+  category: 'faculty-contribution' | 'student-achievement' | 'placement' | 'higher-education' | 'star-performer';
+  title: string;
+  description: string;
+  person?: string; // Name of faculty/student
+  designation?: string; // For faculty
+  studentId?: string; // For students
+  details?: string; // Additional details like company, package, university, etc.
+  date?: string;
+  achievements?: string[]; // List of specific achievements
 }
 
 export interface NewsletterData {
   stats: Stat[];
-  achievements: Achievement[];
-  placements: Placement[];
+  canvas: CanvasItem[];
+  spotlight: SpotlightItem[];
   events: Event[];
   messages: {
     principal: Message;
     hod: Message;
     editorial: Message;
   };
-  spotlight: SpotlightItem[];
   vision: string;
   mission: string;
   logos?: Array<{

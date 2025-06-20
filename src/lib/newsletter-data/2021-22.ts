@@ -12,73 +12,175 @@ export const newsletterData2021_22: NewsletterData = {
     { label: 'Expert Lectures', value: 2, color: 'bg-orange-500' },
   ],
   
-  achievements: [
+  canvas: [
     {
-      category: 'Faculty Excellence & Publications',
-      items: [
-        'Dr. R. N. Patel - Published patent on 25/02/2022 titled "Design of wideband bow tie antenna using tapered balun for industrial, scientific and medical band application"',
-        'Dr. R. N. Patel - Published patent on 21/01/2022 titled "Rectangular patch antenna with Tree-Fractal structure"',
-        'Mr. L. K. Patel - Presented paper in 3rd National Conference on "Recent Trends in Engineering, Management, Pharmacy, Architecture And Science" on 22/10/2021 titled "Analysis of matched key points of image registration using SIFT, SURF with different layers of CNN" and won best paper Runner-up',
-        'Dr. R. N. Patel - Editorial board member in "Global Research and Development Journal (ISSN: 24555703)", completed training on "Antenna Design"',
-        'Mr. L. K. Patel - GTU coordinator of the institute, contributed to GTU syllabus for "Fundamentals of Electronics (4311102)"'
-      ]
+      title: "5G Technology: The Future of Communication",
+      author: "Faculty Member",
+      designation: "Lecturer, EC Department", 
+      content: "5G technology represents a quantum leap in wireless communication, offering unprecedented speeds, ultra-low latency, and massive device connectivity. This revolutionary technology will enable innovations like autonomous vehicles, smart cities, and IoT applications that were previously impossible. As EC engineers, understanding 5G architecture and implementation is crucial for future career prospects.",
+      date: "March 2022",
+      type: "tech-news",
+      authorType: "faculty"
     },
     {
-      category: 'Faculty Contributions & Administrative Roles',
-      items: [
-        'Mr. S. J. Chauhan - Head of Department, contributed as lead member in GTU syllabus development for "Electronics Workshop (4321101)", Institute coordinator for AICTE accreditation and GTU affiliation, served as Hostel Rector',
-        'Mrs. G. N. Acharya - Coordinator of housekeeping committee in the institute',
-        'Ms. M. K. Pedhadiya - Contributed to GTU syllabus for "Electronic Circuits & Applications (4321104)", Co-coordinator of Student Section, completed training on "Embedded Systems"',
-        'Mr. N. M. Patel - Contributed to GTU syllabus for "Fundamentals Electronic Circuits & Applications (4321104)", Co-coordinator in Gymkhana committee and training & placement cell',
-        'Mr. R. N. Patel - Serving as administrative officer of the institute',
-        'Mr. M. J. Dabgar - Coordinator of CWAN committee & Co-coordinator of SSIP Cell, completed "Induction Phase – II" training',
-        'Mr. R. C. Parmar - Contributed to GTU syllabus for "Industrial Electronics (4331103)", Co-coordinator of Student Section, completed "Induction Phase – II" training',
-        'Mr. S. P. Joshiara - Co-coordinator of CWAN, Website & GTU Committees, completed "Induction Phase – II" training',
-        'Mr. N. J. Chauhan - Contributed to GTU syllabus for "Digital Electronics (4321103)", Co-coordinator of AICTE accreditation Committee, completed "Induction Phase – II" training'
-      ]
+      title: "Artificial Intelligence in Electronics",
+      author: "Dr. R. N. Patel",
+      designation: "Lecturer, EC Department",
+      content: "AI integration in electronics is transforming how we design and manufacture electronic systems. From automated PCB design to predictive maintenance in electronic equipment, AI is revolutionizing our field. Students should focus on learning AI fundamentals alongside traditional electronics to stay competitive in the evolving industry.",
+      date: "January 2022",
+      type: "innovation",
+      authorType: "faculty"
     },
     {
-      category: 'Star Performers (Academic Excellence)',
-      items: [
-        'Stuti Raval (216260311005) - 7.41 CGPA (Sem 1 - Winter 2021)',
-        'Chaudhary Adarsh (206260311005) - 8.19 CGPA (Sem 3 - Winter 2021)',
-        'Chaudhary Piyush (206260311003) - 7.68 CGPA (Sem 3 - Winter 2021)',
-        'Panchal Tirth (196260311008) - 8.2 CGPA (Sem 5 - Winter 2021)',
-        'Umatiya Anas (196260311016) - 8.07 CGPA (Sem 5 - Winter 2021)',
-        'Chaudhary Piyush (206260311003) - 9.26 CGPA (Sem 2 - Summer 2021)',
-        'Chaudhary Adarsh (206260311005) - 8.87 CGPA (Sem 2 - Summer 2021)',
-        'Solanki Niravbhai (196260311505) - 8.21 CGPA (Sem 4 - Summer 2021)',
-        'Prajapati Rohit (196260311013) - 8.13 CGPA (Sem 6 - Summer 2022)',
-        'Panchal Tirth (196260311008) - 8.07 CGPA (Sem 6 - Summer 2022)',
-        'Solanki Niravbhai (196260311505) - 8.07 CGPA (Sem 6 - Summer 2022)'
-      ]
+      title: "My Journey Through Electronics",
+      author: "Tirth Panchal",
+      studentId: "196260311008",
+      semester: "6th Semester",
+      content: "Electronics has always fascinated me since childhood. During my time at GPP, I've learned not just the theoretical concepts but also practical applications through our well-equipped labs. The industrial visits and expert lectures have given me insights into real-world applications. I'm grateful for the placement opportunity at Webilok IT Services and look forward to contributing to the tech industry.",
+      date: "April 2022",
+      type: "experience",
+      authorType: "student"
     },
     {
-      category: 'Student Placements (2021-22)',
-      items: [
-        'Nirav Solanki (196260311505) - Placed at Mehta Expai Technologies Pvt. Ltd.',
-        'Darshil Modi (196260311006) - Placed at Mehta Expai Technologies Pvt. Ltd.',
-        'Dabhi Ashwin (196260311002) - Placed at Webilok IT Services, Deesa',
-        'Damor Bhargav (196260311503) - Placed at Webilok IT Services, Deesa',
-        'Chhayank Mevada (196260311005) - Placed at Webilok IT Services, Deesa',
-        'Tirth Panchal (196260311008) - Placed at Webilok IT Services, Deesa',
-        'Rohit Prajapati (196260311013) - Placed at Webilok IT Services, Deesa',
-        'Mohammed Kaif (156260311501) - Placed at Asahi Glass, Patan'
-      ]
+      title: "Innovation in Antenna Design",
+      author: "Mr. L. K. Patel",
+      designation: "Lecturer, EC Department",
+      content: "Recent advancements in antenna technology are opening new possibilities in wireless communication. Fractal antennas, metamaterial-based designs, and MIMO systems are reshaping the communication landscape. Our department's research in wideband bow tie antennas and tree-fractal structures demonstrates our commitment to cutting-edge antenna research.",
+      date: "February 2022", 
+      type: "research",
+      authorType: "faculty"
     },
     {
-      category: 'Higher Education Admissions',
-      items: [
-        'Nirajkumar Prajapati (186260311002) - Admitted to VGEC, Chandkheda for Degree Engineering',
-        'Jaydip Kadiya (166260311010) - Admitted to GEC, Gandhinagar for Degree Engineering'
-      ]
+      title: "Dreams and Circuits",
+      author: "Stuti Raval",
+      studentId: "216260311005",
+      semester: "2nd Semester",
+      content: "In the world of resistors and capacitors,\nWhere electrons dance and current flows,\nI find my passion, my calling true,\nIn circuits where innovation grows.\n\nFrom simple LEDs to complex designs,\nEach component tells a story,\nOf human ingenuity and endless dreams,\nBuilding tomorrow's electronic glory.",
+      date: "December 2021",
+      type: "poem",
+      authorType: "student"
+    },
+    {
+      title: "Sustainable Electronics: Green Technology",
+      author: "Ms. M. K. Pedhadiya",
+      designation: "Lecturer, EC Department",
+      content: "The electronics industry is moving towards sustainable practices with eco-friendly materials, energy-efficient designs, and recycling initiatives. As future engineers, we must consider environmental impact in our designs. Green electronics not only reduce carbon footprint but also create new market opportunities for innovative solutions.",
+      date: "November 2021",
+      type: "innovation",
+      authorType: "faculty"
     }
   ],
-  
-  placements: [
-    { company: 'Mehta Expai Technologies Pvt. Ltd.', package: 'Not specified', students: 2, position: 'Technical Role' },
-    { company: 'Webilok IT Services, Deesa', package: 'Not specified', students: 5, position: 'Software Developer' },
-    { company: 'Asahi Glass, Patan', package: 'Not specified', students: 1, position: 'Technical Assistant' }
+
+  spotlight: [
+    // Faculty Contributions
+    {
+      category: "faculty-contribution",
+      title: "Patent Publications by Dr. R. N. Patel",
+      description: "Published two patents in antenna design for industrial applications",
+      person: "Dr. R. N. Patel",
+      designation: "Lecturer, EC Department",
+      date: "February 2022",
+      achievements: [
+        "Patent: Design of wideband bow tie antenna using tapered balun for ISM band (25/02/2022)",
+        "Patent: Rectangular patch antenna with Tree-Fractal structure (21/01/2022)",
+        "Editorial board member in Global Research and Development Journal",
+        "Completed training on Antenna Design"
+      ]
+    },
+    {
+      category: "faculty-contribution", 
+      title: "Best Paper Runner-up Award",
+      description: "Mr. L. K. Patel won best paper runner-up at National Conference",
+      person: "Mr. L. K. Patel",
+      designation: "Lecturer, EC Department",
+      date: "October 2021",
+      achievements: [
+        "Paper: Analysis of matched key points of image registration using SIFT, SURF with different layers of CNN",
+        "3rd National Conference on Recent Trends in Engineering, Management, Pharmacy, Architecture And Science",
+        "GTU coordinator and syllabus contributor"
+      ]
+    },
+    // Star Performers (Academic Excellence)
+    {
+      category: "star-performer",
+      title: "Semester Toppers - Winter 2021",
+      description: "Outstanding academic performance across all semesters",
+      date: "Winter 2021",
+      achievements: [
+        "Stuti Raval (216260311005) - 7.41 CGPA (Sem 1)",
+        "Chaudhary Adarsh (206260311005) - 8.19 CGPA (Sem 3)", 
+        "Chaudhary Piyush (206260311003) - 7.68 CGPA (Sem 3)",
+        "Panchal Tirth (196260311008) - 8.2 CGPA (Sem 5)",
+        "Umatiya Anas (196260311016) - 8.07 CGPA (Sem 5)"
+      ]
+    },
+    {
+      category: "star-performer",
+      title: "Semester Toppers - Summer 2021 & 2022",
+      description: "Consistent academic excellence maintained",
+      date: "Summer 2021-22",
+      achievements: [
+        "Chaudhary Piyush (206260311003) - 9.26 CGPA (Sem 2 - Summer 2021)",
+        "Chaudhary Adarsh (206260311005) - 8.87 CGPA (Sem 2 - Summer 2021)",
+        "Solanki Niravbhai (196260311505) - 8.21 CGPA (Sem 4 - Summer 2021)",
+        "Prajapati Rohit (196260311013) - 8.13 CGPA (Sem 6 - Summer 2022)",
+        "Panchal Tirth (196260311008) - 8.07 CGPA (Sem 6 - Summer 2022)"
+      ]
+    },
+    // Placements
+    {
+      category: "placement",
+      title: "Mehta Expai Technologies Placements",
+      description: "Two students successfully placed at Mehta Expai Technologies",
+      details: "Mehta Expai Technologies Pvt. Ltd. - Technical Roles",
+      date: "2022",
+      achievements: [
+        "Nirav Solanki (196260311505)",
+        "Darshil Modi (196260311006)"
+      ]
+    },
+    {
+      category: "placement",
+      title: "Webilok IT Services Mass Recruitment",
+      description: "Five students placed at Webilok IT Services, Deesa",
+      details: "Webilok IT Services, Deesa - Software Developer Positions",
+      date: "2022",
+      achievements: [
+        "Dabhi Ashwin (196260311002)",
+        "Damor Bhargav (196260311503)", 
+        "Chhayank Mevada (196260311005)",
+        "Tirth Panchal (196260311008)",
+        "Rohit Prajapati (196260311013)"
+      ]
+    },
+    {
+      category: "placement",
+      title: "Asahi Glass Placement",
+      description: "Industrial placement at Asahi Glass, Patan",
+      person: "Mohammed Kaif",
+      studentId: "156260311501",
+      details: "Asahi Glass, Patan - Technical Assistant",
+      date: "2022"
+    },
+    // Higher Education
+    {
+      category: "higher-education",
+      title: "VGEC Admission for Degree Engineering",
+      description: "Student admitted to VGEC, Chandkheda for pursuing B.E.",
+      person: "Nirajkumar Prajapati",
+      studentId: "186260311002",
+      details: "VGEC, Chandkheda - Degree Engineering",
+      date: "2022"
+    },
+    {
+      category: "higher-education", 
+      title: "GEC Gandhinagar Admission",
+      description: "Student admitted to Government Engineering College",
+      person: "Jaydip Kadiya",
+      studentId: "166260311010",
+      details: "GEC, Gandhinagar - Degree Engineering", 
+      date: "2022"
+    }
   ],
   
   events: [
@@ -257,65 +359,6 @@ export const newsletterData2021_22: NewsletterData = {
       description: 'Students contributed as experts in practical sessions at Vidhya Mandir School, Palanpur for 5th to 8th standard students. Sessions on robotics and drone making conducted. Bootcamp at Jasra Primary School also organized.',
       tags: ['SSIP', 'School Outreach', 'Robotics', 'Community Service'],
       images: []
-    }
-  ],
-  
-  spotlight: [
-    {
-      title: "5G Technology: The Future of Communication",
-      author: "Faculty Member",
-      designation: "Lecturer, EC Department", 
-      content: "5G technology represents a quantum leap in wireless communication, offering unprecedented speeds, ultra-low latency, and massive device connectivity. This revolutionary technology will enable innovations like autonomous vehicles, smart cities, and IoT applications that were previously impossible. As EC engineers, understanding 5G architecture and implementation is crucial for future career prospects.",
-      date: "March 2022",
-      type: "tech-news",
-      authorType: "faculty"
-    },
-    {
-      title: "Artificial Intelligence in Electronics",
-      author: "Dr. R. N. Patel",
-      designation: "Lecturer, EC Department",
-      content: "AI integration in electronics is transforming how we design and manufacture electronic systems. From automated PCB design to predictive maintenance in electronic equipment, AI is revolutionizing our field. Students should focus on learning AI fundamentals alongside traditional electronics to stay competitive in the evolving industry.",
-      date: "January 2022",
-      type: "innovation",
-      authorType: "faculty"
-    },
-    {
-      title: "My Journey Through Electronics",
-      author: "Tirth Panchal",
-      studentId: "196260311008",
-      semester: "6th Semester",
-      content: "Electronics has always fascinated me since childhood. During my time at GPP, I've learned not just the theoretical concepts but also practical applications through our well-equipped labs. The industrial visits and expert lectures have given me insights into real-world applications. I'm grateful for the placement opportunity at Webilok IT Services and look forward to contributing to the tech industry.",
-      date: "April 2022",
-      type: "experience",
-      authorType: "student"
-    },
-    {
-      title: "Innovation in Antenna Design",
-      author: "Mr. L. K. Patel",
-      designation: "Lecturer, EC Department",
-      content: "Recent advancements in antenna technology are opening new possibilities in wireless communication. Fractal antennas, metamaterial-based designs, and MIMO systems are reshaping the communication landscape. Our department's research in wideband bow tie antennas and tree-fractal structures demonstrates our commitment to cutting-edge antenna research.",
-      date: "February 2022", 
-      type: "research",
-      authorType: "faculty"
-    },
-    {
-      title: "Dreams and Circuits",
-      author: "Stuti Raval",
-      studentId: "216260311005",
-      semester: "2nd Semester",
-      content: "In the world of resistors and capacitors,\nWhere electrons dance and current flows,\nI find my passion, my calling true,\nIn circuits where innovation grows.\n\nFrom simple LEDs to complex designs,\nEach component tells a story,\nOf human ingenuity and endless dreams,\nBuilding tomorrow's electronic glory.",
-      date: "December 2021",
-      type: "poem",
-      authorType: "student"
-    },
-    {
-      title: "Sustainable Electronics: Green Technology",
-      author: "Ms. M. K. Pedhadiya",
-      designation: "Lecturer, EC Department",
-      content: "The electronics industry is moving towards sustainable practices with eco-friendly materials, energy-efficient designs, and recycling initiatives. As future engineers, we must consider environmental impact in our designs. Green electronics not only reduce carbon footprint but also create new market opportunities for innovative solutions.",
-      date: "November 2021",
-      type: "innovation",
-      authorType: "faculty"
     }
   ],
 

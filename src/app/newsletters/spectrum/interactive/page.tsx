@@ -36,12 +36,11 @@ export default function InteractiveNewsletterPage() {
     icon: [TrendingUp, BookOpen, Users, Award][index] || TrendingUp
   }));
 
-  const achievements = currentData.achievements.map((achievement, index) => ({
-    ...achievement,
-    icon: [Award, Trophy, Building][index] || Award
-  }));
+  // Canvas content for creative sharing
+  const canvasItems = currentData.canvas || [];
 
-  const placementCompanies = currentData.placements;
+  // Spotlight content for achievements and accomplishments
+  const spotlightItems = currentData.spotlight || [];
 
   const handleExport = async (format: string) => {
     setIsExporting(format);
@@ -193,13 +192,12 @@ export default function InteractiveNewsletterPage() {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-12">
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="messages">Messages</TabsTrigger>
-            <TabsTrigger value="achievements">Achievements</TabsTrigger>
-            <TabsTrigger value="placements">Placements</TabsTrigger>
-            <TabsTrigger value="events">Events</TabsTrigger>
             <TabsTrigger value="spotlight">Spotlight</TabsTrigger>
+            <TabsTrigger value="canvas">Canvas</TabsTrigger>
+            <TabsTrigger value="events">Events</TabsTrigger>
             <TabsTrigger value="contact">Contact</TabsTrigger>
           </TabsList>
 
@@ -417,151 +415,73 @@ export default function InteractiveNewsletterPage() {
           </TabsContent>
 
           {/* Achievements Tab */}
-          <TabsContent value="achievements">
-            <div className="space-y-8">
-              {achievements.map((achievement, index) => {
-                const IconComponent = achievement.icon;
-                return (
-                  <Card key={index}>
-                    <CardHeader>
-                      <CardTitle className="flex items-center space-x-2">
-                        <IconComponent className="w-5 h-5 text-blue-600" />
-                        <span>{achievement.category}</span>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {achievement.items.map((item, itemIndex) => (
-                          <div key={itemIndex} className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
-                            <Star className="w-4 h-4 text-yellow-500 mt-1 flex-shrink-0" />
-                            <span className="text-sm text-gray-700">{item}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </TabsContent>
-
-          {/* Placements Tab */}
-          <TabsContent value="placements">
+          {/* Canvas Tab */}
+          <TabsContent value="canvas">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <Trophy className="w-5 h-5 text-blue-600" />
-                  <span>Placements & Higher Studies 2023-24</span>
+                  <Star className="w-5 h-5 text-purple-600" />
+                  <span>Canvas</span>
                 </CardTitle>
-                <CardDescription>Career success stories and pathways</CardDescription>
+                <CardDescription>Creative expressions and insights from faculty and students</CardDescription>
               </CardHeader>
               <CardContent>
-                {/* Placement Success Highlights */}
-                <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white p-6 rounded-lg mb-6">
-                  <h3 className="text-lg font-semibold mb-4 text-center">🎯 Career Success Metrics</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-white/10 backdrop-blur p-4 rounded-lg text-center">
-                      <div className="text-2xl font-bold mb-1">{statsData[2].value}</div>
-                      <div className="text-sm opacity-90">Students Placed</div>
-                    </div>
-                    <div className="bg-white/10 backdrop-blur p-4 rounded-lg text-center">
-                      <div className="text-2xl font-bold mb-1">₹{statsData[3].value}L</div>
-                      <div className="text-sm opacity-90">Highest Package</div>
-                    </div>
-                    <div className="bg-white/10 backdrop-blur p-4 rounded-lg text-center">
-                      <div className="text-2xl font-bold mb-1">{statsData[0].value}%</div>
-                      <div className="text-sm opacity-90">Placement Rate</div>
-                    </div>
-                    <div className="bg-white/10 backdrop-blur p-4 rounded-lg text-center">
-                      <div className="text-2xl font-bold mb-1">1</div>
-                      <div className="text-sm opacity-90">Higher Studies</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Placement Success Stories */}
-                  <div className="bg-white p-6 rounded-lg border border-green-200">
-                    <h3 className="text-lg font-semibold mb-4 flex items-center">
-                      <Building className="w-5 h-5 text-green-600 mr-2" />
-                      Placement Success Stories
-                    </h3>
-                    
-                    <div className="space-y-4">
-                      {placementCompanies.map((placement, index) => {
-                        const colors = ['green', 'blue', 'purple', 'orange'];
-                        const color = colors[index % colors.length];
-                        const students = placement.position === 'Diploma Trainee Engineer' ? 
-                          ['Stutiben A. Raval'] : 
-                          ['Bharat S. Pawar'];
-                        
-                        return students.map((student, studentIndex) => (
-                          <div key={`${index}-${studentIndex}`} className={`bg-gradient-to-r from-${color}-50 to-${color}-100 p-4 rounded-lg border-l-4 border-${color}-500`}>
-                            <div className="flex justify-between items-start mb-2">
-                              <div>
-                                <div className="font-semibold text-gray-900">{student}</div>
-                                <div className={`text-${color}-600 font-medium text-sm`}>{placement.company} • {placement.position}</div>
-                              </div>
-                              <Badge className={`bg-${color}-600`}>{placement.package}</Badge>
-                            </div>
+                <div className="space-y-6">
+                  {canvasItems.map((item, index) => (
+                    <div key={index} className="bg-gradient-to-r from-purple-50 to-indigo-50 p-6 rounded-lg border border-purple-200">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.title}</h3>
+                          <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
+                            <span className="flex items-center">
+                              <Users className="w-4 h-4 mr-1" />
+                              {item.author}
+                              {item.designation && ` - ${item.designation}`}
+                              {item.studentId && ` (${item.studentId})`}
+                              {item.semester && ` - ${item.semester}`}
+                            </span>
+                            {item.date && (
+                              <span className="flex items-center">
+                                <Calendar className="w-4 h-4 mr-1" />
+                                {item.date}
+                              </span>
+                            )}
                           </div>
-                        ));
-                      })}
-                    </div>
-                  </div>
-                  
-                  {/* Higher Studies & Career Pathways */}
-                  <div className="bg-white p-6 rounded-lg border border-blue-200">
-                    <h3 className="text-lg font-semibold mb-4 flex items-center">
-                      <BookOpen className="w-5 h-5 text-blue-600 mr-2" />
-                      Higher Studies & Career Pathways
-                    </h3>
-                    
-                    {/* Higher Studies Success */}
-                    <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg mb-4 border border-blue-200">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <div className="bg-blue-600 text-white p-3 rounded-lg">
-                          <BookOpen className="w-5 h-5" />
                         </div>
-                        <div>
-                          <div className="font-semibold text-blue-900">Srujal Y. Chaudhary</div>
-                          <div className="text-blue-700 font-medium text-sm">B.E. at VEGC, Chandkheda</div>
-                          <div className="text-blue-600 text-xs">Academic Year 2024</div>
+                        <div className="flex items-center space-x-2">
+                          <Badge 
+                            variant="secondary" 
+                            className={`${
+                              item.authorType === 'faculty' 
+                                ? 'bg-blue-100 text-blue-800' 
+                                : 'bg-green-100 text-green-800'
+                            }`}
+                          >
+                            {item.authorType === 'faculty' ? 'Faculty' : 'Student'}
+                          </Badge>
+                          <Badge variant="outline" className="capitalize">
+                            {item.type?.replace('-', ' ') || 'Content'}
+                          </Badge>
                         </div>
                       </div>
-                    </div>
-                    
-                    {/* Career Pathways Overview */}
-                    <div className="bg-gray-50 p-4 rounded-lg border">
-                      <h4 className="font-semibold text-blue-900 mb-3 flex items-center">
-                        <Target className="w-4 h-4 mr-2" />
-                        Career Excellence Pathways
-                      </h4>
-                      <div className="space-y-3">
-                        <div className="flex items-center space-x-3 p-3 bg-white rounded border">
-                          <span className="text-xl">🏭</span>
-                          <div>
-                            <div className="font-medium text-gray-900 text-sm">Industry Leadership</div>
-                            <div className="text-gray-600 text-xs">Leading semiconductor & electronics companies</div>
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-3 p-3 bg-white rounded border">
-                          <span className="text-xl">🚀</span>
-                          <div>
-                            <div className="font-medium text-gray-900 text-sm">Entrepreneurship</div>
-                            <div className="text-gray-600 text-xs">Innovation-driven startups & ventures</div>
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-3 p-3 bg-white rounded border">
-                          <span className="text-xl">🎓</span>
-                          <div>
-                            <div className="font-medium text-gray-900 text-sm">Advanced Degrees</div>
-                            <div className="text-gray-600 text-xs">IITs, NITs & premier institutions</div>
-                          </div>
-                        </div>
+                      <div className="prose prose-sm max-w-none">
+                        {item.type === 'poem' ? (
+                          <pre className="whitespace-pre-wrap font-sans text-sm text-gray-700 leading-relaxed">
+                            {item.content || ''}
+                          </pre>
+                        ) : (
+                          <p className="text-gray-700 leading-relaxed">
+                            {item.content || ''}
+                          </p>
+                        )}
                       </div>
                     </div>
-                  </div>
+                  )) || (
+                    <div className="text-center py-8 text-gray-500">
+                      <Star className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                      <p>No canvas content available for this year.</p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -651,65 +571,92 @@ export default function InteractiveNewsletterPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <Star className="w-5 h-5 text-yellow-600" />
+                  <Trophy className="w-5 h-5 text-yellow-600" />
                   <span>Spotlight</span>
                 </CardTitle>
-                <CardDescription>Faculty insights and student contributions</CardDescription>
+                <CardDescription>Achievements, accomplishments, and success stories</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
-                  {currentData.spotlight?.map((item, index) => (
-                    <div key={index} className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.title}</h3>
-                          <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
-                            <span className="flex items-center">
-                              <Users className="w-4 h-4 mr-1" />
-                              {item.author}
-                              {item.designation && ` - ${item.designation}`}
-                              {item.studentId && ` (${item.studentId})`}
-                              {item.semester && ` - ${item.semester}`}
-                            </span>
-                            {item.date && (
-                              <span className="flex items-center">
-                                <Calendar className="w-4 h-4 mr-1" />
-                                {item.date}
-                              </span>
+                  {spotlightItems.map((item, index) => {
+                    const getCategoryIcon = (category: string) => {
+                      switch (category) {
+                        case 'faculty-contribution': return <Award className="w-5 h-5" />;
+                        case 'student-achievement': return <Trophy className="w-5 h-5" />;
+                        case 'placement': return <Building className="w-5 h-5" />;
+                        case 'higher-education': return <BookOpen className="w-5 h-5" />;
+                        case 'star-performer': return <Star className="w-5 h-5" />;
+                        default: return <Award className="w-5 h-5" />;
+                      }
+                    };
+
+                    const getCategoryColor = (category: string) => {
+                      switch (category) {
+                        case 'faculty-contribution': return 'blue';
+                        case 'student-achievement': return 'green';
+                        case 'placement': return 'purple';
+                        case 'higher-education': return 'orange';
+                        case 'star-performer': return 'yellow';
+                        default: return 'gray';
+                      }
+                    };
+
+                    const color = getCategoryColor(item.category || '');
+                    const icon = getCategoryIcon(item.category || '');
+
+                    return (
+                      <div key={index} className={`bg-gradient-to-r from-${color}-50 to-${color}-100 p-6 rounded-lg border border-${color}-200`}>
+                        <div className="flex items-start space-x-4">
+                          <div className={`bg-${color}-600 text-white p-3 rounded-lg flex-shrink-0`}>
+                            {icon}
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between mb-3">
+                              <div>
+                                <h3 className="text-lg font-semibold text-gray-900 mb-1">{item.title}</h3>
+                                <p className="text-gray-700 text-sm mb-2">{item.description}</p>
+                                {item.person && (
+                                  <div className="text-sm text-gray-600">
+                                    <span className="font-medium">{item.person}</span>
+                                    {item.designation && ` - ${item.designation}`}
+                                    {item.studentId && ` (${item.studentId})`}
+                                  </div>
+                                )}
+                                {item.details && (
+                                  <div className="text-sm text-gray-600 mt-1">
+                                    {item.details}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <Badge variant="outline" className="capitalize">
+                                  {item.category?.replace('-', ' ') || 'Achievement'}
+                                </Badge>
+                                {item.date && (
+                                  <Badge variant="secondary">
+                                    {item.date}
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                            {item.achievements && item.achievements.length > 0 && (
+                              <div className="space-y-2">
+                                {item.achievements.map((achievement, achIndex) => (
+                                  <div key={achIndex} className="flex items-start space-x-2 text-sm">
+                                    <Star className={`w-4 h-4 text-${color}-600 mt-0.5 flex-shrink-0`} />
+                                    <span className="text-gray-700">{achievement}</span>
+                                  </div>
+                                ))}
+                              </div>
                             )}
                           </div>
                         </div>
-                        <div className="flex items-center space-x-2">
-                          <Badge 
-                            variant="secondary" 
-                            className={`${
-                              item.authorType === 'faculty' 
-                                ? 'bg-blue-100 text-blue-800' 
-                                : 'bg-green-100 text-green-800'
-                            }`}
-                          >
-                            {item.authorType === 'faculty' ? 'Faculty' : 'Student'}
-                          </Badge>
-                          <Badge variant="outline" className="capitalize">
-                            {item.type.replace('-', ' ')}
-                          </Badge>
-                        </div>
                       </div>
-                      <div className="prose prose-sm max-w-none">
-                        {item.type === 'poem' ? (
-                          <pre className="whitespace-pre-wrap font-sans text-sm text-gray-700 leading-relaxed">
-                            {item.content}
-                          </pre>
-                        ) : (
-                          <p className="text-gray-700 leading-relaxed">
-                            {item.content}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  )) || (
+                    );
+                  })}
+                  {spotlightItems.length === 0 && (
                     <div className="text-center py-8 text-gray-500">
-                      <Star className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                      <Trophy className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                       <p>No spotlight content available for this year.</p>
                     </div>
                   )}
