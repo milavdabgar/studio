@@ -11,10 +11,12 @@ export const newsletterData2022_23: NewsletterData = {
     { label: 'Faculty Publications', value: 4, color: 'bg-purple-500' },
     { label: 'Expert Lectures', value: 8, color: 'bg-orange-500' },
   ],
+  
   essence: {
     vision: "To be a center of excellence in Electronics and Communication Engineering education, fostering innovation, research, and industry collaboration to produce globally competent professionals.",
     mission: "To provide quality technical education through modern teaching methodologies, state-of-the-art laboratories, and industry partnerships, enabling students to excel in their careers and contribute to society's technological advancement."
   },
+  
   spotlight: [
     {
       category: 'faculty-contribution',
@@ -53,6 +55,7 @@ export const newsletterData2022_23: NewsletterData = {
       date: 'June 2023'
     }
   ],
+  
   chronicles: [
     {
       title: 'Orientation Program 2022',
@@ -60,18 +63,7 @@ export const newsletterData2022_23: NewsletterData = {
       category: 'orientation',
       description: 'Comprehensive orientation for new students focusing on hybrid learning model, department facilities, and emerging career opportunities in electronics and communication sector.',
       tags: ['Orientation', 'New Students', 'Hybrid Learning', 'Career Guidance'],
-      images: [
-        {
-          src: '/newsletters/2022-23/orientation-welcome.jpg',
-          alt: 'Welcome ceremony for new students',
-          caption: 'New students being welcomed to EC Department'
-        },
-        {
-          src: '/newsletters/2022-23/orientation-session.jpg',
-          alt: 'Orientation session in progress',
-          caption: 'Interactive session about course curriculum and opportunities'
-        }
-      ]
+      images: []
     },
     {
       title: 'Industrial Visit to BSNL Exchange',
@@ -79,18 +71,7 @@ export const newsletterData2022_23: NewsletterData = {
       category: 'visit',
       description: 'Educational visit to understand telecommunication infrastructure, switching systems, and network management in real-world telecom operations.',
       tags: ['Industrial Visit', 'Telecommunications', 'Network Systems', 'Practical Learning'],
-      images: [
-        {
-          src: '/newsletters/2022-23/bsnl-visit-group.jpg',
-          alt: 'Students at BSNL exchange facility',
-          caption: 'Students exploring telecommunication equipment at BSNL exchange'
-        },
-        {
-          src: '/newsletters/2022-23/bsnl-switching-room.jpg',
-          alt: 'Digital switching equipment demonstration',
-          caption: 'Technical explanation of digital switching systems'
-        }
-      ]
+      images: []
     },
     {
       title: 'Expert Lecture on 5G Technology',
@@ -98,18 +79,7 @@ export const newsletterData2022_23: NewsletterData = {
       category: 'workshop',
       description: 'Comprehensive session on 5G technology fundamentals, implementation challenges, and future prospects in Indian telecom sector.',
       tags: ['5G Technology', 'Expert Lecture', 'Future Technology', 'Wireless Communication'],
-      images: [
-        {
-          src: '/newsletters/2022-23/5g-lecture-hall.jpg',
-          alt: '5G technology expert lecture',
-          caption: 'Industry expert explaining 5G network architecture'
-        },
-        {
-          src: '/newsletters/2022-23/5g-demo.jpg',
-          alt: '5G technology demonstration',
-          caption: 'Live demonstration of 5G capabilities and applications'
-        }
-      ]
+      images: []
     },
     {
       title: 'Technical Paper Presentation Competition',
@@ -117,18 +87,7 @@ export const newsletterData2022_23: NewsletterData = {
       category: 'workshop',
       description: 'Inter-departmental competition encouraging students to present research papers on emerging technologies in electronics and communication.',
       tags: ['Technical Papers', 'Competition', 'Research', 'Presentation Skills'],
-      images: [
-        {
-          src: '/newsletters/2022-23/paper-presentation.jpg',
-          alt: 'Student presenting technical paper',
-          caption: 'Student presenting research on IoT applications'
-        },
-        {
-          src: '/newsletters/2022-23/judges-panel.jpg',
-          alt: 'Expert judges evaluating presentations',
-          caption: 'Panel of industry experts evaluating student presentations'
-        }
-      ]
+      images: []
     },
     {
       title: 'Diwali Celebration',
@@ -136,18 +95,7 @@ export const newsletterData2022_23: NewsletterData = {
       category: 'community',
       description: 'Festive celebration bringing together faculty and students, featuring cultural performances, traditional decorations, and community bonding activities.',
       tags: ['Festival', 'Cultural Celebration', 'Community Bonding', 'Traditional Events'],
-      images: [
-        {
-          src: '/newsletters/2022-23/diwali-decoration.jpg',
-          alt: 'Beautiful Diwali decorations',
-          caption: 'Traditional rangoli and lighting decorations'
-        },
-        {
-          src: '/newsletters/2022-23/diwali-celebration.jpg',
-          alt: 'Faculty and students celebrating together',
-          caption: 'Faculty and students sharing festive moments'
-        }
-      ]
+      images: []
     },
     {
       title: 'Digital Communication Workshop',
@@ -155,18 +103,7 @@ export const newsletterData2022_23: NewsletterData = {
       category: 'training',
       description: 'Hands-on workshop covering advanced digital communication techniques, error correction codes, and modern modulation schemes.',
       tags: ['Digital Communication', 'Workshop', 'Hands-on Training', 'Technical Skills'],
-      images: [
-        {
-          src: '/newsletters/2022-23/digital-comm-lab.jpg',
-          alt: 'Students working on digital communication experiments',
-          caption: 'Practical session on digital modulation techniques'
-        },
-        {
-          src: '/newsletters/2022-23/digital-comm-demo.jpg',
-          alt: 'Faculty demonstrating communication concepts',
-          caption: 'Faculty explaining error correction coding principles'
-        }
-      ]
+      images: []
     },
     {
       title: 'Industry-Academia Interface Program',
@@ -174,18 +111,7 @@ export const newsletterData2022_23: NewsletterData = {
       category: 'workshop',
       description: 'Collaborative session with industry partners discussing current market trends, skill requirements, and career opportunities in electronics sector.',
       tags: ['Industry Interaction', 'Career Guidance', 'Skill Development', 'Market Trends'],
-      images: [
-        {
-          src: '/newsletters/2022-23/industry-session.jpg',
-          alt: 'Industry professionals interacting with students',
-          caption: 'Industry experts sharing insights on career opportunities'
-        },
-        {
-          src: '/newsletters/2022-23/networking-session.jpg',
-          alt: 'Students networking with industry professionals',
-          caption: 'Students engaging in networking opportunities'
-        }
-      ]
+      images: []
     },
     {
       title: 'Women in Engineering Awareness Program',
@@ -193,20 +119,10 @@ export const newsletterData2022_23: NewsletterData = {
       category: 'awareness',
       description: 'Special program highlighting achievements of women engineers and encouraging female students to pursue advanced careers in technology.',
       tags: ['Women Engineers', 'Gender Equality', 'Inspiration', 'Career Motivation'],
-      images: [
-        {
-          src: '/newsletters/2022-23/women-engineers-panel.jpg',
-          alt: 'Panel of successful women engineers',
-          caption: 'Inspiring panel of women engineers sharing their experiences'
-        },
-        {
-          src: '/newsletters/2022-23/female-students-interaction.jpg',
-          alt: 'Female students interacting with role models',
-          caption: 'Female students engaging with successful women engineers'
-        }
-      ]
+      images: []
     }
   ],
+  
   canvas: [
     {
       title: "Internet of Things: Revolutionizing Connectivity",
@@ -265,6 +181,7 @@ export const newsletterData2022_23: NewsletterData = {
       authorType: "faculty"
     }
   ],
+  
   reflections: {
     principal: {
       name: "Dr. P. R. Patel",
@@ -282,6 +199,7 @@ export const newsletterData2022_23: NewsletterData = {
       message: "We are delighted to present the annual newsletter showcasing the vibrant activities and achievements of our department during 2022-23. This publication reflects the collective efforts of our students, faculty, and staff in creating a dynamic learning environment. We thank everyone who contributed to making this year successful and look forward to continued growth and innovation in the coming years."
     }
   },
+  
   logos: [
     {
       src: '/logos/gpp-logo.png',
@@ -292,6 +210,7 @@ export const newsletterData2022_23: NewsletterData = {
       alt: 'Gujarat Technological University Logo'
     }
   ],
+  
   reachout: {
     email: 'ecgpp@gmail.com',
     phone: '+91-2742-252000',

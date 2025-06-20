@@ -85,6 +85,13 @@ export const newsletterData2021_22: NewsletterData = {
         "Patent: Rectangular patch antenna with Tree-Fractal structure (21/01/2022)",
         "Editorial board member in Global Research and Development Journal",
         "Completed training on Antenna Design"
+      ],
+      images: [
+        {
+          src: '/newsletters/2021-22/rn-patel.png',
+          alt: 'Dr. R. N. Patel',
+          caption: 'Dr. R. N. Patel - Patent publications in antenna design'
+        }
       ]
     },
     {
@@ -98,6 +105,13 @@ export const newsletterData2021_22: NewsletterData = {
         "Paper: Analysis of matched key points of image registration using SIFT, SURF with different layers of CNN",
         "3rd National Conference on Recent Trends in Engineering, Management, Pharmacy, Architecture And Science",
         "GTU coordinator and syllabus contributor"
+      ],
+      images: [
+        {
+          src: '/newsletters/2021-22/lk-patel.png',
+          alt: 'Mr. L. K. Patel',
+          caption: 'Mr. L. K. Patel - Best paper runner-up award winner'
+        }
       ]
     },
     {
@@ -107,7 +121,14 @@ export const newsletterData2021_22: NewsletterData = {
       person: "Mr. S. J. Chauhan",
       designation: "Head of Department, EC Engineering",
       details: "Institute coordinator for AICTE accreditation and GTU affiliation, Hostel Rector",
-      date: "2021-22"
+      date: "2021-22",
+      images: [
+        {
+          src: '/newsletters/2021-22/sj-chauhan.png',
+          alt: 'Mr. S. J. Chauhan - Head of Department',
+          caption: 'Mr. S. J. Chauhan - HOD EC Engineering, leading syllabus development and administrative coordination'
+        }
+      ]
     },
     {
       category: "faculty-contribution" as const,
@@ -284,7 +305,13 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'workshop',
       description: 'Expert lecture delivered by Mr. Pranav Dave, Tech Lead (Associate consultant), Tata Consultancy Services (TCS), Gandhinagar in online mode. The session covered basics of programming, real-time examples, and motivation for students to start programming and build careers.',
       tags: ['Programming', 'TCS', 'Career Development', 'Online Session'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/importance-programming.jpg',
+          alt: 'Expert lecture on Programming by TCS',
+          caption: 'Online expert lecture session on "Importance of Programming" by Mr. Pranav Dave from TCS'
+        }
+      ]
     },
     {
       title: 'Expert Lecture on "Navigation with Indian Constellation (NavIC) and Its Application"',
@@ -292,7 +319,13 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'workshop',
       description: 'Expert lecture delivered by Dr. Mehulkumar Desai, Lecturer in EC, Government Polytechnic for Girls, Surat in online mode. Session covered satellite-based navigation system, NavIC architecture, and various applications.',
       tags: ['NavIC', 'Navigation Systems', 'Satellite Technology', 'Make in India'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/navigation-with-navic.jpg',
+          alt: 'Expert lecture on NavIC navigation system',
+          caption: 'Online expert lecture on Navigation with Indian Constellation (NavIC) by Dr. Mehulkumar Desai'
+        }
+      ]
     },
     {
       title: 'Industrial Visit - Community Radio Palanpur',
@@ -300,7 +333,18 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'visit',
       description: 'Students experienced live radio broadcast, visited recording studio, observed FM transmission equipment and antennas. Met Radio Jockey and manager who shared their experiences in setting up community radio station.',
       tags: ['Radio Broadcasting', 'FM Transmission', 'Community Radio', 'Industry Visit'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/radio-palanpur.jpg',
+          alt: 'Students at Community Radio Palanpur',
+          caption: 'Students visiting Community Radio Palanpur - observing broadcasting setup'
+        },
+        {
+          src: '/newsletters/2021-22/radio-palanpur2.jpg',
+          alt: 'Recording studio and transmission equipment',
+          caption: 'Students exploring recording studio and transmission equipment at Community Radio'
+        }
+      ]
     },
     {
       title: 'Industrial Visit - Samsung Customer Care',
@@ -308,7 +352,13 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'visit',
       description: 'Students observed smartphone, laptop and tablet servicing at Samsung service center. Technician demonstrated disassembly and component soldering. Manager guided students about career opportunities.',
       tags: ['Electronics Repair', 'Samsung', 'Mobile Technology', 'Career Guidance'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/samsung-care.jpg',
+          alt: 'Students at Samsung Customer Care center',
+          caption: 'Students observing smartphone and tablet servicing techniques at Samsung Customer Care'
+        }
+      ]
     },
     {
       title: 'Industrial Visit - Sahajanand Laser Technologies',
@@ -316,7 +366,13 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'visit',
       description: 'Visit to SLTL, a technology-driven company manufacturing solutions in Laser Systems, Medical, Diamond & Jewellery, RF & Microwave, and Renewable Energy. Students observed LASER cutting/engraving machines, robotic equipment, and RF/microwave manufacturing.',
       tags: ['Laser Technology', 'Manufacturing', 'RF Technology', 'Automation'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/stlt.jpg',
+          alt: 'Students at Sahajanand Laser Technologies',
+          caption: 'Students observing LASER cutting and engraving machines at SLTL'
+        }
+      ]
     },
     {
       title: 'Industrial Visit - JK Industries, Chandisar',
@@ -324,7 +380,13 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'visit',
       description: 'JK Industries works on manufacturing and servicing high voltage transformers for power distribution by GEB. Students learned about transformer repairing and witnessed live troubleshooting.',
       tags: ['Power Systems', 'Transformers', 'High Voltage', 'Power Distribution'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/jk-industries.jpg',
+          alt: 'Students learning transformer repair at JK Industries',
+          caption: 'Students observing high voltage transformer repairing and troubleshooting at JK Industries'
+        }
+      ]
     },
     {
       title: 'Farewell for 2022 Pass-outs',
@@ -332,7 +394,13 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'community',
       description: 'Farewell ceremony organized for 2022 graduating batch with keynote by HoD and kind words by all staff members.',
       tags: ['Farewell', 'Graduation', 'Community Event', 'Students'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/farewell-2022.jpg',
+          alt: 'Farewell ceremony for 2022 graduates',
+          caption: 'Farewell ceremony for 2022 pass-outs with faculty and students'
+        }
+      ]
     },
     {
       title: 'Tree Plantation Drive',
@@ -340,7 +408,13 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'awareness',
       description: 'Institute organized tree plantation in college campus with approximately 150 different types of trees planted. Mr. Lalitbhai Vasvani and his team from Society for clean and green environment joined the event.',
       tags: ['Environment', 'Tree Plantation', 'Green Campus', 'Sustainability'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/tree-plantation.jpg',
+          alt: 'Tree plantation drive at campus',
+          caption: 'Tree plantation event with students and faculty planting various tree species'
+        }
+      ]
     },
     {
       title: '75th Independence Day Celebration',
@@ -348,7 +422,13 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'community',
       description: 'Flag hoisting ceremony organized at Government Polytechnic Palanpur with enthusiastic participation from all students and staff members.',
       tags: ['Independence Day', 'Patriotic', 'Flag Hoisting', 'National Festival'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/independance-day.jpg',
+          alt: '75th Independence Day celebration',
+          caption: 'Flag hoisting ceremony during 75th Independence Day celebration'
+        }
+      ]
     },
     {
       title: 'NBA Visit for Accreditation',
@@ -356,7 +436,13 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'training',
       description: 'NBA accreditation visit for Civil, Mechanical and Electrical departments. EC staff members played key role in successful completion of the visit.',
       tags: ['NBA Accreditation', 'Quality Assurance', 'Department Support', 'Academic Excellence'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/nba.jpg',
+          alt: 'NBA accreditation team visit',
+          caption: 'NBA accreditation visit - faculty and team members during evaluation process'
+        }
+      ]
     },
     {
       title: 'Thalassemia Awareness Camp',
@@ -364,7 +450,13 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'awareness',
       description: 'Thalassemia camp organized for students with awareness and counseling program by Indian Red Cross Society, Ahmedabad team.',
       tags: ['Health Awareness', 'Thalassemia', 'Medical Camp', 'Student Welfare'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/thalassemia-camp.png',
+          alt: 'Thalassemia awareness and testing camp',
+          caption: 'Thalassemia awareness camp conducted by Indian Red Cross Society'
+        }
+      ]
     },
     {
       title: 'Garba Mahotsav',
@@ -372,7 +464,13 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'community',
       description: 'One day Garba Mahotsav organized for Navaratri celebration with enthusiastic participation from students and staff.',
       tags: ['Cultural Event', 'Garba', 'Navaratri', 'Festival Celebration'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/navratri.jpg',
+          alt: 'Garba Mahotsav celebration',
+          caption: 'Students and faculty celebrating Garba Mahotsav during Navaratri'
+        }
+      ]
     },
     {
       title: 'Drug Awareness Program (Vyasan Mukti Abhiyan)',
@@ -380,7 +478,13 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'awareness',
       description: 'Seminar on Tobacco free movement and Drug Awareness organized by Drug enforcement department Palanpur. Speakers included PI N.A.Devani, PSI G.D.Ahir, and counselor Jigishaben Tarar.',
       tags: ['Drug Awareness', 'Health Campaign', 'Social Awareness', 'Student Safety'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/vyasan-mukti-abhiyan.jpg',
+          alt: 'Drug awareness seminar',
+          caption: 'Drug awareness seminar by enforcement officials and counselors'
+        }
+      ]
     },
     {
       title: 'Clean India Movement',
@@ -388,7 +492,13 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'awareness',
       description: 'Cleanliness drive carried out for clean campus and surroundings under the Clean India Movement campaign.',
       tags: ['Cleanliness', 'Swachh Bharat', 'Campus Cleaning', 'Social Responsibility'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/clean-india.jpg',
+          alt: 'Clean India Movement drive',
+          caption: 'Students and faculty participating in campus cleanliness drive'
+        }
+      ]
     },
     {
       title: 'National Unity Day',
@@ -396,7 +506,13 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'community',
       description: 'Birth anniversary of Sardar Vallabhbhai Patel celebrated as National Unity Day with pledge taking ceremony in seminar hall.',
       tags: ['National Unity', 'Sardar Patel', 'Unity Day', 'Patriotic Event'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/national-unity-day.jpg',
+          alt: 'National Unity Day celebration',
+          caption: 'Pledge taking ceremony during National Unity Day celebration'
+        }
+      ]
     },
     {
       title: '73rd Republic Day Celebration',
@@ -404,7 +520,18 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'community',
       description: 'Flag salute program organized in presence of Hon\'ble former MLA Rekhaben Khanesha with enthusiastic participation from officials and students.',
       tags: ['Republic Day', 'Flag Salute', 'National Festival', 'Guest Speaker'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/republic-day.jpg',
+          alt: '73rd Republic Day celebration',
+          caption: 'Flag salute ceremony during 73rd Republic Day with Hon\'ble former MLA Rekhaben Khanesha'
+        },
+        {
+          src: '/newsletters/2021-22/republic-day2.jpg',
+          alt: 'Students participating in Republic Day parade',
+          caption: 'Students and faculty participating in Republic Day celebration'
+        }
+      ]
     },
     {
       title: 'Martyrs\' Day Commemoration',
@@ -412,7 +539,13 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'awareness',
       description: 'Online talk organized by History Coordinating Committee, Gujarat. Shri Girishbhai Thacker, Vice Chairman spoke on "Indian Freedom Struggle (Bhartiya Swatantra Sangram)".',
       tags: ['Martyrs Day', 'Freedom Struggle', 'Historical Awareness', 'Online Event'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/martyrs-day.jpg',
+          alt: 'Martyrs Day commemoration event',
+          caption: 'Online talk on Indian Freedom Struggle during Martyrs\' Day commemoration'
+        }
+      ]
     },
     {
       title: 'Women\'s Day Celebration',
@@ -420,7 +553,18 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'awareness',
       description: 'Women Development cell conducted various activities. Expert lectures on "Laws related to women safety" by Ms. Yashashvi Mehta Pandya and "Disadvantages of mobile and internet" by Ms. Geeta Acharya. "Food without flame contest" organized.',
       tags: ['Women\'s Day', 'Women Safety', 'Expert Lectures', 'Competition'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/womens-day.jpg',
+          alt: 'Women\'s Day celebration activities',
+          caption: 'Expert lectures and Food without flame contest during Women\'s Day celebration'
+        },
+        {
+          src: '/newsletters/2021-22/womens-day-food-without-flames.jpg',
+          alt: 'Food without flame contest winners',
+          caption: 'Winners of Food without flame contest - Stuti Raval, Bijal Suthar, Khushbu Garasiya, and Khushi Patel'
+        }
+      ]
     },
     {
       title: 'District Level Placement Fair',
@@ -428,7 +572,18 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'orientation',
       description: 'District level mega placement fair organized as per government directives. 22 industries participated conducting interviews across Banaskantha district. 9 students from EC department were shortlisted/selected by companies like Webilok IT Services and Mehta Expai.',
       tags: ['Placement Fair', 'Industry Connect', 'Career Opportunities', 'District Level'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/placement-fair.jpg',
+          alt: 'District level placement fair',
+          caption: 'District level mega placement fair with 22 participating industries'
+        },
+        {
+          src: '/newsletters/2021-22/placement-fair-press-release.png',
+          alt: 'Students attending placement interviews',
+          caption: 'Students attending interviews at the district level placement fair'
+        }
+      ]
     },
     {
       title: 'Voter Awareness Program',
@@ -436,7 +591,13 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'awareness',
       description: 'NSS unit organized drawing and essay competitions to create voting awareness among students. Winners were encouraged with certificates and prizes.',
       tags: ['Voter Awareness', 'NSS Activity', 'Democracy', 'Student Competition'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/voter-awareness-program.jpg',
+          alt: 'Voter awareness program activities',
+          caption: 'NSS organized drawing and essay competitions for voter awareness'
+        }
+      ]
     },
     {
       title: 'International Yoga Day Celebration',
@@ -444,7 +605,13 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'awareness',
       description: 'Various yoga asanas demonstrated by yoga teacher with enthusiastic participation from officials, employees and students.',
       tags: ['Yoga Day', 'Health Awareness', 'Wellness', 'International Day'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/yoga-day.jpg',
+          alt: 'International Yoga Day celebration',
+          caption: 'Students and faculty participating in International Yoga Day celebration'
+        }
+      ]
     },
     {
       title: 'SSIP Activities - School Outreach',
@@ -452,7 +619,18 @@ export const newsletterData2021_22: NewsletterData = {
       category: 'community',
       description: 'Students contributed as experts in practical sessions at Vidhya Mandir School, Palanpur for 5th to 8th standard students. Sessions on robotics and drone making conducted. Bootcamp at Jasra Primary School also organized.',
       tags: ['SSIP', 'School Outreach', 'Robotics', 'Community Service'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2021-22/ssip-vidhyamandir.png',
+          alt: 'SSIP school outreach program',
+          caption: 'Students teaching robotics and drone making to school children at Vidhya Mandir School'
+        },
+        {
+          src: '/newsletters/2021-22/ssip-jasra-primary-school.jpg',
+          alt: 'Robotics bootcamp at Jasra Primary School',
+          caption: 'Robotics and drone making bootcamp at Jasra Primary School'
+        }
+      ]
     }
   ],
 
@@ -460,12 +638,22 @@ export const newsletterData2021_22: NewsletterData = {
     principal: {
       name: 'Principal Name (Not specified in PDF)',
       designation: 'Principal, Government Polytechnic Palanpur',
-      message: `Technology is the fuel for the society; it provides means to ease human lives, and Government Polytechnic, Palanpur is one of the institutes that provide skilled and ethical engineers to the society. This institute runs basic to advance engineering programs. Electronics and communication engineering department is one which stands ahead in terms of technology and advancements. The department is well equipped with the resources to prepare competent and industry ready EC engineers catering the needs of industries, innovators, and entrepreneurs with moral values. It is my great pleasure to see the first band (Volume 1) of the "Spectrum", e-newsletter of Electronics and Communication Department being published.`
+      message: `Technology is the fuel for the society; it provides means to ease human lives, and Government Polytechnic, Palanpur is one of the institutes that provide skilled and ethical engineers to the society. This institute runs basic to advance engineering programs. Electronics and communication engineering department is one which stands ahead in terms of technology and advancements. The department is well equipped with the resources to prepare competent and industry ready EC engineers catering the needs of industries, innovators, and entrepreneurs with moral values. It is my great pleasure to see the first band (Volume 1) of the "Spectrum", e-newsletter of Electronics and Communication Department being published.`,
+      image: {
+        src: '/newsletters/2021-22/spectrum1.jpg',
+        alt: 'Principal of Government Polytechnic Palanpur',
+        caption: 'Principal\'s message for Spectrum Newsletter 2021-22'
+      }
     },
     hod: {
       name: 'S. J. Chauhan',
       designation: 'Head of Department - Electronics & Communication Engineering',
-      message: `Electronics and communication engineering field has witnessed the evolution of semiconductor from vacuum tubes to MOSFETs, from telephones to 5G smart phones. Continuing the evolutionary tradition of the branch, it gives me immense pleasure to present its first yearly newsletter "Spectrum". Spectrum intends to provide a platform for faculties, students, and all other stakeholders to share and receive news of latest updates of the activities carried out in the department. This newsletter will also be publishing achievements of staff members and students. I expect students to take the 'Spectrum' to new heights. A lot of hard work has gone into publishing this, and every stakeholder's involvement will encourage us further. I extend my full cooperation and best wishes to the entire team behind Spectrum.`
+      message: `Electronics and communication engineering field has witnessed the evolution of semiconductor from vacuum tubes to MOSFETs, from telephones to 5G smart phones. Continuing the evolutionary tradition of the branch, it gives me immense pleasure to present its first yearly newsletter "Spectrum". Spectrum intends to provide a platform for faculties, students, and all other stakeholders to share and receive news of latest updates of the activities carried out in the department. This newsletter will also be publishing achievements of staff members and students. I expect students to take the 'Spectrum' to new heights. A lot of hard work has gone into publishing this, and every stakeholder's involvement will encourage us further. I extend my full cooperation and best wishes to the entire team behind Spectrum.`,
+      image: {
+        src: '/newsletters/2021-22/sj-chauhan.png',
+        alt: 'S. J. Chauhan - Head of Department, EC Engineering',
+        caption: 'HOD\'s message for Spectrum Newsletter 2021-22'
+      }
     },
     editorial: {
       name: 'Editorial Team',

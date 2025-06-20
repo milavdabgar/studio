@@ -38,6 +38,7 @@ export interface Message {
   name: string;
   designation: string;
   message: string;
+  image?: EventImage;
 }
 
 export interface CanvasItem {
@@ -62,6 +63,7 @@ export interface SpotlightItem {
   details?: string; // Additional details like company, package, university, etc.
   date?: string;
   achievements?: string[]; // List of specific achievements
+  images?: EventImage[]; // Support for images in spotlight items
 }
 
 export interface NewsletterData {

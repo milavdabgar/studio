@@ -368,94 +368,6 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             margin-top: 0.25rem;
         }
         
-        .canvas-grid {
-            display: grid;
-            gap: 1.5rem;
-        }
-        
-        .canvas-item {
-            background: #fefefe;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            border-left: 4px solid #f59e0b;
-            margin-bottom: 1rem;
-        }
-        
-        .canvas-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 0.5rem;
-        }
-        
-        .canvas-category {
-            font-size: 0.875rem;
-            color: #f59e0b;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-        }
-        
-        .canvas-content {
-            color: #64748b;
-            line-height: 1.6;
-            margin-bottom: 0.75rem;
-        }
-        
-        .canvas-author {
-            font-style: italic;
-            color: #6b7280;
-            text-align: right;
-            font-size: 0.875rem;
-        }
-        
-        .achievement-item {
-            background: #fefefe;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            border-left: 4px solid #10b981;
-            margin-bottom: 1rem;
-        }
-        
-        .achievement-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 0.5rem;
-        }
-        
-        .achievement-category {
-            font-size: 0.875rem;
-            color: #10b981;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-        }
-        
-        .achievement-description {
-            color: #64748b;
-            line-height: 1.6;
-            margin-bottom: 0.75rem;
-        }
-        
-        .achievement-person {
-            font-weight: 500;
-            color: #374151;
-            margin-bottom: 0.25rem;
-        }
-        
-        .achievement-details {
-            font-size: 0.875rem;
-            color: #6b7280;
-            margin-bottom: 0.25rem;
-        }
-        
-        .achievement-date {
-            font-size: 0.875rem;
-            color: #9ca3af;
-            font-style: italic;
-        }
-        
         @media print {
             body {
                 background: white;
@@ -499,7 +411,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
         
         <!-- Department Overview Section -->
         <div class="section">
-            <h2 class="section-title">� Essence - Department Overview</h2>
+            <h2 class="section-title">🏢 Department Overview</h2>
             <div class="content-card" style="padding: 1.5rem; background: #f9fafb; border-radius: 0.75rem; margin-bottom: 1.5rem;">
                 <p style="margin-bottom: 1rem; line-height: 1.6;">The Electronics & Communication Engineering department at Government Polytechnic, Palanpur continues to excel in providing quality technical education and fostering innovation. With state-of-the-art laboratories and experienced faculty, we prepare students for the rapidly evolving technology landscape.</p>
                 
@@ -550,10 +462,10 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             </div>
         </div>
         
-        <!-- Essence Section - Vision & Mission -->
+        <!-- Vision & Mission Section - Correctly placed after Department Overview -->
         ${data.essence?.vision && data.essence?.mission ? `
         <div class="section">
-            <h2 class="section-title">🌟 Essence - Vision & Mission</h2>
+            <h2 class="section-title">🎯 Vision & Mission</h2>
             <div class="vision-mission-grid">
                 <div class="vision-card">
                     <h3 class="vision-title">🔭 Vision</h3>
@@ -567,25 +479,49 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
         </div>
         ` : ''}
         
+        ${data.reflections ? `
+        <div class="message-section">
+            <h2 class="section-title">� Principal's Message</h2>
+            <div class="message-author">${data.reflections.principal.name}</div>
+            <div class="message-designation">${data.reflections.principal.designation}</div>
+            <div class="message-text">${data.reflections.principal.message}</div>
+        </div>
+        
+        <div class="message-section">
+            <h2 class="section-title">👨‍🏫 Head of Department's Message</h2>
+            <div class="message-author">${data.reflections.hod.name}</div>
+            <div class="message-designation">${data.reflections.hod.designation}</div>
+            <div class="message-text">${data.reflections.hod.message}</div>
+        </div>
+        
+        <div class="message-section">
+            <h2 class="section-title">✍️ Editor's Note</h2>
+            <div class="message-author">${data.reflections.editorial.name}</div>
+            <div class="message-designation">${data.reflections.editorial.designation}</div>
+            <div class="message-text">${data.reflections.editorial.message}</div>
+        </div>
+        ` : ''}
+        
         <div class="section">
-            <h2 class="section-title">✨ Spotlight - Achievements & Recognition</h2>
+            <h2 class="section-title">🏆 Spotlight - Achievements & Recognition</h2>
             <div class="achievements-grid">
                 ${data.spotlight.map((achievement: any) => `
                     <div class="achievement-item">
                         <h3 class="achievement-title">${achievement.title}</h3>
-                        <div class="achievement-category" style="text-transform: uppercase; font-weight: 500; margin-bottom: 0.5rem;">${achievement.category.replace('-', ' ')}</div>
-                        <div class="achievement-description" style="margin-bottom: 1rem;">${achievement.description}</div>
-                        ${achievement.person ? `<div class="achievement-person" style="font-weight: 500; color: #374151; margin-bottom: 0.25rem;"><strong>Person:</strong> ${achievement.person}</div>` : ''}
-                        ${achievement.studentId ? `<div class="achievement-details" style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.25rem;"><strong>Student ID:</strong> ${achievement.studentId}</div>` : ''}
-                        ${achievement.details ? `<div class="achievement-details" style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.25rem;"><strong>Details:</strong> ${achievement.details}</div>` : ''}
-                        ${achievement.date ? `<div class="achievement-date" style="font-size: 0.875rem; color: #9ca3af; font-style: italic;"><strong>Date:</strong> ${achievement.date}</div>` : ''}
+                        <div class="achievement-category">${achievement.category}</div>
+                        <div class="achievement-description">${achievement.description}</div>
+                        ${achievement.person ? `<div class="achievement-person">${achievement.person}</div>` : ''}
+                        ${achievement.details ? `<div class="achievement-details">${achievement.details}</div>` : ''}
+                        ${achievement.date ? `<div class="achievement-date">${achievement.date}</div>` : ''}
                     </div>
                 `).join('')}
             </div>
         </div>
+            </div>
+        </div>
         
         <div class="section">
-            <h2 class="section-title">📖 Chronicles - Major Events & Activities</h2>
+            <h2 class="section-title">📅 Key Events & Activities</h2>
             <div class="events-list">
                 ${data.chronicles.map(event => `
                     <div class="event-card">
@@ -607,130 +543,83 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             </div>
         </div>
         
-        ${data.canvas && data.canvas.length > 0 ? `
+        <!-- Labs & Infrastructure Section -->
         <div class="section">
-            <h2 class="section-title">🎨 Canvas - Creative Expressions</h2>
-            <div class="canvas-grid">
-                ${data.canvas.map((item: any) => `
-                    <div class="canvas-item">
-                        <h3 class="canvas-title">${item.title}</h3>
-                        <div class="canvas-category">${item.category}</div>
-                        <div class="canvas-content">${item.content}</div>
-                        ${item.author ? `<div class="canvas-author">- ${item.author}</div>` : ''}
+            <h2 class="section-title">🔬 Laboratory Facilities & Infrastructure</h2>
+            
+            <!-- Infrastructure Overview -->
+            <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 2rem; border-radius: 1rem; margin-bottom: 2rem;">
+                <h3 style="color: white; margin-bottom: 1.5rem; text-align: center; font-size: 1.25rem; font-weight: 600;">Infrastructure Overview</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 0.75rem; text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">8</div>
+                        <div style="font-size: 0.875rem; opacity: 0.9;">Modern Laboratories</div>
                     </div>
-                `).join('')}
-            </div>
-        </div>
-        ` : ''}
-        
-        ${data.reflections ? `
-        <div class="section">
-            <h2 class="section-title">💭 Reflections - Leadership Messages</h2>
-            <div class="message-section">
-                <h3 class="section-title">👨‍💼 Principal's Message</h3>
-                <div class="message-author">${data.reflections.principal.name}</div>
-                <div class="message-designation">${data.reflections.principal.designation}</div>
-                <div class="message-text">${data.reflections.principal.message}</div>
-            </div>
-            
-            <div class="message-section">
-                <h3 class="section-title">👨‍🏫 Head of Department's Message</h3>
-                <div class="message-author">${data.reflections.hod.name}</div>
-                <div class="message-designation">${data.reflections.hod.designation}</div>
-                <div class="message-text">${data.reflections.hod.message}</div>
-            </div>
-            
-            <div class="message-section">
-                <h3 class="section-title">✍️ Editor's Note</h3>
-                <div class="message-author">${data.reflections.editorial.name}</div>
-                <div class="message-designation">${data.reflections.editorial.designation}</div>
-                <div class="message-text">${data.reflections.editorial.message}</div>
-            </div>
-        </div>
-        ` : ''}
-        
-        ${data.reachout ? `
-        <div class="section">
-            <h2 class="section-title">🤝 Reachout - Connect With Us</h2>
-            
-            <!-- Contact Details -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
-                <div>
-                    <h3 style="font-weight: 600; color: #1f2937; margin-bottom: 1rem;">Department Contact</h3>
-                    <div class="contact-grid">
-                        ${data.reachout.address ? `
-                        <div class="contact-item">
-                            <span class="contact-icon">📍</span>
-                            <span>${data.reachout.address}</span>
-                        </div>
-                        ` : ''}
-                        ${data.reachout.email ? `
-                        <div class="contact-item">
-                            <span class="contact-icon">📧</span>
-                            <span>${data.reachout.email}</span>
-                        </div>
-                        ` : ''}
-                        ${data.reachout.phone ? `
-                        <div class="contact-item">
-                            <span class="contact-icon">📞</span>
-                            <span>${data.reachout.phone}</span>
-                        </div>
-                        ` : ''}
-                        ${data.reachout.website ? `
-                        <div class="contact-item">
-                            <span class="contact-icon">🌐</span>
-                            <span>${data.reachout.website}</span>
-                        </div>
-                        ` : ''}
+                    <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 0.75rem; text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">₹35L+</div>
+                        <div style="font-size: 0.875rem; opacity: 0.9;">Equipment Value</div>
                     </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 0.75rem; text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">150+</div>
+                        <div style="font-size: 0.875rem; opacity: 0.9;">Students Capacity</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Laboratory Details -->
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+                <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #e5e7eb;">
+                    <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 1rem;">📟 Electronics & Circuits Lab</h4>
+                    <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1rem; line-height: 1.5;">
+                        Comprehensive facility for analog and digital circuit analysis, equipped with advanced oscilloscopes, function generators, and power supplies.
+                    </p>
+                    <ul style="list-style: disc; padding-left: 1.5rem; margin: 0;">
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Digital Storage Oscilloscopes (20 MHz - 100 MHz)</li>
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Function Generators & Signal Analyzers</li>
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Power Supplies & Multimeters</li>
+                    </ul>
                 </div>
                 
-                <!-- Editorial Team -->
-                <div>
-                    <h3 style="font-weight: 600; color: #1f2937; margin-bottom: 1rem;">Editorial Team</h3>
-                    <div style="background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); color: white; padding: 1.5rem; border-radius: 0.75rem; margin-bottom: 1rem;">
-                        <div style="display: flex; align-items: center; margin-bottom: 1rem;">
-                            <div style="background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 0.5rem; margin-right: 0.75rem;">
-                                <span style="font-size: 1.25rem;">👥</span>
-                            </div>
-                            <div>
-                                <div style="font-weight: 600;">Ms. Mittal K. Pedhadiya</div>
-                                <div style="font-size: 0.875rem; opacity: 0.9;">Assistant Professor & Newsletter Editor</div>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center;">
-                            <div style="background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 0.5rem; margin-right: 0.75rem;">
-                                <span style="font-size: 1.25rem;">👥</span>
-                            </div>
-                            <div>
-                                <div style="font-weight: 600;">Mr. Milav J. Dabgar</div>
-                                <div style="font-size: 0.875rem; opacity: 0.9;">Assistant Professor & Newsletter Co-Editor</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Department Info -->
-                    <div style="background: #f9fafb; padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #e5e7eb;">
-                        <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 0.75rem;">About the Department</h4>
-                        <p style="color: #6b7280; font-size: 0.875rem; line-height: 1.5; margin-bottom: 1rem;">
-                            The Electronics & Communication Engineering Department at Government Polytechnic, Palanpur 
-                            has been a center of excellence in technical education since 1984. We are committed to 
-                            preparing competent diploma-level engineers who can contribute to the industry and society.
-                        </p>
-                        <div style="padding-top: 1rem; border-top: 1px solid #e5e7eb;">
-                            <div style="font-size: 0.875rem; color: #6b7280;">
-                                <strong>Established:</strong> 1984<br />
-                                <strong>Academic Year:</strong> 2023-24<br />
-                                <strong>Newsletter:</strong> Spectrum - Band III
-                            </div>
-                        </div>
-                    </div>
+                <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #e5e7eb;">
+                    <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 1rem;">📡 Communication Systems Lab</h4>
+                    <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1rem; line-height: 1.5;">
+                        Advanced laboratory for studying various communication technologies and protocols.
+                    </p>
+                    <ul style="list-style: disc; padding-left: 1.5rem; margin: 0;">
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">RF Signal Generators & Spectrum Analyzers</li>
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Digital Communication Trainers</li>
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Microwave Test Equipment</li>
+                    </ul>
+                </div>
+                
+                <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #e5e7eb;">
+                    <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 1rem;">💾 Microprocessor & Embedded Systems Lab</h4>
+                    <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1rem; line-height: 1.5;">
+                        Hands-on experience with microcontrollers, embedded programming, and IoT applications.
+                    </p>
+                    <ul style="list-style: disc; padding-left: 1.5rem; margin: 0;">
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">ARM Cortex Development Boards</li>
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">IoT Development Kits</li>
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Embedded Programming Tools</li>
+                    </ul>
+                </div>
+                
+                <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #e5e7eb;">
+                    <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 1rem;">🖥️ Digital Signal Processing Lab</h4>
+                    <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1rem; line-height: 1.5;">
+                        Advanced DSP laboratory with software tools and hardware for signal analysis.
+                    </p>
+                    <ul style="list-style: disc; padding-left: 1.5rem; margin: 0;">
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">DSP Development Boards</li>
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">MATLAB & Simulink Licenses</li>
+                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Signal Processing Software Tools</li>
+                    </ul>
                 </div>
             </div>
         </div>
-        ` : `
+        
         <div class="section">
-            <h2 class="section-title">🤝 Reachout - Connect With Us</h2>
+            <h2 class="section-title">📞 Contact Information</h2>
             <div class="contact-grid">
                 <div class="contact-item">
                     <span class="contact-icon">📍</span>
@@ -750,7 +639,6 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 </div>
             </div>
         </div>
-        `}
     </div>
 </body>
 </html>
@@ -871,7 +759,7 @@ function htmlToMarkdown(html: string): string {
     .replace(/<div[^>]*class="[^"]*stat-label[^"]*"[^>]*>(.*?)<\/div>/gi, '*$1*')
     .replace(/<[^>]*>/g, '') // Remove remaining HTML tags
     .replace(/\n{3,}/g, '\n\n') // Normalize multiple newlines
-    .replace(/[\u{1F600}-\u{1F6FF}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}]/gu, '') // Remove emojis
+    .replace(/[\u{1F600}-\u{1F6FF}][\u{1F300}-\u{1F5FF}][\u{1F680}-\u{1F6FF}][\u{1F1E0}-\u{1F1FF}]/gu, '') // Remove emojis
     .trim();
 }
 
