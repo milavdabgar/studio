@@ -104,7 +104,7 @@ export const newsletterData2024_25: NewsletterData = {
       date: 'August 2, 2024',
       category: 'visit',
       description: 'Educational visit organized by the EC Department to enhance practical learning and industry exposure for students. The visit included 33 students from Semester 1, accompanied by faculty members MJD and JVK.',
-      tags: ['Visit', 'EC Department', 'Student Activity'],
+      tags: ['Visit', 'Bajrang Paper Products', 'Industry Exposure', 'Paper Manufacturing'],
       images: [
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2024/08/20240802_121122-1024x577.jpg',
@@ -133,7 +133,7 @@ export const newsletterData2024_25: NewsletterData = {
       date: 'September 25, 2024',
       category: 'visit',
       description: 'Educational visit organized by the EC Department to enhance practical learning and industry exposure for students. The visit included 49 students from Semesters 3 and 5, accompanied by faculty members MKP and NJC.',
-      tags: ['Visit', 'EC Department', 'Student Activity'],
+      tags: ['Visit', 'Railway Station', 'Transportation Technology', 'Signal Systems'],
       images: [
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240925-WA0041-1024x768.jpg',
@@ -168,11 +168,27 @@ export const newsletterData2024_25: NewsletterData = {
       ]
     },
     {
+      title: 'Workshop: Embedded System',
+      date: 'March 13, 2024',
+      category: 'workshop',
+      description: 'Technical workshop on embedded system design and development. Expert: Mr. Vishal Vadher, Assistant Manager Training, SOFCON India Pvt. Ltd. with 45 participants. The session covered embedded system fundamentals, microcontroller programming, and real-world applications.',
+      tags: ['Workshop', 'Embedded System', 'Microcontroller', 'SOFCON India', 'Programming'],
+      images: []
+    },
+    {
+      title: 'Workshop: Web Development Technologies',
+      date: 'March 13, 2024',
+      category: 'workshop',
+      description: 'Technical workshop on modern web development technologies and frameworks. Expert: Mr. Vishal Vadher, Assistant Manager Training, SOFCON India Pvt. Ltd. with 53 participants. The session covered front-end and back-end technologies, responsive design, and current industry practices.',
+      tags: ['Workshop', 'Web Development', 'Programming', 'SOFCON India', 'Front-end', 'Back-end'],
+      images: []
+    },
+    {
       title: 'AI-ML: A New Era of Future',
       date: 'September 30, 2024',
       category: 'workshop',
       description: 'The session explored the impact of AI and machine learning in various industries, discussing deep learning, neural networks, and career prospects. Expert: Mr. Vishal Vadher, Assistant Manager Training, SOFCON India Pvt. Ltd. with 77 participants.',
-      tags: ['AI-ML', 'EC Department', 'Student Activity'],
+      tags: ['AI-ML', 'Machine Learning', 'Deep Learning', 'Career Prospects', 'SOFCON India'],
       images: [
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240930-WA0007-1024x766.jpg',
@@ -694,8 +710,8 @@ export const newsletterData2024_25: NewsletterData = {
       title: 'Workshop: HAM Radio',
       date: 'February 13, 2025',
       category: 'workshop',
-      description: 'Workshop on HAM radio technology and amateur radio operations, providing hands-on experience with radio communication systems.',
-      tags: ['Workshop', 'EC Department', 'Student Activity'],
+      description: 'Workshop on HAM radio technology and amateur radio operations, providing hands-on experience with radio communication systems. Expert: Mr. N. B. Nadoda, Senior Lecturer, GGP Ahmedabad.',
+      tags: ['Workshop', 'HAM Radio', 'Amateur Radio', 'Communication Systems', 'GGP Ahmedabad'],
       images: [
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20250214-WA0086-1024x768.jpg',
@@ -718,8 +734,8 @@ export const newsletterData2024_25: NewsletterData = {
       title: 'Workshop: Drone Technology',
       date: 'February 15, 2025',
       category: 'workshop',
-      description: 'Workshop on drone technology covering principles of unmanned aerial vehicles, their applications, and hands-on operation experience.',
-      tags: ['Workshop', 'EC Department', 'Student Activity'],
+      description: 'Workshop on drone technology covering principles of unmanned aerial vehicles, their applications, and hands-on operation experience. Expert: Mr. Yuvrajsinh Rajput, CEO, Bee-Robokids Academy, Palanpur.',
+      tags: ['Workshop', 'Drone Technology', 'UAV', 'Bee-Robokids Academy', 'Palanpur'],
       images: [
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20250215-WA0075-1024x768.jpg',
