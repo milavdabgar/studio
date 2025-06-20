@@ -463,68 +463,56 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
         </div>
         
         <!-- Vision & Mission Section - Correctly placed after Department Overview -->
-        ${data.vision && data.mission ? `
+        ${data.essence?.vision && data.essence?.mission ? `
         <div class="section">
             <h2 class="section-title">🎯 Vision & Mission</h2>
             <div class="vision-mission-grid">
                 <div class="vision-card">
                     <h3 class="vision-title">🔭 Vision</h3>
-                    <p>${data.vision}</p>
+                    <p>${data.essence.vision}</p>
                 </div>
                 <div class="mission-card">
                     <h3 class="mission-title">🎯 Mission</h3>
-                    <p>${data.mission}</p>
+                    <p>${data.essence.mission}</p>
                 </div>
             </div>
         </div>
         ` : ''}
         
-        ${data.messages ? `
+        ${data.reflections ? `
         <div class="message-section">
             <h2 class="section-title">� Principal's Message</h2>
-            <div class="message-author">${data.messages.principal.name}</div>
-            <div class="message-designation">${data.messages.principal.designation}</div>
-            <div class="message-text">${data.messages.principal.message}</div>
+            <div class="message-author">${data.reflections.principal.name}</div>
+            <div class="message-designation">${data.reflections.principal.designation}</div>
+            <div class="message-text">${data.reflections.principal.message}</div>
         </div>
         
         <div class="message-section">
             <h2 class="section-title">👨‍🏫 Head of Department's Message</h2>
-            <div class="message-author">${data.messages.hod.name}</div>
-            <div class="message-designation">${data.messages.hod.designation}</div>
-            <div class="message-text">${data.messages.hod.message}</div>
+            <div class="message-author">${data.reflections.hod.name}</div>
+            <div class="message-designation">${data.reflections.hod.designation}</div>
+            <div class="message-text">${data.reflections.hod.message}</div>
         </div>
         
         <div class="message-section">
             <h2 class="section-title">✍️ Editor's Note</h2>
-            <div class="message-author">${data.messages.editorial.name}</div>
-            <div class="message-designation">${data.messages.editorial.designation}</div>
-            <div class="message-text">${data.messages.editorial.message}</div>
+            <div class="message-author">${data.reflections.editorial.name}</div>
+            <div class="message-designation">${data.reflections.editorial.designation}</div>
+            <div class="message-text">${data.reflections.editorial.message}</div>
         </div>
         ` : ''}
         
         <div class="section">
-            <h2 class="section-title">�🏆 Achievements & Recognition</h2>
+            <h2 class="section-title">🏆 Spotlight - Achievements & Recognition</h2>
             <div class="achievements-grid">
-                ${data.achievements.map(achievement => `
-                    <div class="achievement-category">
-                        <h3 class="category-title">${achievement.category}</h3>
-                        <ul class="achievement-list">
-                            ${achievement.items.map(item => `<li>${item}</li>`).join('')}
-                        </ul>
-                    </div>
-                `).join('')}
-            </div>
-        </div>
-        
-        <div class="section">
-            <h2 class="section-title">💼 Placements & Higher Studies 2023-24</h2>
-            <div class="placements-grid">
-                ${data.placements.map(placement => `
-                    <div class="placement-card">
-                        <div class="placement-company">${placement.company}</div>
-                        <div class="placement-package">Package: ${placement.package}</div>
-                        <div class="placement-students">${placement.students} students placed</div>
-                        ${placement.position ? `<div style="font-size: 0.875rem; color: #6b7280; margin-top: 0.25rem;">${placement.position}</div>` : ''}
+                ${data.spotlight.map((achievement: any) => `
+                    <div class="achievement-item">
+                        <h3 class="achievement-title">${achievement.title}</h3>
+                        <div class="achievement-category">${achievement.category}</div>
+                        <div class="achievement-description">${achievement.description}</div>
+                        ${achievement.person ? `<div class="achievement-person">${achievement.person}</div>` : ''}
+                        ${achievement.details ? `<div class="achievement-details">${achievement.details}</div>` : ''}
+                        ${achievement.date ? `<div class="achievement-date">${achievement.date}</div>` : ''}
                     </div>
                 `).join('')}
             </div>
@@ -535,7 +523,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
         <div class="section">
             <h2 class="section-title">📅 Key Events & Activities</h2>
             <div class="events-list">
-                ${data.events.map(event => `
+                ${data.chronicles.map(event => `
                     <div class="event-card">
                         <div class="event-title">${event.title}</div>
                         <div class="event-date">${event.date}</div>

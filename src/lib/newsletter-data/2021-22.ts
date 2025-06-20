@@ -270,10 +270,14 @@ export const newsletterData2021_22: NewsletterData = {
       studentId: "166260311010",
       details: "GEC, Gandhinagar - Degree Engineering", 
       date: "2022"
-    }
-  ],
-  
-  events: [
+    }  ],
+
+  essence: {
+    vision: "To prepare competent diploma level electronics and communication engineers, catering the needs of industries and society as an excellent employee, innovator, and entrepreneur with moral values.",
+    mission: "• Provide quality education in the field of EC engineering.\n• Develop state of art laboratories, classrooms, and up gradation of Faculties.\n• Strengthen industrial liaison by offering mutual beneficiaries services.\n• Execute extra-curricular and co-curricular activities to inculcate innovation, entrepreneurship, and moral values."
+  },
+
+  chronicles: [
     {
       title: 'Expert Lecture on "Importance of Programming"',
       date: 'August 9, 2021',
@@ -452,7 +456,7 @@ export const newsletterData2021_22: NewsletterData = {
     }
   ],
 
-  messages: {
+  reflections: {
     principal: {
       name: 'Principal Name (Not specified in PDF)',
       designation: 'Principal, Government Polytechnic Palanpur',
@@ -470,10 +474,6 @@ export const newsletterData2021_22: NewsletterData = {
     }
   },
   
-  vision: "To prepare competent diploma level electronics and communication engineers, catering the needs of industries and society as an excellent employee, innovator, and entrepreneur with moral values.",
-  
-  mission: "• Provide quality education in the field of EC engineering.\n• Develop state of art laboratories, classrooms, and up gradation of Faculties.\n• Strengthen industrial liaison by offering mutual beneficiaries services.\n• Execute extra-curricular and co-curricular activities to inculcate innovation, entrepreneurship, and moral values.",
-  
   logos: [
     {
       src: '/newsletters/imgs/gpp-logo.png',
@@ -485,7 +485,7 @@ export const newsletterData2021_22: NewsletterData = {
     }
   ],
   
-  contact: {
+  reachout: {
     email: 'gppec11@gmail.com',
     phone: '02742-245219',
     address: 'Opp. Malan Darwaja, Ambaji Road, Palanpur - 385001, Gujarat',

@@ -216,10 +216,14 @@ export const newsletterData2023_24: NewsletterData = {
         'Merit-based selection for degree programs',
         'Continuation of technical education journey'
       ]
-    }
-  ],
-  
-  events: [
+    }  ],
+
+  essence: {
+    vision: "To be a center of excellence in Electronics and Communication Engineering education, fostering innovation, research, and industry collaboration to produce globally competent professionals.",
+    mission: "To provide quality technical education through modern teaching methodologies, state-of-the-art laboratories, and industry partnerships, enabling students to excel in their careers and contribute to society's technological advancement."
+  },
+
+  chronicles: [
     {
       title: 'Industrial Training at Duke Pipes',
       date: 'July 27, 2024',
@@ -761,7 +765,7 @@ export const newsletterData2023_24: NewsletterData = {
     }
   ],
 
-  messages: {
+  reflections: {
     principal: {
       name: 'Sureshkumar D Dabhi',
       designation: 'Principal, Government Polytechnic Palanpur',
@@ -797,10 +801,6 @@ Thank you for your continued support and encouragement.`
     }
   },
   
-  vision: "To be a premier department of Electronics & Communication Engineering, recognized for excellence in technical education, innovation, and research, contributing to the technological advancement of society.",
-  
-  mission: "To provide quality technical education in Electronics & Communication Engineering, foster innovation and research, develop industry-ready professionals, and contribute to the socio-economic development of the region through knowledge creation and dissemination.",
-  
   logos: [
     {
       src: '/newsletters/imgs/gpp-logo.png',
@@ -812,7 +812,7 @@ Thank you for your continued support and encouragement.`
     }
   ],
   
-  contact: {
+  reachout: {
     email: 'gppec11@gmail.com',
     phone: '02742-245219',
     address: 'Opp. Malan Darwaja, Ambaji Road, Palanpur - 385001, Gujarat',

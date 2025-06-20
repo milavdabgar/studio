@@ -191,18 +191,18 @@ export default function InteractiveNewsletterPage() {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-12">
-        <Tabs defaultValue="overview" className="w-full">
+        <Tabs defaultValue="essence" className="w-full">
           <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="messages">Messages</TabsTrigger>
+            <TabsTrigger value="essence">Essence</TabsTrigger>
             <TabsTrigger value="spotlight">Spotlight</TabsTrigger>
+            <TabsTrigger value="chronicles">Chronicles</TabsTrigger>
             <TabsTrigger value="canvas">Canvas</TabsTrigger>
-            <TabsTrigger value="events">Events</TabsTrigger>
-            <TabsTrigger value="contact">Contact</TabsTrigger>
+            <TabsTrigger value="reflections">Reflections</TabsTrigger>
+            <TabsTrigger value="reachout">Reachout</TabsTrigger>
           </TabsList>
 
-          {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-8">
+          {/* Essence Tab - Overview with Vision & Mission */}
+          <TabsContent value="essence" className="space-y-8">
             {/* Department Statistics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {statsData.map((stat, index) => {
@@ -296,7 +296,7 @@ export default function InteractiveNewsletterPage() {
                       <h3 className="text-lg font-semibold text-blue-900">Vision</h3>
                     </div>
                     <p className="text-blue-800 leading-relaxed">
-                      {currentData.vision}
+                      {currentData.essence.vision}
                     </p>
                   </div>
 
@@ -309,7 +309,7 @@ export default function InteractiveNewsletterPage() {
                       <h3 className="text-lg font-semibold text-green-900">Mission</h3>
                     </div>
                     <div className="text-green-800 leading-relaxed">
-                      {currentData.mission}
+                      {currentData.essence.mission}
                     </div>
                   </div>
                 </div>
@@ -319,7 +319,7 @@ export default function InteractiveNewsletterPage() {
           </TabsContent>
 
           {/* Messages Tab */}
-          <TabsContent value="messages" className="space-y-8">
+          <TabsContent value="reflections" className="space-y-8">
             {/* Principal's Message */}
             <Card>
               <CardHeader>
@@ -337,13 +337,13 @@ export default function InteractiveNewsletterPage() {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                        {currentData.messages.principal.name}
+                        {currentData.reflections.principal.name}
                       </h3>
                       <p className="text-sm text-gray-600 mb-4">
-                        {currentData.messages.principal.designation}
+                        {currentData.reflections.principal.designation}
                       </p>
                       <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                        {currentData.messages.principal.message}
+                        {currentData.reflections.principal.message}
                       </p>
                     </div>
                   </div>
@@ -368,13 +368,13 @@ export default function InteractiveNewsletterPage() {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                        {currentData.messages.hod.name}
+                        {currentData.reflections.hod.name}
                       </h3>
                       <p className="text-sm text-gray-600 mb-4">
-                        {currentData.messages.hod.designation}
+                        {currentData.reflections.hod.designation}
                       </p>
                       <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                        {currentData.messages.hod.message}
+                        {currentData.reflections.hod.message}
                       </p>
                     </div>
                   </div>
@@ -399,13 +399,13 @@ export default function InteractiveNewsletterPage() {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                        {currentData.messages.editorial.name}
+                        {currentData.reflections.editorial.name}
                       </h3>
                       <p className="text-sm text-gray-600 mb-4">
-                        {currentData.messages.editorial.designation}
+                        {currentData.reflections.editorial.designation}
                       </p>
                       <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                        {currentData.messages.editorial.message}
+                        {currentData.reflections.editorial.message}
                       </p>
                     </div>
                   </div>
@@ -488,7 +488,7 @@ export default function InteractiveNewsletterPage() {
           </TabsContent>
 
           {/* Events Tab */}
-          <TabsContent value="events">
+          <TabsContent value="chronicles">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
@@ -499,7 +499,7 @@ export default function InteractiveNewsletterPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-8">
-                  {currentData.events.map((event, index) => {
+                  {currentData.chronicles.map((event, index) => {
                     // Category-based styling
                     const categoryStyles = {
                       workshop: 'from-violet-50 to-purple-50 text-violet-700 border-violet-300',
@@ -557,7 +557,7 @@ export default function InteractiveNewsletterPage() {
                             </div>
                           )}
                         </div>
-                        {index < currentData.events.length - 1 && <Separator />}
+                        {index < currentData.chronicles.length - 1 && <Separator />}
                       </div>
                     );
                   })}
@@ -678,12 +678,12 @@ export default function InteractiveNewsletterPage() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="contact">
+          <TabsContent value="reachout">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Phone className="w-5 h-5 text-blue-600" />
-                  <span>Contact Information</span>
+                  <span>Reachout</span>
                 </CardTitle>
                 <CardDescription>Get in touch with the Electronics & Communication Engineering Department</CardDescription>
               </CardHeader>
@@ -697,7 +697,7 @@ export default function InteractiveNewsletterPage() {
                       <Mail className="w-5 h-5 text-blue-600" />
                       <div>
                         <div className="font-medium text-gray-900">Email</div>
-                        <div className="text-gray-600">gppec11@gmail.com</div>
+                        <div className="text-gray-600">{currentData.reachout?.email || 'gppec11@gmail.com'}</div>
                       </div>
                     </div>
                     
@@ -705,7 +705,7 @@ export default function InteractiveNewsletterPage() {
                       <Phone className="w-5 h-5 text-green-600" />
                       <div>
                         <div className="font-medium text-gray-900">Phone</div>
-                        <div className="text-gray-600">02742-245219</div>
+                        <div className="text-gray-600">{currentData.reachout?.phone || '02742-245219'}</div>
                       </div>
                     </div>
                     
@@ -713,7 +713,7 @@ export default function InteractiveNewsletterPage() {
                       <MapPin className="w-5 h-5 text-red-600" />
                       <div>
                         <div className="font-medium text-gray-900">Address</div>
-                        <div className="text-gray-600">Opp. Malan Darwaja, Ambaji Road<br />Palanpur - 385001, Gujarat</div>
+                        <div className="text-gray-600">{currentData.reachout?.address || 'Opp. Malan Darwaja, Ambaji Road, Palanpur - 385001, Gujarat'}</div>
                       </div>
                     </div>
                     
@@ -721,7 +721,7 @@ export default function InteractiveNewsletterPage() {
                       <Globe className="w-5 h-5 text-purple-600" />
                       <div>
                         <div className="font-medium text-gray-900">Website</div>
-                        <div className="text-gray-600">ec.gppalanpur.in</div>
+                        <div className="text-gray-600">{currentData.reachout?.website || 'ec.gppalanpur.in'}</div>
                       </div>
                     </div>
                   </div>

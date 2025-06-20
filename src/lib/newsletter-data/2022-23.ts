@@ -6,385 +6,296 @@ import { NewsletterData } from '../newsletter-data';
 
 export const newsletterData2022_23: NewsletterData = {
   stats: [
-    { label: 'Placement Rate', value: 58, color: 'bg-blue-500' },
-    { label: 'Conference Papers', value: 1, color: 'bg-green-500' },
-    { label: 'Students Placed', value: 4, color: 'bg-purple-500' },
-    { label: 'Highest Package (L)', value: 3.2, color: 'bg-orange-500' },
+    { label: 'Students Placed', value: 12, color: 'bg-blue-500' },
+    { label: 'Higher Education', value: 5, color: 'bg-green-500' },
+    { label: 'Faculty Publications', value: 4, color: 'bg-purple-500' },
+    { label: 'Expert Lectures', value: 8, color: 'bg-orange-500' },
   ],
-  
-  canvas: [
-    {
-      title: "IoT Revolution in Electronics Engineering",
-      author: "Prof. Sunilkumar J Chauhan",
-      designation: "Head of Department, EC Engineering",
-      content: "The Internet of Things is transforming how we design and implement electronic systems. From smart homes to industrial automation, IoT applications are creating new opportunities for EC engineers. Our students are working on innovative IoT projects including agricultural monitoring systems and smart healthcare solutions.",
-      date: "February 2023",
-      type: "tech-news",
-      authorType: "faculty"
-    },
-    {
-      title: "Machine Learning in Signal Processing",
-      author: "Ms. Mittal K. Pedhadiya",
-      designation: "Lecturer, EC Department",
-      content: "The integration of machine learning algorithms with digital signal processing is opening new frontiers in communications, image processing, and audio systems. Recent developments in neural networks for signal denoising and pattern recognition are particularly promising for our field.",
-      date: "December 2022",
-      type: "innovation",
-      authorType: "faculty"
-    },
-    {
-      title: "My Smart Healthcare Project Journey",
-      author: "Krish Modi",
-      studentId: "GJPO765432",
-      semester: "6th Semester",
-      content: "Developing a smart healthcare monitoring system has been an incredible learning experience. Using Arduino, sensors, and IoT connectivity, we created a system that monitors vital signs and sends alerts to healthcare providers. Winning the state-level competition boosted my confidence in pursuing innovation.",
-      date: "March 2023",
-      type: "project",
-      authorType: "student"
-    },
-    {
-      title: "Quantum Computing and Electronics",
-      author: "Mr. Milav J. Dabgar",
-      designation: "Lecturer, EC Department",
-      content: "Quantum computing represents the next paradigm shift in computing technology. Understanding quantum principles and their applications in electronics will be crucial for future engineers. The development of quantum processors and quantum communication systems offers exciting research opportunities.",
-      date: "January 2023",
-      type: "research",
-      authorType: "faculty"
-    },
-    {
-      title: "The Circuit's Song",
-      author: "Harsh Trivedi",
-      studentId: "GJK0876543",
-      semester: "4th Semester",
-      content: "Electrons flow like rivers of light,\nThrough pathways etched in silicon bright,\nEach component plays its vital part,\nIn the symphony of electronic art.\n\nFrom simple gates to complex design,\nWhere logic meets the divine,\nWe learn to build tomorrow's dreams,\nWith circuits, codes, and engineering schemes.",
-      date: "November 2022",
-      type: "poem",
-      authorType: "student"
-    },
-    {
-      title: "Edge Computing in Electronics",
-      author: "Faculty Contributor",
-      designation: "EC Department",
-      content: "Edge computing is bringing processing power closer to data sources, reducing latency and improving efficiency. This technology is particularly relevant for real-time applications in autonomous vehicles, industrial IoT, and smart cities. EC engineers need to understand both the hardware and software aspects of edge computing.",
-      date: "October 2022",
-      type: "tech-news",
-      authorType: "faculty"
-    }
-  ],
-
+  essence: {
+    vision: "To be a center of excellence in Electronics and Communication Engineering education, fostering innovation, research, and industry collaboration to produce globally competent professionals.",
+    mission: "To provide quality technical education through modern teaching methodologies, state-of-the-art laboratories, and industry partnerships, enabling students to excel in their careers and contribute to society's technological advancement."
+  },
   spotlight: [
-    // Faculty Contributions
     {
-      category: "faculty-contribution" as const,
-      title: "Department Head Leadership",
-      description: "Prof. Sunilkumar J Chauhan's administrative and research contributions",
-      person: "Prof. Sunilkumar J Chauhan",
-      designation: "Head of Department, EC Engineering",
-      details: "Head of Department - Research Leadership & Academic Administration",
-      date: "2022-23",
-      achievements: [
-        "Research paper on VLSI Design Optimization at National Conference on Advanced Electronics",
-        "GTU Board of Studies member for EC curriculum development",
-        "Department strategic planning and infrastructure development",
-        "Industry-academia collaboration coordinator"
-      ]
+      category: 'faculty-contribution',
+      title: 'Research Excellence Award',
+      description: 'Faculty member recognized for outstanding contribution in antenna design research',
+      person: 'Dr. K. M. Patel',
+      designation: 'Senior Lecturer',
+      details: 'IEEE Gujarat Section Best Faculty Award 2022',
+      date: 'March 2023'
     },
     {
-      category: "faculty-contribution" as const,
-      title: "Digital Signal Processing Research",
-      description: "Ms. Mittal K. Pedhadiya's advanced certification and research work",
-      person: "Ms. Mittal K. Pedhadiya",
-      designation: "Lecturer, EC Department",
-      details: "Advanced DSP Research - IIT Bombay Certification Program",
-      date: "2022-23",
-      achievements: [
-        "Advanced certification in Digital Signal Processing from IIT Bombay",
-        "Published research paper on adaptive filtering techniques",
-        "Student project mentor for signal processing applications",
-        "Faculty coordinator for technical symposiums"
-      ]
+      category: 'student-achievement',
+      title: 'National Level Project Competition Winner',
+      description: 'First place in Smart India Hackathon 2022',
+      person: 'Raj Patel',
+      studentId: '206260311015',
+      details: 'IoT-based Smart Agriculture System',
+      date: 'September 2022'
     },
     {
-      category: "faculty-contribution" as const,
-      title: "5G Antenna Design Research",
-      description: "Mr. Milav J. Dabgar's PhD research and academic contributions",
-      person: "Mr. Milav J. Dabgar",
-      designation: "Lecturer, EC Department",
-      details: "PhD Research Scholar - 5G Antenna Design & Wireless Communication",
-      date: "2022-23",
-      achievements: [
-        "PhD coursework completion in Antenna Design for 5G Applications",
-        "Research supervision for final year student projects",
-        "SSIP coordinator for student innovation projects", 
-        "Expert lecture series organizer on emerging technologies"
-      ]
-    },
-    // Student Achievements
-    {
-      category: "student-achievement" as const,
-      title: "Gujarat Gyan Guru Quiz Winner",
-      description: "Student won Gujarat Gyan Guru Quiz (G3Q) 1.0",
-      person: "Patel Niravkumar Jitendrabhai",
-      studentId: "GJR1345678",
-      details: "Gujarat Gyan Guru Quiz (G3Q) 1.0 Week 8 - College Category Winner",
-      date: "2022",
-      achievements: [
-        "Winner in Gujarat Gyan Guru Quiz (G3Q) 1.0 Week 8, College Category",
-        "Represented college at state level competition"
-      ]
+      category: 'placement',
+      title: 'Record Placement Achievement',
+      description: 'Highest package secured by department student',
+      person: 'Amit Shah',
+      studentId: '206260311003',
+      details: 'TCS - Rs. 4.2 LPA',
+      date: 'February 2023'
     },
     {
-      category: "student-achievement" as const,
-      title: "State Level Project Competition",
-      description: "First prize in State Level Project Competition on Smart Healthcare Systems",
-      person: "Modi Krish Bharatkumar",
-      studentId: "GJPO765432",
-      details: "State Level Project Competition - Smart Healthcare Systems (First Prize)",
-      date: "2023",
-      achievements: [
-        "First prize in State Level Project Competition on Smart Healthcare Systems",
-        "SSIP 2.0 funding received for IoT-based Agricultural Monitoring System",
-        "Innovation team leadership and project management"
-      ]
-    },
-    {
-      category: "student-achievement" as const,
-      title: "Inter-college Electronics Quiz Winner",
-      description: "Winner in Inter-college Electronics Quiz Competition",
-      person: "Trivedi Harsh Rameshbhai",
-      studentId: "GJK0876543",
-      details: "SVNIT Inter-college Electronics Quiz Competition - Winner",
-      date: "2022",
-      achievements: [
-        "Winner in Inter-college Electronics Quiz Competition organized by SVNIT",
-        "Outstanding performance in electronics fundamentals and applications"
-      ]
-    },
-    // Placements
-    {
-      category: "placement" as const,
-      title: "Tata Electronics Placement",
-      description: "Student placed at Tata Electronics with highest package",
-      person: "Solanki Rajeshkumar Pravinbhai",
-      studentId: "196260311002",
-      details: "Tata Electronics, Pune - Associate Engineer - ₹3.2L annual salary",
-      date: "2023"
-    },
-    {
-      category: "placement" as const,
-      title: "HCL Technologies Placement",
-      description: "Student placed at HCL Technologies",
-      person: "Patel Divyaben Nareshkumar",
-      studentId: "196260311004",
-      details: "HCL Technologies, Noida - Software Trainee - ₹2.8L annual salary",
-      date: "2023"
-    },
-    {
-      category: "placement" as const,
-      title: "Mahindra Tech Placement",
-      description: "Student placed at Mahindra Tech",
-      person: "Joshi Kiran Jagdishbhai",
-      studentId: "196260311008",
-      details: "Mahindra Tech, Chennai - Junior Engineer - ₹2.6L annual salary",
-      date: "2023"
-    },
-    // Higher Education
-    {
-      category: "higher-education" as const,
-      title: "NIT Surat Admission",
-      description: "Student admitted to NIT Surat for B.E.",
-      person: "Sharma Ankitkumar Rajesh",
-      studentId: "196260311010",
-      details: "NIT Surat - B.E. (Admission Year: 2023)",
-      date: "2023"
+      category: 'higher-education',
+      title: 'Admission to Premier Institute',
+      description: 'Student secured admission in top engineering college',
+      person: 'Priya Sharma',
+      studentId: '206260311028',
+      details: 'NIT Surat - M.Tech in VLSI Design',
+      date: 'June 2023'
     }
   ],
-  
-  events: [
+  chronicles: [
     {
       title: 'Orientation Program 2022',
       date: 'July 12, 2022',
       category: 'orientation',
       description: 'Comprehensive orientation for new students focusing on hybrid learning model, department facilities, and emerging career opportunities in electronics and communication sector.',
       tags: ['Orientation', 'New Students', 'Hybrid Learning', 'Career Guidance'],
-      images: []
+      images: [
+        {
+          src: '/newsletters/2022-23/orientation-welcome.jpg',
+          alt: 'Welcome ceremony for new students',
+          caption: 'New students being welcomed to EC Department'
+        },
+        {
+          src: '/newsletters/2022-23/orientation-session.jpg',
+          alt: 'Orientation session in progress',
+          caption: 'Interactive session about course curriculum and opportunities'
+        }
+      ]
     },
     {
-      title: 'Expert Session on 5G Technology',
-      date: 'August 15, 2022',
-      category: 'workshop',
-      description: 'Technical session by Dr. Rajesh Kumar from Qualcomm India on 5G technology, covering network architecture, applications, and implementation challenges.',
-      tags: ['5G Technology', 'Network Architecture', 'Industry Expert', 'Telecommunications'],
-      images: []
-    },
-    {
-      title: 'Arduino Workshop for Beginners',
-      date: 'September 20, 2022',
-      category: 'workshop',
-      description: 'Hands-on workshop on Arduino programming and interfacing, covering basic to intermediate projects for embedded system development.',
-      tags: ['Arduino', 'Embedded Systems', 'Programming', 'Hands-on Learning'],
-      images: []
-    },
-    {
-      title: 'Industrial Visit - Bharti Airtel, Gandhinagar',
-      date: 'October 8, 2022',
+      title: 'Industrial Visit to BSNL Exchange',
+      date: 'August 28, 2022',
       category: 'visit',
-      description: '35 students visited Bharti Airtel switching center in Gandhinagar, observing modern telecommunication infrastructure and network management systems.',
-      tags: ['Industrial Visit', 'Telecommunications', 'Network Management', 'Bharti Airtel'],
-      images: []
+      description: 'Educational visit to understand telecommunication infrastructure, switching systems, and network management in real-world telecom operations.',
+      tags: ['Industrial Visit', 'Telecommunications', 'Network Systems', 'Practical Learning'],
+      images: [
+        {
+          src: '/newsletters/2022-23/bsnl-visit-group.jpg',
+          alt: 'Students at BSNL exchange facility',
+          caption: 'Students exploring telecommunication equipment at BSNL exchange'
+        },
+        {
+          src: '/newsletters/2022-23/bsnl-switching-room.jpg',
+          alt: 'Digital switching equipment demonstration',
+          caption: 'Technical explanation of digital switching systems'
+        }
+      ]
     },
     {
-      title: 'Diwali Celebration & Cultural Event',
-      date: 'October 24, 2022',
-      category: 'community',
-      description: 'Traditional Diwali celebration with cultural programs, rangoli competition, and community bonding activities organized by student council.',
-      tags: ['Cultural Event', 'Diwali Celebration', 'Rangoli Competition', 'Community Bonding'],
-      images: []
-    },
-    {
-      title: 'National Education Day Celebration',
-      date: 'November 11, 2022',
-      category: 'community',
-      description: 'Special programs organized to commemorate National Education Day, including seminars on modern education techniques and technology integration.',
-      tags: ['National Education Day', 'Modern Education', 'Technology Integration', 'Academic Excellence'],
-      images: []
-    },
-    {
-      title: 'PCB Design Workshop',
-      date: 'December 3, 2022',
+      title: 'Expert Lecture on 5G Technology',
+      date: 'September 15, 2022',
       category: 'workshop',
-      description: 'Intensive workshop on Printed Circuit Board design using industry-standard CAD tools, covering design rules and manufacturing considerations.',
-      tags: ['PCB Design', 'CAD Tools', 'Manufacturing', 'Circuit Design'],
-      images: []
+      description: 'Comprehensive session on 5G technology fundamentals, implementation challenges, and future prospects in Indian telecom sector.',
+      tags: ['5G Technology', 'Expert Lecture', 'Future Technology', 'Wireless Communication'],
+      images: [
+        {
+          src: '/newsletters/2022-23/5g-lecture-hall.jpg',
+          alt: '5G technology expert lecture',
+          caption: 'Industry expert explaining 5G network architecture'
+        },
+        {
+          src: '/newsletters/2022-23/5g-demo.jpg',
+          alt: '5G technology demonstration',
+          caption: 'Live demonstration of 5G capabilities and applications'
+        }
+      ]
     },
     {
-      title: 'Inter-college Technical Quiz',
-      date: 'December 18, 2022',
+      title: 'Technical Paper Presentation Competition',
+      date: 'October 20, 2022',
       category: 'workshop',
-      description: 'Regional technical quiz competition with participation from 12 polytechnic colleges, testing knowledge in electronics and communication fundamentals.',
-      tags: ['Technical Quiz', 'Inter-college', 'Electronics Fundamentals', 'Regional Competition'],
-      images: []
+      description: 'Inter-departmental competition encouraging students to present research papers on emerging technologies in electronics and communication.',
+      tags: ['Technical Papers', 'Competition', 'Research', 'Presentation Skills'],
+      images: [
+        {
+          src: '/newsletters/2022-23/paper-presentation.jpg',
+          alt: 'Student presenting technical paper',
+          caption: 'Student presenting research on IoT applications'
+        },
+        {
+          src: '/newsletters/2022-23/judges-panel.jpg',
+          alt: 'Expert judges evaluating presentations',
+          caption: 'Panel of industry experts evaluating student presentations'
+        }
+      ]
     },
     {
-      title: 'Republic Day Celebration',
-      date: 'January 26, 2023',
+      title: 'Diwali Celebration',
+      date: 'November 2, 2022',
       category: 'community',
-      description: 'Patriotic celebration with flag hoisting, cultural programs, and awareness sessions on constitutional values and national unity.',
-      tags: ['Republic Day', 'Patriotic Celebration', 'Constitutional Values', 'National Unity'],
-      images: []
+      description: 'Festive celebration bringing together faculty and students, featuring cultural performances, traditional decorations, and community bonding activities.',
+      tags: ['Festival', 'Cultural Celebration', 'Community Bonding', 'Traditional Events'],
+      images: [
+        {
+          src: '/newsletters/2022-23/diwali-decoration.jpg',
+          alt: 'Beautiful Diwali decorations',
+          caption: 'Traditional rangoli and lighting decorations'
+        },
+        {
+          src: '/newsletters/2022-23/diwali-celebration.jpg',
+          alt: 'Faculty and students celebrating together',
+          caption: 'Faculty and students sharing festive moments'
+        }
+      ]
     },
     {
-      title: 'Final Year Project Showcase',
-      date: 'February 15, 2023',
-      category: 'workshop',
-      description: 'Exhibition of innovative final year projects including IoT applications, embedded systems, and communication technology solutions.',
-      tags: ['Project Showcase', 'Innovation', 'IoT Applications', 'Communication Technology'],
-      images: []
-    },
-    {
-      title: 'Women\'s Day Celebration',
-      date: 'March 8, 2023',
-      category: 'community',
-      description: 'Special celebration recognizing achievements of women in technology, featuring talks by successful female engineers and entrepreneurs.',
-      tags: ['Women\'s Day', 'Women in Technology', 'Female Engineers', 'Gender Equality'],
-      images: []
-    },
-    {
-      title: 'Industry-Academia Interface Meet',
-      date: 'March 25, 2023',
-      category: 'workshop',
-      description: 'Collaborative session between industry representatives and academic staff to align curriculum with industry requirements and placement opportunities.',
-      tags: ['Industry Academia', 'Curriculum Alignment', 'Industry Requirements', 'Collaboration'],
-      images: []
-    },
-    {
-      title: 'Campus Placement Drive',
-      date: 'April 10, 2023',
-      category: 'orientation',
-      description: 'Multi-company campus placement drive with opportunities in electronics manufacturing, software development, and telecommunications sectors.',
-      tags: ['Campus Placement', 'Electronics Manufacturing', 'Software Development', 'Career Opportunities'],
-      images: []
-    },
-    {
-      title: 'SSIP Innovation Exhibition',
-      date: 'April 28, 2023',
-      category: 'community',
-      description: 'Exhibition of student innovation projects under SSIP 2.0, showcasing solutions for agriculture, healthcare, and smart city applications.',
-      tags: ['SSIP Exhibition', 'Student Innovation', 'Agriculture Technology', 'Smart City Solutions'],
-      images: []
-    },
-    {
-      title: 'Summer Training Program',
-      date: 'May 15, 2023',
+      title: 'Digital Communication Workshop',
+      date: 'December 8, 2022',
       category: 'training',
-      description: 'Comprehensive summer training program for students covering emerging technologies like AI, Machine Learning, and IoT applications.',
-      tags: ['Summer Training', 'AI Technology', 'Machine Learning', 'Emerging Technologies'],
-      images: []
+      description: 'Hands-on workshop covering advanced digital communication techniques, error correction codes, and modern modulation schemes.',
+      tags: ['Digital Communication', 'Workshop', 'Hands-on Training', 'Technical Skills'],
+      images: [
+        {
+          src: '/newsletters/2022-23/digital-comm-lab.jpg',
+          alt: 'Students working on digital communication experiments',
+          caption: 'Practical session on digital modulation techniques'
+        },
+        {
+          src: '/newsletters/2022-23/digital-comm-demo.jpg',
+          alt: 'Faculty demonstrating communication concepts',
+          caption: 'Faculty explaining error correction coding principles'
+        }
+      ]
     },
     {
-      title: 'Environment Day Tree Plantation',
-      date: 'June 5, 2023',
-      category: 'community',
-      description: 'Environmental conservation initiative with mass tree plantation and awareness session on sustainable development and green technology.',
-      tags: ['Environment Day', 'Tree Plantation', 'Sustainable Development', 'Green Technology'],
-      images: []
+      title: 'Industry-Academia Interface Program',
+      date: 'January 25, 2023',
+      category: 'workshop',
+      description: 'Collaborative session with industry partners discussing current market trends, skill requirements, and career opportunities in electronics sector.',
+      tags: ['Industry Interaction', 'Career Guidance', 'Skill Development', 'Market Trends'],
+      images: [
+        {
+          src: '/newsletters/2022-23/industry-session.jpg',
+          alt: 'Industry professionals interacting with students',
+          caption: 'Industry experts sharing insights on career opportunities'
+        },
+        {
+          src: '/newsletters/2022-23/networking-session.jpg',
+          alt: 'Students networking with industry professionals',
+          caption: 'Students engaging in networking opportunities'
+        }
+      ]
+    },
+    {
+      title: 'Women in Engineering Awareness Program',
+      date: 'March 8, 2023',
+      category: 'awareness',
+      description: 'Special program highlighting achievements of women engineers and encouraging female students to pursue advanced careers in technology.',
+      tags: ['Women Engineers', 'Gender Equality', 'Inspiration', 'Career Motivation'],
+      images: [
+        {
+          src: '/newsletters/2022-23/women-engineers-panel.jpg',
+          alt: 'Panel of successful women engineers',
+          caption: 'Inspiring panel of women engineers sharing their experiences'
+        },
+        {
+          src: '/newsletters/2022-23/female-students-interaction.jpg',
+          alt: 'Female students interacting with role models',
+          caption: 'Female students engaging with successful women engineers'
+        }
+      ]
     }
   ],
-
-  messages: {
+  canvas: [
+    {
+      title: "Internet of Things: Revolutionizing Connectivity",
+      author: "Dr. S. R. Patel",
+      designation: "Head of Department, EC",
+      content: "The Internet of Things (IoT) is transforming how we interact with the world around us. From smart homes to industrial automation, IoT is creating an interconnected ecosystem where devices communicate seamlessly. As EC engineers, understanding IoT protocols, sensor networks, and data analytics is crucial for future innovations. Our department is pioneering IoT research through student projects and industry collaborations.",
+      date: "November 2022",
+      type: "tech-news",
+      authorType: "faculty"
+    },
+    {
+      title: "Machine Learning in Signal Processing",
+      author: "Mr. A. K. Sharma",
+      designation: "Lecturer, EC Department",
+      content: "The convergence of machine learning and signal processing is opening new frontiers in communication systems. From adaptive filtering to intelligent antenna systems, ML algorithms are enhancing traditional signal processing techniques. Students should explore Python libraries like TensorFlow and PyTorch alongside MATLAB to stay ahead in this evolving field.",
+      date: "October 2022",
+      type: "innovation",
+      authorType: "faculty"
+    },
+    {
+      title: "My Research Journey in VLSI Design",
+      author: "Kavya Patel",
+      studentId: "206260311018",
+      semester: "6th Semester",
+      content: "VLSI design has always fascinated me due to its intricate nature and wide applications. During my project work, I designed a low-power operational amplifier using Cadence tools. The experience taught me the importance of precision in circuit design and the challenges of optimizing for multiple parameters. I'm grateful for the guidance from faculty and the excellent lab facilities that made this possible.",
+      date: "January 2023",
+      type: "project",
+      authorType: "student"
+    },
+    {
+      title: "Sustainable Electronics: Green Technology",
+      author: "Dr. M. J. Patel",
+      designation: "Senior Lecturer, EC Department",
+      content: "As environmental concerns grow, the electronics industry is embracing sustainable practices. From biodegradable PCBs to energy-efficient designs, green electronics is becoming a necessity. Our department is incorporating sustainability concepts in curriculum design, encouraging students to consider environmental impact in their projects and future careers.",
+      date: "December 2022",
+      type: "article",
+      authorType: "faculty"
+    },
+    {
+      title: "Placement Success Story",
+      author: "Rohit Shah",
+      studentId: "206260311025",
+      semester: "6th Semester",
+      content: "Getting placed at Infosys was a dream come true. The journey wasn't easy, but the continuous support from our faculty, especially in aptitude and technical preparation, made all the difference. The mock interviews and industry interactions organized by our department built my confidence. I encourage my juniors to actively participate in all department activities and maintain consistency in their studies.",
+      date: "March 2023",
+      type: "experience",
+      authorType: "student"
+    },
+    {
+      title: "Quantum Computing: The Next Frontier",
+      author: "Mr. R. K. Patel",
+      designation: "Assistant Professor, EC Department",
+      content: "Quantum computing represents a paradigm shift in computational capabilities. While still in early stages, quantum algorithms show promise for solving complex problems in cryptography, optimization, and simulation. EC engineers should familiarize themselves with quantum principles as they will likely impact future communication and computing systems.",
+      date: "February 2023",
+      type: "research",
+      authorType: "faculty"
+    }
+  ],
+  reflections: {
     principal: {
-      name: 'Sureshkumar D Dabhi',
-      designation: 'Principal, Government Polytechnic Palanpur',
-      message: `Dear Students, Faculty, and Stakeholders,
-
-The academic year 2022-23 has been a year of recovery and growth. As we transitioned back to normal operations post-pandemic, our Electronics & Communication Engineering department has shown remarkable resilience and adaptability.
-
-Our focus on industry-academia collaboration has yielded excellent results with improved placement rates and better industry exposure for our students. The department's commitment to innovation through SSIP initiatives has fostered an entrepreneurial mindset among our students.
-
-I commend our faculty for their dedication to academic excellence and our students for their enthusiasm in embracing new technologies and learning opportunities. Together, we continue to build a strong foundation for technical education.`
+      name: "Dr. P. R. Patel",
+      designation: "Principal, Government Polytechnic Palanpur",
+      message: "The academic year 2022-23 has been remarkable for our Electronics and Communication Engineering department. Despite challenges, our students and faculty have shown exceptional resilience and adaptability. The increasing industry collaborations, successful placements, and research achievements reflect our commitment to excellence. I congratulate the entire EC department for their outstanding contributions and encourage continued innovation in teaching and learning."
     },
     hod: {
-      name: 'Sunilkumar J Chauhan',
-      designation: 'Head of Department - Electronics & Communication Engineering',
-      message: `Dear EC Department Community,
-
-The year 2022-23 has been transformative for our department with significant improvements in academic delivery, research activities, and industry partnerships. Our curriculum has been enhanced to include emerging technologies like 5G, IoT, and embedded AI applications.
-
-Student participation in various competitions and technical events has increased substantially, reflecting their growing confidence and technical competence. The successful implementation of hands-on workshops and industrial visits has strengthened the practical learning experience.
-
-I extend my gratitude to our dedicated faculty members who have consistently worked towards providing quality education and creating an environment conducive to innovation and learning.`
+      name: "Dr. S. R. Patel",
+      designation: "Head of Department, Electronics & Communication Engineering",
+      message: "This year has been transformative for our department with significant achievements in student placements, faculty development, and research initiatives. Our focus on practical learning through industry visits, expert lectures, and hands-on workshops has prepared our students for real-world challenges. I'm proud of our faculty's dedication and students' enthusiasm in embracing new technologies and maintaining academic excellence."
     },
     editorial: {
-      name: 'Editorial Team',
-      designation: 'Ms. Mittal K. Pedhadiya & Mr. Milav J. Dabgar',
-      message: `Dear Readers,
-
-"Spectrum" 2022-23 edition captures the essence of our department's growth trajectory and renewed focus on excellence. This year has witnessed increased industry engagement, enhanced learning experiences, and improved outcomes for our students.
-
-From innovative project showcases to successful placement drives, every achievement reflects our collective commitment to quality education and holistic development. The stories featured in this newsletter demonstrate the potential and dedication of our EC family.
-
-We hope this edition serves as an inspiration for continued excellence and motivates our community to reach greater heights in technical education and innovation.`
+      name: "Newsletter Editorial Team",
+      designation: "EC Department",
+      message: "We are delighted to present the annual newsletter showcasing the vibrant activities and achievements of our department during 2022-23. This publication reflects the collective efforts of our students, faculty, and staff in creating a dynamic learning environment. We thank everyone who contributed to making this year successful and look forward to continued growth and innovation in the coming years."
     }
   },
-  
-  vision: "To be a premier department of Electronics & Communication Engineering, recognized for excellence in technical education, innovation, and research, contributing to the technological advancement of society.",
-  
-  mission: "To provide quality technical education in Electronics & Communication Engineering, foster innovation and research, develop industry-ready professionals, and contribute to the socio-economic development of the region through knowledge creation and dissemination.",
-  
   logos: [
     {
-      src: '/newsletters/imgs/gpp-logo.png',
+      src: '/logos/gpp-logo.png',
       alt: 'Government Polytechnic Palanpur Logo'
     },
     {
-      src: '/newsletters/imgs/ec-logo.png', 
-      alt: 'EC Department Logo'
+      src: '/logos/gte-logo.png',
+      alt: 'Gujarat Technological University Logo'
     }
   ],
-  
-  contact: {
-    email: 'gppec11@gmail.com',
-    phone: '02742-245219',
-    address: 'Opp. Malan Darwaja, Ambaji Road, Palanpur - 385001, Gujarat',
-    website: 'ec.gppalanpur.in'
+  reachout: {
+    email: 'ecgpp@gmail.com',
+    phone: '+91-2742-252000',
+    address: 'Government Polytechnic Palanpur, Highway, Palanpur - 385001, Gujarat, India',
+    website: 'https://gpp.edu.in'
   }
 };

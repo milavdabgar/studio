@@ -66,21 +66,23 @@ export interface SpotlightItem {
 
 export interface NewsletterData {
   stats: Stat[];
-  canvas: CanvasItem[];
+  essence: {
+    vision: string;
+    mission: string;
+  };
   spotlight: SpotlightItem[];
-  events: Event[];
-  messages: {
+  chronicles: Event[];
+  canvas: CanvasItem[];
+  reflections: {
     principal: Message;
     hod: Message;
     editorial: Message;
   };
-  vision: string;
-  mission: string;
   logos?: Array<{
     src: string;
     alt: string;
   }>;
-  contact: {
+  reachout: {
     email: string;
     phone: string;
     address: string;
