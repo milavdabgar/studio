@@ -14,13 +14,25 @@ export const newsletterData2021_22: NewsletterData = {
   
   canvas: [
     {
-      title: "5G Technology: The Future of Communication",
-      author: "Faculty Member",
+      title: "Device to Device Communication in 5G",
+      author: "Ms. M. K. Pedhadiya",
       designation: "Lecturer, EC Department", 
-      content: "5G technology represents a quantum leap in wireless communication, offering unprecedented speeds, ultra-low latency, and massive device connectivity. This revolutionary technology will enable innovations like autonomous vehicles, smart cities, and IoT applications that were previously impossible. As EC engineers, understanding 5G architecture and implementation is crucial for future career prospects.",
+      content: "Device-to-Device (D2D) communication is a revolutionary feature of 5G networks that enables direct communication between devices without routing through base stations. This technology significantly reduces latency, improves spectrum efficiency, and enhances network capacity. D2D communication supports various use cases including proximity services, public safety communications, and IoT applications. As 5G networks continue to evolve, D2D communication will play a crucial role in enabling new applications like autonomous vehicles, smart cities, and industrial automation. Understanding D2D protocols, resource allocation, and interference management is essential for future communication engineers.",
       date: "March 2022",
-      type: "tech-news",
-      authorType: "faculty"
+      type: "article",
+      authorType: "faculty",
+      images: [
+        {
+          src: '/newsletters/2021-22/5g-network.png',
+          alt: '5G Network Architecture',
+          caption: '5G network architecture showing device-to-device communication capabilities'
+        },
+        {
+          src: '/newsletters/2021-22/5g-d2d-communication.png',
+          alt: 'Device to Device Communication in 5G',
+          caption: 'Illustration of D2D communication reducing latency and improving spectrum efficiency'
+        }
+      ]
     },
     {
       title: "Artificial Intelligence in Electronics",
@@ -55,10 +67,34 @@ export const newsletterData2021_22: NewsletterData = {
       author: "Stuti Raval",
       studentId: "216260311005",
       semester: "2nd Semester",
-      content: "In the world of resistors and capacitors,\nWhere electrons dance and current flows,\nI find my passion, my calling true,\nIn circuits where innovation grows.\n\nFrom simple LEDs to complex designs,\nEach component tells a story,\nOf human ingenuity and endless dreams,\nBuilding tomorrow's electronic glory.",
+      content: "A beautiful poem expressing passion for electronics and engineering, showcasing the creative side of technical education. The poem captures the essence of how students find inspiration in the world of electronics.",
       date: "December 2021",
       type: "poem",
-      authorType: "student"
+      authorType: "student",
+      images: [
+        {
+          src: '/newsletters/2021-22/stuti-poem.jpg',
+          alt: 'Stuti Raval\'s poem "Dreams and Circuits"',
+          caption: 'Creative poem by Stuti Raval expressing passion for electronics'
+        }
+      ]
+    },
+    {
+      title: "A Tribute to Teachers",
+      author: "Arman Ghasura",
+      studentId: "166260311008",
+      semester: "6th Semester",
+      content: "A heartfelt poem dedicated to teachers who shape our minds and guide our paths. This Teacher's Day tribute celebrates the invaluable contribution of teachers in building our future and their role in transforming students into capable professionals.",
+      date: "September 2021",
+      type: "poem",
+      authorType: "student",
+      images: [
+        {
+          src: '/newsletters/2021-22/arman-poem.png',
+          alt: 'Arman Ghasura\'s poem on Teachers',
+          caption: 'A touching tribute to teachers by Arman Ghasura on Teacher\'s Day'
+        }
+      ]
     },
     {
       title: "Sustainable Electronics: Green Technology",

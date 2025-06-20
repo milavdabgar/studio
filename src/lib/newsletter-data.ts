@@ -51,6 +51,7 @@ export interface CanvasItem {
   date?: string;
   type: 'tech-news' | 'innovation' | 'research' | 'poem' | 'article' | 'project' | 'experience' | 'story' | 'tutorial';
   authorType: 'faculty' | 'student';
+  images?: EventImage[]; // Support for images in canvas items
 }
 
 export interface SpotlightItem {

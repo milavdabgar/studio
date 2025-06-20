@@ -475,6 +475,30 @@ export default function InteractiveNewsletterPage() {
                           </p>
                         )}
                       </div>
+                      
+                      {/* Images for canvas items */}
+                      {item.images && item.images.length > 0 && (
+                        <div className="mt-4 space-y-3">
+                          {item.images.map((image, imageIndex) => (
+                            <div key={imageIndex} className="relative">
+                              <img 
+                                src={image.src} 
+                                alt={image.alt} 
+                                className="w-full max-w-2xl mx-auto rounded-lg shadow-md"
+                                onError={(e) => {
+                                  console.error('Failed to load image:', image.src);
+                                  e.currentTarget.style.display = 'none';
+                                }}
+                              />
+                              {image.caption && (
+                                <p className="text-xs text-gray-600 mt-2 italic text-center">
+                                  {image.caption}
+                                </p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )) || (
                     <div className="text-center py-8 text-gray-500">
