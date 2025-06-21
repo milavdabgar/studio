@@ -192,12 +192,11 @@ export default function InteractiveNewsletterPage() {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-12">
         <Tabs defaultValue="essence" className="w-full">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="essence">Essence</TabsTrigger>
             <TabsTrigger value="spotlight">Spotlight</TabsTrigger>
             <TabsTrigger value="chronicles">Chronicles</TabsTrigger>
             <TabsTrigger value="canvas">Canvas</TabsTrigger>
-            <TabsTrigger value="reflections">Reflections</TabsTrigger>
             <TabsTrigger value="reachout">Reachout</TabsTrigger>
           </TabsList>
 
@@ -308,7 +307,7 @@ export default function InteractiveNewsletterPage() {
                       </div>
                       <h3 className="text-lg font-semibold text-green-900">Mission</h3>
                     </div>
-                    <div className="text-green-800 leading-relaxed">
+                    <div className="text-green-800 leading-relaxed whitespace-pre-line">
                       {currentData.essence.mission}
                     </div>
                   </div>
@@ -316,43 +315,8 @@ export default function InteractiveNewsletterPage() {
               </CardContent>
             </Card>
 
-          </TabsContent>
-
-          {/* Messages Tab */}
-          <TabsContent value="reflections" className="space-y-8">
-            {/* Principal's Message */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Users className="w-5 h-5 text-blue-600" />
-                  <span>Principal's Message</span>
-                </CardTitle>
-                <CardDescription>Message from the Principal</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200">
-                  <div className="flex items-start space-x-4">
-                    <div className="bg-blue-600 text-white p-3 rounded-full">
-                      <Users className="w-6 h-6" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                        {currentData.reflections.principal.name}
-                      </h3>
-                      <p className="text-sm text-gray-600 mb-4">
-                        {currentData.reflections.principal.designation}
-                      </p>
-                      <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                        {currentData.reflections.principal.message}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* HOD's Message */}
-            <Card>
+            {/* HOD Message */}
+            <Card className="mb-8">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <BookOpen className="w-5 h-5 text-blue-600" />
@@ -368,13 +332,13 @@ export default function InteractiveNewsletterPage() {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                        {currentData.reflections.hod.name}
+                        {currentData.essence.hodMessage?.name || 'HOD Name'}
                       </h3>
                       <p className="text-sm text-gray-600 mb-4">
-                        {currentData.reflections.hod.designation}
+                        {currentData.essence.hodMessage?.designation || 'Head of Department'}
                       </p>
                       <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                        {currentData.reflections.hod.message}
+                        {currentData.essence.hodMessage?.message || 'HOD message content will be displayed here.'}
                       </p>
                     </div>
                   </div>
@@ -382,40 +346,9 @@ export default function InteractiveNewsletterPage() {
               </CardContent>
             </Card>
 
-            {/* Editorial Message */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <FileText className="w-5 h-5 text-blue-600" />
-                  <span>Editorial Note</span>
-                </CardTitle>
-                <CardDescription>Message from the Editorial Team</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="bg-gradient-to-r from-purple-50 to-violet-50 p-6 rounded-lg border border-purple-200">
-                  <div className="flex items-start space-x-4">
-                    <div className="bg-purple-600 text-white p-3 rounded-full">
-                      <FileText className="w-6 h-6" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                        {currentData.reflections.editorial.name}
-                      </h3>
-                      <p className="text-sm text-gray-600 mb-4">
-                        {currentData.reflections.editorial.designation}
-                      </p>
-                      <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                        {currentData.reflections.editorial.message}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </TabsContent>
 
-          {/* Achievements Tab */}
-          {/* Canvas Tab */}
+          {/* Spotlight Tab */}
           <TabsContent value="canvas">
             <Card>
               <CardHeader>

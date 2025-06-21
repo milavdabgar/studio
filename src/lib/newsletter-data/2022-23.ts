@@ -13,8 +13,13 @@ export const newsletterData2022_23: NewsletterData = {
   ],
   
   essence: {
-    vision: "To be a center of excellence in Electronics and Communication Engineering education, fostering innovation, research, and industry collaboration to produce globally competent professionals.",
-    mission: "To provide quality technical education through modern teaching methodologies, state-of-the-art laboratories, and industry partnerships, enabling students to excel in their careers and contribute to society's technological advancement."
+    vision: "To prepare competent diploma level electronics and communication engineers, catering the needs of industries and society as an excellent employee, innovator and entrepreneur with moral values.",
+    mission: "• M1: Provide quality education in the field of EC engineering.\n• M2: Develop state of art laboratories, classrooms and upgradation of Faculties.\n• M3: Strengthen industrial liaison by offering mutual beneficiaries services.\n• M4: Execute extra curricular and co-curricular activities to inculcate innovation, entrepreneurship and moral values.",
+    hodMessage: {
+      name: "Mr. S. J. Chauhan",
+      designation: "Head of Department, Electronics & Communication Engineering",
+      message: "Dear EC Family,\n\nThe academic year 2022-23 has been a watershed moment for our department, marked by exceptional academic achievements and comprehensive faculty development initiatives. Our students have consistently demonstrated excellence, with remarkable SPI scores across all semesters, particularly noteworthy being Patel Dev Kiritbhai's outstanding 9.71 SPI and Raval Stutiben Amitkumar's consistent top performance.\n\nWhat sets this year apart is our faculty's multifaceted contributions to institutional governance and student development. From IQAC and audit para coordination to SSIP innovation initiatives, our team has shouldered significant administrative responsibilities while maintaining teaching excellence. The successful organization of expert sessions on communication skills, cybersecurity, and industrial visits to Samsung Service Centre and Community Radio have enriched our students' practical learning experience.\n\nOur focus on emerging technologies - IoT, AI in electronics, sustainable design, and 5G communications - as reflected in our canvas contributions, positions our students at the forefront of technological advancement. I'm proud of our collaborative approach to education that blends academic rigor with industry relevance."
+    }
   },
   
   spotlight: [
@@ -388,24 +393,6 @@ export const newsletterData2022_23: NewsletterData = {
       authorType: "faculty"
     }
   ],
-  
-  reflections: {
-    principal: {
-      name: "Sureshkumar D Dabhi",
-      designation: "Principal, Government Polytechnic Palanpur",
-      message: "Dear Students, Faculty, and Stakeholders,\n\nIt brings me great pride to present this edition of 'Spectrum' for the academic year 2022-23, showcasing the remarkable journey of our Electronics & Communication Engineering department. This year has been particularly significant as we transitioned back to full academic activities post-pandemic, demonstrating our institution's resilience and adaptability.\n\nOur department has excelled in multiple dimensions - from achieving 100% success in higher education admissions with students securing seats at prestigious institutions like Government Engineering College Gandhinagar and LD College of Engineering, to organizing impactful expert sessions on cutting-edge topics like cybersecurity and industrial communication. The comprehensive faculty contributions spanning IQAC coordination, student welfare, and innovative teaching methodologies reflect our commitment to institutional excellence.\n\nThe diverse canvas of activities - from IoT innovations to sustainable electronics research - demonstrates how our faculty and students are embracing emerging technologies while maintaining academic rigor. I congratulate the entire EC department for their dedication to quality education and holistic student development."
-    },
-    hod: {
-      name: "Mr. S. J. Chauhan",
-      designation: "Head of Department, Electronics & Communication Engineering",
-      message: "Dear EC Family,\n\nThe academic year 2022-23 has been a watershed moment for our department, marked by exceptional academic achievements and comprehensive faculty development initiatives. Our students have consistently demonstrated excellence, with remarkable SPI scores across all semesters, particularly noteworthy being Patel Dev Kiritbhai's outstanding 9.71 SPI and Raval Stutiben Amitkumar's consistent top performance.\n\nWhat sets this year apart is our faculty's multifaceted contributions to institutional governance and student development. From IQAC and audit para coordination to SSIP innovation initiatives, our team has shouldered significant administrative responsibilities while maintaining teaching excellence. The successful organization of expert sessions on communication skills, cybersecurity, and industrial visits to Samsung Service Centre and Community Radio have enriched our students' practical learning experience.\n\nOur focus on emerging technologies - IoT, AI in electronics, sustainable design, and 5G communications - as reflected in our canvas contributions, positions our students at the forefront of technological advancement. I'm proud of our collaborative approach to education that blends academic rigor with industry relevance."
-    },
-    editorial: {
-      name: "Newsletter Editorial Team",
-      designation: "Ms. M. K. Pedhadiya & Mr. M. J. Dabgar, EC Department",
-      message: "Dear Readers,\n\nWe are delighted to present this comprehensive edition of 'Spectrum' for 2022-23, which captures the vibrant spirit of innovation and academic excellence that defines our Electronics & Communication Engineering department. This newsletter reflects a year of significant achievements - from stellar academic performances to meaningful industry engagements.\n\nThe diverse content in this edition - ranging from technical articles on next-generation technologies to heartfelt student poems and faculty research insights - showcases the holistic development approach we champion. Our spotlight section celebrates both faculty contributions across multiple institutional committees and student academic excellence, while our chronicles document meaningful industrial visits and expert sessions that bridge theory with practice.\n\nAs we compile these stories of success, innovation, and growth, we're reminded of the collaborative effort that makes our department a thriving learning community. We extend our gratitude to all contributors and readers who make 'Spectrum' a true reflection of our department's dynamic spirit."
-    }
-  },
   
   logos: [
     {

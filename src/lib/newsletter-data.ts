@@ -72,15 +72,11 @@ export interface NewsletterData {
   essence: {
     vision: string;
     mission: string;
+    hodMessage: Message;
   };
   spotlight: SpotlightItem[];
   chronicles: Event[];
   canvas: CanvasItem[];
-  reflections: {
-    principal: Message;
-    hod: Message;
-    editorial: Message;
-  };
   logos?: Array<{
     src: string;
     alt: string;

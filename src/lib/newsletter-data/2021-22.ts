@@ -323,8 +323,18 @@ export const newsletterData2021_22: NewsletterData = {
     }  ],
 
   essence: {
-    vision: "To prepare competent diploma level electronics and communication engineers, catering the needs of industries and society as an excellent employee, innovator, and entrepreneur with moral values.",
-    mission: "• Provide quality education in the field of EC engineering.\n• Develop state of art laboratories, classrooms, and up gradation of Faculties.\n• Strengthen industrial liaison by offering mutual beneficiaries services.\n• Execute extra-curricular and co-curricular activities to inculcate innovation, entrepreneurship, and moral values."
+    vision: "To prepare competent diploma level electronics and communication engineers, catering the needs of industries and society as an excellent employee, innovator and entrepreneur with moral values.",
+    mission: "• M1: Provide quality education in the field of EC engineering.\n• M2: Develop state of art laboratories, classrooms and upgradation of Faculties.\n• M3: Strengthen industrial liaison by offering mutual beneficiaries services.\n• M4: Execute extra curricular and co-curricular activities to inculcate innovation, entrepreneurship and moral values.",
+    hodMessage: {
+      name: 'S. J. Chauhan',
+      designation: 'Head of Department - Electronics & Communication Engineering',
+      message: `Electronics and communication engineering field has witnessed the evolution of semiconductor from vacuum tubes to MOSFETs, from telephones to 5G smart phones. Continuing the evolutionary tradition of the branch, it gives me immense pleasure to present its first yearly newsletter "Spectrum". Spectrum intends to provide a platform for faculties, students, and all other stakeholders to share and receive news of latest updates of the activities carried out in the department. This newsletter will also be publishing achievements of staff members and students. I expect students to take the 'Spectrum' to new heights. A lot of hard work has gone into publishing this, and every stakeholder's involvement will encourage us further. I extend my full cooperation and best wishes to the entire team behind Spectrum.`,
+      image: {
+        src: '/newsletters/2021-22/sj-chauhan.png',
+        alt: 'S. J. Chauhan - Head of Department, EC Engineering',
+        caption: 'HOD\'s message for Spectrum Newsletter 2021-22'
+      }
+    }
   },
 
   chronicles: [
@@ -671,33 +681,6 @@ export const newsletterData2021_22: NewsletterData = {
     }
   ],
 
-  reflections: {
-    principal: {
-      name: 'Sureshkumar D Dabhi',
-      designation: 'Principal, Government Polytechnic Palanpur',
-      message: `Technology is the fuel for the society; it provides means to ease human lives, and Government Polytechnic, Palanpur is one of the institutes that provide skilled and ethical engineers to the society. This institute runs basic to advance engineering programs. Electronics and communication engineering department is one which stands ahead in terms of technology and advancements. The department is well equipped with the resources to prepare competent and industry ready EC engineers catering the needs of industries, innovators, and entrepreneurs with moral values. It is my great pleasure to see the first band (Volume 1) of the "Spectrum", e-newsletter of Electronics and Communication Department being published.`,
-      image: {
-        src: '/newsletters/2021-22/spectrum1.jpg',
-        alt: 'Sureshkumar D Dabhi - Principal of Government Polytechnic Palanpur',
-        caption: 'Principal\'s message for Spectrum Newsletter 2021-22'
-      }
-    },
-    hod: {
-      name: 'S. J. Chauhan',
-      designation: 'Head of Department - Electronics & Communication Engineering',
-      message: `Electronics and communication engineering field has witnessed the evolution of semiconductor from vacuum tubes to MOSFETs, from telephones to 5G smart phones. Continuing the evolutionary tradition of the branch, it gives me immense pleasure to present its first yearly newsletter "Spectrum". Spectrum intends to provide a platform for faculties, students, and all other stakeholders to share and receive news of latest updates of the activities carried out in the department. This newsletter will also be publishing achievements of staff members and students. I expect students to take the 'Spectrum' to new heights. A lot of hard work has gone into publishing this, and every stakeholder's involvement will encourage us further. I extend my full cooperation and best wishes to the entire team behind Spectrum.`,
-      image: {
-        src: '/newsletters/2021-22/sj-chauhan.png',
-        alt: 'S. J. Chauhan - Head of Department, EC Engineering',
-        caption: 'HOD\'s message for Spectrum Newsletter 2021-22'
-      }
-    },
-    editorial: {
-      name: 'Editorial Team',
-      designation: 'Ms. Mittal K Pedhadiya & Mr. Milav J Dabgar, Lecturers, EC Department',
-      message: `It gives us an immense pleasure to release the first band of "Spectrum" a Newsletter of EC Engineering. Continuous motivation and guidance by HoD made the first release of this band a success. We are also thankful to the principal of our institute to provide us a platform. To make upcoming Band's of our Spectrum more informative and innovative feedbacks are welcome from all the stakeholders.`
-    }
-  },
   
   logos: [
     {

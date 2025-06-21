@@ -326,8 +326,23 @@ export const newsletterData2024_25: NewsletterData = {
   ],
 
   essence: {
-    vision: "To be a center of excellence in Electronics and Communication Engineering education, fostering innovation, research, and industry collaboration to produce globally competent professionals.",
-    mission: "To provide quality technical education through modern teaching methodologies, state-of-the-art laboratories, and industry partnerships, enabling students to excel in their careers and contribute to society's technological advancement."
+    vision: "To prepare competent diploma level electronics and communication engineers, catering the needs of industries and society as an excellent employee, innovator and entrepreneur with moral values.",
+    mission: "• M1: Provide quality education in the field of EC engineering.\n• M2: Develop state of art laboratories, classrooms and upgradation of Faculties.\n• M3: Strengthen industrial liaison by offering mutual beneficiaries services.\n• M4: Execute extra curricular and co-curricular activities to inculcate innovation, entrepreneurship and moral values.",
+    hodMessage: {
+      name: 'Mr. S. J. Chauhan',
+      designation: 'Head of Department - Electronics & Communication Engineering',
+      message: `Dear EC Community,
+
+The academic year 2024-25 represents a pivotal moment in our department's evolution, characterized by our strategic embrace of next-generation technologies and comprehensive educational transformation. This year has been exceptional in terms of curriculum modernization, faculty development, and student innovation initiatives that position our department as a leader in contemporary electronics and communication engineering education.
+
+Our focus on Artificial Intelligence and Machine Learning integration in electronics design, as evidenced by our comprehensive canvas contributions, reflects our commitment to preparing students for the AI-driven future of technology. The emphasis on sustainable electronics, advanced communication systems, and embedded AI applications ensures our graduates possess the skills demanded by modern industry.
+
+This year's academic achievements are remarkable, with students like Mali Bhavin Ashokbhai and Joshi Neel Subhashchandra demonstrating exceptional performance, while our faculty's contributions spanning AICTE coordination, SSIP innovation management, and NBA accreditation showcase our institutional leadership. The integration of startup ecosystem development, IoT applications, and cybersecurity principles in our educational approach reflects our holistic vision for engineering education.
+
+Our faculty's comprehensive involvement in institutional governance - from human resource management to digital portal coordination - demonstrates our commitment to excellence beyond classroom teaching. The diverse canvas contributions covering cutting-edge topics like 6G technology, quantum computing applications, and sustainable design principles ensure our students are well-prepared for future technological challenges.
+
+I'm proud of our department's progressive approach and look forward to continued innovation and excellence in the coming months.`
+    }
   },
 
   chronicles: [
@@ -1363,57 +1378,8 @@ export const newsletterData2024_25: NewsletterData = {
           caption: 'Seminar: Road Safety - Image 6'
         }
       ]
-    }
-  ],
+    }  ],
 
-  reflections: {
-    principal: {
-      name: 'Sureshkumar D Dabhi',
-      designation: 'Principal, Government Polytechnic Palanpur',
-      message: `Dear Students, Faculty, and Stakeholders,
-
-I am delighted to present this edition of "Spectrum" for the academic year 2024-25, which represents a year of innovation, technological advancement, and comprehensive curriculum transformation within our Electronics & Communication Engineering Department. This year has been particularly significant as we embrace cutting-edge technologies and prepare our students for the rapidly evolving digital landscape.
-
-The academic year 2024-25 has been marked by our department's strategic focus on emerging technologies - Artificial Intelligence, Machine Learning, IoT applications, and sustainable electronics design. Our faculty's initiatives in AICTE approval processes, NBA accreditation, and SSIP innovation coordination demonstrate our commitment to maintaining the highest standards of technical education while fostering entrepreneurship and innovation.
-
-Our students have shown exceptional academic performance, with Mali Bhavin Ashokbhai achieving an outstanding 8.71 SPI and consistent excellence demonstrated across all semesters. The integration of advanced topics like 5G communication systems, embedded AI, cybersecurity, and digital signal processing in our curriculum ensures our graduates are industry-ready and technologically competent.
-
-The comprehensive canvas contributions spanning AI integration, startup ecosystem development, and sustainable technology showcase our department's forward-thinking approach. Our emphasis on practical learning through innovative projects, industry collaborations, and research initiatives positions our students at the forefront of technological advancement.
-
-I commend the entire EC department for their dedication to excellence and encourage continued innovation in preparing engineers for tomorrow's technological challenges.`
-    },
-    hod: {
-      name: 'Mr. S. J. Chauhan',
-      designation: 'Head of Department - Electronics & Communication Engineering',
-      message: `Dear EC Community,
-
-The academic year 2024-25 represents a pivotal moment in our department's evolution, characterized by our strategic embrace of next-generation technologies and comprehensive educational transformation. This year has been exceptional in terms of curriculum modernization, faculty development, and student innovation initiatives that position our department as a leader in contemporary electronics and communication engineering education.
-
-Our focus on Artificial Intelligence and Machine Learning integration in electronics design, as evidenced by our comprehensive canvas contributions, reflects our commitment to preparing students for the AI-driven future of technology. The emphasis on sustainable electronics, advanced communication systems, and embedded AI applications ensures our graduates possess the skills demanded by modern industry.
-
-This year's academic achievements are remarkable, with students like Mali Bhavin Ashokbhai and Joshi Neel Subhashchandra demonstrating exceptional performance, while our faculty's contributions spanning AICTE coordination, SSIP innovation management, and NBA accreditation showcase our institutional leadership. The integration of startup ecosystem development, IoT applications, and cybersecurity principles in our educational approach reflects our holistic vision for engineering education.
-
-Our faculty's comprehensive involvement in institutional governance - from human resource management to digital portal coordination - demonstrates our commitment to excellence beyond classroom teaching. The diverse canvas contributions covering cutting-edge topics like 6G technology, quantum computing applications, and sustainable design principles ensure our students are well-prepared for future technological challenges.
-
-I'm proud of our department's progressive approach and look forward to continued innovation and excellence in the coming months.`
-    },
-    editorial: {
-      name: 'Editorial Team',
-      designation: 'EC Department Faculty',
-      message: `Dear Readers,
-
-We are privileged to present this comprehensive edition of "Spectrum" for the academic year 2024-25, documenting a transformative year of technological innovation, academic excellence, and forward-thinking initiatives within our Electronics & Communication Engineering department. This newsletter captures our department's evolution as we embrace emerging technologies and prepare our students for the digital future.
-
-The content in this edition reflects our commitment to cutting-edge education - from comprehensive articles on AI and ML integration in electronics to insights on startup ecosystem development and sustainable technology design. Our spotlight section celebrates exceptional academic achievements, innovative faculty contributions, and the comprehensive institutional leadership that characterizes our department.
-
-This year's emphasis on emerging technologies - 5G communications, embedded systems, cybersecurity, and digital signal processing - as documented in our canvas section, demonstrates our proactive approach to curriculum development. The diverse contributions spanning technical innovations, student project experiences, and creative expressions showcase the holistic educational philosophy that defines our department.
-
-Our chronicles of expert lectures, industrial collaborations, and innovation initiatives reflect our commitment to bridging academic learning with industry practice. The faculty contributions spanning AICTE processes, NBA accreditation, and SSIP coordination demonstrate our institutional leadership and commitment to educational excellence.
-
-As we document these stories of innovation, achievement, and growth, we celebrate the collaborative spirit that drives our department toward technological leadership. We extend our gratitude to all faculty, students, and stakeholders who contribute to our department's success and to our readers who inspire us to reach new heights of excellence.`
-    }
-  },
-  
   logos: [
     {
       src: '/newsletters/imgs/gpp-logo.png',

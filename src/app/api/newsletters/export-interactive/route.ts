@@ -473,32 +473,18 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 </div>
                 <div class="mission-card">
                     <h3 class="mission-title">🎯 Mission</h3>
-                    <p>${data.essence.mission}</p>
+                    <p style="white-space: pre-line;">${data.essence.mission}</p>
                 </div>
             </div>
         </div>
         ` : ''}
         
-        ${data.reflections ? `
-        <div class="message-section">
-            <h2 class="section-title">� Principal's Message</h2>
-            <div class="message-author">${data.reflections.principal.name}</div>
-            <div class="message-designation">${data.reflections.principal.designation}</div>
-            <div class="message-text">${data.reflections.principal.message}</div>
-        </div>
-        
+        ${data.essence?.hodMessage ? `
         <div class="message-section">
             <h2 class="section-title">👨‍🏫 Head of Department's Message</h2>
-            <div class="message-author">${data.reflections.hod.name}</div>
-            <div class="message-designation">${data.reflections.hod.designation}</div>
-            <div class="message-text">${data.reflections.hod.message}</div>
-        </div>
-        
-        <div class="message-section">
-            <h2 class="section-title">✍️ Editor's Note</h2>
-            <div class="message-author">${data.reflections.editorial.name}</div>
-            <div class="message-designation">${data.reflections.editorial.designation}</div>
-            <div class="message-text">${data.reflections.editorial.message}</div>
+            <div class="message-author">${data.essence.hodMessage.name}</div>
+            <div class="message-designation">${data.essence.hodMessage.designation}</div>
+            <div class="message-text">${data.essence.hodMessage.message}</div>
         </div>
         ` : ''}
         
