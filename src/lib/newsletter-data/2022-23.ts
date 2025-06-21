@@ -6,10 +6,10 @@ import { NewsletterData } from '../newsletter-data';
 
 export const newsletterData2022_23: NewsletterData = {
   stats: [
-    { label: 'Students Placed', value: 12, color: 'bg-blue-500' },
-    { label: 'Higher Education', value: 5, color: 'bg-green-500' },
+    { label: 'Students Placed', value: 0, color: 'bg-blue-500' },
+    { label: 'Higher Education', value: 2, color: 'bg-green-500' },
     { label: 'Faculty Publications', value: 4, color: 'bg-purple-500' },
-    { label: 'Expert Lectures', value: 8, color: 'bg-orange-500' },
+    { label: 'Expert Lectures', value: 5, color: 'bg-orange-500' },
   ],
   
   essence: {
@@ -19,40 +19,76 @@ export const newsletterData2022_23: NewsletterData = {
   
   spotlight: [
     {
-      category: 'faculty-contribution',
+      category: 'faculty-contribution' as const,
       title: 'Research Excellence Award',
       description: 'Faculty member recognized for outstanding contribution in antenna design research',
       person: 'Dr. K. M. Patel',
       designation: 'Senior Lecturer',
       details: 'IEEE Gujarat Section Best Faculty Award 2022',
-      date: 'March 2023'
+      date: 'March 2023',
+      achievements: [
+        'IEEE Gujarat Section Best Faculty Award recipient',
+        'Outstanding contribution in antenna design research',
+        'Academic excellence and research leadership',
+        'Mentorship and guidance to students'
+      ]
     },
     {
-      category: 'student-achievement',
+      category: 'student-achievement' as const,
       title: 'National Level Project Competition Winner',
       description: 'First place in Smart India Hackathon 2022',
       person: 'Raj Patel',
       studentId: '206260311015',
       details: 'IoT-based Smart Agriculture System',
-      date: 'September 2022'
+      date: 'September 2022',
+      achievements: [
+        'First place in Smart India Hackathon 2022',
+        'IoT-based Smart Agriculture System development',
+        'Innovation in agricultural technology',
+        'National level recognition for technical excellence'
+      ]
     },
     {
-      category: 'placement',
-      title: 'Record Placement Achievement',
-      description: 'Highest package secured by department student',
-      person: 'Amit Shah',
-      studentId: '206260311003',
-      details: 'TCS - Rs. 4.2 LPA',
-      date: 'February 2023'
+      category: 'higher-education' as const,
+      title: 'Government Engineering College Gandhinagar Admission',
+      description: 'Student secured admission to premier government engineering college',
+      person: 'Piyushbhai Chaudhary',
+      studentId: '206260311502',
+      details: 'Government Engineering College, Gandhinagar - B.E. in Electronics & Communication Engineering',
+      date: '2023',
+      achievements: [
+        'Admission to Government Engineering College, Gandhinagar',
+        'Pursuing B.E. in Electronics & Communication Engineering',
+        'Merit-based selection for degree program',
+        'Continuation of technical education journey'
+      ]
     },
     {
-      category: 'higher-education',
-      title: 'Admission to Premier Institute',
-      description: 'Student secured admission in top engineering college',
-      person: 'Priya Sharma',
-      studentId: '206260311028',
-      details: 'NIT Surat - M.Tech in VLSI Design',
-      date: 'June 2023'
+      category: 'higher-education' as const,
+      title: 'LD College of Engineering Admission',
+      description: 'Student admitted to prestigious LD College of Engineering, Ahmedabad',
+      person: 'Adarsh Chaudhary',
+      studentId: '206260311501',
+      details: 'LD College of Engineering, Ahmedabad - B.E. in Electronics & Communication Engineering',
+      date: '2023',
+      achievements: [
+        'Admission to LD College of Engineering, Ahmedabad',
+        'Pursuing B.E. in Electronics & Communication Engineering',
+        'Merit-based selection through ACPC',
+        'Academic excellence and career advancement'
+      ]
+    },
+    {
+      category: 'star-performer' as const,
+      title: 'Academic Excellence Recognition',
+      description: 'Outstanding academic performance by students across all semesters',
+      date: '2022-23',
+      achievements: [
+        'Semester toppers with excellent CGPA performance',
+        'Consistent academic improvement across batches',
+        'Subject-wise excellence in core engineering disciplines',
+        'Overall departmental academic achievement'
+      ]
     }
   ],
   
