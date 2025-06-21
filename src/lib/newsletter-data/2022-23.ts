@@ -34,6 +34,141 @@ export const newsletterData2022_23: NewsletterData = {
       ]
     },
     {
+      category: 'faculty-contribution' as const,
+      title: 'IQAC & Audit Para Coordination',
+      description: 'Internal Quality Assurance Cell coordination and audit para management with multi-committee leadership',
+      person: 'Mr. S. J. Chauhan',
+      designation: 'Head of Department, EC Department',
+      details: 'Co-convener of IQAC, Convener of Audit Para, Co-convener of Anti Ragging Squad',
+      date: '2022-23',
+      achievements: [
+        'Co-convener of Internal Quality Assurance Cell (IQAC)',
+        'Convener of Audit Para management',
+        'Co-convener of Anti Ragging Squad',
+        'Administrative leadership and quality assurance'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'Training & Placement Cell Leadership',
+      description: 'Training and Placement Cell coordination with industry outreach and student development',
+      person: 'Mr. L. K. Patel',
+      designation: 'Lecturer, EC Department',
+      details: 'Convener of GTU coordination, Member of Training & Placement Cell, Website management',
+      date: '2022-23',
+      achievements: [
+        'Convener of GTU coordination activities',
+        'Member of Training & Placement Cell',
+        'Website management and maintenance',
+        'Industry outreach and student placement support'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'Student Affairs & Hostel Management',
+      description: 'Student section coordination, hostel rector duties, and student welfare activities',
+      person: 'Mr. M. K. Pedhadiya',
+      designation: 'Lecturer, EC Department',
+      details: 'Member of Student Section, Women Development Cell, and Internal Complaint Committee',
+      date: '2022-23',
+      achievements: [
+        'Student Section coordination and management',
+        'Women Development Cell member',
+        'Internal Complaint Committee participation',
+        'Student welfare and hostel management'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'Human Resource & Multi-Committee Role',
+      description: 'Human Resource management, establishment section coordination, and SATHI portal management',
+      person: 'Mr. R. N. Patel',
+      designation: 'Lecturer, EC Department',
+      details: 'Convener of Head Human Resource, Co-convener of SATHI Karmyogi Portal, Member of CAS',
+      date: '2022-23',
+      achievements: [
+        'Convener of Head Human Resource management',
+        'Co-convener of SATHI Karmyogi Portal',
+        'Member of Career Advancement Scheme (CAS)',
+        'Establishment section coordination'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'Alumni Association & Student Activities',
+      description: 'Alumni association coordination and gymkhana activities management',
+      person: 'Mr. N. M. Patel',
+      designation: 'Lecturer, EC Department',
+      details: 'Member of Hostel Rector, Student Section, and Gymkhana activities',
+      date: '2022-23',
+      achievements: [
+        'Alumni association coordination',
+        'Hostel Rector duties and responsibilities',
+        'Student Section activities management',
+        'Gymkhana and extracurricular activities coordination'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'Industry Outreach & SSIP Coordination',
+      description: 'Industry linkages, website management, and startup innovation coordination',
+      person: 'Mr. M. J. Dabgar',
+      designation: 'Lecturer, EC Department',
+      details: 'Member of Training & Placement Cell, Convener of CWAN & Website, Member of SSIP',
+      date: '2022-23',
+      achievements: [
+        'Training & Placement Cell member',
+        'Convener of Campus Wide Area Network (CWAN)',
+        'Website management and coordination',
+        'Student Startup and Innovation Policy (SSIP) member'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'Academic Coordination & Time Table Management',
+      description: 'Institute time table coordination and academic calendar management',
+      person: 'Mr. R. C. Parmar',
+      designation: 'Lecturer, EC Department',
+      details: 'Member of Institute Time table committee, Student Section, and SATHI portal',
+      date: '2022-23',
+      achievements: [
+        'Institute Time Table committee member',
+        'Academic calendar coordination',
+        'Student Section activities support',
+        'SATHI portal management'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'E-Mail & Communication Systems',
+      description: 'Institutional email handling and communication systems management',
+      person: 'Mr. S. P. Joshiara',
+      designation: 'Lecturer, EC Department',
+      details: 'Convener of E-Mail Handling, Co-convener of GTU, Member of CWAN and Website committees',
+      date: '2022-23',
+      achievements: [
+        'Convener of E-Mail Handling systems',
+        'Co-convener of GTU coordination',
+        'CWAN committee member',
+        'Website committee participation'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'Gymkhana Activities & NSS Coordination',
+      description: 'Student co-curricular activities coordination and National Service Scheme management',
+      person: 'Mr. N. J. Chauhan',
+      designation: 'Lecturer, EC Department',
+      details: 'Member of Gymkhana/Co-curricular activities, NSS, Ek Bharat Shrestha Bharat (EBSB)',
+      date: '2022-23',
+      achievements: [
+        'Gymkhana and co-curricular activities coordination',
+        'National Service Scheme (NSS) member',
+        'Ek Bharat Shrestha Bharat (EBSB) program participation',
+        'Student development and community service activities'
+      ]
+    },
+    {
       category: 'student-achievement' as const,
       title: 'National Level Project Competition Winner',
       description: 'First place in Smart India Hackathon 2022',

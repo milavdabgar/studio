@@ -84,6 +84,148 @@ export const newsletterData2024_25: NewsletterData = {
         'Patel Dev Kiritbhai (226260332015) - 9.62 SPI (Sem 5)',
         'Ansari Mohammad Sadik Ansar Ahmed (226260332002) - 9.14 SPI (Sem 5)'
       ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'AICTE Approval & GTU Affiliation Leadership',
+      description: 'AICTE approval processes and GTU affiliation coordination with academic excellence',
+      person: 'Mr. S. J. Chauhan',
+      designation: 'Head of Department, EC Department',
+      details: 'Convener of AICTE Approval/GTU Affiliation, Member of MAY/PMKVY programs',
+      date: '2024-25',
+      achievements: [
+        'Convener of AICTE Approval and GTU Affiliation processes',
+        'Member of MAY (Make in India for Youth) programs',
+        'PMKVY (Pradhan Mantri Kaushal Vikas Yojana) coordination',
+        'Academic excellence and institutional accreditation leadership'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'SSIP Innovation & Central Store Management',
+      description: 'Student Startup Innovation Policy coordination and central store operations',
+      person: 'Mr. L. K. Patel',
+      designation: 'Lecturer, EC Department',
+      details: 'Convener of SSIP/CIC3/IPR/Hackathone, Member of Central Store and CLEANLINESS committees',
+      date: '2024-25',
+      achievements: [
+        'Convener of Student Startup Innovation Policy (SSIP)',
+        'CIC3 (Common Innovation Campus) coordination',
+        'Intellectual Property Rights (IPR) management',
+        'Hackathon organization and mentorship',
+        'Central Store management and CLEANLINESS committee member'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'NBA Accreditation & Student Development',
+      description: 'NBA accreditation processes and comprehensive student development activities',
+      person: 'Ms. M. K. Pedhadiya',
+      designation: 'Lecturer, EC Department',
+      details: 'Member of NBA, Student Section, Women Development Cell, and Internal Complaint Committee',
+      date: '2024-25',
+      achievements: [
+        'National Board of Accreditation (NBA) member',
+        'Student Section coordination and management',
+        'Women Development Cell participation',
+        'Internal Complaint Committee member',
+        'Student welfare and development activities'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'Human Resources & Digital Portal Management',
+      description: 'Human resource management and digital transformation through various portals',
+      person: 'Mr. R. N. Patel',
+      designation: 'Lecturer, EC Department',
+      details: 'Convener of Establishment Section, SATHI Karmyogi Portal, Member of CAS and Alumni Association',
+      date: '2024-25',
+      achievements: [
+        'Convener of Establishment Section',
+        'SATHI Karmyogi Portal management and coordination',
+        'Career Advancement Scheme (CAS) member',
+        'Alumni Association activities and networking',
+        'Digital transformation and HR management'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'Student Affairs & Hostel Administration',
+      description: 'Comprehensive student affairs management and hostel administration',
+      person: 'Mr. N. M. Patel',
+      designation: 'Lecturer, EC Department',
+      details: 'Member of Student Section, Hostel Rector, Gymkhana activities, and SC-ST Cell',
+      date: '2024-25',
+      achievements: [
+        'Student Section coordination and support',
+        'Hostel Rector duties and residential management',
+        'Gymkhana activities and extracurricular coordination',
+        'SC-ST Cell member for social welfare',
+        'Student welfare and campus life enhancement'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'Infrastructure & Industry Outreach',
+      description: 'Infrastructure maintenance coordination and industry partnership development',
+      person: 'Mr. M. J. Dabgar',
+      designation: 'Lecturer, EC Department',
+      details: 'Convener of CWAN/Internet/CCTV, Member of Training & Placement Cell, NEP coordination',
+      date: '2024-25',
+      achievements: [
+        'Convener of Campus Wide Area Network (CWAN)',
+        'Internet infrastructure and CCTV systems management',
+        'Training & Placement Cell member',
+        'National Education Policy (NEP) coordination',
+        'Technology infrastructure and industry partnerships'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'Academic Planning & Time Management',
+      description: 'Institute academic planning and comprehensive time table management',
+      person: 'Mr. R. C. Parmar',
+      designation: 'Lecturer, EC Department',
+      details: 'Member of Institute Time table committee, Student Section, RUSA, and CAS',
+      date: '2024-25',
+      achievements: [
+        'Institute Time Table committee member',
+        'Academic calendar planning and coordination',
+        'Student Section activities support',
+        'RUSA (Rashtriya Uchchatar Shiksha Abhiyan) member',
+        'Career Advancement Scheme (CAS) participation'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'Communication Systems & Data Management',
+      description: 'Institutional communication systems and academic data management',
+      person: 'Mr. S. P. Joshiara',
+      designation: 'Lecturer, EC Department',
+      details: 'Convener of E-Mail Handling, Co-convener of GTU, Member of CWAN and CLEANLINESS',
+      date: '2024-25',
+      achievements: [
+        'Convener of E-Mail Handling systems',
+        'Co-convener of GTU coordination',
+        'CWAN (Campus Wide Area Network) committee member',
+        'CLEANLINESS committee participation',
+        'Digital communication and data management'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'ISTE Chapter & Student Development',
+      description: 'Indian Society for Technical Education chapter coordination and student development activities',
+      person: 'Mr. N. J. Chauhan',
+      designation: 'Lecturer, EC Department',
+      details: 'Member of ISTE Chapter, Gymkhana activities, and A V Gajjar-Elect team',
+      date: '2024-25',
+      achievements: [
+        'Indian Society for Technical Education (ISTE) Chapter member',
+        'Gymkhana activities coordination',
+        'A V Gajjar-Elect team member',
+        'Student development and technical education activities'
+      ]
     }
   ],
 

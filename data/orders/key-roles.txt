@@ -1,0 +1,151 @@
+  // 2022-23 Academic Year
+  "2022-23": [
+    {
+      category: "faculty-contribution" as const,
+      title: "IQAC & Audit Para Coordination",
+      description: "Internal Quality Assurance Cell coordination and audit para management with multi-committee leadership",
+      person: "Mr. S. J. Chauhan",
+      designation: "Head of Department, EC Department",
+      details: "Co-convener of IQAC, Convener of Audit Para, Co-convener of Anti Ragging Squad",
+      date: "2022-23"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "Training & Placement Cell Leadership",
+      description: "Training and Placement Cell coordination with industry outreach and student development",
+      person: "Mr. L. K. Patel",
+      designation: "Lecturer, EC Department",
+      details: "Convener of GTU coordination, Member of Training & Placement Cell, Website management",
+      date: "2022-23"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "Student Affairs & Hostel Management",
+      description: "Student section coordination, hostel rector duties, and student welfare activities",
+      person: "Mr. M. K. Pedhadiya",
+      designation: "Lecturer, EC Department",
+      details: "Member of Student Section, Women Development Cell, and Internal Complaint Committee",
+      date: "2022-23"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "Human Resource & Multi-Committee Role",
+      description: "Human Resource management, establishment section coordination, and SATHI portal management",
+      person: "Mr. R. N. Patel",
+      designation: "Lecturer, EC Department",
+      details: "Convener of Head Human Resource, Co-convener of SATHI Karmyogi Portal, Member of CAS",
+      date: "2022-23"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "Alumni Association & Student Activities",
+      description: "Alumni association coordination and gymkhana activities management",
+      person: "Mr. N. M. Patel",
+      designation: "Lecturer, EC Department",
+      details: "Member of Hostel Rector, Student Section, and Gymkhana activities",
+      date: "2022-23"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "Industry Outreach & SSIP Coordination",
+      description: "Industry linkages, website management, and startup innovation coordination",
+      person: "Mr. M. J. Dabgar",
+      designation: "Lecturer, EC Department",
+      details: "Member of Training & Placement Cell, Convener of CWAN & Website, Member of SSIP",
+      date: "2022-23"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "Academic Coordination & Time Table Management",
+      description: "Institute time table coordination and academic calendar management",
+      person: "Mr. R. C. Parmar",
+      designation: "Lecturer, EC Department",
+      details: "Member of Institute Time table committee, Student Section, and SATHI portal",
+      date: "2022-23"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "E-Mail & Communication Systems",
+      description: "Institutional email handling and communication systems management",
+      person: "Mr. S. P. Joshiara",
+      designation: "Lecturer, EC Department",
+      details: "Convener of E-Mail Handling, Co-convener of GTU, Member of CWAN and Website committees",
+      date: "2022-23"
+    }
+  ],
+
+  // 2023-24 Academic Year
+  "2023-24": [
+    {
+      category: "faculty-contribution" as const,
+      title: "IQAC & Audit Para Coordination",
+      description: "Internal Quality Assurance Cell coordination and audit para management with multi-committee leadership",
+      person: "Mr. S. J. Chauhan",
+      designation: "Head of Department, EC Department",
+      details: "Co-convener of IQAC, Convener of Audit Para, Co-convener of Anti Ragging Squad",
+      date: "2023-24"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "Training & Placement Cell Leadership",
+      description: "Training and Placement Cell coordination with industry outreach and student development",
+      person: "Mr. L. K. Patel",
+      designation: "Lecturer, EC Department",
+      details: "Convener of GTU coordination, Member of Training & Placement Cell, Website management",
+      date: "2023-24"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "Student Affairs & Hostel Management",
+      description: "Student section coordination, hostel rector duties, and student welfare activities",
+      person: "Mr. M. K. Pedhadiya",
+      designation: "Lecturer, EC Department",
+      details: "Member of Student Section, Women Development Cell, and Internal Complaint Committee",
+      date: "2023-24"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "Human Resource & Multi-Committee Role",
+      description: "Human Resource management, establishment section coordination, and SATHI portal management",
+      person: "Mr. R. N. Patel",
+      designation: "Lecturer, EC Department",
+      details: "Convener of Head Human Resource, Co-convener of SATHI Karmyogi Portal, Member of CAS",
+      date: "2023-24"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "Alumni Association & Student Activities",
+      description: "Alumni association coordination and gymkhana activities management",
+      person: "Mr. N. M. Patel",
+      designation: "Lecturer, EC Department",
+      details: "Member of Hostel Rector, Student Section, and Gymkhana activities",
+      date: "2023-24"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "Industry Outreach & SSIP Coordination",
+      description: "Industry linkages, website management, and startup innovation coordination",
+      person: "Mr. M. J. Dabgar",
+      designation: "Lecturer, EC Department",
+      details: "Member of Training & Placement Cell, Convener of CWAN & Website, Member of SSIP",
+      date: "2023-24"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "Academic Coordination & Time Table Management",
+      description: "Institute time table coordination and academic calendar management",
+      person: "Mr. R. C. Parmar",
+      designation: "Lecturer, EC Department",
+      details: "Member of Institute Time table committee, Student Section, and SATHI portal",
+      date: "2023-24"
+    },
+    {
+      category: "faculty-contribution" as const,
+      title: "E-Mail & Communication Systems",
+      description: "Institutional email handling and communication systems management",
+      person: "Mr. S. P. Joshiara",
+      designation: "Lecturer, EC Department",
+      details: "Convener of E-Mail Handling, Co-convener of GTU, Member of CWAN and Website committees",
+      date: "2023-24"
+    }
+  ],
