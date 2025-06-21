@@ -241,48 +241,6 @@ export const newsletterData2023_24: NewsletterData = {
         'Package of ₹3,00,000 per annum'
       ]
     },
-    {
-      category: 'placement' as const,
-      title: 'Historical Placement Excellence - Mundra Solar',
-      description: 'Multiple students placed at Mundra Solar Pv Ltd over the years',
-      person: 'Multiple EC Students',
-      details: 'Mundra Solar Pv Ltd - Trainee Engineer positions across multiple batches',
-      date: '2019-2020',
-      achievements: [
-        'Consistent placement track record at Mundra Solar',
-        'Trainee Engineer positions in renewable energy sector',
-        'Multiple students placed: Adilbhai Memon, Sanket Jha, Sanjay Chauhan',
-        'Strong industry relationship building for sustainable placements'
-      ]
-    },
-    {
-      category: 'placement' as const,
-      title: 'Power Sector Placements',
-      description: 'Students placed in various power and electrical companies',
-      person: 'Multiple EC Graduates',
-      details: 'Various companies including GSECL, Tata Power, L&T',
-      date: '2018-2019',
-      achievements: [
-        'GSECL Powerplant Bhuj - Plant Operator (Rajkuvar Sharma)',
-        'Tata Power Wav - Trainee (Jamabhai Rabari)', 
-        'L&T Jamnagar - Trainee Engineer (Pravinkumar Rathod)',
-        'Strong presence in power and electrical industry'
-      ]
-    },
-    {
-      category: 'higher-education' as const,
-      title: 'Premier Engineering Colleges - Historical Admissions',
-      description: 'Consistent track record of students joining top engineering colleges',
-      person: 'Multiple EC Students',
-      details: 'LDCE, VGEC, GEC colleges - Various years',
-      date: '2019-2022',
-      achievements: [
-        'LDCE Ahmedabad admissions: Bharatbhai Khardola, Nileshkumar Pavar, Krishna Panchal',
-        'VGEC Ahmedabad admissions: Abhishek Roy, Riddhiben Sathwara, Armankhan Ghasura',
-        'GEC admissions across multiple locations: Bharuch, Modasa, Gandhinagar',
-        'Consistent higher education success rate with merit-based selections'
-      ]
-    },
     // Higher Education
     {
       category: 'higher-education' as const,

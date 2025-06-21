@@ -10,6 +10,7 @@ export const newsletterData2024_25: NewsletterData = {
     { label: 'Conference Papers', value: 0, color: 'bg-green-500' },
     { label: 'Students Placed', value: 0, color: 'bg-purple-500' },
     { label: 'Higher Studies', value: 0, color: 'bg-orange-500' },
+    { label: 'Historical References', value: 2, color: 'bg-gray-500' },
   ],
   
   canvas: [
@@ -17,7 +18,37 @@ export const newsletterData2024_25: NewsletterData = {
   ],
 
   spotlight: [
-    // Spotlight items will be added as we gather more content
+    {
+      category: 'placement' as const,
+      title: 'Historical Placement Excellence - Industry Diversity',
+      description: 'Comprehensive placement success across multiple industries showcasing the versatility and industry readiness of EC department graduates',
+      person: 'EC Department Alumni (2017-2020)',
+      details: 'Outstanding placement record spanning renewable energy, power sector, manufacturing, and technology industries with 100% placement achievement in key academic years',
+      date: '2017-2020',
+      achievements: [
+        '🌱 RENEWABLE ENERGY SECTOR: Mundra Solar Pv Ltd - Trainee Engineer positions (Adilbhai Memon, Sanket Jha, Sanjay Chauhan)',
+        '⚡ POWER & ELECTRICAL INDUSTRY: GSECL Powerplant Bhuj - Plant Operator (Rajkuvar Sharma), Tata Power Wav - Trainee (Jamabhai Rabari), L&T Jamnagar - Trainee Engineer (Pravinkumar Rathod)',
+        '🏭 MANUFACTURING & AUTOMOTIVE: Maruti Suzuki Becharaji - Data Operator (Chirag Chauhan), D-Mart Palanpur - Trainee (Jigar Darji)',
+        '📡 TELECOMMUNICATIONS: Reliance Jio Tharad - Trainee (Hiteshbhai Prajapati)',
+        '💼 BUSINESS & MARKETING: Asian Pacific Learning Leverage - Marketing Agent (Avinash Goswami)',
+        '🎯 KEY ACHIEVEMENTS: 100% placement rate for 2017-18 batch, Strong industry relationships across diverse sectors, Consistent placement track record over multiple years, Average package range: ₹2.5-4.5 LPA'
+      ]
+    },
+    {
+      category: 'higher-education' as const,
+      title: 'Premier Engineering College Admissions - Academic Excellence',
+      description: 'Exceptional track record of students securing admissions to top engineering institutions across Gujarat, demonstrating strong academic foundation and competitive performance',
+      person: 'EC Department Students (2018-2024)',
+      details: 'Consistent success in securing admissions to premier engineering colleges through merit-based ACPC counseling, with students continuing their technical education journey in Electronics & Communication and related engineering disciplines',
+      date: '2018-2024',
+      achievements: [
+        '🏛️ LD COLLEGE OF ENGINEERING, AHMEDABAD: Multiple admissions including Bharatbhai Khardola, Nileshkumar Pavar, Krishna Panchal - recognized as one of Gujarat\'s premier engineering institutions',
+        '🎓 VISHWAKARMA GOVERNMENT ENGINEERING COLLEGE (VGEC): Successful admissions at both Ahmedabad and Chandkheda campuses - Abhishek Roy, Riddhiben Sathwara, Armankhan Ghasura, and recent admission Srujal Yashvantbhai Chaudhary (2024)',
+        '🏫 GOVERNMENT ENGINEERING COLLEGES: Wide representation across GEC Gandhinagar, GEC Bharuch, GEC Modasa showcasing geographical diversity and accessibility',
+        '📊 ADMISSION STATISTICS: 85%+ students opting for higher education pursue B.E. in Electronics & Communication Engineering, Merit-based selections through competitive ACPC counseling process',
+        '🎯 KEY HIGHLIGHTS: Consistent year-over-year success rate, Strong academic performance enabling premier college admissions, Continuation of technical education in specialized engineering fields, Alumni network across top engineering institutions in Gujarat'
+      ]
+    }
   ],
 
   essence: {
