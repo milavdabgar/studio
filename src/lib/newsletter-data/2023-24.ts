@@ -117,6 +117,97 @@ export const newsletterData2023_24: NewsletterData = {
       date: "May 2023",
       type: "experience",
       authorType: "student"
+    },
+    {
+      title: "In Loving Memory of Shri Nikunj M Patel",
+      author: "EC Department Faculty & Students",
+      designation: "Electronics & Communication Engineering Department",
+      content: "On December 15, 2023, we lost one of the greatest faculty members of our EC Department, Shri Nikunj M Patel, after a brief illness. His departure has left an irreplaceable void in our hearts and our institution. Nikunj sir was not just an educator; he was a mentor, a guide, and a friend to countless students who walked through our department doors.\n\nHis down-to-earth nature made every student feel comfortable approaching him with their doubts and concerns. Whether it was academic guidance, career counseling, or personal support, he was always there with a warm smile and helpful words. His commitment to any task he undertook was exemplary - he approached every responsibility with dedication and integrity that inspired all of us.\n\nShri Nikunj M Patel believed in nurturing not just technical skills but also human values. He taught us that true success comes from helping others succeed. His legacy lives on in every student he mentored, every colleague he supported, and every life he touched with his kindness and wisdom.\n\nThough he may have left us physically, his teachings, his values, and his spirit continue to guide us. We remember him not with sorrow, but with gratitude for having had the privilege of working alongside such a remarkable human being.\n\nRest in peace, dear sir. Your memory will forever be cherished in the EC Department family.",
+      date: "December 2023",
+      type: "article",
+      authorType: "faculty",
+      images: [
+        {
+          src: '/newsletters/2023-24/nmp/20210926_101936.jpg',
+          alt: 'Shri Nikunj M Patel with students and colleagues',
+          caption: 'Capturing moments of dedication and mentorship in the EC Department'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/20220128_171246.jpg',
+          alt: 'Shri Nikunj M Patel during department activities',
+          caption: 'Always present and engaged in departmental initiatives and student welfare'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/20221231_155100.jpg',
+          alt: 'Shri Nikunj M Patel with faculty and students',
+          caption: 'A beloved teacher who brought warmth and wisdom to every gathering'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/462940275_27529417436649570_7023369186748130685_n.jpg',
+          alt: 'Shri Nikunj M Patel in memorable moments',
+          caption: 'Cherished memories of a faculty member who touched countless lives'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/464242605_9412158062134416_5050199162295147749_n.jpg',
+          alt: 'Shri Nikunj M Patel with the EC community',
+          caption: 'Building bonds and fostering growth in the electronics engineering community'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/464244071_9412159172134305_6631052670891998215_n.jpg',
+          alt: 'Shri Nikunj M Patel during educational activities',
+          caption: 'Committed to excellence in education and student development'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/464284590_9412157725467783_6967180381419490622_n.jpg',
+          alt: 'Shri Nikunj M Patel with students',
+          caption: 'A mentor who believed in nurturing both technical skills and human values'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/IMG-20180928-WA0022.jpg',
+          alt: 'Shri Nikunj M Patel in departmental setting',
+          caption: 'Dedicated service to the Electronics & Communication Engineering Department'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/IMG-20221224-WA0001.jpg',
+          alt: 'Shri Nikunj M Patel with colleagues',
+          caption: 'Professional excellence and collaborative spirit in every endeavor'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/IMG_20180314_112606.jpg',
+          alt: 'Shri Nikunj M Patel during academic activities',
+          caption: 'Early years of dedicated service and commitment to education'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/IMG_20180518_140436.jpg',
+          alt: 'Shri Nikunj M Patel with students',
+          caption: 'Patient guidance and encouragement for every student who sought help'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/IMG_20180815_085220.jpg',
+          alt: 'Shri Nikunj M Patel in teaching environment',
+          caption: 'Passionate about teaching and making complex concepts accessible to all'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/IMG_20180815_090133.jpg',
+          alt: 'Shri Nikunj M Patel during faculty activities',
+          caption: 'Active participation in all departmental activities and responsibilities'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/IMG_20180815_090712.jpg',
+          alt: 'Shri Nikunj M Patel with academic community',
+          caption: 'Building lasting relationships within the academic community'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/IMG_20180925_211850.jpg',
+          alt: 'Shri Nikunj M Patel during special occasions',
+          caption: 'Celebrating achievements and milestones with students and colleagues'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/IMG_20180928_170327.jpg',
+          alt: 'Shri Nikunj M Patel in memorable moments',
+          caption: 'A legacy of kindness, wisdom, and unwavering commitment to education'
+        }
+      ]
     }
   ],
 
