@@ -129,24 +129,19 @@ export const newsletterData2021_22: NewsletterData = {
     },
     {
       category: "faculty-contribution" as const,
-      title: "GTU Coordination & Fundamentals Syllabus",
-      description: "GTU institutional coordination and syllabus development for Fundamentals of Electronics",
+      title: "GTU Coordination & Research Excellence",
+      description: "GTU institutional coordination, syllabus development for Fundamentals of Electronics, and research paper recognition at national conference",
       person: "Mr. L. K. Patel",
       designation: "Lecturer, EC Department",
-      details: "GTU coordinator of the institute",
-      date: "2021-22"
-    },
-    {
-      category: "faculty-contribution" as const, 
-      title: "Best Paper Runner-up Award",
-      description: "Mr. L. K. Patel won best paper runner-up at National Conference",
-      person: "Mr. L. K. Patel",
-      designation: "Lecturer, EC Department",
-      date: "October 2021",
+      details: "GTU coordinator of the institute with research paper runner-up award at national conference",
+      date: "2021-22",
       achievements: [
+        "GTU coordinator of the institute",
+        "Syllabus development for Fundamentals of Electronics",
+        "Best Paper Runner-up Award (October 2021)",
         "Paper: Analysis of matched key points of image registration using SIFT, SURF with different layers of CNN",
         "3rd National Conference on Recent Trends in Engineering, Management, Pharmacy, Architecture And Science",
-        "GTU coordinator and syllabus contributor"
+        "Administrative coordination and research excellence"
       ]
     },    
     {
@@ -160,25 +155,19 @@ export const newsletterData2021_22: NewsletterData = {
     },
     {
       category: "faculty-contribution" as const,
-      title: "Administrative Officer & Editorial Board",
-      description: "Institute administrative officer, editorial board member, and antenna design training",
-      person: "Mr. R. N. Patel",
-      designation: "Administrative Officer & Lecturer",
-      details: "Editorial board member in Global Research and Development Journal, Training: Antenna Design",
-      date: "2021-22"
-    },
-    {
-      category: "faculty-contribution" as const,
-      title: "Patent Publications by Dr. R. N. Patel",
-      description: "Published two patents in antenna design for industrial applications",
+      title: "Patent Publications & Administrative Leadership",
+      description: "Published two patents in antenna design and served as institute administrative officer with editorial board membership",
       person: "Dr. R. N. Patel",
-      designation: "Lecturer, EC Department",
-      date: "February 2022",
+      designation: "Administrative Officer & Lecturer, EC Department",
+      details: "Published patents in antenna design for industrial applications, editorial board member, and administrative leadership",
+      date: "2021-22",
       achievements: [
         "Patent: Design of wideband bow tie antenna using tapered balun for ISM band (25/02/2022)",
         "Patent: Rectangular patch antenna with Tree-Fractal structure (21/01/2022)",
         "Editorial board member in Global Research and Development Journal",
-        "Completed training on Antenna Design"
+        "Institute administrative officer duties and responsibilities",
+        "Completed training on Antenna Design",
+        "Research focus on antenna design for industrial applications"
       ]
     },    
     {
