@@ -15,60 +15,108 @@ export const newsletterData2023_24: NewsletterData = {
   
   canvas: [
     {
-      title: "6G Technology: Beyond Imagination",
-      author: "Prof. Advanced Faculty",
-      designation: "Senior Lecturer, EC Department",
-      content: "While 5G is still being deployed, research into 6G technology is already underway. Expected by 2030, 6G will offer terabit speeds, holographic communications, and brain-computer interfaces. As EC engineers, we must prepare for this technological revolution that will redefine human-machine interaction.",
+      title: "6G Technology: The Next Communication Revolution",
+      author: "Mr. S. J. Chauhan",
+      designation: "Head of Department, EC Department",
+      content: "While 5G networks are still being deployed globally, research into 6G technology is already underway. Expected by 2030, 6G will offer terabit speeds, holographic communications, and seamless integration with AI and IoT ecosystems. As EC engineers, we must prepare for this technological revolution that will redefine human-machine interaction and enable truly immersive digital experiences.",
       date: "March 2024",
-      type: "tech-news",
+      type: "article",
       authorType: "faculty"
     },
     {
-      title: "Neuromorphic Computing: The Brain-Inspired Approach",
-      author: "Dr. Research Innovator",
-      designation: "Research Faculty, EC Department",
-      content: "Neuromorphic computing mimics the neural structure of the human brain, offering ultra-low power consumption and real-time learning capabilities. This emerging field combines neuroscience, computer science, and electronics to create next-generation computing systems.",
+      title: "Artificial Intelligence in Modern Electronics",
+      author: "Mr. L. K. Patel",
+      designation: "Lecturer, EC Department",
+      content: "AI is transforming every aspect of electronics design and manufacturing. From automated PCB design optimization to predictive maintenance in electronic systems, machine learning algorithms are becoming indispensable tools. Students must understand both traditional electronics and AI fundamentals to excel in tomorrow's technology landscape.",
       date: "February 2024",
-      type: "research",
+      type: "innovation",
       authorType: "faculty"
     },
     {
-      title: "My Robotics Competition Experience",
-      author: "Innovative Student",
-      studentId: "236260311xxx",
-      semester: "5th Semester",
-      content: "Participating in the national robotics competition was a dream come true. Our team developed an autonomous navigation robot using computer vision and machine learning. The experience taught me the importance of interdisciplinary knowledge in modern electronics engineering.",
+      title: "My Journey to Academic Excellence",
+      author: "Prajapati Shaileshbhai Chelabhai",
+      studentId: "236260311007",
+      semester: "2nd Semester",
+      content: "Achieving top rank in my semester has been incredibly rewarding, but the journey taught me more than just academic success. The support from our faculty, hands-on laboratory experiences, and collaborative project work have shaped my understanding of electronics engineering. I encourage my fellow students to embrace every learning opportunity and never hesitate to ask questions.",
       date: "January 2024",
       type: "experience",
       authorType: "student"
     },
     {
-      title: "Sustainable Electronics Design",
-      author: "Green Tech Advocate",
-      designation: "Environmental Engineering Lecturer",
-      content: "The future of electronics lies in sustainable design practices. From biodegradable circuits to energy harvesting systems, we must innovate responsibly. Our students are exploring eco-friendly materials and circular economy principles in electronic product design.",
+      title: "Renewable Energy Systems and Electronics",
+      author: "Mr. R. N. Patel",
+      designation: "Lecturer, EC Department",
+      content: "The integration of electronics with renewable energy systems is creating exciting opportunities for sustainable technology development. From smart grid systems to efficient power converters, EC engineers play a crucial role in the green energy transition. Our department is focusing on practical projects that combine environmental consciousness with technical excellence.",
       date: "December 2023",
-      type: "innovation",
+      type: "article",
       authorType: "faculty"
     },
     {
-      title: "Digital Dreams",
-      author: "Creative Writer",
-      studentId: "236260311yyy",
-      semester: "3rd Semester",
-      content: "In the realm of bits and bytes,\nWhere digital dreams take flight,\nWe craft the future with our hands,\nGuided by electronic light.\n\nFrom sensors smart to AI bright,\nEach circuit tells a tale,\nOf innovation, dedication,\nWhere human spirits never fail.",
+      title: "Innovation's Call",
+      author: "Maknojiya Arman Imranbhai",
+      studentId: "236260332029",
+      semester: "2nd Semester",
+      content: "In laboratories where circuits come alive,\nWhere knowledge and curiosity thrive,\nWe learn to build, we learn to create,\nShaping tomorrow, sealing our fate.\n\nFrom microprocessors to wireless design,\nEach concept learned makes our future shine,\nWith dedication and passion so true,\nElectronics engineering, we're coming for you!\n\nThank you, teachers, for showing the way,\nGuiding our steps every single day.",
       date: "November 2023",
       type: "poem",
       authorType: "student"
     },
     {
-      title: "Quantum Sensors and Measurement",
-      author: "Quantum Research Team",
-      designation: "Advanced Research Group",
-      content: "Quantum sensors are revolutionizing precision measurement across multiple domains. From gravitational wave detection to medical imaging, these ultra-sensitive devices offer unprecedented accuracy. Understanding quantum principles is becoming essential for next-generation sensor design.",
+      title: "Internet of Things: Building Smart Ecosystems",
+      author: "Mr. M. J. Dabgar",
+      designation: "Lecturer, EC Department",
+      content: "IoT is transforming how we interact with our environment, from smart homes to industrial automation. Understanding sensor networks, communication protocols, and data analytics is essential for modern EC engineers. Our students are working on exciting IoT projects that solve real-world problems while gaining practical experience with cutting-edge technologies.",
       date: "October 2023",
-      type: "research",
+      type: "article",
       authorType: "faculty"
+    },
+    {
+      title: "My Research Project Experience",
+      author: "Raval Stutiben Amitkumar",
+      studentId: "216260311005",
+      semester: "6th Semester",
+      content: "Working on my final year project has been the highlight of my diploma journey. Designing a smart irrigation system using IoT sensors and wireless communication taught me to integrate theoretical knowledge with practical implementation. The guidance from faculty and access to modern laboratory equipment made this learning experience truly valuable. I'm excited to pursue higher education and continue exploring electronics engineering.",
+      date: "September 2023",
+      type: "project",
+      authorType: "student"
+    },
+    {
+      title: "Digital Signal Processing in Modern Applications",
+      author: "Mr. N. J. Chauhan",
+      designation: "Lecturer, EC Department",
+      content: "Digital Signal Processing (DSP) is at the heart of modern communication systems, from 5G networks to audio processing applications. Understanding DSP fundamentals enables students to work with cutting-edge technologies in telecommunications, multimedia, and biomedical engineering. Our updated curriculum includes hands-on DSP projects using MATLAB and embedded systems.",
+      date: "August 2023",
+      type: "article",
+      authorType: "faculty"
+    },
+    {
+      title: "Engineering Dreams",
+      author: "Chaudhary Srujal Yashvantbhai",
+      studentId: "216260311012",
+      semester: "6th Semester",
+      content: "Dreams of circuits dancing in my head,\nWhere electrons flow and knowledge is fed,\nFrom basic gates to complex design,\nEach lesson learned helps my future shine.\n\nIn this journey of engineering art,\nPassion and perseverance play their part,\nWith teachers guiding every single day,\nSuccess and knowledge come our way.\n\nElectronics isn't just what we learn,\nIt's the fire within that makes us yearn,\nTo innovate, create, and build anew,\nMaking impossible dreams come true.",
+      date: "July 2023",
+      type: "poem",
+      authorType: "student"
+    },
+    {
+      title: "Cybersecurity in Electronic Systems",
+      author: "Mr. R. C. Parmar",
+      designation: "Lecturer, EC Department",
+      content: "As electronic systems become increasingly connected, cybersecurity has become a critical concern for EC engineers. From securing IoT devices to implementing encryption in communication systems, understanding cybersecurity principles is essential. Students should focus on learning both hardware and software security measures to design robust electronic systems.",
+      date: "June 2023",
+      type: "article",
+      authorType: "faculty"
+    },
+    {
+      title: "Industry Placement Success Story",
+      author: "Bharat Shankarlal Pawar",
+      studentId: "216260311003",
+      semester: "6th Semester",
+      content: "Getting placed at Micron Technology was a dream come true! The journey from first semester to final placement required consistent hard work, active participation in departmental activities, and continuous skill development. The mock interviews, technical workshops, and industry interactions organized by our department prepared me well for the selection process. I'm grateful to all faculty members for their guidance and support.",
+      date: "May 2023",
+      type: "experience",
+      authorType: "student"
     }
   ],
 

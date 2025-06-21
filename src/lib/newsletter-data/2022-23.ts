@@ -294,59 +294,97 @@ export const newsletterData2022_23: NewsletterData = {
   
   canvas: [
     {
-      title: "Internet of Things: Revolutionizing Connectivity",
-      author: "Dr. S. R. Patel",
-      designation: "Head of Department, EC",
-      content: "The Internet of Things (IoT) is transforming how we interact with the world around us. From smart homes to industrial automation, IoT is creating an interconnected ecosystem where devices communicate seamlessly. As EC engineers, understanding IoT protocols, sensor networks, and data analytics is crucial for future innovations. Our department is pioneering IoT research through student projects and industry collaborations.",
+      title: "Internet of Things in Smart Cities",
+      author: "Mr. S. J. Chauhan",
+      designation: "Head of Department, EC Department",
+      content: "The Internet of Things (IoT) is revolutionizing urban infrastructure through smart city initiatives. From intelligent traffic management systems to automated waste collection, IoT sensors and devices are creating interconnected networks that improve quality of life. As electronics engineers, we must understand protocols like LoRaWAN, Zigbee, and 6LoWPAN that enable these massive sensor networks. The integration of edge computing with IoT devices is reducing latency and improving real-time decision making in critical city services.",
       date: "November 2022",
-      type: "tech-news",
+      type: "article",
       authorType: "faculty"
     },
     {
-      title: "Machine Learning in Signal Processing",
-      author: "Mr. A. K. Sharma",
+      title: "The Future is 5G: Beyond Speed",
+      author: "Mr. L. K. Patel",
       designation: "Lecturer, EC Department",
-      content: "The convergence of machine learning and signal processing is opening new frontiers in communication systems. From adaptive filtering to intelligent antenna systems, ML algorithms are enhancing traditional signal processing techniques. Students should explore Python libraries like TensorFlow and PyTorch alongside MATLAB to stay ahead in this evolving field.",
-      date: "October 2022",
-      type: "innovation",
-      authorType: "faculty"
-    },
-    {
-      title: "My Research Journey in VLSI Design",
-      author: "Kavya Patel",
-      studentId: "206260311018",
-      semester: "6th Semester",
-      content: "VLSI design has always fascinated me due to its intricate nature and wide applications. During my project work, I designed a low-power operational amplifier using Cadence tools. The experience taught me the importance of precision in circuit design and the challenges of optimizing for multiple parameters. I'm grateful for the guidance from faculty and the excellent lab facilities that made this possible.",
-      date: "January 2023",
-      type: "project",
-      authorType: "student"
-    },
-    {
-      title: "Sustainable Electronics: Green Technology",
-      author: "Dr. M. J. Patel",
-      designation: "Senior Lecturer, EC Department",
-      content: "As environmental concerns grow, the electronics industry is embracing sustainable practices. From biodegradable PCBs to energy-efficient designs, green electronics is becoming a necessity. Our department is incorporating sustainability concepts in curriculum design, encouraging students to consider environmental impact in their projects and future careers.",
+      content: "While 5G promises incredible speeds, its true potential lies in ultra-low latency and massive device connectivity. Network slicing allows operators to create virtual networks optimized for specific applications - from autonomous vehicles requiring millisecond response times to IoT sensors that need minimal bandwidth. The implementation of mmWave technology and beamforming is enabling these advanced capabilities, fundamentally changing how we think about wireless communication.",
       date: "December 2022",
       type: "article",
       authorType: "faculty"
     },
     {
-      title: "Placement Success Story",
-      author: "Rohit Shah",
-      studentId: "206260311025",
-      semester: "6th Semester",
-      content: "Getting placed at Infosys was a dream come true. The journey wasn't easy, but the continuous support from our faculty, especially in aptitude and technical preparation, made all the difference. The mock interviews and industry interactions organized by our department built my confidence. I encourage my juniors to actively participate in all department activities and maintain consistency in their studies.",
-      date: "March 2023",
+      title: "My Journey Through Diploma Years",
+      author: "Panchal Shubh Kiranbhai",
+      studentId: "226260311003",
+      semester: "2nd Semester",
+      content: "Starting my diploma journey in Electronics & Communication has been an incredible experience. The hands-on labs, especially working with microcontrollers and communication systems, have made theoretical concepts come alive. Our faculty's guidance during project work has helped me understand the practical applications of what we learn in textbooks. I'm excited about the opportunities ahead and grateful for the strong foundation we're building here.",
+      date: "January 2023",
       type: "experience",
       authorType: "student"
     },
     {
-      title: "Quantum Computing: The Next Frontier",
-      author: "Mr. R. K. Patel",
-      designation: "Assistant Professor, EC Department",
-      content: "Quantum computing represents a paradigm shift in computational capabilities. While still in early stages, quantum algorithms show promise for solving complex problems in cryptography, optimization, and simulation. EC engineers should familiarize themselves with quantum principles as they will likely impact future communication and computing systems.",
+      title: "Artificial Intelligence in Electronics Design",
+      author: "Mr. R. N. Patel",
+      designation: "Lecturer, EC Department",
+      content: "AI is transforming electronics design from PCB layout optimization to automated testing protocols. Machine learning algorithms can now predict component failures, optimize power consumption, and even design antenna patterns. Tools like Cadence's AI-driven design platforms are reducing development time while improving product reliability. As educators, we must prepare students for this AI-integrated future of electronics engineering.",
       date: "February 2023",
-      type: "research",
+      type: "innovation",
+      authorType: "faculty"
+    },
+    {
+      title: "Dreams of Innovation",
+      author: "Raval Stutiben Amitkumar",
+      studentId: "216260311005",
+      semester: "4th Semester",
+      content: "In circuits I find my peace,\nIn voltages that never cease,\nOhm's law guides my every thought,\nIn resistors, wisdom is caught.\n\nFrom amplifiers to digital gates,\nKnowledge within me generates,\nMy professors light the way,\nTowards a brighter engineering day.\n\nElectronics is not just a field,\nIt's the power that dreams can wield,\nWith every project, every test,\nI'm building skills to be my best.",
+      date: "March 2023",
+      type: "poem",
+      authorType: "student"
+    },
+    {
+      title: "Sustainable Electronics: The Green Revolution",
+      author: "Mr. M. J. Dabgar",
+      designation: "Lecturer, EC Department",
+      content: "The electronics industry is undergoing a green revolution. From biodegradable printed circuit boards to energy harvesting systems, sustainable design is becoming crucial. Our department is incorporating environmental consciousness into project work, encouraging students to consider the lifecycle impact of their designs. The future belongs to engineers who can innovate while protecting our planet.",
+      date: "April 2023",
+      type: "article",
+      authorType: "faculty"
+    },
+    {
+      title: "My Laboratory Adventures",
+      author: "Patel Dev Kiritbhai",
+      studentId: "226260332015",
+      semester: "2nd Semester",
+      content: "The EC laboratory has been my second home this year. From my first LED blinking circuit to complex communication system experiments, every session has been a learning adventure. The moment when theory clicks with practical implementation is magical. I've learned that patience and systematic troubleshooting are as important as technical knowledge. Our lab instructors have been incredibly supportive in guiding us through complex experiments.",
+      date: "May 2023",
+      type: "experience",
+      authorType: "student"
+    },
+    {
+      title: "Digital Signal Processing: Transforming Audio Engineering",
+      author: "Mr. N. J. Chauhan",
+      designation: "Lecturer, EC Department",
+      content: "Digital Signal Processing (DSP) is revolutionizing audio engineering and multimedia applications. From noise cancellation in headphones to real-time audio effects in concerts, DSP algorithms are everywhere. Our students are exploring MATLAB and Python implementations of filters, transforms, and audio processing techniques. Understanding DSP fundamentals opens doors to careers in telecommunications, entertainment, and emerging AR/VR technologies.",
+      date: "June 2023",
+      type: "article",
+      authorType: "faculty"
+    },
+    {
+      title: "A Teacher's Day Tribute",
+      author: "Suthar Bharat Vishnubhai",
+      studentId: "226260311009",
+      semester: "4th Semester",
+      content: "To our beloved teachers, on this special day,\nWe express gratitude in every way,\nYou've shaped our minds with knowledge true,\nGuided our paths when skies weren't blue.\n\nFrom basic circuits to complex design,\nYou've helped our technical skills to shine,\nNot just subjects, but life you teach,\nMaking excellence within our reach.\n\nThank you for your patience and care,\nFor being with us everywhere,\nThis Teacher's Day we proudly say,\nYou've illuminated our learning way.",
+      date: "September 2022",
+      type: "poem",
+      authorType: "student"
+    },
+    {
+      title: "Industry 4.0 and Electronics Engineering",
+      author: "Mr. R. C. Parmar",
+      designation: "Lecturer, EC Department",
+      content: "Industry 4.0 is transforming manufacturing through smart automation, IoT integration, and data analytics. Electronics engineers are at the forefront of this revolution, designing sensors, actuators, and control systems that enable predictive maintenance and autonomous production. Our curriculum emphasizes practical skills in industrial automation, preparing students for careers in smart manufacturing environments.",
+      date: "October 2022",
+      type: "innovation",
       authorType: "faculty"
     }
   ],

@@ -14,7 +14,119 @@ export const newsletterData2024_25: NewsletterData = {
   ],
   
   canvas: [
-    // Canvas items will be added as we gather more content
+    {
+      title: "Artificial Intelligence and Machine Learning in Electronics",
+      author: "Mr. S. J. Chauhan",
+      designation: "Head of Department, EC Department",
+      content: "AI and ML are revolutionizing electronics engineering, from automated circuit design to predictive maintenance. Modern EC engineers must master both traditional electronics principles and AI algorithms to stay competitive. Our department is integrating AI concepts into the curriculum through practical projects involving neural networks, computer vision, and embedded AI systems.",
+      date: "March 2025",
+      type: "article",
+      authorType: "faculty"
+    },
+    {
+      title: "Innovation in Startup Ecosystem",
+      author: "Mr. L. K. Patel",
+      designation: "Lecturer, EC Department",
+      content: "The startup ecosystem is thriving with electronics-based innovations. From IoT startups to drone technology companies, EC engineers are leading the entrepreneurial revolution. Through SSIP initiatives, we're encouraging students to develop innovative solutions and convert their ideas into viable business ventures. Hackathons and innovation challenges provide platforms for creative expression.",
+      date: "February 2025",
+      type: "innovation",
+      authorType: "faculty"
+    },
+    {
+      title: "My Academic Excellence Journey",
+      author: "Mali Bhavin Ashokbhai",
+      studentId: "246260311010",
+      semester: "2nd Semester",
+      content: "Achieving the top position in my first semester was just the beginning of an exciting learning journey. The comprehensive curriculum, practical laboratory sessions, and supportive faculty have helped me understand complex electronics concepts. I believe in consistent effort, active participation in class discussions, and regular practice. My goal is to maintain this performance and contribute to innovative projects in advanced semesters.",
+      date: "January 2025",
+      type: "experience",
+      authorType: "student"
+    },
+    {
+      title: "Sustainable Electronics and Green Technology",
+      author: "Ms. M. K. Pedhadiya",
+      designation: "Lecturer, EC Department",
+      content: "Sustainability is becoming crucial in electronics design. From energy-efficient circuits to biodegradable components, green electronics is the future. Our students are exploring renewable energy integration, low-power design techniques, and environmental impact assessment. The NBA accreditation process has reinforced our commitment to sustainable engineering practices.",
+      date: "December 2024",
+      type: "article",
+      authorType: "faculty"
+    },
+    {
+      title: "Digital Innovation Dreams",
+      author: "Joshi Neel Subhashchandra",
+      studentId: "246260332012",
+      semester: "2nd Semester",
+      content: "In the world of digital design,\nWhere logic gates and circuits align,\nWe craft tomorrow's technology,\nWith passion and creativity.\n\nFrom simple LED to complex processor,\nEach lesson makes us a better successor,\nOur teachers guide with patience and care,\nMaking knowledge accessible everywhere.\n\nElectronics is not just our field,\nIt's the power that dreams can wield,\nWith innovation in our hands,\nWe'll transform this digital land.",
+      date: "November 2024",
+      type: "poem",
+      authorType: "student"
+    },
+    {
+      title: "Advanced Communication Systems and 5G",
+      author: "Mr. R. N. Patel",
+      designation: "Lecturer, EC Department",
+      content: "5G technology is transforming communication landscapes with ultra-low latency and massive connectivity. Understanding advanced modulation techniques, MIMO systems, and network slicing is essential for modern EC engineers. Our laboratory setup now includes 5G demonstration modules, enabling students to experiment with cutting-edge communication protocols and RF systems.",
+      date: "October 2024",
+      type: "article",
+      authorType: "faculty"
+    },
+    {
+      title: "My Project Development Experience",
+      author: "Maknojiya Arman Imranbhai",
+      studentId: "236260332029",
+      semester: "4th Semester",
+      content: "Working on my semester project has been an incredible learning experience. Developing a smart home automation system using IoT sensors and wireless communication taught me to integrate hardware and software components. The project involved sensor interfacing, wireless protocols, mobile app development, and cloud connectivity. Faculty guidance and peer collaboration made this complex project achievable and enjoyable.",
+      date: "September 2024",
+      type: "project",
+      authorType: "student"
+    },
+    {
+      title: "Embedded Systems and IoT Applications",
+      author: "Mr. M. J. Dabgar",
+      designation: "Lecturer, EC Department",
+      content: "Embedded systems form the backbone of IoT applications, from smart cities to industrial automation. Students must understand microcontroller programming, sensor interfacing, and wireless communication protocols. Our updated curriculum includes hands-on projects with Arduino, Raspberry Pi, and ESP32 platforms, preparing students for careers in embedded system design.",
+      date: "August 2024",
+      type: "article",
+      authorType: "faculty"
+    },
+    {
+      title: "Academic Success Reflections",
+      author: "Patel Dev Kiritbhai",
+      studentId: "226260332015",
+      semester: "6th Semester",
+      content: "Maintaining top academic performance throughout my diploma has taught me valuable lessons about consistency, time management, and continuous learning. The key to success lies in understanding concepts rather than memorizing facts. Active participation in practical sessions, asking questions during lectures, and collaborating with classmates have enriched my learning experience. I'm grateful for the excellent faculty support and modern laboratory facilities.",
+      date: "July 2024",
+      type: "experience",
+      authorType: "student"
+    },
+    {
+      title: "Cybersecurity in Modern Electronics",
+      author: "Mr. R. C. Parmar",
+      designation: "Lecturer, EC Department",
+      content: "As electronic systems become increasingly connected, cybersecurity has become paramount. From securing IoT devices to implementing encryption in communication systems, EC engineers must understand security principles. Students should focus on learning secure coding practices, cryptographic techniques, and vulnerability assessment methods to design robust electronic systems.",
+      date: "June 2024",
+      type: "article",
+      authorType: "faculty"
+    },
+    {
+      title: "Engineering Aspirations",
+      author: "Modi Jainilkumar Dipakbhai",
+      studentId: "246260311011",
+      semester: "2nd Semester",
+      content: "In circuits we find our calling true,\nWhere voltage, current, and resistance grew,\nFrom basic components to complex design,\nEach day in class makes our future shine.\n\nWith oscilloscopes and multimeters in hand,\nWe explore the electronic wonderland,\nOur professors light the path we take,\nInspiring dreams that nothing can break.\n\nEngineering is more than just a degree,\nIt's the key to set innovation free,\nWith dedication and passion as our guide,\nWe'll build the future side by side.",
+      date: "May 2024",
+      type: "poem",
+      authorType: "student"
+    },
+    {
+      title: "Digital Signal Processing and Applications",
+      author: "Mr. S. P. Joshiara",
+      designation: "Lecturer, EC Department",
+      content: "Digital Signal Processing (DSP) is fundamental to modern communication and multimedia systems. From audio processing to image enhancement, DSP algorithms are everywhere. Our curriculum includes practical implementation of filters, transforms, and real-time signal processing using MATLAB and dedicated DSP processors. Students gain hands-on experience with FFT, FIR, and IIR filter design.",
+      date: "April 2024",
+      type: "article",
+      authorType: "faculty"
+    }
   ],
 
   spotlight: [
