@@ -171,9 +171,45 @@ export const newsletterData2024_25: NewsletterData = {
       title: 'Workshop: Embedded System',
       date: 'March 13, 2024',
       category: 'workshop',
-      description: 'Technical workshop on embedded system design and development. Expert: Mr. Vishal Vadher, Assistant Manager Training, SOFCON India Pvt. Ltd. with 45 participants. The session covered embedded system fundamentals, microcontroller programming, and real-world applications.',
-      tags: ['Workshop', 'Embedded System', 'Microcontroller', 'SOFCON India', 'Programming'],
-      images: []
+      description: 'Technical workshop on embedded system design and development. Expert: Mr. Vishal Vadher, Assistant Manager Training, SOFCON India Pvt. Ltd. with 45 participants. This session provided insights into embedded systems, their role in modern electronics, and real-world applications using microcontrollers. The workshop covered embedded system fundamentals, microcontroller programming, circuit design, and practical implementation techniques.',
+      tags: ['Workshop', 'Embedded System', 'Microcontroller', 'SOFCON India', 'Programming', 'Electronics'],
+      images: [
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0028-1024x766.jpg',
+          alt: 'Workshop: Embedded System - Session in progress',
+          caption: 'Workshop: Embedded System - Session in progress'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0029-766x1024.jpg',
+          alt: 'Workshop: Embedded System - Expert presentation',
+          caption: 'Workshop: Embedded System - Expert presentation'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0021-1024x766.jpg',
+          alt: 'Workshop: Embedded System - Students engaged in learning',
+          caption: 'Workshop: Embedded System - Students engaged in learning'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0010-1024x459.jpg',
+          alt: 'Workshop: Embedded System - Practical demonstration',
+          caption: 'Workshop: Embedded System - Practical demonstration'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0008-1024x459.jpg',
+          alt: 'Workshop: Embedded System - Hands-on training session',
+          caption: 'Workshop: Embedded System - Hands-on training session'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0005-1024x459.jpg',
+          alt: 'Workshop: Embedded System - Interactive learning environment',
+          caption: 'Workshop: Embedded System - Interactive learning environment'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0033-1024x766.jpg',
+          alt: 'Workshop: Embedded System - Group discussion and Q&A',
+          caption: 'Workshop: Embedded System - Group discussion and Q&A'
+        }
+      ]
     },
     {
       title: 'Workshop: Web Development Technologies',
@@ -181,7 +217,68 @@ export const newsletterData2024_25: NewsletterData = {
       category: 'workshop',
       description: 'Technical workshop on modern web development technologies and frameworks. Expert: Mr. Vishal Vadher, Assistant Manager Training, SOFCON India Pvt. Ltd. with 53 participants. The session covered front-end and back-end technologies, responsive design, and current industry practices.',
       tags: ['Workshop', 'Web Development', 'Programming', 'SOFCON India', 'Front-end', 'Back-end'],
-      images: []
+      images: [
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0035-1024x766.jpg',
+          alt: 'Workshop: Web Development Technologies - Expert session in progress',
+          caption: 'Workshop: Web Development Technologies - Expert session in progress'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0031-1024x766.jpg',
+          alt: 'Workshop: Web Development Technologies - Interactive learning session',
+          caption: 'Workshop: Web Development Technologies - Interactive learning session'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0027-1024x766.jpg',
+          alt: 'Workshop: Web Development Technologies - Students learning modern frameworks',
+          caption: 'Workshop: Web Development Technologies - Students learning modern frameworks'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0028-1024x766.jpg',
+          alt: 'Workshop: Web Development Technologies - Coding demonstration',
+          caption: 'Workshop: Web Development Technologies - Coding demonstration'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0025-766x1024.jpg',
+          alt: 'Workshop: Web Development Technologies - Hands-on practice session',
+          caption: 'Workshop: Web Development Technologies - Hands-on practice session'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0020-1024x766.jpg',
+          alt: 'Workshop: Web Development Technologies - Group learning activity',
+          caption: 'Workshop: Web Development Technologies - Group learning activity'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0018-1024x766.jpg',
+          alt: 'Workshop: Web Development Technologies - Technical discussion',
+          caption: 'Workshop: Web Development Technologies - Technical discussion'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0011-1024x459.jpg',
+          alt: 'Workshop: Web Development Technologies - Practical implementation',
+          caption: 'Workshop: Web Development Technologies - Practical implementation'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0008-1024x459.jpg',
+          alt: 'Workshop: Web Development Technologies - Front-end development demo',
+          caption: 'Workshop: Web Development Technologies - Front-end development demo'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0004-1024x459.jpg',
+          alt: 'Workshop: Web Development Technologies - Back-end technologies overview',
+          caption: 'Workshop: Web Development Technologies - Back-end technologies overview'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0005-1024x459.jpg',
+          alt: 'Workshop: Web Development Technologies - Responsive design concepts',
+          caption: 'Workshop: Web Development Technologies - Responsive design concepts'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0006-1024x459.jpg',
+          alt: 'Workshop: Web Development Technologies - Career opportunities discussion',
+          caption: 'Workshop: Web Development Technologies - Career opportunities discussion'
+        }
+      ]
     },
     {
       title: 'AI-ML: A New Era of Future',
@@ -239,34 +336,34 @@ export const newsletterData2024_25: NewsletterData = {
       tags: ['Visit', 'Banas Dairy', 'Industry Exposure', 'Practical Learning'],
       images: [
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0038-1024x457.jpg',
-          alt: 'Visit: Banas Dairy - Image 1',
-          caption: 'Visit: Banas Dairy - Image 1'
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0030-1536x1152.jpg',
+          alt: 'Visit: Banas Dairy - Group Photo',
+          caption: 'Visit: Banas Dairy - Group Photo'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0066-1024x457.jpg',
-          alt: 'Visit: Banas Dairy - Image 2',
-          caption: 'Visit: Banas Dairy - Image 2'
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20241005_114817-768x432.jpg',
+          alt: 'Visit: Banas Dairy - Facility Tour',
+          caption: 'Visit: Banas Dairy - Facility Tour'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0070-1024x457.jpg',
-          alt: 'Visit: Banas Dairy - Image 3',
-          caption: 'Visit: Banas Dairy - Image 3'
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0038-2048x914.jpg',
+          alt: 'Visit: Banas Dairy - Industrial Learning',
+          caption: 'Visit: Banas Dairy - Industrial Learning'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0111-1024x457.jpg',
-          alt: 'Visit: Banas Dairy - Image 4',
-          caption: 'Visit: Banas Dairy - Image 4'
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0109-768x343.jpg',
+          alt: 'Visit: Banas Dairy - Technology Demonstration',
+          caption: 'Visit: Banas Dairy - Technology Demonstration'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0121-457x1024.jpg',
-          alt: 'Visit: Banas Dairy - Image 5',
-          caption: 'Visit: Banas Dairy - Image 5'
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0046-768x343.jpg',
+          alt: 'Visit: Banas Dairy - Production Process',
+          caption: 'Visit: Banas Dairy - Production Process'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20241005-WA0109-1024x457.jpg',
-          alt: 'Visit: Banas Dairy - Image 6',
-          caption: 'Visit: Banas Dairy - Image 6'
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20241005_101831-768x1364.jpg',
+          alt: 'Visit: Banas Dairy - Student Interaction',
+          caption: 'Visit: Banas Dairy - Student Interaction'
         }
       ]
     },
