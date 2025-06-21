@@ -382,33 +382,103 @@ export const newsletterData2023_24: NewsletterData = {
       images: [
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230719_142931-1024x577.jpg',
-          alt: 'Tree Planting Activity',
-          caption: 'Tree Planting Activity'
+          alt: 'Tree Plantation Drive - Environmental conservation activity',
+          caption: 'Tree Plantation Drive - Environmental conservation activity'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230719_142939-1024x577.jpg',
-          alt: 'Environmental Drive',
-          caption: 'Environmental Drive'
+          alt: 'Tree Plantation Drive - Campus greening initiative',
+          caption: 'Tree Plantation Drive - Campus greening initiative'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230719_142940-1024x577.jpg',
+          alt: 'Tree Plantation Drive - Student participation',
+          caption: 'Tree Plantation Drive - Student participation'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230719_143128-1024x577.jpg',
+          alt: 'Tree Plantation Drive - Ecological awareness',
+          caption: 'Tree Plantation Drive - Ecological awareness'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230719_143130-1024x577.jpg',
+          alt: 'Tree Plantation Drive - Green campus development',
+          caption: 'Tree Plantation Drive - Green campus development'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230719_143133-1024x577.jpg',
+          alt: 'Tree Plantation Drive - Environmental initiative',
+          caption: 'Tree Plantation Drive - Environmental initiative'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230719-WA0003-1024x768.jpg',
+          alt: 'Tree Plantation Drive - Faculty and students collaboration',
+          caption: 'Tree Plantation Drive - Faculty and students collaboration'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230719-WA0004-1024x768.jpg',
+          alt: 'Tree Plantation Drive - Hands-on environmental work',
+          caption: 'Tree Plantation Drive - Hands-on environmental work'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230719-WA0005-1024x768.jpg',
-          alt: 'Green Initiative',
-          caption: 'Green Initiative'
+          alt: 'Tree Plantation Drive - Green initiative activity',
+          caption: 'Tree Plantation Drive - Green initiative activity'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230719-WA0006-1024x768.jpg',
+          alt: 'Tree Plantation Drive - Environmental conservation effort',
+          caption: 'Tree Plantation Drive - Environmental conservation effort'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230719-WA0007-1024x768.jpg',
+          alt: 'Tree Plantation Drive - Campus sustainability project',
+          caption: 'Tree Plantation Drive - Campus sustainability project'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230719-WA0008-1024x768.jpg',
+          alt: 'Tree Plantation Drive - Student environmental engagement',
+          caption: 'Tree Plantation Drive - Student environmental engagement'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230719-WA0009-1024x768.jpg',
-          alt: 'Student Participation',
-          caption: 'Student Participation'
+          alt: 'Tree Plantation Drive - Green campus initiative',
+          caption: 'Tree Plantation Drive - Green campus initiative'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230719-WA0010-1024x768.jpg',
+          alt: 'Tree Plantation Drive - Environmental awareness activity',
+          caption: 'Tree Plantation Drive - Environmental awareness activity'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230719-WA0011-1024x768.jpg',
+          alt: 'Tree Plantation Drive - Community involvement',
+          caption: 'Tree Plantation Drive - Community involvement'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230719-WA0012-1024x768.jpg',
-          alt: 'Campus Greening',
-          caption: 'Campus Greening'
+          alt: 'Tree Plantation Drive - Tree planting ceremony',
+          caption: 'Tree Plantation Drive - Tree planting ceremony'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230719-WA0013-1024x768.jpg',
+          alt: 'Tree Plantation Drive - Ecological responsibility',
+          caption: 'Tree Plantation Drive - Ecological responsibility'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230719-WA0014-1024x768.jpg',
+          alt: 'Tree Plantation Drive - Environmental stewardship',
+          caption: 'Tree Plantation Drive - Environmental stewardship'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230719-WA0015-1024x768.jpg',
+          alt: 'Tree Plantation Drive - Green environment promotion',
+          caption: 'Tree Plantation Drive - Green environment promotion'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230719-WA0016-1024x768.jpg',
-          alt: 'Tree Plantation Team',
-          caption: 'Tree Plantation Team'
+          alt: 'Tree Plantation Drive - Team environmental effort',
+          caption: 'Tree Plantation Drive - Team environmental effort'
         }
       ]
     },
@@ -421,23 +491,58 @@ export const newsletterData2023_24: NewsletterData = {
       images: [
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_142650-768x1024.jpg',
-          alt: 'IPR Session 1',
-          caption: 'IPR Session 1'
+          alt: 'IPR Awareness Camp - Opening session at Vidhyamandir School',
+          caption: 'IPR Awareness Camp - Opening session at Vidhyamandir School'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_142738-768x1024.jpg',
+          alt: 'IPR Awareness Camp - Student presentation on intellectual property',
+          caption: 'IPR Awareness Camp - Student presentation on intellectual property'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_142746-768x1024.jpg',
+          alt: 'IPR Awareness Camp - Interactive session on patents',
+          caption: 'IPR Awareness Camp - Interactive session on patents'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_142951-1024x768.jpg',
-          alt: 'School Visit',
-          caption: 'School Visit'
+          alt: 'IPR Awareness Camp - Knowledge sharing with school students',
+          caption: 'IPR Awareness Camp - Knowledge sharing with school students'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_143104-768x1024.jpg',
+          alt: 'IPR Awareness Camp - Educational outreach program',
+          caption: 'IPR Awareness Camp - Educational outreach program'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_143225-768x1024.jpg',
+          alt: 'IPR Awareness Camp - Student teaching initiative',
+          caption: 'IPR Awareness Camp - Student teaching initiative'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_143414-768x1024.jpg',
-          alt: 'Student Teaching',
-          caption: 'Student Teaching'
+          alt: 'IPR Awareness Camp - Intellectual property education',
+          caption: 'IPR Awareness Camp - Intellectual property education'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_143459-1024x768.jpg',
+          alt: 'IPR Awareness Camp - Community knowledge sharing',
+          caption: 'IPR Awareness Camp - Community knowledge sharing'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_143748-768x1024.jpg',
+          alt: 'IPR Awareness Camp - School visit documentation',
+          caption: 'IPR Awareness Camp - School visit documentation'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_143757-1024x768.jpg',
-          alt: 'Knowledge Sharing',
-          caption: 'Knowledge Sharing'
+          alt: 'IPR Awareness Camp - Student engagement activity',
+          caption: 'IPR Awareness Camp - Student engagement activity'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_144208-768x1024.jpg',
+          alt: 'IPR Awareness Camp - Group interaction session',
+          caption: 'IPR Awareness Camp - Group interaction session'
         }
       ]
     },
@@ -447,7 +552,13 @@ export const newsletterData2023_24: NewsletterData = {
       category: 'visit',
       description: '50 students from EC and ICT departments visited Bajrang Paper Products, Palanpur, observing paper manufacturing processes and industrial automation systems.',
       tags: ['Industrial Visit', 'Manufacturing Process', 'Automation', 'Paper Industry'],
-      images: []
+      images: [
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2024/08/20230801_115754-2048x1153.jpg',
+          alt: 'Bajrang Paper Products Visit - Students at manufacturing facility',
+          caption: 'Bajrang Paper Products Visit - Students at manufacturing facility'
+        }
+      ]
     },
     {
       title: 'SSIP 2.0 Appreciation Meet',
@@ -477,23 +588,53 @@ export const newsletterData2023_24: NewsletterData = {
       images: [
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230727_071846-1024x577.jpg',
-          alt: 'SEMICON Exhibition',
-          caption: 'SEMICON Exhibition'
+          alt: 'SEMICON 2023 - Exhibition entrance and registration',
+          caption: 'SEMICON 2023 - Exhibition entrance and registration'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230727_071853-1024x577.jpg',
+          alt: 'SEMICON 2023 - Technology exhibition hall',
+          caption: 'SEMICON 2023 - Technology exhibition hall'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230727_071935-1024x577.jpg',
+          alt: 'SEMICON 2023 - Semiconductor technology displays',
+          caption: 'SEMICON 2023 - Semiconductor technology displays'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230727_113120-1024x577.jpg',
-          alt: 'Technology Display',
-          caption: 'Technology Display'
+          alt: 'SEMICON 2023 - Industry technology showcase',
+          caption: 'SEMICON 2023 - Industry technology showcase'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230727_113127-1024x577.jpg',
+          alt: 'SEMICON 2023 - Electronics manufacturing exhibits',
+          caption: 'SEMICON 2023 - Electronics manufacturing exhibits'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230727_113133-1024x577.jpg',
+          alt: 'SEMICON 2023 - Advanced semiconductor equipment',
+          caption: 'SEMICON 2023 - Advanced semiconductor equipment'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230727_115432-768x1024.jpg',
+          alt: 'SEMICON 2023 - Students exploring technology trends',
+          caption: 'SEMICON 2023 - Students exploring technology trends'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230727_115436-1024x768.jpg',
-          alt: 'Industry Interaction',
-          caption: 'Industry Interaction'
+          alt: 'SEMICON 2023 - Industry interaction and learning',
+          caption: 'SEMICON 2023 - Industry interaction and learning'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230727_115708-768x1024.jpg',
+          alt: 'SEMICON 2023 - Technology demonstration session',
+          caption: 'SEMICON 2023 - Technology demonstration session'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230727_115958-768x1024.jpg',
-          alt: 'Student Learning',
-          caption: 'Student Learning'
+          alt: 'SEMICON 2023 - Student learning experience',
+          caption: 'SEMICON 2023 - Student learning experience'
         }
       ]
     },
@@ -555,35 +696,6 @@ export const newsletterData2023_24: NewsletterData = {
       ]
     },
     {
-      title: 'Cultural Activities - Rakhi & Rangoli Competition',
-      date: 'October 27, 2023',
-      category: 'community',
-      description: 'Student participation in traditional cultural activities including Rakhi making and Rangoli competitions, fostering creativity and cultural awareness among students.',
-      tags: ['Cultural Activities', 'Rakhi Making', 'Rangoli Competition', 'Creativity'],
-      images: [
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230829-WA0012-766x1024.jpg',
-          alt: 'Rakhi Making',
-          caption: 'Rakhi Making'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231027-WA0003-1024x576.jpg',
-          alt: 'Rangoli Competition',
-          caption: 'Rangoli Competition'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231027-WA0005-1024x576.jpg',
-          alt: 'Cultural Event',
-          caption: 'Cultural Event'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231030-WA0001-1024x766.jpg',
-          alt: 'Award Ceremony',
-          caption: 'Award Ceremony'
-        }
-      ]
-    },
-    {
       title: 'SEMIX Training at IIT Bombay',
       date: 'November 6-10, 2023',
       category: 'training',
@@ -592,33 +704,35 @@ export const newsletterData2023_24: NewsletterData = {
       images: [
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20231109_102102-1024x768.jpg',
-          alt: 'IIT Bombay Campus',
-          caption: 'IIT Bombay Campus'
+          alt: 'SEMIX Training - IIT Bombay campus and facilities',
+          caption: 'SEMIX Training - IIT Bombay campus and facilities'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20231109_154913-1024x768.jpg',
-          alt: 'SEMIX Training Session',
-          caption: 'SEMIX Training Session'
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20231109_154951-768x1024.jpg',
+          alt: 'SEMIX Training - Advanced research laboratory session',
+          caption: 'SEMIX Training - Advanced research laboratory session'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20231110_120533-768x1024.jpg',
+          alt: 'SEMIX Training - Semiconductor technology demonstration',
+          caption: 'SEMIX Training - Semiconductor technology demonstration'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231108-WA0004.jpg',
-          alt: 'Lab Visit',
-          caption: 'Lab Visit'
+          alt: 'SEMIX Training - Technical laboratory visit',
+          caption: 'SEMIX Training - Technical laboratory visit'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231108-WA0012.jpg',
+          alt: 'SEMIX Training - Research facility exploration',
+          caption: 'SEMIX Training - Research facility exploration'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231109-WA0010.jpg',
-          alt: 'Technical Discussion',
-          caption: 'Technical Discussion'
+          alt: 'SEMIX Training - Technical discussion and learning',
+          caption: 'SEMIX Training - Technical discussion and learning'
         }
       ]
-    },
-    {
-      title: 'GPP Sportsweek Inauguration',
-      date: 'February 2024',
-      category: 'community',
-      description: 'Annual sports week celebration featuring various competitive events, promoting physical fitness and team spirit among students across all departments. The week-long event included multiple sports competitions and encouraged healthy competition.',
-      tags: ['Sports Week', 'Physical Fitness', 'Team Spirit', 'Competition'],
-      images: []
     },
     {
       title: 'Expert Sessions on Embedded Systems & Web Development',
@@ -629,33 +743,83 @@ export const newsletterData2023_24: NewsletterData = {
       images: [
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0004-1024x459.jpg',
-          alt: 'Expert Session Opening',
-          caption: 'Session Opening'
+          alt: 'Expert Session - Opening presentation',
+          caption: 'Expert Session - Opening presentation'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0005-1024x459.jpg',
-          alt: 'Industry Expert Speaking',
-          caption: 'Industry Expert'
+          alt: 'Expert Session - Industry expert speaking',
+          caption: 'Expert Session - Industry expert speaking'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0006-1024x459.jpg',
+          alt: 'Expert Session - Technical presentation on embedded systems',
+          caption: 'Expert Session - Technical presentation on embedded systems'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0008-1024x459.jpg',
-          alt: 'Technical Presentation',
-          caption: 'Technical Presentation'
+          alt: 'Expert Session - Student engagement and interaction',
+          caption: 'Expert Session - Student engagement and interaction'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0010-1024x459.jpg',
-          alt: 'Student Engagement',
-          caption: 'Student Engagement'
+          alt: 'Expert Session - Hands-on demonstration',
+          caption: 'Expert Session - Hands-on demonstration'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0011-1024x459.jpg',
+          alt: 'Expert Session - Web development technologies overview',
+          caption: 'Expert Session - Web development technologies overview'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0018-1024x766.jpg',
+          alt: 'Expert Session - Interactive workshop session',
+          caption: 'Expert Session - Interactive workshop session'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0020-1024x766.jpg',
+          alt: 'Expert Session - Technical discussion and Q&A',
+          caption: 'Expert Session - Technical discussion and Q&A'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0021-1024x766.jpg',
-          alt: 'Hands-on Session',
-          caption: 'Hands-on Session'
+          alt: 'Expert Session - Practical learning session',
+          caption: 'Expert Session - Practical learning session'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0025-766x1024.jpg',
+          alt: 'Expert Session - Student participation in workshop',
+          caption: 'Expert Session - Student participation in workshop'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0027-1024x766.jpg',
+          alt: 'Expert Session - Industry insights presentation',
+          caption: 'Expert Session - Industry insights presentation'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0028-1024x766.jpg',
+          alt: 'Expert Session - Collaborative learning environment',
+          caption: 'Expert Session - Collaborative learning environment'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0029-766x1024.jpg',
+          alt: 'Expert Session - Technical skill development',
+          caption: 'Expert Session - Technical skill development'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0031-1024x766.jpg',
+          alt: 'Expert Session - Workshop documentation',
+          caption: 'Expert Session - Workshop documentation'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0033-1024x766.jpg',
+          alt: 'Expert Session - Technology demonstration',
+          caption: 'Expert Session - Technology demonstration'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240314-WA0035-1024x766.jpg',
-          alt: 'Group Photo',
-          caption: 'Group Photo'
+          alt: 'Expert Session - Group photo with industry expert',
+          caption: 'Expert Session - Group photo with industry expert'
         }
       ]
     },
@@ -668,33 +832,58 @@ export const newsletterData2023_24: NewsletterData = {
       images: [
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240316-WA0002-1024x766.jpg',
-          alt: 'PCB Manufacturing Line',
-          caption: 'PCB Manufacturing Line'
+          alt: 'PCB Power Visit - Students at company entrance',
+          caption: 'PCB Power Visit - Students at company entrance'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240316-WA0008-1024x472.jpg',
-          alt: 'Industrial Equipment',
-          caption: 'Industrial Equipment'
+          alt: 'PCB Power Visit - Industrial equipment demonstration',
+          caption: 'PCB Power Visit - Industrial equipment demonstration'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240316-WA0009-1024x472.jpg',
-          alt: 'Students Learning',
-          caption: 'Students Learning'
+          alt: 'PCB Power Visit - Students learning manufacturing processes',
+          caption: 'PCB Power Visit - Students learning manufacturing processes'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240316-WA0011-1024x472.jpg',
-          alt: 'Technical Demonstration',
-          caption: 'Technical Demonstration'
+          alt: 'PCB Power Visit - Technical demonstration session',
+          caption: 'PCB Power Visit - Technical demonstration session'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240316-WA0013-1024x472.jpg',
-          alt: 'Group Discussion',
-          caption: 'Group Discussion'
+          alt: 'PCB Power Visit - Group discussion with engineers',
+          caption: 'PCB Power Visit - Group discussion with engineers'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240316-WA0014-1024x472.jpg',
+          alt: 'PCB Power Visit - PCB manufacturing line observation',
+          caption: 'PCB Power Visit - PCB manufacturing line observation'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240316-WA0015-1024x473.jpg',
+          alt: 'PCB Power Visit - Industrial automation systems',
+          caption: 'PCB Power Visit - Industrial automation systems'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240316-WA0020-766x1024.jpg',
+          alt: 'PCB Power Visit - Students observing production process',
+          caption: 'PCB Power Visit - Students observing production process'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240316-WA0021-766x1024.jpg',
+          alt: 'PCB Power Visit - Quality control demonstration',
+          caption: 'PCB Power Visit - Quality control demonstration'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240316-WA0022-1024x766.jpg',
-          alt: 'Company Visit',
-          caption: 'Company Visit'
+          alt: 'PCB Power Visit - Company facility tour',
+          caption: 'PCB Power Visit - Company facility tour'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240316-WA0023-1024x766.jpg',
+          alt: 'PCB Power Visit - Group photo at industrial facility',
+          caption: 'PCB Power Visit - Group photo at industrial facility'
         }
       ]
     },
@@ -798,23 +987,28 @@ export const newsletterData2023_24: NewsletterData = {
       images: [
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240603-WA0035-1024x766.jpg',
-          alt: 'Orientation Welcome',
-          caption: 'Welcome Session'
+          alt: 'Orientation Program 2024 - Welcome session for new students',
+          caption: 'Orientation Program 2024 - Welcome session for new students'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240603-WA0037-1024x766.jpg',
-          alt: 'Orientation Session',
-          caption: 'Department Overview'
+          alt: 'Orientation Program 2024 - Department overview presentation',
+          caption: 'Orientation Program 2024 - Department overview presentation'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240603-WA0038-1024x766.jpg',
-          alt: 'Student Interaction',
-          caption: 'Student Interaction'
+          alt: 'Orientation Program 2024 - Student interaction session',
+          caption: 'Orientation Program 2024 - Student interaction session'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240603-WA0040-1024x766.jpg',
-          alt: 'Faculty Address',
-          caption: 'Faculty Address'
+          alt: 'Orientation Program 2024 - Faculty address to new students',
+          caption: 'Orientation Program 2024 - Faculty address to new students'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240603-WA0042-1024x766.jpg',
+          alt: 'Orientation Program 2024 - Introduction to department facilities',
+          caption: 'Orientation Program 2024 - Introduction to department facilities'
         }
       ]
     },
@@ -826,14 +1020,49 @@ export const newsletterData2023_24: NewsletterData = {
       tags: ['VLSI Design', 'RTL Programming', 'HDL', 'Circuit Synthesis'],
       images: [
         {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240611-WA0013-1024x459.jpg',
+          alt: 'RTL Design Workshop - Introduction to Verilog HDL',
+          caption: 'RTL Design Workshop - Introduction to Verilog HDL'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240611-WA0030-1024x459.jpg',
+          alt: 'RTL Design Workshop - Digital system design fundamentals',
+          caption: 'RTL Design Workshop - Digital system design fundamentals'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240611-WA0040-1024x459.jpg',
+          alt: 'RTL Design Workshop - Circuit synthesis techniques',
+          caption: 'RTL Design Workshop - Circuit synthesis techniques'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240611-WA0043-1024x459.jpg',
+          alt: 'RTL Design Workshop - FPGA implementation session',
+          caption: 'RTL Design Workshop - FPGA implementation session'
+        },
+        {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240611-WA0048-1024x459.jpg',
-          alt: 'RTL Workshop Session 3',
-          caption: 'Workshop Session 3'
+          alt: 'RTL Design Workshop - Hands-on VLSI design practice',
+          caption: 'RTL Design Workshop - Hands-on VLSI design practice'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240611-WA0052-1024x459.jpg',
+          alt: 'RTL Design Workshop - Simulation and verification',
+          caption: 'RTL Design Workshop - Simulation and verification'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240611-WA0055-1024x459.jpg',
-          alt: 'RTL Workshop Session 4',
-          caption: 'Workshop Session 4'
+          alt: 'RTL Design Workshop - Register Transfer Level programming',
+          caption: 'RTL Design Workshop - Register Transfer Level programming'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240611-WA0066-1024x459.jpg',
+          alt: 'RTL Design Workshop - Advanced HDL concepts',
+          caption: 'RTL Design Workshop - Advanced HDL concepts'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20240611-WA0067-1024x459.jpg',
+          alt: 'RTL Design Workshop - Final presentation and evaluation',
+          caption: 'RTL Design Workshop - Final presentation and evaluation'
         }
       ]
     }
