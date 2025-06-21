@@ -40,9 +40,14 @@ Successfully extracted top performing students from GTU result files for Electro
 
 ## Integration Status
 
-✅ **Updated 2021-22 Newsletter**: Added recent performance update with verified GTU SPI data
-- Updated existing entries to include latest SPI values from GTU results
-- Added new "Recent Performance Update" section with 2022 Summer results
+✅ **Updated 2021-22 Newsletter**: Added complete semester-wise star-performer spotlight entries (Sem 1-6)
+- DIPL SEM 1 - Regular (DEC 2021): Raval Stutiben (7.41 SPI), Pawar Bharat (5.95 SPI)
+- DIPL SEM 2 - Regular (MAY 2022): Raval Stutiben (8.32 SPI), Pawar Bharat (7.79 SPI)  
+- DIPL SEM 3 - Regular (DEC 2021): Chaudhary Adarsh (8.19 SPI), Chaudhary Piyushbhai (7.68 SPI)
+- DIPL SEM 4 - Regular (MAY 2022): Chaudhary Adarsh (9.13 SPI), Chaudhary Piyushbhai (7.77 SPI)
+- DIPL SEM 5 - Regular (DEC 2021): Panchal Tirth (8.2 SPI), Umatiya Anas (8.07 SPI)
+- DIPL SEM 6 - Regular (MAY 2022): Prajapati Rohit (8.13 SPI), Panchal Tirth (8.07 SPI)
+- **Complete Coverage**: All 6 semesters with authentic GTU SPI data
 
 ✅ **Updated 2022-23 Newsletter**: Added 6 new star-performer spotlight entries
 - DIPL SEM 1 - Regular (DEC 2022): Panchal Shubh, Lokhandwala Mahammadtaukir, Patel Dev, Ansari Mohammad Sadik

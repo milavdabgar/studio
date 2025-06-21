@@ -249,41 +249,63 @@ export const newsletterData2021_22: NewsletterData = {
     },
     // Star Performers (Academic Excellence)
     {
-      category: "star-performer",
-      title: "Semester Toppers - Winter 2021",
+      category: "star-performer" as const,
+      title: "Semester Toppers - DIPL SEM 2 - Regular (MAY 2022)",
       description: "Outstanding academic performance across all semesters",
-      date: "Winter 2021",
+      date: "May 2022",
       achievements: [
-        "Stuti Raval (216260311005) - 7.41 CGPA (Sem 1)",
-        "Chaudhary Adarsh (206260311005) - 8.19 CGPA (Sem 3)", 
-        "Chaudhary Piyush (206260311003) - 7.68 CGPA (Sem 3)",
-        "Panchal Tirth (196260311008) - 8.2 CGPA (Sem 5)",
-        "Umatiya Anas (196260311016) - 8.07 CGPA (Sem 5)"
+        "Raval Stutiben Amitkumar (216260311005) - 8.32 SPI (Sem 2)",
+        "Pawar Bharat Shankarlal (216260311003) - 7.79 SPI (Sem 2)"
       ]
     },
     {
-      category: "star-performer",
-      title: "Semester Toppers - Summer 2021 & 2022",
-      description: "Consistent academic excellence maintained",
-      date: "Summer 2021-22",
+      category: "star-performer" as const,
+      title: "Semester Toppers - DIPL SEM 4 - Regular (MAY 2022)",
+      description: "Outstanding academic performance across all semesters",
+      date: "May 2022",
       achievements: [
-        "Chaudhary Piyush (206260311003) - 9.26 CGPA (Sem 2 - Summer 2021)",
-        "Chaudhary Adarsh (206260311005) - 8.87 CGPA (Sem 2 - Summer 2021)",
-        "Solanki Niravbhai (196260311505) - 8.21 CGPA (Sem 4 - Summer 2021)",
-        "Prajapati Rohit (196260311013) - 8.13 SPI (Sem 6 - Summer 2022)",
-        "Panchal Tirth (196260311008) - 8.07 SPI (Sem 6 - Summer 2022)"
+        "Chaudhary Adarsh Premjibhai (206260311005) - 9.13 SPI (Sem 4)",
+        "Chaudhary Piyushbhai Nagjibhai (206260311003) - 7.77 SPI (Sem 4)"
       ]
     },
     {
-      category: "star-performer", 
-      title: "Semester Toppers - Recent Performance Update",
-      description: "Latest semester performance based on GTU results",
-      date: "2021-22",
+      category: "star-performer" as const,
+      title: "Semester Toppers - DIPL SEM 6 - Regular (MAY 2022)",
+      description: "Outstanding academic performance across all semesters",
+      date: "May 2022",
       achievements: [
-        "Raval Stuti Amitkumar (216260311005) - 8.32 SPI (Sem 2 - Summer 2022)",
-        "Pawar Bharat Shankarlal (216260311003) - 7.79 SPI (Sem 2 - Summer 2022)",
-        "Chaudhary Adarsh Premjibhai (206260311005) - 9.13 SPI (Sem 4 - Summer 2022)",
-        "Chaudhary Piyushbhai Nagjibhai (206260311003) - 7.77 SPI (Sem 4 - Summer 2022)"
+        "Prajapati Rohit Ashwinbhai (196260311013) - 8.13 SPI (Sem 6)",
+        "Panchal Tirth Rakeshkumar (196260311008) - 8.07 SPI (Sem 6)"
+      ]
+    },
+    {
+      category: "star-performer" as const,
+      title: "Semester Toppers - DIPL SEM 1 - Regular (DEC 2021)",
+      description: "Outstanding academic performance across all semesters",
+      date: "December 2021",
+      achievements: [
+        "Raval Stutiben Amitkumar (216260311005) - 7.41 SPI (Sem 1)",
+        "Pawar Bharat Shankarlal (216260311003) - 5.95 SPI (Sem 1)"
+      ]
+    },
+    {
+      category: "star-performer" as const,
+      title: "Semester Toppers - DIPL SEM 3 - Regular (DEC 2021)",
+      description: "Outstanding academic performance across all semesters",
+      date: "December 2021",
+      achievements: [
+        "Chaudhary Adarsh Premjibhai (206260311005) - 8.19 SPI (Sem 3)",
+        "Chaudhary Piyushbhai Nagjibhai (206260311003) - 7.68 SPI (Sem 3)"
+      ]
+    },
+    {
+      category: "star-performer" as const,
+      title: "Semester Toppers - DIPL SEM 5 - Regular (DEC 2021)",
+      description: "Outstanding academic performance across all semesters",
+      date: "December 2021",
+      achievements: [
+        "Panchal Tirth Rakeshkumar (196260311008) - 8.2 SPI (Sem 5)",
+        "Umatiya Anas Asharafbhai (196260311016) - 8.07 SPI (Sem 5)"
       ]
     },
     // Placements
