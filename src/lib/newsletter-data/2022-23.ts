@@ -58,67 +58,43 @@ export const newsletterData2022_23: NewsletterData = {
   
   chronicles: [
     {
-      title: 'Orientation Program 2022',
-      date: 'July 12, 2022',
-      category: 'orientation',
-      description: 'Comprehensive orientation for new students focusing on hybrid learning model, department facilities, and emerging career opportunities in electronics and communication sector.',
-      tags: ['Orientation', 'New Students', 'Hybrid Learning', 'Career Guidance'],
+      title: 'Expert Talk: Importance of Communication in Industries',
+      date: 'August 9, 2022',
+      category: 'workshop',
+      description: 'Expert session conducted by Mr. Jaimin Rami, Station Controller at JMR Ahmedabad, focusing on effective communication skills essential for engineering professionals, including workplace interactions, presentations, and teamwork strategies.',
+      tags: ['Expert Session', 'Communication Skills', 'Professional Development', 'Industry Insights'],
       images: []
     },
     {
-      title: 'Industrial Visit to BSNL Exchange',
-      date: 'August 28, 2022',
+      title: 'Industrial Visit: Bajrang Paper Products',
+      date: 'September 21, 2022',
       category: 'visit',
-      description: 'Educational visit to understand telecommunication infrastructure, switching systems, and network management in real-world telecom operations.',
-      tags: ['Industrial Visit', 'Telecommunications', 'Network Systems', 'Practical Learning'],
+      description: '23 students from 1st semester EC department visited Bajrang Paper Products, Palanpur, to observe paper manufacturing processes and industrial automation systems.',
+      tags: ['Industrial Visit', 'Manufacturing Process', 'Paper Industry', 'Practical Learning'],
       images: []
     },
     {
-      title: 'Expert Lecture on 5G Technology',
-      date: 'September 15, 2022',
+      title: 'Expert Session on Cyber Security',
+      date: 'March 31, 2023',
       category: 'workshop',
-      description: 'Comprehensive session on 5G technology fundamentals, implementation challenges, and future prospects in Indian telecom sector.',
-      tags: ['5G Technology', 'Expert Lecture', 'Future Technology', 'Wireless Communication'],
+      description: 'Comprehensive session conducted by Mr. Sagar Hajare, Security Expert at Bank of America, with 35 participants. Students learned about cyber threats, ethical hacking, and preventive measures against cyber-attacks through real-world case studies.',
+      tags: ['Cyber Security', 'Expert Session', 'Ethical Hacking', 'Information Security'],
       images: []
     },
     {
-      title: 'Technical Paper Presentation Competition',
-      date: 'October 20, 2022',
-      category: 'workshop',
-      description: 'Inter-departmental competition encouraging students to present research papers on emerging technologies in electronics and communication.',
-      tags: ['Technical Papers', 'Competition', 'Research', 'Presentation Skills'],
+      title: 'Industrial Visit: Samsung Service Centre',
+      date: 'May 4, 2023',
+      category: 'visit',
+      description: '39 students from 2nd semester EC department visited Samsung Service Centre, Palanpur, gaining practical exposure to consumer electronics servicing, troubleshooting techniques, and customer service operations.',
+      tags: ['Industrial Visit', 'Consumer Electronics', 'Service Operations', 'Troubleshooting'],
       images: []
     },
     {
-      title: 'Diwali Celebration',
-      date: 'November 2, 2022',
-      category: 'community',
-      description: 'Festive celebration bringing together faculty and students, featuring cultural performances, traditional decorations, and community bonding activities.',
-      tags: ['Festival', 'Cultural Celebration', 'Community Bonding', 'Traditional Events'],
-      images: []
-    },
-    {
-      title: 'Digital Communication Workshop',
-      date: 'December 8, 2022',
-      category: 'training',
-      description: 'Hands-on workshop covering advanced digital communication techniques, error correction codes, and modern modulation schemes.',
-      tags: ['Digital Communication', 'Workshop', 'Hands-on Training', 'Technical Skills'],
-      images: []
-    },
-    {
-      title: 'Industry-Academia Interface Program',
-      date: 'January 25, 2023',
-      category: 'workshop',
-      description: 'Collaborative session with industry partners discussing current market trends, skill requirements, and career opportunities in electronics sector.',
-      tags: ['Industry Interaction', 'Career Guidance', 'Skill Development', 'Market Trends'],
-      images: []
-    },
-    {
-      title: 'Women in Engineering Awareness Program',
-      date: 'March 8, 2023',
-      category: 'awareness',
-      description: 'Special program highlighting achievements of women engineers and encouraging female students to pursue advanced careers in technology.',
-      tags: ['Women Engineers', 'Gender Equality', 'Inspiration', 'Career Motivation'],
+      title: 'Industrial Visit: Community Radio Station',
+      date: 'May 10, 2023',
+      category: 'visit',
+      description: '11 students from 4th semester EC department visited Community Radio Station, Palanpur, to understand radio broadcasting operations, transmission systems, and community engagement through radio programming.',
+      tags: ['Industrial Visit', 'Radio Broadcasting', 'Transmission Systems', 'Community Radio'],
       images: []
     }
   ],
