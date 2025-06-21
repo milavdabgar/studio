@@ -76,106 +76,6 @@ export const newsletterData2023_24: NewsletterData = {
     // Faculty Contributions
     {
       category: 'faculty-contribution' as const,
-      title: 'GTU Board of Studies Coordinator',
-      description: 'Prof. Sunilkumar J Chauhan serves as coordinator for GTU syllabus development',
-      person: 'Prof. Sunilkumar J Chauhan',
-      designation: 'Head of Department, EC Engineering',
-      details: 'GTU Board of Studies member for Electronics & Communication Engineering syllabus development and curriculum enhancement',
-      date: '2023-24',
-      achievements: [
-        'GTU Syllabus Committee coordination for EC Engineering',
-        'Curriculum modernization with emerging technologies',
-        'Academic policy development and implementation',
-        'Inter-departmental coordination and leadership'
-      ]
-    },
-    {
-      category: 'faculty-contribution' as const,
-      title: 'Digital Signal Processing Research & Training',
-      description: 'Ms. Mittal K. Pedhadiya completed advanced certification and research work',
-      person: 'Ms. Mittal K. Pedhadiya',
-      designation: 'Assistant Professor, EC Department',
-      details: 'Advanced certification in Digital Signal Processing from IIT Bombay and editorial responsibilities',
-      date: '2023-24',
-      achievements: [
-        'Editorial board member for academic publications',
-        'Advanced DSP certification from IIT Bombay',
-        'Student project supervision and guidance',
-        'Industry collaboration for practical training'
-      ]
-    },
-    {
-      category: 'faculty-contribution' as const,
-      title: 'PhD Research in Antenna Design',
-      description: 'Mr. Milav J. Dabgar pursuing PhD research in 5G antenna technologies',
-      person: 'Mr. Milav J. Dabgar',
-      designation: 'Assistant Professor, EC Department',
-      details: 'PhD coursework and research in Antenna Design for 5G Applications with publication activities',
-      date: '2023-24',
-      achievements: [
-        'PhD research in 5G antenna design applications',
-        'Research publications in peer-reviewed journals',
-        'Conference presentations on antenna technologies',
-        'Student research mentorship and lab supervision'
-      ]
-    },
-    {
-      category: 'faculty-contribution' as const,
-      title: 'SSIP Coordination & Innovation Programs',
-      description: 'Faculty coordination of Student Startup and Innovation Policy initiatives',
-      person: 'EC Faculty Team',
-      designation: 'SSIP Coordinators',
-      details: 'Student Startup and Innovation Policy coordination fostering entrepreneurship and innovation projects',
-      date: '2023-24',
-      achievements: [
-        'SSIP project coordination and mentorship',
-        'Innovation and entrepreneurship program development',
-        'Industry partnership for startup initiatives',
-        'Student competition guidance and support'
-      ]
-    },
-    {
-      category: 'faculty-contribution' as const,
-      title: 'Professional Development & Training',
-      description: 'Faculty participation in skill enhancement and professional development programs',
-      person: 'EC Department Faculty',
-      designation: 'Various Faculty Members',
-      details: 'Comprehensive professional development through workshops, seminars, and certification programs',
-      date: '2023-24',
-      achievements: [
-        'ATAL Faculty Development Program participation',
-        'NPTEL online certification courses completion',
-        'Industry workshop attendance and training',
-        'Technical skill enhancement programs'
-      ]
-    },
-    {
-      category: 'faculty-contribution' as const,
-      title: 'International Conference Paper Presentation - Antenna Design',
-      description: 'Prof. Nirav Jashvantkumar Chauhan presented research paper at international conference on antenna design',
-      person: 'Prof. Nirav Jashvantkumar Chauhan',
-      designation: 'Assistant Professor, EC Department',
-      details: 'Paper presentation at 2nd International Conference on Emerging Trends & Contemporary Practices (ICETCP 2024) organized by Atmiya University',
-      date: 'February 2024',
-      achievements: [
-        'Paper Title: "Analysis of Vedic Shaped Microstrip Patch Antenna (MPA) Design for Wireless Applications"',
-        'Conference: 2nd International Conference on Emerging Trends & Contemporary Practices (ICETCP 2024)',
-        'Organized by: Atmiya University, India',
-        'Sponsored by: AICTE & CSIR',
-        'Date: February 9th-10th, 2024',
-        'Research focus on wireless communication and antenna design',
-        'Contribution to cutting-edge research in microstrip patch antennas'
-      ],
-      images: [
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2024/02/Screen-Shot-2025-03-20-at-22.44.21-PM.png',
-          alt: 'Prof. Nirav Jashvantkumar Chauhan at ICETCP 2024',
-          caption: 'Prof. Nirav Jashvantkumar Chauhan presenting his research paper at ICETCP 2024, Atmiya University'
-        }
-      ]
-    },
-    {
-      category: 'faculty-contribution' as const,
       title: 'IQAC & Audit Para Coordination',
       description: 'Internal Quality Assurance Cell coordination and audit para management with multi-committee leadership',
       person: 'Mr. S. J. Chauhan',
@@ -187,21 +87,6 @@ export const newsletterData2023_24: NewsletterData = {
         'Convener of Audit Para management',
         'Co-convener of Anti Ragging Squad',
         'Administrative leadership and quality assurance'
-      ]
-    },
-    {
-      category: 'faculty-contribution' as const,
-      title: 'Training & Placement Cell Leadership',
-      description: 'Training and Placement Cell coordination with industry outreach and student development',
-      person: 'Mr. L. K. Patel',
-      designation: 'Lecturer, EC Department',
-      details: 'Convener of GTU coordination, Member of Training & Placement Cell, Website management',
-      date: '2023-24',
-      achievements: [
-        'Convener of GTU coordination activities',
-        'Member of Training & Placement Cell',
-        'Website management and maintenance',
-        'Industry outreach and student placement support'
       ]
     },
     {
@@ -221,17 +106,17 @@ export const newsletterData2023_24: NewsletterData = {
     },
     {
       category: 'faculty-contribution' as const,
-      title: 'Human Resource & Multi-Committee Role',
-      description: 'Human Resource management, establishment section coordination, and SATHI portal management',
-      person: 'Mr. R. N. Patel',
+      title: 'Training & Placement Cell Leadership',
+      description: 'Training and Placement Cell coordination with industry outreach and student development',
+      person: 'Mr. L. K. Patel',
       designation: 'Lecturer, EC Department',
-      details: 'Convener of Head Human Resource, Co-convener of SATHI Karmyogi Portal, Member of CAS',
+      details: 'Convener of GTU coordination, Member of Training & Placement Cell, Website management',
       date: '2023-24',
       achievements: [
-        'Convener of Head Human Resource management',
-        'Co-convener of SATHI Karmyogi Portal',
-        'Member of Career Advancement Scheme (CAS)',
-        'Establishment section coordination'
+        'Convener of GTU coordination activities',
+        'Member of Training & Placement Cell',
+        'Website management and maintenance',
+        'Industry outreach and student placement support'
       ]
     },
     {
@@ -247,6 +132,21 @@ export const newsletterData2023_24: NewsletterData = {
         'Hostel Rector duties and responsibilities',
         'Student Section activities management',
         'Gymkhana and extracurricular activities coordination'
+      ]
+    },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'Human Resource & Multi-Committee Role',
+      description: 'Human Resource management, establishment section coordination, and SATHI portal management',
+      person: 'Mr. R. N. Patel',
+      designation: 'Lecturer, EC Department',
+      details: 'Convener of Head Human Resource, Co-convener of SATHI Karmyogi Portal, Member of CAS',
+      date: '2023-24',
+      achievements: [
+        'Convener of Head Human Resource management',
+        'Co-convener of SATHI Karmyogi Portal',
+        'Member of Career Advancement Scheme (CAS)',
+        'Establishment section coordination'
       ]
     },
     {
@@ -296,44 +196,31 @@ export const newsletterData2023_24: NewsletterData = {
     },
     {
       category: 'faculty-contribution' as const,
-      title: 'Gymkhana Activities & NSS Coordination',
-      description: 'Student co-curricular activities coordination and National Service Scheme management',
-      person: 'Mr. N. J. Chauhan',
-      designation: 'Lecturer, EC Department',
-      details: 'Member of Gymkhana/Co-curricular activities, NSS, Ek Bharat Shrestha Bharat (EBSB)',
+      title: 'Research Excellence & Student Development Leadership',
+      description: 'Prof. N. J. Chauhan demonstrates excellence in research publications and comprehensive student development activities',
+      person: 'Prof. N. J. Chauhan',
+      designation: 'Assistant Professor, EC Department',
+      details: 'Research paper presentation at international conference and coordination of student co-curricular activities, NSS, and cultural programs',
       date: '2023-24',
       achievements: [
+        'Paper Title: "Analysis of Vedic Shaped Microstrip Patch Antenna (MPA) Design for Wireless Applications"',
+        'Conference: 2nd International Conference on Emerging Trends & Contemporary Practices (ICETCP 2024)',
+        'Organized by: Atmiya University, India (February 9th-10th, 2024)',
+        'Sponsored by: AICTE & CSIR',
+        'Research focus on wireless communication and antenna design',
         'Gymkhana and co-curricular activities coordination',
         'National Service Scheme (NSS) member',
         'Ek Bharat Shrestha Bharat (EBSB) program participation',
         'Student development and community service activities'
+      ],
+      images: [
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2024/02/Screen-Shot-2025-03-20-at-22.44.21-PM.png',
+          alt: 'Prof. N. J. Chauhan at ICETCP 2024',
+          caption: 'Prof. N. J. Chauhan presenting his research paper at ICETCP 2024, Atmiya University'
+        }
       ]
-    },
-    // Student Achievements
-    {
-      category: 'student-achievement' as const,
-      title: 'Technical Competition Excellence',
-      description: 'Students participated and excelled in various technical competitions',
-      date: '2023-24',
-      achievements: [
-        'National level technical competition participation',
-        'Project exhibition and presentation at state level',
-        'Innovation challenge participation and recognition',
-        'Technical paper presentation at conferences'
-      ]
-    },
-    {
-      category: 'student-achievement' as const,
-      title: 'Academic Excellence & CGPA Performance',
-      description: 'Outstanding academic performance by students across all semesters',
-      date: '2023-24',
-      achievements: [
-        'Semester toppers with CGPA above 8.5',
-        'Consistent academic performance improvement',
-        'Subject-wise excellence in core engineering topics',
-        'Overall department academic ranking improvement'
-      ]
-    },
+    },    
     // Star Performers
     {
       category: 'star-performer' as const,
