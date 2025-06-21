@@ -250,42 +250,22 @@ export const newsletterData2021_22: NewsletterData = {
     // Star Performers (Academic Excellence)
     {
       category: "star-performer" as const,
-      title: "Semester Toppers - DIPL SEM 2 - Regular (MAY 2022)",
-      description: "Outstanding academic performance across all semesters",
-      date: "May 2022",
-      achievements: [
-        "Raval Stutiben Amitkumar (216260311005) - 8.32 SPI (Sem 2)",
-        "Pawar Bharat Shankarlal (216260311003) - 7.79 SPI (Sem 2)"
-      ]
-    },
-    {
-      category: "star-performer" as const,
-      title: "Semester Toppers - DIPL SEM 4 - Regular (MAY 2022)",
-      description: "Outstanding academic performance across all semesters",
-      date: "May 2022",
-      achievements: [
-        "Chaudhary Adarsh Premjibhai (206260311005) - 9.13 SPI (Sem 4)",
-        "Chaudhary Piyushbhai Nagjibhai (206260311003) - 7.77 SPI (Sem 4)"
-      ]
-    },
-    {
-      category: "star-performer" as const,
-      title: "Semester Toppers - DIPL SEM 6 - Regular (MAY 2022)",
-      description: "Outstanding academic performance across all semesters",
-      date: "May 2022",
-      achievements: [
-        "Prajapati Rohit Ashwinbhai (196260311013) - 8.13 SPI (Sem 6)",
-        "Panchal Tirth Rakeshkumar (196260311008) - 8.07 SPI (Sem 6)"
-      ]
-    },
-    {
-      category: "star-performer" as const,
       title: "Semester Toppers - DIPL SEM 1 - Regular (DEC 2021)",
       description: "Outstanding academic performance across all semesters",
       date: "December 2021",
       achievements: [
         "Raval Stutiben Amitkumar (216260311005) - 7.41 SPI (Sem 1)",
         "Pawar Bharat Shankarlal (216260311003) - 5.95 SPI (Sem 1)"
+      ]
+    },
+    {
+      category: "star-performer" as const,
+      title: "Semester Toppers - DIPL SEM 2 - Regular (MAY 2022)",
+      description: "Outstanding academic performance across all semesters",
+      date: "May 2022",
+      achievements: [
+        "Raval Stutiben Amitkumar (216260311005) - 8.32 SPI (Sem 2)",
+        "Pawar Bharat Shankarlal (216260311003) - 7.79 SPI (Sem 2)"
       ]
     },
     {
@@ -300,12 +280,32 @@ export const newsletterData2021_22: NewsletterData = {
     },
     {
       category: "star-performer" as const,
+      title: "Semester Toppers - DIPL SEM 4 - Regular (MAY 2022)",
+      description: "Outstanding academic performance across all semesters",
+      date: "May 2022",
+      achievements: [
+        "Chaudhary Adarsh Premjibhai (206260311005) - 9.13 SPI (Sem 4)",
+        "Chaudhary Piyushbhai Nagjibhai (206260311003) - 7.77 SPI (Sem 4)"
+      ]
+    },
+    {
+      category: "star-performer" as const,
       title: "Semester Toppers - DIPL SEM 5 - Regular (DEC 2021)",
       description: "Outstanding academic performance across all semesters",
       date: "December 2021",
       achievements: [
         "Panchal Tirth Rakeshkumar (196260311008) - 8.2 SPI (Sem 5)",
         "Umatiya Anas Asharafbhai (196260311016) - 8.07 SPI (Sem 5)"
+      ]
+    },
+    {
+      category: "star-performer" as const,
+      title: "Semester Toppers - DIPL SEM 6 - Regular (MAY 2022)",
+      description: "Outstanding academic performance across all semesters",
+      date: "May 2022",
+      achievements: [
+        "Prajapati Rohit Ashwinbhai (196260311013) - 8.13 SPI (Sem 6)",
+        "Panchal Tirth Rakeshkumar (196260311008) - 8.07 SPI (Sem 6)"
       ]
     },
     // Placements
