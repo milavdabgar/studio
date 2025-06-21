@@ -48,6 +48,42 @@ export const newsletterData2024_25: NewsletterData = {
         '📊 ADMISSION STATISTICS: 85%+ students opting for higher education pursue B.E. in Electronics & Communication Engineering, Merit-based selections through competitive ACPC counseling process',
         '🎯 KEY HIGHLIGHTS: Consistent year-over-year success rate, Strong academic performance enabling premier college admissions, Continuation of technical education in specialized engineering fields, Alumni network across top engineering institutions in Gujarat'
       ]
+    },
+    {
+      category: 'star-performer' as const,
+      title: 'Semester Toppers - DIPL SEM 1 - Regular (DEC 2024)',
+      description: 'Outstanding academic performance across all semesters',
+      date: 'December 2024',
+      achievements: [
+        'Mali Bhavin Ashokbhai (246260311010) - 8.71 SPI (Sem 1)',
+        'Modi Jainilkumar Dipakbhai (246260311011) - 7.62 SPI (Sem 1)',
+        'Joshi Neel Subhashchandra (246260332012) - 8.19 SPI (Sem 1)',
+        'Thakor Ashvinkumar Balvantji (246260332039) - 7.71 SPI (Sem 1)'
+      ]
+    },
+    {
+      category: 'star-performer' as const,
+      title: 'Semester Toppers - DIPL SEM 3 - Regular (DEC 2024)',
+      description: 'Outstanding academic performance across all semesters',
+      date: 'December 2024',
+      achievements: [
+        'Prajapati Princekumar Dilipbhai (236260311006) - 8.3 SPI (Sem 3)',
+        'Prajapati Shaileshbhai Chelabhai (236260311007) - 5.75 SPI (Sem 3)',
+        'Maknojiya Arman Imranbhai (236260332029) - 9.2 SPI (Sem 3)',
+        'Mevada Aarykumar Mukeshkumar (236260332030) - 8.35 SPI (Sem 3)'
+      ]
+    },
+    {
+      category: 'star-performer' as const,
+      title: 'Semester Toppers - DIPL SEM 5 - Regular (DEC 2024)',
+      description: 'Outstanding academic performance across all semesters',
+      date: 'December 2024',
+      achievements: [
+        'Patel Akshar Dilipkumar (226260311004) - 8.52 SPI (Sem 5)',
+        'Suthar Bharat Vishnubhai (226260311009) - 8.17 SPI (Sem 5)',
+        'Patel Dev Kiritbhai (226260332015) - 9.62 SPI (Sem 5)',
+        'Ansari Mohammad Sadik Ansar Ahmed (226260332002) - 9.14 SPI (Sem 5)'
+      ]
     }
   ],
 

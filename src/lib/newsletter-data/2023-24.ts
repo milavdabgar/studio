@@ -202,14 +202,70 @@ export const newsletterData2023_24: NewsletterData = {
     // Star Performers
     {
       category: 'star-performer' as const,
-      title: 'Academic Excellence - Semester Toppers',
-      description: 'Recognition of top-performing students across different semesters',
-      date: '2023-24',
+      title: 'Semester Toppers - DIPL SEM 1 - Regular (DEC 2023)',
+      description: 'Outstanding academic performance across all semesters',
+      date: 'December 2023',
       achievements: [
-        'Semester 2 topper with outstanding CGPA performance',
-        'Semester 4 academic excellence recognition',
-        'Semester 6 consistent high performance',
-        'Overall academic achievement and improvement'
+        'Prajapati Shaileshbhai Chelabhai (236260311007) - 8.05 SPI (Sem 1)',
+        'Prajapati Princekumar Dilipbhai (236260311006) - 8.0 SPI (Sem 1)',
+        'Maknojiya Arman Imranbhai (236260332029) - 8.79 SPI (Sem 1)',
+        'Mevada Aarykumar Mukeshkumar (236260332030) - 8.0 SPI (Sem 1)'
+      ]
+    },
+    {
+      category: 'star-performer' as const,
+      title: 'Semester Toppers - DIPL SEM 2 - Regular (MAY 2024)',
+      description: 'Outstanding academic performance across all semesters',
+      date: 'May 2024',
+      achievements: [
+        'Prajapati Princekumar Dilipbhai (236260311006) - 8.32 SPI (Sem 2)',
+        'Prajapati Shaileshbhai Chelabhai (236260311007) - 7.53 SPI (Sem 2)',
+        'Maknojiya Arman Imranbhai (236260332029) - 8.95 SPI (Sem 2)',
+        'Modi Harshil Mahendrakumar (236260332034) - 7.71 SPI (Sem 2)'
+      ]
+    },
+    {
+      category: 'star-performer' as const,
+      title: 'Semester Toppers - DIPL SEM 3 - Regular (DEC 2023)',
+      description: 'Outstanding academic performance across all semesters',
+      date: 'December 2023',
+      achievements: [
+        'Patel Akshar Dilipkumar (226260311004) - 7.7 SPI (Sem 3)',
+        'Lokhandwala Mahammadtaukir Taiyabbhai (226260311002) - 5.1 SPI (Sem 3)',
+        'Patel Dev Kiritbhai (226260332015) - 9.8 SPI (Sem 3)',
+        'Ansari Mohammad Sadik Ansar Ahmed (226260332002) - 9.2 SPI (Sem 3)'
+      ]
+    },
+    {
+      category: 'star-performer' as const,
+      title: 'Semester Toppers - DIPL SEM 4 - Regular (MAY 2024)',
+      description: 'Outstanding academic performance across all semesters',
+      date: 'May 2024',
+      achievements: [
+        'Suthar Bharat Vishnubhai (226260311009) - 8.14 SPI (Sem 4)',
+        'Patel Akshar Dilipkumar (226260311004) - 7.95 SPI (Sem 4)',
+        'Patel Dev Kiritbhai (226260332015) - 9.62 SPI (Sem 4)',
+        'Ansari Mohammad Sadik Ansar Ahmed (226260332002) - 9.38 SPI (Sem 4)'
+      ]
+    },
+    {
+      category: 'star-performer' as const,
+      title: 'Semester Toppers - DIPL SEM 5 - Regular (DEC 2023)',
+      description: 'Outstanding academic performance across all semesters',
+      date: 'December 2023',
+      achievements: [
+        'Raval Stutiben Amitkumar (216260311005) - 8.74 SPI (Sem 5)',
+        'Chaudhary Srujal Yashvantbhai (216260311012) - 7.48 SPI (Sem 5)'
+      ]
+    },
+    {
+      category: 'star-performer' as const,
+      title: 'Semester Toppers - DIPL SEM 6 - Regular (MAY 2024)',
+      description: 'Outstanding academic performance across all semesters',
+      date: 'May 2024',
+      achievements: [
+        'Chaudhary Srujal Yashvantbhai (216260311012) - 8.64 SPI (Sem 6)',
+        'Raval Stutiben Amitkumar (216260311005) - 8.14 SPI (Sem 6)'
       ]
     },
     // Placements

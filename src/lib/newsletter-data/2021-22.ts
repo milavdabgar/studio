@@ -270,8 +270,20 @@ export const newsletterData2021_22: NewsletterData = {
         "Chaudhary Piyush (206260311003) - 9.26 CGPA (Sem 2 - Summer 2021)",
         "Chaudhary Adarsh (206260311005) - 8.87 CGPA (Sem 2 - Summer 2021)",
         "Solanki Niravbhai (196260311505) - 8.21 CGPA (Sem 4 - Summer 2021)",
-        "Prajapati Rohit (196260311013) - 8.13 CGPA (Sem 6 - Summer 2022)",
-        "Panchal Tirth (196260311008) - 8.07 CGPA (Sem 6 - Summer 2022)"
+        "Prajapati Rohit (196260311013) - 8.13 SPI (Sem 6 - Summer 2022)",
+        "Panchal Tirth (196260311008) - 8.07 SPI (Sem 6 - Summer 2022)"
+      ]
+    },
+    {
+      category: "star-performer", 
+      title: "Semester Toppers - Recent Performance Update",
+      description: "Latest semester performance based on GTU results",
+      date: "2021-22",
+      achievements: [
+        "Raval Stuti Amitkumar (216260311005) - 8.32 SPI (Sem 2 - Summer 2022)",
+        "Pawar Bharat Shankarlal (216260311003) - 7.79 SPI (Sem 2 - Summer 2022)",
+        "Chaudhary Adarsh Premjibhai (206260311005) - 9.13 SPI (Sem 4 - Summer 2022)",
+        "Chaudhary Piyushbhai Nagjibhai (206260311003) - 7.77 SPI (Sem 4 - Summer 2022)"
       ]
     },
     // Placements
