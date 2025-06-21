@@ -265,40 +265,6 @@ export const newsletterData2023_24: NewsletterData = {
 
   chronicles: [
     {
-      title: 'Industrial Training at Duke Pipes',
-      date: 'July 27, 2024',
-      category: 'training',
-      description: 'Industrial training program for students at Duke Pipes, providing practical exposure to manufacturing processes and industrial operations in the field of electronics and communication.',
-      tags: ['Industrial Training', 'Manufacturing', 'Practical Exposure', 'Industry Visit'],
-      images: [
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20240727_145950-1024x577.jpg',
-          alt: 'Industrial Training at Duke Pipes',
-          caption: 'Industrial Training Session'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20240727_145947-577x1024.jpg',
-          alt: 'Students at Duke Pipes',
-          caption: 'Students During Training'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20240727_144258-577x1024.jpg',
-          alt: 'Manufacturing Process',
-          caption: 'Manufacturing Process'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20240727_144231-1024x577.jpg',
-          alt: 'Industrial Equipment',
-          caption: 'Industrial Equipment'
-        },
-        {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20240727_144216-1024x577.jpg',
-          alt: 'Factory Operations',
-          caption: 'Factory Operations'
-        }
-      ]
-    },
-    {
       title: 'SSIP 2.0 Appreciation Meet',
       date: 'August 11, 2023',
       category: 'orientation',
@@ -326,23 +292,43 @@ export const newsletterData2023_24: NewsletterData = {
       images: [
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231030-WA0001-1024x766.jpg',
-          alt: 'Rakhi & Rangoli Celebration',
-          caption: 'Cultural Celebration'
+          alt: 'Rakhi & Rangoli 2023 - Main celebration event',
+          caption: 'Rakhi & Rangoli 2023 - Main celebration event'
         },
         {
-          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231027_WA0004-1024x576.jpg',
-          alt: 'Rangoli Competition',
-          caption: 'Rangoli Art Competition'
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231027-WA0004-1024x576.jpg',
+          alt: 'Rakhi & Rangoli 2023 - Rangoli art competition',
+          caption: 'Rakhi & Rangoli 2023 - Rangoli art competition'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231027-WA0005-1024x576.jpg',
-          alt: 'Student Participation',
-          caption: 'Student Participation'
+          alt: 'Rakhi & Rangoli 2023 - Student participation in activities',
+          caption: 'Rakhi & Rangoli 2023 - Student participation in activities'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231027-WA0006-1024x576.jpg',
+          alt: 'Rakhi & Rangoli 2023 - Creative artwork display',
+          caption: 'Rakhi & Rangoli 2023 - Creative artwork display'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231027-WA0003-1024x576.jpg',
+          alt: 'Rakhi & Rangoli 2023 - Festival celebration activities',
+          caption: 'Rakhi & Rangoli 2023 - Festival celebration activities'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230829-WA0012-766x1024.jpg',
-          alt: 'Festival Activities',
-          caption: 'Festival Activities'
+          alt: 'Rakhi & Rangoli 2023 - Traditional festival elements',
+          caption: 'Rakhi & Rangoli 2023 - Traditional festival elements'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20231027-WA0007-1024x576.jpg',
+          alt: 'Rakhi & Rangoli 2023 - Cultural expression and creativity',
+          caption: 'Rakhi & Rangoli 2023 - Cultural expression and creativity'
+        },
+        {
+          src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/IMG-20230829-WA0013-766x1024.jpg',
+          alt: 'Rakhi & Rangoli 2023 - Student engagement in cultural activities',
+          caption: 'Rakhi & Rangoli 2023 - Student engagement in cultural activities'
         }
       ]
     },
