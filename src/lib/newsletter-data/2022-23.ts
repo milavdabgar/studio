@@ -20,21 +20,6 @@ export const newsletterData2022_23: NewsletterData = {
   spotlight: [
     {
       category: 'faculty-contribution' as const,
-      title: 'Research Excellence Award',
-      description: 'Faculty member recognized for outstanding contribution in antenna design research',
-      person: 'Dr. K. M. Patel',
-      designation: 'Senior Lecturer',
-      details: 'IEEE Gujarat Section Best Faculty Award 2022',
-      date: 'March 2023',
-      achievements: [
-        'IEEE Gujarat Section Best Faculty Award recipient',
-        'Outstanding contribution in antenna design research',
-        'Academic excellence and research leadership',
-        'Mentorship and guidance to students'
-      ]
-    },
-    {
-      category: 'faculty-contribution' as const,
       title: 'IQAC & Audit Para Coordination',
       description: 'Internal Quality Assurance Cell coordination and audit para management with multi-committee leadership',
       person: 'Mr. S. J. Chauhan',
@@ -48,6 +33,21 @@ export const newsletterData2022_23: NewsletterData = {
         'Administrative leadership and quality assurance'
       ]
     },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'Student Affairs & Hostel Management',
+      description: 'Student section coordination, hostel rector duties, and student welfare activities',
+      person: 'Mr. M. K. Pedhadiya',
+      designation: 'Lecturer, EC Department',
+      details: 'Member of Student Section, Women Development Cell, and Internal Complaint Committee',
+      date: '2022-23',
+      achievements: [
+        'Student Section coordination and management',
+        'Women Development Cell member',
+        'Internal Complaint Committee participation',
+        'Student welfare and hostel management'
+      ]
+    },    
     {
       category: 'faculty-contribution' as const,
       title: 'Training & Placement Cell Leadership',
@@ -65,19 +65,19 @@ export const newsletterData2022_23: NewsletterData = {
     },
     {
       category: 'faculty-contribution' as const,
-      title: 'Student Affairs & Hostel Management',
-      description: 'Student section coordination, hostel rector duties, and student welfare activities',
-      person: 'Mr. M. K. Pedhadiya',
+      title: 'Alumni Association & Student Activities',
+      description: 'Alumni association coordination and gymkhana activities management',
+      person: 'Mr. N. M. Patel',
       designation: 'Lecturer, EC Department',
-      details: 'Member of Student Section, Women Development Cell, and Internal Complaint Committee',
+      details: 'Member of Hostel Rector, Student Section, and Gymkhana activities',
       date: '2022-23',
       achievements: [
-        'Student Section coordination and management',
-        'Women Development Cell member',
-        'Internal Complaint Committee participation',
-        'Student welfare and hostel management'
+        'Alumni association coordination',
+        'Hostel Rector duties and responsibilities',
+        'Student Section activities management',
+        'Gymkhana and extracurricular activities coordination'
       ]
-    },
+    },    
     {
       category: 'faculty-contribution' as const,
       title: 'Human Resource & Multi-Committee Role',
@@ -91,21 +91,6 @@ export const newsletterData2022_23: NewsletterData = {
         'Co-convener of SATHI Karmyogi Portal',
         'Member of Career Advancement Scheme (CAS)',
         'Establishment section coordination'
-      ]
-    },
-    {
-      category: 'faculty-contribution' as const,
-      title: 'Alumni Association & Student Activities',
-      description: 'Alumni association coordination and gymkhana activities management',
-      person: 'Mr. N. M. Patel',
-      designation: 'Lecturer, EC Department',
-      details: 'Member of Hostel Rector, Student Section, and Gymkhana activities',
-      date: '2022-23',
-      achievements: [
-        'Alumni association coordination',
-        'Hostel Rector duties and responsibilities',
-        'Student Section activities management',
-        'Gymkhana and extracurricular activities coordination'
       ]
     },
     {
@@ -166,51 +151,6 @@ export const newsletterData2022_23: NewsletterData = {
         'National Service Scheme (NSS) member',
         'Ek Bharat Shrestha Bharat (EBSB) program participation',
         'Student development and community service activities'
-      ]
-    },
-    {
-      category: 'student-achievement' as const,
-      title: 'National Level Project Competition Winner',
-      description: 'First place in Smart India Hackathon 2022',
-      person: 'Raj Patel',
-      studentId: '206260311015',
-      details: 'IoT-based Smart Agriculture System',
-      date: 'September 2022',
-      achievements: [
-        'First place in Smart India Hackathon 2022',
-        'IoT-based Smart Agriculture System development',
-        'Innovation in agricultural technology',
-        'National level recognition for technical excellence'
-      ]
-    },
-    {
-      category: 'higher-education' as const,
-      title: 'Government Engineering College Gandhinagar Admission',
-      description: 'Student secured admission to premier government engineering college',
-      person: 'Piyushbhai Chaudhary',
-      studentId: '206260311502',
-      details: 'Government Engineering College, Gandhinagar - B.E. in Electronics & Communication Engineering',
-      date: '2023',
-      achievements: [
-        'Admission to Government Engineering College, Gandhinagar',
-        'Pursuing B.E. in Electronics & Communication Engineering',
-        'Merit-based selection for degree program',
-        'Continuation of technical education journey'
-      ]
-    },
-    {
-      category: 'higher-education' as const,
-      title: 'LD College of Engineering Admission',
-      description: 'Student admitted to prestigious LD College of Engineering, Ahmedabad',
-      person: 'Adarsh Chaudhary',
-      studentId: '206260311501',
-      details: 'LD College of Engineering, Ahmedabad - B.E. in Electronics & Communication Engineering',
-      date: '2023',
-      achievements: [
-        'Admission to LD College of Engineering, Ahmedabad',
-        'Pursuing B.E. in Electronics & Communication Engineering',
-        'Merit-based selection through ACPC',
-        'Academic excellence and career advancement'
       ]
     },
     {
@@ -276,7 +216,37 @@ export const newsletterData2022_23: NewsletterData = {
         'Chaudhary Adarsh Premjibhai (206260311005) - 9.0 SPI (Sem 6)',
         'Rajput Yuvrajsinh Narendrasinh (196260311015) - 7.73 SPI (Sem 6)'
       ]
-    }
+    },
+    {
+      category: 'higher-education' as const,
+      title: 'Government Engineering College Gandhinagar Admission',
+      description: 'Student secured admission to premier government engineering college',
+      person: 'Piyushbhai Chaudhary',
+      studentId: '206260311502',
+      details: 'Government Engineering College, Gandhinagar - B.E. in Electronics & Communication Engineering',
+      date: '2023',
+      achievements: [
+        'Admission to Government Engineering College, Gandhinagar',
+        'Pursuing B.E. in Electronics & Communication Engineering',
+        'Merit-based selection for degree program',
+        'Continuation of technical education journey'
+      ]
+    },
+    {
+      category: 'higher-education' as const,
+      title: 'LD College of Engineering Admission',
+      description: 'Student admitted to prestigious LD College of Engineering, Ahmedabad',
+      person: 'Adarsh Chaudhary',
+      studentId: '206260311501',
+      details: 'LD College of Engineering, Ahmedabad - B.E. in Electronics & Communication Engineering',
+      date: '2023',
+      achievements: [
+        'Admission to LD College of Engineering, Ahmedabad',
+        'Pursuing B.E. in Electronics & Communication Engineering',
+        'Merit-based selection through ACPC',
+        'Academic excellence and career advancement'
+      ]
+    },
   ],
   
   chronicles: [

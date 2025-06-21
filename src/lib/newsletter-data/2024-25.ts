@@ -19,73 +19,6 @@ export const newsletterData2024_25: NewsletterData = {
 
   spotlight: [
     {
-      category: 'placement' as const,
-      title: 'Historical Placement Excellence - Industry Diversity',
-      description: 'Comprehensive placement success across multiple industries showcasing the versatility and industry readiness of EC department graduates',
-      person: 'EC Department Alumni (2017-2020)',
-      details: 'Outstanding placement record spanning renewable energy, power sector, manufacturing, and technology industries with 100% placement achievement in key academic years',
-      date: '2017-2020',
-      achievements: [
-        '🌱 RENEWABLE ENERGY SECTOR: Mundra Solar Pv Ltd - Trainee Engineer positions (Adilbhai Memon, Sanket Jha, Sanjay Chauhan)',
-        '⚡ POWER & ELECTRICAL INDUSTRY: GSECL Powerplant Bhuj - Plant Operator (Rajkuvar Sharma), Tata Power Wav - Trainee (Jamabhai Rabari), L&T Jamnagar - Trainee Engineer (Pravinkumar Rathod)',
-        '🏭 MANUFACTURING & AUTOMOTIVE: Maruti Suzuki Becharaji - Data Operator (Chirag Chauhan), D-Mart Palanpur - Trainee (Jigar Darji)',
-        '📡 TELECOMMUNICATIONS: Reliance Jio Tharad - Trainee (Hiteshbhai Prajapati)',
-        '💼 BUSINESS & MARKETING: Asian Pacific Learning Leverage - Marketing Agent (Avinash Goswami)',
-        '🎯 KEY ACHIEVEMENTS: 100% placement rate for 2017-18 batch, Strong industry relationships across diverse sectors, Consistent placement track record over multiple years, Average package range: ₹2.5-4.5 LPA'
-      ]
-    },
-    {
-      category: 'higher-education' as const,
-      title: 'Premier Engineering College Admissions - Academic Excellence',
-      description: 'Exceptional track record of students securing admissions to top engineering institutions across Gujarat, demonstrating strong academic foundation and competitive performance',
-      person: 'EC Department Students (2018-2024)',
-      details: 'Consistent success in securing admissions to premier engineering colleges through merit-based ACPC counseling, with students continuing their technical education journey in Electronics & Communication and related engineering disciplines',
-      date: '2018-2024',
-      achievements: [
-        '🏛️ LD COLLEGE OF ENGINEERING, AHMEDABAD: Multiple admissions including Bharatbhai Khardola, Nileshkumar Pavar, Krishna Panchal - recognized as one of Gujarat\'s premier engineering institutions',
-        '🎓 VISHWAKARMA GOVERNMENT ENGINEERING COLLEGE (VGEC): Successful admissions at both Ahmedabad and Chandkheda campuses - Abhishek Roy, Riddhiben Sathwara, Armankhan Ghasura, and recent admission Srujal Yashvantbhai Chaudhary (2024)',
-        '🏫 GOVERNMENT ENGINEERING COLLEGES: Wide representation across GEC Gandhinagar, GEC Bharuch, GEC Modasa showcasing geographical diversity and accessibility',
-        '📊 ADMISSION STATISTICS: 85%+ students opting for higher education pursue B.E. in Electronics & Communication Engineering, Merit-based selections through competitive ACPC counseling process',
-        '🎯 KEY HIGHLIGHTS: Consistent year-over-year success rate, Strong academic performance enabling premier college admissions, Continuation of technical education in specialized engineering fields, Alumni network across top engineering institutions in Gujarat'
-      ]
-    },
-    {
-      category: 'star-performer' as const,
-      title: 'Semester Toppers - DIPL SEM 1 - Regular (DEC 2024)',
-      description: 'Outstanding academic performance across all semesters',
-      date: 'December 2024',
-      achievements: [
-        'Mali Bhavin Ashokbhai (246260311010) - 8.71 SPI (Sem 1)',
-        'Modi Jainilkumar Dipakbhai (246260311011) - 7.62 SPI (Sem 1)',
-        'Joshi Neel Subhashchandra (246260332012) - 8.19 SPI (Sem 1)',
-        'Thakor Ashvinkumar Balvantji (246260332039) - 7.71 SPI (Sem 1)'
-      ]
-    },
-    {
-      category: 'star-performer' as const,
-      title: 'Semester Toppers - DIPL SEM 3 - Regular (DEC 2024)',
-      description: 'Outstanding academic performance across all semesters',
-      date: 'December 2024',
-      achievements: [
-        'Prajapati Princekumar Dilipbhai (236260311006) - 8.3 SPI (Sem 3)',
-        'Prajapati Shaileshbhai Chelabhai (236260311007) - 5.75 SPI (Sem 3)',
-        'Maknojiya Arman Imranbhai (236260332029) - 9.2 SPI (Sem 3)',
-        'Mevada Aarykumar Mukeshkumar (236260332030) - 8.35 SPI (Sem 3)'
-      ]
-    },
-    {
-      category: 'star-performer' as const,
-      title: 'Semester Toppers - DIPL SEM 5 - Regular (DEC 2024)',
-      description: 'Outstanding academic performance across all semesters',
-      date: 'December 2024',
-      achievements: [
-        'Patel Akshar Dilipkumar (226260311004) - 8.52 SPI (Sem 5)',
-        'Suthar Bharat Vishnubhai (226260311009) - 8.17 SPI (Sem 5)',
-        'Patel Dev Kiritbhai (226260332015) - 9.62 SPI (Sem 5)',
-        'Ansari Mohammad Sadik Ansar Ahmed (226260332002) - 9.14 SPI (Sem 5)'
-      ]
-    },
-    {
       category: 'faculty-contribution' as const,
       title: 'AICTE Approval & GTU Affiliation Leadership',
       description: 'AICTE approval processes and GTU affiliation coordination with academic excellence',
@@ -100,6 +33,22 @@ export const newsletterData2024_25: NewsletterData = {
         'Academic excellence and institutional accreditation leadership'
       ]
     },
+    {
+      category: 'faculty-contribution' as const,
+      title: 'NBA Accreditation & Student Development',
+      description: 'NBA accreditation processes and comprehensive student development activities',
+      person: 'Ms. M. K. Pedhadiya',
+      designation: 'Lecturer, EC Department',
+      details: 'Member of NBA, Student Section, Women Development Cell, and Internal Complaint Committee',
+      date: '2024-25',
+      achievements: [
+        'National Board of Accreditation (NBA) member',
+        'Student Section coordination and management',
+        'Women Development Cell participation',
+        'Internal Complaint Committee member',
+        'Student welfare and development activities'
+      ]
+    },    
     {
       category: 'faculty-contribution' as const,
       title: 'SSIP Innovation & Central Store Management',
@@ -118,22 +67,6 @@ export const newsletterData2024_25: NewsletterData = {
     },
     {
       category: 'faculty-contribution' as const,
-      title: 'NBA Accreditation & Student Development',
-      description: 'NBA accreditation processes and comprehensive student development activities',
-      person: 'Ms. M. K. Pedhadiya',
-      designation: 'Lecturer, EC Department',
-      details: 'Member of NBA, Student Section, Women Development Cell, and Internal Complaint Committee',
-      date: '2024-25',
-      achievements: [
-        'National Board of Accreditation (NBA) member',
-        'Student Section coordination and management',
-        'Women Development Cell participation',
-        'Internal Complaint Committee member',
-        'Student welfare and development activities'
-      ]
-    },
-    {
-      category: 'faculty-contribution' as const,
       title: 'Human Resources & Digital Portal Management',
       description: 'Human resource management and digital transformation through various portals',
       person: 'Mr. R. N. Patel',
@@ -146,22 +79,6 @@ export const newsletterData2024_25: NewsletterData = {
         'Career Advancement Scheme (CAS) member',
         'Alumni Association activities and networking',
         'Digital transformation and HR management'
-      ]
-    },
-    {
-      category: 'faculty-contribution' as const,
-      title: 'Student Affairs & Hostel Administration',
-      description: 'Comprehensive student affairs management and hostel administration',
-      person: 'Mr. N. M. Patel',
-      designation: 'Lecturer, EC Department',
-      details: 'Member of Student Section, Hostel Rector, Gymkhana activities, and SC-ST Cell',
-      date: '2024-25',
-      achievements: [
-        'Student Section coordination and support',
-        'Hostel Rector duties and residential management',
-        'Gymkhana activities and extracurricular coordination',
-        'SC-ST Cell member for social welfare',
-        'Student welfare and campus life enhancement'
       ]
     },
     {
@@ -226,7 +143,74 @@ export const newsletterData2024_25: NewsletterData = {
         'A V Gajjar-Elect team member',
         'Student development and technical education activities'
       ]
-    }
+    },
+    {
+      category: 'star-performer' as const,
+      title: 'Semester Toppers - DIPL SEM 1 - Regular (DEC 2024)',
+      description: 'Outstanding academic performance across all semesters',
+      date: 'December 2024',
+      achievements: [
+        'Mali Bhavin Ashokbhai (246260311010) - 8.71 SPI (Sem 1)',
+        'Modi Jainilkumar Dipakbhai (246260311011) - 7.62 SPI (Sem 1)',
+        'Joshi Neel Subhashchandra (246260332012) - 8.19 SPI (Sem 1)',
+        'Thakor Ashvinkumar Balvantji (246260332039) - 7.71 SPI (Sem 1)'
+      ]
+    },
+    {
+      category: 'star-performer' as const,
+      title: 'Semester Toppers - DIPL SEM 3 - Regular (DEC 2024)',
+      description: 'Outstanding academic performance across all semesters',
+      date: 'December 2024',
+      achievements: [
+        'Prajapati Princekumar Dilipbhai (236260311006) - 8.3 SPI (Sem 3)',
+        'Prajapati Shaileshbhai Chelabhai (236260311007) - 5.75 SPI (Sem 3)',
+        'Maknojiya Arman Imranbhai (236260332029) - 9.2 SPI (Sem 3)',
+        'Mevada Aarykumar Mukeshkumar (236260332030) - 8.35 SPI (Sem 3)'
+      ]
+    },
+    {
+      category: 'star-performer' as const,
+      title: 'Semester Toppers - DIPL SEM 5 - Regular (DEC 2024)',
+      description: 'Outstanding academic performance across all semesters',
+      date: 'December 2024',
+      achievements: [
+        'Patel Akshar Dilipkumar (226260311004) - 8.52 SPI (Sem 5)',
+        'Suthar Bharat Vishnubhai (226260311009) - 8.17 SPI (Sem 5)',
+        'Patel Dev Kiritbhai (226260332015) - 9.62 SPI (Sem 5)',
+        'Ansari Mohammad Sadik Ansar Ahmed (226260332002) - 9.14 SPI (Sem 5)'
+      ]
+    },
+    {
+      category: 'placement' as const,
+      title: 'Historical Placement Excellence - Industry Diversity',
+      description: 'Comprehensive placement success across multiple industries showcasing the versatility and industry readiness of EC department graduates',
+      person: 'EC Department Alumni (2018-2024)',
+      details: 'Outstanding placement record spanning renewable energy, power sector, manufacturing, and technology industries with 100% placement achievement in key academic years',
+      date: '2017-2020',
+      achievements: [
+        '🌱 RENEWABLE ENERGY SECTOR: Mundra Solar Pv Ltd - Trainee Engineer positions (Adilbhai Memon, Sanket Jha, Sanjay Chauhan)',
+        '⚡ POWER & ELECTRICAL INDUSTRY: GSECL Powerplant Bhuj - Plant Operator (Rajkuvar Sharma), Tata Power Wav - Trainee (Jamabhai Rabari), L&T Jamnagar - Trainee Engineer (Pravinkumar Rathod)',
+        '🏭 MANUFACTURING & AUTOMOTIVE: Maruti Suzuki Becharaji - Data Operator (Chirag Chauhan), D-Mart Palanpur - Trainee (Jigar Darji)',
+        '📡 TELECOMMUNICATIONS: Reliance Jio Tharad - Trainee (Hiteshbhai Prajapati)',
+        '💼 BUSINESS & MARKETING: Asian Pacific Learning Leverage - Marketing Agent (Avinash Goswami)',
+        '🎯 KEY ACHIEVEMENTS: 100% placement rate for 2017-18 batch, Strong industry relationships across diverse sectors, Consistent placement track record over multiple years, Average package range: ₹2.5-4.5 LPA'
+      ]
+    },
+    {
+      category: 'higher-education' as const,
+      title: 'Premier Engineering College Admissions - Academic Excellence',
+      description: 'Exceptional track record of students securing admissions to top engineering institutions across Gujarat, demonstrating strong academic foundation and competitive performance',
+      person: 'EC Department Students (2018-2024)',
+      details: 'Consistent success in securing admissions to premier engineering colleges through merit-based ACPC counseling, with students continuing their technical education journey in Electronics & Communication and related engineering disciplines',
+      date: '2018-2024',
+      achievements: [
+        '🏛️ LD COLLEGE OF ENGINEERING, AHMEDABAD: Multiple admissions including Bharatbhai Khardola, Nileshkumar Pavar, Krishna Panchal - recognized as one of Gujarat\'s premier engineering institutions',
+        '🎓 VISHWAKARMA GOVERNMENT ENGINEERING COLLEGE (VGEC): Successful admissions at both Ahmedabad and Chandkheda campuses - Abhishek Roy, Riddhiben Sathwara, Armankhan Ghasura, and recent admission Srujal Yashvantbhai Chaudhary (2024)',
+        '🏫 GOVERNMENT ENGINEERING COLLEGES: Wide representation across GEC Gandhinagar, GEC Bharuch, GEC Modasa showcasing geographical diversity and accessibility',
+        '📊 ADMISSION STATISTICS: 85%+ students opting for higher education pursue B.E. in Electronics & Communication Engineering, Merit-based selections through competitive ACPC counseling process',
+        '🎯 KEY HIGHLIGHTS: Consistent year-over-year success rate, Strong academic performance enabling premier college admissions, Continuation of technical education in specialized engineering fields, Alumni network across top engineering institutions in Gujarat'
+      ]
+    },
   ],
 
   essence: {

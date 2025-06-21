@@ -95,15 +95,6 @@ export const newsletterData2021_22: NewsletterData = {
           caption: 'A touching tribute to teachers by Arman Ghasura on Teacher\'s Day'
         }
       ]
-    },
-    {
-      title: "Sustainable Electronics: Green Technology",
-      author: "Ms. M. K. Pedhadiya",
-      designation: "Lecturer, EC Department",
-      content: "The electronics industry is moving towards sustainable practices with eco-friendly materials, energy-efficient designs, and recycling initiatives. As future engineers, we must consider environmental impact in our designs. Green electronics not only reduce carbon footprint but also create new market opportunities for innovative solutions.",
-      date: "November 2021",
-      type: "innovation",
-      authorType: "faculty"
     }
   ],
 
@@ -111,60 +102,12 @@ export const newsletterData2021_22: NewsletterData = {
     // Faculty Contributions
     {
       category: "faculty-contribution" as const,
-      title: "Patent Publications by Dr. R. N. Patel",
-      description: "Published two patents in antenna design for industrial applications",
-      person: "Dr. R. N. Patel",
-      designation: "Lecturer, EC Department",
-      date: "February 2022",
-      achievements: [
-        "Patent: Design of wideband bow tie antenna using tapered balun for ISM band (25/02/2022)",
-        "Patent: Rectangular patch antenna with Tree-Fractal structure (21/01/2022)",
-        "Editorial board member in Global Research and Development Journal",
-        "Completed training on Antenna Design"
-      ],
-      images: [
-        {
-          src: '/newsletters/2021-22/rn-patel.png',
-          alt: 'Dr. R. N. Patel',
-          caption: 'Dr. R. N. Patel - Patent publications in antenna design'
-        }
-      ]
-    },
-    {
-      category: "faculty-contribution" as const, 
-      title: "Best Paper Runner-up Award",
-      description: "Mr. L. K. Patel won best paper runner-up at National Conference",
-      person: "Mr. L. K. Patel",
-      designation: "Lecturer, EC Department",
-      date: "October 2021",
-      achievements: [
-        "Paper: Analysis of matched key points of image registration using SIFT, SURF with different layers of CNN",
-        "3rd National Conference on Recent Trends in Engineering, Management, Pharmacy, Architecture And Science",
-        "GTU coordinator and syllabus contributor"
-      ],
-      images: [
-        {
-          src: '/newsletters/2021-22/lk-patel.png',
-          alt: 'Mr. L. K. Patel',
-          caption: 'Mr. L. K. Patel - Best paper runner-up award winner'
-        }
-      ]
-    },
-    {
-      category: "faculty-contribution" as const,
       title: "GTU Syllabus Development & Administrative Leadership",
       description: "Led development of GTU syllabus for Electronics Workshop, AICTE accreditation coordination, and Hostel Rector services",
       person: "Mr. S. J. Chauhan",
       designation: "Head of Department, EC Engineering",
       details: "Institute coordinator for AICTE accreditation and GTU affiliation, Hostel Rector",
-      date: "2021-22",
-      images: [
-        {
-          src: '/newsletters/2021-22/sj-chauhan.png',
-          alt: 'Mr. S. J. Chauhan - Head of Department',
-          caption: 'Mr. S. J. Chauhan - HOD EC Engineering, leading syllabus development and administrative coordination'
-        }
-      ]
+      date: "2021-22"
     },
     {
       category: "faculty-contribution" as const,
@@ -194,6 +137,19 @@ export const newsletterData2021_22: NewsletterData = {
       date: "2021-22"
     },
     {
+      category: "faculty-contribution" as const, 
+      title: "Best Paper Runner-up Award",
+      description: "Mr. L. K. Patel won best paper runner-up at National Conference",
+      person: "Mr. L. K. Patel",
+      designation: "Lecturer, EC Department",
+      date: "October 2021",
+      achievements: [
+        "Paper: Analysis of matched key points of image registration using SIFT, SURF with different layers of CNN",
+        "3rd National Conference on Recent Trends in Engineering, Management, Pharmacy, Architecture And Science",
+        "GTU coordinator and syllabus contributor"
+      ]
+    },    
+    {
       category: "faculty-contribution" as const,
       title: "Electronic Circuits Syllabus & Multi-Committee Role",
       description: "Syllabus development for Electronic Circuits & Applications, Gymkhana and placement cell coordination",
@@ -211,6 +167,20 @@ export const newsletterData2021_22: NewsletterData = {
       details: "Editorial board member in Global Research and Development Journal, Training: Antenna Design",
       date: "2021-22"
     },
+    {
+      category: "faculty-contribution" as const,
+      title: "Patent Publications by Dr. R. N. Patel",
+      description: "Published two patents in antenna design for industrial applications",
+      person: "Dr. R. N. Patel",
+      designation: "Lecturer, EC Department",
+      date: "February 2022",
+      achievements: [
+        "Patent: Design of wideband bow tie antenna using tapered balun for ISM band (25/02/2022)",
+        "Patent: Rectangular patch antenna with Tree-Fractal structure (21/01/2022)",
+        "Editorial board member in Global Research and Development Journal",
+        "Completed training on Antenna Design"
+      ]
+    },    
     {
       category: "faculty-contribution" as const,
       title: "CWAN Committee & SSIP Cell Coordination",
