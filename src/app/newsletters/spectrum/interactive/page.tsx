@@ -44,7 +44,7 @@ export default function InteractiveNewsletterPage() {
 
   const handleExport = async (format: string) => {
     setIsExporting(format);
-    
+
     try {
       // Create a comprehensive data object for export
       const exportData = {
@@ -69,7 +69,7 @@ export default function InteractiveNewsletterPage() {
         // Try to get error details from the response
         let errorMessage = `Export failed: ${response.statusText}`;
         let suggestion = '';
-        
+
         try {
           const errorData = await response.json();
           if (errorData.error) {
@@ -82,7 +82,7 @@ export default function InteractiveNewsletterPage() {
           // Fallback if response is not JSON
           console.error('Could not parse error response:', jsonError);
         }
-        
+
         throw new Error(errorMessage + (suggestion ? ` ${suggestion}` : ''));
       }
 
@@ -111,14 +111,14 @@ export default function InteractiveNewsletterPage() {
 
     } catch (error) {
       console.error('Export error:', error);
-      
+
       // Show helpful error message based on format
       let errorDescription = error instanceof Error ? error.message : 'Unknown error occurred';
-      
+
       if (format === 'pdf' && errorDescription.includes('PDF generation failed')) {
         errorDescription += ' Try HTML export as an alternative.';
       }
-      
+
       toast({
         title: "Export Failed",
         description: errorDescription,
@@ -131,35 +131,85 @@ export default function InteractiveNewsletterPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      {/* Hero Header */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-blue-900 via-purple-900 to-indigo-900">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="relative container mx-auto px-4 py-16">
-          <div className="text-center text-white">
-            <h1 className="text-4xl font-bold mb-4">Spectrum Newsletter</h1>
-            <p className="text-xl mb-8">Band III - Academic Year {selectedYear}</p>
-            
-            {/* Year Selection */}
-            <div className="flex justify-center mb-8">
-              <div className="bg-white/10 backdrop-blur-md rounded-lg p-4">
-                <label className="text-white text-sm font-medium mb-2 block">Select Academic Year</label>
-                <Select value={selectedYear} onValueChange={setSelectedYear}>
-                  <SelectTrigger className="w-64 bg-white/90 text-gray-900">
-                    <SelectValue placeholder="Select academic year" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {availableYears.map((year) => (
-                      <SelectItem key={year.year} value={year.year}>
-                        {year.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+      {/* Cover Page */}
+      <div className="h-screen flex items-center justify-center overflow-hidden">
+        <div className="w-full h-full bg-gradient-to-br from-blue-800 via-blue-700 to-blue-500 relative overflow-hidden flex items-center justify-center">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.1)_0%,transparent_60%),radial-gradient(circle_at_80%_80%,rgba(255,255,255,0.1)_0%,transparent_60%),radial-gradient(circle_at_40%_70%,rgba(255,255,255,0.05)_0%,transparent_50%),linear-gradient(45deg,transparent_40%,rgba(255,255,255,0.03)_50%,transparent_60%)]"></div>
+
+          <div className="text-center text-white z-10 p-8 max-w-4xl w-full flex flex-col justify-between min-h-[80vh]">
+            {/* Top Section */}
+            <div className="flex-shrink-0">
+              {currentData.logos && (
+                <div className="flex justify-center gap-8 mb-4">
+                  {currentData.logos.map((logo, index) => (
+                    <div key={index} className="w-36 h-36 bg-white/95 p-6 rounded-3xl shadow-lg border-2 border-white/30 backdrop-blur-md">
+                      <img src={logo.src} alt={logo.alt} className="w-full h-full object-contain" />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Middle Section */}
+            <div className="flex-1 flex flex-col justify-center gap-8">
+              <div>
+                <h1 className="text-7xl font-black m-0 text-shadow-lg tracking-tighter text-white">Spectrum</h1>
+                <div className="inline-block bg-white/95 text-blue-800 px-10 py-3 rounded-full backdrop-blur-md border-2 border-white/80 shadow-lg font-bold text-xl mt-2">Band III</div>
+              </div>
+
+              <div>
+                <h2 className="text-2xl font-semibold mb-2 text-shadow text-white">Electronics & Communication Engineering</h2>
+                <h3 className="text-xl font-normal opacity-95 text-shadow text-gray-100">Government Polytechnic, Palanpur</h3>
+              </div>
+
+              <div>
+                <div className="inline-block bg-white/95 text-blue-800 px-8 py-4 rounded-full backdrop-blur-md border-2 border-white/80 shadow-lg font-semibold text-lg">Academic Year {selectedYear}</div>
               </div>
             </div>
-            
+
+            {/* Bottom Section */}
+            <div className="flex-shrink-0">
+              <div className="flex items-center justify-center gap-4 mb-8">
+                <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-white/80 to-transparent"></div>
+                <div className="flex gap-2 text-2xl opacity-80">
+                  <span>•</span>
+                  <span>•</span>
+                  <span>•</span>
+                </div>
+                <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-white/80 to-transparent"></div>
+              </div>
+
+              <div className="text-lg opacity-90 italic font-light text-gray-100">
+                <p>Excellence in Technical Education Since 1984</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Controls Section */}
+      <div className="bg-gradient-to-r from-blue-900 via-purple-900 to-indigo-900 py-8">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            {/* Year Selection */}
+            <div className="bg-white/10 backdrop-blur-md rounded-lg p-4">
+              <label className="text-white text-sm font-medium mb-2 block">Select Academic Year</label>
+              <Select value={selectedYear} onValueChange={setSelectedYear}>
+                <SelectTrigger className="w-64 bg-white/90 text-gray-900">
+                  <SelectValue placeholder="Select academic year" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableYears.map((year) => (
+                    <SelectItem key={year.year} value={year.year}>
+                      {year.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             {/* Export Buttons */}
-            <div className="flex justify-center space-x-4 mb-8">
+            <div className="flex flex-wrap justify-center gap-4">
               <Button 
                 onClick={() => handleExport('pdf')} 
                 className="bg-red-600 hover:bg-red-700"
@@ -349,7 +399,7 @@ export default function InteractiveNewsletterPage() {
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Programs Highlight */}
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white p-6 rounded-xl text-center">
@@ -462,7 +512,7 @@ export default function InteractiveNewsletterPage() {
                           </p>
                         )}
                       </div>
-                      
+
                       {/* Images for canvas items */}
                       {item.images && item.images.length > 0 && (
                         <div className="mt-6">
@@ -492,7 +542,7 @@ export default function InteractiveNewsletterPage() {
                                   : isFeatured 
                                     ? 'sm:col-span-2 aspect-video' 
                                     : 'aspect-square';
-                              
+
                               return (
                                 <div key={imgIndex} className={`group relative overflow-hidden rounded-lg bg-gray-100 ${aspectClass}`}>
                                   <img 
@@ -551,10 +601,10 @@ export default function InteractiveNewsletterPage() {
                       community: 'from-blue-50 to-cyan-50 text-blue-700 border-blue-300',
                       visit: 'from-yellow-50 to-amber-50 text-yellow-700 border-yellow-300'
                     };
-                    
+
                     const style = categoryStyles[event.category as keyof typeof categoryStyles] || 'from-gray-50 to-slate-50 text-gray-700 border-gray-300';
                     const [gradientFrom, gradientTo, textColor, borderColor] = style.split(' ');
-                    
+
                     return (
                       <div key={index}>
                         <div className={`border border-gray-200 rounded-lg p-6 bg-gradient-to-r ${gradientFrom} ${gradientTo}`}>
@@ -576,7 +626,7 @@ export default function InteractiveNewsletterPage() {
                               )}
                             </div>
                           </div>
-                          
+
                           {event.images && event.images.length > 0 && (
                             <div className="mt-6">
                               <h4 className="text-sm font-medium text-gray-600 mb-3">Event Gallery</h4>
@@ -604,7 +654,7 @@ export default function InteractiveNewsletterPage() {
                                       : isFeatured 
                                         ? 'sm:col-span-2 aspect-video' 
                                         : 'aspect-square';
-                                  
+
                                   return (
                                     <div key={imgIndex} className={`group relative overflow-hidden rounded-lg bg-gray-100 ${aspectClass}`}>
                                       <img 
@@ -780,7 +830,7 @@ export default function InteractiveNewsletterPage() {
                   {/* Contact Details */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Department Contact</h3>
-                    
+
                     <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
                       <Mail className="w-5 h-5 text-blue-600" />
                       <div>
@@ -788,7 +838,7 @@ export default function InteractiveNewsletterPage() {
                         <div className="text-gray-600">{currentData.reachout?.email || 'gppec11@gmail.com'}</div>
                       </div>
                     </div>
-                    
+
                     {currentData.reachout?.newsletterEmail && (
                       <div className="flex items-center space-x-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
                         <Mail className="w-5 h-5 text-purple-600" />
@@ -799,7 +849,7 @@ export default function InteractiveNewsletterPage() {
                         </div>
                       </div>
                     )}
-                    
+
                     <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
                       <Phone className="w-5 h-5 text-green-600" />
                       <div>
@@ -807,7 +857,7 @@ export default function InteractiveNewsletterPage() {
                         <div className="text-gray-600">{currentData.reachout?.phone || '02742-245219'}</div>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
                       <MapPin className="w-5 h-5 text-red-600" />
                       <div>
@@ -815,7 +865,7 @@ export default function InteractiveNewsletterPage() {
                         <div className="text-gray-600">{currentData.reachout?.address || 'Opp. Malan Darwaja, Ambaji Road, Palanpur - 385001, Gujarat'}</div>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
                       <Globe className="w-5 h-5 text-purple-600" />
                       <div>
@@ -824,11 +874,11 @@ export default function InteractiveNewsletterPage() {
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Editorial Team */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Editorial Team</h3>
-                    
+
                     {currentData.editorialTeam && currentData.editorialTeam.length > 0 ? (
                       <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border border-blue-200">
                         <div className="space-y-4">
@@ -857,7 +907,7 @@ export default function InteractiveNewsletterPage() {
                               <div className="text-sm text-gray-600">Assistant Professor & Newsletter Editor</div>
                             </div>
                           </div>
-                          
+
                           <div className="flex items-center space-x-3">
                             <div className="bg-purple-600 text-white p-2 rounded-lg">
                               <Users className="w-5 h-5" />
@@ -870,7 +920,7 @@ export default function InteractiveNewsletterPage() {
                         </div>
                       </div>
                     )}
-                    
+
                     {/* Department Info */}
                     <div className="bg-gray-50 p-6 rounded-lg border">
                       <h4 className="font-semibold text-gray-900 mb-3">About the Department</h4>

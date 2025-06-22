@@ -17,12 +17,12 @@ function getImageAsBase64(imagePath: string): string {
   try {
     const fullPath = path.join(process.cwd(), 'public', imagePath);
     console.log(`Attempting to load image from: ${fullPath}`);
-    
+
     if (!fs.existsSync(fullPath)) {
       console.error(`Image file not found: ${fullPath}`);
       return '';
     }
-    
+
     const imageBuffer = fs.readFileSync(fullPath);
     const base64 = imageBuffer.toString('base64');
     const ext = path.extname(imagePath).toLowerCase();
@@ -66,7 +66,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
@@ -74,13 +74,13 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             background: linear-gradient(to bottom right, #dbeafe, #e0e7ff, #f3e8ff);
             min-height: 100vh;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0;
         }
-        
+
         /* Cover Page Styles */
         .cover-page {
             height: 100vh;
@@ -96,7 +96,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             overflow: hidden;
             position: relative;
         }
-        
+
         .cover-background {
             width: 100%;
             height: 100%;
@@ -113,7 +113,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             align-items: center;
             justify-content: center;
         }
-        
+
         .cover-pattern {
             position: absolute;
             top: 0;
@@ -126,7 +126,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 radial-gradient(circle at 40% 70%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
                 linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.03) 50%, transparent 60%);
         }
-        
+
         .cover-content {
             text-align: center;
             color: #ffffff;
@@ -139,11 +139,11 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             justify-content: space-between;
             min-height: 80vh;
         }
-        
+
         .cover-top {
             flex-shrink: 0;
         }
-        
+
         .cover-middle {
             flex: 1;
             display: flex;
@@ -151,18 +151,18 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             justify-content: center;
             gap: 2rem;
         }
-        
+
         .cover-bottom {
             flex-shrink: 0;
         }
-        
+
         .cover-logos {
             margin-bottom: 1rem;
             display: flex;
             justify-content: center;
             gap: 2rem;
         }
-        
+
         .cover-logo {
             width: 140px;
             height: 140px;
@@ -176,11 +176,11 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             border: 2px solid rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(20px);
         }
-        
+
         .cover-title-section {
             margin-bottom: 0;
         }
-        
+
         .cover-main-title {
             font-size: 6.5rem;
             font-weight: 900;
@@ -191,7 +191,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             letter-spacing: -3px;
             color: #ffffff;
         }
-        
+
         .cover-subtitle {
             font-size: 2.5rem;
             font-weight: 300;
@@ -200,7 +200,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
             color: #ffffff;
         }
-        
+
         .cover-band {
             font-size: 1.5rem;
             font-weight: 600;
@@ -216,11 +216,11 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 inset 0 1px 0 rgba(255, 255, 255, 0.6);
             font-weight: 700;
         }
-        
+
         .cover-department {
             margin-bottom: 0;
         }
-        
+
         .cover-department h2 {
             font-size: 2rem;
             font-weight: 600;
@@ -228,7 +228,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
             color: #ffffff;
         }
-        
+
         .cover-department h3 {
             font-size: 1.5rem;
             font-weight: 400;
@@ -237,11 +237,11 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
             color: #f1f5f9;
         }
-        
+
         .cover-year {
             margin-bottom: 0;
         }
-        
+
         .year-badge {
             font-size: 1.25rem;
             font-weight: 500;
@@ -257,7 +257,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 inset 0 1px 0 rgba(255, 255, 255, 0.6);
             font-weight: 600;
         }
-        
+
         .cover-decoration {
             margin-bottom: 2rem;
             display: flex;
@@ -265,7 +265,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             justify-content: center;
             gap: 1rem;
         }
-        
+
         .decoration-line {
             width: 4rem;
             height: 2px;
@@ -276,18 +276,18 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             );
             border-radius: 1px;
         }
-        
+
         .decoration-dots {
             display: flex;
             gap: 0.5rem;
         }
-        
+
         .decoration-dots span {
             opacity: 0.8;
             font-size: 1.5rem;
             color: #ffffff;
         }
-        
+
         .cover-footer {
             font-size: 1.125rem;
             opacity: 0.9;
@@ -295,37 +295,37 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             font-weight: 300;
             color: #f1f5f9;
         }
-        
+
         .cover-footer p {
             margin: 0;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
-        
+
         /* Stats and Welcome Page */
         .stats-welcome-page {
             padding: 2rem;
             margin-bottom: 2rem;
         }
-        
+
         .page-header {
             text-align: center;
             margin-bottom: 2rem;
         }
-        
+
         .page-header h2 {
             font-size: 2rem;
             font-weight: 600;
             color: #1f2937;
             margin: 0;
         }
-        
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
             margin-bottom: 3rem;
         }
-        
+
         .stat-card {
             background: white;
             padding: 1.5rem;
@@ -335,30 +335,30 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             position: relative;
             overflow: hidden;
         }
-        
+
         .stat-card-content {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-        
+
         .stat-info {
             flex: 1;
         }
-        
+
         .stat-value {
             font-size: 2rem;
             font-weight: 700;
             color: #1f2937;
             margin-bottom: 0.25rem;
         }
-        
+
         .stat-label {
             font-size: 0.875rem;
             color: #6b7280;
             font-medium: 500;
         }
-        
+
         .stat-icon {
             width: 48px;
             height: 48px;
@@ -369,12 +369,12 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             font-size: 1.5rem;
             color: white;
         }
-        
+
         .stat-icon.bg-blue { background: #3b82f6; }
         .stat-icon.bg-green { background: #10b981; }
         .stat-icon.bg-purple { background: #8b5cf6; }
         .stat-icon.bg-orange { background: #f59e0b; }
-        
+
         .section {
             background: white;
             margin-bottom: 2rem;
@@ -383,13 +383,13 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             border: 1px solid #e5e7eb;
             overflow: hidden;
         }
-        
+
         .section-header {
             background: white;
             padding: 1.5rem 2rem;
             border-bottom: 1px solid #e5e7eb;
         }
-        
+
         .section-title {
             font-size: 1.5rem;
             font-weight: 600;
@@ -399,22 +399,22 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             align-items: center;
             gap: 0.5rem;
         }
-        
+
         .section-description {
             font-size: 0.875rem;
             color: #6b7280;
             margin: 0;
         }
-        
+
         .section-content {
             padding: 2rem;
         }
-        
+
         .spotlight-grid {
             display: grid;
             gap: 1.5rem;
         }
-        
+
         .spotlight-item {
             padding: 1.5rem;
             border-radius: 0.75rem;
@@ -423,32 +423,32 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             align-items: flex-start;
             gap: 1rem;
         }
-        
+
         .spotlight-item.faculty-contribution {
             background: linear-gradient(to right, #dbeafe, #bfdbfe);
             border-color: #3b82f6;
         }
-        
+
         .spotlight-item.student-achievement {
             background: linear-gradient(to right, #dcfce7, #bbf7d0);
             border-color: #10b981;
         }
-        
+
         .spotlight-item.placement {
             background: linear-gradient(to right, #f3e8ff, #e9d5ff);
             border-color: #8b5cf6;
         }
-        
+
         .spotlight-item.higher-education {
             background: linear-gradient(to right, #fed7aa, #fdba74);
             border-color: #f59e0b;
         }
-        
+
         .spotlight-item.star-performer {
             background: linear-gradient(to right, #fef3c7, #fde68a);
             border-color: #f59e0b;
         }
-        
+
         .spotlight-icon {
             width: 48px;
             height: 48px;
@@ -460,51 +460,51 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             flex-shrink: 0;
             font-size: 1.25rem;
         }
-        
+
         .spotlight-icon.faculty-contribution { background: #3b82f6; }
         .spotlight-icon.student-achievement { background: #10b981; }
         .spotlight-icon.placement { background: #8b5cf6; }
         .spotlight-icon.higher-education { background: #f59e0b; }
         .spotlight-icon.star-performer { background: #f59e0b; }
-        
+
         .spotlight-content {
             flex: 1;
         }
-        
+
         .spotlight-header {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
             margin-bottom: 0.75rem;
         }
-        
+
         .spotlight-person {
             font-size: 1.125rem;
             font-weight: 600;
             color: #1f2937;
             margin-bottom: 0.25rem;
         }
-        
+
         .spotlight-designation {
             font-size: 0.875rem;
             color: #6b7280;
             margin-bottom: 0.5rem;
         }
-        
+
         .spotlight-title {
             font-size: 1rem;
             font-weight: 500;
             color: #374151;
             margin-bottom: 0.5rem;
         }
-        
+
         .spotlight-description {
             color: #6b7280;
             font-size: 0.875rem;
             margin-bottom: 0.5rem;
             line-height: 1.5;
         }
-        
+
         .spotlight-details {
             background: rgba(255, 255, 255, 0.5);
             padding: 0.5rem;
@@ -513,14 +513,14 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             color: #374151;
             margin-top: 0.5rem;
         }
-        
+
         .spotlight-badges {
             display: flex;
             align-items: center;
             gap: 0.5rem;
             flex-wrap: wrap;
         }
-        
+
         .spotlight-badge {
             background: rgba(255, 255, 255, 0.8);
             padding: 0.25rem 0.5rem;
@@ -529,90 +529,90 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             font-weight: 500;
             border: 1px solid rgba(0, 0, 0, 0.1);
         }
-        
+
         .placements-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1rem;
         }
-        
+
         .placement-card {
             background: #f8fafc;
             padding: 1.5rem;
             border-radius: 0.5rem;
             border: 1px solid #e2e8f0;
         }
-        
+
         .placement-company {
             font-size: 1.125rem;
             font-weight: 600;
             color: #1e293b;
         }
-        
+
         .placement-package {
             font-size: 1rem;
             color: #059669;
             font-weight: 500;
         }
-        
+
         .placement-students {
             font-size: 0.875rem;
             color: #64748b;
         }
-        
+
         .chronicles-grid {
             display: grid;
             gap: 2rem;
         }
-        
+
         .chronicle-item {
             border: 1px solid #e5e7eb;
             border-radius: 0.75rem;
             padding: 1.5rem;
             background: white;
         }
-        
+
         .chronicle-item.workshop {
             background: linear-gradient(to right, #f5f3ff, #ede9fe);
             border-color: #8b5cf6;
         }
-        
+
         .chronicle-item.orientation {
             background: linear-gradient(to right, #ecfdf5, #d1fae5);
             border-color: #10b981;
         }
-        
+
         .chronicle-item.training {
             background: linear-gradient(to right, #fff7ed, #fed7aa);
             border-color: #f97316;
         }
-        
+
         .chronicle-item.awareness {
             background: linear-gradient(to right, #fdf2f8, #fce7f3);
             border-color: #ec4899;
         }
-        
+
         .chronicle-item.community {
             background: linear-gradient(to right, #eff6ff, #dbeafe);
             border-color: #3b82f6;
         }
-        
+
         .chronicle-item.visit {
             background: linear-gradient(to right, #fffbeb, #fef3c7);
             border-color: #f59e0b;
         }
-        
+
         .chronicle-header {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
             margin-bottom: 1rem;
         }
-        
+
         .chronicle-content {
             flex: 1;
         }
-        
+
         .chronicle-date-badge {
             padding: 0.375rem 0.75rem;
             border-radius: 0.375rem;
@@ -622,63 +622,63 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             margin-bottom: 0.5rem;
             display: inline-block;
         }
-        
+
         .chronicle-item.workshop .chronicle-date-badge {
             background: #f5f3ff;
             color: #7c3aed;
             border-color: #c4b5fd;
         }
-        
+
         .chronicle-item.orientation .chronicle-date-badge {
             background: #ecfdf5;
             color: #059669;
             border-color: #a7f3d0;
         }
-        
+
         .chronicle-item.training .chronicle-date-badge {
             background: #fff7ed;
             color: #ea580c;
             border-color: #fed7aa;
         }
-        
+
         .chronicle-item.awareness .chronicle-date-badge {
             background: #fdf2f8;
             color: #be185d;
             border-color: #fce7f3;
         }
-        
+
         .chronicle-item.community .chronicle-date-badge {
             background: #eff6ff;
             color: #2563eb;
             border-color: #bfdbfe;
         }
-        
+
         .chronicle-item.visit .chronicle-date-badge {
             background: #fffbeb;
             color: #d97706;
             border-color: #fde68a;
         }
-        
+
         .chronicle-title {
             font-size: 1.25rem;
             font-weight: 600;
             color: #1f2937;
             margin-bottom: 0.5rem;
         }
-        
+
         .chronicle-description {
             color: #374151;
             line-height: 1.6;
             margin-bottom: 1rem;
         }
-        
+
         .chronicle-tags {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
             margin-bottom: 1rem;
         }
-        
+
         .chronicle-tag {
             background: rgba(156, 163, 175, 0.2);
             color: #374151;
@@ -687,72 +687,72 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             font-size: 0.75rem;
             font-weight: 500;
         }
-        
+
         .chronicle-gallery {
             margin-top: 1.5rem;
         }
-        
+
         .chronicle-gallery-title {
             font-size: 0.875rem;
             font-weight: 500;
             color: #6b7280;
             margin-bottom: 0.75rem;
         }
-        
+
         .chronicle-images {
             display: grid;
             gap: 1rem;
         }
-        
+
         .chronicle-images.single {
             grid-template-columns: 1fr;
             justify-items: center;
         }
-        
+
         .chronicle-images.double {
             grid-template-columns: repeat(2, 1fr);
         }
-        
+
         .chronicle-images.triple {
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         }
-        
+
         .chronicle-images.multiple {
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         }
-        
+
         .chronicle-image-container {
             position: relative;
             overflow: hidden;
             border-radius: 0.5rem;
             background: #f3f4f6;
         }
-        
+
         .chronicle-images.single .chronicle-image-container {
             aspect-ratio: 16/9;
             max-width: 32rem;
         }
-        
+
         .chronicle-images.double .chronicle-image-container {
             aspect-ratio: 4/3;
         }
-        
+
         .chronicle-images.triple .chronicle-image-container,
         .chronicle-images.multiple .chronicle-image-container {
             aspect-ratio: 1/1;
         }
-        
+
         .chronicle-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.3s ease;
         }
-        
+
         .chronicle-image:hover {
             transform: scale(1.05);
         }
-        
+
         .chronicle-image-caption {
             position: absolute;
             bottom: 0;
@@ -766,17 +766,17 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        
+
         .chronicle-image-container:hover .chronicle-image-caption {
             opacity: 1;
         }
-        
+
         .contact-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
         }
-        
+
         .contact-item {
             display: flex;
             align-items: center;
@@ -785,13 +785,13 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             background: #f8fafc;
             border-radius: 0.5rem;
         }
-        
+
         .contact-icon {
             width: 20px;
             height: 20px;
             color: #3b82f6;
         }
-        
+
         .message-section {
             background: white;
             margin-bottom: 2rem;
@@ -800,30 +800,30 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             border: 1px solid #e5e7eb;
             overflow: hidden;
         }
-        
+
         .message-header {
             background: white;
             padding: 1.5rem 2rem;
             border-bottom: 1px solid #e5e7eb;
         }
-        
+
         .message-content {
             padding: 2rem;
         }
-        
+
         .message-body {
             background: linear-gradient(to right, #f0fdf4, #dcfce7);
             padding: 1.5rem;
             border-radius: 0.75rem;
             border: 1px solid #16a34a;
         }
-        
+
         .message-profile {
             display: flex;
             align-items: flex-start;
             gap: 1rem;
         }
-        
+
         .message-icon {
             background: #16a34a;
             color: white;
@@ -831,37 +831,37 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             border-radius: 50%;
             flex-shrink: 0;
         }
-        
+
         .message-details {
             flex: 1;
         }
-        
+
         .message-author {
             font-size: 1.125rem;
             font-weight: 600;
             color: #1f2937;
             margin-bottom: 0.25rem;
         }
-        
+
         .message-designation {
             font-size: 0.875rem;
             color: #6b7280;
             margin-bottom: 1rem;
         }
-        
+
         .message-text {
             color: #374151;
             line-height: 1.7;
             white-space: pre-line;
         }
-        
+
         .vision-mission-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 2rem;
             margin-top: 1rem;
         }
-        
+
         .department-overview {
             background: white;
             border-radius: 0.75rem;
@@ -869,29 +869,29 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             overflow: hidden;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
         }
-        
+
         .dept-overview-header {
             background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
             color: white;
             padding: 1.5rem 2rem;
         }
-        
+
         .dept-overview-title {
             margin: 0;
             font-size: 1.25rem;
             font-weight: 600;
         }
-        
+
         .dept-overview-subtitle {
             margin: 0.5rem 0 0 0;
             opacity: 0.9;
             font-size: 0.875rem;
         }
-        
+
         .dept-overview-content {
             padding: 2rem;
         }
-        
+
         .dept-overview-text {
             background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
             padding: 2rem;
@@ -899,7 +899,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             border: 1px solid #e2e8f0;
             margin: 1.5rem 0;
         }
-        
+
         .dept-overview-text p {
             white-space: pre-line;
             text-align: justify;
@@ -908,57 +908,57 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             font-size: 1rem;
             margin: 0;
         }
-        
+
         .programs-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1.5rem;
             margin-top: 2rem;
         }
-        
+
         .program-card {
             color: white;
             padding: 1.5rem;
             border-radius: 0.75rem;
             text-align: center;
         }
-        
+
         .program-card.ec {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         }
-        
+
         .program-card.ict {
             background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
         }
-        
+
         .program-icon {
             font-size: 3rem;
             margin-bottom: 1rem;
             display: block;
         }
-        
+
         .program-title {
             margin: 0 0 0.75rem 0;
             font-size: 1.125rem;
             font-weight: 600;
         }
-        
+
         .program-intake {
             margin: 0;
             font-size: 0.875rem;
             opacity: 0.9;
         }
-        
+
         .program-description {
             margin: 0.5rem 0 0 0;
             font-size: 0.75rem;
             opacity: 0.8;
         }
-        
+
         .key-strengths {
             margin-top: 2rem;
         }
-        
+
         .key-strengths-title {
             font-size: 1.25rem;
             font-weight: 600;
@@ -966,85 +966,85 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             margin-bottom: 1.5rem;
             text-align: center;
         }
-        
+
         .strengths-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1rem;
         }
-        
+
         .strength-card {
             padding: 1.25rem;
             border-radius: 0.5rem;
             border-left: 4px solid;
         }
-        
+
         .strength-card.holistic {
             background: #f0f9ff;
             border-left-color: #0ea5e9;
         }
-        
+
         .strength-card.partnerships {
             background: #f0fdf4;
             border-left-color: #22c55e;
         }
-        
+
         .strength-card.leaders {
             background: #fefbff;
             border-left-color: #a855f7;
         }
-        
+
         .strength-header {
             display: flex;
             align-items: center;
             gap: 0.5rem;
             margin-bottom: 0.75rem;
         }
-        
+
         .strength-icon {
             font-size: 1.25rem;
         }
-        
+
         .strength-title {
             font-weight: 600;
         }
-        
+
         .strength-card.holistic .strength-title { color: #0369a1; }
         .strength-card.partnerships .strength-title { color: #15803d; }
         .strength-card.leaders .strength-title { color: #7c2d12; }
-        
+
         .strength-description {
             margin: 0;
             font-size: 0.875rem;
             line-height: 1.5;
         }
-        
+
         .strength-card.holistic .strength-description { color: #075985; }
         .strength-card.partnerships .strength-description { color: #166534; }
         .strength-card.leaders .strength-description { color: #92400e; }
-        
+
         .vision-mission-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 1.5rem;
         }
-        
+
         .vision-card, .mission-card {
             padding: 1.5rem;
             border-radius: 0.75rem;
             border: 1px solid;
         }
-        
+
         .vision-card {
             background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
             border-color: #3b82f6;
         }
-        
+
         .mission-card {
             background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
             border-color: #10b981;
         }
-        
+
         .vision-title, .mission-title {
             font-size: 1.125rem;
             font-weight: 600;
@@ -1053,15 +1053,15 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             align-items: center;
             gap: 0.5rem;
         }
-        
+
         .vision-title {
             color: #1e40af;
         }
-        
+
         .mission-title {
             color: #065f46;
         }
-        
+
         .vision-icon, .mission-icon {
             width: 48px;
             height: 48px;
@@ -1072,26 +1072,26 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             color: white;
             margin-right: 0.75rem;
         }
-        
+
         .vision-icon {
             background: #3b82f6;
         }
-        
+
         .mission-icon {
             background: #10b981;
         }
-        
+
         .vision-text, .mission-text {
             color: #374151;
             line-height: 1.6;
             white-space: pre-line;
         }
-        
+
         .mission-list {
             list-style: none;
             padding: 0;
         }
-        
+
         .mission-list li {
             padding: 0.75rem 0;
             border-bottom: 1px solid #e5e7eb;
@@ -1099,11 +1099,11 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             align-items: center;
             gap: 0.75rem;
         }
-        
+
         .mission-list li:last-child {
             border-bottom: none;
         }
-        
+
         .header-logos {
             display: flex;
             justify-content: center;
@@ -1111,7 +1111,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             gap: 2rem;
             margin-bottom: 2rem;
         }
-        
+
         .header-logo {
             width: 80px;
             height: 80px;
@@ -1121,37 +1121,37 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             border-radius: 0.5rem;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
         }
-        
+
         .canvas-grid {
             display: grid;
             gap: 1.5rem;
         }
-        
+
         .canvas-item {
             background: linear-gradient(to right, #f5f3ff, #ede9fe);
             padding: 1.5rem;
             border-radius: 0.75rem;
             border: 1px solid #8b5cf6;
         }
-        
+
         .canvas-header {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
             margin-bottom: 1rem;
         }
-        
+
         .canvas-content {
             flex: 1;
         }
-        
+
         .canvas-title {
             font-size: 1.125rem;
             font-weight: 600;
             color: #1f2937;
             margin-bottom: 0.5rem;
         }
-        
+
         .canvas-author-info {
             display: flex;
             align-items: center;
@@ -1160,18 +1160,18 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             font-size: 0.875rem;
             color: #6b7280;
         }
-        
+
         .canvas-author-info .author-icon {
             color: #8b5cf6;
         }
-        
+
         .canvas-badges {
             display: flex;
             align-items: center;
             gap: 0.5rem;
             flex-wrap: wrap;
         }
-        
+
         .canvas-badge {
             padding: 0.25rem 0.5rem;
             border-radius: 0.375rem;
@@ -1179,66 +1179,66 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             font-weight: 500;
             border: 1px solid;
         }
-        
+
         .canvas-badge.faculty {
             background: #dbeafe;
             color: #2563eb;
             border-color: #93c5fd;
         }
-        
+
         .canvas-badge.student {
             background: #dcfce7;
             color: #16a34a;
             border-color: #86efac;
         }
-        
+
         .canvas-badge.type {
             background: rgba(255, 255, 255, 0.8);
             color: #6b7280;
             border-color: #d1d5db;
         }
-        
+
         .canvas-text {
             color: #374151;
             line-height: 1.6;
             margin-top: 1rem;
         }
-        
+
         .canvas-text.poem {
             white-space: pre-wrap;
             font-family: 'Georgia', serif;
             font-style: italic;
         }
-        
+
         .canvas-images {
             margin-top: 1.5rem;
         }
-        
+
         .canvas-gallery-title {
             font-size: 0.875rem;
             font-weight: 500;
             color: #6b7280;
             margin-bottom: 0.75rem;
         }
-        
+
         .canvas-image-grid {
             display: grid;
             gap: 1rem;
         }
-        
+
         .canvas-image-grid.single {
             grid-template-columns: 1fr;
             justify-items: center;
         }
-        
+
         .canvas-image-grid.double {
             grid-template-columns: repeat(2, 1fr);
         }
-        
+
         .canvas-image-grid.multiple {
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         }
-        
+
         .canvas-image-container {
             position: relative;
             overflow: hidden;
@@ -1246,18 +1246,18 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             background: #f3f4f6;
             aspect-ratio: 4/3;
         }
-        
+
         .canvas-image-grid.single .canvas-image-container {
             aspect-ratio: 16/9;
             max-width: 32rem;
         }
-        
+
         .canvas-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        
+
         .canvas-image-caption {
             position: absolute;
             bottom: 0;
@@ -1271,11 +1271,11 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        
+
         .canvas-image-container:hover .canvas-image-caption {
             opacity: 1;
         }
-        
+
         .welcome-section {
             background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0fdf4 100%);
             border-radius: 0.75rem;
@@ -1283,26 +1283,26 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             margin-bottom: 3rem;
             border: 1px solid #bae6fd;
         }
-        
+
         .welcome-header {
             text-align: center;
             margin-bottom: 2rem;
         }
-        
+
         .welcome-header h2 {
             font-size: 1.75rem;
             font-weight: 600;
             color: #0f172a;
             margin: 0;
         }
-        
+
         .welcome-highlights {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
-        
+
         .highlight-card {
             background: white;
             padding: 1.5rem;
@@ -1313,26 +1313,26 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             align-items: flex-start;
             gap: 1rem;
         }
-        
+
         .highlight-icon {
             font-size: 2rem;
             flex-shrink: 0;
         }
-        
+
         .highlight-content h3 {
             font-size: 1.125rem;
             font-weight: 600;
             color: #1e293b;
             margin: 0 0 0.5rem 0;
         }
-        
+
         .highlight-content p {
             font-size: 0.875rem;
             color: #64748b;
             line-height: 1.5;
             margin: 0;
         }
-        
+
         .newsletter-intro {
             background: white;
             border-radius: 0.75rem;
@@ -1340,27 +1340,27 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             border: 1px solid #e2e8f0;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
-        
+
         .intro-content h3 {
             font-size: 1.25rem;
             font-weight: 600;
             color: #1e293b;
             margin: 0 0 1rem 0;
         }
-        
+
         .intro-content p {
             font-size: 0.9375rem;
             color: #475569;
             line-height: 1.6;
             margin: 0 0 1.5rem 0;
         }
-        
+
         .intro-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
         }
-        
+
         .intro-stat {
             display: flex;
             align-items: center;
@@ -1370,18 +1370,18 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             border-radius: 0.5rem;
             border: 1px solid #e2e8f0;
         }
-        
+
         .intro-stat-icon {
             font-size: 1.25rem;
             flex-shrink: 0;
         }
-        
+
         .intro-stat-text {
             font-size: 0.875rem;
             font-weight: 500;
             color: #374151;
         }
-        
+
         /* Back Cover Styles */
         .back-cover {
             height: 100vh;
@@ -1397,7 +1397,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             overflow: hidden;
             position: relative;
         }
-        
+
         .back-cover-background {
             width: 100%;
             height: 100%;
@@ -1414,7 +1414,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             align-items: center;
             justify-content: center;
         }
-        
+
         .back-cover-pattern {
             position: absolute;
             top: 0;
@@ -1427,7 +1427,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
                 linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.03) 50%, transparent 60%);
         }
-        
+
         .back-cover-content {
             color: #ffffff;
             z-index: 2;
@@ -1441,13 +1441,13 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             max-height: 90vh;
             overflow: hidden;
         }
-        
+
         .back-cover-header {
             text-align: center;
             margin-bottom: 1.5rem;
             flex-shrink: 0;
         }
-        
+
         .back-cover-header h2 {
             font-size: 2.5rem;
             font-weight: 700;
@@ -1455,7 +1455,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
             color: #ffffff;
         }
-        
+
         .header-divider {
             width: 6rem;
             height: 3px;
@@ -1467,7 +1467,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             margin: 0 auto;
             border-radius: 2px;
         }
-        
+
         .contact-section {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -1475,7 +1475,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             margin-bottom: 1.5rem;
             flex-shrink: 0;
         }
-        
+
         .contact-card, .address-card {
             background: rgba(255, 255, 255, 0.95);
             padding: 1.25rem;
@@ -1486,20 +1486,20 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 0 12px 40px rgba(0, 0, 0, 0.2),
                 inset 0 1px 0 rgba(255, 255, 255, 0.6);
         }
-        
+
         .contact-card h3, .address-card h3 {
             font-size: 1.25rem;
             font-weight: 700;
             margin: 0 0 1rem 0;
             color: #1e3a8a;
         }
-        
+
         .contact-info {
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
         }
-        
+
         .contact-item {
             display: flex;
             justify-content: space-between;
@@ -1507,25 +1507,25 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             padding: 0.5rem 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
+
         .contact-item:last-child {
             border-bottom: none;
         }
-        
+
         .contact-label {
             font-weight: 600;
             opacity: 1;
             color: #1e40af;
             font-size: 0.9375rem;
         }
-        
+
         .contact-value {
             font-weight: 700;
             color: #1e3a8a;
             text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3);
             font-size: 0.9375rem;
         }
-        
+
         .address-content p {
             margin: 0.5rem 0;
             line-height: 1.5;
@@ -1533,12 +1533,12 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             font-weight: 500;
             text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3);
         }
-        
+
         .programs-section {
             margin-bottom: 1.5rem;
             flex-shrink: 0;
         }
-        
+
         .programs-section h3 {
             font-size: 1.5rem;
             font-weight: 600;
@@ -1547,13 +1547,13 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
             color: #ffffff;
         }
-        
+
         .programs-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
         }
-        
+
         .program-item {
             background: rgba(255, 255, 255, 0.95);
             padding: 1rem;
@@ -1567,12 +1567,12 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 0 8px 32px rgba(0, 0, 0, 0.2),
                 inset 0 1px 0 rgba(255, 255, 255, 0.6);
         }
-        
+
         .additional-info-section {
             margin-bottom: 1.5rem;
             flex-shrink: 0;
         }
-        
+
         .additional-info-section h3 {
             font-size: 1.5rem;
             font-weight: 600;
@@ -1581,13 +1581,13 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
             color: #ffffff;
         }
-        
+
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
         }
-        
+
         .info-item {
             background: rgba(255, 255, 255, 0.95);
             padding: 1rem;
@@ -1601,12 +1601,12 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 0 8px 32px rgba(0, 0, 0, 0.2),
                 inset 0 1px 0 rgba(255, 255, 255, 0.6);
         }
-        
+
         .info-icon {
             font-size: 1.5rem;
             flex-shrink: 0;
         }
-        
+
         .info-content strong {
             display: block;
             font-size: 0.9375rem;
@@ -1614,19 +1614,19 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             color: #1e3a8a;
             font-weight: 700;
         }
-        
+
         .info-content span {
             font-size: 0.8125rem;
             opacity: 0.95;
             font-weight: 500;
             color: #1e40af;
         }
-        
+
         .program-icon {
             font-size: 2rem;
             flex-shrink: 0;
         }
-        
+
         .program-details strong {
             display: block;
             font-size: 0.9375rem;
@@ -1634,19 +1634,19 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             color: #1e3a8a;
             font-weight: 700;
         }
-        
+
         .program-details span {
             font-size: 0.8125rem;
             opacity: 0.95;
             color: #1e40af;
             font-weight: 500;
         }
-        
+
         .achievements-section {
             margin-bottom: 1.5rem;
             flex-shrink: 0;
         }
-        
+
         .achievements-section h3 {
             font-size: 1.5rem;
             font-weight: 600;
@@ -1655,13 +1655,13 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
             color: #ffffff;
         }
-        
+
         .achievements-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 1rem;
         }
-        
+
         .achievement-item {
             background: rgba(255, 255, 255, 0.95);
             padding: 1rem;
@@ -1673,26 +1673,26 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 0 8px 32px rgba(0, 0, 0, 0.2),
                 inset 0 1px 0 rgba(255, 255, 255, 0.6);
         }
-        
+
         .achievement-number {
             font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 0.25rem;
             color: #1e3a8a;
         }
-        
+
         .achievement-label {
             font-size: 0.75rem;
             opacity: 0.95;
             font-weight: 600;
             color: #1e40af;
         }
-        
+
         .editorial-section {
             margin-bottom: 1.5rem;
             flex-shrink: 0;
         }
-        
+
         .editorial-section h3 {
             font-size: 1.5rem;
             font-weight: 600;
@@ -1701,13 +1701,13 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
             color: #ffffff;
         }
-        
+
         .editorial-members {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
         }
-        
+
         .editorial-member {
             background: rgba(255, 255, 255, 0.95);
             padding: 1rem;
@@ -1721,12 +1721,12 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 0 8px 32px rgba(0, 0, 0, 0.15),
                 inset 0 1px 0 rgba(255, 255, 255, 0.6);
         }
-        
+
         .member-icon {
             font-size: 2rem;
             flex-shrink: 0;
         }
-        
+
         .member-details strong {
             display: block;
             font-size: 0.9375rem;
@@ -1734,20 +1734,20 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             color: #1e3a8a;
             font-weight: 700;
         }
-        
+
         .member-details span {
             font-size: 0.8125rem;
             opacity: 0.95;
             color: #1e40af;
             font-weight: 500;
         }
-        
+
         .back-cover-footer {
             text-align: center;
             flex-shrink: 0;
             margin-top: auto;
         }
-        
+
         .footer-decoration {
             margin-bottom: 1rem;
             display: flex;
@@ -1755,13 +1755,13 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             justify-content: center;
             gap: 1rem;
         }
-        
+
         .footer-text p {
             margin: 0.25rem 0;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
             color: #ffffff;
         }
-        
+
         .footer-text .motto {
             font-style: italic;
             opacity: 0.9;
@@ -1769,13 +1769,13 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             font-weight: 300;
             color: #f1f5f9;
         }
-        
+
         @media print {
             * {
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
-            
+
             body {
                 background: white;
                 font-size: 12px;
@@ -1788,7 +1788,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 max-width: 100%;
                 margin: 0;
             }
-            
+
             /* Cover Page Print Styles */
             .cover-page {
                 height: 100vh !important;
@@ -1905,7 +1905,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
-            
+
             /* Stats Welcome Page */
             .stats-welcome-page {
                 padding: 1.5rem;
@@ -1965,7 +1965,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             .intro-stat-text {
                 font-size: 0.75rem;
             }
-            
+
             /* Back Cover Print Styles */
             .back-cover {
                 height: 100vh !important;
@@ -2180,7 +2180,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
-            
+
             /* General Print Styles */
             .section, .message-section {
                 box-shadow: none;
@@ -2383,22 +2383,22 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                         </div>
                         ` : ''}
                     </div>
-                    
+
                     <div class="cover-middle">                    <div class="cover-title-section">
                         <h1 class="cover-main-title">Spectrum</h1>
                         <div class="cover-band">Band III</div>
                     </div>
-                        
+
                         <div class="cover-department">
                             <h2>Electronics & Communication Engineering</h2>
                             <h3>Government Polytechnic, Palanpur</h3>
                         </div>
-                        
+
                         <div class="cover-year">
                             <div class="year-badge">Academic Year ${year}</div>
                         </div>
                     </div>
-                    
+
                     <div class="cover-bottom">
                         <div class="cover-decoration">
                             <div class="decoration-line"></div>
@@ -2409,7 +2409,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                             </div>
                             <div class="decoration-line"></div>
                         </div>
-                        
+
                         <div class="cover-footer">
                             <p>Excellence in Technical Education Since 1984</p>
                         </div>
@@ -2417,7 +2417,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 </div>
             </div>
         </div>
-        
+
         <!-- Stats and Welcome Page -->
         <div class="stats-welcome-page">
             <div class="page-header">
@@ -2448,7 +2448,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                     </div>
                 </div>
             </div>
-            
+
             <div class="welcome-highlights" style="margin-top: 2rem;">
                 ${data.highlights ? data.highlights.map(highlight => `
                 <div class="highlight-card">
@@ -2503,7 +2503,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 }).join('')}
             </div>            
         </div>
-        
+
         <!-- Department Overview Section -->
         ${data.essence?.departmentOverview ? `
         <div class="section">
@@ -2521,7 +2521,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                         <div class="dept-overview-text">
                             <p>${data.essence.departmentOverview}</p>
                         </div>
-                        
+
                         ${data.essence?.vision && data.essence?.mission ? `
                         <div class="vision-mission-grid" style="margin: 2rem 0;">
                             <div class="vision-card">
@@ -2540,7 +2540,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                             </div>
                         </div>
                         ` : ''}
-                        
+
                         <div class="programs-grid">
                             <div class="program-card ec">
                                 <span class="program-icon">📡</span>
@@ -2560,7 +2560,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             </div>
         </div>
         ` : ''}
-        
+
         ${data.essence?.hodMessage ? `
         <div class="message-section">
             <div class="message-header">
@@ -2581,7 +2581,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             </div>
         </div>
         ` : ''}
-        
+
         <div class="section">
             <div class="section-header">
                 <h2 class="section-title">🏆 Spotlight</h2>
@@ -2598,7 +2598,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                         'star-performer': '⭐'
                       };
                       const icon = icons[item.category] || '🏅';
-                      
+
                       return `
                         <div class="spotlight-item ${item.category}">
                             <div class="spotlight-icon ${item.category}">
@@ -2668,7 +2668,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 </div>
             </div>
         </div>
-        
+
         <div class="section">
             <div class="section-header">
                 <h2 class="section-title">📅 Major Events & Activities</h2>
@@ -2683,7 +2683,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                       if (imageCount === 2) imageGridClass = 'double';
                       else if (imageCount === 3) imageGridClass = 'triple';
                       else if (imageCount > 3) imageGridClass = 'multiple';
-                      
+
                       return `
                         <div class="chronicle-item ${category}">
                             <div class="chronicle-header">
@@ -2698,7 +2698,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                                     ` : ''}
                                 </div>
                             </div>
-                            
+
                             ${event.images && event.images.length > 0 ? `
                                 <div class="chronicle-gallery">
                                     <h4 class="chronicle-gallery-title">Event Gallery</h4>
@@ -2725,7 +2725,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 </div>
             </div>
         </div>
-        
+
         <!-- Canvas Section -->
         <div class="section">
             <div class="section-header">
@@ -2739,7 +2739,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                       let imageGridClass = 'single';
                       if (imageCount === 2) imageGridClass = 'double';
                       else if (imageCount > 2) imageGridClass = 'multiple';
-                      
+
                       return `
                         <div class="canvas-item">
                             <div class="canvas-header">
@@ -2758,11 +2758,11 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                                     <span class="canvas-badge type">${item.type?.replace('-', ' ') || 'Content'}</span>
                                 </div>
                             </div>
-                            
+
                             <div class="canvas-text ${item.type === 'poem' ? 'poem' : ''}">
                                 ${item.content || ''}
                             </div>
-                            
+
                             ${item.images && item.images.length > 0 ? `
                                 <div class="canvas-images">
                                     <h4 class="canvas-gallery-title">Photo Gallery</h4>
@@ -2794,121 +2794,8 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 </div>
             </div>
         </div>
-        
-        <div class="section">
-            <div class="section-header">
-                <h2 class="section-title">📞 Reachout</h2>
-                <p class="section-description">Get in touch with the Electronics & Communication Engineering Department</p>
-            </div>
-            <div class="section-content">
-                <div class="contact-grid">
-                    <div>
-                        <h3 style="font-size: 1.125rem; font-weight: 600; color: #1f2937; margin-bottom: 1rem;">Department Contact</h3>
-                        
-                        <div class="contact-item" style="margin-bottom: 1rem;">
-                            <span class="contact-icon">�</span>
-                            <div>
-                                <div style="font-weight: 500; color: #1f2937;">Email</div>
-                                <div style="color: #6b7280;">${data.reachout?.email || 'gppec11@gmail.com'}</div>
-                            </div>
-                        </div>
-                        
-                        ${data.reachout?.newsletterEmail ? `
-                        <div class="contact-item" style="margin-bottom: 1rem; background: #dbeafe; border: 1px solid #3b82f6;">
-                            <span class="contact-icon" style="color: #8b5cf6;">📧</span>
-                            <div>
-                                <div style="font-weight: 500; color: #1f2937;">Newsletter Submissions</div>
-                                <div style="color: #6b7280;">${data.reachout.newsletterEmail}</div>
-                                <div style="font-size: 0.75rem; color: #8b5cf6; margin-top: 0.25rem;">For students & faculty to share newsletter content</div>
-                            </div>
-                        </div>
-                        ` : ''}
-                        
-                        <div class="contact-item" style="margin-bottom: 1rem;">
-                            <span class="contact-icon" style="color: #10b981;">📞</span>
-                            <div>
-                                <div style="font-weight: 500; color: #1f2937;">Phone</div>
-                                <div style="color: #6b7280;">${data.reachout?.phone || '02742-245219'}</div>
-                            </div>
-                        </div>
-                        
-                        <div class="contact-item" style="margin-bottom: 1rem;">
-                            <span class="contact-icon" style="color: #ef4444;">�</span>
-                            <div>
-                                <div style="font-weight: 500; color: #1f2937;">Address</div>
-                                <div style="color: #6b7280;">${data.reachout?.address || 'Opp. Malan Darwaja, Ambaji Road, Palanpur - 385001, Gujarat'}</div>
-                            </div>
-                        </div>
-                        
-                        <div class="contact-item">
-                            <span class="contact-icon" style="color: #8b5cf6;">🌐</span>
-                            <div>
-                                <div style="font-weight: 500; color: #1f2937;">Website</div>
-                                <div style="color: #6b7280;">${data.reachout?.website || 'ec.gppalanpur.in'}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <h3 style="font-size: 1.125rem; font-weight: 600; color: #1f2937; margin-bottom: 1rem;">Editorial Team</h3>
-                        
-                        <div style="background: linear-gradient(to right, #dbeafe, #f3e8ff); padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #3b82f6;">
-                            <div style="display: flex; flex-direction: column; gap: 1rem;">
-                                ${data.editorialTeam && data.editorialTeam.length > 0 ? 
-                                  data.editorialTeam.map((member, index) => `
-                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                        <div style="background: ${index === 0 ? '#3b82f6' : '#8b5cf6'}; color: white; padding: 0.5rem; border-radius: 0.5rem;">
-                                            👥
-                                        </div>
-                                        <div>
-                                            <div style="font-weight: 600; color: #1f2937;">${member.name}</div>
-                                            <div style="font-size: 0.875rem; color: #6b7280;">${member.designation} & ${member.role}</div>
-                                        </div>
-                                    </div>
-                                  `).join('') : `
-                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                        <div style="background: #3b82f6; color: white; padding: 0.5rem; border-radius: 0.5rem;">
-                                            👥
-                                        </div>
-                                        <div>
-                                            <div style="font-weight: 600; color: #1f2937;">Ms. Mittal K. Pedhadiya</div>
-                                            <div style="font-size: 0.875rem; color: #6b7280;">Assistant Professor & Newsletter Editor</div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                        <div style="background: #8b5cf6; color: white; padding: 0.5rem; border-radius: 0.5rem;">
-                                            👥
-                                        </div>
-                                        <div>
-                                            <div style="font-weight: 600; color: #1f2937;">Mr. Milav J. Dabgar</div>
-                                            <div style="font-size: 0.875rem; color: #6b7280;">Assistant Professor & Newsletter Co-Editor</div>
-                                        </div>
-                                    </div>
-                                `}
-                            </div>
-                        </div>
-                        
-                        <div style="background: #f9fafb; padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #e5e7eb; margin-top: 1rem;">
-                            <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 0.75rem;">About the Department</h4>
-                            <p style="color: #6b7280; font-size: 0.875rem; line-height: 1.6; margin-bottom: 1rem;">
-                                The Electronics & Communication Engineering Department at Government Polytechnic, Palanpur 
-                                has been a center of excellence in technical education since 1984. We are committed to 
-                                preparing competent diploma-level engineers who can contribute to the industry and society.
-                            </p>
-                            <div style="padding-top: 1rem; border-top: 1px solid #e5e7eb;">
-                                <div style="font-size: 0.875rem; color: #6b7280;">
-                                    <strong>Established:</strong> 1984<br />
-                                    <strong>Academic Year:</strong> ${year}<br />
-                                    <strong>Newsletter:</strong> Spectrum - Band III
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
+
+
         <!-- Back Cover Page -->
         <div class="back-cover">
             <div class="back-cover-background">
@@ -2918,7 +2805,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                         <h2>Connect With Us</h2>
                         <div class="header-divider"></div>
                     </div>
-                    
+
                     <div class="contact-section">
                         <div class="contact-card">
                             <h3>✉️ Department Contact</h3>
@@ -2943,7 +2830,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                                 ` : ''}
                             </div>
                         </div>
-                        
+
                         <div class="address-card">
                             <h3>📍 Visit Us</h3>
                             <div class="address-content">
@@ -2953,7 +2840,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="programs-section">
                         <h3>🎓 Our Programs</h3>
                         <div class="programs-grid">
@@ -2973,7 +2860,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="additional-info-section">
                         <h3>📋 Quick Information</h3>
                         <div class="info-grid">
@@ -3007,7 +2894,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="achievements-section">
                         <h3>🏆 Legacy of Excellence</h3>
                         <div class="achievements-grid">
@@ -3029,7 +2916,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="editorial-section">
                         <h3>✏️ Editorial Team</h3>
                         <div class="editorial-members">
@@ -3060,7 +2947,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                             `}
                         </div>
                     </div>
-                    
+
                     <div class="back-cover-footer">
                         <div class="footer-decoration">
                             <div class="decoration-line"></div>
@@ -3126,14 +3013,14 @@ async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
     }
 
     const page = await browser.newPage();
-    
+
     // Set viewport and other page settings
     await page.setViewport({
       width: 1200,
       height: 800,
       deviceScaleFactor: 1,
     });
-    
+
     // Set content with longer timeout and better error handling
     await page.setContent(htmlContent, { 
       waitUntil: ['load', 'domcontentloaded'],
@@ -3208,7 +3095,7 @@ export async function POST(request: NextRequest) {
   try {
     const requestData = await request.json();
     const { format, year = '2023-24' } = requestData;
-    
+
     if (!format || !['pdf', 'docx', 'rtf', 'html'].includes(format)) {
       return NextResponse.json(
         { error: 'Invalid format. Supported formats: pdf, docx, rtf, html' },
@@ -3220,10 +3107,10 @@ export async function POST(request: NextRequest) {
 
     // Get newsletter data for the specified year
     const yearData = getNewsletterDataByYear(year) || newsletterData;
-    
+
     // Generate static HTML from component data
     const htmlContent = generateStaticHtml(yearData, year);
-    
+
     // Handle different export formats
     switch (format) {
       case 'pdf': {
@@ -3231,7 +3118,7 @@ export async function POST(request: NextRequest) {
           console.log('[Interactive Export] Generating PDF...');
           const pdfBuffer = await generatePdfFromHtml(htmlContent);
           console.log('[Interactive Export] PDF generation successful');
-          
+
           return new NextResponse(pdfBuffer, {
             headers: {
               'Content-Type': 'application/pdf',
@@ -3250,7 +3137,7 @@ export async function POST(request: NextRequest) {
           );
         }
       }
-      
+
       case 'html': {
         console.log('[Interactive Export] Generating HTML...');
         return new NextResponse(htmlContent, {
@@ -3260,28 +3147,28 @@ export async function POST(request: NextRequest) {
           },
         });
       }
-      
+
       case 'docx':
       case 'rtf': {
         try {
           console.log(`[Interactive Export] Generating ${format.toUpperCase()}...`);
-          
+
           // Convert HTML to Markdown for better document conversion
           const markdownContent = htmlToMarkdown(htmlContent);
-          
+
           // Use the existing content converter
           const converter = new ContentConverterV2();
           const convertedContent = await converter.convert(
             markdownContent,
             format as 'docx' | 'rtf'
           );
-          
+
           const mimeType = format === 'docx' 
             ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
             : 'application/rtf';
-            
+
           console.log(`[Interactive Export] ${format.toUpperCase()} generation successful`);
-          
+
           return new NextResponse(convertedContent, {
             headers: {
               'Content-Type': mimeType,
@@ -3300,7 +3187,7 @@ export async function POST(request: NextRequest) {
           );
         }
       }
-      
+
       default:
         return NextResponse.json(
           { error: 'Unsupported format' },
