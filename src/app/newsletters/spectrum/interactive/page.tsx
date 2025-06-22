@@ -202,120 +202,172 @@ export default function InteractiveNewsletterPage() {
 
           {/* Essence Tab - Overview with Vision & Mission */}
           <TabsContent value="essence" className="space-y-8">
-            {/* Department Statistics */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {statsData.map((stat, index) => {
-                const IconComponent = stat.icon;
-                return (
-                  <Card key={index} className="relative overflow-hidden">
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-gray-600">{stat.label}</p>
-                          <div className="flex items-center space-x-2">
-                            <span className="text-2xl font-bold text-gray-900">
-                              {typeof stat.value === 'number' && stat.value % 1 !== 0 ? stat.value.toFixed(1) : stat.value}
-                              {stat.label.includes('Rate') ? '%' : ''}
-                            </span>
+            {/* Stats and Welcome Page */}
+            <Card className="overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                <CardTitle className="flex items-center space-x-2">
+                  <TrendingUp className="w-5 h-5" />
+                  <span>📋 Spectrum Band - III - At a Glance</span>
+                </CardTitle>
+                <CardDescription className="text-blue-100">
+                  Department performance and key highlights for academic year {selectedYear}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6">
+                {/* About This Newsletter */}
+                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center space-x-2">
+                    <span>📰</span>
+                    <span>About This Newsletter</span>
+                  </h3>
+                  <p className="text-gray-700 leading-relaxed mb-4">
+                    Welcome to <strong>Spectrum - Band III</strong>, the official newsletter of the Electronics & Communication Engineering Department. 
+                    This edition showcases our department's achievements, student accomplishments, faculty contributions, and major events from the academic year {selectedYear}.
+                  </p>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
+                      <span className="text-lg">📖</span>
+                      <span className="text-sm font-medium text-gray-700">Comprehensive Coverage</span>
+                    </div>
+                    <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
+                      <span className="text-lg">🏆</span>
+                      <span className="text-sm font-medium text-gray-700">Student Achievements</span>
+                    </div>
+                    <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
+                      <span className="text-lg">🔬</span>
+                      <span className="text-sm font-medium text-gray-700">Faculty Research</span>
+                    </div>
+                    <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
+                      <span className="text-lg">🎉</span>
+                      <span className="text-sm font-medium text-gray-700">Department Events</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Welcome Highlights */}
+                {currentData.highlights && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {currentData.highlights.map((highlight, index) => (
+                      <div key={index} className="bg-gradient-to-br from-slate-50 to-white p-4 rounded-lg border border-slate-200 hover:shadow-md transition-shadow">
+                        <div className="flex items-start space-x-3">
+                          <div className="text-2xl flex-shrink-0">{highlight.icon}</div>
+                          <div>
+                            <h4 className="font-semibold text-gray-900 mb-1">{highlight.title}</h4>
+                            <p className="text-sm text-gray-600 leading-relaxed">{highlight.description}</p>
                           </div>
                         </div>
-                        <div className={`p-3 rounded-full ${stat.color}`}>
-                          <IconComponent className="w-6 h-6 text-white" />
-                        </div>
                       </div>
-                      {stat.label.includes('Rate') && (
-                        <div className="mt-4">
-                          <Progress value={stat.value as number} className="h-2" />
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
+                    ))}
+                  </div>
+                )}
 
-            {/* Department Overview - Enhanced Creative Design */}
+                {/* Department Statistics */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {statsData.map((stat, index) => {
+                    const IconComponent = stat.icon;
+                    return (
+                      <Card key={index} className="relative overflow-hidden">
+                        <CardContent className="p-6">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm font-medium text-gray-600">{stat.label}</p>
+                              <div className="flex items-center space-x-2">
+                                <span className="text-2xl font-bold text-gray-900">
+                                  {typeof stat.value === 'number' && stat.value % 1 !== 0 ? stat.value.toFixed(1) : stat.value}
+                                  {stat.label.includes('Rate') ? '%' : ''}
+                                </span>
+                              </div>
+                            </div>
+                            <div className={`p-3 rounded-full ${stat.color}`}>
+                              <IconComponent className="w-6 h-6 text-white" />
+                            </div>
+                          </div>
+                          {stat.label.includes('Rate') && (
+                            <div className="mt-4">
+                              <Progress value={stat.value as number} className="h-2" />
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Department Overview with Vision & Mission Integrated */}
             {currentData?.essence?.departmentOverview && (
               <Card className="mb-8 overflow-hidden">
                 <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-700 text-white">
                   <CardTitle className="flex items-center space-x-2">
                     <Building className="w-5 h-5" />
-                    <span>Department Overview</span>
+                    <span>🏢 Department Overview</span>
                   </CardTitle>
                   <CardDescription className="text-purple-100">
                     Electronics & Communication Engineering - Government Polytechnic, Palanpur
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="p-0">
-                  {/* Main Content */}
-                  <div className="p-6">
-                    <div className="prose max-w-none">
-                      <div className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-xl border border-slate-200">
-                        <p className="text-gray-700 leading-relaxed whitespace-pre-line text-justify m-0">
-                          {currentData.essence.departmentOverview}
-                        </p>
+                <CardContent className="p-6 space-y-6">
+                  {/* Department Header */}
+                  <div className="text-center bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-lg border border-purple-200">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-1">Electronics & Communication Engineering</h3>
+                    <p className="text-gray-600">Government Polytechnic, Palanpur</p>
+                  </div>
+
+                  {/* Department Description */}
+                  <div className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-xl border border-slate-200">
+                    <p className="text-gray-700 leading-relaxed whitespace-pre-line text-justify m-0">
+                      {currentData.essence.departmentOverview}
+                    </p>
+                  </div>
+
+                  {/* Vision & Mission Integrated */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Vision */}
+                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
+                      <div className="flex items-center mb-4">
+                        <div className="bg-blue-600 text-white p-3 rounded-lg mr-3 text-lg">
+                          🔭
+                        </div>
+                        <h3 className="text-lg font-semibold text-blue-900">Vision</h3>
+                      </div>
+                      <p className="text-blue-800 leading-relaxed">
+                        {currentData.essence.vision}
+                      </p>
+                    </div>
+
+                    {/* Mission */}
+                    <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border border-green-200">
+                      <div className="flex items-center mb-4">
+                        <div className="bg-green-600 text-white p-3 rounded-lg mr-3 text-lg">
+                          🚀
+                        </div>
+                        <h3 className="text-lg font-semibold text-green-900">Mission</h3>
+                      </div>
+                      <div className="text-green-800 leading-relaxed whitespace-pre-line">
+                        {currentData.essence.mission}
                       </div>
                     </div>
-                    
-                    {/* Programs Highlight */}
-                    <div className="grid md:grid-cols-2 gap-4 mt-8">
-                      <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white p-6 rounded-xl text-center">
-                        <div className="text-3xl mb-3">📡</div>
-                        <h4 className="text-lg font-semibold mb-2">Electronics & Communication</h4>
-                        <p className="text-sm opacity-90">38 Students Intake</p>
-                        <p className="text-xs opacity-80 mt-1">Advanced EC Engineering</p>
-                      </div>
-                      <div className="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-xl text-center">
-                        <div className="text-3xl mb-3">💻</div>
-                        <h4 className="text-lg font-semibold mb-2">Information & Communication Technology</h4>
-                        <p className="text-sm opacity-90">78 Students Intake</p>
-                        <p className="text-xs opacity-80 mt-1">Modern ICT Solutions</p>
-                      </div>
+                  </div>
+                  
+                  {/* Programs Highlight */}
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white p-6 rounded-xl text-center">
+                      <div className="text-3xl mb-3">📡</div>
+                      <h4 className="text-lg font-semibold mb-2">Electronics & Communication</h4>
+                      <p className="text-sm opacity-90">38 Students Intake</p>
+                      <p className="text-xs opacity-80 mt-1">Advanced EC Engineering</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-xl text-center">
+                      <div className="text-3xl mb-3">💻</div>
+                      <h4 className="text-lg font-semibold mb-2">Information & Communication Technology</h4>
+                      <p className="text-sm opacity-90">78 Students Intake</p>
+                      <p className="text-xs opacity-80 mt-1">Modern ICT Solutions</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
             )}
-
-            {/* Vision & Mission */}
-            <Card className="mb-8">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Target className="w-5 h-5 text-purple-600" />
-                  <span>Vision & Mission</span>
-                </CardTitle>
-                <CardDescription>Our Commitment to Excellence</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Vision */}
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
-                    <div className="flex items-center mb-4">
-                      <div className="bg-blue-600 text-white p-3 rounded-lg mr-3">
-                        <Target className="w-6 h-6" />
-                      </div>
-                      <h3 className="text-lg font-semibold text-blue-900">Vision</h3>
-                    </div>
-                    <p className="text-blue-800 leading-relaxed">
-                      {currentData.essence.vision}
-                    </p>
-                  </div>
-
-                  {/* Mission */}
-                  <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border border-green-200">
-                    <div className="flex items-center mb-4">
-                      <div className="bg-green-600 text-white p-3 rounded-lg mr-3">
-                        <Rocket className="w-6 h-6" />
-                      </div>
-                      <h3 className="text-lg font-semibold text-green-900">Mission</h3>
-                    </div>
-                    <div className="text-green-800 leading-relaxed whitespace-pre-line">
-                      {currentData.essence.mission}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
 
             {/* HOD Message */}
             <Card className="mb-8">
