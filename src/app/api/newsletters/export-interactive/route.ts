@@ -2423,6 +2423,31 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             <div class="page-header">
                 <h2>📋 Spectrum Band - III - At a Glance</h2>
             </div>
+
+            <div class="newsletter-intro">
+                <div class="intro-content">
+                    <h3>📰 About This Newsletter</h3>
+                    <p>Welcome to <strong>Spectrum - Band III</strong>, the official newsletter of the Electronics & Communication Engineering Department. This edition showcases our department's achievements, student accomplishments, faculty contributions, and major events from the academic year ${year}.</p>
+                    <div class="intro-stats">
+                        <div class="intro-stat">
+                            <span class="intro-stat-icon">📖</span>
+                            <span class="intro-stat-text">Comprehensive Coverage</span>
+                        </div>
+                        <div class="intro-stat">
+                            <span class="intro-stat-icon">🏆</span>
+                            <span class="intro-stat-text">Student Achievements</span>
+                        </div>
+                        <div class="intro-stat">
+                            <span class="intro-stat-icon">🔬</span>
+                            <span class="intro-stat-text">Faculty Research</span>
+                        </div>
+                        <div class="intro-stat">
+                            <span class="intro-stat-icon">🎉</span>
+                            <span class="intro-stat-text">Department Events</span>
+                        </div>
+                    </div>
+                </div>
+            </div>            
             
             <div class="stats-grid">
                 ${data.stats.map((stat, index) => {
@@ -2464,31 +2489,6 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                     <div class="highlight-content">
                         <h3>Future Ready</h3>
                         <p>Preparing students for emerging technologies and industry demands through comprehensive curriculum and hands-on training.</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="newsletter-intro">
-                <div class="intro-content">
-                    <h3>📰 About This Newsletter</h3>
-                    <p>Welcome to <strong>Spectrum - Band III</strong>, the official newsletter of the Electronics & Communication Engineering Department. This edition showcases our department's achievements, student accomplishments, faculty contributions, and major events from the academic year ${year}.</p>
-                    <div class="intro-stats">
-                        <div class="intro-stat">
-                            <span class="intro-stat-icon">📖</span>
-                            <span class="intro-stat-text">Comprehensive Coverage</span>
-                        </div>
-                        <div class="intro-stat">
-                            <span class="intro-stat-icon">🏆</span>
-                            <span class="intro-stat-text">Student Achievements</span>
-                        </div>
-                        <div class="intro-stat">
-                            <span class="intro-stat-icon">🔬</span>
-                            <span class="intro-stat-text">Faculty Research</span>
-                        </div>
-                        <div class="intro-stat">
-                            <span class="intro-stat-icon">🎉</span>
-                            <span class="intro-stat-text">Department Events</span>
-                        </div>
                     </div>
                 </div>
             </div>
