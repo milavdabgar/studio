@@ -2447,9 +2447,9 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                         </div>
                     </div>
                 </div>
-            </div>            
+            </div>
             
-            <div class="stats-grid">
+            <div class="stats-grid" style="margin-top: 2rem;">
                 ${data.stats.map((stat, index) => {
                   const icons = ['📈', '📚', '👥', '🏆'];
                   const colors = ['bg-blue', 'bg-green', 'bg-purple', 'bg-orange'];
@@ -2470,6 +2470,15 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             </div>
             
             <div class="welcome-highlights">
+                ${data.highlights ? data.highlights.map(highlight => `
+                <div class="highlight-card">
+                    <div class="highlight-icon">${highlight.icon}</div>
+                    <div class="highlight-content">
+                        <h3>${highlight.title}</h3>
+                        <p>${highlight.description}</p>
+                    </div>
+                </div>
+                `).join('') : `
                 <div class="highlight-card">
                     <div class="highlight-icon">🎯</div>
                     <div class="highlight-content">
@@ -2491,6 +2500,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                         <p>Preparing students for emerging technologies and industry demands through comprehensive curriculum and hands-on training.</p>
                     </div>
                 </div>
+                `}
             </div>
         </div>
         

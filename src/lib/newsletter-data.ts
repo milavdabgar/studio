@@ -75,6 +75,11 @@ export interface NewsletterData {
     departmentOverview?: string;
     hodMessage: Message;
   };
+  highlights?: Array<{
+    icon: string;
+    title: string;
+    description: string;
+  }>;
   spotlight: SpotlightItem[];
   chronicles: Event[];
   canvas: CanvasItem[];

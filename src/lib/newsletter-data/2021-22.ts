@@ -342,6 +342,39 @@ export const newsletterData2021_22: NewsletterData = {
     }
   },
 
+  highlights: [
+    {
+      icon: '🎯',
+      title: 'Premier Newsletter Launch',
+      description: 'Inaugural edition of Spectrum newsletter showcasing department excellence and student achievements'
+    },
+    {
+      icon: '👥',
+      title: '10+ Student Placements',
+      description: 'Successful placement of students in top companies like Webilok IT Services and Mehta Expai Technologies'
+    },
+    {
+      icon: '🏆',
+      title: 'Academic Excellence',
+      description: 'Consistent semester toppers across all years with outstanding academic performance records'
+    },
+    {
+      icon: '🔬',
+      title: 'Research & Innovation',
+      description: 'Faculty published 2 patents in antenna design and research papers at national conferences'
+    },
+    {
+      icon: '🤝',
+      title: 'Industry Partnerships',
+      description: 'Strong collaborations with 6+ industry partners for training, visits, and placement opportunities'
+    },
+    {
+      icon: '🌱',
+      title: 'Community Impact',
+      description: 'Active participation in social initiatives including tree plantation, awareness campaigns, and school outreach'
+    }
+  ],
+
   chronicles: [
     {
       title: 'Expert Lecture on "Importance of Programming"',

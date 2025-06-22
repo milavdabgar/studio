@@ -513,6 +513,39 @@ With continued commitment to excellence.`
     }
   },
 
+  highlights: [
+    {
+      icon: '🎓',
+      title: '67% Placement Success',
+      description: 'Outstanding placement rate with students securing positions at Micron Technology, TDSC, and other top companies'
+    },
+    {
+      icon: '🏆',
+      title: 'Academic Excellence',
+      description: 'Top performers achieving 9.62 SPI and consistent high academic standards across all semesters'
+    },
+    {
+      icon: '🔬',
+      title: 'Industry Collaboration',
+      description: 'Strong partnerships with semiconductor industry, SEMICON 2023 participation, and SEMIX training at IIT Bombay'
+    },
+    {
+      icon: '💡',
+      title: 'Innovation & Research',
+      description: 'Faculty research presentations at ICETCP 2024 and advanced RTL design workshop training'
+    },
+    {
+      icon: '🌟',
+      title: 'Skill Development',
+      description: 'Comprehensive training programs including solar cell fabrication, embedded systems, and web development'
+    },
+    {
+      icon: '❤️',
+      title: 'Community Values',
+      description: 'Honoring legacy of Shri Nikunj M Patel and fostering holistic development with strong ethical foundation'
+    }
+  ],
+
   chronicles: [
     {
       title: 'Orientation Session 2023',
