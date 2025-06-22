@@ -90,36 +90,36 @@ Successfully extracted top performing students from GTU result files for Electro
 
 ✅ **Updated 2022-23 Newsletter**: Added 8 faculty-contribution spotlight entries
 
-- **IQAC & Audit Para Coordination** - Mr. S. J. Chauhan (Head of Department)
-- **Training & Placement Cell Leadership** - Mr. L. K. Patel (Lecturer)
-- **Student Affairs & Hostel Management** - Mr. M. K. Pedhadiya (Lecturer)
-- **Human Resource & Multi-Committee Role** - Mr. R. N. Patel (Lecturer)
-- **Alumni Association & Student Activities** - Mr. N. M. Patel (Lecturer)
-- **Industry Outreach & SSIP Coordination** - Mr. M. J. Dabgar (Lecturer)
-- **Academic Coordination & Time Table Management** - Mr. R. C. Parmar (Lecturer)
-- **E-Mail & Communication Systems** - Mr. S. P. Joshiara (Lecturer)
+- **IQAC & Audit Para Coordination** - Shri Sunilkumar J. Chauhan (Head of Department)
+- **Training & Placement Cell Leadership** - Dr. Laukik K. Patel (Lecturer)
+- **Student Affairs & Hostel Management** - Ms. Mittal K. Pedhadiya (Lecturer)
+- **Human Resource & Multi-Committee Role** - Dr. Ratansing N. Patel (Lecturer)
+- **Alumni Association & Student Activities** - Mr. Nikunj M. Patel (Lecturer)
+- **Industry Outreach & SSIP Coordination** - Mr. Milav J. Dabgar (Lecturer)
+- **Academic Coordination & Time Table Management** - Mr. Rahul C. Parmar (Lecturer)
+- **E-Mail & Communication Systems** - Mr. Snehil P. Joshiara (Lecturer)
 
 ✅ **Updated 2023-24 Newsletter**: Added 8 faculty-contribution spotlight entries
 
-- **IQAC & Audit Para Coordination** - Mr. S. J. Chauhan (Head of Department)
-- **Training & Placement Cell Leadership** - Mr. L. K. Patel (Lecturer)
-- **Student Affairs & Hostel Management** - Mr. M. K. Pedhadiya (Lecturer)
-- **Human Resource & Multi-Committee Role** - Mr. R. N. Patel (Lecturer)
-- **Alumni Association & Student Activities** - Mr. N. M. Patel (Lecturer)
-- **Industry Outreach & SSIP Coordination** - Mr. M. J. Dabgar (Lecturer)
-- **Academic Coordination & Time Table Management** - Mr. R. C. Parmar (Lecturer)
-- **E-Mail & Communication Systems** - Mr. S. P. Joshiara (Lecturer)
+- **IQAC & Audit Para Coordination** - Shri Sunilkumar J. Chauhan (Head of Department)
+- **Training & Placement Cell Leadership** - Dr. Laukik K. Patel (Lecturer)
+- **Student Affairs & Hostel Management** - Ms. Mittal K. Pedhadiya (Lecturer)
+- **Human Resource & Multi-Committee Role** - Dr. Ratansing N. Patel (Lecturer)
+- **Alumni Association & Student Activities** - Mr. Nikunj M. Patel (Lecturer)
+- **Industry Outreach & SSIP Coordination** - Mr. Milav J. Dabgar (Lecturer)
+- **Academic Coordination & Time Table Management** - Mr. Rahul C. Parmar (Lecturer)
+- **E-Mail & Communication Systems** - Mr. Snehil P. Joshiara (Lecturer)
 
 ✅ **Updated 2024-25 Newsletter**: Added 8 faculty-contribution spotlight entries
 
-- **AICTE Approval & GTU Affiliation Leadership** - Mr. S. J. Chauhan (Head of Department)
-- **SSIP Innovation & Central Store Management** - Mr. L. K. Patel (Lecturer)
-- **NBA Accreditation & Student Development** - Ms. M. K. Pedhadiya (Lecturer)
-- **Human Resources & Digital Portal Management** - Mr. R. N. Patel (Lecturer)
-- **Student Affairs & Hostel Administration** - Mr. N. M. Patel (Lecturer)
-- **Infrastructure & Industry Outreach** - Mr. M. J. Dabgar (Lecturer)
-- **Academic Planning & Time Management** - Mr. R. C. Parmar (Lecturer)
-- **Communication Systems & Data Management** - Mr. S. P. Joshiara (Lecturer)
+- **AICTE Approval & GTU Affiliation Leadership** - Shri Sunilkumar J. Chauhan (Head of Department)
+- **SSIP Innovation & Central Store Management** - Dr. Laukik K. Patel (Lecturer)
+- **NBA Accreditation & Student Development** - Ms. Mittal K. Pedhadiya (Lecturer)
+- **Human Resources & Digital Portal Management** - Dr. Ratansing N. Patel (Lecturer)
+- **Student Affairs & Hostel Administration** - Mr. Nikunj M. Patel (Lecturer)
+- **Infrastructure & Industry Outreach** - Mr. Milav J. Dabgar (Lecturer)
+- **Academic Planning & Time Management** - Mr. Rahul C. Parmar (Lecturer)
+- **Communication Systems & Data Management** - Mr. Snehil P. Joshiara (Lecturer)
 
 **Total Faculty Integration**: 24 new faculty-contribution spotlight entries (8 for 2022-23, 8 for 2023-24, 8 for 2024-25) based on yearly institute work allocation orders
 

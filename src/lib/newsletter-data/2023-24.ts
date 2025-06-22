@@ -120,7 +120,7 @@ export const newsletterData2023_24: NewsletterData = {
     },    
     {
       title: "6G Technology: The Next Communication Revolution",
-      author: "Mr. S. J. Chauhan",
+      author: "Shri Sunilkumar J. Chauhan",
       designation: "Head of Department, EC Department",
       content: "While 5G networks are still being deployed globally, research into 6G technology is already underway. Expected by 2030, 6G will offer terabit speeds, holographic communications, and seamless integration with AI and IoT ecosystems. As EC engineers, we must prepare for this technological revolution that will redefine human-machine interaction and enable truly immersive digital experiences.",
       date: "March 2024",
@@ -129,7 +129,7 @@ export const newsletterData2023_24: NewsletterData = {
     },
     {
       title: "Artificial Intelligence in Modern Electronics",
-      author: "Mr. L. K. Patel",
+      author: "Dr. Laukik K. Patel",
       designation: "Lecturer, EC Department",
       content: "AI is transforming every aspect of electronics design and manufacturing. From automated PCB design optimization to predictive maintenance in electronic systems, machine learning algorithms are becoming indispensable tools. Students must understand both traditional electronics and AI fundamentals to excel in tomorrow's technology landscape.",
       date: "February 2024",
@@ -148,7 +148,7 @@ export const newsletterData2023_24: NewsletterData = {
     },
     {
       title: "Renewable Energy Systems and Electronics",
-      author: "Mr. R. N. Patel",
+      author: "Dr. Ratansing N. Patel",
       designation: "Lecturer, EC Department",
       content: "The integration of electronics with renewable energy systems is creating exciting opportunities for sustainable technology development. From smart grid systems to efficient power converters, EC engineers play a crucial role in the green energy transition. Our department is focusing on practical projects that combine environmental consciousness with technical excellence.",
       date: "December 2023",
@@ -167,7 +167,7 @@ export const newsletterData2023_24: NewsletterData = {
     },
     {
       title: "Internet of Things: Building Smart Ecosystems",
-      author: "Mr. M. J. Dabgar",
+      author: "Mr. Milav J. Dabgar",
       designation: "Lecturer, EC Department",
       content: "IoT is transforming how we interact with our environment, from smart homes to industrial automation. Understanding sensor networks, communication protocols, and data analytics is essential for modern EC engineers. Our students are working on exciting IoT projects that solve real-world problems while gaining practical experience with cutting-edge technologies.",
       date: "October 2023",
@@ -186,7 +186,7 @@ export const newsletterData2023_24: NewsletterData = {
     },
     {
       title: "Digital Signal Processing in Modern Applications",
-      author: "Mr. N. J. Chauhan",
+      author: "Mr. Nirav J. Chauhan",
       designation: "Lecturer, EC Department",
       content: "Digital Signal Processing (DSP) is at the heart of modern communication systems, from 5G networks to audio processing applications. Understanding DSP fundamentals enables students to work with cutting-edge technologies in telecommunications, multimedia, and biomedical engineering. Our updated curriculum includes hands-on DSP projects using MATLAB and embedded systems.",
       date: "August 2023",
@@ -205,7 +205,7 @@ export const newsletterData2023_24: NewsletterData = {
     },
     {
       title: "Cybersecurity in Electronic Systems",
-      author: "Mr. R. C. Parmar",
+      author: "Mr. Rahul C. Parmar",
       designation: "Lecturer, EC Department",
       content: "As electronic systems become increasingly connected, cybersecurity has become a critical concern for EC engineers. From securing IoT devices to implementing encryption in communication systems, understanding cybersecurity principles is essential. Students should focus on learning both hardware and software security measures to design robust electronic systems.",
       date: "June 2023",
@@ -230,7 +230,7 @@ export const newsletterData2023_24: NewsletterData = {
       category: 'faculty-contribution' as const,
       title: 'IQAC & Audit Para Coordination',
       description: 'Internal Quality Assurance Cell coordination and audit para management with multi-committee leadership',
-      person: 'Mr. S. J. Chauhan',
+      person: 'Shri Sunilkumar J. Chauhan',
       designation: 'Head of Department, EC Department',
       details: 'Co-convener of IQAC, Convener of Audit Para, Co-convener of Anti Ragging Squad',
       date: '2023-24',
@@ -245,7 +245,7 @@ export const newsletterData2023_24: NewsletterData = {
       category: 'faculty-contribution' as const,
       title: 'Student Affairs & Hostel Management',
       description: 'Student section coordination, hostel rector duties, and student welfare activities',
-      person: 'Mr. M. K. Pedhadiya',
+      person: 'Ms. Mittal K. Pedhadiya',
       designation: 'Lecturer, EC Department',
       details: 'Member of Student Section, Women Development Cell, and Internal Complaint Committee',
       date: '2023-24',
@@ -260,7 +260,7 @@ export const newsletterData2023_24: NewsletterData = {
       category: 'faculty-contribution' as const,
       title: 'Training & Placement Cell Leadership',
       description: 'Training and Placement Cell coordination with industry outreach and student development',
-      person: 'Mr. L. K. Patel',
+      person: 'Dr. Laukik K. Patel',
       designation: 'Lecturer, EC Department',
       details: 'Convener of GTU coordination, Member of Training & Placement Cell, Website management',
       date: '2023-24',
@@ -275,7 +275,7 @@ export const newsletterData2023_24: NewsletterData = {
       category: 'faculty-contribution' as const,
       title: 'Alumni Association & Student Activities',
       description: 'Alumni association coordination and gymkhana activities management',
-      person: 'Mr. N. M. Patel',
+      person: 'Mr. Nikunj M. Patel',
       designation: 'Lecturer, EC Department',
       details: 'Member of Hostel Rector, Student Section, and Gymkhana activities',
       date: '2023-24',
@@ -290,7 +290,7 @@ export const newsletterData2023_24: NewsletterData = {
       category: 'faculty-contribution' as const,
       title: 'Human Resource & Multi-Committee Role',
       description: 'Human Resource management, establishment section coordination, and SATHI portal management',
-      person: 'Mr. R. N. Patel',
+      person: 'Dr. Ratansing N. Patel',
       designation: 'Lecturer, EC Department',
       details: 'Convener of Head Human Resource, Co-convener of SATHI Karmyogi Portal, Member of CAS',
       date: '2023-24',
@@ -305,7 +305,7 @@ export const newsletterData2023_24: NewsletterData = {
       category: 'faculty-contribution' as const,
       title: 'Industry Outreach & SSIP Coordination',
       description: 'Industry linkages, website management, and startup innovation coordination',
-      person: 'Mr. M. J. Dabgar',
+      person: 'Mr. Milav J. Dabgar',
       designation: 'Lecturer, EC Department',
       details: 'Member of Training & Placement Cell, Convener of CWAN & Website, Member of SSIP',
       date: '2023-24',
@@ -320,7 +320,7 @@ export const newsletterData2023_24: NewsletterData = {
       category: 'faculty-contribution' as const,
       title: 'Academic Coordination & Time Table Management',
       description: 'Institute time table coordination and academic calendar management',
-      person: 'Mr. R. C. Parmar',
+      person: 'Mr. Rahul C. Parmar',
       designation: 'Lecturer, EC Department',
       details: 'Member of Institute Time table committee, Student Section, and SATHI portal',
       date: '2023-24',
@@ -335,7 +335,7 @@ export const newsletterData2023_24: NewsletterData = {
       category: 'faculty-contribution' as const,
       title: 'E-Mail & Communication Systems',
       description: 'Institutional email handling and communication systems management',
-      person: 'Mr. S. P. Joshiara',
+      person: 'Mr. Snehil P. Joshiara',
       designation: 'Lecturer, EC Department',
       details: 'Convener of E-Mail Handling, Co-convener of GTU, Member of CWAN and Website committees',
       date: '2023-24',
@@ -349,8 +349,8 @@ export const newsletterData2023_24: NewsletterData = {
     {
       category: 'faculty-contribution' as const,
       title: 'Research Excellence & Student Development Leadership',
-      description: 'Prof. N. J. Chauhan demonstrates excellence in research publications and comprehensive student development activities',
-      person: 'Prof. N. J. Chauhan',
+      description: 'Mr. Nirav J. Chauhan demonstrates excellence in research publications and comprehensive student development activities',
+      person: 'Mr. Nirav J. Chauhan',
       designation: 'Assistant Professor, EC Department',
       details: 'Research paper presentation at international conference and coordination of student co-curricular activities, NSS, and cultural programs',
       date: '2023-24',
@@ -368,8 +368,8 @@ export const newsletterData2023_24: NewsletterData = {
       images: [
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2024/02/Screen-Shot-2025-03-20-at-22.44.21-PM.png',
-          alt: 'Prof. N. J. Chauhan at ICETCP 2024',
-          caption: 'Prof. N. J. Chauhan presenting his research paper at ICETCP 2024, Atmiya University'
+          alt: 'Mr. Nirav J. Chauhan at ICETCP 2024',
+          caption: 'Mr. Nirav J. Chauhan presenting his research paper at ICETCP 2024, Atmiya University'
         }
       ]
     },    
@@ -493,7 +493,7 @@ export const newsletterData2023_24: NewsletterData = {
     mission: "• M1: Provide quality education in the field of EC engineering.\n• M2: Develop state of art laboratories, classrooms and upgradation of Faculties.\n• M3: Strengthen industrial liaison by offering mutual beneficiaries services.\n• M4: Execute extra curricular and co-curricular activities to inculcate innovation, entrepreneurship and moral values.",
     departmentOverview: "The Electronics & Communication Engineering Department at Government Polytechnic Palanpur stands as a beacon of technical excellence, offering two comprehensive diploma programs: Electronics & Communication Engineering (ECE) with an intake capacity of 38 students and Information & Communication Technology (ICT) with 78 students. Our department operates under the dynamic leadership of our Head of Department, supported by a dedicated team of 7 highly qualified faculty members, including 2 with completed Ph.D. degrees, 1 pursuing doctoral studies, 3 with Master's degrees (M.E.), and 1 with a Bachelor's degree (B.E.). Our infrastructure is strengthened by 1 skilled lab assistant and 1 support staff member, ensuring smooth operations and excellent student support.\n\nWhat sets our department apart is our commitment to holistic education that seamlessly blends cutting-edge technology with practical industry applications. Our faculty's diverse expertise spans from research and innovation to industry collaboration, while our comprehensive curriculum integrates emerging technologies like AI, IoT, and sustainable electronics. Through strategic industry partnerships, expert lecture series, and hands-on innovation projects, we prepare our students not just as technically competent engineers, but as future leaders and entrepreneurs who will drive technological advancement in Gujarat and beyond.",
     hodMessage: {
-      name: 'Mr. S. J. Chauhan',
+      name: 'Shri Sunilkumar J. Chauhan',
       designation: 'Head of Department - Electronics & Communication Engineering',
       message: `Dear Students, Faculty, and Stakeholders,
 
@@ -503,7 +503,7 @@ Our students have demonstrated exceptional academic performance, with achievers 
 
 Our industry-academia collaboration flourished through expert sessions on embedded systems and web development, industrial visits to Bajrang Paper Products and PCB Power, and participation in premier events like SEMICON 2023 and SEMIX training at IIT Bombay. The plasma knowledge camp by Institute of Plasma Research, Gandhinagar, further enriched our students' scientific exposure.
 
-Faculty excellence was highlighted by Prof. N. J. Chauhan's research presentation at ICETCP 2024, while our comprehensive skill development initiatives included RTL design workshops, solar cell fabrication training, and safety programs. We also embraced holistic development through cultural celebrations, community engagement in "New Palanpur for New India 2.0," health awareness campaigns, and environmental initiatives.
+Faculty excellence was highlighted by Mr. Nirav J. Chauhan's research presentation at ICETCP 2024, while our comprehensive skill development initiatives included RTL design workshops, solar cell fabrication training, and safety programs. We also embraced holistic development through cultural celebrations, community engagement in "New Palanpur for New India 2.0," health awareness campaigns, and environmental initiatives.
 
 This year, we also honored the memory of our beloved colleague Shri Nikunj M Patel, whose dedication and values continue to inspire our community. His legacy reminds us that true education encompasses both technical excellence and character building.
 

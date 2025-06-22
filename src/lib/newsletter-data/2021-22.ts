@@ -19,7 +19,7 @@ export const newsletterData2021_22: NewsletterData = {
   canvas: [
     {
       title: "Device to Device Communication in 5G",
-      author: "Ms. M. K. Pedhadiya",
+      author: "Ms. Mittal K. Pedhadiya",
       designation: "Lecturer, EC Department", 
       content: "Introduction of Android as an operating system and open source software's, free wares and ample of bandwidth-hungry applications results in scarcity of spectrum for communication. The growth of mobile devices, voice, and video over IP (VoIP) resulted in an exponential growth of data traffic; mobile data traffic expected to increase 1000 times over ten years. The forecast says that the 100 billion devices would be connected by 2030 by the onset of the internet of things. The massive increment in the connected devices causes overcrowded electromagnetic spectrum. In the 5G device to device, communication provides a prominent solution. Device to device communication (D2D) is defined as the communication among devices in close proximity, open to use cellular licensed as well as unlicensed frequency spectrum without the need to traverse the core network.\n\nD2D communication is a prime technology of 5G, which supports a variety of use cases including vehicular communication, content distribution in conferences, concerts, gaming, cellular offloading, relaying of data, and advertisement broadcasting in the streets. The use case of D2D communication of significance is public safety and disaster. The devices close to, enables higher throughput, lower latency, lower transmission power, higher data rate and higher spectral efficiency and energy efficiency.\n\nD2D communication exists on unlicensed as well as on the licensed frequency spectrum. Majority of the research is on the licensed spectrum (inband D2D) as it provides a higher level of security. Resources of cellular devices reused by the D2D devices in inband D2D communication (underlay inband D2D). Reusing the resources certainly improves the spectral efficiency, but interference between the D2D user and cellular user introduced nevertheless. The eventual reduction in the spectral efficiency by using part of dedicated licensed spectrum for D2D users, however, provides fairness in provisioning of resources to D2D users and cellular users (overlay inband D2D).\n\nFor Further Study: https://doi.org/10.1016/j.jnca.2018.10.012",
       date: "March 2022",
@@ -59,7 +59,7 @@ export const newsletterData2021_22: NewsletterData = {
     },
     {
       title: "Innovation in Antenna Design",
-      author: "Mr. L. K. Patel",
+      author: "Dr. Laukik K. Patel",
       designation: "Lecturer, EC Department",
       content: "Recent advancements in antenna technology are opening new possibilities in wireless communication. Fractal antennas, metamaterial-based designs, and MIMO systems are reshaping the communication landscape. Our department's research in wideband bow tie antennas and tree-fractal structures demonstrates our commitment to cutting-edge antenna research.",
       date: "February 2022", 
@@ -108,7 +108,7 @@ export const newsletterData2021_22: NewsletterData = {
       category: "faculty-contribution" as const,
       title: "GTU Syllabus Development & Administrative Leadership",
       description: "Led development of GTU syllabus for Electronics Workshop, AICTE accreditation coordination, and Hostel Rector services",
-      person: "Mr. S. J. Chauhan",
+      person: "Shri Sunilkumar J. Chauhan",
       designation: "Head of Department, EC Engineering",
       details: "Institute coordinator for AICTE accreditation and GTU affiliation, Hostel Rector",
       date: "2021-22"
@@ -126,7 +126,7 @@ export const newsletterData2021_22: NewsletterData = {
       category: "faculty-contribution" as const,
       title: "Electronic Circuits Syllabus & Student Section",
       description: "Contributed to GTU syllabus for Electronic Circuits & Applications, Student Section coordination, Embedded Systems training",
-      person: "Ms. M. K. Pedhadiya",
+      person: "Ms. Mittal K. Pedhadiya",
       designation: "Lecturer, EC Department",
       details: "Co-coordinator of Student Section, Training completed: Embedded Systems",
       date: "2021-22"
@@ -135,7 +135,7 @@ export const newsletterData2021_22: NewsletterData = {
       category: "faculty-contribution" as const,
       title: "GTU Coordination & Research Excellence",
       description: "GTU institutional coordination, syllabus development for Fundamentals of Electronics, and research paper recognition at national conference",
-      person: "Mr. L. K. Patel",
+      person: "Dr. Laukik K. Patel",
       designation: "Lecturer, EC Department",
       details: "GTU coordinator of the institute with research paper runner-up award at national conference",
       date: "2021-22",
@@ -152,7 +152,7 @@ export const newsletterData2021_22: NewsletterData = {
       category: "faculty-contribution" as const,
       title: "Electronic Circuits Syllabus & Multi-Committee Role",
       description: "Syllabus development for Electronic Circuits & Applications, Gymkhana and placement cell coordination",
-      person: "Mr. N. M. Patel",
+      person: "Mr. Nikunj M. Patel",
       designation: "Lecturer, EC Department",
       details: "Co-coordinator in Gymkhana committee and training & placement cell",
       date: "2021-22"
@@ -178,7 +178,7 @@ export const newsletterData2021_22: NewsletterData = {
       category: "faculty-contribution" as const,
       title: "CWAN Committee & SSIP Cell Coordination",
       description: "CWAN committee coordination and SSIP Cell co-coordination with professional development training",
-      person: "Mr. M. J. Dabgar",
+      person: "Mr. Milav J. Dabgar",
       designation: "Lecturer, EC Department",
       details: "Coordinator of CWAN committee & co-coordinator of SSIP Cell, Training: Induction Phase – II",
       date: "2021-22"
@@ -187,7 +187,7 @@ export const newsletterData2021_22: NewsletterData = {
       category: "faculty-contribution" as const,
       title: "Industrial Electronics Syllabus & Student Section",
       description: "Syllabus development for Industrial Electronics and Student Section co-coordination",
-      person: "Mr. R. C. Parmar",
+      person: "Mr. Rahul C. Parmar",
       designation: "Lecturer, EC Department",
       details: "Co-coordinator of Student Section, Training: Induction Phase – II",
       date: "2021-22"
@@ -196,7 +196,7 @@ export const newsletterData2021_22: NewsletterData = {
       category: "faculty-contribution" as const,
       title: "Multi-Committee Coordination & Training",
       description: "CWAN, Website & GTU committees co-coordination with professional development",
-      person: "Mr. S. P. Joshiara",
+      person: "Mr. Snehil P. Joshiara",
       designation: "Lecturer, EC Department",
       details: "Co-coordinator of CWAN, Website & GTU Committees, Training: Induction Phase – II",
       date: "2021-22"
@@ -205,7 +205,7 @@ export const newsletterData2021_22: NewsletterData = {
       category: "faculty-contribution" as const,
       title: "Digital Electronics Syllabus & AICTE Coordination",
       description: "Syllabus development for Digital Electronics and AICTE accreditation committee coordination",
-      person: "Mr. N. J. Chauhan",
+      person: "Mr. Nirav J. Chauhan",
       designation: "Lecturer, EC Department",
       details: "Co-coordinator of AICTE accreditation Committee, Training: Induction Phase – II",
       date: "2021-22"
