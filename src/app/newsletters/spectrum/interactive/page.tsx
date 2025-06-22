@@ -247,7 +247,7 @@ export default function InteractiveNewsletterPage() {
             <TabsTrigger value="spotlight">Spotlight</TabsTrigger>
             <TabsTrigger value="chronicles">Chronicles</TabsTrigger>
             <TabsTrigger value="canvas">Canvas</TabsTrigger>
-            <TabsTrigger value="reachout">Reachout</TabsTrigger>
+            <TabsTrigger value="connect">Connect with Us</TabsTrigger>
           </TabsList>
 
           {/* Essence Tab - Overview with Vision & Mission */}
@@ -816,131 +816,167 @@ export default function InteractiveNewsletterPage() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="reachout">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Phone className="w-5 h-5 text-blue-600" />
-                  <span>Reachout</span>
-                </CardTitle>
-                <CardDescription>Get in touch with the Electronics & Communication Engineering Department</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Contact Details */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Department Contact</h3>
+          <TabsContent value="connect">
+            <div className="bg-gradient-to-br from-blue-800 via-blue-700 to-blue-500 rounded-xl overflow-hidden shadow-xl">
+              <div className="relative">
+                {/* Background pattern overlay */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.1)_0%,transparent_60%),radial-gradient(circle_at_70%_70%,rgba(255,255,255,0.1)_0%,transparent_60%),radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.05)_0%,transparent_50%),linear-gradient(45deg,transparent_40%,rgba(255,255,255,0.03)_50%,transparent_60%)]"></div>
 
-                    <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
-                      <Mail className="w-5 h-5 text-blue-600" />
-                      <div>
-                        <div className="font-medium text-gray-900">Email</div>
-                        <div className="text-gray-600">{currentData.reachout?.email || 'gppec11@gmail.com'}</div>
+                <div className="relative z-10 p-8 text-white">
+                  {/* Header */}
+                  <div className="text-center mb-8">
+                    <h2 className="text-3xl font-bold mb-2">Connect With Us</h2>
+                    <div className="w-24 h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto"></div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Contact Card */}
+                    <div className="bg-white/95 backdrop-blur-md rounded-xl p-5 shadow-lg border-2 border-white/80">
+                      <h3 className="text-blue-900 font-bold text-lg mb-4 flex items-center">
+                        <Mail className="w-5 h-5 mr-2" />
+                        Department Contact
+                      </h3>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center border-b border-blue-100 pb-2">
+                          <span className="font-medium text-blue-800">Email:</span>
+                          <span className="font-semibold text-blue-900">{currentData.reachout?.email || 'gppec11@gmail.com'}</span>
+                        </div>
+                        <div className="flex justify-between items-center border-b border-blue-100 pb-2">
+                          <span className="font-medium text-blue-800">Phone:</span>
+                          <span className="font-semibold text-blue-900">{currentData.reachout?.phone || '02742-245219'}</span>
+                        </div>
+                        <div className="flex justify-between items-center border-b border-blue-100 pb-2">
+                          <span className="font-medium text-blue-800">Website:</span>
+                          <span className="font-semibold text-blue-900">{currentData.reachout?.website || 'ec.gppalanpur.in'}</span>
+                        </div>
+                        {currentData.reachout?.newsletterEmail && (
+                          <div className="flex justify-between items-center pb-2">
+                            <span className="font-medium text-blue-800">Newsletter:</span>
+                            <span className="font-semibold text-blue-900">{currentData.reachout.newsletterEmail}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
 
-                    {currentData.reachout?.newsletterEmail && (
-                      <div className="flex items-center space-x-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                        <Mail className="w-5 h-5 text-purple-600" />
+                    {/* Address Card */}
+                    <div className="bg-white/95 backdrop-blur-md rounded-xl p-5 shadow-lg border-2 border-white/80">
+                      <h3 className="text-blue-900 font-bold text-lg mb-4 flex items-center">
+                        <MapPin className="w-5 h-5 mr-2" />
+                        Visit Us
+                      </h3>
+                      <div className="space-y-2 text-green-800">
+                        <p className="font-semibold">Government Polytechnic, Palanpur</p>
+                        <p>Electronics & Communication Engineering Department</p>
+                        <p>{currentData.reachout?.address || 'Opp. Malan Darwaja, Ambaji Road, Palanpur - 385001, Gujarat'}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Programs Section */}
+                  <div className="mt-6">
+                    <h3 className="text-xl font-semibold mb-4 text-center">🎓 Our Programs</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="bg-white/95 backdrop-blur-md rounded-lg p-4 flex items-center gap-4 border-2 border-white/80 shadow-lg">
+                        <div className="text-2xl">📡</div>
                         <div>
-                          <div className="font-medium text-gray-900">Newsletter Submissions</div>
-                          <div className="text-gray-600">{currentData.reachout.newsletterEmail}</div>
-                          <div className="text-xs text-purple-600 mt-1">For students & faculty to share newsletter content</div>
+                          <strong className="text-blue-900 block">Electronics & Communication</strong>
+                          <span className="text-blue-800 text-sm">3-Year Diploma • 38 Students Intake</span>
                         </div>
                       </div>
-                    )}
-
-                    <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
-                      <Phone className="w-5 h-5 text-green-600" />
-                      <div>
-                        <div className="font-medium text-gray-900">Phone</div>
-                        <div className="text-gray-600">{currentData.reachout?.phone || '02742-245219'}</div>
+                      <div className="bg-white/95 backdrop-blur-md rounded-lg p-4 flex items-center gap-4 border-2 border-white/80 shadow-lg">
+                        <div className="text-2xl">💻</div>
+                        <div>
+                          <strong className="text-blue-900 block">Information & Communication Technology</strong>
+                          <span className="text-blue-800 text-sm">3-Year Diploma • 78 Students Intake</span>
+                        </div>
                       </div>
                     </div>
+                  </div>
 
-                    <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
-                      <MapPin className="w-5 h-5 text-red-600" />
-                      <div>
-                        <div className="font-medium text-gray-900">Address</div>
-                        <div className="text-gray-600">{currentData.reachout?.address || 'Opp. Malan Darwaja, Ambaji Road, Palanpur - 385001, Gujarat'}</div>
+                  {/* Quick Information */}
+                  <div className="mt-6">
+                    <h3 className="text-xl font-semibold mb-4 text-center">📋 Quick Information</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="bg-white/95 backdrop-blur-md rounded-lg p-3 text-center shadow-lg border-2 border-white/80">
+                        <div className="text-xl font-bold text-blue-900">40+</div>
+                        <div className="text-sm font-medium text-blue-800">Years of Excellence</div>
                       </div>
-                    </div>
-
-                    <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
-                      <Globe className="w-5 h-5 text-purple-600" />
-                      <div>
-                        <div className="font-medium text-gray-900">Website</div>
-                        <div className="text-gray-600">{currentData.reachout?.website || 'ec.gppalanpur.in'}</div>
+                      <div className="bg-white/95 backdrop-blur-md rounded-lg p-3 text-center shadow-lg border-2 border-white/80">
+                        <div className="text-xl font-bold text-blue-900">100+</div>
+                        <div className="text-sm font-medium text-blue-800">Alumni Network</div>
+                      </div>
+                      <div className="bg-white/95 backdrop-blur-md rounded-lg p-3 text-center shadow-lg border-2 border-white/80">
+                        <div className="text-xl font-bold text-blue-900">116</div>
+                        <div className="text-sm font-medium text-blue-800">Total Intake</div>
+                      </div>
+                      <div className="bg-white/95 backdrop-blur-md rounded-lg p-3 text-center shadow-lg border-2 border-white/80">
+                        <div className="text-xl font-bold text-blue-900">100%</div>
+                        <div className="text-sm font-medium text-blue-800">Placement Focus</div>
                       </div>
                     </div>
                   </div>
 
                   {/* Editorial Team */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Editorial Team</h3>
-
-                    {currentData.editorialTeam && currentData.editorialTeam.length > 0 ? (
-                      <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border border-blue-200">
-                        <div className="space-y-4">
-                          {currentData.editorialTeam.map((member, index) => (
-                            <div key={index} className="flex items-center space-x-3">
-                              <div className={`${index === 0 ? 'bg-blue-600' : 'bg-purple-600'} text-white p-2 rounded-lg`}>
-                                <Users className="w-5 h-5" />
-                              </div>
-                              <div>
-                                <div className="font-semibold text-gray-900">{member.name}</div>
-                                <div className="text-sm text-gray-600">{member.designation} & {member.role}</div>
-                              </div>
+                  <div className="mt-6">
+                    <h3 className="text-xl font-semibold mb-4 text-center">✏️ Editorial Team</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {currentData.editorialTeam && currentData.editorialTeam.length > 0 ? (
+                        currentData.editorialTeam.map((member, index) => (
+                          <div key={index} className="bg-white/95 backdrop-blur-md rounded-lg p-4 flex items-center gap-4 border-2 border-white/80 shadow-lg">
+                            <div className={`${index === 0 ? 'bg-blue-600' : 'bg-purple-600'} text-white p-2 rounded-lg`}>
+                              <Users className="w-5 h-5" />
                             </div>
-                          ))}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border border-blue-200">
-                        <div className="space-y-4">
-                          <div className="flex items-center space-x-3">
+                            <div>
+                              <strong className="text-blue-900 block">{member.name}</strong>
+                              <span className="text-blue-800 text-sm">{member.role}</span>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <>
+                          <div className="bg-white/95 backdrop-blur-md rounded-lg p-4 flex items-center gap-4 border-2 border-white/80 shadow-lg">
                             <div className="bg-blue-600 text-white p-2 rounded-lg">
                               <Users className="w-5 h-5" />
                             </div>
                             <div>
-                              <div className="font-semibold text-gray-900">Ms. Mittal K. Pedhadiya</div>
-                              <div className="text-sm text-gray-600">Assistant Professor & Newsletter Editor</div>
+                              <strong className="text-blue-900 block">Ms. Mittal K. Pedhadiya</strong>
+                              <span className="text-blue-800 text-sm">Newsletter Editor</span>
                             </div>
                           </div>
-
-                          <div className="flex items-center space-x-3">
+                          <div className="bg-white/95 backdrop-blur-md rounded-lg p-4 flex items-center gap-4 border-2 border-white/80 shadow-lg">
                             <div className="bg-purple-600 text-white p-2 rounded-lg">
                               <Users className="w-5 h-5" />
                             </div>
                             <div>
-                              <div className="font-semibold text-gray-900">Mr. Milav J. Dabgar</div>
-                              <div className="text-sm text-gray-600">Assistant Professor & Newsletter Co-Editor</div>
+                              <strong className="text-blue-900 block">Mr. Milav J. Dabgar</strong>
+                              <span className="text-blue-800 text-sm">Newsletter Co-Editor</span>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    )}
+                        </>
+                      )}
+                    </div>
+                  </div>
 
-                    {/* Department Info */}
-                    <div className="bg-gray-50 p-6 rounded-lg border">
-                      <h4 className="font-semibold text-gray-900 mb-3">About the Department</h4>
-                      <p className="text-gray-600 text-sm leading-relaxed">
-                        The Electronics & Communication Engineering Department at Government Polytechnic, Palanpur 
-                        has been a center of excellence in technical education since 1984. We are committed to 
-                        preparing competent diploma-level engineers who can contribute to the industry and society.
-                      </p>
-                      <div className="mt-4 pt-4 border-t border-gray-200">
-                        <div className="text-sm text-gray-600">
-                          <strong>Established:</strong> 1984<br />
-                          <strong>Academic Year:</strong> 2023-24<br />
-                          <strong>Newsletter:</strong> Spectrum - Band III
-                        </div>
+                  {/* Footer */}
+                  <div className="mt-8 text-center">
+                    <div className="flex items-center justify-center gap-4 mb-4">
+                      <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-white/80 to-transparent"></div>
+                      <div className="flex gap-2 text-xl opacity-80">
+                        <span>•</span>
+                        <span>•</span>
+                        <span>•</span>
                       </div>
+                      <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-white/80 to-transparent"></div>
+                    </div>
+                    <div>
+                      <p className="font-semibold">Spectrum Newsletter - Band III</p>
+                      <p>Academic Year {selectedYear} • Government Polytechnic, Palanpur</p>
+                      <p className="text-sm italic opacity-90 mt-1">Excellence in Technical Education Since 1984</p>
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
