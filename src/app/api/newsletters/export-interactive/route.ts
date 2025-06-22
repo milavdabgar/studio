@@ -1067,6 +1067,12 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             padding: 1rem 0.75rem 0.75rem;
             font-size: 0.75rem;
             font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .canvas-image-container:hover .canvas-image-caption {
+            opacity: 1;
         }
         
         @media print {
