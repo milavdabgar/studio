@@ -15,6 +15,106 @@ export const newsletterData2023_24: NewsletterData = {
   
   canvas: [
     {
+      title: "In Loving Memory of Shri Nikunj M Patel",
+      author: "EC Department Faculty & Students",
+      designation: "Electronics & Communication Engineering Department",
+      content: "On December 15, 2023, we lost one of the greatest faculty members of our EC Department, Shri Nikunj M Patel, after a brief illness. His departure has left an irreplaceable void in our hearts and our institution. Nikunj sir was not just an educator; he was a mentor, a guide, and a friend to countless students who walked through our department doors.\n\nHis down-to-earth nature made every student feel comfortable approaching him with their doubts and concerns. Whether it was academic guidance, career counseling, or personal support, he was always there with a warm smile and helpful words. His commitment to any task he undertook was exemplary - he approached every responsibility with dedication and integrity that inspired all of us.\n\nShri Nikunj M Patel believed in nurturing not just technical skills but also human values. He taught us that true success comes from helping others succeed. His legacy lives on in every student he mentored, every colleague he supported, and every life he touched with his kindness and wisdom.\n\nThough he may have left us physically, his teachings, his values, and his spirit continue to guide us. We remember him not with sorrow, but with gratitude for having had the privilege of working alongside such a remarkable human being.\n\nRest in peace, dear sir. Your memory will forever be cherished in the EC Department family.",
+      date: "December 2023",
+      type: "article",
+      authorType: "faculty",
+      images: [
+        {
+          src: '/newsletters/2023-24/nmp/20210926_101936.jpg',
+          alt: 'Shri Nikunj M Patel with students and colleagues',
+          caption: 'Capturing moments of dedication and mentorship in the EC Department'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/20220128_171246.jpg',
+          alt: 'Shri Nikunj M Patel during department activities',
+          caption: 'Always present and engaged in departmental initiatives and student welfare'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/20221231_155100.jpg',
+          alt: 'Shri Nikunj M Patel with faculty and students',
+          caption: 'A beloved teacher who brought warmth and wisdom to every gathering'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/462940275_27529417436649570_7023369186748130685_n.jpg',
+          alt: 'Shri Nikunj M Patel in memorable moments',
+          caption: 'Cherished memories of a faculty member who touched countless lives'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/464242605_9412158062134416_5050199162295147749_n.jpg',
+          alt: 'Shri Nikunj M Patel with the EC community',
+          caption: 'Building bonds and fostering growth in the electronics engineering community'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/464244071_9412159172134305_6631052670891998215_n.jpg',
+          alt: 'Shri Nikunj M Patel during educational activities',
+          caption: 'Committed to excellence in education and student development'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/464284590_9412157725467783_6967180381419490622_n.jpg',
+          alt: 'Shri Nikunj M Patel with students',
+          caption: 'A mentor who believed in nurturing both technical skills and human values'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/IMG-20180928-WA0022.jpg',
+          alt: 'Shri Nikunj M Patel in departmental setting',
+          caption: 'Dedicated service to the Electronics & Communication Engineering Department'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/IMG-20221224-WA0001.jpg',
+          alt: 'Shri Nikunj M Patel with colleagues',
+          caption: 'Professional excellence and collaborative spirit in every endeavor'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/IMG_20180314_112606.jpg',
+          alt: 'Shri Nikunj M Patel during academic activities',
+          caption: 'Early years of dedicated service and commitment to education'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/IMG_20180518_140436.jpg',
+          alt: 'Shri Nikunj M Patel with students',
+          caption: 'Patient guidance and encouragement for every student who sought help'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/IMG_20180815_085220.jpg',
+          alt: 'Shri Nikunj M Patel in teaching environment',
+          caption: 'Passionate about teaching and making complex concepts accessible to all'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/IMG_20180815_090133.jpg',
+          alt: 'Shri Nikunj M Patel during faculty activities',
+          caption: 'Active participation in all departmental activities and responsibilities'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/IMG_20180815_090712.jpg',
+          alt: 'Shri Nikunj M Patel with academic community',
+          caption: 'Building lasting relationships within the academic community'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/IMG_20180925_211850.jpg',
+          alt: 'Shri Nikunj M Patel during special occasions',
+          caption: 'Celebrating achievements and milestones with students and colleagues'
+        },
+        {
+          src: '/newsletters/2023-24/nmp/IMG_20180928_170327.jpg',
+          alt: 'Shri Nikunj M Patel in memorable moments',
+          caption: 'A legacy of kindness, wisdom, and unwavering commitment to education'
+        }
+      ]
+    },
+    {
+      title: "A Tribute in Verse - For Shri Nikunj M Patel",
+      author: "EC Department Faculty & Students",
+      designation: "Electronics & Communication Engineering Department", 
+      content: "In halls of learning where knowledge flows free,\nWalked a teacher whose heart was the key,\nShri Nikunj M Patel, with wisdom so bright,\nGuided countless souls toward the light.\n\nWith patience unending and words ever kind,\nHe nurtured each student, heart, soul, and mind,\nNo question too simple, no doubt left unclear,\nHe made every pathway to learning appear.\n\nBeyond circuits and signals, equations and code,\nHe taught us compassion, and showed us the road,\nTo success built on service, on helping each other,\nA teacher, a mentor, a father, a brother.\n\nThough December's cold wind took him away,\nHis spirit lives on in each word that we say,\nIn every success that his students achieve,\nIn memories cherished, we'll never let leave.\n\nThe EC Department echoes still,\nWith lessons he taught through unwavering will,\nShri Nikunj sir, your legacy bright,\nShines on as our eternal guiding light.",
+      date: "December 2023",
+      type: "poem",
+      authorType: "faculty"
+    },    
+    {
       title: "6G Technology: The Next Communication Revolution",
       author: "Mr. S. J. Chauhan",
       designation: "Head of Department, EC Department",
@@ -117,106 +217,6 @@ export const newsletterData2023_24: NewsletterData = {
       date: "May 2023",
       type: "experience",
       authorType: "student"
-    },
-    {
-      title: "In Loving Memory of Shri Nikunj M Patel",
-      author: "EC Department Faculty & Students",
-      designation: "Electronics & Communication Engineering Department",
-      content: "On December 15, 2023, we lost one of the greatest faculty members of our EC Department, Shri Nikunj M Patel, after a brief illness. His departure has left an irreplaceable void in our hearts and our institution. Nikunj sir was not just an educator; he was a mentor, a guide, and a friend to countless students who walked through our department doors.\n\nHis down-to-earth nature made every student feel comfortable approaching him with their doubts and concerns. Whether it was academic guidance, career counseling, or personal support, he was always there with a warm smile and helpful words. His commitment to any task he undertook was exemplary - he approached every responsibility with dedication and integrity that inspired all of us.\n\nShri Nikunj M Patel believed in nurturing not just technical skills but also human values. He taught us that true success comes from helping others succeed. His legacy lives on in every student he mentored, every colleague he supported, and every life he touched with his kindness and wisdom.\n\nThough he may have left us physically, his teachings, his values, and his spirit continue to guide us. We remember him not with sorrow, but with gratitude for having had the privilege of working alongside such a remarkable human being.\n\nRest in peace, dear sir. Your memory will forever be cherished in the EC Department family.",
-      date: "December 2023",
-      type: "article",
-      authorType: "faculty",
-      images: [
-        {
-          src: '/newsletters/2023-24/nmp/20210926_101936.jpg',
-          alt: 'Shri Nikunj M Patel with students and colleagues',
-          caption: 'Capturing moments of dedication and mentorship in the EC Department'
-        },
-        {
-          src: '/newsletters/2023-24/nmp/20220128_171246.jpg',
-          alt: 'Shri Nikunj M Patel during department activities',
-          caption: 'Always present and engaged in departmental initiatives and student welfare'
-        },
-        {
-          src: '/newsletters/2023-24/nmp/20221231_155100.jpg',
-          alt: 'Shri Nikunj M Patel with faculty and students',
-          caption: 'A beloved teacher who brought warmth and wisdom to every gathering'
-        },
-        {
-          src: '/newsletters/2023-24/nmp/462940275_27529417436649570_7023369186748130685_n.jpg',
-          alt: 'Shri Nikunj M Patel in memorable moments',
-          caption: 'Cherished memories of a faculty member who touched countless lives'
-        },
-        {
-          src: '/newsletters/2023-24/nmp/464242605_9412158062134416_5050199162295147749_n.jpg',
-          alt: 'Shri Nikunj M Patel with the EC community',
-          caption: 'Building bonds and fostering growth in the electronics engineering community'
-        },
-        {
-          src: '/newsletters/2023-24/nmp/464244071_9412159172134305_6631052670891998215_n.jpg',
-          alt: 'Shri Nikunj M Patel during educational activities',
-          caption: 'Committed to excellence in education and student development'
-        },
-        {
-          src: '/newsletters/2023-24/nmp/464284590_9412157725467783_6967180381419490622_n.jpg',
-          alt: 'Shri Nikunj M Patel with students',
-          caption: 'A mentor who believed in nurturing both technical skills and human values'
-        },
-        {
-          src: '/newsletters/2023-24/nmp/IMG-20180928-WA0022.jpg',
-          alt: 'Shri Nikunj M Patel in departmental setting',
-          caption: 'Dedicated service to the Electronics & Communication Engineering Department'
-        },
-        {
-          src: '/newsletters/2023-24/nmp/IMG-20221224-WA0001.jpg',
-          alt: 'Shri Nikunj M Patel with colleagues',
-          caption: 'Professional excellence and collaborative spirit in every endeavor'
-        },
-        {
-          src: '/newsletters/2023-24/nmp/IMG_20180314_112606.jpg',
-          alt: 'Shri Nikunj M Patel during academic activities',
-          caption: 'Early years of dedicated service and commitment to education'
-        },
-        {
-          src: '/newsletters/2023-24/nmp/IMG_20180518_140436.jpg',
-          alt: 'Shri Nikunj M Patel with students',
-          caption: 'Patient guidance and encouragement for every student who sought help'
-        },
-        {
-          src: '/newsletters/2023-24/nmp/IMG_20180815_085220.jpg',
-          alt: 'Shri Nikunj M Patel in teaching environment',
-          caption: 'Passionate about teaching and making complex concepts accessible to all'
-        },
-        {
-          src: '/newsletters/2023-24/nmp/IMG_20180815_090133.jpg',
-          alt: 'Shri Nikunj M Patel during faculty activities',
-          caption: 'Active participation in all departmental activities and responsibilities'
-        },
-        {
-          src: '/newsletters/2023-24/nmp/IMG_20180815_090712.jpg',
-          alt: 'Shri Nikunj M Patel with academic community',
-          caption: 'Building lasting relationships within the academic community'
-        },
-        {
-          src: '/newsletters/2023-24/nmp/IMG_20180925_211850.jpg',
-          alt: 'Shri Nikunj M Patel during special occasions',
-          caption: 'Celebrating achievements and milestones with students and colleagues'
-        },
-        {
-          src: '/newsletters/2023-24/nmp/IMG_20180928_170327.jpg',
-          alt: 'Shri Nikunj M Patel in memorable moments',
-          caption: 'A legacy of kindness, wisdom, and unwavering commitment to education'
-        }
-      ]
-    },
-    {
-      title: "A Tribute in Verse - For Shri Nikunj M Patel",
-      author: "EC Department Faculty & Students",
-      designation: "Electronics & Communication Engineering Department", 
-      content: "In halls of learning where knowledge flows free,\nWalked a teacher whose heart was the key,\nShri Nikunj M Patel, with wisdom so bright,\nGuided countless souls toward the light.\n\nWith patience unending and words ever kind,\nHe nurtured each student, heart, soul, and mind,\nNo question too simple, no doubt left unclear,\nHe made every pathway to learning appear.\n\nBeyond circuits and signals, equations and code,\nHe taught us compassion, and showed us the road,\nTo success built on service, on helping each other,\nA teacher, a mentor, a father, a brother.\n\nThough December's cold wind took him away,\nHis spirit lives on in each word that we say,\nIn every success that his students achieve,\nIn memories cherished, we'll never let leave.\n\nThe EC Department echoes still,\nWith lessons he taught through unwavering will,\nShri Nikunj sir, your legacy bright,\nShines on as our eternal guiding light.",
-      date: "December 2023",
-      type: "poem",
-      authorType: "faculty"
     }
   ],
 
@@ -722,66 +722,66 @@ The successful organization of expert lectures, industrial visits, and the IEEE 
       ]
     },
     {
-      title: 'IPR Awareness Camp at Vidhyamandir School',
+      title: 'Plasma Knowledge Camp - Institute of Plasma Research (IPR), Gandhinagar',
       date: 'July 26, 2023',
-      category: 'awareness',
-      description: 'Students conducted Intellectual Property Rights awareness sessions at local schools, sharing knowledge about patents, trademarks, and innovation protection.',
-      tags: ['IPR Awareness', 'Intellectual Property', 'School Outreach', 'Knowledge Sharing'],
+      category: 'visit',
+      description: 'Educational visit to a plasma science camp organized by Institute of Plasma Research (IPR), Gandhinagar at Vidhyamandir School. Students and faculty members participated to gain knowledge about plasma physics, its applications, and cutting-edge research in plasma technology.',
+      tags: ['Plasma Science', 'IPR Gandhinagar', 'Educational Camp', 'Science Learning', 'Physics Research'],
       images: [
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_142650-768x1024.jpg',
-          alt: 'IPR Awareness Camp - Opening session at Vidhyamandir School',
-          caption: 'IPR Awareness Camp - Opening session at Vidhyamandir School'
+          alt: 'Plasma Knowledge Camp - Opening session at Vidhyamandir School',
+          caption: 'Plasma Knowledge Camp - Opening session at Vidhyamandir School'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_142738-768x1024.jpg',
-          alt: 'IPR Awareness Camp - Student presentation on intellectual property',
-          caption: 'IPR Awareness Camp - Student presentation on intellectual property'
+          alt: 'Plasma Knowledge Camp - Learning about plasma physics',
+          caption: 'Plasma Knowledge Camp - Learning about plasma physics'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_142746-768x1024.jpg',
-          alt: 'IPR Awareness Camp - Interactive session on patents',
-          caption: 'IPR Awareness Camp - Interactive session on patents'
+          alt: 'Plasma Knowledge Camp - Interactive session on plasma applications',
+          caption: 'Plasma Knowledge Camp - Interactive session on plasma applications'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_142951-1024x768.jpg',
-          alt: 'IPR Awareness Camp - Knowledge sharing with school students',
-          caption: 'IPR Awareness Camp - Knowledge sharing with school students'
+          alt: 'Plasma Knowledge Camp - Students and faculty gaining scientific knowledge',
+          caption: 'Plasma Knowledge Camp - Students and faculty gaining scientific knowledge'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_143104-768x1024.jpg',
-          alt: 'IPR Awareness Camp - Educational outreach program',
-          caption: 'IPR Awareness Camp - Educational outreach program'
+          alt: 'Plasma Knowledge Camp - Educational outreach by IPR Gandhinagar',
+          caption: 'Plasma Knowledge Camp - Educational outreach by IPR Gandhinagar'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_143225-768x1024.jpg',
-          alt: 'IPR Awareness Camp - Student teaching initiative',
-          caption: 'IPR Awareness Camp - Student teaching initiative'
+          alt: 'Plasma Knowledge Camp - Students exploring plasma science',
+          caption: 'Plasma Knowledge Camp - Students exploring plasma science'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_143414-768x1024.jpg',
-          alt: 'IPR Awareness Camp - Intellectual property education',
-          caption: 'IPR Awareness Camp - Intellectual property education'
+          alt: 'Plasma Knowledge Camp - Plasma physics education session',
+          caption: 'Plasma Knowledge Camp - Plasma physics education session'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_143459-1024x768.jpg',
-          alt: 'IPR Awareness Camp - Community knowledge sharing',
-          caption: 'IPR Awareness Camp - Community knowledge sharing'
+          alt: 'Plasma Knowledge Camp - Faculty and students learning together',
+          caption: 'Plasma Knowledge Camp - Faculty and students learning together'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_143748-768x1024.jpg',
-          alt: 'IPR Awareness Camp - School visit documentation',
-          caption: 'IPR Awareness Camp - School visit documentation'
+          alt: 'Plasma Knowledge Camp - Documentation of scientific learning',
+          caption: 'Plasma Knowledge Camp - Documentation of scientific learning'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_143757-1024x768.jpg',
-          alt: 'IPR Awareness Camp - Student engagement activity',
-          caption: 'IPR Awareness Camp - Student engagement activity'
+          alt: 'Plasma Knowledge Camp - Student engagement in plasma research',
+          caption: 'Plasma Knowledge Camp - Student engagement in plasma research'
         },
         {
           src: 'https://ec.gppalanpur.in/wp-content/uploads/sites/2/2025/03/20230726_144208-768x1024.jpg',
-          alt: 'IPR Awareness Camp - Group interaction session',
-          caption: 'IPR Awareness Camp - Group interaction session'
+          alt: 'Plasma Knowledge Camp - Group learning about plasma technology',
+          caption: 'Plasma Knowledge Camp - Group learning about plasma technology'
         }
       ]
     },
