@@ -234,46 +234,82 @@ export default function InteractiveNewsletterPage() {
               })}
             </div>
 
-            {/* Department Overview */}
-            <Card className="mb-8">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Building className="w-5 h-5 text-blue-600" />
-                  <span>Department Overview</span>
-                </CardTitle>
-                <CardDescription>Electronics & Communication Engineering - Government Polytechnic, Palanpur</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="prose max-w-none">
-                  <p className="text-gray-700 leading-relaxed mb-4">
-                    The Electronics & Communication Engineering department at Government Polytechnic, Palanpur 
-                    continues to excel in providing quality technical education and fostering innovation. 
-                    With state-of-the-art laboratories and experienced faculty, we prepare students for 
-                    the rapidly evolving technology landscape.
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Key Highlights 2023-24</h4>
-                      <ul className="space-y-1 text-sm text-gray-600">
-                        <li>• 150+ students across all semesters</li>
-                        <li>• {statsData[0].value}% placement rate for eligible students</li>
-                        <li>• {statsData[1].value} conference papers published</li>
-                        <li>• Modern lab infrastructure worth ₹35+ lakhs</li>
-                      </ul>
+            {/* Department Overview - Enhanced Creative Design */}
+            {currentData?.essence?.departmentOverview && (
+              <Card className="mb-8 overflow-hidden">
+                <CardHeader className="bg-gradient-to-r from-purple-600 to-purple-700 text-white">
+                  <CardTitle className="flex items-center space-x-2">
+                    <Building className="w-5 h-5" />
+                    <span>Department Overview</span>
+                  </CardTitle>
+                  <CardDescription className="text-purple-100">
+                    Electronics & Communication Engineering - Government Polytechnic, Palanpur
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-0">
+                  {/* Main Content */}
+                  <div className="p-6">
+                    <div className="prose max-w-none">
+                      <div className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-xl border border-slate-200">
+                        <p className="text-gray-700 leading-relaxed whitespace-pre-line text-justify m-0">
+                          {currentData.essence.departmentOverview}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Focus Areas</h4>
-                      <ul className="space-y-1 text-sm text-gray-600">
-                        <li>• 5G Communication Systems</li>
-                        <li>• IoT & Embedded Systems</li>
-                        <li>• Digital Signal Processing</li>
-                        <li>• VLSI Design & Testing</li>
-                      </ul>
+                    
+                    {/* Programs Highlight */}
+                    <div className="grid md:grid-cols-2 gap-4 mt-8">
+                      <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white p-6 rounded-xl text-center">
+                        <div className="text-3xl mb-3">📡</div>
+                        <h4 className="text-lg font-semibold mb-2">Electronics & Communication</h4>
+                        <p className="text-sm opacity-90">38 Students Intake</p>
+                        <p className="text-xs opacity-80 mt-1">Advanced EC Engineering</p>
+                      </div>
+                      <div className="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-xl text-center">
+                        <div className="text-3xl mb-3">💻</div>
+                        <h4 className="text-lg font-semibold mb-2">Information & Communication Technology</h4>
+                        <p className="text-sm opacity-90">78 Students Intake</p>
+                        <p className="text-xs opacity-80 mt-1">Modern ICT Solutions</p>
+                      </div>
+                    </div>
+                    
+                    {/* Key Strengths */}
+                    <div className="mt-8">
+                      <h4 className="text-xl font-semibold text-gray-800 mb-6 text-center">🌟 What Sets Us Apart</h4>
+                      <div className="grid md:grid-cols-3 gap-4">
+                        <div className="bg-blue-50 p-5 rounded-lg border-l-4 border-blue-400">
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="text-xl">🎓</span>
+                            <strong className="text-blue-700">Holistic Education</strong>
+                          </div>
+                          <p className="text-sm text-blue-600 leading-relaxed">
+                            Cutting-edge technology with practical industry applications
+                          </p>
+                        </div>
+                        <div className="bg-green-50 p-5 rounded-lg border-l-4 border-green-400">
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="text-xl">🤝</span>
+                            <strong className="text-green-700">Industry Partnerships</strong>
+                          </div>
+                          <p className="text-sm text-green-600 leading-relaxed">
+                            Strategic collaborations for innovation projects
+                          </p>
+                        </div>
+                        <div className="bg-purple-50 p-5 rounded-lg border-l-4 border-purple-400">
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="text-xl">💡</span>
+                            <strong className="text-purple-700">Future Leaders</strong>
+                          </div>
+                          <p className="text-sm text-purple-600 leading-relaxed">
+                            Preparing entrepreneurs who drive technological advancement
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Vision & Mission */}
             <Card className="mb-8">

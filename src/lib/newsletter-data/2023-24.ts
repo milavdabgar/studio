@@ -7,10 +7,14 @@ import { NewsletterData } from '../newsletter-data';
 
 export const newsletterData2023_24: NewsletterData = {
   stats: [
-    { label: 'Placement Rate', value: 67, color: 'bg-blue-500' },
-    { label: 'Conference Papers', value: 1, color: 'bg-green-500' },
-    { label: 'Students Placed', value: 2, color: 'bg-purple-500' },
-    { label: 'Higher Studies', value: 1, color: 'bg-orange-500' },
+    { label: 'Events', value: 15, color: 'bg-blue-500' },
+    { label: 'Industry Visits', value: 4, color: 'bg-green-500' },
+    { label: 'Expert Lectures & Workshops', value: 6, color: 'bg-purple-500' },
+    { label: 'FDP Participation', value: 3, color: 'bg-orange-500' },
+    { label: 'Placements & Higher Education', value: 3, color: 'bg-indigo-500' },
+    { label: 'Books, Papers & Patents', value: 1, color: 'bg-red-500' },
+    { label: 'Industry Partnerships', value: 12, color: 'bg-teal-500' },
+    { label: 'Innovation Projects', value: 25, color: 'bg-amber-500' },
   ],
   
   canvas: [
@@ -487,6 +491,7 @@ export const newsletterData2023_24: NewsletterData = {
   essence: {
     vision: "To prepare competent diploma level electronics and communication engineers, catering the needs of industries and society as an excellent employee, innovator and entrepreneur with moral values.",
     mission: "• M1: Provide quality education in the field of EC engineering.\n• M2: Develop state of art laboratories, classrooms and upgradation of Faculties.\n• M3: Strengthen industrial liaison by offering mutual beneficiaries services.\n• M4: Execute extra curricular and co-curricular activities to inculcate innovation, entrepreneurship and moral values.",
+    departmentOverview: "The Electronics & Communication Engineering Department at Government Polytechnic Palanpur stands as a beacon of technical excellence, offering two comprehensive diploma programs: Electronics & Communication Engineering (ECE) with an intake capacity of 38 students and Information & Communication Technology (ICT) with 78 students. Our department operates under the dynamic leadership of our Head of Department, supported by a dedicated team of 7 highly qualified faculty members, including 2 with completed Ph.D. degrees, 1 pursuing doctoral studies, 3 with Master's degrees (M.E.), and 1 with a Bachelor's degree (B.E.). Our infrastructure is strengthened by 1 skilled lab assistant and 1 support staff member, ensuring smooth operations and excellent student support.\n\nWhat sets our department apart is our commitment to holistic education that seamlessly blends cutting-edge technology with practical industry applications. Our faculty's diverse expertise spans from research and innovation to industry collaboration, while our comprehensive curriculum integrates emerging technologies like AI, IoT, and sustainable electronics. Through strategic industry partnerships, expert lecture series, and hands-on innovation projects, we prepare our students not just as technically competent engineers, but as future leaders and entrepreneurs who will drive technological advancement in Gujarat and beyond.",
     hodMessage: {
       name: 'Mr. S. J. Chauhan',
       designation: 'Head of Department - Electronics & Communication Engineering',

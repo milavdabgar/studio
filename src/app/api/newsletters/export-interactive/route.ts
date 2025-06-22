@@ -279,6 +279,59 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             margin-top: 1rem;
         }
         
+        .department-overview {
+            background: linear-gradient(135deg, #fefbff 0%, #f3f4f6 100%);
+            padding: 0;
+            border-radius: 0.75rem;
+            border: 1px solid #e4e4e7;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+        
+        .dept-overview-header {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            margin-bottom: 0;
+        }
+        
+        .dept-overview-content {
+            padding: 2rem;
+        }
+        
+        .dept-overview-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: rgba(139, 92, 246, 0.05);
+            border-radius: 0.5rem;
+            border: 1px solid rgba(139, 92, 246, 0.1);
+        }
+        
+        .dept-stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .dept-stat-number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #7c3aed;
+            margin-bottom: 0.25rem;
+        }
+        
+        .dept-stat-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
         .vision-card, .mission-card {
             background: #f8fafc;
             padding: 2rem;
@@ -409,58 +462,68 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             `).join('')}
         </div>
         
-        <!-- Department Overview Section -->
+        <!-- Department Overview Section - Enhanced Creative Design -->
+        ${data.essence?.departmentOverview ? `
         <div class="section">
             <h2 class="section-title">🏢 Department Overview</h2>
-            <div class="content-card" style="padding: 1.5rem; background: #f9fafb; border-radius: 0.75rem; margin-bottom: 1.5rem;">
-                <p style="margin-bottom: 1rem; line-height: 1.6;">The Electronics & Communication Engineering department at Government Polytechnic, Palanpur continues to excel in providing quality technical education and fostering innovation. With state-of-the-art laboratories and experienced faculty, we prepare students for the rapidly evolving technology landscape.</p>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1.5rem;">
-                    <div>
-                        <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 1rem;">Key Highlights 2023-24</h4>
-                        <ul style="list-style: none; padding: 0; margin: 0;">
-                            <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
-                                <span style="color: #10b981; margin-right: 0.5rem;">•</span>
-                                150+ students across all semesters
-                            </li>
-                            <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
-                                <span style="color: #10b981; margin-right: 0.5rem;">•</span>
-                                100% placement rate for eligible students
-                            </li>
-                            <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
-                                <span style="color: #10b981; margin-right: 0.5rem;">•</span>
-                                20+ research publications
-                            </li>
-                            <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
-                                <span style="color: #10b981; margin-right: 0.5rem;">•</span>
-                                Modern lab infrastructure worth ₹35+ lakhs
-                            </li>
-                        </ul>
+            <div class="department-overview">
+                <div class="dept-overview-header">
+                    <h3 style="margin: 0; font-size: 1.5rem; font-weight: 600;">Electronics & Communication Engineering</h3>
+                    <p style="margin: 0.5rem 0 0 0; opacity: 0.9; font-size: 1rem;">Government Polytechnic, Palanpur</p>
+                </div>
+                <div class="dept-overview-content">
+                    <!-- Main Content with Clean Formatting -->
+                    <div style="background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%); padding: 2rem; border-radius: 0.75rem; border: 1px solid #e2e8f0; margin: 1.5rem 0;">
+                        <p style="white-space: pre-line; text-align: justify; line-height: 1.7; color: #374151; font-size: 1rem; margin: 0;">${data.essence.departmentOverview}</p>
                     </div>
-                    <div>
-                        <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 1rem;">Focus Areas</h4>
-                        <ul style="list-style: none; padding: 0; margin: 0;">
-                            <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
-                                <span style="color: #3b82f6; margin-right: 0.5rem;">•</span>
-                                5G Communication Systems
-                            </li>
-                            <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
-                                <span style="color: #3b82f6; margin-right: 0.5rem;">•</span>
-                                IoT & Embedded Systems
-                            </li>
-                            <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
-                                <span style="color: #3b82f6; margin-right: 0.5rem;">•</span>
-                                Digital Signal Processing
-                            </li>
-                            <li style="margin-bottom: 0.5rem; display: flex; align-items: center;">
-                                <span style="color: #3b82f6; margin-right: 0.5rem;">•</span>
-                                VLSI Design & Testing
-                            </li>
-                        </ul>
+                    
+                    <!-- Programs Highlight -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;">
+                        <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 0.75rem; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📡</div>
+                            <h4 style="margin: 0 0 0.5rem 0; font-size: 1.125rem; font-weight: 600;">Electronics & Communication</h4>
+                            <p style="margin: 0; font-size: 0.875rem; opacity: 0.9;">38 Students Intake</p>
+                            <p style="margin: 0.25rem 0 0 0; font-size: 0.75rem; opacity: 0.8;">Advanced EC Engineering</p>
+                        </div>
+                        <div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; padding: 1.5rem; border-radius: 0.75rem; text-align: center;">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">💻</div>
+                            <h4 style="margin: 0 0 0.5rem 0; font-size: 1.125rem; font-weight: 600;">Information & Communication Technology</h4>
+                            <p style="margin: 0; font-size: 0.875rem; opacity: 0.9;">78 Students Intake</p>
+                            <p style="margin: 0.25rem 0 0 0; font-size: 0.75rem; opacity: 0.8;">Modern ICT Solutions</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Key Strengths -->
+                    <div style="margin-top: 2rem;">
+                        <h4 style="font-size: 1.25rem; font-weight: 600; color: #1f2937; margin-bottom: 1rem; text-align: center;">🌟 What Sets Us Apart</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                            <div style="background: #f0f9ff; padding: 1.25rem; border-radius: 0.5rem; border-left: 4px solid #0ea5e9;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                                    <span style="font-size: 1.25rem;">🎓</span>
+                                    <strong style="color: #0369a1;">Holistic Education</strong>
+                                </div>
+                                <p style="margin: 0; font-size: 0.875rem; color: #075985; line-height: 1.5;">Cutting-edge technology with practical industry applications</p>
+                            </div>
+                            <div style="background: #f0fdf4; padding: 1.25rem; border-radius: 0.5rem; border-left: 4px solid #22c55e;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                                    <span style="font-size: 1.25rem;">🤝</span>
+                                    <strong style="color: #15803d;">Industry Partnerships</strong>
+                                </div>
+                                <p style="margin: 0; font-size: 0.875rem; color: #166534; line-height: 1.5;">Strategic collaborations for innovation projects</p>
+                            </div>
+                            <div style="background: #fefbff; padding: 1.25rem; border-radius: 0.5rem; border-left: 4px solid #a855f7;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                                    <span style="font-size: 1.25rem;">💡</span>
+                                    <strong style="color: #7c2d12;">Future Leaders</strong>
+                                </div>
+                                <p style="margin: 0; font-size: 0.875rem; color: #92400e; line-height: 1.5;">Preparing entrepreneurs who drive technological advancement</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        ` : ''}
         
         <!-- Vision & Mission Section - Correctly placed after Department Overview -->
         ${data.essence?.vision && data.essence?.mission ? `
@@ -501,8 +564,6 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                         ${achievement.date ? `<div class="achievement-date">${achievement.date}</div>` : ''}
                     </div>
                 `).join('')}
-            </div>
-        </div>
             </div>
         </div>
         

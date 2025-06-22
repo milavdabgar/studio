@@ -72,6 +72,7 @@ export interface NewsletterData {
   essence: {
     vision: string;
     mission: string;
+    departmentOverview?: string;
     hodMessage: Message;
   };
   spotlight: SpotlightItem[];
