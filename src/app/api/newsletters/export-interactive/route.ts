@@ -1078,14 +1078,234 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
         @media print {
             body {
                 background: white;
+                font-size: 12px;
+                line-height: 1.4;
             }
             .container {
-                padding: 1rem;
+                padding: 0.5rem;
+                max-width: 100%;
+            }
+            .header {
+                padding: 2rem 1rem;
+                margin-bottom: 1.5rem;
+            }
+            .header h1 {
+                font-size: 2.5rem;
+                margin-bottom: 0.5rem;
+            }
+            .header p {
+                font-size: 1rem;
+                margin-bottom: 0.25rem;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 0.75rem;
+                margin-bottom: 1.5rem;
+            }
+            .stat-card {
+                padding: 0.75rem;
+            }
+            .stat-value {
+                font-size: 1.25rem;
+                margin-bottom: 0.125rem;
+            }
+            .stat-label {
+                font-size: 0.75rem;
+            }
+            .stat-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
             }
             .section, .message-section {
                 box-shadow: none;
                 border: 1px solid #e5e7eb;
                 page-break-inside: avoid;
+                margin-bottom: 1rem;
+            }
+            .section-header {
+                padding: 1rem 1.5rem;
+            }
+            .section-title {
+                font-size: 1.25rem;
+            }
+            .section-description {
+                font-size: 0.75rem;
+            }
+            .section-content {
+                padding: 1rem 1.5rem;
+            }
+            .dept-overview-header {
+                padding: 1rem 1.5rem;
+            }
+            .dept-overview-title {
+                font-size: 1.125rem;
+            }
+            .dept-overview-subtitle {
+                font-size: 0.75rem;
+            }
+            .dept-overview-content {
+                padding: 1rem 1.5rem;
+            }
+            .dept-overview-text {
+                padding: 1rem;
+                margin: 1rem 0;
+            }
+            .dept-overview-text p {
+                font-size: 0.875rem;
+                line-height: 1.5;
+            }
+            .programs-grid {
+                gap: 1rem;
+                margin-top: 1rem;
+            }
+            .program-card {
+                padding: 1rem;
+            }
+            .program-icon {
+                font-size: 2rem;
+                margin-bottom: 0.5rem;
+            }
+            .program-title {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+            }
+            .program-intake, .program-description {
+                font-size: 0.75rem;
+            }
+            .key-strengths {
+                margin-top: 1rem;
+            }
+            .key-strengths-title {
+                font-size: 1rem;
+                margin-bottom: 1rem;
+            }
+            .strengths-grid {
+                gap: 0.75rem;
+            }
+            .strength-card {
+                padding: 0.75rem;
+            }
+            .strength-title {
+                font-size: 0.875rem;
+            }
+            .strength-description {
+                font-size: 0.75rem;
+            }
+            .vision-mission-grid {
+                gap: 1rem;
+                margin-top: 0.5rem;
+            }
+            .vision-card, .mission-card {
+                padding: 1rem;
+            }
+            .vision-title, .mission-title {
+                font-size: 1rem;
+                margin-bottom: 0.75rem;
+            }
+            .vision-icon, .mission-icon {
+                width: 32px;
+                height: 32px;
+                margin-right: 0.5rem;
+            }
+            .vision-text, .mission-text {
+                font-size: 0.875rem;
+                line-height: 1.5;
+            }
+            .message-header {
+                padding: 1rem 1.5rem;
+            }
+            .message-content {
+                padding: 1rem 1.5rem;
+            }
+            .message-body {
+                padding: 1rem;
+            }
+            .message-author {
+                font-size: 1rem;
+            }
+            .message-designation {
+                font-size: 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+            .message-text {
+                font-size: 0.875rem;
+                line-height: 1.6;
+            }
+            .spotlight-grid, .chronicles-grid, .canvas-grid {
+                gap: 1rem;
+            }
+            .spotlight-item, .chronicle-item, .canvas-item {
+                padding: 1rem;
+            }
+            .spotlight-person, .chronicle-title, .canvas-title {
+                font-size: 1rem;
+            }
+            .spotlight-title {
+                font-size: 0.875rem;
+            }
+            .spotlight-description, .chronicle-description {
+                font-size: 0.75rem;
+            }
+            .spotlight-designation {
+                font-size: 0.75rem;
+            }
+            .spotlight-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+            }
+            .chronicle-date-badge {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.65rem;
+            }
+            .canvas-author-info {
+                font-size: 0.75rem;
+            }
+            .canvas-badges {
+                gap: 0.25rem;
+            }
+            .canvas-badge {
+                padding: 0.125rem 0.375rem;
+                font-size: 0.65rem;
+            }
+            .canvas-text {
+                font-size: 0.875rem;
+                margin-top: 0.75rem;
+            }
+            .contact-grid {
+                gap: 1rem;
+            }
+            .contact-item {
+                padding: 0.75rem;
+            }
+            .chronicle-gallery, .canvas-images {
+                margin-top: 1rem;
+            }
+            .chronicle-gallery-title, .canvas-gallery-title {
+                font-size: 0.75rem;
+                margin-bottom: 0.5rem;
+            }
+            .chronicle-images, .canvas-image-grid {
+                gap: 0.5rem;
+            }
+            .spotlight-images {
+                margin-top: 0.75rem;
+            }
+            .spotlight-images h4 {
+                font-size: 0.75rem;
+                margin-bottom: 0.5rem;
+            }
+            .spotlight-images img {
+                max-width: 20rem;
+            }
+            .header-logos {
+                gap: 1rem;
+                margin-bottom: 1rem;
+            }
+            .header-logo {
+                width: 60px;
+                height: 60px;
             }
         }
     </style>
