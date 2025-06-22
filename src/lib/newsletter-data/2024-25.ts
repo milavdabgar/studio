@@ -333,15 +333,15 @@ export const newsletterData2024_25: NewsletterData = {
       designation: 'Head of Department - Electronics & Communication Engineering',
       message: `Dear EC Community,
 
-The academic year 2024-25 represents a pivotal moment in our department's evolution, characterized by our strategic embrace of next-generation technologies and comprehensive educational transformation. This year has been exceptional in terms of curriculum modernization, faculty development, and student innovation initiatives that position our department as a leader in contemporary electronics and communication engineering education.
+The academic year 2024-25 marks a transformative period in our department's journey, distinguished by our strategic integration of emerging technologies and innovative educational practices. This year has been exceptional for our comprehensive approach to modern electronics engineering education.
 
-Our focus on Artificial Intelligence and Machine Learning integration in electronics design, as evidenced by our comprehensive canvas contributions, reflects our commitment to preparing students for the AI-driven future of technology. The emphasis on sustainable electronics, advanced communication systems, and embedded AI applications ensures our graduates possess the skills demanded by modern industry.
+Our curriculum now seamlessly integrates Artificial Intelligence and Machine Learning with traditional electronics, while emphasizing sustainable design principles and advanced 5G communication systems. Students are exploring cutting-edge areas from IoT applications to cybersecurity, ensuring they graduate with industry-relevant skills.
 
-This year's academic achievements are remarkable, with students like Mali Bhavin Ashokbhai and Joshi Neel Subhashchandra demonstrating exceptional performance, while our faculty's contributions spanning AICTE coordination, SSIP innovation management, and NBA accreditation showcase our institutional leadership. The integration of startup ecosystem development, IoT applications, and cybersecurity principles in our educational approach reflects our holistic vision for engineering education.
+Academic excellence continues to flourish with outstanding performers like Mali Bhavin Ashokbhai (8.71 SPI) and Maknojiya Arman Imranbhai (9.2 SPI), while our faculty's leadership spans AICTE coordination, SSIP innovation management, and NBA accreditation. The successful implementation of startup ecosystem development, extensive industry visits, and hands-on project work reflects our commitment to holistic engineering education.
 
-Our faculty's comprehensive involvement in institutional governance - from human resource management to digital portal coordination - demonstrates our commitment to excellence beyond classroom teaching. The diverse canvas contributions covering cutting-edge topics like 6G technology, quantum computing applications, and sustainable design principles ensure our students are well-prepared for future technological challenges.
+Our faculty's diverse contributions - from digital portal management to infrastructure coordination - demonstrate our dedication to institutional excellence. With comprehensive training programs, modern laboratory facilities, and strong industry partnerships, we're preparing students for the rapidly evolving technological landscape.
 
-I'm proud of our department's progressive approach and look forward to continued innovation and excellence in the coming months.`
+I'm proud of our progressive approach and excited about the innovations ahead.`
     }
   },
 

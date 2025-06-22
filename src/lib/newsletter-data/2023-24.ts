@@ -490,15 +490,21 @@ export const newsletterData2023_24: NewsletterData = {
     hodMessage: {
       name: 'Mr. S. J. Chauhan',
       designation: 'Head of Department - Electronics & Communication Engineering',
-      message: `Dear EC Community,
+      message: `Dear Students, Faculty, and Stakeholders,
 
-The academic year 2023-24 stands as a testament to our department's commitment to excellence, innovation, and industry relevance. This year has been transformative, with achievements spanning student placements, faculty research, and comprehensive curriculum development that positions our graduates at the forefront of technological advancement.
+The academic year 2023-24 has been a year of remarkable achievements and growth for our Electronics & Communication Engineering Department. I am proud to share our collective successes that reflect our commitment to excellence and innovation.
 
-Our remarkable placement success, achieving 67% placement rate with students securing positions at industry leaders like Micron Technology and TCS, reflects the quality of technical education and industry preparation we provide. The consistent academic excellence demonstrated by our students - with Maknojiya Arman Imranbhai achieving 9.2 SPI and Patel Dev Kiritbhai maintaining exceptional performance with 9.62 SPI - showcases the academic rigor we maintain.
+Our students have demonstrated exceptional academic performance, with achievers like Maknojiya Arman Imranbhai (8.95 SPI) and Patel Dev Kiritbhai (9.62 SPI) leading the way. This academic excellence translated into outstanding placement success, achieving a 67% placement rate with students securing positions at prestigious organizations like Micron Technology and TDSC, with packages reaching ₹3.72 lakhs.
 
-This year's emphasis on emerging technologies - 6G communications, AI integration in electronics, renewable energy systems, and IoT applications - as evidenced in our comprehensive canvas section, ensures our students are well-prepared for future technological challenges. Our faculty's multifaceted contributions spanning AICTE coordination, research publications, and innovative teaching methodologies continue to strengthen our institutional foundation.
+Our industry-academia collaboration flourished through expert sessions on embedded systems and web development, industrial visits to Bajrang Paper Products and PCB Power, and participation in premier events like SEMICON 2023 and SEMIX training at IIT Bombay. The plasma knowledge camp by Institute of Plasma Research, Gandhinagar, further enriched our students' scientific exposure.
 
-The successful organization of expert lectures, industrial visits, and the IEEE conference participation demonstrate our commitment to bridging academic learning with industry practice. I'm proud of our collaborative achievements and look forward to scaling new heights in the coming year.`
+Faculty excellence was highlighted by Prof. N. J. Chauhan's research presentation at ICETCP 2024, while our comprehensive skill development initiatives included RTL design workshops, solar cell fabrication training, and safety programs. We also embraced holistic development through cultural celebrations, community engagement in "New Palanpur for New India 2.0," health awareness campaigns, and environmental initiatives.
+
+This year, we also honored the memory of our beloved colleague Shri Nikunj M Patel, whose dedication and values continue to inspire our community. His legacy reminds us that true education encompasses both technical excellence and character building.
+
+As we move forward, our focus remains on nurturing industry-ready engineers who are technically competent, ethically grounded, and socially responsible. I extend my heartfelt gratitude to all who contributed to making 2023-24 a year of exceptional progress.
+
+With continued commitment to excellence.`
     }
   },
 
