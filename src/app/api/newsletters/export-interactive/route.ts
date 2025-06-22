@@ -57,7 +57,8 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: #1f2937;
-            background: #f9fafb;
+            background: linear-gradient(to bottom right, #dbeafe, #e0e7ff, #f3e8ff);
+            min-height: 100vh;
         }
         
         .container {
@@ -69,96 +70,249 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
         .header {
             text-align: center;
             margin-bottom: 3rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(to right, #1e3a8a, #581c87, #3730a3);
             color: white;
-            padding: 3rem 2rem;
-            border-radius: 1rem;
+            padding: 4rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
         }
         
         .header h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
         }
         
         .header p {
             font-size: 1.25rem;
             opacity: 0.9;
+            margin-bottom: 0.5rem;
         }
         
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
             margin-bottom: 3rem;
         }
         
         .stat-card {
             background: white;
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 0.75rem;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            text-align: center;
+            border: 1px solid #e5e7eb;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .stat-info {
+            flex: 1;
         }
         
         .stat-value {
-            font-size: 2.5rem;
-            font-weight: 800;
+            font-size: 2rem;
+            font-weight: 700;
             color: #1f2937;
+            margin-bottom: 0.25rem;
         }
         
         .stat-label {
-            font-size: 1rem;
+            font-size: 0.875rem;
             color: #6b7280;
-            margin-top: 0.5rem;
+            font-medium: 500;
         }
+        
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .stat-icon.bg-blue { background: #3b82f6; }
+        .stat-icon.bg-green { background: #10b981; }
+        .stat-icon.bg-purple { background: #8b5cf6; }
+        .stat-icon.bg-orange { background: #f59e0b; }
         
         .section {
             background: white;
             margin-bottom: 2rem;
-            padding: 2rem;
             border-radius: 0.75rem;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e5e7eb;
         }
         
         .section-title {
-            font-size: 1.875rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: #1f2937;
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 0.5rem;
-        }
-        
-        .achievements-grid {
-            display: grid;
-            gap: 2rem;
-        }
-        
-        .achievement-category {
-            margin-bottom: 2rem;
-        }
-        
-        .category-title {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 600;
-            color: #374151;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
+            color: #1f2937;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
         
-        .achievement-list {
-            list-style: none;
+        .section-description {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin: 0;
         }
         
-        .achievement-list li {
-            padding: 0.75rem 1rem;
+        .section-content {
+            padding: 2rem;
+        }
+        
+        .spotlight-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .spotlight-item {
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .spotlight-item.faculty-contribution {
+            background: linear-gradient(to right, #dbeafe, #bfdbfe);
+            border-color: #3b82f6;
+        }
+        
+        .spotlight-item.student-achievement {
+            background: linear-gradient(to right, #dcfce7, #bbf7d0);
+            border-color: #10b981;
+        }
+        
+        .spotlight-item.placement {
+            background: linear-gradient(to right, #f3e8ff, #e9d5ff);
+            border-color: #8b5cf6;
+        }
+        
+        .spotlight-item.higher-education {
+            background: linear-gradient(to right, #fed7aa, #fdba74);
+            border-color: #f59e0b;
+        }
+        
+        .spotlight-item.star-performer {
+            background: linear-gradient(to right, #fef3c7, #fde68a);
+            border-color: #f59e0b;
+        }
+        
+        .spotlight-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+            font-size: 1.25rem;
+        }
+        
+        .spotlight-icon.faculty-contribution { background: #3b82f6; }
+        .spotlight-icon.student-achievement { background: #10b981; }
+        .spotlight-icon.placement { background: #8b5cf6; }
+        .spotlight-icon.higher-education { background: #f59e0b; }
+        .spotlight-icon.star-performer { background: #f59e0b; }
+        
+        .spotlight-content {
+            flex: 1;
+        }
+        
+        .spotlight-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+        
+        .spotlight-person {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+        
+        .spotlight-designation {
+            font-size: 0.875rem;
+            color: #6b7280;
             margin-bottom: 0.5rem;
-            background: #f3f4f6;
-            border-radius: 0.5rem;
-            border-left: 4px solid #3b82f6;
+        }
+        
+        .spotlight-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        .spotlight-description {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+        
+        .spotlight-details {
+            background: rgba(255, 255, 255, 0.5);
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            color: #374151;
+            margin-top: 0.5rem;
+        }
+        
+        .spotlight-badges {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .spotlight-badge {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
         
         .placements-grid {
@@ -191,35 +345,215 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             color: #64748b;
         }
         
-        .events-list {
+        .chronicles-grid {
             display: grid;
-            gap: 1.5rem;
+            gap: 2rem;
         }
         
-        .event-card {
-            background: #fefefe;
+        .chronicle-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
             padding: 1.5rem;
-            border-radius: 0.5rem;
-            border-left: 4px solid #8b5cf6;
+            background: white;
         }
         
-        .event-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 0.5rem;
+        .chronicle-item.workshop {
+            background: linear-gradient(to right, #f5f3ff, #ede9fe);
+            border-color: #8b5cf6;
         }
         
-        .event-date {
-            font-size: 0.875rem;
-            color: #7c3aed;
+        .chronicle-item.orientation {
+            background: linear-gradient(to right, #ecfdf5, #d1fae5);
+            border-color: #10b981;
+        }
+        
+        .chronicle-item.training {
+            background: linear-gradient(to right, #fff7ed, #fed7aa);
+            border-color: #f97316;
+        }
+        
+        .chronicle-item.awareness {
+            background: linear-gradient(to right, #fdf2f8, #fce7f3);
+            border-color: #ec4899;
+        }
+        
+        .chronicle-item.community {
+            background: linear-gradient(to right, #eff6ff, #dbeafe);
+            border-color: #3b82f6;
+        }
+        
+        .chronicle-item.visit {
+            background: linear-gradient(to right, #fffbeb, #fef3c7);
+            border-color: #f59e0b;
+        }
+        
+        .chronicle-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .chronicle-content {
+            flex: 1;
+        }
+        
+        .chronicle-date-badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
             font-weight: 500;
+            border: 1px solid;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+        
+        .chronicle-item.workshop .chronicle-date-badge {
+            background: #f5f3ff;
+            color: #7c3aed;
+            border-color: #c4b5fd;
+        }
+        
+        .chronicle-item.orientation .chronicle-date-badge {
+            background: #ecfdf5;
+            color: #059669;
+            border-color: #a7f3d0;
+        }
+        
+        .chronicle-item.training .chronicle-date-badge {
+            background: #fff7ed;
+            color: #ea580c;
+            border-color: #fed7aa;
+        }
+        
+        .chronicle-item.awareness .chronicle-date-badge {
+            background: #fdf2f8;
+            color: #be185d;
+            border-color: #fce7f3;
+        }
+        
+        .chronicle-item.community .chronicle-date-badge {
+            background: #eff6ff;
+            color: #2563eb;
+            border-color: #bfdbfe;
+        }
+        
+        .chronicle-item.visit .chronicle-date-badge {
+            background: #fffbeb;
+            color: #d97706;
+            border-color: #fde68a;
+        }
+        
+        .chronicle-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
             margin-bottom: 0.5rem;
         }
         
-        .event-description {
-            color: #64748b;
+        .chronicle-description {
+            color: #374151;
             line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .chronicle-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .chronicle-tag {
+            background: rgba(156, 163, 175, 0.2);
+            color: #374151;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .chronicle-gallery {
+            margin-top: 1.5rem;
+        }
+        
+        .chronicle-gallery-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
+            margin-bottom: 0.75rem;
+        }
+        
+        .chronicle-images {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .chronicle-images.single {
+            grid-template-columns: 1fr;
+            justify-items: center;
+        }
+        
+        .chronicle-images.double {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .chronicle-images.triple {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+        
+        .chronicle-images.multiple {
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        }
+        
+        .chronicle-image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            background: #f3f4f6;
+        }
+        
+        .chronicle-images.single .chronicle-image-container {
+            aspect-ratio: 16/9;
+            max-width: 32rem;
+        }
+        
+        .chronicle-images.double .chronicle-image-container {
+            aspect-ratio: 4/3;
+        }
+        
+        .chronicle-images.triple .chronicle-image-container,
+        .chronicle-images.multiple .chronicle-image-container {
+            aspect-ratio: 1/1;
+        }
+        
+        .chronicle-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .chronicle-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .chronicle-image-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: white;
+            padding: 1rem 0.75rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .chronicle-image-container:hover .chronicle-image-caption {
+            opacity: 1;
         }
         
         .contact-grid {
@@ -246,28 +580,62 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
         .message-section {
             background: white;
             margin-bottom: 2rem;
-            padding: 2rem;
             border-radius: 0.75rem;
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            border-left: 4px solid #3b82f6;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+        }
+        
+        .message-header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .message-content {
+            padding: 2rem;
+        }
+        
+        .message-body {
+            background: linear-gradient(to right, #f0fdf4, #dcfce7);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid #16a34a;
+        }
+        
+        .message-profile {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .message-icon {
+            background: #16a34a;
+            color: white;
+            padding: 0.75rem;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .message-details {
+            flex: 1;
         }
         
         .message-author {
-            font-size: 1.25rem;
+            font-size: 1.125rem;
             font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 0.5rem;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
         }
         
         .message-designation {
-            font-size: 1rem;
+            font-size: 0.875rem;
             color: #6b7280;
             margin-bottom: 1rem;
-            font-style: italic;
         }
         
         .message-text {
-            color: #4b5563;
+            color: #374151;
             line-height: 1.7;
             white-space: pre-line;
         }
@@ -280,75 +648,190 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
         }
         
         .department-overview {
-            background: linear-gradient(135deg, #fefbff 0%, #f3f4f6 100%);
-            padding: 0;
+            background: white;
             border-radius: 0.75rem;
-            border: 1px solid #e4e4e7;
-            margin-top: 1rem;
+            border: 1px solid #e5e7eb;
             overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
         }
         
         .dept-overview-header {
             background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
             color: white;
             padding: 1.5rem 2rem;
-            margin-bottom: 0;
+        }
+        
+        .dept-overview-title {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .dept-overview-subtitle {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+            font-size: 0.875rem;
         }
         
         .dept-overview-content {
             padding: 2rem;
         }
         
-        .dept-overview-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin: 1.5rem 0;
-            padding: 1.5rem;
-            background: rgba(139, 92, 246, 0.05);
-            border-radius: 0.5rem;
-            border: 1px solid rgba(139, 92, 246, 0.1);
-        }
-        
-        .dept-stat-item {
-            text-align: center;
-            padding: 1rem;
-            background: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-        
-        .dept-stat-number {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #7c3aed;
-            margin-bottom: 0.25rem;
-        }
-        
-        .dept-stat-label {
-            font-size: 0.75rem;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .vision-card, .mission-card {
-            background: #f8fafc;
+        .dept-overview-text {
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
             padding: 2rem;
             border-radius: 0.75rem;
             border: 1px solid #e2e8f0;
+            margin: 1.5rem 0;
+        }
+        
+        .dept-overview-text p {
+            white-space: pre-line;
+            text-align: justify;
+            line-height: 1.7;
+            color: #374151;
+            font-size: 1rem;
+            margin: 0;
+        }
+        
+        .programs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .program-card {
+            color: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            text-align: center;
+        }
+        
+        .program-card.ec {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        .program-card.ict {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        }
+        
+        .program-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .program-title {
+            margin: 0 0 0.75rem 0;
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+        
+        .program-intake {
+            margin: 0;
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+        
+        .program-description {
+            margin: 0.5rem 0 0 0;
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+        
+        .key-strengths {
+            margin-top: 2rem;
+        }
+        
+        .key-strengths-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .strengths-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        
+        .strength-card {
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid;
+        }
+        
+        .strength-card.holistic {
+            background: #f0f9ff;
+            border-left-color: #0ea5e9;
+        }
+        
+        .strength-card.partnerships {
+            background: #f0fdf4;
+            border-left-color: #22c55e;
+        }
+        
+        .strength-card.leaders {
+            background: #fefbff;
+            border-left-color: #a855f7;
+        }
+        
+        .strength-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .strength-icon {
+            font-size: 1.25rem;
+        }
+        
+        .strength-title {
+            font-weight: 600;
+        }
+        
+        .strength-card.holistic .strength-title { color: #0369a1; }
+        .strength-card.partnerships .strength-title { color: #15803d; }
+        .strength-card.leaders .strength-title { color: #7c2d12; }
+        
+        .strength-description {
+            margin: 0;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        
+        .strength-card.holistic .strength-description { color: #075985; }
+        .strength-card.partnerships .strength-description { color: #166534; }
+        .strength-card.leaders .strength-description { color: #92400e; }
+        
+        .vision-mission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .vision-card, .mission-card {
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid;
         }
         
         .vision-card {
-            border-left: 4px solid #3b82f6;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border-color: #3b82f6;
         }
         
         .mission-card {
-            border-left: 4px solid #10b981;
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            border-color: #10b981;
         }
         
         .vision-title, .mission-title {
-            font-size: 1.5rem;
+            font-size: 1.125rem;
             font-weight: 600;
             margin-bottom: 1rem;
             display: flex;
@@ -362,6 +845,31 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
         
         .mission-title {
             color: #065f46;
+        }
+        
+        .vision-icon, .mission-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 0.75rem;
+        }
+        
+        .vision-icon {
+            background: #3b82f6;
+        }
+        
+        .mission-icon {
+            background: #10b981;
+        }
+        
+        .vision-text, .mission-text {
+            color: #374151;
+            line-height: 1.6;
+            white-space: pre-line;
         }
         
         .mission-list {
@@ -399,26 +907,152 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
         }
         
-        .event-images {
+        .canvas-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .canvas-item {
+            background: linear-gradient(to right, #f5f3ff, #ede9fe);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid #8b5cf6;
+        }
+        
+        .canvas-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .canvas-content {
+            flex: 1;
+        }
+        
+        .canvas-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .canvas-author-info {
+            display: flex;
+            align-items: center;
             gap: 1rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .canvas-author-info .author-icon {
+            color: #8b5cf6;
+        }
+        
+        .canvas-badges {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .canvas-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid;
+        }
+        
+        .canvas-badge.faculty {
+            background: #dbeafe;
+            color: #2563eb;
+            border-color: #93c5fd;
+        }
+        
+        .canvas-badge.student {
+            background: #dcfce7;
+            color: #16a34a;
+            border-color: #86efac;
+        }
+        
+        .canvas-badge.type {
+            background: rgba(255, 255, 255, 0.8);
+            color: #6b7280;
+            border-color: #d1d5db;
+        }
+        
+        .canvas-text {
+            color: #374151;
+            line-height: 1.6;
             margin-top: 1rem;
         }
         
-        .event-image {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+        .canvas-text.poem {
+            white-space: pre-wrap;
+            font-family: 'Georgia', serif;
+            font-style: italic;
         }
         
-        .event-image-caption {
-            text-align: center;
-            font-size: 0.75rem;
+        .canvas-images {
+            margin-top: 1.5rem;
+        }
+        
+        .canvas-gallery-title {
+            font-size: 0.875rem;
+            font-weight: 500;
             color: #6b7280;
-            margin-top: 0.25rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .canvas-image-grid {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .canvas-image-grid.single {
+            grid-template-columns: 1fr;
+            justify-items: center;
+        }
+        
+        .canvas-image-grid.double {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .canvas-image-grid.multiple {
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        }
+        
+        .canvas-image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            background: #f3f4f6;
+            aspect-ratio: 4/3;
+        }
+        
+        .canvas-image-grid.single .canvas-image-container {
+            aspect-ratio: 16/9;
+            max-width: 32rem;
+        }
+        
+        .canvas-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .canvas-image-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: white;
+            padding: 1rem 0.75rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 500;
         }
         
         @media print {
@@ -439,84 +1073,99 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
 <body>
     <div class="container">
         <div class="header">
-            ${data.logos ? `
-            <div class="header-logos">
-                ${data.logos.map(logo => {
-                  const base64Src = getImageAsBase64(logo.src);
-                  return base64Src ? `<img src="${base64Src}" alt="${logo.alt}" class="header-logo" />` : '';
-                }).join('')}
+            <div class="header-content">
+                ${data.logos ? `
+                <div class="header-logos">
+                    ${data.logos.map(logo => {
+                      const base64Src = getImageAsBase64(logo.src);
+                      return base64Src ? `<img src="${base64Src}" alt="${logo.alt}" class="header-logo" />` : '';
+                    }).join('')}
+                </div>
+                ` : ''}
+                <h1>Spectrum Newsletter</h1>
+                <p>Department of Electronics & Communication Engineering</p>
+                <p>Government Polytechnic, Palanpur</p>
+                <p>Band III • Academic Year ${year}</p>
             </div>
-            ` : ''}
-            <h1>Spectrum Newsletter</h1>
-            <p>Department of Electronics & Communication Engineering</p>
-            <p>Government Polytechnic, Palanpur</p>
-            <p>Band III • Academic Year ${year}</p>
         </div>
         
         <div class="stats-grid">
-            ${data.stats.map(stat => `
+            ${data.stats.map((stat, index) => {
+              const icons = ['📈', '📚', '👥', '🏆'];
+              const colors = ['bg-blue', 'bg-green', 'bg-purple', 'bg-orange'];
+              return `
                 <div class="stat-card">
-                    <div class="stat-value">${stat.value}${stat.label.includes('Package') ? '' : stat.label.includes('Rate') ? '%' : ''}</div>
-                    <div class="stat-label">${stat.label}</div>
+                    <div class="stat-card-content">
+                        <div class="stat-info">
+                            <div class="stat-value">${stat.value}${stat.label.includes('Rate') ? '%' : ''}</div>
+                            <div class="stat-label">${stat.label}</div>
+                        </div>
+                        <div class="stat-icon ${colors[index % colors.length]}">
+                            ${icons[index % icons.length]}
+                        </div>
+                    </div>
                 </div>
-            `).join('')}
+              `;
+            }).join('')}
         </div>
         
-        <!-- Department Overview Section - Enhanced Creative Design -->
+        <!-- Department Overview Section -->
         ${data.essence?.departmentOverview ? `
         <div class="section">
-            <h2 class="section-title">🏢 Department Overview</h2>
-            <div class="department-overview">
-                <div class="dept-overview-header">
-                    <h3 style="margin: 0; font-size: 1.5rem; font-weight: 600;">Electronics & Communication Engineering</h3>
-                    <p style="margin: 0.5rem 0 0 0; opacity: 0.9; font-size: 1rem;">Government Polytechnic, Palanpur</p>
-                </div>
-                <div class="dept-overview-content">
-                    <!-- Main Content with Clean Formatting -->
-                    <div style="background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%); padding: 2rem; border-radius: 0.75rem; border: 1px solid #e2e8f0; margin: 1.5rem 0;">
-                        <p style="white-space: pre-line; text-align: justify; line-height: 1.7; color: #374151; font-size: 1rem; margin: 0;">${data.essence.departmentOverview}</p>
+            <div class="section-header">
+                <h2 class="section-title">🏢 Department Overview</h2>
+                <p class="section-description">Electronics & Communication Engineering - Government Polytechnic, Palanpur</p>
+            </div>
+            <div class="section-content">
+                <div class="department-overview">
+                    <div class="dept-overview-header">
+                        <h3 class="dept-overview-title">Electronics & Communication Engineering</h3>
+                        <p class="dept-overview-subtitle">Government Polytechnic, Palanpur</p>
                     </div>
-                    
-                    <!-- Programs Highlight -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;">
-                        <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 1.5rem; border-radius: 0.75rem; text-align: center;">
-                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📡</div>
-                            <h4 style="margin: 0 0 0.5rem 0; font-size: 1.125rem; font-weight: 600;">Electronics & Communication</h4>
-                            <p style="margin: 0; font-size: 0.875rem; opacity: 0.9;">38 Students Intake</p>
-                            <p style="margin: 0.25rem 0 0 0; font-size: 0.75rem; opacity: 0.8;">Advanced EC Engineering</p>
+                    <div class="dept-overview-content">
+                        <div class="dept-overview-text">
+                            <p>${data.essence.departmentOverview}</p>
                         </div>
-                        <div style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; padding: 1.5rem; border-radius: 0.75rem; text-align: center;">
-                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">💻</div>
-                            <h4 style="margin: 0 0 0.5rem 0; font-size: 1.125rem; font-weight: 600;">Information & Communication Technology</h4>
-                            <p style="margin: 0; font-size: 0.875rem; opacity: 0.9;">78 Students Intake</p>
-                            <p style="margin: 0.25rem 0 0 0; font-size: 0.75rem; opacity: 0.8;">Modern ICT Solutions</p>
+                        
+                        <div class="programs-grid">
+                            <div class="program-card ec">
+                                <span class="program-icon">📡</span>
+                                <h4 class="program-title">Electronics & Communication</h4>
+                                <p class="program-intake">38 Students Intake</p>
+                                <p class="program-description">Advanced EC Engineering</p>
+                            </div>
+                            <div class="program-card ict">
+                                <span class="program-icon">💻</span>
+                                <h4 class="program-title">Information & Communication Technology</h4>
+                                <p class="program-intake">78 Students Intake</p>
+                                <p class="program-description">Modern ICT Solutions</p>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <!-- Key Strengths -->
-                    <div style="margin-top: 2rem;">
-                        <h4 style="font-size: 1.25rem; font-weight: 600; color: #1f2937; margin-bottom: 1rem; text-align: center;">🌟 What Sets Us Apart</h4>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
-                            <div style="background: #f0f9ff; padding: 1.25rem; border-radius: 0.5rem; border-left: 4px solid #0ea5e9;">
-                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
-                                    <span style="font-size: 1.25rem;">🎓</span>
-                                    <strong style="color: #0369a1;">Holistic Education</strong>
+                        
+                        <div class="key-strengths">
+                            <h4 class="key-strengths-title">🌟 What Sets Us Apart</h4>
+                            <div class="strengths-grid">
+                                <div class="strength-card holistic">
+                                    <div class="strength-header">
+                                        <span class="strength-icon">🎓</span>
+                                        <strong class="strength-title">Holistic Education</strong>
+                                    </div>
+                                    <p class="strength-description">Cutting-edge technology with practical industry applications</p>
                                 </div>
-                                <p style="margin: 0; font-size: 0.875rem; color: #075985; line-height: 1.5;">Cutting-edge technology with practical industry applications</p>
-                            </div>
-                            <div style="background: #f0fdf4; padding: 1.25rem; border-radius: 0.5rem; border-left: 4px solid #22c55e;">
-                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
-                                    <span style="font-size: 1.25rem;">🤝</span>
-                                    <strong style="color: #15803d;">Industry Partnerships</strong>
+                                <div class="strength-card partnerships">
+                                    <div class="strength-header">
+                                        <span class="strength-icon">🤝</span>
+                                        <strong class="strength-title">Industry Partnerships</strong>
+                                    </div>
+                                    <p class="strength-description">Strategic collaborations for innovation projects</p>
                                 </div>
-                                <p style="margin: 0; font-size: 0.875rem; color: #166534; line-height: 1.5;">Strategic collaborations for innovation projects</p>
-                            </div>
-                            <div style="background: #fefbff; padding: 1.25rem; border-radius: 0.5rem; border-left: 4px solid #a855f7;">
-                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
-                                    <span style="font-size: 1.25rem;">💡</span>
-                                    <strong style="color: #7c2d12;">Future Leaders</strong>
+                                <div class="strength-card leaders">
+                                    <div class="strength-header">
+                                        <span class="strength-icon">💡</span>
+                                        <strong class="strength-title">Future Leaders</strong>
+                                    </div>
+                                    <p class="strength-description">Preparing entrepreneurs who drive technological advancement</p>
                                 </div>
-                                <p style="margin: 0; font-size: 0.875rem; color: #92400e; line-height: 1.5;">Preparing entrepreneurs who drive technological advancement</p>
                             </div>
                         </div>
                     </div>
@@ -525,18 +1174,29 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
         </div>
         ` : ''}
         
-        <!-- Vision & Mission Section - Correctly placed after Department Overview -->
+        <!-- Vision & Mission Section -->
         ${data.essence?.vision && data.essence?.mission ? `
         <div class="section">
-            <h2 class="section-title">🎯 Vision & Mission</h2>
-            <div class="vision-mission-grid">
-                <div class="vision-card">
-                    <h3 class="vision-title">🔭 Vision</h3>
-                    <p>${data.essence.vision}</p>
-                </div>
-                <div class="mission-card">
-                    <h3 class="mission-title">🎯 Mission</h3>
-                    <p style="white-space: pre-line;">${data.essence.mission}</p>
+            <div class="section-header">
+                <h2 class="section-title">🎯 Vision & Mission</h2>
+                <p class="section-description">Our Commitment to Excellence</p>
+            </div>
+            <div class="section-content">
+                <div class="vision-mission-grid">
+                    <div class="vision-card">
+                        <div class="vision-title">
+                            <div class="vision-icon">🔭</div>
+                            <span>Vision</span>
+                        </div>
+                        <div class="vision-text">${data.essence.vision}</div>
+                    </div>
+                    <div class="mission-card">
+                        <div class="mission-title">
+                            <div class="mission-icon">🚀</div>
+                            <span>Mission</span>
+                        </div>
+                        <div class="mission-text">${data.essence.mission}</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -544,145 +1204,328 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
         
         ${data.essence?.hodMessage ? `
         <div class="message-section">
-            <h2 class="section-title">👨‍🏫 Head of Department's Message</h2>
-            <div class="message-author">${data.essence.hodMessage.name}</div>
-            <div class="message-designation">${data.essence.hodMessage.designation}</div>
-            <div class="message-text">${data.essence.hodMessage.message}</div>
+            <div class="message-header">
+                <h2 class="section-title">� Head of Department's Message</h2>
+                <p class="section-description">Message from the HOD</p>
+            </div>
+            <div class="message-content">
+                <div class="message-body">
+                    <div class="message-profile">
+                        <div class="message-icon">📚</div>
+                        <div class="message-details">
+                            <h3 class="message-author">${data.essence.hodMessage.name}</h3>
+                            <p class="message-designation">${data.essence.hodMessage.designation}</p>
+                            <div class="message-text">${data.essence.hodMessage.message}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         ` : ''}
         
         <div class="section">
-            <h2 class="section-title">🏆 Spotlight - Achievements & Recognition</h2>
-            <div class="achievements-grid">
-                ${data.spotlight.map((achievement: any) => `
-                    <div class="achievement-item">
-                        <h3 class="achievement-title">${achievement.title}</h3>
-                        <div class="achievement-category">${achievement.category}</div>
-                        <div class="achievement-description">${achievement.description}</div>
-                        ${achievement.person ? `<div class="achievement-person">${achievement.person}</div>` : ''}
-                        ${achievement.details ? `<div class="achievement-details">${achievement.details}</div>` : ''}
-                        ${achievement.date ? `<div class="achievement-date">${achievement.date}</div>` : ''}
-                    </div>
-                `).join('')}
+            <div class="section-header">
+                <h2 class="section-title">🏆 Spotlight</h2>
+                <p class="section-description">Achievements, accomplishments, and success stories</p>
+            </div>
+            <div class="section-content">
+                <div class="spotlight-grid">
+                    ${data.spotlight.map((item) => {
+                      const icons = {
+                        'faculty-contribution': '🏅',
+                        'student-achievement': '🏆',
+                        'placement': '🏢',
+                        'higher-education': '📚',
+                        'star-performer': '⭐'
+                      };
+                      const icon = icons[item.category] || '🏅';
+                      
+                      return `
+                        <div class="spotlight-item ${item.category}">
+                            <div class="spotlight-icon ${item.category}">
+                                ${icon}
+                            </div>
+                            <div class="spotlight-content">
+                                <div class="spotlight-header">
+                                    <div>
+                                        ${item.person ? `
+                                            <div class="spotlight-person">${item.person}</div>
+                                            ${item.designation ? `<div class="spotlight-designation">${item.designation}</div>` : ''}
+                                        ` : ''}
+                                        <h3 class="spotlight-title">${item.title}</h3>
+                                        <p class="spotlight-description">${item.description}</p>
+                                        ${item.studentId ? `<div class="spotlight-designation">Student ID: ${item.studentId}</div>` : ''}
+                                        ${item.details ? `
+                                            <div class="spotlight-details">
+                                                <strong>
+                                                    ${item.category === 'placement' ? 'Company & Position:' : 
+                                                      item.category === 'higher-education' ? 'Institution:' :
+                                                      item.category === 'faculty-contribution' ? 'Role & Contribution:' :
+                                                      item.category === 'student-achievement' ? 'Achievement Details:' :
+                                                      item.category === 'star-performer' ? 'Performance:' : 'Details:'}
+                                                </strong> ${item.details}
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                    <div class="spotlight-badges">
+                                        <span class="spotlight-badge">${item.category.replace('-', ' ')}</span>
+                                        ${item.date ? `<span class="spotlight-badge">${item.date}</span>` : ''}
+                                    </div>
+                                </div>
+                                ${item.achievements && item.achievements.length > 0 ? `
+                                    <div style="margin-top: 1rem;">
+                                        ${item.achievements.map(achievement => `
+                                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.875rem;">
+                                                <span style="color: #8b5cf6;">⭐</span>
+                                                <span style="color: #374151;">${achievement}</span>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                      `;
+                    }).join('')}
+                </div>
             </div>
         </div>
         
         <div class="section">
-            <h2 class="section-title">📅 Key Events & Activities</h2>
-            <div class="events-list">
-                ${data.chronicles.map(event => `
-                    <div class="event-card">
-                        <div class="event-title">${event.title}</div>
-                        <div class="event-date">${event.date}</div>
-                        <div class="event-description">${event.description}</div>
-                        ${event.images ? `
-                        <div class="event-images">
-                            ${event.images.map(image => `
-                                <div>
-                                    <img src="${image.src}" alt="${image.alt}" class="event-image" />
-                                    <div class="event-image-caption">${image.caption}</div>
+            <div class="section-header">
+                <h2 class="section-title">📅 Major Events & Activities</h2>
+                <p class="section-description">Key departmental events, workshops, and student activities</p>
+            </div>
+            <div class="section-content">
+                <div class="chronicles-grid">
+                    ${data.chronicles.map((event, index) => {
+                      const category = event.category || 'workshop';
+                      const imageCount = event.images ? event.images.length : 0;
+                      let imageGridClass = 'single';
+                      if (imageCount === 2) imageGridClass = 'double';
+                      else if (imageCount === 3) imageGridClass = 'triple';
+                      else if (imageCount > 3) imageGridClass = 'multiple';
+                      
+                      return `
+                        <div class="chronicle-item ${category}">
+                            <div class="chronicle-header">
+                                <div class="chronicle-content">
+                                    <span class="chronicle-date-badge">${event.date}</span>
+                                    <h3 class="chronicle-title">${event.title}</h3>
+                                    <p class="chronicle-description">${event.description}</p>
+                                    ${event.tags && event.tags.length > 0 ? `
+                                        <div class="chronicle-tags">
+                                            ${event.tags.map(tag => `<span class="chronicle-tag">${tag}</span>`).join('')}
+                                        </div>
+                                    ` : ''}
                                 </div>
-                            `).join('')}
+                            </div>
+                            
+                            ${event.images && event.images.length > 0 ? `
+                                <div class="chronicle-gallery">
+                                    <h4 class="chronicle-gallery-title">Event Gallery</h4>
+                                    <div class="chronicle-images ${imageGridClass}">
+                                        ${event.images.map((image, imgIndex) => `
+                                            <div class="chronicle-image-container">
+                                                <img 
+                                                    src="${image.src}" 
+                                                    alt="${image.alt}" 
+                                                    class="chronicle-image"
+                                                    onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIE5vdCBGb3VuZDwvdGV4dD48L3N2Zz4='"
+                                                />
+                                                ${image.caption ? `
+                                                    <div class="chronicle-image-caption">${image.caption}</div>
+                                                ` : ''}
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                      `;
+                    }).join('')}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Canvas Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">⭐ Canvas</h2>
+                <p class="section-description">Creative expressions and insights from faculty and students</p>
+            </div>
+            <div class="section-content">
+                <div class="canvas-grid">
+                    ${data.canvas && data.canvas.length > 0 ? data.canvas.map((item, index) => {
+                      const imageCount = item.images ? item.images.length : 0;
+                      let imageGridClass = 'single';
+                      if (imageCount === 2) imageGridClass = 'double';
+                      else if (imageCount > 2) imageGridClass = 'multiple';
+                      
+                      return `
+                        <div class="canvas-item">
+                            <div class="canvas-header">
+                                <div class="canvas-content">
+                                    <h3 class="canvas-title">${item.title}</h3>
+                                    <div class="canvas-author-info">
+                                        <span class="author-icon">👥</span>
+                                        <span>${item.author}${item.designation ? ` - ${item.designation}` : ''}${item.studentId ? ` (${item.studentId})` : ''}${item.semester ? ` - ${item.semester}` : ''}</span>
+                                        ${item.date ? `<span>📅 ${item.date}</span>` : ''}
+                                    </div>
+                                </div>
+                                <div class="canvas-badges">
+                                    <span class="canvas-badge ${item.authorType === 'faculty' ? 'faculty' : 'student'}">
+                                        ${item.authorType === 'faculty' ? 'Faculty' : 'Student'}
+                                    </span>
+                                    <span class="canvas-badge type">${item.type?.replace('-', ' ') || 'Content'}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="canvas-text ${item.type === 'poem' ? 'poem' : ''}">
+                                ${item.content || ''}
+                            </div>
+                            
+                            ${item.images && item.images.length > 0 ? `
+                                <div class="canvas-images">
+                                    <h4 class="canvas-gallery-title">Photo Gallery</h4>
+                                    <div class="canvas-image-grid ${imageGridClass}">
+                                        ${item.images.map((image, imgIndex) => `
+                                            <div class="canvas-image-container">
+                                                <img 
+                                                    src="${image.src}" 
+                                                    alt="${image.alt}" 
+                                                    class="canvas-image"
+                                                    onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIE5vdCBGb3VuZDwvdGV4dD48L3N2Zz4='"
+                                                />
+                                                ${image.caption ? `
+                                                    <div class="canvas-image-caption">${image.caption}</div>
+                                                ` : ''}
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                      `;
+                    }).join('') : `
+                        <div style="text-align: center; padding: 2rem; color: #6b7280;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">⭐</div>
+                            <p>No canvas content available for this year.</p>
+                        </div>
+                    `}
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">📞 Reachout</h2>
+                <p class="section-description">Get in touch with the Electronics & Communication Engineering Department</p>
+            </div>
+            <div class="section-content">
+                <div class="contact-grid">
+                    <div>
+                        <h3 style="font-size: 1.125rem; font-weight: 600; color: #1f2937; margin-bottom: 1rem;">Department Contact</h3>
+                        
+                        <div class="contact-item" style="margin-bottom: 1rem;">
+                            <span class="contact-icon">�</span>
+                            <div>
+                                <div style="font-weight: 500; color: #1f2937;">Email</div>
+                                <div style="color: #6b7280;">${data.reachout?.email || 'gppec11@gmail.com'}</div>
+                            </div>
+                        </div>
+                        
+                        ${data.reachout?.newsletterEmail ? `
+                        <div class="contact-item" style="margin-bottom: 1rem; background: #dbeafe; border: 1px solid #3b82f6;">
+                            <span class="contact-icon" style="color: #8b5cf6;">📧</span>
+                            <div>
+                                <div style="font-weight: 500; color: #1f2937;">Newsletter Submissions</div>
+                                <div style="color: #6b7280;">${data.reachout.newsletterEmail}</div>
+                                <div style="font-size: 0.75rem; color: #8b5cf6; margin-top: 0.25rem;">For students & faculty to share newsletter content</div>
+                            </div>
                         </div>
                         ` : ''}
+                        
+                        <div class="contact-item" style="margin-bottom: 1rem;">
+                            <span class="contact-icon" style="color: #10b981;">📞</span>
+                            <div>
+                                <div style="font-weight: 500; color: #1f2937;">Phone</div>
+                                <div style="color: #6b7280;">${data.reachout?.phone || '02742-245219'}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item" style="margin-bottom: 1rem;">
+                            <span class="contact-icon" style="color: #ef4444;">�</span>
+                            <div>
+                                <div style="font-weight: 500; color: #1f2937;">Address</div>
+                                <div style="color: #6b7280;">${data.reachout?.address || 'Opp. Malan Darwaja, Ambaji Road, Palanpur - 385001, Gujarat'}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <span class="contact-icon" style="color: #8b5cf6;">🌐</span>
+                            <div>
+                                <div style="font-weight: 500; color: #1f2937;">Website</div>
+                                <div style="color: #6b7280;">${data.reachout?.website || 'ec.gppalanpur.in'}</div>
+                            </div>
+                        </div>
                     </div>
-                `).join('')}
-            </div>
-        </div>
-        
-        <!-- Labs & Infrastructure Section -->
-        <div class="section">
-            <h2 class="section-title">🔬 Laboratory Facilities & Infrastructure</h2>
-            
-            <!-- Infrastructure Overview -->
-            <div style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; padding: 2rem; border-radius: 1rem; margin-bottom: 2rem;">
-                <h3 style="color: white; margin-bottom: 1.5rem; text-align: center; font-size: 1.25rem; font-weight: 600;">Infrastructure Overview</h3>
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
-                    <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 0.75rem; text-align: center;">
-                        <div style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">8</div>
-                        <div style="font-size: 0.875rem; opacity: 0.9;">Modern Laboratories</div>
+                    
+                    <div>
+                        <h3 style="font-size: 1.125rem; font-weight: 600; color: #1f2937; margin-bottom: 1rem;">Editorial Team</h3>
+                        
+                        <div style="background: linear-gradient(to right, #dbeafe, #f3e8ff); padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #3b82f6;">
+                            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                                ${data.editorialTeam && data.editorialTeam.length > 0 ? 
+                                  data.editorialTeam.map((member, index) => `
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div style="background: ${index === 0 ? '#3b82f6' : '#8b5cf6'}; color: white; padding: 0.5rem; border-radius: 0.5rem;">
+                                            👥
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 600; color: #1f2937;">${member.name}</div>
+                                            <div style="font-size: 0.875rem; color: #6b7280;">${member.designation} & ${member.role}</div>
+                                        </div>
+                                    </div>
+                                  `).join('') : `
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div style="background: #3b82f6; color: white; padding: 0.5rem; border-radius: 0.5rem;">
+                                            👥
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 600; color: #1f2937;">Ms. Mittal K. Pedhadiya</div>
+                                            <div style="font-size: 0.875rem; color: #6b7280;">Assistant Professor & Newsletter Editor</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div style="background: #8b5cf6; color: white; padding: 0.5rem; border-radius: 0.5rem;">
+                                            👥
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 600; color: #1f2937;">Mr. Milav J. Dabgar</div>
+                                            <div style="font-size: 0.875rem; color: #6b7280;">Assistant Professor & Newsletter Co-Editor</div>
+                                        </div>
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+                        
+                        <div style="background: #f9fafb; padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #e5e7eb; margin-top: 1rem;">
+                            <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 0.75rem;">About the Department</h4>
+                            <p style="color: #6b7280; font-size: 0.875rem; line-height: 1.6; margin-bottom: 1rem;">
+                                The Electronics & Communication Engineering Department at Government Polytechnic, Palanpur 
+                                has been a center of excellence in technical education since 1984. We are committed to 
+                                preparing competent diploma-level engineers who can contribute to the industry and society.
+                            </p>
+                            <div style="padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+                                <div style="font-size: 0.875rem; color: #6b7280;">
+                                    <strong>Established:</strong> 1984<br />
+                                    <strong>Academic Year:</strong> ${year}<br />
+                                    <strong>Newsletter:</strong> Spectrum - Band III
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 0.75rem; text-align: center;">
-                        <div style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">₹35L+</div>
-                        <div style="font-size: 0.875rem; opacity: 0.9;">Equipment Value</div>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 0.75rem; text-align: center;">
-                        <div style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">150+</div>
-                        <div style="font-size: 0.875rem; opacity: 0.9;">Students Capacity</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Laboratory Details -->
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
-                <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #e5e7eb;">
-                    <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 1rem;">📟 Electronics & Circuits Lab</h4>
-                    <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1rem; line-height: 1.5;">
-                        Comprehensive facility for analog and digital circuit analysis, equipped with advanced oscilloscopes, function generators, and power supplies.
-                    </p>
-                    <ul style="list-style: disc; padding-left: 1.5rem; margin: 0;">
-                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Digital Storage Oscilloscopes (20 MHz - 100 MHz)</li>
-                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Function Generators & Signal Analyzers</li>
-                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Power Supplies & Multimeters</li>
-                    </ul>
-                </div>
-                
-                <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #e5e7eb;">
-                    <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 1rem;">📡 Communication Systems Lab</h4>
-                    <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1rem; line-height: 1.5;">
-                        Advanced laboratory for studying various communication technologies and protocols.
-                    </p>
-                    <ul style="list-style: disc; padding-left: 1.5rem; margin: 0;">
-                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">RF Signal Generators & Spectrum Analyzers</li>
-                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Digital Communication Trainers</li>
-                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Microwave Test Equipment</li>
-                    </ul>
-                </div>
-                
-                <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #e5e7eb;">
-                    <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 1rem;">💾 Microprocessor & Embedded Systems Lab</h4>
-                    <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1rem; line-height: 1.5;">
-                        Hands-on experience with microcontrollers, embedded programming, and IoT applications.
-                    </p>
-                    <ul style="list-style: disc; padding-left: 1.5rem; margin: 0;">
-                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">ARM Cortex Development Boards</li>
-                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">IoT Development Kits</li>
-                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Embedded Programming Tools</li>
-                    </ul>
-                </div>
-                
-                <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; border: 1px solid #e5e7eb;">
-                    <h4 style="font-weight: 600; color: #1f2937; margin-bottom: 1rem;">🖥️ Digital Signal Processing Lab</h4>
-                    <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1rem; line-height: 1.5;">
-                        Advanced DSP laboratory with software tools and hardware for signal analysis.
-                    </p>
-                    <ul style="list-style: disc; padding-left: 1.5rem; margin: 0;">
-                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">DSP Development Boards</li>
-                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">MATLAB & Simulink Licenses</li>
-                        <li style="margin-bottom: 0.5rem; font-size: 0.875rem;">Signal Processing Software Tools</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        
-        <div class="section">
-            <h2 class="section-title">📞 Contact Information</h2>
-            <div class="contact-grid">
-                <div class="contact-item">
-                    <span class="contact-icon">📍</span>
-                    <span>Government Polytechnic, Palanpur, Gujarat 385001</span>
-                </div>
-                <div class="contact-item">
-                    <span class="contact-icon">📧</span>
-                    <span>ec.dept@gppalanpur.edu.in</span>
-                </div>
-                <div class="contact-item">
-                    <span class="contact-icon">📞</span>
-                    <span>+91 2742 251234</span>
-                </div>
-                <div class="contact-item">
-                    <span class="contact-icon">🌐</span>
-                    <span>www.gppalanpur.edu.in</span>
                 </div>
             </div>
         </div>
