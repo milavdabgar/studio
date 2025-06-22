@@ -2512,6 +2512,25 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                             <p>${data.essence.departmentOverview}</p>
                         </div>
                         
+                        ${data.essence?.vision && data.essence?.mission ? `
+                        <div class="vision-mission-grid" style="margin: 2rem 0;">
+                            <div class="vision-card">
+                                <div class="vision-title">
+                                    <div class="vision-icon">🔭</div>
+                                    <span>Vision</span>
+                                </div>
+                                <div class="vision-text">${data.essence.vision}</div>
+                            </div>
+                            <div class="mission-card">
+                                <div class="mission-title">
+                                    <div class="mission-icon">🚀</div>
+                                    <span>Mission</span>
+                                </div>
+                                <div class="mission-text">${data.essence.mission}</div>
+                            </div>
+                        </div>
+                        ` : ''}
+                        
                         <div class="programs-grid">
                             <div class="program-card ec">
                                 <span class="program-icon">📡</span>
@@ -2526,61 +2545,6 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                                 <p class="program-description">Modern ICT Solutions</p>
                             </div>
                         </div>
-                        
-                        <div class="key-strengths">
-                            <h4 class="key-strengths-title">🌟 What Sets Us Apart</h4>
-                            <div class="strengths-grid">
-                                <div class="strength-card holistic">
-                                    <div class="strength-header">
-                                        <span class="strength-icon">🎓</span>
-                                        <strong class="strength-title">Holistic Education</strong>
-                                    </div>
-                                    <p class="strength-description">Cutting-edge technology with practical industry applications</p>
-                                </div>
-                                <div class="strength-card partnerships">
-                                    <div class="strength-header">
-                                        <span class="strength-icon">🤝</span>
-                                        <strong class="strength-title">Industry Partnerships</strong>
-                                    </div>
-                                    <p class="strength-description">Strategic collaborations for innovation projects</p>
-                                </div>
-                                <div class="strength-card leaders">
-                                    <div class="strength-header">
-                                        <span class="strength-icon">💡</span>
-                                        <strong class="strength-title">Future Leaders</strong>
-                                    </div>
-                                    <p class="strength-description">Preparing entrepreneurs who drive technological advancement</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        ` : ''}
-        
-        <!-- Vision & Mission Section -->
-        ${data.essence?.vision && data.essence?.mission ? `
-        <div class="section">
-            <div class="section-header">
-                <h2 class="section-title">🎯 Vision & Mission</h2>
-                <p class="section-description">Our Commitment to Excellence</p>
-            </div>
-            <div class="section-content">
-                <div class="vision-mission-grid">
-                    <div class="vision-card">
-                        <div class="vision-title">
-                            <div class="vision-icon">🔭</div>
-                            <span>Vision</span>
-                        </div>
-                        <div class="vision-text">${data.essence.vision}</div>
-                    </div>
-                    <div class="mission-card">
-                        <div class="mission-title">
-                            <div class="mission-icon">🚀</div>
-                            <span>Mission</span>
-                        </div>
-                        <div class="mission-text">${data.essence.mission}</div>
                     </div>
                 </div>
             </div>

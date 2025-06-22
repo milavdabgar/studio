@@ -272,40 +272,6 @@ export default function InteractiveNewsletterPage() {
                         <p className="text-xs opacity-80 mt-1">Modern ICT Solutions</p>
                       </div>
                     </div>
-                    
-                    {/* Key Strengths */}
-                    <div className="mt-8">
-                      <h4 className="text-xl font-semibold text-gray-800 mb-6 text-center">🌟 What Sets Us Apart</h4>
-                      <div className="grid md:grid-cols-3 gap-4">
-                        <div className="bg-blue-50 p-5 rounded-lg border-l-4 border-blue-400">
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className="text-xl">🎓</span>
-                            <strong className="text-blue-700">Holistic Education</strong>
-                          </div>
-                          <p className="text-sm text-blue-600 leading-relaxed">
-                            Cutting-edge technology with practical industry applications
-                          </p>
-                        </div>
-                        <div className="bg-green-50 p-5 rounded-lg border-l-4 border-green-400">
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className="text-xl">🤝</span>
-                            <strong className="text-green-700">Industry Partnerships</strong>
-                          </div>
-                          <p className="text-sm text-green-600 leading-relaxed">
-                            Strategic collaborations for innovation projects
-                          </p>
-                        </div>
-                        <div className="bg-purple-50 p-5 rounded-lg border-l-4 border-purple-400">
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className="text-xl">💡</span>
-                            <strong className="text-purple-700">Future Leaders</strong>
-                          </div>
-                          <p className="text-sm text-purple-600 leading-relaxed">
-                            Preparing entrepreneurs who drive technological advancement
-                          </p>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </CardContent>
               </Card>
