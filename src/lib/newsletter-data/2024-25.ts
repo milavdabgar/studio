@@ -1391,8 +1391,22 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
     }
   ],
   
+  editorialTeam: [
+    {
+      name: 'Mr. Milav J. Dabgar',
+      designation: 'Lecturer',
+      role: 'Newsletter Editor'
+    },
+    {
+      name: 'Mr. Nirav J. Chauhan',
+      designation: 'Lecturer',
+      role: 'Newsletter Co-Editor'
+    }
+  ],
+  
   reachout: {
-    email: 'gppec11@gmail.com',
+    email: 'ec@gppalanpur.in',
+    newsletterEmail: 'spectrum@gppalanpur.in',
     phone: '02742-245219',
     address: 'Opp. Malan Darwaja, Ambaji Road, Palanpur - 385001, Gujarat',
     website: 'ec.gppalanpur.in'

@@ -81,8 +81,14 @@ export interface NewsletterData {
     src: string;
     alt: string;
   }>;
+  editorialTeam?: Array<{
+    name: string;
+    designation: string;
+    role: string;
+  }>;
   reachout: {
     email: string;
+    newsletterEmail?: string;
     phone: string;
     address: string;
     website: string;

@@ -405,10 +405,24 @@ export const newsletterData2022_23: NewsletterData = {
     }
   ],
   
+  editorialTeam: [
+    {
+      name: 'Mr. Milav J. Dabgar',
+      designation: 'Lecturer',
+      role: 'Newsletter Editor'
+    },
+    {
+      name: 'Mr. Nirav J. Chauhan',
+      designation: 'Lecturer',
+      role: 'Newsletter Co-Editor'
+    }
+  ],
+  
   reachout: {
-    email: 'ecgpp@gmail.com',
-    phone: '+91-2742-252000',
-    address: 'Government Polytechnic Palanpur, Highway, Palanpur - 385001, Gujarat, India',
-    website: 'https://gpp.edu.in'
+    email: 'ec@gppalanpur.in',
+    newsletterEmail: 'spectrum@gppalanpur.in',
+    phone: '02742-245219',
+    address: 'Opp. Malan Darwaja, Ambaji Road, Palanpur - 385001, Gujarat',
+    website: 'ec.gppalanpur.in'
   }
 };

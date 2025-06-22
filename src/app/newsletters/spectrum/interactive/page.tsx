@@ -735,6 +735,17 @@ export default function InteractiveNewsletterPage() {
                       </div>
                     </div>
                     
+                    {currentData.reachout?.newsletterEmail && (
+                      <div className="flex items-center space-x-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <Mail className="w-5 h-5 text-purple-600" />
+                        <div>
+                          <div className="font-medium text-gray-900">Newsletter Submissions</div>
+                          <div className="text-gray-600">{currentData.reachout.newsletterEmail}</div>
+                          <div className="text-xs text-purple-600 mt-1">For students & faculty to share newsletter content</div>
+                        </div>
+                      </div>
+                    )}
+                    
                     <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
                       <Phone className="w-5 h-5 text-green-600" />
                       <div>
@@ -764,29 +775,47 @@ export default function InteractiveNewsletterPage() {
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Editorial Team</h3>
                     
-                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border border-blue-200">
-                      <div className="space-y-4">
-                        <div className="flex items-center space-x-3">
-                          <div className="bg-blue-600 text-white p-2 rounded-lg">
-                            <Users className="w-5 h-5" />
-                          </div>
-                          <div>
-                            <div className="font-semibold text-gray-900">Ms. Mittal K. Pedhadiya</div>
-                            <div className="text-sm text-gray-600">Assistant Professor & Newsletter Editor</div>
-                          </div>
+                    {currentData.editorialTeam && currentData.editorialTeam.length > 0 ? (
+                      <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border border-blue-200">
+                        <div className="space-y-4">
+                          {currentData.editorialTeam.map((member, index) => (
+                            <div key={index} className="flex items-center space-x-3">
+                              <div className={`${index === 0 ? 'bg-blue-600' : 'bg-purple-600'} text-white p-2 rounded-lg`}>
+                                <Users className="w-5 h-5" />
+                              </div>
+                              <div>
+                                <div className="font-semibold text-gray-900">{member.name}</div>
+                                <div className="text-sm text-gray-600">{member.designation} & {member.role}</div>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                        
-                        <div className="flex items-center space-x-3">
-                          <div className="bg-purple-600 text-white p-2 rounded-lg">
-                            <Users className="w-5 h-5" />
+                      </div>
+                    ) : (
+                      <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border border-blue-200">
+                        <div className="space-y-4">
+                          <div className="flex items-center space-x-3">
+                            <div className="bg-blue-600 text-white p-2 rounded-lg">
+                              <Users className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <div className="font-semibold text-gray-900">Ms. Mittal K. Pedhadiya</div>
+                              <div className="text-sm text-gray-600">Assistant Professor & Newsletter Editor</div>
+                            </div>
                           </div>
-                          <div>
-                            <div className="font-semibold text-gray-900">Mr. Milav J. Dabgar</div>
-                            <div className="text-sm text-gray-600">Assistant Professor & Newsletter Co-Editor</div>
+                          
+                          <div className="flex items-center space-x-3">
+                            <div className="bg-purple-600 text-white p-2 rounded-lg">
+                              <Users className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <div className="font-semibold text-gray-900">Mr. Milav J. Dabgar</div>
+                              <div className="text-sm text-gray-600">Assistant Professor & Newsletter Co-Editor</div>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                     
                     {/* Department Info */}
                     <div className="bg-gray-50 p-6 rounded-lg border">
