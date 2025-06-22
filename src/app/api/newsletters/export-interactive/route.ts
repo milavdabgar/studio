@@ -2449,27 +2449,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 </div>
             </div>
             
-            <div class="stats-grid" style="margin-top: 2rem;">
-                ${data.stats.map((stat, index) => {
-                  const icons = ['📈', '📚', '👥', '🏆'];
-                  const colors = ['bg-blue', 'bg-green', 'bg-purple', 'bg-orange'];
-                  return `
-                    <div class="stat-card">
-                        <div class="stat-card-content">
-                            <div class="stat-info">
-                                <div class="stat-value">${stat.value}${stat.label.includes('Rate') ? '%' : ''}</div>
-                                <div class="stat-label">${stat.label}</div>
-                            </div>
-                            <div class="stat-icon ${colors[index % colors.length]}">
-                                ${icons[index % icons.length]}
-                            </div>
-                        </div>
-                    </div>
-                  `;
-                }).join('')}
-            </div>
-            
-            <div class="welcome-highlights">
+            <div class="welcome-highlights" style="margin-top: 2rem;">
                 ${data.highlights ? data.highlights.map(highlight => `
                 <div class="highlight-card">
                     <div class="highlight-icon">${highlight.icon}</div>
@@ -2502,6 +2482,26 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 </div>
                 `}
             </div>
+
+            <div class="stats-grid" style="margin-top: 2rem;">
+                ${data.stats.map((stat, index) => {
+                  const icons = ['📈', '📚', '👥', '🏆'];
+                  const colors = ['bg-blue', 'bg-green', 'bg-purple', 'bg-orange'];
+                  return `
+                    <div class="stat-card">
+                        <div class="stat-card-content">
+                            <div class="stat-info">
+                                <div class="stat-value">${stat.value}${stat.label.includes('Rate') ? '%' : ''}</div>
+                                <div class="stat-label">${stat.label}</div>
+                            </div>
+                            <div class="stat-icon ${colors[index % colors.length]}">
+                                ${icons[index % icons.length]}
+                            </div>
+                        </div>
+                    </div>
+                  `;
+                }).join('')}
+            </div>            
         </div>
         
         <!-- Department Overview Section -->
