@@ -208,6 +208,15 @@ export const newsletterData2023_24: NewsletterData = {
           caption: 'A legacy of kindness, wisdom, and unwavering commitment to education'
         }
       ]
+    },
+    {
+      title: "A Tribute in Verse - For Shri Nikunj M Patel",
+      author: "EC Department Faculty & Students",
+      designation: "Electronics & Communication Engineering Department", 
+      content: "In halls of learning where knowledge flows free,\nWalked a teacher whose heart was the key,\nShri Nikunj M Patel, with wisdom so bright,\nGuided countless souls toward the light.\n\nWith patience unending and words ever kind,\nHe nurtured each student, heart, soul, and mind,\nNo question too simple, no doubt left unclear,\nHe made every pathway to learning appear.\n\nBeyond circuits and signals, equations and code,\nHe taught us compassion, and showed us the road,\nTo success built on service, on helping each other,\nA teacher, a mentor, a father, a brother.\n\nThough December's cold wind took him away,\nHis spirit lives on in each word that we say,\nIn every success that his students achieve,\nIn memories cherished, we'll never let leave.\n\nThe EC Department echoes still,\nWith lessons he taught through unwavering will,\nShri Nikunj sir, your legacy bright,\nShines on as our eternal guiding light.",
+      date: "December 2023",
+      type: "poem",
+      authorType: "faculty"
     }
   ],
 
