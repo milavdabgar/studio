@@ -78,44 +78,245 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 0;
         }
         
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-            background: linear-gradient(to right, #1e3a8a, #581c87, #3730a3);
-            color: white;
-            padding: 4rem 2rem;
+        /* Cover Page Styles */
+        .cover-page {
+            height: 100vh;
+            min-height: 100vh;
+            max-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            page-break-after: always;
+            page-break-inside: avoid;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .cover-background {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                #1e3a8a 0%,      /* blue-800 */
+                #1e40af 25%,     /* blue-700 */
+                #2563eb 50%,     /* blue-600 */
+                #3b82f6 75%,     /* blue-500 */
+                #60a5fa 100%     /* blue-400 */
+            );
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        .header::before {
-            content: '';
+        .cover-pattern {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.2);
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 60%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 60%),
+                radial-gradient(circle at 40% 70%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+                linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.03) 50%, transparent 60%);
         }
         
-        .header-content {
-            position: relative;
-            z-index: 1;
+        .cover-content {
+            text-align: center;
+            color: #ffffff;
+            z-index: 2;
+            padding: 2rem;
+            max-width: 800px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 80vh;
         }
         
-        .header h1 {
-            font-size: 4rem;
-            font-weight: 700;
+        .cover-top {
+            flex-shrink: 0;
+        }
+        
+        .cover-middle {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 2rem;
+        }
+        
+        .cover-bottom {
+            flex-shrink: 0;
+        }
+        
+        .cover-logos {
             margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
         }
         
-        .header p {
+        .cover-logo {
+            width: 140px;
+            height: 140px;
+            object-fit: contain;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 
+                0 20px 50px rgba(0, 0, 0, 0.3),
+                0 0 0 3px rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(20px);
+        }
+        
+        .cover-title-section {
+            margin-bottom: 0;
+        }
+        
+        .cover-main-title {
+            font-size: 6.5rem;
+            font-weight: 900;
+            margin: 0;
+            text-shadow: 
+                0 0 20px rgba(255, 255, 255, 0.3),
+                2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: -3px;
+            color: #ffffff;
+        }
+        
+        .cover-subtitle {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin: -0.5rem 0 1rem 0;
+            opacity: 0.95;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            color: #ffffff;
+        }
+        
+        .cover-band {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.95);
+            color: #1e3a8a;
+            padding: 0.75rem 2.5rem;
+            border-radius: 2rem;
+            display: inline-block;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 
+                0 12px 40px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            font-weight: 700;
+        }
+        
+        .cover-department {
+            margin-bottom: 0;
+        }
+        
+        .cover-department h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            color: #ffffff;
+        }
+        
+        .cover-department h3 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin: 0;
+            opacity: 0.95;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            color: #f1f5f9;
+        }
+        
+        .cover-year {
+            margin-bottom: 0;
+        }
+        
+        .year-badge {
             font-size: 1.25rem;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.95);
+            color: #1e3a8a;
+            padding: 1rem 2rem;
+            border-radius: 3rem;
+            display: inline-block;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 
+                0 12px 40px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            font-weight: 600;
+        }
+        
+        .cover-decoration {
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .decoration-line {
+            width: 4rem;
+            height: 2px;
+            background: linear-gradient(to right, 
+                transparent, 
+                rgba(255, 255, 255, 0.8), 
+                transparent
+            );
+            border-radius: 1px;
+        }
+        
+        .decoration-dots {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .decoration-dots span {
+            opacity: 0.8;
+            font-size: 1.5rem;
+            color: #ffffff;
+        }
+        
+        .cover-footer {
+            font-size: 1.125rem;
             opacity: 0.9;
-            margin-bottom: 0.5rem;
+            font-style: italic;
+            font-weight: 300;
+            color: #f1f5f9;
+        }
+        
+        .cover-footer p {
+            margin: 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Stats and Welcome Page */
+        .stats-welcome-page {
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-header h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
         }
         
         .stats-grid {
@@ -1075,27 +1276,643 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             opacity: 1;
         }
         
+        .welcome-section {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0fdf4 100%);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            border: 1px solid #bae6fd;
+        }
+        
+        .welcome-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .welcome-header h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0;
+        }
+        
+        .welcome-highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .highlight-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .highlight-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+        
+        .highlight-content h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .highlight-content p {
+            font-size: 0.875rem;
+            color: #64748b;
+            line-height: 1.5;
+            margin: 0;
+        }
+        
+        .newsletter-intro {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .intro-content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 1rem 0;
+        }
+        
+        .intro-content p {
+            font-size: 0.9375rem;
+            color: #475569;
+            line-height: 1.6;
+            margin: 0 0 1.5rem 0;
+        }
+        
+        .intro-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .intro-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: linear-gradient(to right, #f8fafc, #f1f5f9);
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .intro-stat-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        .intro-stat-text {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        /* Back Cover Styles */
+        .back-cover {
+            height: 100vh;
+            min-height: 100vh;
+            max-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            page-break-before: always;
+            page-break-inside: avoid;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .back-cover-background {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                #1e3a8a 0%,      /* blue-800 */
+                #1e40af 25%,     /* blue-700 */
+                #2563eb 50%,     /* blue-600 */
+                #3b82f6 75%,     /* blue-500 */
+                #60a5fa 100%     /* blue-400 */
+            );
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .back-cover-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 60%),
+                radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 60%),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+                linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.03) 50%, transparent 60%);
+        }
+        
+        .back-cover-content {
+            color: #ffffff;
+            z-index: 2;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 90vh;
+            max-height: 90vh;
+            overflow: hidden;
+        }
+        
+        .back-cover-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .back-cover-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0 0 1rem 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            color: #ffffff;
+        }
+        
+        .header-divider {
+            width: 6rem;
+            height: 3px;
+            background: linear-gradient(to right, 
+                transparent, 
+                rgba(255, 255, 255, 0.8), 
+                transparent
+            );
+            margin: 0 auto;
+            border-radius: 2px;
+        }
+        
+        .contact-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .contact-card, .address-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.25rem;
+            border-radius: 1rem;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 
+                0 12px 40px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+        
+        .contact-card h3, .address-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 1rem 0;
+            color: #1e3a8a;
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .contact-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .contact-item:last-child {
+            border-bottom: none;
+        }
+        
+        .contact-label {
+            font-weight: 600;
+            opacity: 1;
+            color: #1e40af;
+            font-size: 0.9375rem;
+        }
+        
+        .contact-value {
+            font-weight: 700;
+            color: #1e3a8a;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3);
+            font-size: 0.9375rem;
+        }
+        
+        .address-content p {
+            margin: 0.5rem 0;
+            line-height: 1.5;
+            color: #047857;
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3);
+        }
+        
+        .programs-section {
+            margin-bottom: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .programs-section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 1rem 0;
+            text-align: center;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            color: #ffffff;
+        }
+        
+        .programs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .program-item {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+        
+        .additional-info-section {
+            margin-bottom: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .additional-info-section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 1rem 0;
+            text-align: center;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            color: #ffffff;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .info-item {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+        
+        .info-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .info-content strong {
+            display: block;
+            font-size: 0.9375rem;
+            margin-bottom: 0.25rem;
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+        
+        .info-content span {
+            font-size: 0.8125rem;
+            opacity: 0.95;
+            font-weight: 500;
+            color: #1e40af;
+        }
+        
+        .program-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+        
+        .program-details strong {
+            display: block;
+            font-size: 0.9375rem;
+            margin-bottom: 0.25rem;
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+        
+        .program-details span {
+            font-size: 0.8125rem;
+            opacity: 0.95;
+            color: #1e40af;
+            font-weight: 500;
+        }
+        
+        .achievements-section {
+            margin-bottom: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .achievements-section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 1rem 0;
+            text-align: center;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            color: #ffffff;
+        }
+        
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+        
+        .achievement-item {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+        
+        .achievement-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            color: #1e3a8a;
+        }
+        
+        .achievement-label {
+            font-size: 0.75rem;
+            opacity: 0.95;
+            font-weight: 600;
+            color: #1e40af;
+        }
+        
+        .editorial-section {
+            margin-bottom: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .editorial-section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 1rem 0;
+            text-align: center;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            color: #ffffff;
+        }
+        
+        .editorial-members {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .editorial-member {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+        
+        .member-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+        
+        .member-details strong {
+            display: block;
+            font-size: 0.9375rem;
+            margin-bottom: 0.25rem;
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+        
+        .member-details span {
+            font-size: 0.8125rem;
+            opacity: 0.95;
+            color: #1e40af;
+            font-weight: 500;
+        }
+        
+        .back-cover-footer {
+            text-align: center;
+            flex-shrink: 0;
+            margin-top: auto;
+        }
+        
+        .footer-decoration {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .footer-text p {
+            margin: 0.25rem 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            color: #ffffff;
+        }
+        
+        .footer-text .motto {
+            font-style: italic;
+            opacity: 0.9;
+            font-size: 0.9375rem;
+            font-weight: 300;
+            color: #f1f5f9;
+        }
+        
         @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
             body {
                 background: white;
                 font-size: 12px;
                 line-height: 1.4;
+                margin: 0;
+                padding: 0;
             }
             .container {
-                padding: 0.5rem;
+                padding: 0;
                 max-width: 100%;
+                margin: 0;
             }
-            .header {
-                padding: 2rem 1rem;
+            
+            /* Cover Page Print Styles */
+            .cover-page {
+                height: 100vh !important;
+                min-height: 100vh !important;
+                max-height: 100vh !important;
+                page-break-after: always !important;
+                page-break-inside: avoid !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                overflow: hidden !important;
+            }
+            .cover-background {
+                width: 100% !important;
+                height: 100% !important;
+                background: linear-gradient(135deg, 
+                    #1e3a8a 0%,      /* blue-800 */
+                    #1e40af 25%,     /* blue-700 */
+                    #2563eb 50%,     /* blue-600 */
+                    #3b82f6 75%,     /* blue-500 */
+                    #60a5fa 100%     /* blue-400 */
+                ) !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .cover-content {
+                min-height: 80vh !important;
+                max-height: 80vh !important;
+                overflow: hidden !important;
+            }
+            .cover-top {
+                flex-shrink: 0 !important;
+            }
+            .cover-middle {
+                flex: 1 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                gap: 1.5rem !important;
+            }
+            .cover-bottom {
+                flex-shrink: 0 !important;
+            }
+            .cover-logos {
+                margin-bottom: 0.5rem !important;
+            }
+            .cover-logo {
+                width: 60px !important;
+                height: 60px !important;
+                padding: 0.5rem !important;
+            }
+            .cover-main-title {
+                font-size: 4.5rem !important;
+                color: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .cover-subtitle {
+                font-size: 2rem !important;
+                color: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .cover-band {
+                font-size: 1.25rem !important;
+                padding: 0.5rem 1.5rem !important;
+                color: #1e3a8a !important;
+                background: rgba(255, 255, 255, 0.95) !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .cover-department h2 {
+                font-size: 1.5rem !important;
+                color: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .cover-department h3 {
+                font-size: 1.25rem !important;
+                color: #f1f5f9 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .year-badge {
+                font-size: 1rem !important;
+                padding: 0.75rem 1.5rem !important;
+                color: #1e3a8a !important;
+                background: rgba(255, 255, 255, 0.95) !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .cover-footer {
+                font-size: 1rem !important;
+                color: #f1f5f9 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .cover-department h3 {
+                font-size: 1.125rem;
+            }
+            .year-badge {
+                font-size: 1rem;
+                padding: 0.75rem 1.5rem;
+            }
+            .cover-footer {
+                font-size: 1rem;
+            }
+            .cover-logo {
+                width: 120px !important;
+                height: 120px !important;
+                padding: 1rem !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            /* Stats Welcome Page */
+            .stats-welcome-page {
+                padding: 1.5rem;
                 margin-bottom: 1.5rem;
             }
-            .header h1 {
-                font-size: 2.5rem;
-                margin-bottom: 0.5rem;
-            }
-            .header p {
-                font-size: 1rem;
-                margin-bottom: 0.25rem;
+            .page-header h2 {
+                font-size: 1.5rem;
             }
             .stats-grid {
                 grid-template-columns: repeat(4, 1fr);
@@ -1117,6 +1934,254 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                 height: 32px;
                 font-size: 1rem;
             }
+            .welcome-highlights {
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+            }
+            .highlight-card {
+                padding: 1rem;
+            }
+            .highlight-content h3 {
+                font-size: 1rem;
+            }
+            .highlight-content p {
+                font-size: 0.75rem;
+            }
+            .newsletter-intro {
+                padding: 1rem;
+            }
+            .intro-content h3 {
+                font-size: 1rem;
+            }
+            .intro-content p {
+                font-size: 0.8125rem;
+            }
+            .intro-stats {
+                gap: 0.75rem;
+            }
+            .intro-stat {
+                padding: 0.5rem;
+            }
+            .intro-stat-text {
+                font-size: 0.75rem;
+            }
+            
+            /* Back Cover Print Styles */
+            .back-cover {
+                height: 100vh !important;
+                min-height: 100vh !important;
+                max-height: 100vh !important;
+                page-break-before: always !important;
+                page-break-inside: avoid !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                overflow: hidden !important;
+            }
+            .back-cover-background {
+                width: 100% !important;
+                height: 100% !important;
+                background: linear-gradient(135deg, 
+                    #1e3a8a 0%,      /* blue-800 */
+                    #1e40af 25%,     /* blue-700 */
+                    #2563eb 50%,     /* blue-600 */
+                    #3b82f6 75%,     /* blue-500 */
+                    #60a5fa 100%     /* blue-400 */
+                ) !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .back-cover-content {
+                padding: 1.5rem !important;
+                min-height: 90vh !important;
+                max-height: 90vh !important;
+                overflow: hidden !important;
+                color: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .back-cover-header h2 {
+                font-size: 2rem !important;
+                color: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .contact-section {
+                gap: 1rem !important;
+                margin-bottom: 1rem !important;
+            }
+            .contact-card, .address-card {
+                padding: 0.75rem !important;
+                background: rgba(255, 255, 255, 0.95) !important;
+                color: #1e3a8a !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                border: 2px solid rgba(255, 255, 255, 0.9) !important;
+            }
+            .contact-card h3, .address-card h3 {
+                font-size: 0.9375rem !important;
+                color: #1e3a8a !important;
+                font-weight: 700 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .contact-info {
+                gap: 0.375rem !important;
+            }
+            .contact-label, .contact-value {
+                font-size: 0.75rem !important;
+                color: #1e40af !important;
+                font-weight: 600 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .address-content p {
+                font-size: 0.75rem !important;
+                color: #1e40af !important;
+                font-weight: 500 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .programs-section {
+                margin-bottom: 1rem !important;
+            }
+            .programs-section h3 {
+                font-size: 1rem !important;
+                color: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .program-item {
+                padding: 0.5rem !important;
+                background: rgba(255, 255, 255, 0.95) !important;
+                color: #1e3a8a !important;
+                border: 2px solid rgba(255, 255, 255, 0.9) !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .program-icon {
+                font-size: 1.25rem !important;
+            }
+            .program-details strong {
+                font-size: 0.75rem !important;
+                color: #1e3a8a !important;
+                font-weight: 700 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .program-details span {
+                font-size: 0.6875rem !important;
+                color: #1e40af !important;
+                font-weight: 500 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .additional-info-section {
+                margin-bottom: 1rem !important;
+            }
+            .additional-info-section h3 {
+                font-size: 1rem !important;
+                color: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .info-item {
+                padding: 0.5rem !important;
+                background: rgba(255, 255, 255, 0.15) !important;
+                color: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .info-icon {
+                font-size: 1.25rem !important;
+            }
+            .info-content strong {
+                font-size: 0.75rem !important;
+                color: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .info-content span {
+                font-size: 0.6875rem !important;
+                color: #e2e8f0 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .achievements-section {
+                margin-bottom: 1rem !important;
+            }
+            .achievements-section h3 {
+                font-size: 1rem !important;
+                color: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .achievement-item {
+                padding: 0.5rem !important;
+                background: rgba(255, 255, 255, 0.15) !important;
+                color: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .achievement-number {
+                font-size: 1.125rem !important;
+                color: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .achievement-label {
+                font-size: 0.625rem !important;
+                color: #1f2937 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .editorial-section {
+                margin-bottom: 1rem !important;
+            }
+            .editorial-section h3 {
+                font-size: 1rem !important;
+                color: #1f2937 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .editorial-member {
+                padding: 0.5rem !important;
+                background: rgba(255, 255, 255, 0.2) !important;
+                color: #1f2937 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .member-icon {
+                font-size: 1.25rem !important;
+            }
+            .member-details strong {
+                font-size: 0.75rem !important;
+                color: #1f2937 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .member-details span {
+                font-size: 0.6875rem !important;
+                color: #1f2937 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .footer-text p {
+                font-size: 0.75rem !important;
+                color: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .footer-text .motto {
+                font-size: 0.6875rem !important;
+                color: #f1f5f9 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            /* General Print Styles */
             .section, .message-section {
                 box-shadow: none;
                 border: 1px solid #e5e7eb;
@@ -1299,54 +2364,134 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
             .spotlight-images img {
                 max-width: 20rem;
             }
-            .header-logos {
-                gap: 1rem;
-                margin-bottom: 1rem;
-            }
-            .header-logo {
-                width: 60px;
-                height: 60px;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <div class="header-content">
-                ${data.logos ? `
-                <div class="header-logos">
-                    ${data.logos.map(logo => {
-                      const base64Src = getImageAsBase64(logo.src);
-                      return base64Src ? `<img src="${base64Src}" alt="${logo.alt}" class="header-logo" />` : '';
-                    }).join('')}
-                </div>
-                ` : ''}
-                <h1>Spectrum Newsletter</h1>
-                <p>Department of Electronics & Communication Engineering</p>
-                <p>Government Polytechnic, Palanpur</p>
-                <p>Band III • Academic Year ${year}</p>
-            </div>
-        </div>
-        
-        <div class="stats-grid">
-            ${data.stats.map((stat, index) => {
-              const icons = ['📈', '📚', '👥', '🏆'];
-              const colors = ['bg-blue', 'bg-green', 'bg-purple', 'bg-orange'];
-              return `
-                <div class="stat-card">
-                    <div class="stat-card-content">
-                        <div class="stat-info">
-                            <div class="stat-value">${stat.value}${stat.label.includes('Rate') ? '%' : ''}</div>
-                            <div class="stat-label">${stat.label}</div>
+        <div class="cover-page">
+            <div class="cover-background">
+                <div class="cover-pattern"></div>
+                <div class="cover-content">
+                    <div class="cover-top">
+                        ${data.logos ? `
+                        <div class="cover-logos">
+                            ${data.logos.map(logo => {
+                              const base64Src = getImageAsBase64(logo.src);
+                              return base64Src ? `<img src="${base64Src}" alt="${logo.alt}" class="cover-logo" />` : '';
+                            }).join('')}
                         </div>
-                        <div class="stat-icon ${colors[index % colors.length]}">
-                            ${icons[index % icons.length]}
+                        ` : ''}
+                    </div>
+                    
+                    <div class="cover-middle">                    <div class="cover-title-section">
+                        <h1 class="cover-main-title">Spectrum</h1>
+                        <div class="cover-band">Band III</div>
+                    </div>
+                        
+                        <div class="cover-department">
+                            <h2>Electronics & Communication Engineering</h2>
+                            <h3>Government Polytechnic, Palanpur</h3>
+                        </div>
+                        
+                        <div class="cover-year">
+                            <div class="year-badge">Academic Year ${year}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="cover-bottom">
+                        <div class="cover-decoration">
+                            <div class="decoration-line"></div>
+                            <div class="decoration-dots">
+                                <span>•</span>
+                                <span>•</span>
+                                <span>•</span>
+                            </div>
+                            <div class="decoration-line"></div>
+                        </div>
+                        
+                        <div class="cover-footer">
+                            <p>Excellence in Technical Education Since 1984</p>
                         </div>
                     </div>
                 </div>
-              `;
-            }).join('')}
+            </div>
+        </div>
+        
+        <!-- Stats and Welcome Page -->
+        <div class="stats-welcome-page">
+            <div class="page-header">
+                <h2>📋 Spectrum Band - III - At a Glance</h2>
+            </div>
+            
+            <div class="stats-grid">
+                ${data.stats.map((stat, index) => {
+                  const icons = ['📈', '📚', '👥', '🏆'];
+                  const colors = ['bg-blue', 'bg-green', 'bg-purple', 'bg-orange'];
+                  return `
+                    <div class="stat-card">
+                        <div class="stat-card-content">
+                            <div class="stat-info">
+                                <div class="stat-value">${stat.value}${stat.label.includes('Rate') ? '%' : ''}</div>
+                                <div class="stat-label">${stat.label}</div>
+                            </div>
+                            <div class="stat-icon ${colors[index % colors.length]}">
+                                ${icons[index % icons.length]}
+                            </div>
+                        </div>
+                    </div>
+                  `;
+                }).join('')}
+            </div>
+            
+            <div class="welcome-highlights">
+                <div class="highlight-card">
+                    <div class="highlight-icon">🎯</div>
+                    <div class="highlight-content">
+                        <h3>Our Mission</h3>
+                        <p>Empowering students with cutting-edge technical education and industry-ready skills in Electronics & Communication Engineering.</p>
+                    </div>
+                </div>
+                <div class="highlight-card">
+                    <div class="highlight-icon">🌟</div>
+                    <div class="highlight-content">
+                        <h3>Excellence</h3>
+                        <p>Committed to maintaining high academic standards while fostering innovation and practical learning experiences.</p>
+                    </div>
+                </div>
+                <div class="highlight-card">
+                    <div class="highlight-icon">🚀</div>
+                    <div class="highlight-content">
+                        <h3>Future Ready</h3>
+                        <p>Preparing students for emerging technologies and industry demands through comprehensive curriculum and hands-on training.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="newsletter-intro">
+                <div class="intro-content">
+                    <h3>📰 About This Newsletter</h3>
+                    <p>Welcome to <strong>Spectrum - Band III</strong>, the official newsletter of the Electronics & Communication Engineering Department. This edition showcases our department's achievements, student accomplishments, faculty contributions, and major events from the academic year ${year}.</p>
+                    <div class="intro-stats">
+                        <div class="intro-stat">
+                            <span class="intro-stat-icon">📖</span>
+                            <span class="intro-stat-text">Comprehensive Coverage</span>
+                        </div>
+                        <div class="intro-stat">
+                            <span class="intro-stat-icon">🏆</span>
+                            <span class="intro-stat-text">Student Achievements</span>
+                        </div>
+                        <div class="intro-stat">
+                            <span class="intro-stat-icon">🔬</span>
+                            <span class="intro-stat-text">Faculty Research</span>
+                        </div>
+                        <div class="intro-stat">
+                            <span class="intro-stat-icon">🎉</span>
+                            <span class="intro-stat-text">Department Events</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <!-- Department Overview Section -->
@@ -1784,6 +2929,178 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                                     <strong>Newsletter:</strong> Spectrum - Band III
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Back Cover Page -->
+        <div class="back-cover">
+            <div class="back-cover-background">
+                <div class="back-cover-pattern"></div>
+                <div class="back-cover-content">
+                    <div class="back-cover-header">
+                        <h2>Connect With Us</h2>
+                        <div class="header-divider"></div>
+                    </div>
+                    
+                    <div class="contact-section">
+                        <div class="contact-card">
+                            <h3>✉️ Department Contact</h3>
+                            <div class="contact-info">
+                                <div class="contact-item">
+                                    <span class="contact-label">Email:</span>
+                                    <span class="contact-value">${data.reachout?.email || 'gppec11@gmail.com'}</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">Phone:</span>
+                                    <span class="contact-value">${data.reachout?.phone || '02742-245219'}</span>
+                                </div>
+                                <div class="contact-item">
+                                    <span class="contact-label">Website:</span>
+                                    <span class="contact-value">${data.reachout?.website || 'ec.gppalanpur.in'}</span>
+                                </div>
+                                ${data.reachout?.newsletterEmail ? `
+                                <div class="contact-item">
+                                    <span class="contact-label">Newsletter:</span>
+                                    <span class="contact-value">${data.reachout.newsletterEmail}</span>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="address-card">
+                            <h3>📍 Visit Us</h3>
+                            <div class="address-content">
+                                <p><strong>Government Polytechnic, Palanpur</strong></p>
+                                <p>Electronics & Communication Engineering Department</p>
+                                <p>${data.reachout?.address || 'Opp. Malan Darwaja, Ambaji Road, Palanpur - 385001, Gujarat'}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="programs-section">
+                        <h3>🎓 Our Programs</h3>
+                        <div class="programs-grid">
+                            <div class="program-item">
+                                <div class="program-icon">📡</div>
+                                <div class="program-details">
+                                    <strong>Electronics & Communication</strong>
+                                    <span>3-Year Diploma • 38 Students Intake</span>
+                                </div>
+                            </div>
+                            <div class="program-item">
+                                <div class="program-icon">💻</div>
+                                <div class="program-details">
+                                    <strong>Information & Communication Technology</strong>
+                                    <span>3-Year Diploma • 78 Students Intake</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="additional-info-section">
+                        <h3>📋 Quick Information</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-icon">🏛️</div>
+                                <div class="info-content">
+                                    <strong>Established</strong>
+                                    <span>1984 (EC Dept: 1994)</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">👥</div>
+                                <div class="info-content">
+                                    <strong>Total Intake</strong>
+                                    <span>116 (Both Programs)</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">👨‍🏫</div>
+                                <div class="info-content">
+                                    <strong>Faculty</strong>
+                                    <span>GPSc Quallified Staff</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-icon">🎯</div>
+                                <div class="info-content">
+                                    <strong>GTU Affiliated</strong>
+                                    <span>Gujarat Technological University</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="achievements-section">
+                        <h3>🏆 Legacy of Excellence</h3>
+                        <div class="achievements-grid">
+                            <div class="achievement-item">
+                                <div class="achievement-number">40+</div>
+                                <div class="achievement-label">Years of Excellence</div>
+                            </div>
+                            <div class="achievement-item">
+                                <div class="achievement-number">100+</div>
+                                <div class="achievement-label">Alumni Network</div>
+                            </div>
+                            <div class="achievement-item">
+                                <div class="achievement-number">116</div>
+                                <div class="achievement-label">Total Intake</div>
+                            </div>
+                            <div class="achievement-item">
+                                <div class="achievement-number">100%</div>
+                                <div class="achievement-label">Placement Focus</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="editorial-section">
+                        <h3>✏️ Editorial Team</h3>
+                        <div class="editorial-members">
+                            ${data.editorialTeam && data.editorialTeam.length > 0 ? 
+                              data.editorialTeam.map((member, index) => `
+                                <div class="editorial-member">
+                                    <div class="member-icon">${index === 0 ? '👩‍🏫' : '�‍🏫'}</div>
+                                    <div class="member-details">
+                                        <strong>${member.name}</strong>
+                                        <span>${member.role}</span>
+                                    </div>
+                                </div>
+                              `).join('') : `
+                                <div class="editorial-member">
+                                    <div class="member-icon">👩‍�</div>
+                                    <div class="member-details">
+                                        <strong>Ms. Mittal K. Pedhadiya</strong>
+                                        <span>Newsletter Editor</span>
+                                    </div>
+                                </div>
+                                <div class="editorial-member">
+                                    <div class="member-icon">�‍🏫</div>
+                                    <div class="member-details">
+                                        <strong>Mr. Milav J. Dabgar</strong>
+                                        <span>Newsletter Co-Editor</span>
+                                    </div>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                    
+                    <div class="back-cover-footer">
+                        <div class="footer-decoration">
+                            <div class="decoration-line"></div>
+                            <div class="decoration-dots">
+                                <span>•</span>
+                                <span>•</span>
+                                <span>•</span>
+                            </div>
+                            <div class="decoration-line"></div>
+                        </div>
+                        <div class="footer-text">
+                            <p><strong>Spectrum Newsletter - Band III</strong></p>
+                            <p>Academic Year ${year} • Government Polytechnic, Palanpur</p>
+                            <p class="motto">Excellence in Technical Education Since 1984</p>
                         </div>
                     </div>
                 </div>
