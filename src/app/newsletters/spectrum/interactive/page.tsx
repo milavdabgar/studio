@@ -411,25 +411,56 @@ export default function InteractiveNewsletterPage() {
                       
                       {/* Images for canvas items */}
                       {item.images && item.images.length > 0 && (
-                        <div className="mt-4 space-y-3">
-                          {item.images.map((image, imageIndex) => (
-                            <div key={imageIndex} className="relative">
-                              <img 
-                                src={image.src} 
-                                alt={image.alt} 
-                                className="w-full max-w-2xl mx-auto rounded-lg shadow-md"
-                                onError={(e) => {
-                                  console.error('Failed to load image:', image.src);
-                                  e.currentTarget.style.display = 'none';
-                                }}
-                              />
-                              {image.caption && (
-                                <p className="text-xs text-gray-600 mt-2 italic text-center">
-                                  {image.caption}
-                                </p>
-                              )}
-                            </div>
-                          ))}
+                        <div className="mt-6">
+                          <h4 className="text-sm font-medium text-gray-600 mb-3">Photo Gallery</h4>
+                          <div className={`gap-4 ${
+                            item.images.length === 1 
+                              ? 'flex justify-center' 
+                              : item.images.length === 2 
+                                ? 'grid grid-cols-1 sm:grid-cols-2' 
+                                : item.images.length === 3 
+                                  ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' 
+                                  : item.images.length === 4 
+                                    ? 'grid grid-cols-2 lg:grid-cols-4' 
+                                    : item.images.length <= 6 
+                                      ? 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3' 
+                                      : 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'
+                          }`}>
+                            {item.images.map((image, imgIndex) => {
+                              // Create dynamic sizing based on position and total count
+                              const isFirstImage = imgIndex === 0;
+                              const imageCount = item.images?.length || 0;
+                              const isFeatured = imageCount > 4 && isFirstImage;
+                              const aspectClass = imageCount === 1 
+                                ? 'aspect-video max-w-2xl' 
+                                : imageCount === 2 
+                                  ? 'aspect-[4/3]' 
+                                  : isFeatured 
+                                    ? 'sm:col-span-2 aspect-video' 
+                                    : 'aspect-square';
+                              
+                              return (
+                                <div key={imgIndex} className={`group relative overflow-hidden rounded-lg bg-gray-100 ${aspectClass}`}>
+                                  <img 
+                                    src={image.src}
+                                    alt={image.alt}
+                                    className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105 group-hover:brightness-110"
+                                    onError={(e) => {
+                                      console.error('Failed to load image:', image.src);
+                                      e.currentTarget.style.display = 'none';
+                                    }}
+                                  />
+                                  {image.caption && (
+                                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all duration-300 flex items-end p-3">
+                                      <p className="text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        {image.caption}
+                                      </p>
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
                       )}
                     </div>
