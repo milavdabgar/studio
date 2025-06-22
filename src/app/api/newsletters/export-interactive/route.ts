@@ -35,6 +35,20 @@ function getImageAsBase64(imagePath: string): string {
   }
 }
 
+// Helper function to check if an image URL is local (relative path)
+function isLocalImage(src: string): boolean {
+  return !src.startsWith('http://') && !src.startsWith('https://') && !src.startsWith('data:');
+}
+
+// Helper function to process image src, converting local images to base64
+function processImageSrc(src: string): string {
+  if (isLocalImage(src)) {
+    const base64Src = getImageAsBase64(src);
+    return base64Src || src; // fallback to original src if base64 conversion fails
+  }
+  return src; // return as-is for online images
+}
+
 // Using centralized newsletter data
 
 // Generate static HTML from React component data
@@ -1282,6 +1296,26 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                                         `).join('')}
                                     </div>
                                 ` : ''}
+                                ${item.images && item.images.length > 0 ? `
+                                    <div style="margin-top: 1rem;">
+                                        <h4 style="font-size: 0.875rem; font-weight: 500; color: #6b7280; margin-bottom: 0.75rem;">Photo Gallery</h4>
+                                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                            ${item.images.map((image, imgIndex) => `
+                                                <div style="position: relative;">
+                                                    <img 
+                                                        src="${processImageSrc(image.src)}" 
+                                                        alt="${image.alt}" 
+                                                        style="width: 100%; max-width: 28rem; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb;"
+                                                        onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIE5vdCBGb3VuZDwvdGV4dD48L3N2Zz4='"
+                                                    />
+                                                    ${image.caption ? `
+                                                        <p style="font-size: 0.75rem; color: #6b7280; margin-top: 0.5rem; font-style: italic;">${image.caption}</p>
+                                                    ` : ''}
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                ` : ''}
                             </div>
                         </div>
                       `;
@@ -1327,7 +1361,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                                         ${event.images.map((image, imgIndex) => `
                                             <div class="chronicle-image-container">
                                                 <img 
-                                                    src="${image.src}" 
+                                                    src="${processImageSrc(image.src)}" 
                                                     alt="${image.alt}" 
                                                     class="chronicle-image"
                                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIE5vdCBGb3VuZDwvdGV4dD48L3N2Zz4='"
@@ -1391,7 +1425,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                                         ${item.images.map((image, imgIndex) => `
                                             <div class="canvas-image-container">
                                                 <img 
-                                                    src="${image.src}" 
+                                                    src="${processImageSrc(image.src)}" 
                                                     alt="${image.alt}" 
                                                     class="canvas-image"
                                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIE5vdCBGb3VuZDwvdGV4dD48L3N2Zz4='"
