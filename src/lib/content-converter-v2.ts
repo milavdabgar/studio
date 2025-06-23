@@ -941,6 +941,21 @@ ${presentationContent}`;
             text-align: justify;
             orphans: 3;
             widows: 3;
+            text-indent: 0;
+        }
+        
+        .poem-content, .canvas-text.poem, pre.poem {
+            white-space: pre-wrap !important;
+            text-indent: 0 !important;
+            margin-left: 0 !important;
+            padding: 0 !important;
+            text-align: left !important;
+            font-family: 'Georgia', serif !important;
+            font-style: italic !important;
+            border: none !important;
+            background: transparent !important;
+            line-height: 1.8 !important;
+            word-wrap: break-word !important;
         }
         
         .table-wrapper {

@@ -504,7 +504,7 @@ export default function InteractiveNewsletterPage() {
                       <div className="prose prose-sm max-w-none">
                         {item.type === 'poem' ? (
                           <pre className="whitespace-pre-wrap font-sans text-sm text-gray-700 leading-relaxed">
-                            {item.content || ''}
+{(item.content || '').trim()}
                           </pre>
                         ) : (
                           <p className="text-gray-700 leading-relaxed">
