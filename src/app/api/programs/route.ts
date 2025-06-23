@@ -1,112 +1,83 @@
-
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Program } from '@/types/entities'; 
-
-declare global {
-  var __API_PROGRAMS_STORE__: Program[] | undefined;
-}
-
-const now = new Date().toISOString();
-
-if (!global.__API_PROGRAMS_STORE__ || global.__API_PROGRAMS_STORE__.length === 0) {
-  global.__API_PROGRAMS_STORE__ = [
-    { 
-      id: "prog_dce_gpp", 
-      name: "Diploma in Computer Engineering", 
-      code: "DCE", 
-      departmentId: "dept_ce_gpp", 
-      instituteId: "inst1",
-      degreeType: "Diploma", 
-      durationYears: 3, 
-      totalSemesters: 6, 
-      status: "active",
-      createdAt: now,
-      updatedAt: now,
-    },
-    { 
-      id: "prog_dme_gpp", 
-      name: "Diploma in Mechanical Engineering", 
-      code: "DME", 
-      departmentId: "dept_me_gpp", 
-      instituteId: "inst1",
-      degreeType: "Diploma", 
-      durationYears: 3, 
-      totalSemesters: 6, 
-      status: "active",
-      createdAt: now,
-      updatedAt: now,
-    },
-    { 
-      id: "prog_dee_gpp", 
-      name: "Diploma in Electrical Engineering", 
-      code: "DEE", 
-      departmentId: "dept_ee_gpp", 
-      instituteId: "inst1",
-      degreeType: "Diploma", 
-      durationYears: 3, 
-      totalSemesters: 6, 
-      status: "active",
-      createdAt: now,
-      updatedAt: now,
-    },
-  ];
-}
-const programsStore: Program[] = global.__API_PROGRAMS_STORE__;
+import type { Program } from '@/types/entities';
+import { connectMongoose } from '@/lib/mongodb';
+import { ProgramModel } from '@/lib/models';
 
 const generateId = (): string => `prog_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function GET() {
-  if (!Array.isArray(global.__API_PROGRAMS_STORE__)) {
-      console.error("/api/programs GET: global.__API_PROGRAMS_STORE__ is not an array!", global.__API_PROGRAMS_STORE__);
-      global.__API_PROGRAMS_STORE__ = []; 
-      return NextResponse.json({ message: 'Internal server error: Program data store corrupted.' }, { status: 500 });
+  try {
+    await connectMongoose();
+    const programs = await ProgramModel.find();
+    return NextResponse.json(programs);
+  } catch (error) {
+    console.error('Error fetching programs:', error);
+    return NextResponse.json({ message: 'Error fetching programs', error: (error as Error).message }, { status: 500 });
   }
-  return NextResponse.json(global.__API_PROGRAMS_STORE__);
 }
 
 export async function POST(request: NextRequest) {
   try {
+    await connectMongoose();
     const programData = await request.json() as Omit<Program, 'id' | 'createdAt' | 'updatedAt'>;
 
+    // Validate required fields
     if (!programData.name || !programData.name.trim()) {
-      return NextResponse.json({ message: 'Program Name cannot be empty.' }, { status: 400 });
+      return NextResponse.json({ message: 'Program name cannot be empty.' }, { status: 400 });
     }
     if (!programData.code || !programData.code.trim()) {
-      return NextResponse.json({ message: 'Program Code cannot be empty.' }, { status: 400 });
+      return NextResponse.json({ message: 'Program code cannot be empty.' }, { status: 400 });
     }
     if (!programData.departmentId) {
       return NextResponse.json({ message: 'Department ID is required.' }, { status: 400 });
     }
-    if (!programData.instituteId) { // Added check for instituteId
+    if (!programData.instituteId) {
       return NextResponse.json({ message: 'Institute ID is required.' }, { status: 400 });
     }
-     if (global.__API_PROGRAMS_STORE__?.some(p => p.code.toLowerCase() === programData.code.trim().toLowerCase() && p.departmentId === programData.departmentId && p.instituteId === programData.instituteId)) {
-        return NextResponse.json({ message: `Program with code '${programData.code.trim()}' already exists for this department and institute.` }, { status: 409 });
+    
+    // Check for duplicate program code within the institute
+    const existingProgram = await ProgramModel.findOne({ 
+      code: { $regex: new RegExp(`^${programData.code.trim()}$`, 'i') },
+      instituteId: programData.instituteId 
+    });
+    
+    if (existingProgram) {
+      return NextResponse.json({ message: `Program with code '${programData.code.trim()}' already exists for this institute.` }, { status: 409 });
     }
-    if ((programData.durationYears && (isNaN(programData.durationYears) || programData.durationYears <= 0 || programData.durationYears > 10)) ||
-        (programData.totalSemesters && (isNaN(programData.totalSemesters) || programData.totalSemesters <= 0 || programData.totalSemesters > 20))) {
-      return NextResponse.json({ message: 'Please enter valid duration (1-10 years) and semester (1-20) numbers.' }, { status: 400 });
+    
+    // Validate numeric fields
+    if (programData.durationYears && programData.durationYears <= 0) {
+      return NextResponse.json({ message: 'Duration must be greater than 0.' }, { status: 400 });
     }
-
-
-    const newProgram: Program = {
-      id: generateId(),
+    if (programData.totalSemesters && programData.totalSemesters <= 0) {
+      return NextResponse.json({ message: 'Total semesters must be greater than 0.' }, { status: 400 });
+    }
+    if (programData.totalCredits && programData.totalCredits <= 0) {
+      return NextResponse.json({ message: 'Total credits must be greater than 0.' }, { status: 400 });
+    }
+    if (programData.admissionCapacity && programData.admissionCapacity <= 0) {
+      return NextResponse.json({ message: 'Admission capacity must be greater than 0.' }, { status: 400 });
+    }
+    
+    const newProgram = new ProgramModel({
       name: programData.name.trim(),
       code: programData.code.trim().toUpperCase(),
       description: programData.description?.trim() || undefined,
       departmentId: programData.departmentId,
       instituteId: programData.instituteId,
-      degreeType: programData.degreeType || 'Diploma',
+      degreeType: programData.degreeType || undefined,
       durationYears: programData.durationYears ? Number(programData.durationYears) : undefined,
       totalSemesters: programData.totalSemesters ? Number(programData.totalSemesters) : undefined,
       totalCredits: programData.totalCredits ? Number(programData.totalCredits) : undefined,
-      curriculumVersion: programData.curriculumVersion || undefined,
+      curriculumVersion: programData.curriculumVersion?.trim() || undefined,
       status: programData.status || 'active',
+      admissionCapacity: programData.admissionCapacity ? Number(programData.admissionCapacity) : undefined,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    };
-    global.__API_PROGRAMS_STORE__?.push(newProgram); 
-    return NextResponse.json(newProgram, { status: 201 });
+    });
+    
+    const savedProgram = await newProgram.save();
+    return NextResponse.json(savedProgram, { status: 201 });
   } catch (error) {
     console.error('Error creating program:', error);
     return NextResponse.json({ message: 'Error creating program', error: (error as Error).message }, { status: 500 });

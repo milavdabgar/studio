@@ -5,7 +5,26 @@ import type {
 } from '@/types/entities';
 
 // User Schema
-interface IUser extends Omit<User, 'id'>, Document {
+interface IUser extends Omit<// Update timestamps middleware
+departmentSchema.pre('save', function(this: IDepartment, next) {
+  this.updatedAt = new Date().toISOString();
+  next();
+});
+
+courseSchema.pre('save', function(this: ICourse, next) {
+  this.updatedAt = new Date().toISOString();
+  next();
+});
+
+batchSchema.pre('save', function(this: IBatch, next) {
+  this.updatedAt = new Date().toISOString();
+  next();
+});
+
+programSchema.pre('save', function(this: IProgram, next) {
+  this.updatedAt = new Date().toISOString();
+  next();
+});t {
   _id: string;
 }
 
@@ -51,18 +70,15 @@ const userSchema = new Schema<IUser>({
   },
   
   instituteId: { type: String },
-  
-  password: { type: String },
-  
-  metadata: { type: Schema.Types.Mixed }
+  instituteEmail: { type: String },
+  password: { type: String, select: false } // Don't return password by default
 }, {
-  timestamps: false,
+  timestamps: false, // We handle timestamps manually with ISO strings
   toJSON: {
     transform: function(doc, ret) {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;
-      delete ret.password; // Never expose password in JSON
       return ret;
     }
   }
@@ -78,9 +94,10 @@ const roleSchema = new Schema<IRole>({
   code: { type: String, required: true, unique: true },
   description: { type: String, required: true },
   permissions: [{ type: String, required: true }],
-  
-  isActive: { type: Boolean, required: true, default: true },
-  
+  isSystemRole: { type: Boolean, default: false },
+  isCommitteeRole: { type: Boolean, default: false },
+  committeeId: { type: String },
+  committeeCode: { type: String },
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() },
   
@@ -257,32 +274,32 @@ const programSchema = new Schema<IProgram>({
 
 // Update timestamps middleware
 userSchema.pre('save', function(next) {
-  (this as any).updatedAt = new Date().toISOString();
+  this.updatedAt = new Date().toISOString();
   next();
 });
 
 roleSchema.pre('save', function(next) {
-  (this as any).updatedAt = new Date().toISOString();
+  this.updatedAt = new Date().toISOString();
   next();
 });
 
 departmentSchema.pre('save', function(next) {
-  (this as any).updatedAt = new Date().toISOString();
+  this.updatedAt = new Date().toISOString();
   next();
 });
 
 courseSchema.pre('save', function(next) {
-  (this as any).updatedAt = new Date().toISOString();
+  this.updatedAt = new Date().toISOString();
   next();
 });
 
 batchSchema.pre('save', function(next) {
-  (this as any).updatedAt = new Date().toISOString();
+  this.updatedAt = new Date().toISOString();
   next();
 });
 
 programSchema.pre('save', function(next) {
-  (this as any).updatedAt = new Date().toISOString();
+  this.updatedAt = new Date().toISOString();
   next();
 });
 
