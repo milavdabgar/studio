@@ -2415,6 +2415,41 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24', imag
                 max-width: 20rem;
             }
         }
+
+        /* PDF-specific styling to match HTML exactly */
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            /* Preserve poem formatting exactly */
+            .canvas-text.poem {
+                white-space: pre-wrap !important;
+                font-family: 'Georgia', serif !important;
+                font-style: italic !important;
+                text-indent: 0 !important;
+                margin-left: 0 !important;
+                padding: 0 !important;
+                text-align: left !important;
+            }
+            
+            /* Ensure page breaks work properly */
+            .section {
+                page-break-inside: avoid;
+            }
+            
+            .canvas-container, .spotlight-container {
+                page-break-inside: avoid;
+            }
+        }
+        
+        /* Force color preservation for PDF generation */
+        @page {
+            margin: 20px;
+            size: A4;
+        }
     </style>
 </head>
 <body>
@@ -3048,6 +3083,9 @@ async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
           '--disable-background-timer-throttling',
           '--disable-renderer-backgrounding',
           '--disable-backgrounding-occluded-windows',
+          '--force-color-profile=srgb',
+          '--enable-font-antialiasing',
+          '--font-render-hinting=none',
         ],
         timeout: 60000
       });
@@ -3063,7 +3101,7 @@ async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
 
     const page = await browser.newPage();
 
-    // Set viewport and other page settings
+    // Set viewport and other page settings to match HTML rendering exactly
     await page.setViewport({
       width: 1200,
       height: 800,
@@ -3072,7 +3110,7 @@ async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
 
     // Set content with longer timeout and better error handling
     await page.setContent(htmlContent, { 
-      waitUntil: ['load', 'domcontentloaded'],
+      waitUntil: ['load', 'domcontentloaded', 'networkidle0'],
       timeout: 60000 
     });
 
@@ -3086,7 +3124,18 @@ async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
     // Wait a bit more for any CSS animations or dynamic content
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    // Generate PDF with optimal settings for newsletter
+    // Add CSS to force color preservation for PDF
+    await page.addStyleTag({
+      content: `
+        * {
+          -webkit-print-color-adjust: exact !important;
+          color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+      `
+    });
+
+    // Generate PDF with optimal settings for newsletter to match HTML exactly
     const pdfBuffer = await page.pdf({
       format: 'A4',
       printBackground: true,
@@ -3096,9 +3145,12 @@ async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
         bottom: '20px',
         left: '20px',
       },
-      preferCSSPageSize: false,
+      preferCSSPageSize: true,
       displayHeaderFooter: false,
       timeout: 60000,
+      omitBackground: false,
+      tagged: false,
+      scale: 1,
     });
 
     return Buffer.from(pdfBuffer);
