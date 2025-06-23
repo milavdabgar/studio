@@ -115,7 +115,7 @@ test.describe('Admin Infrastructure Management', () => {
             const buildingRow = page.locator(`tr:has-text("${testBuildingIdForRooms}")`).first();
             if(await buildingRow.isVisible({timeout: 5000})){
                 await buildingRow.getByRole('button', { name: /delete/i }).click();
-                await expect(page.getByText(/building deleted/i, { exact: false })).toBeVisible({timeout: 10000});
+                await expect(page.getByText('Building Deleted', { exact: true })).toBeVisible({timeout: 10000});
             }
         }
     });
@@ -167,7 +167,7 @@ test.describe('Admin Infrastructure Management', () => {
       await expect(roomRow).toBeVisible();
       await roomRow.getByRole('button', { name: /delete/i }).click();
       
-      await expect(page.getByText(/room deleted/i, { exact: false })).toBeVisible({timeout: 10000});
+      await expect(page.getByText('Room Deleted', { exact: true })).toBeVisible({timeout: 10000});
       await expect(roomRow).not.toBeVisible();
       createdRoomNumber = '';
     });
@@ -258,7 +258,7 @@ test.describe('Admin Infrastructure Management', () => {
       await expect(allocationRow).toBeVisible();
       await allocationRow.getByRole('button', { name: /delete/i }).click();
       
-      await expect(page.getByText(/allocation deleted/i, { exact: false })).toBeVisible({timeout: 10000});
+      await expect(page.getByText('Allocation Deleted', { exact: true })).toBeVisible({timeout: 10000});
       await expect(allocationRow).not.toBeVisible();
       createdAllocationTitle = '';
     });
