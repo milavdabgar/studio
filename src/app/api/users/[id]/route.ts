@@ -4,6 +4,7 @@ import type { User } from '@/types/entities'; // Updated import
 import { instituteService } from '@/lib/api/institutes';
 import { connectMongoose } from '@/lib/mongodb';
 import { UserModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 interface RouteParams {
   params: {
@@ -24,6 +25,11 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     await connectMongoose();
     const { id } = params;
     
+    // Check if the ID is a valid ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ message: 'User not found' }, { status: 404 });
+    }
+    
     const user = await UserModel.findById(id).select('-password');
     if (!user) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 });
@@ -40,6 +46,11 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
     const { id } = params;
+    
+    // Check if the ID is a valid ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ message: 'User not found' }, { status: 404 });
+    }
     
     const userDataToUpdate = await request.json() as Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>> & { password?: string, fullName?: string };
 
@@ -127,6 +138,11 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
     const { id } = params;
+    
+    // Check if the ID is a valid ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ message: 'User not found' }, { status: 404 });
+    }
     
     const userToDelete = await UserModel.findById(id);
     if (!userToDelete) {

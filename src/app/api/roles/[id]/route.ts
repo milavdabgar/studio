@@ -3,6 +3,7 @@ import type { Role, User } from '@/types/entities'; // Import User
 import { allPermissions } from '@/lib/api/roles'; 
 import { connectMongoose } from '@/lib/mongodb';
 import { RoleModel, UserModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 interface RouteParams {
   params: {
@@ -14,6 +15,11 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
     const { id } = params;
+    
+    // Check if the ID is a valid ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ message: 'Role not found' }, { status: 404 });
+    }
     
     const role = await RoleModel.findById(id);
     if (!role) {
@@ -31,6 +37,11 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
     const { id } = params;
+    
+    // Check if the ID is a valid ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ message: 'Role not found' }, { status: 404 });
+    }
     
     const roleData = await request.json() as Partial<Omit<Role, 'id' | 'createdAt' | 'updatedAt'>>;
 
@@ -90,6 +101,11 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
     const { id } = params;
+    
+    // Check if the ID is a valid ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return NextResponse.json({ message: 'Role not found' }, { status: 404 });
+    }
     
     const roleToDelete = await RoleModel.findById(id);
     if (!roleToDelete) {
