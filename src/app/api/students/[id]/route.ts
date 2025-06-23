@@ -25,7 +25,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   try {
     const studentDataToUpdate = await request.json() as Partial<Omit<Student, 'id' | 'userId' | 'createdAt' | 'updatedAt'>>;
     const studentIndex = studentsStore.findIndex(s => s.id === id);
@@ -146,7 +146,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   const studentIndex = studentsStore.findIndex(s => s.id === id);
 
   if (studentIndex === -1) {

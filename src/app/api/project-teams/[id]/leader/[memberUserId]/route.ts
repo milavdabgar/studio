@@ -8,14 +8,14 @@ if (!(global as any).__API_PROJECT_TEAMS_STORE__) {
 }
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string; // Team ID
     memberUserId: string; // User ID of the member to set as leader
-  };
+  }>;
 }
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
-  const { id: teamId, memberUserId } = params;
+  const { id: teamId, memberUserId } = await params;
   let currentProjectTeamsStore = global.__API_PROJECT_TEAMS_STORE__ as ProjectTeam[];
 
   if (!Array.isArray(currentProjectTeamsStore)) {

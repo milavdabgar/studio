@@ -9,13 +9,13 @@ if (!global.__API_ROOM_ALLOCATIONS_STORE__) {
 let roomAllocationsStore: RoomAllocation[] = global.__API_ROOM_ALLOCATIONS_STORE__;
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   if (!Array.isArray(global.__API_ROOM_ALLOCATIONS_STORE__)) {
     global.__API_ROOM_ALLOCATIONS_STORE__ = [];
     return NextResponse.json({ message: 'Room Allocation data store corrupted.' }, { status: 500 });
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   if (!Array.isArray(global.__API_ROOM_ALLOCATIONS_STORE__)) {
     global.__API_ROOM_ALLOCATIONS_STORE__ = [];
     return NextResponse.json({ message: 'Room Allocation data store corrupted.' }, { status: 500 });
@@ -92,7 +92,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   if (!Array.isArray(global.__API_ROOM_ALLOCATIONS_STORE__)) {
     global.__API_ROOM_ALLOCATIONS_STORE__ = [];
     return NextResponse.json({ message: 'Room Allocation data store corrupted.' }, { status: 500 });

@@ -12,13 +12,13 @@ if (!global.__API_TIMETABLES_STORE__) {
 let timetablesStore: Timetable[] = global.__API_TIMETABLES_STORE__;
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   if (!Array.isArray(global.__API_TIMETABLES_STORE__)) {
     global.__API_TIMETABLES_STORE__ = [];
     return NextResponse.json({ message: 'Timetable data store corrupted.' }, { status: 500 });
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   if (!Array.isArray(global.__API_TIMETABLES_STORE__)) {
     global.__API_TIMETABLES_STORE__ = [];
     return NextResponse.json({ message: 'Timetable data store corrupted.' }, { status: 500 });
@@ -62,7 +62,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   if (!Array.isArray(global.__API_TIMETABLES_STORE__)) {
     global.__API_TIMETABLES_STORE__ = [];
     return NextResponse.json({ message: 'Timetable data store corrupted.' }, { status: 500 });

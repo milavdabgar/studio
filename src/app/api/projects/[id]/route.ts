@@ -1,6 +1,6 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Project, ProjectTeam } from '@/types/entities';
+import type { Project, ProjectTeam, ProjectLocation } from '@/types/entities';
 import { notificationService } from '@/lib/api/notifications';
 
 // Assuming these stores are initialized as in other files
@@ -8,7 +8,7 @@ declare global {
   // eslint-disable-next-line no-var
   var __API_PROJECTS_STORE__: Project[] | undefined;
   // eslint-disable-next-line no-var
-  var __API_PROJECT_LOCATIONS_STORE__: any[] | undefined;
+  var __API_PROJECT_LOCATIONS_STORE__: ProjectLocation[] | undefined;
   // eslint-disable-next-line no-var
   var __API_PROJECT_TEAMS_STORE__: ProjectTeam[] | undefined; 
 }
@@ -18,18 +18,18 @@ if (!global.__API_PROJECT_TEAMS_STORE__) global.__API_PROJECT_TEAMS_STORE__ = []
 
 
 let projectsStore: Project[] = global.__API_PROJECTS_STORE__;
-let projectLocationsStore: any[] = global.__API_PROJECT_LOCATIONS_STORE__;
+let projectLocationsStore: ProjectLocation[] = global.__API_PROJECT_LOCATIONS_STORE__;
 const projectTeamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
 
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   const project = projectsStore.find(p => p.id === id);
   if (project) {
     return NextResponse.json({ status: 'success', data: { project } });
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   try {
     const projectDataToUpdate = await request.json() as Partial<Omit<Project, 'id'>>;
     const projectIndex = projectsStore.findIndex(p => p.id === id);
@@ -90,7 +90,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   const projectIndex = projectsStore.findIndex(p => p.id === id);
 
   if (projectIndex === -1) {

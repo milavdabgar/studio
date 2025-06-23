@@ -16,15 +16,15 @@ const ensureProjectLocationsStore = () => {
 
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string; // This ID can be either the MongoDB _id or the user-friendly locationId string (e.g., A-01)
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   ensureProjectLocationsStore();
   const currentProjectLocationsStore: ProjectLocation[] = global.__API_PROJECT_LOCATIONS_STORE__!;
-  const { id } = params;
+  const { id } = await params;
 
   try {
     // Attempt to find by MongoDB _id first, then by locationId string
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 export async function PUT(request: NextRequest, { params }: RouteParams) { // Changed to PUT for full update
   ensureProjectLocationsStore();
   const currentProjectLocationsStore: ProjectLocation[] = global.__API_PROJECT_LOCATIONS_STORE__!;
-  const { id } = params;
+  const { id } = await params;
   
   try {
     const locationDataToUpdate = await request.json() as Partial<Omit<ProjectLocation, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>>;
@@ -97,7 +97,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) { // Ch
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   ensureProjectLocationsStore();
   let currentProjectLocationsStore: ProjectLocation[] = global.__API_PROJECT_LOCATIONS_STORE__!;
-  const { id } = params;
+  const { id } = await params;
 
   try {
     const initialLength = currentProjectLocationsStore.length;

@@ -12,13 +12,13 @@ if (!global.__API_NOTIFICATIONS_STORE__) {
 let notificationsStore: Notification[] = global.__API_NOTIFICATIONS_STORE__;
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     notificationId: string;
-  };
+  }>;
 }
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
-  const { notificationId } = params;
+  const { notificationId } = await params;
   const notificationIndex = notificationsStore.findIndex(n => n.id === notificationId);
 
   if (notificationIndex === -1) {

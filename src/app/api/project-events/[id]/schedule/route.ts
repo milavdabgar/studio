@@ -18,13 +18,13 @@ const projectTeamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
 
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string; // Event ID
-  };
+  }>;
 }
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
-  const { id: eventId } = params;
+  const { id: eventId } = await params;
   try {
     const { schedule } = await request.json() as { schedule: ProjectEventScheduleItem[] };
     

@@ -11,13 +11,13 @@ if (!(global as any).__API_USERS_STORE__) {
 }
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string; // Team ID
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id: teamId } = params;
+  const { id: teamId } = await params;
   const projectTeamsStoreRef = global.__API_PROJECT_TEAMS_STORE__ as ProjectTeam[];
   const usersStoreRef = global.__API_USERS_STORE__ as User[];
 
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function POST(request: NextRequest, { params }: RouteParams) {
-  const { id: teamId } = params;
+  const { id: teamId } = await params;
   let projectTeamsStoreRef = global.__API_PROJECT_TEAMS_STORE__ as ProjectTeam[];
   const usersStoreRef = global.__API_USERS_STORE__ as User[];
 

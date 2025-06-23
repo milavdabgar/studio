@@ -13,13 +13,13 @@ if (!global.__API_PROJECT_TEAMS_STORE__) {
 let projectTeamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string; // Team ID
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   if (!Array.isArray(global.__API_PROJECT_TEAMS_STORE__)) {
     global.__API_PROJECT_TEAMS_STORE__ = []; 
     projectTeamsStore = global.__API_PROJECT_TEAMS_STORE__;
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) { 
-  const { id } = params;
+  const { id } = await params;
   if (!Array.isArray(global.__API_PROJECT_TEAMS_STORE__)) {
     global.__API_PROJECT_TEAMS_STORE__ = [];
     projectTeamsStore = global.__API_PROJECT_TEAMS_STORE__;
@@ -83,7 +83,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   if (!Array.isArray(global.__API_PROJECT_TEAMS_STORE__)) {
     global.__API_PROJECT_TEAMS_STORE__ = [];
     projectTeamsStore = global.__API_PROJECT_TEAMS_STORE__;

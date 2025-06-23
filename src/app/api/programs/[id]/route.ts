@@ -112,11 +112,19 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     await connectMongoose();
     const { id } = await params;
     
-    const deletedProgram = await ProgramModel.findByIdAndDelete(id);
-    if (!deletedProgram) {
+    // Try to find by MongoDB ObjectId first, then by custom id field
+    let programToDelete;
+    if (Types.ObjectId.isValid(id)) {
+      programToDelete = await ProgramModel.findById(id);
+    } else {
+      programToDelete = await ProgramModel.findOne({ id });
+    }
+    
+    if (!programToDelete) {
       return NextResponse.json({ message: 'Program not found' }, { status: 404 });
     }
     
+    await ProgramModel.findByIdAndDelete(programToDelete._id);
     return NextResponse.json({ message: 'Program deleted successfully' });
   } catch (error) {
     console.error('Error deleting program:', error);
