@@ -3,10 +3,10 @@ import { test, expect, Page } from '@playwright/test';
 const APP_BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000';
 
 const facultyUserCredentials = {
-  email: 'faculty.cs01@gppalanpur.ac.in', 
-  password: 'Password@123', 
+  email: 'faculty@example.com', 
+  password: 'password', 
   role: 'Faculty',
-  name: 'Prof. CS01 FACULTY' 
+  name: 'Bob Faculty' 
 };
 
 async function loginAsFaculty(page: Page) {

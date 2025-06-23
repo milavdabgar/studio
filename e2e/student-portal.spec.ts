@@ -7,10 +7,10 @@ import os from 'os'; // Import os for temp directory
 const APP_BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000';
 
 const studentUserCredentials = {
-  email: '220010107001@gppalanpur.ac.in', 
-  password: '220010107001', // Assuming this is the default password
+  email: 'student@example.com', 
+  password: 'password', 
   role: 'Student',
-  name: 'DOE JOHN MICHAEL'
+  name: 'Alice Student'
 };
 
 async function loginAsStudent(page: Page) {
