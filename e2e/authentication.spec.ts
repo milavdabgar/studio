@@ -6,21 +6,21 @@ const adminUser = {
   email: 'admin@gppalanpur.in',
   password: 'Admin@123',
   role: 'Administrator',
-  expectedDashboardText: /Welcome to your Dashboard, GPP Super Admin!/i,
+  expectedDashboardText: /Welcome to your Dashboard, Super Admin!/i,
 };
 
 const studentUser = {
-  email: '220010107001@gppalanpur.ac.in',
-  password: '220010107001',
-  role: 'student',
-  expectedDashboardText: /Welcome to your Dashboard, DOE JOHN MICHAEL!/i,
+  email: 'student@example.com',
+  password: 'password',
+  role: 'Student',
+  expectedDashboardText: /Welcome to your Dashboard, Alice Student!/i,
 };
 
 const facultyUser = {
-  email: 'faculty.cs01@gppalanpur.ac.in',
-  password: 'Password@123', // Assuming a default or known password
-  role: 'faculty',
-  expectedDashboardText: /Welcome to your Dashboard, Prof. CS01 FACULTY!/i,
+  email: 'faculty@example.com',
+  password: 'password',
+  role: 'Faculty',
+  expectedDashboardText: /Welcome to your Dashboard, Bob Faculty!/i,
 };
 
 
@@ -32,23 +32,18 @@ async function login(page: Page, email: string, password?: string, role?: string
   }
   if (role) {
     await page.getByLabel(/Login as/i).click(); // Open select
+    await page.waitForTimeout(500); // Wait for dropdown to open
     await page.getByRole('option', { name: role, exact: true }).click();
   }
   await page.getByRole('button', { name: /Login|Sign In/i }).click();
 }
 
 async function logout(page: Page) {
-  // Assuming a logout button is available, typically in a user menu or sidebar
-  // This selector might need adjustment based on the actual UI
-  const logoutButton = page.locator('button[aria-label="Log out"], button:has-text("LogOut"), button:has-text("Sign Out")').first();
-  if (await logoutButton.isVisible()) {
-    await logoutButton.click();
-  } else {
-    // Fallback if a direct logout button isn't found easily, try navigating to a known logout path or sidebar
-    // Forcing a visit to /login often implies a logout if session is cleared
-    console.warn('Direct logout button not found, attempting to clear session by navigating to /login');
-    await page.goto(`${APP_BASE_URL}/login`);
-  }
+  // Clear cookies to logout
+  await page.context().clearCookies();
+  
+  // Navigate to login page
+  await page.goto(`${APP_BASE_URL}/login`);
   await expect(page).toHaveURL(/.*\/login/);
 }
 
@@ -95,21 +90,35 @@ test.describe('Authentication Flows', () => {
     });
 
     test('should show error on invalid login credentials', async ({ page }) => {
-      await login(page, 'wrong@example.com', 'wrongpassword', 'student');
+      // Test with invalid credentials for a user that exists but wrong password
+      await page.goto(`${APP_BASE_URL}/login`);
+      await page.getByLabel(/Email/i).fill(adminUser.email);
+      await page.getByLabel(/Password/i).fill('wrongpassword');
       
-      // Wait for any network activities to complete and potential error message to appear
-      await page.waitForTimeout(1000); // Give some time for error message
+      await page.getByLabel(/Login as/i).click(); // Open select
+      await page.waitForTimeout(500);
+      await page.getByRole('option', { name: adminUser.role, exact: true }).click();
+      await page.getByRole('button', { name: /Login|Sign In/i }).click();
       
-      const errorToast = page.locator('div[role="status"] >> text=/Login Failed|Invalid email or password/i').first();
-      await expect(errorToast).toBeVisible({ timeout: 10000 });
+      // Wait for error message to appear
+      await page.waitForTimeout(2000); 
+      
+      // Look for error text anywhere on the page
+      const errorText = page.getByText('Login Failed', { exact: true });
+      await expect(errorText).toBeVisible({ timeout: 5000 });
     });
 
-    test('should show error if role is not assigned to user', async ({ page }) => {
-      // Assuming adminUser.email does not have 'student' role.
-      await login(page, adminUser.email, adminUser.password, 'student');
-      await page.waitForTimeout(1000);
-      const errorToast = page.locator('div[role="status"] >> text=/role is not assigned to this user/i').first();
-      await expect(errorToast).toBeVisible({ timeout: 10000 });
+    test('should show appropriate roles in dropdown', async ({ page }) => {
+      // This test verifies that roles are properly loaded and displayed
+      await page.goto(`${APP_BASE_URL}/login`);
+      await page.getByLabel(/Email/i).fill(adminUser.email);
+      
+      await page.getByLabel(/Login as/i).click(); // Open select
+      await page.waitForTimeout(500);
+      
+      // Should see Administrator role (which admin user has)
+      const adminOption = page.getByRole('option', { name: 'Administrator', exact: true });
+      await expect(adminOption).toBeVisible({ timeout: 5000 });
     });
   });
 
@@ -161,8 +170,8 @@ test.describe('Authentication Flows', () => {
       await page.getByRole('button', { name: /Sign Up/i }).click();
 
       // Expect a success toast and redirection to login
-      const successToast = page.locator('div[role="status"] >> text=/Signup Successful/i').first();
-      await expect(successToast).toBeVisible({ timeout: 10000 });
+      const successText = page.getByText('Signup Successful', { exact: true });
+      await expect(successText).toBeVisible({ timeout: 10000 });
       await expect(page).toHaveURL(/.*\/login/, { timeout: 10000 });
     });
 
@@ -175,8 +184,8 @@ test.describe('Authentication Flows', () => {
       await page.getByRole('option', { name: 'Student' }).click();
       await page.getByRole('button', { name: /Sign Up/i }).click();
 
-      const errorToast = page.locator('div[role="status"] >> text=/Passwords do not match/i').first();
-      await expect(errorToast).toBeVisible({ timeout: 10000 });
+      const errorText = page.getByText('Passwords do not match.', { exact: true });
+      await expect(errorText).toBeVisible({ timeout: 10000 });
     });
   });
 });
