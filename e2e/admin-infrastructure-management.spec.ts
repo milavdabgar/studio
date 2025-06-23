@@ -20,6 +20,8 @@ async function loginAsAdmin(page: Page) {
 
 test.describe('Admin Infrastructure Management', () => {
   let page: Page;
+  let createdRoomNumber: string = ''; // Moved to top level for sharing between test groups
+  let testBuildingIdForRooms: string = ''; // To store ID of a building created for rooms
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
@@ -37,7 +39,7 @@ test.describe('Admin Infrastructure Management', () => {
 
     test('should navigate to buildings page and create a new building', async () => {
       await page.goto(`${APP_BASE_URL}/admin/buildings`);
-      await expect(page.getByRole('heading', { name: /building management/i })).toBeVisible();
+      await expect(page.getByText('Building Management', { exact: true })).toBeVisible();
 
       const timestamp = Date.now().toString().slice(-6);
       createdBuildingCode = `E2EBLD${timestamp}`;
@@ -53,11 +55,11 @@ test.describe('Admin Infrastructure Management', () => {
       await page.getByRole('option', { name: /Government Polytechnic Palanpur/i }).first().click(); 
 
       await page.locator('form').getByLabel('Status *').click();
-      await page.getByRole('option', { name: /active/i }).click();
+      await page.getByRole('option', { name: 'Active', exact: true }).click();
       
       await page.getByRole('button', { name: /create building/i }).click();
 
-      await expect(page.getByText(/building created/i, { exact: false })).toBeVisible({timeout: 10000});
+      await expect(page.getByText('Building Created', { exact: true })).toBeVisible({timeout: 10000});
       await expect(page.getByText(buildingName)).toBeVisible();
     });
 
@@ -77,9 +79,7 @@ test.describe('Admin Infrastructure Management', () => {
 
   // --- Room Management ---
   test.describe('Room Management', () => {
-    let createdRoomNumber: string = '';
     const roomBaseName = 'E2E Test Room';
-    let testBuildingIdForRooms: string = ''; // To store ID of a building created for rooms
 
     test.beforeAll(async () => {
       // Create a temporary building for room tests
@@ -94,9 +94,9 @@ test.describe('Admin Infrastructure Management', () => {
       await instituteSelect.click();
       await page.getByRole('option', { name: /Government Polytechnic Palanpur/i }).first().click();
       await page.locator('form').getByLabel('Status *').click();
-      await page.getByRole('option', { name: /active/i }).click();
+      await page.getByRole('option', { name: 'Active', exact: true }).click();
       await page.getByRole('button', { name: /create building/i }).click();
-      await expect(page.getByText(/building created/i, { exact: false })).toBeVisible({timeout: 10000});
+      await expect(page.getByText('Building Created', { exact: true })).toBeVisible({timeout: 10000});
       
       // Get the ID of the created building for room creation
       // This is a simplified way, ideally API response would give ID or table has data-id
@@ -124,7 +124,7 @@ test.describe('Admin Infrastructure Management', () => {
     test('should navigate to rooms page and create a new room', async () => {
       test.skip(!testBuildingIdForRooms, "Skipping room creation: No test building ID available.");
       await page.goto(`${APP_BASE_URL}/admin/rooms`);
-      await expect(page.getByRole('heading', { name: /room management/i })).toBeVisible();
+      await expect(page.getByText('Room Management', { exact: true })).toBeVisible();
 
       const timestamp = Date.now().toString().slice(-6);
       createdRoomNumber = `E2E-R${timestamp}`;
@@ -151,7 +151,7 @@ test.describe('Admin Infrastructure Management', () => {
       await page.getByLabel(/capacity/i).fill('50');
 
       await page.locator('form').getByLabel('Status *').click();
-      await page.getByRole('option', { name: /available/i }).click();
+      await page.getByRole('option', { name: 'Available', exact: true }).click();
 
       await page.getByRole('button', { name: /create room/i }).click();
 
@@ -242,7 +242,7 @@ test.describe('Admin Infrastructure Management', () => {
       await page.locator('input[type="time"]').last().fill('11:00');
 
       await page.locator('form').getByLabel('Status *').click();
-      await page.getByRole('option', { name: /scheduled/i }).click();
+      await page.getByRole('option', { name: 'Scheduled', exact: true }).click();
       
       await page.getByRole('button', { name: /create allocation/i }).click();
 

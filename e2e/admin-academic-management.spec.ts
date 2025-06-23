@@ -37,7 +37,7 @@ test.describe('Admin Academic Management', () => {
 
     test('should navigate to batches page and create a new batch', async () => {
       await page.goto(`${APP_BASE_URL}/admin/batches`);
-      await expect(page.getByRole('heading', { name: /batch management/i })).toBeVisible();
+      await expect(page.getByText('Batch Management', { exact: true })).toBeVisible();
 
       const timestamp = Date.now().toString().slice(-6);
       createdBatchName = `${batchBaseName} ${timestamp}`;
@@ -54,8 +54,8 @@ test.describe('Admin Academic Management', () => {
       await page.getByLabel(/end academic year/i).fill('2027');
       await page.getByLabel(/max intake/i).fill('60');
 
-      await page.locator('label:has-text("Status") + button[role="combobox"]').click();
-      await page.getByRole('option', { name: /upcoming/i }).click();
+      await page.getByRole('combobox', { name: 'Status *' }).click();
+      await page.getByRole('option', { name: 'Upcoming', exact: true }).click();
       
       await page.getByRole('button', { name: /create batch/i }).click();
       await expect(page.getByText(/batch created/i, { exact: false })).toBeVisible({timeout: 10000});
@@ -83,7 +83,7 @@ test.describe('Admin Academic Management', () => {
 
     test('should navigate to courses page and create a new course', async () => {
       await page.goto(`${APP_BASE_URL}/admin/courses`);
-      await expect(page.getByRole('heading', { name: /course management/i })).toBeVisible();
+      await expect(page.getByText('Course Management', { exact: true })).toBeVisible();
 
       const timestamp = Date.now().toString().slice(-6);
       createdCourseSubcode = `E2ECRS${timestamp}`;
@@ -132,7 +132,7 @@ test.describe('Admin Academic Management', () => {
 
     test('should navigate to curriculum page and create a new curriculum', async () => {
       await page.goto(`${APP_BASE_URL}/admin/curriculum`);
-      await expect(page.getByRole('heading', { name: /curriculum management/i })).toBeVisible();
+      await expect(page.getByText('Curriculum Management', { exact: true })).toBeVisible();
       
       const timestamp = Date.now().toString().slice(-6);
       createdCurriculumVersion = `V_E2E_${timestamp}`;
@@ -186,7 +186,7 @@ test.describe('Admin Academic Management', () => {
 
     test('should navigate to assessments page and create a new assessment', async () => {
       await page.goto(`${APP_BASE_URL}/admin/assessments`);
-      await expect(page.getByRole('heading', { name: /assessment management/i })).toBeVisible();
+      await expect(page.getByText('Assessment Management', { exact: true })).toBeVisible();
 
       const timestamp = Date.now().toString().slice(-6);
       createdAssessmentName = `${assessmentBaseName} ${timestamp}`;

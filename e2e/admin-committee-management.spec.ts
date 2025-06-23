@@ -36,7 +36,7 @@ test.describe('Admin Committee Management', () => {
 
     test('should navigate to committees page and create a new committee', async () => {
       await page.goto(`${APP_BASE_URL}/admin/committees`);
-      await expect(page.getByRole('heading', { name: /committee management/i })).toBeVisible();
+      await expect(page.getByText('Committee Management', { exact: true })).toBeVisible();
 
       const timestamp = Date.now().toString().slice(-6);
       createdCommitteeCode = `E2ECMT${timestamp}`;

@@ -32,7 +32,7 @@ async function login(page: Page, email: string, password?: string, role?: string
   }
   if (role) {
     await page.getByLabel(/Login as/i).click(); // Open select
-    await page.getByRole('option', { name: new RegExp(role, 'i') }).click();
+    await page.getByRole('option', { name: role, exact: true }).click();
   }
   await page.getByRole('button', { name: /Login|Sign In/i }).click();
 }
