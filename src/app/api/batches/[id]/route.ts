@@ -1,99 +1,108 @@
 import { NextResponse, type NextRequest } from 'next/server';
+import { connectMongoose } from '@/lib/mongodb';
+import { BatchModel } from '@/lib/models';
 import type { Batch } from '@/types/entities';
 
-declare global {
-  var __API_BATCHES_STORE__: Batch[] | undefined;
-}
-if (!global.__API_BATCHES_STORE__) {
-  global.__API_BATCHES_STORE__ = [];
-}
-let batchesStore: Batch[] = global.__API_BATCHES_STORE__;
-
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
-  if (!Array.isArray(global.__API_BATCHES_STORE__)) {
-    global.__API_BATCHES_STORE__ = [];
-    return NextResponse.json({ message: 'Batch data store corrupted.' }, { status: 500 });
-  }
-  const batch = global.__API_BATCHES_STORE__.find(b => b.id === id);
-  if (batch) {
+  try {
+    await connectMongoose();
+    const { id } = await params;
+    
+    const batch = await BatchModel.findById(id);
+    if (!batch) {
+      return NextResponse.json({ message: 'Batch not found' }, { status: 404 });
+    }
+    
     return NextResponse.json(batch);
+  } catch (error) {
+    console.error('Error fetching batch:', error);
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
-  return NextResponse.json({ message: 'Batch not found' }, { status: 404 });
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
-  if (!Array.isArray(global.__API_BATCHES_STORE__)) {
-    global.__API_BATCHES_STORE__ = [];
-    return NextResponse.json({ message: 'Batch data store corrupted.' }, { status: 500 });
-  }
   try {
-    const batchDataToUpdate = await request.json() as Partial<Omit<Batch, 'id' | 'createdAt' | 'updatedAt'>>;
-    const batchIndex = global.__API_BATCHES_STORE__.findIndex(b => b.id === id);
-
-    if (batchIndex === -1) {
+    await connectMongoose();
+    const { id } = await params;
+    const batchData = await request.json() as Partial<Omit<Batch, 'id'>>;
+    
+    // Validation
+    if (batchData.name !== undefined && !batchData.name.trim()) {
+      return NextResponse.json({ message: 'Batch name cannot be empty.' }, { status: 400 });
+    }
+    if (batchData.programId !== undefined && !batchData.programId) {
+      return NextResponse.json({ message: 'Program ID is required.' }, { status: 400 });
+    }
+    if (batchData.startAcademicYear !== undefined && (isNaN(batchData.startAcademicYear) || batchData.startAcademicYear < 2000)) {
+      return NextResponse.json({ message: 'Start Academic Year must be a valid year.' }, { status: 400 });
+    }
+    if (batchData.endAcademicYear !== undefined && (isNaN(batchData.endAcademicYear) || batchData.endAcademicYear < 2000)) {
+      return NextResponse.json({ message: 'End Academic Year must be a valid year.' }, { status: 400 });
+    }
+    if (batchData.maxIntake !== undefined && (isNaN(batchData.maxIntake) || batchData.maxIntake <= 0)) {
+      return NextResponse.json({ message: 'Max Intake must be a positive number.' }, { status: 400 });
+    }
+    
+    // Check for duplicate batch name within the same program
+    if (batchData.name && batchData.programId) {
+      const existingBatch = await BatchModel.findOne({
+        name: batchData.name.trim(),
+        programId: batchData.programId,
+        _id: { $ne: id }
+      });
+      
+      if (existingBatch) {
+        return NextResponse.json({ 
+          message: `Batch with name '${batchData.name.trim()}' already exists for this program.` 
+        }, { status: 409 });
+      }
+    }
+    
+    // Process data before update
+    const updateData = { ...batchData };
+    if (batchData.name) {
+      updateData.name = batchData.name.trim();
+    }
+    
+    // Update timestamp
+    updateData.updatedAt = new Date().toISOString();
+    
+    const updatedBatch = await BatchModel.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true, runValidators: true }
+    );
+    
+    if (!updatedBatch) {
       return NextResponse.json({ message: 'Batch not found' }, { status: 404 });
     }
-
-    const existingBatch = global.__API_BATCHES_STORE__[batchIndex];
-
-    if (batchDataToUpdate.name !== undefined && !batchDataToUpdate.name.trim()) {
-        return NextResponse.json({ message: 'Batch Name cannot be empty.' }, { status: 400 });
-    }
-    if (batchDataToUpdate.programId !== undefined && !batchDataToUpdate.programId) {
-        return NextResponse.json({ message: 'Program ID cannot be empty if provided for update.' }, { status: 400 });
-    }
-    if (batchDataToUpdate.startAcademicYear && (isNaN(batchDataToUpdate.startAcademicYear) || batchDataToUpdate.startAcademicYear < 1900 || batchDataToUpdate.startAcademicYear > new Date().getFullYear() + 10)) {
-        return NextResponse.json({ message: 'Valid Start Academic Year is required.' }, { status: 400 });
-    }
-    const startYear = batchDataToUpdate.startAcademicYear || existingBatch.startAcademicYear;
-    if (batchDataToUpdate.endAcademicYear && (isNaN(batchDataToUpdate.endAcademicYear) || batchDataToUpdate.endAcademicYear < startYear || batchDataToUpdate.endAcademicYear > startYear + 10)) {
-        return NextResponse.json({ message: 'Valid End Academic Year is required and must be after Start Academic Year.' }, { status: 400 });
-    }
-
-    if (batchDataToUpdate.name && batchDataToUpdate.name.trim().toLowerCase() !== existingBatch.name.toLowerCase() && 
-        global.__API_BATCHES_STORE__.some(b => b.id !== id && b.name.toLowerCase() === batchDataToUpdate.name!.trim().toLowerCase() && b.programId === (batchDataToUpdate.programId || existingBatch.programId))) {
-        return NextResponse.json({ message: `Batch with name '${batchDataToUpdate.name.trim()}' already exists for this program.` }, { status: 409 });
-    }
-
-    const updatedBatch: Batch = { 
-        ...existingBatch, 
-        ...batchDataToUpdate,
-        updatedAt: new Date().toISOString(),
-    };
-    if(batchDataToUpdate.name) updatedBatch.name = batchDataToUpdate.name.trim();
-
-
-    global.__API_BATCHES_STORE__[batchIndex] = updatedBatch;
-    batchesStore = global.__API_BATCHES_STORE__;
+    
     return NextResponse.json(updatedBatch);
   } catch (error) {
-    console.error(`Error updating batch ${id}:`, error);
-    return NextResponse.json({ message: `Error updating batch ${id}`, error: (error as Error).message }, { status: 500 });
+    console.error('Error updating batch:', error);
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
-  if (!Array.isArray(global.__API_BATCHES_STORE__)) {
-    global.__API_BATCHES_STORE__ = [];
-    return NextResponse.json({ message: 'Batch data store corrupted.' }, { status: 500 });
+  try {
+    await connectMongoose();
+    const { id } = await params;
+    
+    const deletedBatch = await BatchModel.findByIdAndDelete(id);
+    if (!deletedBatch) {
+      return NextResponse.json({ message: 'Batch not found' }, { status: 404 });
+    }
+    
+    return NextResponse.json({ message: 'Batch deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting batch:', error);
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
-  const initialLength = global.__API_BATCHES_STORE__.length;
-  const newStore = global.__API_BATCHES_STORE__.filter(b => b.id !== id);
-
-  if (newStore.length === initialLength) {
-    return NextResponse.json({ message: 'Batch not found' }, { status: 404 });
-  }
-  
-  global.__API_BATCHES_STORE__ = newStore;
-  batchesStore = global.__API_BATCHES_STORE__;
-  return NextResponse.json({ message: 'Batch deleted successfully' }, { status: 200 });
 }

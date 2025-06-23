@@ -6,15 +6,15 @@ import { RoleModel, UserModel } from '@/lib/models';
 import mongoose from 'mongoose';
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { id } = params;
+    const { id } = await params;
     
     // Check if the ID is a valid ObjectId format
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { id } = params;
+    const { id } = await params;
     
     // Check if the ID is a valid ObjectId format
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -92,15 +92,15 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     const updatedRole = await RoleModel.findByIdAndUpdate(id, updateData, { new: true });
     return NextResponse.json(updatedRole);
   } catch (error) {
-    console.error(`Error updating role ${params.id}:`, error);
-    return NextResponse.json({ message: `Error updating role ${params.id}`, error: (error as Error).message }, { status: 500 });
+    console.error(`Error updating role:`, error);
+    return NextResponse.json({ message: `Error updating role`, error: (error as Error).message }, { status: 500 });
   }
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { id } = params;
+    const { id } = await params;
     
     // Check if the ID is a valid ObjectId format
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -125,7 +125,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     await RoleModel.findByIdAndDelete(id);
     return NextResponse.json({ message: 'Role deleted successfully' }, { status: 200 });
   } catch (error) {
-    console.error(`Error deleting role ${params.id}:`, error);
+    console.error(`Error deleting role:`, error);
     return NextResponse.json({ message: 'Error deleting role', error: (error as Error).message }, { status: 500 });
   }
 }

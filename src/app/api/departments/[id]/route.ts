@@ -5,15 +5,15 @@ import { DepartmentModel } from '@/lib/models';
 import mongoose from 'mongoose';
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { id } = params;
+    const { id } = await params;
     
     // Check if the ID is a valid ObjectId format
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { id } = params;
+    const { id } = await params;
     
     // Check if the ID is a valid ObjectId format
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -88,15 +88,15 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     const updatedDepartment = await DepartmentModel.findByIdAndUpdate(id, updateData, { new: true });
     return NextResponse.json(updatedDepartment);
   } catch (error) {
-    console.error(`Error updating department ${params.id}:`, error);
-    return NextResponse.json({ message: `Error updating department ${params.id}`, error: (error as Error).message }, { status: 500 });
+    console.error(`Error updating department:`, error);
+    return NextResponse.json({ message: `Error updating department`, error: (error as Error).message }, { status: 500 });
   }
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { id } = params;
+    const { id } = await params;
     
     // Check if the ID is a valid ObjectId format
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -113,7 +113,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     await DepartmentModel.findByIdAndDelete(id);
     return NextResponse.json({ message: 'Department deleted successfully' }, { status: 200 });
   } catch (error) {
-    console.error(`Error deleting department ${params.id}:`, error);
+    console.error(`Error deleting department:`, error);
     return NextResponse.json({ message: 'Error deleting department', error: (error as Error).message }, { status: 500 });
   }
 }

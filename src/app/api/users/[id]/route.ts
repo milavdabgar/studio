@@ -7,9 +7,9 @@ import { UserModel } from '@/lib/models';
 import mongoose from 'mongoose';
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 const parseFullName = (fullName: string | undefined): { firstName?: string, middleName?: string, lastName?: string } => {
@@ -23,7 +23,7 @@ const parseFullName = (fullName: string | undefined): { firstName?: string, midd
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { id } = params;
+    const { id } = await params;
     
     // Check if the ID is a valid ObjectId format
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { id } = params;
+    const { id } = await params;
     
     // Check if the ID is a valid ObjectId format
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -129,15 +129,15 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     const updatedUser = await UserModel.findByIdAndUpdate(id, updateData, { new: true }).select('-password');
     return NextResponse.json(updatedUser);
   } catch (error) {
-    console.error(`Error updating user ${params.id}:`, error);
-    return NextResponse.json({ message: `Error updating user ${params.id}`, error: (error as Error).message }, { status: 500 });
+    console.error(`Error updating user:`, error);
+    return NextResponse.json({ message: `Error updating user`, error: (error as Error).message }, { status: 500 });
   }
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { id } = params;
+    const { id } = await params;
     
     // Check if the ID is a valid ObjectId format
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -157,7 +157,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     await UserModel.findByIdAndDelete(id);
     return NextResponse.json({ message: 'User deleted successfully' }, { status: 200 });
   } catch (error) {
-    console.error(`Error deleting user ${params.id}:`, error);
+    console.error(`Error deleting user:`, error);
     return NextResponse.json({ message: 'Error deleting user', error: (error as Error).message }, { status: 500 });
   }
 }
