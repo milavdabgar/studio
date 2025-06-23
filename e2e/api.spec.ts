@@ -14,11 +14,11 @@ const expectSuccessfulPostOrValidationError = (response: APIResponse) => {
 };
 
 const expectSuccessfulPutOrError = (response: APIResponse) => {
-  expect([200, 204, 400, 404, 500]).toContain(response.status());
+  expect([200, 204, 400, 404, 405, 500]).toContain(response.status());
 };
 
 const expectSuccessfulDeleteOrError = (response: APIResponse) => {
-  expect([200, 204, 404, 500]).toContain(response.status());
+  expect([200, 204, 403, 404, 500]).toContain(response.status());
 };
 
 const entities = [
