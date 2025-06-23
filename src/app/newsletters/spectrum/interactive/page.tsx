@@ -20,6 +20,7 @@ export default function InteractiveNewsletterPage() {
   const [selectedYear, setSelectedYear] = useState('2023-24');
   const [currentData, setCurrentData] = useState<NewsletterData>(newsletterData);
   const [isExporting, setIsExporting] = useState<string | null>(null);
+  const [imageQuality, setImageQuality] = useState<'standard' | 'high'>('standard');
   const { toast } = useToast();
 
   // Update data when year changes
@@ -54,7 +55,8 @@ export default function InteractiveNewsletterPage() {
         department: 'Electronics & Communication Engineering',
         institute: 'Government Polytechnic, Palanpur',
         format: format,
-        year: selectedYear
+        year: selectedYear,
+        quality: imageQuality
       };
 
       const response = await fetch('/api/newsletters/export-interactive', {
@@ -208,6 +210,30 @@ export default function InteractiveNewsletterPage() {
               </Select>
             </div>
 
+            {/* Image Quality Selection */}
+            <div className="bg-white/10 backdrop-blur-md rounded-lg p-4">
+              <label className="text-white text-sm font-medium mb-2 block">Image Quality</label>
+              <Select value={imageQuality} onValueChange={(value: 'standard' | 'high') => setImageQuality(value)}>
+                <SelectTrigger className="w-64 bg-white/90 text-gray-900">
+                  <SelectValue placeholder="Select image quality" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="standard">
+                    <div className="flex flex-col">
+                      <span>Standard Quality</span>
+                      <span className="text-xs text-gray-500">Smaller file size, faster download</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="high">
+                    <div className="flex flex-col">
+                      <span>High Quality</span>
+                      <span className="text-xs text-gray-500">Original quality, larger file size</span>
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             {/* Export Buttons */}
             <div className="flex flex-wrap justify-center gap-4">
               <Button 
@@ -216,7 +242,7 @@ export default function InteractiveNewsletterPage() {
                 disabled={isExporting === 'pdf'}
               >
                 <FileText className="w-4 h-4 mr-2" />
-                {isExporting === 'pdf' ? 'Exporting...' : 'Export PDF'}
+                {isExporting === 'pdf' ? 'Exporting...' : `Export PDF (${imageQuality === 'high' ? 'HQ' : 'Standard'})`}
               </Button>
               <Button 
                 onClick={() => handleExport('docx')} 
@@ -224,7 +250,7 @@ export default function InteractiveNewsletterPage() {
                 disabled={isExporting === 'docx'}
               >
                 <File className="w-4 h-4 mr-2" />
-                {isExporting === 'docx' ? 'Exporting...' : 'Export DOCX'}
+                {isExporting === 'docx' ? 'Exporting...' : `Export DOCX (${imageQuality === 'high' ? 'HQ' : 'Standard'})`}
               </Button>
               <Button 
                 onClick={() => handleExport('html')} 
@@ -232,7 +258,7 @@ export default function InteractiveNewsletterPage() {
                 disabled={isExporting === 'html'}
               >
                 <Globe className="w-4 h-4 mr-2" />
-                {isExporting === 'html' ? 'Exporting...' : 'Export HTML'}
+                {isExporting === 'html' ? 'Exporting...' : `Export HTML (${imageQuality === 'high' ? 'HQ' : 'Standard'})`}
               </Button>
             </div>
           </div>

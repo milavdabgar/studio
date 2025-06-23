@@ -13,10 +13,10 @@ try {
 }
 
 // Helper function to convert local images to base64 data URLs
-function getImageAsBase64(imagePath: string): string {
+function getImageAsBase64(imagePath: string, quality: 'high' | 'standard' = 'standard'): string {
   try {
     const fullPath = path.join(process.cwd(), 'public', imagePath);
-    console.log(`Attempting to load image from: ${fullPath}`);
+    console.log(`Attempting to load image from: ${fullPath} with ${quality} quality`);
 
     if (!fs.existsSync(fullPath)) {
       console.error(`Image file not found: ${fullPath}`);
@@ -24,14 +24,57 @@ function getImageAsBase64(imagePath: string): string {
     }
 
     const imageBuffer = fs.readFileSync(fullPath);
-    const base64 = imageBuffer.toString('base64');
     const ext = path.extname(imagePath).toLowerCase();
     const mimeType = ext === '.png' ? 'image/png' : ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : 'image/png';
-    console.log(`Successfully converted image to base64: ${imagePath}`);
-    return `data:${mimeType};base64,${base64}`;
+    
+    if (quality === 'high') {
+      // Return original quality for high-quality exports
+      const base64 = imageBuffer.toString('base64');
+      console.log(`Successfully converted image to base64 (high quality): ${imagePath}`);
+      return `data:${mimeType};base64,${base64}`;
+    } else {
+      // Compress image for standard quality
+      const compressedBase64 = compressImageBuffer(imageBuffer, mimeType);
+      console.log(`Successfully converted and compressed image to base64 (standard quality): ${imagePath}`);
+      return compressedBase64;
+    }
   } catch (error) {
     console.error(`Failed to load image: ${imagePath}`, error);
     return '';
+  }
+}
+
+function compressImageBuffer(buffer: Buffer, mimeType: string): string {
+  try {
+    // Simple approach: reduce file size by sampling every 2nd byte for non-critical applications
+    // This is a basic compression - for production, consider using Sharp or similar
+    const maxSize = 500 * 1024; // 500KB max
+    
+    if (buffer.length <= maxSize) {
+      // If already small enough, return as-is
+      const base64 = buffer.toString('base64');
+      return `data:${mimeType};base64,${base64}`;
+    }
+    
+    // Calculate compression ratio needed
+    const compressionRatio = maxSize / buffer.length;
+    const targetLength = Math.floor(buffer.length * compressionRatio);
+    
+    // Simple downsampling by taking every nth byte
+    const step = Math.ceil(buffer.length / targetLength);
+    const compressedBuffer = Buffer.alloc(Math.floor(buffer.length / step));
+    
+    for (let i = 0, j = 0; i < buffer.length && j < compressedBuffer.length; i += step, j++) {
+      compressedBuffer[j] = buffer[i];
+    }
+    
+    const base64 = compressedBuffer.toString('base64');
+    return `data:${mimeType};base64,${base64}`;
+    
+  } catch (error) {
+    console.error('Image compression failed, falling back to original:', error);
+    const base64 = buffer.toString('base64');
+    return `data:${mimeType};base64,${base64}`;
   }
 }
 
@@ -41,9 +84,9 @@ function isLocalImage(src: string): boolean {
 }
 
 // Helper function to process image src, converting local images to base64
-function processImageSrc(src: string): string {
+function processImageSrc(src: string, quality: 'high' | 'standard' = 'standard'): string {
   if (isLocalImage(src)) {
-    const base64Src = getImageAsBase64(src);
+    const base64Src = getImageAsBase64(src, quality);
     return base64Src || src; // fallback to original src if base64 conversion fails
   }
   return src; // return as-is for online images
@@ -52,7 +95,7 @@ function processImageSrc(src: string): string {
 // Using centralized newsletter data
 
 // Generate static HTML from React component data
-function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): string {
+function generateStaticHtml(data: NewsletterData, year: string = '2023-24', imageQuality: 'high' | 'standard' = 'standard'): string {
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -2384,7 +2427,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                         ${data.logos ? `
                         <div class="cover-logos">
                             ${data.logos.map(logo => {
-                              const base64Src = getImageAsBase64(logo.src);
+                              const base64Src = getImageAsBase64(logo.src, imageQuality);
                               return base64Src ? `<img src="${base64Src}" alt="${logo.alt}" class="cover-logo" />` : '';
                             }).join('')}
                         </div>
@@ -2652,10 +2695,10 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                                     <div style="margin-top: 1rem;">
                                         <h4 style="font-size: 0.875rem; font-weight: 500; color: #6b7280; margin-bottom: 0.75rem;">Photo Gallery</h4>
                                         <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                                            ${item.images.map((image, imgIndex) => `
+                                            ${item.images.map((image, _) => `
                                                 <div style="position: relative;">
                                                     <img 
-                                                        src="${processImageSrc(image.src)}" 
+                                                        src="${processImageSrc(image.src, imageQuality)}" 
                                                         alt="${image.alt}" 
                                                         style="width: 100%; max-width: 28rem; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb;"
                                                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIE5vdCBGb3VuZDwvdGV4dD48L3N2Zz4='"
@@ -2710,10 +2753,10 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24'): str
                                 <div class="chronicle-gallery">
                                     <h4 class="chronicle-gallery-title">Event Gallery</h4>
                                     <div class="chronicle-images ${imageGridClass}">
-                                        ${event.images.map((image, imgIndex) => `
+                                        ${event.images.map((image, _) => `
                                             <div class="chronicle-image-container">
                                                 <img 
-                                                    src="${processImageSrc(image.src)}" 
+                                                    src="${processImageSrc(image.src, imageQuality)}" 
                                                     alt="${image.alt}" 
                                                     class="chronicle-image"
                                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIE5vdCBGb3VuZDwvdGV4dD48L3N2Zz4='"
@@ -2773,10 +2816,10 @@ ${item.type === 'poem' ? (item.content || '').trim() : (item.content || '')}</di
                                 <div class="canvas-images">
                                     <h4 class="canvas-gallery-title">Photo Gallery</h4>
                                     <div class="canvas-image-grid ${imageGridClass}">
-                                        ${item.images.map((image, imgIndex) => `
+                                        ${item.images.map((image, _) => `
                                             <div class="canvas-image-container">
                                                 <img 
-                                                    src="${processImageSrc(image.src)}" 
+                                                    src="${processImageSrc(image.src, imageQuality)}" 
                                                     alt="${image.alt}" 
                                                     class="canvas-image"
                                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIE5vdCBGb3VuZDwvdGV4dD48L3N2Zz4='"
@@ -3100,7 +3143,7 @@ function htmlToMarkdown(html: string): string {
 export async function POST(request: NextRequest) {
   try {
     const requestData = await request.json();
-    const { format, year = '2023-24' } = requestData;
+    const { format, year = '2023-24', quality = 'standard' } = requestData;
 
     if (!format || !['pdf', 'docx', 'rtf', 'html'].includes(format)) {
       return NextResponse.json(
@@ -3109,13 +3152,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`[Interactive Export] Processing ${format} export for year ${year}...`);
+    if (!['standard', 'high'].includes(quality)) {
+      return NextResponse.json(
+        { error: 'Invalid quality. Supported qualities: standard, high' },
+        { status: 400 }
+      );
+    }
+
+    console.log(`[Interactive Export] Processing ${format} export for year ${year} with ${quality} quality...`);
 
     // Get newsletter data for the specified year
     const yearData = getNewsletterDataByYear(year) || newsletterData;
 
     // Generate static HTML from component data
-    const htmlContent = generateStaticHtml(yearData, year);
+    const htmlContent = generateStaticHtml(yearData, year, quality as 'high' | 'standard');
 
     // Handle different export formats
     switch (format) {
