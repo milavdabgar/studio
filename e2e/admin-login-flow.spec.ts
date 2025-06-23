@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('Admin Login Flow', async ({ page }) => {
   // Navigate to the login page
-  await page.goto('http://localhost:9003/login');
+  await page.goto('http://localhost:3000/login');
   
   // Wait for page to load
   await page.waitForTimeout(2000);

@@ -160,7 +160,7 @@ List all available Playwright test files.
 The server can be configured through environment variables:
 
 - `PLAYWRIGHT_WORKSPACE_ROOT`: Root directory of your Playwright project
-- `PLAYWRIGHT_TEST_BASE_URL`: Base URL for your application (default: http://localhost:9003)
+- `PLAYWRIGHT_TEST_BASE_URL`: Base URL for your application (default: http://localhost:3000)
 - `NODE_ENV`: Environment mode (development/production)
 
 ## Development

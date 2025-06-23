@@ -1,6 +1,6 @@
 import { test, expect, Page } from '@playwright/test';
 
-const APP_BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:9003';
+const APP_BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000';
 
 const adminUserCredentials = {
   email: 'admin@gppalanpur.in',

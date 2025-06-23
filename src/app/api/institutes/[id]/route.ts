@@ -1,99 +1,140 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
+import { connectMongoose } from '@/lib/mongodb';
+import { InstituteModel } from '@/lib/models';
 import type { Institute } from '@/types/entities';
-
-declare global {
-  var __API_INSTITUTES_STORE__: Institute[] | undefined;
-}
-if (!global.__API_INSTITUTES_STORE__) {
-  global.__API_INSTITUTES_STORE__ = [
-    { id: "inst1", name: "Government Polytechnic Palanpur", code: "GPP", address: "Jagana, Palanpur, Gujarat 385011", contactEmail: "gp-palanpur-dte@gujarat.gov.in", contactPhone: "02742-280126", website: "http://www.gppalanpur.ac.in", status: "active", establishmentYear: 1964 },
-  ];
-}
-let institutesStore: Institute[] = global.__API_INSTITUTES_STORE__;
-
+import { Types } from 'mongoose';
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
-  if (!Array.isArray(global.__API_INSTITUTES_STORE__)) {
-    global.__API_INSTITUTES_STORE__ = [];
-    return NextResponse.json({ message: 'Institute data store corrupted.' }, { status: 500 });
+  try {
+    const { id } = await params;
+    console.log('Looking for institute with id:', id);
+    await connectMongoose();
+
+    // Try to find by MongoDB ObjectId first, then by custom id field
+    let institute;
+    if (Types.ObjectId.isValid(id)) {
+      console.log('Searching by ObjectId');
+      institute = await InstituteModel.findById(id);
+    } else {
+      console.log('Searching by custom id field');
+      institute = await InstituteModel.findOne({ id });
+    }
+
+    console.log('Found institute:', institute ? 'YES' : 'NO');
+    if (!institute) {
+      return NextResponse.json({ message: 'Institute not found' }, { status: 404 });
+    }
+
+    // Convert to plain object and ensure custom id is used
+    const instituteObject = institute.toObject();
+    const response = {
+      ...instituteObject,
+      id: instituteObject.id || instituteObject._id
+    };
+    delete response._id;
+    delete response.__v;
+
+    return NextResponse.json(response);
+  } catch (error) {
+    console.error('Error fetching institute:', error);
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
-  const institute = global.__API_INSTITUTES_STORE__.find(i => i.id === id);
-  if (institute) {
-    return NextResponse.json(institute);
-  }
-  return NextResponse.json({ message: 'Institute not found' }, { status: 404 });
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
-  if (!Array.isArray(global.__API_INSTITUTES_STORE__)) {
-    global.__API_INSTITUTES_STORE__ = [];
-    return NextResponse.json({ message: 'Institute data store corrupted.' }, { status: 500 });
-  }
   try {
-    const instituteData = await request.json() as Partial<Omit<Institute, 'id'>>;
-    const instituteIndex = global.__API_INSTITUTES_STORE__.findIndex(i => i.id === id);
+    const { id } = await params;
+    await connectMongoose();
 
-    if (instituteIndex === -1) {
+    // Try to find by MongoDB ObjectId first, then by custom id field
+    let institute;
+    if (Types.ObjectId.isValid(id)) {
+      institute = await InstituteModel.findById(id);
+    } else {
+      institute = await InstituteModel.findOne({ id });
+    }
+
+    if (!institute) {
       return NextResponse.json({ message: 'Institute not found' }, { status: 404 });
     }
-    const existingInstitute = global.__API_INSTITUTES_STORE__[instituteIndex];
 
+    const instituteData = await request.json() as Partial<Omit<Institute, 'id'>>;
+
+    // Validation
     if (instituteData.name !== undefined && !instituteData.name.trim()) {
-        return NextResponse.json({ message: 'Institute Name cannot be empty.' }, { status: 400 });
+      return NextResponse.json({ message: 'Institute Name cannot be empty.' }, { status: 400 });
     }
     if (instituteData.code !== undefined && !instituteData.code.trim()) {
-        return NextResponse.json({ message: 'Institute Code cannot be empty.' }, { status: 400 });
-    }
-    if (instituteData.code && instituteData.code.trim().toUpperCase() !== existingInstitute.code.toUpperCase() && global.__API_INSTITUTES_STORE__.some(i => i.id !== id && i.code.toLowerCase() === instituteData.code!.trim().toLowerCase())) {
-        return NextResponse.json({ message: `Institute with code '${instituteData.code.trim()}' already exists.` }, { status: 409 });
+      return NextResponse.json({ message: 'Institute Code cannot be empty.' }, { status: 400 });
     }
     if (instituteData.establishmentYear && (isNaN(instituteData.establishmentYear) || instituteData.establishmentYear < 1800 || instituteData.establishmentYear > new Date().getFullYear())) {
       return NextResponse.json({ message: 'Please enter a valid establishment year.' }, { status: 400 });
     }
     if (instituteData.contactEmail && !/\S+@\S+\.\S+/.test(instituteData.contactEmail)) {
-        return NextResponse.json({ message: 'Please enter a valid contact email address.' }, { status: 400 });
+      return NextResponse.json({ message: 'Please enter a valid contact email address.' }, { status: 400 });
     }
 
-    const updatedInstitute = { ...existingInstitute, ...instituteData };
-    if (instituteData.code) updatedInstitute.code = instituteData.code.trim().toUpperCase();
-    if (instituteData.name) updatedInstitute.name = instituteData.name.trim();
-    if (instituteData.address !== undefined) updatedInstitute.address = instituteData.address.trim() || undefined;
-    if (instituteData.contactEmail !== undefined) updatedInstitute.contactEmail = instituteData.contactEmail.trim() || undefined;
-    if (instituteData.contactPhone !== undefined) updatedInstitute.contactPhone = instituteData.contactPhone.trim() || undefined;
-    if (instituteData.website !== undefined) updatedInstitute.website = instituteData.website.trim() || undefined;
+    // Check for duplicate code if code is being updated
+    if (instituteData.code && instituteData.code.trim().toUpperCase() !== institute.code?.toUpperCase()) {
+      const existingInstitute = await InstituteModel.findOne({ 
+        code: new RegExp(`^${instituteData.code.trim()}$`, 'i'),
+        _id: { $ne: institute._id }
+      });
+      if (existingInstitute) {
+        return NextResponse.json({ message: `Institute with code '${instituteData.code.trim()}' already exists.` }, { status: 409 });
+      }
+    }
 
+    // Prepare update data with proper trimming
+    const updateData: Partial<Institute> = { ...instituteData };
+    if (instituteData.code) updateData.code = instituteData.code.trim().toUpperCase();
+    if (instituteData.name) updateData.name = instituteData.name.trim();
+    if (instituteData.address !== undefined) updateData.address = instituteData.address.trim() || undefined;
+    if (instituteData.contactEmail !== undefined) updateData.contactEmail = instituteData.contactEmail.trim() || undefined;
+    if (instituteData.contactPhone !== undefined) updateData.contactPhone = instituteData.contactPhone.trim() || undefined;
+    if (instituteData.website !== undefined) updateData.website = instituteData.website.trim() || undefined;
 
-    global.__API_INSTITUTES_STORE__[instituteIndex] = updatedInstitute;
-    institutesStore = global.__API_INSTITUTES_STORE__; 
+    const updatedInstitute = await InstituteModel.findByIdAndUpdate(
+      institute._id,
+      { ...updateData, updatedAt: new Date().toISOString() },
+      { new: true }
+    );
+
     return NextResponse.json(updatedInstitute);
   } catch (error) {
-    console.error(`Error updating institute ${id}:`, error);
-    return NextResponse.json({ message: `Error updating institute ${id}`, error: (error as Error).message }, { status: 500 });
+    console.error('Error updating institute:', error);
+    return NextResponse.json({ message: 'Error updating institute', error: (error as Error).message }, { status: 500 });
   }
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
-  if (!Array.isArray(global.__API_INSTITUTES_STORE__)) {
-    global.__API_INSTITUTES_STORE__ = [];
-    return NextResponse.json({ message: 'Institute data store corrupted.' }, { status: 500 });
-  }
-  const initialLength = global.__API_INSTITUTES_STORE__.length;
-  const newStore = global.__API_INSTITUTES_STORE__.filter(i => i.id !== id);
+  try {
+    const { id } = await params;
+    await connectMongoose();
 
-  if (newStore.length === initialLength) {
-    return NextResponse.json({ message: 'Institute not found' }, { status: 404 });
+    // Try to find by MongoDB ObjectId first, then by custom id field
+    let institute;
+    if (Types.ObjectId.isValid(id)) {
+      institute = await InstituteModel.findById(id);
+    } else {
+      institute = await InstituteModel.findOne({ id });
+    }
+
+    if (!institute) {
+      return NextResponse.json({ message: 'Institute not found' }, { status: 404 });
+    }
+
+    await InstituteModel.findByIdAndDelete(institute._id);
+    return NextResponse.json({ message: 'Institute deleted successfully' }, { status: 200 });
+  } catch (error) {
+    console.error('Error deleting institute:', error);
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
-  global.__API_INSTITUTES_STORE__ = newStore; 
-  institutesStore = global.__API_INSTITUTES_STORE__;
-  return NextResponse.json({ message: 'Institute deleted successfully' }, { status: 200 });
 }

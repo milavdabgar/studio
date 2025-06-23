@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { User, UserRole } from '../src/types/entities';
 
-const API_BASE_URL = 'http://localhost:9003/api';
+const API_BASE_URL = 'http://localhost:3000/api';
 
 // Helper function to create valid user data matching the interface
 const createValidUserData = (): Omit<User, 'id'> => {

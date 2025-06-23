@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('Newsletter Page Test - Public Access Verification', async ({ page }) => {
   // Navigate to the newsletters page without any authentication
-  await page.goto('http://localhost:9003/newsletters');
+  await page.goto('http://localhost:3000/newsletters');
   
   // Wait for page to load
   await page.waitForTimeout(3000);
@@ -26,7 +26,7 @@ test('Newsletter Page Test - Public Access Verification', async ({ page }) => {
 
 test('Newsletter Page Test - Trailing Slash Redirect', async ({ page }) => {
   // Test that /newsletters/ redirects properly to /newsletters
-  await page.goto('http://localhost:9003/newsletters/');
+  await page.goto('http://localhost:3000/newsletters/');
   
   // Wait for any redirects to complete
   await page.waitForTimeout(2000);
@@ -45,7 +45,7 @@ test('Newsletter Page Test - No Authentication Required', async ({ page }) => {
   await page.context().clearCookies();
   
   // Navigate to newsletters page
-  await page.goto('http://localhost:9003/newsletters');
+  await page.goto('http://localhost:3000/newsletters');
   
   // Wait for page to load
   await page.waitForTimeout(3000);

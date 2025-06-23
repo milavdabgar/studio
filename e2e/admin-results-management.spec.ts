@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs'; // Import fs for file operations
 import os from 'os'; // Import os for temp directory
 
-const APP_BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:9003';
+const APP_BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000';
 
 const adminUserCredentials = {
   email: 'admin@gppalanpur.in',

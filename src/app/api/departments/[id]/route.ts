@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Department } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { DepartmentModel } from '@/lib/models';
-import mongoose from 'mongoose';
+import { Types } from 'mongoose';
 
 interface RouteParams {
   params: Promise<{
@@ -15,12 +15,14 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     await connectMongoose();
     const { id } = await params;
     
-    // Check if the ID is a valid ObjectId format
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return NextResponse.json({ message: 'Department not found' }, { status: 404 });
+    // Try to find by MongoDB ObjectId first, then by custom id field
+    let department;
+    if (Types.ObjectId.isValid(id)) {
+      department = await DepartmentModel.findById(id);
+    } else {
+      department = await DepartmentModel.findOne({ id });
     }
     
-    const department = await DepartmentModel.findById(id);
     if (!department) {
       return NextResponse.json({ message: 'Department not found' }, { status: 404 });
     }
@@ -37,17 +39,19 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     await connectMongoose();
     const { id } = await params;
     
-    // Check if the ID is a valid ObjectId format
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    // Try to find by MongoDB ObjectId first, then by custom id field
+    let existingDepartment;
+    if (Types.ObjectId.isValid(id)) {
+      existingDepartment = await DepartmentModel.findById(id);
+    } else {
+      existingDepartment = await DepartmentModel.findOne({ id });
+    }
+    
+    if (!existingDepartment) {
       return NextResponse.json({ message: 'Department not found' }, { status: 404 });
     }
     
     const departmentData = await request.json() as Partial<Omit<Department, 'id' | 'createdAt' | 'updatedAt'>>;
-    
-    const existingDepartment = await DepartmentModel.findById(id);
-    if (!existingDepartment) {
-      return NextResponse.json({ message: 'Department not found' }, { status: 404 });
-    }
 
     // Validate required fields if they're being updated
     if (departmentData.name !== undefined && (!departmentData.name || !departmentData.name.trim())) {
@@ -60,7 +64,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Check for duplicate department code within the institute if code is being changed
     if (departmentData.code && departmentData.code.trim().toUpperCase() !== existingDepartment.code) {
       const duplicateCode = await DepartmentModel.findOne({ 
-        _id: { $ne: id },
+        _id: { $ne: existingDepartment._id },
         code: { $regex: new RegExp(`^${departmentData.code.trim()}$`, 'i') },
         instituteId: departmentData.instituteId || existingDepartment.instituteId 
       });
@@ -85,7 +89,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (departmentData.description !== undefined) updateData.description = departmentData.description?.trim() || undefined;
     if (departmentData.establishmentYear !== undefined) updateData.establishmentYear = departmentData.establishmentYear ? Number(departmentData.establishmentYear) : undefined;
 
-    const updatedDepartment = await DepartmentModel.findByIdAndUpdate(id, updateData, { new: true });
+    const updatedDepartment = await DepartmentModel.findByIdAndUpdate(existingDepartment._id, updateData, { new: true });
     return NextResponse.json(updatedDepartment);
   } catch (error) {
     console.error(`Error updating department:`, error);
@@ -98,19 +102,21 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     await connectMongoose();
     const { id } = await params;
     
-    // Check if the ID is a valid ObjectId format
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return NextResponse.json({ message: 'Department not found' }, { status: 404 });
+    // Try to find by MongoDB ObjectId first, then by custom id field
+    let departmentToDelete;
+    if (Types.ObjectId.isValid(id)) {
+      departmentToDelete = await DepartmentModel.findById(id);
+    } else {
+      departmentToDelete = await DepartmentModel.findOne({ id });
     }
     
-    const departmentToDelete = await DepartmentModel.findById(id);
     if (!departmentToDelete) {
       return NextResponse.json({ message: 'Department not found' }, { status: 404 });
     }
     
     // TODO: Add validation to prevent deletion of departments that have associated programs, courses, or users
     
-    await DepartmentModel.findByIdAndDelete(id);
+    await DepartmentModel.findByIdAndDelete(departmentToDelete._id);
     return NextResponse.json({ message: 'Department deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error(`Error deleting department:`, error);

@@ -1,7 +1,7 @@
 import { test, expect, Page } from '@playwright/test';
 
-const API_BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:9003/api'; // Assuming API is at /api
-const APP_BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:9003';
+const API_BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000/api'; // Assuming API is at /api
+const APP_BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000';
 
 
 const adminUserCredentials = {

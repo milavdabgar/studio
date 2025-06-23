@@ -6,7 +6,7 @@
  */
 
 const fetch = require('node-fetch');
-const API_BASE_URL = 'http://localhost:9003/api';
+const API_BASE_URL = 'http://localhost:3000/api';
 
 // Helper function to make API requests
 async function apiRequest(endpoint, method = 'GET', data = null) {

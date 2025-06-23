@@ -228,16 +228,16 @@ npx tsx scripts/seed-database.ts
 ### 3. API Testing
 ```bash
 # Tested all endpoints
-curl "http://localhost:9003/api/users"
-curl "http://localhost:9003/api/roles"
+curl "http://localhost:3000/api/users"
+curl "http://localhost:3000/api/roles"
 
 # Tested data creation
-curl -X POST "http://localhost:9003/api/users" -H "Content-Type: application/json" -d '{...}'
-curl -X POST "http://localhost:9003/api/roles" -H "Content-Type: application/json" -d '{...}'
+curl -X POST "http://localhost:3000/api/users" -H "Content-Type: application/json" -d '{...}'
+curl -X POST "http://localhost:3000/api/roles" -H "Content-Type: application/json" -d '{...}'
 ```
 
 ### 4. Frontend Integration
-✅ Application runs successfully at `http://localhost:9003`
+✅ Application runs successfully at `http://localhost:3000`
 ✅ Database integration does not break existing functionality
 
 ## Before/After Comparison

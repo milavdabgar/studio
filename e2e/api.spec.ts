@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import type { APIResponse } from '@playwright/test';
 
-const API_BASE_URL = 'http://localhost:9003/api'; // Using port 9003 as per the local development setup
+const API_BASE_URL = 'http://localhost:3000/api'; // Using port 9003 as per the local development setup
 
 interface ApiItem {
   id: string;

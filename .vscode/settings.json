@@ -10,7 +10,7 @@
             "env": {
                 "NODE_ENV": "development",
                 "PLAYWRIGHT_WORKSPACE_ROOT": "${workspaceFolder}",
-                "PLAYWRIGHT_TEST_BASE_URL": "http://localhost:9003"
+                "PLAYWRIGHT_TEST_BASE_URL": "http://localhost:3000"
             }
         }
     },

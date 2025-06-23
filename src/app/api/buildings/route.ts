@@ -1,81 +1,60 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
+import { connectMongoose } from '@/lib/mongodb';
+import { BuildingModel } from '@/lib/models';
 import type { Building } from '@/types/entities';
 
-declare global {
-  var __API_BUILDINGS_STORE__: Building[] | undefined;
-}
-
-const now = new Date().toISOString();
-
-if (!global.__API_BUILDINGS_STORE__ || global.__API_BUILDINGS_STORE__.length === 0) {
-  global.__API_BUILDINGS_STORE__ = [
-    { 
-      id: "bldg_main_gpp", 
-      name: "Main Building", 
-      code: "MAIN", 
-      instituteId: "inst1", 
-      status: "active", 
-      constructionYear: 1964, 
-      numberOfFloors: 2, 
-      totalAreaSqFt: 50000,
-      createdAt: now,
-      updatedAt: now,
-    },
-    { 
-      id: "bldg_workshop_gpp", 
-      name: "Workshop Block", 
-      code: "WKSP", 
-      instituteId: "inst1", 
-      status: "active", 
-      constructionYear: 1980, 
-      numberOfFloors: 1, 
-      totalAreaSqFt: 20000,
-      createdAt: now,
-      updatedAt: now,
-    },
-    { 
-      id: "bldg_acad_gecm", 
-      name: "Academic Block A", 
-      code: "ACAD-A", 
-      instituteId: "inst2", 
-      status: "active", 
-      constructionYear: 1985, 
-      numberOfFloors: 3,
-      createdAt: now,
-      updatedAt: now,
-    },
-  ];
-}
-const buildingsStore: Building[] = global.__API_BUILDINGS_STORE__;
-
-const generateId = (): string => `bldg_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-
 export async function GET() {
-  if (!Array.isArray(global.__API_BUILDINGS_STORE__)) {
-      console.error("/api/buildings GET: global.__API_BUILDINGS_STORE__ is not an array!", global.__API_BUILDINGS_STORE__);
-      global.__API_BUILDINGS_STORE__ = []; 
-      return NextResponse.json({ message: 'Internal server error: Building data store corrupted.' }, { status: 500 });
+  try {
+    await connectMongoose();
+    const buildings = await BuildingModel.find({});
+    
+    // Convert to plain objects and ensure custom id is used
+    const response = buildings.map(building => {
+      const buildingObject = building.toObject();
+      return {
+        ...buildingObject,
+        id: buildingObject.id || buildingObject._id
+      };
+    }).map(building => {
+      delete building._id;
+      delete building.__v;
+      return building;
+    });
+    
+    return NextResponse.json(response);
+  } catch (error) {
+    console.error('Error fetching buildings:', error);
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
-  return NextResponse.json(global.__API_BUILDINGS_STORE__);
 }
 
 export async function POST(request: NextRequest) {
   try {
+    await connectMongoose();
     const buildingData = await request.json() as Omit<Building, 'id' | 'createdAt' | 'updatedAt'>;
 
+    // Validation
     if (!buildingData.name || !buildingData.name.trim()) {
       return NextResponse.json({ message: 'Building Name cannot be empty.' }, { status: 400 });
     }
     if (!buildingData.instituteId) {
       return NextResponse.json({ message: 'Institute ID is required.' }, { status: 400 });
     }
-     if (buildingData.code && global.__API_BUILDINGS_STORE__?.some(b => b.instituteId === buildingData.instituteId && b.code?.toLowerCase() === buildingData.code!.trim().toLowerCase())) {
+    if (buildingData.code) {
+      const existingBuilding = await BuildingModel.findOne({ 
+        code: new RegExp(`^${buildingData.code.trim()}$`, 'i'),
+        instituteId: buildingData.instituteId
+      });
+      if (existingBuilding) {
         return NextResponse.json({ message: `Building with code '${buildingData.code.trim()}' already exists for this institute.` }, { status: 409 });
+      }
     }
     if (buildingData.constructionYear && (isNaN(buildingData.constructionYear) || buildingData.constructionYear < 1800 || buildingData.constructionYear > new Date().getFullYear() + 5)) { 
       return NextResponse.json({ message: 'Please enter a valid construction year.' }, { status: 400 });
     }
+    
+    // Numeric field validation
     const numericFields: (keyof Pick<Building, 'numberOfFloors' | 'totalAreaSqFt'>)[] = ['numberOfFloors', 'totalAreaSqFt'];
     for (const field of numericFields) {
         if (buildingData[field] !== undefined && (isNaN(Number(buildingData[field])) || Number(buildingData[field]) < 0)) {
@@ -83,9 +62,8 @@ export async function POST(request: NextRequest) {
         }
     }
 
-    const currentTimestamp = new Date().toISOString();
-    const newBuilding: Building = {
-      id: generateId(),
+    // Prepare building data
+    const newBuildingData = {
       name: buildingData.name.trim(),
       code: buildingData.code?.trim().toUpperCase() || undefined,
       description: buildingData.description?.trim() || undefined,
@@ -94,11 +72,22 @@ export async function POST(request: NextRequest) {
       constructionYear: buildingData.constructionYear ? Number(buildingData.constructionYear) : undefined,
       numberOfFloors: buildingData.numberOfFloors ? Number(buildingData.numberOfFloors) : undefined,
       totalAreaSqFt: buildingData.totalAreaSqFt ? Number(buildingData.totalAreaSqFt) : undefined,
-      createdAt: currentTimestamp,
-      updatedAt: currentTimestamp,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
-    global.__API_BUILDINGS_STORE__?.push(newBuilding);
-    return NextResponse.json(newBuilding, { status: 201 });
+
+    const newBuilding = await BuildingModel.create(newBuildingData);
+    
+    // Convert to plain object and ensure custom id is used
+    const buildingObject = newBuilding.toObject();
+    const response = {
+      ...buildingObject,
+      id: buildingObject.id || buildingObject._id
+    };
+    delete response._id;
+    delete response.__v;
+    
+    return NextResponse.json(response, { status: 201 });
   } catch (error) {
     console.error('Error creating building:', error);
     return NextResponse.json({ message: 'Error creating building', error: (error as Error).message }, { status: 500 });

@@ -1,7 +1,7 @@
 import { connectMongoose, disconnectMongoDB } from '@/lib/mongodb';
 import { 
   UserModel, RoleModel, DepartmentModel, CourseModel, 
-  BatchModel, ProgramModel 
+  BatchModel, ProgramModel, InstituteModel, BuildingModel, RoomModel, CommitteeModel
 } from '@/lib/models';
 
 // Initial user data (from current in-memory store)
@@ -156,6 +156,54 @@ const initialDepartments = [
   }
 ];
 
+// Initial committees data
+const initialCommittees = [
+  {
+    id: "cmt_arc_gpp",
+    name: "Anti-Ragging Committee",
+    code: "ARC_GPP",
+    purpose: "To prevent ragging and ensure a safe campus environment.",
+    instituteId: "inst1",
+    formationDate: "2023-07-01",
+    status: "active",
+    convenerId: "user_hod_ce_gpp", // Example convener (HOD Computer)
+    members: [
+      {
+        userId: "user_hod_ce_gpp",
+        role: "convener",
+        assignmentDate: "2023-07-01"
+      }
+    ],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: "cmt_cwan_gpp",
+    name: "College Website & Network Committee",
+    code: "CWAN_GPP",
+    description: "Manages and maintains the college website and network infrastructure.",
+    purpose: "To oversee digital presence and IT infrastructure.",
+    instituteId: "inst1",
+    formationDate: "2023-01-15",
+    status: "active",
+    convenerId: "user_admin_gpp", // Using admin as convener for this committee
+    members: [
+      {
+        userId: "user_admin_gpp",
+        role: "convener",
+        assignmentDate: "2023-01-15"
+      },
+      {
+        userId: "user_hod_ce_gpp",
+        role: "member",
+        assignmentDate: "2023-01-15"
+      }
+    ],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+];
+
 // Initial programs data
 const initialPrograms = [
   {
@@ -275,6 +323,103 @@ const initialCourses = [
   }
 ];
 
+// Initial institutes data
+const initialInstitutes = [
+  {
+    id: "inst1",
+    name: "Government Polytechnic Palanpur",
+    code: "GPP",
+    address: "Jagana, Palanpur, Gujarat 385011",
+    contactEmail: "gp-palanpur-dte@gujarat.gov.in",
+    contactPhone: "02742-280126",
+    website: "http://www.gppalanpur.ac.in",
+    status: "active",
+    establishmentYear: 1964,
+    administrators: ["user_admin_gpp"],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+];
+
+// Initial buildings data
+const initialBuildings = [
+  {
+    id: "bldg_admin_gpp",
+    name: "Administrative Block",
+    code: "ADMIN",
+    description: "Main administrative building",
+    instituteId: "inst1",
+    status: "active",
+    constructionYear: 1964,
+    numberOfFloors: 2,
+    totalAreaSqFt: 5000,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: "bldg_academic_gpp",
+    name: "Academic Block",
+    code: "ACAD",
+    description: "Main academic building with classrooms and labs",
+    instituteId: "inst1",
+    status: "active",
+    constructionYear: 1984,
+    numberOfFloors: 3,
+    totalAreaSqFt: 12000,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+];
+
+// Initial rooms data
+const initialRooms = [
+  {
+    id: "room_101_admin_gpp",
+    roomNumber: "101",
+    name: "Principal Office",
+    buildingId: "bldg_admin_gpp",
+    floor: 1,
+    type: "Office",
+    capacity: 10,
+    areaSqFt: 300,
+    facilities: ["AC", "Computer", "Printer"],
+    status: "available",
+    notes: "Principal's office",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: "room_201_acad_gpp",
+    roomNumber: "201",
+    name: "Computer Lab 1",
+    buildingId: "bldg_academic_gpp",
+    floor: 2,
+    type: "Laboratory",
+    capacity: 30,
+    areaSqFt: 600,
+    facilities: ["Computers", "Projector", "AC", "Whiteboard"],
+    status: "available",
+    notes: "Computer programming lab",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: "room_301_acad_gpp",
+    roomNumber: "301",
+    name: "Lecture Hall A",
+    buildingId: "bldg_academic_gpp",
+    floor: 3,
+    type: "Lecture Hall",
+    capacity: 60,
+    areaSqFt: 800,
+    facilities: ["Projector", "Sound System", "Whiteboard"],
+    status: "available",
+    notes: "Main lecture hall for computer engineering",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+];
+
 async function seedDatabase() {
   try {
     console.log('🌱 Starting database seeding...');
@@ -290,21 +435,38 @@ async function seedDatabase() {
     await ProgramModel.deleteMany({});
     await BatchModel.deleteMany({});
     await CourseModel.deleteMany({});
+    await InstituteModel.deleteMany({});
+    await BuildingModel.deleteMany({});
+    await RoomModel.deleteMany({});
     console.log('🧹 Cleared existing data');
 
-    // Seed departments first (as they're referenced by other entities)
+    // Seed institutes first (as they're referenced by other entities)
+    const instituteDocuments = initialInstitutes.map(inst => {
+      return inst; // Keep all fields including custom id
+    });
+    
+    await InstituteModel.insertMany(instituteDocuments);
+    console.log(`✅ Seeded ${instituteDocuments.length} institutes`);
+
+    // Seed departments (as they're referenced by other entities)
     const departmentDocuments = initialDepartments.map(dept => {
-      const { id, ...deptData } = dept;
-      return deptData;
+      return dept; // Keep all fields including custom id
     });
     
     await DepartmentModel.insertMany(departmentDocuments);
     console.log(`✅ Seeded ${initialDepartments.length} departments`);
 
+    // Seed committees (depends on users and institutes)
+    const committeeDocuments = initialCommittees.map(committee => {
+      return committee; // Keep all fields including custom id
+    });
+    
+    await CommitteeModel.insertMany(committeeDocuments);
+    console.log(`✅ Seeded ${initialCommittees.length} committees`);
+
     // Seed programs (depends on departments)
     const programDocuments = initialPrograms.map(program => {
-      const { id, ...programData } = program;
-      return programData;
+      return program; // Keep all fields including custom id
     });
     
     await ProgramModel.insertMany(programDocuments);
@@ -312,8 +474,7 @@ async function seedDatabase() {
 
     // Seed batches (depends on programs)
     const batchDocuments = initialBatches.map(batch => {
-      const { id, ...batchData } = batch;
-      return batchData;
+      return batch; // Keep all fields including custom id
     });
     
     await BatchModel.insertMany(batchDocuments);
@@ -321,17 +482,31 @@ async function seedDatabase() {
 
     // Seed courses (depends on departments and programs)
     const courseDocuments = initialCourses.map(course => {
-      const { id, ...courseData } = course;
-      return courseData;
+      return course; // Keep all fields including custom id
     });
     
     await CourseModel.insertMany(courseDocuments);
     console.log(`✅ Seeded ${initialCourses.length} courses`);
 
+    // Seed buildings
+    const buildingDocuments = initialBuildings.map(building => {
+      return building; // Keep all fields including custom id
+    });
+    
+    await BuildingModel.insertMany(buildingDocuments);
+    console.log(`✅ Seeded ${buildingDocuments.length} buildings`);
+
+    // Seed rooms
+    const roomDocuments = initialRooms.map(room => {
+      return room; // Keep all fields including custom id
+    });
+    
+    await RoomModel.insertMany(roomDocuments);
+    console.log(`✅ Seeded ${roomDocuments.length} rooms`);
+
     // Seed roles first
     const roleDocuments = initialRoles.map(role => {
-      const { id, ...roleData } = role;
-      return roleData;
+      return role; // Keep all fields including custom id
     });
     
     await RoleModel.insertMany(roleDocuments);
@@ -339,9 +514,8 @@ async function seedDatabase() {
 
     // Seed users
     const userDocuments = initialUsers.map(user => {
-      const { id, ...userData } = user;
       return {
-        ...userData,
+        ...user, // Keep all fields including custom id
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
@@ -356,10 +530,14 @@ async function seedDatabase() {
     const userCount = await UserModel.countDocuments();
     const roleCount = await RoleModel.countDocuments();
     const departmentCount = await DepartmentModel.countDocuments();
+    const committeeCount = await CommitteeModel.countDocuments();
     const programCount = await ProgramModel.countDocuments();
     const batchCount = await BatchModel.countDocuments();
     const courseCount = await CourseModel.countDocuments();
-    console.log(`📊 Final counts: ${userCount} users, ${roleCount} roles, ${departmentCount} departments, ${programCount} programs, ${batchCount} batches, ${courseCount} courses`);
+    const instituteCount = await InstituteModel.countDocuments();
+    const buildingCount = await BuildingModel.countDocuments();
+    const roomCount = await RoomModel.countDocuments();
+    console.log(`📊 Final counts: ${userCount} users, ${roleCount} roles, ${departmentCount} departments, ${committeeCount} committees, ${programCount} programs, ${batchCount} batches, ${courseCount} courses, ${instituteCount} institutes, ${buildingCount} buildings, ${roomCount} rooms`);
 
   } catch (error) {
     console.error('❌ Error seeding database:', error);

@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('Landing Page Navigation Test', async ({ page }) => {
   // Navigate to the page
-  await page.goto('http://localhost:9003');
+  await page.goto('http://localhost:3000');
   
   // Wait for page to load
   await page.waitForTimeout(3000);

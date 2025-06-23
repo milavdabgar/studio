@@ -130,7 +130,7 @@ The MCP server is configured to work seamlessly with VS Code:
 {
   "tool": "generate_playwright_test",
   "parameters": {
-    "url": "http://localhost:9003/login",
+    "url": "http://localhost:3000/login",
     "testName": "User authentication flow",
     "actions": [
       {
@@ -182,7 +182,7 @@ The MCP server has been tested and verified to be working correctly. The test re
 
 The MCP server is specifically configured for your project:
 
-- **Base URL**: `http://localhost:9003` (matches your dev server)
+- **Base URL**: `http://localhost:3000` (matches your dev server)
 - **Test Directory**: `./e2e` (matches your existing Playwright setup)
 - **Workspace Root**: `/Users/milav/Code/studio`
 - **Browser Support**: Chromium, Firefox, WebKit

@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('http://localhost:9003'),
+  metadataBase: new URL('http://localhost:3000'),
   title: 'PolyManager',
   description: 'A comprehensive management system for polytechnic institutes',
   manifest: '/manifest.json',
