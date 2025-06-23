@@ -1,157 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { User, UserRole } from '@/types/entities'; 
-import { instituteService } from '@/lib/api/institutes'; 
-
-declare global {
-  var __API_USERS_STORE__: User[] | undefined;
-}
-
-const now = new Date().toISOString();
-
-// Corrected initial user data
-if (!global.__API_USERS_STORE__ || global.__API_USERS_STORE__.length === 0) {
-  global.__API_USERS_STORE__ = [
-    { 
-      id: "user_admin_gpp", 
-      displayName: "GPP Super Admin", 
-      username: "gpp_superadmin",
-      email: "admin@gppalanpur.in", 
-      instituteEmail: "admin@gppalanpur.ac.in", // Consistent institute email
-      password: "Admin@123", 
-      roles: ["super_admin", "admin"], // Use role CODES
-      isActive: true, 
-      instituteId: "inst1", 
-      authProviders: ['password'],
-      createdAt: now,
-      updatedAt: now,
-      isEmailVerified: true,
-      preferences: { theme: 'system', language: 'en' },
-      fullName: "ADMIN SUPER GPP",
-      firstName: "SUPER",
-      lastName: "ADMIN",
-      currentRole: "super_admin"
-    },
-     { 
-      id: "user_hod_ce_gpp", 
-      displayName: "HOD Computer", 
-      username: "hod_ce_gpp",
-      email: "hod.ce@example.com", // Personal email
-      instituteEmail: "hod.ce@gppalanpur.ac.in", 
-      password: "Password@123", 
-      roles: ["hod", "faculty"], // Role CODES
-      isActive: true, 
-      instituteId: "inst1", 
-      authProviders: ['password'],
-      createdAt: now,
-      updatedAt: now,
-      isEmailVerified: true,
-      preferences: { theme: 'system', language: 'en' },
-      fullName: "HOD COMPUTER ENGINEERING",
-      firstName: "COMPUTER",
-      lastName: "HOD",
-      currentRole: "hod"
-    },
-    { 
-      id: "user_faculty_cs01_gpp", 
-      displayName: "Faculty CS01", 
-      email: "faculty.cs01@example.com", // Personal email
-      instituteEmail: "faculty.cs01@gppalanpur.ac.in", 
-      password: "Password@123", 
-      roles: ["faculty"], // Role CODE
-      isActive: true, 
-      instituteId: "inst1", 
-      authProviders: ['password'],
-      createdAt: now,
-      updatedAt: now,
-      isEmailVerified: true,
-      preferences: { theme: 'system', language: 'en' },
-      fullName: "FACULTY CS01 GPP",
-      firstName: "CS01",
-      lastName: "FACULTY",
-      currentRole: "faculty"
-    },
-    { 
-      id: "user_student_ce001_gpp", 
-      displayName: "Student CE001", 
-      email: "student.ce001@example.com", // Personal Email
-      instituteEmail: "220010107001@gppalanpur.ac.in", 
-      password: "220010107001", 
-      roles: ["student"], // Role CODE
-      isActive: true, 
-      instituteId: "inst1", 
-      authProviders: ['password'],
-      createdAt: now,
-      updatedAt: now,
-      isEmailVerified: true,
-      preferences: { theme: 'system', language: 'en' },
-      fullName: "DOE JOHN MICHAEL", // GTU Format
-      firstName: "JOHN",
-      middleName: "MICHAEL",
-      lastName: "DOE",
-      currentRole: "student"
-    },
-    { 
-      id: "user_student_me002_gpp", 
-      displayName: "Student ME002", 
-      email: "student.me002@example.com",
-      instituteEmail: "220010108002@gppalanpur.ac.in", 
-      password: "220010108002", 
-      roles: ["student"], // Role CODE
-      isActive: true, 
-      instituteId: "inst1", 
-      authProviders: ['password'],
-      createdAt: now,
-      updatedAt: now,
-      isEmailVerified: true,
-      preferences: { theme: 'system', language: 'en' },
-      fullName: "SMITH JANE ANNA",
-      firstName: "JANE",
-      middleName: "ANNA",
-      lastName: "SMITH",
-      currentRole: "student"
-    },
-    { 
-      id: "user_faculty_me01_gpp", 
-      displayName: "Faculty ME01", 
-      email: "faculty.me01@example.com",
-      instituteEmail: "faculty.me01@gppalanpur.ac.in", 
-      password: "Password@123", 
-      roles: ["faculty", "jury"], // Role CODES
-      isActive: true, 
-      instituteId: "inst1", 
-      authProviders: ['password'],
-      createdAt: now,
-      updatedAt: now,
-      isEmailVerified: true,
-      preferences: { theme: 'system', language: 'en' },
-      fullName: "PATEL RAJ KUMAR",
-      firstName: "RAJ",
-      middleName: "KUMAR",
-      lastName: "PATEL",
-      currentRole: "faculty"
-    },
-    { 
-      id: "user_committee_convener_gpp", 
-      displayName: "CWAN Convener", 
-      email: "convener.cwan@example.com", // Personal Email
-      instituteEmail: "convener.cwan@gppalanpur.ac.in", 
-      password: "Password@123", 
-      roles: ["faculty", "cwan_gpp_convener"], // Role CODES
-      isActive: true, 
-      instituteId: "inst1", 
-      authProviders: ['password'],
-      createdAt: now,
-      updatedAt: now,
-      isEmailVerified: true,
-      preferences: { theme: 'system', language: 'en' },
-      fullName: "CONVENER CWAN GPP",
-      firstName: "CWAN",
-      lastName: "CONVENER",
-      currentRole: "cwan_gpp_convener"
-    },
-  ];
-}
-const usersStore: User[] = global.__API_USERS_STORE__;
+import { instituteService } from '@/lib/api/institutes';
+import { connectMongoose } from '@/lib/mongodb';
+import { UserModel } from '@/lib/models';
 
 const generateId = (): string => `user_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
@@ -168,20 +19,29 @@ const parseFullNameForEmail = (fullName: string | undefined, displayName?: strin
 
 export async function GET(request: NextRequest) {
   try {
-    if (!Array.isArray(global.__API_USERS_STORE__)) {
-      global.__API_USERS_STORE__ = []; 
-      return NextResponse.json({ message: 'Internal server error: User data store corrupted.' }, { status: 500 });
-    }
-    const usersWithoutPassword = global.__API_USERS_STORE__.map(({ password, ...user }) => user);
-    return NextResponse.json(usersWithoutPassword);
-  } catch (e) {
-    return NextResponse.json({ message: 'Internal server error during JSON response creation.', error: (e as Error).message }, { status: 500 });
+    await connectMongoose();
+    
+    const users = await UserModel.find({}, '-password').lean();
+    const usersWithId = users.map(user => ({
+      ...user,
+      id: (user as any)._id.toString()
+    }));
+    
+    return NextResponse.json(usersWithId);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    return NextResponse.json({ 
+      message: 'Internal server error during user fetch.', 
+      error: (error as Error).message 
+    }, { status: 500 });
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const userData = await request.json() as Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'authProviders' | 'isEmailVerified' | 'preferences'> & { password?: string };
+    await connectMongoose();
+    
+    const userData = await request.json() as Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'authProviders' | 'isEmailVerified'> & { password?: string };
 
     if (!userData.fullName || !userData.fullName.trim()) {
         return NextResponse.json({ message: 'Full Name (GTU Format) is required.' }, { status: 400 });
@@ -195,9 +55,15 @@ export async function POST(request: NextRequest) {
     if (!userData.email || !userData.email.trim()) {
       return NextResponse.json({ message: 'Personal Email is required.' }, { status: 400 });
     }
-     if (usersStore?.some(u => u.email.toLowerCase() === userData.email.trim().toLowerCase())) {
+    
+    // Check if user already exists
+    const existingUser = await UserModel.findOne({ 
+      email: { $regex: new RegExp(`^${userData.email.trim()}$`, 'i') } 
+    });
+    if (existingUser) {
         return NextResponse.json({ message: `User with personal email '${userData.email.trim()}' already exists.` }, { status: 409 });
     }
+    
     if (!userData.roles || userData.roles.length === 0) {
         return NextResponse.json({ message: 'User must have at least one role.' }, { status: 400 });
     }
@@ -237,14 +103,22 @@ export async function POST(request: NextRequest) {
     
     let instituteEmail = `${baseInstituteEmail}@${instituteDomain}`;
     let emailSuffix = 1;
-    while(usersStore?.some(u => u.instituteEmail?.toLowerCase() === instituteEmail.toLowerCase())) {
+    
+    // Check for existing institute email in MongoDB
+    let existingInstituteEmailUser = await UserModel.findOne({ 
+      instituteEmail: { $regex: new RegExp(`^${instituteEmail}$`, 'i') } 
+    });
+    
+    while(existingInstituteEmailUser) {
         instituteEmail = `${baseInstituteEmail}${emailSuffix}@${instituteDomain}`;
         emailSuffix++;
+        existingInstituteEmailUser = await UserModel.findOne({ 
+          instituteEmail: { $regex: new RegExp(`^${instituteEmail}$`, 'i') } 
+        });
     }
 
     const currentTimestamp = new Date().toISOString();
-    const newUser: User = {
-      id: generateId(),
+    const newUserData = {
       displayName: userData.displayName || `${userData.firstName.trim()} ${userData.lastName.trim()}`,
       fullName: userData.fullName.trim(),
       firstName: userData.firstName.trim(),
@@ -267,8 +141,14 @@ export async function POST(request: NextRequest) {
       instituteId: userData.instituteId || undefined,
       password: userData.password, 
     };
-    usersStore?.push(newUser);
-    const { password, ...userToReturn } = newUser;
+    
+    const newUser = new UserModel(newUserData);
+    await newUser.save();
+    
+    // Return user without password
+    const userToReturn = newUser.toJSON();
+    delete userToReturn.password;
+    
     return NextResponse.json(userToReturn, { status: 201 });
   } catch (error) {
     console.error('Error creating user:', error);
