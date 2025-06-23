@@ -1,28 +1,63 @@
 import { test, expect } from '@playwright/test';
 
-test('Newsletter Page Test', async ({ page }) => {
-  // Navigate to the newsletters page
+test('Newsletter Page Test - Public Access Verification', async ({ page }) => {
+  // Navigate to the newsletters page without any authentication
   await page.goto('http://localhost:9003/newsletters');
   
   // Wait for page to load
   await page.waitForTimeout(3000);
   
-  // Check for page heading
-  const heading = page.locator('h1, h2, .newsletter-title');
-  if (await heading.count() > 0) {
-    await expect(heading.first()).toBeVisible();
-  }
+  // Verify we're on the newsletters page and NOT redirected to login
+  await expect(page).toHaveURL(/.*\/newsletters$/);
+  await expect(page).not.toHaveURL(/.*\/login/);
   
-  // Check for newsletter content or links
-  const content = page.locator('a, button, .newsletter-item, article, .newsletter');
-  if (await content.count() > 0) {
-    await expect(content.first()).toBeVisible();
-  }
+  // Verify page content loads (look for the main heading)
+  const heading = page.locator('h1').filter({ hasText: 'Spectrum Newsletter' });
+  await expect(heading).toBeVisible();
   
-  // Try to interact with newsletter items if they exist
-  const newsletterLinks = page.locator('a[href*="newsletter"], .newsletter-item');
-  if (await newsletterLinks.count() > 0) {
-    await newsletterLinks.first().click();
-    await page.waitForTimeout(2000);
-  }
+  // Verify the page has actual newsletter content
+  const description = page.locator('text=Department of Electronics & Communication Engineering');
+  await expect(description).toBeVisible();
+  
+  // Check for newsletter approach cards
+  const newsletterCards = page.locator('div').filter({ hasText: 'Markdown-Based Newsletter' });
+  await expect(newsletterCards.first()).toBeVisible();
+});
+
+test('Newsletter Page Test - Trailing Slash Redirect', async ({ page }) => {
+  // Test that /newsletters/ redirects properly to /newsletters
+  await page.goto('http://localhost:9003/newsletters/');
+  
+  // Wait for any redirects to complete
+  await page.waitForTimeout(2000);
+  
+  // Verify we end up on the correct newsletters page (without trailing slash)
+  await expect(page).toHaveURL(/.*\/newsletters$/);
+  await expect(page).not.toHaveURL(/.*\/login/);
+  
+  // Verify the page loads content
+  const heading = page.locator('h1').filter({ hasText: 'Spectrum Newsletter' });
+  await expect(heading).toBeVisible();
+});
+
+test('Newsletter Page Test - No Authentication Required', async ({ page }) => {
+  // Clear any existing cookies to ensure we're truly unauthenticated
+  await page.context().clearCookies();
+  
+  // Navigate to newsletters page
+  await page.goto('http://localhost:9003/newsletters');
+  
+  // Wait for page to load
+  await page.waitForTimeout(3000);
+  
+  // Should not redirect to login
+  await expect(page).not.toHaveURL(/.*\/login/);
+  
+  // Should show actual newsletter content, not login form
+  await expect(page.locator('input[type="email"]')).not.toBeVisible();
+  await expect(page.locator('input[type="password"]')).not.toBeVisible();
+  
+  // Should show newsletter content
+  const mainContent = page.locator('h1').filter({ hasText: 'Spectrum Newsletter' });
+  await expect(mainContent).toBeVisible();
 });

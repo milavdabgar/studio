@@ -200,9 +200,9 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
     
-// Matcher to apply middleware to all routes except static assets, API routes, and newsletters
+// Matcher to apply middleware to all routes except static assets and API routes
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|icons/|newsletters).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|icons/).*)',
   ],
 }

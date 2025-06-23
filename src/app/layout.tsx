@@ -311,7 +311,7 @@ export default function RootLayout({
       });
     } else {
       setCurrentUser(DEFAULT_USER);
-       if (!['/login', '/signup', '/'].includes(pathname) && !pathname.startsWith('/posts')) { // Allow /posts
+       if (!['/login', '/signup', '/'].includes(pathname) && !pathname.startsWith('/posts') && !pathname.startsWith('/newsletters')) { // Allow /posts and /newsletters
          router.push('/login');
        }
     }
