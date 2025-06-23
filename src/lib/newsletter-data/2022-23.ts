@@ -258,6 +258,39 @@ export const newsletterData2022_23: NewsletterData = {
       ]
     },
   ],
+
+  highlights: [
+    {
+      icon: '🎓',
+      title: 'Outstanding Academic Achievement',
+      description: 'Dev Kiritbhai Patel achieved remarkable 9.71 SPI, showcasing department\'s commitment to academic excellence'
+    },
+    {
+      icon: '🏛️',
+      title: 'Premier College Admissions',
+      description: 'Students secured admissions to LD College of Engineering and Government Engineering College Gandhinagar'
+    },
+    {
+      icon: '💼',
+      title: 'Industry Expert Sessions',
+      description: 'Comprehensive workshops on communication skills and cybersecurity by Bank of America security expert'
+    },
+    {
+      icon: '🏭',
+      title: 'Industrial Learning',
+      description: 'Strategic industrial visits to Samsung Service Centre and Community Radio for practical exposure'
+    },
+    {
+      icon: '🚀',
+      title: 'Technology Integration',
+      description: 'Curriculum focus on IoT, AI in electronics, and sustainable design practices for future-ready engineers'
+    },
+    {
+      icon: '🎯',
+      title: 'Faculty Leadership',
+      description: 'Comprehensive administrative roles from IQAC coordination to SSIP innovation management across faculty'
+    }
+  ],
   
   chronicles: [
     {
@@ -401,12 +434,12 @@ export const newsletterData2022_23: NewsletterData = {
   
   logos: [
     {
-      src: '/logos/gpp-logo.png',
+      src: '/newsletters/imgs/gpp-logo.png',
       alt: 'Government Polytechnic Palanpur Logo'
     },
     {
-      src: '/logos/gte-logo.png',
-      alt: 'Gujarat Technological University Logo'
+      src: '/newsletters/imgs/ec-logo.png',
+      alt: 'EC Department Logo'
     }
   ],
   

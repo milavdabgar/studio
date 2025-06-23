@@ -48,5 +48,16 @@ export function getAvailableYears(): string[] {
   return availableYears.map(y => y.year);
 }
 
+// Get Band number based on academic year
+export function getBandNumber(academicYear: string): string {
+  const yearToBandMap: { [key: string]: string } = {
+    '2021-22': 'Band I',
+    '2022-23': 'Band II',
+    '2023-24': 'Band III',
+    '2024-25': 'Band IV'
+  };
+  return yearToBandMap[academicYear] || 'Band III';
+}
+
 // Default export - latest year data (2024-25)
 export default newsletterData2024_25;

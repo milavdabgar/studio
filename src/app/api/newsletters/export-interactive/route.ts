@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ContentConverterV2 } from '@/lib/content-converter-v2';
-import { newsletterData, getNewsletterDataByYear, type NewsletterData } from '@/lib/newsletter-data';
+import { newsletterData, getNewsletterDataByYear, getBandNumber, type NewsletterData } from '@/lib/newsletter-data';
 import fs from 'fs';
 import path from 'path';
 
@@ -2471,7 +2471,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24', imag
 
                     <div class="cover-middle">                    <div class="cover-title-section">
                         <h1 class="cover-main-title">Spectrum</h1>
-                        <div class="cover-band">Band III</div>
+                        <div class="cover-band">${getBandNumber(year)}</div>
                     </div>
 
                         <div class="cover-department">
@@ -2506,13 +2506,13 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24', imag
         <!-- Stats and Welcome Page -->
         <div class="stats-welcome-page">
             <div class="page-header">
-                <h2>📋 Spectrum Band - III - At a Glance</h2>
+                <h2>📋 Essence</h2>
             </div>
 
             <div class="newsletter-intro">
                 <div class="intro-content">
                     <h3>📰 About This Newsletter</h3>
-                    <p>Welcome to <strong>Spectrum - Band III</strong>, the official newsletter of the Electronics & Communication Engineering Department. This edition showcases our department's achievements, student accomplishments, faculty contributions, and major events from the academic year ${year}.</p>
+                    <p>Welcome to <strong>Spectrum - ${getBandNumber(year)}</strong>, the official newsletter of the Electronics & Communication Engineering Department. This edition showcases our department's achievements, student accomplishments, faculty contributions, and major events from the academic year ${year}.</p>
                     <div class="intro-stats">
                         <div class="intro-stat">
                             <span class="intro-stat-icon">📖</span>
@@ -3043,7 +3043,7 @@ ${item.type === 'poem' ? (item.content || '').trim() : (item.content || '')}</di
                             <div class="decoration-line"></div>
                         </div>
                         <div class="footer-text">
-                            <p><strong>Spectrum Newsletter - Band III</strong></p>
+                            <p><strong>Spectrum Newsletter - ${getBandNumber(year)}</strong></p>
                             <p>Academic Year ${year} • Government Polytechnic, Palanpur</p>
                             <p class="motto">Excellence in Technical Education Since 1984</p>
                         </div>

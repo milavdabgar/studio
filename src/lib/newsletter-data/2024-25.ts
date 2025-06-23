@@ -349,6 +349,39 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
     }
   },
 
+  highlights: [
+    {
+      icon: '🤖',
+      title: 'AI/ML Curriculum Integration',
+      description: 'Successfully integrated Artificial Intelligence and Machine Learning with traditional electronics engineering education'
+    },
+    {
+      icon: '🏛️',
+      title: 'AICTE & NBA Coordination',
+      description: 'Led institutional excellence through AICTE coordination and NBA accreditation process management'
+    },
+    {
+      icon: '🚀',
+      title: 'Startup Ecosystem Development',
+      description: 'Comprehensive SSIP innovation management and startup ecosystem development initiatives'
+    },
+    {
+      icon: '🏆',
+      title: 'Outstanding Academic Performance',
+      description: 'Exceptional students like Mali Bhavin Ashokbhai (8.71 SPI) and Maknojiya Arman Imranbhai (9.2 SPI)'
+    },
+    {
+      icon: '🔧',
+      title: 'Advanced Technology Workshops',
+      description: 'Cutting-edge training in 5G communication, IoT applications, and cybersecurity technologies'
+    },
+    {
+      icon: '🌱',
+      title: 'Sustainable Electronics Focus',
+      description: 'Integration of sustainable design principles and green technology practices in curriculum'
+    }
+  ],
+
   chronicles: [
     {
       title: 'ISTE Student Chapter 2024',

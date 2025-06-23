@@ -14,7 +14,7 @@ import {
   Calendar, Star, Trophy, Lightbulb, Target, Rocket
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { newsletterData, getNewsletterDataByYear, availableYears, type NewsletterData } from '@/lib/newsletter-data';
+import { newsletterData, getNewsletterDataByYear, availableYears, getBandNumber, type NewsletterData } from '@/lib/newsletter-data';
 
 export default function InteractiveNewsletterPage() {
   const [selectedYear, setSelectedYear] = useState('2023-24');
@@ -49,8 +49,8 @@ export default function InteractiveNewsletterPage() {
     try {
       // Create a comprehensive data object for export
       const exportData = {
-        title: 'Spectrum Newsletter - Band III',
-        edition: 'Band III',
+        title: `Spectrum Newsletter - ${getBandNumber(selectedYear)}`,
+        edition: getBandNumber(selectedYear),
         academicYear: selectedYear,
         department: 'Electronics & Communication Engineering',
         institute: 'Government Polytechnic, Palanpur',
@@ -156,7 +156,7 @@ export default function InteractiveNewsletterPage() {
             <div className="flex-1 flex flex-col justify-center gap-8">
               <div>
                 <h1 className="text-7xl font-black m-0 text-shadow-lg tracking-tighter text-white">Spectrum</h1>
-                <div className="inline-block bg-white/95 text-blue-800 px-10 py-3 rounded-full backdrop-blur-md border-2 border-white/80 shadow-lg font-bold text-xl mt-2">Band III</div>
+                <div className="inline-block bg-white/95 text-blue-800 px-10 py-3 rounded-full backdrop-blur-md border-2 border-white/80 shadow-lg font-bold text-xl mt-2">{getBandNumber(selectedYear)}</div>
               </div>
 
               <div>
@@ -283,7 +283,7 @@ export default function InteractiveNewsletterPage() {
               <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
                 <CardTitle className="flex items-center space-x-2">
                   <TrendingUp className="w-5 h-5" />
-                  <span>📋 Spectrum Band - III - At a Glance</span>
+                  <span>📋 Spectrum {getBandNumber(selectedYear)} - At a Glance</span>
                 </CardTitle>
                 <CardDescription className="text-blue-100">
                   Department performance and key highlights for academic year {selectedYear}
@@ -297,7 +297,7 @@ export default function InteractiveNewsletterPage() {
                     <span>About This Newsletter</span>
                   </h3>
                   <p className="text-gray-700 leading-relaxed mb-4">
-                    Welcome to <strong>Spectrum - Band III</strong>, the official newsletter of the Electronics & Communication Engineering Department. 
+                    Welcome to <strong>Spectrum - {getBandNumber(selectedYear)}</strong>, the official newsletter of the Electronics & Communication Engineering Department. 
                     This edition showcases our department's achievements, student accomplishments, faculty contributions, and major events from the academic year {selectedYear}.
                   </p>
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -995,7 +995,7 @@ export default function InteractiveNewsletterPage() {
                       <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-white/80 to-transparent"></div>
                     </div>
                     <div>
-                      <p className="font-semibold">Spectrum Newsletter - Band III</p>
+                      <p className="font-semibold">Spectrum Newsletter - {getBandNumber(selectedYear)}</p>
                       <p>Academic Year {selectedYear} • Government Polytechnic, Palanpur</p>
                       <p className="text-sm italic opacity-90 mt-1">Excellence in Technical Education Since 1984</p>
                     </div>
