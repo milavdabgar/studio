@@ -10,13 +10,13 @@ if (!(global as any).__API_STUDENTS_STORE__) {
 }
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   const student = studentsStore.find(s => s.id === id);
   if (student) {
     return NextResponse.json(student);

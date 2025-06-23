@@ -8,13 +8,13 @@ if (!(global as any).__API_FACULTY_STORE__) {
 }
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   const faculty = facultyStore.find(f => f.id === id);
   if (faculty) {
     return NextResponse.json(faculty);
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   try {
     const facultyData = await request.json() as Partial<Omit<Faculty, 'id'>>;
     const facultyIndex = facultyStore.findIndex(f => f.id === id);
@@ -89,7 +89,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   const facultyIndex = facultyStore.findIndex(f => f.id === id);
 
   if (facultyIndex === -1) {

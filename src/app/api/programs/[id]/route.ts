@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { connectMongoose } from '@/lib/mongodb';
 import { ProgramModel } from '@/lib/models';
 import type { Program } from '@/types/entities';
+import { Types } from 'mongoose';
 
 interface RouteParams {
   params: Promise<{
@@ -14,7 +15,14 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     await connectMongoose();
     const { id } = await params;
     
-    const program = await ProgramModel.findById(id);
+    // Try to find by MongoDB ObjectId first, then by custom id field
+    let program;
+    if (Types.ObjectId.isValid(id)) {
+      program = await ProgramModel.findById(id);
+    } else {
+      program = await ProgramModel.findOne({ id });
+    }
+    
     if (!program) {
       return NextResponse.json({ message: 'Program not found' }, { status: 404 });
     }
@@ -22,7 +30,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(program);
   } catch (error) {
     console.error('Error fetching program:', error);
-    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ message: 'Error fetching program', error: (error as Error).message }, { status: 500 });
   }
 }
 

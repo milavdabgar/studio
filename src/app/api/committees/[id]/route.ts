@@ -128,7 +128,7 @@ async function createOrUpdateCommitteeRoles(committee: Committee, isUpdate: bool
 
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   const committeesStore = global.__API_COMMITTEES_STORE__ || [];
   const committee = committeesStore.find(c => c.id === id);
   if (committee) {
@@ -138,7 +138,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   let committeesStore = global.__API_COMMITTEES_STORE__ || [];
   
   try {
@@ -225,7 +225,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   let committeesStore = global.__API_COMMITTEES_STORE__ || [];
   let currentRolesStore = global.__API_ROLES_STORE__ || [];
   let currentUsersStore: User[] = (global as any).__API_USERS_STORE__ || [];

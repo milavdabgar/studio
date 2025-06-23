@@ -17,7 +17,7 @@ interface RouteParams {
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   if (!Array.isArray(global.__API_CURRICULUM_STORE__)) {
     global.__API_CURRICULUM_STORE__ = [];
     return NextResponse.json({ message: 'Curriculum data store corrupted.' }, { status: 500 });
@@ -76,7 +76,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id } = await params;
   if (!Array.isArray(global.__API_CURRICULUM_STORE__)) {
     global.__API_CURRICULUM_STORE__ = [];
     return NextResponse.json({ message: 'Curriculum data store corrupted.' }, { status: 500 });

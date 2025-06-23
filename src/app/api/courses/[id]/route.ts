@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { connectMongoose } from '@/lib/mongodb';
 import { CourseModel } from '@/lib/models';
 import type { Course } from '@/types/entities';
+import { Types } from 'mongoose';
 
 interface RouteParams {
   params: Promise<{
@@ -15,7 +16,14 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     await connectMongoose();
     const { id } = await params;
     
-    const course = await CourseModel.findById(id);
+    // Try to find by MongoDB ObjectId first, then by custom id field
+    let course;
+    if (Types.ObjectId.isValid(id)) {
+      course = await CourseModel.findById(id);
+    } else {
+      course = await CourseModel.findOne({ id });
+    }
+    
     if (!course) {
       return NextResponse.json({ message: 'Course not found' }, { status: 404 });
     }
@@ -23,7 +31,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(course);
   } catch (error) {
     console.error('Error fetching course:', error);
-    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ message: 'Error fetching course', error: (error as Error).message }, { status: 500 });
   }
 }
 
@@ -114,14 +122,22 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     await connectMongoose();
     const { id } = await params;
     
-    const deletedCourse = await CourseModel.findByIdAndDelete(id);
-    if (!deletedCourse) {
+    // Try to find by MongoDB ObjectId first, then by custom id field
+    let courseToDelete;
+    if (Types.ObjectId.isValid(id)) {
+      courseToDelete = await CourseModel.findById(id);
+    } else {
+      courseToDelete = await CourseModel.findOne({ id });
+    }
+    
+    if (!courseToDelete) {
       return NextResponse.json({ message: 'Course not found' }, { status: 404 });
     }
     
-    return NextResponse.json({ message: 'Course deleted successfully' });
+    await CourseModel.findByIdAndDelete(courseToDelete._id);
+    return NextResponse.json({ message: 'Course deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error('Error deleting course:', error);
-    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ message: 'Error deleting course', error: (error as Error).message }, { status: 500 });
   }
 }

@@ -1,7 +1,19 @@
 
 import type { Institute } from '@/types/entities';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
+// Use absolute URL for server-side calls, relative for client-side
+const getBaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    // Client side - use relative URL
+    return '/api';
+  }
+  // Server side - use absolute URL
+  return process.env.NEXTAUTH_URL || process.env.VERCEL_URL ? 
+    `${process.env.NEXTAUTH_URL || `https://${process.env.VERCEL_URL}`}/api` : 
+    'http://localhost:3000/api';
+};
+
+const API_BASE_URL = getBaseUrl();
 
 export const instituteService = {
   async getAllInstitutes(): Promise<Institute[]> {

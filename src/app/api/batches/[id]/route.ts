@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { connectMongoose } from '@/lib/mongodb';
 import { BatchModel } from '@/lib/models';
 import type { Batch } from '@/types/entities';
+import { Types } from 'mongoose';
 
 interface RouteParams {
   params: Promise<{
@@ -14,7 +15,14 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     await connectMongoose();
     const { id } = await params;
     
-    const batch = await BatchModel.findById(id);
+    // Try to find by MongoDB ObjectId first, then by custom id field
+    let batch;
+    if (Types.ObjectId.isValid(id)) {
+      batch = await BatchModel.findById(id);
+    } else {
+      batch = await BatchModel.findOne({ id });
+    }
+    
     if (!batch) {
       return NextResponse.json({ message: 'Batch not found' }, { status: 404 });
     }
@@ -22,7 +30,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(batch);
   } catch (error) {
     console.error('Error fetching batch:', error);
-    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ message: 'Error fetching batch', error: (error as Error).message }, { status: 500 });
   }
 }
 
@@ -95,10 +103,20 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     await connectMongoose();
     const { id } = await params;
     
-    const deletedBatch = await BatchModel.findByIdAndDelete(id);
-    if (!deletedBatch) {
+    // Try to find by MongoDB ObjectId first, then by custom id field
+    let batchToDelete;
+    if (Types.ObjectId.isValid(id)) {
+      batchToDelete = await BatchModel.findById(id);
+    } else {
+      batchToDelete = await BatchModel.findOne({ id });
+    }
+    
+    if (!batchToDelete) {
       return NextResponse.json({ message: 'Batch not found' }, { status: 404 });
     }
+    
+    await BatchModel.findByIdAndDelete(batchToDelete._id);
+    return NextResponse.json({ message: 'Batch deleted successfully' }, { status: 200 });
     
     return NextResponse.json({ message: 'Batch deleted successfully' });
   } catch (error) {
