@@ -58,7 +58,7 @@ test.describe('Admin Academic Management', () => {
       await page.getByRole('option', { name: 'Upcoming', exact: true }).click();
       
       await page.getByRole('button', { name: /create batch/i }).click();
-      await expect(page.getByText(/batch created/i, { exact: false })).toBeVisible({timeout: 10000});
+      await expect(page.getByText('Batch Created', { exact: true })).toBeVisible({timeout: 10000});
       await expect(page.getByText(createdBatchName)).toBeVisible();
     });
 

@@ -71,7 +71,7 @@ test.describe('Admin Infrastructure Management', () => {
       await expect(buildingRow).toBeVisible();
       await buildingRow.getByRole('button', { name: /delete/i }).click();
       
-      await expect(page.getByText(/building deleted/i, { exact: false })).toBeVisible({timeout: 10000});
+      await expect(page.getByText('Building Deleted', { exact: true })).toBeVisible({timeout: 10000});
       await expect(buildingRow).not.toBeVisible();
       createdBuildingCode = '';
     });
@@ -155,8 +155,8 @@ test.describe('Admin Infrastructure Management', () => {
 
       await page.getByRole('button', { name: /create room/i }).click();
 
-      await expect(page.getByText(/room created/i, { exact: false })).toBeVisible({timeout: 10000});
-      await expect(page.getByText(createdRoomNumber)).toBeVisible();
+      await expect(page.getByText('Room Created', { exact: true })).toBeVisible({timeout: 10000});
+      await expect(page.getByText(createdRoomNumber, { exact: true })).toBeVisible();
     });
 
     test('should delete the created room', async () => {

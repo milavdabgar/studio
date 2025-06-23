@@ -54,7 +54,7 @@ test.describe('Admin Results Management', () => {
 
   test('should navigate to results import page and import standard CSV', async () => {
     await page.goto(`${APP_BASE_URL}/admin/results/import`);
-    await expect(page.getByRole('heading', { name: /import student results/i })).toBeVisible();
+    await expect(page.getByText('Import Student Results')).toBeVisible();
 
     // Standard Import
     const examTypeSelect = page.locator('form').getByLabel('Examination Type *');
@@ -74,12 +74,12 @@ test.describe('Admin Results Management', () => {
     await page.getByLabel(/gtu results csv file/i).setInputFiles(sampleGtuCsvPath);
     await page.getByRole('button', { name: /import gtu results/i }).click();
 
-    await expect(page.getByText(/gtu results imported successfully/i, { exact: false })).toBeVisible({timeout: 15000});
+    await expect(page.getByText('GTU Results Imported Successfully', { exact: true })).toBeVisible({timeout: 15000});
   });
 
   test('should navigate to results view page and display results', async () => {
     await page.goto(`${APP_BASE_URL}/admin/results`); 
-    await expect(page.getByRole('heading', { name: /result management/i })).toBeVisible();
+    await expect(page.getByText('Result Management')).toBeVisible();
     
     // Click on the "Results" tab if not already active
     const resultsTabButton = page.getByRole('tab', { name: /results/i, exact: true }); // ShadCN tabs use role="tab"

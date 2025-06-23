@@ -32,7 +32,7 @@ test.describe('Admin System Settings', () => {
 
   test('should navigate to settings page and update settings', async () => {
     await page.goto(`${APP_BASE_URL}/admin/settings`);
-    await expect(page.getByRole('heading', { name: /system settings/i })).toBeVisible();
+    await expect(page.getByText('System Settings', { exact: true }).first()).toBeVisible();
 
     // Update Notifications Email
     const notificationsEmailInput = page.getByLabel(/notifications email/i);

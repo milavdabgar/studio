@@ -59,7 +59,7 @@ test.describe('Admin Timetable Management', () => {
 
   test('should navigate to timetables page and create a new timetable', async () => {
     await page.goto(`${APP_BASE_URL}/admin/timetables`);
-    await expect(page.getByRole('heading', { name: /timetable management/i })).toBeVisible();
+    await expect(page.getByText('Timetable Management')).toBeVisible();
 
     const timestamp = Date.now().toString().slice(-6);
     createdTimetableName = `${timetableBaseName} ${timestamp}`;

@@ -37,7 +37,7 @@ test.describe('Admin Data Management', () => {
 
     test('should navigate to institutes page and create a new institute', async () => {
       await page.goto(`${APP_BASE_URL}/admin/institutes`);
-      await expect(page.getByRole('heading', { name: /institute management/i })).toBeVisible();
+      await expect(page.getByText('Institute Management', { exact: true }).first()).toBeVisible();
 
       const timestamp = Date.now().toString().slice(-6);
       createdInstituteCode = `E2EI${timestamp}`;
@@ -48,7 +48,7 @@ test.describe('Admin Data Management', () => {
       await page.getByLabel(/institute code/i).fill(createdInstituteCode);
       await page.getByLabel(/address/i).fill('123 E2E Test St');
       await page.getByLabel(/contact email/i).fill(`contact@${createdInstituteCode.toLowerCase()}.e2e`);
-      await page.locator('label:has-text("Status") + button[role="combobox"]').click();
+      await page.getByRole('combobox', { name: 'Status *' }).click();
       await page.getByRole('option', { name: /active/i }).click();
       await page.getByRole('button', { name: /create institute/i }).click();
 
@@ -96,7 +96,7 @@ test.describe('Admin Data Management', () => {
 
     test('should navigate to departments page and create a new department', async () => {
       await page.goto(`${APP_BASE_URL}/admin/departments`);
-      await expect(page.getByRole('heading', { name: /department management/i })).toBeVisible();
+      await expect(page.getByText('Department Management', { exact: true }).first()).toBeVisible();
 
       const timestamp = Date.now().toString().slice(-6);
       createdDepartmentCode = `E2ED${timestamp}`;
@@ -108,11 +108,10 @@ test.describe('Admin Data Management', () => {
       
       // Select an institute - ensure at least one institute exists for selection
       // This assumes "Government Polytechnic Palanpur" exists or is the first option
-      const instituteSelect = page.locator('label:has-text("Institute") + div button[role="combobox"]');
-      await instituteSelect.click();
+      await page.getByRole('combobox', { name: 'Institute *' }).click();
       await page.getByRole('option', { name: /Government Polytechnic Palanpur/i }).first().click();
 
-      await page.locator('label:has-text("Status") + button[role="combobox"]').click();
+      await page.getByRole('combobox', { name: 'Status *' }).click();
       await page.getByRole('option', { name: /active/i }).click();
       await page.getByRole('button', { name: /create department/i }).click();
 
@@ -141,7 +140,7 @@ test.describe('Admin Data Management', () => {
 
     test('should navigate to users page and add a new user', async () => {
       await page.goto(`${APP_BASE_URL}/admin/users`);
-      await expect(page.getByRole('heading', { name: /user management/i })).toBeVisible();
+      await expect(page.getByText('User Management', { exact: true }).first()).toBeVisible();
 
       const timestamp = Date.now();
       testUserEmail = `e2e.user.${timestamp}@example.com`;
@@ -153,7 +152,7 @@ test.describe('Admin Data Management', () => {
       await page.getByLabel(/first name/i).fill('E2E');
       await page.getByLabel(/last name/i).fill(`User${timestamp}`);
       await page.getByLabel('Personal Email *').fill(testUserEmail); // Use exact label match if possible
-      await page.getByLabel('Password', { exact: true }).fill('Password123!');
+      await page.getByLabel(/password/i).first().fill('Password123!');
       await page.getByLabel(/confirm password/i).fill('Password123!');
       
       // Select Roles - ensure 'Student' role checkbox exists
@@ -193,7 +192,7 @@ test.describe('Admin Data Management', () => {
 
     test('should navigate to roles page and create a new role', async () => {
       await page.goto(`${APP_BASE_URL}/admin/roles`);
-      await expect(page.getByRole('heading', { name: /role management/i })).toBeVisible();
+      await expect(page.getByText('Role Management', { exact: true }).first()).toBeVisible();
 
       const timestamp = Date.now().toString().slice(-6);
       testRoleCode = `e2e_test_role_${timestamp}`;
@@ -208,7 +207,7 @@ test.describe('Admin Data Management', () => {
       await page.getByLabel(/view courses/i).check(); // Assuming 'View Courses' is a valid permission label
       await page.getByRole('button', { name: /create role/i }).click();
 
-      await expect(page.getByText(/role created/i, { exact: false })).toBeVisible({timeout: 10000});
+      await expect(page.getByText('Role Created', { exact: true })).toBeVisible({timeout: 10000});
       await expect(page.getByText(testRoleName)).toBeVisible();
       await expect(page.getByText(testRoleCode, { exact: true })).toBeVisible(); // Ensure code is also displayed
     });

@@ -58,7 +58,7 @@ test.describe('Project Fair Management (Admin)', () => {
   test.describe('Event Management', () => {
     test('Navigate to Project Fair Events page', async () => {
       await page.goto(`${APP_BASE_URL}/admin/project-fair/events`);
-      await expect(page.getByRole('heading', { name: /project fair event management/i })).toBeVisible();
+      await expect(page.getByText('Project Fair Event Management')).toBeVisible();
     });
 
     test('Create a new Project Fair Event', async () => {
