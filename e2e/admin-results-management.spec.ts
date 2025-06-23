@@ -8,7 +8,7 @@ const APP_BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3
 const adminUserCredentials = {
   email: 'admin@gppalanpur.in',
   password: 'Admin@123',
-  role: 'admin',
+  role: 'Administrator',
 };
 
 async function loginAsAdmin(page: Page) {
@@ -16,7 +16,7 @@ async function loginAsAdmin(page: Page) {
   await page.getByLabel(/email/i).fill(adminUserCredentials.email);
   await page.getByLabel(/password/i).fill(adminUserCredentials.password);
   await page.getByLabel(/login as/i).click();
-  await page.getByRole('option', { name: new RegExp(adminUserCredentials.role, 'i') }).click();
+  await page.getByRole('option', { name: adminUserCredentials.role, exact: true }).click();
   await page.getByRole('button', { name: /login/i }).click();
   await expect(page).toHaveURL(new RegExp(`${APP_BASE_URL}/dashboard`), {timeout: 25000});
 }

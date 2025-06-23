@@ -5,7 +5,7 @@ const APP_BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3
 const facultyUserCredentials = {
   email: 'faculty.cs01@gppalanpur.ac.in', 
   password: 'Password@123', 
-  role: 'faculty',
+  role: 'Faculty',
   name: 'Prof. CS01 FACULTY' 
 };
 
@@ -14,7 +14,7 @@ async function loginAsFaculty(page: Page) {
   await page.getByLabel(/Email/i).fill(facultyUserCredentials.email);
   await page.getByLabel(/Password/i).fill(facultyUserCredentials.password);
   await page.getByLabel(/Login as/i).click();
-  await page.getByRole('option', { name: new RegExp(facultyUserCredentials.role, 'i') }).click();
+  await page.getByRole('option', { name: facultyUserCredentials.role, exact: true }).click();
   await page.getByRole('button', { name: /Login|Sign In/i }).click();
   await expect(page).toHaveURL(new RegExp(`${APP_BASE_URL}/dashboard`), {timeout: 25000});
 }

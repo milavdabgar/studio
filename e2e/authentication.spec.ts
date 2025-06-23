@@ -5,7 +5,7 @@ const APP_BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3
 const adminUser = {
   email: 'admin@gppalanpur.in',
   password: 'Admin@123',
-  role: 'admin',
+  role: 'Administrator',
   expectedDashboardText: /Welcome to your Dashboard, GPP Super Admin!/i,
 };
 

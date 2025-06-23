@@ -9,7 +9,7 @@ const APP_BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3
 const studentUserCredentials = {
   email: '220010107001@gppalanpur.ac.in', 
   password: '220010107001', // Assuming this is the default password
-  role: 'student',
+  role: 'Student',
   name: 'DOE JOHN MICHAEL'
 };
 
@@ -18,7 +18,7 @@ async function loginAsStudent(page: Page) {
   await page.getByLabel(/Email/i).fill(studentUserCredentials.email);
   await page.getByLabel(/Password/i).fill(studentUserCredentials.password);
   await page.getByLabel(/Login as/i).click(); 
-  await page.getByRole('option', { name: new RegExp(studentUserCredentials.role, 'i') }).click();
+  await page.getByRole('option', { name: studentUserCredentials.role, exact: true }).click();
   await page.getByRole('button', { name: /Login|Sign In/i }).click();
   await expect(page).toHaveURL(new RegExp(`${APP_BASE_URL}/dashboard`), {timeout: 25000});
 }
