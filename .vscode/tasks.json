@@ -8,6 +8,55 @@
 			"group": "build",
 			"isBackground": true,
 			"problemMatcher": []
+		},
+		{
+			"label": "Start MCP Server",
+			"type": "shell",
+			"command": "npm run mcp:start",
+			"group": "build",
+			"isBackground": true,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new"
+			}
+		},
+		{
+			"label": "Start MCP Server (Dev Mode)",
+			"type": "shell",
+			"command": "npm run mcp:dev",
+			"group": "build",
+			"isBackground": true,
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new"
+			}
+		},
+		{
+			"label": "Build MCP Server",
+			"type": "shell",
+			"command": "npm run mcp:build",
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "Test MCP Server",
+			"type": "shell",
+			"command": "npm run mcp:test",
+			"group": "test",
+			"problemMatcher": []
+		},
+		{
+			"label": "Run Playwright Tests",
+			"type": "shell",
+			"command": "npm run test:e2e",
+			"group": "test",
+			"problemMatcher": []
 		}
 	]
 }

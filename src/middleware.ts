@@ -74,6 +74,7 @@ const PUBLIC_ROUTES = [
   '/signup',
   '/api/auth/callback/credentials',
   '/posts', // Add /posts base route
+  '/newsletters', // Add newsletters to public routes
 ];
 
 // Role access control: Key is route prefix, Value is array of ALLOWED role CODES
@@ -116,7 +117,9 @@ export async function middleware(request: NextRequest) {
   }
 
   // Check if the route is public first
-  if (PUBLIC_ROUTES.includes(pathname) || pathname.startsWith('/posts')) {
+  if (PUBLIC_ROUTES.includes(pathname) || 
+      pathname.startsWith('/posts') || 
+      pathname.startsWith('/newsletters')) {
     // If accessing login or signup while already authenticated, redirect to dashboard
     if ((pathname === '/login' || pathname === '/signup') && authenticatedUser) {
       return NextResponse.redirect(new URL('/dashboard', request.url));
@@ -197,9 +200,9 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
     
-// Matcher to apply middleware to all routes except static assets and API routes.
-// export const config = {
-//   matcher: [
-//     '/((?!api|_next/static|_next/image|favicon.ico|icons/).*)',
-//   ],
-// }
+// Matcher to apply middleware to all routes except static assets, API routes, and newsletters
+export const config = {
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|icons/|newsletters).*)',
+  ],
+}

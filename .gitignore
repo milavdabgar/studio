@@ -44,3 +44,14 @@ yarn-error.log*
 
 # Project IDX
 .idx
+
+# MCP Server
+mcp-server/node_modules/
+mcp-server/dist/
+mcp-server/package-lock.json
+mcp-server/.env
+mcp-server/*.log
+
+# MCP Server build artifacts and logs
+mcp-server/coverage/
+mcp-server/test-results/

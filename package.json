@@ -21,7 +21,11 @@
     "test-api-permissions-put": "curl -X PUT -H \"Content-Type: application/json\" -d '{\"name\":\"updated test permission\",\"description\":\"An updated test permission.\",\"resource\":\"test\",\"action\":\"write\"}' http://localhost:9003/api/permissions/1",
     "test-api-permissions-delete": "curl -X DELETE http://localhost:9003/api/permissions/1",
     "test:e2e": "playwright test",
-    "test:e2e:report": "playwright show-report"
+    "test:e2e:report": "playwright show-report",
+    "mcp:start": "cd mcp-server && node dist/index.js",
+    "mcp:dev": "cd mcp-server && npm run dev",
+    "mcp:build": "cd mcp-server && npm run build",
+    "mcp:test": "cd mcp-server && node test-server.js"
   },
   "dependencies": {
     "@genkit-ai/googleai": "^1.6.2",
@@ -72,6 +76,7 @@
     "next-themes": "^0.4.6",
     "papaparse": "^5.4.1",
     "patch-package": "^8.0.0",
+    "playwright": "^1.53.1",
     "puppeteer": "^24.10.2",
     "puppeteer-core": "^22.13.0",
     "rate-limiter-flexible": "^7.1.0",
@@ -99,7 +104,7 @@
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
     "@mermaid-js/mermaid-cli": "^11.4.3",
-    "@playwright/test": "^1.45.3",
+    "@playwright/test": "^1.53.1",
     "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/react": "^16.3.0",
     "@types/jest": "^29.5.12",
