@@ -1,19 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Role, User } from '@/types/entities'; // Import User
 import { allPermissions } from '@/lib/api/roles'; 
-
-declare global {
-  var __API_ROLES_STORE__: Role[] | undefined;
-  var __API_USERS_STORE__: User[] | undefined; // For updating user roles if a role code changes (though disallowed now)
-}
-
-if (!global.__API_ROLES_STORE__) {
-  global.__API_ROLES_STORE__ = [
-    { id: "1", name: "Admin", code: "admin", description: "Full access to all system features.", permissions: allPermissions, isSystemRole: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-    { id: "2", name: "Student", code: "student", description: "Access to student-specific features.", permissions: ["view_courses", "submit_assignments"], isSystemRole: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-  ];
-}
-let rolesStore: Role[] = global.__API_ROLES_STORE__;
+import { connectMongoose } from '@/lib/mongodb';
+import { RoleModel, UserModel } from '@/lib/models';
 
 interface RouteParams {
   params: {
@@ -22,28 +11,38 @@ interface RouteParams {
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
-  const role = rolesStore.find(r => r.id === id);
-  if (role) {
+  try {
+    await connectMongoose();
+    const { id } = params;
+    
+    const role = await RoleModel.findById(id);
+    if (!role) {
+      return NextResponse.json({ message: 'Role not found' }, { status: 404 });
+    }
+    
     return NextResponse.json(role);
+  } catch (error) {
+    console.error('Error fetching role:', error);
+    return NextResponse.json({ message: 'Error fetching role', error: (error as Error).message }, { status: 500 });
   }
-  return NextResponse.json({ message: 'Role not found' }, { status: 404 });
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
   try {
+    await connectMongoose();
+    const { id } = params;
+    
     const roleData = await request.json() as Partial<Omit<Role, 'id' | 'createdAt' | 'updatedAt'>>;
-    const roleIndex = rolesStore.findIndex(r => r.id === id);
 
-    if (roleIndex === -1) {
+    const existingRole = await RoleModel.findById(id);
+    if (!existingRole) {
       return NextResponse.json({ message: 'Role not found' }, { status: 404 });
     }
 
-    const existingRole = rolesStore[roleIndex];
     if (existingRole.isSystemRole && roleData.name && roleData.name.trim().toLowerCase() !== existingRole.name.toLowerCase()) {
         return NextResponse.json({ message: `Cannot change the name of the system role '${existingRole.name}'.` }, { status: 400 });
     }
+    
     // Disallow changing the code of any role after creation
     if (roleData.code && roleData.code.trim().toLowerCase() !== existingRole.code.toLowerCase()) {
         return NextResponse.json({ message: `Changing the 'code' of a role is not allowed. Create a new role if a different code is needed.` }, { status: 400 });
@@ -53,8 +52,14 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         return NextResponse.json({ message: 'Role Name cannot be empty.' }, { status: 400 });
     }
     
-    if (roleData.name && roleData.name.trim().toLowerCase() !== existingRole.name.toLowerCase() && rolesStore.some(r => r.id !== id && r.name.toLowerCase() === roleData.name!.trim().toLowerCase())) {
-        return NextResponse.json({ message: `Role with name '${roleData.name.trim()}' already exists.` }, { status: 409 });
+    if (roleData.name && roleData.name.trim().toLowerCase() !== existingRole.name.toLowerCase()) {
+        const nameExists = await RoleModel.findOne({ 
+          _id: { $ne: id }, 
+          name: { $regex: new RegExp(`^${roleData.name.trim()}$`, 'i') } 
+        });
+        if (nameExists) {
+            return NextResponse.json({ message: `Role with name '${roleData.name.trim()}' already exists.` }, { status: 409 });
+        }
     }
 
     if(roleData.permissions){
@@ -66,49 +71,46 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Code is not updated here as it's disallowed
     if (updatedRoleData.description !== undefined) updatedRoleData.description = updatedRoleData.description.trim();
 
-
-    const updatedRole = { 
-      ...existingRole, 
+    const updateData = { 
       ...updatedRoleData,
       code: existingRole.code, // Ensure code remains unchanged
       committeeCode: roleData.committeeCode ? roleData.committeeCode.toLowerCase() : existingRole.committeeCode,
       updatedAt: new Date().toISOString()
     };
 
-    rolesStore[roleIndex] = updatedRole;
-    global.__API_ROLES_STORE__ = rolesStore; 
+    const updatedRole = await RoleModel.findByIdAndUpdate(id, updateData, { new: true });
     return NextResponse.json(updatedRole);
   } catch (error) {
-    console.error(`Error updating role ${id}:`, error);
-    return NextResponse.json({ message: `Error updating role ${id}`, error: (error as Error).message }, { status: 500 });
+    console.error(`Error updating role ${params.id}:`, error);
+    return NextResponse.json({ message: `Error updating role ${params.id}`, error: (error as Error).message }, { status: 500 });
   }
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
-  let currentUsersStore: User[] = (global as any).__API_USERS_STORE__ || [];
-  const roleIndex = rolesStore.findIndex(r => r.id === id);
+  try {
+    await connectMongoose();
+    const { id } = params;
+    
+    const roleToDelete = await RoleModel.findById(id);
+    if (!roleToDelete) {
+      return NextResponse.json({ message: 'Role not found' }, { status: 404 });
+    }
+    
+    if (roleToDelete.isSystemRole && !roleToDelete.isCommitteeRole) { // System roles (non-committee) are protected
+        return NextResponse.json({ message: `Cannot delete the system role '${roleToDelete.name}'.` }, { status: 403 });
+    }
+    
+    // Remove this role (by code) from all users
+    await UserModel.updateMany(
+      { roles: roleToDelete.code },
+      { $pull: { roles: roleToDelete.code } }
+    );
 
-  if (roleIndex === -1) {
-    return NextResponse.json({ message: 'Role not found' }, { status: 404 });
+    await RoleModel.findByIdAndDelete(id);
+    return NextResponse.json({ message: 'Role deleted successfully' }, { status: 200 });
+  } catch (error) {
+    console.error(`Error deleting role ${params.id}:`, error);
+    return NextResponse.json({ message: 'Error deleting role', error: (error as Error).message }, { status: 500 });
   }
-  
-  const roleToDelete = rolesStore[roleIndex];
-  if (roleToDelete.isSystemRole && !roleToDelete.isCommitteeRole) { // System roles (non-committee) are protected
-      return NextResponse.json({ message: `Cannot delete the system role '${roleToDelete.name}'.` }, { status: 403 });
-  }
-  
-  // Remove this role (by code) from all users
-  currentUsersStore.forEach(user => {
-      if (user.roles.includes(roleToDelete.code)) { // Compare with role CODE
-          user.roles = user.roles.filter(rCode => rCode !== roleToDelete.code);
-      }
-  });
-  (global as any).__API_USERS_STORE__ = currentUsersStore;
-
-
-  rolesStore.splice(roleIndex, 1);
-  global.__API_ROLES_STORE__ = rolesStore;
-  return NextResponse.json({ message: 'Role deleted successfully' }, { status: 200 });
 }
     
