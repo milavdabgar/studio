@@ -149,7 +149,7 @@ test.describe('Admin Results Management', () => {
   });
 
   test('should view upload batches and attempt to delete a batch', async () => {
-    await page.goto(`${APP_BASE_URL}/admin/results`);
+    await page.goto(`${APP_BASE_URL}/admin/results`, { waitUntil: 'domcontentloaded' });
     const batchesTabButton = page.getByRole('tab', { name: /upload batches/i }); // ShadCN tabs use role="tab"
      if(await batchesTabButton.isVisible()){
         await batchesTabButton.click();

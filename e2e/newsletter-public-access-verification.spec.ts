@@ -11,7 +11,7 @@ test('Newsletter Public Access Verification', async ({ page }) => {
   await expect(page.locator('body')).toBeVisible();
   
   // Test 2: Access /newsletters/ (with trailing slash) without authentication
-  await page.goto('http://localhost:3000/newsletters/');
+  await page.goto('http://localhost:3000/newsletters/', { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(2000);
   
   // Verify redirect to /newsletters (without trailing slash) and NOT to login

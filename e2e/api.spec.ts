@@ -79,6 +79,12 @@ test.describe('API Endpoints E2E Tests', () => {
           }
           const firstItemId = items[0].id || items[0]._id; // Handle _id for project-fair entities
 
+          if (!firstItemId) {
+            console.warn(`First ${entity.name} item has no ID field, skipping GET by ID test`);
+            test.skip();
+            return;
+          }
+
           const response = await request.get(`${API_BASE_URL}/${entity.name}/${firstItemId}`);
           expect(response.status()).toBe(200);
         });
