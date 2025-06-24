@@ -1,0 +1,709 @@
+import { test, expect } from '@playwright/test';
+
+test.describe('Assessments API - Comprehensive E2E Tests', () => {
+  const baseURL = 'http://localhost:3000';
+  let assessmentId: string;
+  let courseId: string;
+  let facultyId: string;
+
+  test.beforeEach(async () => {
+    // Note: These tests assume the server is running and authentication is handled
+  });
+
+  test.describe('Assessments CRUD Operations', () => {
+    test('should create a new assessment', async ({ request }) => {
+      const assessmentData = {
+        title: 'Midterm Examination',
+        description: 'Comprehensive midterm covering chapters 1-5',
+        type: 'exam',
+        courseId: 'course_123',
+        facultyId: 'faculty_456',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        totalMarks: 100,
+        passingMarks: 40,
+        duration: 120, // minutes
+        assessmentDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
+        instructions: 'Answer all questions. Show your work clearly.',
+        status: 'scheduled',
+        weightage: 30, // percentage of total course grade
+        allowedAttempts: 1,
+        isOnline: false,
+        venue: 'Main Hall',
+        questions: [
+          {
+            questionNumber: 1,
+            question: 'Explain the concept of inheritance in OOP',
+            marks: 10,
+            type: 'descriptive'
+          },
+          {
+            questionNumber: 2,
+            question: 'Write a program to implement binary search',
+            marks: 15,
+            type: 'programming'
+          }
+        ]
+      };
+
+      const response = await request.post(`${baseURL}/api/assessments`, {
+        data: assessmentData
+      });
+
+      expect(response.status()).toBe(201);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(true);
+      expect(responseData.data).toHaveProperty('id');
+      expect(responseData.data.title).toBe(assessmentData.title);
+      expect(responseData.data.type).toBe(assessmentData.type);
+      expect(responseData.data.courseId).toBe(assessmentData.courseId);
+      expect(responseData.data.totalMarks).toBe(assessmentData.totalMarks);
+      expect(responseData.data.status).toBe(assessmentData.status);
+      expect(responseData.data.weightage).toBe(assessmentData.weightage);
+
+      assessmentId = responseData.data.id;
+      courseId = assessmentData.courseId;
+      facultyId = assessmentData.facultyId;
+    });
+
+    test('should get all assessments', async ({ request }) => {
+      const response = await request.get(`${baseURL}/api/assessments`);
+
+      expect(response.status()).toBe(200);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(true);
+      expect(Array.isArray(responseData.data)).toBe(true);
+      
+      if (responseData.data.length > 0) {
+        const assessment = responseData.data[0];
+        expect(assessment).toHaveProperty('id');
+        expect(assessment).toHaveProperty('title');
+        expect(assessment).toHaveProperty('type');
+        expect(assessment).toHaveProperty('courseId');
+        expect(assessment).toHaveProperty('totalMarks');
+        expect(assessment).toHaveProperty('status');
+        expect(assessment).toHaveProperty('assessmentDate');
+      }
+    });
+
+    test('should get a specific assessment by ID', async ({ request }) => {
+      // First create an assessment
+      const assessmentData = {
+        title: 'Quiz 1',
+        description: 'Quick assessment on basic concepts',
+        type: 'quiz',
+        courseId: 'course_get_test',
+        facultyId: 'faculty_get_test',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        totalMarks: 50,
+        passingMarks: 25,
+        duration: 30,
+        assessmentDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'scheduled',
+        weightage: 10,
+        isOnline: true
+      };
+
+      const createResponse = await request.post(`${baseURL}/api/assessments`, {
+        data: assessmentData
+      });
+
+      const createdAssessment = await createResponse.json();
+      const testAssessmentId = createdAssessment.data.id;
+
+      // Get the specific assessment
+      const response = await request.get(`${baseURL}/api/assessments/${testAssessmentId}`);
+
+      expect(response.status()).toBe(200);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(true);
+      expect(responseData.data.id).toBe(testAssessmentId);
+      expect(responseData.data.title).toBe(assessmentData.title);
+      expect(responseData.data.type).toBe(assessmentData.type);
+    });
+
+    test('should update an assessment', async ({ request }) => {
+      // First create an assessment
+      const assessmentData = {
+        title: 'Assignment 1',
+        description: 'Programming assignment on data structures',
+        type: 'assignment',
+        courseId: 'course_update_test',
+        facultyId: 'faculty_update_test',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        totalMarks: 100,
+        passingMarks: 60,
+        duration: 240,
+        assessmentDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'scheduled',
+        weightage: 25,
+        isOnline: false
+      };
+
+      const createResponse = await request.post(`${baseURL}/api/assessments`, {
+        data: assessmentData
+      });
+
+      const createdAssessment = await createResponse.json();
+      const testAssessmentId = createdAssessment.data.id;
+
+      // Update the assessment
+      const updateData = {
+        title: 'Assignment 1 - Updated',
+        totalMarks: 120,
+        passingMarks: 72,
+        status: 'active',
+        venue: 'Computer Lab A',
+        instructions: 'Updated instructions for the assignment'
+      };
+
+      const updateResponse = await request.put(`${baseURL}/api/assessments/${testAssessmentId}`, {
+        data: updateData
+      });
+
+      expect(updateResponse.status()).toBe(200);
+      const updateResponseData = await updateResponse.json();
+      expect(updateResponseData.success).toBe(true);
+      expect(updateResponseData.data.title).toBe(updateData.title);
+      expect(updateResponseData.data.totalMarks).toBe(updateData.totalMarks);
+      expect(updateResponseData.data.status).toBe(updateData.status);
+      expect(updateResponseData.data.venue).toBe(updateData.venue);
+    });
+
+    test('should delete an assessment', async ({ request }) => {
+      // First create an assessment
+      const assessmentData = {
+        title: 'Test Assessment to Delete',
+        description: 'This assessment will be deleted',
+        type: 'test',
+        courseId: 'course_delete_test',
+        facultyId: 'faculty_delete_test',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        totalMarks: 50,
+        passingMarks: 25,
+        duration: 60,
+        assessmentDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'scheduled',
+        weightage: 15
+      };
+
+      const createResponse = await request.post(`${baseURL}/api/assessments`, {
+        data: assessmentData
+      });
+
+      const createdAssessment = await createResponse.json();
+      const testAssessmentId = createdAssessment.data.id;
+
+      // Delete the assessment
+      const deleteResponse = await request.delete(`${baseURL}/api/assessments/${testAssessmentId}`);
+
+      expect(deleteResponse.status()).toBe(200);
+      const deleteResponseData = await deleteResponse.json();
+      expect(deleteResponseData.success).toBe(true);
+
+      // Verify the assessment is deleted
+      const getResponse = await request.get(`${baseURL}/api/assessments/${testAssessmentId}`);
+      expect(getResponse.status()).toBe(404);
+    });
+  });
+
+  test.describe('Assessments Query and Filtering', () => {
+    test('should filter assessments by course', async ({ request }) => {
+      const testCourseId = 'course_filter_123';
+      
+      // Create an assessment for the test course
+      const assessmentData = {
+        title: 'Course Filter Test',
+        type: 'quiz',
+        courseId: testCourseId,
+        facultyId: 'faculty_filter',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        totalMarks: 25,
+        passingMarks: 15,
+        duration: 30,
+        assessmentDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'scheduled',
+        weightage: 10
+      };
+
+      await request.post(`${baseURL}/api/assessments`, { data: assessmentData });
+
+      const response = await request.get(`${baseURL}/api/assessments?courseId=${testCourseId}`);
+
+      expect(response.status()).toBe(200);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(true);
+      expect(Array.isArray(responseData.data)).toBe(true);
+      
+      responseData.data.forEach((assessment: any) => {
+        expect(assessment.courseId).toBe(testCourseId);
+      });
+    });
+
+    test('should filter assessments by type', async ({ request }) => {
+      const response = await request.get(`${baseURL}/api/assessments?type=exam`);
+
+      expect(response.status()).toBe(200);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(true);
+      expect(Array.isArray(responseData.data)).toBe(true);
+      
+      responseData.data.forEach((assessment: any) => {
+        expect(assessment.type).toBe('exam');
+      });
+    });
+
+    test('should filter assessments by semester', async ({ request }) => {
+      const response = await request.get(`${baseURL}/api/assessments?semester=Fall 2024`);
+
+      expect(response.status()).toBe(200);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(true);
+      expect(Array.isArray(responseData.data)).toBe(true);
+      
+      responseData.data.forEach((assessment: any) => {
+        expect(assessment.semester).toBe('Fall 2024');
+      });
+    });
+
+    test('should filter assessments by faculty', async ({ request }) => {
+      const testFacultyId = 'faculty_filter_456';
+      
+      const response = await request.get(`${baseURL}/api/assessments?facultyId=${testFacultyId}`);
+
+      expect(response.status()).toBe(200);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(true);
+      expect(Array.isArray(responseData.data)).toBe(true);
+      
+      responseData.data.forEach((assessment: any) => {
+        expect(assessment.facultyId).toBe(testFacultyId);
+      });
+    });
+
+    test('should filter assessments by status', async ({ request }) => {
+      const response = await request.get(`${baseURL}/api/assessments?status=scheduled`);
+
+      expect(response.status()).toBe(200);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(true);
+      expect(Array.isArray(responseData.data)).toBe(true);
+      
+      responseData.data.forEach((assessment: any) => {
+        expect(assessment.status).toBe('scheduled');
+      });
+    });
+
+    test('should filter assessments by date range', async ({ request }) => {
+      const startDate = new Date().toISOString();
+      const endDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+
+      const response = await request.get(
+        `${baseURL}/api/assessments?startDate=${startDate}&endDate=${endDate}`
+      );
+
+      expect(response.status()).toBe(200);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(true);
+      expect(Array.isArray(responseData.data)).toBe(true);
+    });
+
+    test('should support pagination', async ({ request }) => {
+      const response = await request.get(`${baseURL}/api/assessments?page=1&limit=5`);
+
+      expect(response.status()).toBe(200);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(true);
+      expect(Array.isArray(responseData.data)).toBe(true);
+      expect(responseData.data.length).toBeLessThanOrEqual(5);
+    });
+
+    test('should support sorting', async ({ request }) => {
+      const response = await request.get(`${baseURL}/api/assessments?sortBy=assessmentDate&sortOrder=asc`);
+
+      expect(response.status()).toBe(200);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(true);
+      expect(Array.isArray(responseData.data)).toBe(true);
+
+      // Verify sorting if we have multiple items
+      if (responseData.data.length > 1) {
+        const dates = responseData.data.map((a: any) => new Date(a.assessmentDate));
+        for (let i = 1; i < dates.length; i++) {
+          expect(dates[i].getTime()).toBeGreaterThanOrEqual(dates[i-1].getTime());
+        }
+      }
+    });
+  });
+
+  test.describe('Assessments Business Logic', () => {
+    test('should handle different assessment types', async ({ request }) => {
+      const types = ['exam', 'quiz', 'assignment', 'project', 'lab', 'presentation', 'test'];
+
+      for (const type of types) {
+        const assessmentData = {
+          title: `Test ${type}`,
+          description: `Assessment of type ${type}`,
+          type: type,
+          courseId: `course_${type}`,
+          facultyId: 'faculty_types_test',
+          semester: 'Fall 2024',
+          academicYear: '2024-25',
+          totalMarks: 100,
+          passingMarks: 40,
+          duration: 60,
+          assessmentDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          status: 'scheduled',
+          weightage: 20
+        };
+
+        const response = await request.post(`${baseURL}/api/assessments`, {
+          data: assessmentData
+        });
+
+        expect(response.status()).toBe(201);
+        const responseData = await response.json();
+        expect(responseData.data.type).toBe(type);
+      }
+    });
+
+    test('should handle different assessment statuses', async ({ request }) => {
+      const statuses = ['scheduled', 'active', 'completed', 'cancelled', 'postponed'];
+
+      for (const status of statuses) {
+        const assessmentData = {
+          title: `Assessment with ${status} status`,
+          type: 'quiz',
+          courseId: `course_status_${status}`,
+          facultyId: 'faculty_status_test',
+          semester: 'Fall 2024',
+          academicYear: '2024-25',
+          totalMarks: 50,
+          passingMarks: 25,
+          duration: 30,
+          assessmentDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          status: status,
+          weightage: 15
+        };
+
+        const response = await request.post(`${baseURL}/api/assessments`, {
+          data: assessmentData
+        });
+
+        expect(response.status()).toBe(201);
+        const responseData = await response.json();
+        expect(responseData.data.status).toBe(status);
+      }
+    });
+
+    test('should handle online vs offline assessments', async ({ request }) => {
+      const assessmentTypes = [
+        { isOnline: true, venue: null },
+        { isOnline: false, venue: 'Classroom A' }
+      ];
+
+      for (const { isOnline, venue } of assessmentTypes) {
+        const assessmentData = {
+          title: `${isOnline ? 'Online' : 'Offline'} Assessment`,
+          type: 'quiz',
+          courseId: 'course_online_test',
+          facultyId: 'faculty_online_test',
+          semester: 'Fall 2024',
+          academicYear: '2024-25',
+          totalMarks: 50,
+          passingMarks: 25,
+          duration: 30,
+          assessmentDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          status: 'scheduled',
+          weightage: 15,
+          isOnline: isOnline,
+          venue: venue
+        };
+
+        const response = await request.post(`${baseURL}/api/assessments`, {
+          data: assessmentData
+        });
+
+        expect(response.status()).toBe(201);
+        const responseData = await response.json();
+        expect(responseData.data.isOnline).toBe(isOnline);
+        if (venue) {
+          expect(responseData.data.venue).toBe(venue);
+        }
+      }
+    });
+
+    test('should handle multiple attempts', async ({ request }) => {
+      const assessmentData = {
+        title: 'Multiple Attempts Quiz',
+        type: 'quiz',
+        courseId: 'course_attempts_test',
+        facultyId: 'faculty_attempts_test',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        totalMarks: 50,
+        passingMarks: 25,
+        duration: 30,
+        assessmentDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'scheduled',
+        weightage: 15,
+        allowedAttempts: 3,
+        timeBetweenAttempts: 24 // hours
+      };
+
+      const response = await request.post(`${baseURL}/api/assessments`, {
+        data: assessmentData
+      });
+
+      expect(response.status()).toBe(201);
+      const responseData = await response.json();
+      expect(responseData.data.allowedAttempts).toBe(3);
+    });
+  });
+
+  test.describe('Assessments Validation', () => {
+    test('should reject assessment creation with missing required fields', async ({ request }) => {
+      const invalidData = {
+        title: 'Test Assessment'
+        // Missing required fields like courseId, facultyId, etc.
+      };
+
+      const response = await request.post(`${baseURL}/api/assessments`, {
+        data: invalidData
+      });
+
+      expect(response.status()).toBe(400);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(false);
+      expect(responseData.error).toBeTruthy();
+    });
+
+    test('should reject assessment with invalid marks', async ({ request }) => {
+      const invalidData = {
+        title: 'Invalid Marks Test',
+        type: 'exam',
+        courseId: 'course_123',
+        facultyId: 'faculty_456',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        totalMarks: 100,
+        passingMarks: 150, // Invalid: passing marks > total marks
+        duration: 120,
+        assessmentDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'scheduled',
+        weightage: 30
+      };
+
+      const response = await request.post(`${baseURL}/api/assessments`, {
+        data: invalidData
+      });
+
+      expect(response.status()).toBe(400);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(false);
+      expect(responseData.error).toContain('passing');
+    });
+
+    test('should reject assessment with invalid weightage', async ({ request }) => {
+      const invalidData = {
+        title: 'Invalid Weightage Test',
+        type: 'exam',
+        courseId: 'course_123',
+        facultyId: 'faculty_456',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        totalMarks: 100,
+        passingMarks: 40,
+        duration: 120,
+        assessmentDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'scheduled',
+        weightage: 150 // Invalid: weightage > 100%
+      };
+
+      const response = await request.post(`${baseURL}/api/assessments`, {
+        data: invalidData
+      });
+
+      expect(response.status()).toBe(400);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(false);
+      expect(responseData.error).toContain('weightage');
+    });
+
+    test('should reject assessment with past date', async ({ request }) => {
+      const invalidData = {
+        title: 'Past Date Test',
+        type: 'exam',
+        courseId: 'course_123',
+        facultyId: 'faculty_456',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        totalMarks: 100,
+        passingMarks: 40,
+        duration: 120,
+        assessmentDate: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // Yesterday
+        status: 'scheduled',
+        weightage: 30
+      };
+
+      const response = await request.post(`${baseURL}/api/assessments`, {
+        data: invalidData
+      });
+
+      expect(response.status()).toBe(400);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(false);
+      expect(responseData.error).toContain('date');
+    });
+
+    test('should handle non-existent assessment operations', async ({ request }) => {
+      const nonExistentId = 'non_existent_assessment';
+
+      // Test GET
+      const getResponse = await request.get(`${baseURL}/api/assessments/${nonExistentId}`);
+      expect(getResponse.status()).toBe(404);
+
+      // Test PUT
+      const putResponse = await request.put(`${baseURL}/api/assessments/${nonExistentId}`, {
+        data: { title: 'Updated Title' }
+      });
+      expect(putResponse.status()).toBe(404);
+
+      // Test DELETE
+      const deleteResponse = await request.delete(`${baseURL}/api/assessments/${nonExistentId}`);
+      expect(deleteResponse.status()).toBe(404);
+    });
+  });
+
+  test.describe('Assessments Import', () => {
+    test('should handle assessment import', async ({ request }) => {
+      const importData = {
+        file: 'test-assessments.xlsx',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        courseId: 'course_import_test'
+      };
+
+      const response = await request.post(`${baseURL}/api/assessments/import`, {
+        data: importData
+      });
+
+      // The response could be 200 (success) or 400 (validation error) depending on the file
+      expect([200, 400]).toContain(response.status());
+      const responseData = await response.json();
+      expect(responseData).toHaveProperty('success');
+    });
+  });
+
+  test.describe('Assessments Advanced Features', () => {
+    test('should handle assessment with detailed questions', async ({ request }) => {
+      const assessmentData = {
+        title: 'Detailed Question Assessment',
+        type: 'exam',
+        courseId: 'course_detailed_test',
+        facultyId: 'faculty_detailed_test',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        totalMarks: 100,
+        passingMarks: 40,
+        duration: 180,
+        assessmentDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'scheduled',
+        weightage: 40,
+        questions: [
+          {
+            questionNumber: 1,
+            question: 'Explain the concept of polymorphism in object-oriented programming',
+            marks: 20,
+            type: 'descriptive',
+            difficulty: 'medium',
+            learningOutcome: 'Understand OOP concepts'
+          },
+          {
+            questionNumber: 2,
+            question: 'Implement a stack using arrays',
+            marks: 25,
+            type: 'programming',
+            difficulty: 'hard',
+            learningOutcome: 'Apply data structures'
+          },
+          {
+            questionNumber: 3,
+            question: 'What is the time complexity of binary search?',
+            marks: 15,
+            type: 'multiple-choice',
+            difficulty: 'easy',
+            options: ['O(n)', 'O(log n)', 'O(n²)', 'O(1)'],
+            correctAnswer: 'O(log n)'
+          }
+        ]
+      };
+
+      const response = await request.post(`${baseURL}/api/assessments`, {
+        data: assessmentData
+      });
+
+      expect(response.status()).toBe(201);
+      const responseData = await response.json();
+      expect(responseData.data.questions).toHaveLength(3);
+      expect(responseData.data.questions[0].marks).toBe(20);
+      expect(responseData.data.questions[2].options).toHaveLength(4);
+    });
+
+    test('should handle assessment with rubric', async ({ request }) => {
+      const assessmentData = {
+        title: 'Rubric-based Assessment',
+        type: 'project',
+        courseId: 'course_rubric_test',
+        facultyId: 'faculty_rubric_test',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        totalMarks: 100,
+        passingMarks: 60,
+        duration: 0, // No time limit for projects
+        assessmentDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'scheduled',
+        weightage: 35,
+        rubric: {
+          criteria: [
+            {
+              name: 'Code Quality',
+              description: 'Clean, readable, and well-documented code',
+              maxPoints: 30,
+              levels: [
+                { name: 'Excellent', points: 30, description: 'Exceptional code quality' },
+                { name: 'Good', points: 24, description: 'Good code quality' },
+                { name: 'Satisfactory', points: 18, description: 'Acceptable code quality' },
+                { name: 'Needs Improvement', points: 12, description: 'Poor code quality' }
+              ]
+            },
+            {
+              name: 'Functionality',
+              description: 'Does the program work as expected?',
+              maxPoints: 40,
+              levels: [
+                { name: 'Excellent', points: 40, description: 'All features work perfectly' },
+                { name: 'Good', points: 32, description: 'Most features work well' },
+                { name: 'Satisfactory', points: 24, description: 'Basic functionality works' },
+                { name: 'Needs Improvement', points: 16, description: 'Major functionality issues' }
+              ]
+            }
+          ]
+        }
+      };
+
+      const response = await request.post(`${baseURL}/api/assessments`, {
+        data: assessmentData
+      });
+
+      expect(response.status()).toBe(201);
+      const responseData = await response.json();
+      expect(responseData.data.rubric).toBeTruthy();
+      expect(responseData.data.rubric.criteria).toHaveLength(2);
+    });
+  });
+});

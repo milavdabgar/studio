@@ -54,11 +54,28 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ message: 'Invalid endDate format for update. Use ISO 8601.' }, { status: 400 });
     }
     
-    const newStartDate = offeringDataToUpdate.startDate ? parseISO(offeringDataToUpdate.startDate) : parseISO(existingOffering.startDate!);
-    const newEndDate = offeringDataToUpdate.endDate ? parseISO(offeringDataToUpdate.endDate) : parseISO(existingOffering.endDate!);
-
-    if (newStartDate >= newEndDate) {
+    // Only validate date order if both dates exist
+    if (offeringDataToUpdate.startDate && offeringDataToUpdate.endDate) {
+      const newStartDate = parseISO(offeringDataToUpdate.startDate);
+      const newEndDate = parseISO(offeringDataToUpdate.endDate);
+      
+      if (newStartDate >= newEndDate) {
         return NextResponse.json({ message: 'End date must be after start date for update.' }, { status: 400 });
+      }
+    } else if (offeringDataToUpdate.startDate && existingOffering.endDate) {
+      const newStartDate = parseISO(offeringDataToUpdate.startDate);
+      const existingEndDate = parseISO(existingOffering.endDate);
+      
+      if (newStartDate >= existingEndDate) {
+        return NextResponse.json({ message: 'Start date must be before existing end date.' }, { status: 400 });
+      }
+    } else if (offeringDataToUpdate.endDate && existingOffering.startDate) {
+      const existingStartDate = parseISO(existingOffering.startDate);
+      const newEndDate = parseISO(offeringDataToUpdate.endDate);
+      
+      if (existingStartDate >= newEndDate) {
+        return NextResponse.json({ message: 'End date must be after existing start date.' }, { status: 400 });
+      }
     }
 
 

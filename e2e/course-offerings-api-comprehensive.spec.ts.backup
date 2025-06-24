@@ -1,0 +1,608 @@
+import { test, expect } from '@playwright/test';
+
+test.describe('Course Offerings API - Comprehensive E2E Tests', () => {
+  const baseURL = 'http://localhost:3000';
+  let offeringId: string;
+  let courseId: string;
+  let batchId: string;
+
+  test.beforeEach(async () => {
+    // Note: These tests assume the server is running and authentication is handled
+  });
+
+  test.describe('Course Offerings CRUD Operations', () => {
+    test('should create a new course offering', async ({ request }) => {
+      const offeringData = {
+        courseId: 'course_cs101_test',
+        batchId: 'batch_dce_2024_test',
+        academicYear: '2024-25',
+        semester: 1,
+        facultyIds: ['faculty_cs01_test', 'faculty_cs02_test'],
+        roomIds: ['room_a101_test'],
+        startDate: '2024-07-15T00:00:00.000Z',
+        endDate: '2024-11-15T00:00:00.000Z',
+        status: 'scheduled'
+      };
+
+      const response = await request.post(`${baseURL}/api/course-offerings`, {
+        data: offeringData
+      });
+
+      expect(response.status()).toBe(201);
+      const responseData = await response.json();
+      expect(responseData).toHaveProperty('id');
+      expect(responseData.courseId).toBe(offeringData.courseId);
+      expect(responseData.batchId).toBe(offeringData.batchId);
+      expect(responseData.academicYear).toBe(offeringData.academicYear);
+      expect(responseData.semester).toBe(offeringData.semester);
+      expect(responseData.facultyIds).toEqual(offeringData.facultyIds);
+      expect(responseData.status).toBe(offeringData.status);
+
+      offeringId = responseData.id;
+      courseId = offeringData.courseId;
+      batchId = offeringData.batchId;
+    });
+
+    test('should get all course offerings', async ({ request }) => {
+      const response = await request.get(`${baseURL}/api/course-offerings`);
+
+      expect(response.status()).toBe(200);
+      const responseData = await response.json();
+      expect(Array.isArray(responseData)).toBe(true);
+      
+      if (responseData.length > 0) {
+        const offering = responseData[0];
+        expect(offering).toHaveProperty('id');
+        expect(offering).toHaveProperty('courseId');
+        expect(offering).toHaveProperty('batchId');
+        expect(offering).toHaveProperty('academicYear');
+        expect(offering).toHaveProperty('semester');
+        expect(offering).toHaveProperty('facultyIds');
+        expect(offering).toHaveProperty('status');
+        expect(offering).toHaveProperty('createdAt');
+        expect(offering).toHaveProperty('updatedAt');
+      }
+    });
+      }
+    });
+
+    test('should get a specific course offering by ID', async ({ request }) => {
+      // First create a course offering
+      const offeringData = {
+        courseId: 'course_get_test',
+        facultyId: 'faculty_get_test',
+        semester: 'Spring 2024',
+        academicYear: '2023-24',
+        section: 'B',
+        maxStudents: 45,
+        credits: 3,
+        status: 'active',
+        schedule: {
+          days: ['Tuesday', 'Thursday'],
+          startTime: '14:00',
+          endTime: '15:30',
+          room: 'Room 205'
+        }
+      };
+
+      const createResponse = await request.post(`${baseURL}/api/course-offerings`, {
+        data: offeringData
+      });
+
+      const createdOffering = await createResponse.json();
+      const testOfferingId = createdOffering.data.id;
+
+      // Get the specific course offering
+      const response = await request.get(`${baseURL}/api/course-offerings/${testOfferingId}`);
+
+      expect(response.status()).toBe(200);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(true);
+      expect(responseData.data.id).toBe(testOfferingId);
+      expect(responseData.data.courseId).toBe(offeringData.courseId);
+      expect(responseData.data.section).toBe(offeringData.section);
+    });
+
+    test('should update a course offering', async ({ request }) => {
+      // First create a course offering
+      const offeringData = {
+        courseId: 'course_update_test',
+        facultyId: 'faculty_update_test',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        section: 'C',
+        maxStudents: 50,
+        credits: 4,
+        status: 'active',
+        schedule: {
+          days: ['Monday', 'Wednesday'],
+          startTime: '11:00',
+          endTime: '12:30',
+          room: 'Room 101'
+        }
+      };
+
+      const createResponse = await request.post(`${baseURL}/api/course-offerings`, {
+        data: offeringData
+      });
+
+      const createdOffering = await createResponse.json();
+      const testOfferingId = createdOffering.data.id;
+
+      // Update the course offering
+      const updateData = {
+        maxStudents: 65,
+        enrolledStudents: 25,
+        schedule: {
+          days: ['Monday', 'Wednesday', 'Friday'],
+          startTime: '10:00',
+          endTime: '11:00',
+          room: 'Room 201'
+        },
+        status: 'open'
+      };
+
+      const updateResponse = await request.put(`${baseURL}/api/course-offerings/${testOfferingId}`, {
+        data: updateData
+      });
+
+      expect(updateResponse.status()).toBe(200);
+      const updateResponseData = await updateResponse.json();
+      expect(updateResponseData.success).toBe(true);
+      expect(updateResponseData.data.maxStudents).toBe(updateData.maxStudents);
+      expect(updateResponseData.data.enrolledStudents).toBe(updateData.enrolledStudents);
+      expect(updateResponseData.data.status).toBe(updateData.status);
+      expect(updateResponseData.data.schedule.room).toBe(updateData.schedule.room);
+    });
+
+    test('should delete a course offering', async ({ request }) => {
+      // First create a course offering
+      const offeringData = {
+        courseId: 'course_delete_test',
+        facultyId: 'faculty_delete_test',
+        semester: 'Spring 2024',
+        academicYear: '2023-24',
+        section: 'D',
+        maxStudents: 40,
+        credits: 3,
+        status: 'active'
+      };
+
+      const createResponse = await request.post(`${baseURL}/api/course-offerings`, {
+        data: offeringData
+      });
+
+      const createdOffering = await createResponse.json();
+      const testOfferingId = createdOffering.data.id;
+
+      // Delete the course offering
+      const deleteResponse = await request.delete(`${baseURL}/api/course-offerings/${testOfferingId}`);
+
+      expect(deleteResponse.status()).toBe(200);
+      const deleteResponseData = await deleteResponse.json();
+      expect(deleteResponseData.success).toBe(true);
+
+      // Verify the offering is deleted
+      const getResponse = await request.get(`${baseURL}/api/course-offerings/${testOfferingId}`);
+      expect(getResponse.status()).toBe(404);
+    });
+  });
+
+  test.describe('Course Offerings Query and Filtering', () => {
+    test('should filter course offerings by semester', async ({ request }) => {
+      // Create a course offering for the test semester
+      const offeringData = {
+        courseId: 'course_filter_sem',
+        facultyId: 'faculty_filter_sem',
+        semester: 'Summer 2024',
+        academicYear: '2023-24',
+        section: 'A',
+        maxStudents: 30,
+        credits: 2,
+        status: 'active'
+      };
+
+      await request.post(`${baseURL}/api/course-offerings`, { data: offeringData });
+
+      const response = await request.get(`${baseURL}/api/course-offerings?semester=Summer 2024`);
+
+      expect(response.status()).toBe(200);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(true);
+      expect(Array.isArray(responseData.data)).toBe(true);
+      
+      responseData.data.forEach((offering: any) => {
+        expect(offering.semester).toBe('Summer 2024');
+      });
+    });
+
+    test('should filter course offerings by academic year', async ({ request }) => {
+      const response = await request.get(`${baseURL}/api/course-offerings?academicYear=2024-25`);
+
+      expect(response.status()).toBe(200);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(true);
+      expect(Array.isArray(responseData.data)).toBe(true);
+      
+      responseData.data.forEach((offering: any) => {
+        expect(offering.academicYear).toBe('2024-25');
+      });
+    });
+
+    test('should filter course offerings by faculty', async ({ request }) => {
+      const testFacultyId = 'faculty_filter_123';
+      
+      // Create a course offering for the test faculty
+      const offeringData = {
+        courseId: 'course_faculty_filter',
+        facultyId: testFacultyId,
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        section: 'A',
+        maxStudents: 50,
+        credits: 4,
+        status: 'active'
+      };
+
+      await request.post(`${baseURL}/api/course-offerings`, { data: offeringData });
+
+      const response = await request.get(`${baseURL}/api/course-offerings?facultyId=${testFacultyId}`);
+
+      expect(response.status()).toBe(200);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(true);
+      expect(Array.isArray(responseData.data)).toBe(true);
+      
+      responseData.data.forEach((offering: any) => {
+        expect(offering.facultyId).toBe(testFacultyId);
+      });
+    });
+
+    test('should filter course offerings by status', async ({ request }) => {
+      const response = await request.get(`${baseURL}/api/course-offerings?status=active`);
+
+      expect(response.status()).toBe(200);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(true);
+      expect(Array.isArray(responseData.data)).toBe(true);
+      
+      responseData.data.forEach((offering: any) => {
+        expect(offering.status).toBe('active');
+      });
+    });
+
+    test('should filter course offerings by course', async ({ request }) => {
+      const testCourseId = 'course_filter_456';
+      
+      const response = await request.get(`${baseURL}/api/course-offerings?courseId=${testCourseId}`);
+
+      expect(response.status()).toBe(200);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(true);
+      expect(Array.isArray(responseData.data)).toBe(true);
+      
+      responseData.data.forEach((offering: any) => {
+        expect(offering.courseId).toBe(testCourseId);
+      });
+    });
+
+    test('should support pagination', async ({ request }) => {
+      const response = await request.get(`${baseURL}/api/course-offerings?page=1&limit=5`);
+
+      expect(response.status()).toBe(200);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(true);
+      expect(Array.isArray(responseData.data)).toBe(true);
+      expect(responseData.data.length).toBeLessThanOrEqual(5);
+    });
+
+    test('should support sorting', async ({ request }) => {
+      const response = await request.get(`${baseURL}/api/course-offerings?sortBy=semester&sortOrder=desc`);
+
+      expect(response.status()).toBe(200);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(true);
+      expect(Array.isArray(responseData.data)).toBe(true);
+    });
+  });
+
+  test.describe('Course Offerings Business Logic', () => {
+    test('should handle enrollment capacity validation', async ({ request }) => {
+      const offeringData = {
+        courseId: 'course_capacity_test',
+        facultyId: 'faculty_capacity_test',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        section: 'A',
+        maxStudents: 30,
+        enrolledStudents: 35, // More than max - should be validated
+        credits: 4,
+        status: 'active'
+      };
+
+      const response = await request.post(`${baseURL}/api/course-offerings`, {
+        data: offeringData
+      });
+
+      // Should either accept and auto-correct, or reject with validation error
+      if (response.status() === 400) {
+        const responseData = await response.json();
+        expect(responseData.success).toBe(false);
+        expect(responseData.error).toContain('enrolled');
+      } else {
+        expect(response.status()).toBe(201);
+        const responseData = await response.json();
+        // Should auto-correct to maxStudents or allow over-enrollment
+        expect(responseData.data.enrolledStudents).toBeLessThanOrEqual(responseData.data.maxStudents + 5);
+      }
+    });
+
+    test('should handle schedule conflict validation', async ({ request }) => {
+      // Create first offering
+      const firstOffering = {
+        courseId: 'course_schedule_1',
+        facultyId: 'faculty_schedule_test',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        section: 'A',
+        maxStudents: 30,
+        credits: 4,
+        status: 'active',
+        schedule: {
+          days: ['Monday', 'Wednesday'],
+          startTime: '10:00',
+          endTime: '11:30',
+          room: 'Room 101'
+        }
+      };
+
+      await request.post(`${baseURL}/api/course-offerings`, { data: firstOffering });
+
+      // Try to create conflicting offering (same faculty, overlapping time)
+      const conflictingOffering = {
+        courseId: 'course_schedule_2',
+        facultyId: 'faculty_schedule_test', // Same faculty
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        section: 'B',
+        maxStudents: 25,
+        credits: 3,
+        status: 'active',
+        schedule: {
+          days: ['Monday', 'Wednesday'],
+          startTime: '10:30', // Overlapping time
+          endTime: '12:00',
+          room: 'Room 102'
+        }
+      };
+
+      const response = await request.post(`${baseURL}/api/course-offerings`, {
+        data: conflictingOffering
+      });
+
+      // Could be 201 (allowed) or 400 (conflict detected)
+      expect([201, 400]).toContain(response.status());
+    });
+
+    test('should handle prerequisite validation', async ({ request }) => {
+      const offeringData = {
+        courseId: 'course_prereq_test',
+        facultyId: 'faculty_prereq_test',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        section: 'A',
+        maxStudents: 40,
+        credits: 4,
+        status: 'active',
+        prerequisiteCourses: ['CS101', 'MATH201'], // Prerequisites
+        description: 'Advanced course requiring prerequisites'
+      };
+
+      const response = await request.post(`${baseURL}/api/course-offerings`, {
+        data: offeringData
+      });
+
+      expect(response.status()).toBe(201);
+      const responseData = await response.json();
+      expect(responseData.data.prerequisiteCourses).toEqual(offeringData.prerequisiteCourses);
+    });
+
+    test('should handle different course offering statuses', async ({ request }) => {
+      const statuses = ['active', 'open', 'closed', 'cancelled', 'full'];
+
+      for (const status of statuses) {
+        const offeringData = {
+          courseId: `course_status_${status}`,
+          facultyId: 'faculty_status_test',
+          semester: 'Fall 2024',
+          academicYear: '2024-25',
+          section: 'A',
+          maxStudents: 30,
+          credits: 3,
+          status: status
+        };
+
+        const response = await request.post(`${baseURL}/api/course-offerings`, {
+          data: offeringData
+        });
+
+        expect(response.status()).toBe(201);
+        const responseData = await response.json();
+        expect(responseData.data.status).toBe(status);
+      }
+    });
+  });
+
+  test.describe('Course Offerings Validation', () => {
+    test('should reject course offering creation with missing required fields', async ({ request }) => {
+      const invalidData = {
+        facultyId: 'faculty_123'
+        // Missing courseId, semester, etc.
+      };
+
+      const response = await request.post(`${baseURL}/api/course-offerings`, {
+        data: invalidData
+      });
+
+      expect(response.status()).toBe(400);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(false);
+      expect(responseData.error).toBeTruthy();
+    });
+
+    test('should reject invalid credit values', async ({ request }) => {
+      const invalidData = {
+        courseId: 'course_123',
+        facultyId: 'faculty_456',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        section: 'A',
+        maxStudents: 30,
+        credits: -1, // Invalid credits
+        status: 'active'
+      };
+
+      const response = await request.post(`${baseURL}/api/course-offerings`, {
+        data: invalidData
+      });
+
+      expect(response.status()).toBe(400);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(false);
+      expect(responseData.error).toContain('credits');
+    });
+
+    test('should reject invalid max students', async ({ request }) => {
+      const invalidData = {
+        courseId: 'course_123',
+        facultyId: 'faculty_456',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        section: 'A',
+        maxStudents: 0, // Invalid max students
+        credits: 4,
+        status: 'active'
+      };
+
+      const response = await request.post(`${baseURL}/api/course-offerings`, {
+        data: invalidData
+      });
+
+      expect(response.status()).toBe(400);
+      const responseData = await response.json();
+      expect(responseData.success).toBe(false);
+      expect(responseData.error).toContain('maxStudents');
+    });
+
+    test('should handle non-existent course offering operations', async ({ request }) => {
+      const nonExistentId = 'non_existent_offering';
+
+      // Test GET
+      const getResponse = await request.get(`${baseURL}/api/course-offerings/${nonExistentId}`);
+      expect(getResponse.status()).toBe(404);
+
+      // Test PUT
+      const putResponse = await request.put(`${baseURL}/api/course-offerings/${nonExistentId}`, {
+        data: { maxStudents: 50 }
+      });
+      expect(putResponse.status()).toBe(404);
+
+      // Test DELETE
+      const deleteResponse = await request.delete(`${baseURL}/api/course-offerings/${nonExistentId}`);
+      expect(deleteResponse.status()).toBe(404);
+    });
+  });
+
+  test.describe('Course Offerings Advanced Features', () => {
+    test('should handle assessment criteria', async ({ request }) => {
+      const offeringData = {
+        courseId: 'course_assessment_test',
+        facultyId: 'faculty_assessment_test',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        section: 'A',
+        maxStudents: 40,
+        credits: 4,
+        status: 'active',
+        assessmentCriteria: {
+          midterm: 25,
+          final: 35,
+          assignments: 25,
+          quizzes: 10,
+          attendance: 5
+        }
+      };
+
+      const response = await request.post(`${baseURL}/api/course-offerings`, {
+        data: offeringData
+      });
+
+      expect(response.status()).toBe(201);
+      const responseData = await response.json();
+      expect(responseData.data.assessmentCriteria).toEqual(offeringData.assessmentCriteria);
+      
+      // Verify assessment criteria sum to 100
+      const total = Object.values(responseData.data.assessmentCriteria).reduce((sum: number, value: any) => sum + value, 0);
+      expect(total).toBe(100);
+    });
+
+    test('should handle course objectives', async ({ request }) => {
+      const offeringData = {
+        courseId: 'course_objectives_test',
+        facultyId: 'faculty_objectives_test',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        section: 'A',
+        maxStudents: 35,
+        credits: 3,
+        status: 'active',
+        objectives: [
+          'Understand fundamental concepts',
+          'Apply theoretical knowledge to practical problems',
+          'Develop problem-solving skills',
+          'Master advanced techniques'
+        ]
+      };
+
+      const response = await request.post(`${baseURL}/api/course-offerings`, {
+        data: offeringData
+      });
+
+      expect(response.status()).toBe(201);
+      const responseData = await response.json();
+      expect(responseData.data.objectives).toEqual(offeringData.objectives);
+      expect(Array.isArray(responseData.data.objectives)).toBe(true);
+    });
+
+    test('should handle complex schedule configurations', async ({ request }) => {
+      const offeringData = {
+        courseId: 'course_complex_schedule',
+        facultyId: 'faculty_complex_schedule',
+        semester: 'Fall 2024',
+        academicYear: '2024-25',
+        section: 'A',
+        maxStudents: 30,
+        credits: 4,
+        status: 'active',
+        schedule: {
+          days: ['Monday', 'Wednesday', 'Friday'],
+          startTime: '09:00',
+          endTime: '10:00',
+          room: 'Room 301',
+          labDays: ['Thursday'],
+          labStartTime: '14:00',
+          labEndTime: '17:00',
+          labRoom: 'Lab 101'
+        }
+      };
+
+      const response = await request.post(`${baseURL}/api/course-offerings`, {
+        data: offeringData
+      });
+
+      expect(response.status()).toBe(201);
+      const responseData = await response.json();
+      expect(responseData.data.schedule).toEqual(offeringData.schedule);
+    });
+  });
+});
