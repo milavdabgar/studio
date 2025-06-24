@@ -69,7 +69,7 @@ export default function ProgramManagementPage() {
       toast({ variant: "destructive", title: "Error", description: "Could not load programs or departments data." });
     }
     setIsLoading(false);
-  }, [toast]);
+  }, [toast, formDepartmentId]);
 
   useEffect(() => {
     fetchProgramsAndDepartments();

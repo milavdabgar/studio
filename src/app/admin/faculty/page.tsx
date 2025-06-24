@@ -156,7 +156,7 @@ export default function FacultyManagementPage() {
       toast({ variant: "destructive", title: "Error", description: "Could not load faculty data" });
     }
     setIsLoading(false);
-  }, []);
+  }, [formInstituteId, toast]);
 
   useEffect(() => {
     fetchInitialData();
