@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Faculty, User, StaffCategory } from '@/types/entities'; 
 import { userService } from '@/lib/api/users'; 
 
-let facultyStore: Faculty[] = (global as any).__API_FACULTY_STORE__ || [];
+const facultyStore: Faculty[] = (global as any).__API_FACULTY_STORE__ || [];
 if (!(global as any).__API_FACULTY_STORE__) {
   (global as any).__API_FACULTY_STORE__ = facultyStore;
 }
@@ -64,7 +64,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
             const baseRole = updatedFaculty.staffCategory === 'Teaching' ? 'faculty' : (updatedFaculty.staffCategory?.toLowerCase() + '_staff' as UserRole) || 'faculty';
             const existingUser = await userService.getUserById(updatedFaculty.userId);
             if (existingUser) {
-                let newRoles = existingUser.roles.filter(r => !r.endsWith('_staff') && r !== 'faculty'); // Remove old staff/faculty specific roles
+                const newRoles = existingUser.roles.filter(r => !r.endsWith('_staff') && r !== 'faculty'); // Remove old staff/faculty specific roles
                 if (!newRoles.includes(baseRole)) {
                     newRoles.push(baseRole);
                 }

@@ -96,7 +96,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) { // Ch
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   ensureProjectLocationsStore();
-  let currentProjectLocationsStore: ProjectLocation[] = global.__API_PROJECT_LOCATIONS_STORE__!;
+  const currentProjectLocationsStore: ProjectLocation[] = global.__API_PROJECT_LOCATIONS_STORE__!;
   const { id } = await params;
 
   try {

@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Student, User } from '@/types/entities'; // Updated User import
 import { userService } from '@/lib/api/users'; 
 
-let studentsStore: Student[] = (global as any).__API_STUDENTS_STORE__ || [];
+const studentsStore: Student[] = (global as any).__API_STUDENTS_STORE__ || [];
 if (!(global as any).__API_STUDENTS_STORE__) {
   (global as any).__API_STUDENTS_STORE__ = studentsStore;
 }

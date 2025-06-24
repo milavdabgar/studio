@@ -35,7 +35,7 @@ if (!global.__API_PROJECT_EVENTS_STORE__ || global.__API_PROJECT_EVENTS_STORE__.
     },
   ];
 }
-let projectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
+const projectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
 
 const generateEventId = (): string => `event_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 

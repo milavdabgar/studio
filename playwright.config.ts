@@ -77,16 +77,16 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'npm run dev', // Ensure this command starts your Next.js dev server
-    url: process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-    timeout: 180 * 1000, // Increased to 3 minutes for server to start, especially with Turbopack
-    stdout: 'pipe',
-    stderr: 'pipe',
-    env: {
-        NODE_ENV: 'development', // Or 'test' if you have specific test environment settings
-    }
-  },
+  // webServer: {
+  //   command: 'npm run dev', // Ensure this command starts your Next.js dev server
+  //   url: process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000',
+  //   reuseExistingServer: !process.env.CI,
+  //   timeout: 180 * 1000, // Increased to 3 minutes for server to start, especially with Turbopack
+  //   stdout: 'pipe',
+  //   stderr: 'pipe',
+  //   env: {
+  //       NODE_ENV: 'development', // Or 'test' if you have specific test environment settings
+  //   }
+  // },
 });
 

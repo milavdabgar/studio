@@ -8,7 +8,7 @@ declare global {
   var __API_PROJECT_TEAMS_STORE__: ProjectTeam[] | undefined;
 }
 if (!global.__API_PROJECT_TEAMS_STORE__) global.__API_PROJECT_TEAMS_STORE__ = [];
-let teamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
+const teamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
 
 const generateIdForImport = (): string => `team_imp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 

@@ -43,7 +43,7 @@ if (!global.__API_NOTIFICATIONS_STORE__) {
     },
   ];
 }
-let notificationsStore: Notification[] = global.__API_NOTIFICATIONS_STORE__;
+const notificationsStore: Notification[] = global.__API_NOTIFICATIONS_STORE__;
 
 const generateId = (): string => `notif_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 

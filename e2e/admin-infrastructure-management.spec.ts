@@ -58,7 +58,11 @@ test.describe('Admin Infrastructure Management', () => {
       
       await page.getByRole('button', { name: /create building/i }).click();
       await expect(page.getByText('Building Created', { exact: true })).toBeVisible({timeout: 10000});
-      await expect(page.getByText(buildingName)).toBeVisible();
+      
+      // Wait for potential redirect and verify the building exists in the list
+      await page.waitForTimeout(2000);
+      await page.goto('/admin/infrastructure/buildings', { waitUntil: 'domcontentloaded' });
+      await expect(page.getByText(buildingName)).toBeVisible({ timeout: 10000 });
     });
 
     test('should delete the created building', async ({ page }) => {

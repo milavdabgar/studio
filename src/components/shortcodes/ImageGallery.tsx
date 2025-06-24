@@ -32,21 +32,8 @@ export function ImageGallery({
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Check if images is provided and handle it safely
-  if (!images) {
-    return (
-      <div className="p-4 text-center text-gray-500 border border-gray-200 rounded">
-        No images provided for gallery
-      </div>
-    );
-  }
-
-  // Parse images array
-  const imageArray = Array.isArray(images) 
-    ? images 
-    : images.split(',').map(img => img.trim());
-  
-  // Fix relative image paths
+  // Parse images array (safe to do before hooks)
+  const imageArray = images ? (Array.isArray(images) ? images : images.split(',').map(img => img.trim())) : [];
   const fixedImageArray = imageArray.map(src => 
     src && !src.startsWith('http') && !src.startsWith('/') ? `/${src}` : src
   );
@@ -59,7 +46,7 @@ export function ImageGallery({
     ? (Array.isArray(titles) ? titles : titles.split(',').map(title => title.trim()))
     : [];
 
-  // Autoplay effect
+  // Autoplay effect - must be before any early returns
   useEffect(() => {
     if (autoplay && !isModalOpen) {
       intervalRef.current = setInterval(() => {
@@ -78,6 +65,15 @@ export function ImageGallery({
       }
     };
   }, [autoplay, interval, fixedImageArray.length, isModalOpen]);
+
+  // Check if images is provided and handle it safely
+  if (!images) {
+    return (
+      <div className="p-4 text-center text-gray-500 border border-gray-200 rounded">
+        No images provided for gallery
+      </div>
+    );
+  }
 
   const nextImage = () => {
     setCurrentIndex((prev) => (prev + 1) % fixedImageArray.length);

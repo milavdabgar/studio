@@ -36,7 +36,7 @@ if (!global.__API_RESULTS_STORE__) {
     },
   ];
 }
-let resultsStore: Result[] = global.__API_RESULTS_STORE__;
+const resultsStore: Result[] = global.__API_RESULTS_STORE__;
 
 export async function GET(request: NextRequest) {
   if (!Array.isArray(global.__API_RESULTS_STORE__)) {

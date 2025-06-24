@@ -13,7 +13,7 @@ declare global {
 if (!global.__API_PROJECT_EVENTS_STORE__) global.__API_PROJECT_EVENTS_STORE__ = [];
 if (!global.__API_PROJECT_TEAMS_STORE__) global.__API_PROJECT_TEAMS_STORE__ = [];
 
-let projectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
+const projectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
 const projectTeamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
 
 

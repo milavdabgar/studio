@@ -4,7 +4,7 @@ import { parse, type ParseError } from 'papaparse';
 import { userService } from '@/lib/api/users';
 import { instituteService } from '@/lib/api/institutes'; 
 
-let facultyStore: Faculty[] = (global as any).__API_FACULTY_STORE__ || [];
+const facultyStore: Faculty[] = (global as any).__API_FACULTY_STORE__ || [];
 if (!(global as any).__API_FACULTY_STORE__) {
   (global as any).__API_FACULTY_STORE__ = facultyStore;
 }
@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
       };
 
       const idFromCsv = row.id?.toString().trim();
-      let existingFacultyIndex = facultyStore.findIndex(f => (idFromCsv && f.id === idFromCsv) || f.staffCode === staffCode);
+      const existingFacultyIndex = facultyStore.findIndex(f => (idFromCsv && f.id === idFromCsv) || f.staffCode === staffCode);
       let facultyToProcess: Faculty;
 
       if (existingFacultyIndex !== -1) {
@@ -165,7 +165,7 @@ export async function POST(request: NextRequest) {
 
         if (existingUserByEmail) { 
             facultyToProcess.userId = existingUserByEmail.id;
-            let rolesToSet = existingUserByEmail.roles.includes(userBaseRole) ? existingUserByEmail.roles : [...existingUserByEmail.roles, userBaseRole];
+            const rolesToSet = existingUserByEmail.roles.includes(userBaseRole) ? existingUserByEmail.roles : [...existingUserByEmail.roles, userBaseRole];
             await userService.updateUser(existingUserByEmail.id, {...userDataPayload, roles: rolesToSet });
         } else { 
             const createdUser = await userService.createUser({...userDataPayload, password: facultyToProcess.staffCode, roles: [userBaseRole]});

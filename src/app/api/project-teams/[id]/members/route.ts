@@ -58,7 +58,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 export async function POST(request: NextRequest, { params }: RouteParams) {
   const { id: teamId } = await params;
-  let projectTeamsStoreRef = global.__API_PROJECT_TEAMS_STORE__ as ProjectTeam[];
+  const projectTeamsStoreRef = global.__API_PROJECT_TEAMS_STORE__ as ProjectTeam[];
   const usersStoreRef = global.__API_USERS_STORE__ as User[];
 
   if (!Array.isArray(projectTeamsStoreRef) || !Array.isArray(usersStoreRef)) {

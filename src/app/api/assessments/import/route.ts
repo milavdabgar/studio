@@ -3,7 +3,7 @@ import type { Assessment, AssessmentStatus, AssessmentType, Course, Program, Bat
 import { parse, type ParseError } from 'papaparse';
 import { isValid, parseISO, format } from 'date-fns';
 
-let assessmentsStore: Assessment[] = (global as any).__API_ASSESSMENTS_STORE__ || [];
+const assessmentsStore: Assessment[] = (global as any).__API_ASSESSMENTS_STORE__ || [];
 if (!(global as any).__API_ASSESSMENTS_STORE__) {
   (global as any).__API_ASSESSMENTS_STORE__ = assessmentsStore;
 }
@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
            skippedCount++; continue;
       }
 
-      let programId = row.programid?.toString().trim() || targetCourse.programId; // Prefer CSV, fallback to course's program
+      const programId = row.programid?.toString().trim() || targetCourse.programId; // Prefer CSV, fallback to course's program
       if (!clientPrograms.some(p => p.id === programId)) {
         importErrors.push({ row: rowIndex, message: `Program ID '${programId}' not found.`, data: row });
         skippedCount++; continue;

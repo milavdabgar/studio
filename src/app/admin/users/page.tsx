@@ -433,7 +433,7 @@ export default function UserManagementPage() {
     
     await fetchInitialData();
     setSelectedUserIds([]);
-    let description = `${deletedCount} user(s) have been successfully deleted.`;
+    const description = `${deletedCount} user(s) have been successfully deleted.`;
     if(adminSkipped){
       toast({ variant: "warning", title: "Admin User Protected", description: "The primary admin user (admin@gppalanpur.in) cannot be deleted." });
     }

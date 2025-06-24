@@ -168,7 +168,7 @@ export default function ExamResultEntryPage() {
             const existingFullResult = await resultService.getResultById(studentEntry.existingResultId);
             const existingResultData = existingFullResult.data.result;
             const subjectIndex = existingResultData.subjects.findIndex(s => s.code === subjectResultPayload.code);
-            let updatedSubjects = [...existingResultData.subjects];
+            const updatedSubjects = [...existingResultData.subjects];
             if (subjectIndex !== -1) {
                 updatedSubjects[subjectIndex] = subjectResultPayload;
             } else {

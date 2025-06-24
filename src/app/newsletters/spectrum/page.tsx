@@ -171,8 +171,8 @@ export default function SpectrumNewsletterPage() {
           <div className="prose max-w-none">
             <h3>Featured Content</h3>
             <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              <li>Principal's Message & Vision</li>
-              <li>HOD's Message & Department Updates</li>
+              <li>Principal&apos;s Message & Vision</li>
+              <li>HOD&apos;s Message & Department Updates</li>
               <li>Faculty Achievements & Research</li>
               <li>Student Excellence & Awards</li>
               <li>Placement Success Stories</li>

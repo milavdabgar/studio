@@ -6,7 +6,7 @@ import { parse, type ParseError } from 'papaparse';
 // This assumes the in-memory 'institutes' array and 'generateClientId' are accessible here.
 // In a real app, you'd import them or use a shared DB module.
 // For simplicity, we'll redefine them here for this isolated API route example.
-let institutesStore: Institute[] = (global as any).__API_INSTITUTES_STORE__ || [
+const institutesStore: Institute[] = (global as any).__API_INSTITUTES_STORE__ || [
   { id: "inst1", name: "Government Polytechnic Palanpur", code: "GPP", address: "Jagana, Palanpur, Gujarat 385011", contactEmail: "gp-palanpur-dte@gujarat.gov.in", contactPhone: "02742-280126", website: "http://www.gppalanpur.ac.in", status: "active", establishmentYear: 1964 },
 ];
 (global as any).__API_INSTITUTES_STORE__ = institutesStore;

@@ -169,8 +169,8 @@ export default function CommitteeDashboardPage() {
             <ul className="space-y-2">
               {/* Placeholder activities */}
               <li className="text-sm text-muted-foreground">Meeting scheduled for next week.</li>
-              <li className="text-sm text-muted-foreground">New document uploaded: "Annual Report Draft".</li>
-              <li className="text-sm text-muted-foreground">Task "Review Budget Proposal" assigned to John Doe.</li>
+              <li className="text-sm text-muted-foreground">New document uploaded: &quot;Annual Report Draft&quot;.</li>
+              <li className="text-sm text-muted-foreground">Task &quot;Review Budget Proposal&quot; assigned to John Doe.</li>
             </ul>
           </CardContent>
         </Card>

@@ -431,7 +431,7 @@ export class ContentConverterV2 {
 
     private convertToPlainText(content: string, frontmatter: any, options: ConversionOptions): string {
         // Strip markdown formatting and return plain text
-        let text = content
+        const text = content
             .replace(/!\[.*?\]\(.*?\)/g, '') // Remove images
             .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Convert links to just text
             .replace(/```[\s\S]*?```/g, '') // Remove code blocks first
@@ -461,7 +461,7 @@ export class ContentConverterV2 {
 
     private convertToRtf(content: string, frontmatter: any, options: ConversionOptions): string {
         // Convert markdown to RTF (Rich Text Format)
-        let rtf = this.markdownToRtf(content);
+        const rtf = this.markdownToRtf(content);
         
         const title = options.title || frontmatter.title || 'Document';
         const author = options.author || frontmatter.author || '';

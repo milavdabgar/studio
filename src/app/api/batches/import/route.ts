@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Batch, Program, BatchStatus } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 
-let batchesStore: Batch[] = (global as any).__API_BATCHES_STORE__ || [];
+const batchesStore: Batch[] = (global as any).__API_BATCHES_STORE__ || [];
 if (!(global as any).__API_BATCHES_STORE__) {
   (global as any).__API_BATCHES_STORE__ = batchesStore;
 }

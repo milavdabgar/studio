@@ -57,7 +57,7 @@ async function updateUserConvenerRoleForImport(userId: string, committeeCode: st
 }
 
 async function createOrUpdateCommitteeRolesForImport(committee: Committee, isUpdate: boolean = false, oldCommitteeDetails?: {name: string, code: string}) {
-  let currentRolesStore: Role[] = global.__API_ROLES_STORE__ || [];
+  const currentRolesStore: Role[] = global.__API_ROLES_STORE__ || [];
   const committeeRolesInfo = [
     { type: 'Convener', permissions: ['view_committee_info', 'manage_committee_meetings', 'manage_committee_members'] },
     { type: 'Co-Convener', permissions: ['view_committee_info', 'manage_committee_meetings'] },
@@ -93,7 +93,7 @@ async function createOrUpdateCommitteeRolesForImport(committee: Committee, isUpd
       };
       
       if (oldRoleCodeActual !== newRoleCode) {
-        let currentUsersStore: User[] = (global as any).__API_USERS_STORE__ || [];
+        const currentUsersStore: User[] = (global as any).__API_USERS_STORE__ || [];
         currentUsersStore.forEach(user => {
           const userRoleIndex = user.roles.indexOf(oldRoleCodeActual);
           if (userRoleIndex !== -1) {
@@ -173,7 +173,7 @@ export async function POST(request: NextRequest) {
     let skippedCount = 0;
     const importErrors: { row: number; message: string; data: unknown }[] = [];
     const now = new Date().toISOString();
-    let committeesStoreRef = global.__API_COMMITTEES_STORE__!;
+    const committeesStoreRef = global.__API_COMMITTEES_STORE__!;
 
 
     for (let i = 0; i < parsedData.length; i++) {

@@ -69,7 +69,7 @@ export function YouTube({
             <Shield className="h-12 w-12 mb-4 text-blue-400" />
             <h3 className="text-lg font-semibold mb-2">Privacy Enhanced Mode</h3>
             <p className="text-sm mb-4 max-w-md">
-              This video is hosted by YouTube. By watching it, you agree to YouTube's privacy policy and terms of service.
+              This video is hosted by YouTube. By watching it, you agree to YouTube&apos;s privacy policy and terms of service.
             </p>
             <button
               onClick={handlePrivacyAccept}

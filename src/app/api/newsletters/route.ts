@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
 
     // Extract frontmatter for newsletter-specific options
     const frontmatterMatch = markdownContent.match(/^---\n([\s\S]*?)\n---/);
-    let newsletterOptions = { ...options };
+    const newsletterOptions = { ...options };
     
     if (frontmatterMatch) {
       try {
@@ -184,7 +184,7 @@ export async function GET(request: NextRequest) {
         
         // Extract basic metadata from frontmatter
         const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-        let metadata: any = { slug, filename: file };
+        const metadata: any = { slug, filename: file };
         
         if (frontmatterMatch) {
           try {

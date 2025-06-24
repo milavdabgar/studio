@@ -43,7 +43,7 @@ export function PostMeta({
         return format(dateInput, 'LLLL d, yyyy');
       }
       
-      let dateString = String(dateInput);
+      const dateString = String(dateInput);
       
       if (dateString && dateString.length > 0 && dateString !== 'undefined' && dateString !== 'null') {
         const parsedDate = parseISO(dateString);

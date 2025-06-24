@@ -8,7 +8,7 @@ import { departmentService } from '@/lib/api/departments'; // To find department
 import { instituteService } from '@/lib/api/institutes'; // To get institute domain
 
 
-let studentsStore: Student[] = (global as any).__API_STUDENTS_STORE__ || [];
+const studentsStore: Student[] = (global as any).__API_STUDENTS_STORE__ || [];
 if (!(global as any).__API_STUDENTS_STORE__) {
   (global as any).__API_STUDENTS_STORE__ = studentsStore;
 }
@@ -203,7 +203,7 @@ export async function POST(request: NextRequest) {
 
         if (existingUserByEmail) {
             studentToProcess.userId = existingUserByEmail.id;
-            let rolesToSet = existingUserByEmail.roles.includes('student') ? existingUserByEmail.roles : [...existingUserByEmail.roles, 'student' as UserRole];
+            const rolesToSet = existingUserByEmail.roles.includes('student') ? existingUserByEmail.roles : [...existingUserByEmail.roles, 'student' as UserRole];
             await userService.updateUser(existingUserByEmail.id, {...userDataPayload, roles: rolesToSet});
         } else {
             const createdUser = await userService.createUser({...userDataPayload, password: studentToProcess.enrollmentNumber, roles: ['student']});

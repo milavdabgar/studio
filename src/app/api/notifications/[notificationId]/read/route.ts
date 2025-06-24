@@ -9,7 +9,7 @@ declare global {
 if (!global.__API_NOTIFICATIONS_STORE__) {
   global.__API_NOTIFICATIONS_STORE__ = [];
 }
-let notificationsStore: Notification[] = global.__API_NOTIFICATIONS_STORE__;
+const notificationsStore: Notification[] = global.__API_NOTIFICATIONS_STORE__;
 
 interface RouteParams {
   params: Promise<{

@@ -57,7 +57,7 @@ export default function EditProjectEventPage() {
         <Card className="shadow-xl">
             <CardHeader>
                 <CardTitle className="text-2xl font-bold text-primary">Edit Project Fair Event</CardTitle>
-                <CardDescription>Modify the details for "{event.name}".</CardDescription>
+                <CardDescription>Modify the details for &quot;{event.name}&quot;.</CardDescription>
             </CardHeader>
             <CardContent>
                 <ProjectEventForm

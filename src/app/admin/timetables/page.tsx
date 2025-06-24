@@ -279,7 +279,7 @@ export default function TimetableManagementPage() {
   }, [timetables, searchTerm, filterProgram, filterBatch, filterStatus]);
 
   const sortedTimetables = useMemo(() => {
-    let sorted = [...filteredTimetables];
+    const sorted = [...filteredTimetables];
     if (sortField !== 'none') {
       sorted.sort((a, b) => {
         let valA: unknown = a[sortField as keyof Timetable];

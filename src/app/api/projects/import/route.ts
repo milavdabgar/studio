@@ -8,7 +8,7 @@ declare global {
   var __API_PROJECTS_STORE__: Project[] | undefined;
 }
 if (!global.__API_PROJECTS_STORE__) global.__API_PROJECTS_STORE__ = [];
-let projectsStore: Project[] = global.__API_PROJECTS_STORE__;
+const projectsStore: Project[] = global.__API_PROJECTS_STORE__;
 
 const generateIdForImport = (): string => `proj_imp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 const PROJECT_STATUS_OPTIONS: ProjectStatus[] = ['draft', 'submitted', 'approved', 'rejected', 'completed', 'evaluated'];

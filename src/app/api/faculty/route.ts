@@ -88,7 +88,7 @@ if (!global.__API_FACULTY_STORE__ || global.__API_FACULTY_STORE__.length === 0) 
     }
   ];
 }
-let facultyStore: Faculty[] = global.__API_FACULTY_STORE__;
+const facultyStore: Faculty[] = global.__API_FACULTY_STORE__;
 
 
 const generateId = (): string => `fac_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;

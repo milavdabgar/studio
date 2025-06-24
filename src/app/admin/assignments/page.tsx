@@ -23,7 +23,7 @@ export default function AdminAssignmentsPage() {
               Assignment Management features are under development.
             </p>
             <p className="text-sm text-muted-foreground">
-              Faculty can create and manage assignments via the 'Assessments' module, filtering by type 'Assignment' or 'Project'.
+              Faculty can create and manage assignments via the &apos;Assessments&apos; module, filtering by type &apos;Assignment&apos; or &apos;Project&apos;.
             </p>
           </div>
         </CardContent>

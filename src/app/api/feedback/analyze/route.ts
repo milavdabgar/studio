@@ -291,7 +291,7 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id'|'markdownRepor
 
         uniqueSubjectInfos.forEach(subjectInfo => {
             let row = `| ${subjectInfo.code} | ${subjectInfo.shortForm} |`;
-            let subjectScoresForAvg: number[] = [];
+            const subjectScoresForAvg: number[] = [];
             facultyInitials.forEach(facultyInitial => {
                 const scoreEntry = result.subject_scores.find(s => s.Subject_Code === subjectInfo.code && s.Faculty_Initial === facultyInitial);
                 const score = scoreEntry ? scoreEntry.Score : undefined;

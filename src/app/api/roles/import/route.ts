@@ -5,7 +5,7 @@ import { parse, type ParseError } from 'papaparse';
 import { allPermissions } from '@/lib/api/roles'; 
 
 // In-memory store for roles (replace with actual DB interaction)
-let rolesStore: Role[] = (global as any).__API_ROLES_STORE__ || [
+const rolesStore: Role[] = (global as any).__API_ROLES_STORE__ || [
   { id: "1", name: "Admin", description: "Full access to all system features.", permissions: ["manage_users", "manage_roles", "manage_settings", "manage_institutes", "manage_buildings", "manage_rooms", "manage_departments", "manage_programs", "manage_courses"] },
   { id: "2", name: "Student", description: "Access to student-specific features.", permissions: ["view_courses", "submit_assignments"] },
   { id: "3", name: "Faculty", description: "Access to faculty-specific features.", permissions: ["manage_courses", "grade_assignments", "evaluate_projects"] },

@@ -11,7 +11,7 @@ declare global {
 if (!global.__API_PROJECT_EVENTS_STORE__) {
   global.__API_PROJECT_EVENTS_STORE__ = [];
 }
-let projectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
+const projectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
 
 const generateIdForImport = (): string => `evt_imp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 const EVENT_STATUS_OPTIONS_LOWER: string[] = ['upcoming', 'ongoing', 'completed', 'cancelled'];

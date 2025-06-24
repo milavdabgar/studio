@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Room, Building, RoomType, RoomStatus } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 
-let roomsStore: Room[] = (global as any).__API_ROOMS_STORE__ || [];
+const roomsStore: Room[] = (global as any).__API_ROOMS_STORE__ || [];
 if (!(global as any).__API_ROOMS_STORE__) {
   (global as any).__API_ROOMS_STORE__ = roomsStore;
 }

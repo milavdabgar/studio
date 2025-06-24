@@ -108,7 +108,7 @@ test.describe('Admin Data Management', () => {
     const departmentBaseName = 'E2E Test Department';
 
     test('should navigate to departments page and create a new department', async () => {
-      await page.goto(`${APP_BASE_URL}/admin/departments`);
+      await page.goto(`${APP_BASE_URL}/admin/departments`, { waitUntil: 'domcontentloaded' });
       await expect(page.getByText('Department Management', { exact: true }).first()).toBeVisible();
 
       const timestamp = Date.now().toString().slice(-6);
@@ -150,7 +150,7 @@ test.describe('Admin Data Management', () => {
     const userBaseName = 'E2E Test User';
 
     test('should navigate to users page and add a new user', async () => {
-      await page.goto(`${APP_BASE_URL}/admin/users`);
+      await page.goto(`${APP_BASE_URL}/admin/users`, { waitUntil: 'domcontentloaded' });
       await expect(page.getByText('User Management', { exact: true }).first()).toBeVisible();
 
       const timestamp = Date.now();
@@ -249,7 +249,7 @@ test.describe('Admin Data Management', () => {
     const roleBaseName = 'E2E Test Role';
 
     test('should navigate to roles page and create a new role', async () => {
-      await page.goto(`${APP_BASE_URL}/admin/roles`);
+      await page.goto(`${APP_BASE_URL}/admin/roles`, { waitUntil: 'domcontentloaded' });
       await expect(page.getByText('Role Management', { exact: true }).first()).toBeVisible();
 
       const timestamp = Date.now().toString().slice(-6);

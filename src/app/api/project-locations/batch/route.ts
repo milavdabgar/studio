@@ -10,7 +10,7 @@ declare global {
 if (!global.__API_PROJECT_LOCATIONS_STORE__) {
   global.__API_PROJECT_LOCATIONS_STORE__ = [];
 }
-let projectLocationsStore: ProjectLocation[] = global.__API_PROJECT_LOCATIONS_STORE__;
+const projectLocationsStore: ProjectLocation[] = global.__API_PROJECT_LOCATIONS_STORE__;
 
 const generateLocationIdInternal = (): string => `loc_batch_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 

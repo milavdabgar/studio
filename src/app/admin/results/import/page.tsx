@@ -106,11 +106,11 @@ export default function ImportResultsPage() {
     let sampleProgramCode = "DCE"; 
     let sampleProgramName = "Diploma in Computer Engineering";
     let sampleBranchName = "Computer Engineering";
-    let sampleCourseName = "Computer Course";
-    let sampleSubjectCode1 = "3310701"; 
-    let sampleSubjectCode2 = "3300001";
-    let sampleStudentName = "SURNAME FIRST MIDDLE";
-    let sampleEnrollment = "220010107001"; 
+    const sampleCourseName = "Computer Course";
+    const sampleSubjectCode1 = "3310701"; 
+    const sampleSubjectCode2 = "3300001";
+    const sampleStudentName = "SURNAME FIRST MIDDLE";
+    const sampleEnrollment = "220010107001"; 
 
     if (programs.length > 0) {
       const firstProgram = programs[0];

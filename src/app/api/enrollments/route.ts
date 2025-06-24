@@ -55,7 +55,7 @@ if (!global.__API_COURSES_STORE__) {
 }
 
 
-let enrollmentsStore: Enrollment[] = global.__API_ENROLLMENTS_STORE__;
+const enrollmentsStore: Enrollment[] = global.__API_ENROLLMENTS_STORE__;
 const studentsStore: Student[] = global.__API_STUDENTS_STORE__;
 const courseOfferingsStore: CourseOffering[] = global.__API_COURSE_OFFERINGS_STORE__;
 const usersStore: User[] = global.__API_USERS_STORE__;

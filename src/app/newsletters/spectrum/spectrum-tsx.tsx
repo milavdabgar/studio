@@ -677,11 +677,11 @@ export default function SpectrumNewsletterTSX() {
                     <div className="space-y-2">
                       <div className="flex items-center space-x-2">
                         <span className="text-blue-500">🎯</span>
-                        <span>Principal's Message & Vision</span>
+                        <span>Principal&apos;s Message & Vision</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <span className="text-green-500">👨‍🏫</span>
-                        <span>HOD's Message & Department Updates</span>
+                        <span>HOD&apos;s Message & Department Updates</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <span className="text-purple-500">🏆</span>

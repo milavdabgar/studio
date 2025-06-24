@@ -4,7 +4,7 @@ import type { Department } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse'; 
 
 // In-memory store for departments
-let departmentsStore: Department[] = (global as any).__API_DEPARTMENTS_STORE__ || [];
+const departmentsStore: Department[] = (global as any).__API_DEPARTMENTS_STORE__ || [];
 if (!(global as any).__API_DEPARTMENTS_STORE__) {
   (global as any).__API_DEPARTMENTS_STORE__ = departmentsStore;
 }

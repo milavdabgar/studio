@@ -20,9 +20,9 @@ if (!global.__API_DEPARTMENTS_STORE__) global.__API_DEPARTMENTS_STORE__ = [];
 if (!global.__API_PROJECT_TEAMS_STORE__) global.__API_PROJECT_TEAMS_STORE__ = [];
 
 
-let projectLocationsStore: ProjectLocation[] = global.__API_PROJECT_LOCATIONS_STORE__;
-let projectsStore: Project[] = global.__API_PROJECTS_STORE__;
-let departmentsStore: Department[] = global.__API_DEPARTMENTS_STORE__;
+const projectLocationsStore: ProjectLocation[] = global.__API_PROJECT_LOCATIONS_STORE__;
+const projectsStore: Project[] = global.__API_PROJECTS_STORE__;
+const departmentsStore: Department[] = global.__API_DEPARTMENTS_STORE__;
 const projectTeamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
 
 

@@ -28,7 +28,7 @@ async function applyRateLimiting(request: NextRequest): Promise<RateLimiterRes |
 
 // In-memory storage for demonstration purposes
 // In a real application, this would be a database interaction
-let permissions: Permission[] = [
+const permissions: Permission[] = [
   {
     id: 'perm_1',
     name: 'View Student Profile',

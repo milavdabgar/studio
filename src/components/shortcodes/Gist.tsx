@@ -117,7 +117,7 @@ const Gist: React.FC<GistProps> = (props) => {
           <span className="font-medium">File Not Found</span>
         </div>
         <p className="mt-2 text-sm text-yellow-600 dark:text-yellow-400">
-          The file "{filename}" was not found in this gist.
+          The file &quot;{filename}&quot; was not found in this gist.
         </p>
       </div>
     );

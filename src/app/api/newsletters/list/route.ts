@@ -27,7 +27,7 @@ export async function GET() {
           
           // Extract basic metadata from frontmatter
           const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-          let metadata: any = { slug, filename: file };
+          const metadata: any = { slug, filename: file };
           
           if (frontmatterMatch) {
             const frontmatter = frontmatterMatch[1];

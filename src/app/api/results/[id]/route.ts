@@ -7,7 +7,7 @@ declare global {
 if (!global.__API_RESULTS_STORE__) {
   global.__API_RESULTS_STORE__ = [];
 }
-let resultsStore: Result[] = global.__API_RESULTS_STORE__;
+const resultsStore: Result[] = global.__API_RESULTS_STORE__;
 
 interface RouteParams {
   params: {

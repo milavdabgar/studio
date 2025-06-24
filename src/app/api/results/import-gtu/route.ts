@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 if (!(global as any).__API_RESULTS_STORE__) {
   (global as any).__API_RESULTS_STORE__ = [];
 }
-let resultsStore: Result[] = (global as any).__API_RESULTS_STORE__;
+const resultsStore: Result[] = (global as any).__API_RESULTS_STORE__;
 
 // Helper functions adapted from reference/result.controller.ts
 const extractEnrollmentNo = (row: any): string => {
@@ -166,7 +166,7 @@ export async function POST(request: NextRequest) {
     
     let newCount = 0;
     let updatedCount = 0; 
-    let skippedCountDueToProcessing = processingErrors.length; 
+    const skippedCountDueToProcessing = processingErrors.length; 
     const now = new Date().toISOString();
     const currentUploadBatchId = uuidv4(); // Single batch ID for this upload
 

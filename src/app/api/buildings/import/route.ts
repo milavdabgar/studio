@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Building, Institute } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 
-let buildingsStore: Building[] = (global as any).__API_BUILDINGS_STORE__ || [];
+const buildingsStore: Building[] = (global as any).__API_BUILDINGS_STORE__ || [];
 if (!(global as any).__API_BUILDINGS_STORE__) {
   (global as any).__API_BUILDINGS_STORE__ = buildingsStore;
 }

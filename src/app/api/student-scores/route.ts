@@ -23,7 +23,7 @@ if (!global.__API_ASSESSMENTS_STORE__) {
   global.__API_ASSESSMENTS_STORE__ = [];
 }
 
-let studentScoresStore: StudentAssessmentScore[] = global.__API_STUDENT_SCORES_STORE__;
+const studentScoresStore: StudentAssessmentScore[] = global.__API_STUDENT_SCORES_STORE__;
 const studentsStore: Student[] = global.__API_STUDENTS_STORE__;
 const assessmentsStore: Assessment[] = global.__API_ASSESSMENTS_STORE__;
 
@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
 
 
     const currentTimestamp = new Date().toISOString();
-    let existingScoreIndex = studentScoresStore.findIndex(
+    const existingScoreIndex = studentScoresStore.findIndex(
       s => s.studentId === studentId && s.assessmentId === assessmentId
     );
 

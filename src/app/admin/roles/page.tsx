@@ -267,7 +267,7 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
     
     await fetchRoles();
     setSelectedRoleIds([]);
-    let description = `${deletedCount} role(s) have been successfully deleted.`;
+    const description = `${deletedCount} role(s) have been successfully deleted.`;
     if (adminSkipped) {
         toast({ variant: "warning", title: "Admin Role Protected", description: "The 'admin' or 'super_admin' role cannot be deleted." });
     }

@@ -3,7 +3,7 @@ import type { Curriculum, Program, Course } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 import { isValid, parseISO, format } from 'date-fns';
 
-let curriculumStore: Curriculum[] = (global as any).__API_CURRICULUM_STORE__ || [];
+const curriculumStore: Curriculum[] = (global as any).__API_CURRICULUM_STORE__ || [];
 if (!(global as any).__API_CURRICULUM_STORE__) {
   (global as any).__API_CURRICULUM_STORE__ = curriculumStore;
 }

@@ -55,7 +55,7 @@ async function updateUserConvenerRole(userId: string, committeeCode: string, com
 }
 
 async function createOrUpdateCommitteeRoles(committee: Committee, isUpdate: boolean = false, oldCommitteeDetails?: {name: string, code: string}) {
-  let currentRolesStore: Role[] = global.__API_ROLES_STORE__ || [];
+  const currentRolesStore: Role[] = global.__API_ROLES_STORE__ || [];
   const committeeRolesInfo = [
     { type: 'Convener', permissions: ['view_committee_info', 'manage_committee_meetings', 'manage_committee_members'] },
     { type: 'Co-Convener', permissions: ['view_committee_info', 'manage_committee_meetings'] },
@@ -92,7 +92,7 @@ async function createOrUpdateCommitteeRoles(committee: Committee, isUpdate: bool
       };
 
       if (oldRoleCodeActual !== newRoleCode) { // If role code itself changed
-        let currentUsersStore: User[] = (global as any).__API_USERS_STORE__ || [];
+        const currentUsersStore: User[] = (global as any).__API_USERS_STORE__ || [];
         currentUsersStore.forEach(user => {
           const userRoleIndex = user.roles.indexOf(oldRoleCodeActual);
           if (userRoleIndex !== -1) {
@@ -139,7 +139,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
-  let committeesStore = global.__API_COMMITTEES_STORE__ || [];
+  const committeesStore = global.__API_COMMITTEES_STORE__ || [];
   
   try {
     const committeeData = await request.json() as Partial<Omit<Committee, 'id' | 'createdAt' | 'updatedAt'>>;
@@ -226,9 +226,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
-  let committeesStore = global.__API_COMMITTEES_STORE__ || [];
+  const committeesStore = global.__API_COMMITTEES_STORE__ || [];
   let currentRolesStore = global.__API_ROLES_STORE__ || [];
-  let currentUsersStore: User[] = (global as any).__API_USERS_STORE__ || [];
+  const currentUsersStore: User[] = (global as any).__API_USERS_STORE__ || [];
   
   const committeeIndex = committeesStore.findIndex(c => c.id === id);
   if (committeeIndex === -1) {

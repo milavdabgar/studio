@@ -353,7 +353,7 @@ export default function DashboardPage() {
               <li className="flex items-center gap-3 p-3 rounded-md hover:bg-muted/50 transition-colors">
                 <Image src="https://picsum.photos/seed/activity1/40/40" alt="User avatar" data-ai-hint="user avatar" width={40} height={40} className="rounded-full"/>
                 <div>
-                  <p className="text-sm font-medium">New project "AI Chatbot" submitted.</p>
+                  <p className="text-sm font-medium">New project &quot;AI Chatbot&quot; submitted.</p>
                   <p className="text-xs text-muted-foreground">2 hours ago</p>
                 </div>
               </li>

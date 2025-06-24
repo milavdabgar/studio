@@ -91,7 +91,7 @@ export function SearchBox({ language, onResults, showResults = true, placeholder
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">
-              {t('search_results_for')}: "{query}"
+              {t('search_results_for')}: &quot;{query}&quot;
             </h3>
             <span className="text-sm text-muted-foreground">
               {isLoading ? t('loading') : `${results.length} results`}

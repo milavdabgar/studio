@@ -121,7 +121,7 @@ export function TwitterEmbed({
               </div>
               
               <p className="text-gray-700 dark:text-gray-300 text-sm mb-4">
-                This tweet is hosted by Twitter. By viewing it, you agree to Twitter's privacy policy and terms of service.
+                This tweet is hosted by Twitter. By viewing it, you agree to Twitter&apos;s privacy policy and terms of service.
               </p>
               
               <a

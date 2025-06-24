@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Course, Department, Program } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 
-let coursesStore: Course[] = (global as any).__API_COURSES_STORE__ || [];
+const coursesStore: Course[] = (global as any).__API_COURSES_STORE__ || [];
 if (!(global as any).__API_COURSES_STORE__) {
   (global as any).__API_COURSES_STORE__ = coursesStore;
 }
