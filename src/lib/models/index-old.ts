@@ -5,26 +5,7 @@ import type {
 } from '@/types/entities';
 
 // User Schema
-interface IUser extends Omit<// Update timestamps middleware
-departmentSchema.pre('save', function(this: IDepartment, next) {
-  this.updatedAt = new Date().toISOString();
-  next();
-});
-
-courseSchema.pre('save', function(this: ICourse, next) {
-  this.updatedAt = new Date().toISOString();
-  next();
-});
-
-batchSchema.pre('save', function(this: IBatch, next) {
-  this.updatedAt = new Date().toISOString();
-  next();
-});
-
-programSchema.pre('save', function(this: IProgram, next) {
-  this.updatedAt = new Date().toISOString();
-  next();
-});t {
+interface IUser extends Omit<User, 'id'>, Document {
   _id: string;
 }
 
@@ -283,22 +264,22 @@ roleSchema.pre('save', function(next) {
   next();
 });
 
-departmentSchema.pre('save', function(next) {
+departmentSchema.pre('save', function(this: IDepartment, next) {
   this.updatedAt = new Date().toISOString();
   next();
 });
 
-courseSchema.pre('save', function(next) {
+courseSchema.pre('save', function(this: ICourse, next) {
   this.updatedAt = new Date().toISOString();
   next();
 });
 
-batchSchema.pre('save', function(next) {
+batchSchema.pre('save', function(this: IBatch, next) {
   this.updatedAt = new Date().toISOString();
   next();
 });
 
-programSchema.pre('save', function(next) {
+programSchema.pre('save', function(this: IProgram, next) {
   this.updatedAt = new Date().toISOString();
   next();
 });

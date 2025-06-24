@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { BarChart3, FileText, Users, BookOpen, Activity, Loader2, University, Library, UsersRound, CalendarDays } from "lucide-react";
 import Link from "next/link";
 import { useToast } from '@/hooks/use-toast';

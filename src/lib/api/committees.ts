@@ -76,7 +76,7 @@ export const committeeService = {
     if (!response.ok) {
       let detailedMessage = responseData.message || 'Failed to import committees';
       if (responseData.errors && Array.isArray(responseData.errors) && responseData.errors.length > 0) {
-        detailedMessage += ` Specific issues: ${responseData.errors.slice(0, 3).map((e: any) => { return e.message || JSON.stringify(e.data); }).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
+        detailedMessage += ` Specific issues: ${responseData.errors.slice(0, 3).map((e: { message?: string; data?: unknown }) => { return e.message || JSON.stringify(e.data); }).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
       }
       throw new Error(detailedMessage);
     }

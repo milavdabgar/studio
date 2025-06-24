@@ -9,8 +9,7 @@ import {
   TwitterEmbed, 
   Instagram, 
   QRCode, 
-  CodeBlock, 
-  Carousel 
+  CodeBlock 
 } from '@/components/shortcodes';
 
 // Import Blowfish shortcodes

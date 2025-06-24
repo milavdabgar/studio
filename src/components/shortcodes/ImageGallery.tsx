@@ -25,6 +25,13 @@ export function ImageGallery({
   autoplay = false,
   interval = 5000
 }: ImageGalleryProps) {
+  // React hooks must be called at the top level
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
   // Check if images is provided and handle it safely
   if (!images) {
     return (
@@ -51,12 +58,6 @@ export function ImageGallery({
   const titleArray = titles 
     ? (Array.isArray(titles) ? titles : titles.split(',').map(title => title.trim()))
     : [];
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Autoplay effect
   useEffect(() => {

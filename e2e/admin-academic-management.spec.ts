@@ -104,10 +104,15 @@ test.describe('Admin Academic Management', () => {
       await page.getByRole('button', { name: /add new course/i }).click();
       await page.getByLabel(/subject code/i).fill(createdCourseSubcode);
       await page.getByLabel(/subject name/i).fill(courseName);
-       // Select the General Department directly since we know it has programs
+      
+      // Select the first available department
       const departmentSelect = page.locator('form').getByLabel(/department/i).first();
       await departmentSelect.click();
-      await page.getByRole('option', { name: /General Department/i }).click();
+      
+      // Wait for department options to load and select the first one
+      const departmentOptions = page.getByRole('option');
+      await departmentOptions.first().waitFor({ state: 'visible', timeout: 5000 });
+      await departmentOptions.first().click();
       
       // Wait for program dropdown to be populated after department selection
       await page.waitForTimeout(3000);

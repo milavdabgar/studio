@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
+import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -55,7 +55,7 @@ export default function BatchManagementPage() {
 
   const { toast } = useToast();
 
-  const fetchInitialData = async () => {
+  const fetchInitialData = useCallback(async () => {
     setIsLoading(true);
     try {
       const [batchData, programData] = await Promise.all([
@@ -72,11 +72,11 @@ export default function BatchManagementPage() {
       toast({ variant: "destructive", title: "Error", description: "Could not load batches or programs data." });
     }
     setIsLoading(false);
-  };
+  }, [toast, formProgramId]);
 
   useEffect(() => {
     fetchInitialData();
-  }, [programs.length, toast]); // Added programs.length and toast to dependencies
+  }, [fetchInitialData]);
 
   const resetForm = () => {
     setFormName(''); 

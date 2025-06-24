@@ -5,6 +5,10 @@ import { InstituteModel } from '@/lib/models';
 import type { Institute } from '@/types/entities';
 import { Types } from 'mongoose';
 
+declare global {
+  var __API_INSTITUTES_STORE__: Institute[] | undefined;
+}
+
 interface RouteParams {
   params: Promise<{
     id: string;
@@ -27,7 +31,18 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       institute = await InstituteModel.findOne({ id });
     }
 
-    console.log('Found institute:', institute ? 'YES' : 'NO');
+    console.log('Found institute in MongoDB:', institute ? 'YES' : 'NO');
+    
+    // If not found in MongoDB, check global store as fallback
+    if (!institute && global.__API_INSTITUTES_STORE__) {
+      console.log('Checking global store for institute');
+      const storeInstitute = global.__API_INSTITUTES_STORE__.find(inst => inst.id === id);
+      if (storeInstitute) {
+        console.log('Found institute in global store');
+        return NextResponse.json(storeInstitute);
+      }
+    }
+    
     if (!institute) {
       return NextResponse.json({ message: 'Institute not found' }, { status: 404 });
     }

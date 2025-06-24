@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
+import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -83,7 +83,7 @@ export default function AssessmentManagementPage() {
 
   const { toast } = useToast();
 
-  const fetchInitialData = async () => {
+  const fetchInitialData = useCallback(async () => {
     setIsLoading(true);
     try {
       const [assessmentData, courseData, programData, batchData, facultyData] = await Promise.all([
@@ -108,11 +108,11 @@ export default function AssessmentManagementPage() {
       toast({ variant: "destructive", title: "Error", description: "Could not load initial data" });
     }
     setIsLoading(false);
-  };
+  }, [toast, formCourseId]);
 
   useEffect(() => {
     fetchInitialData();
-  }, []);
+  }, [fetchInitialData]);
 
   const resetForm = () => {
     setFormName('');

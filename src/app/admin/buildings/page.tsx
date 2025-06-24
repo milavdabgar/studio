@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
+import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -62,7 +62,7 @@ export default function BuildingManagementPage() {
 
   const { toast } = useToast();
 
-  const fetchBuildingsAndInstitutes = async () => {
+  const fetchBuildingsAndInstitutes = useCallback(async () => {
     setIsLoading(true);
     try {
       const [buildingData, instituteData] = await Promise.all([
@@ -79,12 +79,11 @@ export default function BuildingManagementPage() {
       toast({ variant: "destructive", title: "Error", description: "Could not load buildings or institutes data." });
     }
     setIsLoading(false);
-  };
+  }, [toast, formInstituteId]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchBuildingsAndInstitutes();
-  }, []);
+  }, [fetchBuildingsAndInstitutes]);
 
 
   const resetForm = () => {

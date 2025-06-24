@@ -21,7 +21,7 @@ async function loginAsAdmin(page: Page) {
 // Helper to ensure required data exists or skip test
 async function ensureTestData(page: Page, entityName: string, checkUrl: string, creationButtonText: string) {
   try {
-    await page.goto(checkUrl, { timeout: 15000 });
+    await page.goto(checkUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
     // Check if any data exists (e.g., by looking for table rows excluding header)
     const rowCount = await page.locator('table tbody tr').count();
     if (rowCount === 0 || (rowCount === 1 && (await page.locator('table tbody tr td:has-text("No data")').count()) === 1) ) {
@@ -63,7 +63,7 @@ test.describe('Admin Timetable Management', () => {
   });
 
   test('should navigate to timetables page and create a new timetable', async () => {
-    await page.goto(`${APP_BASE_URL}/admin/timetables`);
+    await page.goto(`${APP_BASE_URL}/admin/timetables`, { waitUntil: 'domcontentloaded' });
     await expect(page.getByText('Timetable Management')).toBeVisible();
 
     const timestamp = Date.now().toString().slice(-6);

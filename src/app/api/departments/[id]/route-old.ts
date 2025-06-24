@@ -94,34 +94,6 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-    if (departmentData.name !== undefined && !departmentData.name.trim()) {
-        return NextResponse.json({ message: 'Department Name cannot be empty.' }, { status: 400 });
-    }
-    if (departmentData.code !== undefined && !departmentData.code.trim()) {
-        return NextResponse.json({ message: 'Department Code cannot be empty.' }, { status: 400 });
-    }
-     if (departmentData.code && departmentData.code.trim().toUpperCase() !== existingDepartment.code.toUpperCase() && global.__API_DEPARTMENTS_STORE__.some(d => d.id !== id && d.code.toLowerCase() === departmentData.code!.trim().toLowerCase())) {
-        return NextResponse.json({ message: `Department with code '${departmentData.code.trim()}' already exists.` }, { status: 409 });
-    }
-    if (departmentData.establishmentYear && (isNaN(departmentData.establishmentYear) || departmentData.establishmentYear < 1900 || departmentData.establishmentYear > new Date().getFullYear())) {
-      return NextResponse.json({ message: 'Please enter a valid establishment year.' }, { status: 400 });
-    }
-
-    const updatedDepartment = { ...existingDepartment, ...departmentData };
-    if(departmentData.code) updatedDepartment.code = departmentData.code.trim().toUpperCase();
-    if(departmentData.name) updatedDepartment.name = departmentData.name.trim();
-    if(departmentData.description !== undefined) updatedDepartment.description = departmentData.description.trim() || undefined;
-
-
-    global.__API_DEPARTMENTS_STORE__[departmentIndex] = updatedDepartment;
-    departmentsStore = global.__API_DEPARTMENTS_STORE__;
-    return NextResponse.json(updatedDepartment);
-  } catch (error) {
-    console.error(`Error updating department ${id}:`, error);
-    return NextResponse.json({ message: `Error updating department ${id}`, error: (error as Error).message }, { status: 500 });
-  }
-}
-
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { id } = params;
   if (!Array.isArray(global.__API_DEPARTMENTS_STORE__)) {

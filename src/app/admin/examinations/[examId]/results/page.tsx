@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useMemo, FormEvent } from 'react';
+import React, { useEffect, useState, FormEvent } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -10,13 +10,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, ArrowLeft, BookCheck, Save } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Examination, ExaminationTimeTableEntry, Course, Student, Result, ResultSubject, Program, Batch } from '@/types/entities';
+import type { Examination, Course, Student, Result, ResultSubject } from '@/types/entities';
 import { examinationService } from '@/lib/api/examinations';
 import { courseService } from '@/lib/api/courses';
 import { studentService } from '@/lib/api/students';
 import { resultService } from '@/lib/api/results';
-import { programService } from '@/lib/api/programs';
-import { batchService } from '@/lib/api/batches';
 
 interface StudentResultEntry extends Student {
   scores: Partial<Record<keyof ResultSubject, string | number | boolean>>; // Flexible for input
@@ -57,7 +55,7 @@ export default function ExamResultEntryPage() {
         } else {
           setCoursesInExam([]);
         }
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load examination details." });
       }
       setIsLoading(false);
@@ -100,7 +98,7 @@ export default function ExamResultEntryPage() {
         });
         setStudentsForCourse(studentEntries);
 
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load students or their existing results." });
       }
       setIsLoading(false);

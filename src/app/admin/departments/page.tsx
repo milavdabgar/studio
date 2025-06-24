@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
+import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -51,7 +51,7 @@ export default function DepartmentManagementPage() {
 
   const { toast } = useToast();
 
-  const fetchDepartmentsAndFaculty = async () => {
+  const fetchDepartmentsAndFaculty = useCallback(async () => {
     setIsLoading(true);
     try {
       const [deptData, usersData] = await Promise.all([
@@ -66,11 +66,11 @@ export default function DepartmentManagementPage() {
       toast({ variant: "destructive", title: "Error", description: "Could not load departments or faculty data." });
     }
     setIsLoading(false);
-  };
+  }, [toast]);
 
   useEffect(() => {
     fetchDepartmentsAndFaculty();
-  }, []);
+  }, [fetchDepartmentsAndFaculty]);
 
   const resetForm = () => {
     setFormDeptName('');

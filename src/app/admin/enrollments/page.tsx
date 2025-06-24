@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, UserPlus, CheckCircle, XCircle, Filter, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { Loader2, UserPlus, CheckCircle, XCircle, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Enrollment, Student, CourseOffering, Course, Program, Batch, EnrollmentStatus } from '@/types/entities';
 import { enrollmentService } from '@/lib/api/enrollments';
@@ -80,7 +80,7 @@ export default function EnrollmentManagementPage() {
         setCourses(coursesData);
         setPrograms(programsData);
         setBatches(batchesData);
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load enrollment data." });
       }
       setIsLoading(false);

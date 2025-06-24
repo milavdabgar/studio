@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
+import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -68,7 +68,7 @@ export default function CurriculumManagementPage() {
 
   const { toast } = useToast();
 
-  const fetchInitialData = async () => {
+  const fetchInitialData = useCallback(async () => {
     setIsLoading(true);
     try {
       const [curriculaData, programsData, coursesData] = await Promise.all([
@@ -83,15 +83,15 @@ export default function CurriculumManagementPage() {
       if (programsData.length > 0 && !formProgramId) {
         setFormProgramId(programsData[0].id);
       }
-    } catch (error) {
+    } catch {
       toast({ variant: "destructive", title: "Error", description: "Could not load initial data." });
     }
     setIsLoading(false);
-  };
+  }, [toast, formProgramId]);
 
   useEffect(() => {
     fetchInitialData();
-  }, []);
+  }, [fetchInitialData]);
 
   const resetForm = () => {
     setFormProgramId(programs.length > 0 ? programs[0].id : '');

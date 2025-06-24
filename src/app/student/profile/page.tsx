@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogClose, DialogTrigger } from "@/components/ui/dialog";
 import { UserCircle, Mail, Phone, CalendarDays, Landmark, GraduationCap, Loader2, Edit, BookOpen, AlertCircle, TrendingUp, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Student, User, Program, Batch, Result, Course, ResultSubject } from '@/types/entities';

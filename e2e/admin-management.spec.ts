@@ -36,7 +36,7 @@ test.describe('Admin Data Management', () => {
     const instituteBaseName = 'E2E Test Institute';
 
     test('should navigate to institutes page and create a new institute', async () => {
-      await page.goto(`${APP_BASE_URL}/admin/institutes`);
+      await page.goto(`${APP_BASE_URL}/admin/institutes`, { waitUntil: 'domcontentloaded' });
       await expect(page.getByText('Institute Management', { exact: true }).first()).toBeVisible();
 
       const timestamp = Date.now().toString().slice(-6);
@@ -91,7 +91,7 @@ test.describe('Admin Data Management', () => {
 
     test('should delete the created institute', async () => {
       test.skip(!createdInstituteCode, 'Skipping delete: No institute code from create test.');
-      await page.goto(`${APP_BASE_URL}/admin/institutes`);
+      await page.goto(`${APP_BASE_URL}/admin/institutes`, { waitUntil: 'domcontentloaded' });
       const instituteRow = page.locator(`tr:has-text("${createdInstituteCode}")`).first();
       await expect(instituteRow).toBeVisible();
       await instituteRow.getByRole('button', { name: /delete/i }).click();

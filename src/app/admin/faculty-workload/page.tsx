@@ -8,15 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Users, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Briefcase } from "lucide-react";
+import { Loader2, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Briefcase } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Faculty, CourseOffering, Course, Department, Program, Batch } from '@/types/entities';
+import type { Faculty, CourseOffering, Course, Department } from '@/types/entities';
 import { facultyService } from '@/lib/api/faculty';
 import { courseOfferingService } from '@/lib/api/courseOfferings';
 import { courseService } from '@/lib/api/courses';
 import { departmentService } from '@/lib/api/departments';
-import { programService } from '@/lib/api/programs';
-import { batchService } from '@/lib/api/batches';
 
 interface EnrichedFacultyWorkload extends Faculty {
   totalTeachingHours: number;

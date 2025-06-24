@@ -57,12 +57,12 @@ test.describe('Project Fair Management (Admin)', () => {
 
   test.describe('Event Management', () => {
     test('Navigate to Project Fair Events page', async () => {
-      await page.goto(`${APP_BASE_URL}/admin/project-fair/events`);
+      await page.goto(`${APP_BASE_URL}/admin/project-fair/events`, { waitUntil: 'domcontentloaded' });
       await expect(page.getByText('Project Fair Event Management')).toBeVisible();
     });
 
     test('Create a new Project Fair Event', async () => {
-      await page.goto(`${APP_BASE_URL}/admin/project-fair/events`);
+      await page.goto(`${APP_BASE_URL}/admin/project-fair/events`, { waitUntil: 'domcontentloaded' });
       await page.getByRole('button', { name: /create new event/i }).click();
       
       const timestamp = Date.now().toString().slice(-6);

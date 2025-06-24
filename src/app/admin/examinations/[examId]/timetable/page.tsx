@@ -3,18 +3,18 @@
 import React, { useEffect, useState, FormEvent } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, PlusCircle, Edit2, Trash2, Clock, Loader2, ArrowLeft, ListChecks } from "lucide-react";
+import { CalendarIcon, PlusCircle, Edit2, Trash2, Loader2, ArrowLeft, ListChecks, Download, UploadCloud, BookCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { format, parse, isValid, setHours, setMinutes } from 'date-fns';
+import { format } from 'date-fns';
 import { cn } from "@/lib/utils";
 import type { Examination, ExaminationTimeTableEntry, Course, Room, Faculty as SystemUser } from '@/types/entities';
 import { examinationService } from '@/lib/api/examinations';
@@ -22,7 +22,6 @@ import { courseService } from '@/lib/api/courses';
 import { roomService } from '@/lib/services/roomService';
 import { userService } from '@/lib/api/users'; // For faculty/invigilators
 
-const DAY_OPTIONS: ExaminationTimeTableEntry['dayOfWeek'][] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; // Keep if needed, but dates are primary
 
 export default function ExamTimetablePage() {
   const router = useRouter();
@@ -39,7 +38,6 @@ export default function ExamTimetablePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEntryFormOpen, setIsEntryFormOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState<Partial<ExaminationTimeTableEntry> & { tempId?: string } | null>(null);
-  const [editingEntryIndex, setEditingEntryIndex] = useState<number | null>(null);
 
   // Form state for timetable entry
   const [formCourseId, setFormCourseId] = useState<string>('');
@@ -74,7 +72,7 @@ export default function ExamTimetablePage() {
         if (relevantCourses.length > 0 && !formCourseId) setFormCourseId(relevantCourses[0].id);
         if (roomsData.length > 0 && !formRoomId) setFormRoomId(roomsData[0].id);
 
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load examination or related data." });
       }
       setIsLoading(false);
