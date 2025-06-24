@@ -4,6 +4,13 @@ import 'reflect-metadata';
 // Optional: extend Jest's expect functionality
 import '@testing-library/jest-dom';
 
+// Add Next.js Web API polyfills for API route testing
+import { TextEncoder, TextDecoder } from 'util';
+
+// Polyfill for Node.js environment to support Next.js API routes
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
+
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
