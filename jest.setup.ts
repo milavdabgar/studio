@@ -9,7 +9,7 @@ import { TextEncoder, TextDecoder } from 'util';
 
 // Polyfill for Node.js environment to support Next.js API routes
 global.TextEncoder = TextEncoder;
-global.TextDecoder = TextDecoder;
+global.TextDecoder = TextDecoder as any;
 
 // Mock Next.js router
 jest.mock('next/navigation', () => ({

@@ -1,5 +1,5 @@
 // 2024-25 Academic Year Faculty Contributions
-"2024-25": [
+export const faculty202425 = [
   {
     category: "faculty-contribution" as const,
     title: "AICTE Approval & GTU Affiliation Leadership",

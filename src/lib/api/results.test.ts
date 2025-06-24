@@ -90,7 +90,7 @@ describe('ResultService API Tests', () => {
     it('should import standard results successfully', async () => {
       mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, json: async () => mockImportResponse }));
       const result = await resultService.importResults(mockFile);
-      expect(fetch).toHaveBeenCalledWith('/api/results/import', expect.objectContaining({ method: 'POST', body: expect.any(FormData) }));
+      expect(fetch).toHaveBeenCalledWith('/api/results/import-standard-placeholder', expect.objectContaining({ method: 'POST', body: expect.any(FormData) }));
       expect(result).toEqual(mockImportResponse);
     });
   });
@@ -109,10 +109,11 @@ describe('ResultService API Tests', () => {
   describe('exportResults', () => {
     it('should export results to CSV successfully', async () => {
       const mockBlob = new Blob(["csv data"], {type: 'text/csv'});
-      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, blob: async () => mockBlob }));
+      const mockResponse = createMockResponse({ ok: true, blob: async () => mockBlob });
+      mockFetch.mockResolvedValueOnce(mockResponse);
       const response = await resultService.exportResults();
       expect(fetch).toHaveBeenCalledWith('/api/results/export?');
-      expect(response).toBeInstanceOf(Response); // Check that it returns a Response object
+      expect(response).toBe(mockResponse); // Check that it returns the Response object
       const blobData = await response.blob();
       expect(blobData.type).toBe('text/csv');
     });

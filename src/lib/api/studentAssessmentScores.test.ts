@@ -85,8 +85,12 @@ describe('StudentAssessmentScoreService API Tests', () => {
     const gradeData = { score: 90, grade: "AA", remarks: "Excellent work" };
     const gradedScore: StudentAssessmentScore = { ...mockScore, ...gradeData, evaluatedAt: now, evaluatedBy: 'faculty1' };
     it('should grade a submission successfully', async () => {
+      // Mock the getStudentScoreForAssessment call first
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, json: async () => mockScore }));
+      // Then mock the update call
       mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, json: async () => gradedScore }));
-      const result = await studentAssessmentScoreService.gradeStudentSubmission('score1', gradeData);
+      const result = await studentAssessmentScoreService.gradeStudentSubmission('student1', 'assessment1', gradeData);
+      expect(fetch).toHaveBeenCalledWith('/api/student-scores?assessmentId=assessment1&studentId=student1');
       expect(fetch).toHaveBeenCalledWith('/api/student-scores/score1', expect.objectContaining({ method: 'PUT', body: JSON.stringify(gradeData) }));
       expect(result).toEqual(gradedScore);
     });

@@ -36,12 +36,12 @@ const config: Config = {
   coverageProvider: "v8",
 
   // A list of reporter names that Jest uses when writing coverage reports
-  // coverageReporters: [
-  //   "json",
-  //   "text",
-  //   "lcov",
-  //   "clover"
-  // ],
+  coverageReporters: [
+    "json",
+    "text",
+    "lcov",
+    "html"
+  ],
 
   // An object that configures minimum threshold enforcement for coverage results
   // coverageThreshold: undefined,
@@ -185,7 +185,7 @@ const config: Config = {
   },
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   transformIgnorePatterns: [
-    '/node_modules/(?!.*\\.mjs$)' // Keep this to transpile mjs from node_modules if needed
+    '/node_modules/(?!(lucide-react|remark.*|rehype.*|unified.*|.*\\.mjs$))' // Transform lucide-react, remark ecosystem, and mjs files
   ],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them

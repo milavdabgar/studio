@@ -18,7 +18,8 @@ export const roleService = {
   async getAllRoles(): Promise<Role[]> {
     const response = await fetch(`${API_BASE_URL}/roles`);
     if (!response.ok) {
-      throw new Error('Failed to fetch roles');
+      const errorData = await response.json().catch(() => ({ message: 'Failed to fetch roles' }));
+      throw new Error(errorData.message || 'Failed to fetch roles');
     }
     return response.json();
   },
@@ -26,7 +27,8 @@ export const roleService = {
   async getRoleById(id: string): Promise<Role> {
     const response = await fetch(`${API_BASE_URL}/roles/${id}`);
     if (!response.ok) {
-      throw new Error(`Failed to fetch role with id ${id}`);
+      const errorData = await response.json().catch(() => ({ message: `Failed to fetch role with id ${id}` }));
+      throw new Error(errorData.message || `Failed to fetch role with id ${id}`);
     }
     return response.json();
   },
@@ -91,3 +93,5 @@ export const roleService = {
     return response.json();
   }
 };
+
+export default roleService;

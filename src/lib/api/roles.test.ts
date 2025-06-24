@@ -1,6 +1,10 @@
+import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+
+// Unmock the roles module to test the actual implementation
+jest.unmock('@/lib/api/roles');
+
 import { roleService } from './roles';
 import type { Role } from '@/types/entities';
-import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
 // Create a proper mock for the Response object
 const createMockResponse = (options: { ok: boolean; status?: number; statusText?: string; json?: () => Promise<any> }): Response => {

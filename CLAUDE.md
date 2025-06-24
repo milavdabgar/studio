@@ -37,8 +37,25 @@
 - Global mocks configured in `jest.setup.ts`
 - Test coverage reports in `coverage/` directory
 
-### Next Priority After 100% Coverage
+### Next Priority: Code Quality & TypeScript Fixes
+**Status**: URGENT - TypeScript compilation is failing
+**Target**: Fix all TypeScript errors and major linting issues
+
+#### Critical Issues Found
+1. **TypeScript Errors**: 18 compilation errors (mainly in newsletter page)
+2. **Lint Warnings**: 200+ warnings across the codebase
+3. **Broken Files**: `page-broken.tsx` has syntax errors
+4. **Data File**: `faculty-2024-25.ts` syntax error
+
+#### Action Plan
+1. Fix TypeScript compilation errors (blocking builds)
+2. Clean up unused imports and variables
+3. Replace `any` types with proper typing
+4. Fix React hooks dependencies
+5. Remove unused components and clean up code
+
+### After Code Quality Fixes
+- Continue with 100% test coverage
 - Performance optimization
 - Security audit
 - Documentation improvements
-- E2E test expansion
