@@ -34,7 +34,7 @@ test.describe('Admin Committee Management', () => {
     let createdCommitteeCode: string = '';
     const committeeBaseName = 'E2E Test Committee';
 
-    test.skip('should navigate to committees page and create a new committee - SKIPPED due to date picker issue', async () => {
+    test.skip('should navigate to committees page and create a new committee - Date picker component needs investigation', async () => {
       await page.goto(`${APP_BASE_URL}/admin/committees`);
       await expect(page.getByText('Committee Management', { exact: true })).toBeVisible();
 
@@ -52,40 +52,39 @@ test.describe('Admin Committee Management', () => {
       await instituteSelect.click();
       await page.getByRole('option', { name: /Government Polytechnic Palanpur/i }).first().click(); 
 
-      // Select Formation Date - click the date picker button and select a date
+      // Select Formation Date - try typing the date directly or using a simpler approach
       const formationDateButton = page.getByRole('button').filter({ hasText: /pick a date/i }).first();
-      await formationDateButton.click(); // Open calendar
-      await page.waitForTimeout(1500); // Wait for calendar to open and render
       
-      // Try to click on today's date or any available date
-      // Look for grid cells that contain numbers and are not disabled
-      const availableDates = page.locator('[role="gridcell"]:not([aria-disabled="true"])').filter({ hasText: /^\d+$/ });
-      const dateCount = await availableDates.count();
-      console.log(`Found ${dateCount} available date cells`);
+      // Try clicking and then typing a date using keyboard
+      await formationDateButton.click();
+      await page.waitForTimeout(500);
       
-      if (dateCount > 0) {
-        // Click on the 15th if available, otherwise click the first date
-        // Use force: true to click through any overlaying elements
-        const fifteenthDate = availableDates.filter({ hasText: '15' });
-        if (await fifteenthDate.count() > 0) {
-          await fifteenthDate.first().click({ force: true });
-          console.log('Clicked on date 15 with force');
-        } else {
-          await availableDates.first().click({ force: true });
-          console.log('Clicked on first available date with force');
-        }
-        
-        // Wait for the popover to close and date to be set
+      // Try typing the date: June 15, 2024
+      await page.keyboard.type('June 15, 2024');
+      await page.keyboard.press('Enter');
+      await page.waitForTimeout(500);
+      
+      // Check if the date was set
+      const buttonText = await formationDateButton.textContent();
+      console.log(`Formation date button text after typing: "${buttonText}"`);
+      
+      // If typing didn't work, try the calendar approach one more time
+      if (buttonText?.includes('Pick a date')) {
+        console.log('Typing approach failed, trying calendar selection');
+        await formationDateButton.click();
         await page.waitForTimeout(1000);
         
-        // Verify that the date was selected
-        const buttonText = await formationDateButton.textContent();
-        console.log(`Formation date button text after selection: "${buttonText}"`);
-      } else {
-        console.log('No available date cells found');
-        // Close the popover by clicking outside or pressing Escape
-        await page.keyboard.press('Escape');
+        // Try to select any date that's available - use a more direct approach
+        await page.keyboard.press('Enter'); // Try pressing Enter to select today
         await page.waitForTimeout(500);
+        
+        // Final check
+        const finalButtonText = await formationDateButton.textContent();
+        console.log(`Formation date final text: "${finalButtonText}"`);
+        
+        if (finalButtonText?.includes('Pick a date')) {
+          console.log('Date picker still not working, but continuing with test to see other validation errors');
+        }
       }
 
       await page.locator('form').getByLabel('Status *').click();
