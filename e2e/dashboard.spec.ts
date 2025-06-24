@@ -245,6 +245,11 @@ test.describe('Student Management', () => {
     // Check for table headers with more flexible selectors
     const headers = page.locator('th, [role="columnheader"]');
     expect(await headers.count()).toBeGreaterThan(0);
+    
+    // Check that we have some student data rows
+    const dataRows = page.locator('table tbody tr');
+    const rowCount = await dataRows.count();
+    expect(rowCount).toBeGreaterThan(0);
   });
 
   test('should allow adding a new student', async ({ page }) => {
@@ -414,6 +419,11 @@ test.describe('User Management', () => {
     // Check for table headers with more flexible selectors
     const headers = page.locator('th, [role="columnheader"]');
     expect(await headers.count()).toBeGreaterThan(0);
+    
+    // Check that we have some user data rows
+    const dataRows = page.locator('table tbody tr');
+    const rowCount = await dataRows.count();
+    expect(rowCount).toBeGreaterThan(0);
   });
 
   test('should allow adding a new user', async ({ page }) => {
