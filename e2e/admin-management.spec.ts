@@ -96,7 +96,7 @@ test.describe('Admin Data Management', () => {
       await expect(instituteRow).toBeVisible();
       await instituteRow.getByRole('button', { name: /delete/i }).click();
       
-      await expect(page.getByText(/institute deleted/i, { exact: false })).toBeVisible({timeout: 10000});
+      await expect(page.getByText('Institute Deleted', { exact: true })).toBeVisible({timeout: 10000});
       await expect(instituteRow).not.toBeVisible();
       createdInstituteCode = ''; 
     });
@@ -237,7 +237,7 @@ test.describe('Admin Data Management', () => {
       
       await userRow.getByRole('button', { name: /delete/i }).click();
 
-      await expect(page.getByText(/user deleted/i, { exact: false })).toBeVisible({timeout: 10000});
+      await expect(page.getByText('User Deleted', { exact: true })).toBeVisible({timeout: 10000});
       await expect(userRow).not.toBeVisible();
       testUserEmail = '';
     });
@@ -290,7 +290,7 @@ test.describe('Admin Data Management', () => {
       if (await roleRow.isVisible({ timeout: 5000 })) {
         console.log(`Found role ${testRoleCode}, proceeding with deletion`);
         await roleRow.getByRole('button', { name: /delete/i }).click();
-        await expect(page.getByText(/role deleted/i, { exact: false })).toBeVisible({timeout: 10000});
+        await expect(page.getByText('Role Deleted', { exact: true })).toBeVisible({timeout: 10000});
         await expect(roleRow).not.toBeVisible();
         testRoleCode = '';
       } else {

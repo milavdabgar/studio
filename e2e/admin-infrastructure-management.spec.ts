@@ -31,7 +31,7 @@ test.describe('Admin Infrastructure Management', () => {
 
     test('should navigate to buildings page and create a new building', async ({ page }) => {
       await loginAsAdmin(page);
-      await page.goto(`${APP_BASE_URL}/admin/buildings`, { timeout: 60000 });
+      await page.goto(`${APP_BASE_URL}/admin/buildings`, { waitUntil: 'domcontentloaded', timeout: 30000 });
       
       // Check if we were redirected to login (which would indicate auth failure)
       const currentUrl = page.url();
@@ -68,7 +68,7 @@ test.describe('Admin Infrastructure Management', () => {
       }
       
       await loginAsAdmin(page);
-      await page.goto(`${APP_BASE_URL}/admin/buildings`, { timeout: 60000 });
+      await page.goto(`${APP_BASE_URL}/admin/buildings`, { waitUntil: 'domcontentloaded', timeout: 30000 });
       
       // Find the building row and delete it
       const buildingRow = page.locator(`tr:has-text("${createdBuildingCode}")`).first();
@@ -94,7 +94,7 @@ test.describe('Admin Infrastructure Management', () => {
       const tempBuildingCode = `RMTSTBLD${timestamp}`;
       const tempBuildingName = `Room Test Building ${tempBuildingCode}`;
       
-      await page.goto(`${APP_BASE_URL}/admin/buildings`, { timeout: 60000 });
+      await page.goto(`${APP_BASE_URL}/admin/buildings`, { waitUntil: 'domcontentloaded', timeout: 30000 });
       await page.getByRole('button', { name: /add new building/i }).click();
       await page.getByLabel(/building name/i).fill(tempBuildingName);
       await page.getByLabel(/building code/i).fill(tempBuildingCode);
@@ -109,7 +109,7 @@ test.describe('Admin Infrastructure Management', () => {
       await expect(page.getByText('Building Created', { exact: true })).toBeVisible({timeout: 10000});
       
       // Now create the room
-      await page.goto(`${APP_BASE_URL}/admin/rooms`, { timeout: 60000 });
+      await page.goto(`${APP_BASE_URL}/admin/rooms`, { waitUntil: 'domcontentloaded', timeout: 30000 });
       
       // Check if we were redirected to login
       const currentUrl = page.url();
@@ -134,9 +134,9 @@ test.describe('Admin Infrastructure Management', () => {
       
       await page.getByLabel(/capacity/i).fill('30');
       
-      const roomTypeSelect = page.locator('form').getByLabel('Room Type *');
+      const roomTypeSelect = page.locator('form').getByLabel('Type *');
       await roomTypeSelect.click();
-      await page.getByRole('option', { name: 'Classroom', exact: true }).click();
+      await page.getByRole('option', { name: 'Lecture Hall', exact: true }).click();
       
       await page.locator('form').getByLabel('Status *').click();
       await page.getByRole('option', { name: 'Available', exact: true }).click();
@@ -148,7 +148,7 @@ test.describe('Admin Infrastructure Management', () => {
 
     test('should delete the created room', async ({ page }) => {
       await loginAsAdmin(page);
-      await page.goto(`${APP_BASE_URL}/admin/rooms`, { timeout: 60000 });
+      await page.goto(`${APP_BASE_URL}/admin/rooms`, { waitUntil: 'domcontentloaded', timeout: 30000 });
       
       // Try to find any test room to delete
       const testRoomRows = page.locator('tr:has-text("E2ERM")');
@@ -170,7 +170,7 @@ test.describe('Admin Infrastructure Management', () => {
     
     test('should navigate to room allocations page and create a new allocation', async ({ page }) => {
       await loginAsAdmin(page);
-      await page.goto(`${APP_BASE_URL}/admin/room-allocations`, { timeout: 60000 });
+      await page.goto(`${APP_BASE_URL}/admin/resource-allocation/rooms`, { waitUntil: 'domcontentloaded', timeout: 30000 });
       
       // Check if we were redirected to login
       const currentUrl = page.url();
@@ -178,7 +178,7 @@ test.describe('Admin Infrastructure Management', () => {
         throw new Error('User was redirected to login page - authentication failed');
       }
       
-      await expect(page.getByText(/room allocation|room booking/i)).toBeVisible({timeout: 20000});
+      await expect(page.getByText('Room Allocation Management', { exact: true })).toBeVisible({timeout: 20000});
 
       // This test might be skipped if no rooms/courses are available
       const createButton = page.getByRole('button', { name: /add new|create/i }).first();
@@ -204,7 +204,7 @@ test.describe('Admin Infrastructure Management', () => {
 
     test('should delete the created room allocation', async ({ page }) => {
       await loginAsAdmin(page);
-      await page.goto(`${APP_BASE_URL}/admin/room-allocations`, { timeout: 60000 });
+      await page.goto(`${APP_BASE_URL}/admin/resource-allocation/rooms`, { waitUntil: 'domcontentloaded', timeout: 30000 });
       
       // Try to find any test allocation to delete
       const testAllocationRows = page.locator('tr:has-text("E2E Test")');

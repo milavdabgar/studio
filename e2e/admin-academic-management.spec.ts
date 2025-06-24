@@ -40,8 +40,8 @@ test.describe('Admin Academic Management', () => {
     test('should navigate to batches page and create a new batch', async ({ page }) => {
       await loginAsAdmin(page);
       
-      // Try to navigate to admin page without networkidle as it might be timing out
-      await page.goto(`${APP_BASE_URL}/admin/batches`, { timeout: 60000 });
+      // Try to navigate to admin page with waitUntil: 'domcontentloaded' to avoid timeout
+      await page.goto(`${APP_BASE_URL}/admin/batches`, { waitUntil: 'domcontentloaded', timeout: 30000 });
       
       // Check if we were redirected to login (which would indicate auth failure)
       const currentUrl = page.url();
@@ -83,8 +83,8 @@ test.describe('Admin Academic Management', () => {
     test('should navigate to courses page and create a new course', async ({ page }) => {
       await loginAsAdmin(page);
       
-      // Try to navigate to admin page without networkidle as it might be timing out
-      await page.goto(`${APP_BASE_URL}/admin/courses`, { timeout: 60000 });
+      // Try to navigate to admin page with waitUntil: 'domcontentloaded' to avoid timeout
+      await page.goto(`${APP_BASE_URL}/admin/courses`, { waitUntil: 'domcontentloaded', timeout: 30000 });
       
       // Check if we were redirected to login (which would indicate auth failure)
       const currentUrl = page.url();
@@ -104,64 +104,33 @@ test.describe('Admin Academic Management', () => {
       await page.getByRole('button', { name: /add new course/i }).click();
       await page.getByLabel(/subject code/i).fill(createdCourseSubcode);
       await page.getByLabel(/subject name/i).fill(courseName);
-       // Select Department - try each department until we find one with programs
+       // Select the General Department directly since we know it has programs
       const departmentSelect = page.locator('form').getByLabel(/department/i).first();
       await departmentSelect.click();
+      await page.getByRole('option', { name: /General Department/i }).click();
       
-      const departmentOptions = page.getByRole('option');
-      const departmentCount = await departmentOptions.count();
-      console.log(`Found ${departmentCount} department options`);
+      // Wait for program dropdown to be populated after department selection
+      await page.waitForTimeout(3000);
       
-      let programsFound = false;
+      // Select a program
+      const programSelect = page.locator('form').getByLabel(/program/i).first();
+      await programSelect.waitFor({ state: 'attached' });
+      await programSelect.click();
       
-      // Try each department to find one with programs
-      for (let i = 0; i < departmentCount && !programsFound; i++) {
-        if (i > 0) {
-          // Reopen department dropdown if not the first attempt
-          await departmentSelect.click();
-        }
-        
-        const departmentOption = departmentOptions.nth(i);
-        const optionText = await departmentOption.textContent();
-        console.log(`Trying department: ${optionText}`);
-        await departmentOption.click();
-
-        // Wait for program dropdown to be enabled after department selection
-        await page.waitForTimeout(2000);
-
-        // Check if program dropdown is available and enabled
-        const programSelect = page.locator('form').getByLabel(/program/i).first();
-        await programSelect.waitFor({ state: 'attached' });
-        
-        const isProgramSelectDisabled = await programSelect.getAttribute('data-disabled');
-        console.log(`Program select disabled status: ${isProgramSelectDisabled}`);
-        
-        if (isProgramSelectDisabled === null || isProgramSelectDisabled === 'false') {
-          await programSelect.click();
-          
-          // Check if there are program options
-          const programOptions = page.getByRole('option');
-          const programCount = await programOptions.count();
-          console.log(`Found ${programCount} program options`);
-          
-          if (programCount > 0) {
-            await programOptions.first().click();
-            programsFound = true;
-            console.log(`Successfully selected program for department: ${optionText}`);
-            break;
-          } else {
-            console.log(`No program options for department: ${optionText}`);
-            // Close the program dropdown
-            await page.keyboard.press('Escape');
-          }
-        } else {
-          console.log(`Program dropdown is disabled for department: ${optionText}`);
-        }
+      // Wait a bit more for options to load
+      await page.waitForTimeout(1000);
+      
+      // Select the first available program
+      const programOptions = page.getByRole('option');
+      const programCount = await programOptions.count();
+      console.log(`Found ${programCount} program options`);
+      
+      if (programCount === 0) {
+        throw new Error('No programs found for General Department. Check database setup.');
       }
       
-      if (!programsFound) {
-        throw new Error('No departments with available programs found');
-      }
+      await programOptions.first().click();
+      console.log('Successfully selected program');
 
       await page.getByRole('spinbutton', { name: 'Semester *' }).fill('1');
       
