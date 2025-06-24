@@ -1,7 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import type { 
-  User, Role, Permission, Department, Course, Batch, Student, Program, 
-  Room, Assessment, Building, Committee 
+  User, Role, Permission, Department, Course, Batch, Program
 } from '@/types/entities';
 
 // User Schema

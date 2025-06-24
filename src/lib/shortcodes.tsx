@@ -47,7 +47,7 @@ import MDImporter from '@/components/shortcodes/MDImporter';
 import Ref from '@/components/shortcodes/Ref';
 
 // Type for shortcode components
-type ShortcodeComponent = React.ComponentType<any>;
+type ShortcodeComponent = React.ComponentType<Record<string, unknown>>;
 
 // Shortcode registry mapping with exact Blowfish API compatibility
 const shortcodeRegistry: Record<string, ShortcodeComponent> = {
@@ -141,8 +141,8 @@ const shortcodeRegistry: Record<string, ShortcodeComponent> = {
 };
 
 // Parse shortcode parameters from Hugo-style syntax
-function parseShortcodeParams(paramString: string): Record<string, any> {
-  const params: Record<string, any> = {};
+function parseShortcodeParams(paramString: string): Record<string, unknown> {
+  const params: Record<string, unknown> = {};
   
   // Handle both named and positional parameters
   // Examples: 
@@ -180,7 +180,7 @@ function parseShortcodeParams(paramString: string): Record<string, any> {
 }
 
 // Parse string values to appropriate types
-function parseValue(value: string): any {
+function parseValue(value: string): unknown {
   if (!value) return value;
   
   // Boolean values
@@ -287,7 +287,7 @@ export function parseShortcodes(content: string): string {
 }
 
 // Render shortcodes in React components
-export function renderShortcode(shortcodeName: string, params: Record<string, any>, key: string): React.ReactElement | null {
+export function renderShortcode(shortcodeName: string, params: Record<string, unknown>, key: string): React.ReactElement | null {
   const Component = shortcodeRegistry[shortcodeName];
   
   if (!Component) {
@@ -296,7 +296,7 @@ export function renderShortcode(shortcodeName: string, params: Record<string, an
   }
   
   try {
-    return React.createElement(Component as React.ComponentType<any>, { ...params, key });
+    return React.createElement(Component as React.ComponentType<Record<string, unknown>>, { ...params, key });
   } catch (error) {
     console.error(`Error rendering shortcode ${shortcodeName}:`, error);
     return null;

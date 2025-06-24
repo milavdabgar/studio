@@ -1,12 +1,13 @@
 
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import type { UserRole as UserRoleCode, Role } from '@/types/entities'; // UserRole is now UserRoleCode
+import type { UserRole as UserRoleCode } from '@/types/entities'; // UserRole is now UserRoleCode
 
 // This would ideally fetch from an API or shared config in a real app
 // For middleware, direct API fetch might be slow. Consider embedding essential roles or using a faster mechanism.
 // As a temporary measure, keep a static list of essential system role CODES.
-const SYSTEM_ROLE_CODES = ['admin', 'student', 'faculty', 'hod', 'jury', 'unknown', 'super_admin', 'committee_convener', 'committee_co_convener', 'committee_member'];
+// Note: SYSTEM_ROLE_CODES defined for reference but not actively used in current middleware logic
+// const SYSTEM_ROLE_CODES = ['admin', 'student', 'faculty', 'hod', 'jury', 'unknown', 'super_admin', 'committee_convener', 'committee_co_convener', 'committee_member'];
 
 interface AuthUser {
   email: string;

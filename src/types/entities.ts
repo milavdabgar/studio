@@ -94,7 +94,7 @@ export interface Permission {
     description: string;
     resource: string; 
     action: 'create' | 'read' | 'update' | 'delete' | 'manage' | string; 
-    conditions?: unknown; 
+    conditions?: Record<string, unknown>; 
 }
 
 export interface RoleAssignment {
@@ -714,7 +714,7 @@ export interface ResultImportResponse {
   newCount?: number; 
   updatedCount?: number; 
   skippedCount?: number; 
-  errors?: Array<{ row: number; message: string; data: any }>; 
+  errors?: Array<{ row: number; message: string; data: Record<string, unknown> }>; 
 }
 
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, FormEvent } from 'react';
+import React, { useEffect, useState, FormEvent, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,13 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, PlusCircle, Edit2, Trash2, Loader2, ArrowLeft, ListChecks, Download, UploadCloud, BookCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { cn } from "@/lib/utils";
 import type { Examination, ExaminationTimeTableEntry, Course, Room, Faculty as SystemUser } from '@/types/entities';
 import { examinationService } from '@/lib/api/examinations';
@@ -38,6 +38,7 @@ export default function ExamTimetablePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEntryFormOpen, setIsEntryFormOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState<Partial<ExaminationTimeTableEntry> & { tempId?: string } | null>(null);
+  const [editingItemIndex, setEditingItemIndex] = useState<number | null>(null);
 
   // Form state for timetable entry
   const [formCourseId, setFormCourseId] = useState<string>('');
@@ -78,10 +79,10 @@ export default function ExamTimetablePage() {
       setIsLoading(false);
     };
     fetchData();
-  }, [examId, toast]); // Removed formCourseId and formRoomId from deps
+  }, [examId, toast, formCourseId, formRoomId]);
 
 
-  const resetEntryForm = () => {
+  const resetEntryForm = useCallback(() => {
     setFormCourseId(courses.length > 0 ? courses[0].id : '');
     setFormDate(new Date());
     setFormStartTime('10:00');
@@ -91,7 +92,7 @@ export default function ExamTimetablePage() {
     setFormNotes('');
     setEditingEntry(null);
     setEditingItemIndex(null);
-  };
+  }, [courses, rooms]);
 
   const handleOpenEntryForm = (entry?: ExaminationTimeTableEntry, index?: number) => {
     if (entry && index !== undefined) {
@@ -227,7 +228,7 @@ export default function ExamTimetablePage() {
             <div className="text-center py-10">
               <ListChecks className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
               <p className="text-lg font-medium text-muted-foreground">No timetable entries created yet.</p>
-              <p className="text-sm text-muted-foreground">Click "Add Timetable Entry" to start building the schedule.</p>
+              <p className="text-sm text-muted-foreground">Click &quot;Add Timetable Entry&quot; to start building the schedule.</p>
             </div>
           ) : (
             <Table>

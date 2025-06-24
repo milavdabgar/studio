@@ -317,7 +317,7 @@ export default function ManageCourseOfferingAssessmentsPage() {
           </div>
           
           {paginatedAssessments.length === 0 ? (
-             <p className="text-center text-muted-foreground py-8">No assessments found. Click "Add New Assessment" to create one.</p>
+             <p className="text-center text-muted-foreground py-8">No assessments found. Click &quot;Add New Assessment&quot; to create one.</p>
           ) : (
             <Table>
               <TableHeader><TableRow>

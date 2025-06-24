@@ -5,14 +5,14 @@ import React, { useEffect, useState, useMemo, useCallback, FormEvent } from 'rea
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Loader2, ArrowLeft, MapPin, PlusCircle, Edit, Trash2, Filter, Search, UploadCloud, Download, FileSpreadsheet, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, RefreshCw } from "lucide-react";
+import { Loader2, ArrowLeft, MapPin, PlusCircle, Edit, Trash2, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { ProjectLocation, ProjectEvent, Department, Project } from '@/types/entities';
 import { projectLocationService } from '@/lib/api/projectLocations'; 
 import { projectEventService } from '@/lib/api/projectEvents';
 import { departmentService } from '@/lib/api/departments';
 import { projectService } from '@/lib/api/projects';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";

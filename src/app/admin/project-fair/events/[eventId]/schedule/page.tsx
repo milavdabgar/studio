@@ -190,7 +190,7 @@ export default function EventSchedulePage() {
             <div className="text-center py-10">
               <ListChecks className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
               <p className="text-lg font-medium text-muted-foreground">No schedule items created yet.</p>
-              <p className="text-sm text-muted-foreground">Click "Add Schedule Item" to start building the event timeline.</p>
+              <p className="text-sm text-muted-foreground">Click &quot;Add Schedule Item&quot; to start building the event timeline.</p>
             </div>
           ) : (
             <Table>

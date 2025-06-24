@@ -394,7 +394,7 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
                 <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
             </Button>
             <p className="text-xs text-muted-foreground mt-2">
-              CSV format: id (optional, for updates), name, code, description, permissions (semicolon-separated, e.g., "perm_code1;perm_code2").
+              CSV format: id (optional, for updates), name, code, description, permissions (semicolon-separated, e.g., &quot;perm_code1;perm_code2&quot;).
             </p>
           </div>
 
@@ -458,7 +458,7 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
               {paginatedRoles.length === 0 && (
                  <TableRow>
                     <TableCell colSpan={6} className="text-center text-muted-foreground py-8"> 
-                        No roles found. Click "Add New Role" or import a CSV file to create roles.
+                        No roles found. Click &quot;Add New Role&quot; or import a CSV file to create roles.
                     </TableCell>
                  </TableRow>
               )}

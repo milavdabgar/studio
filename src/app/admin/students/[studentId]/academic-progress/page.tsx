@@ -163,6 +163,16 @@ export default function AdminStudentAcademicProgressPage() {
     return { earnedCredits, totalProgramCredits, latestCpi, backlogs: finalBacklogs, progressPercentage, statusMessage, semesterSgpa };
   }, [student, program, studentResults, allCourses]);
 
+  const resultsBySemester = useMemo(() => {
+    const grouped = studentResults.reduce((acc, result) => {
+      const sem = result.semester;
+      if (!acc[sem]) acc[sem] = [];
+      acc[sem].push(result);
+      return acc;
+    }, {} as Record<number, Result[]>);
+    return Object.entries(grouped).sort(([semA], [semB]) => parseInt(semA) - parseInt(semB));
+  }, [studentResults]);
+
   const handleUpdateAcademicStatus = async (event: FormEvent) => {
     event.preventDefault();
     if (!student || !formCurrentSemester) {

@@ -14,8 +14,24 @@ import { codeToHtml, BundledLanguage, BundledTheme } from 'shiki';
 const execAsync = promisify(exec);
 
 // Import Puppeteer for PDF generation
-let puppeteer: any;
-let chromium: any;
+let puppeteer: {
+  launch: (options?: Record<string, unknown>) => Promise<{
+    newPage: () => Promise<{
+      setViewport: (options: { width: number; height: number; deviceScaleFactor: number }) => Promise<void>;
+      evaluateOnNewDocument: (fn: () => void) => Promise<void>;
+      setContent: (html: string, options?: { waitUntil?: string; timeout?: number }) => Promise<void>;
+      evaluateHandle: (script: string) => Promise<unknown>;
+      evaluate: (fn: () => Promise<void>) => Promise<void>;
+      pdf: (options: Record<string, unknown>) => Promise<Buffer>;
+    }>;
+    close: () => Promise<void>;
+  }>;
+} | null = null;
+let chromium: {
+  executablePath: (path: string) => Promise<string>;
+  args: string[];
+  defaultViewport: Record<string, unknown>;
+} | null = null;
 try {
     puppeteer = require('puppeteer');
     // For production environments, also try chromium
@@ -29,7 +45,13 @@ try {
 }
 
 // Import KaTeX for math rendering
-let katex: any;
+let katex: {
+  renderToString: (math: string, options?: {
+    displayMode?: boolean;
+    throwOnError?: boolean;
+    strict?: boolean;
+  }) => string;
+} | null = null;
 try {
     katex = require('katex');
 } catch (error) {
@@ -186,7 +208,7 @@ export class ContentConverterV2 {
         }
     }
 
-    private async convertToHtml(content: string, frontmatter: any, options: ConversionOptions): Promise<string> {
+    private async convertToHtml(content: string, frontmatter: Record<string, unknown>, options: ConversionOptions): Promise<string> {
         // Process code blocks with syntax highlighting first
         let processedContent = await this.processCodeBlocks(content);
         
@@ -206,7 +228,7 @@ export class ContentConverterV2 {
         return this.generateHtmlTemplate(htmlContent, title, author, options);
     }
 
-    private async convertToPdfChrome(content: string, frontmatter: any, options: ConversionOptions): Promise<Buffer> {
+    private async convertToPdfChrome(content: string, frontmatter: Record<string, unknown>, options: ConversionOptions): Promise<Buffer> {
         // First convert to HTML
         const htmlContent = await this.convertToHtml(content, frontmatter, options);
         
@@ -264,7 +286,7 @@ export class ContentConverterV2 {
         }
     }
 
-    private async convertToPdfPuppeteer(content: string, frontmatter: any, options: ConversionOptions): Promise<Buffer> {
+    private async convertToPdfPuppeteer(content: string, frontmatter: Record<string, unknown>, options: ConversionOptions): Promise<Buffer> {
         if (!puppeteer) {
             console.log('Puppeteer not available, falling back to Chrome headless');
             return this.convertToPdfChrome(content, frontmatter, options);
@@ -278,7 +300,7 @@ export class ContentConverterV2 {
             const isProduction = process.env.NODE_ENV === 'production';
             
             // Configure browser launch options
-            const launchOptions: any = {
+            const launchOptions: Record<string, unknown> = {
                 headless: true,
                 args: [
                     '--no-sandbox',
@@ -346,8 +368,13 @@ export class ContentConverterV2 {
                         }
 
                         // Check if Mermaid is available
-                        if (typeof (window as any).mermaid !== 'undefined') {
-                            (window as any).mermaid.initialize({
+                        if (typeof (window as unknown as { mermaid?: unknown }).mermaid !== 'undefined') {
+                            (window as unknown as {
+                              mermaid: {
+                                initialize: (config: Record<string, unknown>) => void;
+                                render: (id: string, code: string, callback: (svg: string) => void) => void;
+                              };
+                            }).mermaid.initialize({
                                 startOnLoad: false,
                                 theme: 'default',
                                 flowchart: { 
@@ -360,12 +387,16 @@ export class ContentConverterV2 {
                             let rendered = 0;
                             const total = diagrams.length;
 
-                            diagrams.forEach((diagram: any, index: number) => {
+                            diagrams.forEach((diagram: Element, index: number) => {
                                 const codeEl = diagram.querySelector('.mermaid-code');
                                 const renderEl = diagram.querySelector('.mermaid-render');
                                 if (codeEl && renderEl && codeEl.textContent) {
                                     try {
-                                        (window as any).mermaid.render(`diagram-${index}`, codeEl.textContent, (svgCode: string) => {
+                                        (window as unknown as {
+                                          mermaid: {
+                                            render: (id: string, code: string, callback: (svg: string) => void) => void;
+                                          };
+                                        }).mermaid.render(`diagram-${index}`, codeEl.textContent, (svgCode: string) => {
                                             renderEl.innerHTML = svgCode;
                                             rendered++;
                                             if (rendered === total) {
@@ -402,7 +433,7 @@ export class ContentConverterV2 {
             await new Promise(resolve => setTimeout(resolve, 1000));
 
             // Configure PDF options
-            const pdfOptions: any = {
+            const pdfOptions: Record<string, unknown> = {
                 format: options.pdfOptions?.format || 'A4',
                 printBackground: true,
                 margin: options.pdfOptions?.margin || {
@@ -419,9 +450,10 @@ export class ContentConverterV2 {
 
             return Buffer.from(pdfBuffer);
 
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Puppeteer PDF generation error:', error);
-            throw new Error(`PDF generation failed: ${error.message || error}`);
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            throw new Error(`PDF generation failed: ${errorMessage}`);
         } finally {
             if (browser) {
                 await browser.close();
@@ -429,7 +461,7 @@ export class ContentConverterV2 {
         }
     }
 
-    private convertToPlainText(content: string, frontmatter: any, options: ConversionOptions): string {
+    private convertToPlainText(content: string, frontmatter: Record<string, unknown>, options: ConversionOptions): string {
         // Strip markdown formatting and return plain text
         const text = content
             .replace(/!\[.*?\]\(.*?\)/g, '') // Remove images
@@ -459,7 +491,7 @@ export class ContentConverterV2 {
         return header + text;
     }
 
-    private convertToRtf(content: string, frontmatter: any, options: ConversionOptions): string {
+    private convertToRtf(content: string, frontmatter: Record<string, unknown>, options: ConversionOptions): string {
         // Convert markdown to RTF (Rich Text Format)
         const rtf = this.markdownToRtf(content);
         
@@ -492,7 +524,7 @@ ${rtf}
             .replace(/\n/g, '\\par\n');
     }
 
-    private async convertToDocx(content: string, frontmatter: any, options: ConversionOptions): Promise<Buffer> {
+    private async convertToDocx(content: string, frontmatter: Record<string, unknown>, options: ConversionOptions): Promise<Buffer> {
         // Use pandoc to convert markdown to docx
         const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
         const tempDocxPath = path.join(this.tempDir, `temp-${Date.now()}.docx`);
@@ -543,7 +575,7 @@ ${processedContent}`;
         }
     }
 
-    private async convertToEpub(content: string, frontmatter: any, options: ConversionOptions): Promise<Buffer> {
+    private async convertToEpub(content: string, frontmatter: Record<string, unknown>, options: ConversionOptions): Promise<Buffer> {
         // Generate temporary markdown file
         const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
         const tempEpubPath = path.join(this.tempDir, `output-${Date.now()}.epub`);
@@ -597,7 +629,7 @@ ${content}`;
         }
     }
 
-    private async convertToLatex(content: string, frontmatter: any, options: ConversionOptions): Promise<string> {
+    private async convertToLatex(content: string, frontmatter: Record<string, unknown>, options: ConversionOptions): Promise<string> {
         // Generate temporary markdown file
         const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
         const tempTexPath = path.join(this.tempDir, `output-${Date.now()}.tex`);
@@ -651,7 +683,7 @@ ${content}`;
         }
     }
 
-    private async convertToOdt(content: string, frontmatter: any, options: ConversionOptions): Promise<Buffer> {
+    private async convertToOdt(content: string, frontmatter: Record<string, unknown>, options: ConversionOptions): Promise<Buffer> {
         // Generate temporary markdown file
         const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
         const tempOdtPath = path.join(this.tempDir, `output-${Date.now()}.odt`);
@@ -712,7 +744,7 @@ ${processedContent}`;
         }
     }
 
-    private async convertToPptx(content: string, frontmatter: any, options: ConversionOptions): Promise<Buffer> {
+    private async convertToPptx(content: string, frontmatter: Record<string, unknown>, options: ConversionOptions): Promise<Buffer> {
         // Generate temporary markdown file
         const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
         const tempPptxPath = path.join(this.tempDir, `output-${Date.now()}.pptx`);

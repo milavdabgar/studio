@@ -16,7 +16,7 @@ export interface PostData {
   featured?: boolean;
   readingTime?: number;
   wordCount?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface PostPreview {
@@ -35,5 +35,5 @@ export interface PostPreview {
   featured?: boolean;
   readingTime?: number;
   wordCount?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }

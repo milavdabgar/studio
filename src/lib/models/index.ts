@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import type { 
-  User, Role, Permission, Department, Course, Batch, Student, Program, 
-  Room, Assessment, Building, Committee, Institute 
+  User, Role, Permission, Department, Course, Batch, Program, 
+  Room, Building, Committee, Institute 
 } from '@/types/entities';
 
 // Institute Schema
@@ -272,7 +272,7 @@ const permissionSchema = new Schema<IPermission>({
   description: { type: String, required: true },
   resource: { type: String, required: true },
   action: { type: String, required: true },
-  conditions: { type: Schema.Types.Mixed }
+  conditions: { type: Schema.Types.Mixed as mongoose.SchemaTypeOptions<Record<string, unknown>> }
 }, {
   timestamps: false,
   toJSON: {
@@ -420,52 +420,52 @@ const programSchema = new Schema<IProgram>({
 
 // Update timestamps middleware
 instituteSchema.pre('save', function(next) {
-  (this as any).updatedAt = new Date().toISOString();
+  (this as IInstitute).updatedAt = new Date().toISOString();
   next();
 });
 
 buildingSchema.pre('save', function(next) {
-  (this as any).updatedAt = new Date().toISOString();
+  (this as IBuilding).updatedAt = new Date().toISOString();
   next();
 });
 
 roomSchema.pre('save', function(next) {
-  (this as any).updatedAt = new Date().toISOString();
+  (this as IRoom).updatedAt = new Date().toISOString();
   next();
 });
 
 committeeSchema.pre('save', function(next) {
-  (this as any).updatedAt = new Date().toISOString();
+  (this as ICommittee).updatedAt = new Date().toISOString();
   next();
 });
 
 userSchema.pre('save', function(next) {
-  (this as any).updatedAt = new Date().toISOString();
+  (this as IUser).updatedAt = new Date().toISOString();
   next();
 });
 
 roleSchema.pre('save', function(next) {
-  (this as any).updatedAt = new Date().toISOString();
+  (this as IRole).updatedAt = new Date().toISOString();
   next();
 });
 
 departmentSchema.pre('save', function(next) {
-  (this as any).updatedAt = new Date().toISOString();
+  (this as IDepartment).updatedAt = new Date().toISOString();
   next();
 });
 
 courseSchema.pre('save', function(next) {
-  (this as any).updatedAt = new Date().toISOString();
+  (this as ICourse).updatedAt = new Date().toISOString();
   next();
 });
 
 batchSchema.pre('save', function(next) {
-  (this as any).updatedAt = new Date().toISOString();
+  (this as IBatch).updatedAt = new Date().toISOString();
   next();
 });
 
 programSchema.pre('save', function(next) {
-  (this as any).updatedAt = new Date().toISOString();
+  (this as IProgram).updatedAt = new Date().toISOString();
   next();
 });
 

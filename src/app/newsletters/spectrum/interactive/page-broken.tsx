@@ -267,7 +267,7 @@ export default function InteractiveNewsletterPage() {
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <Star className="w-5 h-5 text-blue-500" />
-                    <span>Principal's Message</span>
+                    <span>Principal&apos;s Message</span>
                   </CardTitle>
                   <CardDescription>Dr. Rajesh Kumar Sharma</CardDescription>
                 </CardHeader>
@@ -285,7 +285,7 @@ export default function InteractiveNewsletterPage() {
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <Users className="w-5 h-5 text-green-500" />
-                    <span>HOD's Message</span>
+                    <span>HOD&apos;s Message</span>
                   </CardTitle>
                   <CardDescription>Prof. Nirav J. Chauhan</CardDescription>
                 </CardHeader>

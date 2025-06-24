@@ -105,7 +105,7 @@ export default function ExamResultEntryPage() {
     };
 
     fetchStudentsAndResults();
-  }, [selectedCourseId, examination, toast, coursesInExam]);
+  }, [selectedCourseId, examination, toast, coursesInExam, examId]);
 
   const handleScoreChange = (studentId: string, field: keyof ResultSubject, value: string | number) => {
     setStudentsForCourse(prev =>

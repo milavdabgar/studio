@@ -298,7 +298,7 @@ export default function InteractiveNewsletterPage() {
                   </h3>
                   <p className="text-gray-700 leading-relaxed mb-4">
                     Welcome to <strong>Spectrum - {getBandNumber(selectedYear)}</strong>, the official newsletter of the Electronics & Communication Engineering Department. 
-                    This edition showcases our department's achievements, student accomplishments, faculty contributions, and major events from the academic year {selectedYear}.
+                    This edition showcases our department&apos;s achievements, student accomplishments, faculty contributions, and major events from the academic year {selectedYear}.
                   </p>
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
@@ -450,7 +450,7 @@ export default function InteractiveNewsletterPage() {
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <BookOpen className="w-5 h-5 text-blue-600" />
-                  <span>Head of Department's Message</span>
+                  <span>Head of Department&apos;s Message</span>
                 </CardTitle>
                 <CardDescription>Message from the HOD</CardDescription>
               </CardHeader>

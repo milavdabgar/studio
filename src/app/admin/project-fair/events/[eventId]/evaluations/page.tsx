@@ -6,7 +6,7 @@ import React, { useEffect, useState, useMemo, useCallback, FormEvent } from 'rea
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Loader2, ArrowLeft, Award, Search, Filter, Edit3, UserCheck } from "lucide-react";
+import { Loader2, ArrowLeft, Award, UserCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { ProjectEvent, Project, Department, ProjectTeam, SystemUser, ProjectEvaluation } from '@/types/entities';
 import { projectEventService } from '@/lib/api/projectEvents';
@@ -18,7 +18,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 

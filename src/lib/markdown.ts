@@ -37,8 +37,9 @@ function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir, curren
   let entries;
   try {
     entries = fs.readdirSync(dir, { withFileTypes: true });
-  } catch (e: any) {
-    console.warn(`[getAllMarkdownFilesRecursive] Could not read directory ${dir}:`, e.message);
+  } catch (e: unknown) {
+    const errorMessage = e instanceof Error ? e.message : String(e);
+    console.warn(`[getAllMarkdownFilesRecursive] Could not read directory ${dir}:`, errorMessage);
     return files;
   }
 
@@ -112,8 +113,9 @@ export async function getPostData({
           console.log(`[getPostData DIAGNOSTIC for blog/hello-world] Listing files in ${parentDir}:`);
           filesInDir.forEach(f => console.log(`  - ${f}`));
       }
-    } catch (e: any) {
-      console.warn(`[getPostData DIAGNOSTIC for blog/hello-world] Could not list files in blog directory: `, e.message);
+    } catch (e: unknown) {
+      const errorMessage = e instanceof Error ? e.message : String(e);
+      console.warn(`[getPostData DIAGNOSTIC for blog/hello-world] Could not list files in blog directory: `, errorMessage);
     }
   }
   
@@ -174,8 +176,9 @@ export async function getPostData({
       } else {
         console.log(`[getPostData DEBUG] File NOT found or not a file: ${check.filePathToCheck}`);
       }
-    } catch (e: any) {
-      console.warn(`[getPostData DEBUG] Error checking file ${check.filePathToCheck}: ${e.message}`);
+    } catch (e: unknown) {
+      const errorMessage = e instanceof Error ? e.message : String(e);
+      console.warn(`[getPostData DEBUG] Error checking file ${check.filePathToCheck}: ${errorMessage}`);
     }
   }
 
@@ -191,7 +194,7 @@ export async function getPostData({
     console.log(`[getPostData DEBUG] Reading file contents from: ${filePath}`);
     fileContents = fs.readFileSync(filePath, 'utf8');
     console.log(`[getPostData DEBUG] Successfully read file: ${filePath}. Length: ${fileContents.length}.`);
-  } catch (readError: any) {
+  } catch (readError: unknown) {
     console.error(`[getPostData] CRITICAL ERROR reading file ${filePath}:`, readError);
     return null;
   }
@@ -201,7 +204,7 @@ export async function getPostData({
     console.log(`[getPostData DEBUG] Parsing frontmatter for: ${filePath}`);
     matterResult = matter(fileContents);
     console.log(`[getPostData DEBUG] Successfully parsed frontmatter for: ${filePath}. Title: ${matterResult.data.title}`);
-  } catch (matterError: any) {
+  } catch (matterError: unknown) {
     console.error(`[getPostData] CRITICAL ERROR parsing frontmatter for file ${filePath}:`, matterError);
     return null;
   }
@@ -230,7 +233,7 @@ export async function getPostData({
       .use(rehypeStringify, { allowDangerousHtml: true })
       .process(contentToProcess);
     console.log(`[getPostData DEBUG] Successfully processed markdown to HTML for: ${filePath}`);
-  } catch (remarkError: any) {
+  } catch (remarkError: unknown) {
     console.error(`[getPostData] CRITICAL ERROR during Remark/Rehype processing for file ${filePath}:`, remarkError);
     return null;
   }
@@ -331,7 +334,7 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
         href: `/posts/${fileDetail.lang}/${fileDetail.id || ''}`.replace(/\/$/, ''), 
         ...matterResult.data,
       };
-    } catch (e: any) { 
+    } catch (e: unknown) { 
       console.error(`[getSortedPostsData] ERROR processing file ${filePath} for preview list:`, e);
       return null; 
     }
@@ -365,7 +368,7 @@ export function getAllPostSlugsForStaticParams(): Array<{ lang: string; slugPart
     });
     console.log(`[getAllPostSlugsForStaticParams] Processed ${validSlugs.length} valid slugs for static params. Sample (first 5):`, validSlugs.slice(0, 3));
     return validSlugs;
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error("[getAllPostSlugsForStaticParams] CRITICAL ERROR generating static params:", e);
     return [{ lang: 'en', slugParts: undefined }, { lang: 'gu', slugParts: undefined }]; // Fallback
   }

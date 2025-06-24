@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
+import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -51,7 +51,7 @@ export default function InstituteManagementPage() {
 
   const { toast } = useToast();
 
-  const fetchInstitutes = async () => {
+  const fetchInstitutes = useCallback(async () => {
     setIsLoading(true);
     try {
       const data = await instituteService.getAllInstitutes();
@@ -61,11 +61,11 @@ export default function InstituteManagementPage() {
       toast({ variant: "destructive", title: "Error", description: (error as Error).message || "Could not load institutes." });
     }
     setIsLoading(false);
-  };
+  }, [toast]);
 
   useEffect(() => {
     fetchInstitutes();
-  }, []);
+  }, [fetchInstitutes]);
 
 
   const resetForm = () => {

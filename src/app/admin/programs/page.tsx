@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
+import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -52,7 +52,7 @@ export default function ProgramManagementPage() {
 
   const { toast } = useToast();
 
-  const fetchProgramsAndDepartments = async () => {
+  const fetchProgramsAndDepartments = useCallback(async () => {
     setIsLoading(true);
     try {
       const [progData, deptData] = await Promise.all([
@@ -69,11 +69,11 @@ export default function ProgramManagementPage() {
       toast({ variant: "destructive", title: "Error", description: "Could not load programs or departments data." });
     }
     setIsLoading(false);
-  };
+  }, [toast]);
 
   useEffect(() => {
     fetchProgramsAndDepartments();
-  }, []);
+  }, [fetchProgramsAndDepartments]);
 
   const resetForm = () => {
     setFormProgramName('');

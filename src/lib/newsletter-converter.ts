@@ -102,7 +102,7 @@ export class NewsletterConverter extends ContentConverterV2 {
     
     let toc = '## Table of Contents\n\n';
     
-    headers.forEach((header, index) => {
+    headers.forEach((header) => {
       const level = (header.match(/#/g) || []).length;
       const title = header.replace(/^#+\s+/, '');
       const indent = '  '.repeat(level - 1);
