@@ -5,7 +5,7 @@ const APP_BASE_URL = process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3
 const facultyUserCredentials = {
   email: 'hod.ce@example.com', 
   password: 'Password@123', 
-  role: 'hod',  // Use 'hod' instead of 'Faculty' since that's the actual role
+  role: 'faculty',  // Try 'faculty' instead of 'hod'
   name: 'HOD Computer' 
 };
 
