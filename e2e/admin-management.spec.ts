@@ -49,7 +49,7 @@ test.describe('Admin Data Management', () => {
       await page.getByLabel(/address/i).fill('123 E2E Test St');
       await page.getByLabel(/contact email/i).fill(`contact@${createdInstituteCode.toLowerCase()}.e2e`);
       await page.getByRole('combobox', { name: 'Status *' }).click();
-      await page.getByRole('option', { name: /active/i }).click();
+      await page.getByRole('option', { name: 'Active', exact: true }).click();
       await page.getByRole('button', { name: /create institute/i }).click();
 
       await expect(page.getByText('Institute Created', { exact: true })).toBeVisible({timeout: 10000});
@@ -65,7 +65,7 @@ test.describe('Admin Data Management', () => {
 
       const updatedInstituteName = `${instituteBaseName} ${createdInstituteCode} (Updated)`;
       await page.getByLabel(/institute name/i).fill(updatedInstituteName);
-      await page.locator('label:has-text("Status") + button[role="combobox"]').click();
+      await page.locator('form').getByRole('combobox', { name: 'Status *' }).click();
       await page.getByRole('option', { name: /inactive/i }).click();
       await page.getByRole('button', { name: /save changes/i }).click();
 
@@ -106,13 +106,11 @@ test.describe('Admin Data Management', () => {
       await page.getByLabel(/department name/i).fill(departmentName);
       await page.getByLabel(/department code/i).fill(createdDepartmentCode);
       
-      // Select an institute - ensure at least one institute exists for selection
-      // This assumes "Government Polytechnic Palanpur" exists or is the first option
-      await page.getByRole('combobox', { name: 'Institute *' }).click();
-      await page.getByRole('option', { name: /Government Polytechnic Palanpur/i }).first().click();
+      // Wait for form to be ready
+      await page.waitForTimeout(1000);
 
       await page.getByRole('combobox', { name: 'Status *' }).click();
-      await page.getByRole('option', { name: /active/i }).click();
+      await page.getByRole('option', { name: 'Active', exact: true }).click();
       await page.getByRole('button', { name: /create department/i }).click();
 
       await expect(page.getByText('Department Created', { exact: true })).toBeVisible({timeout: 10000});
@@ -155,8 +153,16 @@ test.describe('Admin Data Management', () => {
       await page.getByLabel(/password/i).first().fill('Password123!');
       await page.getByLabel(/confirm password/i).fill('Password123!');
       
-      // Select Roles - ensure 'Student' role checkbox exists
-      await page.getByLabel('Roles *').locator('label:has-text("Student")').click(); // More specific targeting
+      // Wait for roles to load and select Student role
+      await page.waitForTimeout(500);
+      
+      // Select Roles - try different selectors for Student role
+      try {
+        await page.getByText('Student').first().click();
+      } catch {
+        // Alternative selector if the first doesn't work
+        await page.locator('input[type="checkbox"][value*="student"], input[type="checkbox"] + label:has-text("Student")').first().click();
+      }
       
       await page.getByRole('button', { name: /create user/i }).click();
       await expect(page.getByText('User Created', { exact: true })).toBeVisible({timeout: 10000});

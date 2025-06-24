@@ -68,7 +68,7 @@ test.describe('Project Fair Management (Admin)', () => {
       const timestamp = Date.now().toString().slice(-6);
       createdEventName = `${eventBaseName} ${timestamp}`;
       await page.getByLabel(/event name/i).fill(createdEventName);
-      await page.getByLabel(/academic year/i).fill('2025-26');
+      await page.getByRole('textbox', { name: 'Academic Year *' }).fill('2025-26');
       
       // Event Date
       await page.getByLabel(/event date/i).locator('button').click();

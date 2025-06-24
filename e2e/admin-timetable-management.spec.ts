@@ -64,10 +64,13 @@ test.describe('Admin Timetable Management', () => {
     const timestamp = Date.now().toString().slice(-6);
     createdTimetableName = `${timetableBaseName} ${timestamp}`;
 
+    // Wait for the button to be enabled before clicking
+    await page.getByRole('button', { name: /new timetable/i }).waitFor({ state: 'visible' });
+    await page.waitForTimeout(1000); // Wait for data to load
     await page.getByRole('button', { name: /new timetable/i }).click();
 
     // Fill timetable details
-    await page.getByLabel(/name/i).fill(createdTimetableName);
+    await page.locator('form').getByLabel(/name/i).fill(createdTimetableName);
     await page.getByLabel(/academic year/i).fill('2024-25');
     
     // Select Program (ensure options are available)
