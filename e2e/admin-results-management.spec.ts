@@ -98,7 +98,7 @@ test.describe('Admin Results Management', () => {
   });
 
   test('should navigate to results view page and display results', async () => {
-    await page.goto(`${APP_BASE_URL}/admin/results`); 
+    await page.goto(`${APP_BASE_URL}/admin/results`, { waitUntil: 'domcontentloaded' }); 
     await expect(page.getByText('Result Management')).toBeVisible();
     
     // Click on the "Results" tab if not already active
