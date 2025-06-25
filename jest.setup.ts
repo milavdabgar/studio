@@ -1,4 +1,3 @@
-
 import 'reflect-metadata';
 
 // Optional: extend Jest's expect functionality
@@ -236,4 +235,54 @@ Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 Object.defineProperty(document, 'cookie', {
   writable: true,
   value: '',
+});
+
+// Add missing jsdom polyfills for Radix UI components
+Object.defineProperty(HTMLElement.prototype, 'hasPointerCapture', {
+  value: jest.fn(() => false),
+  writable: true,
+  configurable: true,
+});
+
+Object.defineProperty(HTMLElement.prototype, 'setPointerCapture', {
+  value: jest.fn(),
+  writable: true,
+  configurable: true,
+});
+
+Object.defineProperty(HTMLElement.prototype, 'releasePointerCapture', {
+  value: jest.fn(),
+  writable: true,
+  configurable: true,
+});
+
+Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+  value: jest.fn(),
+  writable: true,
+  configurable: true,
+});
+
+// Mock DOMRect
+(global as any).DOMRect = jest.fn().mockImplementation((x = 0, y = 0, width = 0, height = 0) => ({
+  x,
+  y,
+  width,
+  height,
+  top: y,
+  left: x,
+  bottom: y + height,
+  right: x + width,
+  toJSON: () => {},
+}));
+
+(global as any).DOMRect.fromRect = () => ({
+  top: 0,
+  left: 0,
+  bottom: 0,
+  right: 0,
+  width: 0,
+  height: 0,
+  x: 0,
+  y: 0,
+  toJSON: () => {},
 });

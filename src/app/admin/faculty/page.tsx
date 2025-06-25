@@ -895,7 +895,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                 <SortableTableHeader field="gtuName" label="Name (GTU)" />
                 <SortableTableHeader field="staffCode" label="Staff Code" />
                 <SortableTableHeader field="department" label="Department" />
-                <SortableTableHeader field="staffCategory" label="Category" /> {/* Added Category Header */}
+                <SortableTableHeader field="staffCategory" label="Category" />
                 <SortableTableHeader field="designation" label="Designation" />
                 <SortableTableHeader field="status" label="Status" />
                 <TableHead>Details</TableHead>
@@ -905,25 +905,25 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
             <TableBody>
               {paginatedFaculty.map((faculty) => (
                 <TableRow key={faculty.id} data-state={selectedFacultyIds.includes(faculty.id) ? "selected" : undefined}>
-                   <TableCell>
-                      <Checkbox
-                        checked={selectedFacultyIds.includes(faculty.id)}
-                        onCheckedChange={(checked) => handleSelectFaculty(faculty.id, !!checked)}
-                        aria-labelledby={`faculty-name-${faculty.id}`}
-                       />
+                  <TableCell>
+                    <Checkbox
+                      checked={selectedFacultyIds.includes(faculty.id)}
+                      onCheckedChange={(checked) => handleSelectFaculty(faculty.id, !!checked)}
+                      aria-labelledby={`faculty-name-${faculty.id}`}
+                    />
                   </TableCell>
                   <TableCell id={`faculty-name-${faculty.id}`} className="font-medium">
                     <div className="flex flex-col">
-                        <span className="font-semibold">
-                          {[faculty.title, faculty.firstName, faculty.middleName, faculty.lastName].filter(Boolean).join(' ') || faculty.gtuName || faculty.staffCode}
-                        </span>
-                        <span className="text-xs text-muted-foreground">{faculty.instituteEmail}</span>
-                        {faculty.personalEmail && <span className="text-xs text-muted-foreground">P: {faculty.personalEmail}</span>}
+                      <span className="font-semibold">
+                        {[faculty.title, faculty.firstName, faculty.middleName, faculty.lastName].filter(Boolean).join(' ') || faculty.gtuName || faculty.staffCode}
+                      </span>
+                      <span className="text-xs text-muted-foreground">{faculty.instituteEmail}</span>
+                      {faculty.personalEmail && <span className="text-xs text-muted-foreground">P: {faculty.personalEmail}</span>}
                     </div>
                   </TableCell>
                   <TableCell>{faculty.staffCode}</TableCell>
                   <TableCell>{faculty.department}</TableCell>
-                  <TableCell>{faculty.staffCategory || 'Teaching'}</TableCell> {/* Display Staff Category */}
+                  <TableCell>{faculty.staffCategory || 'Teaching'}</TableCell>
                   <TableCell>{faculty.designation}</TableCell>
                   <TableCell>
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${

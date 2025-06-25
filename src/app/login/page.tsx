@@ -99,7 +99,7 @@ export default function LoginPage() {
       }
     };
     fetchAllRoles();
-  }, [toast]);
+  }, []); // Removed toast from dependencies to avoid unnecessary re-runs
 
   useEffect(() => {
     const user = MOCK_USERS.find(u => u.email === email);
@@ -110,21 +110,29 @@ export default function LoginPage() {
       
       setAvailableRolesForUser(userRolesAsObjects);
       
-      if (!userRolesAsObjects.find(r => r.code === selectedRoleCode) && userRolesAsObjects.length > 0) {
-        setSelectedRoleCode(userRolesAsObjects[0].code);
-      } else if (userRolesAsObjects.length === 0) {
-        setSelectedRoleCode('unknown'); 
+      // Only update selectedRoleCode if current selection is invalid for this user
+      if (!userRolesAsObjects.find(r => r.code === selectedRoleCode)) {
+        if (userRolesAsObjects.length > 0) {
+          setSelectedRoleCode(userRolesAsObjects[0].code);
+        } else {
+          setSelectedRoleCode('unknown'); 
+        }
       }
     } else {
       setAvailableRolesForUser([]);
-      if (allSystemRoles.length > 0 && (!selectedRoleCode || !allSystemRoles.find(r => r.code === selectedRoleCode))) {
-          const adminRole = allSystemRoles.find(r => r.code === 'admin');
-          if (adminRole) setSelectedRoleCode(adminRole.code);
-          else if(allSystemRoles.length > 0) setSelectedRoleCode(allSystemRoles[0].code);
-          else setSelectedRoleCode('unknown');
+      // Only update selectedRoleCode if we don't have a valid system role selected
+      if (allSystemRoles.length > 0 && !allSystemRoles.find(r => r.code === selectedRoleCode)) {
+        const adminRole = allSystemRoles.find(r => r.code === 'admin');
+        if (adminRole) {
+          setSelectedRoleCode(adminRole.code);
+        } else if (allSystemRoles.length > 0) {
+          setSelectedRoleCode(allSystemRoles[0].code);
+        } else {
+          setSelectedRoleCode('unknown');
+        }
       }
     }
-  }, [email, MOCK_USERS, allSystemRoles, selectedRoleCode]); 
+  }, [email, MOCK_USERS, allSystemRoles]); // Removed selectedRoleCode from dependencies 
 
 
   const handleSubmit = async (event: FormEvent) => {
@@ -219,7 +227,7 @@ export default function LoginPage() {
           <CardDescription>Enter your credentials and select your role to access PolyManager.</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6" role="form">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input

@@ -10,6 +10,8 @@ export function AppLogo(props: SVGProps<SVGSVGElement>) {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+      role="img"
+      aria-label="PolyManager Logo"
       {...props}
     >
       <path d="M12 2L2 7l10 5 10-5-10-5z" />
