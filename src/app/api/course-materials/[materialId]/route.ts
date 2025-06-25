@@ -10,7 +10,7 @@ declare global {
 if (!global.__API_COURSE_MATERIALS_STORE__) {
   global.__API_COURSE_MATERIALS_STORE__ = [];
 }
-let courseMaterialsStore: CourseMaterial[] = global.__API_COURSE_MATERIALS_STORE__;
+const courseMaterialsStore: CourseMaterial[] = global.__API_COURSE_MATERIALS_STORE__;
 
 interface RouteParams {
   params: {
@@ -64,12 +64,16 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { materialId } = params;
   const initialLength = courseMaterialsStore.length;
-  courseMaterialsStore = courseMaterialsStore.filter(m => m.id !== materialId);
+  const materialIndex = courseMaterialsStore.findIndex(m => m.id === materialId);
 
-  if (courseMaterialsStore.length === initialLength) {
+  if (materialIndex === -1) {
     return NextResponse.json({ message: 'Course material not found' }, { status: 404 });
   }
+
+  // Remove the material from the store
+  courseMaterialsStore.splice(materialIndex, 1);
   global.__API_COURSE_MATERIALS_STORE__ = courseMaterialsStore;
+  
   // In a real app, also delete the associated file from storage here.
   return NextResponse.json({ message: 'Course material deleted successfully' });
 }

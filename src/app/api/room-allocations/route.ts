@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
     const newStartTime = parseISO(allocationData.startTime);
     const newEndTime = parseISO(allocationData.endTime);
 
-    const conflict = roomAllocationsStore.find(existing => 
+    const conflict = global.__API_ROOM_ALLOCATIONS_STORE__?.find(existing => 
         existing.roomId === allocationData.roomId &&
         existing.status !== 'cancelled' &&
         newStartTime < parseISO(existing.endTime) &&

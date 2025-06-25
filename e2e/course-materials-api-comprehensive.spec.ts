@@ -4,7 +4,8 @@ import { test, expect } from '@playwright/test';
  * E2E Tests for Course Materials API - In-Memory Storage Endpoints
  * Priority: Course Materials Module (Critical for Academic Content Management)
  * 
- * This test suite covers the course materials API endpoints that use in-memory storage
+ * This test suite covers the course materials API endpoints that use in-memory      // Test GET by ID
+      const getResponse = await page.request.get(`${API_BASE}/course-materials/${createdMaterial.id}`);torage
  * and are critical for the MongoDB migration. Tests ensure data integrity
  * and business logic preservation during migration.
  */
@@ -319,9 +320,32 @@ test.describe('Course Materials API - Critical In-Memory Storage', () => {
           }
         }
       } else {
-        // Individual material routes may not be working due to store synchronization
-        console.warn('Individual course material routes (GET/PUT/DELETE by ID) appear to have store synchronization issues');
-        expect(getResponse.status()).toBe(404);
+        // All routes are working properly
+        expect(getResponse.status()).toBe(200);
+        const retrievedMaterial = await getResponse.json();
+        expect(retrievedMaterial.id).toBe(createdMaterialId);
+        expect(retrievedMaterial.title).toBe(createdMaterial.title);
+        
+        // Test UPDATE
+        const updateData = {
+          title: `Updated ${createdMaterial.title}`,
+          description: 'Updated description'
+        };
+        const updateResponse = await page.request.put(`${API_BASE}/course-materials/${createdMaterialId}`, {
+          data: updateData
+        });
+        expect(updateResponse.status()).toBe(200);
+        const updatedMaterial = await updateResponse.json();
+        expect(updatedMaterial.title).toBe(updateData.title);
+        expect(updatedMaterial.description).toBe(updateData.description);
+
+        // Verify update by getting the material again
+        const getUpdatedResponse = await page.request.get(`${API_BASE}/course-materials/${createdMaterialId}`);
+        if (getUpdatedResponse.status() === 200) {
+          const getUpdatedMaterial = await getUpdatedResponse.json();
+          expect(getUpdatedMaterial.title).toBe(updateData.title);
+          expect(getUpdatedMaterial.description).toBe(updateData.description);
+        }
       }
 
       // Test DELETE
@@ -334,7 +358,7 @@ test.describe('Course Materials API - Critical In-Memory Storage', () => {
       expect(listResponse.status()).toBe(200);
 
     } catch (error) {
-      // Cleanup in case of error (this may not work due to the same store issue)
+      // Cleanup in case of error
       await page.request.delete(`${API_BASE}/course-materials/${createdMaterialId}`);
       throw error;
     }
@@ -365,15 +389,10 @@ test.describe('Course Materials API - Critical In-Memory Storage', () => {
         data: { title: '' }
       });
 
-      // May fail with 404 due to store synchronization issues, or 400 if the route works
-      expect([400, 404]).toContain(emptyTitleUpdateResponse.status());
-      
-      if (emptyTitleUpdateResponse.status() === 400) {
-        const errorData = await emptyTitleUpdateResponse.json();
-        expect(errorData.message).toContain('Title cannot be empty');
-      } else {
-        console.warn('Individual course material UPDATE route appears to have store synchronization issues');
-      }
+      // Should fail with 400 validation error
+      expect(emptyTitleUpdateResponse.status()).toBe(400);
+      const errorData = await emptyTitleUpdateResponse.json();
+      expect(errorData.message).toContain('Title cannot be empty');
 
     } finally {
       // Cleanup (may not work due to same store issue)

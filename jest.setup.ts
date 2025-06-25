@@ -7,9 +7,16 @@ import '@testing-library/jest-dom';
 // Add Next.js Web API polyfills for API route testing
 import { TextEncoder, TextDecoder } from 'util';
 
-// Polyfill for Node.js environment to support Next.js API routes
+// Set up basic polyfills first
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder as any;
+
+// Set up a basic URL polyfill
+global.URL = require('url').URL;
+global.URLSearchParams = require('url').URLSearchParams;
+
+// Mock fetch for general use (component tests don't need API routes)
+global.fetch = jest.fn();
 
 // Mock Next.js router
 jest.mock('next/navigation', () => ({

@@ -6,7 +6,7 @@ import { isValid, parseISO } from 'date-fns';
 if (!global.__API_ROOM_ALLOCATIONS_STORE__) {
   global.__API_ROOM_ALLOCATIONS_STORE__ = [];
 }
-let roomAllocationsStore: RoomAllocation[] = global.__API_ROOM_ALLOCATIONS_STORE__;
+const roomAllocationsStore: RoomAllocation[] = global.__API_ROOM_ALLOCATIONS_STORE__;
 
 interface RouteParams {
   params: Promise<{
@@ -83,7 +83,6 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     };
 
     global.__API_ROOM_ALLOCATIONS_STORE__[allocationIndex] = updatedAllocation;
-    roomAllocationsStore = global.__API_ROOM_ALLOCATIONS_STORE__; // Keep local reference in sync
     return NextResponse.json(updatedAllocation);
   } catch (error) {
     console.error(`Error updating room allocation ${id}:`, error);
@@ -105,6 +104,5 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
   }
   
   global.__API_ROOM_ALLOCATIONS_STORE__ = newStore;
-  roomAllocationsStore = global.__API_ROOM_ALLOCATIONS_STORE__; // Keep local reference in sync
   return NextResponse.json({ message: 'Room allocation deleted successfully' }, { status: 200 });
 }

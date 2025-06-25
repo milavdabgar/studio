@@ -18,7 +18,7 @@ if (!global.__API_PROJECT_EVENTS_STORE__) {
 }
 if (!global.__API_PROJECT_TEAMS_STORE__) global.__API_PROJECT_TEAMS_STORE__ = [];
 
-let projectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
+const projectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
 const projectTeamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
 
 
@@ -118,12 +118,14 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
-  const initialLength = projectEventsStore.length;
-  projectEventsStore = projectEventsStore.filter(e => e.id !== id);
+  const eventIndex = projectEventsStore.findIndex(e => e.id === id);
 
-  if (projectEventsStore.length === initialLength) {
+  if (eventIndex === -1) {
     return NextResponse.json({ message: 'Event not found' }, { status: 404 });
   }
+
+  // Remove the event from the store
+  projectEventsStore.splice(eventIndex, 1);
   global.__API_PROJECT_EVENTS_STORE__ = projectEventsStore;
   return NextResponse.json({ message: 'Event deleted successfully' }, { status: 200 });
 }
