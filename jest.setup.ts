@@ -17,12 +17,16 @@ global.URLSearchParams = require('url').URLSearchParams;
 
 // Mock Web API globals for Next.js API routes
 global.Request = class MockRequest {
-  public url: string;
+  private _url: string;
   public init?: RequestInit;
   
   constructor(url: string, init?: RequestInit) {
-    this.url = url;
+    this._url = url;
     this.init = init;
+  }
+  
+  get url() {
+    return this._url;
   }
   
   async json() {
@@ -43,6 +47,10 @@ global.Request = class MockRequest {
   get headers() {
     return new Headers(this.init?.headers);
   }
+  
+  nextUrl = {
+    searchParams: new URLSearchParams()
+  };
 } as any;
 
 global.Response = class MockResponse {
@@ -114,6 +122,28 @@ global.Headers = class MockHeaders {
     Object.entries(this._headers).forEach(([key, value]) => {
       callback(value, key);
     });
+  }
+  
+  *entries(): IterableIterator<[string, string]> {
+    for (const [key, value] of Object.entries(this._headers)) {
+      yield [key, value];
+    }
+  }
+  
+  *keys(): IterableIterator<string> {
+    for (const key of Object.keys(this._headers)) {
+      yield key;
+    }
+  }
+  
+  *values(): IterableIterator<string> {
+    for (const value of Object.values(this._headers)) {
+      yield value;
+    }
+  }
+  
+  [Symbol.iterator](): IterableIterator<[string, string]> {
+    return this.entries();
   }
 } as any;
 

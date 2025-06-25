@@ -93,7 +93,11 @@ const config: Config = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1', // Added this line to correctly map @/ paths
     '^.+\\.(css|less|scss)$': 'identity-obj-proxy',
-    '^.+\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.js'
+    '^.+\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.js',
+    // Mock MongoDB modules for testing
+    '^mongodb$': '<rootDir>/__mocks__/mongodb.js',
+    '^bson$': '<rootDir>/__mocks__/bson.js',
+    '^mongoose$': '<rootDir>/__mocks__/mongoose.js'
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -185,7 +189,7 @@ const config: Config = {
   },
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   transformIgnorePatterns: [
-    '/node_modules/(?!(lucide-react|remark.*|rehype.*|unified.*|.*\\.mjs$))' // Transform lucide-react, remark ecosystem, and mjs files
+    '/node_modules/(?!(lucide-react|remark.*|rehype.*|unified.*|.*\\.mjs$|mongodb|bson))' // Transform lucide-react, remark ecosystem, mjs files, mongodb, and bson
   ],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them

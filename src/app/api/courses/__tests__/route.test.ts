@@ -9,7 +9,7 @@ jest.mock('@/lib/mongodb');
 jest.mock('@/lib/models');
 
 const mockConnectMongoose = connectMongoose as jest.MockedFunction<typeof connectMongoose>;
-const mockCourseModel = CourseModel as jest.Mocked<typeof CourseModel>;
+const mockCourseModel = CourseModel as jest.Mocked<typeof CourseModel> & jest.MockedFunction<any>;
 
 describe('/api/courses', () => {
   beforeEach(() => {
@@ -21,7 +21,7 @@ describe('/api/courses', () => {
     // Reset mock implementations
     mockCourseModel.find.mockReset();
     mockCourseModel.findOne.mockReset();
-    mockCourseModel.prototype.save.mockReset();
+    mockCourseModel.create.mockReset();
   });
 
   describe('GET /api/courses', () => {
@@ -40,18 +40,11 @@ describe('/api/courses', () => {
         isFunctional: true,
         category: 'Core',
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        toObject: jest.fn().mockReturnThis()
+        updatedAt: new Date().toISOString()
       };
       
-      // Mock the Document methods
-      const mockDocument = {
-        ...mockCourse,
-        save: jest.fn().mockResolvedValue(mockCourse),
-      } as unknown as Document;
-      
-      mockCourseModel.find.mockReturnThis();
-      mockCourseModel.find().exec = jest.fn().mockResolvedValue([mockDocument]);
+      // Mock the find method to return the courses directly
+      mockCourseModel.find.mockResolvedValue([mockCourse]);
       
       const response = await GET();
       const data = await response.json();
@@ -105,12 +98,18 @@ describe('/api/courses', () => {
         ...validCourseData,
         _id: 'course_new_123',
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        toObject: jest.fn().mockReturnThis()
+        updatedAt: new Date().toISOString()
       };
       
       mockCourseModel.findOne.mockResolvedValue(null);
-      mockCourseModel.prototype.save.mockResolvedValue(savedCourse);
+      
+      // Mock the instance that will be created
+      const mockSave = jest.fn().mockResolvedValue(savedCourse);
+      (mockCourseModel as any).mockImplementation((data: any) => ({
+        ...data,
+        _id: 'course_new_123',
+        save: mockSave
+      }));
       
       const request = new NextRequest('http://localhost/api/courses', {
         method: 'POST',
@@ -123,7 +122,7 @@ describe('/api/courses', () => {
       expect(response.status).toBe(201);
       expect(data.subcode).toBe(validCourseData.subcode);
       expect(data.subjectName).toBe(validCourseData.subjectName);
-      expect(mockCourseModel.prototype.save).toHaveBeenCalledTimes(1);
+      expect(mockSave).toHaveBeenCalledTimes(1);
     });
 
     it('should return 400 when required fields are missing', async () => {
@@ -165,7 +164,14 @@ describe('/api/courses', () => {
     it('should handle database errors during course creation', async () => {
       const errorMessage = 'Database save failed';
       mockCourseModel.findOne.mockResolvedValue(null);
-      mockCourseModel.prototype.save.mockRejectedValue(new Error(errorMessage));
+      
+      // Mock the instance that will be created to throw an error on save
+      const mockSave = jest.fn().mockRejectedValue(new Error(errorMessage));
+      (mockCourseModel as any).mockImplementation((data: any) => ({
+        ...data,
+        _id: 'course_new_123',
+        save: mockSave
+      }));
       
       const request = new NextRequest('http://localhost/api/courses', {
         method: 'POST',

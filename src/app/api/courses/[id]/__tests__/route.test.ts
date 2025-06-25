@@ -90,7 +90,7 @@ describe('/api/courses/[id]', () => {
       const errorMessage = 'Database error';
       mockCourseModel.findById.mockRejectedValue(new Error(errorMessage));
       
-      const params = Promise.resolve({ id: 'some_id' });
+      const params = Promise.resolve({ id: '507f1f77bcf86cd799439011' }); // Valid ObjectId format
       const response = await GET({} as NextRequest, { params });
       
       expect(response.status).toBe(500);
@@ -128,7 +128,9 @@ describe('/api/courses/[id]', () => {
         mockCourse._id,
         expect.objectContaining({
           subjectName: updateData.subjectName,
-          credits: 5, // Should be recalculated
+          credits: 7, // 4 (new lecture) + 1 (tutorial) + 2 (practical) = 7
+          lectureHours: updateData.lectureHours,
+          updatedAt: expect.any(String)
         }),
         { new: true, runValidators: true }
       );
@@ -149,8 +151,9 @@ describe('/api/courses/[id]', () => {
     });
 
     it('should return 409 for duplicate course code', async () => {
-      const duplicateData = { subcode: 'DUPLICATE' };
-      mockCourseModel.findOne.mockResolvedValue({ _id: 'other_course_id' });
+      const duplicateData = { subcode: 'DUPLICATE', programId: 'prog_1' };
+      mockCourseModel.findById.mockResolvedValue(mockCourse); // Existing course to update
+      mockCourseModel.findOne.mockResolvedValue({ _id: 'other_course_id' }); // Duplicate course found
       
       const params = Promise.resolve({ id: mockCourse._id });
       const request = new NextRequest('http://localhost/api/courses/123', {

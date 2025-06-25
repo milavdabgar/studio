@@ -184,8 +184,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
     
     // Fill signup form with test data
     await fillForm(page, {
-      firstName: testData.newUser.firstName,
-      lastName: testData.newUser.lastName,
+      name: testData.newUser.name,
       email: testData.newUser.email,
       password: testData.newUser.password,
       confirmPassword: testData.newUser.confirmPassword
