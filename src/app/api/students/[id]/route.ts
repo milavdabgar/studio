@@ -4,9 +4,12 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Student, User } from '@/types/entities'; // Updated User import
 import { userService } from '@/lib/api/users'; 
 
-const studentsStore: Student[] = (global as any).__API_STUDENTS_STORE__ || [];
-if (!(global as any).__API_STUDENTS_STORE__) {
-  (global as any).__API_STUDENTS_STORE__ = studentsStore;
+// Dynamic getter for the students store to ensure tests can control the store state
+function getStudentsStore(): Student[] {
+  if (!(global as any).__API_STUDENTS_STORE__) {
+    (global as any).__API_STUDENTS_STORE__ = [];
+  }
+  return (global as any).__API_STUDENTS_STORE__;
 }
 
 interface RouteParams {
@@ -17,7 +20,7 @@ interface RouteParams {
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
-  const student = studentsStore.find(s => s.id === id);
+  const student = getStudentsStore().find(s => s.id === id);
   if (student) {
     return NextResponse.json(student);
   }
@@ -28,17 +31,18 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
   try {
     const studentDataToUpdate = await request.json() as Partial<Omit<Student, 'id' | 'userId' | 'createdAt' | 'updatedAt'>>;
-    const studentIndex = studentsStore.findIndex(s => s.id === id);
+    const currentStore = getStudentsStore();
+    const studentIndex = currentStore.findIndex(s => s.id === id);
 
     if (studentIndex === -1) {
       return NextResponse.json({ message: 'Student not found' }, { status: 404 });
     }
-    const existingStudent = studentsStore[studentIndex];
+    const existingStudent = currentStore[studentIndex];
     
-    if (studentDataToUpdate.enrollmentNumber && studentDataToUpdate.enrollmentNumber.trim() !== existingStudent.enrollmentNumber && studentsStore.some(s => s.id !== id && s.enrollmentNumber === studentDataToUpdate.enrollmentNumber!.trim())) {
+    if (studentDataToUpdate.enrollmentNumber && studentDataToUpdate.enrollmentNumber.trim() !== existingStudent.enrollmentNumber && currentStore.some(s => s.id !== id && s.enrollmentNumber === studentDataToUpdate.enrollmentNumber!.trim())) {
         return NextResponse.json({ message: `Enrollment number '${studentDataToUpdate.enrollmentNumber.trim()}' already exists.` }, { status: 409 });
     }
-    if (studentDataToUpdate.instituteEmail && studentDataToUpdate.instituteEmail.trim().toLowerCase() !== existingStudent.instituteEmail?.toLowerCase() && studentsStore.some(s => s.id !== id && s.instituteEmail?.toLowerCase() === studentDataToUpdate.instituteEmail!.trim().toLowerCase())) {
+    if (studentDataToUpdate.instituteEmail && studentDataToUpdate.instituteEmail.trim().toLowerCase() !== existingStudent.instituteEmail?.toLowerCase() && currentStore.some(s => s.id !== id && s.instituteEmail?.toLowerCase() === studentDataToUpdate.instituteEmail!.trim().toLowerCase())) {
         return NextResponse.json({ message: `Institute email '${studentDataToUpdate.instituteEmail.trim()}' is already in use.` }, { status: 409 });
     }
 
@@ -61,13 +65,13 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       ...(studentDataToUpdate.isPassAll !== undefined && { isPassAll: studentDataToUpdate.isPassAll }),
       ...(studentDataToUpdate.fullNameGtuFormat && { fullNameGtuFormat: studentDataToUpdate.fullNameGtuFormat.trim() }),
       ...(studentDataToUpdate.firstName && { firstName: studentDataToUpdate.firstName.trim() }),
-      ...(studentDataToUpdate.middleName !== undefined && { middleName: studentDataToUpdate.middleName.trim() || undefined }),
+      ...(studentDataToUpdate.middleName !== undefined && { middleName: studentDataToUpdate.middleName !== null ? studentDataToUpdate.middleName.trim() : undefined }),
       ...(studentDataToUpdate.lastName && { lastName: studentDataToUpdate.lastName.trim() }),
       ...(studentDataToUpdate.gender && { gender: studentDataToUpdate.gender }),
       ...(studentDataToUpdate.dateOfBirth && { dateOfBirth: studentDataToUpdate.dateOfBirth }),
       ...(studentDataToUpdate.bloodGroup && { bloodGroup: studentDataToUpdate.bloodGroup }),
       ...(studentDataToUpdate.aadharNumber && { aadharNumber: studentDataToUpdate.aadharNumber.trim() }),
-      ...(studentDataToUpdate.personalEmail !== undefined && { personalEmail: studentDataToUpdate.personalEmail.trim() || undefined }),
+      ...(studentDataToUpdate.personalEmail !== undefined && { personalEmail: studentDataToUpdate.personalEmail !== null ? studentDataToUpdate.personalEmail.trim() : undefined }),
       ...(studentDataToUpdate.instituteEmail && { instituteEmail: studentDataToUpdate.instituteEmail.trim() }),
       ...(studentDataToUpdate.contactNumber !== undefined && { contactNumber: studentDataToUpdate.contactNumber.trim() || undefined }),
       ...(studentDataToUpdate.address !== undefined && { address: studentDataToUpdate.address.trim() || undefined }),
@@ -85,12 +89,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       ...(studentDataToUpdate.sem6Status && { sem6Status: studentDataToUpdate.sem6Status }),
       ...(studentDataToUpdate.sem7Status && { sem7Status: studentDataToUpdate.sem7Status }),
       ...(studentDataToUpdate.sem8Status && { sem8Status: studentDataToUpdate.sem8Status }),
-      ...(studentDataToUpdate.academicRemarks !== undefined && { academicRemarks: studentDataToUpdate.academicRemarks.trim() || undefined }),
+      ...(studentDataToUpdate.academicRemarks !== undefined && { academicRemarks: studentDataToUpdate.academicRemarks !== null ? studentDataToUpdate.academicRemarks.trim() : undefined }),
       updatedAt: new Date().toISOString(), // Always update the timestamp
     };
 
-    studentsStore[studentIndex] = updatedStudent;
-    (global as any).__API_STUDENTS_STORE__ = studentsStore;
+    currentStore[studentIndex] = updatedStudent;
+    global.__API_STUDENTS_STORE__ = currentStore;
 
     if (updatedStudent.userId) {
         const userUpdateData: Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>> = {};
@@ -147,14 +151,15 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
-  const studentIndex = studentsStore.findIndex(s => s.id === id);
+  const currentStore = getStudentsStore();
+  const studentIndex = currentStore.findIndex(s => s.id === id);
 
   if (studentIndex === -1) {
     return NextResponse.json({ message: 'Student not found' }, { status: 404 });
   }
   
-  const deletedStudent = studentsStore.splice(studentIndex, 1)[0];
-  (global as any).__API_STUDENTS_STORE__ = studentsStore;
+  const deletedStudent = currentStore.splice(studentIndex, 1)[0];
+  global.__API_STUDENTS_STORE__ = currentStore;
 
   if (deletedStudent.userId) {
       try {

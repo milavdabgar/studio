@@ -36,11 +36,18 @@
    - POST /api/students - student creation success cases (minimal data, full data, store management)
    - POST /api/students - error handling (JSON parsing, service resilience)
 
+5. **src/app/api/students/[id]/__tests__/route.test.ts** - ✅ ALL TESTS PASSING (29/29)
+   - GET /api/students/[id] - returns student by ID, handles not found
+   - PUT /api/students/[id] - comprehensive validation (enrollment conflicts, institute email conflicts)
+   - PUT /api/students/[id] - student updates (basic fields, semester status, boolean fields, optional fields, trimming)
+   - PUT /api/students/[id] - user synchronization (display name, status, emails, photo URL, error handling)
+   - PUT /api/students/[id] - error handling (JSON parsing, validation failures)
+   - DELETE /api/students/[id] - student deletion with user cleanup (successful, not found, administrative user handling)
+
 ## 🔄 IN PROGRESS
 
 ## ❌ FAILING TEST SUITES TO FIX
 
-- src/app/api/students/[id]/__tests__/route.test.ts
 - src/app/login/__tests__/page.test.tsx
 - Other test suites (need to identify)
 
@@ -68,3 +75,10 @@
 - Fixed type errors by adding missing `currentRole` field to user creation mocks
 - Updated test expectations to match actual service call parameters
 - Adjusted error handling tests to reflect defensive API design that handles service failures gracefully
+
+### Students/[id] API Test Suite Issues:
+- Applied same dynamic store access fix as main students route to resolve 404 errors
+- Fixed optional field updates by handling `null` values correctly and using proper JSON serialization
+- Corrected test expectations for institute email updates (only `instituteEmail` should change when student has personal email)
+- Fixed user update failure test by ensuring display name change triggers user update call
+- Handled proper error propagation while maintaining student update success

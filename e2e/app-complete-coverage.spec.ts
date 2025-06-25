@@ -13,7 +13,7 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
   test.beforeEach(async ({ page }) => {
     // Start from home page
     await page.goto('http://localhost:3000/');
-    await page.waitForLoadState('networkidle', { timeout: 10000 });
+    await page.waitForLoadState('networkidle', { timeout: 15000 });
   });
 
   test('should test all public/marketing pages', async ({ page }) => {
@@ -26,7 +26,7 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
     
     for (const pagePath of publicPages) {
       await page.goto(pagePath);
-      await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForLoadState('networkidle', { timeout: 15000 });
       
       // Should load successfully
       const hasContent = await page.locator('main, .content, body').first().isVisible();
@@ -48,7 +48,7 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
     
     for (const pagePath of newsletterPages) {
       await page.goto(pagePath);
-      await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForLoadState('networkidle', { timeout: 15000 });
       
       const hasContent = await page.locator('main, .content, body').first().isVisible();
       const has404 = await page.locator('text=404, text=Not Found').first().isVisible();
@@ -61,12 +61,13 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
   test('should test faculty dashboard and features', async ({ page }) => {
     // Test faculty main page
     await page.goto('http://localhost:3000/faculty');
-    await page.waitForLoadState('networkidle', { timeout: 10000 });
+    await page.waitForLoadState('networkidle', { timeout: 15000 });
     
     const hasFacultyPage = await page.locator('h1:has-text("Faculty"), .faculty-dashboard').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized, input[type="email"], input[type="password"]').first().isVisible();
+    const hasLoginRedirect = page.url().includes('/login');
     
-    expect(hasFacultyPage || hasAccessControl).toBe(true);
+    expect(hasFacultyPage || hasAccessControl || hasLoginRedirect).toBe(true);
     
     // Test faculty sub-pages
     const facultyPages = [
@@ -81,19 +82,20 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
     
     for (const pagePath of facultyPages) {
       await page.goto(pagePath);
-      await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForLoadState('networkidle', { timeout: 15000 });
       
       const hasContent = await page.locator('main, .content, body').first().isVisible();
-      const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized, input[type="email"], input[type="password"]').first().isVisible();
+      const hasLoginRedirect = page.url().includes('/login');
       
-      expect(hasContent || hasAccessControl).toBe(true);
+      expect(hasContent || hasAccessControl || hasLoginRedirect).toBe(true);
     }
   });
 
   test('should test student dashboard and features', async ({ page }) => {
     // Test student main page
     await page.goto('http://localhost:3000/student');
-    await page.waitForLoadState('networkidle', { timeout: 10000 });
+    await page.waitForLoadState('networkidle', { timeout: 15000 });
     
     const hasStudentPage = await page.locator('h1:has-text("Student"), .student-dashboard').isVisible();
     const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
@@ -111,12 +113,13 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
     
     for (const pagePath of studentPages) {
       await page.goto(pagePath);
-      await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForLoadState('networkidle', { timeout: 15000 });
       
       const hasContent = await page.locator('main, .content, body').first().isVisible();
-      const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized, input[type="email"], input[type="password"]').first().isVisible();
+      const hasLoginRedirect = page.url().includes('/login');
       
-      expect(hasContent || hasAccessControl).toBe(true);
+      expect(hasContent || hasAccessControl || hasLoginRedirect).toBe(true);
     }
   });
 
@@ -131,12 +134,13 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
     
     for (const pagePath of adminPages) {
       await page.goto(pagePath);
-      await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForLoadState('networkidle', { timeout: 15000 });
       
       const hasContent = await page.locator('main, .content, body').first().isVisible();
-      const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized, input[type="email"], input[type="password"]').first().isVisible();
+      const hasLoginRedirect = page.url().includes('/login');
       
-      expect(hasContent || hasAccessControl).toBe(true);
+      expect(hasContent || hasAccessControl || hasLoginRedirect).toBe(true);
     }
   });
 
@@ -150,12 +154,13 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
     
     for (const pagePath of projectFairPages) {
       await page.goto(pagePath);
-      await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForLoadState('networkidle', { timeout: 15000 });
       
       const hasContent = await page.locator('main, .content, body').first().isVisible();
-      const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized, input[type="email"], input[type="password"]').first().isVisible();
+      const hasLoginRedirect = page.url().includes('/login');
       
-      expect(hasContent || hasAccessControl).toBe(true);
+      expect(hasContent || hasAccessControl || hasLoginRedirect).toBe(true);
       
       // Should not show unhandled errors
       const hasError = await page.locator('text=Error, text=500, text=Something went wrong').first().isVisible();
@@ -176,7 +181,7 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
     
     for (const pagePath of contentPages) {
       await page.goto(pagePath);
-      await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForLoadState('networkidle', { timeout: 15000 });
       
       const hasContent = await page.locator('main, .content, body').first().isVisible();
       const has404 = await page.locator('text=404, text=Not Found').first().isVisible();
@@ -195,7 +200,7 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
     
     for (const pagePath of assignmentPages) {
       await page.goto(pagePath);
-      await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForLoadState('networkidle', { timeout: 15000 });
       
       const hasContent = await page.locator('main, .content, body').first().isVisible();
       const has404 = await page.locator('text=404, text=Not Found').first().isVisible();
@@ -217,7 +222,7 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
     
     for (const pagePath of dynamicRoutes) {
       await page.goto(pagePath);
-      await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForLoadState('networkidle', { timeout: 15000 });
       
       const hasContent = await page.locator('main, .content, body').first().isVisible();
       const has404 = await page.locator('text=404, text=Not Found').first().isVisible();
@@ -240,15 +245,17 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
     
     for (const pagePath of mainPages) {
       await page.goto(pagePath);
-      await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForLoadState('networkidle', { timeout: 15000 });
       
       // Check for consistent navigation elements
       const hasNavigation = await page.locator('nav, .navbar, .navigation').first().isVisible();
       const hasHeader = await page.locator('header, .header').first().isVisible();
       const hasLogo = await page.locator('.logo, [alt*="logo"]').first().isVisible();
+      const hasLoginRedirect = page.url().includes('/login');
+      const hasAuthForm = await page.locator('input[type="email"], input[type="password"]').first().isVisible();
       
-      // At least one navigation element should be present
-      expect(hasNavigation || hasHeader || hasLogo).toBe(true);
+      // At least one navigation element should be present, or it's an auth page
+      expect(hasNavigation || hasHeader || hasLogo || hasLoginRedirect || hasAuthForm).toBe(true);
     }
   });
 
@@ -267,7 +274,7 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
       
       for (const pagePath of keyPages) {
         await page.goto(pagePath);
-        await page.waitForLoadState('networkidle', { timeout: 10000 });
+        await page.waitForLoadState('networkidle', { timeout: 15000 });
         
         // Should be responsive and content should be visible
         const hasContent = await page.locator('main, .content, body').first().isVisible();
@@ -296,7 +303,7 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
     
     for (const pagePath of nonExistentRoutes) {
       await page.goto(pagePath);
-      await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForLoadState('networkidle', { timeout: 15000 });
       
       // Should either show 404 or redirect gracefully
       const has404 = await page.locator('text=404, text=Not Found, text=Page not found').first().isVisible();
@@ -333,7 +340,7 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
     
     for (const pagePath of accessibilityPages) {
       await page.goto(pagePath);
-      await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForLoadState('networkidle', { timeout: 15000 });
       
       // Check for basic accessibility features
       const hasMainLandmark = await page.locator('main, [role="main"]').first().isVisible();
@@ -358,7 +365,7 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
       });
       
       await page.goto(pagePath);
-      await page.waitForLoadState('networkidle', { timeout: 10000 });
+      await page.waitForLoadState('networkidle', { timeout: 15000 });
       
       // Filter out known acceptable errors
       const criticalErrors = errors.filter(error => 

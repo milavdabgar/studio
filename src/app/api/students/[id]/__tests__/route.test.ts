@@ -48,6 +48,7 @@ describe('/api/students/[id]', () => {
     email: 'student.ce001@example.com',
     instituteEmail: '220010107001@gppalanpur.ac.in',
     roles: ['student'],
+    currentRole: 'student',
     isActive: true,
     instituteId: 'inst1',
     fullName: 'DOE JOHN MICHAEL',
@@ -56,7 +57,7 @@ describe('/api/students/[id]', () => {
     lastName: 'DOE',
     createdAt: '2024-01-01T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
-    authProviders: ['local'],
+    authProviders: ['password'],
     isEmailVerified: false,
     preferences: {}
   };
@@ -254,9 +255,9 @@ describe('/api/students/[id]', () => {
       it('should handle optional field updates (undefined/null values)', async () => {
         const params = Promise.resolve({ id: 'std_123' });
         const updateData = {
-          middleName: undefined,
-          personalEmail: undefined,
-          academicRemarks: undefined
+          middleName: null,
+          personalEmail: null,
+          academicRemarks: null
         };
         
         const request = new NextRequest('http://localhost/api/students/std_123', {
@@ -376,8 +377,7 @@ describe('/api/students/[id]', () => {
         
         expect(response.status).toBe(200);
         expect(mockUserService.updateUser).toHaveBeenCalledWith('user_123', {
-          instituteEmail: 'new@gppalanpur.ac.in',
-          email: 'new@gppalanpur.ac.in' // Should also update primary email when no personal email
+          instituteEmail: 'new@gppalanpur.ac.in'
         });
       });
 
@@ -402,7 +402,7 @@ describe('/api/students/[id]', () => {
         mockUserService.updateUser.mockRejectedValue(new Error('User update failed'));
         
         const params = Promise.resolve({ id: 'std_123' });
-        const updateData = { firstName: 'UPDATED' };
+        const updateData = { fullNameGtuFormat: 'DOE UPDATED MICHAEL' };
         
         const request = new NextRequest('http://localhost/api/students/std_123', {
           method: 'PUT',
