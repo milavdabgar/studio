@@ -19,8 +19,9 @@ describe('/api/students', () => {
     // Reset all mocks first
     jest.clearAllMocks();
     
-    // Reset global store before each test - must be done after import
-    // Clear the store completely, including any default data
+    // Reset global store before each test with a known empty state
+    // Don't set to [] because the route will reinitialize with default data
+    // Instead, set to a known empty student list that won't interfere
     global.__API_STUDENTS_STORE__ = [];
     
     // Setup default mock responses
@@ -77,6 +78,8 @@ describe('/api/students', () => {
     });
 
     it('should return all students when store has data', async () => {
+      // Since we reset the store in beforeEach, it should be empty
+      // Let's set some test data and verify it's returned
       const mockStudents: Student[] = [
         {
           id: 'std_test_1',
@@ -230,9 +233,12 @@ describe('/api/students', () => {
       });
 
       it('should return 409 when enrollment number already exists', async () => {
-        // Use a unique enrollment number that doesn't exist in default data
+        // Clear the store and add a student with a specific enrollment number
+        global.__API_STUDENTS_STORE__ = [];
+        
         const testEnrollmentNumber = '999999999';
         
+        // Add one student with the test enrollment number
         global.__API_STUDENTS_STORE__ = [{
           ...validStudentData,
           id: 'existing_student',
@@ -258,6 +264,9 @@ describe('/api/students', () => {
       });
 
       it('should return 409 when institute email already exists', async () => {
+        // Clear the store first
+        global.__API_STUDENTS_STORE__ = [];
+        
         // Use a unique enrollment number and test institute email conflict
         const testInstituteEmail = 'test999999@gppalanpur.ac.in';
         
@@ -288,6 +297,9 @@ describe('/api/students', () => {
 
     describe('Institute Domain Logic', () => {
       it('should use institute domain when available', async () => {
+        // Clear the store to avoid conflicts
+        global.__API_STUDENTS_STORE__ = [];
+        
         const request = new NextRequest('http://localhost/api/students', {
           method: 'POST',
           body: JSON.stringify(validStudentData),
@@ -297,11 +309,14 @@ describe('/api/students', () => {
         const data = await response.json();
         
         expect(response.status).toBe(201);
-        expect(data.instituteEmail).toBe('220010107001@gppalanpur.ac.in');
+        expect(data.instituteEmail).toBe('999999999@gppalanpur.ac.in'); // Using our unique enrollment number
         expect(mockInstituteService.getInstituteById).toHaveBeenCalledWith('inst1');
       });
 
       it('should use default domain when institute fetch fails', async () => {
+        // Clear the store to avoid conflicts
+        global.__API_STUDENTS_STORE__ = [];
+        
         mockInstituteService.getInstituteById.mockRejectedValue(new Error('Institute not found'));
         
         const request = new NextRequest('http://localhost/api/students', {
@@ -313,10 +328,13 @@ describe('/api/students', () => {
         const data = await response.json();
         
         expect(response.status).toBe(201);
-        expect(data.instituteEmail).toBe('220010107001@gpp.ac.in');
+        expect(data.instituteEmail).toBe('999999999@gpp.ac.in'); // Using our unique enrollment number
       });
 
       it('should derive instituteId from program when not provided', async () => {
+        // Clear the store to avoid conflicts
+        global.__API_STUDENTS_STORE__ = [];
+        
         const dataWithoutInstituteId = { ...validStudentData };
         delete (dataWithoutInstituteId as any).instituteId;
         
@@ -334,6 +352,9 @@ describe('/api/students', () => {
       });
 
       it('should use provided institute email when specified', async () => {
+        // Clear the store to avoid conflicts
+        global.__API_STUDENTS_STORE__ = [];
+        
         const dataWithCustomEmail = { 
           ...validStudentData, 
           instituteEmail: 'custom@gppalanpur.ac.in' 
@@ -354,6 +375,9 @@ describe('/api/students', () => {
 
     describe('User Creation Integration', () => {
       it('should create new user successfully', async () => {
+        // Clear the store to avoid conflicts
+        global.__API_STUDENTS_STORE__ = [];
+        
         const request = new NextRequest('http://localhost/api/students', {
           method: 'POST',
           body: JSON.stringify(validStudentData),
@@ -366,9 +390,9 @@ describe('/api/students', () => {
         expect(data.userId).toBe('user_123');
         expect(mockUserService.createUser).toHaveBeenCalledWith({
           displayName: 'DOE JOHN MICHAEL',
-          email: 'student.ce001@example.com',
-          instituteEmail: '220010107001@gppalanpur.ac.in',
-          password: '220010107001',
+          email: 'student.test@example.com',
+          instituteEmail: '999999999@gppalanpur.ac.in',
+          password: '999999999',
           roles: ['student'],
           isActive: true,
           instituteId: 'inst1',
@@ -399,22 +423,49 @@ describe('/api/students', () => {
         );
       });
 
+      it('should use institute email as primary when personal email not provided', async () => {
+        // Clear the store to avoid conflicts
+        global.__API_STUDENTS_STORE__ = [];
+        
+        const dataWithoutPersonalEmail = { ...validStudentData };
+        delete (dataWithoutPersonalEmail as any).personalEmail;
+        
+        const request = new NextRequest('http://localhost/api/students', {
+          method: 'POST',
+          body: JSON.stringify(dataWithoutPersonalEmail),
+        });
+        
+        const response = await POST(request);
+        
+        expect(response.status).toBe(201);
+        expect(mockUserService.createUser).toHaveBeenCalledWith(
+          expect.objectContaining({
+            email: '999999999@gppalanpur.ac.in', // institute email should be primary
+            instituteEmail: '999999999@gppalanpur.ac.in'
+          })
+        );
+      });
+
       it('should handle user creation error when user already exists', async () => {
+        // Clear the store to avoid conflicts
+        global.__API_STUDENTS_STORE__ = [];
+        
         const existingUserError = new Error('User with this email already exists');
         existingUserError.message = 'User with this email already exists';
         mockUserService.createUser.mockRejectedValue(existingUserError);
         
         mockUserService.getAllUsers.mockResolvedValue([{
           id: 'existing_user',
-          email: 'student.ce001@example.com',
-          instituteEmail: '220010107001@gppalanpur.ac.in',
+          email: 'student.test@example.com',
+          instituteEmail: '999999999@gppalanpur.ac.in',
           roles: ['faculty'],
+          currentRole: 'faculty',
           displayName: 'Existing User',
           isActive: true,
           instituteId: 'inst1',
           createdAt: '2024-01-01T00:00:00.000Z',
           updatedAt: '2024-01-01T00:00:00.000Z',
-          authProviders: ['local'],
+          authProviders: ['password'],
           isEmailVerified: false,
           preferences: {}
         } as User]);
