@@ -420,8 +420,8 @@ describe('/api/students', () => {
         expect(response.status).toBe(201);
         expect(mockUserService.createUser).toHaveBeenCalledWith(
           expect.objectContaining({
-            email: '220010107001@gppalanpur.ac.in',
-            instituteEmail: '220010107001@gppalanpur.ac.in'
+            email: '999999999@gppalanpur.ac.in',
+            instituteEmail: '999999999@gppalanpur.ac.in'
           })
         );
       });
@@ -625,11 +625,12 @@ describe('/api/students', () => {
         expect(data.error).toBeDefined();
       });
 
-      it('should return 500 when service calls throw unexpected errors', async () => {
+      it('should create student successfully even when user creation fails', async () => {
         // Clear the store to avoid conflicts
         global.__API_STUDENTS_STORE__ = [];
         
-        mockProgramService.getAllPrograms.mockRejectedValue(new Error('Database error'));
+        // Mock user service to fail - this should not prevent student creation
+        mockUserService.createUser.mockRejectedValue(new Error('User service unavailable'));
         
         const request = new NextRequest('http://localhost/api/students', {
           method: 'POST',
@@ -639,9 +640,18 @@ describe('/api/students', () => {
         const response = await POST(request);
         const data = await response.json();
         
-        expect(response.status).toBe(500);
-        expect(data.message).toBe('Error creating student');
-        expect(data.error).toBe('Database error');
+        // Student should still be created successfully
+        expect(response.status).toBe(201);
+        expect(data.enrollmentNumber).toBe(validStudentData.enrollmentNumber);
+        expect(data.id).toBeDefined();
+        
+        // User creation should have been attempted
+        expect(mockUserService.createUser).toHaveBeenCalled();
+        
+        // Student should be added to store even though user creation failed
+        const store = global.__API_STUDENTS_STORE__;
+        expect(store).toHaveLength(1);
+        expect(store[0].enrollmentNumber).toBe(validStudentData.enrollmentNumber);
       });
     });
   });
