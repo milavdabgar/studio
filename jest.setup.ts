@@ -15,6 +15,108 @@ global.TextDecoder = TextDecoder as any;
 global.URL = require('url').URL;
 global.URLSearchParams = require('url').URLSearchParams;
 
+// Mock Web API globals for Next.js API routes
+global.Request = class MockRequest {
+  public url: string;
+  public init?: RequestInit;
+  
+  constructor(url: string, init?: RequestInit) {
+    this.url = url;
+    this.init = init;
+  }
+  
+  async json() {
+    if (this.init?.body) {
+      return JSON.parse(this.init.body as string);
+    }
+    return {};
+  }
+  
+  async text() {
+    return this.init?.body as string || '';
+  }
+  
+  get method() {
+    return this.init?.method || 'GET';
+  }
+  
+  get headers() {
+    return new Headers(this.init?.headers);
+  }
+} as any;
+
+global.Response = class MockResponse {
+  constructor(public body?: any, public init?: ResponseInit) {}
+  
+  static json(data: any, init?: ResponseInit) {
+    return new MockResponse(JSON.stringify(data), {
+      ...init,
+      headers: {
+        'Content-Type': 'application/json',
+        ...init?.headers
+      }
+    });
+  }
+  
+  async json() {
+    return JSON.parse(this.body || '{}');
+  }
+  
+  async text() {
+    return this.body || '';
+  }
+  
+  get status() {
+    return this.init?.status || 200;
+  }
+  
+  get headers() {
+    return new Headers(this.init?.headers);
+  }
+} as any;
+
+global.Headers = class MockHeaders {
+  private _headers: Record<string, string> = {};
+  
+  constructor(init?: HeadersInit) {
+    if (init) {
+      if (Array.isArray(init)) {
+        init.forEach(([key, value]) => {
+          this._headers[key.toLowerCase()] = value;
+        });
+      } else if (init instanceof Headers) {
+        // Handle Headers instance
+      } else {
+        Object.entries(init).forEach(([key, value]) => {
+          this._headers[key.toLowerCase()] = value;
+        });
+      }
+    }
+  }
+  
+  get(name: string) {
+    return this._headers[name.toLowerCase()] || null;
+  }
+  
+  set(name: string, value: string) {
+    this._headers[name.toLowerCase()] = value;
+  }
+  
+  has(name: string) {
+    return name.toLowerCase() in this._headers;
+  }
+  
+  delete(name: string) {
+    delete this._headers[name.toLowerCase()];
+  }
+  
+  forEach(callback: (value: string, key: string) => void) {
+    Object.entries(this._headers).forEach(([key, value]) => {
+      callback(value, key);
+    });
+  }
+} as any;
+
 // Mock fetch for general use (component tests don't need API routes)
 global.fetch = jest.fn();
 
