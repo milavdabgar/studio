@@ -97,7 +97,26 @@ const config: Config = {
     // Mock MongoDB modules for testing
     '^mongodb$': '<rootDir>/__mocks__/mongodb.js',
     '^bson$': '<rootDir>/__mocks__/bson.js',
-    '^mongoose$': '<rootDir>/__mocks__/mongoose.js'
+    '^mongoose$': '<rootDir>/__mocks__/mongoose.js',
+    // Mock third-party packages
+    '^stripe$': '<rootDir>/__mocks__/stripe.js',
+    '^bullmq$': '<rootDir>/__mocks__/bullmq.js',
+    '^@aws-sdk/client-s3$': '<rootDir>/__mocks__/@aws-sdk/client-s3.js',
+    '^nodemailer$': '<rootDir>/__mocks__/nodemailer.js',
+    '^ioredis$': '<rootDir>/__mocks__/ioredis.js',
+    '^@segment/analytics-node$': '<rootDir>/__mocks__/@segment/analytics-node.js',
+    '^pg$': '<rootDir>/__mocks__/pg.js',
+    '^ws$': '<rootDir>/__mocks__/ws.js',
+    '^next-auth/react$': '<rootDir>/__mocks__/next-auth/react.js',
+    '^jsonwebtoken$': '<rootDir>/__mocks__/jsonwebtoken.js',
+    '^yup$': '<rootDir>/__mocks__/yup.js',
+    '^uuid$': '<rootDir>/__mocks__/uuid.js',
+    '^handlebars$': '<rootDir>/__mocks__/handlebars.js',
+    '^fs/promises$': '<rootDir>/__mocks__/fs/promises.js',
+    '^stream$': '<rootDir>/__mocks__/stream.js',
+    '^node-mocks-http$': '<rootDir>/__mocks__/node-mocks-http.js',
+    // Fix deprecated testing library
+    '^@testing-library/react-hooks$': '@testing-library/react'
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader

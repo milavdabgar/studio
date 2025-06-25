@@ -15,7 +15,7 @@ jest.mock('ws', () => {
   const mockWebSocket = {
     on: jest.fn(),
     send: jest.fn(),
-    readyState: WebSocket.OPEN,
+    readyState: 1, // WebSocket.OPEN constant value
     close: jest.fn(),
   };
   
