@@ -12,12 +12,12 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
   
   test.beforeEach(async ({ page }) => {
     // Start from home page
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
   });
 
   test('should access DTE dashboard', async ({ page }) => {
-    await page.goto('/dte/dashboard');
+    await page.goto('http://localhost:3000/dte/dashboard');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasDTEDashboard = await page.locator('h1:has-text("DTE"), h1:has-text("Dashboard"), .dte-dashboard').isVisible();
@@ -36,7 +36,7 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
   });
 
   test('should test feedback analysis system', async ({ page }) => {
-    await page.goto('/admin/feedback-analysis');
+    await page.goto('http://localhost:3000/admin/feedback-analysis');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasFeedbackAnalysis = await page.locator('h1:has-text("Feedback"), h1:has-text("Analysis"), .feedback-analysis').isVisible();
@@ -56,7 +56,7 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
   });
 
   test('should test reporting and analytics dashboard', async ({ page }) => {
-    await page.goto('/admin/reporting-analytics');
+    await page.goto('http://localhost:3000/admin/reporting-analytics');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasReportingDashboard = await page.locator('h1:has-text("Reporting"), h1:has-text("Analytics"), .reporting-dashboard').isVisible();
@@ -77,7 +77,7 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
 
   test('should test GTU integration features', async ({ page }) => {
     // Test GTU-related functionality if it exists
-    await page.goto('/gtu');
+    await page.goto('http://localhost:3000/gtu');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasGTUContent = await page.locator('h1:has-text("GTU"), .gtu-section, .gtu-integration').isVisible();
@@ -96,7 +96,7 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
   });
 
   test('should test resource allocation management', async ({ page }) => {
-    await page.goto('/admin/resource-allocation');
+    await page.goto('http://localhost:3000/admin/resource-allocation');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasResourceAllocation = await page.locator('h1:has-text("Resource"), h1:has-text("Allocation"), .resource-allocation').isVisible();
@@ -116,7 +116,7 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
   });
 
   test('should test advanced settings and configuration', async ({ page }) => {
-    await page.goto('/admin/settings');
+    await page.goto('http://localhost:3000/admin/settings');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasSettingsPage = await page.locator('h1:has-text("Settings"), .settings-page, .configuration').isVisible();
@@ -136,7 +136,7 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
   });
 
   test('should test committee management system', async ({ page }) => {
-    await page.goto('/dashboard/committee');
+    await page.goto('http://localhost:3000/dashboard/committee');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasCommitteeSection = await page.locator('h1:has-text("Committee"), .committee-section').isVisible();
@@ -155,7 +155,7 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
   });
 
   test('should test faculty workload management', async ({ page }) => {
-    await page.goto('/admin/faculty-workload');
+    await page.goto('http://localhost:3000/admin/faculty-workload');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasWorkloadManagement = await page.locator('h1:has-text("Workload"), h1:has-text("Faculty"), .workload-management').isVisible();
@@ -175,7 +175,7 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
   });
 
   test('should test leave management system', async ({ page }) => {
-    await page.goto('/admin/leaves');
+    await page.goto('http://localhost:3000/admin/leaves');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasLeaveManagement = await page.locator('h1:has-text("Leave"), .leave-management').isVisible();
@@ -195,7 +195,7 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
   });
 
   test('should test building and room management', async ({ page }) => {
-    await page.goto('/admin/buildings');
+    await page.goto('http://localhost:3000/admin/buildings');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasBuildingManagement = await page.locator('h1:has-text("Building"), .building-management').isVisible();
@@ -213,7 +213,7 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
     }
     
     // Test room management
-    await page.goto('/admin/rooms');
+    await page.goto('http://localhost:3000/admin/rooms');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasRoomManagement = await page.locator('h1:has-text("Room"), .room-management').isVisible();
@@ -223,7 +223,7 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
   });
 
   test('should test examination management system', async ({ page }) => {
-    await page.goto('/admin/examinations');
+    await page.goto('http://localhost:3000/admin/examinations');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasExamManagement = await page.locator('h1:has-text("Examination"), .exam-management').isVisible();
@@ -273,7 +273,7 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
     // Test that complex dashboards load within reasonable time
     const startTime = Date.now();
     
-    await page.goto('/admin/reporting-analytics');
+    await page.goto('http://localhost:3000/admin/reporting-analytics');
     await page.waitForLoadState('networkidle', { timeout: 15000 });
     
     const loadTime = Date.now() - startTime;
@@ -310,7 +310,7 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
   test('should test specialized responsive design', async ({ page }) => {
     // Test mobile responsiveness for specialized dashboards
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/admin/reporting-analytics');
+    await page.goto('http://localhost:3000/admin/reporting-analytics');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Check if layout adapts to mobile

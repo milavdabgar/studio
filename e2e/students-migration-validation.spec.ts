@@ -8,14 +8,14 @@ test.describe('Students API Migration Validation', () => {
   
   test.beforeEach(async ({ page }) => {
     // Navigate to the application
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
   });
 
   test.describe('Students Data Consistency', () => {
     
     test('should maintain student count after migration', async ({ page }) => {
       // Navigate to students page (assuming you have one)
-      await page.goto('/students'); // Adjust URL to your actual students page
+      await page.goto('http://localhost:3000/students'); // Adjust URL to your actual students page
       
       // Count students before migration
       const studentElements = page.locator('[data-testid="student-item"]'); // Adjust selector
@@ -29,7 +29,7 @@ test.describe('Students API Migration Validation', () => {
     });
 
     test('should preserve all student data fields', async ({ page }) => {
-      await page.goto('/students');
+      await page.goto('http://localhost:3000/students');
       
       // Check first student has all required fields
       const firstStudent = page.locator('[data-testid="student-item"]').first();
@@ -41,7 +41,7 @@ test.describe('Students API Migration Validation', () => {
     });
 
     test('should maintain student search functionality', async ({ page }) => {
-      await page.goto('/students');
+      await page.goto('http://localhost:3000/students');
       
       // Test search functionality if it exists
       const searchInput = page.locator('input[placeholder*="search" i]').first();
@@ -57,7 +57,7 @@ test.describe('Students API Migration Validation', () => {
     });
 
     test('should preserve student detail views', async ({ page }) => {
-      await page.goto('/students');
+      await page.goto('http://localhost:3000/students');
       
       // Click on first student to view details
       const firstStudent = page.locator('[data-testid="student-item"]').first();
@@ -80,7 +80,7 @@ test.describe('Students API Migration Validation', () => {
   test.describe('Students CRUD Operations', () => {
     
     test('should create new student successfully', async ({ page }) => {
-      await page.goto('/students');
+      await page.goto('http://localhost:3000/students');
       
       // Look for "Add Student" or similar button
       const addButton = page.locator('button:has-text("Add"), button:has-text("Create"), button:has-text("New")').first();
@@ -110,7 +110,7 @@ test.describe('Students API Migration Validation', () => {
     });
 
     test('should edit existing student', async ({ page }) => {
-      await page.goto('/students');
+      await page.goto('http://localhost:3000/students');
       
       // Find an edit button or clickable student
       const editButton = page.locator('button:has-text("Edit"), [data-testid="edit-student"]').first();
@@ -138,7 +138,7 @@ test.describe('Students API Migration Validation', () => {
     });
 
     test('should handle invalid student data', async ({ page }) => {
-      await page.goto('/students');
+      await page.goto('http://localhost:3000/students');
       
       const addButton = page.locator('button:has-text("Add"), button:has-text("Create"), button:has-text("New")').first();
       

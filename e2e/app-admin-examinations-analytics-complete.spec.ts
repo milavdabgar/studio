@@ -6,12 +6,12 @@ test.describe('Admin Examinations & Analytics Complete Coverage E2E Tests', () =
   
   test.beforeEach(async ({ page }) => {
     // Navigate to home page first
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     await page.waitForLoadState('networkidle');
   });
 
   test('should test admin reporting and analytics page', async ({ page }) => {
-    await page.goto('/admin/reporting-analytics');
+    await page.goto('http://localhost:3000/admin/reporting-analytics');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="reporting-analytics"]', { timeout: 10000 });
@@ -29,7 +29,7 @@ test.describe('Admin Examinations & Analytics Complete Coverage E2E Tests', () =
   });
 
   test('should test admin resource allocation main page', async ({ page }) => {
-    await page.goto('/admin/resource-allocation');
+    await page.goto('http://localhost:3000/admin/resource-allocation');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="resource-allocation"]', { timeout: 10000 });
@@ -47,7 +47,7 @@ test.describe('Admin Examinations & Analytics Complete Coverage E2E Tests', () =
   });
 
   test('should test admin resource allocation rooms page', async ({ page }) => {
-    await page.goto('/admin/resource-allocation/rooms');
+    await page.goto('http://localhost:3000/admin/resource-allocation/rooms');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="resource-allocation-rooms"]', { timeout: 10000 });
@@ -65,7 +65,7 @@ test.describe('Admin Examinations & Analytics Complete Coverage E2E Tests', () =
   });
 
   test('should test admin faculty workload page', async ({ page }) => {
-    await page.goto('/admin/faculty-workload');
+    await page.goto('http://localhost:3000/admin/faculty-workload');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="faculty-workload"]', { timeout: 10000 });
@@ -178,7 +178,7 @@ test.describe('Admin Examinations & Analytics Complete Coverage E2E Tests', () =
   });
 
   test('should test admin results import page', async ({ page }) => {
-    await page.goto('/admin/results/import');
+    await page.goto('http://localhost:3000/admin/results/import');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="results-import"]', { timeout: 10000 });
@@ -196,7 +196,7 @@ test.describe('Admin Examinations & Analytics Complete Coverage E2E Tests', () =
   });
 
   test('should test analytics and reporting functionality', async ({ page }) => {
-    await page.goto('/admin/reporting-analytics');
+    await page.goto('http://localhost:3000/admin/reporting-analytics');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });
@@ -226,7 +226,7 @@ test.describe('Admin Examinations & Analytics Complete Coverage E2E Tests', () =
   });
 
   test('should test resource allocation functionality', async ({ page }) => {
-    await page.goto('/admin/resource-allocation');
+    await page.goto('http://localhost:3000/admin/resource-allocation');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });
@@ -256,7 +256,7 @@ test.describe('Admin Examinations & Analytics Complete Coverage E2E Tests', () =
   });
 
   test('should test faculty workload management functionality', async ({ page }) => {
-    await page.goto('/admin/faculty-workload');
+    await page.goto('http://localhost:3000/admin/faculty-workload');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });
@@ -310,7 +310,7 @@ test.describe('Admin Examinations & Analytics Complete Coverage E2E Tests', () =
   });
 
   test('should test admin analytics responsive design', async ({ page }) => {
-    await page.goto('/admin/reporting-analytics');
+    await page.goto('http://localhost:3000/admin/reporting-analytics');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });

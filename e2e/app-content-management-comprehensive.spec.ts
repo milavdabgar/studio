@@ -12,13 +12,13 @@ test.describe('Content Management System - Complete Application Flow', () => {
   
   test.beforeEach(async ({ page }) => {
     // Start from home page
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
   });
 
   test('should access blog and posts section', async ({ page }) => {
     // Test blog/posts access
-    await page.goto('/posts');
+    await page.goto('http://localhost:3000/posts');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasBlogContent = await page.locator('h1:has-text("Posts"), h1:has-text("Blog"), .blog-post, .post-list').isVisible();
@@ -37,7 +37,7 @@ test.describe('Content Management System - Complete Application Flow', () => {
   });
 
   test('should test newsletter section', async ({ page }) => {
-    await page.goto('/newsletters');
+    await page.goto('http://localhost:3000/newsletters');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasNewsletterContent = await page.locator('h1:has-text("Newsletter"), .newsletter, .newsletter-list').isVisible();
@@ -56,7 +56,7 @@ test.describe('Content Management System - Complete Application Flow', () => {
   });
 
   test('should test blog dashboard for content creators', async ({ page }) => {
-    await page.goto('/blog-dashboard/en');
+    await page.goto('http://localhost:3000/blog-dashboard/en');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasBlogDashboard = await page.locator('h1:has-text("Dashboard"), h1:has-text("Blog"), .blog-dashboard').isVisible();
@@ -76,7 +76,7 @@ test.describe('Content Management System - Complete Application Flow', () => {
 
   test('should test categories and tags system', async ({ page }) => {
     // Test categories page
-    await page.goto('/categories/en');
+    await page.goto('http://localhost:3000/categories/en');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasCategoriesPage = await page.locator('h1:has-text("Categories"), .categories, .category-list').isVisible();
@@ -93,7 +93,7 @@ test.describe('Content Management System - Complete Application Flow', () => {
     }
     
     // Test tags page
-    await page.goto('/tags/en');
+    await page.goto('http://localhost:3000/tags/en');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasTagsPage = await page.locator('h1:has-text("Tags"), .tags, .tag-list').isVisible();
@@ -103,7 +103,7 @@ test.describe('Content Management System - Complete Application Flow', () => {
   });
 
   test('should test search functionality', async ({ page }) => {
-    await page.goto('/search/en');
+    await page.goto('http://localhost:3000/search/en');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasSearchPage = await page.locator('h1:has-text("Search"), .search-page, .search-results').isVisible();
@@ -139,7 +139,7 @@ test.describe('Content Management System - Complete Application Flow', () => {
 
   test('should test individual post viewing', async ({ page }) => {
     // Try to access a specific post (may not exist, but should handle gracefully)
-    await page.goto('/posts/test-post');
+    await page.goto('http://localhost:3000/posts/test-post');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasPostContent = await page.locator('article, .post-content, .blog-post').isVisible();
@@ -160,7 +160,7 @@ test.describe('Content Management System - Complete Application Flow', () => {
 
   test('should test media and file management', async ({ page }) => {
     // Check if media files are accessible
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Look for any images or media on the page
@@ -234,7 +234,7 @@ test.describe('Content Management System - Complete Application Flow', () => {
   test('should test content management responsive design', async ({ page }) => {
     // Test mobile responsiveness for content pages
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/posts');
+    await page.goto('http://localhost:3000/posts');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Check if layout adapts to mobile
@@ -254,7 +254,7 @@ test.describe('Content Management System - Complete Application Flow', () => {
     // Test that content pages load reasonably fast
     const startTime = Date.now();
     
-    await page.goto('/posts');
+    await page.goto('http://localhost:3000/posts');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const loadTime = Date.now() - startTime;

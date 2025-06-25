@@ -10,7 +10,7 @@ const validUser = {
 // Helper functions
 async function login(page: Page) {
   // Navigate to login page
-  await page.goto('/login');
+  await page.goto('http://localhost:3000/login');
   
   // Try to fill in login form if it's available
   try {
@@ -68,19 +68,19 @@ async function login(page: Page) {
       } else {
         console.log('Login may have succeeded but dashboard heading not found');
         // Try to navigate to dashboard directly
-        await page.goto('/dashboard');
+        await page.goto('http://localhost:3000/dashboard');
         await page.waitForLoadState('networkidle');
       }
     } catch (e) {
       console.log('Login may have succeeded but dashboard heading not found');
       // Try to navigate to dashboard directly
-      await page.goto('/dashboard');
+      await page.goto('http://localhost:3000/dashboard');
       await page.waitForLoadState('networkidle');
     }
   } catch (e) {
     console.log('Login form may not be available in test environment');
     // If we can't log in, just navigate to dashboard directly
-    await page.goto('/dashboard');
+    await page.goto('http://localhost:3000/dashboard');
     await page.waitForLoadState('networkidle');
   }
 }
@@ -156,7 +156,7 @@ test.describe('Dashboard Functionality', () => {
     
     if (!settingsLinkExists) {
       // Admin users can navigate to admin settings
-      await page.goto('/admin/settings');
+      await page.goto('http://localhost:3000/admin/settings');
       await page.waitForLoadState('networkidle');
     } else {
       // Navigate to settings using more flexible selector
@@ -219,7 +219,7 @@ test.describe('Student Management', () => {
     await login(page);
     
     // Always navigate to admin students page
-    await page.goto('/admin/students', { waitUntil: 'domcontentloaded' });
+    await page.goto('http://localhost:3000/admin/students', { waitUntil: 'domcontentloaded' });
     
     // Check for Students heading but don't fail if not found
     try {
@@ -393,7 +393,7 @@ test.describe('User Management', () => {
     await login(page);
     
     // Always navigate to admin users page
-    await page.goto('/admin/users', { waitUntil: 'domcontentloaded' });
+    await page.goto('http://localhost:3000/admin/users', { waitUntil: 'domcontentloaded' });
     
     // Check for Users heading but don't fail if not found
     try {

@@ -6,12 +6,12 @@ test.describe('Notifications and Main Dashboard Complete Coverage E2E Tests', ()
   
   test.beforeEach(async ({ page }) => {
     // Navigate to home page first
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     await page.waitForLoadState('networkidle');
   });
 
   test('should test main dashboard page', async ({ page }) => {
-    await page.goto('/dashboard');
+    await page.goto('http://localhost:3000/dashboard');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="dashboard"]', { timeout: 10000 });
@@ -29,7 +29,7 @@ test.describe('Notifications and Main Dashboard Complete Coverage E2E Tests', ()
   });
 
   test('should test committee dashboard page', async ({ page }) => {
-    await page.goto('/dashboard/committee');
+    await page.goto('http://localhost:3000/dashboard/committee');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="committee-dashboard"]', { timeout: 10000 });
@@ -47,7 +47,7 @@ test.describe('Notifications and Main Dashboard Complete Coverage E2E Tests', ()
   });
 
   test('should test notifications page', async ({ page }) => {
-    await page.goto('/notifications');
+    await page.goto('http://localhost:3000/notifications');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="notifications"]', { timeout: 15000 });
@@ -65,7 +65,7 @@ test.describe('Notifications and Main Dashboard Complete Coverage E2E Tests', ()
   });
 
   test('should test dashboard navigation elements', async ({ page }) => {
-    await page.goto('/dashboard');
+    await page.goto('http://localhost:3000/dashboard');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });
@@ -96,7 +96,7 @@ test.describe('Notifications and Main Dashboard Complete Coverage E2E Tests', ()
   });
 
   test('should test dashboard widgets and components', async ({ page }) => {
-    await page.goto('/dashboard');
+    await page.goto('http://localhost:3000/dashboard');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });
@@ -127,7 +127,7 @@ test.describe('Notifications and Main Dashboard Complete Coverage E2E Tests', ()
   });
 
   test('should test notifications functionality', async ({ page }) => {
-    await page.goto('/notifications');
+    await page.goto('http://localhost:3000/notifications');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 15000 });
@@ -157,7 +157,7 @@ test.describe('Notifications and Main Dashboard Complete Coverage E2E Tests', ()
   });
 
   test('should test notification interactions', async ({ page }) => {
-    await page.goto('/notifications');
+    await page.goto('http://localhost:3000/notifications');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 15000 });
@@ -226,7 +226,7 @@ test.describe('Notifications and Main Dashboard Complete Coverage E2E Tests', ()
   });
 
   test('should test dashboard responsive behavior', async ({ page }) => {
-    await page.goto('/dashboard');
+    await page.goto('http://localhost:3000/dashboard');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });
@@ -255,7 +255,7 @@ test.describe('Notifications and Main Dashboard Complete Coverage E2E Tests', ()
   });
 
   test('should test notifications responsive behavior', async ({ page }) => {
-    await page.goto('/notifications');
+    await page.goto('http://localhost:3000/notifications');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 15000 });

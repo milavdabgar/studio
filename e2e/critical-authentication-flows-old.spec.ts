@@ -14,11 +14,11 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
   test.beforeEach(async ({ page }) => {
     // Ensure clean state
     await page.context().clearCookies();
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
   });
 
   test('should load login page correctly', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     // Verify page loads
     await expect(page).toHaveTitle(/Login/);
@@ -45,7 +45,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
   });
 
   test('should load signup page correctly', async ({ page }) => {
-    await page.goto('/signup');
+    await page.goto('http://localhost:3000/signup');
     
     // Verify page loads
     await expect(page).toHaveTitle(/Sign.*[Uu]p/);
@@ -60,7 +60,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
   });
 
   test('should handle valid login - Admin user', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     // Fill login form
     await fillForm(page, {
@@ -108,7 +108,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
   });
 
   test('should handle valid login - Faculty user', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     await fillForm(page, {
       email: testData.faculty.email,
@@ -129,7 +129,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
   });
 
   test('should handle valid login - Student user', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     await fillForm(page, {
       email: testData.student.email,  
@@ -150,7 +150,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
   });
 
   test('should handle invalid login credentials', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     await fillForm(page, {
       email: 'invalid@test.com',
@@ -165,7 +165,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
   });
 
   test('should validate login form fields', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     // Try to submit empty form
     await submitForm(page);
@@ -180,7 +180,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
   });
 
   test('should handle signup form submission', async ({ page }) => {
-    await page.goto('/signup');
+    await page.goto('http://localhost:3000/signup');
     
     // Fill signup form with test data
     await fillForm(page, {
@@ -203,7 +203,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
   });
 
   test('should validate signup password confirmation', async ({ page }) => {
-    await page.goto('/signup');
+    await page.goto('http://localhost:3000/signup');
     
     await fillForm(page, {
       firstName: 'Test',
@@ -222,7 +222,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
 
   test('should handle logout functionality', async ({ page }) => {
     // First login
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     await fillForm(page, {
       email: testData.admin.email,
@@ -302,7 +302,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
 
   test('should maintain session across page reloads', async ({ page }) => {
     // Login first
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     await fillForm(page, {
       email: testData.admin.email,

@@ -12,7 +12,7 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
   
   test.beforeEach(async ({ page }) => {
     // Start from home page
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
   });
 
@@ -60,7 +60,7 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
 
   test('should test faculty dashboard and features', async ({ page }) => {
     // Test faculty main page
-    await page.goto('/faculty');
+    await page.goto('http://localhost:3000/faculty');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasFacultyPage = await page.locator('h1:has-text("Faculty"), .faculty-dashboard').isVisible();
@@ -92,7 +92,7 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
 
   test('should test student dashboard and features', async ({ page }) => {
     // Test student main page
-    await page.goto('/student');
+    await page.goto('http://localhost:3000/student');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasStudentPage = await page.locator('h1:has-text("Student"), .student-dashboard').isVisible();

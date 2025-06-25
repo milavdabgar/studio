@@ -20,6 +20,7 @@ describe('/api/students', () => {
     jest.clearAllMocks();
     
     // Reset global store before each test - must be done after import
+    // Clear the store completely, including any default data
     global.__API_STUDENTS_STORE__ = [];
     
     // Setup default mock responses
@@ -29,8 +30,9 @@ describe('/api/students', () => {
         instituteId: 'inst1',
         name: 'Diploma in Civil Engineering',
         code: 'DCE',
-        duration: '3 years',
-        type: 'Diploma',
+        departmentId: 'dept_ce_gpp',
+        degreeType: 'Diploma',
+        status: 'active',
         createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z'
       }
@@ -51,11 +53,12 @@ describe('/api/students', () => {
       email: 'john@example.com',
       instituteEmail: '123456@gppalanpur.ac.in',
       roles: ['student'],
+      currentRole: 'student',
       isActive: true,
       instituteId: 'inst1',
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-01T00:00:00.000Z',
-      authProviders: ['local'],
+      authProviders: ['password'],
       isEmailVerified: false,
       preferences: {}
     } as User);
@@ -119,8 +122,8 @@ describe('/api/students', () => {
 
   describe('POST /api/students', () => {
     const validStudentData = {
-      enrollmentNumber: '220010107001',
-      gtuEnrollmentNumber: '220010107001',
+      enrollmentNumber: '999999999', // Use unique enrollment number not in default data
+      gtuEnrollmentNumber: '999999999',
       programId: 'prog_dce_gpp',
       department: 'dept_ce_gpp',
       batchId: 'batch_dce_2022_gpp',
@@ -138,7 +141,7 @@ describe('/api/students', () => {
       lastName: 'DOE',
       gender: 'Male',
       dateOfBirth: '2003-08-15T00:00:00.000Z',
-      personalEmail: 'student.ce001@example.com',
+      personalEmail: 'student.test@example.com', // Use unique email
       contactNumber: '9988776655',
       status: 'active',
       instituteId: 'inst1'
@@ -147,7 +150,8 @@ describe('/api/students', () => {
     describe('Validation', () => {
       it('should return 400 when enrollment number is missing', async () => {
         const invalidData = { ...validStudentData };
-        delete invalidData.enrollmentNumber;
+        // Use type assertion to allow deleting required properties in tests
+        delete (invalidData as any).enrollmentNumber;
         
         const request = new NextRequest('http://localhost/api/students', {
           method: 'POST',
@@ -178,9 +182,9 @@ describe('/api/students', () => {
 
       it('should return 400 when name is missing (no fullNameGtuFormat and no firstName/lastName)', async () => {
         const invalidData = { ...validStudentData };
-        delete invalidData.fullNameGtuFormat;
-        delete invalidData.firstName;
-        delete invalidData.lastName;
+        delete (invalidData as any).fullNameGtuFormat;
+        delete (invalidData as any).firstName;
+        delete (invalidData as any).lastName;
         
         const request = new NextRequest('http://localhost/api/students', {
           method: 'POST',
@@ -196,7 +200,7 @@ describe('/api/students', () => {
 
       it('should return 400 when programId is missing', async () => {
         const invalidData = { ...validStudentData };
-        delete invalidData.programId;
+        delete (invalidData as any).programId;
         
         const request = new NextRequest('http://localhost/api/students', {
           method: 'POST',
@@ -314,7 +318,7 @@ describe('/api/students', () => {
 
       it('should derive instituteId from program when not provided', async () => {
         const dataWithoutInstituteId = { ...validStudentData };
-        delete dataWithoutInstituteId.instituteId;
+        delete (dataWithoutInstituteId as any).instituteId;
         
         const request = new NextRequest('http://localhost/api/students', {
           method: 'POST',
@@ -377,7 +381,7 @@ describe('/api/students', () => {
 
       it('should use institute email as primary when personal email not provided', async () => {
         const dataWithoutPersonalEmail = { ...validStudentData };
-        delete dataWithoutPersonalEmail.personalEmail;
+        delete (dataWithoutPersonalEmail as any).personalEmail;
         
         const request = new NextRequest('http://localhost/api/students', {
           method: 'POST',

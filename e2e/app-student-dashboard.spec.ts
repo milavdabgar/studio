@@ -11,7 +11,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
   
   test.beforeEach(async ({ page }) => {
     // Navigate to student login and attempt authentication
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     // Try to login as student
     const emailInput = page.locator('input[type="email"], input[name="email"]').first();
@@ -26,7 +26,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
     }
     
     // Navigate to student area
-    await page.goto('/student');
+    await page.goto('http://localhost:3000/student');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
   });
 
@@ -60,7 +60,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
   });
 
   test('should test student profile management', async ({ page }) => {
-    await page.goto('/student/profile');
+    await page.goto('http://localhost:3000/student/profile');
     await page.waitForLoadState('networkidle');
     
     // Should load profile page
@@ -90,7 +90,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
   });
 
   test('should test courses and enrollment', async ({ page }) => {
-    await page.goto('/student/courses');
+    await page.goto('http://localhost:3000/student/courses');
     await page.waitForLoadState('networkidle');
     
     // Should load courses interface
@@ -108,7 +108,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
       const hasEnrollButton = await page.locator('button:has-text("Enroll"), a:has-text("Enroll"), text=Enrollment').isVisible();
       
       if (hasEnrollButton) {
-        await page.goto('/student/courses/enroll');
+        await page.goto('http://localhost:3000/student/courses/enroll');
         await page.waitForLoadState('networkidle');
         
         // Should show enrollment interface
@@ -122,7 +122,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
 
   test('should test individual course access', async ({ page }) => {
     // Try to access a specific course
-    await page.goto('/student/courses/test-course-id');
+    await page.goto('http://localhost:3000/student/courses/test-course-id');
     await page.waitForLoadState('networkidle');
     
     // Should load course interface or show access control
@@ -148,7 +148,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
   });
 
   test('should test assignments functionality', async ({ page }) => {
-    await page.goto('/student/assignments');
+    await page.goto('http://localhost:3000/student/assignments');
     await page.waitForLoadState('networkidle');
     
     // Should load assignments interface
@@ -180,7 +180,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
 
   test('should test assignment submission workflow', async ({ page }) => {
     // Try to access a specific assignment
-    await page.goto('/student/assignments/test-assignment-id');
+    await page.goto('http://localhost:3000/student/assignments/test-assignment-id');
     await page.waitForLoadState('networkidle');
     
     // Should load assignment details or show access control
@@ -203,7 +203,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
   });
 
   test('should test results and grades viewing', async ({ page }) => {
-    await page.goto('/student/results');
+    await page.goto('http://localhost:3000/student/results');
     await page.waitForLoadState('networkidle');
     
     // Should load results interface
@@ -229,7 +229,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
   });
 
   test('should test student timetable', async ({ page }) => {
-    await page.goto('/student/timetable');
+    await page.goto('http://localhost:3000/student/timetable');
     await page.waitForLoadState('networkidle');
     
     // Should load timetable interface
@@ -255,7 +255,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
   });
 
   test('should test course materials access', async ({ page }) => {
-    await page.goto('/student/materials');
+    await page.goto('http://localhost:3000/student/materials');
     await page.waitForLoadState('networkidle');
     
     // Should load materials interface
@@ -281,7 +281,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
   });
 
   test('should test attendance tracking', async ({ page }) => {
-    await page.goto('/student/attendance');
+    await page.goto('http://localhost:3000/student/attendance');
     await page.waitForLoadState('networkidle');
     
     // Should load attendance interface
@@ -334,7 +334,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
     // Test mobile responsiveness for student dashboard
     await page.setViewportSize({ width: 375, height: 667 });
     
-    await page.goto('/student');
+    await page.goto('http://localhost:3000/student');
     await page.waitForLoadState('networkidle');
     
     // Should be responsive
@@ -351,7 +351,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
   });
 
   test('should test student notification system', async ({ page }) => {
-    await page.goto('/student');
+    await page.goto('http://localhost:3000/student');
     await page.waitForLoadState('networkidle');
     
     // Look for notification indicators
@@ -370,7 +370,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
   });
 
   test('should test student academic progress tracking', async ({ page }) => {
-    await page.goto('/student');
+    await page.goto('http://localhost:3000/student');
     await page.waitForLoadState('networkidle');
     
     // Should show academic progress information
@@ -391,7 +391,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
   });
 
   test('should test file upload functionality in assignments', async ({ page }) => {
-    await page.goto('/student/assignments');
+    await page.goto('http://localhost:3000/student/assignments');
     await page.waitForLoadState('networkidle');
     
     // Look for assignments with upload capability

@@ -61,7 +61,7 @@ test.describe('Admin Infrastructure Management', () => {
       
       // Wait for potential redirect and verify the building exists in the list
       await page.waitForTimeout(2000);
-      await page.goto('/admin/buildings', { waitUntil: 'domcontentloaded' });
+      await page.goto('http://localhost:3000/admin/buildings', { waitUntil: 'domcontentloaded' });
       
       // Wait for page to load
       await page.waitForTimeout(3000);

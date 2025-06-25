@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test';
  */
 
 export async function loginAsAdmin(page: any) {
-  await page.goto('/login');
+  await page.goto('http://localhost:3000/login');
   
   // Wait for login form to load
   await page.waitForSelector('#email', { timeout: 10000 });
@@ -34,7 +34,7 @@ export async function loginAsAdmin(page: any) {
 }
 
 export async function loginAsFaculty(page: any) {
-  await page.goto('/login');
+  await page.goto('http://localhost:3000/login');
   
   await page.waitForSelector('#email', { timeout: 10000 });
   
@@ -57,7 +57,7 @@ export async function loginAsFaculty(page: any) {
 }
 
 export async function loginAsStudent(page: any) {
-  await page.goto('/login');
+  await page.goto('http://localhost:3000/login');
   
   await page.waitForSelector('#email', { timeout: 10000 });
   
@@ -146,7 +146,7 @@ export async function submitForm(page: any, submitSelector = 'button[type="submi
  * Signup helper for testing user registration
  */
 export async function signupNewUser(page: any, userData = testData.newUser) {
-  await page.goto('/signup');
+  await page.goto('http://localhost:3000/signup');
   
   // Wait for signup form to load
   await page.waitForSelector('#name', { timeout: 10000 });

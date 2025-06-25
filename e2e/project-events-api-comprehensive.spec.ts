@@ -49,7 +49,7 @@ test.describe('Project Events API - Critical In-Memory Storage', () => {
   
   test.beforeEach(async ({ page }) => {
     // Navigate to a page that initializes the app context
-    await page.goto('/dashboard');
+    await page.goto('http://localhost:3000/dashboard');
     await page.waitForLoadState('networkidle');
   });
 

@@ -11,7 +11,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Complete Admin Section Coverage', () => {
   
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
   });
 

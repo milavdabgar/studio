@@ -14,11 +14,10 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
   test.beforeEach(async ({ page }) => {
     // Ensure clean state
     await page.context().clearCookies();
-    await page.goto('/');
   });
 
   test('should load login page correctly', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     // Verify page loads with correct title
     await expect(page).toHaveTitle('PolyManager');
@@ -47,7 +46,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
   });
 
   test('should load signup page correctly', async ({ page }) => {
-    await page.goto('/signup');
+    await page.goto('http://localhost:3000/signup');
     
     // Verify page loads with correct title
     await expect(page).toHaveTitle('PolyManager');
@@ -66,7 +65,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
   });
 
   test('should handle valid login - Admin user', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     // Wait for form to load
     await page.waitForSelector('#email', { timeout: 10000 });
@@ -103,7 +102,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
   });
 
   test('should handle valid login - Faculty user', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     // Wait for form to load
     await page.waitForSelector('#email', { timeout: 10000 });
@@ -129,7 +128,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
   });
 
   test('should handle valid login - Student user', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     // Wait for form to load
     await page.waitForSelector('#email', { timeout: 10000 });
@@ -155,7 +154,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
   });
 
   test('should handle invalid login credentials', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     // Wait for form to load
     await page.waitForSelector('#email', { timeout: 10000 });
@@ -199,7 +198,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
   });
 
   test('should validate login form fields', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     // Wait for form to load
     await page.waitForSelector('#email', { timeout: 10000 });
@@ -213,7 +212,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
   });
 
   test('should handle signup form submission', async ({ page }) => {
-    await page.goto('/signup');
+    await page.goto('http://localhost:3000/signup');
     
     // Fill signup form
     await page.fill('#name', testData.newUser.name);
@@ -252,7 +251,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
   });
 
   test('should validate signup password confirmation', async ({ page }) => {
-    await page.goto('/signup');
+    await page.goto('http://localhost:3000/signup');
     
     // Fill form with mismatched passwords
     await page.fill('#name', 'Test User');
@@ -277,7 +276,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
 
   test('should handle logout functionality', async ({ page }) => {
     // First login
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     await page.waitForSelector('#email', { timeout: 10000 });
     
     await page.fill('#email', testData.admin.email);
@@ -342,7 +341,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
     // If no logout mechanism found, clear cookies manually and go to home
     if (!loggedOut) {
       await page.context().clearCookies();
-      await page.goto('/');
+      await page.goto('http://localhost:3000/');
     }
     
     // Should redirect to home or login page, or at least not show dashboard content
@@ -369,7 +368,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
     ];
     
     for (const route of protectedRoutes) {
-      await page.goto(route);
+      await page.goto(`http://localhost:3000${route}`);
       
       // Should redirect to login or show login form
       const currentUrl = page.url();
@@ -382,7 +381,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
 
   test('should maintain session across page reloads', async ({ page }) => {
     // Login first
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     await page.waitForSelector('#email', { timeout: 10000 });
     
     await page.fill('#email', testData.admin.email);
