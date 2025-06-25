@@ -33,14 +33,14 @@ test.describe('Complete Faculty Section Coverage', () => {
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
       // Should show faculty content or proper access control
-      const hasFacultyContent = await page.locator('h1, h2, .faculty-content, .page-title, main').isVisible();
+      const hasFacultyContent = await page.locator('h1, h2, .faculty-content, .page-title, main').first().isVisible();
       const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized, text=403').first().isVisible();
-      const hasNotFound = await page.locator('text=404, text=Not Found').isVisible();
+      const hasNotFound = await page.locator('text=404, text=Not Found').first().isVisible();
       
       expect(hasFacultyContent || hasAccessControl || hasNotFound).toBe(true);
       
       // Should not show unhandled errors
-      const hasServerError = await page.locator('text=500, text=Internal Server Error').isVisible();
+      const hasServerError = await page.locator('text=500, text=Internal Server Error').first().isVisible();
       expect(hasServerError).toBe(false);
     }
   });
@@ -59,15 +59,15 @@ test.describe('Complete Faculty Section Coverage', () => {
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
       // Should handle gracefully - show content, 404, or access control
-      const hasContent = await page.locator('h1, h2, main, .content').isVisible();
-      const has404 = await page.locator('text=404, text=Not Found, text=Course not found').isVisible();
+      const hasContent = await page.locator('h1, h2, main, .content').first().isVisible();
+      const has404 = await page.locator('text=404, text=Not Found, text=Course not found').first().isVisible();
       const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
-      const hasNoData = await page.locator('text=No courses, text=No data, text=No students').isVisible();
+      const hasNoData = await page.locator('text=No courses, text=No data, text=No students').first().isVisible();
       
       expect(hasContent || has404 || hasAccessControl || hasNoData).toBe(true);
       
       // Should not crash
-      const hasError = await page.locator('text=Error, text=Something went wrong, text=500').isVisible();
+      const hasError = await page.locator('text=Error, text=Something went wrong, text=500').first().isVisible();
       expect(hasError).toBe(false);
     }
   });
@@ -82,10 +82,10 @@ test.describe('Complete Faculty Section Coverage', () => {
     
     if (hasDashboard) {
       // Look for faculty-specific features
-      const hasCourses = await page.locator('text=Courses, text=My Courses, .course-list').isVisible();
-      const hasAttendance = await page.locator('text=Attendance, .attendance').isVisible();
-      const hasAssessments = await page.locator('text=Assessments, text=Grading, .assessments').isVisible();
-      const hasTimetable = await page.locator('text=Timetable, text=Schedule, .timetable').isVisible();
+      const hasCourses = await page.locator('text=Courses, text=My Courses, .course-list').first().isVisible();
+      const hasAttendance = await page.locator('text=Attendance, .attendance').first().isVisible();
+      const hasAssessments = await page.locator('text=Assessments, text=Grading, .assessments').first().isVisible();
+      const hasTimetable = await page.locator('text=Timetable, text=Schedule, .timetable').first().isVisible();
       
       expect(hasCourses || hasAttendance || hasAssessments || hasTimetable).toBe(true);
     } else {
@@ -103,8 +103,8 @@ test.describe('Complete Faculty Section Coverage', () => {
     if (hasProfilePage) {
       // Look for profile features
       const hasEditButton = await page.locator('button:has-text("Edit"), button:has-text("Update")').isVisible();
-      const hasProfileForm = await page.locator('form, .profile-form').isVisible();
-      const hasPersonalInfo = await page.locator('.personal-info, .profile-details').isVisible();
+      const hasProfileForm = await page.locator('form, .profile-form').first().isVisible();
+      const hasPersonalInfo = await page.locator('.personal-info, .profile-details').first().isVisible();
       
       expect(hasEditButton || hasProfileForm || hasPersonalInfo).toBe(true);
     } else {
@@ -121,9 +121,9 @@ test.describe('Complete Faculty Section Coverage', () => {
     
     if (hasCoursesPage) {
       // Look for course management features
-      const hasCourseList = await page.locator('.course-list, .course-card, table').isVisible();
+      const hasCourseList = await page.locator('.course-list, .course-card, table').first().isVisible();
       const hasAddCourse = await page.locator('button:has-text("Add"), button:has-text("Create")').isVisible();
-      const hasNoCourses = await page.locator('text=No courses, text=No assignments').isVisible();
+      const hasNoCourses = await page.locator('text=No courses, text=No assignments').first().isVisible();
       
       expect(hasCourseList || hasAddCourse || hasNoCourses).toBe(true);
     } else {
@@ -140,8 +140,8 @@ test.describe('Complete Faculty Section Coverage', () => {
     const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasAttendancePage) {
-      const hasAttendanceForm = await page.locator('form, .attendance-form').isVisible();
-      const hasStudentList = await page.locator('.student-list, table').isVisible();
+      const hasAttendanceForm = await page.locator('form, .attendance-form').first().isVisible();
+      const hasStudentList = await page.locator('.student-list, table').first().isVisible();
       const hasMarkButtons = await page.locator('button:has-text("Mark"), button:has-text("Save")').isVisible();
       
       expect(hasAttendanceForm || hasStudentList || hasMarkButtons).toBe(true);
@@ -168,8 +168,8 @@ test.describe('Complete Faculty Section Coverage', () => {
     
     if (hasGradingPage) {
       // Look for grading features
-      const hasGradingForm = await page.locator('form, .grading-form').isVisible();
-      const hasStudentGrades = await page.locator('.grades, .grade-input, table').isVisible();
+      const hasGradingForm = await page.locator('form, .grading-form').first().isVisible();
+      const hasStudentGrades = await page.locator('.grades, .grade-input, table').first().isVisible();
       const hasSaveButton = await page.locator('button:has-text("Save"), button:has-text("Submit")').isVisible();
       
       expect(hasGradingForm || hasStudentGrades || hasSaveButton).toBe(true);
@@ -187,9 +187,9 @@ test.describe('Complete Faculty Section Coverage', () => {
     
     if (hasTimetablePage) {
       // Look for timetable features
-      const hasCalendar = await page.locator('.calendar, .schedule-grid, table').isVisible();
-      const hasTimeSlots = await page.locator('.time-slot, .schedule-item').isVisible();
-      const hasViewOptions = await page.locator('select, .view-toggle').isVisible();
+      const hasCalendar = await page.locator('.calendar, .schedule-grid, table').first().isVisible();
+      const hasTimeSlots = await page.locator('.time-slot, .schedule-item').first().isVisible();
+      const hasViewOptions = await page.locator('select, .view-toggle').first().isVisible();
       
       expect(hasCalendar || hasTimeSlots || hasViewOptions).toBe(true);
     } else {
@@ -206,8 +206,8 @@ test.describe('Complete Faculty Section Coverage', () => {
     
     if (hasLeavePage) {
       // Look for leave management features
-      const hasLeaveForm = await page.locator('form, .leave-form').isVisible();
-      const hasLeaveList = await page.locator('.leave-list, table').isVisible();
+      const hasLeaveForm = await page.locator('form, .leave-form').first().isVisible();
+      const hasLeaveList = await page.locator('.leave-list, table').first().isVisible();
       const hasApplyButton = await page.locator('button:has-text("Apply"), button:has-text("Request")').isVisible();
       
       expect(hasLeaveForm || hasLeaveList || hasApplyButton).toBe(true);
@@ -232,7 +232,7 @@ test.describe('Complete Faculty Section Coverage', () => {
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
       // Should be responsive
-      const hasResponsiveContent = await page.locator('main, .content, body').isVisible();
+      const hasResponsiveContent = await page.locator('main, .content, body').first().isVisible();
       if (hasResponsiveContent) {
         const mainElement = await page.locator('main, .content').first();
         if (await mainElement.isVisible()) {
@@ -258,9 +258,9 @@ test.describe('Complete Faculty Section Coverage', () => {
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
       // Check for consistent faculty navigation/layout
-      const hasFacultyLayout = await page.locator('.faculty-layout, .faculty-nav, .sidebar').isVisible();
-      const hasMainContent = await page.locator('main, .main-content').isVisible();
-      const hasHeader = await page.locator('header, .header, h1').isVisible();
+      const hasFacultyLayout = await page.locator('.faculty-layout, .faculty-nav, .sidebar').first().isVisible();
+      const hasMainContent = await page.locator('main, .main-content').first().isVisible();
+      const hasHeader = await page.locator('header, .header, h1').first().isVisible();
       const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
       
       expect(hasFacultyLayout || hasMainContent || hasHeader || hasAccessControl).toBe(true);
@@ -279,13 +279,13 @@ test.describe('Complete Faculty Section Coverage', () => {
       await page.goto(workflowPath);
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
-      const hasContent = await page.locator('main, .content, h1').isVisible();
+      const hasContent = await page.locator('main, .content, h1').first().isVisible();
       const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
       
       expect(hasContent || hasAccessControl).toBe(true);
       
       // Should not show errors during workflow
-      const hasError = await page.locator('text=Error, text=500').isVisible();
+      const hasError = await page.locator('text=Error, text=500').first().isVisible();
       expect(hasError).toBe(false);
     }
   });
@@ -303,7 +303,7 @@ test.describe('Complete Faculty Section Coverage', () => {
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
       // Should show 404 or redirect appropriately
-      const has404 = await page.locator('text=404, text=Not Found, text=Page not found').isVisible();
+      const has404 = await page.locator('text=404, text=Not Found, text=Page not found').first().isVisible();
       const hasRedirect = page.url() !== `http://localhost:3000${invalidPath}`;
       const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
       

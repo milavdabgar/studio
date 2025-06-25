@@ -28,9 +28,9 @@ test.describe('Content Management System - Complete Application Flow', () => {
     
     if (hasBlogContent) {
       // Check for blog features
-      const hasPostsList = await page.locator('.post-card, .blog-card, article').isVisible();
-      const hasCategories = await page.locator('.categories, .tags, .category-filter').isVisible();
-      const hasSearch = await page.locator('input[type="search"], .search-box, [placeholder*="search"]').isVisible();
+      const hasPostsList = await page.locator('.post-card, .blog-card, article').first().isVisible();
+      const hasCategories = await page.locator('.categories, .tags, .category-filter').first().isVisible();
+      const hasSearch = await page.locator('input[type="search"], .search-box, [placeholder*="search"]').first().isVisible();
       
       expect(hasPostsList || hasCategories || hasSearch).toBe(true);
     }
@@ -47,9 +47,9 @@ test.describe('Content Management System - Complete Application Flow', () => {
     
     if (hasNewsletterContent) {
       // Check for newsletter features
-      const hasNewsletterList = await page.locator('.newsletter-card, .newsletter-item').isVisible();
+      const hasNewsletterList = await page.locator('.newsletter-card, .newsletter-item').first().isVisible();
       const hasSubscription = await page.locator('input[type="email"], .subscribe, button:has-text("Subscribe")').isVisible();
-      const hasArchive = await page.locator('.archive, .past-newsletters, .newsletter-archive').isVisible();
+      const hasArchive = await page.locator('.archive, .past-newsletters, .newsletter-archive').first().isVisible();
       
       expect(hasNewsletterList || hasSubscription || hasArchive).toBe(true);
     }
@@ -67,7 +67,7 @@ test.describe('Content Management System - Complete Application Flow', () => {
     if (hasBlogDashboard) {
       // Check for content management features
       const hasCreatePost = await page.locator('button:has-text("Create"), button:has-text("New Post"), .create-button').isVisible();
-      const hasPostsList = await page.locator('table, .posts-list, .content-list').isVisible();
+      const hasPostsList = await page.locator('table, .posts-list, .content-list').first().isVisible();
       const hasEditControls = await page.locator('button:has-text("Edit"), button:has-text("Delete"), .post-actions').isVisible();
       
       expect(hasCreatePost || hasPostsList || hasEditControls).toBe(true);
@@ -86,8 +86,8 @@ test.describe('Content Management System - Complete Application Flow', () => {
     
     if (hasCategoriesPage) {
       // Check for category features
-      const hasCategoryList = await page.locator('.category-card, .category-item, .category-grid').isVisible();
-      const hasPostCount = await page.locator('.post-count, .count, text=/\\d+ posts?/i').isVisible();
+      const hasCategoryList = await page.locator('.category-card, .category-item, .category-grid').first().isVisible();
+      const hasPostCount = await page.locator('.post-count, .count, text=/\\d+ posts?/i').first().isVisible();
       
       expect(hasCategoryList || hasPostCount).toBe(true);
     }
@@ -113,9 +113,9 @@ test.describe('Content Management System - Complete Application Flow', () => {
     
     if (hasSearchPage) {
       // Check for search features
-      const hasSearchInput = await page.locator('input[type="search"], .search-input, [placeholder*="search"]').isVisible();
+      const hasSearchInput = await page.locator('input[type="search"], .search-input, [placeholder*="search"]').first().isVisible();
       const hasSearchButton = await page.locator('button:has-text("Search"), .search-button').isVisible();
-      const hasFilters = await page.locator('.search-filters, .filter-options').isVisible();
+      const hasFilters = await page.locator('.search-filters, .filter-options').first().isVisible();
       
       expect(hasSearchInput || hasSearchButton || hasFilters).toBe(true);
       
@@ -128,8 +128,8 @@ test.describe('Content Management System - Complete Application Flow', () => {
           await page.waitForLoadState('networkidle', { timeout: 5000 });
           
           // Should show search results or no results message
-          const hasResults = await page.locator('.search-result, .result-item').isVisible();
-          const hasNoResults = await page.locator('text=No results, text=No posts found').isVisible();
+          const hasResults = await page.locator('.search-result, .result-item').first().isVisible();
+          const hasNoResults = await page.locator('text=No results, text=No posts found').first().isVisible();
           
           expect(hasResults || hasNoResults).toBe(true);
         }
@@ -142,17 +142,17 @@ test.describe('Content Management System - Complete Application Flow', () => {
     await page.goto('http://localhost:3000/posts/test-post');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
-    const hasPostContent = await page.locator('article, .post-content, .blog-post').isVisible();
-    const has404 = await page.locator('text=404, text=Not Found, text=Post not found').isVisible();
+    const hasPostContent = await page.locator('article, .post-content, .blog-post').first().isVisible();
+    const has404 = await page.locator('text=404, text=Not Found, text=Post not found').first().isVisible();
     const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     expect(hasPostContent || has404 || hasAccessControl).toBe(true);
     
     if (hasPostContent) {
       // Check for post features
-      const hasTitle = await page.locator('h1, .post-title').isVisible();
-      const hasContent = await page.locator('.post-body, .content, p').isVisible();
-      const hasMetadata = await page.locator('.post-meta, .author, .date').isVisible();
+      const hasTitle = await page.locator('h1, .post-title').first().isVisible();
+      const hasContent = await page.locator('.post-body, .content, p').first().isVisible();
+      const hasMetadata = await page.locator('.post-meta, .author, .date').first().isVisible();
       
       expect(hasTitle || hasContent || hasMetadata).toBe(true);
     }
@@ -218,15 +218,15 @@ test.describe('Content Management System - Complete Application Flow', () => {
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
       // Should load successfully or show appropriate message
-      const hasContent = await page.locator('main, .content, .page-content').isVisible();
-      const hasHeader = await page.locator('h1, h2, .page-title').isVisible();
-      const hasNotFound = await page.locator('text=404, text=Not Found').isVisible();
+      const hasContent = await page.locator('main, .content, .page-content').first().isVisible();
+      const hasHeader = await page.locator('h1, h2, .page-title').first().isVisible();
+      const hasNotFound = await page.locator('text=404, text=Not Found').first().isVisible();
       const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
       
       expect(hasContent || hasHeader || hasNotFound || hasAccessControl).toBe(true);
       
       // Should not show unhandled errors
-      const hasError = await page.locator('text=Error, text=500, text=Something went wrong').isVisible();
+      const hasError = await page.locator('text=Error, text=500, text=Something went wrong').first().isVisible();
       expect(hasError).toBe(false);
     }
   });
@@ -238,11 +238,11 @@ test.describe('Content Management System - Complete Application Flow', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Check if layout adapts to mobile
-    const hasContent = await page.locator('main, .content').isVisible();
+    const hasContent = await page.locator('main, .content').first().isVisible();
     expect(hasContent).toBe(true);
     
     // Test content readability on mobile
-    const hasReadableText = await page.locator('p, .post-content, article').isVisible();
+    const hasReadableText = await page.locator('p, .post-content, article').first().isVisible();
     if (hasReadableText) {
       // Check that text is not cut off (basic responsive check)
       const contentWidth = await page.locator('main, .content').first().boundingBox();
@@ -263,7 +263,7 @@ test.describe('Content Management System - Complete Application Flow', () => {
     expect(loadTime).toBeLessThan(10000);
     
     // Check that essential content is visible
-    const hasEssentialContent = await page.locator('main, .content, body').isVisible();
+    const hasEssentialContent = await page.locator('main, .content, body').first().isVisible();
     expect(hasEssentialContent).toBe(true);
   });
 
@@ -281,9 +281,9 @@ test.describe('Content Management System - Complete Application Flow', () => {
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
       // Should show 404 or handle gracefully
-      const has404 = await page.locator('text=404, text=Not Found, text=Page not found').isVisible();
+      const has404 = await page.locator('text=404, text=Not Found, text=Page not found').first().isVisible();
       const hasRedirect = await page.url() !== `http://localhost:3000${pagePath}`;
-      const hasGracefulMessage = await page.locator('text=No posts, text=No content, text=Coming soon').isVisible();
+      const hasGracefulMessage = await page.locator('text=No posts, text=No content, text=Coming soon').first().isVisible();
       
       expect(has404 || hasRedirect || hasGracefulMessage).toBe(true);
     }

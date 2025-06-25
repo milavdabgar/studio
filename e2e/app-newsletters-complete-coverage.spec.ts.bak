@@ -6,12 +6,12 @@ test.describe('Newsletters Complete Coverage E2E Tests', () => {
   
   test.beforeEach(async ({ page }) => {
     // Navigate to home page first
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     await page.waitForLoadState('networkidle');
   });
 
   test('should test newsletters main page', async ({ page }) => {
-    await page.goto('/newsletters');
+    await page.goto('http://localhost:3000/newsletters');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="newsletters-list"]', { timeout: 10000 });
@@ -23,7 +23,7 @@ test.describe('Newsletters Complete Coverage E2E Tests', () => {
   });
 
   test('should test spectrum newsletter main page', async ({ page }) => {
-    await page.goto('/newsletters/spectrum');
+    await page.goto('http://localhost:3000/newsletters/spectrum');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="spectrum-newsletter"]', { timeout: 10000 });
@@ -35,7 +35,7 @@ test.describe('Newsletters Complete Coverage E2E Tests', () => {
   });
 
   test('should test spectrum newsletter original version', async ({ page }) => {
-    await page.goto('/newsletters/spectrum/original');
+    await page.goto('http://localhost:3000/newsletters/spectrum/original');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="spectrum-original"]', { timeout: 10000 });
@@ -47,7 +47,7 @@ test.describe('Newsletters Complete Coverage E2E Tests', () => {
   });
 
   test('should test spectrum newsletter interactive version', async ({ page }) => {
-    await page.goto('/newsletters/spectrum/interactive');
+    await page.goto('http://localhost:3000/newsletters/spectrum/interactive');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="spectrum-interactive"]', { timeout: 10000 });
@@ -82,7 +82,7 @@ test.describe('Newsletters Complete Coverage E2E Tests', () => {
   });
 
   test('should test newsletter content structure', async ({ page }) => {
-    await page.goto('/newsletters/spectrum');
+    await page.goto('http://localhost:3000/newsletters/spectrum');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });
@@ -108,7 +108,7 @@ test.describe('Newsletters Complete Coverage E2E Tests', () => {
   });
 
   test('should test newsletter interactive features', async ({ page }) => {
-    await page.goto('/newsletters/spectrum/interactive');
+    await page.goto('http://localhost:3000/newsletters/spectrum/interactive');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });
@@ -147,7 +147,7 @@ test.describe('Newsletters Complete Coverage E2E Tests', () => {
   });
 
   test('should test newsletter responsive design', async ({ page }) => {
-    await page.goto('/newsletters/spectrum');
+    await page.goto('http://localhost:3000/newsletters/spectrum');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });
@@ -175,7 +175,7 @@ test.describe('Newsletters Complete Coverage E2E Tests', () => {
   });
 
   test('should test newsletter accessibility features', async ({ page }) => {
-    await page.goto('/newsletters/spectrum');
+    await page.goto('http://localhost:3000/newsletters/spectrum');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });
@@ -218,7 +218,7 @@ test.describe('Newsletters Complete Coverage E2E Tests', () => {
   test('should test newsletter content loading performance', async ({ page }) => {
     const startTime = Date.now();
     
-    await page.goto('/newsletters/spectrum');
+    await page.goto('http://localhost:3000/newsletters/spectrum');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });
@@ -237,7 +237,7 @@ test.describe('Newsletters Complete Coverage E2E Tests', () => {
   });
 
   test('should test newsletter SEO and meta information', async ({ page }) => {
-    await page.goto('/newsletters/spectrum');
+    await page.goto('http://localhost:3000/newsletters/spectrum');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });
@@ -266,7 +266,7 @@ test.describe('Newsletters Complete Coverage E2E Tests', () => {
   });
 
   test('should test newsletter sharing and social features', async ({ page }) => {
-    await page.goto('/newsletters/spectrum');
+    await page.goto('http://localhost:3000/newsletters/spectrum');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });

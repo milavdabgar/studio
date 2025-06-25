@@ -6,12 +6,12 @@ test.describe('Faculty Attendance & Assessments Complete Coverage E2E Tests', ()
   
   test.beforeEach(async ({ page }) => {
     // Navigate to home page first
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     await page.waitForLoadState('networkidle');
   });
 
   test('should test faculty attendance marking page', async ({ page }) => {
-    await page.goto('/faculty/attendance/mark');
+    await page.goto('http://localhost:3000/faculty/attendance/mark');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="attendance-mark"]', { timeout: 10000 });
@@ -29,7 +29,7 @@ test.describe('Faculty Attendance & Assessments Complete Coverage E2E Tests', ()
   });
 
   test('should test faculty attendance reports page', async ({ page }) => {
-    await page.goto('/faculty/attendance/reports');
+    await page.goto('http://localhost:3000/faculty/attendance/reports');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="attendance-reports"]', { timeout: 10000 });
@@ -47,7 +47,7 @@ test.describe('Faculty Attendance & Assessments Complete Coverage E2E Tests', ()
   });
 
   test('should test faculty assessments grading page', async ({ page }) => {
-    await page.goto('/faculty/assessments/grade');
+    await page.goto('http://localhost:3000/faculty/assessments/grade');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="assessments-grade"]', { timeout: 10000 });
@@ -141,7 +141,7 @@ test.describe('Faculty Attendance & Assessments Complete Coverage E2E Tests', ()
   });
 
   test('should test faculty leaves management page', async ({ page }) => {
-    await page.goto('/faculty/leaves');
+    await page.goto('http://localhost:3000/faculty/leaves');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="faculty-leaves"]', { timeout: 10000 });
@@ -196,7 +196,7 @@ test.describe('Faculty Attendance & Assessments Complete Coverage E2E Tests', ()
   });
 
   test('should test faculty assessment workflow functionality', async ({ page }) => {
-    await page.goto('/faculty/assessments/grade');
+    await page.goto('http://localhost:3000/faculty/assessments/grade');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });
@@ -251,7 +251,7 @@ test.describe('Faculty Attendance & Assessments Complete Coverage E2E Tests', ()
   });
 
   test('should test faculty pages responsive design', async ({ page }) => {
-    await page.goto('/faculty/attendance/mark');
+    await page.goto('http://localhost:3000/faculty/attendance/mark');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });

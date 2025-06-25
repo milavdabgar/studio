@@ -29,11 +29,11 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
       // Should load successfully
-      const hasContent = await page.locator('main, .content, body').isVisible();
+      const hasContent = await page.locator('main, .content, body').first().isVisible();
       expect(hasContent).toBe(true);
       
       // Should not show server errors
-      const hasServerError = await page.locator('text=500, text=Internal Server Error').isVisible();
+      const hasServerError = await page.locator('text=500, text=Internal Server Error').first().isVisible();
       expect(hasServerError).toBe(false);
     }
   });
@@ -50,8 +50,8 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
       await page.goto(pagePath);
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
-      const hasContent = await page.locator('main, .content, body').isVisible();
-      const has404 = await page.locator('text=404, text=Not Found').isVisible();
+      const hasContent = await page.locator('main, .content, body').first().isVisible();
+      const has404 = await page.locator('text=404, text=Not Found').first().isVisible();
       const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
       
       expect(hasContent || has404 || hasAccessControl).toBe(true);
@@ -83,7 +83,7 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
       await page.goto(pagePath);
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
-      const hasContent = await page.locator('main, .content, body').isVisible();
+      const hasContent = await page.locator('main, .content, body').first().isVisible();
       const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
       
       expect(hasContent || hasAccessControl).toBe(true);
@@ -113,7 +113,7 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
       await page.goto(pagePath);
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
-      const hasContent = await page.locator('main, .content, body').isVisible();
+      const hasContent = await page.locator('main, .content, body').first().isVisible();
       const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
       
       expect(hasContent || hasAccessControl).toBe(true);
@@ -133,7 +133,7 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
       await page.goto(pagePath);
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
-      const hasContent = await page.locator('main, .content, body').isVisible();
+      const hasContent = await page.locator('main, .content, body').first().isVisible();
       const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
       
       expect(hasContent || hasAccessControl).toBe(true);
@@ -152,13 +152,13 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
       await page.goto(pagePath);
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
-      const hasContent = await page.locator('main, .content, body').isVisible();
+      const hasContent = await page.locator('main, .content, body').first().isVisible();
       const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
       
       expect(hasContent || hasAccessControl).toBe(true);
       
       // Should not show unhandled errors
-      const hasError = await page.locator('text=Error, text=500, text=Something went wrong').isVisible();
+      const hasError = await page.locator('text=Error, text=500, text=Something went wrong').first().isVisible();
       expect(hasError).toBe(false);
     }
   });
@@ -178,8 +178,8 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
       await page.goto(pagePath);
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
-      const hasContent = await page.locator('main, .content, body').isVisible();
-      const has404 = await page.locator('text=404, text=Not Found').isVisible();
+      const hasContent = await page.locator('main, .content, body').first().isVisible();
+      const has404 = await page.locator('text=404, text=Not Found').first().isVisible();
       const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
       
       expect(hasContent || has404 || hasAccessControl).toBe(true);
@@ -197,8 +197,8 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
       await page.goto(pagePath);
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
-      const hasContent = await page.locator('main, .content, body').isVisible();
-      const has404 = await page.locator('text=404, text=Not Found').isVisible();
+      const hasContent = await page.locator('main, .content, body').first().isVisible();
+      const has404 = await page.locator('text=404, text=Not Found').first().isVisible();
       const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
       
       expect(hasContent || has404 || hasAccessControl).toBe(true);
@@ -219,10 +219,10 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
       await page.goto(pagePath);
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
-      const hasContent = await page.locator('main, .content, body').isVisible();
-      const has404 = await page.locator('text=404, text=Not Found').isVisible();
+      const hasContent = await page.locator('main, .content, body').first().isVisible();
+      const has404 = await page.locator('text=404, text=Not Found').first().isVisible();
       const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
-      const hasNoData = await page.locator('text=No data, text=No courses, text=Empty').isVisible();
+      const hasNoData = await page.locator('text=No data, text=No courses, text=Empty').first().isVisible();
       
       expect(hasContent || has404 || hasAccessControl || hasNoData).toBe(true);
     }
@@ -243,9 +243,9 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
       // Check for consistent navigation elements
-      const hasNavigation = await page.locator('nav, .navbar, .navigation').isVisible();
-      const hasHeader = await page.locator('header, .header').isVisible();
-      const hasLogo = await page.locator('.logo, [alt*="logo"]').isVisible();
+      const hasNavigation = await page.locator('nav, .navbar, .navigation').first().isVisible();
+      const hasHeader = await page.locator('header, .header').first().isVisible();
+      const hasLogo = await page.locator('.logo, [alt*="logo"]').first().isVisible();
       
       // At least one navigation element should be present
       expect(hasNavigation || hasHeader || hasLogo).toBe(true);
@@ -270,7 +270,7 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
         await page.waitForLoadState('networkidle', { timeout: 10000 });
         
         // Should be responsive and content should be visible
-        const hasContent = await page.locator('main, .content, body').isVisible();
+        const hasContent = await page.locator('main, .content, body').first().isVisible();
         expect(hasContent).toBe(true);
         
         // Content should fit within viewport width
@@ -299,9 +299,9 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
       // Should either show 404 or redirect gracefully
-      const has404 = await page.locator('text=404, text=Not Found, text=Page not found').isVisible();
+      const has404 = await page.locator('text=404, text=Not Found, text=Page not found').first().isVisible();
       const hasRedirect = page.url() !== `http://localhost:3000${pagePath}`;
-      const hasContent = await page.locator('main, .content, body').isVisible();
+      const hasContent = await page.locator('main, .content, body').first().isVisible();
       
       expect(has404 || hasRedirect || hasContent).toBe(true);
     }
@@ -323,7 +323,7 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
       expect(loadTime).toBeLessThan(15000);
       
       // Essential content should be visible
-      const hasEssentialContent = await page.locator('main, .content, body').isVisible();
+      const hasEssentialContent = await page.locator('main, .content, body').first().isVisible();
       expect(hasEssentialContent).toBe(true);
     }
   });
@@ -336,7 +336,7 @@ test.describe('Complete Application Coverage - Existing Routes', () => {
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
       // Check for basic accessibility features
-      const hasMainLandmark = await page.locator('main, [role="main"]').isVisible();
+      const hasMainLandmark = await page.locator('main, [role="main"]').first().isVisible();
       const hasHeadings = await page.locator('h1, h2, h3').first().isVisible();
       const hasSkipLink = await page.locator('a:has-text("Skip to content"), .skip-link').isVisible();
       

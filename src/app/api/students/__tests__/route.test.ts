@@ -19,10 +19,18 @@ describe('/api/students', () => {
     // Reset all mocks first
     jest.clearAllMocks();
     
-    // Reset global store before each test with a known empty state
-    // Don't set to [] because the route will reinitialize with default data
-    // Instead, set to a known empty student list that won't interfere
-    global.__API_STUDENTS_STORE__ = [];
+    // Instead of clearing to empty (which triggers route reinitialization),
+    // set to a minimal test state that won't conflict with our tests
+    global.__API_STUDENTS_STORE__ = [{
+      id: 'test_marker_student',
+      userId: 'test_user',
+      enrollmentNumber: 'TEST_MARKER', 
+      programId: 'test_prog',
+      instituteEmail: 'test@test.com',
+      instituteId: 'test',
+      createdAt: '2024-01-01T00:00:00.000Z',
+      updatedAt: '2024-01-01T00:00:00.000Z'
+    } as Student];
     
     // Setup default mock responses
     mockProgramService.getAllPrograms.mockResolvedValue([
@@ -233,12 +241,9 @@ describe('/api/students', () => {
       });
 
       it('should return 409 when enrollment number already exists', async () => {
-        // Clear the store and add a student with a specific enrollment number
-        global.__API_STUDENTS_STORE__ = [];
-        
+        // Set the store to have ONLY a student with a specific enrollment number
         const testEnrollmentNumber = '999999999';
         
-        // Add one student with the test enrollment number
         global.__API_STUDENTS_STORE__ = [{
           ...validStudentData,
           id: 'existing_student',
@@ -264,10 +269,7 @@ describe('/api/students', () => {
       });
 
       it('should return 409 when institute email already exists', async () => {
-        // Clear the store first
-        global.__API_STUDENTS_STORE__ = [];
-        
-        // Use a unique enrollment number and test institute email conflict
+        // Set the store to have a student with a specific institute email
         const testInstituteEmail = 'test999999@gppalanpur.ac.in';
         
         global.__API_STUDENTS_STORE__ = [{
@@ -297,7 +299,7 @@ describe('/api/students', () => {
 
     describe('Institute Domain Logic', () => {
       it('should use institute domain when available', async () => {
-        // Clear the store to avoid conflicts
+        // Set clean store for this test  
         global.__API_STUDENTS_STORE__ = [];
         
         const request = new NextRequest('http://localhost/api/students', {
@@ -399,7 +401,8 @@ describe('/api/students', () => {
           fullName: 'DOE JOHN MICHAEL',
           firstName: 'JOHN',
           middleName: 'MICHAEL',
-          lastName: 'DOE'
+          lastName: 'DOE',
+          currentRole: 'student'
         });
       });
 
@@ -486,6 +489,9 @@ describe('/api/students', () => {
       });
 
       it('should handle other user creation errors gracefully', async () => {
+        // Clear the store to avoid conflicts
+        global.__API_STUDENTS_STORE__ = [];
+        
         mockUserService.createUser.mockRejectedValue(new Error('Database connection failed'));
         
         const request = new NextRequest('http://localhost/api/students', {
@@ -620,6 +626,9 @@ describe('/api/students', () => {
       });
 
       it('should return 500 when service calls throw unexpected errors', async () => {
+        // Clear the store to avoid conflicts
+        global.__API_STUDENTS_STORE__ = [];
+        
         mockProgramService.getAllPrograms.mockRejectedValue(new Error('Database error'));
         
         const request = new NextRequest('http://localhost/api/students', {

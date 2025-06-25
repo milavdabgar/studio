@@ -6,12 +6,12 @@ test.describe('Authentication & Signup Complete Coverage E2E Tests', () => {
   
   test.beforeEach(async ({ page }) => {
     // Navigate to home page first
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     await page.waitForLoadState('networkidle');
   });
 
   test('should test signup page', async ({ page }) => {
-    await page.goto('/signup');
+    await page.goto('http://localhost:3000/signup');
     
     try {
       await page.waitForSelector('main, .content, form, [data-testid="signup-form"]', { timeout: 10000 });
@@ -41,7 +41,7 @@ test.describe('Authentication & Signup Complete Coverage E2E Tests', () => {
   });
 
   test('should test login page comprehensive functionality', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     try {
       await page.waitForSelector('main, .content, form, [data-testid="login-form"]', { timeout: 10000 });
@@ -72,7 +72,7 @@ test.describe('Authentication & Signup Complete Coverage E2E Tests', () => {
   });
 
   test('should test signup form interaction', async ({ page }) => {
-    await page.goto('/signup');
+    await page.goto('http://localhost:3000/signup');
     
     try {
       await page.waitForSelector('form', { timeout: 10000 });
@@ -104,7 +104,7 @@ test.describe('Authentication & Signup Complete Coverage E2E Tests', () => {
   });
 
   test('should test login form interaction', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     try {
       await page.waitForSelector('form', { timeout: 10000 });
@@ -150,7 +150,7 @@ test.describe('Authentication & Signup Complete Coverage E2E Tests', () => {
   });
 
   test('should test authentication pages responsive design', async ({ page }) => {
-    await page.goto('/signup');
+    await page.goto('http://localhost:3000/signup');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });
@@ -216,7 +216,7 @@ test.describe('Authentication & Signup Complete Coverage E2E Tests', () => {
   });
 
   test('should test authentication error handling', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     try {
       await page.waitForSelector('form', { timeout: 10000 });
@@ -244,7 +244,7 @@ test.describe('Authentication & Signup Complete Coverage E2E Tests', () => {
   });
 
   test('should test authentication security features', async ({ page }) => {
-    await page.goto('/signup');
+    await page.goto('http://localhost:3000/signup');
     
     try {
       await page.waitForSelector('form', { timeout: 10000 });

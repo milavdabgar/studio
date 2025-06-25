@@ -11,7 +11,7 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
   
   test.beforeEach(async ({ page }) => {
     // Navigate to faculty login and attempt authentication
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     // Try to login as faculty member
     const emailInput = page.locator('input[type="email"], input[name="email"]').first();
@@ -26,7 +26,7 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
     }
     
     // Navigate to faculty area
-    await page.goto('/faculty');
+    await page.goto('http://localhost:3000/faculty');
     await page.waitForLoadState('networkidle');
   });
 
@@ -59,7 +59,7 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
   });
 
   test('should test faculty profile management', async ({ page }) => {
-    await page.goto('/faculty/profile');
+    await page.goto('http://localhost:3000/faculty/profile');
     await page.waitForLoadState('networkidle');
     
     // Should load profile page
@@ -82,7 +82,7 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
   });
 
   test('should test my courses section', async ({ page }) => {
-    await page.goto('/faculty/my-courses');
+    await page.goto('http://localhost:3000/faculty/my-courses');
     await page.waitForLoadState('networkidle');
     
     // Should load courses interface
@@ -113,7 +113,7 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
 
   test('should test course students management', async ({ page }) => {
     // Try to access a course students page
-    await page.goto('/faculty/courses/test-course-id/students');
+    await page.goto('http://localhost:3000/faculty/courses/test-course-id/students');
     await page.waitForLoadState('networkidle');
     
     // Should load students interface or show access control
@@ -139,7 +139,7 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
   });
 
   test('should test timetable functionality', async ({ page }) => {
-    await page.goto('/faculty/timetable');
+    await page.goto('http://localhost:3000/faculty/timetable');
     await page.waitForLoadState('networkidle');
     
     // Should load timetable interface
@@ -165,7 +165,7 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
   });
 
   test('should test assessments and grading', async ({ page }) => {
-    await page.goto('/faculty/assessments');
+    await page.goto('http://localhost:3000/faculty/assessments');
     await page.waitForLoadState('networkidle');
     
     // Should load assessments interface
@@ -191,7 +191,7 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
   });
 
   test('should test grading workflow', async ({ page }) => {
-    await page.goto('/faculty/assessments/grade');
+    await page.goto('http://localhost:3000/faculty/assessments/grade');
     await page.waitForLoadState('networkidle');
     
     // Should load grading interface
@@ -217,7 +217,7 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
   });
 
   test('should test leave management', async ({ page }) => {
-    await page.goto('/faculty/leaves');
+    await page.goto('http://localhost:3000/faculty/leaves');
     await page.waitForLoadState('networkidle');
     
     // Should load leave management interface
@@ -274,7 +274,7 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
     // Test mobile responsiveness for faculty dashboard
     await page.setViewportSize({ width: 768, height: 1024 });
     
-    await page.goto('/faculty');
+    await page.goto('http://localhost:3000/faculty');
     await page.waitForLoadState('networkidle');
     
     // Should be responsive
@@ -292,7 +292,7 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
 
   test('should test course material access', async ({ page }) => {
     // Test if faculty can access course materials
-    await page.goto('/faculty/my-courses');
+    await page.goto('http://localhost:3000/faculty/my-courses');
     await page.waitForLoadState('networkidle');
     
     const hasCourses = await page.locator('.course-list, .course-card').isVisible();
@@ -315,7 +315,7 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
   });
 
   test('should test faculty notification system', async ({ page }) => {
-    await page.goto('/faculty');
+    await page.goto('http://localhost:3000/faculty');
     await page.waitForLoadState('networkidle');
     
     // Look for notification indicators

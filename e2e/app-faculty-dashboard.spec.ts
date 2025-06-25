@@ -33,8 +33,8 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
   test('should load faculty dashboard', async ({ page }) => {
     // Should either show faculty dashboard or access control
     const hasFacultyAccess = await page.locator('h1:has-text("Faculty"), h1:has-text("Dashboard"), .faculty-dashboard').isVisible();
-    const needsLogin = await page.locator('text=Login, text=Sign in').isVisible();
-    const accessDenied = await page.locator('text=Access denied, text=Unauthorized').isVisible();
+    const needsLogin = await page.locator('text=Login, text=Sign in').first().isVisible();
+    const accessDenied = await page.locator('text=Access denied, text=Unauthorized').first().isVisible();
     
     if (hasFacultyAccess) {
       // Should have faculty navigation
@@ -64,16 +64,16 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
     
     // Should load profile page
     const hasProfile = await page.locator('h1:has-text("Profile"), .profile-section').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasProfile) {
       // Should show faculty information
-      const hasProfileInfo = await page.locator('.profile-info, .faculty-details, form').isVisible();
+      const hasProfileInfo = await page.locator('.profile-info, .faculty-details, form').first().isVisible();
       expect(hasProfileInfo).toBe(true);
       
       // Should have editable fields or display mode
       const hasEditButton = await page.locator('button:has-text("Edit"), button:has-text("Update")').isVisible();
-      const hasFormFields = await page.locator('input, select, textarea').isVisible();
+      const hasFormFields = await page.locator('input, select, textarea').first().isVisible();
       
       expect(hasEditButton || hasFormFields).toBe(true);
     } else {
@@ -87,12 +87,12 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
     
     // Should load courses interface
     const hasCourses = await page.locator('h1:has-text("Courses"), .courses-section').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasCourses) {
       // Should show course list or empty state
-      const hasCourseList = await page.locator('.course-list, .course-card, table').isVisible();
-      const hasEmptyState = await page.locator('text=No courses, .empty-state').isVisible();
+      const hasCourseList = await page.locator('.course-list, .course-card, table').first().isVisible();
+      const hasEmptyState = await page.locator('text=No courses, .empty-state').first().isVisible();
       
       expect(hasCourseList || hasEmptyState).toBe(true);
       
@@ -103,7 +103,7 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
         await page.waitForLoadState('networkidle');
         
         // Should navigate to course details
-        const hasCourseDetails = await page.locator('.course-details, h1').isVisible();
+        const hasCourseDetails = await page.locator('.course-details, h1').first().isVisible();
         expect(hasCourseDetails).toBe(true);
       }
     } else {
@@ -118,12 +118,12 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
     
     // Should load students interface or show access control
     const hasStudentsInterface = await page.locator('h1:has-text("Students"), .students-list').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Not found').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Not found').first().isVisible();
     
     if (hasStudentsInterface) {
       // Should show enrolled students
-      const hasStudentsList = await page.locator('table, .student-list, .student-card').isVisible();
-      const hasEmptyState = await page.locator('text=No students, .empty-state').isVisible();
+      const hasStudentsList = await page.locator('table, .student-list, .student-card').first().isVisible();
+      const hasEmptyState = await page.locator('text=No students, .empty-state').first().isVisible();
       
       expect(hasStudentsList || hasEmptyState).toBe(true);
       
@@ -144,12 +144,12 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
     
     // Should load timetable interface
     const hasTimetable = await page.locator('h1:has-text("Timetable"), .timetable-view').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasTimetable) {
       // Should show timetable grid or calendar
-      const hasTimetableView = await page.locator('.timetable-grid, .calendar, table').isVisible();
-      const hasEmptyState = await page.locator('text=No schedule, .empty-state').isVisible();
+      const hasTimetableView = await page.locator('.timetable-grid, .calendar, table').first().isVisible();
+      const hasEmptyState = await page.locator('text=No schedule, .empty-state').first().isVisible();
       
       expect(hasTimetableView || hasEmptyState).toBe(true);
       
@@ -170,12 +170,12 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
     
     // Should load assessments interface
     const hasAssessments = await page.locator('h1:has-text("Assessments"), .assessments-section').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasAssessments) {
       // Should show assessments list
-      const hasAssessmentsList = await page.locator('.assessment-list, .assessment-card, table').isVisible();
-      const hasEmptyState = await page.locator('text=No assessments, .empty-state').isVisible();
+      const hasAssessmentsList = await page.locator('.assessment-list, .assessment-card, table').first().isVisible();
+      const hasEmptyState = await page.locator('text=No assessments, .empty-state').first().isVisible();
       
       expect(hasAssessmentsList || hasEmptyState).toBe(true);
       
@@ -196,12 +196,12 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
     
     // Should load grading interface
     const hasGrading = await page.locator('h1:has-text("Grade"), .grading-interface').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasGrading) {
       // Should have grading tools
-      const hasGradingForm = await page.locator('form, .grading-form, input[type="number"], select').isVisible();
-      const hasStudentList = await page.locator('.student-list, table').isVisible();
+      const hasGradingForm = await page.locator('form, .grading-form, input[type="number"], select').first().isVisible();
+      const hasStudentList = await page.locator('.student-list, table').first().isVisible();
       
       expect(hasGradingForm || hasStudentList).toBe(true);
       
@@ -222,12 +222,12 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
     
     // Should load leave management interface
     const hasLeaves = await page.locator('h1:has-text("Leave"), .leaves-section').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasLeaves) {
       // Should show leave requests or empty state
-      const hasLeavesList = await page.locator('.leave-list, .leave-card, table').isVisible();
-      const hasEmptyState = await page.locator('text=No leaves, .empty-state').isVisible();
+      const hasLeavesList = await page.locator('.leave-list, .leave-card, table').first().isVisible();
+      const hasEmptyState = await page.locator('text=No leaves, .empty-state').first().isVisible();
       
       expect(hasLeavesList || hasEmptyState).toBe(true);
       
@@ -239,7 +239,7 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
         await page.waitForLoadState('networkidle');
         
         // Should open leave application form
-        const hasLeaveForm = await page.locator('form, .leave-form').isVisible();
+        const hasLeaveForm = await page.locator('form, .leave-form').first().isVisible();
         expect(hasLeaveForm).toBe(true);
       }
     } else {
@@ -263,8 +263,8 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
       
       // Should maintain consistent faculty layout
       const hasFacultyLayout = await page.locator('.faculty-layout, .faculty-sidebar, nav:has-text("Faculty")').isVisible();
-      const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
-      const hasContent = await page.locator('main, .content, .page-content').isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
+      const hasContent = await page.locator('main, .content, .page-content').first().isVisible();
       
       expect(hasFacultyLayout || hasAccessControl || hasContent).toBe(true);
     }
@@ -295,7 +295,7 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
     await page.goto('http://localhost:3000/faculty/my-courses');
     await page.waitForLoadState('networkidle');
     
-    const hasCourses = await page.locator('.course-list, .course-card').isVisible();
+    const hasCourses = await page.locator('.course-list, .course-card').first().isVisible();
     
     if (hasCourses) {
       // Try to access course materials
@@ -320,14 +320,14 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
     
     // Look for notification indicators
     const notificationBell = page.locator('.notification-bell, .notifications, [data-testid="notifications"]').first();
-    const hasNotificationCount = await page.locator('.notification-count, .badge').isVisible();
+    const hasNotificationCount = await page.locator('.notification-count, .badge').first().isVisible();
     
     if (await notificationBell.isVisible()) {
       await notificationBell.click();
       await page.waitForLoadState('networkidle');
       
       // Should show notifications panel or navigate to notifications page
-      const hasNotificationsPanel = await page.locator('.notifications-panel, .notifications-dropdown').isVisible();
+      const hasNotificationsPanel = await page.locator('.notifications-panel, .notifications-dropdown').first().isVisible();
       const isOnNotificationsPage = page.url().includes('notification');
       
       expect(hasNotificationsPanel || isOnNotificationsPage).toBe(true);

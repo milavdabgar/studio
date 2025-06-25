@@ -12,13 +12,13 @@ test.describe('Project Fair System - Complete Application Flow', () => {
   
   test.beforeEach(async ({ page }) => {
     // Ensure we start from the home page
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
   });
 
   test('should access project fair landing page', async ({ page }) => {
     // Check if project fair is accessible from main navigation or direct URL
-    await page.goto('/project-fair/student');
+    await page.goto('http://localhost:3000/project-fair/student');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Should show project fair content or access control
@@ -29,7 +29,7 @@ test.describe('Project Fair System - Complete Application Flow', () => {
   });
 
   test('should test student project fair access', async ({ page }) => {
-    await page.goto('/project-fair/student');
+    await page.goto('http://localhost:3000/project-fair/student');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Should show student project fair interface or login prompt
@@ -49,7 +49,7 @@ test.describe('Project Fair System - Complete Application Flow', () => {
   });
 
   test('should test admin project fair management', async ({ page }) => {
-    await page.goto('/project-fair/admin');
+    await page.goto('http://localhost:3000/project-fair/admin');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Should show admin interface or access control
@@ -69,7 +69,7 @@ test.describe('Project Fair System - Complete Application Flow', () => {
   });
 
   test('should test project fair events management', async ({ page }) => {
-    await page.goto('/project-fair/admin/new-event');
+    await page.goto('http://localhost:3000/project-fair/admin/new-event');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasEventsPage = await page.locator('h1:has-text("Events"), h1:has-text("New Event"), .events-list, [data-testid="events"]').isVisible();
@@ -89,7 +89,7 @@ test.describe('Project Fair System - Complete Application Flow', () => {
 
   test('should test project fair evaluation system', async ({ page }) => {
     // Test evaluation interface for judges/faculty
-    await page.goto('/admin/project-fair/events/test-event/evaluations');
+    await page.goto('http://localhost:3000/admin/project-fair/events/test-event/evaluations');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasEvaluationPage = await page.locator('h1:has-text("Evaluation"), .evaluation-form, [data-testid="evaluation"]').isVisible();
@@ -108,7 +108,7 @@ test.describe('Project Fair System - Complete Application Flow', () => {
   });
 
   test('should test project fair results and analytics', async ({ page }) => {
-    await page.goto('/admin/project-fair/events/test-event/results');
+    await page.goto('http://localhost:3000/admin/project-fair/events/test-event/results');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasResultsPage = await page.locator('h1:has-text("Results"), .results-dashboard, [data-testid="results"]').isVisible();
@@ -127,7 +127,7 @@ test.describe('Project Fair System - Complete Application Flow', () => {
   });
 
   test('should test project fair team management', async ({ page }) => {
-    await page.goto('/admin/project-fair/events/test-event/teams');
+    await page.goto('http://localhost:3000/admin/project-fair/events/test-event/teams');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasTeamsPage = await page.locator('h1:has-text("Teams"), .teams-list, [data-testid="teams"]').isVisible();
@@ -146,7 +146,7 @@ test.describe('Project Fair System - Complete Application Flow', () => {
   });
 
   test('should test project fair scheduling', async ({ page }) => {
-    await page.goto('/admin/project-fair/events/test-event/schedule');
+    await page.goto('http://localhost:3000/admin/project-fair/events/test-event/schedule');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasSchedulePage = await page.locator('h1:has-text("Schedule"), .schedule, [data-testid="schedule"]').isVisible();
@@ -192,7 +192,7 @@ test.describe('Project Fair System - Complete Application Flow', () => {
   test('should test project fair responsive design', async ({ page }) => {
     // Test mobile responsiveness
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/project-fair/student');
+    await page.goto('http://localhost:3000/project-fair/student');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Check if layout adapts to mobile
@@ -236,7 +236,7 @@ test.describe('Project Fair System - Complete Application Flow', () => {
       }
     });
     
-    await page.goto('/project-fair/student');
+    await page.goto('http://localhost:3000/project-fair/student');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Filter out known acceptable errors (like network timeouts in test environment)

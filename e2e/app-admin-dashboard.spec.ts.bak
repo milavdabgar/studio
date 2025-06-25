@@ -11,7 +11,7 @@ test.describe('Admin Dashboard & Management Workflows', () => {
   
   test.beforeEach(async ({ page }) => {
     // Navigate to admin login and attempt authentication
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     // Try to login as admin (will handle both success and failure scenarios)
     const emailInput = page.locator('input[type="email"], input[name="email"]').first();
@@ -26,7 +26,7 @@ test.describe('Admin Dashboard & Management Workflows', () => {
     }
     
     // Navigate to admin area (will test access control)
-    await page.goto('/admin');
+    await page.goto('http://localhost:3000/admin');
     await page.waitForLoadState('networkidle');
   });
 
@@ -121,7 +121,7 @@ test.describe('Admin Dashboard & Management Workflows', () => {
   });
 
   test('should test results management workflow', async ({ page }) => {
-    await page.goto('/admin/results');
+    await page.goto('http://localhost:3000/admin/results');
     await page.waitForLoadState('networkidle');
     
     // Should load results management
@@ -137,7 +137,7 @@ test.describe('Admin Dashboard & Management Workflows', () => {
       
       // Test results import page
       if (hasImportButton) {
-        await page.goto('/admin/results/import');
+        await page.goto('http://localhost:3000/admin/results/import');
         await page.waitForLoadState('networkidle');
         
         // Should have import interface
@@ -150,7 +150,7 @@ test.describe('Admin Dashboard & Management Workflows', () => {
   });
 
   test('should test user management', async ({ page }) => {
-    await page.goto('/admin/users');
+    await page.goto('http://localhost:3000/admin/users');
     await page.waitForLoadState('networkidle');
     
     // Should handle user management
@@ -169,7 +169,7 @@ test.describe('Admin Dashboard & Management Workflows', () => {
   });
 
   test('should test reporting and analytics', async ({ page }) => {
-    await page.goto('/admin/reporting-analytics');
+    await page.goto('http://localhost:3000/admin/reporting-analytics');
     await page.waitForLoadState('networkidle');
     
     // Should load reporting interface
@@ -188,7 +188,7 @@ test.describe('Admin Dashboard & Management Workflows', () => {
   });
 
   test('should test settings and configuration', async ({ page }) => {
-    await page.goto('/admin/settings');
+    await page.goto('http://localhost:3000/admin/settings');
     await page.waitForLoadState('networkidle');
     
     // Should load settings interface
@@ -207,7 +207,7 @@ test.describe('Admin Dashboard & Management Workflows', () => {
   });
 
   test('should test feedback analysis features', async ({ page }) => {
-    await page.goto('/admin/feedback-analysis');
+    await page.goto('http://localhost:3000/admin/feedback-analysis');
     await page.waitForLoadState('networkidle');
     
     // Should handle feedback analysis
@@ -224,7 +224,7 @@ test.describe('Admin Dashboard & Management Workflows', () => {
   });
 
   test('should test resource allocation management', async ({ page }) => {
-    await page.goto('/admin/resource-allocation');
+    await page.goto('http://localhost:3000/admin/resource-allocation');
     await page.waitForLoadState('networkidle');
     
     // Should load resource allocation

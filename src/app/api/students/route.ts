@@ -79,12 +79,13 @@ if (!global.__API_STUDENTS_STORE__ || global.__API_STUDENTS_STORE__.length === 0
     }
   ];
 }
-const studentsStore: Student[] = global.__API_STUDENTS_STORE__;
+// Get the current students store dynamically
+const getStudentsStore = (): Student[] => global.__API_STUDENTS_STORE__ || [];
 
 const generateId = (): string => `std_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function GET() {
-  return NextResponse.json(studentsStore);
+  return NextResponse.json(getStudentsStore());
 }
 
 export async function POST(request: NextRequest) {
@@ -132,10 +133,10 @@ export async function POST(request: NextRequest) {
     const instituteEmail = studentData.instituteEmail?.trim() || `${studentData.enrollmentNumber.trim()}@${instituteDomain}`;
 
 
-    if (studentsStore.some(s => s.enrollmentNumber === studentData.enrollmentNumber.trim())) {
+    if (getStudentsStore().some((s: Student) => s.enrollmentNumber === studentData.enrollmentNumber.trim())) {
       return NextResponse.json({ message: `Student with enrollment number '${studentData.enrollmentNumber.trim()}' already exists.` }, { status: 409 });
     }
-    if (studentsStore.some(s => s.instituteEmail.toLowerCase() === instituteEmail.toLowerCase())) {
+    if (getStudentsStore().some((s: Student) => s.instituteEmail.toLowerCase() === instituteEmail.toLowerCase())) {
       return NextResponse.json({ message: `Student with institute email '${instituteEmail}' already exists.` }, { status: 409 });
     }
      if (studentData.personalEmail && !/\S+@\S+\.\S+/.test(studentData.personalEmail)) {
@@ -160,6 +161,7 @@ export async function POST(request: NextRequest) {
             instituteEmail: instituteEmail,
             password: studentData.enrollmentNumber, // Default password as enrollment number
             roles: ['student'], 
+            currentRole: 'student',
             isActive: studentData.status === 'active',
             instituteId: studentInstituteId, 
             fullName: studentData.fullNameGtuFormat || `${studentData.lastName || ''} ${studentData.firstName || ''} ${studentData.middleName || ''}`.trim(),
@@ -173,7 +175,7 @@ export async function POST(request: NextRequest) {
         newStudent.userId = createdUserId;
 
     } catch (userCreationError: unknown) {
-        if (userCreationError.message?.includes("already exists")) {
+        if ((userCreationError as Error).message?.includes("already exists")) {
             console.warn(`System user with email ${instituteEmail} or ${studentData.personalEmail} already exists. Attempting to link student ${newStudent.enrollmentNumber}.`);
             const allUsers = await userService.getAllUsers();
             const existingUser = allUsers.find(u => u.instituteEmail === instituteEmail || u.email === studentData.personalEmail);
@@ -190,8 +192,9 @@ export async function POST(request: NextRequest) {
         }
     }
     
-    studentsStore.push(newStudent);
-    global.__API_STUDENTS_STORE__ = studentsStore;
+    const currentStore = getStudentsStore();
+    currentStore.push(newStudent);
+    global.__API_STUDENTS_STORE__ = currentStore;
 
     return NextResponse.json(newStudent, { status: 201 });
   } catch (error) {

@@ -12,7 +12,7 @@ test.describe('Authentication & Core User Journeys', () => {
   
   test.beforeEach(async ({ page }) => {
     // Start from the home page
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
   });
 
   test('should load the home page successfully', async ({ page }) => {
@@ -45,7 +45,7 @@ test.describe('Authentication & Core User Journeys', () => {
   });
 
   test('should handle login form validation', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     // Try to submit empty form
     const submitButton = page.locator('button[type="submit"], button:has-text("Login")').first();
@@ -60,7 +60,7 @@ test.describe('Authentication & Core User Journeys', () => {
   });
 
   test('should attempt admin login workflow', async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('http://localhost:3000/login');
     
     // Fill login form with test admin credentials
     const emailInput = page.locator('input[type="email"], input[name="email"]').first();
@@ -106,7 +106,7 @@ test.describe('Authentication & Core User Journeys', () => {
   });
 
   test('should load notifications page', async ({ page }) => {
-    await page.goto('/notifications');
+    await page.goto('http://localhost:3000/notifications');
     await page.waitForLoadState('networkidle');
     
     // Should load notifications interface
@@ -122,7 +122,7 @@ test.describe('Authentication & Core User Journeys', () => {
   test('should test responsive design on mobile viewport', async ({ page }) => {
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     
     // Should be responsive
     await expect(page.locator('body')).toBeVisible();
@@ -139,7 +139,7 @@ test.describe('Authentication & Core User Journeys', () => {
   });
 
   test('should handle dark mode toggle if available', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     
     // Look for dark mode toggle
     const darkModeToggle = page.locator('[data-testid="theme-toggle"], button:has-text("Dark"), button:has-text("Light")').first();
@@ -157,7 +157,7 @@ test.describe('Authentication & Core User Journeys', () => {
   });
 
   test('should test accessibility basics', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     
     // Check for basic accessibility features
     const hasSkipLink = await page.locator('a:has-text("Skip to content"), .skip-link').isVisible();
@@ -172,7 +172,7 @@ test.describe('Authentication & Core User Journeys', () => {
     // Simulate network failure
     await page.route('**/api/**', route => route.abort());
     
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     await page.waitForLoadState('networkidle');
     
     // Should still load basic page structure
@@ -189,7 +189,7 @@ test.describe('Authentication & Core User Journeys', () => {
   test('should test page performance basics', async ({ page }) => {
     const startTime = Date.now();
     
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     await page.waitForLoadState('networkidle');
     
     const loadTime = Date.now() - startTime;

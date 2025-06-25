@@ -33,8 +33,8 @@ test.describe('Admin Dashboard & Management Workflows', () => {
   test('should load admin dashboard', async ({ page }) => {
     // Should either show admin dashboard or login prompt
     const hasAdminAccess = await page.locator('h1:has-text("Admin"), h1:has-text("Dashboard"), .admin-dashboard').isVisible();
-    const needsLogin = await page.locator('text=Login, text=Sign in').isVisible();
-    const accessDenied = await page.locator('text=Access denied, text=Unauthorized').isVisible();
+    const needsLogin = await page.locator('text=Login, text=Sign in').first().isVisible();
+    const accessDenied = await page.locator('text=Access denied, text=Unauthorized').first().isVisible();
     
     if (hasAdminAccess) {
       // Should have admin navigation
@@ -76,12 +76,12 @@ test.describe('Admin Dashboard & Management Workflows', () => {
       await page.waitForLoadState('networkidle');
       
       // Should load without server errors
-      const hasServerError = await page.locator('text=500, text=Internal Server Error').isVisible();
+      const hasServerError = await page.locator('text=500, text=Internal Server Error').first().isVisible();
       expect(hasServerError).toBe(false);
       
       // Should either show content or access control
-      const hasContent = await page.locator('table, .data-grid, .list, h1, h2').isVisible();
-      const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+      const hasContent = await page.locator('table, .data-grid, .list, h1, h2').first().isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
       
       expect(hasContent || hasAccessControl).toBe(true);
       
@@ -113,8 +113,8 @@ test.describe('Admin Dashboard & Management Workflows', () => {
       await expect(page.locator('body')).toBeVisible();
       
       // Should either show management interface or access control
-      const hasManagementInterface = await page.locator('table, .grid, .list, .management-panel').isVisible();
-      const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').isVisible();
+      const hasManagementInterface = await page.locator('table, .grid, .list, .management-panel').first().isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
       
       expect(hasManagementInterface || hasAccessControl).toBe(true);
     }
@@ -126,12 +126,12 @@ test.describe('Admin Dashboard & Management Workflows', () => {
     
     // Should load results management
     const hasResultsInterface = await page.locator('h1:has-text("Results"), .results-management').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasResultsInterface) {
       // Should have results management features
       const hasImportButton = await page.locator('button:has-text("Import"), a:has-text("Import")').isVisible();
-      const hasResultsList = await page.locator('table, .results-list, .data-table').isVisible();
+      const hasResultsList = await page.locator('table, .results-list, .data-table').first().isVisible();
       
       expect(hasImportButton || hasResultsList).toBe(true);
       
@@ -141,7 +141,7 @@ test.describe('Admin Dashboard & Management Workflows', () => {
         await page.waitForLoadState('networkidle');
         
         // Should have import interface
-        const hasImportForm = await page.locator('form, input[type="file"], .upload-area').isVisible();
+        const hasImportForm = await page.locator('form, input[type="file"], .upload-area').first().isVisible();
         expect(hasImportForm).toBe(true);
       }
     } else {
@@ -155,11 +155,11 @@ test.describe('Admin Dashboard & Management Workflows', () => {
     
     // Should handle user management
     const hasUserManagement = await page.locator('h1:has-text("Users"), .user-management').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasUserManagement) {
       // Should have user list or creation interface
-      const hasUserList = await page.locator('table, .user-list, .data-grid').isVisible();
+      const hasUserList = await page.locator('table, .user-list, .data-grid').first().isVisible();
       const hasCreateUser = await page.locator('button:has-text("Add"), button:has-text("Create"), button:has-text("New User")').isVisible();
       
       expect(hasUserList || hasCreateUser).toBe(true);
@@ -174,12 +174,12 @@ test.describe('Admin Dashboard & Management Workflows', () => {
     
     // Should load reporting interface
     const hasReporting = await page.locator('h1:has-text("Report"), h1:has-text("Analytics"), .analytics-dashboard').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasReporting) {
       // Should have reporting options
       const hasReportOptions = await page.locator('button:has-text("Generate"), select, .report-type, .filter').isVisible();
-      const hasCharts = await page.locator('canvas, .chart, .graph, svg').isVisible();
+      const hasCharts = await page.locator('canvas, .chart, .graph, svg').first().isVisible();
       
       expect(hasReportOptions || hasCharts).toBe(true);
     } else {
@@ -193,11 +193,11 @@ test.describe('Admin Dashboard & Management Workflows', () => {
     
     // Should load settings interface
     const hasSettings = await page.locator('h1:has-text("Settings"), .settings-panel').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasSettings) {
       // Should have configuration options
-      const hasConfigForms = await page.locator('form, input, select, .config-section').isVisible();
+      const hasConfigForms = await page.locator('form, input, select, .config-section').first().isVisible();
       const hasSaveButton = await page.locator('button:has-text("Save"), button:has-text("Update")').isVisible();
       
       expect(hasConfigForms || hasSaveButton).toBe(true);
@@ -212,7 +212,7 @@ test.describe('Admin Dashboard & Management Workflows', () => {
     
     // Should handle feedback analysis
     const hasFeedbackAnalysis = await page.locator('h1:has-text("Feedback"), .feedback-analysis').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasFeedbackAnalysis) {
       // Should have analysis interface
@@ -229,11 +229,11 @@ test.describe('Admin Dashboard & Management Workflows', () => {
     
     // Should load resource allocation
     const hasResourceAllocation = await page.locator('h1:has-text("Resource"), .resource-allocation').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasResourceAllocation) {
       // Should have allocation interface
-      const hasAllocationTools = await page.locator('button, select, .allocation-grid, .resource-list').isVisible();
+      const hasAllocationTools = await page.locator('button, select, .allocation-grid, .resource-list').first().isVisible();
       expect(hasAllocationTools).toBe(true);
     } else {
       expect(hasAccessControl).toBe(true);
@@ -255,8 +255,8 @@ test.describe('Admin Dashboard & Management Workflows', () => {
       
       // Should maintain consistent admin layout
       const hasAdminLayout = await page.locator('.admin-layout, .admin-sidebar, nav:has-text("Admin")').isVisible();
-      const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
-      const hasContent = await page.locator('main, .content, .page-content').isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
+      const hasContent = await page.locator('main, .content, .page-content').first().isVisible();
       
       expect(hasAdminLayout || hasAccessControl || hasContent).toBe(true);
       
@@ -287,10 +287,10 @@ test.describe('Admin Dashboard & Management Workflows', () => {
         await page.waitForLoadState('networkidle');
         
         // Should open form or modal
-        const hasForm = await page.locator('form, .modal, .dialog').isVisible();
+        const hasForm = await page.locator('form, .modal, .dialog').first().isVisible();
         if (hasForm) {
           // Form should have input fields
-          const hasInputs = await page.locator('input, select, textarea').isVisible();
+          const hasInputs = await page.locator('input, select, textarea').first().isVisible();
           expect(hasInputs).toBe(true);
           
           // Should have submit button

@@ -11,7 +11,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Complete Faculty Section Coverage', () => {
   
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
   });
 
@@ -73,7 +73,7 @@ test.describe('Complete Faculty Section Coverage', () => {
   });
 
   test('should test faculty dashboard functionality', async ({ page }) => {
-    await page.goto('/faculty');
+    await page.goto('http://localhost:3000/faculty');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Check for faculty dashboard elements
@@ -94,7 +94,7 @@ test.describe('Complete Faculty Section Coverage', () => {
   });
 
   test('should test faculty profile management', async ({ page }) => {
-    await page.goto('/faculty/profile');
+    await page.goto('http://localhost:3000/faculty/profile');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasProfilePage = await page.locator('h1:has-text("Profile"), .profile-page, .faculty-profile').isVisible();
@@ -113,7 +113,7 @@ test.describe('Complete Faculty Section Coverage', () => {
   });
 
   test('should test faculty course management', async ({ page }) => {
-    await page.goto('/faculty/my-courses');
+    await page.goto('http://localhost:3000/faculty/my-courses');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasCoursesPage = await page.locator('h1:has-text("Courses"), h1:has-text("My Courses"), .courses-page').isVisible();
@@ -133,7 +133,7 @@ test.describe('Complete Faculty Section Coverage', () => {
 
   test('should test faculty attendance features', async ({ page }) => {
     // Test attendance marking
-    await page.goto('/faculty/attendance/mark');
+    await page.goto('http://localhost:3000/faculty/attendance/mark');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasAttendancePage = await page.locator('h1:has-text("Attendance"), .attendance-page').isVisible();
@@ -150,7 +150,7 @@ test.describe('Complete Faculty Section Coverage', () => {
     }
     
     // Test attendance reports
-    await page.goto('/faculty/attendance/reports');
+    await page.goto('http://localhost:3000/faculty/attendance/reports');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasReportsPage = await page.locator('h1:has-text("Reports"), .reports-page').isVisible();
@@ -160,7 +160,7 @@ test.describe('Complete Faculty Section Coverage', () => {
   });
 
   test('should test faculty assessment and grading', async ({ page }) => {
-    await page.goto('/faculty/assessments/grade');
+    await page.goto('http://localhost:3000/faculty/assessments/grade');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasGradingPage = await page.locator('h1:has-text("Grade"), h1:has-text("Assessment"), .grading-page').isVisible();
@@ -179,7 +179,7 @@ test.describe('Complete Faculty Section Coverage', () => {
   });
 
   test('should test faculty timetable management', async ({ page }) => {
-    await page.goto('/faculty/timetable');
+    await page.goto('http://localhost:3000/faculty/timetable');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasTimetablePage = await page.locator('h1:has-text("Timetable"), h1:has-text("Schedule"), .timetable-page').isVisible();
@@ -198,7 +198,7 @@ test.describe('Complete Faculty Section Coverage', () => {
   });
 
   test('should test faculty leave management', async ({ page }) => {
-    await page.goto('/faculty/leaves');
+    await page.goto('http://localhost:3000/faculty/leaves');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasLeavePage = await page.locator('h1:has-text("Leave"), .leave-page').isVisible();
@@ -232,7 +232,7 @@ test.describe('Complete Faculty Section Coverage', () => {
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
       // Should be responsive
-      const hasResponsiveContent = await page.locator('main, .content, body').isVisible();
+      const hasResponsiveContent = await page.locator('main, .content, body').first().isVisible();
       if (hasResponsiveContent) {
         const mainElement = await page.locator('main, .content').first();
         if (await mainElement.isVisible()) {

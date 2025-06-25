@@ -27,9 +27,9 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
     
     if (hasDTEDashboard) {
       // Check for DTE-specific features
-      const hasStatistics = await page.locator('.statistics, .stats, .dashboard-stats').isVisible();
-      const hasReports = await page.locator('.reports, .report-section, text=Reports').isVisible();
-      const hasInstitutes = await page.locator('.institutes, text=Institutes, .institute-list').isVisible();
+      const hasStatistics = await page.locator('.statistics, .stats, .dashboard-stats').first().isVisible();
+      const hasReports = await page.locator('.reports, .report-section, text=Reports').first().isVisible();
+      const hasInstitutes = await page.locator('.institutes, text=Institutes, .institute-list').first().isVisible();
       
       expect(hasStatistics || hasReports || hasInstitutes).toBe(true);
     }
@@ -46,9 +46,9 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
     
     if (hasFeedbackAnalysis) {
       // Check for feedback analysis features
-      const hasAnalytics = await page.locator('.analytics, .chart, canvas').isVisible();
-      const hasFeedbackList = await page.locator('.feedback-list, table, .feedback-table').isVisible();
-      const hasFilters = await page.locator('.filters, .filter-section, select').isVisible();
+      const hasAnalytics = await page.locator('.analytics, .chart, canvas').first().isVisible();
+      const hasFeedbackList = await page.locator('.feedback-list, table, .feedback-table').first().isVisible();
+      const hasFilters = await page.locator('.filters, .filter-section, select').first().isVisible();
       const hasExportOptions = await page.locator('button:has-text("Export"), button:has-text("Download")').isVisible();
       
       expect(hasAnalytics || hasFeedbackList || hasFilters || hasExportOptions).toBe(true);
@@ -66,10 +66,10 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
     
     if (hasReportingDashboard) {
       // Check for reporting features
-      const hasCharts = await page.locator('canvas, .chart, .graph').isVisible();
-      const hasMetrics = await page.locator('.metrics, .kpi, .dashboard-metric').isVisible();
-      const hasReportOptions = await page.locator('.report-options, .report-selector').isVisible();
-      const hasDateRangeSelector = await page.locator('input[type="date"], .date-picker').isVisible();
+      const hasCharts = await page.locator('canvas, .chart, .graph').first().isVisible();
+      const hasMetrics = await page.locator('.metrics, .kpi, .dashboard-metric').first().isVisible();
+      const hasReportOptions = await page.locator('.report-options, .report-selector').first().isVisible();
+      const hasDateRangeSelector = await page.locator('input[type="date"], .date-picker').first().isVisible();
       
       expect(hasCharts || hasMetrics || hasReportOptions || hasDateRangeSelector).toBe(true);
     }
@@ -87,9 +87,9 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
     
     if (hasGTUContent) {
       // Check for GTU features
-      const hasResultsSection = await page.locator('.results, text=Results, .gtu-results').isVisible();
-      const hasExaminationInfo = await page.locator('.examination, text=Examination, .exam-info').isVisible();
-      const hasAffiliationInfo = await page.locator('.affiliation, text=Affiliation').isVisible();
+      const hasResultsSection = await page.locator('.results, text=Results, .gtu-results').first().isVisible();
+      const hasExaminationInfo = await page.locator('.examination, text=Examination, .exam-info').first().isVisible();
+      const hasAffiliationInfo = await page.locator('.affiliation, text=Affiliation').first().isVisible();
       
       expect(hasResultsSection || hasExaminationInfo || hasAffiliationInfo).toBe(true);
     }
@@ -106,10 +106,10 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
     
     if (hasResourceAllocation) {
       // Check for resource allocation features
-      const hasResourceList = await page.locator('.resource-list, table, .allocation-table').isVisible();
-      const hasAllocationForm = await page.locator('form, .allocation-form').isVisible();
-      const hasCalendar = await page.locator('.calendar, .schedule').isVisible();
-      const hasRoomManagement = await page.locator('.rooms, text=Rooms, .room-allocation').isVisible();
+      const hasResourceList = await page.locator('.resource-list, table, .allocation-table').first().isVisible();
+      const hasAllocationForm = await page.locator('form, .allocation-form').first().isVisible();
+      const hasCalendar = await page.locator('.calendar, .schedule').first().isVisible();
+      const hasRoomManagement = await page.locator('.rooms, text=Rooms, .room-allocation').first().isVisible();
       
       expect(hasResourceList || hasAllocationForm || hasCalendar || hasRoomManagement).toBe(true);
     }
@@ -126,10 +126,10 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
     
     if (hasSettingsPage) {
       // Check for settings features
-      const hasConfigOptions = await page.locator('.config-section, .settings-group').isVisible();
-      const hasFormInputs = await page.locator('input, select, textarea').isVisible();
+      const hasConfigOptions = await page.locator('.config-section, .settings-group').first().isVisible();
+      const hasFormInputs = await page.locator('input, select, textarea').first().isVisible();
       const hasSaveButton = await page.locator('button:has-text("Save"), button:has-text("Update")').isVisible();
-      const hasSystemSettings = await page.locator('.system-settings, text=System').isVisible();
+      const hasSystemSettings = await page.locator('.system-settings, text=System').first().isVisible();
       
       expect(hasConfigOptions || hasFormInputs || hasSaveButton || hasSystemSettings).toBe(true);
     }
@@ -146,9 +146,9 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
     
     if (hasCommitteeSection) {
       // Check for committee features
-      const hasCommitteeList = await page.locator('.committee-list, table').isVisible();
+      const hasCommitteeList = await page.locator('.committee-list, table').first().isVisible();
       const hasCreateCommittee = await page.locator('button:has-text("Create"), button:has-text("Add")').isVisible();
-      const hasMemberManagement = await page.locator('.members, text=Members, .member-list').isVisible();
+      const hasMemberManagement = await page.locator('.members, text=Members, .member-list').first().isVisible();
       
       expect(hasCommitteeList || hasCreateCommittee || hasMemberManagement).toBe(true);
     }
@@ -165,10 +165,10 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
     
     if (hasWorkloadManagement) {
       // Check for workload management features
-      const hasFacultyList = await page.locator('.faculty-list, table').isVisible();
-      const hasWorkloadChart = await page.locator('canvas, .chart, .workload-chart').isVisible();
-      const hasAssignments = await page.locator('.assignments, text=Assignments').isVisible();
-      const hasCalculations = await page.locator('.calculations, .workload-calc').isVisible();
+      const hasFacultyList = await page.locator('.faculty-list, table').first().isVisible();
+      const hasWorkloadChart = await page.locator('canvas, .chart, .workload-chart').first().isVisible();
+      const hasAssignments = await page.locator('.assignments, text=Assignments').first().isVisible();
+      const hasCalculations = await page.locator('.calculations, .workload-calc').first().isVisible();
       
       expect(hasFacultyList || hasWorkloadChart || hasAssignments || hasCalculations).toBe(true);
     }
@@ -185,10 +185,10 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
     
     if (hasLeaveManagement) {
       // Check for leave management features
-      const hasLeaveList = await page.locator('.leave-list, table').isVisible();
+      const hasLeaveList = await page.locator('.leave-list, table').first().isVisible();
       const hasApprovalButtons = await page.locator('button:has-text("Approve"), button:has-text("Reject")').isVisible();
-      const hasLeaveCalendar = await page.locator('.calendar, .leave-calendar').isVisible();
-      const hasFilters = await page.locator('.filters, select').isVisible();
+      const hasLeaveCalendar = await page.locator('.calendar, .leave-calendar').first().isVisible();
+      const hasFilters = await page.locator('.filters, select').first().isVisible();
       
       expect(hasLeaveList || hasApprovalButtons || hasLeaveCalendar || hasFilters).toBe(true);
     }
@@ -205,9 +205,9 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
     
     if (hasBuildingManagement) {
       // Check for building management features
-      const hasBuildingList = await page.locator('.building-list, table').isVisible();
-      const hasRoomDetails = await page.locator('.rooms, text=Rooms').isVisible();
-      const hasFloorPlans = await page.locator('.floor-plan, .building-layout').isVisible();
+      const hasBuildingList = await page.locator('.building-list, table').first().isVisible();
+      const hasRoomDetails = await page.locator('.rooms, text=Rooms').first().isVisible();
+      const hasFloorPlans = await page.locator('.floor-plan, .building-layout').first().isVisible();
       
       expect(hasBuildingList || hasRoomDetails || hasFloorPlans).toBe(true);
     }
@@ -233,10 +233,10 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
     
     if (hasExamManagement) {
       // Check for examination features
-      const hasExamList = await page.locator('.exam-list, table').isVisible();
-      const hasScheduling = await page.locator('.schedule, .exam-schedule').isVisible();
-      const hasSeatingArrangement = await page.locator('.seating, text=Seating').isVisible();
-      const hasInvigilators = await page.locator('.invigilators, text=Invigilator').isVisible();
+      const hasExamList = await page.locator('.exam-list, table').first().isVisible();
+      const hasScheduling = await page.locator('.schedule, .exam-schedule').first().isVisible();
+      const hasSeatingArrangement = await page.locator('.seating, text=Seating').first().isVisible();
+      const hasInvigilators = await page.locator('.invigilators, text=Invigilator').first().isVisible();
       
       expect(hasExamList || hasScheduling || hasSeatingArrangement || hasInvigilators).toBe(true);
     }
@@ -257,14 +257,14 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
       // Should load successfully or show appropriate access control
-      const hasContent = await page.locator('main, .content, .page-content').isVisible();
-      const hasHeader = await page.locator('h1, h2, .page-title').isVisible();
+      const hasContent = await page.locator('main, .content, .page-content').first().isVisible();
+      const hasHeader = await page.locator('h1, h2, .page-title').first().isVisible();
       const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
       
       expect(hasContent || hasHeader || hasAccessControl).toBe(true);
       
       // Should not show unhandled errors
-      const hasError = await page.locator('text=Error, text=500, text=Something went wrong').isVisible();
+      const hasError = await page.locator('text=Error, text=500, text=Something went wrong').first().isVisible();
       expect(hasError).toBe(false);
     }
   });
@@ -282,7 +282,7 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
     expect(loadTime).toBeLessThan(15000);
     
     // Check that essential content is visible
-    const hasEssentialContent = await page.locator('main, .content, body').isVisible();
+    const hasEssentialContent = await page.locator('main, .content, body').first().isVisible();
     expect(hasEssentialContent).toBe(true);
   });
 
@@ -299,7 +299,7 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
       // Should show 404 or appropriate error handling
-      const has404 = await page.locator('text=404, text=Not Found, text=Page not found').isVisible();
+      const has404 = await page.locator('text=404, text=Not Found, text=Page not found').first().isVisible();
       const hasRedirect = await page.url() !== `http://localhost:3000${pagePath}`;
       const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
       
@@ -314,11 +314,11 @@ test.describe('Specialized Dashboards and Workflows - Complete Application Flow'
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Check if layout adapts to mobile
-    const hasContent = await page.locator('main, .content').isVisible();
+    const hasContent = await page.locator('main, .content').first().isVisible();
     expect(hasContent).toBe(true);
     
     // Test that charts and tables are responsive
-    const hasResponsiveElements = await page.locator('.responsive, .mobile-layout, main').isVisible();
+    const hasResponsiveElements = await page.locator('.responsive, .mobile-layout, main').first().isVisible();
     expect(hasResponsiveElements).toBe(true);
   });
 });

@@ -6,12 +6,12 @@ test.describe('Content & Blog System Complete Coverage E2E Tests', () => {
   
   test.beforeEach(async ({ page }) => {
     // Navigate to home page first
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     await page.waitForLoadState('networkidle');
   });
 
   test('should test posts main page', async ({ page }) => {
-    await page.goto('/posts');
+    await page.goto('http://localhost:3000/posts');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="posts-list"], article', { timeout: 10000 });
@@ -158,7 +158,7 @@ test.describe('Content & Blog System Complete Coverage E2E Tests', () => {
   });
 
   test('should test shortcodes demo page', async ({ page }) => {
-    await page.goto('/shortcodes-demo');
+    await page.goto('http://localhost:3000/shortcodes-demo');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="shortcodes"]', { timeout: 10000 });
@@ -217,7 +217,7 @@ test.describe('Content & Blog System Complete Coverage E2E Tests', () => {
   });
 
   test('should test content accessibility and SEO elements', async ({ page }) => {
-    await page.goto('/posts');
+    await page.goto('http://localhost:3000/posts');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });
@@ -242,7 +242,7 @@ test.describe('Content & Blog System Complete Coverage E2E Tests', () => {
   });
 
   test('should test content responsive design', async ({ page }) => {
-    await page.goto('/posts');
+    await page.goto('http://localhost:3000/posts');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });
@@ -268,7 +268,7 @@ test.describe('Content & Blog System Complete Coverage E2E Tests', () => {
   });
 
   test('should test content search functionality with queries', async ({ page }) => {
-    await page.goto('/search/en');
+    await page.goto('http://localhost:3000/search/en');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });

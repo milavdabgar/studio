@@ -76,7 +76,7 @@ test.describe('Authentication & Core User Journeys', () => {
     
     // Should either redirect to dashboard or show error
     const currentUrl = page.url();
-    const hasError = await page.locator('.error, .alert-error, [role="alert"]').isVisible();
+    const hasError = await page.locator('.error, .alert-error, [role="alert"]').first().isVisible();
     
     if (!hasError) {
       // If login successful, should be on dashboard or admin page
@@ -100,7 +100,7 @@ test.describe('Authentication & Core User Journeys', () => {
       await expect(page.locator('body')).toBeVisible();
       
       // Should not show server error
-      const hasServerError = await page.locator('text=500').isVisible();
+      const hasServerError = await page.locator('text=500').first().isVisible();
       expect(hasServerError).toBe(false);
     }
   });
@@ -114,7 +114,7 @@ test.describe('Authentication & Core User Journeys', () => {
     
     // Might show login prompt or notifications list
     const hasLoginPrompt = await page.locator('text=Login').first().isVisible();
-    const hasNotifications = await page.locator('[data-testid="notifications"], .notification').isVisible();
+    const hasNotifications = await page.locator('[data-testid="notifications"], .notification').first().isVisible();
     
     expect(hasLoginPrompt || hasNotifications).toBe(true);
   });
@@ -151,7 +151,7 @@ test.describe('Authentication & Core User Journeys', () => {
       await page.waitForTimeout(500); // Wait for theme change
       
       // Check if body or html has dark mode class
-      const hasDarkMode = await page.locator('html.dark, body.dark, [data-theme="dark"]').isVisible();
+      const hasDarkMode = await page.locator('html.dark, body.dark, [data-theme="dark"]').first().isVisible();
       expect(hasDarkMode).toBe(true);
     }
   });
@@ -161,7 +161,7 @@ test.describe('Authentication & Core User Journeys', () => {
     
     // Check for basic accessibility features
     const hasSkipLink = await page.locator('a:has-text("Skip to content"), .skip-link').isVisible();
-    const hasMainLandmark = await page.locator('main, [role="main"]').isVisible();
+    const hasMainLandmark = await page.locator('main, [role="main"]').first().isVisible();
     const hasHeadings = await page.locator('h1, h2, h3').first().isVisible();
     
     // At least main content should be properly structured
@@ -179,8 +179,8 @@ test.describe('Authentication & Core User Journeys', () => {
     await expect(page.locator('body')).toBeVisible();
     
     // Should handle API failures gracefully
-    const hasErrorBoundary = await page.locator('.error-boundary, .error-fallback').isVisible();
-    const hasNotification = await page.locator('.toast, .alert, .notification').isVisible();
+    const hasErrorBoundary = await page.locator('.error-boundary, .error-fallback').first().isVisible();
+    const hasNotification = await page.locator('.toast, .alert, .notification').first().isVisible();
     
     // Application should not crash
     expect(page.url()).toBeTruthy();

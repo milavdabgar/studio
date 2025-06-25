@@ -33,8 +33,8 @@ test.describe('Student Dashboard & Learning Workflows', () => {
   test('should load student dashboard', async ({ page }) => {
     // Should either show student dashboard or access control
     const hasStudentAccess = await page.locator('h1:has-text("Student"), h1:has-text("Dashboard"), .student-dashboard').isVisible();
-    const needsLogin = await page.locator('text=Login, text=Sign in').isVisible();
-    const accessDenied = await page.locator('text=Access denied, text=Unauthorized').isVisible();
+    const needsLogin = await page.locator('text=Login, text=Sign in').first().isVisible();
+    const accessDenied = await page.locator('text=Access denied, text=Unauthorized').first().isVisible();
     
     if (hasStudentAccess) {
       // Should have student navigation
@@ -65,15 +65,15 @@ test.describe('Student Dashboard & Learning Workflows', () => {
     
     // Should load profile page
     const hasProfile = await page.locator('h1:has-text("Profile"), .profile-section').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasProfile) {
       // Should show student information
-      const hasProfileInfo = await page.locator('.profile-info, .student-details, .personal-info').isVisible();
+      const hasProfileInfo = await page.locator('.profile-info, .student-details, .personal-info').first().isVisible();
       expect(hasProfileInfo).toBe(true);
       
       // Should have student-specific fields
-      const hasStudentFields = await page.locator('text=Enrollment, text=Roll Number, text=Semester, text=Program').isVisible();
+      const hasStudentFields = await page.locator('text=Enrollment, text=Roll Number, text=Semester, text=Program').first().isVisible();
       
       if (hasStudentFields) {
         expect(hasStudentFields).toBe(true);
@@ -81,7 +81,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
       
       // Should have edit functionality
       const hasEditButton = await page.locator('button:has-text("Edit"), button:has-text("Update")').isVisible();
-      const hasFormFields = await page.locator('input, select, textarea').isVisible();
+      const hasFormFields = await page.locator('input, select, textarea').first().isVisible();
       
       expect(hasEditButton || hasFormFields).toBe(true);
     } else {
@@ -95,12 +95,12 @@ test.describe('Student Dashboard & Learning Workflows', () => {
     
     // Should load courses interface
     const hasCourses = await page.locator('h1:has-text("Courses"), .courses-section').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasCourses) {
       // Should show enrolled courses or empty state
-      const hasCourseList = await page.locator('.course-list, .course-card, table').isVisible();
-      const hasEmptyState = await page.locator('text=No courses, .empty-state').isVisible();
+      const hasCourseList = await page.locator('.course-list, .course-card, table').first().isVisible();
+      const hasEmptyState = await page.locator('text=No courses, .empty-state').first().isVisible();
       
       expect(hasCourseList || hasEmptyState).toBe(true);
       
@@ -112,7 +112,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
         await page.waitForLoadState('networkidle');
         
         // Should show enrollment interface
-        const hasEnrollmentInterface = await page.locator('.enrollment-form, .course-selection').isVisible();
+        const hasEnrollmentInterface = await page.locator('.enrollment-form, .course-selection').first().isVisible();
         expect(hasEnrollmentInterface).toBe(true);
       }
     } else {
@@ -126,13 +126,13 @@ test.describe('Student Dashboard & Learning Workflows', () => {
     await page.waitForLoadState('networkidle');
     
     // Should load course interface or show access control
-    const hasCourseAccess = await page.locator('h1, .course-details, .course-content').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Not found').isVisible();
+    const hasCourseAccess = await page.locator('h1, .course-details, .course-content').first().isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Not found').first().isVisible();
     
     if (hasCourseAccess) {
       // Should show course information
-      const hasCourseInfo = await page.locator('.course-info, .course-description, .syllabus').isVisible();
-      const hasCourseActions = await page.locator('button, .action-links, .course-nav').isVisible();
+      const hasCourseInfo = await page.locator('.course-info, .course-description, .syllabus').first().isVisible();
+      const hasCourseActions = await page.locator('button, .action-links, .course-nav').first().isVisible();
       
       expect(hasCourseInfo || hasCourseActions).toBe(true);
       
@@ -153,12 +153,12 @@ test.describe('Student Dashboard & Learning Workflows', () => {
     
     // Should load assignments interface
     const hasAssignments = await page.locator('h1:has-text("Assignments"), .assignments-section').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasAssignments) {
       // Should show assignments list or empty state
-      const hasAssignmentsList = await page.locator('.assignment-list, .assignment-card, table').isVisible();
-      const hasEmptyState = await page.locator('text=No assignments, .empty-state').isVisible();
+      const hasAssignmentsList = await page.locator('.assignment-list, .assignment-card, table').first().isVisible();
+      const hasEmptyState = await page.locator('text=No assignments, .empty-state').first().isVisible();
       
       expect(hasAssignmentsList || hasEmptyState).toBe(true);
       
@@ -170,7 +170,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
         await page.waitForLoadState('networkidle');
         
         // Should show assignment details
-        const hasAssignmentDetails = await page.locator('.assignment-details, h1').isVisible();
+        const hasAssignmentDetails = await page.locator('.assignment-details, h1').first().isVisible();
         expect(hasAssignmentDetails).toBe(true);
       }
     } else {
@@ -184,16 +184,16 @@ test.describe('Student Dashboard & Learning Workflows', () => {
     await page.waitForLoadState('networkidle');
     
     // Should load assignment details or show access control
-    const hasAssignmentDetails = await page.locator('h1, .assignment-details').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Not found').isVisible();
+    const hasAssignmentDetails = await page.locator('h1, .assignment-details').first().isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Not found').first().isVisible();
     
     if (hasAssignmentDetails) {
       // Should show assignment information
-      const hasAssignmentInfo = await page.locator('.assignment-description, .due-date, .instructions').isVisible();
+      const hasAssignmentInfo = await page.locator('.assignment-description, .due-date, .instructions').first().isVisible();
       expect(hasAssignmentInfo).toBe(true);
       
       // Should have submission interface
-      const hasSubmissionForm = await page.locator('form, .submission-form, input[type="file"]').isVisible();
+      const hasSubmissionForm = await page.locator('form, .submission-form, input[type="file"]').first().isVisible();
       const hasSubmitButton = await page.locator('button:has-text("Submit"), button:has-text("Upload")').isVisible();
       
       expect(hasSubmissionForm || hasSubmitButton).toBe(true);
@@ -208,17 +208,17 @@ test.describe('Student Dashboard & Learning Workflows', () => {
     
     // Should load results interface
     const hasResults = await page.locator('h1:has-text("Results"), .results-section').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasResults) {
       // Should show results or empty state
-      const hasResultsList = await page.locator('.results-list, .grade-card, table').isVisible();
-      const hasEmptyState = await page.locator('text=No results, .empty-state').isVisible();
+      const hasResultsList = await page.locator('.results-list, .grade-card, table').first().isVisible();
+      const hasEmptyState = await page.locator('text=No results, .empty-state').first().isVisible();
       
       expect(hasResultsList || hasEmptyState).toBe(true);
       
       // Should show academic information if results exist
-      const hasAcademicInfo = await page.locator('text=GPA, text=CGPA, text=Semester, .academic-summary').isVisible();
+      const hasAcademicInfo = await page.locator('text=GPA, text=CGPA, text=Semester, .academic-summary').first().isVisible();
       
       if (hasAcademicInfo) {
         expect(hasAcademicInfo).toBe(true);
@@ -234,12 +234,12 @@ test.describe('Student Dashboard & Learning Workflows', () => {
     
     // Should load timetable interface
     const hasTimetable = await page.locator('h1:has-text("Timetable"), .timetable-view').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasTimetable) {
       // Should show timetable grid or empty state
-      const hasTimetableView = await page.locator('.timetable-grid, .schedule-view, table').isVisible();
-      const hasEmptyState = await page.locator('text=No schedule, .empty-state').isVisible();
+      const hasTimetableView = await page.locator('.timetable-grid, .schedule-view, table').first().isVisible();
+      const hasEmptyState = await page.locator('text=No schedule, .empty-state').first().isVisible();
       
       expect(hasTimetableView || hasEmptyState).toBe(true);
       
@@ -260,12 +260,12 @@ test.describe('Student Dashboard & Learning Workflows', () => {
     
     // Should load materials interface
     const hasMaterials = await page.locator('h1:has-text("Materials"), .materials-section').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasMaterials) {
       // Should show materials list or empty state
-      const hasMaterialsList = await page.locator('.materials-list, .material-card, table').isVisible();
-      const hasEmptyState = await page.locator('text=No materials, .empty-state').isVisible();
+      const hasMaterialsList = await page.locator('.materials-list, .material-card, table').first().isVisible();
+      const hasEmptyState = await page.locator('text=No materials, .empty-state').first().isVisible();
       
       expect(hasMaterialsList || hasEmptyState).toBe(true);
       
@@ -286,17 +286,17 @@ test.describe('Student Dashboard & Learning Workflows', () => {
     
     // Should load attendance interface
     const hasAttendance = await page.locator('h1:has-text("Attendance"), .attendance-section').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasAttendance) {
       // Should show attendance records or empty state
-      const hasAttendanceRecords = await page.locator('.attendance-list, .attendance-summary, table').isVisible();
-      const hasEmptyState = await page.locator('text=No attendance, .empty-state').isVisible();
+      const hasAttendanceRecords = await page.locator('.attendance-list, .attendance-summary, table').first().isVisible();
+      const hasEmptyState = await page.locator('text=No attendance, .empty-state').first().isVisible();
       
       expect(hasAttendanceRecords || hasEmptyState).toBe(true);
       
       // Should show attendance percentage if records exist
-      const hasAttendanceStats = await page.locator('text=%, .percentage, .attendance-rate').isVisible();
+      const hasAttendanceStats = await page.locator('text=%, .percentage, .attendance-rate').first().isVisible();
       
       if (hasAttendanceStats) {
         expect(hasAttendanceStats).toBe(true);
@@ -323,8 +323,8 @@ test.describe('Student Dashboard & Learning Workflows', () => {
       
       // Should maintain consistent student layout
       const hasStudentLayout = await page.locator('.student-layout, .student-sidebar, nav:has-text("Student")').isVisible();
-      const hasAccessControl = await page.locator('text=Login, text=Access denied').isVisible();
-      const hasContent = await page.locator('main, .content, .page-content').isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
+      const hasContent = await page.locator('main, .content, .page-content').first().isVisible();
       
       expect(hasStudentLayout || hasAccessControl || hasContent).toBe(true);
     }
@@ -362,7 +362,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
       await page.waitForLoadState('networkidle');
       
       // Should show notifications panel or navigate to notifications page
-      const hasNotificationsPanel = await page.locator('.notifications-panel, .notifications-dropdown').isVisible();
+      const hasNotificationsPanel = await page.locator('.notifications-panel, .notifications-dropdown').first().isVisible();
       const isOnNotificationsPage = page.url().includes('notification');
       
       expect(hasNotificationsPanel || isOnNotificationsPage).toBe(true);
@@ -374,15 +374,15 @@ test.describe('Student Dashboard & Learning Workflows', () => {
     await page.waitForLoadState('networkidle');
     
     // Should show academic progress information
-    const hasProgressInfo = await page.locator('.progress-card, .academic-summary, .gpa-display').isVisible();
+    const hasProgressInfo = await page.locator('.progress-card, .academic-summary, .gpa-display').first().isVisible();
     
     if (hasProgressInfo) {
       // Should show current semester/year information
-      const hasSemesterInfo = await page.locator('text=Semester, text=Year, .current-semester').isVisible();
+      const hasSemesterInfo = await page.locator('text=Semester, text=Year, .current-semester').first().isVisible();
       expect(hasSemesterInfo).toBe(true);
       
       // Should show academic performance metrics
-      const hasPerformanceMetrics = await page.locator('text=GPA, text=CGPA, .performance-metrics').isVisible();
+      const hasPerformanceMetrics = await page.locator('text=GPA, text=CGPA, .performance-metrics').first().isVisible();
       
       if (hasPerformanceMetrics) {
         expect(hasPerformanceMetrics).toBe(true);
@@ -395,7 +395,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
     await page.waitForLoadState('networkidle');
     
     // Look for assignments with upload capability
-    const hasFileUpload = await page.locator('input[type="file"], .file-upload, .upload-area').isVisible();
+    const hasFileUpload = await page.locator('input[type="file"], .file-upload, .upload-area').first().isVisible();
     
     if (hasFileUpload) {
       // Should handle file selection
@@ -403,7 +403,7 @@ test.describe('Student Dashboard & Learning Workflows', () => {
       
       // Test file input accessibility
       const isFileInputVisible = await fileInput.isVisible();
-      const hasUploadArea = await page.locator('.upload-area, .dropzone').isVisible();
+      const hasUploadArea = await page.locator('.upload-area, .dropzone').first().isVisible();
       
       expect(isFileInputVisible || hasUploadArea).toBe(true);
     }

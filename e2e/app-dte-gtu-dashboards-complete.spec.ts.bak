@@ -6,12 +6,12 @@ test.describe('DTE/GTU Dashboards Complete Coverage E2E Tests', () => {
   
   test.beforeEach(async ({ page }) => {
     // Navigate to home page first
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     await page.waitForLoadState('networkidle');
   });
 
   test('should test DTE dashboard page', async ({ page }) => {
-    await page.goto('/dte/dashboard');
+    await page.goto('http://localhost:3000/dte/dashboard');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="dte-dashboard"]', { timeout: 15000 });
@@ -29,7 +29,7 @@ test.describe('DTE/GTU Dashboards Complete Coverage E2E Tests', () => {
   });
 
   test('should test GTU dashboard page', async ({ page }) => {
-    await page.goto('/gtu/dashboard');
+    await page.goto('http://localhost:3000/gtu/dashboard');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="gtu-dashboard"]', { timeout: 15000 });
@@ -47,7 +47,7 @@ test.describe('DTE/GTU Dashboards Complete Coverage E2E Tests', () => {
   });
 
   test('should test DTE dashboard functionality and features', async ({ page }) => {
-    await page.goto('/dte/dashboard');
+    await page.goto('http://localhost:3000/dte/dashboard');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 15000 });
@@ -75,7 +75,7 @@ test.describe('DTE/GTU Dashboards Complete Coverage E2E Tests', () => {
   });
 
   test('should test GTU dashboard functionality and features', async ({ page }) => {
-    await page.goto('/gtu/dashboard');
+    await page.goto('http://localhost:3000/gtu/dashboard');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 15000 });
@@ -343,7 +343,7 @@ test.describe('DTE/GTU Dashboards Complete Coverage E2E Tests', () => {
 
   test('should test dashboard integration with main application', async ({ page }) => {
     // Test navigation from main dashboard to specialized dashboards
-    await page.goto('/dashboard');
+    await page.goto('http://localhost:3000/dashboard');
     
     try {
       await page.waitForSelector('main, .content', { timeout: 10000 });

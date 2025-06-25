@@ -40,9 +40,9 @@ test.describe('Project Fair System - Complete Application Flow', () => {
     
     if (hasStudentInterface) {
       // Check for key student features
-      const hasRegistrationForm = await page.locator('form, .registration-form, [data-testid="team-form"]').isVisible();
-      const hasProjectList = await page.locator('.project-list, [data-testid="projects"], table').isVisible();
-      const hasTeamManagement = await page.locator('.team-management, [data-testid="team"], text=Team').isVisible();
+      const hasRegistrationForm = await page.locator('form, .registration-form, [data-testid="team-form"]').first().isVisible();
+      const hasProjectList = await page.locator('.project-list, [data-testid="projects"], table').first().isVisible();
+      const hasTeamManagement = await page.locator('.team-management, [data-testid="team"], text=Team').first().isVisible();
       
       expect(hasRegistrationForm || hasProjectList || hasTeamManagement).toBe(true);
     }
@@ -60,9 +60,9 @@ test.describe('Project Fair System - Complete Application Flow', () => {
     
     if (hasAdminInterface) {
       // Check for admin management features
-      const hasEventManagement = await page.locator('text=Events, text=Create Event, .event-management').isVisible();
-      const hasTeamManagement = await page.locator('text=Teams, text=Manage Teams, .team-management').isVisible();
-      const hasJudgeManagement = await page.locator('text=Judges, text=Jury, .judge-management').isVisible();
+      const hasEventManagement = await page.locator('text=Events, text=Create Event, .event-management').first().isVisible();
+      const hasTeamManagement = await page.locator('text=Teams, text=Manage Teams, .team-management').first().isVisible();
+      const hasJudgeManagement = await page.locator('text=Judges, text=Jury, .judge-management').first().isVisible();
       
       expect(hasEventManagement || hasTeamManagement || hasJudgeManagement).toBe(true);
     }
@@ -80,7 +80,7 @@ test.describe('Project Fair System - Complete Application Flow', () => {
     if (hasEventsPage) {
       // Check for event management features
       const hasCreateButton = await page.locator('button:has-text("Create"), button:has-text("Add"), button:has-text("New")').isVisible();
-      const hasEventsList = await page.locator('table, .event-card, .events-grid').isVisible();
+      const hasEventsList = await page.locator('table, .event-card, .events-grid').first().isVisible();
       const hasEditControls = await page.locator('button:has-text("Edit"), button:has-text("Update"), .edit-button').isVisible();
       
       expect(hasCreateButton || hasEventsList || hasEditControls).toBe(true);
@@ -99,8 +99,8 @@ test.describe('Project Fair System - Complete Application Flow', () => {
     
     if (hasEvaluationPage) {
       // Check for evaluation features
-      const hasProjectList = await page.locator('table, .project-list, .evaluation-grid').isVisible();
-      const hasScoreInputs = await page.locator('input[type="number"], .score-input, .rating').isVisible();
+      const hasProjectList = await page.locator('table, .project-list, .evaluation-grid').first().isVisible();
+      const hasScoreInputs = await page.locator('input[type="number"], .score-input, .rating').first().isVisible();
       const hasSubmitButton = await page.locator('button:has-text("Submit"), button:has-text("Save")').isVisible();
       
       expect(hasProjectList || hasScoreInputs || hasSubmitButton).toBe(true);
@@ -118,8 +118,8 @@ test.describe('Project Fair System - Complete Application Flow', () => {
     
     if (hasResultsPage) {
       // Check for results features
-      const hasResultsTable = await page.locator('table, .results-table, .leaderboard').isVisible();
-      const hasCharts = await page.locator('canvas, .chart, .graph').isVisible();
+      const hasResultsTable = await page.locator('table, .results-table, .leaderboard').first().isVisible();
+      const hasCharts = await page.locator('canvas, .chart, .graph').first().isVisible();
       const hasExportOptions = await page.locator('button:has-text("Export"), button:has-text("Download")').isVisible();
       
       expect(hasResultsTable || hasCharts || hasExportOptions).toBe(true);
@@ -137,7 +137,7 @@ test.describe('Project Fair System - Complete Application Flow', () => {
     
     if (hasTeamsPage) {
       // Check for team management features
-      const hasTeamsList = await page.locator('table, .team-card, .teams-grid').isVisible();
+      const hasTeamsList = await page.locator('table, .team-card, .teams-grid').first().isVisible();
       const hasAddTeamButton = await page.locator('button:has-text("Add Team"), button:has-text("Create Team")').isVisible();
       const hasTeamActions = await page.locator('button:has-text("Edit"), button:has-text("Delete"), .team-actions').isVisible();
       
@@ -156,8 +156,8 @@ test.describe('Project Fair System - Complete Application Flow', () => {
     
     if (hasSchedulePage) {
       // Check for scheduling features
-      const hasCalendar = await page.locator('.calendar, .schedule-grid, table').isVisible();
-      const hasTimeSlots = await page.locator('.time-slot, .schedule-item, .event-time').isVisible();
+      const hasCalendar = await page.locator('.calendar, .schedule-grid, table').first().isVisible();
+      const hasTimeSlots = await page.locator('.time-slot, .schedule-item, .event-time').first().isVisible();
       const hasAddScheduleButton = await page.locator('button:has-text("Add"), button:has-text("Schedule"), button:has-text("Create")').isVisible();
       
       expect(hasCalendar || hasTimeSlots || hasAddScheduleButton).toBe(true);
@@ -177,14 +177,14 @@ test.describe('Project Fair System - Complete Application Flow', () => {
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
       // Should load successfully or show appropriate access control
-      const hasContent = await page.locator('main, .content, .page-content').isVisible();
-      const hasHeader = await page.locator('h1, h2, .page-title').isVisible();
+      const hasContent = await page.locator('main, .content, .page-content').first().isVisible();
+      const hasHeader = await page.locator('h1, h2, .page-title').first().isVisible();
       const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
       
       expect(hasContent || hasHeader || hasAccessControl).toBe(true);
       
       // Should not show unhandled errors
-      const hasError = await page.locator('text=Error, text=500, text=Something went wrong').isVisible();
+      const hasError = await page.locator('text=Error, text=500, text=Something went wrong').first().isVisible();
       expect(hasError).toBe(false);
     }
   });
@@ -196,14 +196,14 @@ test.describe('Project Fair System - Complete Application Flow', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Check if layout adapts to mobile
-    const isMobileMenuVisible = await page.locator('.mobile-menu, [data-testid="mobile-menu"], .hamburger').isVisible();
-    const responsiveContent = await page.locator('.responsive, .mobile-layout, main').isVisible();
+    const isMobileMenuVisible = await page.locator('.mobile-menu, [data-testid="mobile-menu"], .hamburger').first().isVisible();
+    const responsiveContent = await page.locator('.responsive, .mobile-layout, main').first().isVisible();
     
     expect(isMobileMenuVisible || responsiveContent).toBe(true);
     
     // Test tablet size
     await page.setViewportSize({ width: 768, height: 1024 });
-    const tabletLayout = await page.locator('main, .content').isVisible();
+    const tabletLayout = await page.locator('main, .content').first().isVisible();
     expect(tabletLayout).toBe(true);
   });
 
@@ -219,7 +219,7 @@ test.describe('Project Fair System - Complete Application Flow', () => {
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
       // Should show 404 or redirect appropriately
-      const has404 = await page.locator('text=404, text=Not Found, text=Page not found').isVisible();
+      const has404 = await page.locator('text=404, text=Not Found, text=Page not found').first().isVisible();
       const hasRedirect = await page.url() !== `http://localhost:3000${pagePath}`;
       const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
       

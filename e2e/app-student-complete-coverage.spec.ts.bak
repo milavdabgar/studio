@@ -6,12 +6,12 @@ test.describe('Student Complete Coverage E2E Tests', () => {
   
   test.beforeEach(async ({ page }) => {
     // Navigate to home page first
-    await page.goto('/');
+    await page.goto('http://localhost:3000/');
     await page.waitForLoadState('networkidle');
   });
 
   test('should navigate to student main page', async ({ page }) => {
-    await page.goto('/student');
+    await page.goto('http://localhost:3000/student');
     
     // Handle both successful load and potential redirect scenarios
     try {
@@ -32,7 +32,7 @@ test.describe('Student Complete Coverage E2E Tests', () => {
   });
 
   test('should test student profile page', async ({ page }) => {
-    await page.goto('/student/profile');
+    await page.goto('http://localhost:3000/student/profile');
     
     try {
       await page.waitForSelector('main, .content, form', { timeout: 10000 });
@@ -50,7 +50,7 @@ test.describe('Student Complete Coverage E2E Tests', () => {
   });
 
   test('should test student courses page', async ({ page }) => {
-    await page.goto('/student/courses');
+    await page.goto('http://localhost:3000/student/courses');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="courses-list"]', { timeout: 10000 });
@@ -68,7 +68,7 @@ test.describe('Student Complete Coverage E2E Tests', () => {
   });
 
   test('should test student course enrollment page', async ({ page }) => {
-    await page.goto('/student/courses/enroll');
+    await page.goto('http://localhost:3000/student/courses/enroll');
     
     try {
       await page.waitForSelector('main, .content, form', { timeout: 10000 });
@@ -86,7 +86,7 @@ test.describe('Student Complete Coverage E2E Tests', () => {
   });
 
   test('should test student assignments page', async ({ page }) => {
-    await page.goto('/student/assignments');
+    await page.goto('http://localhost:3000/student/assignments');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="assignments-list"]', { timeout: 10000 });
@@ -104,7 +104,7 @@ test.describe('Student Complete Coverage E2E Tests', () => {
   });
 
   test('should test student results page', async ({ page }) => {
-    await page.goto('/student/results');
+    await page.goto('http://localhost:3000/student/results');
     
     try {
       await page.waitForSelector('main, .content, table, [data-testid="results"]', { timeout: 10000 });
@@ -122,7 +122,7 @@ test.describe('Student Complete Coverage E2E Tests', () => {
   });
 
   test('should test student timetable page', async ({ page }) => {
-    await page.goto('/student/timetable');
+    await page.goto('http://localhost:3000/student/timetable');
     
     try {
       await page.waitForSelector('main, .content, table, [data-testid="timetable"]', { timeout: 10000 });
@@ -140,7 +140,7 @@ test.describe('Student Complete Coverage E2E Tests', () => {
   });
 
   test('should test student materials page', async ({ page }) => {
-    await page.goto('/student/materials');
+    await page.goto('http://localhost:3000/student/materials');
     
     try {
       await page.waitForSelector('main, .content, [data-testid="materials-list"]', { timeout: 10000 });
@@ -158,7 +158,7 @@ test.describe('Student Complete Coverage E2E Tests', () => {
   });
 
   test('should test student attendance page', async ({ page }) => {
-    await page.goto('/student/attendance');
+    await page.goto('http://localhost:3000/student/attendance');
     
     try {
       await page.waitForSelector('main, .content, table, [data-testid="attendance"]', { timeout: 10000 });
@@ -242,7 +242,7 @@ test.describe('Student Complete Coverage E2E Tests', () => {
   });
 
   test('should test student section accessibility and responsiveness', async ({ page }) => {
-    await page.goto('/student');
+    await page.goto('http://localhost:3000/student');
     
     try {
       await page.waitForSelector('main, .content, form', { timeout: 10000 });
