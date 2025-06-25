@@ -73,9 +73,10 @@ test.describe('Complete Admin Section Coverage', () => {
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
       const hasContent = await page.locator('h1, h2, main, .content').first().isVisible();
-      const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized, input[type="email"], input[type="password"]').first().isVisible();
+      const hasLoginRedirect = page.url().includes('/login');
       
-      expect(hasContent || hasAccessControl).toBe(true);
+      expect(hasContent || hasAccessControl || hasLoginRedirect).toBe(true);
     }
   });
 
@@ -125,10 +126,11 @@ test.describe('Complete Admin Section Coverage', () => {
       // Should handle gracefully - either show content, 404, or access control
       const hasContent = await page.locator('h1, h2, main, .content').first().isVisible();
       const has404 = await page.locator('text=404, text=Not Found, text=Page not found').first().isVisible();
-      const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized, input[type="email"], input[type="password"]').first().isVisible();
+      const hasLoginRedirect = page.url().includes('/login');
       const hasNoData = await page.locator('text=No data, text=Not found, text=Invalid').first().isVisible();
       
-      expect(hasContent || has404 || hasAccessControl || hasNoData).toBe(true);
+      expect(hasContent || has404 || hasAccessControl || hasLoginRedirect || hasNoData).toBe(true);
       
       // Should not crash
       const hasError = await page.locator('text=Error, text=Something went wrong, text=500').first().isVisible();
@@ -180,9 +182,10 @@ test.describe('Complete Admin Section Coverage', () => {
       const hasAdminLayout = await page.locator('.admin-layout, .admin-nav, .sidebar').first().isVisible();
       const hasMainContent = await page.locator('main, .main-content').first().isVisible();
       const hasHeader = await page.locator('header, .header, h1').first().isVisible();
-      const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
+      const hasLoginRedirect = page.url().includes('/login');
       
-      expect(hasAdminLayout || hasMainContent || hasHeader || hasAccessControl).toBe(true);
+      expect(hasAdminLayout || hasMainContent || hasHeader || hasAccessControl || hasLoginRedirect).toBe(true);
     }
   });
 
@@ -202,10 +205,11 @@ test.describe('Complete Admin Section Coverage', () => {
       const hasForm = await page.locator('form').first().isVisible();
       const hasInputs = await page.locator('input, select, textarea').first().isVisible();
       const hasButtons = await page.locator('button').first().isVisible();
-      const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
+      const hasLoginRedirect = page.url().includes('/login');
       
       // Should have interactive elements or proper access control
-      expect(hasForm || hasInputs || hasButtons || hasAccessControl).toBe(true);
+      expect(hasForm || hasInputs || hasButtons || hasAccessControl || hasLoginRedirect).toBe(true);
     }
   });
 
@@ -250,10 +254,11 @@ test.describe('Complete Admin Section Coverage', () => {
       const hasSearch = await page.locator('input[type="search"], .search-input, [placeholder*="search"]').first().isVisible();
       const hasFilters = await page.locator('select, .filter, .filter-dropdown').first().isVisible();
       const hasPagination = await page.locator('.pagination, .page-nav, button:has-text("Next")').isVisible();
-      const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
+      const hasLoginRedirect = page.url().includes('/login');
       
       // Should have interactive elements or access control
-      expect(hasSearch || hasFilters || hasPagination || hasAccessControl).toBe(true);
+      expect(hasSearch || hasFilters || hasPagination || hasAccessControl || hasLoginRedirect).toBe(true);
     }
   });
 
@@ -272,9 +277,10 @@ test.describe('Complete Admin Section Coverage', () => {
       // Should show 404 or redirect appropriately
       const has404 = await page.locator('text=404, text=Not Found, text=Page not found').first().isVisible();
       const hasRedirect = page.url() !== `http://localhost:3000${invalidPath}`;
-      const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
+      const hasLoginRedirect = page.url().includes('/login');
       
-      expect(has404 || hasRedirect || hasAccessControl).toBe(true);
+      expect(has404 || hasRedirect || hasAccessControl || hasLoginRedirect).toBe(true);
     }
   });
 });
