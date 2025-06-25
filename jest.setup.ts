@@ -18,6 +18,13 @@ global.URLSearchParams = require('url').URLSearchParams;
 // Mock fetch for general use (component tests don't need API routes)
 global.fetch = jest.fn();
 
+// Mock ResizeObserver for Radix UI components
+global.ResizeObserver = jest.fn().mockImplementation(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}));
+
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
