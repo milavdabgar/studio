@@ -76,6 +76,11 @@ const PUBLIC_ROUTES = [
   '/api/auth/callback/credentials',
   '/posts', // Add /posts base route
   '/newsletters', // Add newsletters to public routes
+  '/about', // Add about page to public routes
+  '/departments', // Add departments page to public routes
+  '/admissions', // Add admissions page to public routes
+  '/facilities', // Add facilities page to public routes
+  '/contact', // Add contact page to public routes
 ];
 
 // Role access control: Key is route prefix, Value is array of ALLOWED role CODES
