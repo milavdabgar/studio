@@ -25,6 +25,7 @@ import {
 import { notFound } from "next/navigation";
 import { use } from "react";
 import departments from "../../../../data/content/departments.json";
+import { Footer } from "@/components/footer";
 
 interface DepartmentPageProps {
   params: Promise<{
@@ -160,6 +161,46 @@ export default function DepartmentPage({ params }: DepartmentPageProps) {
           </div>
         </div>
       </section>
+
+      {/* Department Introduction Video */}
+      {(department.slug === 'civil-engineering' || department.slug === 'mechanical-engineering' || department.slug === 'electrical-engineering') && (
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Discover {department.name}
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Get an inside look at our {department.name.toLowerCase()} program, facilities, and student experiences
+              </p>
+            </div>
+            <div className="max-w-4xl mx-auto">
+              <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl">
+                <iframe
+                  src={
+                    department.slug === 'civil-engineering' 
+                      ? "https://www.youtube.com/embed/aUQAQY_VzS8"
+                      : department.slug === 'mechanical-engineering'
+                      ? "https://www.youtube.com/embed/d_41cIqDYDs"
+                      : department.slug === 'electrical-engineering'
+                      ? "https://www.youtube.com/embed/GRxHueCONus"
+                      : ""
+                  }
+                  title={`${department.name} Department Introduction`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                ></iframe>
+              </div>
+              <div className="text-center mt-6">
+                <p className="text-gray-600">
+                  Explore our {department.name.toLowerCase()} labs, meet our faculty, and see students in action
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Specializations */}
       <section className="py-16 bg-gray-50">
@@ -316,26 +357,7 @@ export default function DepartmentPage({ params }: DepartmentPageProps) {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center space-x-3 mb-4 md:mb-0">
-              <GraduationCap className="h-6 w-6 text-primary" />
-              <span className="font-semibold">Government Polytechnic Palanpur</span>
-            </div>
-            <div className="flex space-x-6 text-sm">
-              <Link href="/" className="text-gray-400 hover:text-white">Home</Link>
-              <Link href="/about" className="text-gray-400 hover:text-white">About</Link>
-              <Link href="/departments" className="text-gray-400 hover:text-white">Departments</Link>
-              <Link href="/contact" className="text-gray-400 hover:text-white">Contact</Link>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-6 pt-6 text-center text-sm text-gray-400">
-            <p>&copy; {new Date().getFullYear()} Government Polytechnic Palanpur. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -311,7 +311,7 @@ export default function RootLayout({
       });
     } else {
       setCurrentUser(DEFAULT_USER);
-       if (!['/login', '/signup', '/', '/about', '/departments', '/admissions', '/facilities', '/contact'].includes(pathname) && !pathname.startsWith('/posts') && !pathname.startsWith('/newsletters') && !pathname.startsWith('/departments/')) { // Allow /posts and /newsletters and new public routes
+       if (!['/login', '/signup', '/', '/about', '/departments', '/admissions', '/facilities', '/contact', '/ssip', '/establishment', '/student-section', '/tpo'].includes(pathname) && !pathname.startsWith('/posts') && !pathname.startsWith('/newsletters') && !pathname.startsWith('/departments/')) { // Allow /posts and /newsletters and new public routes
          router.push('/login');
        }
     }
@@ -375,7 +375,7 @@ export default function RootLayout({
   
   const activeRoleObject = allSystemRoles.find(r => r.code === currentUser.activeRole);
   const currentNavItems = getNavItemsForRoleCode(currentUser.activeRole);
-  const hideSidebar = ['/login', '/signup', '/', '/about', '/departments', '/admissions', '/facilities', '/contact'].includes(pathname) || pathname.startsWith('/posts') || pathname.startsWith('/newsletters') || pathname.startsWith('/departments/');
+  const hideSidebar = ['/login', '/signup', '/', '/about', '/departments', '/admissions', '/facilities', '/contact', '/ssip', '/establishment', '/student-section', '/tpo'].includes(pathname) || pathname.startsWith('/posts') || pathname.startsWith('/newsletters') || pathname.startsWith('/departments/');
 
 
   if (!isMounted) { 

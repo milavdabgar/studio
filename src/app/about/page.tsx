@@ -18,10 +18,13 @@ import {
   Shield,
   BookOpen,
   Trophy,
-  Lightbulb
+  Lightbulb,
+  Cog,
+  Zap
 } from "lucide-react";
 import collegeInfo from "../../../data/content/college-info.json";
 import pages from "../../../data/content/pages.json";
+import { Footer } from "@/components/footer";
 
 export default function AboutPage() {
   const aboutContent = pages.find(page => page.slug === 'about-us');
@@ -88,6 +91,11 @@ export default function AboutPage() {
                   standards of technical education. With {collegeInfo.administration.total_faculty} dedicated 
                   faculty members, including {collegeInfo.administration.faculty_with_phd} PhD holders, 
                   we provide comprehensive education across {collegeInfo.infrastructure.total_departments} engineering disciplines.
+                </p>
+                <p>
+                  Strategically located outside Malan Gate near Dhaniyana Crossroads, our campus is easily 
+                  accessible from all parts of the Banaskantha district and neighboring areas, making quality 
+                  technical education available to students from diverse backgrounds.
                 </p>
               </div>
               <div className="mt-8 grid md:grid-cols-2 gap-4">
@@ -277,39 +285,203 @@ export default function AboutPage() {
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Green & Digital</h3>
               <div className="space-y-2 text-gray-600">
-                <p>Solar Power Plant (86,000 units)</p>
-                <p>{collegeInfo.infrastructure.internet}</p>
-                <p>Eco-friendly Campus</p>
-                <p>Digital Infrastructure</p>
+                <p><strong>86,000 units</strong> Solar Power Plant</p>
+                <p><strong>14</strong> NaMo WiFi Access Points</p>
+                <p>National Digital Library Access</p>
+                <p>Solar Water Heaters in Hostels</p>
+                <p>Green Campus Initiatives</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* College Highlights */}
+      {/* Leadership Team */}
       <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Leadership Team
+            </h2>
+            <p className="text-xl text-gray-600">
+              Meet the professionals leading GP Palanpur
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="p-6 text-center hover:shadow-lg transition-shadow">
+              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 rounded-full mx-auto mb-4">
+                <Users className="h-10 w-10 text-primary" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">Mr. S D Dabhi</h3>
+              <p className="text-primary font-medium mb-2">Principal</p>
+              <p className="text-gray-600 text-sm">Leading the institution with vision and excellence</p>
+            </Card>
+            
+            <Card className="p-6 text-center hover:shadow-lg transition-shadow">
+              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 rounded-full mx-auto mb-4">
+                <Cog className="h-10 w-10 text-primary" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">Mr. D D Prajapati</h3>
+              <p className="text-primary font-medium mb-2">HOD - Mechanical Engineering</p>
+              <p className="text-gray-600 text-sm">Expert in mechanical systems and manufacturing</p>
+            </Card>
+            
+            <Card className="p-6 text-center hover:shadow-lg transition-shadow">
+              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 rounded-full mx-auto mb-4">
+                <Building className="h-10 w-10 text-primary" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">Mr. D N Sheth</h3>
+              <p className="text-primary font-medium mb-2">HOD - Civil Engineering</p>
+              <p className="text-gray-600 text-sm">Specialist in structural and construction engineering</p>
+            </Card>
+            
+            <Card className="p-6 text-center hover:shadow-lg transition-shadow">
+              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 rounded-full mx-auto mb-4">
+                <Zap className="h-10 w-10 text-primary" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">Mr. A D Shah</h3>
+              <p className="text-primary font-medium mb-2">HOD - Electrical Engineering</p>
+              <p className="text-gray-600 text-sm">Expert in electrical systems and power engineering</p>
+            </Card>
+            
+            <Card className="p-6 text-center hover:shadow-lg transition-shadow">
+              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 rounded-full mx-auto mb-4">
+                <Zap className="h-10 w-10 text-primary" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">Mr. S J Chauhan</h3>
+              <p className="text-primary font-medium mb-2">HOD - Electronics & Communication | ICT</p>
+              <p className="text-gray-600 text-sm">Leading both EC and ICT departments with expertise in communication systems</p>
+            </Card>
+            
+            <Card className="p-6 text-center hover:shadow-lg transition-shadow">
+              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 rounded-full mx-auto mb-4">
+                <BookOpen className="h-10 w-10 text-primary" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">Ms. M M Shah</h3>
+              <p className="text-primary font-medium mb-2">HOD - Information Technology</p>
+              <p className="text-gray-600 text-sm">Expert in IT systems and software development</p>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Our Commitment */}
+      <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                What Makes Us Special
+                Our Commitment to Excellence
               </h2>
+              <p className="text-xl text-gray-600">
+                What we promise to every student who joins GP Palanpur
+              </p>
             </div>
             
             <div className="grid md:grid-cols-2 gap-6">
-              {collegeInfo.highlights.map((highlight, index) => (
-                <Card key={index} className="p-6 hover:shadow-lg transition-shadow">
-                  <div className="flex items-start space-x-4">
-                    <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full flex-shrink-0 mt-1">
-                      <Star className="h-4 w-4 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-gray-700 leading-relaxed">{highlight}</p>
-                    </div>
+              <Card className="p-6 hover:shadow-lg transition-shadow">
+                <div className="flex items-start space-x-4">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full flex-shrink-0 mt-1">
+                    <BookOpen className="h-4 w-4 text-primary" />
                   </div>
-                </Card>
-              ))}
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-2">Academic Excellence</h3>
+                    <p className="text-gray-700 leading-relaxed">Through quality teaching and continuous assessment methods</p>
+                  </div>
+                </div>
+              </Card>
+              
+              <Card className="p-6 hover:shadow-lg transition-shadow">
+                <div className="flex items-start space-x-4">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full flex-shrink-0 mt-1">
+                    <Cog className="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-2">Skill Development</h3>
+                    <p className="text-gray-700 leading-relaxed">Through practical training and industry exposure programs</p>
+                  </div>
+                </div>
+              </Card>
+              
+              <Card className="p-6 hover:shadow-lg transition-shadow">
+                <div className="flex items-start space-x-4">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full flex-shrink-0 mt-1">
+                    <Lightbulb className="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-2">Innovation Culture</h3>
+                    <p className="text-gray-700 leading-relaxed">Through project-based learning and SSIP initiatives</p>
+                  </div>
+                </div>
+              </Card>
+              
+              <Card className="p-6 hover:shadow-lg transition-shadow">
+                <div className="flex items-start space-x-4">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full flex-shrink-0 mt-1">
+                    <Users className="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-2">Holistic Growth</h3>
+                    <p className="text-gray-700 leading-relaxed">Through extracurricular activities and value-based education</p>
+                  </div>
+                </div>
+              </Card>
+              
+              <Card className="p-6 hover:shadow-lg transition-shadow">
+                <div className="flex items-start space-x-4">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full flex-shrink-0 mt-1">
+                    <Building className="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-2">Industry Connect</h3>
+                    <p className="text-gray-700 leading-relaxed">Through expert lectures, industrial visits, and internships</p>
+                  </div>
+                </div>
+              </Card>
+              
+              <Card className="p-6 hover:shadow-lg transition-shadow">
+                <div className="flex items-start space-x-4">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full flex-shrink-0 mt-1">
+                    <Award className="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 mb-2">Continuous Excellence</h3>
+                    <p className="text-gray-700 leading-relaxed">Maintaining high standards through NBA accreditation and quality initiatives</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* College Introduction Video */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Experience GP Palanpur
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Watch our campus tour and discover what makes Government Polytechnic Palanpur 
+              a leading institution in technical education
+            </p>
+          </div>
+          <div className="max-w-4xl mx-auto">
+            <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl">
+              <iframe
+                src="https://www.youtube.com/embed/Z6w-asbJO9E?start=336"
+                title="Government Polytechnic Palanpur Introduction"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+              ></iframe>
+            </div>
+            <div className="text-center mt-6">
+              <p className="text-gray-600">
+                Explore our modern facilities, meet our faculty, and see student life in action
+              </p>
             </div>
           </div>
         </div>
@@ -339,26 +511,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center space-x-3 mb-4 md:mb-0">
-              <GraduationCap className="h-6 w-6 text-primary" />
-              <span className="font-semibold">Government Polytechnic Palanpur</span>
-            </div>
-            <div className="flex space-x-6 text-sm">
-              <Link href="/" className="text-gray-400 hover:text-white">Home</Link>
-              <Link href="/departments" className="text-gray-400 hover:text-white">Departments</Link>
-              <Link href="/facilities" className="text-gray-400 hover:text-white">Facilities</Link>
-              <Link href="/contact" className="text-gray-400 hover:text-white">Contact</Link>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-6 pt-6 text-center text-sm text-gray-400">
-            <p>&copy; {new Date().getFullYear()} Government Polytechnic Palanpur. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

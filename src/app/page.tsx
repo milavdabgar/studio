@@ -20,6 +20,7 @@ import {
   TrendingUp,
   Shield
 } from "lucide-react";
+import { Footer } from "@/components/footer";
 
 export default function HomePage() {
   return (
@@ -77,6 +78,36 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* College Introduction Video */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Discover GP Palanpur
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Take a virtual tour of our campus and learn about our commitment to excellence in technical education
+            </p>
+          </div>
+          <div className="max-w-4xl mx-auto">
+            <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl">
+              <iframe
+                src="https://www.youtube.com/embed/Z6w-asbJO9E?start=336"
+                title="Government Polytechnic Palanpur Introduction"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+              ></iframe>
+            </div>
+            <div className="text-center mt-6">
+              <p className="text-gray-600">
+                Experience our state-of-the-art facilities, dedicated faculty, and vibrant campus life
+              </p>
             </div>
           </div>
         </div>
@@ -376,50 +407,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-8">
-            <div>
-              <div className="flex items-center space-x-3 mb-4">
-                <GraduationCap className="h-8 w-8 text-primary" />
-                <div>
-                  <h3 className="text-lg font-bold">Government Polytechnic Palanpur</h3>
-                  <p className="text-sm text-gray-400">Excellence in Technical Education</p>
-                </div>
-              </div>
-              <p className="text-gray-400 text-sm">
-                Premier government diploma engineering institution in Banaskantha district, 
-                operating since 1984 with a proven track record.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/about" className="text-gray-400 hover:text-white">About Us</Link></li>
-                <li><Link href="/departments" className="text-gray-400 hover:text-white">Departments</Link></li>
-                <li><Link href="/admissions" className="text-gray-400 hover:text-white">Admissions</Link></li>
-                <li><Link href="/facilities" className="text-gray-400 hover:text-white">Facilities</Link></li>
-                <li><Link href="/contact" className="text-gray-400 hover:text-white">Contact</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Connect</h4>
-              <p className="text-gray-400 text-sm">
-                Stay updated with the latest news and announcements from GP Palanpur.
-              </p>
-              <div className="mt-4">
-                <Button variant="outline" size="sm" asChild>
-                  <Link href="/login">Portal</Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-            <p>&copy; {new Date().getFullYear()} Government Polytechnic Palanpur. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
