@@ -3,7 +3,7 @@ import { useState, useCallback } from 'react';
 
 interface UseFormOptions<T> {
   initialValues: T;
-  onSubmit?: (values: T) => void | Promise<void>;
+  onSubmit?: (values: T, resetForm: () => void) => void | Promise<void>;
   validate?: (values: T) => Record<string, string>;
 }
 
@@ -12,14 +12,27 @@ export const useForm = <T extends Record<string, any>>(options: UseFormOptions<T
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = useCallback((name: keyof T, value: any) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement> | { target: { name: string; value: any } }) => {
+    const { name, value } = e.target;
     setValues(prev => ({ ...prev, [name]: value }));
     
     // Clear error for this field when user starts typing
-    if (errors[name as string]) {
-      setErrors(prev => ({ ...prev, [name as string]: '' }));
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
   }, [errors]);
+
+  const handleBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
+    const { name } = e.target;
+    
+    // Validate field on blur if validator is provided
+    if (options.validate) {
+      const validationErrors = options.validate(values);
+      if (validationErrors[name]) {
+        setErrors(prev => ({ ...prev, [name]: validationErrors[name] }));
+      }
+    }
+  }, [values, options]);
 
   const handleSubmit = useCallback(async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -39,7 +52,7 @@ export const useForm = <T extends Record<string, any>>(options: UseFormOptions<T
 
     try {
       if (options.onSubmit) {
-        await options.onSubmit(values);
+        await options.onSubmit(values, resetForm);
       }
     } catch (error) {
       console.error('Form submission error:', error);
@@ -59,6 +72,7 @@ export const useForm = <T extends Record<string, any>>(options: UseFormOptions<T
     errors,
     isSubmitting,
     handleChange,
+    handleBlur,
     handleSubmit,
     resetForm,
   };

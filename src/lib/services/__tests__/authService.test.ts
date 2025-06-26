@@ -18,6 +18,7 @@ jest.mock('@/lib/db', () => ({
   user: {
     findUnique: jest.fn(),
     create: jest.fn(),
+    update: jest.fn(),
   },
 }));
 
@@ -228,10 +229,8 @@ describe('AuthService', () => {
       require('@/lib/db').user.findUnique.mockResolvedValue({ id: 1, email });
       require('@/lib/db').user.update.mockResolvedValue({});
       
-      // Mock the token generation
-      jest.spyOn(require('crypto'), 'randomBytes').mockReturnValueOnce({
-        toString: () => mockToken,
-      });
+      // Mock the JWT sign to return our expected token
+      (sign as jest.Mock).mockReturnValueOnce(mockToken);
       
       // Mock the email service
       const mockSendEmail = jest.fn().mockResolvedValue(true);

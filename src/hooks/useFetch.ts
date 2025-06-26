@@ -10,21 +10,39 @@ interface FetchState<T> {
 export const useFetch = <T>(url: string, options?: RequestInit) => {
   const [state, setState] = useState<FetchState<T>>({
     data: null,
-    loading: true,
-    error: null,
+    loading: !url ? false : true,
+    error: !url ? 'No URL provided' : null,
   });
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (abortController?: AbortController) => {
+    if (!url) {
+      setState({
+        data: null,
+        loading: false,
+        error: 'No URL provided',
+      });
+      return;
+    }
+
     setState(prev => ({ ...prev, loading: true, error: null }));
     
     try {
-      const response = await fetch(url, options);
+      const response = await fetch(url, {
+        ...options,
+        signal: abortController?.signal,
+      });
+      
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      
       const data = await response.json();
       setState({ data, loading: false, error: null });
     } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        return; // Don't update state if request was aborted
+      }
+      
       setState({
         data: null,
         loading: false,
@@ -34,12 +52,21 @@ export const useFetch = <T>(url: string, options?: RequestInit) => {
   }, [url, options]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    if (!url) return;
+    
+    const abortController = new AbortController();
+    fetchData(abortController);
+
+    return () => {
+      abortController.abort();
+    };
+  }, [fetchData, url]);
 
   const refetch = useCallback(() => {
-    fetchData();
-  }, [fetchData]);
+    if (url) {
+      fetchData();
+    }
+  }, [fetchData, url]);
 
   return { ...state, refetch };
 };

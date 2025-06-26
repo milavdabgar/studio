@@ -50,6 +50,12 @@ const testMember = {
   joinedAt: new Date().toISOString()
 };
 
+// Helper function to create unique team names
+const createUniqueTeam = (baseName: string) => ({
+  ...testTeam,
+  name: `${baseName} ${Date.now()}_${Math.random().toString(36).substr(2, 5)}`
+});
+
 test.describe('Project Teams API - Critical In-Memory Storage', () => {
   
   test.beforeEach(async ({ page }) => {
@@ -61,15 +67,20 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
   test('should create, read, update, and delete project teams (CRUD)', async ({ page }) => {
     let createdTeamId: string;
 
-    // Test CREATE - POST /api/project-teams
+    // Test CREATE - POST /api/project-teams with unique name
+    const uniqueTestTeam = {
+      ...testTeam,
+      name: `E2E Test Team CRUD ${Date.now()}`
+    };
     const createResponse = await page.request.post(`${API_BASE}/project-teams`, {
-      data: testTeam
+      data: uniqueTestTeam
     });
 
     expect(createResponse.status()).toBe(201);
-    const createdTeam = await createResponse.json();
+    const createResponseData = await createResponse.json();
+    const createdTeam = createResponseData.data?.team || createResponseData;
     expect(createdTeam).toHaveProperty('id');
-    expect(createdTeam.name).toBe(testTeam.name);
+    expect(createdTeam.name).toBe(uniqueTestTeam.name);
     expect(createdTeam.description).toBe(testTeam.description);
     expect(createdTeam.department).toBe(testTeam.department);
     expect(createdTeam.eventId).toBe(testTeam.eventId);
@@ -90,7 +101,7 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
     const teams = allTeamsData.data.teams;
     const foundTeam = teams.find((t: any) => t.id === createdTeamId);
     expect(foundTeam).toBeDefined();
-    expect(foundTeam.name).toBe(testTeam.name);
+    expect(foundTeam.name).toBe(uniqueTestTeam.name);
 
     // Test READ ONE - GET /api/project-teams/:id
     const getOneResponse = await page.request.get(`${API_BASE}/project-teams/${createdTeamId}`);
@@ -181,13 +192,15 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
   });
 
   test('should manage team members (CRUD operations)', async ({ page }) => {
-    // First create a team
+    // First create a team with unique name
+    const uniqueTeam = createUniqueTeam('Members CRUD');
     const createTeamResponse = await page.request.post(`${API_BASE}/project-teams`, {
-      data: testTeam
+      data: uniqueTeam
     });
 
     expect(createTeamResponse.status()).toBe(201);
-    const createdTeam = await createTeamResponse.json();
+    const createTeamResponseData = await createTeamResponse.json();
+    const createdTeam = createTeamResponseData.data?.team || createTeamResponseData;
     const teamId = createdTeam.id;
 
     try {
@@ -245,7 +258,7 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
   test('should handle team leader management', async ({ page }) => {
     // Create a team with multiple members
     const teamWithMembers = {
-      ...testTeam,
+      ...createUniqueTeam('Leader Management'),
       members: [
         { studentId: 'student_leader_1', role: 'leader', isLeader: true, joinedAt: new Date().toISOString() },
         { studentId: 'student_member_1', role: 'member', isLeader: false, joinedAt: new Date().toISOString() },

@@ -1,20 +1,17 @@
-import { compare, hash } from 'bcryptjs';
-import { sign, verify } from 'jsonwebtoken';
+import { hash, compare } from 'bcryptjs';
+import { sign, verify, JwtPayload } from 'jsonwebtoken';
+import db from '@/lib/db';
 
 export interface User {
-  id: string;
+  id: number;
   email: string;
   password: string;
-  role: string;
-  createdAt: Date;
-  updatedAt: Date;
-  isActive: boolean;
-}
-
-export interface AuthTokens {
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: number;
+  name?: string;
+  role?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  resetToken?: string;
+  resetTokenExpiry?: Date;
 }
 
 export interface LoginCredentials {
@@ -25,185 +22,164 @@ export interface LoginCredentials {
 export interface RegisterData {
   email: string;
   password: string;
+  name?: string;
   role?: string;
 }
 
-export interface TokenPayload {
-  userId: string;
-  email: string;
-  role: string;
-  type: 'access' | 'refresh';
+export interface TokenPayload extends JwtPayload {
+  userId: number;
+}
+
+export interface ChangePasswordData {
+  currentPassword: string;
+  newPassword: string;
 }
 
 export class AuthService {
-  private jwtSecret: string;
-  private jwtRefreshSecret: string;
-  private accessTokenExpiry: string;
-  private refreshTokenExpiry: string;
+  static async register(userData: RegisterData): Promise<User> {
+    // Check if user already exists
+    const existingUser = await db.user.findUnique({
+      where: { email: userData.email },
+    });
 
-  constructor(
-    jwtSecret: string = process.env.JWT_SECRET || 'default-secret',
-    jwtRefreshSecret: string = process.env.JWT_REFRESH_SECRET || 'default-refresh-secret',
-    accessTokenExpiry: string = '15m',
-    refreshTokenExpiry: string = '7d'
-  ) {
-    this.jwtSecret = jwtSecret;
-    this.jwtRefreshSecret = jwtRefreshSecret;
-    this.accessTokenExpiry = accessTokenExpiry;
-    this.refreshTokenExpiry = refreshTokenExpiry;
-  }
+    if (existingUser) {
+      throw new Error('Email already registered');
+    }
 
-  async hashPassword(password: string): Promise<string> {
-    return await hash(password, 12);
-  }
+    // Hash password
+    const hashedPassword = await hash(userData.password, 10);
 
-  async comparePassword(password: string, hashedPassword: string): Promise<boolean> {
-    return await compare(password, hashedPassword);
-  }
-
-  generateTokens(user: User): AuthTokens {
-    const payload = {
-      userId: user.id,
-      email: user.email,
-      role: user.role,
+    // Create user
+    const createData: any = {
+      email: userData.email,
+      password: hashedPassword,
+      name: userData.name,
     };
 
-    const accessToken = sign(
-      { ...payload, type: 'access' },
-      this.jwtSecret,
-      { expiresIn: this.accessTokenExpiry }
-    );
-
-    const refreshToken = sign(
-      { ...payload, type: 'refresh' },
-      this.jwtRefreshSecret,
-      { expiresIn: this.refreshTokenExpiry }
-    );
-
-    return {
-      accessToken,
-      refreshToken,
-      expiresIn: this.parseExpiry(this.accessTokenExpiry),
-    };
-  }
-
-  async verifyAccessToken(token: string): Promise<TokenPayload> {
-    try {
-      const payload = verify(token, this.jwtSecret) as TokenPayload;
-      
-      if (payload.type !== 'access') {
-        throw new Error('Invalid token type');
-      }
-      
-      return payload;
-    } catch (error) {
-      throw new Error('Invalid access token');
+    if (userData.role) {
+      createData.role = userData.role;
     }
+
+    const user = await db.user.create({
+      data: createData,
+    });
+
+    // Return user without password
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword as User;
   }
 
-  async verifyRefreshToken(token: string): Promise<TokenPayload> {
-    try {
-      const payload = verify(token, this.jwtRefreshSecret) as TokenPayload;
-      
-      if (payload.type !== 'refresh') {
-        throw new Error('Invalid token type');
-      }
-      
-      return payload;
-    } catch (error) {
-      throw new Error('Invalid refresh token');
-    }
-  }
+  static async login(credentials: LoginCredentials): Promise<{ user: User; token: string }> {
+    // Find user by email
+    const user = await db.user.findUnique({
+      where: { email: credentials.email },
+    });
 
-  async login(credentials: LoginCredentials, userFinder: (email: string) => Promise<User | null>): Promise<AuthTokens> {
-    const user = await userFinder(credentials.email);
-    
     if (!user) {
       throw new Error('Invalid credentials');
     }
 
-    if (!user.isActive) {
-      throw new Error('Account is deactivated');
-    }
-
-    const isValidPassword = await this.comparePassword(credentials.password, user.password);
-    
-    if (!isValidPassword) {
+    // Verify password
+    const isValid = await compare(credentials.password, user.password);
+    if (!isValid) {
       throw new Error('Invalid credentials');
     }
 
-    return this.generateTokens(user);
+    // Generate JWT token
+    const token = sign(
+      { userId: user.id },
+      process.env.JWT_SECRET!,
+      { expiresIn: '1d' }
+    );
+
+    // Return user without password
+    const { password, ...userWithoutPassword } = user;
+    return { user: userWithoutPassword as User, token };
   }
 
-  async register(
-    data: RegisterData,
-    userCreator: (data: RegisterData & { hashedPassword: string }) => Promise<User>
-  ): Promise<{ user: User; tokens: AuthTokens }> {
-    const hashedPassword = await this.hashPassword(data.password);
-    
-    const user = await userCreator({
-      ...data,
-      hashedPassword,
-      role: data.role || 'user',
+  static async verifyToken(token: string): Promise<User> {
+    try {
+      const payload = verify(token, process.env.JWT_SECRET!) as TokenPayload;
+      
+      const user = await db.user.findUnique({
+        where: { id: payload.userId },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      // Since we're using select, the password field should not be included
+      // But if the mock returns it anyway, we need to filter it out
+      const { password, ...userWithoutPassword } = user as any;
+      return userWithoutPassword as User;
+    } catch (error) {
+      if (error instanceof Error && error.message === 'User not found') {
+        throw error;
+      }
+      throw new Error('Invalid or expired token');
+    }
+  }
+
+  static async changePassword(userId: number, data: ChangePasswordData): Promise<void> {
+    // Get current user
+    const user = await db.user.findUnique({
+      where: { id: userId },
     });
 
-    const tokens = this.generateTokens(user);
-
-    return { user, tokens };
-  }
-
-  async refreshTokens(
-    refreshToken: string,
-    userFinder: (userId: string) => Promise<User | null>
-  ): Promise<AuthTokens> {
-    const payload = await this.verifyRefreshToken(refreshToken);
-    const user = await userFinder(payload.userId);
-    
-    if (!user || !user.isActive) {
-      throw new Error('User not found or inactive');
-    }
-
-    return this.generateTokens(user);
-  }
-
-  private parseExpiry(expiry: string): number {
-    const match = expiry.match(/^(\d+)([smhd])$/);
-    
-    if (!match) {
-      return 900; // Default 15 minutes
-    }
-
-    const value = parseInt(match[1], 10);
-    const unit = match[2];
-
-    switch (unit) {
-      case 's': return value;
-      case 'm': return value * 60;
-      case 'h': return value * 60 * 60;
-      case 'd': return value * 60 * 60 * 24;
-      default: return 900;
-    }
-  }
-
-  extractTokenFromHeader(authHeader: string): string | null {
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return null;
-    }
-    
-    return authHeader.substring(7);
-  }
-
-  async validateUser(userId: string, userFinder: (userId: string) => Promise<User | null>): Promise<User> {
-    const user = await userFinder(userId);
-    
     if (!user) {
       throw new Error('User not found');
     }
 
-    if (!user.isActive) {
-      throw new Error('User account is deactivated');
+    // Verify current password
+    const isCurrentPasswordValid = await compare(data.currentPassword, user.password);
+    if (!isCurrentPasswordValid) {
+      throw new Error('Current password is incorrect');
     }
 
-    return user;
+    // Hash new password
+    const hashedPassword = await hash(data.newPassword, 10);
+
+    // Update password
+    await db.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    });
+  }
+
+  static async requestPasswordReset(email: string): Promise<{ token: string }> {
+    const user = await db.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Generate reset token
+    const resetToken = sign(
+      { userId: user.id, type: 'password-reset' },
+      process.env.JWT_SECRET!,
+      { expiresIn: '1h' }
+    );
+
+    // Store reset token with expiry
+    await db.user.update({
+      where: { email }, // Use email instead of id
+      data: { 
+        resetToken,
+        resetTokenExpiry: new Date(Date.now() + 60 * 60 * 1000), // 1 hour from now
+      },
+    });
+
+    return { token: resetToken };
   }
 }

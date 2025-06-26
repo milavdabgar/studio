@@ -62,6 +62,11 @@
     "test:app-dte-gtu": "playwright test e2e/app-dte-gtu-dashboards-complete.spec.ts --reporter=line",
     "test:app-notifications": "playwright test e2e/app-notifications-dashboard-complete.spec.ts --reporter=line",
     "test:whole-app-coverage": "playwright test e2e/app-complete-coverage.spec.ts e2e/app-authentication-core.spec.ts e2e/app-project-fair-comprehensive.spec.ts --reporter=line",
+    "test:integration-workflows": "playwright test e2e/api-integration-workflows-comprehensive.spec.ts --reporter=line",
+    "test:data-consistency": "playwright test e2e/data-consistency-validation-comprehensive.spec.ts --reporter=line",
+    "test:performance-edge-cases": "playwright test e2e/performance-edge-cases-comprehensive.spec.ts --reporter=line",
+    "test:security-authorization": "playwright test e2e/security-authorization-comprehensive.spec.ts --reporter=line",
+    "test:advanced-e2e": "playwright test e2e/api-integration-workflows-comprehensive.spec.ts e2e/data-consistency-validation-comprehensive.spec.ts e2e/performance-edge-cases-comprehensive.spec.ts e2e/security-authorization-comprehensive.spec.ts --reporter=line",
     "test:whole-app": "playwright test e2e/app-*.spec.ts e2e/*-comprehensive.spec.ts --reporter=line",
     "test:complete-coverage": "playwright test e2e/app-student-complete-coverage.spec.ts e2e/app-content-blog-system-complete.spec.ts e2e/app-newsletters-complete-coverage.spec.ts e2e/app-dte-gtu-dashboards-complete.spec.ts e2e/app-notifications-dashboard-complete.spec.ts --reporter=line",
     "test:critical-auth": "playwright test e2e/critical-authentication-flows.spec.ts --reporter=line",
@@ -164,6 +169,7 @@
     "typeit": "^8.8.7",
     "uuid": "^11.1.0",
     "winston": "^3.17.0",
+    "yup": "^1.6.1",
     "zod": "^3.24.2"
   },
   "devDependencies": {

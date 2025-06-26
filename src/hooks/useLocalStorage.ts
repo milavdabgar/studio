@@ -26,5 +26,16 @@ export const useLocalStorage = <T>(key: string, initialValue: T) => {
     }
   };
 
-  return [storedValue, setValue] as const;
+  const remove = () => {
+    try {
+      setStoredValue(undefined as any);
+      if (typeof window !== 'undefined') {
+        window.localStorage.removeItem(key);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return [storedValue, setValue, remove] as const;
 };

@@ -8,6 +8,7 @@ import { promisify } from 'util';
 import { pipeline } from 'stream';
 import { createGzip, gunzip } from 'zlib';
 import { rm } from 'fs/promises';
+import { jest } from '@jest/globals';
 
 // Mock dependencies
 jest.mock('@aws-sdk/client-s3');

@@ -1,6 +1,9 @@
+import { getClient, RedisClient } from '@/lib/redis';
+
 export interface CacheOptions {
   ttl?: number; // Time to live in seconds
   prefix?: string;
+  useRedis?: boolean;
 }
 
 export interface CacheItem<T = any> {
@@ -12,17 +15,31 @@ export class CacheService {
   private cache: Map<string, CacheItem> = new Map();
   private defaultTtl: number = 3600; // 1 hour
   private prefix: string = '';
+  private useRedis: boolean = false;
+  private redis?: RedisClient;
 
   constructor(options: CacheOptions = {}) {
     this.defaultTtl = options.ttl || 3600;
     this.prefix = options.prefix || '';
+    this.useRedis = options.useRedis || false;
     
-    // Clean up expired items every 5 minutes
-    setInterval(() => this.cleanup(), 5 * 60 * 1000);
+    if (this.useRedis) {
+      this.redis = getClient();
+    } else {
+      // Clean up expired items every 5 minutes for in-memory cache
+      setInterval(() => this.cleanup(), 5 * 60 * 1000);
+    }
   }
 
   private getKey(key: string): string {
-    return this.prefix ? `${this.prefix}:${key}` : key;
+    if (!this.prefix) return key;
+    
+    // If prefix already ends with ':', don't add another one
+    if (this.prefix.endsWith(':')) {
+      return `${this.prefix}${key}`;
+    }
+    
+    return `${this.prefix}:${key}`;
   }
 
   private isExpired(item: CacheItem): boolean {
@@ -40,6 +57,19 @@ export class CacheService {
 
   async get<T = any>(key: string): Promise<T | null> {
     const fullKey = this.getKey(key);
+    
+    if (this.useRedis && this.redis) {
+      const value = await this.redis.get(fullKey);
+      if (!value) return null;
+      
+      try {
+        return JSON.parse(value);
+      } catch (error) {
+        // If JSON parsing fails, return null
+        return null;
+      }
+    }
+    
     const item = this.cache.get(fullKey);
     
     if (!item) {
@@ -56,7 +86,17 @@ export class CacheService {
 
   async set<T = any>(key: string, value: T, ttl?: number): Promise<void> {
     const fullKey = this.getKey(key);
-    const expiryTime = Date.now() + ((ttl || this.defaultTtl) * 1000);
+    const effectiveTtl = ttl !== undefined ? ttl : this.defaultTtl;
+    
+    if (this.useRedis && this.redis) {
+      await this.redis.set(fullKey, JSON.stringify(value));
+      if (effectiveTtl > 0) {
+        await this.redis.expire(fullKey, effectiveTtl);
+      }
+      return;
+    }
+    
+    const expiryTime = Date.now() + (effectiveTtl * 1000);
     
     this.cache.set(fullKey, {
       value,
@@ -82,6 +122,12 @@ export class CacheService {
 
   async delete(key: string): Promise<boolean> {
     const fullKey = this.getKey(key);
+    
+    if (this.useRedis && this.redis) {
+      const result = await this.redis.del(fullKey);
+      return result > 0;
+    }
+    
     return this.cache.delete(fullKey);
   }
 
@@ -143,7 +189,7 @@ export class CacheService {
 
   async getOrSet<T = any>(
     key: string, 
-    factory: () => Promise<T> | T, 
+    factory: (isCacheMiss?: boolean) => Promise<T> | T, 
     ttl?: number
   ): Promise<T> {
     const existing = await this.get<T>(key);
@@ -152,7 +198,7 @@ export class CacheService {
       return existing;
     }
     
-    const value = await factory();
+    const value = await factory(true); // Pass true to indicate cache miss
     await this.set(key, value, ttl);
     return value;
   }
@@ -174,5 +220,76 @@ export class CacheService {
       size: this.cache.size,
       memoryUsage: JSON.stringify(Array.from(this.cache.entries())).length,
     };
+  }
+
+  withPrefix(prefix: string): CacheService {
+    return new CacheService({
+      ttl: this.defaultTtl,
+      prefix: prefix, // Use the provided prefix directly
+      useRedis: this.useRedis,
+    });
+  }
+
+  generateCacheKey(base: string, params: Record<string, any>): string {
+    const crypto = require('crypto');
+    const sortedParams = Object.keys(params)
+      .sort()
+      .reduce((sorted, key) => {
+        sorted[key] = params[key];
+        return sorted;
+      }, {} as Record<string, any>);
+    
+    const hash = crypto.createHash('md5')
+      .update(JSON.stringify(sortedParams))
+      .digest('hex');
+    
+    return `${base}:${hash}`;
+  }
+
+  cached<T extends (...args: any[]) => Promise<any>>(
+    key: string,
+    fn: T,
+    ttl?: number
+  ): T {
+    return (async (...args: Parameters<T>) => {
+      const cached = await this.get(key);
+      if (cached !== null) {
+        return cached;
+      }
+      
+      const result = await fn(...args);
+      if (result !== undefined) {
+        await this.set(key, result, ttl);
+      }
+      return result;
+    }) as T;
+  }
+
+  async clearByPattern(pattern: string): Promise<number> {
+    if (this.useRedis && this.redis) {
+      const keys = await (this.redis as any).keys(pattern);
+      if (keys.length === 0) {
+        return 0;
+      }
+      await (this.redis as any).del(...keys);
+      return keys.length;
+    }
+    
+    // For in-memory cache, implement pattern matching
+    const keys = Array.from(this.cache.keys());
+    const regex = new RegExp(pattern.replace(/\*/g, '.*').replace(/\?/g, '.'), 'i');
+    const matchingKeys = keys.filter(key => regex.test(key));
+    
+    matchingKeys.forEach(key => this.cache.delete(key));
+    return matchingKeys.length;
+  }
+
+  async flushAll(): Promise<void> {
+    if (this.useRedis && this.redis) {
+      await (this.redis as any).flushdb();
+      return;
+    }
+    
+    this.cache.clear();
   }
 }

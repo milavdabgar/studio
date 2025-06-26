@@ -11,9 +11,9 @@ const mockData = [
 ];
 
 const columns = [
-  { key: 'name', header: 'Name', sortable: true },
-  { key: 'email', header: 'Email', sortable: true },
-  { key: 'age', header: 'Age', sortable: true },
+  { key: 'name' as const, header: 'Name', sortable: true },
+  { key: 'email' as const, header: 'Email', sortable: true },
+  { key: 'age' as const, header: 'Age', sortable: true },
 ];
 
 describe('DataTable Component', () => {
@@ -84,11 +84,13 @@ describe('DataTable Component', () => {
     const searchInput = screen.getByPlaceholderText(/search/i);
     fireEvent.change(searchInput, { target: { value: 'john' } });
     
-    // Should show only rows containing 'john' (case insensitive)
+    // Should show rows containing 'john' (case insensitive)
+    // This matches both "John Doe" and "Bob Johnson" 
     const rows = screen.getAllByRole('row');
-    // 1 header + 1 data row (John Doe)
-    expect(rows).toHaveLength(2);
+    // 1 header + 2 data rows (John Doe and Bob Johnson)
+    expect(rows).toHaveLength(3);
     expect(within(rows[1]).getByText('John Doe')).toBeInTheDocument();
+    expect(within(rows[2]).getByText('Bob Johnson')).toBeInTheDocument();
   });
 
   it('displays pagination controls when data exceeds page size', () => {

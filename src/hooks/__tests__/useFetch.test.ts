@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { useFetch } from '../useFetch';
 
 // Mock the global fetch API
@@ -18,7 +18,7 @@ describe('useFetch', () => {
       json: async () => mockData,
     });
 
-    const { result, waitForNextUpdate } = renderHook(() => useFetch(mockUrl));
+    const { result } = renderHook(() => useFetch(mockUrl));
 
     // Initial state
     expect(result.current.data).toBeNull();
@@ -26,7 +26,9 @@ describe('useFetch', () => {
     expect(result.current.error).toBeNull();
 
     // Wait for the hook to finish
-    await waitForNextUpdate();
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
 
     // After fetch
     expect(global.fetch).toHaveBeenCalledWith(mockUrl);
@@ -39,9 +41,11 @@ describe('useFetch', () => {
     const errorMessage = 'Network error';
     (global.fetch as jest.Mock).mockRejectedValueOnce(new Error(errorMessage));
 
-    const { result, waitForNextUpdate } = renderHook(() => useFetch(mockUrl));
+    const { result } = renderHook(() => useFetch(mockUrl));
 
-    await waitForNextUpdate();
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
 
     expect(result.current.data).toBeNull();
     expect(result.current.loading).toBe(false);
@@ -64,8 +68,10 @@ describe('useFetch', () => {
       statusText: 'Not Found',
     });
 
-    const { result, waitForNextUpdate } = renderHook(() => useFetch(mockUrl));
-    await waitForNextUpdate();
+    const { result } = renderHook(() => useFetch(mockUrl));
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
 
     expect(result.current.error).toBe('HTTP error! status: 404');
     expect(result.current.loading).toBe(false);

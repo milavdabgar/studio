@@ -30,7 +30,7 @@ describe('CacheService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    cacheService = new CacheService();
+    cacheService = new CacheService({ useRedis: true });
   });
 
   describe('get', () => {
