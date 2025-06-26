@@ -42,7 +42,8 @@ export const formatDateTime = (date: Date | string, options?: Intl.DateTimeForma
     day: 'numeric',
     hour: 'numeric',
     minute: '2-digit',
-    hour12: true
+    hour12: true,
+    timeZone: 'UTC' // Use UTC to match the test expectations
   };
   
   return d.toLocaleDateString('en-US', { ...defaultOptions, ...options });

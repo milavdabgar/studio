@@ -10,18 +10,106 @@ export interface NormalizationOptions {
 
 export class DataTransformService {
   static normalizeResponse(response: any, options?: NormalizationOptions): NormalizedResponse {
-    // Simple implementation - just return the data as-is for now
-    // This would need to be enhanced to handle the full normalization logic expected by tests
+    if (!response || !response.data) {
+      return {
+        entities: {},
+        result: [],
+        meta: response?.meta,
+      };
+    }
+
+    const entities: Record<string, Record<string | number, any>> = {};
+    const result: (string | number)[] = [];
+    const data = Array.isArray(response.data) ? response.data : [response.data];
+
+    // Determine entity type from the first item or default to 'items'
+    const entityType = options?.entityType || 'items';
+    entities[entityType] = {};
+
+    data.forEach((item: any) => {
+      if (item && typeof item === 'object' && 'id' in item) {
+        const normalizedItem = { ...item };
+        
+        // Handle nested objects based on options
+        if (options) {
+          Object.entries(options).forEach(([key, entityName]) => {
+            if (key !== 'entityType' && normalizedItem[key]) {
+              if (Array.isArray(normalizedItem[key])) {
+                // Handle arrays of nested objects
+                if (!entities[entityName]) entities[entityName] = {};
+                normalizedItem[key] = normalizedItem[key].map((nestedItem: any) => {
+                  if (nestedItem && typeof nestedItem === 'object' && 'id' in nestedItem) {
+                    entities[entityName][nestedItem.id] = nestedItem;
+                    return nestedItem.id;
+                  }
+                  return nestedItem;
+                });
+              } else if (typeof normalizedItem[key] === 'object' && normalizedItem[key].id) {
+                // Handle single nested object
+                if (!entities[entityName]) entities[entityName] = {};
+                const nestedItem = normalizedItem[key];
+                entities[entityName][nestedItem.id] = nestedItem;
+                normalizedItem[key] = nestedItem.id;
+              }
+            }
+          });
+        }
+
+        entities[entityType][item.id] = normalizedItem;
+        result.push(item.id);
+      }
+    });
+
+    const meta = response.meta ? { ...response.meta } : undefined;
+    if (meta && meta.total && meta.limit && !meta.totalPages) {
+      meta.totalPages = Math.ceil(meta.total / meta.limit);
+    }
+
     return {
-      entities: {},
-      result: [],
-      ...response,
+      entities,
+      result,
+      meta,
     };
   }
 
   static denormalize(normalizedData: any, entityType: string, relations?: string[]): any {
-    // Simple denormalization implementation
-    return normalizedData;
+    if (!normalizedData.entities || !normalizedData.entities[entityType]) {
+      return [];
+    }
+
+    const entities = normalizedData.entities;
+    const entityIds = normalizedData.result || Object.keys(entities[entityType]);
+
+    return entityIds.map((id: string | number) => {
+      const entity = { ...entities[entityType][id] };
+      
+      // Resolve relations if specified
+      if (relations) {
+        relations.forEach(relation => {
+          if (entity[relation] && typeof entity[relation] !== 'object') {
+            // Find the relation in entities
+            Object.keys(entities).forEach(entityName => {
+              if (entities[entityName][entity[relation]]) {
+                entity[relation] = entities[entityName][entity[relation]];
+              }
+            });
+          } else if (Array.isArray(entity[relation])) {
+            entity[relation] = entity[relation].map((relId: string | number) => {
+              // Find the relation in entities
+              let resolved = relId;
+              Object.keys(entities).forEach(entityName => {
+                if (entities[entityName][relId]) {
+                  resolved = entities[entityName][relId];
+                }
+              });
+              return resolved;
+            });
+          }
+        });
+      }
+
+      return entity;
+    });
   }
 
   static formatDateRange(startDate: string, endDate: string): string {
@@ -72,9 +160,12 @@ export class DataTransformService {
   static slugify(text: string): string {
     return text
       .toLowerCase()
+      .normalize('NFD') // Normalize accented characters
+      .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
       .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
       .replace(/\s+/g, '-') // Replace spaces with hyphens
       .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+      .replace(/^-+|-+$/g, '') // Remove leading/trailing hyphens
       .trim();
   }
 
@@ -102,17 +193,17 @@ export class DataTransformService {
       return '';
     }
     
-    const searchParams = new URLSearchParams();
+    const parts: string[] = [];
     
     for (const [key, value] of Object.entries(params)) {
       if (Array.isArray(value)) {
-        value.forEach(v => searchParams.append(`${key}[]`, v.toString()));
+        value.forEach(v => parts.push(`${key}[]=${encodeURIComponent(v.toString())}`));
       } else if (value !== undefined && value !== null) {
-        searchParams.append(key, value.toString());
+        parts.push(`${key}=${encodeURIComponent(value.toString())}`);
       }
     }
     
-    return searchParams.toString();
+    return parts.join('&');
   }
 
   // Legacy methods for backward compatibility
