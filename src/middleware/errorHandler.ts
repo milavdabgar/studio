@@ -86,7 +86,7 @@ export const errorHandler = async (
     status: 'error',
     message: 'Internal server error',
   };
-  let headers: Record<string, string> = {};
+  const headers: Record<string, string> = {};
 
   // Handle Yup ValidationError
   if (error instanceof ValidationError) {

@@ -1,0 +1,58 @@
+{
+  "name": "Government Polytechnic Palanpur",
+  "short_name": "GPP Palanpur",
+  "motto": "Excellence in Technical Education",
+  "location": "Palanpur, Gujarat, India",
+  "address": "Outside Malan Gate, Near Dhaniyana Crossroads, Palanpur-385001 (B.K.)",
+  "contact": {
+    "phone": "02742-245219/262115",
+    "email": "gppalanpur@gmail.com",
+    "website": "https://gppalanpur.in",
+    "institutional_website": "www.gppp.cteguj.in"
+  },
+  "basic_info": {
+    "type": "Government Technical Institute",
+    "established": 1984,
+    "affiliation": "Gujarat Technological University (GTU)",
+    "approval": "AICTE Approved",
+    "recognition": "Government of Gujarat",
+    "campus_area": "18.8 acres",
+    "location_type": "Urban"
+  },
+  "administration": {
+    "principal": "Mr. S D Dabhi",
+    "total_faculty": 66,
+    "faculty_with_phd": 6,
+    "faculty_with_masters": 41
+  },
+  "infrastructure": {
+    "total_departments": 6,
+    "total_labs": 25,
+    "library_books": 18000,
+    "hostel_capacity": {
+      "boys": 132,
+      "girls": 48,
+      "total": 180
+    },
+    "internet": "200 Mbps with NAMO WiFi",
+    "green_energy": "Solar plant generating 86,000 units annually"
+  },
+  "achievements": {
+    "nba_accredited_programs": 3,
+    "established_years": 41,
+    "total_programs": 6,
+    "placement_companies": 14,
+    "job_offers_2024": 171
+  },
+  "highlights": [
+    "Premier government diploma engineering institution in Banaskantha district",
+    "Operating since 1984 with proven track record",
+    "18.8 acres green campus",
+    "66 GPSC selected faculty including 6 PhDs",
+    "Three NBA accredited programs",
+    "State-of-the-art laboratories and modern infrastructure",
+    "200 Mbps internet with NAMO WiFi campus",
+    "Focus on innovation through SSIP cell",
+    "Strong placement record with industry partnerships"
+  ]
+}
