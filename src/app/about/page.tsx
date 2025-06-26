@@ -18,8 +18,8 @@ import {
   Trophy,
   Lightbulb
 } from "lucide-react";
-import collegeInfo from "@/../../data/content/college-info.json";
-import pages from "@/../../data/content/pages.json";
+import collegeInfo from "../../../data/content/college-info.json";
+import pages from "../../../data/content/pages.json";
 
 export default function AboutPage() {
   const aboutContent = pages.find(page => page.slug === 'about-us');

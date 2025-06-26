@@ -16,7 +16,7 @@ import {
   Building,
   Users
 } from "lucide-react";
-import collegeInfo from "@/../../data/content/college-info.json";
+import collegeInfo from "../../../data/content/college-info.json";
 
 export default function ContactPage() {
   return (

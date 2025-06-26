@@ -41,7 +41,7 @@ export default function HomePage() {
               <Link href="/facilities" className="text-gray-700 hover:text-primary">Facilities</Link>
               <Link href="/contact" className="text-gray-700 hover:text-primary">Contact</Link>
               <Button asChild>
-                <Link href="/login">Student Portal</Link>
+                <Link href="/login">Portal</Link>
               </Button>
             </nav>
           </div>
@@ -384,7 +384,7 @@ export default function HomePage() {
                     <div className="text-sm text-gray-600">Campus Tour</div>
                   </Link>
                   <Link href="/login" className="p-3 rounded-lg border hover:bg-gray-50 transition-colors">
-                    <div className="font-medium text-gray-900">Student Portal</div>
+                    <div className="font-medium text-gray-900">Portal</div>
                     <div className="text-sm text-gray-600">Access Dashboard</div>
                   </Link>
                   <Link href="/departments" className="p-3 rounded-lg border hover:bg-gray-50 transition-colors">
@@ -432,7 +432,7 @@ export default function HomePage() {
               </p>
               <div className="mt-4">
                 <Button variant="outline" size="sm" asChild>
-                  <Link href="/login">Student Portal</Link>
+                  <Link href="/login">Portal</Link>
                 </Button>
               </div>
             </div>

@@ -17,8 +17,8 @@ import {
   Users,
   Building
 } from "lucide-react";
-import facilities from "@/../../data/content/facilities.json";
-import collegeInfo from "@/../../data/content/college-info.json";
+import facilities from "../../../data/content/facilities.json";
+import collegeInfo from "../../../data/content/college-info.json";
 
 const facilityIcons = {
   Academic: BookOpen,

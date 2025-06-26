@@ -20,9 +20,9 @@ import {
   TrendingUp,
   Star
 } from "lucide-react";
-import pages from "@/../../data/content/pages.json";
-import departments from "@/../../data/content/departments.json";
-import collegeInfo from "@/../../data/content/college-info.json";
+import pages from "../../../data/content/pages.json";
+import departments from "../../../data/content/departments.json";
+import collegeInfo from "../../../data/content/college-info.json";
 
 export default function AdmissionsPage() {
   const admissionsContent = pages.find(page => page.slug === 'admissions');

@@ -13,7 +13,7 @@ import {
   Calendar,
   ChevronLeft
 } from "lucide-react";
-import departments from "@/../../data/content/departments.json";
+import departments from "../../../data/content/departments.json";
 
 export default function DepartmentsPage() {
   return (
