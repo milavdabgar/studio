@@ -1,19 +1,51 @@
 // Date utility functions
-export const formatDate = (date: Date | string, format: string = 'YYYY-MM-DD'): string => {
+export const formatDate = (date: Date | string, format?: string): string => {
   const d = new Date(date);
+  
+  // Check if date is valid
+  if (isNaN(d.getTime())) {
+    return '';
+  }
+  
+  // If no format provided, use default locale format
+  if (!format) {
+    return d.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  }
+  
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
   
   return format
+    .replace('yyyy', String(year))
     .replace('YYYY', String(year))
     .replace('MM', month)
+    .replace('dd', day)
     .replace('DD', day);
 };
 
-export const formatDateTime = (date: Date | string): string => {
+export const formatDateTime = (date: Date | string, options?: Intl.DateTimeFormatOptions): string => {
   const d = new Date(date);
-  return d.toLocaleString();
+  
+  // Check if date is valid
+  if (isNaN(d.getTime())) {
+    return '';
+  }
+  
+  const defaultOptions: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  };
+  
+  return d.toLocaleDateString('en-US', { ...defaultOptions, ...options });
 };
 
 export const getRelativeTime = (date: Date | string): string => {
@@ -27,7 +59,10 @@ export const getRelativeTime = (date: Date | string): string => {
   if (diffMins < 1) return 'just now';
   if (diffMins < 60) return `${diffMins} minutes ago`;
   if (diffHours < 24) return `${diffHours} hours ago`;
-  return `${diffDays} days ago`;
+  if (diffDays < 30) return `${diffDays} days ago`;
+  
+  // For dates older than 30 days, show formatted date
+  return formatDate(d);
 };
 
 export const isDateInPast = (date: Date | string): boolean => {

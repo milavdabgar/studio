@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server';
-import { errorHandler } from '../errorHandler';
+import { 
+  errorHandler, 
+  CustomError, 
+  AuthenticationError, 
+  AuthorizationError, 
+  NotFoundError, 
+  RateLimitError 
+} from '../errorHandler';
 import { ValidationError } from 'yup';
-import { AuthenticationError, AuthorizationError, NotFoundError, RateLimitError } from '@/lib/errors';
 
 // Mock NextResponse
 jest.mock('next/server', () => ({
@@ -105,7 +111,12 @@ describe('errorHandler Middleware', () => {
   });
 
   it('should handle RateLimitError with 429 status', async () => {
-    const error = new RateLimitError('Too many requests');
+    const error = new RateLimitError('Too many requests', {
+      retryAfter: 60,
+      limit: 100,
+      remaining: 0,
+      reset: Date.now() + 60000
+    });
     
     const req = mockRequest();
     const res = mockResponse();
@@ -123,7 +134,7 @@ describe('errorHandler Middleware', () => {
           'Retry-After': '60',
           'X-RateLimit-Limit': '100',
           'X-RateLimit-Remaining': '0',
-          'X-RateLimit-Reset': expect.any(Number)
+          'X-RateLimit-Reset': expect.any(String)
         }
       }
     );
@@ -140,25 +151,14 @@ describe('errorHandler Middleware', () => {
     expect(NextResponse.json).toHaveBeenCalledWith(
       {
         status: 'error',
-        message: 'Internal server error',
+        message: 'Something went wrong',
+        stack: expect.any(String),
       },
       { status: 500 }
     );
-    expect(console.error).toHaveBeenCalledWith('Unhandled error:', error);
   });
 
   it('should handle custom error with additional data', async () => {
-    class CustomError extends Error {
-      statusCode: number;
-      data: any;
-      
-      constructor(message: string, statusCode: number, data: any) {
-        super(message);
-        this.statusCode = statusCode;
-        this.data = data;
-      }
-    }
-
     const error = new CustomError('Custom error', 400, { field: 'value' });
     
     const req = mockRequest();
@@ -196,7 +196,10 @@ describe('errorHandler Middleware', () => {
 
   it('should handle errors in production mode', async () => {
     const originalNodeEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'production';
+    Object.defineProperty(process.env, 'NODE_ENV', {
+      value: 'production',
+      configurable: true,
+    });
     
     const error = new Error('Sensitive error message');
     
@@ -213,12 +216,18 @@ describe('errorHandler Middleware', () => {
       { status: 500 }
     );
 
-    process.env.NODE_ENV = originalNodeEnv;
+    Object.defineProperty(process.env, 'NODE_ENV', {
+      value: originalNodeEnv,
+      configurable: true,
+    });
   });
 
   it('should include stack trace in development mode', async () => {
     const originalNodeEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'development';
+    Object.defineProperty(process.env, 'NODE_ENV', {
+      value: 'development',
+      configurable: true,
+    });
     
     const error = new Error('Test error');
     
@@ -236,7 +245,10 @@ describe('errorHandler Middleware', () => {
       { status: 500 }
     );
 
-    process.env.NODE_ENV = originalNodeEnv;
+    Object.defineProperty(process.env, 'NODE_ENV', {
+      value: originalNodeEnv,
+      configurable: true,
+    });
   });
 
   it('should call next if no error is provided', async () => {

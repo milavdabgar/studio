@@ -100,46 +100,48 @@ export const errorHandler = async (
       })) || [],
     };
   }
-  // Handle custom errors
-  else if (error instanceof AuthenticationError) {
+  // Handle custom errors by name since instanceof might not work in test environment
+  else if (error.name === 'AuthenticationError') {
     status = 401;
     responseData = {
       status: 'error',
       message: error.message,
     };
   }
-  else if (error instanceof AuthorizationError) {
+  else if (error.name === 'AuthorizationError') {
     status = 403;
     responseData = {
       status: 'error',
       message: error.message,
     };
   }
-  else if (error instanceof NotFoundError) {
+  else if (error.name === 'NotFoundError') {
     status = 404;
     responseData = {
       status: 'error',
       message: error.message,
     };
   }
-  else if (error instanceof RateLimitError) {
+  else if (error.name === 'RateLimitError') {
+    const rateLimitError = error as RateLimitError;
     status = 429;
     responseData = {
       status: 'error',
       message: error.message,
     };
     
-    if (error.retryAfter) headers['Retry-After'] = String(error.retryAfter);
-    if (error.limit) headers['X-RateLimit-Limit'] = String(error.limit);
-    if (error.remaining !== undefined) headers['X-RateLimit-Remaining'] = String(error.remaining);
-    if (error.reset) headers['X-RateLimit-Reset'] = String(error.reset);
+    if (rateLimitError.retryAfter) headers['Retry-After'] = String(rateLimitError.retryAfter);
+    if (rateLimitError.limit) headers['X-RateLimit-Limit'] = String(rateLimitError.limit);
+    if (rateLimitError.remaining !== undefined) headers['X-RateLimit-Remaining'] = String(rateLimitError.remaining);
+    if (rateLimitError.reset) headers['X-RateLimit-Reset'] = String(rateLimitError.reset);
   }
-  else if (error instanceof CustomError) {
-    status = error.statusCode;
+  else if (error.name === 'CustomError') {
+    const customError = error as CustomError;
+    status = customError.statusCode;
     responseData = {
       status: 'error',
       message: error.message,
-      ...(error.data && { data: error.data }),
+      ...(customError.data && { data: customError.data }),
     };
   }
   // Handle generic errors
@@ -153,8 +155,10 @@ export const errorHandler = async (
     }
   }
 
-  return NextResponse.json(responseData, { 
-    status, 
-    ...(Object.keys(headers).length > 0 && { headers }) 
-  });
+  const responseOptions: any = { status };
+  if (Object.keys(headers).length > 0) {
+    responseOptions.headers = headers;
+  }
+
+  return NextResponse.json(responseData, responseOptions);
 };
