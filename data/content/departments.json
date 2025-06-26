@@ -8,7 +8,8 @@
     "nba_status": "Accredited",
     "faculty_count": 13,
     "head_of_department": "Mr. D N Sheth",
-    "overview": "Civil Engineering at GPP Palanpur focuses on structural design, construction techniques, and infrastructure development. The program equips students with skills in structural analysis, material science, transportation engineering, water resource management, and soil mechanics.",
+    "website": "https://gppcivil06.wixsite.com/civil",
+    "overview": "Civil Engineering at GPP Palanpur focuses on structural design, construction techniques, and infrastructure development. The program equips students with skills in structural analysis, material science, transportation engineering, water resource management, and soil mechanics. For detailed information about faculty, facilities, and current projects, visit our dedicated website.",
     "specializations": [
       "Structural Design",
       "Construction Techniques",
@@ -41,7 +42,8 @@
     "nba_status": "Accredited",
     "faculty_count": 10,
     "head_of_department": "Mr. A D Shah",
-    "overview": "Our Electrical Engineering program focuses on electricity, power systems, and control mechanisms. Students learn about power generation, electrical motors, transmission systems, and renewable energy technologies through a blend of theoretical and practical coursework.",
+    "website": "https://eegppalanpur.wixsite.com/electrical",
+    "overview": "Our Electrical Engineering program focuses on electricity, power systems, and control mechanisms. Students learn about power generation, electrical motors, transmission systems, and renewable energy technologies through a blend of theoretical and practical coursework. For comprehensive details about our labs, projects, and achievements, please visit our department website.",
     "specializations": [
       "Power Systems",
       "Electrical Motors",
@@ -109,7 +111,8 @@
     "nba_status": null,
     "faculty_count": 8,
     "head_of_department": "Mr. S J Chauhan",
-    "overview": "The EC program focuses on computer, communication, and navigation electronics. Students study IoT, Embedded Systems, VLSI, Integrated Circuits, and Medical Electronics through well-designed theoretical and practical sessions.",
+    "website": "https://ec.gppalanpur.in/",
+    "overview": "The EC program focuses on computer, communication, and navigation electronics. Students study IoT, Embedded Systems, VLSI, Integrated Circuits, and Medical Electronics through well-designed theoretical and practical sessions. Visit our department website for latest updates on research activities, student projects, and industry collaborations.",
     "specializations": [
       "IoT (Internet of Things)",
       "Embedded Systems",
@@ -142,8 +145,9 @@
     "intake_capacity": 78,
     "nba_status": null,
     "faculty_count": null,
-    "head_of_department": null,
-    "overview": "The ICT program deals with computer networks, data communication, and software systems. Students learn image processing, networking, cybersecurity, and data analytics through a comprehensive curriculum.",
+    "head_of_department": "Shri Sunilkumar J Chauhan",
+    "website": null,
+    "overview": "The ICT program deals with computer networks, data communication, and software systems. Students learn image processing, networking, cybersecurity, and data analytics through a comprehensive curriculum. As our newest department, we are building cutting-edge facilities and establishing industry partnerships to provide students with the most current technological education.",
     "specializations": [
       "Computer Networks",
       "Data Communication",
@@ -178,7 +182,8 @@
     "nba_status": null,
     "faculty_count": null,
     "head_of_department": "Ms. M M Shah",
-    "overview": "The IT program focuses on software development, networking, and data management. Students study cybersecurity, web development, and database administration through theory and practical sessions.",
+    "website": null,
+    "overview": "The IT program focuses on software development, networking, and data management. Students study cybersecurity, web development, and database administration through theory and practical sessions. This program prepares students for the rapidly evolving IT industry with hands-on experience in the latest technologies and methodologies.",
     "specializations": [
       "Software Development",
       "Web Development",

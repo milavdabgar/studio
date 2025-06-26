@@ -125,7 +125,8 @@ export async function middleware(request: NextRequest) {
   // Check if the route is public first
   if (PUBLIC_ROUTES.includes(pathname) || 
       pathname.startsWith('/posts') || 
-      pathname.startsWith('/newsletters')) {
+      pathname.startsWith('/newsletters') ||
+      pathname.startsWith('/departments/')) {
     // If accessing login or signup while already authenticated, redirect to dashboard
     if ((pathname === '/login' || pathname === '/signup') && authenticatedUser) {
       return NextResponse.redirect(new URL('/dashboard', request.url));

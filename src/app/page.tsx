@@ -1,6 +1,9 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { PublicNav } from "@/components/public-nav";
 import Link from "next/link";
 import Image from "next/image";
 import { 
@@ -21,32 +24,7 @@ import {
 export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b sticky top-0 z-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3">
-                <GraduationCap className="h-8 w-8 text-primary" />
-                <div>
-                  <h1 className="text-lg font-bold text-gray-900">Government Polytechnic Palanpur</h1>
-                  <p className="text-xs text-gray-600">Excellence in Technical Education</p>
-                </div>
-              </div>
-            </div>
-            <nav className="hidden md:flex items-center space-x-6">
-              <Link href="/about" className="text-gray-700 hover:text-primary">About</Link>
-              <Link href="/departments" className="text-gray-700 hover:text-primary">Departments</Link>
-              <Link href="/admissions" className="text-gray-700 hover:text-primary">Admissions</Link>
-              <Link href="/facilities" className="text-gray-700 hover:text-primary">Facilities</Link>
-              <Link href="/contact" className="text-gray-700 hover:text-primary">Contact</Link>
-              <Button asChild>
-                <Link href="/login">Portal</Link>
-              </Button>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <PublicNav />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary/5 to-secondary/10 py-16 md:py-24">
