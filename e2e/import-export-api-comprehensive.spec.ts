@@ -34,7 +34,7 @@ STU002,Jane Smith,jane@example.com,0987654321,1996-08-22,Female,OBC,prog_001,bat
   test('should handle Faculty Import API', async ({ page }) => {
     const importEndpoint = `${API_BASE}/faculty/import`;
     
-    const csvData = `employeeId,name,email,contactNumber,qualification,experience,designation,specialization,departmentId,isHOD,isPrincipal
+    const csvData = `staffCode,name,email,contactNumber,qualification,experience,designation,specialization,departmentId,isHOD,isPrincipal
 EMP001,Dr. John Smith,john@faculty.com,1234567890,PhD,10,Professor,Computer Science,dept_001,false,false
 EMP002,Prof. Jane Doe,jane@faculty.com,0987654321,MSc,5,Assistant Professor,Mathematics,dept_002,true,false`;
 
@@ -57,7 +57,7 @@ EMP002,Prof. Jane Doe,jane@faculty.com,0987654321,MSc,5,Assistant Professor,Math
   test('should handle Projects Import API', async ({ page }) => {
     const importEndpoint = `${API_BASE}/projects/import`;
     
-    const csvData = `title,description,category,department,guide,eventId,submissionStatus,status
+    const csvData = `projectTitle,description,category,department,guide,eventId,submissionStatus,status
 AI Chatbot,An intelligent chatbot using machine learning,Software Development,Computer Engineering,Dr. Smith,event_001,submitted,approved
 IoT Home Automation,Smart home system using IoT sensors,Hardware,Electronics Engineering,Prof. Johnson,event_001,pending,active`;
 

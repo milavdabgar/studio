@@ -43,9 +43,9 @@ test.describe('Security and Authorization - Migration Security', () => {
       for (let i = 0; i < xssPayloads.length; i++) {
         const payload = xssPayloads[i];
         const studentData = {
+          enrollmentNumber: `XSS_${generateUniqueId()}_${i}`,
           firstName: payload,
           lastName: `XSS Test ${i}`,
-          enrollmentNumber: `XSS_${generateUniqueId()}_${i}`,
           email: `xss.test.${i}.${generateUniqueId()}@example.com`,
           currentSemester: 3,
           department: 'Computer Engineering',
@@ -77,7 +77,7 @@ test.describe('Security and Authorization - Migration Security', () => {
 
       // Test XSS in project data
       const projectXSSData = {
-        title: '<script>alert("Project XSS")</script>',
+        projectTitle: '<script>alert("Project XSS")</script>',
         description: '<img src="x" onerror="alert(\'Project XSS\')">',
         department: 'Computer Engineering',
         eventId: 'event_xss_test',
@@ -95,8 +95,8 @@ test.describe('Security and Authorization - Migration Security', () => {
         const createdProject = projectResponseData.data?.project || projectResponseData;
         
         // Verify XSS was handled safely
-        expect(createdProject.title).toBeDefined();
-        expect(typeof createdProject.title).toBe('string');
+        expect(createdProject.projectTitle).toBeDefined();
+        expect(typeof createdProject.projectTitle).toBe('string');
         
         await page.request.delete(`${API_BASE}/projects/${createdProject.id}`);
       }

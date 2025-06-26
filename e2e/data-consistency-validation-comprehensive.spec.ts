@@ -25,9 +25,9 @@ test.describe('Data Consistency and Validation - Migration Safety', () => {
     
     // Test 1: Valid student creation
     const validStudentData = {
+      enrollmentNumber: generateUniqueId(),
       firstName: 'Valid',
       lastName: 'Student',
-      enrollmentNumber: generateUniqueId(),
       email: `valid.student.${generateUniqueId()}@example.com`,
       program: 'B.Tech',
       currentSemester: 3,
@@ -117,12 +117,14 @@ test.describe('Data Consistency and Validation - Migration Safety', () => {
     
     // Step 1: Create a valid course offering
     const courseOfferingData = {
+      courseId: `course_${generateUniqueId()}`,
+      batchId: `batch_${generateUniqueId()}`,
+      academicYear: '2024-25',
+      semester: 5,
+      facultyIds: ['faculty_consistency_test'],
       courseCode: `CS${generateUniqueId().substr(-4)}`,
       courseName: 'Data Consistency Test Course',
       credits: 3,
-      semester: 5,
-      academicYear: '2024-25',
-      facultyId: 'faculty_consistency_test',
       startDate: '2024-09-01',
       endDate: '2024-12-31',
       status: 'active',
@@ -139,9 +141,9 @@ test.describe('Data Consistency and Validation - Migration Safety', () => {
     try {
       // Test 1: Valid enrollment creation
       const studentData = {
+        enrollmentNumber: generateUniqueId(),
         firstName: 'Enrollment',
         lastName: 'Test',
-        enrollmentNumber: generateUniqueId(),
         email: `enrollment.test.${generateUniqueId()}@example.com`,
         currentSemester: 5,
         department: 'Computer Engineering'
@@ -212,10 +214,11 @@ test.describe('Data Consistency and Validation - Migration Safety', () => {
     const eventData = {
       name: `Team Validation Event ${generateUniqueId()}`,
       description: 'Event for testing team validation',
-      startDate: '2024-10-01',
-      endDate: '2024-10-15',
-      status: 'active',
-      departments: ['Computer Engineering']
+      eventDate: '2024-10-01',
+      academicYear: '2024-25',
+      registrationStartDate: '2024-09-01',
+      registrationEndDate: '2024-09-20',
+      status: 'active'
     };
 
     const createEventResponse = await page.request.post(`${API_BASE}/project-events`, {
@@ -316,12 +319,14 @@ test.describe('Data Consistency and Validation - Migration Safety', () => {
     
     // Step 1: Create course offering for assessments
     const courseOfferingData = {
+      courseId: `course_${generateUniqueId()}`,
+      batchId: `batch_${generateUniqueId()}`,
+      academicYear: '2024-25',
+      semester: 6,
+      facultyIds: ['faculty_assessment_test'],
       courseCode: `AS${generateUniqueId().substr(-4)}`,
       courseName: 'Assessment Validation Course',
       credits: 4,
-      semester: 6,
-      academicYear: '2024-25',
-      facultyId: 'faculty_assessment_test',
       startDate: '2024-09-01',
       endDate: '2024-12-31',
       status: 'active'
@@ -385,9 +390,9 @@ test.describe('Data Consistency and Validation - Migration Safety', () => {
 
       // Test 5: Valid result creation
       const studentData = {
+        enrollmentNumber: generateUniqueId(),
         firstName: 'Result',
         lastName: 'Test Student',
-        enrollmentNumber: generateUniqueId(),
         email: `result.test.${generateUniqueId()}@example.com`,
         currentSemester: 6,
         department: 'Computer Engineering'
@@ -653,7 +658,7 @@ test.describe('Data Consistency and Validation - Migration Safety', () => {
     // Test data integrity when multiple operations happen concurrently
     
     const baseData = {
-      title: `Concurrent Test Project`,
+      projectTitle: `Concurrent Test Project`,
       description: 'Project for testing concurrent operations',
       department: 'Computer Engineering',
       eventId: 'event_concurrent_test',
@@ -666,7 +671,7 @@ test.describe('Data Consistency and Validation - Migration Safety', () => {
     for (let i = 0; i < 5; i++) {
       const projectData = {
         ...baseData,
-        title: `${baseData.title} ${i} ${generateUniqueId()}`
+        projectTitle: `${baseData.projectTitle} ${i} ${generateUniqueId()}`
       };
 
       const promise = page.request.post(`${API_BASE}/projects`, {
@@ -701,7 +706,7 @@ test.describe('Data Consistency and Validation - Migration Safety', () => {
       for (const project of createdProjects) {
         const foundProject = allProjects.find((p: any) => p.id === project.id);
         expect(foundProject).toBeDefined();
-        expect(foundProject.title).toBe(project.title);
+        expect(foundProject.projectTitle).toBe(project.projectTitle);
       }
 
     } finally {

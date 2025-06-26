@@ -25,13 +25,12 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
     
     // Step 1: Create a student
     const studentData = {
+      enrollmentNumber: generateUniqueId(),
       firstName: 'Integration',
       lastName: 'Test Student',
-      enrollmentNumber: generateUniqueId(),
       email: `integration.test.${generateUniqueId()}@example.com`,
-      program: 'B.Tech',
+      programId: 'prog_btech_ce_gpp',
       currentSemester: 3,
-      institute: 'GPPEC',
       department: 'Computer Engineering'
     };
 
@@ -165,14 +164,11 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
     const eventData = {
       name: `Integration Test Event ${generateUniqueId()}`,
       description: 'Test event for integration testing',
-      startDate: '2024-10-01',
-      endDate: '2024-10-15',
+      eventDate: '2024-10-01',
+      academicYear: '2024-25',
       registrationStartDate: '2024-09-01',
       registrationEndDate: '2024-09-20',
-      status: 'upcoming',
-      eventType: 'project_fair',
-      departments: ['Computer Engineering', 'Information Technology'],
-      isActive: true
+      status: 'active'
     };
 
     const createEventResponse = await page.request.post(`${API_BASE}/project-events`, {
@@ -217,7 +213,7 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
 
       // Step 3: Create a project
       const projectData = {
-        title: `Integration Test Project ${generateUniqueId()}`,
+        projectTitle: `Integration Test Project ${generateUniqueId()}`,
         description: 'Test project for integration workflow',
         department: 'Computer Engineering',
         eventId: eventId,
@@ -292,7 +288,7 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
     
     // Step 1: Create a faculty member
     const facultyData = {
-      employeeId: generateUniqueId(),
+      staffCode: generateUniqueId(),
       firstName: 'Integration',
       lastName: 'Test Faculty',
       email: `faculty.integration.${generateUniqueId()}@example.com`,
@@ -303,7 +299,8 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
       contactNumber: '9999999999',
       joiningDate: '2020-07-01',
       status: 'active',
-      isHOD: false
+      isHOD: false,
+      instituteId: 'inst_gpp'
     };
 
     const createFacultyResponse = await page.request.post(`${API_BASE}/faculty`, {
@@ -319,7 +316,8 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
         staffCode: generateUniqueId(),
         firstName: 'Integration',
         lastName: 'Test Faculty',
-        department: 'Computer Engineering'
+        department: 'Computer Engineering',
+        instituteId: 'inst_gpp'
       };
       
       const retryResponse = await page.request.post(`${API_BASE}/faculty`, {
@@ -337,12 +335,14 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
     try {
       // Step 2: Create a course offering assigned to this faculty
       const courseOfferingData = {
+        courseId: `course_${generateUniqueId()}`,
+        batchId: `batch_${generateUniqueId()}`,
+        academicYear: '2024-25',
+        semester: 4,
+        facultyIds: [facultyId],
         courseCode: `CS${generateUniqueId().substr(-4)}`,
         courseName: 'Faculty Integration Course',
         credits: 3,
-        semester: 4,
-        academicYear: '2024-25',
-        facultyId: facultyId,
         startDate: '2024-09-01',
         endDate: '2024-12-31',
         status: 'active'
@@ -439,7 +439,7 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
     
     // Step 1: Create test data for export
     const projectData = {
-      title: `Export Test Project ${generateUniqueId()}`,
+      projectTitle: `Export Test Project ${generateUniqueId()}`,
       description: 'Project for testing export-import workflow',
       department: 'Computer Engineering',
       eventId: 'event_export_test',
@@ -462,7 +462,7 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
       const exportData = await exportResponse.text();
       
       // Validate export contains our test project
-      expect(exportData).toContain(projectData.title);
+      expect(exportData).toContain(projectData.projectTitle);
 
       // Step 3: Test team export
       const teamData = {

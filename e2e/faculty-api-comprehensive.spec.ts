@@ -14,7 +14,7 @@ const API_BASE = '/api';
 
 // Test data for faculty
 const testFaculty = {
-  employeeId: 'EMP001',
+  staffCode: 'EMP001',
   gtuFacultyId: 'GTU_FAC_001',
   firstName: 'Test',
   middleName: 'E2E',

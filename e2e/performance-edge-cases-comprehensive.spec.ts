@@ -30,9 +30,9 @@ test.describe('Performance and Edge Cases - Migration Robustness', () => {
       // Step 1: Create multiple students for pagination testing
       for (let i = 0; i < batchSize; i++) {
         const studentData = {
+          enrollmentNumber: `BATCH_${generateUniqueId()}_${i}`,
           firstName: `Batch`,
           lastName: `Student ${i}`,
-          enrollmentNumber: `BATCH_${generateUniqueId()}_${i}`,
           email: `batch.student.${i}.${generateUniqueId()}@example.com`,
           program: 'B.Tech',
           currentSemester: (i % 8) + 1,
@@ -122,9 +122,9 @@ test.describe('Performance and Edge Cases - Migration Robustness', () => {
         case 0: // Create student
           const studentPromise = page.request.post(`${API_BASE}/students`, {
             data: {
+              enrollmentNumber: `CONC_${generateUniqueId()}_${i}`,
               firstName: `Concurrent`,
               lastName: `Student ${i}`,
-              enrollmentNumber: `CONC_${generateUniqueId()}_${i}`,
               email: `concurrent.${i}.${generateUniqueId()}@example.com`,
               currentSemester: (i % 8) + 1,
               department: 'Computer Engineering'
@@ -153,7 +153,7 @@ test.describe('Performance and Edge Cases - Migration Robustness', () => {
         case 3: // Create project
           const projectPromise = page.request.post(`${API_BASE}/projects`, {
             data: {
-              title: `Concurrent Project ${i} ${generateUniqueId()}`,
+              projectTitle: `Concurrent Project ${i} ${generateUniqueId()}`,
               description: `Project for concurrent testing ${i}`,
               department: 'Computer Engineering',
               eventId: 'event_concurrent_stress',
@@ -236,9 +236,9 @@ test.describe('Performance and Edge Cases - Migration Robustness', () => {
     // Test 1: Maximum string lengths
     const longString = 'A'.repeat(1000); // Very long string
     const maxLengthStudentData = {
+      enrollmentNumber: generateUniqueId(),
       firstName: longString.substring(0, 100), // Typical max length
       lastName: longString.substring(0, 100),
-      enrollmentNumber: generateUniqueId(),
       email: `boundary.test.${generateUniqueId()}@example.com`,
       description: longString, // Test very long description
       currentSemester: 8, // Maximum semester
@@ -268,9 +268,9 @@ test.describe('Performance and Edge Cases - Migration Robustness', () => {
 
     for (const testCase of extremeValues) {
       const testData = {
+        enrollmentNumber: generateUniqueId(),
         firstName: 'Boundary',
         lastName: 'Test',
-        enrollmentNumber: generateUniqueId(),
         email: `boundary.${testCase.semester}.${generateUniqueId()}@example.com`,
         currentSemester: testCase.semester,
         department: 'Computer Engineering'
@@ -347,9 +347,9 @@ test.describe('Performance and Edge Cases - Migration Robustness', () => {
 
     // Test 3: Invalid data types
     const invalidTypesData = {
+      enrollmentNumber: [], // Should be string
       firstName: 123, // Should be string
       lastName: true, // Should be string
-      enrollmentNumber: [], // Should be string
       currentSemester: 'invalid', // Should be number
       email: 'valid@example.com',
       department: 'Computer Engineering'
@@ -362,9 +362,9 @@ test.describe('Performance and Edge Cases - Migration Robustness', () => {
 
     // Test 4: SQL Injection attempts (should be safely handled)
     const sqlInjectionData = {
+      enrollmentNumber: generateUniqueId(),
       firstName: "'; DROP TABLE students; --",
       lastName: "Test",
-      enrollmentNumber: generateUniqueId(),
       email: `sql.injection.${generateUniqueId()}@example.com`,
       currentSemester: 3,
       department: 'Computer Engineering'
@@ -386,9 +386,9 @@ test.describe('Performance and Edge Cases - Migration Robustness', () => {
 
     // Test 5: XSS attempts (should be safely handled)
     const xssData = {
+      enrollmentNumber: generateUniqueId(),
       firstName: '<script>alert("XSS")</script>',
       lastName: '<img src="x" onerror="alert(\'XSS\')">',
-      enrollmentNumber: generateUniqueId(),
       email: `xss.test.${generateUniqueId()}@example.com`,
       currentSemester: 3,
       department: 'Computer Engineering'
@@ -521,7 +521,7 @@ test.describe('Performance and Edge Cases - Migration Robustness', () => {
     const startTime = Date.now();
     
     const largeProjectData = {
-      title: `Timeout Test Project ${generateUniqueId()}`,
+      projectTitle: `Timeout Test Project ${generateUniqueId()}`,
       description: 'A'.repeat(5000), // Large description
       department: 'Computer Engineering',
       eventId: 'event_timeout_test',
@@ -544,7 +544,7 @@ test.describe('Performance and Edge Cases - Migration Robustness', () => {
       const projectData = project.data?.project || project;
       
       // Verify large data was handled correctly
-      expect(projectData.title).toBe(largeProjectData.title);
+      expect(projectData.projectTitle).toBe(largeProjectData.projectTitle);
       expect(requestTime).toBeLessThan(30000); // Should complete within timeout
       
       await page.request.delete(`${API_BASE}/projects/${projectData.id}`);
@@ -604,9 +604,9 @@ test.describe('Performance and Edge Cases - Migration Robustness', () => {
     const testStudents = [];
     for (let i = 0; i < 5; i++) {
       const studentData = {
+        enrollmentNumber: `EXP_${generateUniqueId()}_${i}`,
         firstName: `Export`,
         lastName: `Student ${i}`,
-        enrollmentNumber: `EXP_${generateUniqueId()}_${i}`,
         email: `export.student.${i}.${generateUniqueId()}@example.com`,
         currentSemester: (i % 8) + 1,
         department: 'Computer Engineering',
@@ -656,7 +656,7 @@ test.describe('Performance and Edge Cases - Migration Robustness', () => {
       
       if (projectExportResponse.status() === 200) {
         const projectData = await projectExportResponse.text();
-        expect(projectData).toContain('title');
+        expect(projectData).toContain('projectTitle');
       }
 
       // Test 4: Team export with member data
