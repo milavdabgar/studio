@@ -79,8 +79,13 @@ const PUBLIC_ROUTES = [
   '/about', // Add about page to public routes
   '/departments', // Add departments page to public routes
   '/admissions', // Add admissions page to public routes
+  '/library', // Add library page to public routes
   '/facilities', // Add facilities page to public routes
   '/contact', // Add contact page to public routes
+  '/ssip', // Add SSIP page to public routes
+  '/establishment', // Add establishment page to public routes
+  '/student-section', // Add student section page to public routes
+  '/tpo', // Add TPO page to public routes
 ];
 
 // Role access control: Key is route prefix, Value is array of ALLOWED role CODES
