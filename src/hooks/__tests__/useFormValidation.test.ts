@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { useFormValidation } from '../useFormValidation';
 
 describe('useFormValidation', () => {
@@ -51,13 +51,13 @@ describe('useFormValidation', () => {
 
   it('validates on change', () => {
     const { result } = renderHook(() => 
-      useFormValidation({ initialValues, validate })
+      useFormValidation({ initialValues, validate, validateOnChange: true })
     );
     
     // Test username validation
     act(() => {
       result.current.handleChange({
-        target: { name: 'username', value: 'ab' },
+        target: { name: 'username', value: 'ab', type: 'text' },
       } as React.ChangeEvent<HTMLInputElement>);
     });
     
@@ -68,7 +68,7 @@ describe('useFormValidation', () => {
     // Fix the username
     act(() => {
       result.current.handleChange({
-        target: { name: 'username', value: 'validuser' },
+        target: { name: 'username', value: 'validuser', type: 'text' },
       } as React.ChangeEvent<HTMLInputElement>);
     });
     
@@ -77,7 +77,7 @@ describe('useFormValidation', () => {
 
   it('validates on blur', () => {
     const { result } = renderHook(() => 
-      useFormValidation({ initialValues, validate })
+      useFormValidation({ initialValues, validate, validateOnBlur: true })
     );
     
     act(() => {
@@ -92,7 +92,7 @@ describe('useFormValidation', () => {
 
   it('validates on submit', async () => {
     const onSubmit = jest.fn();
-    const { result, waitForNextUpdate } = renderHook(() => 
+    const { result } = renderHook(() => 
       useFormValidation({ 
         initialValues, 
         validate,
@@ -117,16 +117,16 @@ describe('useFormValidation', () => {
     // Fill in valid values
     act(() => {
       result.current.handleChange({
-        target: { name: 'username', value: 'testuser' },
+        target: { name: 'username', value: 'testuser', type: 'text' },
       } as React.ChangeEvent<HTMLInputElement>);
       result.current.handleChange({
-        target: { name: 'email', value: 'test@example.com' },
+        target: { name: 'email', value: 'test@example.com', type: 'text' },
       } as React.ChangeEvent<HTMLInputElement>);
       result.current.handleChange({
-        target: { name: 'password', value: 'password123' },
+        target: { name: 'password', value: 'password123', type: 'text' },
       } as React.ChangeEvent<HTMLInputElement>);
       result.current.handleChange({
-        target: { name: 'confirmPassword', value: 'password123' },
+        target: { name: 'confirmPassword', value: 'password123', type: 'text' },
       } as React.ChangeEvent<HTMLInputElement>);
     });
     
@@ -164,16 +164,16 @@ describe('useFormValidation', () => {
     // Fill in form
     act(() => {
       result.current.handleChange({
-        target: { name: 'username', value: 'existinguser' },
+        target: { name: 'username', value: 'existinguser', type: 'text' },
       } as React.ChangeEvent<HTMLInputElement>);
       result.current.handleChange({
-        target: { name: 'email', value: 'test@example.com' },
+        target: { name: 'email', value: 'test@example.com', type: 'text' },
       } as React.ChangeEvent<HTMLInputElement>);
       result.current.handleChange({
-        target: { name: 'password', value: 'password123' },
+        target: { name: 'password', value: 'password123', type: 'text' },
       } as React.ChangeEvent<HTMLInputElement>);
       result.current.handleChange({
-        target: { name: 'confirmPassword', value: 'password123' },
+        target: { name: 'confirmPassword', value: 'password123', type: 'text' },
       } as React.ChangeEvent<HTMLInputElement>);
     });
     
@@ -202,7 +202,7 @@ describe('useFormValidation', () => {
     // Make some changes
     act(() => {
       result.current.handleChange({
-        target: { name: 'username', value: 'test' },
+        target: { name: 'username', value: 'test', type: 'text' },
       } as React.ChangeEvent<HTMLInputElement>);
       result.current.handleBlur({
         target: { name: 'username' },

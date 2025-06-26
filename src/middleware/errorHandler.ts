@@ -57,7 +57,7 @@ export class CustomError extends Error {
 }
 
 export const errorHandler = async (
-  error: Error | undefined,
+  error: Error | unknown,
   req: NextRequest,
   res: any,
   next: Function
@@ -67,6 +67,18 @@ export const errorHandler = async (
     return next();
   }
 
+  // Handle non-Error objects thrown as errors
+  if (!(error instanceof Error)) {
+    console.error('Non-Error object thrown:', error);
+    return NextResponse.json(
+      {
+        status: 'error',
+        message: 'Internal server error',
+      },
+      { status: 500 }
+    );
+  }
+
   console.error(error);
 
   let status = 500;
@@ -74,6 +86,7 @@ export const errorHandler = async (
     status: 'error',
     message: 'Internal server error',
   };
+  let headers: Record<string, string> = {};
 
   // Handle Yup ValidationError
   if (error instanceof ValidationError) {
@@ -116,13 +129,10 @@ export const errorHandler = async (
       message: error.message,
     };
     
-    const headers: Record<string, string> = {};
     if (error.retryAfter) headers['Retry-After'] = String(error.retryAfter);
     if (error.limit) headers['X-RateLimit-Limit'] = String(error.limit);
     if (error.remaining !== undefined) headers['X-RateLimit-Remaining'] = String(error.remaining);
     if (error.reset) headers['X-RateLimit-Reset'] = String(error.reset);
-    
-    return NextResponse.json(responseData, { status, headers });
   }
   else if (error instanceof CustomError) {
     status = error.statusCode;
@@ -133,18 +143,18 @@ export const errorHandler = async (
     };
   }
   // Handle generic errors
-  else if (error instanceof Error) {
-    responseData.message = error.message;
-    
-    // Include stack trace in development
-    if (process.env.NODE_ENV === 'development') {
+  else {
+    // In production, don't expose internal error messages
+    if (process.env.NODE_ENV === 'production') {
+      responseData.message = 'Internal server error';
+    } else {
+      responseData.message = error.message;
       responseData.stack = error.stack;
     }
   }
-  // Handle non-Error objects
-  else if (typeof error === 'object') {
-    responseData.message = 'Internal server error';
-  }
 
-  return NextResponse.json(responseData, { status });
+  return NextResponse.json(responseData, { 
+    status, 
+    ...(Object.keys(headers).length > 0 && { headers }) 
+  });
 };
