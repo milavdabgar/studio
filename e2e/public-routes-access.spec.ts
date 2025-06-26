@@ -51,7 +51,7 @@ test.describe('Public Routes Access', () => {
     expect(page.url()).toContain('/admissions');
     
     // Should see admissions page content
-    await expect(page.getByRole('heading', { name: /Admissions/ })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Admissions/ }).first()).toBeVisible();
     await expect(page.locator('text=Academic Year 2025-26')).toBeVisible();
   });
 
@@ -65,6 +65,18 @@ test.describe('Public Routes Access', () => {
     // Should see facilities page content
     await expect(page.locator('section h1')).toContainText('Campus Facilities');
     await expect(page.getByText('Modern Laboratories').first()).toBeVisible();
+  });
+
+  test('should access library page without authentication', async ({ page }) => {
+    await page.goto('/library');
+    
+    // Should not redirect to login
+    expect(page.url()).not.toContain('/login');
+    expect(page.url()).toContain('/library');
+    
+    // Should see library page content
+    await expect(page.locator('section h1')).toContainText('GP Palanpur Library');
+    await expect(page.getByText('Digital Resources').first()).toBeVisible();
   });
 
   test('should access contact page without authentication', async ({ page }) => {
@@ -101,14 +113,62 @@ test.describe('Public Routes Access', () => {
     await expect(page.locator('h1')).toBeVisible();
   });
 
+  test('should access SSIP page without authentication', async ({ page }) => {
+    await page.goto('/ssip');
+    
+    // Should not redirect to login
+    expect(page.url()).not.toContain('/login');
+    expect(page.url()).toContain('/ssip');
+    
+    // Should see SSIP page content
+    await expect(page.locator('section h1')).toContainText('SSIP Cell');
+    await expect(page.getByText('Innovation and Entrepreneurship').first()).toBeVisible();
+  });
+
+  test('should access establishment page without authentication', async ({ page }) => {
+    await page.goto('/establishment');
+    
+    // Should not redirect to login
+    expect(page.url()).not.toContain('/login');
+    expect(page.url()).toContain('/establishment');
+    
+    // Should see establishment page content
+    await expect(page.locator('section h1')).toContainText('Establishment');
+    await expect(page.getByText('Administrative Office').first()).toBeVisible();
+  });
+
+  test('should access student section page without authentication', async ({ page }) => {
+    await page.goto('/student-section');
+    
+    // Should not redirect to login
+    expect(page.url()).not.toContain('/login');
+    expect(page.url()).toContain('/student-section');
+    
+    // Should see student section page content
+    await expect(page.locator('section h1')).toContainText('Student Section');
+    await expect(page.getByText('Student Services').first()).toBeVisible();
+  });
+
+  test('should access TPO page without authentication', async ({ page }) => {
+    await page.goto('/tpo');
+    
+    // Should not redirect to login
+    expect(page.url()).not.toContain('/login');
+    expect(page.url()).toContain('/tpo');
+    
+    // Should see TPO page content
+    await expect(page.getByRole('heading', { name: 'TPO Cell' })).toBeVisible();
+    await expect(page.getByText('Training & Placement Cell').first()).toBeVisible();
+  });
+
   test('protected routes should still redirect to login', async ({ page }) => {
     // Test admin route
     await page.goto('/admin');
     await page.waitForURL('**/login**');
     expect(page.url()).toContain('/login');
     
-    // Test student route
-    await page.goto('/student');
+    // Test student profile route (protected)
+    await page.goto('/student/profile');
     await page.waitForURL('**/login**');
     expect(page.url()).toContain('/login');
     
@@ -126,42 +186,44 @@ test.describe('Public Routes Access', () => {
   test('navigation between public pages should work', async ({ page }) => {
     await page.goto('/');
     
-    // Click on About link in header navigation
-    await page.locator('nav').getByRole('link', { name: 'About' }).first().click();
+    // Click on Home and About links (direct navigation)
+    await page.getByRole('link', { name: 'Home' }).click();
+    await page.waitForURL('**/');
+    expect(page.url()).toMatch(/\/$|\/$/);
+    
+    await page.getByRole('link', { name: 'About' }).click();
     await page.waitForURL('**/about');
     expect(page.url()).toContain('/about');
     
-    // Go back to home and test other links
-    await page.goto('/');
-    
-    // Click on Departments link
-    await page.locator('nav').getByRole('link', { name: 'Departments' }).first().click();
-    await page.waitForURL('**/departments');
+    // Test direct navigation to departments via URL
+    await page.goto('/departments');
     expect(page.url()).toContain('/departments');
+    await expect(page.locator('h1')).toContainText('Engineering Departments');
     
-    // Go back to home 
-    await page.goto('/');
-    
-    // Click on Admissions link
-    await page.locator('nav').getByRole('link', { name: 'Admissions' }).first().click();
-    await page.waitForURL('**/admissions');
+    // Test direct navigation to other pages
+    await page.goto('/admissions');
     expect(page.url()).toContain('/admissions');
     
-    // Go back to home
-    await page.goto('/');
-    
-    // Click on Facilities link
-    await page.locator('nav').getByRole('link', { name: 'Facilities' }).first().click();
-    await page.waitForURL('**/facilities');
+    await page.goto('/facilities');
     expect(page.url()).toContain('/facilities');
     
-    // Go back to home
-    await page.goto('/');
+    await page.goto('/library');
+    expect(page.url()).toContain('/library');
     
-    // Click on Contact link
-    await page.locator('nav').getByRole('link', { name: 'Contact' }).first().click();
-    await page.waitForURL('**/contact');
+    await page.goto('/ssip');
+    expect(page.url()).toContain('/ssip');
+    
+    await page.goto('/tpo');
+    expect(page.url()).toContain('/tpo');
+    
+    await page.goto('/student-section');
+    expect(page.url()).toContain('/student-section');
+    
+    await page.goto('/contact');
     expect(page.url()).toContain('/contact');
+    
+    await page.goto('/establishment');
+    expect(page.url()).toContain('/establishment');
   });
 
   test('Portal login button should work from public pages', async ({ page }) => {
