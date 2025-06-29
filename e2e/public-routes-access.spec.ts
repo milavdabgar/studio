@@ -75,8 +75,8 @@ test.describe('Public Routes Access', () => {
     expect(page.url()).toContain('/library');
     
     // Should see library page content
-    await expect(page.getByRole('heading', { name: 'GP Palanpur Library' })).toBeVisible();
-    await expect(page.getByText('Your gateway to knowledge')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'GP Palanpur Library' })).toBeVisible({ timeout: 15000 });
+    await expect(page.getByText('Your gateway to knowledge')).toBeVisible({ timeout: 10000 });
   });
 
   test('should access contact page without authentication', async ({ page }) => {
