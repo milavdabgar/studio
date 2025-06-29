@@ -292,11 +292,22 @@ without,proper,gtu,headers`;
     const validResponses = responses.filter(r => r.status() === 200);
     
     if (validResponses.length > 0) {
-      const dataArray = await Promise.all(validResponses.map(r => r.json()));
-      
-      dataArray.forEach(data => {
-        expect(data).toBeDefined();
-      });
+      // Handle responses based on content type
+      for (const response of validResponses) {
+        const contentType = response.headers()['content-type'] || '';
+        if (contentType.includes('application/json')) {
+          const data = await response.json();
+          expect(data).toBeDefined();
+        } else if (contentType.includes('text/csv')) {
+          const csvData = await response.text();
+          expect(csvData).toBeDefined();
+          expect(csvData.length).toBeGreaterThan(0);
+        } else {
+          // For other content types, just verify the response is defined
+          const data = await response.text();
+          expect(data).toBeDefined();
+        }
+      }
     }
   });
 

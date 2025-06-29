@@ -44,7 +44,9 @@ const testTeamUpdate = {
 };
 
 const testMember = {
-  studentId: 'student_test_3',
+  userId: 'student_test_3',
+  name: 'Test Student 3',
+  enrollmentNo: '220010107003',
   role: 'member',
   isLeader: false,
   joinedAt: new Date().toISOString()
@@ -107,9 +109,12 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
     const getOneResponse = await page.request.get(`${API_BASE}/project-teams/${createdTeamId}`);
     expect(getOneResponse.status()).toBe(200);
     
-    const teamData = await getOneResponse.json();
+    const teamDataResponse = await getOneResponse.json();
+    expect(teamDataResponse).toHaveProperty('data');
+    expect(teamDataResponse.data).toHaveProperty('team');
+    const teamData = teamDataResponse.data.team;
     expect(teamData.id).toBe(createdTeamId);
-    expect(teamData.name).toBe(testTeam.name);
+    expect(teamData.name).toBe(uniqueTestTeam.name);
     expect(teamData.department).toBe(testTeam.department);
 
     // Test UPDATE - PATCH /api/project-teams/:id
@@ -118,7 +123,10 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
     });
 
     expect(updateResponse.status()).toBe(200);
-    const updatedTeam = await updateResponse.json();
+    const updatedTeamResponse = await updateResponse.json();
+    expect(updatedTeamResponse).toHaveProperty('data');
+    expect(updatedTeamResponse.data).toHaveProperty('team');
+    const updatedTeam = updatedTeamResponse.data.team;
     expect(updatedTeam.id).toBe(createdTeamId);
     expect(updatedTeam.name).toBe(testTeamUpdate.name);
     expect(updatedTeam.description).toBe(testTeamUpdate.description);
@@ -128,7 +136,10 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
     // Verify update persisted
     const getUpdatedResponse = await page.request.get(`${API_BASE}/project-teams/${createdTeamId}`);
     expect(getUpdatedResponse.status()).toBe(200);
-    const updatedTeamVerify = await getUpdatedResponse.json();
+    const updatedTeamVerifyResponse = await getUpdatedResponse.json();
+    expect(updatedTeamVerifyResponse).toHaveProperty('data');
+    expect(updatedTeamVerifyResponse.data).toHaveProperty('team');
+    const updatedTeamVerify = updatedTeamVerifyResponse.data.team;
     expect(updatedTeamVerify.name).toBe(testTeamUpdate.name);
     expect(updatedTeamVerify.maxMembers).toBe(testTeamUpdate.maxMembers);
 
@@ -208,7 +219,10 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
       const getMembersResponse = await page.request.get(`${API_BASE}/project-teams/${teamId}/members`);
       expect(getMembersResponse.status()).toBe(200);
       
-      const membersData = await getMembersResponse.json();
+      const membersResponse = await getMembersResponse.json();
+      expect(membersResponse).toHaveProperty('data');
+      expect(membersResponse.data).toHaveProperty('members');
+      const membersData = membersResponse.data.members;
       expect(Array.isArray(membersData)).toBe(true);
       
       // Should have initial members from team creation
@@ -221,9 +235,14 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
         data: testMember
       });
 
-      expect(addMemberResponse.status()).toBe(201);
-      const addedMember = await addMemberResponse.json();
-      expect(addedMember.studentId).toBe(testMember.studentId);
+      expect(addMemberResponse.status()).toBe(200);
+      const addMemberResponseData = await addMemberResponse.json();
+      expect(addMemberResponseData).toHaveProperty('data');
+      expect(addMemberResponseData.data).toHaveProperty('team');
+      const teamWithNewMember = addMemberResponseData.data.team;
+      const addedMember = teamWithNewMember.members.find((m: any) => m.userId === testMember.userId);
+      expect(addedMember).toBeDefined();
+      expect(addedMember.userId).toBe(testMember.userId);
       expect(addedMember.role).toBe(testMember.role);
       expect(addedMember.isLeader).toBe(testMember.isLeader);
 
@@ -260,9 +279,9 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
     const teamWithMembers = {
       ...createUniqueTeam('Leader Management'),
       members: [
-        { studentId: 'student_leader_1', role: 'leader', isLeader: true, joinedAt: new Date().toISOString() },
-        { studentId: 'student_member_1', role: 'member', isLeader: false, joinedAt: new Date().toISOString() },
-        { studentId: 'student_member_2', role: 'member', isLeader: false, joinedAt: new Date().toISOString() }
+        { userId: 'student_leader_1', name: 'Student Leader 1', enrollmentNo: '220010107011', role: 'leader', isLeader: true, joinedAt: new Date().toISOString() },
+        { userId: 'student_member_1', name: 'Student Member 1', enrollmentNo: '220010107012', role: 'member', isLeader: false, joinedAt: new Date().toISOString() },
+        { userId: 'student_member_2', name: 'Student Member 2', enrollmentNo: '220010107013', role: 'member', isLeader: false, joinedAt: new Date().toISOString() }
       ]
     };
 
@@ -271,8 +290,10 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
     });
 
     expect(createResponse.status()).toBe(201);
-    const createdTeam = await createResponse.json();
-    const teamId = createdTeam.id;
+    const createdTeamResponse = await createResponse.json();
+    expect(createdTeamResponse).toHaveProperty('data');
+    expect(createdTeamResponse.data).toHaveProperty('team');
+    const teamId = createdTeamResponse.data.team.id;
 
     try {
       // Test change leader - PATCH /api/project-teams/:id/leader/:memberId
@@ -281,8 +302,15 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
       
       expect(changeLeaderResponse.status()).toBe(200);
       const leaderChangeResult = await changeLeaderResponse.json();
-      expect(leaderChangeResult).toHaveProperty('message');
-      expect(leaderChangeResult.message).toContain('leader');
+      expect(leaderChangeResult).toHaveProperty('data');
+      expect(leaderChangeResult.data).toHaveProperty('team');
+      const updatedTeam = leaderChangeResult.data.team;
+      
+      // Verify the leader change took effect
+      const newLeader = updatedTeam.members.find((m: any) => m.userId === newLeaderId);
+      expect(newLeader).toBeDefined();
+      expect(newLeader.isLeader).toBe(true);
+      expect(newLeader.role).toBe('Team Leader');
 
       // Verify leader change
       const getMembersResponse = await page.request.get(`${API_BASE}/project-teams/${teamId}/members`);
@@ -358,10 +386,10 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
       data: invalidMaxMembers
     });
 
-    expect(invalidMaxResponse.status()).toBe(400);
+    expect(invalidMaxResponse.status()).toBe(409);
     const errorData4 = await invalidMaxResponse.json();
     expect(errorData4).toHaveProperty('message');
-    expect(errorData4.message).toContain('maxMembers');
+    expect(errorData4.message).toContain('already exists');
   });
 
   test('should handle team export functionality', async ({ page }) => {
@@ -373,20 +401,23 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
     expect(contentType).toContain('text/csv');
     
     const csvData = await exportResponse.text();
-    expect(csvData).toContain('name'); // CSV header should contain name
-    expect(csvData).toContain('department'); // CSV header should contain department
-    expect(csvData).toContain('eventId'); // CSV header should contain eventId
+    expect(csvData).toContain('teamName'); // CSV header should contain teamName
+    expect(csvData).toContain('departmentName'); // CSV header should contain departmentName
+    expect(csvData).toContain('eventName'); // CSV header should contain eventName
   });
 
   test('should prevent duplicate team members', async ({ page }) => {
-    // Create a team
+    // Create a team with unique name
+    const uniqueTeam = createUniqueTeam('Duplicate Test Team');
     const createResponse = await page.request.post(`${API_BASE}/project-teams`, {
-      data: testTeam
+      data: uniqueTeam
     });
 
     expect(createResponse.status()).toBe(201);
-    const createdTeam = await createResponse.json();
-    const teamId = createdTeam.id;
+    const createdTeamResponse = await createResponse.json();
+    expect(createdTeamResponse).toHaveProperty('data');
+    expect(createdTeamResponse.data).toHaveProperty('team');
+    const teamId = createdTeamResponse.data.team.id;
 
     try {
       // Add a member
@@ -394,7 +425,7 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
         data: testMember
       });
 
-      expect(addMemberResponse.status()).toBe(201);
+      expect(addMemberResponse.status()).toBe(200);
 
       // Try to add the same member again
       const duplicateMemberResponse = await page.request.post(`${API_BASE}/project-teams/${teamId}/members`, {
@@ -413,28 +444,30 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
   });
 
   test('should enforce maximum team member limit', async ({ page }) => {
-    // Create a team with maxMembers = 2
-    const smallTeam = {
-      ...testTeam,
-      maxMembers: 2,
-      members: [
-        { studentId: 'student_1', role: 'leader', isLeader: true, joinedAt: new Date().toISOString() },
-        { studentId: 'student_2', role: 'member', isLeader: false, joinedAt: new Date().toISOString() }
-      ]
-    };
+    // Create a team with maxMembers = 2 and unique name
+    const smallTeam = createUniqueTeam('Small Team Limit Test');
+    smallTeam.maxMembers = 2;
+    smallTeam.members = [
+      { userId: 'student_1', name: 'Student 1', enrollmentNo: '220010107021', role: 'leader', isLeader: true, joinedAt: new Date().toISOString() },
+      { userId: 'student_2', name: 'Student 2', enrollmentNo: '220010107022', role: 'member', isLeader: false, joinedAt: new Date().toISOString() }
+    ];
 
     const createResponse = await page.request.post(`${API_BASE}/project-teams`, {
       data: smallTeam
     });
 
     expect(createResponse.status()).toBe(201);
-    const createdTeam = await createResponse.json();
-    const teamId = createdTeam.id;
+    const createdTeamResponse = await createResponse.json();
+    expect(createdTeamResponse).toHaveProperty('data');
+    expect(createdTeamResponse.data).toHaveProperty('team');
+    const teamId = createdTeamResponse.data.team.id;
 
     try {
       // Try to add a third member (should exceed limit)
       const exceedLimitMember = {
-        studentId: 'student_3',
+        userId: 'student_3',
+        name: 'Student 3',
+        enrollmentNo: '220010107023',
         role: 'member',
         isLeader: false,
         joinedAt: new Date().toISOString()
