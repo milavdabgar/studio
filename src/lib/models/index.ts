@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import type { 
   User, Role, Permission, Department, Course, Batch, Program, 
-  Room, Building, Committee, Institute, Student, Faculty
+  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam
 } from '@/types/entities';
 
 // Institute Schema
@@ -649,6 +649,49 @@ facultySchema.pre('save', function(next) {
   next();
 });
 
+// ProjectTeam Schema
+interface IProjectTeam extends Omit<ProjectTeam, 'id'>, Document {
+  _id: string;
+}
+
+const projectTeamSchema = new Schema<IProjectTeam>({
+  id: { type: String, unique: true, sparse: true }, // Custom ID field
+  
+  name: { type: String, required: true },
+  department: { type: String, required: true },
+  eventId: { type: String, required: true },
+  
+  members: [{
+    userId: { type: String, required: true },
+    name: { type: String, required: true },
+    enrollmentNo: { type: String, required: true },
+    role: { type: String, required: true },
+    isLeader: { type: Boolean, required: true, default: false }
+  }],
+  
+  createdBy: { type: String },
+  updatedBy: { type: String },
+  
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      // Use custom id if available, otherwise use _id
+      ret.id = ret.id || ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+projectTeamSchema.pre('save', function(next) {
+  (this as IProjectTeam).updatedAt = new Date().toISOString();
+  next();
+});
+
 // Models
 export const InstituteModel = mongoose.models.Institute || mongoose.model<IInstitute>('Institute', instituteSchema);
 export const BuildingModel = mongoose.models.Building || mongoose.model<IBuilding>('Building', buildingSchema);
@@ -663,6 +706,7 @@ export const BatchModel = mongoose.models.Batch || mongoose.model<IBatch>('Batch
 export const ProgramModel = mongoose.models.Program || mongoose.model<IProgram>('Program', programSchema);
 export const StudentModel = mongoose.models.Student || mongoose.model<IStudent>('Student', studentSchema);
 export const FacultyModel = mongoose.models.Faculty || mongoose.model<IFaculty>('Faculty', facultySchema, 'faculties');
+export const ProjectTeamModel = mongoose.models.ProjectTeam || mongoose.model<IProjectTeam>('ProjectTeam', projectTeamSchema, 'projectteams');
 
 // Export types
-export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent, IFaculty };
+export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent, IFaculty, IProjectTeam };

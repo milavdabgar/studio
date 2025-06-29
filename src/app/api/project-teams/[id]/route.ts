@@ -1,16 +1,8 @@
 // src/app/api/project-teams/[id]/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
 import type { ProjectTeam, ProjectTeamMember } from '@/types/entities';
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_PROJECT_TEAMS_STORE__: ProjectTeam[] | undefined;
-}
-
-if (!global.__API_PROJECT_TEAMS_STORE__) {
-  global.__API_PROJECT_TEAMS_STORE__ = [];
-}
-let projectTeamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
+import { connectMongoose } from '@/lib/mongodb';
+import { ProjectTeamModel } from '@/lib/models';
 
 interface RouteParams {
   params: Promise<{
@@ -19,39 +11,53 @@ interface RouteParams {
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = await params;
-  if (!Array.isArray(global.__API_PROJECT_TEAMS_STORE__)) {
-    global.__API_PROJECT_TEAMS_STORE__ = []; 
-    projectTeamsStore = global.__API_PROJECT_TEAMS_STORE__;
-    return NextResponse.json({ message: 'Project Team data store corrupted.' }, { status: 500 });
+  try {
+    await connectMongoose();
+    
+    const { id } = await params;
+    
+    // Try to find by custom id first, then by MongoDB _id if it's a valid ObjectId
+    let team = await ProjectTeamModel.findOne({ id }).lean();
+    if (!team && id.match(/^[0-9a-fA-F]{24}$/)) {
+      team = await ProjectTeamModel.findById(id).lean();
+    }
+    
+    if (team) {
+      const teamWithId = {
+        ...team,
+        id: team.id || (team as any)._id.toString()
+      };
+      return NextResponse.json({ status: 'success', data: { team: teamWithId } });
+    }
+    
+    return NextResponse.json({ message: 'Team not found' }, { status: 404 });
+  } catch (error) {
+    console.error('Error fetching project team:', error);
+    return NextResponse.json({ 
+      message: 'Internal server error during team fetch.', 
+      error: (error as Error).message 
+    }, { status: 500 });
   }
-  projectTeamsStore = global.__API_PROJECT_TEAMS_STORE__; 
-  const team = projectTeamsStore.find(t => t.id === id);
-  if (team) {
-    return NextResponse.json({ status: 'success', data: { team } });
-  }
-  return NextResponse.json({ message: 'Team not found' }, { status: 404 });
 }
 
-export async function PATCH(request: NextRequest, { params }: RouteParams) { 
-  const { id } = await params;
-  if (!Array.isArray(global.__API_PROJECT_TEAMS_STORE__)) {
-    global.__API_PROJECT_TEAMS_STORE__ = [];
-    projectTeamsStore = global.__API_PROJECT_TEAMS_STORE__;
-    return NextResponse.json({ message: 'Project Team data store corrupted.' }, { status: 500 });
-  }
-  projectTeamsStore = global.__API_PROJECT_TEAMS_STORE__;
-
+export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
+    await connectMongoose();
+    
+    const { id } = await params;
     const teamDataToUpdate = await request.json() as Partial<Omit<ProjectTeam, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>>;
-    const teamIndex = projectTeamsStore.findIndex(t => t.id === id);
-
-    if (teamIndex === -1) {
+    
+    // Find the existing team
+    let existingTeam = await ProjectTeamModel.findOne({ id }).lean();
+    if (!existingTeam && id.match(/^[0-9a-fA-F]{24}$/)) {
+      existingTeam = await ProjectTeamModel.findById(id).lean();
+    }
+    
+    if (!existingTeam) {
       return NextResponse.json({ message: 'Team not found' }, { status: 404 });
     }
 
-    const existingTeam = projectTeamsStore[teamIndex];
-
+    // Validation
     if (teamDataToUpdate.name !== undefined && !teamDataToUpdate.name.trim()) {
         return NextResponse.json({ message: 'Team Name cannot be empty if provided.' }, { status: 400 });
     }
@@ -62,44 +68,65 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
         return NextResponse.json({ message: 'Team must have at least one leader.' }, { status: 400 });
     }
 
-
-    const updatedTeam: ProjectTeam = {
-      ...existingTeam,
+    // Prepare update data
+    const updateData: any = {
       ...teamDataToUpdate,
-      name: teamDataToUpdate.name?.trim() || existingTeam.name,
-      members: teamDataToUpdate.members || existingTeam.members,
-      updatedBy: "user_admin_placeholder_update", 
-      updatedAt: new Date().toISOString(),
+      updatedBy: "user_admin_placeholder_update",
+      updatedAt: new Date().toISOString()
     };
 
-    projectTeamsStore[teamIndex] = updatedTeam;
-    global.__API_PROJECT_TEAMS_STORE__ = projectTeamsStore; 
+    // Remove undefined fields and trim strings
+    Object.keys(updateData).forEach(key => {
+      if (updateData[key] === undefined) {
+        delete updateData[key];
+      } else if (typeof updateData[key] === 'string') {
+        updateData[key] = updateData[key].trim();
+      }
+    });
 
-    return NextResponse.json({ status: 'success', data: { team: updatedTeam } });
+    // Update the team
+    const updatedTeam = await ProjectTeamModel.findOneAndUpdate(
+      { _id: existingTeam._id },
+      updateData,
+      { new: true, lean: true }
+    );
+
+    if (!updatedTeam) {
+      return NextResponse.json({ message: 'Team not found' }, { status: 404 });
+    }
+
+    // Format response
+    const teamToReturn = {
+      ...updatedTeam,
+      id: updatedTeam.id || (updatedTeam as any)._id.toString()
+    };
+
+    return NextResponse.json({ status: 'success', data: { team: teamToReturn } });
   } catch (error) {
-    console.error(`Error updating team ${id}:`, error);
-    return NextResponse.json({ message: `Error updating team ${id}`, error: (error as Error).message }, { status: 500 });
+    console.error(`Error updating team:`, error);
+    return NextResponse.json({ message: `Error updating team`, error: (error as Error).message }, { status: 500 });
   }
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = await params;
-  if (!Array.isArray(global.__API_PROJECT_TEAMS_STORE__)) {
-    global.__API_PROJECT_TEAMS_STORE__ = [];
-    projectTeamsStore = global.__API_PROJECT_TEAMS_STORE__;
-    return NextResponse.json({ message: 'Project Team data store corrupted.' }, { status: 500 });
+  try {
+    await connectMongoose();
+    
+    const { id } = await params;
+    
+    // Find and delete the team
+    let deletedTeam = await ProjectTeamModel.findOneAndDelete({ id }).lean();
+    if (!deletedTeam && id.match(/^[0-9a-fA-F]{24}$/)) {
+      deletedTeam = await ProjectTeamModel.findByIdAndDelete(id).lean();
+    }
+
+    if (!deletedTeam) {
+      return NextResponse.json({ message: 'Team not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ status: 'success', data: null }, { status: 200 });
+  } catch (error) {
+    console.error(`Error deleting team:`, error);
+    return NextResponse.json({ message: `Error deleting team`, error: (error as Error).message }, { status: 500 });
   }
-  projectTeamsStore = global.__API_PROJECT_TEAMS_STORE__;
-
-  const initialLength = projectTeamsStore.length;
-  const newStore = projectTeamsStore.filter(t => t.id !== id);
-
-  if (newStore.length === initialLength) {
-    return NextResponse.json({ message: 'Team not found' }, { status: 404 });
-  }
-  
-  global.__API_PROJECT_TEAMS_STORE__ = newStore; 
-  projectTeamsStore = newStore; 
-
-  return NextResponse.json({ status: 'success', data: null }, { status: 200 });
 }
