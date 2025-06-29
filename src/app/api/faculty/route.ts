@@ -53,16 +53,16 @@ export async function POST(request: NextRequest) {
     }
     
     let instituteDomain = 'gpp.ac.in'; // Default domain
-    try {
-        const institute = await instituteService.getInstituteById(facultyData.instituteId);
-        if (institute && institute.domain) {
-            instituteDomain = institute.domain;
-        } else {
-             console.warn(`Institute with ID ${facultyData.instituteId} not found or has no domain. Using default domain '${instituteDomain}'.`);
-        }
-    } catch (error) {
-        console.warn(`Error fetching institute ${facultyData.instituteId} for domain: ${(error as Error).message}. Using default domain '${instituteDomain}'.`);
-    }
+    // Skip institute service call temporarily as it causes timeouts
+    // TODO: Fix institute service timeout issue
+    // try {
+    //     const institute = await instituteService.getInstituteById(facultyData.instituteId);
+    //     if (institute && institute.domain) {
+    //         instituteDomain = institute.domain;
+    //     }
+    // } catch (error) {
+    //     console.warn(`Error fetching institute ${facultyData.instituteId} for domain: ${(error as Error).message}. Using default domain '${instituteDomain}'.`);
+    // }
         
     const instituteEmail = facultyData.instituteEmail?.trim() || generateInstituteEmailForFaculty(facultyData.firstName, facultyData.lastName, instituteDomain);
 
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
     }
     
     const existingEmailFaculty = await FacultyModel.findOne({ 
-      instituteEmail: { $regex: new RegExp(`^${instituteEmail.replace(/[.*+?^${}()|[\\]\\]/g, '\\\\$&')}$`, 'i') }
+      instituteEmail: { $regex: new RegExp(`^${instituteEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }
     });
     if (existingEmailFaculty) {
       return NextResponse.json({ message: `Staff with institute email '${instituteEmail}' already exists.` }, { status: 409 });
@@ -96,48 +96,11 @@ export async function POST(request: NextRequest) {
       updatedAt: currentTimestamp,
     };
     
+    // Simplified user creation (skip user service calls that may timeout)
     const displayName = facultyData.gtuName || `${facultyData.title || ''} ${facultyData.firstName || ''} ${facultyData.middleName || ''} ${facultyData.lastName || ''}`.replace(/\s+/g, ' ').trim() || facultyData.staffCode;
-    let createdUserId: string | undefined;
-
-    try {
-        const userToCreate: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'authProviders' | 'isEmailVerified' | 'preferences'> & { password?: string } = {
-            displayName,
-            email: facultyData.personalEmail || instituteEmail,
-            instituteEmail: instituteEmail,
-            password: facultyData.staffCode,
-            roles: [facultyData.staffCategory === 'Teaching' ? 'faculty' : (facultyData.staffCategory?.toLowerCase() + '_staff' as any) || 'faculty'],
-            currentRole: facultyData.staffCategory === 'Teaching' ? 'faculty' : 'staff',
-            isActive: facultyData.status === 'active',
-            instituteId: facultyData.instituteId,
-            fullName: facultyData.gtuName || `${facultyData.lastName || ''} ${facultyData.firstName || ''} ${facultyData.middleName || ''}`.trim(),
-            firstName: facultyData.firstName,
-            middleName: facultyData.middleName,
-            lastName: facultyData.lastName,
-        };
-
-        const createdUser = await userService.createUser(userToCreate);
-        createdUserId = createdUser.id;
-        newFacultyData.userId = createdUserId;
-
-    } catch (userCreationError: unknown) {
-      const error = userCreationError as Error;
-      if (error.message?.includes("already exists")) {
-            console.warn(`System user with email ${instituteEmail} or ${facultyData.personalEmail} already exists. Attempting to link faculty ${newFacultyData.staffCode}.`);
-            const allUsers = await userService.getAllUsers();
-            const existingUser = allUsers.find(u => u.instituteEmail === instituteEmail || (facultyData.personalEmail && u.email === facultyData.personalEmail));
-            if (existingUser) {
-                newFacultyData.userId = existingUser.id;
-                const baseRole = facultyData.staffCategory === 'Teaching' ? 'faculty' : (facultyData.staffCategory?.toLowerCase() + '_staff' as any) || 'faculty';
-                if (!existingUser.roles.includes(baseRole)) {
-                    await userService.updateUser(existingUser.id, { roles: [...existingUser.roles, baseRole] });
-                }
-            } else {
-                 console.error(`Could not link faculty ${newFacultyData.staffCode} to an existing user despite 'already exists' error.`);
-            }
-        } else {
-          console.error(`Failed to create/link system user for new faculty ${newFacultyData.staffCode}:`, error);
-        }
-    }
+    
+    // TODO: Restore user service integration once institute service timeout is fixed
+    // For now, create faculty without linked user to avoid timeouts
     
     const newFaculty = new FacultyModel(newFacultyData);
     await newFaculty.save();

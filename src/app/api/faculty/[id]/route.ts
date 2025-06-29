@@ -71,7 +71,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Check for duplicate institute email
     if (facultyDataToUpdate.instituteEmail && facultyDataToUpdate.instituteEmail.trim().toLowerCase() !== existingFaculty.instituteEmail?.toLowerCase()) {
       const duplicateEmail = await FacultyModel.findOne({
-        instituteEmail: { $regex: new RegExp(`^${facultyDataToUpdate.instituteEmail.trim().replace(/[.*+?^${}()|[\\]\\]/g, '\\\\$&')}$`, 'i') },
+        instituteEmail: { $regex: new RegExp(`^${facultyDataToUpdate.instituteEmail.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') },
         _id: { $ne: existingFaculty._id }
       });
       if (duplicateEmail) {
