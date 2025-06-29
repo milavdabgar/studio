@@ -1,95 +1,37 @@
-
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Student, User, Program, Institute } from '@/types/entities'; 
+import type { Student, User } from '@/types/entities'; 
 import { userService } from '@/lib/api/users'; 
 import { instituteService } from '@/lib/api/institutes';
 import { programService } from '@/lib/api/programs';
-
-
-declare global {
-  var __API_STUDENTS_STORE__: Student[] | undefined;
-}
-const now = new Date().toISOString();
-
-if (!global.__API_STUDENTS_STORE__ || global.__API_STUDENTS_STORE__.length === 0) {
-  global.__API_STUDENTS_STORE__ = [
-    {
-      id: "std_ce_001_gpp",
-      userId: "user_student_ce001_gpp", // Link to an existing User ID
-      enrollmentNumber: "220010107001",
-      gtuEnrollmentNumber: "220010107001",
-      programId: "prog_dce_gpp", // Link to an existing Program ID
-      department: "dept_ce_gpp", // Department ID from program
-      batchId: "batch_dce_2022_gpp", // Link to an existing Batch ID
-      currentSemester: 3,
-      admissionDate: "2022-07-01T00:00:00.000Z",
-      category: "OPEN",
-      shift: "Morning",
-      isComplete: false,
-      termClose: false,
-      isCancel: false,
-      isPassAll: false,
-      sem1Status: "Passed",
-      sem2Status: "Passed",
-      sem3Status: "Pending",
-      fullNameGtuFormat: "DOE JOHN MICHAEL",
-      firstName: "JOHN",
-      middleName: "MICHAEL",
-      lastName: "DOE",
-      gender: "Male",
-      dateOfBirth: "2003-08-15T00:00:00.000Z",
-      personalEmail: "student.ce001@example.com",
-      instituteEmail: "220010107001@gppalanpur.ac.in",
-      contactNumber: "9988776655",
-      status: "active",
-      instituteId: "inst1",
-      createdAt: now,
-      updatedAt: now,
-    },
-    {
-      id: "std_me_002_gpp",
-      userId: "user_student_me002_gpp", // Link to an existing User ID
-      enrollmentNumber: "220010108002",
-      gtuEnrollmentNumber: "220010108002",
-      programId: "prog_dme_gpp", 
-      department: "dept_me_gpp",
-      batchId: "batch_dme_2023_gpp", 
-      currentSemester: 1,
-      admissionDate: "2023-07-10T00:00:00.000Z",
-      category: "SEBC",
-      shift: "Afternoon",
-      isComplete: false,
-      termClose: false,
-      isCancel: false,
-      isPassAll: true, // Assuming passed first sem
-      sem1Status: "Passed",
-      fullNameGtuFormat: "SMITH JANE ANNA",
-      firstName: "JANE",
-      middleName: "ANNA",
-      lastName: "SMITH",
-      gender: "Female",
-      dateOfBirth: "2004-01-20T00:00:00.000Z",
-      personalEmail: "student.me002@example.com",
-      instituteEmail: "220010108002@gppalanpur.ac.in",
-      contactNumber: "9876500002",
-      status: "active",
-      instituteId: "inst1",
-      createdAt: now,
-      updatedAt: now,
-    }
-  ];
-}
-// Get the current students store dynamically
-const getStudentsStore = (): Student[] => global.__API_STUDENTS_STORE__ || [];
+import { connectMongoose } from '@/lib/mongodb';
+import { StudentModel } from '@/lib/models';
 
 const generateId = (): string => `std_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function GET() {
-  return NextResponse.json(getStudentsStore());
+  try {
+    await connectMongoose();
+    
+    const students = await StudentModel.find({}).lean();
+    const studentsWithId = students.map(student => ({
+      ...student,
+      id: student.id || (student as any)._id.toString()
+    }));
+    
+    return NextResponse.json(studentsWithId);
+  } catch (error) {
+    console.error('Error fetching students:', error);
+    return NextResponse.json({ 
+      message: 'Internal server error during student fetch.', 
+      error: (error as Error).message 
+    }, { status: 500 });
+  }
 }
 
 export async function POST(request: NextRequest) {
   try {
+    await connectMongoose();
+    
     const studentData = await request.json() as Omit<Student, 'id' | 'userId'> & { userId?: string, instituteId?: string };
 
     if (!studentData.enrollmentNumber || !studentData.enrollmentNumber.trim()) {
@@ -111,11 +53,8 @@ export async function POST(request: NextRequest) {
             studentInstituteId = program.instituteId;
         } else {
             console.warn(`Could not determine instituteId for student ${studentData.enrollmentNumber} from program ${studentData.programId}. User account linking might be inaccurate.`);
-            // Fallback or error if institute is strictly required for user creation.
-            // For now, let it proceed, but User creation might use a default or fail if institute is mandatory there.
         }
     }
-
 
     let instituteDomain = 'gpp.ac.in'; // Default domain
     if (studentInstituteId) {
@@ -132,23 +71,33 @@ export async function POST(request: NextRequest) {
     }
     const instituteEmail = studentData.instituteEmail?.trim() || `${studentData.enrollmentNumber.trim()}@${instituteDomain}`;
 
-
-    if (getStudentsStore().some((s: Student) => s.enrollmentNumber === studentData.enrollmentNumber.trim())) {
+    // Check for existing students
+    const existingEnrollmentStudent = await StudentModel.findOne({ 
+      enrollmentNumber: studentData.enrollmentNumber.trim() 
+    });
+    if (existingEnrollmentStudent) {
       return NextResponse.json({ message: `Student with enrollment number '${studentData.enrollmentNumber.trim()}' already exists.` }, { status: 409 });
     }
-    if (getStudentsStore().some((s: Student) => s.instituteEmail.toLowerCase() === instituteEmail.toLowerCase())) {
+    
+    const existingEmailStudent = await StudentModel.findOne({ 
+      instituteEmail: { $regex: new RegExp(`^${instituteEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }
+    });
+    if (existingEmailStudent) {
       return NextResponse.json({ message: `Student with institute email '${instituteEmail}' already exists.` }, { status: 409 });
     }
-     if (studentData.personalEmail && !/\S+@\S+\.\S+/.test(studentData.personalEmail)) {
+    
+    if (studentData.personalEmail && !/\S+@\S+\.\S+/.test(studentData.personalEmail)) {
         return NextResponse.json({ message: 'Invalid personal email format.' }, { status: 400 });
     }
 
-    const newStudentId = generateId();
-    const newStudent: Student = {
-      id: newStudentId,
+    const currentTimestamp = new Date().toISOString();
+    const newStudentData = {
+      id: generateId(),
       ...studentData,
       instituteEmail,
-      instituteId: studentInstituteId, // Ensure instituteId is set on the student record
+      instituteId: studentInstituteId,
+      createdAt: currentTimestamp,
+      updatedAt: currentTimestamp,
     };
     
     const displayName = studentData.fullNameGtuFormat || `${studentData.firstName || ''} ${studentData.lastName || ''}`.trim() || studentData.enrollmentNumber;
@@ -157,7 +106,7 @@ export async function POST(request: NextRequest) {
     try {
         const userToCreate: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'authProviders' | 'isEmailVerified' | 'preferences'> & { password?: string } = {
             displayName,
-            email: studentData.personalEmail || instituteEmail, // Use personal as primary if available
+            email: studentData.personalEmail || instituteEmail,
             instituteEmail: instituteEmail,
             password: studentData.enrollmentNumber, // Default password as enrollment number
             roles: ['student'], 
@@ -172,31 +121,33 @@ export async function POST(request: NextRequest) {
 
         const createdUser = await userService.createUser(userToCreate);
         createdUserId = createdUser.id;
-        newStudent.userId = createdUserId;
+        newStudentData.userId = createdUserId;
 
     } catch (userCreationError: unknown) {
         if ((userCreationError as Error).message?.includes("already exists")) {
-            console.warn(`System user with email ${instituteEmail} or ${studentData.personalEmail} already exists. Attempting to link student ${newStudent.enrollmentNumber}.`);
+            console.warn(`System user with email ${instituteEmail} or ${studentData.personalEmail} already exists. Attempting to link student ${newStudentData.enrollmentNumber}.`);
             const allUsers = await userService.getAllUsers();
             const existingUser = allUsers.find(u => u.instituteEmail === instituteEmail || u.email === studentData.personalEmail);
             if (existingUser) {
-                newStudent.userId = existingUser.id;
+                newStudentData.userId = existingUser.id;
                 if (!existingUser.roles.includes('student')) {
                     await userService.updateUser(existingUser.id, { roles: [...existingUser.roles, 'student'] });
                 }
             } else {
-                 console.error(`Could not link student ${newStudent.enrollmentNumber} to an existing user despite 'already exists' error.`);
+                 console.error(`Could not link student ${newStudentData.enrollmentNumber} to an existing user despite 'already exists' error.`);
             }
         } else {
-          console.error(`Failed to create/link system user for new student ${newStudent.enrollmentNumber}:`, userCreationError);
+          console.error(`Failed to create/link system user for new student ${newStudentData.enrollmentNumber}:`, userCreationError);
         }
     }
     
-    const currentStore = getStudentsStore();
-    currentStore.push(newStudent);
-    global.__API_STUDENTS_STORE__ = currentStore;
+    const newStudent = new StudentModel(newStudentData);
+    await newStudent.save();
+    
+    // Return student with properly formatted id
+    const studentToReturn = newStudent.toJSON();
 
-    return NextResponse.json(newStudent, { status: 201 });
+    return NextResponse.json(studentToReturn, { status: 201 });
   } catch (error) {
     console.error('Error creating student:', error);
     return NextResponse.json({ message: 'Error creating student', error: (error as Error).message }, { status: 500 });

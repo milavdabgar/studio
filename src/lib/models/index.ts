@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import type { 
   User, Role, Permission, Department, Course, Batch, Program, 
-  Room, Building, Committee, Institute 
+  Room, Building, Committee, Institute, Student
 } from '@/types/entities';
 
 // Institute Schema
@@ -469,6 +469,103 @@ programSchema.pre('save', function(next) {
   next();
 });
 
+// Student Schema
+interface IStudent extends Omit<Student, 'id'>, Document {
+  _id: string;
+}
+
+const studentSchema = new Schema<IStudent>({
+  id: { type: String, unique: true, sparse: true }, // Custom ID field
+  userId: { type: String }, // Reference to User model
+  
+  enrollmentNumber: { type: String, required: true, unique: true },
+  gtuEnrollmentNumber: { type: String },
+  
+  programId: { type: String, required: true }, // Reference to Program
+  department: { type: String, required: true }, // Department ID
+  batchId: { type: String }, // Reference to Batch
+  currentSemester: { type: Number, required: true, default: 1 },
+  admissionDate: { type: String },
+  
+  category: { type: String }, // OPEN, SEBC, SC, ST, etc.
+  shift: { 
+    type: String, 
+    enum: ['Morning', 'Afternoon', 'Evening'], 
+  },
+  
+  isComplete: { type: Boolean, default: false },
+  termClose: { type: Boolean, default: false },
+  isCancel: { type: Boolean, default: false },
+  isPassAll: { type: Boolean, default: false },
+  
+  // Semester status tracking
+  sem1Status: { type: String, enum: ['N/A', 'Passed', 'Pending', 'Not Appeared'], default: 'N/A' },
+  sem2Status: { type: String, enum: ['N/A', 'Passed', 'Pending', 'Not Appeared'], default: 'N/A' },
+  sem3Status: { type: String, enum: ['N/A', 'Passed', 'Pending', 'Not Appeared'], default: 'N/A' },
+  sem4Status: { type: String, enum: ['N/A', 'Passed', 'Pending', 'Not Appeared'], default: 'N/A' },
+  sem5Status: { type: String, enum: ['N/A', 'Passed', 'Pending', 'Not Appeared'], default: 'N/A' },
+  sem6Status: { type: String, enum: ['N/A', 'Passed', 'Pending', 'Not Appeared'], default: 'N/A' },
+  sem7Status: { type: String, enum: ['N/A', 'Passed', 'Pending', 'Not Appeared'], default: 'N/A' },
+  sem8Status: { type: String, enum: ['N/A', 'Passed', 'Pending', 'Not Appeared'], default: 'N/A' },
+  
+  // Personal Information
+  fullNameGtuFormat: { type: String },
+  firstName: { type: String },
+  middleName: { type: String },
+  lastName: { type: String },
+  gender: { type: String, enum: ['Male', 'Female', 'Other'] },
+  dateOfBirth: { type: String },
+  bloodGroup: { type: String },
+  aadharNumber: { type: String },
+  
+  // Contact Information
+  personalEmail: { type: String },
+  instituteEmail: { type: String, required: true },
+  contactNumber: { type: String },
+  address: { type: String },
+  
+  // Guardian Details
+  guardianDetails: {
+    name: { type: String },
+    relation: { type: String },
+    contactNumber: { type: String },
+    occupation: { type: String },
+    annualIncome: { type: Number }
+  },
+  
+  status: { 
+    type: String, 
+    enum: ['active', 'inactive', 'graduated', 'dropped'], 
+    required: true, 
+    default: 'active' 
+  },
+  convocationYear: { type: Number },
+  academicRemarks: { type: String },
+  
+  instituteId: { type: String },
+  photoURL: { type: String },
+  isActive: { type: Boolean, default: true },
+  
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      // Use custom id if available, otherwise use _id
+      ret.id = ret.id || ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+studentSchema.pre('save', function(next) {
+  (this as IStudent).updatedAt = new Date().toISOString();
+  next();
+});
+
 // Models
 export const InstituteModel = mongoose.models.Institute || mongoose.model<IInstitute>('Institute', instituteSchema);
 export const BuildingModel = mongoose.models.Building || mongoose.model<IBuilding>('Building', buildingSchema);
@@ -481,6 +578,7 @@ export const DepartmentModel = mongoose.models.Department || mongoose.model<IDep
 export const CourseModel = mongoose.models.Course || mongoose.model<ICourse>('Course', courseSchema);
 export const BatchModel = mongoose.models.Batch || mongoose.model<IBatch>('Batch', batchSchema);
 export const ProgramModel = mongoose.models.Program || mongoose.model<IProgram>('Program', programSchema);
+export const StudentModel = mongoose.models.Student || mongoose.model<IStudent>('Student', studentSchema);
 
 // Export types
-export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram };
+export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent };
