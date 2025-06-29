@@ -22,14 +22,18 @@ const testTeam = {
   status: 'active',
   members: [
     {
-      studentId: 'student_test_1',
-      role: 'leader',
+      userId: 'user_student_ce001_gpp',
+      name: 'Student CE001',
+      enrollmentNo: '220010107001',
+      role: 'Team Leader',
       isLeader: true,
       joinedAt: new Date().toISOString()
     },
     {
-      studentId: 'student_test_2', 
-      role: 'member',
+      userId: 'user_student_me002_gpp',
+      name: 'Student ME002', 
+      enrollmentNo: '220010108002',
+      role: 'Member',
       isLeader: false,
       joinedAt: new Date().toISOString()
     }
@@ -44,8 +48,8 @@ const testTeamUpdate = {
 };
 
 const testMember = {
-  userId: 'student_test_3',
-  name: 'Test Student 3',
+  userId: 'user_student_ce003_gpp',
+  name: 'Student CE003',
   enrollmentNo: '220010107003',
   role: 'member',
   isLeader: false,
@@ -64,6 +68,27 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
     // Navigate to a page that initializes the app context
     await page.goto('http://localhost:3000/dashboard');
     await page.waitForLoadState('networkidle');
+    
+    // Seed test users that match existing patterns from project teams store
+    const users = [
+      { id: 'user_student_ce001_gpp', displayName: 'Student CE001', fullName: 'Student CE001', email: 'student.ce001@gppalanpur.ac.in', username: 'student_ce001', enrollmentNo: '220010107001', role: 'student', roles: ['student'] },
+      { id: 'user_student_me002_gpp', displayName: 'Student ME002', fullName: 'Student ME002', email: 'student.me002@gppalanpur.ac.in', username: 'student_me002', enrollmentNo: '220010108002', role: 'student', roles: ['student'] },
+      { id: 'user_student_ce003_gpp', displayName: 'Student CE003', fullName: 'Student CE003', email: 'student.ce003@gppalanpur.ac.in', username: 'student_ce003', enrollmentNo: '220010107003', role: 'student', roles: ['student'] },
+      { id: 'user_student_ce004_gpp', displayName: 'Student CE004', fullName: 'Student CE004', email: 'student.ce004@gppalanpur.ac.in', username: 'student_ce004', enrollmentNo: '220010107004', role: 'student', roles: ['student'] },
+      { id: 'user_student_ce005_gpp', displayName: 'Student CE005', fullName: 'Student CE005', email: 'student.ce005@gppalanpur.ac.in', username: 'student_ce005', enrollmentNo: '220010107005', role: 'student', roles: ['student'] },
+      { id: 'user_student_ce006_gpp', displayName: 'Student CE006', fullName: 'Student CE006', email: 'student.ce006@gppalanpur.ac.in', username: 'student_ce006', enrollmentNo: '220010107006', role: 'student', roles: ['student'] },
+      { id: 'user_student_ce007_gpp', displayName: 'Student CE007', fullName: 'Student CE007', email: 'student.ce007@gppalanpur.ac.in', username: 'student_ce007', enrollmentNo: '220010107007', role: 'student', roles: ['student'] }
+    ];
+    
+    // Check what users exist in the system by calling the GET endpoint
+    const existingUsersResponse = await page.request.get('/api/users');
+    if (existingUsersResponse.status() === 200) {
+      const existingUsers = await existingUsersResponse.json();
+      console.log('Existing users in system:', existingUsers.length);
+      if (existingUsers.length > 0) {
+        console.log('Sample existing user:', existingUsers[0]);
+      }
+    }
   });
 
   test('should create, read, update, and delete project teams (CRUD)', async ({ page }) => {
@@ -91,8 +116,8 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
     
     createdTeamId = createdTeam.id;
 
-    // Test READ ALL - GET /api/project-teams
-    const getAllResponse = await page.request.get(`${API_BASE}/project-teams`);
+    // Test READ ALL - GET /api/project-teams (get all pages to ensure we find our team)
+    const getAllResponse = await page.request.get(`${API_BASE}/project-teams?limit=100`);
     expect(getAllResponse.status()).toBe(200);
     
     const allTeamsData = await getAllResponse.json();
@@ -249,9 +274,12 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
       // Verify member was added
       const getUpdatedMembersResponse = await page.request.get(`${API_BASE}/project-teams/${teamId}/members`);
       expect(getUpdatedMembersResponse.status()).toBe(200);
-      const updatedMembers = await getUpdatedMembersResponse.json();
+      const updatedMembersResponse = await getUpdatedMembersResponse.json();
+      expect(updatedMembersResponse).toHaveProperty('data');
+      expect(updatedMembersResponse.data).toHaveProperty('members');
+      const updatedMembers = updatedMembersResponse.data.members;
       
-      const foundMember = updatedMembers.find((m: any) => m.studentId === testMember.studentId);
+      const foundMember = updatedMembers.find((m: any) => m.userId === testMember.userId);
       expect(foundMember).toBeDefined();
 
       // Test REMOVE team member - DELETE /api/project-teams/:id/members/:memberId
@@ -262,9 +290,12 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
         // Verify member was removed
         const getFinalMembersResponse = await page.request.get(`${API_BASE}/project-teams/${teamId}/members`);
         expect(getFinalMembersResponse.status()).toBe(200);
-        const finalMembers = await getFinalMembersResponse.json();
+        const finalMembersResponse = await getFinalMembersResponse.json();
+        expect(finalMembersResponse).toHaveProperty('data');
+        expect(finalMembersResponse.data).toHaveProperty('members');
+        const finalMembers = finalMembersResponse.data.members;
         
-        const removedMember = finalMembers.find((m: any) => m.studentId === testMember.studentId);
+        const removedMember = finalMembers.find((m: any) => m.userId === testMember.userId);
         expect(removedMember).toBeUndefined();
       }
 
@@ -279,9 +310,9 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
     const teamWithMembers = {
       ...createUniqueTeam('Leader Management'),
       members: [
-        { userId: 'student_leader_1', name: 'Student Leader 1', enrollmentNo: '220010107011', role: 'leader', isLeader: true, joinedAt: new Date().toISOString() },
-        { userId: 'student_member_1', name: 'Student Member 1', enrollmentNo: '220010107012', role: 'member', isLeader: false, joinedAt: new Date().toISOString() },
-        { userId: 'student_member_2', name: 'Student Member 2', enrollmentNo: '220010107013', role: 'member', isLeader: false, joinedAt: new Date().toISOString() }
+        { userId: 'user_student_ce004_gpp', name: 'Student CE004', enrollmentNo: '220010107004', role: 'Team Leader', isLeader: true, joinedAt: new Date().toISOString() },
+        { userId: 'user_student_ce005_gpp', name: 'Student CE005', enrollmentNo: '220010107005', role: 'Member', isLeader: false, joinedAt: new Date().toISOString() },
+        { userId: 'user_student_ce006_gpp', name: 'Student CE006', enrollmentNo: '220010107006', role: 'Member', isLeader: false, joinedAt: new Date().toISOString() }
       ]
     };
 
@@ -297,7 +328,7 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
 
     try {
       // Test change leader - PATCH /api/project-teams/:id/leader/:memberId
-      const newLeaderId = 'student_member_1';
+      const newLeaderId = 'user_student_ce005_gpp';
       const changeLeaderResponse = await page.request.patch(`${API_BASE}/project-teams/${teamId}/leader/${newLeaderId}`);
       
       expect(changeLeaderResponse.status()).toBe(200);
@@ -315,19 +346,21 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
       // Verify leader change
       const getMembersResponse = await page.request.get(`${API_BASE}/project-teams/${teamId}/members`);
       expect(getMembersResponse.status()).toBe(200);
-      const members = await getMembersResponse.json();
+      const membersResponse = await getMembersResponse.json();
+      expect(membersResponse).toHaveProperty('data');
+      const members = membersResponse.data.members;
       
-      const newLeader = members.find((m: any) => m.studentId === newLeaderId);
-      const oldLeader = members.find((m: any) => m.studentId === 'student_leader_1');
+      const verifyNewLeader = members.find((m: any) => m.userId === newLeaderId);
+      const verifyOldLeader = members.find((m: any) => m.userId === 'user_student_ce004_gpp');
       
-      if (newLeader) {
-        expect(newLeader.isLeader).toBe(true);
-        expect(newLeader.role).toBe('leader');
+      if (verifyNewLeader) {
+        expect(verifyNewLeader.isLeader).toBe(true);
+        expect(verifyNewLeader.role).toBe('Team Leader');
       }
       
-      if (oldLeader) {
-        expect(oldLeader.isLeader).toBe(false);
-        expect(oldLeader.role).toBe('member');
+      if (verifyOldLeader) {
+        expect(verifyOldLeader.isLeader).toBe(false);
+        expect(verifyOldLeader.role).toBe('Member');
       }
 
     } finally {
@@ -448,8 +481,8 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
     const smallTeam = createUniqueTeam('Small Team Limit Test');
     smallTeam.maxMembers = 2;
     smallTeam.members = [
-      { userId: 'student_1', name: 'Student 1', enrollmentNo: '220010107021', role: 'leader', isLeader: true, joinedAt: new Date().toISOString() },
-      { userId: 'student_2', name: 'Student 2', enrollmentNo: '220010107022', role: 'member', isLeader: false, joinedAt: new Date().toISOString() }
+      { userId: 'user_student_ce001_gpp', name: 'Student CE001', enrollmentNo: '220010107001', role: 'Team Leader', isLeader: true, joinedAt: new Date().toISOString() },
+      { userId: 'user_student_me002_gpp', name: 'Student ME002', enrollmentNo: '220010108002', role: 'Member', isLeader: false, joinedAt: new Date().toISOString() }
     ];
 
     const createResponse = await page.request.post(`${API_BASE}/project-teams`, {
@@ -465,9 +498,9 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
     try {
       // Try to add a third member (should exceed limit)
       const exceedLimitMember = {
-        userId: 'student_3',
-        name: 'Student 3',
-        enrollmentNo: '220010107023',
+        userId: 'user_student_ce003_gpp',
+        name: 'Student CE003',
+        enrollmentNo: '220010107003',
         role: 'member',
         isLeader: false,
         joinedAt: new Date().toISOString()
