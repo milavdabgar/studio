@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import type { 
   User, Role, Permission, Department, Course, Batch, Program, 
-  Room, Building, Committee, Institute, Student
+  Room, Building, Committee, Institute, Student, Faculty
 } from '@/types/entities';
 
 // Institute Schema
@@ -566,6 +566,89 @@ studentSchema.pre('save', function(next) {
   next();
 });
 
+// Faculty Schema
+interface IFaculty extends Omit<Faculty, 'id'>, Document {
+  _id: string;
+}
+
+const facultySchema = new Schema<IFaculty>({
+  id: { type: String, unique: true, sparse: true }, // Custom ID field
+  userId: { type: String }, // Reference to User model
+  
+  staffCode: { type: String, required: true, unique: true },
+  employeeId: { type: String },
+  
+  title: { type: String },
+  firstName: { type: String },
+  middleName: { type: String },
+  lastName: { type: String },
+  gtuName: { type: String },
+  personalEmail: { type: String },
+  instituteEmail: { type: String, required: true },
+  contactNumber: { type: String },
+  
+  department: { type: String, required: true },
+  designation: { type: String },
+  jobType: { 
+    type: String, 
+    enum: ['Regular', 'Adhoc', 'Contractual', 'Visiting', 'Other']
+  },
+  staffCategory: { 
+    type: String, 
+    enum: ['Teaching', 'Clerical', 'Technical', 'Support', 'Administrative', 'Other'],
+    default: 'Teaching'
+  },
+  instType: { type: String },
+  specializations: [{ type: String }],
+  qualifications: [{
+    degree: { type: String },
+    field: { type: String },
+    institution: { type: String },
+    year: { type: Number },
+    percentage: { type: Number }
+  }],
+  
+  dateOfBirth: { type: String },
+  joiningDate: { type: String },
+  
+  gender: { type: String, enum: ['Male', 'Female', 'Other'] },
+  maritalStatus: { type: String },
+  aadharNumber: { type: String },
+  panCardNumber: { type: String },
+  gpfNpsNumber: { type: String },
+  placeOfBirth: { type: String },
+  nationality: { type: String },
+  knownAs: { type: String },
+  
+  status: { 
+    type: String, 
+    enum: ['active', 'inactive', 'retired', 'resigned', 'on_leave'],
+    required: true,
+    default: 'active'
+  },
+  
+  instituteId: { type: String },
+  
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      // Use custom id if available, otherwise use _id
+      ret.id = ret.id || ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+facultySchema.pre('save', function(next) {
+  (this as IFaculty).updatedAt = new Date().toISOString();
+  next();
+});
+
 // Models
 export const InstituteModel = mongoose.models.Institute || mongoose.model<IInstitute>('Institute', instituteSchema);
 export const BuildingModel = mongoose.models.Building || mongoose.model<IBuilding>('Building', buildingSchema);
@@ -579,6 +662,7 @@ export const CourseModel = mongoose.models.Course || mongoose.model<ICourse>('Co
 export const BatchModel = mongoose.models.Batch || mongoose.model<IBatch>('Batch', batchSchema);
 export const ProgramModel = mongoose.models.Program || mongoose.model<IProgram>('Program', programSchema);
 export const StudentModel = mongoose.models.Student || mongoose.model<IStudent>('Student', studentSchema);
+export const FacultyModel = mongoose.models.Faculty || mongoose.model<IFaculty>('Faculty', facultySchema, 'faculties');
 
 // Export types
-export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent };
+export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent, IFaculty };
