@@ -598,8 +598,13 @@ const facultySchema = new Schema<IFaculty>({
     enum: ['Teaching', 'Clerical', 'Technical', 'Support', 'Administrative', 'Other'],
     default: 'Teaching'
   },
+  category: { 
+    type: String, 
+    enum: ['Teaching', 'Clerical', 'Technical', 'Support', 'Administrative', 'Other']
+  }, // Alias for staffCategory for compatibility
   instType: { type: String },
   specializations: [{ type: String }],
+  specialization: { type: String }, // Single specialization field for compatibility
   qualifications: [{
     degree: { type: String },
     field: { type: String },
@@ -607,9 +612,19 @@ const facultySchema = new Schema<IFaculty>({
     year: { type: Number },
     percentage: { type: Number }
   }],
+  qualification: { type: String }, // Single qualification field for compatibility
+  experience: { type: Number }, // Years of experience
   
   dateOfBirth: { type: String },
   joiningDate: { type: String },
+  
+  // Additional fields for compatibility
+  gtuFacultyId: { type: String },
+  fullName: { type: String },
+  address: { type: String },
+  isHOD: { type: Boolean, default: false },
+  isPrincipal: { type: Boolean, default: false },
+  researchInterests: { type: String },
   
   gender: { type: String, enum: ['Male', 'Female', 'Other'] },
   maritalStatus: { type: String },

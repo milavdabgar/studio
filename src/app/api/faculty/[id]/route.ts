@@ -79,20 +79,53 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       }
     }
 
-    // Prepare update data
+    // Prepare update data with explicit field handling
     const updateData: any = {
-      ...facultyDataToUpdate,
       updatedAt: new Date().toISOString()
     };
 
-    // Remove undefined fields and trim strings
-    Object.keys(updateData).forEach(key => {
-      if (updateData[key] === undefined) {
-        delete updateData[key];
-      } else if (typeof updateData[key] === 'string') {
-        updateData[key] = updateData[key].trim();
+    // Explicitly handle each field to ensure they're preserved
+    const fieldsToUpdate = [
+      'staffCode', 'employeeId', 'title', 'firstName', 'middleName', 'lastName', 
+      'fullName', 'gtuName', 'gtuFacultyId', 'personalEmail', 'instituteEmail', 
+      'contactNumber', 'address', 'department', 'designation', 'jobType', 
+      'staffCategory', 'category', 'instType', 'specializations', 'specialization',
+      'qualifications', 'qualification', 'experience', 'dateOfBirth', 'joiningDate',
+      'gender', 'maritalStatus', 'aadharNumber', 'panCardNumber', 'gpfNpsNumber',
+      'placeOfBirth', 'nationality', 'knownAs', 'isHOD', 'isPrincipal', 
+      'researchInterests', 'status', 'instituteId'
+    ];
+
+    fieldsToUpdate.forEach(field => {
+      if (facultyDataToUpdate.hasOwnProperty(field)) {
+        const value = (facultyDataToUpdate as any)[field];
+        if (value !== undefined) {
+          if (typeof value === 'string') {
+            updateData[field] = value.trim();
+          } else {
+            updateData[field] = value;
+          }
+        }
       }
     });
+
+    // Handle category/staffCategory synchronization
+    if (facultyDataToUpdate.category !== undefined) {
+      updateData.staffCategory = facultyDataToUpdate.category;
+      updateData.category = facultyDataToUpdate.category;
+    } else if (facultyDataToUpdate.staffCategory !== undefined) {
+      updateData.category = facultyDataToUpdate.staffCategory;
+      updateData.staffCategory = facultyDataToUpdate.staffCategory;
+    }
+
+    // Ensure fullName is updated if name fields change
+    if (facultyDataToUpdate.firstName || facultyDataToUpdate.middleName || facultyDataToUpdate.lastName || facultyDataToUpdate.title) {
+      const newFirstName = facultyDataToUpdate.firstName || existingFaculty.firstName;
+      const newMiddleName = facultyDataToUpdate.middleName || existingFaculty.middleName;
+      const newLastName = facultyDataToUpdate.lastName || existingFaculty.lastName;
+      const newTitle = facultyDataToUpdate.title || existingFaculty.title;
+      updateData.fullName = `${newTitle || ''} ${newFirstName || ''} ${newMiddleName || ''} ${newLastName || ''}`.replace(/\s+/g, ' ').trim();
+    }
 
     // Update the faculty
     const updatedFaculty = await FacultyModel.findOneAndUpdate(

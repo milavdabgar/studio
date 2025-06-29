@@ -1,0 +1,494 @@
+
+> nextn@0.1.0 dev
+> next dev --turbopack -p 3000
+
+   ▲ Next.js 15.3.3 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.68:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Compiled middleware in 65ms
+ ✓ Ready in 736ms
+ ○ Compiling /login ...
+ ✓ Compiled /login in 1624ms
+ GET /login?redirectedFrom=%2Fdashboard 200 in 1804ms
+ ✓ Compiled /api/roles in 209ms
+Mongoose connected to MongoDB successfully
+ GET /api/roles 200 in 407ms
+ GET /api/roles 200 in 13ms
+ GET /api/roles 200 in 13ms
+ ✓ Compiled /api/faculty in 139ms
+ POST /api/faculty 201 in 162ms
+ GET /api/faculty 200 in 26ms
+ ✓ Compiled /api/faculty/[id] in 130ms
+ GET /api/faculty/fac_1751216336805_jqk7iyu 200 in 430ms
+Faculty update request for: fac_1751216336805_jqk7iyu
+Update data received: {
+  "staffCode": "EMP1751216337279",
+  "gtuFacultyId": "GTU_FAC_1751216337279",
+  "firstName": "Updated",
+  "middleName": "E2E",
+  "lastName": "Faculty",
+  "fullName": "TestData E2E Faculty",
+  "personalEmail": "testdata.faculty1751216337279@example.com",
+  "instituteEmail": "testdata.faculty1751216337279@gppalanpur.ac.in",
+  "contactNumber": "9876543210",
+  "department": "dept_ce_gpp",
+  "instituteId": "inst_gpp",
+  "designation": "Associate Professor",
+  "qualification": "M.Tech, PhD",
+  "experience": 7,
+  "joiningDate": "2020-07-15",
+  "dateOfBirth": "1985-05-20",
+  "gender": "Male",
+  "category": "Teaching",
+  "status": "inactive",
+  "address": "123 Faculty Colony, Test City",
+  "specialization": "Computer Networks, Software Engineering",
+  "isHOD": true,
+  "isPrincipal": false,
+  "researchInterests": "Machine Learning, Data Mining"
+}
+Final update data: {
+  "updatedAt": "2025-06-29T16:58:57.297Z",
+  "staffCode": "EMP1751216337279",
+  "firstName": "Updated",
+  "middleName": "E2E",
+  "lastName": "Faculty",
+  "fullName": "Updated E2E Faculty",
+  "gtuFacultyId": "GTU_FAC_1751216337279",
+  "personalEmail": "testdata.faculty1751216337279@example.com",
+  "instituteEmail": "testdata.faculty1751216337279@gppalanpur.ac.in",
+  "contactNumber": "9876543210",
+  "address": "123 Faculty Colony, Test City",
+  "department": "dept_ce_gpp",
+  "designation": "Associate Professor",
+  "category": "Teaching",
+  "specialization": "Computer Networks, Software Engineering",
+  "qualification": "M.Tech, PhD",
+  "experience": 7,
+  "dateOfBirth": "1985-05-20",
+  "joiningDate": "2020-07-15",
+  "gender": "Male",
+  "isHOD": true,
+  "isPrincipal": false,
+  "researchInterests": "Machine Learning, Data Mining",
+  "status": "inactive",
+  "instituteId": "inst_gpp",
+  "staffCategory": "Teaching"
+}
+Updated faculty result: {
+  "_id": "686170d0df30c00c8e476d7d",
+  "id": "fac_1751216336805_jqk7iyu",
+  "staffCode": "EMP1751216337279",
+  "firstName": "Updated",
+  "middleName": "E2E",
+  "lastName": "Faculty",
+  "personalEmail": "testdata.faculty1751216337279@example.com",
+  "instituteEmail": "testdata.faculty1751216337279@gppalanpur.ac.in",
+  "contactNumber": "9876543210",
+  "department": "dept_ce_gpp",
+  "designation": "Associate Professor",
+  "staffCategory": "Teaching",
+  "category": "Teaching",
+  "specializations": [],
+  "specialization": "Computer Networks, Software Engineering",
+  "qualifications": [],
+  "qualification": "M.Tech, PhD",
+  "experience": 7,
+  "dateOfBirth": "1985-05-20",
+  "joiningDate": "2020-07-15",
+  "gtuFacultyId": "GTU_FAC_1751216337279",
+  "fullName": "Updated E2E Faculty",
+  "address": "123 Faculty Colony, Test City",
+  "isHOD": true,
+  "isPrincipal": false,
+  "researchInterests": "Machine Learning, Data Mining",
+  "gender": "Male",
+  "status": "inactive",
+  "instituteId": "inst_gpp",
+  "createdAt": "2025-06-29T16:58:56.805Z",
+  "updatedAt": "2025-06-29T16:58:57.297Z",
+  "__v": 0
+}
+ PUT /api/faculty/fac_1751216336805_jqk7iyu 200 in 16ms
+ GET /api/faculty/fac_1751216336805_jqk7iyu 200 in 13ms
+ DELETE /api/faculty/fac_1751216336805_jqk7iyu 200 in 12ms
+ GET /api/faculty/fac_1751216336805_jqk7iyu 404 in 12ms
+ GET /login?redirectedFrom=%2Fdashboard 200 in 130ms
+ GET /login?redirectedFrom=%2Fdashboard 200 in 134ms
+ GET /login?redirectedFrom=%2Fdashboard 200 in 147ms
+ GET /login?redirectedFrom=%2Fdashboard 200 in 153ms
+ GET /login?redirectedFrom=%2Fdashboard 200 in 180ms
+ GET /api/roles 200 in 135ms
+ GET /api/roles 200 in 117ms
+ GET /api/roles 200 in 88ms
+ GET /api/roles 200 in 76ms
+ GET /api/roles 200 in 60ms
+ GET /api/roles 200 in 38ms
+ GET /api/roles 200 in 36ms
+ GET /api/roles 200 in 31ms
+ GET /api/roles 200 in 38ms
+ GET /api/roles 200 in 38ms
+ GET /api/roles 200 in 40ms
+ GET /api/roles 200 in 35ms
+ GET /api/roles 200 in 37ms
+ GET /api/roles 200 in 33ms
+ GET /api/roles 200 in 33ms
+ POST /api/faculty 400 in 46ms
+ POST /api/faculty 201 in 47ms
+ POST /api/faculty 400 in 32ms
+ POST /api/faculty 201 in 49ms
+ POST /api/faculty 201 in 55ms
+ POST /api/faculty 400 in 39ms
+ DELETE /api/faculty/fac_1751216345653_uykmqxx 200 in 31ms
+ POST /api/faculty 400 in 30ms
+ GET /api/faculty 200 in 33ms
+ DELETE /api/faculty/fac_1751216345666_o8m5avg 200 in 36ms
+ POST /api/faculty 400 in 41ms
+ POST /api/faculty 400 in 44ms
+ GET /api/faculty/fac_1751216345654_9t15y7s 200 in 38ms
+ POST /api/faculty 201 in 47ms
+Error creating faculty: Error: Faculty validation failed: staffCategory: `Non-Teaching` is not a valid enum value for path `staffCategory`., category: `Non-Teaching` is not a valid enum value for path `category`.
+    at POST (src/app/api/faculty/route.ts:152:12)
+  150 |     return NextResponse.json(facultyToReturn, { status: 201 });
+  151 |   } catch (error) {
+> 152 |     console.error('Error creating faculty:', error);
+      |            ^
+  153 |     return NextResponse.json({ message: 'Error creating faculty', error: (error as Error).message }, { status: 500 });
+  154 |   }
+  155 | } {
+  errors: [Object],
+  _message: 'Faculty validation failed'
+}
+ POST /api/faculty 500 in 192ms
+ POST /api/faculty 400 in 218ms
+ POST /api/faculty 201 in 223ms
+Faculty update request for: fac_1751216345654_9t15y7s
+Update data received: {
+  "staffCode": "EMP1751216345752",
+  "gtuFacultyId": "GTU_FAC_1751216345752",
+  "firstName": "Updated",
+  "middleName": "E2E",
+  "lastName": "Faculty",
+  "fullName": "TestData E2E Faculty",
+  "personalEmail": "testdata.faculty1751216345752@example.com",
+  "instituteEmail": "testdata.faculty1751216345752@gppalanpur.ac.in",
+  "contactNumber": "9876543210",
+  "department": "dept_ce_gpp",
+  "instituteId": "inst_gpp",
+  "designation": "Associate Professor",
+  "qualification": "M.Tech, PhD",
+  "experience": 7,
+  "joiningDate": "2020-07-15",
+  "dateOfBirth": "1985-05-20",
+  "gender": "Male",
+  "category": "Teaching",
+  "status": "inactive",
+  "address": "123 Faculty Colony, Test City",
+  "specialization": "Computer Networks, Software Engineering",
+  "isHOD": true,
+  "isPrincipal": false,
+  "researchInterests": "Machine Learning, Data Mining"
+}
+ DELETE /api/faculty/fac_1751216345750_l3cpe6b 200 in 52ms
+Final update data: {
+  "updatedAt": "2025-06-29T16:59:05.980Z",
+  "staffCode": "EMP1751216345752",
+  "firstName": "Updated",
+  "middleName": "E2E",
+  "lastName": "Faculty",
+  "fullName": "Updated E2E Faculty",
+  "gtuFacultyId": "GTU_FAC_1751216345752",
+  "personalEmail": "testdata.faculty1751216345752@example.com",
+  "instituteEmail": "testdata.faculty1751216345752@gppalanpur.ac.in",
+  "contactNumber": "9876543210",
+  "address": "123 Faculty Colony, Test City",
+  "department": "dept_ce_gpp",
+  "designation": "Associate Professor",
+  "category": "Teaching",
+  "specialization": "Computer Networks, Software Engineering",
+  "qualification": "M.Tech, PhD",
+  "experience": 7,
+  "dateOfBirth": "1985-05-20",
+  "joiningDate": "2020-07-15",
+  "gender": "Male",
+  "isHOD": true,
+  "isPrincipal": false,
+  "researchInterests": "Machine Learning, Data Mining",
+  "status": "inactive",
+  "instituteId": "inst_gpp",
+  "staffCategory": "Teaching"
+}
+Updated faculty result: {
+  "_id": "686170d9df30c00c8e476d9f",
+  "id": "fac_1751216345654_9t15y7s",
+  "staffCode": "EMP1751216345752",
+  "firstName": "Updated",
+  "middleName": "E2E",
+  "lastName": "Faculty",
+  "personalEmail": "testdata.faculty1751216345752@example.com",
+  "instituteEmail": "testdata.faculty1751216345752@gppalanpur.ac.in",
+  "contactNumber": "9876543210",
+  "department": "dept_ce_gpp",
+  "designation": "Associate Professor",
+  "staffCategory": "Teaching",
+  "category": "Teaching",
+  "specializations": [],
+  "specialization": "Computer Networks, Software Engineering",
+  "qualifications": [],
+  "qualification": "M.Tech, PhD",
+  "experience": 7,
+  "dateOfBirth": "1985-05-20",
+  "joiningDate": "2020-07-15",
+  "gtuFacultyId": "GTU_FAC_1751216345752",
+  "fullName": "Updated E2E Faculty",
+  "address": "123 Faculty Colony, Test City",
+  "isHOD": true,
+  "isPrincipal": false,
+  "researchInterests": "Machine Learning, Data Mining",
+  "gender": "Male",
+  "status": "inactive",
+  "instituteId": "inst_gpp",
+  "createdAt": "2025-06-29T16:59:05.654Z",
+  "updatedAt": "2025-06-29T16:59:05.980Z",
+  "__v": 0
+}
+ PUT /api/faculty/fac_1751216345654_9t15y7s 200 in 60ms
+ POST /api/faculty 201 in 56ms
+ DELETE /api/faculty/fac_1751216345972_eyivbgg 200 in 37ms
+ POST /api/faculty 201 in 49ms
+ GET /api/faculty/fac_1751216345654_9t15y7s 200 in 38ms
+ POST /api/faculty 201 in 49ms
+ DELETE /api/faculty/fac_1751216345981_yc9i5xh 200 in 45ms
+ POST /api/faculty 409 in 52ms
+ POST /api/faculty 201 in 45ms
+ DELETE /api/faculty/fac_1751216346027_ey6gchb 200 in 46ms
+ DELETE /api/faculty/fac_1751216345654_9t15y7s 200 in 47ms
+ GET /login?redirectedFrom=%2Fdashboard 200 in 84ms
+ DELETE /api/faculty/fac_1751216346018_0nh0t7s 200 in 92ms
+ DELETE /api/faculty/fac_1751216346079_i5sbbdm 200 in 91ms
+ GET /api/faculty/fac_1751216345654_9t15y7s 404 in 94ms
+ GET /login?redirectedFrom=%2Fdashboard 200 in 134ms
+ GET /api/roles 200 in 70ms
+ GET /login?redirectedFrom=%2Fdashboard 200 in 145ms
+ GET /login?redirectedFrom=%2Fdashboard 200 in 150ms
+ GET /login?redirectedFrom=%2Fdashboard 200 in 150ms
+ GET /api/roles 200 in 199ms
+ GET /api/roles 200 in 180ms
+ GET /api/roles 200 in 70ms
+ GET /api/roles 200 in 52ms
+ GET /api/roles 200 in 33ms
+ GET /api/roles 200 in 60ms
+ GET /api/roles 200 in 71ms
+ GET /api/roles 200 in 26ms
+ GET /api/roles 200 in 30ms
+ GET /api/roles 200 in 26ms
+ GET /api/roles 200 in 32ms
+ GET /api/roles 200 in 28ms
+ GET /api/roles 200 in 26ms
+ GET /api/roles 200 in 22ms
+ POST /api/faculty 201 in 33ms
+ POST /api/faculty 201 in 27ms
+ DELETE /api/faculty/fac_1751216347130_pog1lds 200 in 28ms
+ POST /api/faculty 201 in 41ms
+ POST /api/faculty 201 in 36ms
+ DELETE /api/faculty/fac_1751216347155_x34qp63 200 in 35ms
+ POST /api/faculty 201 in 43ms
+ POST /api/faculty 201 in 45ms
+ DELETE /api/faculty/fac_1751216347203_zzlkf2w 200 in 29ms
+ POST /api/faculty 201 in 38ms
+ DELETE /api/faculty/fac_1751216347196_i9obbcf 200 in 35ms
+ DELETE /api/faculty/fac_1751216347197_ymvraf8 200 in 37ms
+ DELETE /api/faculty/fac_1751216347207_iph4bqh 200 in 33ms
+ POST /api/faculty 201 in 31ms
+ POST /api/faculty 201 in 32ms
+ DELETE /api/faculty/fac_1751216347239_y3g21s9 200 in 33ms
+ POST /api/faculty 201 in 36ms
+ POST /api/faculty 201 in 34ms
+ DELETE /api/faculty/fac_1751216347274_z4eeln8 200 in 30ms
+ POST /api/faculty 201 in 36ms
+ DELETE /api/faculty/fac_1751216347276_mg0gg3b 200 in 38ms
+ DELETE /api/faculty/fac_1751216347280_zxddhya 200 in 39ms
+ DELETE /api/faculty/fac_1751216347279_txirtwo 200 in 39ms
+ POST /api/faculty 201 in 41ms
+ POST /api/faculty 201 in 39ms
+ DELETE /api/faculty/fac_1751216347317_4p0vg7e 200 in 39ms
+ POST /api/faculty 201 in 41ms
+Error creating faculty: Error: Faculty validation failed: status: `suspended` is not a valid enum value for path `status`.
+    at POST (src/app/api/faculty/route.ts:152:12)
+  150 |     return NextResponse.json(facultyToReturn, { status: 201 });
+  151 |   } catch (error) {
+> 152 |     console.error('Error creating faculty:', error);
+      |            ^
+  153 |     return NextResponse.json({ message: 'Error creating faculty', error: (error as Error).message }, { status: 500 });
+  154 |   }
+  155 | } {
+  errors: [Object],
+  _message: 'Faculty validation failed'
+}
+ POST /api/faculty 500 in 142ms
+ DELETE /api/faculty/fac_1751216347356_k5c1nj7 200 in 138ms
+ DELETE /api/faculty/fac_1751216347365_folp2gu 200 in 28ms
+ POST /api/faculty 201 in 140ms
+ POST /api/faculty 201 in 36ms
+ DELETE /api/faculty/fac_1751216347361_wdqt4r9 200 in 144ms
+ POST /api/faculty 201 in 43ms
+ POST /api/faculty 201 in 45ms
+ POST /api/faculty 201 in 39ms
+ DELETE /api/faculty/fac_1751216347505_4ryc4ne 200 in 41ms
+ DELETE /api/faculty/fac_1751216347507_9r7dftg 200 in 44ms
+ DELETE /api/faculty/fac_1751216347547_33hpkmf 200 in 73ms
+ DELETE /api/faculty/fac_1751216347550_a0m7n7i 200 in 73ms
+ POST /api/faculty 201 in 76ms
+ DELETE /api/faculty/fac_1751216347552_6we4vtz 200 in 75ms
+ POST /api/faculty 201 in 69ms
+ GET /login?redirectedFrom=%2Fdashboard 200 in 86ms
+ DELETE /api/faculty/fac_1751216347629_oee8tk0 200 in 75ms
+ POST /api/faculty 201 in 76ms
+ GET /login?redirectedFrom=%2Fdashboard 200 in 112ms
+ DELETE /api/faculty/fac_1751216347697_vr97qvj 200 in 96ms
+ POST /api/faculty 201 in 95ms
+ DELETE /api/faculty/fac_1751216347713_zbj121u 200 in 111ms
+ GET /api/roles 200 in 69ms
+ POST /api/faculty 201 in 56ms
+ DELETE /api/faculty/fac_1751216347809_nvwohzy 200 in 46ms
+ POST /api/faculty 201 in 50ms
+ GET /api/roles 200 in 65ms
+ DELETE /api/faculty/fac_1751216347867_f5nbro4 200 in 64ms
+ GET /api/roles 200 in 58ms
+ DELETE /api/faculty/fac_1751216347884_70x9nb7 200 in 58ms
+ GET /api/roles 200 in 40ms
+ POST /api/faculty 201 in 39ms
+ GET /api/roles 200 in 36ms
+ GET /api/roles 200 in 21ms
+ DELETE /api/faculty/fac_1751216347974_96zcq0f 200 in 22ms
+ GET /api/faculty/invalid-id 404 in 35ms
+ POST /api/faculty 409 in 22ms
+Faculty update request for: invalid-id
+Update data received: {
+  "staffCode": "EMP1751216348511",
+  "gtuFacultyId": "GTU_FAC_1751216348511",
+  "firstName": "ErrorTest",
+  "middleName": "E2E",
+  "lastName": "Faculty",
+  "fullName": "ErrorTest E2E Faculty",
+  "personalEmail": "errortest.faculty1751216348511@example.com",
+  "instituteEmail": "errortest.faculty1751216348511@gppalanpur.ac.in",
+  "contactNumber": "9876543210",
+  "department": "dept_ce_gpp",
+  "instituteId": "inst_gpp",
+  "designation": "Assistant Professor",
+  "qualification": "M.Tech, PhD",
+  "experience": 5,
+  "joiningDate": "2020-07-15",
+  "dateOfBirth": "1985-05-20",
+  "gender": "Male",
+  "category": "Teaching",
+  "status": "active",
+  "address": "123 Faculty Colony, Test City",
+  "specialization": "Computer Networks, Software Engineering",
+  "isHOD": false,
+  "isPrincipal": false,
+  "researchInterests": "Machine Learning, Data Mining"
+}
+ PUT /api/faculty/invalid-id 404 in 21ms
+ POST /api/faculty 409 in 21ms
+ DELETE /api/faculty/invalid-id 404 in 18ms
+ POST /api/faculty 409 in 15ms
+Error creating faculty: TypeError: Cannot read properties of null (reading 'staffCode')
+    at POST (src/app/api/faculty/route.ts:45:21)
+  43 |     const facultyData = await request.json() as Omit<Faculty, 'id' | 'userId'> & { userId?: string, instituteId: string };
+  44 |
+> 45 |     if (!facultyData.staffCode || !facultyData.staffCode.trim()) {
+     |                     ^
+  46 |       return NextResponse.json({ message: 'Staff Code is required.' }, { status: 400 });
+  47 |     }
+  48 |     if ((!facultyData.firstName || !facultyData.firstName.trim()) || (!facultyData.lastName || !facultyData.lastName.trim())) {
+ POST /api/faculty 500 in 37ms
+ GET /api/faculty 200 in 42ms
+ GET /login?redirectedFrom=%2Fdashboard 200 in 30ms
+ GET /api/roles 200 in 15ms
+ GET /api/roles 200 in 15ms
+ GET /api/roles 200 in 13ms
+ ✓ Compiled /api/users in 154ms
+ GET /api/users?email=student.ce001@gppalanpur.ac.in 200 in 172ms
+ POST /api/users 400 in 11ms
+ GET /api/users?email=student.me002@gppalanpur.ac.in 200 in 11ms
+ POST /api/users 400 in 9ms
+ GET /api/users?email=student.ce003@gppalanpur.ac.in 200 in 11ms
+ POST /api/users 400 in 9ms
+ GET /api/users?email=student.ce004@gppalanpur.ac.in 200 in 12ms
+ POST /api/users 400 in 10ms
+ GET /api/users?email=student.ce005@gppalanpur.ac.in 200 in 11ms
+ POST /api/users 400 in 10ms
+ GET /api/users?email=student.ce006@gppalanpur.ac.in 200 in 11ms
+ POST /api/users 400 in 11ms
+ GET /api/users?email=student.ce007@gppalanpur.ac.in 200 in 10ms
+ POST /api/users 400 in 12ms
+ ✓ Compiled /api/project-teams in 139ms
+ POST /api/project-teams 201 in 157ms
+ ✓ Compiled /api/project-teams/[id]/members in 134ms
+ GET /api/project-teams/team_1751216398774_c2jd1gk/members 200 in 374ms
+ POST /api/project-teams/team_1751216398774_c2jd1gk/members 404 in 13ms
+ ✓ Compiled /api/project-teams/[id] in 145ms
+ DELETE /api/project-teams/team_1751216398774_c2jd1gk 200 in 386ms
+ GET /login?redirectedFrom=%2Fdashboard 200 in 26ms
+ GET /api/roles 200 in 15ms
+ GET /api/roles 200 in 12ms
+ GET /api/roles 200 in 12ms
+ GET /api/users?email=student.ce001@gppalanpur.ac.in 200 in 20ms
+ ✓ Compiled /api/institutes/[id] in 148ms
+Looking for institute with id: inst_gpp
+Searching by custom id field
+Found institute in MongoDB: NO
+ GET /api/institutes/inst_gpp 404 in 583ms
+Error fetching institute inst_gpp for domain: Failed to fetch institute with id inst_gpp. Using default domain 'gpp.ac.in'.
+ POST /api/users 201 in 603ms
+ GET /api/users?email=student.me002@gppalanpur.ac.in 200 in 13ms
+Looking for institute with id: inst_gpp
+Searching by custom id field
+Found institute in MongoDB: NO
+ GET /api/institutes/inst_gpp 404 in 14ms
+Error fetching institute inst_gpp for domain: Failed to fetch institute with id inst_gpp. Using default domain 'gpp.ac.in'.
+ POST /api/users 201 in 27ms
+ GET /api/users?email=student.ce003@gppalanpur.ac.in 200 in 12ms
+Looking for institute with id: inst_gpp
+Searching by custom id field
+Found institute in MongoDB: NO
+ GET /api/institutes/inst_gpp 404 in 11ms
+Error fetching institute inst_gpp for domain: Failed to fetch institute with id inst_gpp. Using default domain 'gpp.ac.in'.
+ POST /api/users 201 in 25ms
+ GET /api/users?email=student.ce004@gppalanpur.ac.in 200 in 13ms
+Looking for institute with id: inst_gpp
+Searching by custom id field
+Found institute in MongoDB: NO
+ GET /api/institutes/inst_gpp 404 in 12ms
+Error fetching institute inst_gpp for domain: Failed to fetch institute with id inst_gpp. Using default domain 'gpp.ac.in'.
+ POST /api/users 201 in 27ms
+ GET /api/users?email=student.ce005@gppalanpur.ac.in 200 in 11ms
+Looking for institute with id: inst_gpp
+Searching by custom id field
+Found institute in MongoDB: NO
+ GET /api/institutes/inst_gpp 404 in 16ms
+Error fetching institute inst_gpp for domain: Failed to fetch institute with id inst_gpp. Using default domain 'gpp.ac.in'.
+ POST /api/users 201 in 30ms
+ GET /api/users?email=student.ce006@gppalanpur.ac.in 200 in 12ms
+Looking for institute with id: inst_gpp
+Searching by custom id field
+Found institute in MongoDB: NO
+ GET /api/institutes/inst_gpp 404 in 12ms
+Error fetching institute inst_gpp for domain: Failed to fetch institute with id inst_gpp. Using default domain 'gpp.ac.in'.
+ POST /api/users 201 in 28ms
+ GET /api/users?email=student.ce007@gppalanpur.ac.in 200 in 12ms
+Looking for institute with id: inst_gpp
+Searching by custom id field
+Found institute in MongoDB: NO
+ GET /api/institutes/inst_gpp 404 in 11ms
+Error fetching institute inst_gpp for domain: Failed to fetch institute with id inst_gpp. Using default domain 'gpp.ac.in'.
+ POST /api/users 201 in 27ms
+ POST /api/project-teams 201 in 15ms
+ GET /api/project-teams/team_1751216612615_2pthppw/members 200 in 13ms
+ POST /api/project-teams/team_1751216612615_2pthppw/members 404 in 14ms
+ DELETE /api/project-teams/team_1751216612615_2pthppw 200 in 13ms

@@ -80,13 +80,57 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
       { id: 'user_student_ce007_gpp', displayName: 'Student CE007', fullName: 'Student CE007', email: 'student.ce007@gppalanpur.ac.in', username: 'student_ce007', enrollmentNo: '220010107007', role: 'student', roles: ['student'] }
     ];
     
-    // Check what users exist in the system by calling the GET endpoint
-    const existingUsersResponse = await page.request.get('/api/users');
-    if (existingUsersResponse.status() === 200) {
-      const existingUsers = await existingUsersResponse.json();
-      console.log('Existing users in system:', existingUsers.length);
-      if (existingUsers.length > 0) {
-        console.log('Sample existing user:', existingUsers[0]);
+    // Create test users if they don't exist
+    for (const user of users) {
+      try {
+        // Check if user already exists
+        const existingUserResponse = await page.request.get(`/api/users?email=${user.email}`);
+        if (existingUserResponse.status() === 200) {
+          const existingUsersData = await existingUserResponse.json();
+          const userExists = Array.isArray(existingUsersData) 
+            ? existingUsersData.some((u: any) => u.email === user.email || u.id === user.id)
+            : existingUsersData.email === user.email || existingUsersData.id === user.id;
+          
+          if (!userExists) {
+            // Create the user
+            const createUserData = {
+              id: user.id,
+              fullName: user.fullName,
+              firstName: user.displayName.split(' ')[0] || 'Student',
+              lastName: user.displayName.split(' ').slice(1).join(' ') || 'User',
+              displayName: user.displayName,
+              email: user.email,
+              username: user.username,
+              roles: user.roles,
+              currentRole: user.role,
+              password: 'testpass123', // Required field with min 6 characters
+              authProviders: ['password'],
+              isActive: true,
+              isEmailVerified: true,
+              instituteId: 'inst_gpp',
+              instituteEmail: user.email,
+              preferences: {
+                theme: 'system',
+                language: 'en',
+                notifications: { email: true, push: true, sms: false },
+                dashboard: { favorites: [] }
+              }
+            };
+            
+            const createResponse = await page.request.post('/api/users', {
+              data: createUserData
+            });
+            
+            if (createResponse.status() === 201) {
+              console.log(`Created test user: ${user.displayName}`);
+            } else {
+              const errorData = await createResponse.json().catch(() => ({}));
+              console.warn(`Failed to create user ${user.displayName}: ${createResponse.status()} - ${errorData.message || 'Unknown error'}`);
+            }
+          }
+        }
+      } catch (error) {
+        console.warn(`Failed to create test user ${user.displayName}:`, error);
       }
     }
   });
