@@ -658,15 +658,19 @@ const projectTeamSchema = new Schema<IProjectTeam>({
   id: { type: String, unique: true, sparse: true }, // Custom ID field
   
   name: { type: String, required: true },
+  description: { type: String },
   department: { type: String, required: true },
   eventId: { type: String, required: true },
+  maxMembers: { type: Number },
+  status: { type: String, enum: ['active', 'inactive', 'completed'], default: 'active' },
   
   members: [{
     userId: { type: String, required: true },
     name: { type: String, required: true },
     enrollmentNo: { type: String, required: true },
     role: { type: String, required: true },
-    isLeader: { type: Boolean, required: true, default: false }
+    isLeader: { type: Boolean, required: true, default: false },
+    joinedAt: { type: String, default: () => new Date().toISOString() }
   }],
   
   createdBy: { type: String },

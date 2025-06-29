@@ -1,11 +1,7 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { ProjectTeam } from '@/types/entities';
-
-// Ensure the global store is initialized if not already
-if (!(global as any).__API_PROJECT_TEAMS_STORE__) {
-  (global as any).__API_PROJECT_TEAMS_STORE__ = [];
-}
+import { connectMongoose } from '@/lib/mongodb';
+import { ProjectTeamModel } from '@/lib/models';
 
 interface RouteParams {
   params: Promise<{
@@ -15,42 +11,45 @@ interface RouteParams {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id: teamId, memberUserId } = await params;
-  let currentProjectTeamsStore = global.__API_PROJECT_TEAMS_STORE__ as ProjectTeam[];
+  try {
+    await connectMongoose();
+    const { id: teamId, memberUserId } = await params;
 
-  if (!Array.isArray(currentProjectTeamsStore)) {
-    currentProjectTeamsStore = []; 
-    global.__API_PROJECT_TEAMS_STORE__ = currentProjectTeamsStore;
-    return NextResponse.json({ message: 'Team data store issue, please retry or contact admin.' }, { status: 500 });
+    // Check if teamId is a valid MongoDB ObjectId
+    const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(teamId);
+    
+    const query = isValidObjectId 
+      ? { $or: [{ id: teamId }, { _id: teamId }] }
+      : { id: teamId };
+      
+    const team = await ProjectTeamModel.findOne(query);
+
+    if (!team) {
+      return NextResponse.json({ message: 'Team not found' }, { status: 404 });
+    }
+
+    if (team.members.length <= 1) {
+      return NextResponse.json({ message: 'Team must have at least one member. Cannot remove the last member.' }, { status: 400 });
+    }
+
+    const memberToRemove = team.members.find(m => m.userId === memberUserId);
+    if (!memberToRemove) {
+      return NextResponse.json({ message: 'Member not found in this team' }, { status: 404 });
+    }
+
+    if (memberToRemove.isLeader && team.members.filter(m => m.isLeader).length === 1) {
+      return NextResponse.json({ message: 'Cannot remove the only team leader. Assign another leader first.' }, { status: 400 });
+    }
+
+    team.members = team.members.filter(m => m.userId !== memberUserId);
+    team.updatedAt = new Date().toISOString();
+    team.updatedBy = "user_admin_placeholder_member_remove"; 
+    
+    await team.save();
+
+    return NextResponse.json({ status: 'success', data: { team: team.toJSON() } }, { status: 200 });
+  } catch (error) {
+    console.error('Error removing team member:', error);
+    return NextResponse.json({ message: 'Error removing team member', error: (error as Error).message }, { status: 500 });
   }
-
-  const teamIndex = currentProjectTeamsStore.findIndex(t => t.id === teamId);
-
-  if (teamIndex === -1) {
-    return NextResponse.json({ message: 'Team not found' }, { status: 404 });
-  }
-
-  const team = { ...currentProjectTeamsStore[teamIndex] }; 
-
-  if (team.members.length <= 1) {
-    return NextResponse.json({ message: 'Team must have at least one member. Cannot remove the last member.' }, { status: 400 });
-  }
-
-  const memberToRemove = team.members.find(m => m.userId === memberUserId);
-  if (!memberToRemove) {
-    return NextResponse.json({ message: 'Member not found in this team' }, { status: 404 });
-  }
-
-  if (memberToRemove.isLeader && team.members.filter(m => m.isLeader).length === 1) {
-    return NextResponse.json({ message: 'Cannot remove the only team leader. Assign another leader first.' }, { status: 400 });
-  }
-
-  team.members = team.members.filter(m => m.userId !== memberUserId);
-  team.updatedAt = new Date().toISOString();
-  team.updatedBy = "user_admin_placeholder_member_remove"; 
-  
-  currentProjectTeamsStore[teamIndex] = team;
-  global.__API_PROJECT_TEAMS_STORE__ = currentProjectTeamsStore; 
-
-  return NextResponse.json({ status: 'success', data: { team } }, { status: 200 });
 }

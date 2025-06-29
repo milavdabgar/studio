@@ -1,14 +1,8 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { ProjectTeam, User, ProjectTeamMember } from '@/types/entities'; 
-
-// Ensure the global stores are initialized if not already
-if (!(global as any).__API_PROJECT_TEAMS_STORE__) {
-  (global as any).__API_PROJECT_TEAMS_STORE__ = [];
-}
-if (!(global as any).__API_USERS_STORE__) {
-  (global as any).__API_USERS_STORE__ = [];
-}
+import type { ProjectTeamMember } from '@/types/entities'; 
+import { connectMongoose } from '@/lib/mongodb';
+import { ProjectTeamModel, UserModel } from '@/lib/models';
 
 interface RouteParams {
   params: Promise<{
@@ -17,84 +11,109 @@ interface RouteParams {
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id: teamId } = await params;
-  const projectTeamsStoreRef = global.__API_PROJECT_TEAMS_STORE__ as ProjectTeam[];
-  const usersStoreRef = global.__API_USERS_STORE__ as User[];
+  try {
+    await connectMongoose();
+    const { id: teamId } = await params;
 
+    // Check if teamId is a valid MongoDB ObjectId
+    const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(teamId);
+    
+    const query = isValidObjectId 
+      ? { $or: [{ id: teamId }, { _id: teamId }] }
+      : { id: teamId };
+      
+    const team = await ProjectTeamModel.findOne(query).lean();
 
-  if (!Array.isArray(projectTeamsStoreRef) || !Array.isArray(usersStoreRef)) {
-      global.__API_PROJECT_TEAMS_STORE__ = [];
-      global.__API_USERS_STORE__ = [];
-      return NextResponse.json({ message: 'Data store issue, please retry or contact admin.' }, { status: 500 });
-  }
+    if (!team) {
+      return NextResponse.json({ message: 'Team not found' }, { status: 404 });
+    }
 
-  const team = projectTeamsStoreRef.find(t => t.id === teamId);
+    // Get member details with user information
+    const memberDetails = await Promise.all(
+      team.members.map(async member => {
+        // Check if userId is a valid MongoDB ObjectId
+        const isValidUserObjectId = /^[0-9a-fA-F]{24}$/.test(member.userId);
+        
+        const userQuery = isValidUserObjectId 
+          ? { $or: [{ id: member.userId }, { _id: member.userId }] }
+          : { id: member.userId };
+          
+        const user = await UserModel.findOne(userQuery).lean();
+        
+        return {
+          id: member._id,
+          userId: member.userId,
+          name: user?.displayName || member.name || 'Unknown User', 
+          enrollmentNo: member.enrollmentNo,
+          role: member.role,
+          isLeader: member.isLeader,
+          joinedAt: member.joinedAt,
+          email: user?.email, 
+        };
+      })
+    );
 
-  if (!team) {
-    return NextResponse.json({ message: 'Team not found' }, { status: 404 });
-  }
-
-  const memberDetails = team.members.map(member => {
-    const user = usersStoreRef.find(u => u.id === member.userId);
-    return {
-      userId: member.userId,
-      name: user?.displayName || member.name || 'Unknown User', 
-      enrollmentNo: member.enrollmentNo,
-      role: member.role,
-      isLeader: member.isLeader,
-      email: user?.email, 
-    };
-  });
-
-  return NextResponse.json({
-    status: 'success',
-    data: {
-        teamId: team.id,
+    return NextResponse.json({
+      status: 'success',
+      data: {
+        teamId: team.id || team._id,
         teamName: team.name,
         members: memberDetails,
-    }
-  });
+      }
+    });
+  } catch (error) {
+    console.error('Error getting team members:', error);
+    return NextResponse.json({ message: 'Error getting team members', error: (error as Error).message }, { status: 500 });
+  }
 }
 
 export async function POST(request: NextRequest, { params }: RouteParams) {
-  const { id: teamId } = await params;
-  const projectTeamsStoreRef = global.__API_PROJECT_TEAMS_STORE__ as ProjectTeam[];
-  const usersStoreRef = global.__API_USERS_STORE__ as User[];
-
-  if (!Array.isArray(projectTeamsStoreRef) || !Array.isArray(usersStoreRef)) {
-      global.__API_PROJECT_TEAMS_STORE__ = [];
-      global.__API_USERS_STORE__ = [];
-      return NextResponse.json({ message: 'Data store issue, please retry or contact admin.' }, { status: 500 });
-  }
-  
-  const teamIndex = projectTeamsStoreRef.findIndex(t => t.id === teamId);
-
-  if (teamIndex === -1) {
-    return NextResponse.json({ message: 'Team not found' }, { status: 404 });
-  }
-  
-  const team = { ...projectTeamsStoreRef[teamIndex] }; 
-
   try {
+    await connectMongoose();
+    const { id: teamId } = await params;
+
+    // Check if teamId is a valid MongoDB ObjectId
+    const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(teamId);
+    
+    const query = isValidObjectId 
+      ? { $or: [{ id: teamId }, { _id: teamId }] }
+      : { id: teamId };
+      
+    const team = await ProjectTeamModel.findOne(query);
+
+    if (!team) {
+      return NextResponse.json({ message: 'Team not found' }, { status: 404 });
+    }
+
     const { userId, name, enrollmentNo, role, isLeader } = await request.json() as Partial<ProjectTeamMember> & { userId: string };
 
     if (!userId || !name || !enrollmentNo) {
       return NextResponse.json({ message: 'User ID, name, and enrollment number are required for a new member.' }, { status: 400 });
     }
     
-    if (team.members.length >= 4) {
-      return NextResponse.json({ message: 'Team cannot have more than 4 members' }, { status: 400 });
+    // Check maximum members limit (use team's maxMembers or default to 4)
+    const maxMembers = team.maxMembers || 4;
+    if (team.members.length >= maxMembers) {
+      return NextResponse.json({ message: `Team cannot have more than ${maxMembers} members` }, { status: 400 });
     }
 
+    // Check for duplicate member
     if (team.members.some(m => m.userId === userId)) {
       return NextResponse.json({ message: 'User is already a member of this team' }, { status: 400 });
     }
 
-    const userExists = usersStoreRef.find(u => u.id === userId);
+    // Verify user exists
+    const isValidUserObjectId = /^[0-9a-fA-F]{24}$/.test(userId);
+    
+    const userQuery = isValidUserObjectId 
+      ? { $or: [{ id: userId }, { _id: userId }] }
+      : { id: userId };
+      
+    const userExists = await UserModel.findOne(userQuery).lean();
+    
     if (!userExists) {
-        return NextResponse.json({ message: `User with ID ${userId} not found.`}, {status: 404});
+      return NextResponse.json({ message: `User with ID ${userId} not found.`}, {status: 404});
     }
-
 
     const newMember: ProjectTeamMember = {
       userId,
@@ -102,18 +121,18 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       enrollmentNo,
       role: role || 'Member',
       isLeader: isLeader || false,
+      joinedAt: new Date().toISOString()
     };
 
     team.members.push(newMember);
     team.updatedAt = new Date().toISOString();
     team.updatedBy = "user_admin_placeholder_member_add"; 
 
-    projectTeamsStoreRef[teamIndex] = team; 
-    global.__API_PROJECT_TEAMS_STORE__ = projectTeamsStoreRef; 
+    await team.save();
 
-    return NextResponse.json({ status: 'success', data: { team } }, { status: 200 });
+    return NextResponse.json({ status: 'success', data: { team: team.toJSON() } }, { status: 200 });
   } catch (error) {
-    console.error(`Error adding member to team ${teamId}:`, error);
+    console.error(`Error adding member to team:`, error);
     return NextResponse.json({ message: 'Error adding member to team', error: (error as Error).message }, { status: 500 });
   }
 }

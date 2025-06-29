@@ -85,9 +85,22 @@ export async function POST(request: NextRequest) {
     }
 
     const currentTimestamp = new Date().toISOString();
+    
+    // Ensure members have joinedAt timestamps
+    const processedMembers = teamData.members?.map(member => ({
+      ...member,
+      joinedAt: member.joinedAt || currentTimestamp
+    })) || [];
+    
     const newTeamData = {
       id: generateTeamIdInternal(),
-      ...teamData,
+      name: teamData.name,
+      description: teamData.description,
+      department: teamData.department,
+      eventId: teamData.eventId,
+      maxMembers: teamData.maxMembers,
+      status: teamData.status || 'active',
+      members: processedMembers,
       createdBy: "user_admin_placeholder", 
       updatedBy: "user_admin_placeholder",
       createdAt: currentTimestamp,
