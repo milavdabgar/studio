@@ -1,47 +1,20 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
 import type { CourseOffering, Course, Program, Batch, Enrollment, Faculty } from '@/types/entities';
-
-// Assume these global stores are populated as in other API routes
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_COURSE_OFFERINGS_STORE__: CourseOffering[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_COURSES_STORE__: Course[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_PROGRAMS_STORE__: Program[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_BATCHES_STORE__: Batch[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_ENROLLMENTS_STORE__: Enrollment[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_FACULTY_STORE__: Faculty[] | undefined;
-
-}
-
-const ensureStore = (storeName: string, defaultData: any[] = []) => {
-  if (!global[storeName as keyof typeof global] || !Array.isArray(global[storeName as keyof typeof global])) {
-    console.warn(`${storeName} API Store was not an array or undefined. Initializing.`);
-    global[storeName as keyof typeof global] = [...defaultData] as any;
-  }
-};
-
-ensureStore('__API_COURSE_OFFERINGS_STORE__');
-ensureStore('__API_COURSES_STORE__');
-ensureStore('__API_PROGRAMS_STORE__');
-ensureStore('__API_BATCHES_STORE__');
-ensureStore('__API_ENROLLMENTS_STORE__');
-ensureStore('__API_FACULTY_STORE__');
-
+import { CourseOfferingModel, CourseModel, ProgramModel, BatchModel, EnrollmentModel, FacultyModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 export async function GET(request: NextRequest) {
   try {
-    const courseOfferingsStore: CourseOffering[] = global.__API_COURSE_OFFERINGS_STORE__!;
-    const coursesStore: Course[] = global.__API_COURSES_STORE__!;
-    const programsStore: Program[] = global.__API_PROGRAMS_STORE__!;
-    const batchesStore: Batch[] = global.__API_BATCHES_STORE__!;
-    const enrollmentsStore: Enrollment[] = global.__API_ENROLLMENTS_STORE__!;
-    const facultyStore: Faculty[] = global.__API_FACULTY_STORE__!;
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    
+    // Fetch data from MongoDB
+    const courseOfferingsStore = await CourseOfferingModel.find({}).lean() as any[] as CourseOffering[];
+    const coursesStore = await CourseModel.find({}).lean() as any[] as Course[];
+    const programsStore = await ProgramModel.find({}).lean() as any[] as Program[];
+    const batchesStore = await BatchModel.find({}).lean() as any[] as Batch[];
+    const enrollmentsStore = await EnrollmentModel.find({}).lean() as any[] as Enrollment[];
+    const facultyStore = await FacultyModel.find({}).lean() as any[] as Faculty[];
 
 
     const { searchParams } = new URL(request.url);
@@ -72,7 +45,10 @@ export async function GET(request: NextRequest) {
       const batch = batchesStore.find(b => b.id === co.batchId);
       const program = programsStore.find(p => p.id === (batch?.programId || co.programId)); // Fallback to co.programId
       const enrolledStudents = enrollmentsStore.filter(e => e.courseOfferingId === co.id && e.status === 'enrolled').length;
-      const facultyNames = co.facultyIds.map(fid => facultyStore.find(f => f.id === fid)?.displayName || 'Unknown Faculty').filter(Boolean);
+      const facultyNames = co.facultyIds.map(fid => {
+        const faculty = facultyStore.find(f => f.id === fid);
+        return faculty ? (faculty as any).name || (faculty as any).displayName || 'Unknown Faculty' : 'Unknown Faculty';
+      }).filter(Boolean);
 
       return {
         courseOfferingId: co.id,

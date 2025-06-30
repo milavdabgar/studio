@@ -1,42 +1,21 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Student, Program, Batch, Institute } from '@/types/entities';
-
-// Assume these global stores are populated as in other API routes
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_STUDENTS_STORE__: Student[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_PROGRAMS_STORE__: Program[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_BATCHES_STORE__: Batch[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_INSTITUTES_STORE__: Institute[] | undefined;
-}
-
-const ensureStore = (storeName: string, defaultData: any[] = []) => {
-  if (!global[storeName as keyof typeof global] || !Array.isArray(global[storeName as keyof typeof global])) {
-    console.warn(`${storeName} API Store was not an array or undefined. Initializing.`);
-    global[storeName as keyof typeof global] = [...defaultData] as any;
-  }
-};
-
-ensureStore('__API_STUDENTS_STORE__');
-ensureStore('__API_PROGRAMS_STORE__');
-ensureStore('__API_BATCHES_STORE__');
-ensureStore('__API_INSTITUTES_STORE__');
-
+import { StudentModel, ProgramModel, BatchModel, InstituteModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 export async function GET(request: NextRequest) {
   try {
-    const studentsStore: Student[] = global.__API_STUDENTS_STORE__!;
-    const programsStore: Program[] = global.__API_PROGRAMS_STORE__!;
-    const batchesStore: Batch[] = global.__API_BATCHES_STORE__!;
-    const institutesStore: Institute[] = global.__API_INSTITUTES_STORE__!;
-
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    
     const { searchParams } = new URL(request.url);
     const filterInstituteId = searchParams.get('instituteId');
-    // const filterAcademicYear = searchParams.get('academicYear'); // Not directly used on student, would need to filter batches/programs first
+
+    // Fetch data from MongoDB
+    const studentsStore = await StudentModel.find({}).lean() as any[] as Student[];
+    const programsStore = await ProgramModel.find({}).lean() as any[] as Program[];
+    const batchesStore = await BatchModel.find({}).lean() as any[] as Batch[];
+    const institutesStore = await InstituteModel.find({}).lean() as any[] as Institute[];
 
     const reportData: {
       byInstitute: Array<{
