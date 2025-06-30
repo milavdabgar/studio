@@ -3,46 +3,48 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Committee, UserRole, SystemUser as User, Role } from '@/types/entities';
 import { isValid, parseISO } from 'date-fns';
 import { userService } from '@/lib/api/users';
+import { connectMongoose } from '@/lib/mongodb';
+import { CommitteeModel } from '@/lib/models';
 
-declare global {
-  var __API_COMMITTEES_STORE__: Committee[] | undefined;
-  var __API_ROLES_STORE__: Role[] | undefined;
-}
-
-const now = new Date().toISOString();
-
-if (!global.__API_COMMITTEES_STORE__ || global.__API_COMMITTEES_STORE__.length === 0) {
-  global.__API_COMMITTEES_STORE__ = [
-    {
-      id: "cmt_arc_gpp",
-      name: "Anti-Ragging Committee",
-      code: "ARC_GPP",
-      purpose: "To prevent ragging and ensure a safe campus environment.",
-      instituteId: "inst1",
-      formationDate: "2023-07-01",
-      status: "active",
-      convenerId: "user_hod_ce_gpp", // Example convener (HOD Computer)
-      createdAt: now,
-      updatedAt: now,
-    },
-    {
-      id: "cmt_cwan_gpp",
-      name: "College Website & Network Committee",
-      code: "CWAN_GPP",
-      description: "Manages and maintains the college website and network infrastructure.",
-      purpose: "To oversee digital presence and IT infrastructure.",
-      instituteId: "inst1",
-      formationDate: "2023-01-15",
-      status: "active",
-      convenerId: "user_committee_convener_gpp", // Specific convener for CWAN
-      createdAt: now,
-      updatedAt: now,
-    }
-  ];
-}
-
-if (!global.__API_ROLES_STORE__) { 
-  global.__API_ROLES_STORE__ = [];
+// Initialize default committees if none exist
+async function initializeDefaultCommittees() {
+  await connectMongoose();
+  const committeeCount = await CommitteeModel.countDocuments();
+  
+  if (committeeCount === 0) {
+    const now = new Date().toISOString();
+    const defaultCommittees = [
+      {
+        id: "cmt_arc_gpp",
+        name: "Anti-Ragging Committee",
+        code: "ARC_GPP",
+        purpose: "To prevent ragging and ensure a safe campus environment.",
+        instituteId: "inst1",
+        formationDate: "2023-07-01",
+        status: "active",
+        convenerId: "user_hod_ce_gpp",
+        members: [],
+        createdAt: now,
+        updatedAt: now,
+      },
+      {
+        id: "cmt_cwan_gpp",
+        name: "College Website & Network Committee",
+        code: "CWAN_GPP",
+        description: "Manages and maintains the college website and network infrastructure.",
+        purpose: "To oversee digital presence and IT infrastructure.",
+        instituteId: "inst1",
+        formationDate: "2023-01-15",
+        status: "active",
+        convenerId: "user_committee_convener_gpp",
+        members: [],
+        createdAt: now,
+        updatedAt: now,
+      }
+    ];
+    
+    await CommitteeModel.insertMany(defaultCommittees);
+  }
 }
 
 
@@ -150,8 +152,23 @@ async function createOrUpdateCommitteeRoles(committee: Committee, isUpdate: bool
 
 
 export async function GET() {
-  const committeesStore = global.__API_COMMITTEES_STORE__ || [];
-  return NextResponse.json(committeesStore);
+  try {
+    await connectMongoose();
+    await initializeDefaultCommittees();
+    
+    const committees = await CommitteeModel.find({}).lean();
+    
+    // Format committees to ensure proper id field
+    const committeesWithId = committees.map(committee => ({
+      ...committee,
+      id: committee.id || (committee as any)._id.toString()
+    }));
+
+    return NextResponse.json(committeesWithId);
+  } catch (error) {
+    console.error('Error in GET /api/committees:', error);
+    return NextResponse.json({ message: 'Internal server error processing committees request.', error: (error as Error).message }, { status: 500 });
+  }
 }
 
 export async function POST(request: NextRequest) {
