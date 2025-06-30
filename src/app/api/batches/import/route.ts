@@ -1,17 +1,16 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Batch, Program, BatchStatus } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
-
-const batchesStore: Batch[] = (global as any).__API_BATCHES_STORE__ || [];
-if (!(global as any).__API_BATCHES_STORE__) {
-  (global as any).__API_BATCHES_STORE__ = batchesStore;
-}
+import { BatchModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 const generateIdForImport = (): string => `batch_imp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 const BATCH_STATUS_OPTIONS: BatchStatus[] = ['upcoming', 'active', 'completed', 'inactive'];
 
 export async function POST(request: NextRequest) {
   try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const programsJson = formData.get('programs') as string | null;
@@ -33,7 +32,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (parseErrors.length > 0) {
-      const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row + 2}: ${e.message} (Code: ${e.code})`);
+      const errorMessages = parseErrors.map((e: ParseError) => `Row ${(e.row || 0) + 2}: ${e.message} (Code: ${e.code})`);
       return NextResponse.json({ message: 'Error parsing Batches CSV file.', errors: errorMessages }, { status: 400 });
     }
 
@@ -95,41 +94,54 @@ export async function POST(request: NextRequest) {
           skippedCount++; continue;
       }
 
-      const batchDataFromCsv: Omit<Batch, 'id' | 'createdAt' | 'updatedAt'> = {
+      const batchDataFromCsv = {
         name, programId, startAcademicYear, status,
         endAcademicYear,
         maxIntake: row.maxintake && !isNaN(parseInt(row.maxintake.toString(),10)) ? parseInt(row.maxintake.toString(),10) : undefined,
       };
 
       const idFromCsv = row.id?.toString().trim();
-      let existingBatchIndex = -1;
+      let existingBatch = null;
 
       if (idFromCsv) {
-        existingBatchIndex = batchesStore.findIndex(b => b.id === idFromCsv);
+        existingBatch = await BatchModel.findOne({ 
+          $or: [{ id: idFromCsv }, { _id: idFromCsv }] 
+        });
       } else {
-        existingBatchIndex = batchesStore.findIndex(b => b.name.toLowerCase() === name.toLowerCase() && b.programId === programId);
+        existingBatch = await BatchModel.findOne({ 
+          name: { $regex: new RegExp(`^${name}$`, 'i') },
+          programId: programId
+        });
       }
 
-      if (existingBatchIndex !== -1) {
-        batchesStore[existingBatchIndex] = { ...batchesStore[existingBatchIndex], ...batchDataFromCsv, updatedAt: now };
+      if (existingBatch) {
+        await BatchModel.findOneAndUpdate(
+          { _id: existingBatch._id },
+          { ...batchDataFromCsv, updatedAt: now }
+        );
         updatedCount++;
       } else {
-        if (batchesStore.some(b => b.name.toLowerCase() === name.toLowerCase() && b.programId === programId)) {
+        const duplicate = await BatchModel.findOne({ 
+          name: { $regex: new RegExp(`^${name}$`, 'i') },
+          programId: programId
+        });
+        
+        if (duplicate) {
           importErrors.push({ row: rowIndex, message: `Batch with name '${name}' already exists for this program.`, data: row });
           skippedCount++; continue;
         }
-        const newBatch: Batch = {
+        
+        const newBatch = new BatchModel({
           id: idFromCsv || generateIdForImport(),
           ...batchDataFromCsv,
           createdAt: now,
           updatedAt: now,
-        };
-        batchesStore.push(newBatch);
+        });
+        
+        await newBatch.save();
         newCount++;
       }
     }
-
-    (global as any).__API_BATCHES_STORE__ = batchesStore;
 
     if (importErrors.length > 0) {
         return NextResponse.json({ 

@@ -2,20 +2,14 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Course, Department, Program } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
-
-const coursesStore: Course[] = (global as any).__API_COURSES_STORE__ || [];
-if (!(global as any).__API_COURSES_STORE__) {
-  (global as any).__API_COURSES_STORE__ = coursesStore;
-}
-// Departments and Programs stores should be initialized if not already (handled by client sending data)
-// let departmentsStore: Department[] = (global as any).departmentsStore || [];
-// let programsStore: Program[] = (global as any).programsStore || [];
-
+import { CourseModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 const generateIdForImport = (): string => `crs_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function POST(request: NextRequest) {
   try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const departmentsJson = formData.get('departments') as string | null;
@@ -133,28 +127,46 @@ export async function POST(request: NextRequest) {
       };
 
       const idFromCsv = row.id?.toString().trim();
-      let existingCourseIndex = -1;
+      let existingCourse = null;
 
       if (idFromCsv) {
-        existingCourseIndex = coursesStore.findIndex(c => c.id === idFromCsv);
+        existingCourse = await CourseModel.findOne({ 
+          $or: [{ id: idFromCsv }, { _id: idFromCsv }] 
+        });
       } else { 
-        existingCourseIndex = coursesStore.findIndex(c => c.subcode === subcode && c.programId === programId);
+        existingCourse = await CourseModel.findOne({ 
+          subcode: subcode,
+          programId: programId
+        });
       }
 
-      if (existingCourseIndex !== -1) {
-        coursesStore[existingCourseIndex] = { ...coursesStore[existingCourseIndex], ...courseData };
+      if (existingCourse) {
+        await CourseModel.findOneAndUpdate(
+          { _id: existingCourse._id },
+          courseData
+        );
         updatedCount++;
       } else {
-        if (coursesStore.some(c => c.subcode === subcode && c.programId === programId)) {
+        const duplicate = await CourseModel.findOne({ 
+          subcode: subcode,
+          programId: programId
+        });
+        
+        if (duplicate) {
              console.warn(`Skipping new course: Subcode ${subcode} already exists for program ${programId}. Row: ${JSON.stringify(row)}`);
              skippedCount++; continue;
         }
-        const newCourse: Course = { id: idFromCsv || generateIdForImport(), ...courseData };
-        coursesStore.push(newCourse);
+        
+        const newCourse = new CourseModel({
+          id: idFromCsv || generateIdForImport(),
+          ...courseData
+        });
+        
+        await newCourse.save();
         newCount++;
       }
     }
-    (global as any).__API_COURSES_STORE__ = coursesStore;
+
     return NextResponse.json({ message: 'Courses imported successfully.', newCount, updatedCount, skippedCount }, { status: 200 });
 
   } catch (error) {
