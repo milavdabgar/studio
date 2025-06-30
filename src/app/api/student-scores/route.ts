@@ -23,9 +23,9 @@ export async function GET(request: NextRequest) {
     const scores = await StudentAssessmentScoreModel.find(filter).lean();
 
     // Format scores to ensure proper id field
-    const scoresWithId = scores.map(score => ({
+    const scoresWithId = scores.map((score: any) => ({
       ...score,
-      id: score.id || (score as any)._id.toString()
+      id: (score as any).id || (score as any)._id.toString()
     }));
 
     if (assessmentId && studentId) {
@@ -98,8 +98,8 @@ export async function POST(request: NextRequest) {
     }
 
     const score = scoreStr !== undefined ? parseFloat(scoreStr) : undefined;
-    if (score !== undefined && (isNaN(score) || score < 0 || score > assessment.maxMarks)) {
-        return NextResponse.json({ message: `Score must be a non-negative number and not exceed assessment max marks (${assessment.maxMarks}).` }, { status: 400 });
+    if (score !== undefined && (isNaN(score) || score < 0 || score > (assessment as any).maxMarks)) {
+        return NextResponse.json({ message: `Score must be a non-negative number and not exceed assessment max marks (${(assessment as any).maxMarks}).` }, { status: 400 });
     }
 
     const currentTimestamp = new Date().toISOString();
@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
       }
 
       savedScoreRecord = await StudentAssessmentScoreModel.findByIdAndUpdate(
-        existingRecord._id,
+        (existingRecord as any)._id,
         updateData,
         { new: true, lean: true }
       );
@@ -166,13 +166,13 @@ export async function POST(request: NextRequest) {
       
       const newScore = new StudentAssessmentScoreModel(newScoreData);
       await newScore.save();
-      savedScoreRecord = newScore.toJSON();
+      savedScoreRecord = (newScore as any).toJSON();
     }
 
     // Format score to ensure proper id field
     const scoreWithId = {
       ...savedScoreRecord,
-      id: savedScoreRecord.id || savedScoreRecord._id.toString()
+      id: (savedScoreRecord as any).id || (savedScoreRecord as any)._id.toString()
     };
 
     // Notification Trigger
@@ -180,7 +180,7 @@ export async function POST(request: NextRequest) {
         try {
             await notificationService.createNotification({
               userId: studentId, 
-              message: `Your submission for '${assessment.name}' has been graded. Score: ${scoreWithId.score !== undefined ? scoreWithId.score : 'N/A'}.`,
+              message: `Your submission for '${(assessment as any).name}' has been graded. Score: ${(scoreWithId as any).score !== undefined ? (scoreWithId as any).score : 'N/A'}.`,
               type: 'assignment_graded',
               link: `/student/assignments/${assessmentId}`, 
             });
@@ -188,11 +188,11 @@ export async function POST(request: NextRequest) {
             console.error("Failed to create grading notification for student:", notifError);
           }
     } else if (filesArray.length > 0 || comments) { // This implies a student submission
-        if (assessment.facultyId) {
+        if ((assessment as any).facultyId) {
           try {
             await notificationService.createNotification({
-              userId: assessment.facultyId, 
-              message: `New submission for '${assessment.name}' by ${student.firstName || student.enrollmentNumber}.`,
+              userId: (assessment as any).facultyId, 
+              message: `New submission for '${(assessment as any).name}' by ${(student as any).firstName || (student as any).enrollmentNumber}.`,
               type: 'assignment_new',
               link: `/faculty/assessments/grade?assessmentId=${assessmentId}&studentId=${studentId}`, 
             });

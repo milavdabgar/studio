@@ -105,7 +105,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
 
   const fetchRoles = useCallback(async () => {
     try {
-      const roles = await roleService.getRoles();
+      const roles = await roleService.getAllRoles();
       setAllSystemRoles(roles);
     } catch (error) {
       console.error('Error fetching roles:', error);
@@ -137,7 +137,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
             <SidebarContent>
               <SidebarMenu>
                 {baseNavItems[currentUser.activeRole]?.map((item) => (
-                  <SidebarMenuItem key={item.id} active={pathname === item.href}>
+                  <SidebarMenuItem key={item.id}>
                     <Link href={item.href} >
                       <SidebarMenuButton>
                         <item.icon className="w-5 h-5" />

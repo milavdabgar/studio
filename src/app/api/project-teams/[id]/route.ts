@@ -25,7 +25,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     if (team) {
       const teamWithId = {
         ...team,
-        id: team.id || (team as any)._id.toString()
+        id: (team as any).id || (team as any)._id.toString()
       };
       return NextResponse.json({ status: 'success', data: { team: teamWithId } });
     }
@@ -64,7 +64,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     if (teamDataToUpdate.members && teamDataToUpdate.members.length === 0) {
         return NextResponse.json({ message: 'Team must have at least one member.' }, { status: 400 });
     }
-    if (teamDataToUpdate.members && !teamDataToUpdate.members.some((m: any) => m.isLeader)) {
+    if (teamDataToUpdate.members && !teamDataToUpdate.members.some((m: any) => (m as any).isLeader)) {
         return NextResponse.json({ message: 'Team must have at least one leader.' }, { status: 400 });
     }
 
@@ -77,10 +77,10 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     // Remove undefined fields and trim strings
     Object.keys(updateData).forEach((key: any) => {
-      if (updateData[key] === undefined) {
-        delete updateData[key];
-      } else if (typeof updateData[key] === 'string') {
-        updateData[key] = updateData[key].trim();
+      if ((updateData as any)[key] === undefined) {
+        delete (updateData as any)[key];
+      } else if (typeof (updateData as any)[key] === 'string') {
+        (updateData as any)[key] = (updateData as any)[key].trim();
       }
     });
 
@@ -98,7 +98,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     // Format response
     const teamToReturn = {
       ...updatedTeam,
-      id: updatedTeam.id || (updatedTeam as any)._id.toString()
+      id: (updatedTeam as any).id || (updatedTeam as any)._id.toString()
     };
 
     return NextResponse.json({ status: 'success', data: { team: teamToReturn } });

@@ -12,16 +12,17 @@ interface RouteParams {
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
+  const { scoreId } = await params;
+  
   try {
     await connectMongoose();
-    const { scoreId  } = await params;
     
     const scoreRecord = await StudentAssessmentScoreModel.findOne({ id: scoreId }).lean();
     if (scoreRecord) {
       // Format score to ensure proper id field
       const scoreWithId = {
         ...scoreRecord,
-        id: scoreRecord.id || scoreRecord._id.toString()
+        id: (scoreRecord as any).id || (scoreRecord as any)._id.toString()
       };
       return NextResponse.json(scoreWithId);
     }
@@ -33,9 +34,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
+  const { scoreId } = await params;
+  
   try {
     await connectMongoose();
-    const { scoreId  } = await params;
     
     const dataToUpdate = await request.json() as Partial<Omit<StudentAssessmentScore, 'id' | 'studentId' | 'assessmentId' | 'createdAt' | 'submissionDate'>>;
     
@@ -44,15 +46,15 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ message: 'Student score record not found' }, { status: 404 });
     }
 
-    const assessment = await AssessmentModel.findOne({ id: existingRecord.assessmentId }).lean();
+    const assessment = await AssessmentModel.findOne({ id: (existingRecord as any).assessmentId }).lean();
 
-    if (dataToUpdate.score !== undefined && (isNaN(dataToUpdate.score) || dataToUpdate.score < 0 || (assessment && dataToUpdate.score > assessment.maxMarks))) {
-        return NextResponse.json({ message: `Score must be a non-negative number and not exceed assessment max marks (${assessment?.maxMarks || 'N/A'}).` }, { status: 400 });
+    if (dataToUpdate.score !== undefined && (isNaN(dataToUpdate.score) || dataToUpdate.score < 0 || (assessment && dataToUpdate.score > (assessment as any).maxMarks))) {
+        return NextResponse.json({ message: `Score must be a non-negative number and not exceed assessment max marks (${(assessment as any)?.maxMarks || 'N/A'}).` }, { status: 400 });
     }
     
     const updateData: any = {
       ...dataToUpdate,
-      evaluatedBy: dataToUpdate.evaluatedBy || existingRecord.evaluatedBy || "faculty_placeholder_eval",
+      evaluatedBy: dataToUpdate.evaluatedBy || (existingRecord as any).evaluatedBy || "faculty_placeholder_eval",
       evaluatedAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -77,17 +79,17 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Format score to ensure proper id field
     const scoreWithId = {
       ...updatedRecord,
-      id: updatedRecord.id || updatedRecord._id.toString()
+      id: (updatedRecord as any).id || (updatedRecord as any)._id.toString()
     };
 
     // --- Notification Trigger for Student ---
     if (assessment) {
       try {
         await notificationService.createNotification({
-          userId: existingRecord.studentId, // Notify the student whose submission was graded
-          message: `Your submission for '${assessment.name}' has been graded. Score: ${scoreWithId.score !== undefined ? scoreWithId.score : 'N/A'}.`,
+          userId: (existingRecord as any).studentId, // Notify the student whose submission was graded
+          message: `Your submission for '${(assessment as any).name}' has been graded. Score: ${(scoreWithId as any).score !== undefined ? (scoreWithId as any).score : 'N/A'}.`,
           type: 'assignment_graded',
-          link: `/student/assignments/${existingRecord.assessmentId}`, // Link to the assignment detail page
+          link: `/student/assignments/${(existingRecord as any).assessmentId}`, // Link to the assignment detail page
         });
       } catch (notifError) {
         console.error("Failed to create grading notification for student:", notifError);
@@ -103,9 +105,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
+  const { scoreId } = await params;
+  
   try {
     await connectMongoose();
-    const { scoreId  } = await params;
     
     const deletedRecord = await StudentAssessmentScoreModel.findOneAndDelete({ id: scoreId });
     
