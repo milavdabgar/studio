@@ -1345,13 +1345,18 @@ export interface LeaveRequest {
 // Project Fair Statistics and Evaluation Data
 export interface ProjectStatistics {
   totalProjects: number;
+  total: number;
+  evaluated: number;
+  pending: number;
+  averageScore: number;
   departmentStats: Array<{
     departmentId: string;
     departmentName: string;
     projectCount: number;
   }>;
+  departmentWise: Record<string, number>;
   statusCounts: Record<ProjectStatus, number>;
-  averageScore?: number;
+  data?: ProjectStatistics;
 }
 
 export interface EvaluationData {

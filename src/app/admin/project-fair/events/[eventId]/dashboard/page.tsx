@@ -39,7 +39,16 @@ export default function ProjectEventDashboardPage() {
 
         // Fetch statistics for this event
         const statsData = await projectService.getProjectStatistics(eventId);
-        setStats(statsData && typeof statsData === 'object' ? (statsData.data || statsData) : { total: 0, evaluated: 0, pending: 0, averageScore: 0, departmentWise: {} });
+        setStats(statsData && typeof statsData === 'object' ? (statsData.data || statsData) : { 
+          totalProjects: 0, 
+          total: 0, 
+          evaluated: 0, 
+          pending: 0, 
+          averageScore: 0, 
+          departmentWise: {}, 
+          departmentStats: [], 
+          statusCounts: {} as any 
+        });
 
 
       } catch (error) {

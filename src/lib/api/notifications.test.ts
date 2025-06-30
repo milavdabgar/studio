@@ -30,7 +30,6 @@ describe('NotificationService API Tests', () => {
   const mockNotification: Notification = {
     id: "notif1",
     userId: "user1",
-    title: "Test Notification",
     message: "This is a test notification",
     type: "info",
     isRead: false,

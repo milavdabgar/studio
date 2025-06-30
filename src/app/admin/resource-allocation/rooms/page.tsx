@@ -239,8 +239,8 @@ export default function RoomAllocationManagementPage() {
             valB = rooms.find(r=>r.id === b.roomId)?.roomNumber || '';
         }
         if (sortField === 'startTime' || sortField === 'endTime') {
-            valA = new Date(valA).getTime();
-            valB = new Date(valB).getTime();
+            valA = new Date(valA as string | number | Date).getTime();
+            valB = new Date(valB as string | number | Date).getTime();
         }
         if (typeof valA === 'string' && typeof valB === 'string') return sortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
         if (typeof valA === 'number' && typeof valB === 'number') return sortDirection === 'asc' ? valA - valB : valB - valA;

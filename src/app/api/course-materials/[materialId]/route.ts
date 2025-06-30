@@ -11,16 +11,17 @@ interface RouteParams {
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
+  const { materialId } = await params;
+  
   try {
     await connectMongoose();
-    const { materialId } = await params;
     
     const material = await CourseMaterialModel.findOne({ id: materialId }).lean();
     if (material) {
       // Format material to ensure proper id field
       const materialWithId = {
         ...material,
-        id: material.id || (material as any)._id.toString()
+        id: (material as any).id || (material as any)._id?.toString()
       };
       return NextResponse.json(materialWithId);
     }
@@ -32,9 +33,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
+  const { materialId } = await params;
+  
   try {
     await connectMongoose();
-    const { materialId } = await params;
     
     const dataToUpdate = await request.json() as Partial<Omit<CourseMaterial, 'id' | 'courseOfferingId' | 'uploadedBy' | 'uploadedAt' | 'filePathOrUrl' | 'fileName' | 'fileSize'>>;
     
@@ -69,7 +71,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Format material to ensure proper id field
     const materialWithId = {
       ...updatedMaterial,
-      id: updatedMaterial.id || (updatedMaterial as any)._id.toString()
+      id: (updatedMaterial as any).id || (updatedMaterial as any)._id?.toString()
     };
 
     return NextResponse.json(materialWithId);
@@ -80,9 +82,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
+  const { materialId } = await params;
+  
   try {
     await connectMongoose();
-    const { materialId } = await params;
     
     const deletedMaterial = await CourseMaterialModel.findOneAndDelete({ id: materialId });
     

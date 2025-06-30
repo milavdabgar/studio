@@ -20,7 +20,7 @@ const permissionSchema = z.object({
 });
 
 async function applyRateLimiting(request: NextRequest): Promise<RateLimiterRes | null> {
-  const ipAddress = request.ip || 'unknown';
+  const ipAddress = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
   try {
     return await rateLimiter.consume(ipAddress);
   } catch (error) {

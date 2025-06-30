@@ -185,7 +185,7 @@ function calculateGenericScores<T extends { scores: { [key: string]: number }, c
         const overallScore = validQuestionCount > 0 ? totalSumOfAverages / validQuestionCount : 0;
         
         const resultEntry: Partial<FeedbackDataRow> & { Score: number } & { [key: string]: number } = { Score: overallScore };
-        groupByKeys.forEach(k => resultEntry[k] = entry[k]);
+        groupByKeys.forEach(k => (resultEntry as any)[k] = (entry as any)[k]);
         Object.assign(resultEntry, averageScores);
         
         return resultEntry;

@@ -11,16 +11,17 @@ interface RouteParams {
 
 // GET a specific enrollment by ID
 export async function GET(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
+  
   try {
     await connectMongoose();
-    const { id } = await params;
     
     const enrollment = await EnrollmentModel.findOne({ id }).lean();
     if (enrollment) {
       // Format enrollment to ensure proper id field
       const enrollmentWithId = {
         ...enrollment,
-        id: enrollment.id || (enrollment as any)._id.toString()
+        id: (enrollment as any).id || (enrollment as any)._id.toString()
       };
       return NextResponse.json(enrollmentWithId);
     }
@@ -33,9 +34,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 // PUT to update an enrollment (e.g., change status by admin/faculty)
 export async function PUT(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
+  
   try {
     await connectMongoose();
-    const { id } = await params;
     
     const enrollmentDataToUpdate = await request.json() as Partial<Omit<Enrollment, 'id' | 'studentId' | 'courseOfferingId' | 'createdAt'>>;
     
@@ -70,7 +72,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Format enrollment to ensure proper id field
     const enrollmentWithId = {
       ...updatedEnrollment,
-      id: updatedEnrollment.id || (updatedEnrollment as any)._id.toString()
+      id: (updatedEnrollment as any).id || (updatedEnrollment as any)._id.toString()
     };
 
     return NextResponse.json(enrollmentWithId);
@@ -82,9 +84,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 // DELETE an enrollment (e.g., student withdraws, admin removes)
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
+  
   try {
     await connectMongoose();
-    const { id } = await params;
     
     const deletedEnrollment = await EnrollmentModel.findOneAndDelete({ id });
     

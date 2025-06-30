@@ -67,11 +67,11 @@ export async function GET(request: NextRequest) {
     
     // Sort events
     eventsWithId.sort((a, b) => {
-      const dateA = a.eventDate ? parseISO(a.eventDate).getTime() : 0;
-      const dateB = b.eventDate ? parseISO(b.eventDate).getTime() : 0;
-      if (a.isActive && !b.isActive) return -1;
-      if (!a.isActive && b.isActive) return 1;
-      if (a.isActive) return dateA - dateB; 
+      const dateA = (a as any).eventDate ? parseISO((a as any).eventDate).getTime() : 0;
+      const dateB = (b as any).eventDate ? parseISO((b as any).eventDate).getTime() : 0;
+      if ((a as any).isActive && !(b as any).isActive) return -1;
+      if (!(a as any).isActive && (b as any).isActive) return 1;
+      if ((a as any).isActive) return dateA - dateB; 
       return dateB - dateA; 
     });
 

@@ -11,16 +11,17 @@ interface RouteParams {
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
+  
   try {
     await connectMongoose();
-    const { id } = await params;
     
     const examination = await ExaminationModel.findOne({ id }).lean();
     if (examination) {
       // Format examination to ensure proper id field
       const examinationWithId = {
         ...examination,
-        id: examination.id || (examination as any)._id.toString()
+        id: (examination as any).id || (examination as any)._id.toString()
       };
       return NextResponse.json(examinationWithId);
     }
@@ -32,9 +33,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
+  
   try {
     await connectMongoose();
-    const { id } = await params;
     
     const examinationDataToUpdate = await request.json() as Partial<Omit<Examination, 'id' | 'createdAt' | 'updatedAt'>>;
     
@@ -52,8 +54,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
     
     // Check date order if both dates are being updated
-    const finalStartDate = examinationDataToUpdate.startDate || existingExamination.startDate;
-    const finalEndDate = examinationDataToUpdate.endDate || existingExamination.endDate;
+    const finalStartDate = examinationDataToUpdate.startDate || (existingExamination as any).startDate;
+    const finalEndDate = examinationDataToUpdate.endDate || (existingExamination as any).endDate;
     
     if (parseISO(finalStartDate) >= parseISO(finalEndDate)) {
         return NextResponse.json({ message: 'End date must be after start date.' }, { status: 400 });
@@ -61,9 +63,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     // Check for duplicate examination if key fields are being changed
     if (examinationDataToUpdate.name || examinationDataToUpdate.academicYear || examinationDataToUpdate.examType) {
-      const finalName = examinationDataToUpdate.name || existingExamination.name;
-      const finalAcademicYear = examinationDataToUpdate.academicYear || existingExamination.academicYear;
-      const finalExamType = examinationDataToUpdate.examType || existingExamination.examType;
+      const finalName = examinationDataToUpdate.name || (existingExamination as any).name;
+      const finalAcademicYear = examinationDataToUpdate.academicYear || (existingExamination as any).academicYear;
+      const finalExamType = examinationDataToUpdate.examType || (existingExamination as any).examType;
       
       const duplicateExamination = await ExaminationModel.findOne({
         id: { $ne: id },
@@ -95,7 +97,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Format examination to ensure proper id field
     const examinationWithId = {
       ...updatedExamination,
-      id: updatedExamination.id || (updatedExamination as any)._id.toString()
+      id: (updatedExamination as any).id || (updatedExamination as any)._id.toString()
     };
 
     return NextResponse.json(examinationWithId);
@@ -106,9 +108,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
+  
   try {
     await connectMongoose();
-    const { id } = await params;
     
     const deletedExamination = await ExaminationModel.findOneAndDelete({ id });
     

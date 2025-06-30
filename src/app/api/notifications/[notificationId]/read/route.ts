@@ -11,10 +11,10 @@ interface RouteParams {
 }
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
+  const { notificationId } = await params;
+  
   try {
     await connectMongoose();
-    
-    const { notificationId } = await params;
     
     // Try to find by custom id first, then by MongoDB _id if it's a valid ObjectId
     let notification;

@@ -107,6 +107,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Department not found' }, { status: 404 });
   }
   global.__API_DEPARTMENTS_STORE__ = newStore;
-  departmentsStore = global.__API_DEPARTMENTS_STORE__;
+  // departmentsStore = global.__API_DEPARTMENTS_STORE__;
   return NextResponse.json({ message: 'Department deleted successfully' }, { status: 200 });
 }

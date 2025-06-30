@@ -11,16 +11,17 @@ interface RouteParams {
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
+  
   try {
     await connectMongoose();
-    const { id } = await params;
     
     const curriculum = await CurriculumModel.findOne({ id }).lean();
     if (curriculum) {
       // Format curriculum to ensure proper id field
       const curriculumWithId = {
         ...curriculum,
-        id: curriculum.id || (curriculum as any)._id.toString()
+        id: (curriculum as any).id || (curriculum as any)._id.toString()
       };
       return NextResponse.json(curriculumWithId);
     }
@@ -32,9 +33,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
+  
   try {
     await connectMongoose();
-    const { id } = await params;
     
     const curriculumDataToUpdate = await request.json() as Partial<Omit<Curriculum, 'id' | 'createdAt' | 'updatedAt'>>;
     
@@ -54,10 +56,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
     
     // Check for duplicate version
-    if (curriculumDataToUpdate.version && curriculumDataToUpdate.version.trim().toLowerCase() !== existingCurriculum.version.toLowerCase()) {
+    if (curriculumDataToUpdate.version && curriculumDataToUpdate.version.trim().toLowerCase() !== (existingCurriculum as any).version.toLowerCase()) {
         const duplicateCurriculum = await CurriculumModel.findOne({
           id: { $ne: id },
-          programId: curriculumDataToUpdate.programId || existingCurriculum.programId,
+          programId: curriculumDataToUpdate.programId || (existingCurriculum as any).programId,
           version: { $regex: new RegExp(`^${curriculumDataToUpdate.version.trim()}$`, 'i') }
         });
         
@@ -88,7 +90,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Format curriculum to ensure proper id field
     const curriculumWithId = {
       ...updatedCurriculum,
-      id: updatedCurriculum.id || (updatedCurriculum as any)._id.toString()
+      id: (updatedCurriculum as any).id || (updatedCurriculum as any)._id.toString()
     };
 
     return NextResponse.json(curriculumWithId);
@@ -99,9 +101,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
+  
   try {
     await connectMongoose();
-    const { id } = await params;
     
     const deletedCurriculum = await CurriculumModel.findOneAndDelete({ id });
     

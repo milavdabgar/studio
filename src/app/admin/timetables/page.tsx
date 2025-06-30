@@ -222,7 +222,7 @@ export default function TimetableManagementPage() {
     setEntryDayOfWeek(entry.dayOfWeek);
     setEntryStartTime(entry.startTime);
     setEntryEndTime(entry.endTime);
-    setEntryCourseOfferingId(entry.courseOfferingId);
+    setEntryCourseOfferingId(entry.courseOfferingId || '');
     setEntryFacultyId(entry.facultyId);
     setEntryRoomId(entry.roomId);
     setEntryType(entry.entryType);
@@ -430,7 +430,7 @@ export default function TimetableManagementPage() {
                 </div>
             </div>
             <div className="max-h-60 overflow-y-auto border rounded-md">
-                {currentEntries.length > 0 ? <Table size="sm"><TableHeader><TableRow><TableHead>Day</TableHead><TableHead>Time</TableHead><TableHead>Course</TableHead><TableHead>Faculty</TableHead><TableHead>Room</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
+                {currentEntries.length > 0 ? <Table><TableHeader><TableRow><TableHead>Day</TableHead><TableHead>Time</TableHead><TableHead>Course</TableHead><TableHead>Faculty</TableHead><TableHead>Room</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
                 <TableBody>{currentEntries.map((entry, index) => (
                     <TableRow key={index}>
                         <TableCell>{entry.dayOfWeek}</TableCell><TableCell>{entry.startTime}-{entry.endTime}</TableCell>
