@@ -2,51 +2,50 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { ProjectTeam, Department, ProjectEvent, User as SystemUser, ProjectTeamMember } from '@/types/entities';
 import { Parser } from 'json2csv';
+import { connectMongoose } from '@/lib/mongodb';
+import { ProjectTeamModel, DepartmentModel, UserModel } from '@/lib/models';
 
+// Project Events are still in memory - access the global store
 declare global {
   // eslint-disable-next-line no-var
-  var __API_PROJECT_TEAMS_STORE__: ProjectTeam[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_DEPARTMENTS_STORE__: Department[] | undefined;
-  // eslint-disable-next-line no-var
   var __API_PROJECT_EVENTS_STORE__: ProjectEvent[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_USERS_STORE__: SystemUser[] | undefined;
 }
 
-if (!global.__API_PROJECT_TEAMS_STORE__) global.__API_PROJECT_TEAMS_STORE__ = [];
-if (!global.__API_DEPARTMENTS_STORE__) global.__API_DEPARTMENTS_STORE__ = [];
 if (!global.__API_PROJECT_EVENTS_STORE__) global.__API_PROJECT_EVENTS_STORE__ = [];
-if (!global.__API_USERS_STORE__) global.__API_USERS_STORE__ = [];
-
-const teamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
-const departmentsStore: Department[] = global.__API_DEPARTMENTS_STORE__;
-const eventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
-const usersStore: SystemUser[] = global.__API_USERS_STORE__;
+const projectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
 
 
 export async function GET(request: NextRequest) {
   try {
+    await connectMongoose();
+    
     const { searchParams } = new URL(request.url);
     const eventId = searchParams.get('eventId');
     const departmentIdFilter = searchParams.get('department');
 
-    let filteredTeams = [...teamsStore];
+    // Build query filters
+    const query: any = {};
+    if (eventId) query.eventId = eventId;
+    if (departmentIdFilter) query.department = departmentIdFilter;
 
-    if (eventId) filteredTeams = filteredTeams.filter(t => t.eventId === eventId);
-    if (departmentIdFilter) filteredTeams = filteredTeams.filter(t => t.department === departmentIdFilter);
+    const filteredTeams = await ProjectTeamModel.find(query).lean();
 
     if (filteredTeams.length === 0) {
       return NextResponse.json({ message: 'No teams to export for the given filters.' }, { status: 404 });
     }
 
-    const teamDataForCsv = filteredTeams.flatMap(team => {
-        const department = departmentsStore.find(d => d.id === team.department);
-        const event = eventsStore.find(e => e.id === team.eventId);
+    // Get all departments for lookup
+    const departments = await DepartmentModel.find({}).lean();
+    // Events are still in memory storage
+    const events = projectEventsStore;
+
+    const teamDataForCsv = await Promise.all(filteredTeams.map(async team => {
+        const department = departments.find(d => d.id === team.department || (d._id && d._id.toString() === team.department));
+        const event = events.find(e => e.id === team.eventId);
         
         if (team.members.length === 0) {
             return [{ // Return a row even for teams with no members
-                teamId: team.id,
+                teamId: team.id || (team as any)._id,
                 teamName: team.name,
                 departmentName: department?.name || team.department,
                 departmentCode: department?.code || '',
@@ -62,10 +61,16 @@ export async function GET(request: NextRequest) {
             }];
         }
 
-        return team.members.map(member => {
-            const user = usersStore.find(u => u.id === member.userId);
+        return await Promise.all(team.members.map(async member => {
+            // Find user by userId with flexible matching
+            const isValidUserObjectId = /^[0-9a-fA-F]{24}$/.test(member.userId);
+            const userQuery = isValidUserObjectId 
+              ? { $or: [{ id: member.userId }, { _id: member.userId }] }
+              : { id: member.userId };
+            const user = await UserModel.findOne(userQuery).lean();
+            
             return {
-                teamId: team.id,
+                teamId: team.id || (team as any)._id,
                 teamName: team.name,
                 departmentName: department?.name || team.department,
                 departmentCode: department?.code || '',
@@ -76,11 +81,11 @@ export async function GET(request: NextRequest) {
                 memberEnrollmentNo: member.enrollmentNo,
                 memberRole: member.role,
                 memberIsLeader: member.isLeader,
-                createdBy: team.createdBy || '', // Assuming User ID, needs mapping to name if required
+                createdBy: team.createdBy || '',
                 createdAt: team.createdAt ? new Date(team.createdAt).toISOString() : '',
             };
-        });
-    });
+        }));
+    })).then(results => results.flat());
     
     if (teamDataForCsv.length === 0) {
          return NextResponse.json({ message: 'No team data processed for export.' }, { status: 404 });

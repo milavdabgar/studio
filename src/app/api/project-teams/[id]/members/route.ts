@@ -94,7 +94,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     // Check maximum members limit (use team's maxMembers or default to 4)
     const maxMembers = team.maxMembers || 4;
     if (team.members.length >= maxMembers) {
-      return NextResponse.json({ message: `Team cannot have more than ${maxMembers} members` }, { status: 400 });
+      return NextResponse.json({ message: `Team has reached the maximum limit of ${maxMembers} members` }, { status: 400 });
     }
 
     // Check for duplicate member

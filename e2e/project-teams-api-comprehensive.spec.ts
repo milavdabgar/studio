@@ -48,7 +48,7 @@ const testTeamUpdate = {
 };
 
 const testMember = {
-  userId: 'user_student_ce003_gpp',
+  userId: '686171e4df30c00c8e476ea6',
   name: 'Student CE003',
   enrollmentNo: '220010107003',
   role: 'member',
@@ -326,9 +326,9 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
       const foundMember = updatedMembers.find((m: any) => m.userId === testMember.userId);
       expect(foundMember).toBeDefined();
 
-      // Test REMOVE team member - DELETE /api/project-teams/:id/members/:memberId
-      if (foundMember && foundMember.id) {
-        const removeMemberResponse = await page.request.delete(`${API_BASE}/project-teams/${teamId}/members/${foundMember.id}`);
+      // Test REMOVE team member - DELETE /api/project-teams/:id/members/:memberUserId
+      if (foundMember && foundMember.userId) {
+        const removeMemberResponse = await page.request.delete(`${API_BASE}/project-teams/${teamId}/members/${foundMember.userId}`);
         expect(removeMemberResponse.status()).toBe(200);
 
         // Verify member was removed
@@ -512,7 +512,7 @@ test.describe('Project Teams API - Critical In-Memory Storage', () => {
       expect(duplicateMemberResponse.status()).toBe(400);
       const errorData = await duplicateMemberResponse.json();
       expect(errorData).toHaveProperty('message');
-      expect(errorData.message).toContain('already exists');
+      expect(errorData.message).toContain('already a member');
 
     } finally {
       // Cleanup
