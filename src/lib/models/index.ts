@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import type { 
   User, Role, Permission, Department, Course, Batch, Program, 
-  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, ProjectEventScheduleItem
+  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, ProjectEventScheduleItem, Project, ProjectRequirements, ProjectGuide, ProjectEvaluation, Assessment
 } from '@/types/entities';
 
 // Institute Schema
@@ -769,6 +769,146 @@ projectEventSchema.pre('save', function(next) {
   next();
 });
 
+// Project Schema
+interface IProject extends Omit<Project, 'id'>, Document {
+  _id: string;
+}
+
+const projectSchema = new Schema<IProject>({
+  id: { type: String, unique: true, sparse: true }, // Custom ID field
+  
+  title: { type: String, required: true },
+  category: { type: String, required: true },
+  abstract: { type: String, required: true },
+  department: { type: String, required: true },
+  status: { 
+    type: String, 
+    enum: ['draft', 'submitted', 'approved', 'rejected', 'completed', 'evaluated'], 
+    required: true 
+  },
+  
+  requirements: {
+    power: { type: Boolean, required: true },
+    internet: { type: Boolean, required: true },
+    specialSpace: { type: Boolean, required: true },
+    otherRequirements: { type: String }
+  },
+  
+  guide: {
+    userId: { type: String, required: true },
+    name: { type: String, required: true },
+    department: { type: String, required: true },
+    contactNumber: { type: String }
+  },
+  
+  teamId: { type: String, required: true },
+  eventId: { type: String, required: true },
+  locationId: { type: String },
+  
+  deptEvaluation: {
+    completed: { type: Boolean, required: true },
+    score: { type: Number },
+    feedback: { type: String },
+    juryId: { type: String },
+    evaluatedAt: { type: String },
+    criteriaScores: [{
+      criteriaId: { type: String, required: true },
+      score: { type: Number, required: true },
+      comments: { type: String }
+    }]
+  },
+  
+  centralEvaluation: {
+    completed: { type: Boolean, required: true },
+    score: { type: Number },
+    feedback: { type: String },
+    juryId: { type: String },
+    evaluatedAt: { type: String },
+    criteriaScores: [{
+      criteriaId: { type: String, required: true },
+      score: { type: Number, required: true },
+      comments: { type: String }
+    }]
+  },
+  
+  rank: { type: Number },
+  prize: { type: String },
+  certificateUrl: { type: String },
+  
+  createdBy: { type: String },
+  updatedBy: { type: String },
+  
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      // Use custom id if available, otherwise use _id
+      ret.id = ret.id || ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+projectSchema.pre('save', function(next) {
+  (this as IProject).updatedAt = new Date().toISOString();
+  next();
+});
+
+// Assessment Schema
+interface IAssessment extends Omit<Assessment, 'id'>, Document {
+  _id: string;
+}
+
+const assessmentSchema = new Schema<IAssessment>({
+  id: { type: String, unique: true, sparse: true }, // Custom ID field
+  
+  name: { type: String, required: true },
+  courseId: { type: String, required: true },
+  programId: { type: String, required: true },
+  batchId: { type: String },
+  type: { 
+    type: String, 
+    enum: ['Quiz', 'Midterm', 'Final Exam', 'Assignment', 'Project', 'Lab Work', 'Presentation', 'Other'], 
+    required: true 
+  },
+  description: { type: String },
+  maxMarks: { type: Number, required: true },
+  passingMarks: { type: Number },
+  weightage: { type: Number },
+  assessmentDate: { type: String },
+  dueDate: { type: String },
+  status: { 
+    type: String, 
+    enum: ['Draft', 'Published', 'Ongoing', 'Completed', 'Cancelled'], 
+    required: true 
+  },
+  instructions: { type: String },
+  facultyId: { type: String },
+  
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      // Use custom id if available, otherwise use _id
+      ret.id = ret.id || ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+assessmentSchema.pre('save', function(next) {
+  (this as IAssessment).updatedAt = new Date().toISOString();
+  next();
+});
+
 // Models
 export const InstituteModel = mongoose.models.Institute || mongoose.model<IInstitute>('Institute', instituteSchema);
 export const BuildingModel = mongoose.models.Building || mongoose.model<IBuilding>('Building', buildingSchema);
@@ -785,6 +925,8 @@ export const StudentModel = mongoose.models.Student || mongoose.model<IStudent>(
 export const FacultyModel = mongoose.models.Faculty || mongoose.model<IFaculty>('Faculty', facultySchema, 'faculties');
 export const ProjectTeamModel = mongoose.models.ProjectTeam || mongoose.model<IProjectTeam>('ProjectTeam', projectTeamSchema, 'projectteams');
 export const ProjectEventModel = mongoose.models.ProjectEvent || mongoose.model<IProjectEvent>('ProjectEvent', projectEventSchema, 'projectevents');
+export const ProjectModel = mongoose.models.Project || mongoose.model<IProject>('Project', projectSchema, 'projects');
+export const AssessmentModel = mongoose.models.Assessment || mongoose.model<IAssessment>('Assessment', assessmentSchema, 'assessments');
 
 // Export types
-export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent, IFaculty, IProjectTeam, IProjectEvent };
+export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment };

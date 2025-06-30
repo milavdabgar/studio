@@ -2,24 +2,17 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Project, ProjectTeam, ProjectLocation } from '@/types/entities';
 import { notificationService } from '@/lib/api/notifications';
+import { connectMongoose } from '@/lib/mongodb';
+import { ProjectModel, ProjectTeamModel } from '@/lib/models';
 
-// Assuming these stores are initialized as in other files
+// Project Locations are still in-memory - will be migrated later
 declare global {
   // eslint-disable-next-line no-var
-  var __API_PROJECTS_STORE__: Project[] | undefined;
-  // eslint-disable-next-line no-var
   var __API_PROJECT_LOCATIONS_STORE__: ProjectLocation[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_PROJECT_TEAMS_STORE__: ProjectTeam[] | undefined; 
 }
-if (!global.__API_PROJECTS_STORE__) global.__API_PROJECTS_STORE__ = [];
 if (!global.__API_PROJECT_LOCATIONS_STORE__) global.__API_PROJECT_LOCATIONS_STORE__ = [];
-if (!global.__API_PROJECT_TEAMS_STORE__) global.__API_PROJECT_TEAMS_STORE__ = [];
 
-
-const projectsStore: Project[] = global.__API_PROJECTS_STORE__;
 const projectLocationsStore: ProjectLocation[] = global.__API_PROJECT_LOCATIONS_STORE__;
-const projectTeamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
 
 
 interface RouteParams {
@@ -30,40 +23,66 @@ interface RouteParams {
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
-  const project = projectsStore.find(p => p.id === id);
-  if (project) {
-    return NextResponse.json({ status: 'success', data: { project } });
+  
+  try {
+    await connectMongoose();
+    
+    // Try to find by custom id first, then by MongoDB _id if it's a valid ObjectId
+    let project;
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      project = await ProjectModel.findById(id);
+    } else {
+      project = await ProjectModel.findOne({ id });
+    }
+    
+    if (!project) {
+      return NextResponse.json({ message: 'Project not found' }, { status: 404 });
+    }
+    
+    return NextResponse.json({ status: 'success', data: { project: project.toJSON() } });
+  } catch (error) {
+    console.error(`Error fetching project ${id}:`, error);
+    return NextResponse.json({ message: `Error fetching project ${id}`, error: (error as Error).message }, { status: 500 });
   }
-  return NextResponse.json({ message: 'Project not found' }, { status: 404 });
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
   try {
+    await connectMongoose();
+    
     const projectDataToUpdate = await request.json() as Partial<Omit<Project, 'id'>>;
-    const projectIndex = projectsStore.findIndex(p => p.id === id);
+    
+    // Try to find by custom id first, then by MongoDB _id if it's a valid ObjectId
+    let existingProject;
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      existingProject = await ProjectModel.findById(id);
+    } else {
+      existingProject = await ProjectModel.findOne({ id });
+    }
 
-    if (projectIndex === -1) {
+    if (!existingProject) {
       return NextResponse.json({ message: 'Project not found' }, { status: 404 });
     }
-    const existingProject = projectsStore[projectIndex];
 
     if (projectDataToUpdate.title !== undefined && !projectDataToUpdate.title.trim()) {
         return NextResponse.json({ message: 'Project Title cannot be empty if provided.' }, { status: 400 });
     }
 
-    const updatedProject: Project = {
-      ...existingProject,
+    const updateData = {
       ...projectDataToUpdate,
       updatedAt: new Date().toISOString(),
     };
 
-    projectsStore[projectIndex] = updatedProject;
-    global.__API_PROJECTS_STORE__ = projectsStore;
+    const updatedProject = await ProjectModel.findByIdAndUpdate(
+      existingProject._id,
+      updateData,
+      { new: true }
+    );
 
     // --- Notification Trigger for Project Status Change ---
     if (projectDataToUpdate.status && projectDataToUpdate.status !== existingProject.status) {
-        const team = projectTeamsStore.find(t => t.id === updatedProject.teamId);
+        const team = await ProjectTeamModel.findOne({ id: updatedProject.teamId });
         if (team && team.members) {
             for (const member of team.members) {
                 try {
@@ -81,8 +100,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
     // --- End Notification Trigger ---
 
-
-    return NextResponse.json({ status: 'success', data: { project: updatedProject } });
+    return NextResponse.json({ status: 'success', data: { project: updatedProject.toJSON() } });
   } catch (error) {
     console.error(`Error updating project ${id}:`, error);
     return NextResponse.json({ message: `Error updating project ${id}`, error: (error as Error).message }, { status: 500 });
@@ -91,24 +109,42 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
-  const projectIndex = projectsStore.findIndex(p => p.id === id);
-
-  if (projectIndex === -1) {
-    return NextResponse.json({ message: 'Project not found' }, { status: 404 });
-  }
-  const deletedProject = projectsStore.splice(projectIndex, 1)[0];
-  global.__API_PROJECTS_STORE__ = projectsStore; 
-
-  if (deletedProject.locationId) {
-    const locationIndex = projectLocationsStore.findIndex(loc => loc.id === deletedProject.locationId || loc.locationId === deletedProject.locationId);
-    if (locationIndex !== -1) {
-      projectLocationsStore[locationIndex].projectId = undefined; 
-      projectLocationsStore[locationIndex].isAssigned = false;
-      projectLocationsStore[locationIndex].updatedBy = "user_admin_placeholder_project_delete"; 
-      projectLocationsStore[locationIndex].updatedAt = new Date().toISOString();
-      global.__API_PROJECT_LOCATIONS_STORE__ = projectLocationsStore;
+  
+  try {
+    await connectMongoose();
+    
+    // Try to find by custom id first, then by MongoDB _id if it's a valid ObjectId
+    let project;
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      project = await ProjectModel.findById(id);
+    } else {
+      project = await ProjectModel.findOne({ id });
     }
-  }
 
-  return NextResponse.json({ status: 'success', data: null });
+    if (!project) {
+      return NextResponse.json({ message: 'Project not found' }, { status: 404 });
+    }
+
+    const deletedProject = project.toJSON();
+    
+    // Remove the project from the database
+    await ProjectModel.findByIdAndDelete(project._id);
+
+    // Handle project location cleanup (still using in-memory for now)
+    if (deletedProject.locationId) {
+      const locationIndex = projectLocationsStore.findIndex(loc => loc.id === deletedProject.locationId || loc.locationId === deletedProject.locationId);
+      if (locationIndex !== -1) {
+        projectLocationsStore[locationIndex].projectId = undefined; 
+        projectLocationsStore[locationIndex].isAssigned = false;
+        projectLocationsStore[locationIndex].updatedBy = "user_admin_placeholder_project_delete"; 
+        projectLocationsStore[locationIndex].updatedAt = new Date().toISOString();
+        global.__API_PROJECT_LOCATIONS_STORE__ = projectLocationsStore;
+      }
+    }
+
+    return NextResponse.json({ status: 'success', data: null });
+  } catch (error) {
+    console.error(`Error deleting project ${id}:`, error);
+    return NextResponse.json({ message: `Error deleting project ${id}`, error: (error as Error).message }, { status: 500 });
+  }
 }

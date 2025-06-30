@@ -1,48 +1,58 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Assessment } from '@/types/entities';
-
-declare global {
-  var __API_ASSESSMENTS_STORE__: Assessment[] | undefined;
-}
-if (!global.__API_ASSESSMENTS_STORE__) {
-  global.__API_ASSESSMENTS_STORE__ = [];
-}
-let assessmentsStore: Assessment[] = global.__API_ASSESSMENTS_STORE__;
+import { connectMongoose } from '@/lib/mongodb';
+import { AssessmentModel } from '@/lib/models';
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
-  if (!Array.isArray(global.__API_ASSESSMENTS_STORE__)) {
-    global.__API_ASSESSMENTS_STORE__ = [];
-    return NextResponse.json({ message: 'Assessment data store corrupted.' }, { status: 500 });
+  
+  try {
+    await connectMongoose();
+    
+    // Try to find by custom id first, then by MongoDB _id if it's a valid ObjectId
+    let assessment;
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      assessment = await AssessmentModel.findById(id);
+    } else {
+      assessment = await AssessmentModel.findOne({ id });
+    }
+    
+    if (!assessment) {
+      return NextResponse.json({ message: 'Assessment not found' }, { status: 404 });
+    }
+    
+    return NextResponse.json(assessment.toJSON());
+  } catch (error) {
+    console.error(`Error fetching assessment ${id}:`, error);
+    return NextResponse.json({ message: `Error fetching assessment ${id}`, error: (error as Error).message }, { status: 500 });
   }
-  const assessment = global.__API_ASSESSMENTS_STORE__.find(a => a.id === id);
-  if (assessment) {
-    return NextResponse.json(assessment);
-  }
-  return NextResponse.json({ message: 'Assessment not found' }, { status: 404 });
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
-  if (!Array.isArray(global.__API_ASSESSMENTS_STORE__)) {
-    global.__API_ASSESSMENTS_STORE__ = [];
-    return NextResponse.json({ message: 'Assessment data store corrupted.' }, { status: 500 });
-  }
+  const { id } = await params;
+  
   try {
+    await connectMongoose();
+    
     const assessmentDataToUpdate = await request.json() as Partial<Omit<Assessment, 'id' | 'createdAt' | 'updatedAt'>>;
-    const assessmentIndex = global.__API_ASSESSMENTS_STORE__.findIndex(a => a.id === id);
-
-    if (assessmentIndex === -1) {
-      return NextResponse.json({ message: 'Assessment not found' }, { status: 404 });
+    
+    // Try to find by custom id first, then by MongoDB _id if it's a valid ObjectId
+    let existingAssessment;
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      existingAssessment = await AssessmentModel.findById(id);
+    } else {
+      existingAssessment = await AssessmentModel.findOne({ id });
     }
 
-    const existingAssessment = global.__API_ASSESSMENTS_STORE__[assessmentIndex];
+    if (!existingAssessment) {
+      return NextResponse.json({ message: 'Assessment not found' }, { status: 404 });
+    }
 
     if (assessmentDataToUpdate.name !== undefined && !assessmentDataToUpdate.name.trim()) {
         return NextResponse.json({ message: 'Assessment Name cannot be empty.' }, { status: 400 });
@@ -64,34 +74,38 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         const programId = assessmentDataToUpdate.programId || existingAssessment.programId;
         const batchId = assessmentDataToUpdate.batchId === undefined ? existingAssessment.batchId : assessmentDataToUpdate.batchId;
 
-        if (global.__API_ASSESSMENTS_STORE__.some(a => 
-            a.id !== id &&
-            a.name.toLowerCase() === assessmentDataToUpdate.name!.trim().toLowerCase() && 
-            a.courseId === courseId &&
-            a.programId === programId &&
-            (a.batchId === batchId || (!a.batchId && !batchId))
-        )) {
+        const duplicateAssessment = await AssessmentModel.findOne({
+          _id: { $ne: existingAssessment._id },
+          name: { $regex: `^${assessmentDataToUpdate.name!.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, $options: 'i' },
+          courseId,
+          programId,
+          ...(batchId ? { batchId } : {})
+        });
+        
+        if (duplicateAssessment) {
             return NextResponse.json({ message: `Assessment with name '${assessmentDataToUpdate.name.trim()}' already exists for this course/program/batch.` }, { status: 409 });
         }
     }
     
-    const updatedAssessment: Assessment = { 
-        ...existingAssessment, 
+    const updateData: any = {
         ...assessmentDataToUpdate,
         updatedAt: new Date().toISOString(),
     };
 
-    if(assessmentDataToUpdate.name) updatedAssessment.name = assessmentDataToUpdate.name.trim();
-    if(assessmentDataToUpdate.description !== undefined) updatedAssessment.description = assessmentDataToUpdate.description?.trim() || undefined;
-    if(assessmentDataToUpdate.instructions !== undefined) updatedAssessment.instructions = assessmentDataToUpdate.instructions?.trim() || undefined;
-    if (assessmentDataToUpdate.maxMarks !== undefined) updatedAssessment.maxMarks = Number(assessmentDataToUpdate.maxMarks);
-    if (assessmentDataToUpdate.passingMarks !== undefined) updatedAssessment.passingMarks = assessmentDataToUpdate.passingMarks === null ? undefined : Number(assessmentDataToUpdate.passingMarks);
-    if (assessmentDataToUpdate.weightage !== undefined) updatedAssessment.weightage = assessmentDataToUpdate.weightage === null ? undefined : Number(assessmentDataToUpdate.weightage);
+    if(assessmentDataToUpdate.name) updateData.name = assessmentDataToUpdate.name.trim();
+    if(assessmentDataToUpdate.description !== undefined) updateData.description = assessmentDataToUpdate.description?.trim() || undefined;
+    if(assessmentDataToUpdate.instructions !== undefined) updateData.instructions = assessmentDataToUpdate.instructions?.trim() || undefined;
+    if (assessmentDataToUpdate.maxMarks !== undefined) updateData.maxMarks = Number(assessmentDataToUpdate.maxMarks);
+    if (assessmentDataToUpdate.passingMarks !== undefined) updateData.passingMarks = assessmentDataToUpdate.passingMarks === null ? undefined : Number(assessmentDataToUpdate.passingMarks);
+    if (assessmentDataToUpdate.weightage !== undefined) updateData.weightage = assessmentDataToUpdate.weightage === null ? undefined : Number(assessmentDataToUpdate.weightage);
 
+    const updatedAssessment = await AssessmentModel.findByIdAndUpdate(
+      existingAssessment._id,
+      updateData,
+      { new: true }
+    );
 
-    global.__API_ASSESSMENTS_STORE__[assessmentIndex] = updatedAssessment;
-    assessmentsStore = global.__API_ASSESSMENTS_STORE__;
-    return NextResponse.json(updatedAssessment);
+    return NextResponse.json(updatedAssessment.toJSON());
   } catch (error) {
     console.error(`Error updating assessment ${id}:`, error);
     return NextResponse.json({ message: `Error updating assessment ${id}`, error: (error as Error).message }, { status: 500 });
@@ -100,18 +114,28 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
-  if (!Array.isArray(global.__API_ASSESSMENTS_STORE__)) {
-    global.__API_ASSESSMENTS_STORE__ = [];
-    return NextResponse.json({ message: 'Assessment data store corrupted.' }, { status: 500 });
-  }
-  const initialLength = global.__API_ASSESSMENTS_STORE__.length;
-  const newStore = global.__API_ASSESSMENTS_STORE__.filter(a => a.id !== id);
-
-  if (newStore.length === initialLength) {
-    return NextResponse.json({ message: 'Assessment not found' }, { status: 404 });
-  }
   
-  global.__API_ASSESSMENTS_STORE__ = newStore;
-  assessmentsStore = global.__API_ASSESSMENTS_STORE__;
-  return NextResponse.json({ message: 'Assessment deleted successfully' }, { status: 200 });
+  try {
+    await connectMongoose();
+    
+    // Try to find by custom id first, then by MongoDB _id if it's a valid ObjectId
+    let assessment;
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      assessment = await AssessmentModel.findById(id);
+    } else {
+      assessment = await AssessmentModel.findOne({ id });
+    }
+
+    if (!assessment) {
+      return NextResponse.json({ message: 'Assessment not found' }, { status: 404 });
+    }
+    
+    // Remove the assessment from the database
+    await AssessmentModel.findByIdAndDelete(assessment._id);
+    
+    return NextResponse.json({ message: 'Assessment deleted successfully' }, { status: 200 });
+  } catch (error) {
+    console.error(`Error deleting assessment ${id}:`, error);
+    return NextResponse.json({ message: `Error deleting assessment ${id}`, error: (error as Error).message }, { status: 500 });
+  }
 }
