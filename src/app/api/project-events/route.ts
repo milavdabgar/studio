@@ -2,18 +2,20 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { ProjectEvent, ProjectEventStatus } from '@/types/entities';
 import { isValid, parseISO } from 'date-fns';
+import { connectMongoose } from '@/lib/mongodb';
+import { ProjectEventModel } from '@/lib/models';
 
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_PROJECT_EVENTS_STORE__: ProjectEvent[] | undefined;
-}
+const generateEventId = (): string => `event_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
-const now = new Date().toISOString();
-
-if (!global.__API_PROJECT_EVENTS_STORE__ || global.__API_PROJECT_EVENTS_STORE__.length === 0) {
-  global.__API_PROJECT_EVENTS_STORE__ = [
-    { 
-      id: "event_techfest_2024_gpp", 
+// Initialize default event if none exist
+async function initializeDefaultEvents() {
+  await connectMongoose();
+  const eventCount = await ProjectEventModel.countDocuments();
+  
+  if (eventCount === 0) {
+    const now = new Date().toISOString();
+    const defaultEvent = {
+      id: "event_techfest_2024_gpp",
       name: "TechFest 2024",
       academicYear: "2024-25",
       description: "Annual technical project fair.",
@@ -32,39 +34,58 @@ if (!global.__API_PROJECT_EVENTS_STORE__ || global.__API_PROJECT_EVENTS_STORE__.
         { time: "10:00 AM - 01:00 PM", activity: "Project Expo Round 1", location: "Main Building Stalls", coordinator: { userId: "user_hod_ce_gpp", name: "HOD CE" }, notes: "Judges to visit stalls" }
       ],
       publishResults: false,
-    },
-  ];
+    };
+    
+    const newEvent = new ProjectEventModel(defaultEvent);
+    await newEvent.save();
+  }
 }
-const projectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
-
-const generateEventId = (): string => `event_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const isActiveParam = searchParams.get('isActive');
+  try {
+    await connectMongoose();
+    await initializeDefaultEvents();
+    
+    const { searchParams } = new URL(request.url);
+    const isActiveParam = searchParams.get('isActive');
 
-  let filteredEvents = [...projectEventsStore];
+    // Build filter query
+    let filter = {};
+    if (isActiveParam === 'true') {
+      filter = { isActive: true };
+    } else if (isActiveParam === 'false') {
+      filter = { isActive: false };
+    }
 
-  if (isActiveParam === 'true') {
-    filteredEvents = filteredEvents.filter(event => event.isActive);
-  } else if (isActiveParam === 'false') {
-    filteredEvents = filteredEvents.filter(event => !event.isActive);
+    const events = await ProjectEventModel.find(filter).lean();
+    
+    // Format events to ensure proper id field
+    const eventsWithId = events.map(event => ({
+      ...event,
+      id: event.id || (event as any)._id.toString()
+    }));
+    
+    // Sort events
+    eventsWithId.sort((a, b) => {
+      const dateA = a.eventDate ? parseISO(a.eventDate).getTime() : 0;
+      const dateB = b.eventDate ? parseISO(b.eventDate).getTime() : 0;
+      if (a.isActive && !b.isActive) return -1;
+      if (!a.isActive && b.isActive) return 1;
+      if (a.isActive) return dateA - dateB; 
+      return dateB - dateA; 
+    });
+
+    return NextResponse.json(eventsWithId);
+  } catch (error) {
+    console.error('Error in GET /api/project-events:', error);
+    return NextResponse.json({ message: 'Internal server error processing project events request.', error: (error as Error).message }, { status: 500 });
   }
-  
-  filteredEvents.sort((a, b) => {
-    const dateA = a.eventDate ? parseISO(a.eventDate).getTime() : 0;
-    const dateB = b.eventDate ? parseISO(b.eventDate).getTime() : 0;
-    if (a.isActive && !b.isActive) return -1;
-    if (!a.isActive && b.isActive) return 1;
-    if (a.isActive) return dateA - dateB; 
-    return dateB - dateA; 
-  });
-
-  return NextResponse.json(filteredEvents);
 }
 
 export async function POST(request: NextRequest) {
   try {
+    await connectMongoose();
+    
     const eventData = await request.json() as Omit<ProjectEvent, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy' | 'schedule'>;
 
     if (!eventData.name || !eventData.name.trim()) {
@@ -89,9 +110,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ message: 'Event status is required.' }, { status: 400 });
     }
 
-
     const currentTimestamp = new Date().toISOString();
-    const newEvent: ProjectEvent = {
+    const newEventData = {
       id: generateEventId(),
       name: eventData.name.trim(),
       description: eventData.description?.trim() || undefined,
@@ -109,9 +129,11 @@ export async function POST(request: NextRequest) {
       createdAt: currentTimestamp,
       updatedAt: currentTimestamp,
     };
-    projectEventsStore.push(newEvent);
-    global.__API_PROJECT_EVENTS_STORE__ = projectEventsStore;
-    return NextResponse.json(newEvent, { status: 201 });
+    
+    const newEvent = new ProjectEventModel(newEventData);
+    await newEvent.save();
+    
+    return NextResponse.json(newEvent.toJSON(), { status: 201 });
   } catch (error) {
     console.error('Error creating project event:', error);
     return NextResponse.json({ message: 'Error creating project event', error: (error as Error).message }, { status: 500 });

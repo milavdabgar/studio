@@ -3,16 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { ProjectTeam, Department, ProjectEvent, User as SystemUser, ProjectTeamMember } from '@/types/entities';
 import { Parser } from 'json2csv';
 import { connectMongoose } from '@/lib/mongodb';
-import { ProjectTeamModel, DepartmentModel, UserModel } from '@/lib/models';
-
-// Project Events are still in memory - access the global store
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_PROJECT_EVENTS_STORE__: ProjectEvent[] | undefined;
-}
-
-if (!global.__API_PROJECT_EVENTS_STORE__) global.__API_PROJECT_EVENTS_STORE__ = [];
-const projectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
+import { ProjectTeamModel, DepartmentModel, UserModel, ProjectEventModel } from '@/lib/models';
 
 
 export async function GET(request: NextRequest) {
@@ -34,14 +25,13 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: 'No teams to export for the given filters.' }, { status: 404 });
     }
 
-    // Get all departments for lookup
+    // Get all departments and events for lookup
     const departments = await DepartmentModel.find({}).lean();
-    // Events are still in memory storage
-    const events = projectEventsStore;
+    const events = await ProjectEventModel.find({}).lean();
 
     const teamDataForCsv = await Promise.all(filteredTeams.map(async team => {
         const department = departments.find(d => d.id === team.department || (d._id && d._id.toString() === team.department));
-        const event = events.find(e => e.id === team.eventId);
+        const event = events.find(e => e.id === team.eventId || (e._id && e._id.toString() === team.eventId));
         
         if (team.members.length === 0) {
             return [{ // Return a row even for teams with no members

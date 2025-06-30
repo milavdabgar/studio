@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import type { 
   User, Role, Permission, Department, Course, Batch, Program, 
-  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam
+  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, ProjectEventScheduleItem
 } from '@/types/entities';
 
 // Institute Schema
@@ -711,6 +711,64 @@ projectTeamSchema.pre('save', function(next) {
   next();
 });
 
+// ProjectEvent Schema
+interface IProjectEvent extends Omit<ProjectEvent, 'id'>, Document {
+  _id: string;
+}
+
+const projectEventSchema = new Schema<IProjectEvent>({
+  id: { type: String, unique: true, sparse: true }, // Custom ID field
+  
+  name: { type: String, required: true },
+  description: { type: String },
+  academicYear: { type: String, required: true },
+  eventDate: { type: String, required: true }, // ISO date string
+  registrationStartDate: { type: String, required: true }, // ISO date string
+  registrationEndDate: { type: String, required: true }, // ISO date string
+  status: { 
+    type: String, 
+    enum: ['upcoming', 'ongoing', 'completed', 'cancelled'], 
+    required: true 
+  },
+  isActive: { type: Boolean, required: true, default: true },
+  publishResults: { type: Boolean, default: false },
+  
+  schedule: [{
+    time: { type: String, required: true },
+    activity: { type: String, required: true },
+    location: { type: String, required: true },
+    coordinator: {
+      userId: { type: String, required: true },
+      name: { type: String, required: true }
+    },
+    notes: { type: String }
+  }],
+  
+  departments: [{ type: String }],
+  
+  createdBy: { type: String },
+  updatedBy: { type: String },
+  
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      // Use custom id if available, otherwise use _id
+      ret.id = ret.id || ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+projectEventSchema.pre('save', function(next) {
+  (this as IProjectEvent).updatedAt = new Date().toISOString();
+  next();
+});
+
 // Models
 export const InstituteModel = mongoose.models.Institute || mongoose.model<IInstitute>('Institute', instituteSchema);
 export const BuildingModel = mongoose.models.Building || mongoose.model<IBuilding>('Building', buildingSchema);
@@ -726,6 +784,7 @@ export const ProgramModel = mongoose.models.Program || mongoose.model<IProgram>(
 export const StudentModel = mongoose.models.Student || mongoose.model<IStudent>('Student', studentSchema);
 export const FacultyModel = mongoose.models.Faculty || mongoose.model<IFaculty>('Faculty', facultySchema, 'faculties');
 export const ProjectTeamModel = mongoose.models.ProjectTeam || mongoose.model<IProjectTeam>('ProjectTeam', projectTeamSchema, 'projectteams');
+export const ProjectEventModel = mongoose.models.ProjectEvent || mongoose.model<IProjectEvent>('ProjectEvent', projectEventSchema, 'projectevents');
 
 // Export types
-export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent, IFaculty, IProjectTeam };
+export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent, IFaculty, IProjectTeam, IProjectEvent };

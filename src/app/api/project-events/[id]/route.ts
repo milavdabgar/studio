@@ -4,22 +4,8 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { ProjectEvent, ProjectEventStatus, ProjectEventScheduleItem, ProjectTeam } from '@/types/entities';
 import { isValid, parseISO } from 'date-fns';
 import { notificationService } from '@/lib/api/notifications';
-
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_PROJECT_EVENTS_STORE__: ProjectEvent[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_PROJECT_TEAMS_STORE__: ProjectTeam[] | undefined;
-}
-
-if (!global.__API_PROJECT_EVENTS_STORE__) {
-  global.__API_PROJECT_EVENTS_STORE__ = [];
-}
-if (!global.__API_PROJECT_TEAMS_STORE__) global.__API_PROJECT_TEAMS_STORE__ = [];
-
-const projectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
-const projectTeamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
+import { connectMongoose } from '@/lib/mongodb';
+import { ProjectEventModel, ProjectTeamModel } from '@/lib/models';
 
 
 interface RouteParams {
@@ -30,24 +16,47 @@ interface RouteParams {
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
-  const event = projectEventsStore.find(e => e.id === id);
-  if (event) {
-    return NextResponse.json(event);
+  
+  try {
+    await connectMongoose();
+    
+    // Try to find by custom id first, then by MongoDB _id if it's a valid ObjectId
+    let event;
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      event = await ProjectEventModel.findById(id);
+    } else {
+      event = await ProjectEventModel.findOne({ id });
+    }
+    
+    if (!event) {
+      return NextResponse.json({ message: 'Event not found' }, { status: 404 });
+    }
+    
+    return NextResponse.json(event.toJSON());
+  } catch (error) {
+    console.error(`Error fetching event ${id}:`, error);
+    return NextResponse.json({ message: `Error fetching event ${id}`, error: (error as Error).message }, { status: 500 });
   }
-  return NextResponse.json({ message: 'Event not found' }, { status: 404 });
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
   try {
+    await connectMongoose();
+    
     const eventDataToUpdate = await request.json() as Partial<Omit<ProjectEvent, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>>;
-    const eventIndex = projectEventsStore.findIndex(e => e.id === id);
-
-    if (eventIndex === -1) {
-      return NextResponse.json({ message: 'Event not found' }, { status: 404 });
+    
+    // Try to find by custom id first, then by MongoDB _id if it's a valid ObjectId
+    let existingEvent;
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      existingEvent = await ProjectEventModel.findById(id);
+    } else {
+      existingEvent = await ProjectEventModel.findOne({ id });
     }
 
-    const existingEvent = projectEventsStore[eventIndex];
+    if (!existingEvent) {
+      return NextResponse.json({ message: 'Event not found' }, { status: 404 });
+    }
 
     if (eventDataToUpdate.name !== undefined && !eventDataToUpdate.name.trim()) {
         return NextResponse.json({ message: 'Event Name cannot be empty.' }, { status: 400 });
@@ -70,8 +79,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         return NextResponse.json({ message: 'Invalid event status.' }, { status: 400 });
     }
 
-    const updatedEvent: ProjectEvent = {
-      ...existingEvent,
+    const updateData = {
       ...eventDataToUpdate,
       name: eventDataToUpdate.name?.trim() || existingEvent.name,
       description: eventDataToUpdate.description !== undefined ? eventDataToUpdate.description.trim() || undefined : existingEvent.description,
@@ -83,12 +91,15 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       updatedAt: new Date().toISOString(),
     };
 
-    projectEventsStore[eventIndex] = updatedEvent;
-    global.__API_PROJECT_EVENTS_STORE__ = projectEventsStore;
+    const updatedEvent = await ProjectEventModel.findByIdAndUpdate(
+      existingEvent._id,
+      updateData,
+      { new: true }
+    );
 
     // --- Notification Trigger for Results Published ---
     if (eventDataToUpdate.publishResults === true && existingEvent.publishResults !== true) {
-        const teamsForEvent = projectTeamsStore.filter(team => team.eventId === id);
+        const teamsForEvent = await ProjectTeamModel.find({ eventId: id });
         const userIdsToNotify: Set<string> = new Set();
         teamsForEvent.forEach(team => {
             team.members.forEach(member => userIdsToNotify.add(member.userId));
@@ -109,7 +120,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
     // --- End Notification Trigger ---
 
-    return NextResponse.json(updatedEvent);
+    return NextResponse.json(updatedEvent.toJSON());
   } catch (error) {
     console.error(`Error updating event ${id}:`, error);
     return NextResponse.json({ message: `Error updating event ${id}`, error: (error as Error).message }, { status: 500 });
@@ -118,14 +129,28 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
-  const eventIndex = projectEventsStore.findIndex(e => e.id === id);
+  
+  try {
+    await connectMongoose();
+    
+    // Try to find by custom id first, then by MongoDB _id if it's a valid ObjectId
+    let event;
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      event = await ProjectEventModel.findById(id);
+    } else {
+      event = await ProjectEventModel.findOne({ id });
+    }
 
-  if (eventIndex === -1) {
-    return NextResponse.json({ message: 'Event not found' }, { status: 404 });
+    if (!event) {
+      return NextResponse.json({ message: 'Event not found' }, { status: 404 });
+    }
+
+    // Remove the event from the database
+    await ProjectEventModel.findByIdAndDelete(event._id);
+    
+    return NextResponse.json({ message: 'Event deleted successfully' }, { status: 200 });
+  } catch (error) {
+    console.error(`Error deleting event ${id}:`, error);
+    return NextResponse.json({ message: `Error deleting event ${id}`, error: (error as Error).message }, { status: 500 });
   }
-
-  // Remove the event from the store
-  projectEventsStore.splice(eventIndex, 1);
-  global.__API_PROJECT_EVENTS_STORE__ = projectEventsStore;
-  return NextResponse.json({ message: 'Event deleted successfully' }, { status: 200 });
 }
