@@ -2,18 +2,16 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { ProjectTeam, Department, ProjectEvent, User as SystemUser, ProjectTeamMember } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_PROJECT_TEAMS_STORE__: ProjectTeam[] | undefined;
-}
-if (!global.__API_PROJECT_TEAMS_STORE__) global.__API_PROJECT_TEAMS_STORE__ = [];
-const teamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
+import mongoose from 'mongoose';
+import { ProjectTeamModel } from '@/lib/models';
 
 const generateIdForImport = (): string => `team_imp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function POST(request: NextRequest) {
   try {
+    // Connect to MongoDB
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const departmentsJson = formData.get('departments') as string | null;
@@ -37,7 +35,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (parseErrors.length > 0) {
-      return NextResponse.json({ message: 'Error parsing CSV.', errors: parseErrors.map(e => `Row ${e.row + 2}: ${e.message}`) }, { status: 400 });
+      return NextResponse.json({ message: 'Error parsing CSV.', errors: parseErrors.map(e => `Row ${(e.row || 0) + 2}: ${e.message}`) }, { status: 400 });
     }
     if (parsedData.length === 0) return NextResponse.json({ message: 'CSV file is empty or has no data rows.' }, { status: 400 });
 
@@ -52,7 +50,7 @@ export async function POST(request: NextRequest) {
     const now = new Date().toISOString();
 
     // Group rows by team (teamName + eventName as key)
-    const teamsFromCsv: Record<string, { teamData: Omit<ProjectTeam, 'id'|'createdAt'|'updatedAt'|'createdBy'|'updatedBy'|'members'>, membersData: Omit<ProjectTeamMember, 'userId'>[], csvId?: string }> = {};
+    const teamsFromCsv: Record<string, { teamData: Omit<ProjectTeam, 'id'|'createdAt'|'updatedAt'|'createdBy'|'updatedBy'|'members'>, membersData: ProjectTeamMember[], csvId?: string }> = {};
 
     for (let i = 0; i < parsedData.length; i++) {
         const row = parsedData[i];
@@ -127,23 +125,37 @@ export async function POST(request: NextRequest) {
             });
         }
 
-
-        let existingTeamIndex = -1;
+        // Find existing team in MongoDB
+        let existingTeam = null;
         if (csvId) {
-            existingTeamIndex = teamsStore.findIndex(t => t.id === csvId);
+            existingTeam = await ProjectTeamModel.findOne({ $or: [{ id: csvId }, { _id: csvId }] });
         } else {
-            existingTeamIndex = teamsStore.findIndex(t => t.name.toLowerCase() === teamData.name.toLowerCase() && t.eventId === teamData.eventId);
+            existingTeam = await ProjectTeamModel.findOne({ 
+                name: { $regex: new RegExp(`^${teamData.name}$`, 'i') },
+                eventId: teamData.eventId 
+            });
         }
 
-        if (existingTeamIndex !== -1) {
-            teamsStore[existingTeamIndex] = { ...teamsStore[existingTeamIndex], ...teamData, members: membersData, updatedAt: now, updatedBy:"user_import_placeholder" };
+        if (existingTeam) {
+            // Update existing team
+            Object.assign(existingTeam, { ...teamData, members: membersData, updatedAt: now, updatedBy:"user_import_placeholder" });
+            await existingTeam.save();
             updatedCount++;
         } else {
-            if (teamsStore.some(t => t.name.toLowerCase() === teamData.name.toLowerCase() && t.eventId === teamData.eventId)) {
+            // Check for duplicate before creating
+            const duplicateTeam = await ProjectTeamModel.findOne({ 
+                name: { $regex: new RegExp(`^${teamData.name}$`, 'i') },
+                eventId: teamData.eventId 
+            });
+
+            if (duplicateTeam) {
                  importErrors.push({ row: -1, message: `Team '${teamData.name}' for event '${teamData.eventId}' already exists with a different ID. Skipped.`, data: teamData });
-                 skippedCount++; continue;
+                 skippedCount++; 
+                 continue;
             }
-            const newTeam: ProjectTeam = {
+
+            // Create new team
+            const newTeamData = {
                 id: csvId || generateIdForImport(),
                 ...teamData,
                 members: membersData,
@@ -152,12 +164,11 @@ export async function POST(request: NextRequest) {
                 createdAt: now,
                 updatedAt: now,
             };
-            teamsStore.push(newTeam);
+            const newTeam = new ProjectTeamModel(newTeamData);
+            await newTeam.save();
             newCount++;
         }
     }
-
-    global.__API_PROJECT_TEAMS_STORE__ = teamsStore;
 
     if (importErrors.length > 0) {
         return NextResponse.json({ 

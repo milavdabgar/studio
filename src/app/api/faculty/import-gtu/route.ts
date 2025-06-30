@@ -1,13 +1,10 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Faculty, FacultyStatus, JobType, Gender, User, Institute, StaffCategory } from '@/types/entities'; 
+import type { Faculty, FacultyStatus, JobType, Gender, User, Institute, StaffCategory, UserRole } from '@/types/entities'; 
 import { parse, type ParseError } from 'papaparse';
 import { userService } from '@/lib/api/users';
 import { instituteService } from '@/lib/api/institutes';
-
-const facultyStore: Faculty[] = (global as any).__API_FACULTY_STORE__ || [];
-if (!(global as any).__API_FACULTY_STORE__) {
-  (global as any).__API_FACULTY_STORE__ = facultyStore;
-}
+import mongoose from 'mongoose';
+import { FacultyModel, UserModel } from '@/lib/models';
 
 const generateIdForImport = (): string => `fac_gtu_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
@@ -53,6 +50,9 @@ const JOB_TYPE_OPTIONS: JobType[] = ["Regular", "Adhoc", "Contractual", "Visitin
 
 export async function POST(request: NextRequest) {
   try {
+    // Connect to MongoDB
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const defaultInstituteIdFromForm = formData.get('instituteId') as string | null; 
@@ -78,7 +78,6 @@ export async function POST(request: NextRequest) {
     let newCount = 0, updatedCount = 0, skippedCount = 0;
     const importErrors: { row: number, message: string, data: unknown }[] = [];
 
-
     for (let i=0; i < parsedData.length; i++) {
       const row = parsedData[i];
       const rowIndex = i + 2;
@@ -98,7 +97,6 @@ export async function POST(request: NextRequest) {
         if(inst.domain) instituteDomain = inst.domain;
       } catch (e) { /* use default */ }
 
-
       const { title, firstName, middleName, lastName } = parseGtuFacultyNameFromString(gtuName);
       const departmentGTU = row.department?.toString().trim().toUpperCase();
       const department = DEPARTMENT_MAP[departmentGTU || ""] || "Other";
@@ -108,7 +106,6 @@ export async function POST(request: NextRequest) {
       const jobType = JOB_TYPE_OPTIONS.includes(jobTypeRaw as JobType) ? jobTypeRaw as JobType : 'Other';
 
       const instituteEmail = generateInstituteEmailForFaculty(firstName, lastName, instituteDomain);
-
 
       const facultyData: Omit<Faculty, 'id' | 'userId'> = {
         staffCode, gtuName, title, firstName, middleName, lastName,
@@ -122,24 +119,33 @@ export async function POST(request: NextRequest) {
         instituteId: facultyInstituteId,
       };
 
-      const existingFacultyIndex = facultyStore.findIndex(f => f.staffCode === staffCode);
+      // Find existing faculty in MongoDB
+      const existingFaculty = await FacultyModel.findOne({ staffCode });
       let facultyToProcess: Faculty;
 
-      if (existingFacultyIndex !== -1) {
-        facultyToProcess = { ...facultyStore[existingFacultyIndex], ...facultyData };
-        facultyStore[existingFacultyIndex] = facultyToProcess;
+      if (existingFaculty) {
+        // Update existing faculty
+        Object.assign(existingFaculty, facultyData);
+        facultyToProcess = (await existingFaculty.save()).toJSON() as Faculty;
         updatedCount++;
       } else {
-        facultyToProcess = { id: generateIdForImport(), ...facultyData };
-        facultyStore.push(facultyToProcess);
+        // Create new faculty
+        const newFacultyData = { id: generateIdForImport(), ...facultyData };
+        const newFaculty = new FacultyModel(newFacultyData);
+        facultyToProcess = (await newFaculty.save()).toJSON() as Faculty;
         newCount++;
       }
 
       const userDisplayName = facultyToProcess.gtuName || facultyToProcess.staffCode;
       try {
-         const existingUserByEmail = await userService.getAllUsers().then(users => users.find(u => u.instituteEmail === facultyToProcess.instituteEmail || (facultyToProcess.personalEmail && u.email === facultyToProcess.personalEmail)));
+        const existingUserByEmail = await UserModel.findOne({
+          $or: [
+            { instituteEmail: facultyToProcess.instituteEmail },
+            ...(facultyToProcess.personalEmail ? [{ email: facultyToProcess.personalEmail }] : [])
+          ]
+        });
         
-        const userBaseRole = 'faculty' as UserRole; // GTU import always for faculty
+        const userBaseRole: UserRole = 'faculty'; // GTU import always for faculty
         
         const userDataPayload = {
             displayName: userDisplayName,
@@ -147,27 +153,28 @@ export async function POST(request: NextRequest) {
             instituteEmail: facultyToProcess.instituteEmail,
             isActive: facultyToProcess.status === 'active',
             instituteId: facultyInstituteId,
+            currentRole: userBaseRole,
         };
 
         if (existingUserByEmail) {
             facultyToProcess.userId = existingUserByEmail.id;
             const rolesToSet = existingUserByEmail.roles.includes(userBaseRole) ? existingUserByEmail.roles : [...existingUserByEmail.roles, userBaseRole];
-            await userService.updateUser(existingUserByEmail.id, {...userDataPayload, roles: rolesToSet});
+            Object.assign(existingUserByEmail, {...userDataPayload, roles: rolesToSet});
+            await existingUserByEmail.save();
         } else {
-            const createdUser = await userService.createUser({...userDataPayload, password: facultyToProcess.staffCode, roles: [userBaseRole]});
+            const newUser = new UserModel({...userDataPayload, password: facultyToProcess.staffCode, roles: [userBaseRole]});
+            const createdUser = await newUser.save();
             facultyToProcess.userId = createdUser.id;
         }
-        const finalFacultyIndex = facultyStore.findIndex(f => f.id === facultyToProcess.id);
-        if (finalFacultyIndex !== -1) {
-            facultyStore[finalFacultyIndex].userId = facultyToProcess.userId;
-        }
+        
+        // Update faculty with userId
+        await FacultyModel.findByIdAndUpdate(facultyToProcess.id, { userId: facultyToProcess.userId });
 
       } catch(userError: unknown) {
         const error = userError as Error;
          importErrors.push({row: rowIndex, message: `User account linking/creation failed for ${staffCode}: ${error.message}`, data: row});
       }
     }
-    (global as any).__API_FACULTY_STORE__ = facultyStore;
 
     if (importErrors.length > 0) {
         return NextResponse.json({ 

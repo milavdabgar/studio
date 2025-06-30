@@ -2,16 +2,16 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Curriculum, Program, Course } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 import { isValid, parseISO, format } from 'date-fns';
-
-const curriculumStore: Curriculum[] = (global as any).__API_CURRICULUM_STORE__ || [];
-if (!(global as any).__API_CURRICULUM_STORE__) {
-  (global as any).__API_CURRICULUM_STORE__ = curriculumStore;
-}
+import mongoose from 'mongoose';
+import { CurriculumModel } from '@/lib/models';
 
 const generateIdForImport = (): string => `curr_imp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function POST(request: NextRequest) {
   try {
+    // Connect to MongoDB
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const programsJson = formData.get('programs') as string | null;
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (parseErrors.length > 0) {
-      const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row + 2}: ${e.message} (Code: ${e.code})`);
+      const errorMessages = parseErrors.map((e: ParseError) => `Row ${(e.row || 0) + 2}: ${e.message} (Code: ${e.code})`);
       return NextResponse.json({ message: 'Error parsing Curricula CSV file.', errors: errorMessages }, { status: 400 });
     }
 
@@ -136,34 +136,48 @@ export async function POST(request: NextRequest) {
 
     for (const key in curriculaFromCsv) {
         const {csvId, ...curriculumData} = curriculaFromCsv[key];
-        let existingCurriculumIndex = -1;
-
+        
+        // Find existing curriculum in MongoDB
+        let existingCurriculum = null;
         if (csvId) {
-            existingCurriculumIndex = curriculumStore.findIndex(c => c.id === csvId);
+            existingCurriculum = await CurriculumModel.findOne({ $or: [{ id: csvId }, { _id: csvId }] });
         } else {
-            existingCurriculumIndex = curriculumStore.findIndex(c => c.programId === curriculumData.programId && c.version.toLowerCase() === curriculumData.version.toLowerCase());
+            existingCurriculum = await CurriculumModel.findOne({ 
+                programId: curriculumData.programId, 
+                version: { $regex: new RegExp(`^${curriculumData.version}$`, 'i') }
+            });
         }
 
-        if (existingCurriculumIndex !== -1) {
-            curriculumStore[existingCurriculumIndex] = { ...curriculumStore[existingCurriculumIndex], ...curriculumData, courses: curriculumData.courses, updatedAt: now };
+        if (existingCurriculum) {
+            // Update existing curriculum
+            Object.assign(existingCurriculum, { ...curriculumData, courses: curriculumData.courses, updatedAt: now });
+            await existingCurriculum.save();
             updatedCount++;
         } else {
-            if (curriculumStore.some(c => c.programId === curriculumData.programId && c.version.toLowerCase() === curriculumData.version.toLowerCase())) {
+            // Check for duplicate before creating
+            const duplicateCurriculum = await CurriculumModel.findOne({ 
+                programId: curriculumData.programId, 
+                version: { $regex: new RegExp(`^${curriculumData.version}$`, 'i') }
+            });
+
+            if (duplicateCurriculum) {
                 importErrors.push({ row: -1, message: `Curriculum version '${curriculumData.version}' for program '${curriculumData.programId}' already exists with a different ID. Skipped.`, data: curriculumData });
-                skippedCount++; continue;
+                skippedCount++; 
+                continue;
             }
-            const newCurriculum: Curriculum = {
+
+            // Create new curriculum
+            const newCurriculumData = {
                 id: csvId || generateIdForImport(),
                 ...curriculumData,
                 createdAt: now,
                 updatedAt: now,
             };
-            curriculumStore.push(newCurriculum);
+            const newCurriculum = new CurriculumModel(newCurriculumData);
+            await newCurriculum.save();
             newCount++;
         }
     }
-
-    (global as any).__API_CURRICULUM_STORE__ = curriculumStore;
 
     if (importErrors.length > 0) {
         return NextResponse.json({ 

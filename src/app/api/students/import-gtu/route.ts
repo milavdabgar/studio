@@ -1,17 +1,13 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Student, SemesterStatus, User, Program, Institute } from '@/types/entities'; // Updated User import
+import type { Student, SemesterStatus, User, Program, Institute, UserRole } from '@/types/entities'; // Updated User import
 import { parse, type ParseError } from 'papaparse';
 import { userService } from '@/lib/api/users';
 import { programService } from '@/lib/api/programs'; // To find program by code
 import { departmentService } from '@/lib/api/departments'; // To find department by code to link to program
 import { instituteService } from '@/lib/api/institutes'; // To get institute domain
-
-
-const studentsStore: Student[] = (global as any).__API_STUDENTS_STORE__ || [];
-if (!(global as any).__API_STUDENTS_STORE__) {
-  (global as any).__API_STUDENTS_STORE__ = studentsStore;
-}
+import mongoose from 'mongoose';
+import { StudentModel, UserModel } from '@/lib/models';
 
 const generateIdForImport = (): string => `std_gtu_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
@@ -62,6 +58,9 @@ const DEPARTMENT_CODE_TO_NAME_MAP: { [key: string]: string } = {
 
 export async function POST(request: NextRequest) {
   try {
+    // Connect to MongoDB
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const programsJson = formData.get('programs') as string | null; // Get client-side programs
@@ -73,7 +72,6 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ message: 'Program data for mapping is missing.' }, { status: 400 });
     }
     const clientPrograms: Program[] = JSON.parse(programsJson);
-
 
     const fileText = await file.text();
     const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
@@ -149,12 +147,12 @@ export async function POST(request: NextRequest) {
 
 
       const studentData: Omit<Student, 'id' | 'userId'> = {
-        enrollmentNumber, gtuName, firstName, middleName, lastName,
+        enrollmentNumber, fullNameGtuFormat: gtuName, firstName, middleName, lastName,
         personalEmail: row.email?.toString().trim() || undefined,
         instituteEmail,
         programId, 
         department: studentDepartment, // This is departmentId
-        branchCode, currentSemester,
+        currentSemester,
         status: String(row.iscancel).toLowerCase() === 'true' ? 'dropped' : (isCompleteStr === 'true' || isPassAllStr === 'true' ? 'graduated' : 'active'),
         contactNumber: row.mobile?.toString().trim() || undefined,
         gender: normalizeGenderFromString(row.gender?.toString()),
@@ -176,22 +174,26 @@ export async function POST(request: NextRequest) {
         shift: normalizeShiftFromString(row.shift?.toString()),
       };
 
-      const existingStudentIndex = studentsStore.findIndex(s => s.enrollmentNumber === enrollmentNumber);
+      // Find existing student in MongoDB
+      const existingStudent = await StudentModel.findOne({ enrollmentNumber });
       let studentToProcess: Student;
 
-      if (existingStudentIndex !== -1) {
-        studentToProcess = { ...studentsStore[existingStudentIndex], ...studentData };
-        studentsStore[existingStudentIndex] = studentToProcess;
+      if (existingStudent) {
+        // Update existing student
+        Object.assign(existingStudent, studentData);
+        studentToProcess = (await existingStudent.save()).toJSON() as Student;
         updatedCount++;
       } else {
-        studentToProcess = { id: generateIdForImport(), ...studentData };
-        studentsStore.push(studentToProcess);
+        // Create new student
+        const newStudentData = { id: generateIdForImport(), ...studentData };
+        const newStudent = new StudentModel(newStudentData);
+        studentToProcess = (await newStudent.save()).toJSON() as Student;
         newCount++;
       }
 
-      const userDisplayName = studentToProcess.gtuName || studentToProcess.enrollmentNumber;
+      const userDisplayName = studentToProcess.fullNameGtuFormat || studentToProcess.enrollmentNumber;
       try {
-        const existingUserByEmail = await userService.getAllUsers().then(users => users.find(u => u.instituteEmail === studentToProcess.instituteEmail));
+        const existingUserByEmail = await UserModel.findOne({ instituteEmail: studentToProcess.instituteEmail });
         
         const userDataPayload = {
             displayName: userDisplayName,
@@ -199,26 +201,28 @@ export async function POST(request: NextRequest) {
             instituteEmail: studentToProcess.instituteEmail,
             isActive: studentToProcess.status === 'active',
             instituteId: studentInstituteId, // Pass student's institute ID
+            currentRole: 'student' as UserRole,
         };
 
         if (existingUserByEmail) {
             studentToProcess.userId = existingUserByEmail.id;
             const rolesToSet = existingUserByEmail.roles.includes('student') ? existingUserByEmail.roles : [...existingUserByEmail.roles, 'student' as UserRole];
-            await userService.updateUser(existingUserByEmail.id, {...userDataPayload, roles: rolesToSet});
+            Object.assign(existingUserByEmail, {...userDataPayload, roles: rolesToSet});
+            await existingUserByEmail.save();
         } else {
-            const createdUser = await userService.createUser({...userDataPayload, password: studentToProcess.enrollmentNumber, roles: ['student']});
+            const newUser = new UserModel({...userDataPayload, password: studentToProcess.enrollmentNumber, roles: ['student']});
+            const createdUser = await newUser.save();
             studentToProcess.userId = createdUser.id;
         }
-        const finalStudentIndex = studentsStore.findIndex(s => s.id === studentToProcess.id);
-        if (finalStudentIndex !== -1) {
-            studentsStore[finalStudentIndex].userId = studentToProcess.userId;
-        }
+        
+        // Update student with userId
+        await StudentModel.findByIdAndUpdate(studentToProcess.id, { userId: studentToProcess.userId });
 
       } catch(userError: unknown) {
-        importErrors.push({row: rowIndex, message: `User account linking/creation failed for ${enrollmentNumber}: ${userError.message}`, data: row});
+        const error = userError as Error;
+        importErrors.push({row: rowIndex, message: `User account linking/creation failed for ${enrollmentNumber}: ${error.message}`, data: row});
       }
     }
-    (global as any).__API_STUDENTS_STORE__ = studentsStore;
     
     if (importErrors.length > 0) {
         return NextResponse.json({ 
