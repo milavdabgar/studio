@@ -1,14 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Examination, ExaminationTimeTableEntry } from '@/types/entities';
 import { isValid, parseISO } from 'date-fns';
-
-declare global {
-  var __API_EXAMINATIONS_STORE__: Examination[] | undefined;
-}
-if (!global.__API_EXAMINATIONS_STORE__) {
-  global.__API_EXAMINATIONS_STORE__ = [];
-}
-let examinationsStore: Examination[] = global.__API_EXAMINATIONS_STORE__;
+import { connectMongoose } from '@/lib/mongodb';
+import { ExaminationModel } from '@/lib/models';
 
 interface RouteParams {
   params: Promise<{
@@ -17,68 +11,94 @@ interface RouteParams {
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id  } = await params;
-  const examination = examinationsStore.find(e => e.id === id);
-  if (examination) {
-    return NextResponse.json(examination);
+  try {
+    await connectMongoose();
+    const { id } = await params;
+    
+    const examination = await ExaminationModel.findOne({ id }).lean();
+    if (examination) {
+      // Format examination to ensure proper id field
+      const examinationWithId = {
+        ...examination,
+        id: examination.id || (examination as any)._id.toString()
+      };
+      return NextResponse.json(examinationWithId);
+    }
+    return NextResponse.json({ message: 'Examination not found' }, { status: 404 });
+  } catch (error) {
+    console.error(`Error fetching examination ${id}:`, error);
+    return NextResponse.json({ message: 'Internal server error fetching examination.', error: (error as Error).message }, { status: 500 });
   }
-  return NextResponse.json({ message: 'Examination not found' }, { status: 404 });
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { id  } = await params;
   try {
-    const examDataToUpdate = await request.json() as Partial<Omit<Examination, 'id' | 'createdAt' | 'updatedAt'>>;
-    const examIndex = examinationsStore.findIndex(e => e.id === id);
-
-    if (examIndex === -1) {
+    await connectMongoose();
+    const { id } = await params;
+    
+    const examinationDataToUpdate = await request.json() as Partial<Omit<Examination, 'id' | 'createdAt' | 'updatedAt'>>;
+    
+    const existingExamination = await ExaminationModel.findOne({ id }).lean();
+    if (!existingExamination) {
       return NextResponse.json({ message: 'Examination not found' }, { status: 404 });
     }
 
-    const existingExam = examinationsStore[examIndex];
-
-    // Validations (can be more extensive)
-    if (examDataToUpdate.name !== undefined && !examDataToUpdate.name.trim()) {
-      return NextResponse.json({ message: 'Examination Name cannot be empty.' }, { status: 400 });
+    // Validate date fields if provided
+    if (examinationDataToUpdate.startDate && !isValid(parseISO(examinationDataToUpdate.startDate))) {
+        return NextResponse.json({ message: 'Invalid startDate format. Use YYYY-MM-DD format.' }, { status: 400 });
     }
-    if (examDataToUpdate.startDate && (!isValid(parseISO(examDataToUpdate.startDate)) || (examDataToUpdate.endDate && parseISO(examDataToUpdate.startDate) >= parseISO(examDataToUpdate.endDate)))) {
-      return NextResponse.json({ message: 'Invalid Start Date or Start Date is after End Date.' }, { status: 400 });
+    if (examinationDataToUpdate.endDate && !isValid(parseISO(examinationDataToUpdate.endDate))) {
+        return NextResponse.json({ message: 'Invalid endDate format. Use YYYY-MM-DD format.' }, { status: 400 });
     }
-    if (examDataToUpdate.endDate && !isValid(parseISO(examDataToUpdate.endDate))) {
-      return NextResponse.json({ message: 'Invalid End Date format.' }, { status: 400 });
-    }
-    if (examDataToUpdate.examinationTimeTable) {
-        for (const entry of examDataToUpdate.examinationTimeTable) {
-            if (!entry.courseId || !entry.date || !entry.startTime || !entry.endTime || !entry.roomId) {
-                 return NextResponse.json({ message: 'Each timetable entry must have course, date, start/end times, and room.' }, { status: 400 });
-            }
-            if (!isValid(parseISO(entry.date))) {
-                 return NextResponse.json({ message: `Invalid date format in timetable entry: ${entry.date}` }, { status: 400 });
-            }
-             // Basic time validation (HH:MM)
-            if (!/^\d{2}:\d{2}$/.test(entry.startTime) || !/^\d{2}:\d{2}$/.test(entry.endTime) || entry.startTime >= entry.endTime) {
-                return NextResponse.json({ message: `Invalid start/end time format or logic in timetable entry for course ${entry.courseId}.` }, { status: 400 });
-            }
-        }
+    
+    // Check date order if both dates are being updated
+    const finalStartDate = examinationDataToUpdate.startDate || existingExamination.startDate;
+    const finalEndDate = examinationDataToUpdate.endDate || existingExamination.endDate;
+    
+    if (parseISO(finalStartDate) >= parseISO(finalEndDate)) {
+        return NextResponse.json({ message: 'End date must be after start date.' }, { status: 400 });
     }
 
+    // Check for duplicate examination if key fields are being changed
+    if (examinationDataToUpdate.name || examinationDataToUpdate.academicYear || examinationDataToUpdate.examType) {
+      const finalName = examinationDataToUpdate.name || existingExamination.name;
+      const finalAcademicYear = examinationDataToUpdate.academicYear || existingExamination.academicYear;
+      const finalExamType = examinationDataToUpdate.examType || existingExamination.examType;
+      
+      const duplicateExamination = await ExaminationModel.findOne({
+        id: { $ne: id },
+        name: finalName,
+        academicYear: finalAcademicYear,
+        examType: finalExamType
+      });
+      
+      if (duplicateExamination) {
+        return NextResponse.json({ message: 'Examination with this name, academic year, and exam type already exists.' }, { status: 409 });
+      }
+    }
 
-    const updatedExam: Examination = {
-      ...existingExam,
-      ...examDataToUpdate,
-      // Ensure array fields are properly merged or replaced
-      programIds: examDataToUpdate.programIds || existingExam.programIds,
-      examinationTimeTable: examDataToUpdate.examinationTimeTable || existingExam.examinationTimeTable || [],
-      updatedAt: new Date().toISOString(),
+    const updateData: any = {
+      ...examinationDataToUpdate,
+      updatedAt: new Date().toISOString()
     };
-    if(examDataToUpdate.name) updatedExam.name = examDataToUpdate.name.trim();
-    if(examDataToUpdate.gtuExamCode) updatedExam.gtuExamCode = examDataToUpdate.gtuExamCode.trim() || undefined;
-    if(examDataToUpdate.academicYear) updatedExam.academicYear = examDataToUpdate.academicYear.trim();
 
+    const updatedExamination = await ExaminationModel.findOneAndUpdate(
+      { id },
+      updateData,
+      { new: true, lean: true }
+    );
 
-    examinationsStore[examIndex] = updatedExam;
-    global.__API_EXAMINATIONS_STORE__ = examinationsStore;
-    return NextResponse.json(updatedExam);
+    if (!updatedExamination) {
+      return NextResponse.json({ message: 'Examination not found' }, { status: 404 });
+    }
+
+    // Format examination to ensure proper id field
+    const examinationWithId = {
+      ...updatedExamination,
+      id: updatedExamination.id || (updatedExamination as any)._id.toString()
+    };
+
+    return NextResponse.json(examinationWithId);
   } catch (error) {
     console.error(`Error updating examination ${id}:`, error);
     return NextResponse.json({ message: `Error updating examination ${id}`, error: (error as Error).message }, { status: 500 });
@@ -86,14 +106,19 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id  } = await params;
-  const initialLength = examinationsStore.length;
-  const newStore = examinationsStore.filter(e => e.id !== id);
-
-  if (newStore.length === initialLength) {
-    return NextResponse.json({ message: 'Examination not found' }, { status: 404 });
+  try {
+    await connectMongoose();
+    const { id } = await params;
+    
+    const deletedExamination = await ExaminationModel.findOneAndDelete({ id });
+    
+    if (!deletedExamination) {
+      return NextResponse.json({ message: 'Examination not found' }, { status: 404 });
+    }
+    
+    return NextResponse.json({ message: 'Examination deleted successfully' }, { status: 200 });
+  } catch (error) {
+    console.error(`Error deleting examination ${id}:`, error);
+    return NextResponse.json({ message: `Error deleting examination ${id}`, error: (error as Error).message }, { status: 500 });
   }
-  global.__API_EXAMINATIONS_STORE__ = newStore;
-  examinationsStore = global.__API_EXAMINATIONS_STORE__;
-  return NextResponse.json({ message: 'Examination deleted successfully' }, { status: 200 });
 }

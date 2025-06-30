@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import type { 
   User, Role, Permission, Department, Course, Batch, Program, 
-  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, ProjectEventScheduleItem, Project, ProjectRequirements, ProjectGuide, ProjectEvaluation, Assessment, Result, ResultSubject, Enrollment, EnrollmentStatus, CourseOffering, Notification, NotificationType, StudentAssessmentScore, CourseMaterial, AttendanceRecord, Timetable, TimetableEntry, ProjectLocation
+  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, ProjectEventScheduleItem, Project, ProjectRequirements, ProjectGuide, ProjectEvaluation, Assessment, Result, ResultSubject, Enrollment, EnrollmentStatus, CourseOffering, Notification, NotificationType, StudentAssessmentScore, CourseMaterial, AttendanceRecord, Timetable, TimetableEntry, ProjectLocation, Curriculum, RoomAllocation, Examination, ExaminationTimeTableEntry
 } from '@/types/entities';
 
 // Institute Schema
@@ -418,6 +418,37 @@ const programSchema = new Schema<IProgram>({
   }
 });
 
+// Curriculum Schema
+interface ICurriculum extends Omit<Curriculum, 'id'>, Document {
+  _id: string;
+}
+
+const curriculumSchema = new Schema<ICurriculum>({
+  id: { type: String, unique: true, sparse: true }, // Custom ID field
+  programId: { type: String, required: true },
+  version: { type: String, required: true },
+  effectiveDate: { type: String, required: true },
+  courses: [{
+    courseId: { type: String, required: true },
+    semester: { type: Number, required: true },
+    isElective: { type: Boolean, required: true, default: false }
+  }],
+  status: { type: String, enum: ['draft', 'active', 'archived'], required: true, default: 'draft' },
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      // Use custom id if available, otherwise use _id
+      ret.id = ret.id || ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
 // Update timestamps middleware
 instituteSchema.pre('save', function(next) {
   (this as IInstitute).updatedAt = new Date().toISOString();
@@ -466,6 +497,101 @@ batchSchema.pre('save', function(next) {
 
 programSchema.pre('save', function(next) {
   (this as IProgram).updatedAt = new Date().toISOString();
+  next();
+});
+
+curriculumSchema.pre('save', function(next) {
+  (this as ICurriculum).updatedAt = new Date().toISOString();
+  next();
+});
+
+// Room Allocation Schema
+interface IRoomAllocation extends Omit<RoomAllocation, 'id'>, Document {
+  _id: string;
+}
+
+const roomAllocationSchema = new Schema<IRoomAllocation>({
+  id: { type: String, unique: true, sparse: true }, // Custom ID field
+  roomId: { type: String, required: true },
+  purpose: { type: String, enum: ['lecture', 'practical', 'exam', 'event', 'meeting', 'other'], required: true },
+  courseOfferingId: { type: String },
+  committeeId: { type: String },
+  facultyId: { type: String },
+  title: { type: String },
+  dayOfWeek: { type: String },
+  startTime: { type: String, required: true },
+  endTime: { type: String, required: true },
+  isRecurring: { type: Boolean, default: false },
+  recurrencePattern: { type: String },
+  status: { type: String, enum: ['scheduled', 'cancelled', 'completed', 'ongoing'], required: true, default: 'scheduled' },
+  notes: { type: String },
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      // Use custom id if available, otherwise use _id
+      ret.id = ret.id || ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+roomAllocationSchema.pre('save', function(next) {
+  (this as IRoomAllocation).updatedAt = new Date().toISOString();
+  next();
+});
+
+// Examination Schema
+interface IExamination extends Omit<Examination, 'id'>, Document {
+  _id: string;
+}
+
+const examinationTimeTableEntrySchema = new Schema({
+  id: { type: String },
+  examinationId: { type: String, required: true },
+  courseId: { type: String, required: true },
+  courseName: { type: String },
+  date: { type: String, required: true },
+  startTime: { type: String, required: true },
+  endTime: { type: String, required: true },
+  roomId: { type: String },
+  roomIds: [{ type: String }],
+  invigilatorIds: [{ type: String }],
+  notes: { type: String }
+}, { _id: false });
+
+const examinationSchema = new Schema<IExamination>({
+  id: { type: String, unique: true, sparse: true }, // Custom ID field
+  name: { type: String, required: true },
+  gtuExamCode: { type: String },
+  academicYear: { type: String, required: true },
+  examType: { type: String, enum: ['End Semester Theory', 'End Semester Practical/Viva', 'Mid Semester', 'Internal Continuous Evaluation', 'Other'], required: true },
+  startDate: { type: String, required: true },
+  endDate: { type: String, required: true },
+  programIds: [{ type: String, required: true }],
+  status: { type: String, enum: ['scheduled', 'ongoing', 'completed', 'postponed', 'cancelled'], required: true, default: 'scheduled' },
+  examinationTimeTable: [examinationTimeTableEntrySchema],
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      // Use custom id if available, otherwise use _id
+      ret.id = ret.id || ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+examinationSchema.pre('save', function(next) {
+  (this as IExamination).updatedAt = new Date().toISOString();
   next();
 });
 
@@ -1326,6 +1452,9 @@ export const DepartmentModel = mongoose.models.Department || mongoose.model<IDep
 export const CourseModel = mongoose.models.Course || mongoose.model<ICourse>('Course', courseSchema);
 export const BatchModel = mongoose.models.Batch || mongoose.model<IBatch>('Batch', batchSchema);
 export const ProgramModel = mongoose.models.Program || mongoose.model<IProgram>('Program', programSchema);
+export const CurriculumModel = mongoose.models.Curriculum || mongoose.model<ICurriculum>('Curriculum', curriculumSchema, 'curriculums');
+export const RoomAllocationModel = mongoose.models.RoomAllocation || mongoose.model<IRoomAllocation>('RoomAllocation', roomAllocationSchema, 'roomallocations');
+export const ExaminationModel = mongoose.models.Examination || mongoose.model<IExamination>('Examination', examinationSchema, 'examinations');
 export const StudentModel = mongoose.models.Student || mongoose.model<IStudent>('Student', studentSchema);
 export const FacultyModel = mongoose.models.Faculty || mongoose.model<IFaculty>('Faculty', facultySchema, 'faculties');
 export const ProjectTeamModel = mongoose.models.ProjectTeam || mongoose.model<IProjectTeam>('ProjectTeam', projectTeamSchema, 'projectteams');
@@ -1343,4 +1472,4 @@ export const TimetableModel = mongoose.models.Timetable || mongoose.model<ITimet
 export const ProjectLocationModel = mongoose.models.ProjectLocation || mongoose.model<IProjectLocation>('ProjectLocation', projectLocationSchema, 'projectlocations');
 
 // Export types
-export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment, IResult, IEnrollment, ICourseOffering, INotification, IStudentAssessmentScore, ICourseMaterial, IAttendanceRecord, ITimetable, IProjectLocation };
+export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, ICurriculum, IRoomAllocation, IExamination, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment, IResult, IEnrollment, ICourseOffering, INotification, IStudentAssessmentScore, ICourseMaterial, IAttendanceRecord, ITimetable, IProjectLocation };

@@ -1,44 +1,62 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Curriculum } from '@/types/entities';
 import { isValid, parseISO } from 'date-fns';
+import { connectMongoose } from '@/lib/mongodb';
+import { CurriculumModel } from '@/lib/models';
 
-declare global {
-  var __API_CURRICULUM_STORE__: Curriculum[] | undefined;
+// Initialize default curriculum if none exist
+async function initializeDefaultCurriculum() {
+  await connectMongoose();
+  const curriculumCount = await CurriculumModel.countDocuments();
+  
+  if (curriculumCount === 0) {
+    const now = new Date().toISOString();
+    const defaultCurriculum = [
+      {
+        id: "curr_dce_v1_gpp",
+        programId: "prog_dce_gpp",
+        version: "1.0",
+        effectiveDate: "2024-07-01",
+        courses: [
+          { courseId: "course_cs101_dce_gpp", semester: 1, isElective: false },
+          { courseId: "course_math1_gen_gpp", semester: 1, isElective: false },
+        ],
+        status: "active",
+        createdAt: now,
+        updatedAt: now,
+      },
+    ];
+    
+    await CurriculumModel.insertMany(defaultCurriculum);
+  }
 }
-
-const now = new Date().toISOString();
-
-if (!global.__API_CURRICULUM_STORE__ || global.__API_CURRICULUM_STORE__.length === 0) {
-  global.__API_CURRICULUM_STORE__ = [
-    {
-      id: "curr_dce_v1_gpp",
-      programId: "prog_dce_gpp",
-      version: "1.0",
-      effectiveDate: "2024-07-01",
-      courses: [
-        { courseId: "course_cs101_dce_gpp", semester: 1, isElective: false },
-        { courseId: "course_math1_gen_gpp", semester: 1, isElective: false },
-      ],
-      status: "active",
-      createdAt: now,
-      updatedAt: now,
-    },
-  ];
-}
-const curriculumStore: Curriculum[] = global.__API_CURRICULUM_STORE__;
 
 const generateId = (): string => `curr_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function GET() {
-  if (!Array.isArray(global.__API_CURRICULUM_STORE__)) {
-    global.__API_CURRICULUM_STORE__ = [];
-    return NextResponse.json({ message: 'Internal server error: Curriculum data store corrupted.' }, { status: 500 });
+  try {
+    await connectMongoose();
+    await initializeDefaultCurriculum();
+    
+    const curriculum = await CurriculumModel.find({}).lean();
+    
+    // Format curriculum to ensure proper id field
+    const curriculumWithId = curriculum.map(curr => ({
+      ...curr,
+      id: curr.id || (curr as any)._id.toString()
+    }));
+
+    return NextResponse.json(curriculumWithId);
+  } catch (error) {
+    console.error('Error in GET /api/curriculum:', error);
+    return NextResponse.json({ message: 'Internal server error processing curriculum request.', error: (error as Error).message }, { status: 500 });
   }
-  return NextResponse.json(global.__API_CURRICULUM_STORE__);
 }
 
 export async function POST(request: NextRequest) {
   try {
+    await connectMongoose();
+    
     const curriculumData = await request.json() as Omit<Curriculum, 'id' | 'createdAt' | 'updatedAt'>;
 
     if (!curriculumData.programId || !curriculumData.version?.trim() || !curriculumData.effectiveDate) {
@@ -50,25 +68,33 @@ export async function POST(request: NextRequest) {
     if (!curriculumData.courses || curriculumData.courses.length === 0) {
         return NextResponse.json({ message: 'Curriculum must contain at least one course.' }, { status: 400 });
     }
-    if (curriculumStore.some(c => c.programId === curriculumData.programId && c.version.toLowerCase() === curriculumData.version.trim().toLowerCase())) {
+    
+    // Check for duplicate curriculum
+    const existingCurriculum = await CurriculumModel.findOne({
+      programId: curriculumData.programId,
+      version: { $regex: new RegExp(`^${curriculumData.version.trim()}$`, 'i') }
+    });
+    
+    if (existingCurriculum) {
         return NextResponse.json({ message: `Curriculum version '${curriculumData.version.trim()}' already exists for this program.` }, { status: 409 });
     }
 
-
     const currentTimestamp = new Date().toISOString();
-    const newCurriculum: Curriculum = {
+    const newCurriculumData = {
       id: generateId(),
       programId: curriculumData.programId,
       version: curriculumData.version.trim(),
-      effectiveDate: curriculumData.effectiveDate, // Already YYYY-MM-DD from client
+      effectiveDate: curriculumData.effectiveDate,
       courses: curriculumData.courses,
       status: curriculumData.status || 'draft',
       createdAt: currentTimestamp,
       updatedAt: currentTimestamp,
     };
-    curriculumStore.push(newCurriculum);
-    global.__API_CURRICULUM_STORE__ = curriculumStore;
-    return NextResponse.json(newCurriculum, { status: 201 });
+    
+    const newCurriculum = new CurriculumModel(newCurriculumData);
+    await newCurriculum.save();
+    
+    return NextResponse.json(newCurriculum.toJSON(), { status: 201 });
   } catch (error) {
     console.error('Error creating curriculum:', error);
     return NextResponse.json({ message: 'Error creating curriculum', error: (error as Error).message }, { status: 500 });

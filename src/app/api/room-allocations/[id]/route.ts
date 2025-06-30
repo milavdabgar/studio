@@ -1,12 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { RoomAllocation } from '@/types/entities';
 import { isValid, parseISO } from 'date-fns';
-
-// Ensure the global store is initialized
-if (!global.__API_ROOM_ALLOCATIONS_STORE__) {
-  global.__API_ROOM_ALLOCATIONS_STORE__ = [];
-}
-const roomAllocationsStore: RoomAllocation[] = global.__API_ROOM_ALLOCATIONS_STORE__;
+import { connectMongoose } from '@/lib/mongodb';
+import { RoomAllocationModel } from '@/lib/models';
 
 interface RouteParams {
   params: Promise<{
@@ -15,75 +11,99 @@ interface RouteParams {
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = await params;
-  if (!Array.isArray(global.__API_ROOM_ALLOCATIONS_STORE__)) {
-    global.__API_ROOM_ALLOCATIONS_STORE__ = [];
-    return NextResponse.json({ message: 'Room Allocation data store corrupted.' }, { status: 500 });
+  try {
+    await connectMongoose();
+    const { id } = await params;
+    
+    const allocation = await RoomAllocationModel.findOne({ id }).lean();
+    if (allocation) {
+      // Format allocation to ensure proper id field
+      const allocationWithId = {
+        ...allocation,
+        id: allocation.id || (allocation as any)._id.toString()
+      };
+      return NextResponse.json(allocationWithId);
+    }
+    return NextResponse.json({ message: 'Room allocation not found' }, { status: 404 });
+  } catch (error) {
+    console.error(`Error fetching room allocation ${id}:`, error);
+    return NextResponse.json({ message: 'Internal server error fetching room allocation.', error: (error as Error).message }, { status: 500 });
   }
-  const allocation = global.__API_ROOM_ALLOCATIONS_STORE__.find(a => a.id === id);
-  if (allocation) {
-    return NextResponse.json(allocation);
-  }
-  return NextResponse.json({ message: 'Room allocation not found' }, { status: 404 });
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { id } = await params;
-  if (!Array.isArray(global.__API_ROOM_ALLOCATIONS_STORE__)) {
-    global.__API_ROOM_ALLOCATIONS_STORE__ = [];
-    return NextResponse.json({ message: 'Room Allocation data store corrupted.' }, { status: 500 });
-  }
   try {
+    await connectMongoose();
+    const { id } = await params;
+    
     const allocationDataToUpdate = await request.json() as Partial<Omit<RoomAllocation, 'id' | 'createdAt' | 'updatedAt'>>;
-    const allocationIndex = global.__API_ROOM_ALLOCATIONS_STORE__.findIndex(a => a.id === id);
-
-    if (allocationIndex === -1) {
+    
+    const existingAllocation = await RoomAllocationModel.findOne({ id }).lean();
+    if (!existingAllocation) {
       return NextResponse.json({ message: 'Room allocation not found' }, { status: 404 });
     }
 
-    const existingAllocation = global.__API_ROOM_ALLOCATIONS_STORE__[allocationIndex];
-
-    if (allocationDataToUpdate.startTime || allocationDataToUpdate.endTime) {
-        const newStartTimeStr = allocationDataToUpdate.startTime || existingAllocation.startTime;
-        const newEndTimeStr = allocationDataToUpdate.endTime || existingAllocation.endTime;
-        try {
-            if (!isValid(parseISO(newStartTimeStr)) || !isValid(parseISO(newEndTimeStr))) {
-                return NextResponse.json({ message: 'Invalid startTime or endTime format for update. Use ISO 8601 format.' }, { status: 400 });
-            }
-            if (parseISO(newStartTimeStr) >= parseISO(newEndTimeStr)) {
-                return NextResponse.json({ message: 'End time must be after start time for update.' }, { status: 400 });
-            }
-
-            // Basic conflict check for update
-            const newStartTime = parseISO(newStartTimeStr);
-            const newEndTime = parseISO(newEndTimeStr);
-            const targetRoomId = allocationDataToUpdate.roomId || existingAllocation.roomId;
-
-            const conflict = roomAllocationsStore.find(existing => 
-                existing.id !== id && // Exclude the current record being updated
-                existing.roomId === targetRoomId &&
-                existing.status !== 'cancelled' &&
-                newStartTime < parseISO(existing.endTime) &&
-                newEndTime > parseISO(existing.startTime)
-            );
-
-            if (conflict) {
-                return NextResponse.json({ message: `Time slot conflict for room ${targetRoomId}. Room already booked from ${conflict.startTime} to ${conflict.endTime}.` }, { status: 409 });
-            }
-
-        } catch (e) {
-            return NextResponse.json({ message: 'Invalid date format for startTime or endTime during update. Use ISO 8601 format.' }, { status: 400 });
-        }
+    // Validate time fields if provided
+    if (allocationDataToUpdate.startTime && !isValid(parseISO(allocationDataToUpdate.startTime))) {
+        return NextResponse.json({ message: 'Invalid startTime format. Use ISO 8601 format.' }, { status: 400 });
+    }
+    if (allocationDataToUpdate.endTime && !isValid(parseISO(allocationDataToUpdate.endTime))) {
+        return NextResponse.json({ message: 'Invalid endTime format. Use ISO 8601 format.' }, { status: 400 });
     }
     
-    const updatedAllocation: RoomAllocation = { 
-        ...existingAllocation, 
-        ...allocationDataToUpdate,
-        updatedAt: new Date().toISOString(),
+    // Check time order if both times are being updated
+    const finalStartTime = allocationDataToUpdate.startTime || existingAllocation.startTime;
+    const finalEndTime = allocationDataToUpdate.endTime || existingAllocation.endTime;
+    
+    if (parseISO(finalStartTime) >= parseISO(finalEndTime)) {
+        return NextResponse.json({ message: 'End time must be after start time.' }, { status: 400 });
+    }
+
+    // Check for time slot conflicts if times or room are being changed
+    if (allocationDataToUpdate.startTime || allocationDataToUpdate.endTime || allocationDataToUpdate.roomId) {
+      const finalRoomId = allocationDataToUpdate.roomId || existingAllocation.roomId;
+      
+      const conflict = await RoomAllocationModel.findOne({
+        id: { $ne: id },
+        roomId: finalRoomId,
+        status: { $ne: 'cancelled' },
+        $or: [
+          {
+            startTime: { $lt: finalEndTime },
+            endTime: { $gt: finalStartTime }
+          }
+        ]
+      });
+
+      if (conflict) {
+          return NextResponse.json({ 
+            message: `Time slot conflict for room ${finalRoomId}. Room already booked from ${conflict.startTime} to ${conflict.endTime}.` 
+          }, { status: 409 });
+      }
+    }
+
+    const updateData: any = {
+      ...allocationDataToUpdate,
+      updatedAt: new Date().toISOString()
     };
 
-    global.__API_ROOM_ALLOCATIONS_STORE__[allocationIndex] = updatedAllocation;
-    return NextResponse.json(updatedAllocation);
+    const updatedAllocation = await RoomAllocationModel.findOneAndUpdate(
+      { id },
+      updateData,
+      { new: true, lean: true }
+    );
+
+    if (!updatedAllocation) {
+      return NextResponse.json({ message: 'Room allocation not found' }, { status: 404 });
+    }
+
+    // Format allocation to ensure proper id field
+    const allocationWithId = {
+      ...updatedAllocation,
+      id: updatedAllocation.id || (updatedAllocation as any)._id.toString()
+    };
+
+    return NextResponse.json(allocationWithId);
   } catch (error) {
     console.error(`Error updating room allocation ${id}:`, error);
     return NextResponse.json({ message: `Error updating room allocation ${id}`, error: (error as Error).message }, { status: 500 });
@@ -91,18 +111,19 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = await params;
-  if (!Array.isArray(global.__API_ROOM_ALLOCATIONS_STORE__)) {
-    global.__API_ROOM_ALLOCATIONS_STORE__ = [];
-    return NextResponse.json({ message: 'Room Allocation data store corrupted.' }, { status: 500 });
+  try {
+    await connectMongoose();
+    const { id } = await params;
+    
+    const deletedAllocation = await RoomAllocationModel.findOneAndDelete({ id });
+    
+    if (!deletedAllocation) {
+      return NextResponse.json({ message: 'Room allocation not found' }, { status: 404 });
+    }
+    
+    return NextResponse.json({ message: 'Room allocation deleted successfully' }, { status: 200 });
+  } catch (error) {
+    console.error(`Error deleting room allocation ${id}:`, error);
+    return NextResponse.json({ message: `Error deleting room allocation ${id}`, error: (error as Error).message }, { status: 500 });
   }
-  const initialLength = global.__API_ROOM_ALLOCATIONS_STORE__.length;
-  const newStore = global.__API_ROOM_ALLOCATIONS_STORE__.filter(a => a.id !== id);
-
-  if (newStore.length === initialLength) {
-    return NextResponse.json({ message: 'Room allocation not found' }, { status: 404 });
-  }
-  
-  global.__API_ROOM_ALLOCATIONS_STORE__ = newStore;
-  return NextResponse.json({ message: 'Room allocation deleted successfully' }, { status: 200 });
 }
