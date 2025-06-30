@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import type { 
   User, Role, Permission, Department, Course, Batch, Program, 
-  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, ProjectEventScheduleItem, Project, ProjectRequirements, ProjectGuide, ProjectEvaluation, Assessment
+  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, ProjectEventScheduleItem, Project, ProjectRequirements, ProjectGuide, ProjectEvaluation, Assessment, Result, ResultSubject
 } from '@/types/entities';
 
 // Institute Schema
@@ -909,6 +909,75 @@ assessmentSchema.pre('save', function(next) {
   next();
 });
 
+// Result Schema
+interface IResult extends Omit<Result, '_id'>, Document {
+  _id: string;
+}
+
+const resultSubjectSchema = new Schema({
+  code: { type: String, required: true },
+  name: { type: String, required: true },
+  credits: { type: Number, required: true },
+  grade: { type: String, required: true },
+  isBacklog: { type: Boolean, required: true },
+  theoryEseGrade: { type: String },
+  theoryPaGrade: { type: String },
+  theoryTotalGrade: { type: String },
+  practicalPaGrade: { type: String },
+  practicalVivaGrade: { type: String },
+  practicalTotalGrade: { type: String }
+}, { _id: false });
+
+const resultSchema = new Schema<IResult>({
+  st_id: { type: String },
+  studentId: { type: String },
+  enrollmentNo: { type: String, required: true },
+  extype: { type: String },
+  examid: { type: Number },
+  exam: { type: String },
+  declarationDate: { type: String },
+  academicYear: { type: String },
+  semester: { type: Number, required: true },
+  unitNo: { type: Number },
+  examNumber: { type: Number },
+  name: { type: String, required: true },
+  instcode: { type: Number },
+  instName: { type: String },
+  courseName: { type: String },
+  branchCode: { type: Number },
+  branchName: { type: String, required: true },
+  subjects: [resultSubjectSchema],
+  totalCredits: { type: Number, required: true },
+  earnedCredits: { type: Number, required: true },
+  spi: { type: Number, required: true },
+  cpi: { type: Number, required: true },
+  cgpa: { type: Number },
+  result: { type: String, required: true },
+  trials: { type: Number },
+  remark: { type: String },
+  currentBacklog: { type: Number },
+  totalBacklog: { type: Number },
+  uploadBatch: { type: String, required: true },
+  programId: { type: String },
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  _id: true, // Let MongoDB handle _id generation
+  toJSON: {
+    transform: function(doc, ret) {
+      // Keep _id as is for Results (compatibility with existing code)
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+resultSchema.pre('save', function(next) {
+  (this as IResult).updatedAt = new Date().toISOString();
+  next();
+});
+
 // Models
 export const InstituteModel = mongoose.models.Institute || mongoose.model<IInstitute>('Institute', instituteSchema);
 export const BuildingModel = mongoose.models.Building || mongoose.model<IBuilding>('Building', buildingSchema);
@@ -927,6 +996,7 @@ export const ProjectTeamModel = mongoose.models.ProjectTeam || mongoose.model<IP
 export const ProjectEventModel = mongoose.models.ProjectEvent || mongoose.model<IProjectEvent>('ProjectEvent', projectEventSchema, 'projectevents');
 export const ProjectModel = mongoose.models.Project || mongoose.model<IProject>('Project', projectSchema, 'projects');
 export const AssessmentModel = mongoose.models.Assessment || mongoose.model<IAssessment>('Assessment', assessmentSchema, 'assessments');
+export const ResultModel = mongoose.models.Result || mongoose.model<IResult>('Result', resultSchema, 'results');
 
 // Export types
-export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment };
+export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment, IResult };

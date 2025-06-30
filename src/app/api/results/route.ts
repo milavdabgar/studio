@@ -2,86 +2,95 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Result, ResultFilterParams, ResultSubject } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 import { v4 as uuidv4 } from 'uuid';
+import { connectMongoose } from '@/lib/mongodb';
+import { ResultModel } from '@/lib/models';
 
-declare global {
-  var __API_RESULTS_STORE__: Result[] | undefined;
+// Initialize default results if none exist
+async function initializeDefaultResults() {
+  await connectMongoose();
+  const resultCount = await ResultModel.countDocuments();
+  
+  if (resultCount === 0) {
+    const now = new Date().toISOString();
+    const defaultResults = [
+      {
+          st_id: "220010107001",
+          studentId: "std_ce_001_gpp",
+          enrollmentNo: "220010107001",
+          name: "DOE JOHN MICHAEL",
+          branchName: "Computer Engineering",
+          semester: 1,
+          exam: "Winter 2023 Regular",
+          examid: 12345,
+          subjects: [
+              { code: "CS101", name: "Intro to C", credits: 4, grade: "AA", isBacklog: false, theoryEseGrade: "AA" },
+              { code: "MA101", name: "Maths 1", credits: 3, grade: "AB", isBacklog: false, theoryEseGrade: "AB" },
+          ],
+          spi: 9.5,
+          cpi: 9.5,
+          result: "PASS",
+          uploadBatch: "batch_initial_data_gpp",
+          createdAt: now,
+          updatedAt: now,
+          totalCredits: 7,
+          earnedCredits: 7,
+      },
+    ];
+    
+    await ResultModel.insertMany(defaultResults);
+  }
 }
-
-const now = new Date().toISOString();
-
-if (!global.__API_RESULTS_STORE__) {
-  global.__API_RESULTS_STORE__ = [
-    {
-        _id: "res_gpp_22001_s1",
-        st_id: "220010107001",
-        studentId: "std_ce_001_gpp", // Added studentId
-        enrollmentNo: "220010107001",
-        name: "DOE JOHN MICHAEL",
-        branchName: "Computer Engineering",
-        semester: 1,
-        exam: "Winter 2023 Regular",
-        examid: 12345, // Example examid
-        subjects: [
-            { code: "CS101", name: "Intro to C", credits: 4, grade: "AA", isBacklog: false, theoryEseGrade: "AA" },
-            { code: "MA101", name: "Maths 1", credits: 3, grade: "AB", isBacklog: false, theoryEseGrade: "AB" },
-        ],
-        spi: 9.5,
-        cpi: 9.5,
-        result: "PASS",
-        uploadBatch: "batch_initial_data_gpp",
-        createdAt: now,
-        updatedAt: now,
-        totalCredits: 7,
-        earnedCredits: 7,
-    },
-  ];
-}
-const resultsStore: Result[] = global.__API_RESULTS_STORE__;
 
 export async function GET(request: NextRequest) {
-  if (!Array.isArray(global.__API_RESULTS_STORE__)) {
-    global.__API_RESULTS_STORE__ = [];
-    return NextResponse.json({ message: 'Internal server error: Result data store corrupted.' }, { status: 500 });
-  }
-  
-  const { searchParams } = new URL(request.url);
-  const filters: ResultFilterParams = {};
-  searchParams.forEach((value, key) => {
-    if (key === 'page' || key === 'limit' || key === 'semester' || key === 'examid' ) {
-        filters[key] = parseInt(value, 10);
-    } else if (key === 'uploadBatch' || key === 'branchName' || key === 'academicYear' || key === 'examId' || key === 'studentId') { 
-        filters[key] = value;
-    }
-  });
-
-  let filteredResults = [...resultsStore];
-  if (filters.branchName) filteredResults = filteredResults.filter(r => r.branchName === filters.branchName);
-  if (filters.semester) filteredResults = filteredResults.filter(r => r.semester === filters.semester);
-  if (filters.academicYear) filteredResults = filteredResults.filter(r => r.academicYear === filters.academicYear);
-  if (filters.examid) filteredResults = filteredResults.filter(r => r.examid === filters.examid); 
-  if (filters.examId) filteredResults = filteredResults.filter(r => r.examid === parseInt(filters.examId!)); 
-  if (filters.studentId) filteredResults = filteredResults.filter(r => r.studentId === filters.studentId);
-  if (filters.uploadBatch) filteredResults = filteredResults.filter(r => r.uploadBatch === filters.uploadBatch);
-  
-  const page = filters.page || 1;
-  const limit = filters.limit || 100; 
-  const total = filteredResults.length;
-  const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
-  const paginatedResults = filteredResults.slice(startIndex, endIndex);
-
-  return NextResponse.json({
-    status: 'success',
-    data: {
-      results: paginatedResults,
-      pagination: {
-        total,
-        page,
-        limit,
-        pages: Math.ceil(total / limit) || 1,
+  try {
+    await connectMongoose();
+    await initializeDefaultResults();
+    
+    const { searchParams } = new URL(request.url);
+    const filters: ResultFilterParams = {};
+    searchParams.forEach((value, key) => {
+      if (key === 'page' || key === 'limit' || key === 'semester' || key === 'examid' ) {
+          filters[key] = parseInt(value, 10);
+      } else if (key === 'uploadBatch' || key === 'branchName' || key === 'academicYear' || key === 'examId' || key === 'studentId') { 
+          filters[key] = value;
       }
-    }
-  });
+    });
+
+    // Build MongoDB query
+    let query: any = {};
+    if (filters.branchName) query.branchName = filters.branchName;
+    if (filters.semester) query.semester = filters.semester;
+    if (filters.academicYear) query.academicYear = filters.academicYear;
+    if (filters.examid) query.examid = filters.examid;
+    if (filters.examId) query.examid = parseInt(filters.examId!);
+    if (filters.studentId) query.studentId = filters.studentId;
+    if (filters.uploadBatch) query.uploadBatch = filters.uploadBatch;
+    
+    const page = filters.page || 1;
+    const limit = filters.limit || 100;
+    const skip = (page - 1) * limit;
+    
+    const [results, total] = await Promise.all([
+      ResultModel.find(query).skip(skip).limit(limit).lean(),
+      ResultModel.countDocuments(query)
+    ]);
+
+    return NextResponse.json({
+      status: 'success',
+      data: {
+        results,
+        pagination: {
+          total,
+          page,
+          limit,
+          pages: Math.ceil(total / limit) || 1,
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error in GET /api/results:', error);
+    return NextResponse.json({ message: 'Internal server error processing results request.', error: (error as Error).message }, { status: 500 });
+  }
 }
 
 const processStandardResultCsv = (rows: any[]): { processedResults: Omit<Result, '_id' | 'createdAt' | 'updatedAt'>[], errors: any[] } => {
@@ -151,20 +160,23 @@ const processStandardResultCsv = (rows: any[]): { processedResults: Omit<Result,
 
 export async function POST(request: NextRequest) { 
   try {
+    await connectMongoose();
+    
     const resultDataToCreate = await request.json() as Omit<Result, '_id' | 'createdAt' | 'updatedAt'>;
 
     if (!resultDataToCreate.studentId || !resultDataToCreate.enrollmentNo || !resultDataToCreate.examid || !resultDataToCreate.subjects || resultDataToCreate.subjects.length === 0) {
         return NextResponse.json({ message: 'Student ID, Enrollment No, Examination ID, and at least one subject result are required.' }, { status: 400 });
     }
 
-    const existingResultIndex = resultsStore.findIndex(
-      r => r.studentId === resultDataToCreate.studentId && r.examid === resultDataToCreate.examid
-    );
+    const existingResult = await ResultModel.findOne({
+      studentId: resultDataToCreate.studentId,
+      examid: resultDataToCreate.examid
+    });
 
     const currentTimestamp = new Date().toISOString();
 
-    if (existingResultIndex !== -1) {
-      const existingResult = resultsStore[existingResultIndex];
+    if (existingResult) {
+      // Update existing result
       const updatedSubjects = [...existingResult.subjects];
 
       resultDataToCreate.subjects.forEach(newSub => {
@@ -181,33 +193,36 @@ export async function POST(request: NextRequest) {
       const updatedSPI = resultDataToCreate.spi !== undefined ? resultDataToCreate.spi : existingResult.spi;
       const updatedCPI = resultDataToCreate.cpi !== undefined ? resultDataToCreate.cpi : existingResult.cpi;
 
+      const updatedResult = await ResultModel.findByIdAndUpdate(
+        existingResult._id,
+        {
+          ...resultDataToCreate,
+          subjects: updatedSubjects,
+          totalCredits,
+          earnedCredits,
+          spi: updatedSPI,
+          cpi: updatedCPI,
+          updatedAt: currentTimestamp,
+        },
+        { new: true }
+      );
 
-      resultsStore[existingResultIndex] = {
-        ...existingResult,
-        ...resultDataToCreate, 
-        subjects: updatedSubjects,
-        totalCredits,
-        earnedCredits,
-        spi: updatedSPI,
-        cpi: updatedCPI,
-        updatedAt: currentTimestamp,
-      };
-      global.__API_RESULTS_STORE__ = resultsStore;
-      return NextResponse.json(resultsStore[existingResultIndex], { status: 200 });
+      return NextResponse.json(updatedResult, { status: 200 });
 
     } else {
       // Create new Result document
-      const newResult: Result = {
-        _id: `res_${uuidv4()}`,
+      const newResultData = {
         ...resultDataToCreate,
-        st_id: resultDataToCreate.st_id || resultDataToCreate.enrollmentNo, // Default st_id if not provided
+        st_id: resultDataToCreate.st_id || resultDataToCreate.enrollmentNo,
         uploadBatch: resultDataToCreate.uploadBatch || uuidv4(),
         createdAt: currentTimestamp,
         updatedAt: currentTimestamp,
       };
-      resultsStore.push(newResult);
-      global.__API_RESULTS_STORE__ = resultsStore;
-      return NextResponse.json(newResult, { status: 201 });
+      
+      const newResult = new ResultModel(newResultData);
+      await newResult.save();
+      
+      return NextResponse.json(newResult.toJSON(), { status: 201 });
     }
 
   } catch (error) {
