@@ -2,35 +2,10 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { User, UserRole, Institute, Role } from '@/types/entities'; 
 import { parse, type ParseError } from 'papaparse';
-
-
-declare global {
-  var __API_USERS_STORE__: User[] | undefined;
-}
-if (!global.__API_USERS_STORE__) {
-  global.__API_USERS_STORE__ = [
-     { 
-      id: "user1", 
-      displayName: "Alice Admin", 
-      username: "admin",
-      email: "admin@example.com", 
-      instituteEmail: "admin@gppalanpur.in",
-      password: "Admin@123", 
-      roles: ["Admin", "Super Admin"], // Store role names
-      isActive: true, 
-      instituteId: "inst1",
-      authProviders: ['password'],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      isEmailVerified: true,
-      preferences: { theme: 'system', language: 'en' }
-    },
-  ]; 
-}
-const usersStore: User[] = global.__API_USERS_STORE__;
+import { UserModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 const generateIdForImport = (): string => `user_imp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-
 
 const parseGtuNameToComponents = (gtuName: string | undefined): { firstName?: string, middleName?: string, lastName?: string } => {
     if (!gtuName) return {};
@@ -38,7 +13,7 @@ const parseGtuNameToComponents = (gtuName: string | undefined): { firstName?: st
     if (parts.length === 1) return { firstName: parts[0], lastName: "SURNAME_PLACEHOLDER" };
     if (parts.length === 2) return { lastName: parts[0], firstName: parts[1] }; 
     return { lastName: parts[0], firstName: parts[1], middleName: parts.slice(2).join(' ') };
-  };
+};
 
 
 export async function POST(request: NextRequest) {

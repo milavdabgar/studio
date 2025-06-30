@@ -3,21 +3,16 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { ProjectEvent, Department, ProjectEventStatus } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 import { isValid, parseISO, format } from 'date-fns';
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_PROJECT_EVENTS_STORE__: ProjectEvent[] | undefined;
-}
-if (!global.__API_PROJECT_EVENTS_STORE__) {
-  global.__API_PROJECT_EVENTS_STORE__ = [];
-}
-const projectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
+import { ProjectEventModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 const generateIdForImport = (): string => `evt_imp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 const EVENT_STATUS_OPTIONS_LOWER: string[] = ['upcoming', 'ongoing', 'completed', 'cancelled'];
 
 export async function POST(request: NextRequest) {
   try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const departmentsJson = formData.get('departments') as string | null;
@@ -39,7 +34,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (parseErrors.length > 0) {
-      const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row + 2}: ${e.message} (Code: ${e.code})`);
+      const errorMessages = parseErrors.map((e: ParseError) => `Row ${(e.row || 0) + 2}: ${e.message} (Code: ${e.code})`);
       return NextResponse.json({ message: 'Error parsing Project Events CSV file.', errors: errorMessages }, { status: 400 });
     }
 
@@ -106,8 +101,7 @@ export async function POST(request: NextRequest) {
         });
       }
 
-
-      const eventDataFromCsv: Omit<ProjectEvent, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy' | 'schedule'> = {
+      const eventDataFromCsv = {
         name, academicYear, eventDate, registrationStartDate, registrationEndDate, status,
         description: row.description?.toString().trim() || undefined,
         isActive: String(row.isactive).toLowerCase() === 'true' || row.isactive === '1' || row.isactive === 1,
@@ -116,23 +110,38 @@ export async function POST(request: NextRequest) {
       };
 
       const idFromCsv = row.id?.toString().trim();
-      let existingEventIndex = -1;
+      let existingEvent = null;
 
       if (idFromCsv) {
-        existingEventIndex = projectEventsStore.findIndex(e => e.id === idFromCsv);
+        existingEvent = await ProjectEventModel.findOne({ 
+          $or: [{ id: idFromCsv }, { _id: idFromCsv }] 
+        });
       } else {
-        existingEventIndex = projectEventsStore.findIndex(e => e.name.toLowerCase() === name.toLowerCase() && e.academicYear === academicYear);
+        existingEvent = await ProjectEventModel.findOne({ 
+          name: { $regex: new RegExp(`^${name}$`, 'i') },
+          academicYear: academicYear 
+        });
       }
 
-      if (existingEventIndex !== -1) {
-        projectEventsStore[existingEventIndex] = { ...projectEventsStore[existingEventIndex], ...eventDataFromCsv, schedule: projectEventsStore[existingEventIndex].schedule || [], updatedAt: now };
+      if (existingEvent) {
+        await ProjectEventModel.findOneAndUpdate(
+          { _id: existingEvent._id },
+          { ...eventDataFromCsv, schedule: existingEvent.schedule || [], updatedAt: now }
+        );
         updatedCount++;
       } else {
-        if (projectEventsStore.some(e => e.name.toLowerCase() === name.toLowerCase() && e.academicYear === academicYear)) {
+        // Check for duplicates
+        const duplicate = await ProjectEventModel.findOne({ 
+          name: { $regex: new RegExp(`^${name}$`, 'i') },
+          academicYear: academicYear 
+        });
+        
+        if (duplicate) {
             importErrors.push({ row: rowIndex, message: `Event with name '${name}' and academic year '${academicYear}' already exists.`, data: row });
             skippedCount++; continue;
         }
-        const newEvent: ProjectEvent = {
+        
+        const newEvent = new ProjectEventModel({
           id: idFromCsv || generateIdForImport(),
           ...eventDataFromCsv,
           schedule: [],
@@ -140,13 +149,12 @@ export async function POST(request: NextRequest) {
           updatedBy: 'user_import_placeholder',
           createdAt: now,
           updatedAt: now,
-        };
-        projectEventsStore.push(newEvent);
+        });
+        
+        await newEvent.save();
         newCount++;
       }
     }
-
-    global.__API_PROJECT_EVENTS_STORE__ = projectEventsStore;
 
     if (importErrors.length > 0) {
         return NextResponse.json({ 
