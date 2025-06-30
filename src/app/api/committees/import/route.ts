@@ -4,25 +4,8 @@ import type { Committee, CommitteeStatus, Institute, SystemUser as User, UserRol
 import { parse, type ParseError } from 'papaparse';
 import { isValid, parseISO, format } from 'date-fns';
 import { userService } from '@/lib/api/users';
-
-declare global {
-  var __API_COMMITTEES_STORE__: Committee[] | undefined;
-  var __API_ROLES_STORE__: Role[] | undefined;
-  var __API_USERS_STORE__: User[] | undefined;
-}
-
-if (!global.__API_COMMITTEES_STORE__) {
-  global.__API_COMMITTEES_STORE__ = [];
-}
-
-if (!global.__API_ROLES_STORE__) {
-  global.__API_ROLES_STORE__ = [];
-}
-
-if (!global.__API_USERS_STORE__) {
-  global.__API_USERS_STORE__ = [];
-}
-
+import { CommitteeModel, RoleModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 const generateIdForImport = (): string => `cmt_imp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 const generateRoleIdForImport = (): string => `role_cmt_imp_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
@@ -57,7 +40,6 @@ async function updateUserConvenerRoleForImport(userId: string, committeeCode: st
 }
 
 async function createOrUpdateCommitteeRolesForImport(committee: Committee, isUpdate: boolean = false, oldCommitteeDetails?: {name: string, code: string}) {
-  const currentRolesStore: Role[] = global.__API_ROLES_STORE__ || [];
   const committeeRolesInfo = [
     { type: 'Convener', permissions: ['view_committee_info', 'manage_committee_meetings', 'manage_committee_members'] },
     { type: 'Co-Convener', permissions: ['view_committee_info', 'manage_committee_meetings'] },
@@ -69,45 +51,47 @@ async function createOrUpdateCommitteeRolesForImport(committee: Committee, isUpd
     const newRoleName = `${committee.name} ${roleNameSuffix}`;
     const newRoleCode = `${committee.code.toLowerCase()}_${roleNameSuffix.toLowerCase().replace(/\s+/g, '_')}`;
     
-    let existingRoleIndex = -1;
     let oldRoleCodeForSearch: string | undefined = undefined;
 
     if (isUpdate && oldCommitteeDetails) {
       oldRoleCodeForSearch = `${oldCommitteeDetails.code.toLowerCase()}_${roleNameSuffix.toLowerCase().replace(/\s+/g, '_')}`;
-      existingRoleIndex = currentRolesStore.findIndex(r => r.code === oldRoleCodeForSearch && r.committeeId === committee.id);
-    } else {
-       existingRoleIndex = currentRolesStore.findIndex(r => r.code === newRoleCode && r.committeeId === committee.id);
     }
 
-    if (existingRoleIndex !== -1) {
-      const existingRole = currentRolesStore[existingRoleIndex];
-      const oldRoleCodeActual = existingRole.code;
+    // Look for existing role
+    const searchCode = oldRoleCodeForSearch || newRoleCode;
+    const existingRole = await RoleModel.findOne({ 
+      code: searchCode,
+      committeeId: committee.id 
+    });
 
-      currentRolesStore[existingRoleIndex] = {
-        ...existingRole,
-        name: newRoleName,
-        code: newRoleCode,
-        description: `${roleInfo.type} for the ${committee.name} committee.`,
-        committeeCode: committee.code,
-        updatedAt: new Date().toISOString(),
-      };
+    if (existingRole) {
+      // Update existing role
+      await RoleModel.findOneAndUpdate(
+        { _id: existingRole._id },
+        {
+          name: newRoleName,
+          code: newRoleCode,
+          description: `${roleInfo.type} for the ${committee.name} committee.`,
+          committeeCode: committee.code,
+          updatedAt: new Date().toISOString(),
+        }
+      );
       
-      if (oldRoleCodeActual !== newRoleCode) {
-        const currentUsersStore: User[] = (global as any).__API_USERS_STORE__ || [];
-        currentUsersStore.forEach(user => {
-          const userRoleIndex = user.roles.indexOf(oldRoleCodeActual);
-          if (userRoleIndex !== -1) {
-            user.roles[userRoleIndex] = newRoleCode;
-          }
-        });
-        (global as any).__API_USERS_STORE__ = currentUsersStore;
+      // If role code changed, update users with this role
+      if (existingRole.code !== newRoleCode) {
+        // Note: User role updates would be handled by the userService
+        console.log(`Role code changed from ${existingRole.code} to ${newRoleCode} - users may need role updates`);
       }
     } else {
-      if (currentRolesStore.some(r => r.code === newRoleCode)) {
-          console.warn(`Role with code ${newRoleCode} already exists. Skipping creation for ${committee.name} ${roleInfo.type}.`);
-          continue;
+      // Check if role with new code already exists
+      const duplicateRole = await RoleModel.findOne({ code: newRoleCode });
+      if (duplicateRole) {
+        console.warn(`Role with code ${newRoleCode} already exists. Skipping creation for ${committee.name} ${roleInfo.type}.`);
+        continue;
       }
-      const newRole: Role = {
+
+      // Create new role
+      const newRole = new RoleModel({
         id: generateRoleIdForImport(),
         name: newRoleName,
         code: newRoleCode,
@@ -119,21 +103,21 @@ async function createOrUpdateCommitteeRolesForImport(committee: Committee, isUpd
         committeeCode: committee.code,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      };
-      currentRolesStore.push(newRole);
+      });
+      await newRole.save();
     }
   }
-  global.__API_ROLES_STORE__ = currentRolesStore;
 }
 
 
 export async function POST(request: NextRequest) {
   try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const institutesJson = formData.get('institutes') as string | null;
     const facultyUsersJson = formData.get('facultyUsers') as string | null;
-
 
     if (!file) {
       return NextResponse.json({ message: 'No file uploaded.' }, { status: 400 });
@@ -157,7 +141,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (parseErrors.length > 0) {
-      const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row + 2}: ${e.message} (Code: ${e.code})`);
+      const errorMessages = parseErrors.map((e: ParseError) => `Row ${(e.row || 0) + 2}: ${e.message} (Code: ${e.code})`);
       return NextResponse.json({ message: 'Error parsing Committees CSV file. Please check the file format and content.', errors: errorMessages }, { status: 400 });
     }
 
@@ -173,8 +157,6 @@ export async function POST(request: NextRequest) {
     let skippedCount = 0;
     const importErrors: { row: number; message: string; data: unknown }[] = [];
     const now = new Date().toISOString();
-    const committeesStoreRef = global.__API_COMMITTEES_STORE__!;
-
 
     for (let i = 0; i < parsedData.length; i++) {
       const row = parsedData[i];
@@ -251,63 +233,94 @@ export async function POST(request: NextRequest) {
       };
 
       const idFromCsv = row.id?.toString().trim();
-      let existingCommitteeIndex = -1;
+      let existingCommittee: any = null;
       let oldCommitteeSnapshot: Committee | undefined = undefined;
 
+      // Find existing committee
       if (idFromCsv) {
-        existingCommitteeIndex = committeesStoreRef.findIndex(c => c.id === idFromCsv);
+        existingCommittee = await CommitteeModel.findOne({ 
+          $or: [{ id: idFromCsv }, { _id: idFromCsv }] 
+        }).lean();
       } else {
-        existingCommitteeIndex = committeesStoreRef.findIndex(c => c.code.toLowerCase() === code.toLowerCase() && c.instituteId === instituteId);
-        if (existingCommitteeIndex === -1) { 
-             existingCommitteeIndex = committeesStoreRef.findIndex(c => c.name.toLowerCase() === name.toLowerCase() && c.instituteId === instituteId);
+        existingCommittee = await CommitteeModel.findOne({ 
+          code: { $regex: new RegExp(`^${code}$`, 'i') },
+          instituteId: instituteId 
+        }).lean();
+        
+        if (!existingCommittee) {
+          existingCommittee = await CommitteeModel.findOne({ 
+            name: { $regex: new RegExp(`^${name}$`, 'i') },
+            instituteId: instituteId 
+          }).lean();
         }
       }
 
-      if (existingCommitteeIndex !== -1) {
-        oldCommitteeSnapshot = { ...committeesStoreRef[existingCommitteeIndex] };
-        committeesStoreRef[existingCommitteeIndex] = { ...oldCommitteeSnapshot, ...committeeDataFromCsv, updatedAt: now };
-        const updatedCommittee = committeesStoreRef[existingCommitteeIndex];
-        updatedCount++;
-
-        if (oldCommitteeSnapshot && (updatedCommittee.name !== oldCommitteeSnapshot.name || updatedCommittee.code !== oldCommitteeSnapshot.code)) {
-            await createOrUpdateCommitteeRolesForImport(updatedCommittee, true, oldCommitteeSnapshot);
+      if (existingCommittee) {
+        // Update existing committee
+        oldCommitteeSnapshot = existingCommittee as Committee;
+        
+        const updatedCommittee = await CommitteeModel.findOneAndUpdate(
+          { _id: existingCommittee._id },
+          { ...committeeDataFromCsv, updatedAt: now },
+          { new: true, lean: true }
+        );
+        
+        if (!updatedCommittee) {
+          importErrors.push({ row: rowIndex, message: "Failed to update committee.", data: row });
+          skippedCount++; continue;
         }
         
-        if (oldCommitteeSnapshot && oldCommitteeSnapshot.convenerId !== updatedCommittee.convenerId) {
+        const committee = updatedCommittee as any as Committee;
+        updatedCount++;
+
+        if (oldCommitteeSnapshot && (committee.name !== oldCommitteeSnapshot.name || committee.code !== oldCommitteeSnapshot.code)) {
+            await createOrUpdateCommitteeRolesForImport(committee, true, oldCommitteeSnapshot);
+        }
+        
+        if (oldCommitteeSnapshot && oldCommitteeSnapshot.convenerId !== committee.convenerId) {
             if(oldCommitteeSnapshot.convenerId) await updateUserConvenerRoleForImport(oldCommitteeSnapshot.convenerId, oldCommitteeSnapshot.code, oldCommitteeSnapshot.name, false);
-            if(updatedCommittee.convenerId) await updateUserConvenerRoleForImport(updatedCommittee.convenerId, updatedCommittee.code, updatedCommittee.name, true);
-        } else if (updatedCommittee.convenerId && oldCommitteeSnapshot && (updatedCommittee.name !== oldCommitteeSnapshot.name || updatedCommittee.code !== oldCommitteeSnapshot.code) ) {
-            await updateUserConvenerRoleForImport(updatedCommittee.convenerId, oldCommitteeSnapshot.code, oldCommitteeSnapshot.name, false);
-            await updateUserConvenerRoleForImport(updatedCommittee.convenerId, updatedCommittee.code, updatedCommittee.name, true);
+            if(committee.convenerId) await updateUserConvenerRoleForImport(committee.convenerId, committee.code, committee.name, true);
+        } else if (committee.convenerId && oldCommitteeSnapshot && (committee.name !== oldCommitteeSnapshot.name || committee.code !== oldCommitteeSnapshot.code) ) {
+            await updateUserConvenerRoleForImport(committee.convenerId, oldCommitteeSnapshot.code, oldCommitteeSnapshot.name, false);
+            await updateUserConvenerRoleForImport(committee.convenerId, committee.code, committee.name, true);
         }
 
       } else {
-        if (committeesStoreRef.some(c => c.code.toLowerCase() === code.toLowerCase() && c.instituteId === instituteId)) {
+        // Check for duplicates before creating
+        const duplicateByCode = await CommitteeModel.findOne({ 
+          code: { $regex: new RegExp(`^${code}$`, 'i') },
+          instituteId: instituteId 
+        });
+        if (duplicateByCode) {
           importErrors.push({ row: rowIndex, message: `Committee with code '${code}' already exists for this institute.`, data: row });
           skippedCount++; continue;
         }
-         if (committeesStoreRef.some(c => c.name.toLowerCase() === name.toLowerCase() && c.instituteId === instituteId)) {
+        
+        const duplicateByName = await CommitteeModel.findOne({ 
+          name: { $regex: new RegExp(`^${name}$`, 'i') },
+          instituteId: instituteId 
+        });
+        if (duplicateByName) {
           importErrors.push({ row: rowIndex, message: `Committee with name '${name}' already exists for this institute.`, data: row });
           skippedCount++; continue;
         }
 
-        const newCommittee: Committee = {
+        const newCommittee = new CommitteeModel({
           id: idFromCsv || generateIdForImport(),
           ...committeeDataFromCsv,
           createdAt: now,
           updatedAt: now,
-        };
-        committeesStoreRef.push(newCommittee);
-        await createOrUpdateCommitteeRolesForImport(newCommittee, false); 
+        });
+        
+        const savedCommittee = await newCommittee.save();
+        await createOrUpdateCommitteeRolesForImport(savedCommittee.toObject() as Committee, false); 
         newCount++;
         
-        if (newCommittee.convenerId) {
-            await updateUserConvenerRoleForImport(newCommittee.convenerId, newCommittee.code, newCommittee.name, true);
+        if (savedCommittee.convenerId) {
+            await updateUserConvenerRoleForImport(savedCommittee.convenerId, savedCommittee.code, savedCommittee.name, true);
         }
       }
     }
-
-    global.__API_COMMITTEES_STORE__ = committeesStoreRef;
 
     if (importErrors.length > 0) {
         return NextResponse.json({ 

@@ -39,7 +39,9 @@ async function updateUserConvenerRole(userId: string, committeeCode: string, com
 }
 
 async function createOrUpdateCommitteeRoles(committee: Committee, isUpdate: boolean = false, oldCommitteeDetails?: {name: string, code: string}) {
-  const currentRolesStore: Role[] = global.__API_ROLES_STORE__ || [];
+  await connectMongoose();
+  const { RoleModel, UserModel } = await import('@/lib/models');
+  
   const committeeRolesInfo = [
     { type: 'Convener', permissions: ['view_committee_info', 'manage_committee_meetings', 'manage_committee_members'] },
     { type: 'Co-Convener', permissions: ['view_committee_info', 'manage_committee_meetings'] },
@@ -51,43 +53,41 @@ async function createOrUpdateCommitteeRoles(committee: Committee, isUpdate: bool
     const newRoleName = `${committee.name} ${roleNameSuffix}`;
     const newRoleCode = `${committee.code.toLowerCase()}_${roleNameSuffix.toLowerCase().replace(/\s+/g, '_')}`;
     
-    let existingRoleIndex = -1;
+    let existingRole;
     let oldRoleCodeForSearch: string | undefined = undefined;
 
     if (isUpdate && oldCommitteeDetails) {
       oldRoleCodeForSearch = `${oldCommitteeDetails.code.toLowerCase()}_${roleNameSuffix.toLowerCase().replace(/\s+/g, '_')}`;
-      existingRoleIndex = currentRolesStore.findIndex(r => r.code === oldRoleCodeForSearch && r.committeeId === committee.id);
+      existingRole = await RoleModel.findOne({ code: oldRoleCodeForSearch, committeeId: committee.id });
     } else {
        // For new committees or if old details not provided (shouldn't happen for update)
-       existingRoleIndex = currentRolesStore.findIndex(r => r.code === newRoleCode && r.committeeId === committee.id);
+       existingRole = await RoleModel.findOne({ code: newRoleCode, committeeId: committee.id });
     }
 
-    if (existingRoleIndex !== -1) { 
-      const existingRole = currentRolesStore[existingRoleIndex];
+    if (existingRole) { 
       const oldRoleCodeActual = existingRole.code;
 
-      currentRolesStore[existingRoleIndex] = {
-        ...existingRole,
-        name: newRoleName,
-        code: newRoleCode, 
-        description: `${roleInfo.type} for the ${committee.name} committee.`,
-        committeeCode: committee.code, 
-        updatedAt: new Date().toISOString(),
-      };
+      await RoleModel.updateOne(
+        { _id: existingRole._id },
+        {
+          name: newRoleName,
+          code: newRoleCode, 
+          description: `${roleInfo.type} for the ${committee.name} committee.`,
+          committeeCode: committee.code, 
+          updatedAt: new Date().toISOString(),
+        }
+      );
 
       if (oldRoleCodeActual !== newRoleCode) { // If role code itself changed
-        const currentUsersStore: User[] = (global as any).__API_USERS_STORE__ || [];
-        currentUsersStore.forEach(user => {
-          const userRoleIndex = user.roles.indexOf(oldRoleCodeActual);
-          if (userRoleIndex !== -1) {
-            user.roles[userRoleIndex] = newRoleCode; // Update to new role code
-          }
-        });
-        (global as any).__API_USERS_STORE__ = currentUsersStore;
+        await UserModel.updateMany(
+          { roles: oldRoleCodeActual },
+          { $set: { "roles.$": newRoleCode } }
+        );
       }
 
     } else { 
-      if (currentRolesStore.some(r => r.code === newRoleCode)) { 
+      const existingRoleWithCode = await RoleModel.findOne({ code: newRoleCode });
+      if (existingRoleWithCode) { 
           console.warn(`Role with code ${newRoleCode} already exists. Skipping creation for ${committee.name} ${roleInfo.type}.`);
           continue;
       }
@@ -104,38 +104,59 @@ async function createOrUpdateCommitteeRoles(committee: Committee, isUpdate: bool
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      currentRolesStore.push(newRole);
+      await RoleModel.create(newRole);
     }
   }
-  global.__API_ROLES_STORE__ = currentRolesStore;
 }
 
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = await params;
-  const committeesStore = global.__API_COMMITTEES_STORE__ || [];
-  const committee = committeesStore.find(c => c.id === id);
-  if (committee) {
-    return NextResponse.json(committee);
+  try {
+    await connectMongoose();
+    const { id } = await params;
+    
+    const committee = await CommitteeModel.findOne({
+      $or: [{ id }, { _id: id }]
+    }).lean();
+    
+    if (!committee) {
+      return NextResponse.json({ message: 'Committee not found' }, { status: 404 });
+    }
+    
+    // Transform MongoDB document to match API response format
+    const committeeResponse = {
+      ...committee,
+      id: (committee as any).id || (committee as any)._id.toString()
+    };
+    
+    return NextResponse.json(committeeResponse);
+  } catch (error) {
+    console.error('Error fetching committee:', error);
+    return NextResponse.json({ 
+      message: 'Internal server error during committee fetch.', 
+      error: (error as Error).message 
+    }, { status: 500 });
   }
-  return NextResponse.json({ message: 'Committee not found' }, { status: 404 });
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { id } = await params;
-  const committeesStore = global.__API_COMMITTEES_STORE__ || [];
-  
   try {
+    await connectMongoose();
+    const { id } = await params;
+    
     const committeeData = await request.json() as Partial<Omit<Committee, 'id' | 'createdAt' | 'updatedAt'>>;
-    const committeeIndex = committeesStore.findIndex(c => c.id === id);
+    
+    const existingCommittee = await CommitteeModel.findOne({
+      $or: [{ id }, { _id: id }]
+    });
 
-    if (committeeIndex === -1) {
+    if (!existingCommittee) {
       return NextResponse.json({ message: 'Committee not found' }, { status: 404 });
     }
-    const existingCommittee = committeesStore[committeeIndex];
+    
     const oldCommitteeDetails = { name: existingCommittee.name, code: existingCommittee.code };
 
-
+    // Validation
     if (committeeData.name !== undefined && !committeeData.name.trim()) {
       return NextResponse.json({ message: 'Committee Name cannot be empty.' }, { status: 400 });
     }
@@ -145,7 +166,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (committeeData.purpose !== undefined && !committeeData.purpose.trim()) {
       return NextResponse.json({ message: 'Committee Purpose cannot be empty.' }, { status: 400 });
     }
-     if (committeeData.instituteId !== undefined && !committeeData.instituteId) {
+    if (committeeData.instituteId !== undefined && !committeeData.instituteId) {
       return NextResponse.json({ message: 'Institute ID cannot be empty if provided for update.' }, { status: 400 });
     }
     if (committeeData.formationDate && !isValid(parseISO(committeeData.formationDate))) {
@@ -156,88 +177,129 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
     
     const newCode = committeeData.code?.trim().toUpperCase();
-    if (newCode && newCode !== existingCommittee.code.toUpperCase() && 
-        committeesStore.some(c => c.id !== id && c.code.toUpperCase() === newCode && c.instituteId === (committeeData.instituteId || existingCommittee.instituteId))) {
-      return NextResponse.json({ message: `Committee with code '${newCode}' already exists for this institute.` }, { status: 409 });
+    if (newCode && newCode !== existingCommittee.code.toUpperCase()) {
+      const existingWithCode = await CommitteeModel.findOne({
+        code: { $regex: new RegExp(`^${newCode}$`, 'i') },
+        instituteId: committeeData.instituteId || existingCommittee.instituteId,
+        $nor: [{ id }, { _id: id }]
+      });
+      if (existingWithCode) {
+        return NextResponse.json({ message: `Committee with code '${newCode}' already exists for this institute.` }, { status: 409 });
+      }
     }
+    
     const newName = committeeData.name?.trim();
-     if (newName && newName.toLowerCase() !== existingCommittee.name.toLowerCase() && 
-        committeesStore.some(c => c.id !== id && c.name.toLowerCase() === newName.toLowerCase() && c.instituteId === (committeeData.instituteId || existingCommittee.instituteId))) {
-      return NextResponse.json({ message: `Committee with name '${newName}' already exists for this institute.` }, { status: 409 });
+    if (newName && newName.toLowerCase() !== existingCommittee.name.toLowerCase()) {
+      const existingWithName = await CommitteeModel.findOne({
+        name: { $regex: new RegExp(`^${newName}$`, 'i') },
+        instituteId: committeeData.instituteId || existingCommittee.instituteId,
+        $nor: [{ id }, { _id: id }]
+      });
+      if (existingWithName) {
+        return NextResponse.json({ message: `Committee with name '${newName}' already exists for this institute.` }, { status: 409 });
+      }
     }
-
 
     const oldConvenerId = existingCommittee.convenerId;
     const newConvenerId = committeeData.convenerId === undefined ? existingCommittee.convenerId : (committeeData.convenerId === null ? undefined : committeeData.convenerId);
 
-
-    const updatedCommittee = { 
-      ...existingCommittee, 
+    const updateData = {
       ...committeeData,
       name: newName || existingCommittee.name,
       code: newCode || existingCommittee.code,
-      description: committeeData.description !== undefined ? committeeData.description.trim() || undefined : existingCommittee.description,
+      description: committeeData.description !== undefined ? committeeData.description?.trim() || undefined : existingCommittee.description,
       purpose: committeeData.purpose ? committeeData.purpose.trim() : existingCommittee.purpose,
       dissolutionDate: committeeData.dissolutionDate === null ? undefined : committeeData.dissolutionDate || existingCommittee.dissolutionDate,
       convenerId: newConvenerId, 
       updatedAt: new Date().toISOString(),
     };
 
-    committeesStore[committeeIndex] = updatedCommittee;
-    global.__API_COMMITTEES_STORE__ = committeesStore;
+    const updatedCommittee = await CommitteeModel.findOneAndUpdate(
+      { $or: [{ id }, { _id: id }] },
+      updateData,
+      { new: true, lean: true }
+    );
 
-    if (updatedCommittee.name !== oldCommitteeDetails.name || updatedCommittee.code !== oldCommitteeDetails.code) {
-        await createOrUpdateCommitteeRoles(updatedCommittee, true, oldCommitteeDetails);
+    if (!updatedCommittee) {
+      return NextResponse.json({ message: 'Committee not found' }, { status: 404 });
+    }
+
+    // Cast to Committee type for consistency
+    const committee = updatedCommittee as any as Committee;
+    
+    if (committee.name !== oldCommitteeDetails.name || committee.code !== oldCommitteeDetails.code) {
+        await createOrUpdateCommitteeRoles(committee, true, oldCommitteeDetails);
     }
     
     if (oldConvenerId && oldConvenerId !== newConvenerId) { 
       await updateUserConvenerRole(oldConvenerId, oldCommitteeDetails.code, oldCommitteeDetails.name, false);
     }
     if (newConvenerId && newConvenerId !== oldConvenerId) { 
-      await updateUserConvenerRole(newConvenerId, updatedCommittee.code, updatedCommittee.name, true);
-    } else if (newConvenerId && newConvenerId === oldConvenerId && (updatedCommittee.name !== oldCommitteeDetails.name || updatedCommittee.code !== oldCommitteeDetails.code) ) { 
+      await updateUserConvenerRole(newConvenerId, committee.code, committee.name, true);
+    } else if (newConvenerId && newConvenerId === oldConvenerId && (committee.name !== oldCommitteeDetails.name || committee.code !== oldCommitteeDetails.code)) { 
       await updateUserConvenerRole(newConvenerId, oldCommitteeDetails.code, oldCommitteeDetails.name, false);
-      await updateUserConvenerRole(newConvenerId, updatedCommittee.code, updatedCommittee.name, true);
+      await updateUserConvenerRole(newConvenerId, committee.code, committee.name, true);
     }
 
+    // Transform response
+    const committeeResponse = {
+      ...committee,
+      id: committee.id || (committee as any)._id?.toString()
+    };
 
-    return NextResponse.json(updatedCommittee);
+    return NextResponse.json(committeeResponse);
   } catch (error) {
-    console.error(`Error updating committee ${id}:`, error);
-    return NextResponse.json({ message: `Error updating committee ${id}`, error: (error as Error).message }, { status: 500 });
+    console.error('Error updating committee:', error);
+    return NextResponse.json({ 
+      message: 'Error updating committee', 
+      error: (error as Error).message 
+    }, { status: 500 });
   }
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = await params;
-  const committeesStore = global.__API_COMMITTEES_STORE__ || [];
-  let currentRolesStore = global.__API_ROLES_STORE__ || [];
-  const currentUsersStore: User[] = (global as any).__API_USERS_STORE__ || [];
-  
-  const committeeIndex = committeesStore.findIndex(c => c.id === id);
-  if (committeeIndex === -1) {
-    return NextResponse.json({ message: 'Committee not found' }, { status: 404 });
+  try {
+    await connectMongoose();
+    const { id } = await params;
+    const { RoleModel, UserModel } = await import('@/lib/models');
+    
+    const existingCommittee = await CommitteeModel.findOne({
+      $or: [{ id }, { _id: id }]
+    });
+
+    if (!existingCommittee) {
+      return NextResponse.json({ message: 'Committee not found' }, { status: 404 });
+    }
+
+    // Find and delete associated roles
+    const rolesToDelete = await RoleModel.find({ committeeId: id });
+    const roleCodesList = rolesToDelete.map(role => role.code);
+
+    // Remove roles from users who have them
+    if (roleCodesList.length > 0) {
+      await UserModel.updateMany(
+        { roles: { $in: roleCodesList } },
+        { $pullAll: { roles: roleCodesList } }
+      );
+    }
+
+    // Delete the roles
+    await RoleModel.deleteMany({ committeeId: id });
+
+    // Delete the committee
+    await CommitteeModel.deleteOne({ $or: [{ id }, { _id: id }] });
+
+    // Update convener role if needed
+    if (existingCommittee.convenerId) {
+      await updateUserConvenerRole(existingCommittee.convenerId, existingCommittee.code, existingCommittee.name, false);
+    }
+
+    return NextResponse.json({ message: 'Committee and associated roles deleted successfully' }, { status: 200 });
+  } catch (error) {
+    console.error('Error deleting committee:', error);
+    return NextResponse.json({ 
+      message: 'Error deleting committee', 
+      error: (error as Error).message 
+    }, { status: 500 });
   }
-
-  const deletedCommittee = committeesStore.splice(committeeIndex, 1)[0];
-  global.__API_COMMITTEES_STORE__ = committeesStore;
-
-  const rolesToDelete = currentRolesStore.filter(r => r.committeeId === id);
-  currentRolesStore = currentRolesStore.filter(r => r.committeeId !== id);
-  global.__API_ROLES_STORE__ = currentRolesStore;
-
-  for (const role of rolesToDelete) {
-      currentUsersStore.forEach(user => {
-          if (user.roles.includes(role.code)) { // Check against role CODE
-              user.roles = user.roles.filter(rCode => rCode !== role.code);
-          }
-      });
-  }
-  (global as any).__API_USERS_STORE__ = currentUsersStore;
-
-  if (deletedCommittee.convenerId) {
-    await updateUserConvenerRole(deletedCommittee.convenerId, deletedCommittee.code, deletedCommittee.name, false);
-  }
-
-  return NextResponse.json({ message: 'Committee and associated roles deleted successfully' }, { status: 200 });
 }

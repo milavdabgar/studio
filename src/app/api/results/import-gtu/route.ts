@@ -2,12 +2,8 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Result, Student, Program, ResultSubject } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 import { v4 as uuidv4 } from 'uuid';
-
-// Ensure stores are initialized
-if (!(global as any).__API_RESULTS_STORE__) {
-  (global as any).__API_RESULTS_STORE__ = [];
-}
-const resultsStore: Result[] = (global as any).__API_RESULTS_STORE__;
+import { ResultModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 // Helper functions adapted from reference/result.controller.ts
 const extractEnrollmentNo = (row: any): string => {
@@ -154,7 +150,7 @@ export async function POST(request: NextRequest) {
 
 
     if (parseErrors.length > 0) {
-      const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row + 2}: ${e.message} (Code: ${e.code})`).slice(0,5);
+      const errorMessages = parseErrors.map((e: ParseError) => `Row ${(e.row || 0) + 2}: ${e.message} (Code: ${e.code})`).slice(0,5);
       console.error("CSV Parsing Errors:", errorMessages);
       return NextResponse.json({ message: 'Error parsing GTU Results CSV file.', errors: errorMessages, error: `Error parsing GTU Results CSV file. First error: ${errorMessages[0]}` }, { status: 400 });
     }
@@ -170,28 +166,34 @@ export async function POST(request: NextRequest) {
     const now = new Date().toISOString();
     const currentUploadBatchId = uuidv4(); // Single batch ID for this upload
 
-    for (const resultData of processedResults) {
-      const existingResultIndex = resultsStore.findIndex(
-        (r) => r.enrollmentNo === resultData.enrollmentNo && r.examid === resultData.examid && r.semester === resultData.semester
-      );
+    // Connect to MongoDB
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
 
-      if (existingResultIndex !== -1) {
-        resultsStore[existingResultIndex] = { ...resultsStore[existingResultIndex], ...resultData, uploadBatch: currentUploadBatchId, updatedAt: now };
+    for (const resultData of processedResults) {
+      const existingResult = await ResultModel.findOne({
+        enrollmentNo: resultData.enrollmentNo,
+        examid: resultData.examid,
+        semester: resultData.semester
+      });
+
+      if (existingResult) {
+        await ResultModel.findOneAndUpdate(
+          { _id: existingResult._id },
+          { ...resultData, uploadBatch: currentUploadBatchId, updatedAt: now }
+        );
         updatedCount++;
       } else {
-        const newResultWithId: Result = {
-          _id: `gtu_res_${uuidv4()}`, 
+        const newResult = new ResultModel({
+          _id: `gtu_res_${uuidv4()}`,
           ...resultData,
           uploadBatch: currentUploadBatchId, 
           createdAt: now,
           updatedAt: now,
-        };
-        resultsStore.push(newResultWithId);
+        });
+        await newResult.save();
         newCount++;
       }
     }
-
-    (global as any).__API_RESULTS_STORE__ = resultsStore;
 
     if (processingErrors.length > 0) {
         const finalMessage = `GTU Results import partially completed. New: ${newCount}, Updated: ${updatedCount}, Skipped (due to processing issues): ${skippedCountDueToProcessing}.`;

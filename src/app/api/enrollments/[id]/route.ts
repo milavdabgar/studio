@@ -11,26 +11,38 @@ interface RouteParams {
 
 // GET a specific enrollment by ID
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id  } = await params;
-  const enrollment = enrollmentsStore.find(e => e.id === id);
-  if (enrollment) {
-    return NextResponse.json(enrollment);
+  try {
+    await connectMongoose();
+    const { id } = await params;
+    
+    const enrollment = await EnrollmentModel.findOne({ id }).lean();
+    if (enrollment) {
+      // Format enrollment to ensure proper id field
+      const enrollmentWithId = {
+        ...enrollment,
+        id: enrollment.id || (enrollment as any)._id.toString()
+      };
+      return NextResponse.json(enrollmentWithId);
+    }
+    return NextResponse.json({ message: 'Enrollment not found' }, { status: 404 });
+  } catch (error) {
+    console.error(`Error fetching enrollment ${id}:`, error);
+    return NextResponse.json({ message: 'Internal server error fetching enrollment.', error: (error as Error).message }, { status: 500 });
   }
-  return NextResponse.json({ message: 'Enrollment not found' }, { status: 404 });
 }
 
 // PUT to update an enrollment (e.g., change status by admin/faculty)
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { id  } = await params;
   try {
+    await connectMongoose();
+    const { id } = await params;
+    
     const enrollmentDataToUpdate = await request.json() as Partial<Omit<Enrollment, 'id' | 'studentId' | 'courseOfferingId' | 'createdAt'>>;
-    const enrollmentIndex = enrollmentsStore.findIndex(e => e.id === id);
-
-    if (enrollmentIndex === -1) {
+    
+    const existingEnrollment = await EnrollmentModel.findOne({ id }).lean();
+    if (!existingEnrollment) {
       return NextResponse.json({ message: 'Enrollment not found' }, { status: 404 });
     }
-
-    const existingEnrollment = enrollmentsStore[enrollmentIndex];
     
     // Validate status if provided
     if (enrollmentDataToUpdate.status) {
@@ -40,16 +52,28 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         }
     }
 
-    const updatedEnrollment: Enrollment = {
-      ...existingEnrollment,
+    const updateData = {
       ...enrollmentDataToUpdate,
       updatedAt: new Date().toISOString(),
     };
 
-    enrollmentsStore[enrollmentIndex] = updatedEnrollment;
-    global.__API_ENROLLMENTS_STORE__ = enrollmentsStore;
+    const updatedEnrollment = await EnrollmentModel.findOneAndUpdate(
+      { id },
+      updateData,
+      { new: true, lean: true }
+    );
 
-    return NextResponse.json(updatedEnrollment);
+    if (!updatedEnrollment) {
+      return NextResponse.json({ message: 'Enrollment not found' }, { status: 404 });
+    }
+
+    // Format enrollment to ensure proper id field
+    const enrollmentWithId = {
+      ...updatedEnrollment,
+      id: updatedEnrollment.id || (updatedEnrollment as any)._id.toString()
+    };
+
+    return NextResponse.json(enrollmentWithId);
   } catch (error) {
     console.error(`Error updating enrollment ${id}:`, error);
     return NextResponse.json({ message: `Error updating enrollment ${id}`, error: (error as Error).message }, { status: 500 });
@@ -58,13 +82,19 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 // DELETE an enrollment (e.g., student withdraws, admin removes)
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id  } = await params;
-  const initialLength = enrollmentsStore.length;
-  enrollmentsStore = enrollmentsStore.filter(e => e.id !== id);
-
-  if (enrollmentsStore.length === initialLength) {
-    return NextResponse.json({ message: 'Enrollment not found' }, { status: 404 });
+  try {
+    await connectMongoose();
+    const { id } = await params;
+    
+    const deletedEnrollment = await EnrollmentModel.findOneAndDelete({ id });
+    
+    if (!deletedEnrollment) {
+      return NextResponse.json({ message: 'Enrollment not found' }, { status: 404 });
+    }
+    
+    return NextResponse.json({ message: 'Enrollment deleted successfully' });
+  } catch (error) {
+    console.error(`Error deleting enrollment ${id}:`, error);
+    return NextResponse.json({ message: `Error deleting enrollment ${id}`, error: (error as Error).message }, { status: 500 });
   }
-  global.__API_ENROLLMENTS_STORE__ = enrollmentsStore;
-  return NextResponse.json({ message: 'Enrollment deleted successfully' });
 }

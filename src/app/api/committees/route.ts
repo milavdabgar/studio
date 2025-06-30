@@ -4,7 +4,7 @@ import type { Committee, UserRole, SystemUser as User, Role } from '@/types/enti
 import { isValid, parseISO } from 'date-fns';
 import { userService } from '@/lib/api/users';
 import { connectMongoose } from '@/lib/mongodb';
-import { CommitteeModel } from '@/lib/models';
+import { CommitteeModel, RoleModel } from '@/lib/models';
 
 // Initialize default committees if none exist
 async function initializeDefaultCommittees() {
@@ -78,7 +78,8 @@ async function updateUserConvenerRole(userId: string, committeeCode: string, com
 }
 
 async function createOrUpdateCommitteeRoles(committee: Committee, isUpdate: boolean = false, oldCommitteeDetails?: {name: string, code: string}) {
-  const currentRolesStore: Role[] = global.__API_ROLES_STORE__ || [];
+  await connectMongoose();
+  const currentRolesStore: Role[] = await RoleModel.find({}).lean();
   const committeeRolesInfo = [
     { type: 'Convener', permissions: ['view_committee_info', 'manage_committee_meetings', 'manage_committee_members'] },
     { type: 'Co-Convener', permissions: ['view_committee_info', 'manage_committee_meetings'] },
@@ -147,7 +148,7 @@ async function createOrUpdateCommitteeRoles(committee: Committee, isUpdate: bool
       currentRolesStore.push(newRole);
     }
   }
-  global.__API_ROLES_STORE__ = currentRolesStore;
+  // Roles are already saved to MongoDB in the loop above
 }
 
 

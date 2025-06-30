@@ -2,20 +2,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { ProjectEvent, ProjectEventScheduleItem, ProjectTeam } from '@/types/entities';
 import { notificationService } from '@/lib/api/notifications';
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_PROJECT_EVENTS_STORE__: ProjectEvent[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_PROJECT_TEAMS_STORE__: ProjectTeam[] | undefined;
-}
-
-if (!global.__API_PROJECT_EVENTS_STORE__) global.__API_PROJECT_EVENTS_STORE__ = [];
-if (!global.__API_PROJECT_TEAMS_STORE__) global.__API_PROJECT_TEAMS_STORE__ = [];
-
-const projectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
-const projectTeamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
-
+import { ProjectEventModel, ProjectTeamModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 interface RouteParams {
   params: Promise<{
@@ -26,37 +14,41 @@ interface RouteParams {
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   const { id: eventId } = await params;
   try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    
     const { schedule } = await request.json() as { schedule: ProjectEventScheduleItem[] };
     
     if (!Array.isArray(schedule)) {
         return NextResponse.json({ message: 'Invalid schedule data format. Expected an array.'}, { status: 400});
     }
 
-    const eventIndex = projectEventsStore.findIndex(e => e.id === eventId);
+    const eventToUpdate = await ProjectEventModel.findOneAndUpdate(
+      { $or: [{ id: eventId }, { _id: eventId }] },
+      {
+        schedule: schedule,
+        updatedAt: new Date().toISOString(),
+        updatedBy: "user_admin_placeholder_schedule_patch"
+      },
+      { new: true, lean: true }
+    );
 
-    if (eventIndex === -1) {
+    if (!eventToUpdate) {
       return NextResponse.json({ message: 'Event not found for schedule update' }, { status: 404 });
     }
-    
-    const eventToUpdate = projectEventsStore[eventIndex];
-
-    eventToUpdate.schedule = schedule;
-    eventToUpdate.updatedAt = new Date().toISOString();
-    eventToUpdate.updatedBy = "user_admin_placeholder_schedule_patch"; 
-    global.__API_PROJECT_EVENTS_STORE__ = projectEventsStore;
 
     // --- Notification Trigger ---
-    const teamsForEvent = projectTeamsStore.filter(team => team.eventId === eventId);
+    const teamsForEvent = await ProjectTeamModel.find({ eventId: eventId }).lean();
     const userIdsToNotify: Set<string> = new Set();
+    
     teamsForEvent.forEach(team => {
-        team.members.forEach(member => userIdsToNotify.add(member.userId));
+        (team as any).members.forEach((member: any) => userIdsToNotify.add(member.userId));
     });
 
     for (const userId of userIdsToNotify) {
         try {
             await notificationService.createNotification({
                 userId: userId,
-                message: `The schedule for event '${eventToUpdate.name}' has been updated. Please check the portal.`,
+                message: `The schedule for event '${(eventToUpdate as any).name}' has been updated. Please check the portal.`,
                 type: 'event_schedule_update',
                 link: `/project-fair/student`, // Or a more specific event schedule page
             });

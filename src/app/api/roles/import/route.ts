@@ -2,22 +2,16 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Role, UserRole } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
-import { allPermissions } from '@/lib/api/roles'; 
-
-// In-memory store for roles (replace with actual DB interaction)
-const rolesStore: Role[] = (global as any).__API_ROLES_STORE__ || [
-  { id: "1", name: "Admin", description: "Full access to all system features.", permissions: ["manage_users", "manage_roles", "manage_settings", "manage_institutes", "manage_buildings", "manage_rooms", "manage_departments", "manage_programs", "manage_courses"] },
-  { id: "2", name: "Student", description: "Access to student-specific features.", permissions: ["view_courses", "submit_assignments"] },
-  { id: "3", name: "Faculty", description: "Access to faculty-specific features.", permissions: ["manage_courses", "grade_assignments", "evaluate_projects"] },
-  { id: "4", name: "HOD", description: "Head of Department access.", permissions: ["manage_faculty", "view_department_reports", "manage_courses", "evaluate_projects"] },
-  { id: "5", name: "Jury", description: "Project fair jury access.", permissions: ["evaluate_projects"] },
-];
-(global as any).__API_ROLES_STORE__ = rolesStore;
+import { allPermissions } from '@/lib/api/roles';
+import { RoleModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 const generateClientIdForImport = (): string => `role_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function POST(request: NextRequest) {
   try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
 
@@ -36,13 +30,12 @@ export async function POST(request: NextRequest) {
 
     if (parseErrors.length > 0) {
       console.error('CSV Parse Errors (Role Import):', JSON.stringify(parseErrors, null, 2));
-      const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row}: ${e.message} (Code: ${e.code})`);
+      const errorMessages = parseErrors.map((e: ParseError) => `Row ${(e.row || 0)}: ${e.message} (Code: ${e.code})`);
       return NextResponse.json({ message: 'Error parsing Roles CSV file. Please check the file format and content.', errors: errorMessages }, { status: 400 });
     }
     
     const header = Object.keys(parsedData[0] || {}).map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
-    // const expectedHeaders = ['id', 'name', 'description', 'permissions']; 
-    const requiredHeaders = ['name', 'description', 'permissions'];
+    const requiredHeaders = ['name', 'code', 'description', 'permissions'];
 
     if (!requiredHeaders.every(rh => header.includes(rh))) {
         const missing = requiredHeaders.filter(rh => !header.includes(rh));
@@ -53,53 +46,71 @@ export async function POST(request: NextRequest) {
     let updatedCount = 0;
     let skippedCount = 0;
 
-    parsedData.forEach((row: unknown) => {
+    for (const row of parsedData) {
       const name = row.name?.toString().trim();
+      const code = row.code?.toString().trim();
       const description = row.description?.toString().trim();
       const permissionsString = row.permissions?.toString().trim().replace(/^"|"$/g, '');
       const permissions = permissionsString 
-        ? permissionsString.split(';').map(p => p.trim()).filter(p => allPermissions.includes(p)) 
+        ? permissionsString.split(';').map((p: string) => p.trim()).filter((p: string) => allPermissions.includes(p)) 
         : [];
 
-      if (!name || !description) {
-        console.warn(`Skipping role row: Missing name or description. Row: ${JSON.stringify(row)}`);
+      if (!name || !code || !description) {
+        console.warn(`Skipping role row: Missing name, code, or description. Row: ${JSON.stringify(row)}`);
         skippedCount++;
-        return;
+        continue;
       }
       
-      const roleData: Omit<Role, 'id'> = {
+      const roleData = {
         name,
+        code: code as UserRole,
         description,
         permissions,
+        isSystemRole: row.issystemrole?.toString().toLowerCase() === 'true',
+        isCommitteeRole: row.iscommitteerole?.toString().toLowerCase() === 'true',
+        committeeId: row.committeeid?.toString().trim() || undefined,
+        committeeCode: row.committeecode?.toString().trim() || undefined,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
 
       const idFromCsv = row.id?.toString().trim();
-      let existingRoleIndex = -1;
-      if(idFromCsv) {
-        existingRoleIndex = rolesStore.findIndex(r => r.id === idFromCsv);
+      let existingRole = null;
+      
+      if (idFromCsv) {
+        existingRole = await RoleModel.findOne({ 
+          $or: [{ id: idFromCsv }, { _id: idFromCsv }] 
+        });
       } else { 
-        existingRoleIndex = rolesStore.findIndex(r => r.name.toLowerCase() === name.toLowerCase());
+        existingRole = await RoleModel.findOne({ 
+          name: { $regex: new RegExp(`^${name}$`, 'i') }
+        });
       }
 
-      if (existingRoleIndex !== -1) {
-        if (rolesStore[existingRoleIndex].name.toLowerCase() === 'admin' && name.toLowerCase() !== 'admin') {
+      if (existingRole) {
+        // Prevent updating admin role name
+        if (existingRole.name.toLowerCase() === 'admin' && name.toLowerCase() !== 'admin') {
             console.warn(`Skipping update for Admin role name. Original name preserved.`);
-            rolesStore[existingRoleIndex] = { ...rolesStore[existingRoleIndex], ...roleData, name: rolesStore[existingRoleIndex].name };
+            await RoleModel.findOneAndUpdate(
+              { _id: existingRole._id },
+              { ...roleData, name: existingRole.name, updatedAt: new Date().toISOString() }
+            );
         } else {
-            rolesStore[existingRoleIndex] = { ...rolesStore[existingRoleIndex], ...roleData };
+            await RoleModel.findOneAndUpdate(
+              { _id: existingRole._id },
+              { ...roleData, updatedAt: new Date().toISOString() }
+            );
         }
         updatedCount++;
       } else {
-        const newRole: Role = {
+        const newRole = new RoleModel({
           id: idFromCsv || generateClientIdForImport(),
           ...roleData,
-        };
-        rolesStore.push(newRole);
+        });
+        await newRole.save();
         newCount++;
       }
-    });
-
-    (global as any).__API_ROLES_STORE__ = rolesStore; 
+    }
 
     return NextResponse.json({ message: 'Roles imported successfully.', newCount, updatedCount, skippedCount }, { status: 200 });
 

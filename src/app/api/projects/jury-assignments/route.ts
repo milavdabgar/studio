@@ -1,22 +1,13 @@
 // src/app/api/projects/jury-assignments/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Project, ProjectEvent } from '@/types/entities';
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_PROJECTS_STORE__: Project[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_PROJECT_EVENTS_STORE__: ProjectEvent[] | undefined;
-}
-
-if (!global.__API_PROJECTS_STORE__) global.__API_PROJECTS_STORE__ = [];
-if (!global.__API_PROJECT_EVENTS_STORE__) global.__API_PROJECT_EVENTS_STORE__ = [];
-
-const projectsStore: Project[] = global.__API_PROJECTS_STORE__;
-const projectEventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
+import { ProjectModel, ProjectEventModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 export async function GET(request: NextRequest) {
   try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    
     const { searchParams } = new URL(request.url);
     const eventId = searchParams.get('eventId');
     const evaluationType = searchParams.get('evaluationType') || 'department'; // 'department' or 'central'
@@ -25,26 +16,33 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: 'Event ID is required.' }, { status: 400 });
     }
 
-    const event = projectEventsStore.find(e => e.id === eventId);
+    const event = await ProjectEventModel.findOne({
+      $or: [{ id: eventId }, { _id: eventId }]
+    }).lean();
+    
     if (!event) {
       return NextResponse.json({ message: 'Event not found.' }, { status: 404 });
     }
+    
     // For now, assume all 'approved' projects are available for jury. 
     // A real system might have specific jury-project assignments.
-    const projectsForEvent = projectsStore.filter(p => p.eventId === eventId && p.status === 'approved');
+    const projectsForEvent = await ProjectModel.find({
+      eventId: eventId,
+      status: 'approved'
+    }).lean();
 
-    const evaluatedProjects: Project[] = [];
-    const pendingProjects: Project[] = [];
+    const evaluatedProjects: any[] = [];
+    const pendingProjects: any[] = [];
 
     projectsForEvent.forEach(project => {
       if (evaluationType === 'central') {
-        if (project.centralEvaluation?.completed) {
+        if ((project as any).centralEvaluation?.completed) {
           evaluatedProjects.push(project);
         } else {
           pendingProjects.push(project);
         }
       } else { // Default to department evaluation
-        if (project.deptEvaluation?.completed) {
+        if ((project as any).deptEvaluation?.completed) {
           evaluatedProjects.push(project);
         } else {
           pendingProjects.push(project);
@@ -53,9 +51,8 @@ export async function GET(request: NextRequest) {
     });
     
     // Optionally sort pending projects, e.g., by location or title
-    pendingProjects.sort((a, b) => (a.locationId || '').localeCompare(b.locationId || '') || a.title.localeCompare(b.title));
-    evaluatedProjects.sort((a, b) => (a.locationId || '').localeCompare(b.locationId || '') || a.title.localeCompare(b.title));
-
+    pendingProjects.sort((a, b) => ((a as any).locationId || '').localeCompare((b as any).locationId || '') || (a as any).title.localeCompare((b as any).title));
+    evaluatedProjects.sort((a, b) => ((a as any).locationId || '').localeCompare((b as any).locationId || '') || (a as any).title.localeCompare((b as any).title));
 
     return NextResponse.json({
       status: 'success',
