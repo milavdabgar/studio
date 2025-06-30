@@ -2,20 +2,16 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Project, Department, ProjectTeam, ProjectEvent, User as SystemUser, ProjectStatus, ProjectRequirements, ProjectGuide } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_PROJECTS_STORE__: Project[] | undefined;
-}
-if (!global.__API_PROJECTS_STORE__) global.__API_PROJECTS_STORE__ = [];
-const projectsStore: Project[] = global.__API_PROJECTS_STORE__;
+import { ProjectModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 const generateIdForImport = (): string => `proj_imp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 const PROJECT_STATUS_OPTIONS: ProjectStatus[] = ['draft', 'submitted', 'approved', 'rejected', 'completed', 'evaluated'];
 
-
 export async function POST(request: NextRequest) {
   try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     // These will be JSON strings from the client
@@ -34,7 +30,6 @@ export async function POST(request: NextRequest) {
     const clientEvents: ProjectEvent[] = JSON.parse(eventsJson);
     const clientFacultyUsers: SystemUser[] = JSON.parse(usersJson);
 
-
     const fileText = await file.text();
     const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
       header: true,
@@ -43,7 +38,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (parseErrors.length > 0) {
-      return NextResponse.json({ message: 'Error parsing CSV.', errors: parseErrors.map(e => `Row ${e.row + 2}: ${e.message}`) }, { status: 400 });
+      return NextResponse.json({ message: 'Error parsing CSV.', errors: parseErrors.map((e: ParseError) => `Row ${(e.row || 0) + 2}: ${e.message}`) }, { status: 400 });
     }
     if (parsedData.length === 0) return NextResponse.json({ message: 'CSV file is empty or has no data rows.' }, { status: 400 });
 
@@ -102,37 +97,55 @@ export async function POST(request: NextRequest) {
       };
 
 
-      const projectData: Omit<Project, 'id' | 'createdAt' | 'updatedAt'> = {
+      const projectData = {
         title, category, abstract, department: department.id, status, requirements, guide, teamId: team.id, eventId: event.id,
       };
 
       const idFromCsv = row.id?.toString().trim();
-      let existingProjectIndex = -1;
+      let existingProject = null;
+      
       if (idFromCsv) {
-        existingProjectIndex = projectsStore.findIndex(p => p.id === idFromCsv);
+        existingProject = await ProjectModel.findOne({ 
+          $or: [{ id: idFromCsv }, { _id: idFromCsv }] 
+        });
       } else {
         // Check for duplicate based on title, event, and team
-        existingProjectIndex = projectsStore.findIndex(p => 
-            p.title.toLowerCase() === title.toLowerCase() && 
-            p.eventId === event.id && 
-            p.teamId === team.id
-        );
+        existingProject = await ProjectModel.findOne({ 
+          title: { $regex: new RegExp(`^${title}$`, 'i') },
+          eventId: event.id,
+          teamId: team.id
+        });
       }
       
-      if (existingProjectIndex !== -1) {
-        projectsStore[existingProjectIndex] = { ...projectsStore[existingProjectIndex], ...projectData, updatedAt: now };
+      if (existingProject) {
+        await ProjectModel.findOneAndUpdate(
+          { _id: existingProject._id },
+          { ...projectData, updatedAt: now }
+        );
         updatedCount++;
       } else {
-        if (projectsStore.some(p => p.title.toLowerCase() === title.toLowerCase() && p.eventId === event.id && p.teamId === team.id)) {
+        const duplicate = await ProjectModel.findOne({ 
+          title: { $regex: new RegExp(`^${title}$`, 'i') },
+          eventId: event.id,
+          teamId: team.id
+        });
+        
+        if (duplicate) {
             importErrors.push({ row: rowIndex, message: `Project '${title}' for team '${team.name}' in event '${event.name}' already exists.`, data: row });
             skippedCount++; continue;
         }
-        const newProject: Project = { id: idFromCsv || generateIdForImport(), ...projectData, createdAt: now, updatedAt: now };
-        projectsStore.push(newProject);
+        
+        const newProject = new ProjectModel({
+          id: idFromCsv || generateIdForImport(),
+          ...projectData,
+          createdAt: now,
+          updatedAt: now
+        });
+        
+        await newProject.save();
         newCount++;
       }
     }
-    global.__API_PROJECTS_STORE__ = projectsStore;
 
     if (importErrors.length > 0) {
         return NextResponse.json({ 

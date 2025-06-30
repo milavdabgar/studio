@@ -1,18 +1,16 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Department } from '@/types/entities';
-import { parse, type ParseError } from 'papaparse'; 
-
-// In-memory store for departments
-const departmentsStore: Department[] = (global as any).__API_DEPARTMENTS_STORE__ || [];
-if (!(global as any).__API_DEPARTMENTS_STORE__) {
-  (global as any).__API_DEPARTMENTS_STORE__ = departmentsStore;
-}
+import { parse, type ParseError } from 'papaparse';
+import { DepartmentModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 const generateIdForImport = (): string => `dept_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function POST(request: NextRequest) {
   try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
 
@@ -26,12 +24,12 @@ export async function POST(request: NextRequest) {
       header: true,
       skipEmptyLines: true,
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, ''),
-      dynamicTyping: true,
+      dynamicTyping: false,
     });
 
     if (parseErrors.length > 0) {
       console.error('CSV Parse Errors (Department Import):', JSON.stringify(parseErrors, null, 2));
-      const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row}: ${e.message} (Code: ${e.code})`);
+      const errorMessages = parseErrors.map((e: ParseError) => `Row ${(e.row || 0) + 2}: ${e.message} (Code: ${e.code})`);
       return NextResponse.json({ message: 'Error parsing Departments CSV file. Please check the file format and content.', errors: errorMessages }, { status: 400 });
     }
     
@@ -46,67 +44,100 @@ export async function POST(request: NextRequest) {
     let newCount = 0;
     let updatedCount = 0;
     let skippedCount = 0;
+    const importErrors: { row: number; message: string; data: unknown }[] = [];
+    const now = new Date().toISOString();
 
-    parsedData.forEach((row: unknown) => {
+    for (let i = 0; i < parsedData.length; i++) {
+      const row = parsedData[i] as any;
+      const rowIndex = i + 2;
+
       const name = row.name?.toString().trim();
       const code = row.code?.toString().trim().toUpperCase();
       const status = row.status?.toString().trim().toLowerCase() as 'active' | 'inactive';
 
       if (!name || !code || !['active', 'inactive'].includes(status)) {
-        console.warn(`Skipping department row: Missing or invalid required data (name, code, status). Row: ${JSON.stringify(row)}`);
+        importErrors.push({ row: rowIndex, message: 'Missing or invalid required data (name, code, status)', data: row });
         skippedCount++;
-        return;
+        continue;
       }
       
       const establishmentYear = row.establishmentyear !== undefined && row.establishmentyear !== null && !isNaN(Number(row.establishmentyear)) ? Number(row.establishmentyear) : undefined;
       if (establishmentYear && (establishmentYear < 1900 || establishmentYear > new Date().getFullYear())) {
-        console.warn(`Skipping row for department ${name}: Invalid establishment year ${establishmentYear}.`);
+        importErrors.push({ row: rowIndex, message: `Invalid establishment year ${establishmentYear}`, data: row });
         skippedCount++;
-        return;
+        continue;
       }
 
-      const departmentData: Omit<Department, 'id'> = {
+      const departmentData = {
         name,
         code,
         status,
         description: row.description?.toString().trim() || undefined,
         hodId: row.hodid?.toString().trim() || undefined, 
         establishmentYear,
+        instituteId: row.instituteid?.toString().trim() || 'inst1', // Default institute ID
       };
 
       const idFromCsv = row.id?.toString().trim();
-      let existingDepartmentIndex = -1;
+      let existingDepartment = null;
 
       if (idFromCsv) {
-        existingDepartmentIndex = departmentsStore.findIndex(d => d.id === idFromCsv);
-        if (existingDepartmentIndex !== -1 && code !== departmentsStore[existingDepartmentIndex].code && departmentsStore.some(d => d.id !== idFromCsv && d.code === code)) {
-          console.warn(`Skipping update for department ID ${idFromCsv} (Department: ${departmentsStore[existingDepartmentIndex].name}): Code ${code} from CSV conflicts with another existing department.`);
-          skippedCount++;
-          return; 
+        existingDepartment = await DepartmentModel.findOne({ 
+          $or: [{ id: idFromCsv }, { _id: idFromCsv }] 
+        });
+        
+        if (existingDepartment && code !== existingDepartment.code) {
+          const codeConflict = await DepartmentModel.findOne({ 
+            code: code,
+            _id: { $ne: existingDepartment._id }
+          });
+          
+          if (codeConflict) {
+            importErrors.push({ row: rowIndex, message: `Code ${code} conflicts with another existing department`, data: row });
+            skippedCount++;
+            continue;
+          }
         }
       } else { 
-        existingDepartmentIndex = departmentsStore.findIndex(d => d.code === code);
+        existingDepartment = await DepartmentModel.findOne({ code: code });
       }
 
-
-      if (existingDepartmentIndex !== -1) {
-        departmentsStore[existingDepartmentIndex] = { ...departmentsStore[existingDepartmentIndex], ...departmentData };
+      if (existingDepartment) {
+        await DepartmentModel.findOneAndUpdate(
+          { _id: existingDepartment._id },
+          { ...departmentData, updatedAt: now }
+        );
         updatedCount++;
       } else {
-        if (departmentsStore.some(d => d.code === code)) {
-             console.warn(`Skipping new department: Code ${code} (for ${name}) already exists.`);
-             skippedCount++;
-             return;
+        const duplicate = await DepartmentModel.findOne({ code: code });
+        if (duplicate) {
+          importErrors.push({ row: rowIndex, message: `Department code ${code} already exists`, data: row });
+          skippedCount++;
+          continue;
         }
-        const newDepartment: Department = {
-          id: idFromCsv || generateIdForImport(), 
+        
+        const newDepartment = new DepartmentModel({
+          id: idFromCsv || generateIdForImport(),
           ...departmentData,
-        };
-        departmentsStore.push(newDepartment);
+          createdAt: now,
+          updatedAt: now,
+        });
+        
+        await newDepartment.save();
         newCount++;
       }
-    });
-    (global as any).__API_DEPARTMENTS_STORE__ = departmentsStore;
+    }
+
+    if (importErrors.length > 0) {
+      return NextResponse.json({ 
+        message: `Departments import partially completed with ${importErrors.length} issues.`, 
+        newCount, 
+        updatedCount, 
+        skippedCount,
+        errors: importErrors 
+      }, { status: 207 }); 
+    }
+
     return NextResponse.json({ message: 'Departments imported successfully.', newCount, updatedCount, skippedCount }, { status: 200 });
 
   } catch (error) {

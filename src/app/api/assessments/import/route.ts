@@ -2,11 +2,8 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Assessment, AssessmentStatus, AssessmentType, Course, Program, Batch } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 import { isValid, parseISO, format } from 'date-fns';
-
-const assessmentsStore: Assessment[] = (global as any).__API_ASSESSMENTS_STORE__ || [];
-if (!(global as any).__API_ASSESSMENTS_STORE__) {
-  (global as any).__API_ASSESSMENTS_STORE__ = assessmentsStore;
-}
+import { AssessmentModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 const generateIdForImport = (): string => `asmnt_imp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 const ASSESSMENT_TYPE_OPTIONS: AssessmentType[] = ['Quiz', 'Midterm', 'Final Exam', 'Assignment', 'Project', 'Lab Work', 'Presentation', 'Other'];
@@ -14,12 +11,13 @@ const ASSESSMENT_STATUS_OPTIONS: AssessmentStatus[] = ['Draft', 'Published', 'On
 
 export async function POST(request: NextRequest) {
   try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const coursesJson = formData.get('courses') as string | null;
     const programsJson = formData.get('programs') as string | null;
     const batchesJson = formData.get('batches') as string | null;
-
 
     if (!file) {
       return NextResponse.json({ message: 'No file uploaded.' }, { status: 400 });
@@ -32,7 +30,6 @@ export async function POST(request: NextRequest) {
     const clientPrograms: Program[] = JSON.parse(programsJson);
     const clientBatches: Batch[] = batchesJson ? JSON.parse(batchesJson) : [];
 
-
     const fileText = await file.text();
     const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
       header: true,
@@ -42,7 +39,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (parseErrors.length > 0) {
-      const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row + 2}: ${e.message} (Code: ${e.code})`);
+      const errorMessages = parseErrors.map((e: ParseError) => `Row ${(e.row || 0) + 2}: ${e.message} (Code: ${e.code})`);
       return NextResponse.json({ message: 'Error parsing Assessments CSV file.', errors: errorMessages }, { status: 400 });
     }
 
@@ -149,7 +146,7 @@ export async function POST(request: NextRequest) {
       }
 
 
-      const assessmentDataFromCsv: Omit<Assessment, 'id' | 'createdAt' | 'updatedAt'> = {
+      const assessmentDataFromCsv = {
         name, courseId, programId, batchId, type, maxMarks, status,
         description: row.description?.toString().trim() || undefined,
         passingMarks, weightage,
@@ -159,34 +156,57 @@ export async function POST(request: NextRequest) {
       };
 
       const idFromCsv = row.id?.toString().trim();
-      let existingAssessmentIndex = -1;
+      let existingAssessment = null;
 
       if (idFromCsv) {
-        existingAssessmentIndex = assessmentsStore.findIndex(a => a.id === idFromCsv);
+        existingAssessment = await AssessmentModel.findOne({ 
+          $or: [{ id: idFromCsv }, { _id: idFromCsv }] 
+        });
       } else {
-        existingAssessmentIndex = assessmentsStore.findIndex(a => a.name.toLowerCase() === name.toLowerCase() && a.courseId === courseId && a.programId === programId && (a.batchId === batchId || (!a.batchId && !batchId)));
+        existingAssessment = await AssessmentModel.findOne({ 
+          name: { $regex: new RegExp(`^${name}$`, 'i') },
+          courseId: courseId,
+          programId: programId,
+          $or: [
+            { batchId: batchId },
+            { batchId: { $exists: false }, $expr: { $eq: [batchId, undefined] } }
+          ]
+        });
       }
 
-      if (existingAssessmentIndex !== -1) {
-        assessmentsStore[existingAssessmentIndex] = { ...assessmentsStore[existingAssessmentIndex], ...assessmentDataFromCsv, updatedAt: now };
+      if (existingAssessment) {
+        await AssessmentModel.findOneAndUpdate(
+          { _id: existingAssessment._id },
+          { ...assessmentDataFromCsv, updatedAt: now }
+        );
         updatedCount++;
       } else {
-         if (assessmentsStore.some(a => a.name.toLowerCase() === name.toLowerCase() && a.courseId === courseId && a.programId === programId && (a.batchId === batchId || (!a.batchId && !batchId)))) {
+        const duplicate = await AssessmentModel.findOne({ 
+          name: { $regex: new RegExp(`^${name}$`, 'i') },
+          courseId: courseId,
+          programId: programId,
+          $or: [
+            { batchId: batchId },
+            { batchId: { $exists: false }, $expr: { $eq: [batchId, undefined] } }
+          ]
+        });
+        
+        if (duplicate) {
             importErrors.push({ row: rowIndex, message: `Assessment with name '${name}' already exists for this course/program/batch.`, data: row });
             skippedCount++; continue;
         }
-        const newAssessment: Assessment = {
+        
+        const newAssessment = new AssessmentModel({
           id: idFromCsv || generateIdForImport(),
           ...assessmentDataFromCsv,
           createdAt: now,
           updatedAt: now,
-        };
-        assessmentsStore.push(newAssessment);
+        });
+        
+        await newAssessment.save();
         newCount++;
       }
     }
-
-    (global as any).__API_ASSESSMENTS_STORE__ = assessmentsStore;
 
     if (importErrors.length > 0) {
         return NextResponse.json({ 

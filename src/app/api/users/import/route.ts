@@ -18,18 +18,18 @@ const parseGtuNameToComponents = (gtuName: string | undefined): { firstName?: st
 
 export async function POST(request: NextRequest) {
   try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
     const institutesJson = formData.get('institutes') as string | null;
     const allSystemRolesJson = formData.get('allSystemRoles') as string | null;
-
 
     if (!file) {
       return NextResponse.json({ message: 'No file uploaded.' }, { status: 400 });
     }
     const clientInstitutes: Institute[] = institutesJson ? JSON.parse(institutesJson) : [];
     const clientSystemRoles: Role[] = allSystemRolesJson ? JSON.parse(allSystemRolesJson) : [];
-
 
     const fileText = await file.text();
 
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (parseErrors.length > 0) {
-      const errorMessages = parseErrors.map((e: ParseError) => `Row ${e.row}: ${e.message} (Code: ${e.code})`);
+      const errorMessages = parseErrors.map((e: ParseError) => `Row ${(e.row || 0) + 2}: ${e.message} (Code: ${e.code})`);
       return NextResponse.json({ message: 'Error parsing Users CSV file. Please check the file format and content.', errors: errorMessages }, { status: 400 });
     }
     
@@ -57,9 +57,10 @@ export async function POST(request: NextRequest) {
     let updatedCount = 0;
     let skippedCount = 0;
     const importErrors: { row: number, message: string, data: unknown }[] = [];
+    const now = new Date().toISOString();
 
     for (let i = 0; i < parsedData.length; i++) {
-      const row = parsedData[i];
+      const row = parsedData[i] as any;
       const rowIndex = i + 2; 
 
       const personalEmail = row.email?.toString().trim().toLowerCase();
@@ -75,7 +76,6 @@ export async function POST(request: NextRequest) {
               console.warn(`Role '${roleNameOrCode}' not found in system roles for row ${rowIndex}. Skipping this role for user.`);
           }
       }
-
 
       const isActiveRaw = row.isactive?.toString().trim().toLowerCase();
       const isActive = isActiveRaw === 'true' || isActiveRaw === '1' || isActiveRaw === 'active';
@@ -103,7 +103,6 @@ export async function POST(request: NextRequest) {
           }
       }
 
-
       if (!personalEmail || validRoles.length === 0 ) {
         importErrors.push({ row: rowIndex, message: "Missing required fields: email, or no valid roles found.", data: row });
         skippedCount++; continue;
@@ -118,7 +117,6 @@ export async function POST(request: NextRequest) {
       lastName = lastNameFromCSV || lastName;
       middleName = row.middlename?.toString().trim() || middleName;
       const displayName = displayNameFromCSV || `${firstName || ''} ${lastName || ''}`.trim() || personalEmail;
-
 
       let instituteDomain = 'gpp.ac.in'; 
       if (currentInstitute && currentInstitute.domain) {
@@ -141,83 +139,95 @@ export async function POST(request: NextRequest) {
       let emailSuffix = 1;
       const originalBase = baseInstituteEmail;
 
-      const userData: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'authProviders' | 'isEmailVerified' | 'preferences'> & { password?: string } = {
+      const userData = {
         displayName,
         fullName: fullNameFromCSV || `${lastName || ''} ${firstName || ''} ${middleName || ''}`.trim(),
         firstName, middleName, lastName,
         username: row.username?.toString().trim() || undefined,
         email: personalEmail,
-        instituteEmail: tempInstituteEmail, 
         photoURL: row.photourl?.toString().trim() || undefined,
         phoneNumber: row.phonenumber?.toString().trim() || undefined,
         roles: validRoles, // Use validated role names
-        isActive, instituteId: instituteId || undefined,
+        isActive, 
+        instituteId: instituteId || undefined,
         preferences: { theme: 'system', language: 'en' }
       };
 
       const passwordFromCSV = row.password?.toString().trim();
-      if (passwordFromCSV && passwordFromCSV.length >= 6) {
-        userData.password = passwordFromCSV;
-      }
+      let password = passwordFromCSV;
 
       const idFromCsv = row.id?.toString().trim();
-      let existingUserIndex = -1;
+      let existingUser = null;
 
       if (idFromCsv) {
-        existingUserIndex = usersStore.findIndex(u => u.id === idFromCsv);
+        existingUser = await UserModel.findOne({ 
+          $or: [{ id: idFromCsv }, { _id: idFromCsv }] 
+        });
       } else { 
-        existingUserIndex = usersStore.findIndex(u => u.email === personalEmail);
+        existingUser = await UserModel.findOne({ email: personalEmail });
       }
 
-      const isEmailConflict = (emailToCheck: string) => usersStore.some(u => 
-          (existingUserIndex !== -1 ? u.id !== usersStore[existingUserIndex].id : true) && 
-          u.instituteEmail?.toLowerCase() === emailToCheck.toLowerCase()
-      );
+      // Check institute email conflicts
+      const isEmailConflict = async (emailToCheck: string) => {
+        const conflictUser = await UserModel.findOne({ 
+          instituteEmail: { $regex: new RegExp(`^${emailToCheck}$`, 'i') },
+          _id: existingUser ? { $ne: existingUser._id } : { $exists: true }
+        });
+        return !!conflictUser;
+      };
 
-      while (isEmailConflict(tempInstituteEmail)) {
+      while (await isEmailConflict(tempInstituteEmail)) {
           tempInstituteEmail = `${originalBase}${emailSuffix}@${instituteDomain}`;
           emailSuffix++;
       }
-      userData.instituteEmail = tempInstituteEmail;
 
+      const finalUserData = {
+        ...userData,
+        instituteEmail: tempInstituteEmail
+      };
 
-      if (existingUserIndex !== -1) {
-        const existingUser = usersStore[existingUserIndex];
+      if (existingUser) {
         if (existingUser.email === "admin@gppalanpur.in" || existingUser.instituteEmail === "admin@gppalanpur.in") {
            importErrors.push({row: rowIndex, message: "Cannot modify primary admin user via CSV import.", data: row});
            skippedCount++; continue;
         }
-        const currentPassword = existingUser.password;
-        usersStore[existingUserIndex] = { 
-            ...existingUser, 
-            ...userData,
-            password: userData.password || currentPassword, 
-            updatedAt: new Date().toISOString(),
+        
+        const updateData = {
+          ...finalUserData,
+          password: password || existingUser.password,
+          updatedAt: now
         };
+        
+        await UserModel.findOneAndUpdate(
+          { _id: existingUser._id },
+          updateData
+        );
         updatedCount++;
       } else {
-         if (usersStore.some(u => u.email === personalEmail)) { 
+         const duplicate = await UserModel.findOne({ email: personalEmail });
+         if (duplicate) { 
              importErrors.push({row: rowIndex, message: `User with personal email ${personalEmail} already exists with a different ID.`, data: row});
              skippedCount++; continue;
         }
-        if (!userData.password) { 
-            userData.password = `${(firstName || 'user').toLowerCase()}${new Date().getFullYear()}!`;
+        
+        if (!password) { 
+            password = `${(firstName || 'user').toLowerCase()}${new Date().getFullYear()}!`;
         }
-        const newUser: User = {
-          id: idFromCsv || generateIdForImport(), 
-          ...userData,
-          password: userData.password!, 
+        
+        const newUser = new UserModel({
+          id: idFromCsv || generateIdForImport(),
+          ...finalUserData,
+          password: password,
           authProviders: ['password'],
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          isEmailVerified: false, 
-        };
-        usersStore.push(newUser); 
+          createdAt: now,
+          updatedAt: now,
+          isEmailVerified: false,
+        });
+        
+        await newUser.save();
         newCount++;
       }
     }
-    
-    global.__API_USERS_STORE__ = usersStore;
     
     if (importErrors.length > 0) {
         return NextResponse.json({ 
