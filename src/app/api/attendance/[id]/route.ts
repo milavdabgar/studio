@@ -1,11 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { AttendanceRecord, AttendanceStatus } from '@/types/entities';
-
-// Ensure the global store is initialized
-if (!global.__API_ATTENDANCE_STORE__) {
-  global.__API_ATTENDANCE_STORE__ = [];
-}
-let attendanceStore: AttendanceRecord[] = global.__API_ATTENDANCE_STORE__;
+import { connectMongoose } from '@/lib/mongodb';
+import { AttendanceRecordModel } from '@/lib/models';
 
 interface RouteParams {
   params: {
@@ -14,20 +10,16 @@ interface RouteParams {
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
-  if (!Array.isArray(global.__API_ATTENDANCE_STORE__)) {
-    global.__API_ATTENDANCE_STORE__ = [];
-    return NextResponse.json({ message: 'Attendance data store corrupted.' }, { status: 500 });
-  }
   try {
+    await connectMongoose();
+    const { id } = params;
+    
     const recordDataToUpdate = await request.json() as Partial<Omit<AttendanceRecord, 'id' | 'createdAt' | 'updatedAt'>>;
-    const recordIndex = global.__API_ATTENDANCE_STORE__.findIndex(r => r.id === id);
-
-    if (recordIndex === -1) {
+    
+    const existingRecord = await AttendanceRecordModel.findOne({ id }).lean();
+    if (!existingRecord) {
       return NextResponse.json({ message: 'Attendance record not found' }, { status: 404 });
     }
-
-    const existingRecord = global.__API_ATTENDANCE_STORE__[recordIndex];
 
     if (recordDataToUpdate.status) {
         const validStatuses: AttendanceStatus[] = ['present', 'absent', 'late', 'excused'];
@@ -36,15 +28,26 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         }
     }
     
-    const updatedRecord: AttendanceRecord = { 
-        ...existingRecord, 
+    const updatedRecord = await AttendanceRecordModel.findOneAndUpdate(
+      { id },
+      {
         ...recordDataToUpdate,
-        updatedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      },
+      { new: true, lean: true }
+    );
+
+    if (!updatedRecord) {
+      return NextResponse.json({ message: 'Attendance record not found' }, { status: 404 });
+    }
+
+    // Format record to ensure proper id field
+    const recordWithId = {
+      ...updatedRecord,
+      id: updatedRecord.id || (updatedRecord as any)._id.toString()
     };
 
-    global.__API_ATTENDANCE_STORE__[recordIndex] = updatedRecord;
-    attendanceStore = global.__API_ATTENDANCE_STORE__; // Keep local reference in sync
-    return NextResponse.json(updatedRecord);
+    return NextResponse.json(recordWithId);
   } catch (error) {
     console.error(`Error updating attendance record ${id}:`, error);
     return NextResponse.json({ message: `Error updating attendance record ${id}`, error: (error as Error).message }, { status: 500 });
@@ -52,20 +55,20 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
-  if (!Array.isArray(global.__API_ATTENDANCE_STORE__)) {
-    global.__API_ATTENDANCE_STORE__ = [];
-    return NextResponse.json({ message: 'Attendance data store corrupted.' }, { status: 500 });
+  try {
+    await connectMongoose();
+    const { id } = params;
+    
+    const deletedRecord = await AttendanceRecordModel.findOneAndDelete({ id });
+    
+    if (!deletedRecord) {
+      return NextResponse.json({ message: 'Attendance record not found' }, { status: 404 });
+    }
+    
+    return NextResponse.json({ message: 'Attendance record deleted successfully' }, { status: 200 });
+  } catch (error) {
+    console.error(`Error deleting attendance record ${id}:`, error);
+    return NextResponse.json({ message: `Error deleting attendance record ${id}`, error: (error as Error).message }, { status: 500 });
   }
-  const initialLength = global.__API_ATTENDANCE_STORE__.length;
-  const newStore = global.__API_ATTENDANCE_STORE__.filter(r => r.id !== id);
-
-  if (newStore.length === initialLength) {
-    return NextResponse.json({ message: 'Attendance record not found' }, { status: 404 });
-  }
-  
-  global.__API_ATTENDANCE_STORE__ = newStore;
-  attendanceStore = global.__API_ATTENDANCE_STORE__; // Keep local reference in sync
-  return NextResponse.json({ message: 'Attendance record deleted successfully' }, { status: 200 });
 }
     

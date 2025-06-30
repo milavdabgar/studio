@@ -2,102 +2,101 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { AttendanceRecord, AttendanceStatus } from '@/types/entities'; 
 import { isValid, parseISO } from 'date-fns';
+import { connectMongoose } from '@/lib/mongodb';
+import { AttendanceRecordModel } from '@/lib/models';
 
-declare global {
-  var __API_ATTENDANCE_STORE__: AttendanceRecord[] | undefined;
+// Initialize default attendance records if none exist
+async function initializeDefaultAttendanceRecords() {
+  await connectMongoose();
+  const attendanceCount = await AttendanceRecordModel.countDocuments();
+  
+  if (attendanceCount === 0) {
+    const now = new Date().toISOString();
+    const defaultAttendanceRecords = [
+      {
+        id: "att_1_stdCE001_cs101_20231001",
+        studentId: "std_ce_001_gpp", 
+        courseOfferingId: "co_cs101_b2022_sem1_gpp", 
+        date: "2023-10-01T09:30:00.000Z",
+        status: "present",
+        markedBy: "user_faculty_cs01_gpp", 
+        createdAt: now,
+        updatedAt: now,
+      },
+      {
+        id: "att_2_stdCE001_cs101_20231002",
+        studentId: "std_ce_001_gpp",
+        courseOfferingId: "co_cs101_b2022_sem1_gpp",
+        date: "2023-10-02T09:30:00.000Z",
+        status: "absent",
+        markedBy: "user_faculty_cs01_gpp",
+        createdAt: now,
+        updatedAt: now,
+      },
+      {
+        id: "att_3_stdME002_me101_20231001",
+        studentId: "std_me_002_gpp", 
+        courseOfferingId: "co_me101_b2023_sem1_gpp", 
+        date: "2023-10-01T10:30:00.000Z",
+        status: "late",
+        markedBy: "user_faculty_me01_gpp", 
+        createdAt: now,
+        updatedAt: now,
+      },
+    ];
+    
+    await AttendanceRecordModel.insertMany(defaultAttendanceRecords);
+  }
 }
-
-const now = new Date().toISOString();
-
-// Ensure __API_COURSE_OFFERINGS_STORE__ is initialized, or create it if not present
-if (!(global as any).__API_COURSE_OFFERINGS_STORE__) {
-  (global as any).__API_COURSE_OFFERINGS_STORE__ = [
-    { id: "co_cs101_b2022_sem1_gpp", courseId: "course_cs101_dce_gpp", batchId: "batch_dce_2022_gpp", academicYear: "2023-24", semester: 1, facultyIds: ["user_faculty_cs01_gpp"], status: "ongoing", createdAt: now, updatedAt: now },
-    { id: "co_me101_b2023_sem1_gpp", courseId: "course_me101_dme_gpp", batchId: "batch_dme_2023_gpp", academicYear: "2023-24", semester: 1, facultyIds: ["user_faculty_me01_gpp"], status: "ongoing", createdAt: now, updatedAt: now },
-  ];
-}
-
-
-if (!global.__API_ATTENDANCE_STORE__ || global.__API_ATTENDANCE_STORE__.length === 0) {
-  global.__API_ATTENDANCE_STORE__ = [
-    {
-      id: "att_1_stdCE001_cs101_20231001",
-      studentId: "std_ce_001_gpp", 
-      courseOfferingId: "co_cs101_b2022_sem1_gpp", 
-      date: "2023-10-01T09:30:00.000Z",
-      status: "present",
-      markedBy: "user_faculty_cs01_gpp", 
-      createdAt: now,
-      updatedAt: now,
-    },
-    {
-      id: "att_2_stdCE001_cs101_20231002",
-      studentId: "std_ce_001_gpp",
-      courseOfferingId: "co_cs101_b2022_sem1_gpp",
-      date: "2023-10-02T09:30:00.000Z",
-      status: "absent",
-      markedBy: "user_faculty_cs01_gpp",
-      createdAt: now,
-      updatedAt: now,
-    },
-    {
-      id: "att_3_stdME002_me101_20231001",
-      studentId: "std_me_002_gpp", 
-      courseOfferingId: "co_me101_b2023_sem1_gpp", 
-      date: "2023-10-01T10:30:00.000Z",
-      status: "late",
-      markedBy: "user_faculty_me01_gpp", 
-      createdAt: now,
-      updatedAt: now,
-    },
-  ];
-}
-const attendanceStore: AttendanceRecord[] = global.__API_ATTENDANCE_STORE__;
 
 const generateId = (): string => `att_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function GET(request: NextRequest) {
-  if (!Array.isArray(global.__API_ATTENDANCE_STORE__)) {
-    global.__API_ATTENDANCE_STORE__ = [];
-    return NextResponse.json({ message: 'Internal server error: Attendance data store corrupted.' }, { status: 500 });
-  }
-  
-  const { searchParams } = new URL(request.url);
-  const studentId = searchParams.get('studentId');
-  const courseOfferingId = searchParams.get('courseOfferingId');
-  const date = searchParams.get('date'); 
+  try {
+    await connectMongoose();
+    await initializeDefaultAttendanceRecords();
+    
+    const { searchParams } = new URL(request.url);
+    const studentId = searchParams.get('studentId');
+    const courseOfferingId = searchParams.get('courseOfferingId');
+    const date = searchParams.get('date'); 
 
-  let filteredAttendance = [...global.__API_ATTENDANCE_STORE__];
-
-  if (studentId) {
-    filteredAttendance = filteredAttendance.filter(att => att.studentId === studentId);
-  }
-  if (courseOfferingId) {
-    filteredAttendance = filteredAttendance.filter(att => att.courseOfferingId === courseOfferingId);
-  }
-  if (date) {
-    try {
-        
+    // Build filter query
+    let filter: any = {};
+    if (studentId) filter.studentId = studentId;
+    if (courseOfferingId) filter.courseOfferingId = courseOfferingId;
+    if (date) {
+      try {
         if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error('Invalid date format for filter');
-        
-        filteredAttendance = filteredAttendance.filter(att => {
-            
-            return att.date.startsWith(date);
-        });
-    } catch (e) {
+        // Filter by date prefix (YYYY-MM-DD)
+        filter.date = { $regex: `^${date}` };
+      } catch (e) {
         console.warn("Invalid date format provided for attendance filter:", date, e);
+      }
     }
+
+    const attendanceRecords = await AttendanceRecordModel.find(filter).lean();
+    
+    // Format records to ensure proper id field
+    const recordsWithId = attendanceRecords.map(record => ({
+      ...record,
+      id: record.id || (record as any)._id.toString()
+    }));
+
+    return NextResponse.json(recordsWithId);
+  } catch (error) {
+    console.error('Error in GET /api/attendance:', error);
+    return NextResponse.json({ message: 'Internal server error processing attendance request.', error: (error as Error).message }, { status: 500 });
   }
-
-
-  return NextResponse.json(filteredAttendance);
 }
 
 export async function POST(request: NextRequest) {
   try {
+    await connectMongoose();
+    
     const body = await request.json();
     const recordsToCreate = Array.isArray(body) ? body : [body];
-    const createdRecords: AttendanceRecord[] = [];
+    const createdRecords: any[] = [];
     const errors: string[] = [];
 
     for (const recordData of recordsToCreate) {
@@ -120,9 +119,8 @@ export async function POST(request: NextRequest) {
           continue;
       }
 
-
       const currentTimestamp = new Date().toISOString();
-      const newRecord: AttendanceRecord = {
+      const newRecordData = {
         id: generateId(),
         studentId,
         courseOfferingId,
@@ -133,8 +131,21 @@ export async function POST(request: NextRequest) {
         createdAt: currentTimestamp,
         updatedAt: currentTimestamp,
       };
-      global.__API_ATTENDANCE_STORE__?.push(newRecord);
-      createdRecords.push(newRecord);
+      
+      try {
+        const newRecord = new AttendanceRecordModel(newRecordData);
+        await newRecord.save();
+        
+        // Format record to ensure proper id field
+        const recordWithId = {
+          ...newRecord.toJSON(),
+          id: newRecord.id || newRecord._id.toString()
+        };
+        
+        createdRecords.push(recordWithId);
+      } catch (dbError) {
+        errors.push(`Failed to save record for ${studentId}: ${(dbError as Error).message}`);
+      }
     }
 
     if (errors.length > 0 && createdRecords.length === 0) {

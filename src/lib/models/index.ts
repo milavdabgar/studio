@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import type { 
   User, Role, Permission, Department, Course, Batch, Program, 
-  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, ProjectEventScheduleItem, Project, ProjectRequirements, ProjectGuide, ProjectEvaluation, Assessment, Result, ResultSubject, Enrollment, EnrollmentStatus, CourseOffering, Notification, NotificationType, StudentAssessmentScore, CourseMaterial
+  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, ProjectEventScheduleItem, Project, ProjectRequirements, ProjectGuide, ProjectEvaluation, Assessment, Result, ResultSubject, Enrollment, EnrollmentStatus, CourseOffering, Notification, NotificationType, StudentAssessmentScore, CourseMaterial, AttendanceRecord
 } from '@/types/entities';
 
 // Institute Schema
@@ -1183,6 +1183,43 @@ courseMaterialSchema.pre('save', function(next) {
   next();
 });
 
+// AttendanceRecord Schema
+interface IAttendanceRecord extends Omit<AttendanceRecord, 'id'>, Document {
+  _id: string;
+}
+
+const attendanceRecordSchema = new Schema<IAttendanceRecord>({
+  id: { type: String, unique: true, sparse: true }, // Custom ID field
+  studentId: { type: String, required: true },
+  courseOfferingId: { type: String, required: true },
+  date: { type: String, required: true },
+  status: { 
+    type: String, 
+    enum: ['present', 'absent', 'late', 'excused'],
+    required: true 
+  },
+  markedBy: { type: String, required: true },
+  remarks: { type: String },
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      // Use custom id if available, otherwise use _id
+      ret.id = ret.id || ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+attendanceRecordSchema.pre('save', function(next) {
+  (this as IAttendanceRecord).updatedAt = new Date().toISOString();
+  next();
+});
+
 // Models
 export const InstituteModel = mongoose.models.Institute || mongoose.model<IInstitute>('Institute', instituteSchema);
 export const BuildingModel = mongoose.models.Building || mongoose.model<IBuilding>('Building', buildingSchema);
@@ -1207,6 +1244,7 @@ export const CourseOfferingModel = mongoose.models.CourseOffering || mongoose.mo
 export const NotificationModel = mongoose.models.Notification || mongoose.model<INotification>('Notification', notificationSchema, 'notifications');
 export const StudentAssessmentScoreModel = mongoose.models.StudentAssessmentScore || mongoose.model<IStudentAssessmentScore>('StudentAssessmentScore', studentAssessmentScoreSchema, 'studentassessmentscores');
 export const CourseMaterialModel = mongoose.models.CourseMaterial || mongoose.model<ICourseMaterial>('CourseMaterial', courseMaterialSchema, 'coursematerials');
+export const AttendanceRecordModel = mongoose.models.AttendanceRecord || mongoose.model<IAttendanceRecord>('AttendanceRecord', attendanceRecordSchema, 'attendancerecords');
 
 // Export types
-export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment, IResult, IEnrollment, ICourseOffering, INotification, IStudentAssessmentScore, ICourseMaterial };
+export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment, IResult, IEnrollment, ICourseOffering, INotification, IStudentAssessmentScore, ICourseMaterial, IAttendanceRecord };
