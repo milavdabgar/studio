@@ -1,15 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Enrollment, EnrollmentStatus } from '@/types/entities';
-
-// Ensure the global store is initialized
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_ENROLLMENTS_STORE__: Enrollment[] | undefined;
-}
-if (!global.__API_ENROLLMENTS_STORE__) {
-  global.__API_ENROLLMENTS_STORE__ = [];
-}
-let enrollmentsStore: Enrollment[] = global.__API_ENROLLMENTS_STORE__;
+import { connectMongoose } from '@/lib/mongodb';
+import { EnrollmentModel } from '@/lib/models';
 
 interface RouteParams {
   params: Promise<{
