@@ -1440,6 +1440,214 @@ projectLocationSchema.pre('save', function(next) {
   next();
 });
 
+// FeedbackAnalysis Schema
+interface IFeedbackAnalysis extends Document {
+  _id: string;
+  id: string;
+  originalFileName: string;
+  analysisDate: string;
+  subject_scores: Array<{
+    Subject_Code: string;
+    Subject_FullName: string;
+    Faculty_Name: string;
+    Faculty_Initial?: string;
+    Subject_ShortForm?: string;
+    Q1: number;
+    Q2: number;
+    Q3: number;
+    Q4: number;
+    Q5: number;
+    Q6: number;
+    Q7: number;
+    Q8: number;
+    Q9: number;
+    Q10: number;
+    Q11: number;
+    Q12: number;
+    Score: number;
+  }>;
+  faculty_scores: Array<{
+    Faculty_Name: string;
+    Faculty_Initial: string;
+    Q1: number;
+    Q2: number;
+    Q3: number;
+    Q4: number;
+    Q5: number;
+    Q6: number;
+    Q7: number;
+    Q8: number;
+    Q9: number;
+    Q10: number;
+    Q11: number;
+    Q12: number;
+    Score: number;
+  }>;
+  semester_scores: Array<{
+    Year: string;
+    Term: string;
+    Branch: string;
+    Sem: string;
+    Q1: number;
+    Q2: number;
+    Q3: number;
+    Q4: number;
+    Q5: number;
+    Q6: number;
+    Q7: number;
+    Q8: number;
+    Q9: number;
+    Q10: number;
+    Q11: number;
+    Q12: number;
+    Score: number;
+  }>;
+  branch_scores: Array<{
+    Branch: string;
+    Q1: number;
+    Q2: number;
+    Q3: number;
+    Q4: number;
+    Q5: number;
+    Q6: number;
+    Q7: number;
+    Q8: number;
+    Q9: number;
+    Q10: number;
+    Q11: number;
+    Q12: number;
+    Score: number;
+  }>;
+  term_year_scores: Array<{
+    Year: string;
+    Term: string;
+    Q1: number;
+    Q2: number;
+    Q3: number;
+    Q4: number;
+    Q5: number;
+    Q6: number;
+    Q7: number;
+    Q8: number;
+    Q9: number;
+    Q10: number;
+    Q11: number;
+    Q12: number;
+    Score: number;
+  }>;
+  correlation_matrix?: { [key: string]: { [key: string]: number } };
+  markdownReport: string;
+  rawFeedbackData?: string;
+}
+
+const feedbackAnalysisSchema = new Schema<IFeedbackAnalysis>({
+  id: { type: String, required: true, unique: true },
+  originalFileName: { type: String, required: true },
+  analysisDate: { type: String, required: true },
+  subject_scores: [{
+    Subject_Code: { type: String, required: true },
+    Subject_FullName: { type: String, required: true },
+    Faculty_Name: { type: String, required: true },
+    Faculty_Initial: { type: String },
+    Subject_ShortForm: { type: String },
+    Q1: { type: Number, required: true },
+    Q2: { type: Number, required: true },
+    Q3: { type: Number, required: true },
+    Q4: { type: Number, required: true },
+    Q5: { type: Number, required: true },
+    Q6: { type: Number, required: true },
+    Q7: { type: Number, required: true },
+    Q8: { type: Number, required: true },
+    Q9: { type: Number, required: true },
+    Q10: { type: Number, required: true },
+    Q11: { type: Number, required: true },
+    Q12: { type: Number, required: true },
+    Score: { type: Number, required: true }
+  }],
+  faculty_scores: [{
+    Faculty_Name: { type: String, required: true },
+    Faculty_Initial: { type: String, required: true },
+    Q1: { type: Number, required: true },
+    Q2: { type: Number, required: true },
+    Q3: { type: Number, required: true },
+    Q4: { type: Number, required: true },
+    Q5: { type: Number, required: true },
+    Q6: { type: Number, required: true },
+    Q7: { type: Number, required: true },
+    Q8: { type: Number, required: true },
+    Q9: { type: Number, required: true },
+    Q10: { type: Number, required: true },
+    Q11: { type: Number, required: true },
+    Q12: { type: Number, required: true },
+    Score: { type: Number, required: true }
+  }],
+  semester_scores: [{
+    Year: { type: String, required: true },
+    Term: { type: String, required: true },
+    Branch: { type: String, required: true },
+    Sem: { type: String, required: true },
+    Q1: { type: Number, required: true },
+    Q2: { type: Number, required: true },
+    Q3: { type: Number, required: true },
+    Q4: { type: Number, required: true },
+    Q5: { type: Number, required: true },
+    Q6: { type: Number, required: true },
+    Q7: { type: Number, required: true },
+    Q8: { type: Number, required: true },
+    Q9: { type: Number, required: true },
+    Q10: { type: Number, required: true },
+    Q11: { type: Number, required: true },
+    Q12: { type: Number, required: true },
+    Score: { type: Number, required: true }
+  }],
+  branch_scores: [{
+    Branch: { type: String, required: true },
+    Q1: { type: Number, required: true },
+    Q2: { type: Number, required: true },
+    Q3: { type: Number, required: true },
+    Q4: { type: Number, required: true },
+    Q5: { type: Number, required: true },
+    Q6: { type: Number, required: true },
+    Q7: { type: Number, required: true },
+    Q8: { type: Number, required: true },
+    Q9: { type: Number, required: true },
+    Q10: { type: Number, required: true },
+    Q11: { type: Number, required: true },
+    Q12: { type: Number, required: true },
+    Score: { type: Number, required: true }
+  }],
+  term_year_scores: [{
+    Year: { type: String, required: true },
+    Term: { type: String, required: true },
+    Q1: { type: Number, required: true },
+    Q2: { type: Number, required: true },
+    Q3: { type: Number, required: true },
+    Q4: { type: Number, required: true },
+    Q5: { type: Number, required: true },
+    Q6: { type: Number, required: true },
+    Q7: { type: Number, required: true },
+    Q8: { type: Number, required: true },
+    Q9: { type: Number, required: true },
+    Q10: { type: Number, required: true },
+    Q11: { type: Number, required: true },
+    Q12: { type: Number, required: true },
+    Score: { type: Number, required: true }
+  }],
+  correlation_matrix: { type: Schema.Types.Mixed },
+  markdownReport: { type: String, required: true },
+  rawFeedbackData: { type: String }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
 // Models
 export const InstituteModel = mongoose.models.Institute || mongoose.model<IInstitute>('Institute', instituteSchema);
 export const BuildingModel = mongoose.models.Building || mongoose.model<IBuilding>('Building', buildingSchema);
@@ -1470,6 +1678,7 @@ export const CourseMaterialModel = mongoose.models.CourseMaterial || mongoose.mo
 export const AttendanceRecordModel = mongoose.models.AttendanceRecord || mongoose.model<IAttendanceRecord>('AttendanceRecord', attendanceRecordSchema, 'attendancerecords');
 export const TimetableModel = mongoose.models.Timetable || mongoose.model<ITimetable>('Timetable', timetableSchema, 'timetables');
 export const ProjectLocationModel = mongoose.models.ProjectLocation || mongoose.model<IProjectLocation>('ProjectLocation', projectLocationSchema, 'projectlocations');
+export const FeedbackAnalysisModel = mongoose.models.FeedbackAnalysis || mongoose.model<IFeedbackAnalysis>('FeedbackAnalysis', feedbackAnalysisSchema, 'feedbackanalyses');
 
 // Export types
-export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, ICurriculum, IRoomAllocation, IExamination, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment, IResult, IEnrollment, ICourseOffering, INotification, IStudentAssessmentScore, ICourseMaterial, IAttendanceRecord, ITimetable, IProjectLocation };
+export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, ICurriculum, IRoomAllocation, IExamination, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment, IResult, IEnrollment, ICourseOffering, INotification, IStudentAssessmentScore, ICourseMaterial, IAttendanceRecord, ITimetable, IProjectLocation, IFeedbackAnalysis };

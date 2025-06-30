@@ -8,16 +8,8 @@ import chromium from '@sparticuz/chromium-min';
 import { marked } from 'marked';
 import fs from 'fs';
 import path from 'path';
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_FEEDBACK_ANALYSIS_RESULTS_STORE__: Map<string, AnalysisResult> | undefined;
-}
-
-if (!global.__API_FEEDBACK_ANALYSIS_RESULTS_STORE__) {
-  global.__API_FEEDBACK_ANALYSIS_RESULTS_STORE__ = new Map<string, AnalysisResult>();
-}
-const analysisResultsStore: Map<string, AnalysisResult> = global.__API_FEEDBACK_ANALYSIS_RESULTS_STORE__;
+import mongoose from 'mongoose';
+import { FeedbackAnalysisModel } from '@/lib/models';
 
 interface RouteParams {
   params: Promise<{
@@ -164,18 +156,21 @@ async function generatePuppeteerPDFBuffer(markdownContent: string): Promise<Buff
 
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { type, id  } = await params;
-  const analysisResult = analysisResultsStore.get(id);
-
-  if (!analysisResult || !analysisResult.markdownReport) {
-    return NextResponse.json({ error: 'Report not found or is incomplete' }, { status: 404 });
-  }
-
-  let filename: string;
-  let contentType: string;
-  let bufferContent: Buffer | string;
-
   try {
+    // Connect to MongoDB
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+
+    const { type, id  } = await params;
+    const analysisResult = await FeedbackAnalysisModel.findOne({ id });
+
+    if (!analysisResult || !analysisResult.markdownReport) {
+      return NextResponse.json({ error: 'Report not found or is incomplete' }, { status: 404 });
+    }
+
+    let filename: string;
+    let contentType: string;
+    let bufferContent: Buffer | string;
+
     if (type === 'markdown') {
       filename = `feedback_report_${id}.md`;
       contentType = 'text/markdown; charset=utf-8';
@@ -222,8 +217,8 @@ ${analysisResult.markdownReport}`;
     });
 
   } catch (error) {
-    console.error(`Error generating ${type} report for ${id}:`, error);
+    console.error('Error generating report:', error);
     const errorMessage = error instanceof Error ? error.message : String(error);
-    return NextResponse.json({ error: `Failed to generate ${type} report. Server error: ${errorMessage}` }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to generate report. Server error: ' + errorMessage }, { status: 500 });
   }
 }

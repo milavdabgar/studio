@@ -3,16 +3,8 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { FeedbackDataRow, AnalysisResult, SubjectScore, FacultyScore, SemesterScore, BranchScore, TermYearScore } from '@/types/feedback';
 import { parse } from 'papaparse';
 import { marked } from 'marked';
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_FEEDBACK_ANALYSIS_RESULTS_STORE__: Map<string, AnalysisResult> | undefined;
-}
-
-if (!global.__API_FEEDBACK_ANALYSIS_RESULTS_STORE__) {
-  global.__API_FEEDBACK_ANALYSIS_RESULTS_STORE__ = new Map<string, AnalysisResult>();
-}
-const analysisResultsStore: Map<string, AnalysisResult> = global.__API_FEEDBACK_ANALYSIS_RESULTS_STORE__;
+import mongoose from 'mongoose';
+import { FeedbackAnalysisModel } from '@/lib/models';
 
 const getFacultyInitial = (name: string): string => {
     const parts = name.split(' ');
@@ -321,6 +313,9 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id'|'markdownRepor
 
 export async function POST(request: NextRequest) {
   try {
+    // Connect to MongoDB
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
 
@@ -345,7 +340,7 @@ export async function POST(request: NextRequest) {
     
     if (parseResult.errors.length > 0) {
         console.error("CSV Parsing errors:", parseResult.errors);
-        const userFriendlyErrors = parseResult.errors.map(err => `Row ${err.row + 2}: ${err.message} (Code: ${err.code})`).slice(0, 5);
+        const userFriendlyErrors = parseResult.errors.map(err => `Row ${(err.row || 0) + 2}: ${err.message} (Code: ${err.code})`).slice(0, 5);
         return NextResponse.json({ error: 'Error parsing CSV file. Please check column headers and data format.', details: userFriendlyErrors }, { status: 400 });
     }
 
@@ -386,7 +381,8 @@ export async function POST(request: NextRequest) {
         rawFeedbackData: fileContent, // Store raw CSV data
     };
 
-    analysisResultsStore.set(resultId, analysisResult);
+    // Save to MongoDB instead of in-memory store
+    await FeedbackAnalysisModel.create(analysisResult);
 
     return NextResponse.json({ success: true, reportId: resultId, message: "Analysis complete. Fetch report by ID." });
 
