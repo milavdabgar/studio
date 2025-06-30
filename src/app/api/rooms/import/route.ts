@@ -2,32 +2,24 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Room, Building, RoomType, RoomStatus } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
-
-const roomsStore: Room[] = (global as any).__API_ROOMS_STORE__ || [];
-if (!(global as any).__API_ROOMS_STORE__) {
-  (global as any).__API_ROOMS_STORE__ = roomsStore;
-}
-// let buildingsStore: Building[] = (global as any).buildings || []; // Client sends this
+import { RoomModel, BuildingModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 const generateIdForImport = (): string => `room_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 const ROOM_TYPE_OPTIONS_LOWER: string[] = ['lecture hall', 'laboratory', 'office', 'staff room', 'workshop', 'library', 'store room', 'other'];
 const ROOM_STATUS_OPTIONS_LOWER: string[] = ['available', 'occupied', 'under_maintenance', 'unavailable'];
 
-
 export async function POST(request: NextRequest) {
   try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
-    const buildingsJson = formData.get('buildings') as string | null;
 
     if (!file) {
       return NextResponse.json({ message: 'No file uploaded.' }, { status: 400 });
     }
-    if (!buildingsJson) {
-      return NextResponse.json({ message: 'Building data for mapping is missing.' }, { status: 400 });
-    }
-    const clientBuildings: Building[] = JSON.parse(buildingsJson);
 
     const fileText = await file.text();
     const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
@@ -55,70 +47,87 @@ export async function POST(request: NextRequest) {
     let updatedCount = 0;
     let skippedCount = 0;
 
-    parsedData.forEach((row: unknown) => {
-      const roomNumber = row.roomnumber?.toString().trim().toUpperCase();
-      const typeRaw = row.type?.toString().trim().toLowerCase();
-      const type = ROOM_TYPE_OPTIONS_LOWER.includes(typeRaw) ? (typeRaw.charAt(0).toUpperCase() + typeRaw.slice(1).replace(/\s([a-z])/g, (match) => ` ${match.trim().toUpperCase()}`)) as RoomType : 'Other';
+    for (const row of parsedData) {
+      // Type the row object
+      const csvRow = row as any;
       
-      const statusRaw = row.status?.toString().trim().toLowerCase();
+      const roomNumber = csvRow.roomnumber?.toString().trim().toUpperCase();
+      const typeRaw = csvRow.type?.toString().trim().toLowerCase();
+      const type = ROOM_TYPE_OPTIONS_LOWER.includes(typeRaw) ? (typeRaw.charAt(0).toUpperCase() + typeRaw.slice(1).replace(/\s([a-z])/g, (match: string) => ` ${match.trim().toUpperCase()}`)) as RoomType : 'Other';
+      
+      const statusRaw = csvRow.status?.toString().trim().toLowerCase();
       const status = ROOM_STATUS_OPTIONS_LOWER.includes(statusRaw) ? statusRaw as RoomStatus : 'unavailable';
-
 
       if (!roomNumber) {
          console.warn(`Skipping room row: Missing room number. Row: ${JSON.stringify(row)}`);
         skippedCount++;
-        return;
+        continue;
       }
 
-      let buildingId = row.buildingid?.toString().trim();
+      let buildingId = csvRow.buildingid?.toString().trim();
       if (!buildingId) {
-        const buildingName = row.buildingname?.toString().trim();
-        const buildingCode = row.buildingcode?.toString().trim().toUpperCase();
-        const foundBuilding = clientBuildings.find(b => (buildingName && b.name.toLowerCase() === buildingName.toLowerCase()) || (buildingCode && b.code?.toUpperCase() === buildingCode));
-        if (foundBuilding) buildingId = foundBuilding.id;
+        const buildingName = csvRow.buildingname?.toString().trim();
+        const buildingCode = csvRow.buildingcode?.toString().trim().toUpperCase();
+        
+        // Look up building in MongoDB
+        const foundBuilding = await BuildingModel.findOne({
+          $or: [
+            ...(buildingName ? [{ name: { $regex: new RegExp(`^${buildingName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') } }] : []),
+            ...(buildingCode ? [{ code: { $regex: new RegExp(`^${buildingCode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') } }] : [])
+          ]
+        });
+        
+        if (foundBuilding) buildingId = foundBuilding._id.toString();
         else { 
             console.warn(`Skipping room ${roomNumber}: Could not find building by name/code. Row: ${JSON.stringify(row)}`);
-            skippedCount++; return; 
+            skippedCount++; continue; 
         }
-      } else if (!clientBuildings.some(b => b.id === buildingId)) {
+      } else {
+        // Verify building exists in MongoDB
+        const buildingExists = await BuildingModel.findById(buildingId);
+        if (!buildingExists) {
          console.warn(`Skipping room ${roomNumber}: Building ID ${buildingId} not found. Row: ${JSON.stringify(row)}`);
-         skippedCount++; return;
+         skippedCount++; continue;
+        }
       }
 
-      const floor = row.floor !== undefined && row.floor !== null && !isNaN(Number(row.floor)) ? Number(row.floor) : undefined;
-      const capacity = row.capacity !== undefined && row.capacity !== null && !isNaN(Number(row.capacity)) && Number(row.capacity) >=0 ? Number(row.capacity) : undefined;
-      const areaSqFt = row.areasqft !== undefined && row.areasqft !== null && !isNaN(Number(row.areasqft)) && Number(row.areasqft) >=0 ? Number(row.areasqft) : undefined;
+      const floor = csvRow.floor !== undefined && csvRow.floor !== null && !isNaN(Number(csvRow.floor)) ? Number(csvRow.floor) : undefined;
+      const capacity = csvRow.capacity !== undefined && csvRow.capacity !== null && !isNaN(Number(csvRow.capacity)) && Number(csvRow.capacity) >=0 ? Number(csvRow.capacity) : undefined;
+      const areaSqFt = csvRow.areasqft !== undefined && csvRow.areasqft !== null && !isNaN(Number(csvRow.areasqft)) && Number(csvRow.areasqft) >=0 ? Number(csvRow.areasqft) : undefined;
 
-      const roomData: Omit<Room, 'id'> = {
+      const roomData: Partial<Room> = {
         roomNumber, type, status, buildingId,
-        name: row.name?.toString().trim() || undefined,
+        name: csvRow.name?.toString().trim() || undefined,
         floor, capacity, areaSqFt,
-        notes: row.notes?.toString().trim() || undefined,
+        notes: csvRow.notes?.toString().trim() || undefined,
       };
 
-      const idFromCsv = row.id?.toString().trim();
-      let existingRoomIndex = -1;
+      const idFromCsv = csvRow.id?.toString().trim();
+      let existingRoom = null;
 
-      if (idFromCsv) {
-        existingRoomIndex = roomsStore.findIndex(r => r.id === idFromCsv);
+      if (idFromCsv && mongoose.Types.ObjectId.isValid(idFromCsv)) {
+        existingRoom = await RoomModel.findById(idFromCsv);
       } else {
-        existingRoomIndex = roomsStore.findIndex(r => r.roomNumber === roomNumber && r.buildingId === buildingId);
+        existingRoom = await RoomModel.findOne({ roomNumber, buildingId });
       }
 
-      if (existingRoomIndex !== -1) {
-        roomsStore[existingRoomIndex] = { ...roomsStore[existingRoomIndex], ...roomData };
+      if (existingRoom) {
+        await RoomModel.findByIdAndUpdate(existingRoom._id, roomData);
         updatedCount++;
       } else {
-        if(roomsStore.some(r => r.roomNumber === roomNumber && r.buildingId === buildingId)){
-            console.warn(`Skipping new room ${roomNumber} in building ${buildingId}: Already exists.`);
-            skippedCount++; return;
+        // Check for duplicate room in building
+        const duplicateRoom = await RoomModel.findOne({ roomNumber, buildingId });
+        if (duplicateRoom) {
+          console.warn(`Skipping room ${roomNumber}: Already exists in building ${buildingId}.`);
+          skippedCount++; continue;
         }
-        const newRoom: Room = { id: idFromCsv || generateIdForImport(), ...roomData };
-        roomsStore.push(newRoom);
+
+        const newRoom = new RoomModel(roomData);
+        await newRoom.save();
         newCount++;
       }
-    });
-    (global as any).__API_ROOMS_STORE__ = roomsStore;
+    }
+
     return NextResponse.json({ message: 'Rooms imported successfully.', newCount, updatedCount, skippedCount }, { status: 200 });
 
   } catch (error) {
