@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import type { 
   User, Role, Permission, Department, Course, Batch, Program, 
-  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, ProjectEventScheduleItem, Project, ProjectRequirements, ProjectGuide, ProjectEvaluation, Assessment, Result, ResultSubject, Enrollment, EnrollmentStatus, CourseOffering, Notification, NotificationType, StudentAssessmentScore, CourseMaterial, AttendanceRecord
+  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, ProjectEventScheduleItem, Project, ProjectRequirements, ProjectGuide, ProjectEvaluation, Assessment, Result, ResultSubject, Enrollment, EnrollmentStatus, CourseOffering, Notification, NotificationType, StudentAssessmentScore, CourseMaterial, AttendanceRecord, Timetable, TimetableEntry, ProjectLocation
 } from '@/types/entities';
 
 // Institute Schema
@@ -1220,6 +1220,100 @@ attendanceRecordSchema.pre('save', function(next) {
   next();
 });
 
+// Timetable Schema
+interface ITimetable extends Omit<Timetable, 'id'>, Document {
+  _id: string;
+}
+
+const timetableEntrySchema = new Schema({
+  dayOfWeek: { type: String, required: true },
+  startTime: { type: String, required: true },
+  endTime: { type: String, required: true },
+  courseOfferingId: { type: String },
+  courseId: { type: String, required: true },
+  courseName: { type: String },
+  facultyId: { type: String, required: true },
+  roomId: { type: String, required: true },
+  entryType: { 
+    type: String, 
+    enum: ['lecture', 'lab', 'tutorial', 'break', 'other'], 
+    required: true 
+  },
+  notes: { type: String }
+}, { _id: false });
+
+const timetableSchema = new Schema<ITimetable>({
+  id: { type: String, unique: true, sparse: true },
+  name: { type: String, required: true },
+  academicYear: { type: String, required: true },
+  semester: { type: Number, required: true },
+  programId: { type: String, required: true },
+  batchId: { type: String },
+  version: { type: String, required: true },
+  status: { 
+    type: String, 
+    enum: ['draft', 'published', 'archived'], 
+    required: true 
+  },
+  effectiveDate: { type: String, required: true },
+  entries: [timetableEntrySchema],
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      // Use custom id if available, otherwise use _id
+      ret.id = ret.id || ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+timetableSchema.pre('save', function(next) {
+  (this as ITimetable).updatedAt = new Date().toISOString();
+  next();
+});
+
+// ProjectLocation Schema
+interface IProjectLocation extends Omit<ProjectLocation, 'id'>, Document {
+  _id: string;
+}
+
+const projectLocationSchema = new Schema<IProjectLocation>({
+  id: { type: String, unique: true, sparse: true },
+  locationId: { type: String, required: true },
+  section: { type: String, required: true },
+  position: { type: Number, required: true },
+  department: { type: String },
+  eventId: { type: String, required: true },
+  projectId: { type: String },
+  isAssigned: { type: Boolean, required: true, default: false },
+  notes: { type: String },
+  createdBy: { type: String },
+  updatedBy: { type: String },
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      // Use custom id if available, otherwise use _id
+      ret.id = ret.id || ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+projectLocationSchema.pre('save', function(next) {
+  (this as IProjectLocation).updatedAt = new Date().toISOString();
+  next();
+});
+
 // Models
 export const InstituteModel = mongoose.models.Institute || mongoose.model<IInstitute>('Institute', instituteSchema);
 export const BuildingModel = mongoose.models.Building || mongoose.model<IBuilding>('Building', buildingSchema);
@@ -1245,6 +1339,8 @@ export const NotificationModel = mongoose.models.Notification || mongoose.model<
 export const StudentAssessmentScoreModel = mongoose.models.StudentAssessmentScore || mongoose.model<IStudentAssessmentScore>('StudentAssessmentScore', studentAssessmentScoreSchema, 'studentassessmentscores');
 export const CourseMaterialModel = mongoose.models.CourseMaterial || mongoose.model<ICourseMaterial>('CourseMaterial', courseMaterialSchema, 'coursematerials');
 export const AttendanceRecordModel = mongoose.models.AttendanceRecord || mongoose.model<IAttendanceRecord>('AttendanceRecord', attendanceRecordSchema, 'attendancerecords');
+export const TimetableModel = mongoose.models.Timetable || mongoose.model<ITimetable>('Timetable', timetableSchema, 'timetables');
+export const ProjectLocationModel = mongoose.models.ProjectLocation || mongoose.model<IProjectLocation>('ProjectLocation', projectLocationSchema, 'projectlocations');
 
 // Export types
-export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment, IResult, IEnrollment, ICourseOffering, INotification, IStudentAssessmentScore, ICourseMaterial, IAttendanceRecord };
+export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment, IResult, IEnrollment, ICourseOffering, INotification, IStudentAssessmentScore, ICourseMaterial, IAttendanceRecord, ITimetable, IProjectLocation };

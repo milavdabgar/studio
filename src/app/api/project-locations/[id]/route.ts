@@ -1,19 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { ProjectLocation } from '@/types/entities';
-
-declare global {
-  var __API_PROJECT_LOCATIONS_STORE__: ProjectLocation[] | undefined;
-}
-
-const initialProjectLocationsData: ProjectLocation[] = [ /* Default data if needed */ ];
-
-const ensureProjectLocationsStore = () => {
-  if (!global.__API_PROJECT_LOCATIONS_STORE__ || !Array.isArray(global.__API_PROJECT_LOCATIONS_STORE__)) {
-    console.warn("Project Locations API Store (by ID) was not an array or undefined. Initializing.");
-    global.__API_PROJECT_LOCATIONS_STORE__ = [...initialProjectLocationsData];
-  }
-};
-
+import { connectMongoose } from '@/lib/mongodb';
+import { ProjectLocationModel } from '@/lib/models';
 
 interface RouteParams {
   params: Promise<{
@@ -22,37 +10,53 @@ interface RouteParams {
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  ensureProjectLocationsStore();
-  const currentProjectLocationsStore: ProjectLocation[] = global.__API_PROJECT_LOCATIONS_STORE__!;
-  const { id } = await params;
-
   try {
-    // Attempt to find by MongoDB _id first, then by locationId string
-    const location = currentProjectLocationsStore.find(loc => loc.id === id || loc.locationId === id);
-    if (location) {
-      return NextResponse.json({ status: 'success', data: { location }});
+    await connectMongoose();
+    const { id } = await params;
+
+    // Attempt to find by custom id first, then by locationId string
+    const location = await ProjectLocationModel.findOne({
+      $or: [
+        { id: id },
+        { locationId: id }
+      ]
+    }).lean();
+    
+    if (!location) {
+      return NextResponse.json({ message: 'Project location not found' }, { status: 404 });
     }
-    return NextResponse.json({ message: 'Project location not found' }, { status: 404 });
+    
+    // Format location to ensure proper id field
+    const locationWithId = {
+      ...location,
+      id: location.id || (location as any)._id.toString()
+    };
+    
+    return NextResponse.json({ status: 'success', data: { location: locationWithId }});
   } catch (error) {
-    console.error(`Error in GET /api/project-locations/${id}:`, error);
+    console.error(`Error in GET /api/project-locations/${(await params).id}:`, error);
     return NextResponse.json({ message: 'Internal server error.', error: (error as Error).message }, { status: 500 });
   }
 }
 
-export async function PUT(request: NextRequest, { params }: RouteParams) { // Changed to PUT for full update
-  ensureProjectLocationsStore();
-  const currentProjectLocationsStore: ProjectLocation[] = global.__API_PROJECT_LOCATIONS_STORE__!;
-  const { id } = await params;
-  
+export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
+    await connectMongoose();
+    const { id } = await params;
+    
     const locationDataToUpdate = await request.json() as Partial<Omit<ProjectLocation, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>>;
-    const locationIndex = currentProjectLocationsStore.findIndex(loc => loc.id === id || loc.locationId === id);
+    
+    // Find existing location by id or locationId
+    const existingLocation = await ProjectLocationModel.findOne({
+      $or: [
+        { id: id },
+        { locationId: id }
+      ]
+    }).lean();
 
-    if (locationIndex === -1) {
+    if (!existingLocation) {
       return NextResponse.json({ message: 'Project location not found' }, { status: 404 });
     }
-
-    const existingLocation = currentProjectLocationsStore[locationIndex];
 
     // Basic validations
     if (locationDataToUpdate.locationId !== undefined && !locationDataToUpdate.locationId.trim()) {
@@ -67,51 +71,71 @@ export async function PUT(request: NextRequest, { params }: RouteParams) { // Ch
     
     // Uniqueness check for locationId within the same event if it's being changed
     if (locationDataToUpdate.locationId && 
-        locationDataToUpdate.locationId.toLowerCase() !== existingLocation.locationId.toLowerCase() &&
-        currentProjectLocationsStore.some(loc => 
-            loc.id !== existingLocation.id && 
-            loc.locationId.toLowerCase() === locationDataToUpdate.locationId!.toLowerCase() && 
-            loc.eventId === (locationDataToUpdate.eventId || existingLocation.eventId)
-        )
-    ) {
-        return NextResponse.json({ message: `Location ID '${locationDataToUpdate.locationId}' already exists for this event.` }, { status: 409 });
+        locationDataToUpdate.locationId.toLowerCase() !== existingLocation.locationId.toLowerCase()) {
+        
+        const duplicateLocation = await ProjectLocationModel.findOne({
+          locationId: { $regex: new RegExp(`^${locationDataToUpdate.locationId.trim()}$`, 'i') },
+          eventId: locationDataToUpdate.eventId || existingLocation.eventId,
+          id: { $ne: existingLocation.id }
+        });
+        
+        if (duplicateLocation) {
+          return NextResponse.json({ message: `Location ID '${locationDataToUpdate.locationId}' already exists for this event.` }, { status: 409 });
+        }
     }
 
-
-    const updatedLocation: ProjectLocation = { 
-        ...existingLocation, 
+    const updatedLocation = await ProjectLocationModel.findOneAndUpdate(
+      {
+        $or: [
+          { id: id },
+          { locationId: id }
+        ]
+      },
+      {
         ...locationDataToUpdate,
-        updatedBy: "user_admin_placeholder_loc_update", // TODO: Get actual user ID
-        updatedAt: new Date().toISOString(),
+        updatedBy: "user_admin_placeholder_loc_update",
+        updatedAt: new Date().toISOString()
+      },
+      { new: true, lean: true }
+    );
+
+    if (!updatedLocation) {
+      return NextResponse.json({ message: 'Project location not found' }, { status: 404 });
+    }
+
+    // Format location to ensure proper id field
+    const locationWithId = {
+      ...updatedLocation,
+      id: updatedLocation.id || (updatedLocation as any)._id.toString()
     };
 
-    currentProjectLocationsStore[locationIndex] = updatedLocation;
-    global.__API_PROJECT_LOCATIONS_STORE__ = currentProjectLocationsStore;
-    return NextResponse.json({ status: 'success', data: { location: updatedLocation }});
+    return NextResponse.json({ status: 'success', data: { location: locationWithId }});
   } catch (error) {
-    console.error(`Error updating project location ${id}:`, error);
-    return NextResponse.json({ message: `Error updating project location ${id}`, error: (error as Error).message }, { status: 500 });
+    console.error(`Error updating project location ${(await params).id}:`, error);
+    return NextResponse.json({ message: `Error updating project location ${(await params).id}`, error: (error as Error).message }, { status: 500 });
   }
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  ensureProjectLocationsStore();
-  const currentProjectLocationsStore: ProjectLocation[] = global.__API_PROJECT_LOCATIONS_STORE__!;
-  const { id } = await params;
-
   try {
-    const initialLength = currentProjectLocationsStore.length;
-    // Attempt to delete by MongoDB _id first, then by locationId string
-    const newStore = currentProjectLocationsStore.filter(loc => loc.id !== id && loc.locationId !== id);
+    await connectMongoose();
+    const { id } = await params;
 
-    if (newStore.length === initialLength) {
+    // Attempt to delete by id or locationId
+    const deletedLocation = await ProjectLocationModel.findOneAndDelete({
+      $or: [
+        { id: id },
+        { locationId: id }
+      ]
+    });
+
+    if (!deletedLocation) {
       return NextResponse.json({ message: 'Project location not found' }, { status: 404 });
     }
     
-    global.__API_PROJECT_LOCATIONS_STORE__ = newStore;
     return NextResponse.json({ status: 'success', message: 'Project location deleted successfully' });
   } catch (error) {
-    console.error(`Error deleting project location ${id}:`, error);
-    return NextResponse.json({ message: `Error deleting project location ${id}`, error: (error as Error).message }, { status: 500 });
+    console.error(`Error deleting project location ${(await params).id}:`, error);
+    return NextResponse.json({ message: `Error deleting project location ${(await params).id}`, error: (error as Error).message }, { status: 500 });
   }
 }
