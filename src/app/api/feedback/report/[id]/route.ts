@@ -14,13 +14,13 @@ if (!global.__API_FEEDBACK_ANALYSIS_RESULTS_STORE__) {
 const analysisResultsStore: Map<string, AnalysisResult> = global.__API_FEEDBACK_ANALYSIS_RESULTS_STORE__;
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id  } = await params;
   const result = analysisResultsStore.get(id);
 
   if (!result) {

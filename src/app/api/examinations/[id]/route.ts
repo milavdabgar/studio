@@ -11,13 +11,13 @@ if (!global.__API_EXAMINATIONS_STORE__) {
 let examinationsStore: Examination[] = global.__API_EXAMINATIONS_STORE__;
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id  } = await params;
   const examination = examinationsStore.find(e => e.id === id);
   if (examination) {
     return NextResponse.json(examination);
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id  } = await params;
   try {
     const examDataToUpdate = await request.json() as Partial<Omit<Examination, 'id' | 'createdAt' | 'updatedAt'>>;
     const examIndex = examinationsStore.findIndex(e => e.id === id);
@@ -86,7 +86,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id  } = await params;
   const initialLength = examinationsStore.length;
   const newStore = examinationsStore.filter(e => e.id !== id);
 

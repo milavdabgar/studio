@@ -6,15 +6,15 @@ import { connectMongoose } from '@/lib/mongodb';
 import { CourseOfferingModel } from '@/lib/models';
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { id } = params;
+    const { id } = await params;
     
     const offering = await CourseOfferingModel.findOne({ id }).lean();
     if (offering) {
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { id } = params;
+    const { id } = await params;
     
     const offeringDataToUpdate = await request.json() as Partial<Omit<CourseOffering, 'id' | 'createdAt' | 'updatedAt'>>;
     
@@ -104,7 +104,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { id } = params;
+    const { id } = await params;
     
     const deletedOffering = await CourseOfferingModel.findOneAndDelete({ id });
     

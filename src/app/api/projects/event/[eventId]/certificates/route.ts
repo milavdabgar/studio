@@ -23,13 +23,13 @@ const departmentsStore: Department[] = (global as any).__API_DEPARTMENTS_STORE__
 const teamsStore: Team[] = (global as any).__API_PROJECT_TEAMS_STORE__;
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     eventId: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { eventId } = params;
+  const { eventId  } = await params;
   const { searchParams } = new URL(request.url);
   const certificateType = searchParams.get('type') || 'participation';
 

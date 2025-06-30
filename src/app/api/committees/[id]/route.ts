@@ -8,9 +8,9 @@ import { CommitteeModel } from '@/lib/models';
 
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 async function updateUserConvenerRole(userId: string, committeeCode: string, committeeName: string, add: boolean) {

@@ -10,13 +10,13 @@ if (!global.__API_RESULTS_STORE__) {
 const resultsStore: Result[] = global.__API_RESULTS_STORE__;
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string; // This 'id' corresponds to Result._id
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id  } = await params;
   if (!Array.isArray(global.__API_RESULTS_STORE__)) {
     global.__API_RESULTS_STORE__ = [];
     return NextResponse.json({ message: 'Result data store corrupted.' }, { status: 500 });
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-    const { id } = params;
+    const { id  } = await params;
     try {
         const resultDataToUpdate = await request.json() as Partial<Omit<Result, '_id' | 'createdAt' | 'updatedAt'>>;
         const resultIndex = resultsStore.findIndex(r => r._id === id);
@@ -71,7 +71,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id  } = await params;
   if (!Array.isArray(global.__API_RESULTS_STORE__)) {
     global.__API_RESULTS_STORE__ = [];
     return NextResponse.json({ message: 'Result data store corrupted.' }, { status: 500 });

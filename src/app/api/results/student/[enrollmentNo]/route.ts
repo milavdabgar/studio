@@ -10,13 +10,13 @@ if (!global.__API_RESULTS_STORE__) {
 const resultsStore: Result[] = global.__API_RESULTS_STORE__;
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     enrollmentNo: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { enrollmentNo } = params;
+  const { enrollmentNo  } = await params;
   if (!Array.isArray(global.__API_RESULTS_STORE__)) {
     global.__API_RESULTS_STORE__ = [];
     return NextResponse.json({ message: 'Result data store corrupted.' }, { status: 500 });

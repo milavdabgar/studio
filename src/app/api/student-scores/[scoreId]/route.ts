@@ -6,15 +6,15 @@ import { connectMongoose } from '@/lib/mongodb';
 import { StudentAssessmentScoreModel, AssessmentModel } from '@/lib/models';
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     scoreId: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { scoreId } = params;
+    const { scoreId  } = await params;
     
     const scoreRecord = await StudentAssessmentScoreModel.findOne({ id: scoreId }).lean();
     if (scoreRecord) {
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { scoreId } = params;
+    const { scoreId  } = await params;
     
     const dataToUpdate = await request.json() as Partial<Omit<StudentAssessmentScore, 'id' | 'studentId' | 'assessmentId' | 'createdAt' | 'submissionDate'>>;
     
@@ -105,7 +105,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { scoreId } = params;
+    const { scoreId  } = await params;
     
     const deletedRecord = await StudentAssessmentScoreModel.findOneAndDelete({ id: scoreId });
     

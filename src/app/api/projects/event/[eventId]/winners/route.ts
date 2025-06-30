@@ -26,9 +26,9 @@ const departmentsStore: Department[] = global.__API_DEPARTMENTS_STORE__;
 const teamsStore: Team[] = global.__API_PROJECT_TEAMS_STORE__;
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     eventId: string;
-  };
+  }>;
 }
 
 interface WinnerProject extends Project {
@@ -43,7 +43,7 @@ interface DepartmentWinnerGroup {
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { eventId } = params;
+  const { eventId  } = await params;
 
   const event = projectEventsStore.find(e => e.id === eventId);
   if (!event) {

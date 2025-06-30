@@ -4,15 +4,15 @@ import { connectMongoose } from '@/lib/mongodb';
 import { AttendanceRecordModel } from '@/lib/models';
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { id } = params;
+    const { id } = await params;
     
     const recordDataToUpdate = await request.json() as Partial<Omit<AttendanceRecord, 'id' | 'createdAt' | 'updatedAt'>>;
     
@@ -57,7 +57,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { id } = params;
+    const { id } = await params;
     
     const deletedRecord = await AttendanceRecordModel.findOneAndDelete({ id });
     

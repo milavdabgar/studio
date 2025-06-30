@@ -5,15 +5,15 @@ import { connectMongoose } from '@/lib/mongodb';
 import { CourseMaterialModel } from '@/lib/models';
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     materialId: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { materialId } = params;
+    const { materialId } = await params;
     
     const material = await CourseMaterialModel.findOne({ id: materialId }).lean();
     if (material) {
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { materialId } = params;
+    const { materialId } = await params;
     
     const dataToUpdate = await request.json() as Partial<Omit<CourseMaterial, 'id' | 'courseOfferingId' | 'uploadedBy' | 'uploadedAt' | 'filePathOrUrl' | 'fileName' | 'fileSize'>>;
     
@@ -82,7 +82,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
-    const { materialId } = params;
+    const { materialId } = await params;
     
     const deletedMaterial = await CourseMaterialModel.findOneAndDelete({ id: materialId });
     

@@ -10,13 +10,13 @@ if (!global.__API_RESULTS_STORE__) {
 // let resultsStore: Result[] = global.__API_RESULTS_STORE__; // No need to reassign here, work on global directly
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     batchId: string;
-  };
+  }>;
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { batchId } = params;
+  const { batchId  } = await params;
   if (!Array.isArray(global.__API_RESULTS_STORE__)) {
     global.__API_RESULTS_STORE__ = [];
     return NextResponse.json({ message: 'Result data store corrupted.' }, { status: 500 });

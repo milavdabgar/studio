@@ -34,13 +34,13 @@ const usersStore: SystemUser[] = global.__API_USERS_STORE__;
 
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string; // Project ID
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id  } = await params;
 
   const project = projectsStore.find(p => p.id === id);
   if (!project) {

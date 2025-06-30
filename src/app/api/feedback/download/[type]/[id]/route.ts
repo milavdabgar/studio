@@ -20,10 +20,10 @@ if (!global.__API_FEEDBACK_ANALYSIS_RESULTS_STORE__) {
 const analysisResultsStore: Map<string, AnalysisResult> = global.__API_FEEDBACK_ANALYSIS_RESULTS_STORE__;
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     type: string;
     id: string;
-  };
+  }>;
 }
 
 async function generateExcelReportBuffer(analysisResult: AnalysisResult): Promise<Buffer> {
@@ -164,7 +164,7 @@ async function generatePuppeteerPDFBuffer(markdownContent: string): Promise<Buff
 
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { type, id } = params;
+  const { type, id  } = await params;
   const analysisResult = analysisResultsStore.get(id);
 
   if (!analysisResult || !analysisResult.markdownReport) {

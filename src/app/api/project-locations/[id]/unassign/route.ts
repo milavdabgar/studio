@@ -24,13 +24,13 @@ const projectTeamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
 
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string; // This is the locationId string (e.g., "A-01"), not MongoDB _id
-  };
+  }>;
 }
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
-  const { id: locationIdString } = params; 
+  const { id: locationIdString  } = await params; 
   try {
     const locationIndex = projectLocationsStore.findIndex(loc => loc.locationId === locationIdString);
     if (locationIndex === -1) {

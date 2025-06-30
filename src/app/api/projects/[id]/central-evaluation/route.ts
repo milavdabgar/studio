@@ -10,13 +10,13 @@ if (!global.__API_PROJECTS_STORE__) global.__API_PROJECTS_STORE__ = [];
 const projectsStore: Project[] = global.__API_PROJECTS_STORE__;
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string; // Project ID
-  };
+  }>;
 }
 
 export async function POST(request: NextRequest, { params }: RouteParams) {
-  const { id: projectId } = params;
+  const { id: projectId  } = await params;
   try {
     const evaluationData = await request.json() as Omit<ProjectEvaluation, 'completed' | 'juryId' | 'evaluatedAt'>;
 

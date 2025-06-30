@@ -12,14 +12,14 @@ if (!global.__API_ENROLLMENTS_STORE__) {
 let enrollmentsStore: Enrollment[] = global.__API_ENROLLMENTS_STORE__;
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string; // Enrollment ID
-  };
+  }>;
 }
 
 // GET a specific enrollment by ID
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id  } = await params;
   const enrollment = enrollmentsStore.find(e => e.id === id);
   if (enrollment) {
     return NextResponse.json(enrollment);
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 // PUT to update an enrollment (e.g., change status by admin/faculty)
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id  } = await params;
   try {
     const enrollmentDataToUpdate = await request.json() as Partial<Omit<Enrollment, 'id' | 'studentId' | 'courseOfferingId' | 'createdAt'>>;
     const enrollmentIndex = enrollmentsStore.findIndex(e => e.id === id);
@@ -66,7 +66,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 // DELETE an enrollment (e.g., student withdraws, admin removes)
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
+  const { id  } = await params;
   const initialLength = enrollmentsStore.length;
   enrollmentsStore = enrollmentsStore.filter(e => e.id !== id);
 

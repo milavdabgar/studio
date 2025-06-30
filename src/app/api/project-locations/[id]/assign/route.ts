@@ -21,13 +21,13 @@ const projectsStore: Project[] = global.__API_PROJECTS_STORE__;
 const projectTeamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string; // This is the locationId string (e.g., "A-01"), not MongoDB _id
-  };
+  }>;
 }
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
-  const { id: locationIdString } = params; // The user-friendly locationId
+  const { id: locationIdString  } = await params; // The user-friendly locationId
   try {
     const { projectId } = await request.json();
 
