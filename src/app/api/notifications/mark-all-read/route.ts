@@ -1,33 +1,34 @@
 // src/app/api/notifications/mark-all-read/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Notification } from '@/types/entities';
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_NOTIFICATIONS_STORE__: Notification[] | undefined;
-}
-if (!global.__API_NOTIFICATIONS_STORE__) {
-  global.__API_NOTIFICATIONS_STORE__ = [];
-}
-const notificationsStore: Notification[] = global.__API_NOTIFICATIONS_STORE__;
+import { connectMongoose } from '@/lib/mongodb';
+import { NotificationModel } from '@/lib/models';
 
 export async function POST(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const userId = searchParams.get('userId');
+  try {
+    await connectMongoose();
+    
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
 
-  if (!userId) {
-    return NextResponse.json({ message: 'userId is required to mark all notifications as read.' }, { status: 400 });
-  }
-
-  let updatedCount = 0;
-  notificationsStore.forEach(notification => {
-    if (notification.userId === userId && !notification.isRead) {
-      notification.isRead = true;
-      notification.updatedAt = new Date().toISOString();
-      updatedCount++;
+    if (!userId) {
+      return NextResponse.json({ message: 'userId is required to mark all notifications as read.' }, { status: 400 });
     }
-  });
-  global.__API_NOTIFICATIONS_STORE__ = notificationsStore;
 
-  return NextResponse.json({ message: `Marked ${updatedCount} notifications as read for user ${userId}.` });
+    const updateResult = await NotificationModel.updateMany(
+      { userId, isRead: false },
+      { 
+        isRead: true,
+        updatedAt: new Date().toISOString()
+      }
+    );
+
+    return NextResponse.json({ 
+      message: `Marked ${updateResult.modifiedCount} notifications as read for user ${userId}.`,
+      count: updateResult.modifiedCount
+    });
+  } catch (error) {
+    console.error('Error marking all notifications as read:', error);
+    return NextResponse.json({ message: 'Error marking all notifications as read', error: (error as Error).message }, { status: 500 });
+  }
 }

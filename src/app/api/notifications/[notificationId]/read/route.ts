@@ -1,15 +1,8 @@
 // src/app/api/notifications/[notificationId]/read/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Notification } from '@/types/entities';
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_NOTIFICATIONS_STORE__: Notification[] | undefined;
-}
-if (!global.__API_NOTIFICATIONS_STORE__) {
-  global.__API_NOTIFICATIONS_STORE__ = [];
-}
-const notificationsStore: Notification[] = global.__API_NOTIFICATIONS_STORE__;
+import { connectMongoose } from '@/lib/mongodb';
+import { NotificationModel } from '@/lib/models';
 
 interface RouteParams {
   params: Promise<{
@@ -18,16 +11,35 @@ interface RouteParams {
 }
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
-  const { notificationId } = await params;
-  const notificationIndex = notificationsStore.findIndex(n => n.id === notificationId);
+  try {
+    await connectMongoose();
+    
+    const { notificationId } = await params;
+    
+    // Try to find by custom id first, then by MongoDB _id if it's a valid ObjectId
+    let notification;
+    if (notificationId.match(/^[0-9a-fA-F]{24}$/)) {
+      notification = await NotificationModel.findById(notificationId);
+    } else {
+      notification = await NotificationModel.findOne({ id: notificationId });
+    }
 
-  if (notificationIndex === -1) {
-    return NextResponse.json({ message: 'Notification not found' }, { status: 404 });
+    if (!notification) {
+      return NextResponse.json({ message: 'Notification not found' }, { status: 404 });
+    }
+
+    const updatedNotification = await NotificationModel.findByIdAndUpdate(
+      notification._id,
+      { 
+        isRead: true,
+        updatedAt: new Date().toISOString()
+      },
+      { new: true }
+    );
+
+    return NextResponse.json(updatedNotification.toJSON());
+  } catch (error) {
+    console.error(`Error marking notification ${notificationId} as read:`, error);
+    return NextResponse.json({ message: `Error marking notification ${notificationId} as read`, error: (error as Error).message }, { status: 500 });
   }
-
-  notificationsStore[notificationIndex].isRead = true;
-  notificationsStore[notificationIndex].updatedAt = new Date().toISOString();
-  global.__API_NOTIFICATIONS_STORE__ = notificationsStore;
-
-  return NextResponse.json(notificationsStore[notificationIndex]);
 }

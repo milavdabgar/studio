@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import type { 
   User, Role, Permission, Department, Course, Batch, Program, 
-  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, ProjectEventScheduleItem, Project, ProjectRequirements, ProjectGuide, ProjectEvaluation, Assessment, Result, ResultSubject
+  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, ProjectEventScheduleItem, Project, ProjectRequirements, ProjectGuide, ProjectEvaluation, Assessment, Result, ResultSubject, Enrollment, EnrollmentStatus, CourseOffering, Notification, NotificationType
 } from '@/types/entities';
 
 // Institute Schema
@@ -978,6 +978,130 @@ resultSchema.pre('save', function(next) {
   next();
 });
 
+// Enrollment Schema
+interface IEnrollment extends Omit<Enrollment, 'id'>, Document {
+  _id: string;
+}
+
+const enrollmentSchema = new Schema<IEnrollment>({
+  id: { type: String, unique: true, sparse: true }, // Custom ID field
+  
+  studentId: { type: String, required: true },
+  courseOfferingId: { type: String, required: true },
+  status: { 
+    type: String, 
+    enum: ['requested', 'enrolled', 'withdrawn', 'completed', 'failed', 'incomplete', 'rejected'], 
+    required: true 
+  },
+  internalMarks: { type: Number },
+  externalMarks: { type: Number },
+  grade: { type: String },
+  attendancePercentage: { type: Number },
+  enrolledAt: { type: String },
+  completedAt: { type: String },
+  
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      // Use custom id if available, otherwise use _id
+      ret.id = ret.id || ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+enrollmentSchema.pre('save', function(next) {
+  (this as IEnrollment).updatedAt = new Date().toISOString();
+  next();
+});
+
+// CourseOffering Schema
+interface ICourseOffering extends Omit<CourseOffering, 'id'>, Document {
+  _id: string;
+}
+
+const courseOfferingSchema = new Schema<ICourseOffering>({
+  id: { type: String, unique: true, sparse: true }, // Custom ID field
+  courseId: { type: String, required: true },
+  batchId: { type: String, required: true },
+  academicYear: { type: String, required: true },
+  semester: { type: Number, required: true },
+  facultyIds: [{ type: String }],
+  roomIds: [{ type: String }],
+  startDate: { type: String },
+  endDate: { type: String },
+  status: { 
+    type: String, 
+    enum: ['scheduled', 'ongoing', 'completed', 'cancelled'], 
+    required: true, 
+    default: 'scheduled' 
+  },
+  maxEnrollments: { type: Number },
+  currentEnrollments: { type: Number, default: 0 },
+  description: { type: String },
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      // Use custom id if available, otherwise use _id
+      ret.id = ret.id || ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+courseOfferingSchema.pre('save', function(next) {
+  (this as ICourseOffering).updatedAt = new Date().toISOString();
+  next();
+});
+
+// Notification Schema
+interface INotification extends Omit<Notification, 'id'>, Document {
+  _id: string;
+}
+
+const notificationSchema = new Schema<INotification>({
+  id: { type: String, unique: true, sparse: true }, // Custom ID field
+  userId: { type: String, required: true },
+  message: { type: String, required: true },
+  type: { 
+    type: String, 
+    enum: ['info', 'success', 'warning', 'error', 'update', 'reminder', 'assignment_new', 'assignment_graded', 'enrollment_request', 'enrollment_approved', 'enrollment_rejected'], 
+    required: true 
+  },
+  isRead: { type: Boolean, required: true, default: false },
+  link: { type: String },
+  relatedEntityId: { type: String },
+  relatedEntityType: { type: String },
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      // Use custom id if available, otherwise use _id
+      ret.id = ret.id || ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+notificationSchema.pre('save', function(next) {
+  (this as INotification).updatedAt = new Date().toISOString();
+  next();
+});
+
 // Models
 export const InstituteModel = mongoose.models.Institute || mongoose.model<IInstitute>('Institute', instituteSchema);
 export const BuildingModel = mongoose.models.Building || mongoose.model<IBuilding>('Building', buildingSchema);
@@ -997,6 +1121,9 @@ export const ProjectEventModel = mongoose.models.ProjectEvent || mongoose.model<
 export const ProjectModel = mongoose.models.Project || mongoose.model<IProject>('Project', projectSchema, 'projects');
 export const AssessmentModel = mongoose.models.Assessment || mongoose.model<IAssessment>('Assessment', assessmentSchema, 'assessments');
 export const ResultModel = mongoose.models.Result || mongoose.model<IResult>('Result', resultSchema, 'results');
+export const EnrollmentModel = mongoose.models.Enrollment || mongoose.model<IEnrollment>('Enrollment', enrollmentSchema, 'enrollments');
+export const CourseOfferingModel = mongoose.models.CourseOffering || mongoose.model<ICourseOffering>('CourseOffering', courseOfferingSchema, 'courseofferings');
+export const NotificationModel = mongoose.models.Notification || mongoose.model<INotification>('Notification', notificationSchema, 'notifications');
 
 // Export types
-export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment, IResult };
+export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment, IResult, IEnrollment, ICourseOffering, INotification };
