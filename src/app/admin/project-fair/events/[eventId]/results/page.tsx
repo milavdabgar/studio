@@ -66,14 +66,15 @@ export default function EventResultsPage() {
         const winnersData = await projectService.getEventWinners(eventId);
         
         const allDepartments = await departmentService.getAllDepartments();
-        const allTeams = await projectTeamService.getAllTeams({ eventId });
+        const allTeamsResponse = await projectTeamService.getAllTeams({ eventId });
+        const allTeams = Array.isArray(allTeamsResponse) ? allTeamsResponse : ((allTeamsResponse as any)?.data?.teams || []);
 
         const enrichWinners = (projects: (Project & { rank?: number })[]): EnrichedWinner[] => {
           return projects.map(p => ({
             ...p,
             rank: p.rank || 0,
-            teamName: allTeams.find(t => t.id === p.teamId)?.name || 'N/A',
-            departmentName: allDepartments.find(d => d.id === (typeof p.department === 'string' ? p.department : p.department?.id))?.name || 'N/A',
+            teamName: allTeams?.find((t: any) => t.id === p.teamId)?.name || 'N/A',
+            departmentName: allDepartments.find(d => d.id === (typeof p.department === 'string' ? p.department : (p.department as any)?.id))?.name || 'N/A',
           }));
         };
         
@@ -86,7 +87,8 @@ export default function EventResultsPage() {
         setDepartmentWinners(deptWinnersEnriched);
 
         // Mock certificate stats
-        const allProjects = await projectService.getAllProjects({eventId});
+        const allProjectsResponse = await projectService.getAllProjects({eventId});
+        const allProjects = Array.isArray(allProjectsResponse) ? allProjectsResponse : ((allProjectsResponse as any)?.data?.projects || []);
         const participationTotal = allProjects.length;
         const deptWinnersTotal = deptWinnersEnriched.reduce((sum, dept) => sum + dept.winners.length, 0);
         const instWinnersTotal = (winnersData.instituteWinners || []).length;

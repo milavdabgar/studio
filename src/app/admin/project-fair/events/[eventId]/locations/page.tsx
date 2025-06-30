@@ -71,9 +71,9 @@ export default function EventLocationsPage() {
         projectService.getAllProjects({ eventId }), // Fetch projects for this event
       ]);
       setEvent(eventData);
-      setLocations(locationsDataResponse.locations || []);
+      setLocations((locationsDataResponse as any)?.locations || []);
       setDepartments(deptData);
-      setProjects(Array.isArray(projectsDataResponse) ? projectsDataResponse : (projectsDataResponse.data?.projects || []));
+      setProjects(Array.isArray(projectsDataResponse) ? projectsDataResponse : ((projectsDataResponse as any)?.data?.projects || []));
     } catch (error) {
       toast({ variant: "destructive", title: "Error", description: "Could not load event locations data." });
     }

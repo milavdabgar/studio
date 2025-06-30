@@ -10,9 +10,10 @@ interface RouteParams {
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
+  
   try {
     await connectMongoose();
-    const { id } = await params;
 
     // Attempt to find by custom id first, then by locationId string
     const location = await ProjectLocationModel.findOne({
@@ -29,20 +30,21 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     // Format location to ensure proper id field
     const locationWithId = {
       ...location,
-      id: location.id || (location as any)._id.toString()
+      id: (location as any).id || (location as any)._id.toString()
     };
     
     return NextResponse.json({ status: 'success', data: { location: locationWithId }});
   } catch (error) {
-    console.error(`Error in GET /api/project-locations/${(await params).id}:`, error);
+    console.error(`Error in GET /api/project-locations/${id}:`, error);
     return NextResponse.json({ message: 'Internal server error.', error: (error as Error).message }, { status: 500 });
   }
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
+  
   try {
     await connectMongoose();
-    const { id } = await params;
     
     const locationDataToUpdate = await request.json() as Partial<Omit<ProjectLocation, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>>;
     
@@ -71,12 +73,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     
     // Uniqueness check for locationId within the same event if it's being changed
     if (locationDataToUpdate.locationId && 
-        locationDataToUpdate.locationId.toLowerCase() !== existingLocation.locationId.toLowerCase()) {
+        locationDataToUpdate.locationId.toLowerCase() !== (existingLocation as any).locationId.toLowerCase()) {
         
         const duplicateLocation = await ProjectLocationModel.findOne({
           locationId: { $regex: new RegExp(`^${locationDataToUpdate.locationId.trim()}$`, 'i') },
-          eventId: locationDataToUpdate.eventId || existingLocation.eventId,
-          id: { $ne: existingLocation.id }
+          eventId: locationDataToUpdate.eventId || (existingLocation as any).eventId,
+          id: { $ne: (existingLocation as any).id }
         });
         
         if (duplicateLocation) {
@@ -106,20 +108,21 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Format location to ensure proper id field
     const locationWithId = {
       ...updatedLocation,
-      id: updatedLocation.id || (updatedLocation as any)._id.toString()
+      id: (updatedLocation as any).id || (updatedLocation as any)._id.toString()
     };
 
     return NextResponse.json({ status: 'success', data: { location: locationWithId }});
   } catch (error) {
-    console.error(`Error updating project location ${(await params).id}:`, error);
-    return NextResponse.json({ message: `Error updating project location ${(await params).id}`, error: (error as Error).message }, { status: 500 });
+    console.error(`Error updating project location ${id}:`, error);
+    return NextResponse.json({ message: `Error updating project location ${id}`, error: (error as Error).message }, { status: 500 });
   }
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
+  
   try {
     await connectMongoose();
-    const { id } = await params;
 
     // Attempt to delete by id or locationId
     const deletedLocation = await ProjectLocationModel.findOneAndDelete({
@@ -135,7 +138,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     
     return NextResponse.json({ status: 'success', message: 'Project location deleted successfully' });
   } catch (error) {
-    console.error(`Error deleting project location ${(await params).id}:`, error);
-    return NextResponse.json({ message: `Error deleting project location ${(await params).id}`, error: (error as Error).message }, { status: 500 });
+    console.error(`Error deleting project location ${id}:`, error);
+    return NextResponse.json({ message: `Error deleting project location ${id}`, error: (error as Error).message }, { status: 500 });
   }
 }

@@ -67,9 +67,9 @@ export default function EventProjectsPage() {
         projectTeamService.getAllTeams({ eventId }) 
       ]);
       setEvent(eventData);
-      setProjects(Array.isArray(projectsDataResponse) ? projectsDataResponse : (projectsDataResponse.data?.projects || []));
+      setProjects(Array.isArray(projectsDataResponse) ? projectsDataResponse : ((projectsDataResponse as any)?.data?.projects || []));
       setDepartments(deptData);
-      setTeams(Array.isArray(teamDataResponse) ? teamDataResponse : (teamDataResponse.data?.teams || []));
+      setTeams(Array.isArray(teamDataResponse) ? teamDataResponse : ((teamDataResponse as any)?.data?.teams || []));
 
     } catch (error) {
       console.error("Failed to load event projects data:", error);

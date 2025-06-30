@@ -11,9 +11,10 @@ interface RouteParams {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
+  const { id: teamId, memberUserId } = await params;
+  
   try {
     await connectMongoose();
-    const { id: teamId, memberUserId } = await params;
 
     // Check if teamId is a valid MongoDB ObjectId
     const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(teamId);
@@ -28,28 +29,28 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ message: 'Team not found' }, { status: 404 });
     }
 
-    if (team.members.length <= 1) {
+    if ((team as any).members.length <= 1) {
       return NextResponse.json({ message: 'Team must have at least one member. Cannot remove the last member.' }, { status: 400 });
     }
 
-    const memberToRemove = team.members.find(m => m.userId === memberUserId);
+    const memberToRemove = (team as any).members.find((m: any) => m.userId === memberUserId);
     if (!memberToRemove) {
       return NextResponse.json({ message: 'Member not found in this team' }, { status: 404 });
     }
 
-    if (memberToRemove.isLeader && team.members.filter(m => m.isLeader).length === 1) {
+    if ((memberToRemove as any).isLeader && (team as any).members.filter((m: any) => m.isLeader).length === 1) {
       return NextResponse.json({ message: 'Cannot remove the only team leader. Assign another leader first.' }, { status: 400 });
     }
 
-    team.members = team.members.filter(m => m.userId !== memberUserId);
-    team.updatedAt = new Date().toISOString();
-    team.updatedBy = "user_admin_placeholder_member_remove"; 
+    (team as any).members = (team as any).members.filter((m: any) => m.userId !== memberUserId);
+    (team as any).updatedAt = new Date().toISOString();
+    (team as any).updatedBy = "user_admin_placeholder_member_remove"; 
     
-    await team.save();
+    await (team as any).save();
 
-    return NextResponse.json({ status: 'success', data: { team: team.toJSON() } }, { status: 200 });
+    return NextResponse.json({ status: 'success', data: { team: (team as any).toJSON() } }, { status: 200 });
   } catch (error) {
-    console.error('Error removing team member:', error);
+    console.error(`Error removing team member from team ${teamId}:`, error);
     return NextResponse.json({ message: 'Error removing team member', error: (error as Error).message }, { status: 500 });
   }
 }

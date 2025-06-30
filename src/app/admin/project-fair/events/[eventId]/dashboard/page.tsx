@@ -34,7 +34,7 @@ export default function ProjectEventDashboardPage() {
         
         // Fetch projects for this event
         const projectsData = await projectService.getAllProjects({ eventId: eventId });
-        setProjects(Array.isArray(projectsData) ? projectsData : (projectsData.data?.projects || []));
+        setProjects(Array.isArray(projectsData) ? projectsData : ((projectsData as any)?.data?.projects || []));
 
 
         // Fetch statistics for this event

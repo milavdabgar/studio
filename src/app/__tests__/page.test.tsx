@@ -175,18 +175,18 @@ describe('Landing Page', () => {
   describe('Responsive Design Classes', () => {
     it('should have responsive layout classes', () => {
       const container = screen.getByText('PolyManager').closest('div')?.parentElement;
-      expect(container).toHaveClass('container', 'mx-auto');
+      expect(container).toHaveClass('container mx-auto');
     });
 
     it('should have responsive grid classes for features', () => {
       // Check that the features section has responsive grid classes
       const featuresSection = screen.getByText('Comprehensive Dashboards').closest('section');
-      expect(featuresSection).toHaveClass('grid', 'md:grid-cols-2', 'lg:grid-cols-3');
+      expect(featuresSection).toHaveClass('grid md:grid-cols-2 lg:grid-cols-3');
     });
 
     it('should have responsive typography classes', () => {
       const mainHeading = screen.getByText('Streamline Your College Management');
-      expect(mainHeading).toHaveClass('text-4xl', 'md:text-5xl');
+      expect(mainHeading).toHaveClass('text-4xl md:text-5xl');
     });
   });
 
@@ -200,13 +200,13 @@ describe('Landing Page', () => {
     it('should have hover effects on cards', () => {
       const cards = screen.getAllByText(/Comprehensive Dashboards|Project Fair Management|AI-Powered Feedback Analysis/).map(text => text.closest('.shadow-lg'));
       cards.forEach(card => {
-        expect(card).toHaveClass('hover:shadow-xl', 'transition-shadow');
+        expect(card).toHaveClass('hover:shadow-xl transition-shadow');
       });
     });
 
     it('should have proper button styling', () => {
       const getStartedButton = screen.getByRole('link', { name: /get started/i });
-      expect(getStartedButton).toHaveClass('text-lg', 'px-8', 'py-6');
+      expect(getStartedButton).toHaveClass('text-lg px-8 py-6');
     });
   });
 

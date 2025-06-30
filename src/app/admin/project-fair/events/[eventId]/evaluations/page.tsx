@@ -70,9 +70,9 @@ export default function EventEvaluationsPage() {
         userService.getAllUsers(),
       ]);
       setEvent(eventData);
-      setProjects(Array.isArray(projectsDataResponse) ? projectsDataResponse : (projectsDataResponse.data?.projects || []));
+      setProjects(Array.isArray(projectsDataResponse) ? projectsDataResponse : ((projectsDataResponse as any)?.data?.projects || []));
       setDepartments(deptData);
-      setTeams(Array.isArray(teamDataResponse) ? teamDataResponse : (teamDataResponse.data?.teams || []));
+      setTeams(Array.isArray(teamDataResponse) ? teamDataResponse : ((teamDataResponse as any)?.data?.teams || []));
       setJuryMembers(usersData.filter(u => u.roles.some(r => ['jury', 'faculty', 'hod', 'admin', 'super_admin'].includes(r))));
     } catch (error) {
       toast({ variant: "destructive", title: "Error", description: "Could not load event evaluations data." });

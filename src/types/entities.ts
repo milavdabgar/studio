@@ -895,6 +895,7 @@ export interface ProjectTeamMember {
   enrollmentNo: string; 
   role: string; 
   isLeader: boolean;
+  joinedAt?: Timestamp;
 }
 
 export interface ProjectTeam {
