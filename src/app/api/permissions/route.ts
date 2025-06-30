@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { RateLimiterMemory, RateLimiterRes } from 'rate-limiter-flexible';
 import { z } from 'zod';
 import type { Permission } from '@/types/entities';
+import { connectMongoose } from '@/lib/mongodb';
+import { PermissionModel } from '@/lib/models';
 
 const rateLimiter = new RateLimiterMemory({
   points: 10,
@@ -26,26 +28,7 @@ async function applyRateLimiting(request: NextRequest): Promise<RateLimiterRes |
   }
 }
 
-// In-memory storage for demonstration purposes
-// In a real application, this would be a database interaction
-const permissions: Permission[] = [
-  {
-    id: 'perm_1',
-    name: 'View Student Profile',
-    code: 'view_student_profile',
-    description: 'Allows viewing student profiles.',
-    resource: 'student_profile',
-    action: 'read',
-  },
-  {
-    id: 'perm_2',
-    name: 'Create Course',
-    code: 'create_course',
-    description: 'Allows creating new courses.',
-    resource: 'course',
-    action: 'create',
-  },
-];
+const generatePermissionId = (): string => `perm_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function GET(request: NextRequest) {
   const rateLimitResult = await applyRateLimiting(request);
@@ -53,13 +36,28 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ message: 'Too many requests' }, { status: 429 });
   }
 
-  const { searchParams } = new URL(request.url);
-  const id = searchParams.get('id');
+  try {
+    await connectMongoose();
+    
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
 
-  if (id) {
- return getPermission(id);
-  } else {
-    return NextResponse.json(permissions);
+    if (id) {
+      return getPermission(id);
+    } else {
+      const permissions = await PermissionModel.find({}).lean();
+      
+      // Format permissions to ensure proper id field
+      const permissionsWithId = permissions.map(permission => ({
+        ...permission,
+        id: permission.id || (permission as any)._id.toString()
+      }));
+      
+      return NextResponse.json(permissionsWithId);
+    }
+  } catch (error) {
+    console.error("Error in GET /api/permissions:", error);
+    return NextResponse.json({ message: 'Internal server error processing permissions request.', error: (error as Error).message }, { status: 500 });
   }
 }
 
@@ -68,15 +66,23 @@ export async function POST(request: NextRequest) {
   if (!rateLimitResult) {
     return NextResponse.json({ message: 'Too many requests' }, { status: 429 });
   }
-  const body = await request.json();
 
-  const validationResult = permissionSchema.safeParse(body);
+  try {
+    await connectMongoose();
+    
+    const body = await request.json();
 
-  if (!validationResult.success) {
-    return NextResponse.json({ message: 'Invalid input', errors: validationResult.error.errors }, { status: 400 });
+    const validationResult = permissionSchema.safeParse(body);
+
+    if (!validationResult.success) {
+      return NextResponse.json({ message: 'Invalid input', errors: validationResult.error.errors }, { status: 400 });
+    }
+
+    return createPermission(validationResult.data);
+  } catch (error) {
+    console.error("Error in POST /api/permissions:", error);
+    return NextResponse.json({ message: 'Internal server error creating permission.', error: (error as Error).message }, { status: 500 });
   }
-
-  return createPermission(validationResult.data);
 }
 
 export async function PUT(request: NextRequest) {
@@ -85,22 +91,29 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ message: 'Too many requests' }, { status: 429 });
   }
 
-  const { searchParams } = new URL(request.url);
-  const id = searchParams.get('id');
+  try {
+    await connectMongoose();
+    
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
 
-  if (!id) {
-    return NextResponse.json({ message: 'Permission ID is required' }, { status: 400 });
+    if (!id) {
+      return NextResponse.json({ message: 'Permission ID is required' }, { status: 400 });
+    }
+
+    const body = await request.json();
+
+    const validationResult = permissionSchema.safeParse(body);
+
+    if (!validationResult.success) {
+      return NextResponse.json({ message: 'Invalid input', errors: validationResult.error.errors }, { status: 400 });
+    }
+
+    return updatePermission(id, validationResult.data);
+  } catch (error) {
+    console.error("Error in PUT /api/permissions:", error);
+    return NextResponse.json({ message: 'Internal server error updating permission.', error: (error as Error).message }, { status: 500 });
   }
-
-  const body = await request.json();
-
-  const validationResult = permissionSchema.safeParse(body);
-
-  if (!validationResult.success) {
-    return NextResponse.json({ message: 'Invalid input', errors: validationResult.error.errors }, { status: 400 });
-  }
-
-  return updatePermission(id, validationResult.data);
 }
 
 export async function DELETE(request: NextRequest) {
@@ -109,47 +122,118 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ message: 'Too many requests' }, { status: 429 });
   }
 
-  const { searchParams } = new URL(request.url);
-  const id = searchParams.get('id');
+  try {
+    await connectMongoose();
+    
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
 
-  if (!id) {
-    return NextResponse.json({ message: 'Permission ID is required' }, { status: 400 });
+    if (!id) {
+      return NextResponse.json({ message: 'Permission ID is required' }, { status: 400 });
+    }
+    
+    return deletePermission(id);
+  } catch (error) {
+    console.error("Error in DELETE /api/permissions:", error);
+    return NextResponse.json({ message: 'Internal server error deleting permission.', error: (error as Error).message }, { status: 500 });
   }
-  return deletePermission(id);
 }
 
 async function createPermission(data: z.infer<typeof permissionSchema>) {
-  const newPermission: Permission = { id: `permission_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`, ...data };
-  permissions.push(newPermission);
-  return NextResponse.json(newPermission, { status: 201 });
+  // Check for existing permission with same code
+  const existingPermission = await PermissionModel.findOne({ code: data.code });
+  
+  if (existingPermission) {
+    return NextResponse.json({ message: `Permission with code '${data.code}' already exists.` }, { status: 409 });
+  }
+  
+  const newPermissionData = {
+    id: generatePermissionId(),
+    ...data
+  };
+  
+  const newPermission = new PermissionModel(newPermissionData);
+  await newPermission.save();
+  
+  return NextResponse.json(newPermission.toJSON(), { status: 201 });
 }
 
 async function getPermission(id: string) {
-  const permission = permissions.find((permission) => permission.id === id);
+  // Try to find by custom id first, then by MongoDB _id if it's a valid ObjectId
+  let permission;
+  if (id.match(/^[0-9a-fA-F]{24}$/)) {
+    permission = await PermissionModel.findById(id);
+  } else {
+    permission = await PermissionModel.findOne({ id });
+  }
+  
   if (!permission) {
     return NextResponse.json({ message: 'Permission not found' }, { status: 404 });
   }
-  return NextResponse.json(permission);
+  
+  return NextResponse.json(permission.toJSON());
 }
 
 async function getAllPermissions() {
-  return NextResponse.json(permissions);
+  const permissions = await PermissionModel.find({}).lean();
+  
+  // Format permissions to ensure proper id field
+  const permissionsWithId = permissions.map(permission => ({
+    ...permission,
+    id: permission.id || (permission as any)._id.toString()
+  }));
+  
+  return NextResponse.json(permissionsWithId);
 }
 
 async function updatePermission(id: string, data: z.infer<typeof permissionSchema>) {
-  const permissionIndex = permissions.findIndex((permission) => permission.id === id);
-  if (permissionIndex === -1) {
+  // Try to find by custom id first, then by MongoDB _id if it's a valid ObjectId
+  let permission;
+  if (id.match(/^[0-9a-fA-F]{24}$/)) {
+    permission = await PermissionModel.findById(id);
+  } else {
+    permission = await PermissionModel.findOne({ id });
+  }
+  
+  if (!permission) {
     return NextResponse.json({ message: 'Permission not found' }, { status: 404 });
   }
-  permissions[permissionIndex] = { ...permissions[permissionIndex], ...data };
-  return NextResponse.json(permissions[permissionIndex]);
+
+  // Check for duplicate code if code is being updated
+  if (data.code && data.code !== permission.code) {
+    const existingPermission = await PermissionModel.findOne({ 
+      code: data.code,
+      _id: { $ne: permission._id }
+    });
+    if (existingPermission) {
+      return NextResponse.json({ message: `Permission with code '${data.code}' already exists.` }, { status: 409 });
+    }
+  }
+
+  const updatedPermission = await PermissionModel.findByIdAndUpdate(
+    permission._id,
+    data,
+    { new: true }
+  );
+
+  return NextResponse.json(updatedPermission.toJSON());
 }
 
 async function deletePermission(id: string) {
-  const permissionIndex = permissions.findIndex((permission) => permission.id === id);
-  if (permissionIndex === -1) {
+  // Try to find by custom id first, then by MongoDB _id if it's a valid ObjectId
+  let permission;
+  if (id.match(/^[0-9a-fA-F]{24}$/)) {
+    permission = await PermissionModel.findById(id);
+  } else {
+    permission = await PermissionModel.findOne({ id });
+  }
+  
+  if (!permission) {
     return NextResponse.json({ message: 'Permission not found' }, { status: 404 });
   }
-  const deletedPermission = permissions.splice(permissionIndex, 1);
-  return NextResponse.json(deletedPermission[0]);
+
+  const deletedPermission = permission.toJSON();
+  await PermissionModel.findByIdAndDelete(permission._id);
+  
+  return NextResponse.json(deletedPermission);
 }
