@@ -3,17 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Project, ProjectTeam, ProjectLocation } from '@/types/entities';
 import { notificationService } from '@/lib/api/notifications';
 import { connectMongoose } from '@/lib/mongodb';
-import { ProjectModel, ProjectTeamModel } from '@/lib/models';
-
-// Project Locations are still in-memory - will be migrated later
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_PROJECT_LOCATIONS_STORE__: ProjectLocation[] | undefined;
-}
-if (!global.__API_PROJECT_LOCATIONS_STORE__) global.__API_PROJECT_LOCATIONS_STORE__ = [];
-
-const projectLocationsStore: ProjectLocation[] = global.__API_PROJECT_LOCATIONS_STORE__;
-
+import { ProjectModel, ProjectTeamModel, ProjectLocationModel } from '@/lib/models';
 
 interface RouteParams {
   params: Promise<{
@@ -130,16 +120,22 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     // Remove the project from the database
     await ProjectModel.findByIdAndDelete(project._id);
 
-    // Handle project location cleanup (still using in-memory for now)
+    // Handle project location cleanup using MongoDB
     if (deletedProject.locationId) {
-      const locationIndex = projectLocationsStore.findIndex(loc => loc.id === deletedProject.locationId || loc.locationId === deletedProject.locationId);
-      if (locationIndex !== -1) {
-        projectLocationsStore[locationIndex].projectId = undefined; 
-        projectLocationsStore[locationIndex].isAssigned = false;
-        projectLocationsStore[locationIndex].updatedBy = "user_admin_placeholder_project_delete"; 
-        projectLocationsStore[locationIndex].updatedAt = new Date().toISOString();
-        global.__API_PROJECT_LOCATIONS_STORE__ = projectLocationsStore;
-      }
+      await ProjectLocationModel.findOneAndUpdate(
+        { 
+          $or: [
+            { id: deletedProject.locationId }, 
+            { locationId: deletedProject.locationId }
+          ]
+        },
+        {
+          projectId: undefined,
+          isAssigned: false,
+          updatedBy: "user_admin_placeholder_project_delete",
+          updatedAt: new Date().toISOString()
+        }
+      );
     }
 
     return NextResponse.json({ status: 'success', data: null });

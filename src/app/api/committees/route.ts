@@ -79,7 +79,6 @@ async function updateUserConvenerRole(userId: string, committeeCode: string, com
 
 async function createOrUpdateCommitteeRoles(committee: Committee, isUpdate: boolean = false, oldCommitteeDetails?: {name: string, code: string}) {
   await connectMongoose();
-  const currentRolesStore: Role[] = await RoleModel.find({}).lean();
   const committeeRolesInfo = [
     { type: 'Convener', permissions: ['view_committee_info', 'manage_committee_meetings', 'manage_committee_members'] },
     { type: 'Co-Convener', permissions: ['view_committee_info', 'manage_committee_meetings'] },
@@ -91,48 +90,47 @@ async function createOrUpdateCommitteeRoles(committee: Committee, isUpdate: bool
     const newRoleName = `${committee.name} ${roleNameSuffix}`;
     const newRoleCode = `${committee.code.toLowerCase()}_${roleNameSuffix.toLowerCase().replace(/\s+/g, '_')}`;
     
-    let existingRoleIndex = -1;
+    let existingRole = null;
     if (isUpdate && oldCommitteeDetails) {
       const oldRoleCode = `${oldCommitteeDetails.code.toLowerCase()}_${roleNameSuffix.toLowerCase().replace(/\s+/g, '_')}`;
-      existingRoleIndex = currentRolesStore.findIndex(r => r.code === oldRoleCode && r.committeeId === committee.id);
+      existingRole = await RoleModel.findOne({ code: oldRoleCode, committeeId: committee.id });
     } else {
-       existingRoleIndex = currentRolesStore.findIndex(r => r.code === newRoleCode && r.committeeId === committee.id);
+      existingRole = await RoleModel.findOne({ code: newRoleCode, committeeId: committee.id });
     }
 
+    if (existingRole) { // Update existing role
+      const oldRoleCode = existingRole.code;
 
-    if (existingRoleIndex !== -1) { // Update existing role
-      const existingRole = currentRolesStore[existingRoleIndex];
-      const oldRoleName = existingRole.name; 
-
-      currentRolesStore[existingRoleIndex] = {
-        ...existingRole,
+      await RoleModel.findByIdAndUpdate(existingRole._id, {
         name: newRoleName,
         code: newRoleCode, 
         description: `${roleInfo.type} for the ${committee.name} committee.`,
         committeeCode: committee.code, 
         updatedAt: new Date().toISOString(),
-      };
+      });
 
-      if (oldRoleName !== newRoleName) {
-        if (existingRole.code !== newRoleCode) {
-          const currentUsersStore: User[] = (global as any).__API_USERS_STORE__ || [];
-          currentUsersStore.forEach(user => {
-            const userRoleIndex = user.roles.indexOf(existingRole.code);
-            if (userRoleIndex !== -1) {
-              user.roles[userRoleIndex] = newRoleCode;
-            }
-          });
-          (global as any).__API_USERS_STORE__ = currentUsersStore;
+      // Update user roles if the role code changed
+      if (oldRoleCode !== newRoleCode) {
+        try {
+          // Find users with the old role code and update them
+          const { UserModel } = await import('@/lib/models');
+          await UserModel.updateMany(
+            { roles: oldRoleCode },
+            { $set: { "roles.$": newRoleCode } }
+          );
+        } catch (error) {
+          console.error(`Failed to update user roles from ${oldRoleCode} to ${newRoleCode}:`, error);
         }
       }
 
     } else { // Create new role
-      if (currentRolesStore.some(r => r.code === newRoleCode)) { 
+      const existingRoleByCode = await RoleModel.findOne({ code: newRoleCode });
+      if (existingRoleByCode) { 
           console.warn(`Role with code ${newRoleCode} already exists. Skipping creation for ${committee.name} ${roleInfo.type}.`);
           continue;
       }
       const currentTimestamp = new Date().toISOString();
-      const newRole: Role = {
+      const newRole = new RoleModel({
         id: generateRoleId(),
         name: newRoleName,
         code: newRoleCode,
@@ -144,11 +142,10 @@ async function createOrUpdateCommitteeRoles(committee: Committee, isUpdate: bool
         committeeCode: committee.code,
         createdAt: currentTimestamp,
         updatedAt: currentTimestamp,
-      };
-      currentRolesStore.push(newRole);
+      });
+      await newRole.save();
     }
   }
-  // Roles are already saved to MongoDB in the loop above
 }
 
 

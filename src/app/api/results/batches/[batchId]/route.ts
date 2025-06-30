@@ -1,13 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Result } from '@/types/entities';
-
-declare global {
-  var __API_RESULTS_STORE__: Result[] | undefined;
-}
-if (!global.__API_RESULTS_STORE__) {
-  global.__API_RESULTS_STORE__ = [];
-}
-// let resultsStore: Result[] = global.__API_RESULTS_STORE__; // No need to reassign here, work on global directly
+import { ResultModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 interface RouteParams {
   params: Promise<{
@@ -16,25 +10,29 @@ interface RouteParams {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { batchId  } = await params;
-  if (!Array.isArray(global.__API_RESULTS_STORE__)) {
-    global.__API_RESULTS_STORE__ = [];
-    return NextResponse.json({ message: 'Result data store corrupted.' }, { status: 500 });
+  try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+  } catch (error) {
+    console.error('Database connection error:', error);
+    return NextResponse.json({ message: 'Database connection failed.' }, { status: 500 });
   }
 
-  const initialLength = global.__API_RESULTS_STORE__.length;
-  const newStore = global.__API_RESULTS_STORE__.filter(r => r.uploadBatch !== batchId);
-  const deletedCount = initialLength - newStore.length;
+  try {
+    const { batchId } = await params;
 
-  if (deletedCount === 0) {
-    return NextResponse.json({ message: 'No results found for this batch ID to delete.' }, { status: 404 });
+    const deleteResult = await ResultModel.deleteMany({ uploadBatch: batchId });
+    const deletedCount = deleteResult.deletedCount || 0;
+
+    if (deletedCount === 0) {
+      return NextResponse.json({ message: 'No results found for this batch ID to delete.' }, { status: 404 });
+    }
+
+    return NextResponse.json({ 
+      status: 'success', 
+      data: { deletedCount } 
+    }, { status: 200 });
+  } catch (error) {
+    console.error('Error deleting results batch:', error);
+    return NextResponse.json({ message: 'Error deleting results batch.', error: (error as Error).message }, { status: 500 });
   }
-  
-  global.__API_RESULTS_STORE__ = newStore;
-  // resultsStore = global.__API_RESULTS_STORE__; // Redundant if working on global directly
-
-  return NextResponse.json({ 
-    status: 'success', 
-    data: { deletedCount } 
-  }, { status: 200 });
 }

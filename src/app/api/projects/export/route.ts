@@ -2,59 +2,45 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Project, Department, ProjectTeam, ProjectEvent, User as SystemUser } from '@/types/entities';
 import { Parser } from 'json2csv';
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_PROJECTS_STORE__: Project[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_DEPARTMENTS_STORE__: Department[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_PROJECT_TEAMS_STORE__: ProjectTeam[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_PROJECT_EVENTS_STORE__: ProjectEvent[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_USERS_STORE__: SystemUser[] | undefined;
-}
-
-if (!global.__API_PROJECTS_STORE__) global.__API_PROJECTS_STORE__ = [];
-if (!global.__API_DEPARTMENTS_STORE__) global.__API_DEPARTMENTS_STORE__ = [];
-if (!global.__API_PROJECT_TEAMS_STORE__) global.__API_PROJECT_TEAMS_STORE__ = [];
-if (!global.__API_PROJECT_EVENTS_STORE__) global.__API_PROJECT_EVENTS_STORE__ = [];
-if (!global.__API_USERS_STORE__) global.__API_USERS_STORE__ = [];
-
-
-const projectsStore: Project[] = global.__API_PROJECTS_STORE__;
-const departmentsStore: Department[] = global.__API_DEPARTMENTS_STORE__;
-const teamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
-const eventsStore: ProjectEvent[] = global.__API_PROJECT_EVENTS_STORE__;
-const usersStore: SystemUser[] = global.__API_USERS_STORE__;
-
+import mongoose from 'mongoose';
+import { ProjectModel, DepartmentModel, ProjectTeamModel, ProjectEventModel, UserModel } from '@/lib/models';
 
 export async function GET(request: NextRequest) {
   try {
+    // Connect to MongoDB
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+
     const { searchParams } = new URL(request.url);
     const eventId = searchParams.get('eventId');
     const departmentIdFilter = searchParams.get('department');
     const statusFilter = searchParams.get('status');
     const categoryFilter = searchParams.get('category');
 
-    let filteredProjects = [...projectsStore];
+    // Build query filters
+    const query: any = {};
+    if (eventId) query.eventId = eventId;
+    if (departmentIdFilter) query.department = departmentIdFilter;
+    if (statusFilter) query.status = statusFilter;
+    if (categoryFilter) query.category = categoryFilter;
 
-    if (eventId) filteredProjects = filteredProjects.filter(p => p.eventId === eventId);
-    if (departmentIdFilter) filteredProjects = filteredProjects.filter(p => p.department === departmentIdFilter);
-    if (statusFilter) filteredProjects = filteredProjects.filter(p => p.status === statusFilter);
-    if (categoryFilter) filteredProjects = filteredProjects.filter(p => p.category === categoryFilter);
+    const filteredProjects = await ProjectModel.find(query).lean();
 
     if (filteredProjects.length === 0) {
       return NextResponse.json({ message: 'No projects to export for the given filters.' }, { status: 404 });
     }
+
+    // Get all departments, teams, events, and users for lookup
+    const departments = await DepartmentModel.find({}).lean();
+    const teams = await ProjectTeamModel.find({}).lean();
+    const events = await ProjectEventModel.find({}).lean();
+    const users = await UserModel.find({}).lean();
     
-    const projectDataForCsv = filteredProjects.map(project => {
-      const department = departmentsStore.find(d => d.id === project.department);
-      const team = teamsStore.find(t => t.id === project.teamId);
-      const event = eventsStore.find(e => e.id === project.eventId);
-      const guideUser = usersStore.find(u => u.id === project.guide.userId);
-      const guideDepartment = departmentsStore.find(d => d.id === project.guide.department);
+    const projectDataForCsv = filteredProjects.map((project: any) => {
+      const department = departments.find((d: any) => d.id === project.department || d._id.toString() === project.department);
+      const team = teams.find((t: any) => t.id === project.teamId || t._id.toString() === project.teamId);
+      const event = events.find((e: any) => e.id === project.eventId || e._id.toString() === project.eventId);
+      const guideUser = users.find((u: any) => u.id === project.guide?.userId || u._id.toString() === project.guide?.userId);
+      const guideDepartment = departments.find((d: any) => d.id === project.guide?.department || d._id.toString() === project.guide?.department);
 
       return {
         id: project.id,
@@ -64,13 +50,13 @@ export async function GET(request: NextRequest) {
         departmentName: department?.name || project.department,
         departmentCode: department?.code || '',
         status: project.status,
-        powerRequired: project.requirements.power,
-        internetRequired: project.requirements.internet,
-        specialSpaceRequired: project.requirements.specialSpace,
-        otherRequirements: project.requirements.otherRequirements || '',
-        guideName: guideUser?.displayName || project.guide.name,
-        guideDepartmentName: guideDepartment?.name || project.guide.department,
-        guideContact: project.guide.contactNumber || '',
+        powerRequired: project.requirements?.power || false,
+        internetRequired: project.requirements?.internet || false,
+        specialSpaceRequired: project.requirements?.specialSpace || false,
+        otherRequirements: project.requirements?.otherRequirements || '',
+        guideName: guideUser?.displayName || project.guide?.name || '',
+        guideDepartmentName: guideDepartment?.name || project.guide?.department || '',
+        guideContact: project.guide?.contactNumber || '',
         teamName: team?.name || project.teamId,
         eventName: event?.name || project.eventId,
         locationId: project.locationId || 'N/A',

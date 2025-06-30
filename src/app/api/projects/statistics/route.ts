@@ -1,47 +1,45 @@
 // src/app/api/projects/statistics/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Project, ProjectEvent, Department, ProjectStatistics } from '@/types/entities';
-// Removed: import mongoose from 'mongoose'; 
-
-// Ensure global stores are initialized
-if (!(global as any).__API_PROJECTS_STORE__) {
-  (global as any).__API_PROJECTS_STORE__ = [];
-}
-if (!(global as any).__API_PROJECT_EVENTS_STORE__) {
-  (global as any).__API_PROJECT_EVENTS_STORE__ = [];
-}
-if (!(global as any).__API_DEPARTMENTS_STORE__) {
-  (global as any).__API_DEPARTMENTS_STORE__ = [];
-}
-
-const projectsStore: Project[] = (global as any).__API_PROJECTS_STORE__;
-const projectEventsStore: ProjectEvent[] = (global as any).__API_PROJECT_EVENTS_STORE__;
-const departmentsStore: Department[] = (global as any).__API_DEPARTMENTS_STORE__;
+import type { Project, ProjectEvent, Department } from '@/types/entities';
+import mongoose from 'mongoose';
+import { ProjectModel, ProjectEventModel, DepartmentModel } from '@/lib/models';
 
 
 export async function GET(request: NextRequest) {
   try {
+    // Connect to MongoDB
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+
     const { searchParams } = new URL(request.url);
     const eventId = searchParams.get('eventId');
 
-    let relevantProjects = projectsStore;
+    // Build query for projects
+    const projectQuery: any = {};
     if (eventId) {
-      const eventExists = projectEventsStore.find(e => e.id === eventId);
-      relevantProjects = projectsStore.filter(p => p.eventId === eventId);
-      
-      if (!eventExists && relevantProjects.length === 0) {
-          const emptyStats: ProjectStatistics = {
-              total: 0, evaluated: 0, pending: 0, averageScore: 0, departmentWise: {}
-          };
-          return NextResponse.json({ status: 'success', data: emptyStats });
+      const eventExists = await ProjectEventModel.findOne({
+        $or: [{ id: eventId }, { _id: eventId }]
+      });
+      if (!eventExists) {
+        return NextResponse.json({ message: 'Event not found.' }, { status: 404 });
       }
+      projectQuery.eventId = eventId;
+    }
+
+    const relevantProjects = await ProjectModel.find(projectQuery).lean();
+    const departments = await DepartmentModel.find({}).lean();
+
+    if (relevantProjects.length === 0) {
+      const emptyStats = {
+        total: 0, evaluated: 0, pending: 0, averageScore: 0, departmentWise: {}
+      };
+      return NextResponse.json({ status: 'success', data: emptyStats });
     }
     
     const departmentStatsMap = new Map<string, { departmentId: string; name: string; code: string; total: number; evaluated: number; totalScore: number; scoreCount: number }>();
 
-    relevantProjects.forEach(project => {
+    relevantProjects.forEach((project: any) => {
       const deptId = project.department; 
-      const deptInfo = departmentsStore.find(d => d.id === deptId);
+      const deptInfo = departments.find((d: any) => d.id === deptId || d._id.toString() === deptId);
 
       if (!departmentStatsMap.has(deptId)) {
         departmentStatsMap.set(deptId, { 
@@ -78,14 +76,13 @@ export async function GET(request: NextRequest) {
         averageScore: deptStat.scoreCount > 0 ? parseFloat((deptStat.totalScore / deptStat.scoreCount).toFixed(2)) : 0,
     }));
 
-
     const overallTotal = relevantProjects.length;
-    const overallEvaluated = relevantProjects.filter(p => (p.deptEvaluation?.completed && typeof p.deptEvaluation.score === 'number') || (p.centralEvaluation?.completed && typeof p.centralEvaluation.score === 'number')).length;
+    const overallEvaluated = relevantProjects.filter((p: any) => (p.deptEvaluation?.completed && typeof p.deptEvaluation.score === 'number') || (p.centralEvaluation?.completed && typeof p.centralEvaluation.score === 'number')).length;
     const overallPending = overallTotal - overallEvaluated;
     
     let sumOfScores = 0;
     let countOfScoredProjects = 0;
-    relevantProjects.forEach(p => {
+    relevantProjects.forEach((p: any) => {
         const scoreToConsider = typeof p.centralEvaluation?.score === 'number' ? p.centralEvaluation.score : (typeof p.deptEvaluation?.score === 'number' ? p.deptEvaluation.score : undefined);
         if (scoreToConsider !== undefined) {
             sumOfScores += scoreToConsider;
@@ -94,19 +91,19 @@ export async function GET(request: NextRequest) {
     });
     const overallAverageScore = countOfScoredProjects > 0 ? parseFloat((sumOfScores / countOfScoredProjects).toFixed(2)) : 0;
 
-    const responseData: ProjectStatistics = {
+    const responseData = {
       total: overallTotal,
       evaluated: overallEvaluated,
       pending: overallPending,
       averageScore: overallAverageScore,
-      departmentWise: departmentWiseArray.reduce((acc, curr) => {
+      departmentWise: departmentWiseArray.reduce((acc: any, curr) => {
         acc[curr.name] = { 
             total: curr.totalProjects,
             evaluated: curr.evaluatedProjects,
             averageScore: curr.averageScore
         };
         return acc;
-      }, {} as ProjectStatistics['departmentWise']),
+      }, {}),
     };
 
     return NextResponse.json({ status: 'success', data: responseData });

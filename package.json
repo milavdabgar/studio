@@ -184,6 +184,7 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^29.5.14",
+    "@types/json2csv": "^5.0.7",
     "@types/mime-types": "^3.0.1",
     "@types/node": "^20",
     "@types/papaparse": "^5.3.14",

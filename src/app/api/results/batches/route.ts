@@ -1,42 +1,46 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Result, UploadBatch } from '@/types/entities';
-
-declare global {
-  var __API_RESULTS_STORE__: Result[] | undefined;
-}
-if (!global.__API_RESULTS_STORE__) {
-  global.__API_RESULTS_STORE__ = [];
-}
-const resultsStore: Result[] = global.__API_RESULTS_STORE__;
+import { ResultModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 export async function GET(request: NextRequest) {
-  if (!Array.isArray(global.__API_RESULTS_STORE__)) {
-    global.__API_RESULTS_STORE__ = [];
-    return NextResponse.json({ message: 'Result data store corrupted.' }, { status: 500 });
+  try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+  } catch (error) {
+    console.error('Database connection error:', error);
+    return NextResponse.json({ message: 'Database connection failed.' }, { status: 500 });
   }
 
-  const batchSummary: { [key: string]: { count: number; latestUpload: string } } = {};
-
-  resultsStore.forEach(result => {
-    if (result.uploadBatch) {
-      if (!batchSummary[result.uploadBatch]) {
-        batchSummary[result.uploadBatch] = { count: 0, latestUpload: result.createdAt || new Date(0).toISOString() };
+  try {
+    // Use MongoDB aggregation to get batch summaries efficiently
+    const batchSummaries = await ResultModel.aggregate([
+      {
+        $match: { uploadBatch: { $exists: true, $ne: null } }
+      },
+      {
+        $group: {
+          _id: "$uploadBatch",
+          count: { $sum: 1 },
+          latestUpload: { $max: "$createdAt" }
+        }
+      },
+      {
+        $sort: { latestUpload: -1 }
+      },
+      {
+        $limit: 20
       }
-      batchSummary[result.uploadBatch].count++;
-      if (result.createdAt && new Date(result.createdAt) > new Date(batchSummary[result.uploadBatch].latestUpload)) {
-        batchSummary[result.uploadBatch].latestUpload = result.createdAt;
-      }
-    }
-  });
+    ]);
 
-  const batches: UploadBatch[] = Object.entries(batchSummary)
-    .map(([batchId, data]) => ({
-      _id: batchId,
-      count: data.count,
-      latestUpload: data.latestUpload,
-    }))
-    .sort((a, b) => new Date(b.latestUpload).getTime() - new Date(a.latestUpload).getTime())
-    .slice(0, 20); // Limit to recent 20 batches as in reference
+    const batches: UploadBatch[] = batchSummaries.map(summary => ({
+      _id: summary._id,
+      count: summary.count,
+      latestUpload: summary.latestUpload || new Date(0).toISOString(),
+    }));
 
-  return NextResponse.json({ status: 'success', data: { batches } });
+    return NextResponse.json({ status: 'success', data: { batches } });
+  } catch (error) {
+    console.error('Error fetching result batches:', error);
+    return NextResponse.json({ message: 'Error fetching result batches.', error: (error as Error).message }, { status: 500 });
+  }
 }
