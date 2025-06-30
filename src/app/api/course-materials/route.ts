@@ -1,34 +1,41 @@
 // src/app/api/course-materials/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
 import type { CourseMaterial, CourseMaterialFileType } from '@/types/entities';
-import { parseISO, isValid } from 'date-fns'; // For date validation if needed for uploadedAt
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_COURSE_MATERIALS_STORE__: CourseMaterial[] | undefined;
-}
-
-if (!global.__API_COURSE_MATERIALS_STORE__) {
-  global.__API_COURSE_MATERIALS_STORE__ = [];
-}
-const courseMaterialsStore: CourseMaterial[] = global.__API_COURSE_MATERIALS_STORE__;
+import { connectMongoose } from '@/lib/mongodb';
+import { CourseMaterialModel } from '@/lib/models';
 
 const generateId = (): string => `cmat_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const courseOfferingId = searchParams.get('courseOfferingId');
+  try {
+    await connectMongoose();
+    
+    const { searchParams } = new URL(request.url);
+    const courseOfferingId = searchParams.get('courseOfferingId');
 
-  if (!courseOfferingId) {
-    return NextResponse.json({ message: 'courseOfferingId is required to fetch materials.' }, { status: 400 });
+    if (!courseOfferingId) {
+      return NextResponse.json({ message: 'courseOfferingId is required to fetch materials.' }, { status: 400 });
+    }
+
+    const materials = await CourseMaterialModel.find({ courseOfferingId }).lean();
+    
+    // Format materials to ensure proper id field
+    const materialsWithId = materials.map(material => ({
+      ...material,
+      id: material.id || (material as any)._id.toString()
+    }));
+
+    return NextResponse.json(materialsWithId);
+  } catch (error) {
+    console.error('Error in GET /api/course-materials:', error);
+    return NextResponse.json({ message: 'Internal server error processing course materials request.', error: (error as Error).message }, { status: 500 });
   }
-
-  const materials = courseMaterialsStore.filter(m => m.courseOfferingId === courseOfferingId);
-  return NextResponse.json(materials);
 }
 
 export async function POST(request: NextRequest) {
   try {
+    await connectMongoose();
+    
     const formData = await request.formData();
     const title = formData.get('title') as string;
     const courseOfferingId = formData.get('courseOfferingId') as string;
@@ -63,7 +70,7 @@ export async function POST(request: NextRequest) {
     }
     
     const currentTimestamp = new Date().toISOString();
-    const newMaterial: CourseMaterial = {
+    const newMaterialData = {
       id: generateId(),
       courseOfferingId,
       title: title.trim(),
@@ -77,10 +84,10 @@ export async function POST(request: NextRequest) {
       updatedAt: currentTimestamp,
     };
 
-    courseMaterialsStore.push(newMaterial);
-    global.__API_COURSE_MATERIALS_STORE__ = courseMaterialsStore;
+    const newMaterial = new CourseMaterialModel(newMaterialData);
+    await newMaterial.save();
 
-    return NextResponse.json(newMaterial, { status: 201 });
+    return NextResponse.json(newMaterial.toJSON(), { status: 201 });
   } catch (error) {
     console.error('Error creating course material:', error);
     return NextResponse.json({ message: 'Error creating course material', error: (error as Error).message }, { status: 500 });

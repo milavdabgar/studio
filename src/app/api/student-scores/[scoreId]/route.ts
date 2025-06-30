@@ -1,23 +1,9 @@
 // src/app/api/student-scores/[scoreId]/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
 import type { StudentAssessmentScore, Assessment } from '@/types/entities';
-import { notificationService } from '@/lib/api/notifications'; // Import notification service
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_STUDENT_SCORES_STORE__: StudentAssessmentScore[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_ASSESSMENTS_STORE__: Assessment[] | undefined; // For fetching assessment name
-}
-
-if (!global.__API_STUDENT_SCORES_STORE__) {
-  global.__API_STUDENT_SCORES_STORE__ = [];
-}
-if (!global.__API_ASSESSMENTS_STORE__) {
-  global.__API_ASSESSMENTS_STORE__ = [];
-}
-let studentScoresStore: StudentAssessmentScore[] = global.__API_STUDENT_SCORES_STORE__;
-const assessmentsStore: Assessment[] = global.__API_ASSESSMENTS_STORE__;
+import { notificationService } from '@/lib/api/notifications';
+import { connectMongoose } from '@/lib/mongodb';
+import { StudentAssessmentScoreModel, AssessmentModel } from '@/lib/models';
 
 interface RouteParams {
   params: {
@@ -26,51 +12,80 @@ interface RouteParams {
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { scoreId } = params;
-  const scoreRecord = studentScoresStore.find(s => s.id === scoreId);
-  if (scoreRecord) {
-    return NextResponse.json(scoreRecord);
+  try {
+    await connectMongoose();
+    const { scoreId } = params;
+    
+    const scoreRecord = await StudentAssessmentScoreModel.findOne({ id: scoreId }).lean();
+    if (scoreRecord) {
+      // Format score to ensure proper id field
+      const scoreWithId = {
+        ...scoreRecord,
+        id: scoreRecord.id || scoreRecord._id.toString()
+      };
+      return NextResponse.json(scoreWithId);
+    }
+    return NextResponse.json({ message: 'Student score record not found' }, { status: 404 });
+  } catch (error) {
+    console.error(`Error fetching student score ${scoreId}:`, error);
+    return NextResponse.json({ message: `Error fetching student score ${scoreId}`, error: (error as Error).message }, { status: 500 });
   }
-  return NextResponse.json({ message: 'Student score record not found' }, { status: 404 });
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { scoreId } = params;
   try {
+    await connectMongoose();
+    const { scoreId } = params;
+    
     const dataToUpdate = await request.json() as Partial<Omit<StudentAssessmentScore, 'id' | 'studentId' | 'assessmentId' | 'createdAt' | 'submissionDate'>>;
-    const scoreIndex = studentScoresStore.findIndex(s => s.id === scoreId);
-
-    if (scoreIndex === -1) {
+    
+    const existingRecord = await StudentAssessmentScoreModel.findOne({ id: scoreId }).lean();
+    if (!existingRecord) {
       return NextResponse.json({ message: 'Student score record not found' }, { status: 404 });
     }
 
-    const existingRecord = studentScoresStore[scoreIndex];
-    const assessment = assessmentsStore.find(a => a.id === existingRecord.assessmentId);
+    const assessment = await AssessmentModel.findOne({ id: existingRecord.assessmentId }).lean();
 
     if (dataToUpdate.score !== undefined && (isNaN(dataToUpdate.score) || dataToUpdate.score < 0 || (assessment && dataToUpdate.score > assessment.maxMarks))) {
         return NextResponse.json({ message: `Score must be a non-negative number and not exceed assessment max marks (${assessment?.maxMarks || 'N/A'}).` }, { status: 400 });
     }
     
-    const updatedRecord: StudentAssessmentScore = {
-      ...existingRecord,
+    const updateData: any = {
       ...dataToUpdate,
-      evaluatedBy: dataToUpdate.evaluatedBy || existingRecord.evaluatedBy || "faculty_placeholder_eval", // Ensure evaluatedBy is set
+      evaluatedBy: dataToUpdate.evaluatedBy || existingRecord.evaluatedBy || "faculty_placeholder_eval",
       evaluatedAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    if (dataToUpdate.remarks !== undefined) updatedRecord.remarks = dataToUpdate.remarks.trim() || undefined;
-    if (dataToUpdate.grade !== undefined) updatedRecord.grade = dataToUpdate.grade.trim().toUpperCase() || undefined;
+    
+    if (dataToUpdate.remarks !== undefined) {
+      updateData.remarks = dataToUpdate.remarks.trim() || undefined;
+    }
+    if (dataToUpdate.grade !== undefined) {
+      updateData.grade = dataToUpdate.grade.trim().toUpperCase() || undefined;
+    }
 
+    const updatedRecord = await StudentAssessmentScoreModel.findOneAndUpdate(
+      { id: scoreId },
+      updateData,
+      { new: true, lean: true }
+    );
 
-    studentScoresStore[scoreIndex] = updatedRecord;
-    global.__API_STUDENT_SCORES_STORE__ = studentScoresStore;
+    if (!updatedRecord) {
+      return NextResponse.json({ message: 'Student score record not found' }, { status: 404 });
+    }
+
+    // Format score to ensure proper id field
+    const scoreWithId = {
+      ...updatedRecord,
+      id: updatedRecord.id || updatedRecord._id.toString()
+    };
 
     // --- Notification Trigger for Student ---
     if (assessment) {
       try {
         await notificationService.createNotification({
           userId: existingRecord.studentId, // Notify the student whose submission was graded
-          message: `Your submission for '${assessment.name}' has been graded. Score: ${updatedRecord.score !== undefined ? updatedRecord.score : 'N/A'}.`,
+          message: `Your submission for '${assessment.name}' has been graded. Score: ${scoreWithId.score !== undefined ? scoreWithId.score : 'N/A'}.`,
           type: 'assignment_graded',
           link: `/student/assignments/${existingRecord.assessmentId}`, // Link to the assignment detail page
         });
@@ -80,7 +95,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
     // --- End Notification Trigger ---
 
-    return NextResponse.json(updatedRecord);
+    return NextResponse.json(scoreWithId);
   } catch (error) {
     console.error(`Error updating student score record ${scoreId}:`, error);
     return NextResponse.json({ message: `Error updating student score record ${scoreId}`, error: (error as Error).message }, { status: 500 });
@@ -88,14 +103,20 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { scoreId } = params;
-  const initialLength = studentScoresStore.length;
-  studentScoresStore = studentScoresStore.filter(s => s.id !== scoreId);
-
-  if (studentScoresStore.length === initialLength) {
-    return NextResponse.json({ message: 'Student score record not found' }, { status: 404 });
+  try {
+    await connectMongoose();
+    const { scoreId } = params;
+    
+    const deletedRecord = await StudentAssessmentScoreModel.findOneAndDelete({ id: scoreId });
+    
+    if (!deletedRecord) {
+      return NextResponse.json({ message: 'Student score record not found' }, { status: 404 });
+    }
+    
+    // In a real app, also delete associated files from storage if any.
+    return NextResponse.json({ message: 'Student score record deleted successfully' });
+  } catch (error) {
+    console.error(`Error deleting student score record ${scoreId}:`, error);
+    return NextResponse.json({ message: `Error deleting student score record ${scoreId}`, error: (error as Error).message }, { status: 500 });
   }
-  global.__API_STUDENT_SCORES_STORE__ = studentScoresStore;
-  // In a real app, also delete associated files from storage if any.
-  return NextResponse.json({ message: 'Student score record deleted successfully' });
 }

@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import type { 
   User, Role, Permission, Department, Course, Batch, Program, 
-  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, ProjectEventScheduleItem, Project, ProjectRequirements, ProjectGuide, ProjectEvaluation, Assessment, Result, ResultSubject, Enrollment, EnrollmentStatus, CourseOffering, Notification, NotificationType
+  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, ProjectEventScheduleItem, Project, ProjectRequirements, ProjectGuide, ProjectEvaluation, Assessment, Result, ResultSubject, Enrollment, EnrollmentStatus, CourseOffering, Notification, NotificationType, StudentAssessmentScore, CourseMaterial
 } from '@/types/entities';
 
 // Institute Schema
@@ -1102,6 +1102,87 @@ notificationSchema.pre('save', function(next) {
   next();
 });
 
+// StudentAssessmentScore Schema
+interface IStudentAssessmentScore extends Omit<StudentAssessmentScore, 'id'>, Document {
+  _id: string;
+}
+
+const studentAssessmentScoreSchema = new Schema<IStudentAssessmentScore>({
+  id: { type: String, unique: true, sparse: true }, // Custom ID field
+  studentId: { type: String, required: true },
+  assessmentId: { type: String, required: true },
+  score: { type: Number },
+  grade: { type: String },
+  remarks: { type: String },
+  submissionDate: { type: String },
+  files: [{
+    name: { type: String, required: true },
+    url: { type: String, required: true },
+    type: { type: String, required: true },
+    size: { type: Number }
+  }],
+  comments: { type: String },
+  evaluatedBy: { type: String },
+  evaluatedAt: { type: String },
+  createdAt: { type: String, default: () => new Date().toISOString() },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      // Use custom id if available, otherwise use _id
+      ret.id = ret.id || ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+studentAssessmentScoreSchema.pre('save', function(next) {
+  (this as IStudentAssessmentScore).updatedAt = new Date().toISOString();
+  next();
+});
+
+// CourseMaterial Schema
+interface ICourseMaterial extends Omit<CourseMaterial, 'id'>, Document {
+  _id: string;
+}
+
+const courseMaterialSchema = new Schema<ICourseMaterial>({
+  id: { type: String, unique: true, sparse: true }, // Custom ID field
+  courseOfferingId: { type: String, required: true },
+  title: { type: String, required: true },
+  description: { type: String },
+  fileType: { 
+    type: String, 
+    enum: ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'txt', 'zip', 'link', 'video', 'image', 'other'],
+    required: true 
+  },
+  filePathOrUrl: { type: String, required: true },
+  fileName: { type: String },
+  fileSize: { type: Number },
+  uploadedBy: { type: String, required: true },
+  uploadedAt: { type: String, required: true },
+  updatedAt: { type: String, default: () => new Date().toISOString() }
+}, {
+  timestamps: false,
+  toJSON: {
+    transform: function(doc, ret) {
+      // Use custom id if available, otherwise use _id
+      ret.id = ret.id || ret._id;
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
+
+courseMaterialSchema.pre('save', function(next) {
+  (this as ICourseMaterial).updatedAt = new Date().toISOString();
+  next();
+});
+
 // Models
 export const InstituteModel = mongoose.models.Institute || mongoose.model<IInstitute>('Institute', instituteSchema);
 export const BuildingModel = mongoose.models.Building || mongoose.model<IBuilding>('Building', buildingSchema);
@@ -1124,6 +1205,8 @@ export const ResultModel = mongoose.models.Result || mongoose.model<IResult>('Re
 export const EnrollmentModel = mongoose.models.Enrollment || mongoose.model<IEnrollment>('Enrollment', enrollmentSchema, 'enrollments');
 export const CourseOfferingModel = mongoose.models.CourseOffering || mongoose.model<ICourseOffering>('CourseOffering', courseOfferingSchema, 'courseofferings');
 export const NotificationModel = mongoose.models.Notification || mongoose.model<INotification>('Notification', notificationSchema, 'notifications');
+export const StudentAssessmentScoreModel = mongoose.models.StudentAssessmentScore || mongoose.model<IStudentAssessmentScore>('StudentAssessmentScore', studentAssessmentScoreSchema, 'studentassessmentscores');
+export const CourseMaterialModel = mongoose.models.CourseMaterial || mongoose.model<ICourseMaterial>('CourseMaterial', courseMaterialSchema, 'coursematerials');
 
 // Export types
-export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment, IResult, IEnrollment, ICourseOffering, INotification };
+export type { IInstitute, IBuilding, IRoom, ICommittee, IUser, IRole, IPermission, IDepartment, ICourse, IBatch, IProgram, IStudent, IFaculty, IProjectTeam, IProjectEvent, IProject, IAssessment, IResult, IEnrollment, ICourseOffering, INotification, IStudentAssessmentScore, ICourseMaterial };

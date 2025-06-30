@@ -1,16 +1,8 @@
 // src/app/api/course-materials/[materialId]/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
 import type { CourseMaterial } from '@/types/entities';
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_COURSE_MATERIALS_STORE__: CourseMaterial[] | undefined;
-}
-
-if (!global.__API_COURSE_MATERIALS_STORE__) {
-  global.__API_COURSE_MATERIALS_STORE__ = [];
-}
-const courseMaterialsStore: CourseMaterial[] = global.__API_COURSE_MATERIALS_STORE__;
+import { connectMongoose } from '@/lib/mongodb';
+import { CourseMaterialModel } from '@/lib/models';
 
 interface RouteParams {
   params: {
@@ -19,42 +11,68 @@ interface RouteParams {
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { materialId } = params;
-  const material = courseMaterialsStore.find(m => m.id === materialId);
-  if (material) {
-    return NextResponse.json(material);
+  try {
+    await connectMongoose();
+    const { materialId } = params;
+    
+    const material = await CourseMaterialModel.findOne({ id: materialId }).lean();
+    if (material) {
+      // Format material to ensure proper id field
+      const materialWithId = {
+        ...material,
+        id: material.id || (material as any)._id.toString()
+      };
+      return NextResponse.json(materialWithId);
+    }
+    return NextResponse.json({ message: 'Course material not found' }, { status: 404 });
+  } catch (error) {
+    console.error(`Error fetching course material ${materialId}:`, error);
+    return NextResponse.json({ message: `Error fetching course material ${materialId}`, error: (error as Error).message }, { status: 500 });
   }
-  return NextResponse.json({ message: 'Course material not found' }, { status: 404 });
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { materialId } = params;
   try {
-    const dataToUpdate = await request.json() as Partial<Omit<CourseMaterial, 'id' | 'courseOfferingId' | 'uploadedBy' | 'uploadedAt' | 'filePathOrUrl' | 'fileName' | 'fileSize'>>;
-    const materialIndex = courseMaterialsStore.findIndex(m => m.id === materialId);
-
-    if (materialIndex === -1) {
-      return NextResponse.json({ message: 'Course material not found' }, { status: 404 });
-    }
+    await connectMongoose();
+    const { materialId } = params;
     
-    const existingMaterial = courseMaterialsStore[materialIndex];
-
+    const dataToUpdate = await request.json() as Partial<Omit<CourseMaterial, 'id' | 'courseOfferingId' | 'uploadedBy' | 'uploadedAt' | 'filePathOrUrl' | 'fileName' | 'fileSize'>>;
+    
     if (dataToUpdate.title !== undefined && !dataToUpdate.title.trim()) {
         return NextResponse.json({ message: 'Title cannot be empty if provided.' }, { status: 400 });
     }
 
-    const updatedMaterial: CourseMaterial = {
-      ...existingMaterial,
-      title: dataToUpdate.title?.trim() || existingMaterial.title,
-      description: dataToUpdate.description !== undefined ? dataToUpdate.description.trim() || undefined : existingMaterial.description,
-      fileType: dataToUpdate.fileType || existingMaterial.fileType, // Usually fileType might not be updatable post-creation
-      updatedAt: new Date().toISOString(),
+    const updateData: any = {
+      updatedAt: new Date().toISOString()
+    };
+    
+    if (dataToUpdate.title !== undefined) {
+      updateData.title = dataToUpdate.title.trim();
+    }
+    if (dataToUpdate.description !== undefined) {
+      updateData.description = dataToUpdate.description.trim() || undefined;
+    }
+    if (dataToUpdate.fileType !== undefined) {
+      updateData.fileType = dataToUpdate.fileType;
+    }
+
+    const updatedMaterial = await CourseMaterialModel.findOneAndUpdate(
+      { id: materialId },
+      updateData,
+      { new: true, lean: true }
+    );
+
+    if (!updatedMaterial) {
+      return NextResponse.json({ message: 'Course material not found' }, { status: 404 });
+    }
+
+    // Format material to ensure proper id field
+    const materialWithId = {
+      ...updatedMaterial,
+      id: updatedMaterial.id || (updatedMaterial as any)._id.toString()
     };
 
-    courseMaterialsStore[materialIndex] = updatedMaterial;
-    global.__API_COURSE_MATERIALS_STORE__ = courseMaterialsStore;
-
-    return NextResponse.json(updatedMaterial);
+    return NextResponse.json(materialWithId);
   } catch (error) {
     console.error(`Error updating course material ${materialId}:`, error);
     return NextResponse.json({ message: `Error updating course material ${materialId}`, error: (error as Error).message }, { status: 500 });
@@ -62,18 +80,20 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { materialId } = params;
-  const initialLength = courseMaterialsStore.length;
-  const materialIndex = courseMaterialsStore.findIndex(m => m.id === materialId);
-
-  if (materialIndex === -1) {
-    return NextResponse.json({ message: 'Course material not found' }, { status: 404 });
+  try {
+    await connectMongoose();
+    const { materialId } = params;
+    
+    const deletedMaterial = await CourseMaterialModel.findOneAndDelete({ id: materialId });
+    
+    if (!deletedMaterial) {
+      return NextResponse.json({ message: 'Course material not found' }, { status: 404 });
+    }
+    
+    // In a real app, also delete the associated file from storage here.
+    return NextResponse.json({ message: 'Course material deleted successfully' });
+  } catch (error) {
+    console.error(`Error deleting course material ${materialId}:`, error);
+    return NextResponse.json({ message: `Error deleting course material ${materialId}`, error: (error as Error).message }, { status: 500 });
   }
-
-  // Remove the material from the store
-  courseMaterialsStore.splice(materialIndex, 1);
-  global.__API_COURSE_MATERIALS_STORE__ = courseMaterialsStore;
-  
-  // In a real app, also delete the associated file from storage here.
-  return NextResponse.json({ message: 'Course material deleted successfully' });
 }

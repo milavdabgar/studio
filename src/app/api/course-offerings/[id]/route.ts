@@ -2,15 +2,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { CourseOffering } from '@/types/entities';
 import { isValid, parseISO } from 'date-fns';
-
-declare global {
-  var __API_COURSE_OFFERINGS_STORE__: CourseOffering[] | undefined;
-}
-
-if (!global.__API_COURSE_OFFERINGS_STORE__) {
-  global.__API_COURSE_OFFERINGS_STORE__ = [];
-}
-let courseOfferingsStore: CourseOffering[] = global.__API_COURSE_OFFERINGS_STORE__;
+import { connectMongoose } from '@/lib/mongodb';
+import { CourseOfferingModel } from '@/lib/models';
 
 interface RouteParams {
   params: {
@@ -19,33 +12,37 @@ interface RouteParams {
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
-  if (!Array.isArray(global.__API_COURSE_OFFERINGS_STORE__)) {
-    global.__API_COURSE_OFFERINGS_STORE__ = [];
-    return NextResponse.json({ message: 'Course Offering data store corrupted.' }, { status: 500 });
+  try {
+    await connectMongoose();
+    const { id } = params;
+    
+    const offering = await CourseOfferingModel.findOne({ id }).lean();
+    if (offering) {
+      // Format offering to ensure proper id field
+      const offeringWithId = {
+        ...offering,
+        id: offering.id || (offering as any)._id.toString()
+      };
+      return NextResponse.json(offeringWithId);
+    }
+    return NextResponse.json({ message: 'Course offering not found' }, { status: 404 });
+  } catch (error) {
+    console.error('Error in GET /api/course-offerings/[id]:', error);
+    return NextResponse.json({ message: 'Internal server error fetching course offering.', error: (error as Error).message }, { status: 500 });
   }
-  const offering = global.__API_COURSE_OFFERINGS_STORE__.find(co => co.id === id);
-  if (offering) {
-    return NextResponse.json(offering);
-  }
-  return NextResponse.json({ message: 'Course offering not found' }, { status: 404 });
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
-  if (!Array.isArray(global.__API_COURSE_OFFERINGS_STORE__)) {
-    global.__API_COURSE_OFFERINGS_STORE__ = [];
-    return NextResponse.json({ message: 'Course Offering data store corrupted.' }, { status: 500 });
-  }
   try {
+    await connectMongoose();
+    const { id } = params;
+    
     const offeringDataToUpdate = await request.json() as Partial<Omit<CourseOffering, 'id' | 'createdAt' | 'updatedAt'>>;
-    const offeringIndex = global.__API_COURSE_OFFERINGS_STORE__.findIndex(co => co.id === id);
-
-    if (offeringIndex === -1) {
+    
+    const existingOffering = await CourseOfferingModel.findOne({ id }).lean();
+    if (!existingOffering) {
       return NextResponse.json({ message: 'Course offering not found' }, { status: 404 });
     }
-    
-    const existingOffering = global.__API_COURSE_OFFERINGS_STORE__[offeringIndex];
 
     if (offeringDataToUpdate.startDate && !isValid(parseISO(offeringDataToUpdate.startDate))) {
       return NextResponse.json({ message: 'Invalid startDate format for update. Use ISO 8601.' }, { status: 400 });
@@ -78,16 +75,26 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       }
     }
 
+    const updatedOffering = await CourseOfferingModel.findOneAndUpdate(
+      { id },
+      { 
+        ...offeringDataToUpdate,
+        updatedAt: new Date().toISOString()
+      },
+      { new: true, lean: true }
+    );
 
-    const updatedOffering: CourseOffering = {
-      ...existingOffering,
-      ...offeringDataToUpdate,
-      updatedAt: new Date().toISOString(),
+    if (!updatedOffering) {
+      return NextResponse.json({ message: 'Course offering not found' }, { status: 404 });
+    }
+
+    // Format offering to ensure proper id field
+    const offeringWithId = {
+      ...updatedOffering,
+      id: updatedOffering.id || (updatedOffering as any)._id.toString()
     };
 
-    global.__API_COURSE_OFFERINGS_STORE__[offeringIndex] = updatedOffering;
-    courseOfferingsStore = global.__API_COURSE_OFFERINGS_STORE__;
-    return NextResponse.json(updatedOffering);
+    return NextResponse.json(offeringWithId);
   } catch (error) {
     console.error(`Error updating course offering ${id}:`, error);
     return NextResponse.json({ message: `Error updating course offering ${id}`, error: (error as Error).message }, { status: 500 });
@@ -95,19 +102,19 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const { id } = params;
-  if (!Array.isArray(global.__API_COURSE_OFFERINGS_STORE__)) {
-    global.__API_COURSE_OFFERINGS_STORE__ = [];
-    return NextResponse.json({ message: 'Course Offering data store corrupted.' }, { status: 500 });
-  }
-  const initialLength = global.__API_COURSE_OFFERINGS_STORE__.length;
-  const newStore = global.__API_COURSE_OFFERINGS_STORE__.filter(co => co.id !== id);
+  try {
+    await connectMongoose();
+    const { id } = params;
+    
+    const deletedOffering = await CourseOfferingModel.findOneAndDelete({ id });
+    
+    if (!deletedOffering) {
+      return NextResponse.json({ message: 'Course offering not found' }, { status: 404 });
+    }
 
-  if (newStore.length === initialLength) {
-    return NextResponse.json({ message: 'Course offering not found' }, { status: 404 });
+    return NextResponse.json({ message: 'Course offering deleted successfully' }, { status: 200 });
+  } catch (error) {
+    console.error(`Error deleting course offering ${id}:`, error);
+    return NextResponse.json({ message: `Error deleting course offering ${id}`, error: (error as Error).message }, { status: 500 });
   }
-
-  global.__API_COURSE_OFFERINGS_STORE__ = newStore;
-  courseOfferingsStore = global.__API_COURSE_OFFERINGS_STORE__;
-  return NextResponse.json({ message: 'Course offering deleted successfully' }, { status: 200 });
 }
