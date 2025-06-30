@@ -1,21 +1,16 @@
 // src/app/api/project-locations/batch/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
+import mongoose from 'mongoose';
+import { ProjectLocationModel } from '@/lib/models';
 import type { ProjectLocation } from '@/types/entities';
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_PROJECT_LOCATIONS_STORE__: ProjectLocation[] | undefined;
-}
-
-if (!global.__API_PROJECT_LOCATIONS_STORE__) {
-  global.__API_PROJECT_LOCATIONS_STORE__ = [];
-}
-const projectLocationsStore: ProjectLocation[] = global.__API_PROJECT_LOCATIONS_STORE__;
 
 const generateLocationIdInternal = (): string => `loc_batch_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function POST(request: NextRequest) {
   try {
+    // Connect to MongoDB
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+
     const body = await request.json();
     const locationsToCreateData = body.locations as Array<Omit<ProjectLocation, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>>;
 
@@ -32,7 +27,13 @@ export async function POST(request: NextRequest) {
         errors.push({ data: locationData, message: 'Missing required fields: locationId, section, position, eventId.' });
         continue;
       }
-      if (projectLocationsStore.some(loc => loc.locationId.toLowerCase() === locationData.locationId.toLowerCase() && loc.eventId === locationData.eventId)) {
+      
+      const existingLocation = await ProjectLocationModel.findOne({ 
+        locationId: { $regex: new RegExp(`^${locationData.locationId}$`, 'i') }, 
+        eventId: locationData.eventId 
+      });
+      
+      if (existingLocation) {
         errors.push({ data: locationData, message: `Location ID '${locationData.locationId}' already exists for this event.` });
         continue;
       }
@@ -46,10 +47,10 @@ export async function POST(request: NextRequest) {
         createdAt: currentTimestamp,
         updatedAt: currentTimestamp,
       };
-      projectLocationsStore.push(newLocation);
-      createdLocations.push(newLocation);
+      
+      const savedLocation = await ProjectLocationModel.create(newLocation);
+      createdLocations.push(savedLocation.toObject());
     }
-    global.__API_PROJECT_LOCATIONS_STORE__ = projectLocationsStore;
 
     if (errors.length > 0 && createdLocations.length === 0) {
         return NextResponse.json({ message: 'Batch creation failed. No locations were created.', errors}, { status: 400 });

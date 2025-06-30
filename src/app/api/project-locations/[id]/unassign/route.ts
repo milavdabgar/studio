@@ -1,27 +1,8 @@
 // src/app/api/project-locations/[id]/unassign/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { ProjectLocation, Project, ProjectTeam } from '@/types/entities';
+import mongoose from 'mongoose';
+import { ProjectLocationModel, ProjectModel, ProjectTeamModel } from '@/lib/models';
 import { notificationService } from '@/lib/api/notifications';
-
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_PROJECT_LOCATIONS_STORE__: ProjectLocation[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_PROJECTS_STORE__: Project[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_PROJECT_TEAMS_STORE__: ProjectTeam[] | undefined;
-}
-
-if (!global.__API_PROJECT_LOCATIONS_STORE__) global.__API_PROJECT_LOCATIONS_STORE__ = [];
-if (!global.__API_PROJECTS_STORE__) global.__API_PROJECTS_STORE__ = [];
-if (!global.__API_PROJECT_TEAMS_STORE__) global.__API_PROJECT_TEAMS_STORE__ = [];
-
-
-const projectLocationsStore: ProjectLocation[] = global.__API_PROJECT_LOCATIONS_STORE__;
-const projectsStore: Project[] = global.__API_PROJECTS_STORE__;
-const projectTeamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
-
 
 interface RouteParams {
   params: Promise<{
@@ -32,19 +13,20 @@ interface RouteParams {
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   const { id: locationIdString  } = await params; 
   try {
-    const locationIndex = projectLocationsStore.findIndex(loc => loc.locationId === locationIdString);
-    if (locationIndex === -1) {
+    // Connect to MongoDB
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+
+    const locationToUpdate = await ProjectLocationModel.findOne({ locationId: locationIdString });
+    if (!locationToUpdate) {
       return NextResponse.json({ message: `Location with ID '${locationIdString}' not found.` }, { status: 404 });
     }
-
-    const locationToUpdate = { ...projectLocationsStore[locationIndex] };
 
     if (!locationToUpdate.isAssigned || !locationToUpdate.projectId) {
       return NextResponse.json({ message: `Location ${locationIdString} is not currently assigned to any project.` }, { status: 400 });
     }
 
     const previouslyAssignedProjectId = locationToUpdate.projectId;
-    const project = projectsStore.find(p => p.id === previouslyAssignedProjectId);
+    const project = await ProjectModel.findOne({ $or: [{ id: previouslyAssignedProjectId }, { _id: previouslyAssignedProjectId }] });
 
 
     locationToUpdate.projectId = undefined; 
@@ -52,21 +34,21 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     locationToUpdate.updatedAt = new Date().toISOString();
     locationToUpdate.updatedBy = "user_admin_placeholder_unassign"; 
 
-    projectLocationsStore[locationIndex] = locationToUpdate;
-    global.__API_PROJECT_LOCATIONS_STORE__ = projectLocationsStore;
+    await locationToUpdate.save();
 
     if (previouslyAssignedProjectId) {
-        const projectToUpdateIndex = projectsStore.findIndex(p => p.id === previouslyAssignedProjectId);
-        if (projectToUpdateIndex !== -1) {
-            projectsStore[projectToUpdateIndex].locationId = undefined; 
-            projectsStore[projectToUpdateIndex].updatedAt = new Date().toISOString();
-            global.__API_PROJECTS_STORE__ = projectsStore;
-        }
+        await ProjectModel.updateOne(
+          { $or: [{ id: previouslyAssignedProjectId }, { _id: previouslyAssignedProjectId }] },
+          { 
+            $unset: { locationId: "" }, 
+            updatedAt: new Date().toISOString() 
+          }
+        );
     }
 
     // --- Notification Trigger ---
     if (project) {
-        const team = projectTeamsStore.find(t => t.id === project.teamId);
+        const team = await ProjectTeamModel.findOne({ $or: [{ id: project.teamId }, { _id: project.teamId }] });
         if (team && team.members) {
             for (const member of team.members) {
                 try {

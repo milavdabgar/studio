@@ -1,41 +1,30 @@
 // src/app/api/project-locations/auto-assign/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { ProjectLocation, Project, Department, ProjectTeam } from '@/types/entities';
+import mongoose from 'mongoose';
+import { ProjectLocationModel, ProjectModel, DepartmentModel, ProjectTeamModel } from '@/lib/models';
 import { notificationService } from '@/lib/api/notifications';
-
-declare global {
-  // eslint-disable-next-line no-var
-  var __API_PROJECT_LOCATIONS_STORE__: ProjectLocation[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_PROJECTS_STORE__: Project[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_DEPARTMENTS_STORE__: Department[] | undefined;
-  // eslint-disable-next-line no-var
-  var __API_PROJECT_TEAMS_STORE__: ProjectTeam[] | undefined;
-}
-
-if (!global.__API_PROJECT_LOCATIONS_STORE__) global.__API_PROJECT_LOCATIONS_STORE__ = [];
-if (!global.__API_PROJECTS_STORE__) global.__API_PROJECTS_STORE__ = [];
-if (!global.__API_DEPARTMENTS_STORE__) global.__API_DEPARTMENTS_STORE__ = [];
-if (!global.__API_PROJECT_TEAMS_STORE__) global.__API_PROJECT_TEAMS_STORE__ = [];
-
-
-const projectLocationsStore: ProjectLocation[] = global.__API_PROJECT_LOCATIONS_STORE__;
-const projectsStore: Project[] = global.__API_PROJECTS_STORE__;
-const departmentsStore: Department[] = global.__API_DEPARTMENTS_STORE__;
-const projectTeamsStore: ProjectTeam[] = global.__API_PROJECT_TEAMS_STORE__;
-
 
 export async function POST(request: NextRequest) {
   try {
+    // Connect to MongoDB
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+
     const { eventId, departmentWise } = await request.json();
 
     if (!eventId) {
       return NextResponse.json({ message: 'Event ID is required for auto-assignment.' }, { status: 400 });
     }
 
-    const eventProjects = projectsStore.filter(p => p.eventId === eventId && !p.locationId && p.status === 'approved');
-    const availableLocations = projectLocationsStore.filter(loc => loc.eventId === eventId && !loc.isAssigned);
+    const eventProjects = await ProjectModel.find({ 
+      eventId: eventId, 
+      locationId: { $exists: false }, 
+      status: 'approved' 
+    });
+    
+    const availableLocations = await ProjectLocationModel.find({ 
+      eventId: eventId, 
+      isAssigned: false 
+    });
 
     if (eventProjects.length === 0) {
       return NextResponse.json({ message: 'No approved projects without locations to assign for this event.' }, { status: 200 });
@@ -53,31 +42,40 @@ export async function POST(request: NextRequest) {
       const departments = Array.from(new Set(eventProjects.map(p => p.department)));
       for (const deptId of departments) {
         const projectsInDept = eventProjects.filter(p => p.department === deptId);
-        const locationsInDept = availableLocations.filter(loc => loc.department === deptId).sort((a,b) => a.section.localeCompare(b.section) || a.position - b.position);
+        const locationsInDept = availableLocations
+          .filter(loc => loc.department === deptId)
+          .sort((a,b) => a.section.localeCompare(b.section) || a.position - b.position);
         
         for (let i = 0; i < projectsInDept.length; i++) {
           if (i < locationsInDept.length) {
             const project = projectsInDept[i];
             const location = locationsInDept[i];
             
-            const locIndex = projectLocationsStore.findIndex(l => l.id === location.id);
-            if(locIndex !== -1) {
-                projectLocationsStore[locIndex].projectId = project.id;
-                projectLocationsStore[locIndex].isAssigned = true;
-                projectLocationsStore[locIndex].updatedAt = now;
-                projectLocationsStore[locIndex].updatedBy = updatedBy;
-            }
+            // Update location
+            await ProjectLocationModel.updateOne(
+              { _id: location._id },
+              {
+                projectId: project.id,
+                isAssigned: true,
+                updatedAt: now,
+                updatedBy: updatedBy
+              }
+            );
 
-            const projIndex = projectsStore.findIndex(p => p.id === project.id);
-            if(projIndex !== -1){
-                projectsStore[projIndex].locationId = location.locationId; 
-                projectsStore[projIndex].updatedAt = now;
-            }
+            // Update project
+            await ProjectModel.updateOne(
+              { _id: project._id },
+              {
+                locationId: location.locationId,
+                updatedAt: now
+              }
+            );
+            
             assignments.push({ projectId: project.id, locationId: location.locationId });
             assignedCount++;
 
             // --- Notification Trigger ---
-            const team = projectTeamsStore.find(t => t.id === project.teamId);
+            const team = await ProjectTeamModel.findOne({ $or: [{ id: project.teamId }, { _id: project.teamId }] });
             if (team && team.members) {
                 for (const member of team.members) {
                     try {
@@ -103,24 +101,31 @@ export async function POST(request: NextRequest) {
           const project = eventProjects[i];
           const location = sortedAvailableLocations[i];
           
-          const locIndex = projectLocationsStore.findIndex(l => l.id === location.id);
-          if(locIndex !== -1) {
-              projectLocationsStore[locIndex].projectId = project.id;
-              projectLocationsStore[locIndex].isAssigned = true;
-              projectLocationsStore[locIndex].updatedAt = now;
-              projectLocationsStore[locIndex].updatedBy = updatedBy;
-          }
-
-          const projIndex = projectsStore.findIndex(p => p.id === project.id);
-            if(projIndex !== -1){
-                projectsStore[projIndex].locationId = location.locationId;
-                projectsStore[projIndex].updatedAt = now;
+          // Update location
+          await ProjectLocationModel.updateOne(
+            { _id: location._id },
+            {
+              projectId: project.id,
+              isAssigned: true,
+              updatedAt: now,
+              updatedBy: updatedBy
             }
+          );
+
+          // Update project
+          await ProjectModel.updateOne(
+            { _id: project._id },
+            {
+              locationId: location.locationId,
+              updatedAt: now
+            }
+          );
+          
           assignments.push({ projectId: project.id, locationId: location.locationId });
           assignedCount++;
 
            // --- Notification Trigger ---
-            const team = projectTeamsStore.find(t => t.id === project.teamId);
+            const team = await ProjectTeamModel.findOne({ $or: [{ id: project.teamId }, { _id: project.teamId }] });
             if (team && team.members) {
                 for (const member of team.members) {
                     try {
@@ -139,9 +144,6 @@ export async function POST(request: NextRequest) {
         }
       }
     }
-
-    global.__API_PROJECT_LOCATIONS_STORE__ = projectLocationsStore;
-    global.__API_PROJECTS_STORE__ = projectsStore;
 
     return NextResponse.json({ 
       status: 'success', 
