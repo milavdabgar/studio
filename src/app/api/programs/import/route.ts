@@ -2,28 +2,21 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Program, Department } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
-
-const programsStore: Program[] = (global as any).__API_PROGRAMS_STORE__ || [];
-if (!(global as any).__API_PROGRAMS_STORE__) {
-  (global as any).__API_PROGRAMS_STORE__ = programsStore;
-}
-// let departmentsStore: Department[] = (global as any).departments || []; // Client sends this
+import { ProgramModel, DepartmentModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 const generateIdForImport = (): string => `prog_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function POST(request: NextRequest) {
   try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
-    const departmentsJson = formData.get('departments') as string | null;
 
     if (!file) {
       return NextResponse.json({ message: 'No file uploaded.' }, { status: 400 });
     }
-    if (!departmentsJson) {
-      return NextResponse.json({ message: 'Department data for mapping is missing.' }, { status: 400 });
-    }
-    const clientDepartments: Department[] = JSON.parse(departmentsJson);
 
     const fileText = await file.text();
     const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
@@ -51,65 +44,82 @@ export async function POST(request: NextRequest) {
     let updatedCount = 0;
     let skippedCount = 0;
 
-    parsedData.forEach((row: unknown) => {
-      const name = row.name?.toString().trim();
-      const code = row.code?.toString().trim().toUpperCase();
-      const status = row.status?.toString().trim().toLowerCase() as 'active' | 'inactive';
+    for (const row of parsedData) {
+      // Type the row object
+      const csvRow = row as any;
+      
+      const name = csvRow.name?.toString().trim();
+      const code = csvRow.code?.toString().trim().toUpperCase();
+      const status = csvRow.status?.toString().trim().toLowerCase() as 'active' | 'inactive';
 
       if (!name || !code || !['active', 'inactive'].includes(status)) {
         console.warn(`Skipping program row: Missing or invalid required data (name, code, status). Row: ${JSON.stringify(row)}`);
         skippedCount++;
-        return;
+        continue;
       }
 
-      let departmentId = row.departmentid?.toString().trim();
+      let departmentId = csvRow.departmentid?.toString().trim();
       if (!departmentId) {
-        const deptName = row.departmentname?.toString().trim();
-        const deptCode = row.departmentcode?.toString().trim().toUpperCase();
-        const foundDept = clientDepartments.find(d => (deptName && d.name.toLowerCase() === deptName.toLowerCase()) || (deptCode && d.code.toUpperCase() === deptCode));
-        if (foundDept) departmentId = foundDept.id;
+        const deptName = csvRow.departmentname?.toString().trim();
+        const deptCode = csvRow.departmentcode?.toString().trim().toUpperCase();
+        
+        // Look up department in MongoDB
+        const foundDept = await DepartmentModel.findOne({
+          $or: [
+            ...(deptName ? [{ name: { $regex: new RegExp(`^${deptName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') } }] : []),
+            ...(deptCode ? [{ code: { $regex: new RegExp(`^${deptCode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') } }] : [])
+          ]
+        });
+        
+        if (foundDept) departmentId = foundDept._id.toString();
         else { 
             console.warn(`Skipping program ${name}: Could not find department by name/code. Row: ${JSON.stringify(row)}`);
-            skippedCount++; return; 
+            skippedCount++; continue; 
         }
-      } else if (!clientDepartments.some(d => d.id === departmentId)) {
+      } else {
+        // Verify department exists in MongoDB
+        const deptExists = await DepartmentModel.findById(departmentId);
+        if (!deptExists) {
          console.warn(`Skipping program ${name}: Department ID ${departmentId} not found. Row: ${JSON.stringify(row)}`);
-         skippedCount++; return;
+         skippedCount++; continue;
+        }
       }
 
-      const durationYears = row.durationyears !== undefined && row.durationyears !== null && !isNaN(Number(row.durationyears)) && Number(row.durationyears) > 0 && Number(row.durationyears) <=10 ? Number(row.durationyears) : undefined;
-      const totalSemesters = row.totalsemesters !== undefined && row.totalsemesters !== null && !isNaN(Number(row.totalsemesters)) && Number(row.totalsemesters) > 0 && Number(row.totalsemesters) <= 20 ? Number(row.totalsemesters) : undefined;
+      const durationYears = csvRow.durationyears !== undefined && csvRow.durationyears !== null && !isNaN(Number(csvRow.durationyears)) && Number(csvRow.durationyears) > 0 && Number(csvRow.durationyears) <=10 ? Number(csvRow.durationyears) : undefined;
+      const totalSemesters = csvRow.totalsemesters !== undefined && csvRow.totalsemesters !== null && !isNaN(Number(csvRow.totalsemesters)) && Number(csvRow.totalsemesters) > 0 && Number(csvRow.totalsemesters) <= 20 ? Number(csvRow.totalsemesters) : undefined;
 
-
-      const programData: Omit<Program, 'id'> = {
+      const programData: Partial<Program> = {
         name, code, status, departmentId,
-        description: row.description?.toString().trim() || undefined,
+        description: csvRow.description?.toString().trim() || undefined,
         durationYears, totalSemesters,
       };
 
-      const idFromCsv = row.id?.toString().trim();
-      let existingProgramIndex = -1;
+      const idFromCsv = csvRow.id?.toString().trim();
+      let existingProgram = null;
 
-      if (idFromCsv) {
-        existingProgramIndex = programsStore.findIndex(p => p.id === idFromCsv);
+      if (idFromCsv && mongoose.Types.ObjectId.isValid(idFromCsv)) {
+        existingProgram = await ProgramModel.findById(idFromCsv);
       } else {
-        existingProgramIndex = programsStore.findIndex(p => p.code === code && p.departmentId === departmentId);
+        existingProgram = await ProgramModel.findOne({ code, departmentId });
       }
 
-      if (existingProgramIndex !== -1) {
-        programsStore[existingProgramIndex] = { ...programsStore[existingProgramIndex], ...programData };
+      if (existingProgram) {
+        await ProgramModel.findByIdAndUpdate(existingProgram._id, programData);
         updatedCount++;
       } else {
-        if (programsStore.some(p => p.code === code && p.departmentId === departmentId)) {
+        // Check for duplicate code in department
+        const duplicateProgram = await ProgramModel.findOne({ code, departmentId });
+        if (duplicateProgram) {
             console.warn(`Skipping new program ${name} (${code}) for department ${departmentId}: Already exists.`);
-            skippedCount++; return;
+            skippedCount++; continue;
         }
-        const newProgram: Program = { id: idFromCsv || generateIdForImport(), ...programData };
-        programsStore.push(newProgram);
+        
+        const newProgram = new ProgramModel(programData);
+        await newProgram.save();
         newCount++;
       }
-    });
-    (global as any).__API_PROGRAMS_STORE__ = programsStore;
+    }
+
     return NextResponse.json({ message: 'Programs imported successfully.', newCount, updatedCount, skippedCount }, { status: 200 });
 
   } catch (error) {
