@@ -5,10 +5,6 @@ import { InstituteModel } from '@/lib/models';
 import type { Institute } from '@/types/entities';
 import { Types } from 'mongoose';
 
-declare global {
-  var __API_INSTITUTES_STORE__: Institute[] | undefined;
-}
-
 interface RouteParams {
   params: Promise<{
     id: string;
@@ -18,45 +14,24 @@ interface RouteParams {
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    console.log('Looking for institute with id:', id);
     await connectMongoose();
 
     // Try to find by MongoDB ObjectId first, then by custom id field
     let institute;
     if (Types.ObjectId.isValid(id)) {
-      console.log('Searching by ObjectId');
       institute = await InstituteModel.findById(id);
     } else {
-      console.log('Searching by custom id field');
       institute = await InstituteModel.findOne({ id });
-    }
-
-    console.log('Found institute in MongoDB:', institute ? 'YES' : 'NO');
-    
-    // If not found in MongoDB, check global store as fallback
-    if (!institute && global.__API_INSTITUTES_STORE__) {
-      console.log('Checking global store for institute');
-      const storeInstitute = global.__API_INSTITUTES_STORE__.find(inst => inst.id === id);
-      if (storeInstitute) {
-        console.log('Found institute in global store');
-        return NextResponse.json(storeInstitute);
-      }
     }
     
     if (!institute) {
       return NextResponse.json({ message: 'Institute not found' }, { status: 404 });
     }
 
-    // Convert to plain object and ensure custom id is used
-    const instituteObject = institute.toObject();
-    const response = {
-      ...instituteObject,
-      id: instituteObject.id || instituteObject._id
-    };
-    delete response._id;
-    delete response.__v;
+    // Return institute with properly formatted id
+    const instituteToReturn = institute.toJSON();
 
-    return NextResponse.json(response);
+    return NextResponse.json(instituteToReturn);
   } catch (error) {
     console.error('Error fetching institute:', error);
     return NextResponse.json({ message: 'Internal server error' }, { status: 500 });

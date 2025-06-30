@@ -2,19 +2,15 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Institute } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
+import { connectMongoose } from '@/lib/mongodb';
+import { InstituteModel } from '@/lib/models';
 
-// This assumes the in-memory 'institutes' array and 'generateClientId' are accessible here.
-// In a real app, you'd import them or use a shared DB module.
-// For simplicity, we'll redefine them here for this isolated API route example.
-const institutesStore: Institute[] = (global as any).__API_INSTITUTES_STORE__ || [
-  { id: "inst1", name: "Government Polytechnic Palanpur", code: "GPP", address: "Jagana, Palanpur, Gujarat 385011", contactEmail: "gp-palanpur-dte@gujarat.gov.in", contactPhone: "02742-280126", website: "http://www.gppalanpur.ac.in", status: "active", establishmentYear: 1964 },
-];
-(global as any).__API_INSTITUTES_STORE__ = institutesStore;
-
-const generateClientIdForImport = (): string => `inst_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+const generateInstituteIdForImport = (): string => `inst_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function POST(request: NextRequest) {
   try {
+    await connectMongoose();
+    
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
 
@@ -38,7 +34,6 @@ export async function POST(request: NextRequest) {
     }
     
     const header = Object.keys(parsedData[0] || {}).map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
-    // const expectedHeaders = ['id', 'name', 'code', 'address', 'contactemail', 'contactphone', 'website', 'status', 'establishmentyear'];
     const requiredHeaders = ['name', 'code', 'status'];
 
     if (!requiredHeaders.every(rh => header.includes(rh))) {
@@ -50,71 +45,84 @@ export async function POST(request: NextRequest) {
     let updatedCount = 0;
     let skippedCount = 0;
 
-    parsedData.forEach((row: unknown) => {
-      const name = row.name?.toString().trim();
-      const code = row.code?.toString().trim().toUpperCase();
-      const status = row.status?.toString().trim().toLowerCase() as 'active' | 'inactive';
+    for (const row of parsedData) {
+      const name = (row as any).name?.toString().trim();
+      const code = (row as any).code?.toString().trim().toUpperCase();
+      const status = (row as any).status?.toString().trim().toLowerCase() as 'active' | 'inactive';
 
       if (!name || !code || !['active', 'inactive'].includes(status)) {
         console.warn(`Skipping institute row: Missing or invalid required data (name, code, status). Row: ${JSON.stringify(row)}`);
         skippedCount++;
-        return;
+        continue;
       }
       
-      const establishmentYear = row.establishmentyear !== undefined && row.establishmentyear !== null && !isNaN(Number(row.establishmentyear)) ? Number(row.establishmentyear) : undefined;
+      const establishmentYear = (row as any).establishmentyear !== undefined && (row as any).establishmentyear !== null && !isNaN(Number((row as any).establishmentyear)) ? Number((row as any).establishmentyear) : undefined;
       if (establishmentYear && (establishmentYear < 1800 || establishmentYear > new Date().getFullYear())) {
         console.warn(`Skipping institute row for ${name}: Invalid establishment year ${establishmentYear}.`);
         skippedCount++;
-        return;
+        continue;
       }
 
-      const instituteData: Omit<Institute, 'id'> = {
+      const instituteData = {
         name,
         code,
         status,
-        address: row.address?.toString().trim() || undefined,
-        contactEmail: row.contactemail?.toString().trim() || undefined,
-        contactPhone: row.contactphone?.toString().trim() || undefined,
-        website: row.website?.toString().trim() || undefined,
+        address: (row as any).address?.toString().trim() || undefined,
+        contactEmail: (row as any).contactemail?.toString().trim() || undefined,
+        contactPhone: (row as any).contactphone?.toString().trim() || undefined,
+        website: (row as any).website?.toString().trim() || undefined,
+        domain: (row as any).domain?.toString().trim() || `${code.toLowerCase()}.ac.in`,
         establishmentYear,
+        administrators: (row as any).administrators ? JSON.parse((row as any).administrators) : [],
       };
 
-      const idFromCsv = row.id?.toString().trim();
-      let existingInstituteIndex = -1;
+      const idFromCsv = (row as any).id?.toString().trim();
+      let existingInstitute;
 
-      if(idFromCsv) {
-        existingInstituteIndex = institutesStore.findIndex(i => i.id === idFromCsv);
-      } else { 
-        existingInstituteIndex = institutesStore.findIndex(i => i.code === code);
+      if (idFromCsv) {
+        existingInstitute = await InstituteModel.findOne({ id: idFromCsv });
+      } else {
+        existingInstitute = await InstituteModel.findOne({ code: code });
       }
 
-
-      if (existingInstituteIndex !== -1) {
+      if (existingInstitute) {
         // If code is changing, ensure new code doesn't conflict
-        if (code !== institutesStore[existingInstituteIndex].code && institutesStore.some(i => i.id !== institutesStore[existingInstituteIndex].id && i.code === code)) {
-          console.warn(`Skipping update for institute ${institutesStore[existingInstituteIndex].name}: New code ${code} from CSV conflicts with another existing institute.`);
-          skippedCount++;
-          return;
+        if (code !== existingInstitute.code) {
+          const conflictingInstitute = await InstituteModel.findOne({ 
+            code: code, 
+            _id: { $ne: existingInstitute._id } 
+          });
+          if (conflictingInstitute) {
+            console.warn(`Skipping update for institute ${existingInstitute.name}: New code ${code} from CSV conflicts with another existing institute.`);
+            skippedCount++;
+            continue;
+          }
         }
-        institutesStore[existingInstituteIndex] = { ...institutesStore[existingInstituteIndex], ...instituteData };
+        
+        await InstituteModel.findByIdAndUpdate(existingInstitute._id, {
+          ...instituteData,
+          updatedAt: new Date().toISOString()
+        });
         updatedCount++;
       } else {
         // For new institutes, ensure code is unique
-        if (institutesStore.some(i => i.code === code)) {
+        const codeExists = await InstituteModel.findOne({ code: code });
+        if (codeExists) {
           console.warn(`Skipping new institute ${name}: Code ${code} already exists.`);
           skippedCount++;
-          return;
+          continue;
         }
-        const newInstitute: Institute = {
-          id: idFromCsv || generateClientIdForImport(),
+        
+        const newInstitute = new InstituteModel({
+          id: idFromCsv || generateInstituteIdForImport(),
           ...instituteData,
-        };
-        institutesStore.push(newInstitute);
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        });
+        await newInstitute.save();
         newCount++;
       }
-    });
-
-    (global as any).__API_INSTITUTES_STORE__ = institutesStore; // Update global store
+    }
 
     return NextResponse.json({ message: 'Institutes imported successfully.', newCount, updatedCount, skippedCount }, { status: 200 });
 
