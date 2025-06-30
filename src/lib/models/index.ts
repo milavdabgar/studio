@@ -272,7 +272,7 @@ const permissionSchema = new Schema<IPermission>({
   description: { type: String, required: true },
   resource: { type: String, required: true },
   action: { type: String, required: true },
-  conditions: { type: Schema.Types.Mixed as mongoose.SchemaTypeOptions<Record<string, unknown>> }
+  conditions: { type: Schema.Types.Mixed as unknown as mongoose.SchemaTypeOptions<Record<string, unknown>> }
 }, {
   timestamps: false,
   toJSON: {
@@ -1186,7 +1186,7 @@ const courseOfferingSchema = new Schema<ICourseOffering>({
 });
 
 courseOfferingSchema.pre('save', function(next) {
-  (this as ICourseOffering).updatedAt = new Date().toISOString();
+  (this as unknown as ICourseOffering).updatedAt = new Date().toISOString();
   next();
 });
 

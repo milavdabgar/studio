@@ -33,8 +33,7 @@ describe('Assessments API', () => {
       
       require('@/lib/db').assessment.findMany.mockResolvedValue(mockAssessments);
       
-      const req = mockRequest('GET');
-      const response = await GET(req);
+      const response = await GET();
       const data = await response.json();
       
       expect(response.status).toBe(200);

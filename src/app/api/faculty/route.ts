@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Faculty, User } from '@/types/entities'; 
+import type { Faculty, FacultyProfile, User } from '@/types/entities'; 
 import { userService } from '@/lib/api/users'; 
 import { instituteService } from '@/lib/api/institutes';
 import { connectMongoose } from '@/lib/mongodb';
@@ -20,11 +20,11 @@ export async function GET() {
   try {
     await connectMongoose();
     
-    const faculty = await FacultyModel.find({}).lean();
+    const faculty = await FacultyModel.find({}).lean() as unknown as Faculty[];
     const facultyWithId = faculty.map(f => ({
       ...f,
-      id: f.id || (f as any)._id.toString()
-    }));
+      id: f.id || (f as any)._id?.toString()
+    } as Faculty));
     
     return NextResponse.json(facultyWithId);
   } catch (error) {

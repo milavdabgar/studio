@@ -152,7 +152,7 @@ export default function AdminLeavesManagementPage() {
                    faculty?.lastName?.toLowerCase().includes(termLower) ||
                    faculty?.staffCode?.toLowerCase().includes(termLower) ||
                    req.reason.toLowerCase().includes(termLower) ||
-                   req.leaveType.toLowerCase().includes(termLower);
+                   req.leaveType?.toLowerCase().includes(termLower);
         });
     }
     if (filterInstitute !== 'all') result = result.filter(req => req.instituteId === filterInstitute);
@@ -160,8 +160,8 @@ export default function AdminLeavesManagementPage() {
     if (filterFaculty !== 'all') result = result.filter(req => req.facultyId === filterFaculty);
     if (filterLeaveType !== 'all') result = result.filter(req => req.leaveType === filterLeaveType);
     if (filterStatus !== 'all') result = result.filter(req => req.status === filterStatus);
-    if (filterDateFrom) result = result.filter(req => new Date(req.fromDate) >= filterDateFrom!);
-    if (filterDateTo) result = result.filter(req => new Date(req.toDate) <= filterDateTo!);
+    if (filterDateFrom) result = result.filter(req => req.fromDate && new Date(req.fromDate) >= filterDateFrom!);
+    if (filterDateTo) result = result.filter(req => req.toDate && new Date(req.toDate) <= filterDateTo!);
 
 
     if (sortField !== 'none') {
@@ -176,8 +176,9 @@ export default function AdminLeavesManagementPage() {
             valA = departments.find(d => d.id === a.departmentId)?.name || '';
             valB = departments.find(d => d.id === b.departmentId)?.name || '';
         } else if (['appliedAt', 'fromDate', 'toDate'].includes(sortField)) {
-            valA = new Date(a[sortField as 'appliedAt' | 'fromDate' | 'toDate']).getTime();
-            valB = new Date(b[sortField as 'appliedAt' | 'fromDate' | 'toDate']).getTime();
+            const fieldKey = sortField as 'appliedAt' | 'fromDate' | 'toDate';
+            valA = a[fieldKey] ? new Date(a[fieldKey]!).getTime() : 0;
+            valB = b[fieldKey] ? new Date(b[fieldKey]!).getTime() : 0;
         }
         else {
             valA = a[sortField as keyof LeaveRequest];
@@ -261,9 +262,9 @@ export default function AdminLeavesManagementPage() {
                   <TableRow key={req.id}>
                     <TableCell className="font-medium">{faculty?.firstName} {faculty?.lastName}</TableCell>
                     <TableCell>{department?.name || 'N/A'}</TableCell>
-                    <TableCell className="capitalize">{req.leaveType}</TableCell>
-                    <TableCell>{format(parseISO(req.fromDate), "PPP")}</TableCell>
-                    <TableCell>{format(parseISO(req.toDate), "PPP")}</TableCell>
+                    <TableCell className="capitalize">{req.leaveType || req.type}</TableCell>
+                    <TableCell>{req.fromDate ? format(parseISO(req.fromDate), "PPP") : req.startDate ? format(parseISO(req.startDate), "PPP") : 'N/A'}</TableCell>
+                    <TableCell>{req.toDate ? format(parseISO(req.toDate), "PPP") : req.endDate ? format(parseISO(req.endDate), "PPP") : 'N/A'}</TableCell>
                     <TableCell className="max-w-xs truncate" title={req.reason}>{req.reason}</TableCell>
                     <TableCell><span className={cn("px-2 py-0.5 text-xs font-semibold rounded-full", req.status === 'pending' && 'bg-yellow-100 text-yellow-800', req.status === 'approved' && 'bg-green-100 text-green-800', req.status === 'rejected' && 'bg-red-100 text-red-800', req.status === 'cancelled' && 'bg-slate-100 text-slate-800', req.status === 'taken' && 'bg-blue-100 text-blue-800')}>{LEAVE_STATUS_OPTIONS.find(s => s.value === req.status)?.label || req.status}</span></TableCell>
                     <TableCell className="text-right space-x-1">
@@ -303,8 +304,8 @@ export default function AdminLeavesManagementPage() {
           </DialogHeader>
           <div className="py-4 space-y-3">
             <p><span className="font-semibold">Faculty:</span> {faculties.find(f=>f.id === selectedLeaveRequest?.facultyId)?.firstName} {faculties.find(f=>f.id === selectedLeaveRequest?.facultyId)?.lastName}</p>
-            <p><span className="font-semibold">Type:</span> <span className="capitalize">{selectedLeaveRequest?.leaveType}</span></p>
-            <p><span className="font-semibold">Dates:</span> {selectedLeaveRequest?.fromDate && format(parseISO(selectedLeaveRequest.fromDate), "PPP")} to {selectedLeaveRequest?.toDate && format(parseISO(selectedLeaveRequest.toDate), "PPP")} ({selectedLeaveRequest && calculateLeaveDays(selectedLeaveRequest.fromDate, selectedLeaveRequest.toDate, selectedLeaveRequest.isHalfDay)} days)</p>
+            <p><span className="font-semibold">Type:</span> <span className="capitalize">{selectedLeaveRequest?.leaveType || selectedLeaveRequest?.type}</span></p>
+            <p><span className="font-semibold">Dates:</span> {selectedLeaveRequest?.fromDate && format(parseISO(selectedLeaveRequest.fromDate), "PPP")} to {selectedLeaveRequest?.toDate && format(parseISO(selectedLeaveRequest.toDate), "PPP")} ({selectedLeaveRequest && selectedLeaveRequest.fromDate && selectedLeaveRequest.toDate && calculateLeaveDays(selectedLeaveRequest.fromDate, selectedLeaveRequest.toDate, selectedLeaveRequest.isHalfDay)} days)</p>
             <p><span className="font-semibold">Reason:</span> {selectedLeaveRequest?.reason}</p>
              {selectedLeaveRequest?.isHalfDay && <p><span className="font-semibold">Half Day:</span> {selectedLeaveRequest?.halfDayPeriod?.replace('_',' ')}</p>}
             <div>

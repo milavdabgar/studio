@@ -17,15 +17,15 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const { id } = await params;
     
     // Try to find by custom id first, then by MongoDB _id if it's a valid ObjectId
-    let student = await StudentModel.findOne({ id }).lean();
+    let student = await StudentModel.findOne({ id }).lean() as Student | null;
     if (!student && id.match(/^[0-9a-fA-F]{24}$/)) {
-      student = await StudentModel.findById(id).lean();
+      student = await StudentModel.findById(id).lean() as Student | null;
     }
     
     if (student) {
-      const studentWithId = {
+      const studentWithId: Student = {
         ...student,
-        id: student.id || (student as any)._id.toString()
+        id: student.id || (student as any)._id?.toString() || id
       };
       return NextResponse.json(studentWithId);
     }
@@ -48,9 +48,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     const studentDataToUpdate = await request.json() as Partial<Omit<Student, 'id' | 'userId' | 'createdAt' | 'updatedAt'>>;
     
     // Find the existing student
-    let existingStudent = await StudentModel.findOne({ id }).lean();
+    let existingStudent = await StudentModel.findOne({ id }).lean() as Student | null;
     if (!existingStudent && id.match(/^[0-9a-fA-F]{24}$/)) {
-      existingStudent = await StudentModel.findById(id).lean();
+      existingStudent = await StudentModel.findById(id).lean() as Student | null;
     }
     
     if (!existingStudent) {
@@ -61,7 +61,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (studentDataToUpdate.enrollmentNumber && studentDataToUpdate.enrollmentNumber.trim() !== existingStudent.enrollmentNumber) {
       const duplicateEnrollment = await StudentModel.findOne({
         enrollmentNumber: studentDataToUpdate.enrollmentNumber.trim(),
-        _id: { $ne: existingStudent._id }
+        _id: { $ne: (existingStudent as any)._id }
       });
       if (duplicateEnrollment) {
         return NextResponse.json({ message: `Enrollment number '${studentDataToUpdate.enrollmentNumber.trim()}' already exists.` }, { status: 409 });
@@ -72,7 +72,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (studentDataToUpdate.instituteEmail && studentDataToUpdate.instituteEmail.trim().toLowerCase() !== existingStudent.instituteEmail?.toLowerCase()) {
       const duplicateEmail = await StudentModel.findOne({
         instituteEmail: { $regex: new RegExp(`^${studentDataToUpdate.instituteEmail.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') },
-        _id: { $ne: existingStudent._id }
+        _id: { $ne: (existingStudent as any)._id }
       });
       if (duplicateEmail) {
         return NextResponse.json({ message: `Institute email '${studentDataToUpdate.instituteEmail.trim()}' is already in use.` }, { status: 409 });
@@ -96,10 +96,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     // Update the student
     const updatedStudent = await StudentModel.findOneAndUpdate(
-      { _id: existingStudent._id },
+      { _id: (existingStudent as any)._id },
       updateData,
       { new: true, lean: true }
-    );
+    ) as Student | null;
 
     if (!updatedStudent) {
       return NextResponse.json({ message: 'Student not found' }, { status: 404 });
@@ -152,9 +152,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
 
     // Format response
-    const studentToReturn = {
+    const studentToReturn: Student = {
       ...updatedStudent,
-      id: updatedStudent.id || (updatedStudent as any)._id.toString()
+      id: updatedStudent.id || (updatedStudent as any)._id?.toString() || id
     };
 
     return NextResponse.json(studentToReturn);
@@ -171,9 +171,9 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     const { id } = await params;
     
     // Find and delete the student
-    let deletedStudent = await StudentModel.findOneAndDelete({ id }).lean();
+    let deletedStudent = await StudentModel.findOneAndDelete({ id }).lean() as Student | null;
     if (!deletedStudent && id.match(/^[0-9a-fA-F]{24}$/)) {
-      deletedStudent = await StudentModel.findByIdAndDelete(id).lean();
+      deletedStudent = await StudentModel.findByIdAndDelete(id).lean() as Student | null;
     }
 
     if (!deletedStudent) {

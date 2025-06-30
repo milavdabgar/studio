@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { Alert, AlertTitle, AlertDescription } from './alert';
 import { describe, it, expect } from '@jest/globals';
 

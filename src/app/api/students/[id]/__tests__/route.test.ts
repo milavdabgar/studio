@@ -207,7 +207,7 @@ describe('/api/students/[id]', () => {
         expect(data.contactNumber).toBe('9876543210');
         expect(data.currentSemester).toBe(4);
         expect(data.updatedAt).toBeDefined();
-        expect(new Date(data.updatedAt).getTime()).toBeGreaterThan(new Date(mockStudent.updatedAt).getTime());
+        expect(new Date(data.updatedAt!).getTime()).toBeGreaterThan(new Date(mockStudent.updatedAt!).getTime());
       });
 
       it('should handle semester status updates', async () => {

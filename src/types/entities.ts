@@ -146,6 +146,7 @@ export interface Student {
     sem6Status?: SemesterStatus;
     sem7Status?: SemesterStatus;
     sem8Status?: SemesterStatus;
+    semesterStatuses?: Record<number, SemesterStatus>; // For dynamic semester access
     
     fullNameGtuFormat?: string; 
     firstName?: string;
@@ -195,23 +196,33 @@ export interface FacultyProfile {
     
     staffCode: string; 
     employeeId?: string; 
+    gtuFacultyId?: string;
     
     title?: string;
     firstName?: string;
     middleName?: string;
     lastName?: string;
+    fullName?: string;
+    displayName?: string; // For display purposes
     gtuName?: string; 
+    email?: string; // Primary email field
     personalEmail?: string;
     instituteEmail: string; 
     contactNumber?: string;
+    address?: string;
     
     department: string; 
+    departmentId?: string; // Department ID reference
     designation?: string;
     jobType?: JobType;
     staffCategory?: StaffCategory; 
+    category?: StaffCategory; // Alias for staffCategory
     instType?: string; 
     specializations?: string[];
+    specialization?: string; // Singular form for backward compatibility
     qualifications?: Qualification[];
+    qualification?: string; // String form for backward compatibility
+    experience?: string;
     
     dateOfBirth?: Timestamp; 
     joiningDate?: Timestamp; 
@@ -224,6 +235,11 @@ export interface FacultyProfile {
     placeOfBirth?: string;
     nationality?: string;
     knownAs?: string; 
+    
+    // Additional faculty-specific fields
+    isHOD?: boolean;
+    isPrincipal?: boolean;
+    researchInterests?: string[];
     
     status: FacultyStatus;
     
@@ -446,6 +462,9 @@ export interface CourseOffering {
     endDate?: Timestamp;   
     status: CourseOfferingStatus;
     programId?: string; 
+    maxEnrollments?: number;
+    currentEnrollments?: number;
+    description?: string;
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
@@ -559,6 +578,7 @@ export interface StudentAssessmentScore {
   score?: number;
   grade?: string;
   remarks?: string; 
+  comments?: string; // Additional comments
   submissionDate?: Timestamp; 
   files?: Array<{ 
     name: string; 
@@ -880,9 +900,12 @@ export interface ProjectTeamMember {
 export interface ProjectTeam {
   id: string;
   name: string;
+  description?: string;
   department: string; 
   members: ProjectTeamMember[];
   eventId: string; 
+  maxMembers?: number;
+  status?: 'active' | 'inactive' | 'completed';
   createdBy?: string; 
   updatedBy?: string; 
   createdAt?: Timestamp;
@@ -1286,22 +1309,35 @@ export type LeaveRequestStatus =
   | 'pending' 
   | 'approved' 
   | 'rejected' 
-  | 'cancelled';
+  | 'cancelled'
+  | 'taken';
 
 export interface LeaveRequest {
   id: string;
   userId: string;
+  facultyId?: string; // Faculty ID for faculty-specific leave requests
   type: LeaveType;
+  leaveType?: LeaveType; // Alias for type
   reason: string;
+  remarks?: string; // Additional remarks/comments
   startDate: string; // ISO date string
   endDate: string; // ISO date string
+  fromDate?: string; // Alias for startDate
+  toDate?: string; // Alias for endDate
   isHalfDay?: boolean;
+  halfDayPeriod?: 'morning' | 'afternoon';
   totalDays: number;
+  days?: number; // Alias for totalDays
   status: LeaveRequestStatus;
   appliedAt: Timestamp;
   actionTakenAt?: Timestamp;
   actionTakenBy?: string; // User ID of the person who approved/rejected
   rejectionReason?: string;
+  
+  // Additional administrative fields
+  instituteId?: string;
+  departmentId?: string;
+  
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }

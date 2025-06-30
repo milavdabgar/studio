@@ -1,20 +1,8 @@
 // src/lib/api/leaves.ts
 
-export interface LeaveRequest {
-  id: string;
-  userId: string;
-  type: 'sick' | 'casual' | 'vacation' | 'maternity' | 'paternity' | 'emergency';
-  startDate: string;
-  endDate: string;
-  days: number;
-  reason: string;
-  status: 'pending' | 'approved' | 'rejected' | 'cancelled';
-  appliedAt: string;
-  reviewedBy?: string;
-  reviewedAt?: string;
-  comments?: string;
-  attachments?: string[];
-}
+import type { LeaveRequest as EntityLeaveRequest, LeaveType, LeaveRequestStatus } from '@/types/entities';
+
+export type LeaveRequest = EntityLeaveRequest;
 
 export interface LeaveBalance {
   userId: string;

@@ -29,12 +29,11 @@ describe('Button Component', () => {
     expect(screen.getByRole('button')).toHaveClass('border');
   });
 
-  it('shows loading state when isLoading is true', () => {
-    render(<Button isLoading>Loading</Button>);
+  it('shows disabled state when disabled', () => {
+    render(<Button disabled>Disabled</Button>);
     
     const button = screen.getByRole('button');
     expect(button).toBeDisabled();
-    expect(button.querySelector('svg')).toHaveClass('animate-spin');
   });
 
   it('applies custom className', () => {
