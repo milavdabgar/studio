@@ -1342,3 +1342,27 @@ export interface LeaveRequest {
   updatedAt: Timestamp;
 }
 
+// Project Fair Statistics and Evaluation Data
+export interface ProjectStatistics {
+  totalProjects: number;
+  departmentStats: Array<{
+    departmentId: string;
+    departmentName: string;
+    projectCount: number;
+  }>;
+  statusCounts: Record<ProjectStatus, number>;
+  averageScore?: number;
+}
+
+export interface EvaluationData {
+  projectId: string;
+  evaluatorId: string;
+  scores: Record<string, number>;
+  comments?: string;
+  timestamp: Timestamp;
+}
+
+export interface CategoryCounts {
+  [category: string]: number;
+}
+

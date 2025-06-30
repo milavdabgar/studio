@@ -10,9 +10,10 @@ interface RouteParams {
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
+  
   try {
     await connectMongoose();
-    const { id } = await params;
     
     const recordDataToUpdate = await request.json() as Partial<Omit<AttendanceRecord, 'id' | 'createdAt' | 'updatedAt'>>;
     
@@ -44,7 +45,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Format record to ensure proper id field
     const recordWithId = {
       ...updatedRecord,
-      id: updatedRecord.id || (updatedRecord as any)._id.toString()
+      id: (updatedRecord as any).id || (updatedRecord as any)._id?.toString()
     };
 
     return NextResponse.json(recordWithId);
@@ -55,9 +56,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params;
+  
   try {
     await connectMongoose();
-    const { id } = await params;
     
     const deletedRecord = await AttendanceRecordModel.findOneAndDelete({ id });
     

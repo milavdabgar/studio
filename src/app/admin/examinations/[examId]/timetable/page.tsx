@@ -16,7 +16,7 @@ import { CalendarIcon, PlusCircle, Edit2, Trash2, Loader2, ArrowLeft, ListChecks
 import { useToast } from "@/hooks/use-toast";
 import { format, parseISO } from 'date-fns';
 import { cn } from "@/lib/utils";
-import type { Examination, ExaminationTimeTableEntry, Course, Room, Faculty as SystemUser } from '@/types/entities';
+import type { Examination, ExaminationTimeTableEntry, Course, Room, User } from '@/types/entities';
 import { examinationService } from '@/lib/api/examinations';
 import { courseService } from '@/lib/api/courses';
 import { roomService } from '@/lib/services/roomService';
@@ -32,7 +32,7 @@ export default function ExamTimetablePage() {
   const [timetableEntries, setTimetableEntries] = useState<ExaminationTimeTableEntry[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [rooms, setRooms] = useState<Room[]>([]);
-  const [invigilators, setInvigilators] = useState<SystemUser[]>([]);
+  const [invigilators, setInvigilators] = useState<Omit<User, "password">[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -63,9 +63,9 @@ export default function ExamTimetablePage() {
           userService.getAllUsers().then(users => users.filter(u => u.roles.includes('faculty') || u.roles.includes('hod')))
         ]);
         setExamination(examData);
-        setTimetableEntries(examData.examinationTimeTable || []);
+        setTimetableEntries(examData?.examinationTimeTable || []);
         // Filter courses relevant to the programs of this examination
-        const relevantCourses = coursesData.filter(c => examData.programIds.includes(c.programId));
+        const relevantCourses = coursesData.filter(c => examData?.programIds.includes(c.programId));
         setCourses(relevantCourses);
         setRooms(roomsData);
         setInvigilators(usersData);

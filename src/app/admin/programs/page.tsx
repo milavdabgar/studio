@@ -37,7 +37,7 @@ export default function ProgramManagementPage() {
   const [formDepartmentId, setFormDepartmentId] = useState<string>('');
   const [formDurationYears, setFormDurationYears] = useState<number | undefined>(undefined);
   const [formTotalSemesters, setFormTotalSemesters] = useState<number | undefined>(undefined);
-  const [formStatus, setFormStatus] = useState<'active' | 'inactive'>('active');
+  const [formStatus, setFormStatus] = useState<'active' | 'inactive' | 'phasing_out'>('active');
   
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -134,11 +134,19 @@ export default function ProgramManagementPage() {
 
     setIsSubmitting(true);
     
+    const selectedDepartment = departments.find(d => d.id === formDepartmentId);
+    if (!selectedDepartment) {
+      toast({ variant: "destructive", title: "Error", description: "Selected department not found." });
+      setIsSubmitting(false);
+      return;
+    }
+
     const programData: Omit<Program, 'id'> = { 
       name: formProgramName.trim(), 
       code: formProgramCode.trim().toUpperCase(), 
       description: formProgramDescription.trim() || undefined, 
       departmentId: formDepartmentId,
+      instituteId: selectedDepartment.instituteId,
       durationYears: formDurationYears ? Number(formDurationYears) : undefined,
       totalSemesters: formTotalSemesters ? Number(formTotalSemesters) : undefined,
       status: formStatus,
@@ -186,7 +194,7 @@ export default function ProgramManagementPage() {
       toast({ title: "Import Successful", description: `${result.newCount} programs added, ${result.updatedCount} programs updated. Skipped: ${result.skippedCount}` });
     } catch (error: unknown) {
       console.error("Error processing CSV file:", error);
-      toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
+      toast({ variant: "destructive", title: "Import Failed", description: (error as Error).message || "Could not process the CSV file." });
     } finally {
       setIsSubmitting(false);
       setSelectedFile(null); 

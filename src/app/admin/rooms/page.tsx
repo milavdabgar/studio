@@ -202,7 +202,7 @@ export default function RoomManagementPage() {
       toast({ title: "Import Successful", description: `${result.newCount} rooms added, ${result.updatedCount} rooms updated. Skipped: ${result.skippedCount}` });
     } catch (error: unknown) {
       console.error("Error processing CSV file:", error);
-      toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
+      toast({ variant: "destructive", title: "Import Failed", description: (error as Error).message || "Could not process the CSV file." });
     } finally {
       setIsSubmitting(false); setSelectedFile(null); 
       const fileInput = document.getElementById('csvImportRoom') as HTMLInputElement;

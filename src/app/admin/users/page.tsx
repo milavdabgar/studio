@@ -249,7 +249,7 @@ export default function UserManagementPage() {
       }
     } catch (error: unknown) {
       console.error("Error processing CSV file for User Import:", error);
-      toast({ variant: "destructive", title: "Import Failed", description: error.data?.message || error.message || "Could not process the CSV file." });
+      toast({ variant: "destructive", title: "Import Failed", description: (error as any).data?.message || (error as Error).message || "Could not process the CSV file." });
     } finally {
       setIsSubmitting(false);
       setSelectedFile(null); 

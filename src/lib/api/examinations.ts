@@ -1,18 +1,6 @@
 // src/lib/api/examinations.ts
 
-export interface Examination {
-  id: string;
-  courseId: string;
-  title: string;
-  type: 'midterm' | 'final' | 'quiz' | 'assignment';
-  date: string;
-  duration: number; // in minutes
-  maxMarks: number;
-  venue: string;
-  instructions?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import type { Examination, ExaminationType, ExaminationStatus, ExaminationTimeTableEntry } from '@/types/entities';
 
 export interface ExaminationResult {
   id: string;
@@ -40,28 +28,42 @@ export interface TimetableEntry {
 const mockExaminations: Examination[] = [
   {
     id: '1',
-    courseId: 'CS101',
-    title: 'Introduction to Computer Science - Midterm',
-    type: 'midterm',
-    date: '2025-07-15T09:00:00Z',
-    duration: 120,
-    maxMarks: 100,
-    venue: 'Room A-101',
-    instructions: 'Bring calculator and writing materials',
-    createdAt: '2025-06-01T10:00:00Z',
-    updatedAt: '2025-06-01T10:00:00Z',
+    name: 'Mid Semester Examination - Fall 2024',
+    gtuExamCode: 'GTU_MID_2024_F',
+    academicYear: '2024-25',
+    examType: 'Mid Semester',
+    startDate: '2025-07-15T09:00:00.000Z',
+    endDate: '2025-07-25T17:00:00.000Z',
+    programIds: ['prog_dce_gpp', 'prog_dme_gpp'],
+    status: 'scheduled',
+    examinationTimeTable: [
+      {
+        id: 'tt_1',
+        examinationId: '1',
+        courseId: 'CS101',
+        courseName: 'Introduction to Computer Science',
+        date: '2025-07-15T09:00:00.000Z',
+        startTime: '09:00',
+        endTime: '11:00',
+        roomIds: ['room_a101', 'room_a102'],
+        invigilatorIds: ['fac_001', 'fac_002']
+      }
+    ],
+    createdAt: '2025-06-01T10:00:00.000Z',
+    updatedAt: '2025-06-01T10:00:00.000Z',
   },
   {
     id: '2',
-    courseId: 'CS102',
-    title: 'Data Structures - Final Exam',
-    type: 'final',
-    date: '2025-07-20T14:00:00Z',
-    duration: 180,
-    maxMarks: 150,
-    venue: 'Room B-201',
-    createdAt: '2025-06-01T10:00:00Z',
-    updatedAt: '2025-06-01T10:00:00Z',
+    name: 'End Semester Examination - Fall 2024',
+    gtuExamCode: 'GTU_END_2024_F',
+    academicYear: '2024-25',
+    examType: 'End Semester Theory',
+    startDate: '2025-07-20T14:00:00.000Z',
+    endDate: '2025-07-30T17:00:00.000Z',
+    programIds: ['prog_dce_gpp'],
+    status: 'completed',
+    createdAt: '2025-06-01T10:00:00.000Z',
+    updatedAt: '2025-06-01T10:00:00.000Z',
   },
 ];
 
