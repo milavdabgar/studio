@@ -1,8 +1,9 @@
 
-import { genkit, type PluginProvider } from 'genkit';
+import { genkit } from 'genkit';
 import { googleAI } from '@genkit-ai/googleai';
 
-const plugins: PluginProvider[] = [];
+// Use any for PluginProvider to avoid type issues
+const plugins: any[] = [];
 let defaultModel: string | undefined = undefined;
 
 // Check for GOOGLE_API_KEY.

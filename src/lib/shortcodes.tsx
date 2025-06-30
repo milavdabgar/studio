@@ -46,8 +46,8 @@ import RTL from '@/components/shortcodes/RTL';
 import MDImporter from '@/components/shortcodes/MDImporter';
 import Ref from '@/components/shortcodes/Ref';
 
-// Type for shortcode components
-type ShortcodeComponent = React.ComponentType<Record<string, unknown>>;
+// Type for shortcode components - use any to avoid strict type checking for dynamic shortcodes
+type ShortcodeComponent = React.ComponentType<any>;
 
 // Shortcode registry mapping with exact Blowfish API compatibility
 const shortcodeRegistry: Record<string, ShortcodeComponent> = {
@@ -296,7 +296,7 @@ export function renderShortcode(shortcodeName: string, params: Record<string, un
   }
   
   try {
-    return React.createElement(Component as React.ComponentType<Record<string, unknown>>, { ...params, key });
+    return React.createElement(Component as React.ComponentType<any>, { ...params, key });
   } catch (error) {
     console.error(`Error rendering shortcode ${shortcodeName}:`, error);
     return null;

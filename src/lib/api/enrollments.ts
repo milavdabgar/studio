@@ -69,4 +69,13 @@ export const enrollmentService = {
       throw new Error(errorData.message || 'Failed to withdraw enrollment');
     }
   },
+
+  async getAllEnrollments(): Promise<Enrollment[]> {
+    const response = await fetch(`${API_BASE_URL}/enrollments`);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to fetch enrollments' }));
+      throw new Error(errorData.message || 'Failed to fetch enrollments');
+    }
+    return response.json();
+  },
 };

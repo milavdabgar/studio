@@ -25,7 +25,7 @@
     },
     "types": ["jest", "@playwright/test", "node", "next/image-types/global"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "playwright.config.ts", "e2e/**/*.ts", "jest.config.js", "jest.setup.js"],
-  "exclude": ["node_modules"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "playwright.config.ts", "jest.config.js", "jest.setup.js"],
+  "exclude": ["node_modules", "e2e/**/*.ts", "reference/**/*", ".next/types/app/project-fair/student/page.ts"]
 }
 

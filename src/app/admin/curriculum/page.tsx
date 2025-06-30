@@ -224,7 +224,8 @@ export default function CurriculumManagementPage() {
           });
       }
     } catch (error: unknown) {
-      toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process CSV." });
+      const errorMessage = error instanceof Error ? error.message : "Could not process CSV.";
+      toast({ variant: "destructive", title: "Import Failed", description: errorMessage });
     } finally {
       setIsSubmitting(false); setSelectedFile(null);
       const fileInput = document.getElementById('csvImportCurriculum') as HTMLInputElement;
@@ -304,7 +305,11 @@ curr_2,prog_dme_gpp,DME,2.1,2025-01-01,draft,course_me101_dme_gpp,ME101,1,false
         if (valB === undefined || valB === null) return sortDirection === 'asc' ? -1 : 1;
         if (typeof valA === 'string' && typeof valB === 'string') return sortDirection === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
         if (typeof valA === 'number' && typeof valB === 'number') return sortDirection === 'asc' ? valA - valB : valB - valA;
-        if (sortField === 'effectiveDate') return sortDirection === 'asc' ? new Date(valA).getTime() - new Date(valB).getTime() : new Date(valB).getTime() - new Date(valA).getTime();
+        if (sortField === 'effectiveDate') {
+          const dateA = valA && typeof valA === 'string' ? new Date(valA).getTime() : 0;
+          const dateB = valB && typeof valB === 'string' ? new Date(valB).getTime() : 0;
+          return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+        }
         return 0;
       });
     }

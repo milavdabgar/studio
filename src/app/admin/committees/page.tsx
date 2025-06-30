@@ -203,13 +203,14 @@ export default function CommitteeManagementPage() {
         await fetchInitialData();
         toast({ title: "Import Successful", description: `${result.newCount} committees added, ${result.updatedCount} updated. Skipped: ${result.skippedCount}`});
         if (result.errors && result.errors.length > 0) {
-          result.errors.slice(0, 3).forEach((err: unknown) => {
+          result.errors.slice(0, 3).forEach((err: any) => {
             toast({ variant: "destructive", title: `Import Warning (Row ${err.row})`, description: err.message });
           });
         }
     } catch (error: unknown) {
         console.error("Error processing CSV file:", error);
-        toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
+        const errorMessage = error instanceof Error ? error.message : "Could not process the CSV file.";
+        toast({ variant: "destructive", title: "Import Failed", description: errorMessage });
     } finally {
         setIsSubmitting(false); setSelectedFile(null); 
         const fileInput = document.getElementById('csvImportCommittee') as HTMLInputElement;
@@ -295,8 +296,8 @@ cmt_sample_1,Academic Committee,ACCOM,"Oversees academic policies","To ensure ac
         let valB: unknown = b[sortField as keyof Committee];
         
         if (sortField === 'formationDate' || sortField === 'dissolutionDate') {
-            valA = valA ? new Date(valA).getTime() : 0;
-            valB = valB ? new Date(valB).getTime() : 0;
+            valA = valA && typeof valA === 'string' ? new Date(valA).getTime() : 0;
+            valB = valB && typeof valB === 'string' ? new Date(valB).getTime() : 0;
         }
         
         if (valA === undefined || valA === null) return sortDirection === 'asc' ? 1 : -1;

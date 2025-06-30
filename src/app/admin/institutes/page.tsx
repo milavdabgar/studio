@@ -168,7 +168,8 @@ export default function InstituteManagementPage() {
       toast({ title: "Import Successful", description: `${result.newCount} institutes added, ${result.updatedCount} institutes updated.` });
     } catch (error: unknown) {
       console.error("Error processing CSV file:", error);
-      toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not process the CSV file." });
+      const errorMessage = error instanceof Error ? error.message : "Could not process the CSV file.";
+      toast({ variant: "destructive", title: "Import Failed", description: errorMessage });
     } finally {
       setIsSubmitting(false); 
       setSelectedFile(null); 

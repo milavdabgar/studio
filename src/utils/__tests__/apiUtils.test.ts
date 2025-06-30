@@ -166,7 +166,7 @@ describe('API Utilities', () => {
         limit: 10,
       };
       
-      const transformed = transformResponse(paginatedResponse, null, true);
+      const transformed = transformResponse(paginatedResponse, undefined, true);
       
       expect(transformed).toEqual({
         data: [{ id: 1 }, { id: 2 }],

@@ -42,20 +42,25 @@ export default function ExamResultEntryPage() {
       setIsLoading(true);
       try {
         const examData = await examinationService.getExaminationById(examId);
-        setExamination(examData);
+        if (examData) {
+          setExamination(examData);
 
-        if (examData && examData.examinationTimeTable && examData.examinationTimeTable.length > 0) {
-          const courseIds = Array.from(new Set(examData.examinationTimeTable.map(entry => entry.courseId)));
-          const allCourses = await courseService.getAllCourses();
-          const relevantCourses = allCourses.filter(c => courseIds.includes(c.id));
-          setCoursesInExam(relevantCourses);
-          if (relevantCourses.length > 0) {
-            setSelectedCourseId(relevantCourses[0].id);
+          // Check if the examination has a timetable property (needs type definition fix)
+          const timetable = (examData as any).examinationTimeTable;
+          if (timetable && timetable.length > 0) {
+            const courseIds = Array.from(new Set(timetable.map((entry: any) => entry.courseId)));
+            const allCourses = await courseService.getAllCourses();
+            const relevantCourses = allCourses.filter(c => courseIds.includes(c.id));
+            setCoursesInExam(relevantCourses);
+            if (relevantCourses.length > 0) {
+              setSelectedCourseId(relevantCourses[0].id);
+            }
+          } else {
+            setCoursesInExam([]);
           }
-        } else {
-          setCoursesInExam([]);
         }
-      } catch {
+      } catch (error) {
+        console.error('Error loading examination data:', error);
         toast({ variant: "destructive", title: "Error", description: "Could not load examination details." });
       }
       setIsLoading(false);
