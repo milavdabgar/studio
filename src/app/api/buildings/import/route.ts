@@ -2,30 +2,21 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Building, Institute } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
-
-const buildingsStore: Building[] = (global as any).__API_BUILDINGS_STORE__ || [];
-if (!(global as any).__API_BUILDINGS_STORE__) {
-  (global as any).__API_BUILDINGS_STORE__ = buildingsStore;
-}
-// let institutesStore: Institute[] = (global as any).institutes || []; // Ensure institutes are loaded (handled by client sending data)
+import { BuildingModel, InstituteModel } from '@/lib/models';
+import mongoose from 'mongoose';
 
 const generateIdForImport = (): string => `bldg_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function POST(request: NextRequest) {
   try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
-    const institutesJson = formData.get('institutes') as string | null;
-
 
     if (!file) {
       return NextResponse.json({ message: 'No file uploaded.' }, { status: 400 });
     }
-     if (!institutesJson) {
-      return NextResponse.json({ message: 'Institute data for mapping is missing.' }, { status: 400 });
-    }
-
-    const clientInstitutes: Institute[] = JSON.parse(institutesJson);
 
 
     const fileText = await file.text();
@@ -55,105 +46,129 @@ export async function POST(request: NextRequest) {
     let updatedCount = 0;
     let skippedCount = 0;
 
-    parsedData.forEach((row: unknown) => {
-      const name = row.name?.toString().trim();
-      const status = row.status?.toString().trim().toLowerCase() as Building['status'];
+    for (const row of parsedData) {
+      // Type the row object
+      const csvRow = row as any;
+      
+      const name = csvRow.name?.toString().trim();
+      const status = csvRow.status?.toString().trim().toLowerCase() as Building['status'];
 
       if (!name || !['active', 'inactive', 'under_maintenance'].includes(status)) {
         console.warn(`Skipping building row: Missing or invalid required data (name, status). Row: ${JSON.stringify(row)}`);
         skippedCount++;
-        return;
+        continue;
       }
 
-      let instituteId = row.instituteid?.toString().trim();
-      const instituteName = row.institutename?.toString().trim();
-      const instituteCode = row.institutecode?.toString().trim().toUpperCase();
+      let instituteId = csvRow.instituteid?.toString().trim();
+      const instituteName = csvRow.institutename?.toString().trim();
+      const instituteCode = csvRow.institutecode?.toString().trim().toUpperCase();
 
       if (!instituteId) {
-        const foundInstitute = clientInstitutes.find(i => 
-            (instituteName && i.name.toLowerCase() === instituteName.toLowerCase()) ||
-            (instituteCode && i.code.toUpperCase() === instituteCode)
-        );
+        // Try to find existing institute in MongoDB
+        const foundInstitute = await InstituteModel.findOne({
+          $or: [
+            ...(instituteName ? [{ name: { $regex: new RegExp(`^${instituteName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') } }] : []),
+            ...(instituteCode ? [{ code: { $regex: new RegExp(`^${instituteCode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') } }] : [])
+          ]
+        });
+        
         if (foundInstitute) {
-            instituteId = foundInstitute.id;
+            instituteId = foundInstitute._id.toString();
         } else {
             console.warn(`Skipping row for building ${name}: Could not find matching institute by name '${instituteName}' or code '${instituteCode}'.`);
             skippedCount++;
-            return;
+            continue;
         }
       } else {
-         if (!clientInstitutes.some(i => i.id === instituteId)) {
+        // Verify the provided instituteId exists in MongoDB
+        const instituteExists = await InstituteModel.findById(instituteId);
+        if (!instituteExists) {
             console.warn(`Skipping row for building ${name}: Provided instituteId '${instituteId}' does not exist.`);
             skippedCount++;
-            return;
+            continue;
         }
       }
       
-      const constructionYear = row.constructionyear !== undefined && row.constructionyear !== null && !isNaN(Number(row.constructionyear)) ? Number(row.constructionyear) : undefined;
+      const constructionYear = csvRow.constructionyear !== undefined && csvRow.constructionyear !== null && !isNaN(Number(csvRow.constructionyear)) ? Number(csvRow.constructionyear) : undefined;
       if (constructionYear && (constructionYear < 1800 || constructionYear > new Date().getFullYear() + 5)) {
         console.warn(`Skipping row for building ${name}: Invalid construction year ${constructionYear}.`);
         skippedCount++;
-        return;
+        continue;
       }
 
-      const numberOfFloors = row.numberoffloors !== undefined && row.numberoffloors !== null && !isNaN(Number(row.numberoffloors)) && Number(row.numberoffloors) >=0 ? Number(row.numberoffloors) : undefined;
-      const totalAreaSqFt = row.totalareasqft !== undefined && row.totalareasqft !== null && !isNaN(Number(row.totalareasqft)) && Number(row.totalareasqft) >=0 ? Number(row.totalareasqft) : undefined;
+      const numberOfFloors = csvRow.numberoffloors !== undefined && csvRow.numberoffloors !== null && !isNaN(Number(csvRow.numberoffloors)) && Number(csvRow.numberoffloors) >=0 ? Number(csvRow.numberoffloors) : undefined;
+      const totalAreaSqFt = csvRow.totalareasqft !== undefined && csvRow.totalareasqft !== null && !isNaN(Number(csvRow.totalareasqft)) && Number(csvRow.totalareasqft) >=0 ? Number(csvRow.totalareasqft) : undefined;
 
-
-      const buildingData: Omit<Building, 'id'> = {
+      const buildingData: Partial<Building> = {
         name,
         status,
         instituteId,
-        code: row.code?.toString().trim().toUpperCase() || undefined,
-        description: row.description?.toString().trim() || undefined,
+        code: csvRow.code?.toString().trim().toUpperCase() || undefined,
+        description: csvRow.description?.toString().trim() || undefined,
         constructionYear,
         numberOfFloors,
         totalAreaSqFt,
       };
 
-      const idFromCsv = row.id?.toString().trim();
-      let existingBuildingIndex = -1;
+      const idFromCsv = csvRow.id?.toString().trim();
+      let existingBuilding = null;
 
-      if (idFromCsv) {
-        existingBuildingIndex = buildingsStore.findIndex(b => b.id === idFromCsv);
-        if (existingBuildingIndex !== -1 && buildingData.code && buildingData.code !== buildingsStore[existingBuildingIndex].code && buildingsStore.some(b => b.id !== idFromCsv && b.instituteId === instituteId && b.code === buildingData.code)) {
-          console.warn(`Skipping update for building ID ${idFromCsv}: Code ${buildingData.code} from CSV conflicts with another existing building in the same institute.`);
-          skippedCount++;
-          return; 
+      if (idFromCsv && mongoose.Types.ObjectId.isValid(idFromCsv)) {
+        existingBuilding = await BuildingModel.findById(idFromCsv);
+        if (existingBuilding && buildingData.code && buildingData.code !== existingBuilding.code) {
+          const duplicateCodeBuilding = await BuildingModel.findOne({ 
+            _id: { $ne: idFromCsv }, 
+            instituteId, 
+            code: buildingData.code 
+          });
+          if (duplicateCodeBuilding) {
+            console.warn(`Skipping update for building ID ${idFromCsv}: Code ${buildingData.code} from CSV conflicts with another existing building in the same institute.`);
+            skippedCount++;
+            continue; 
+          }
         }
       } else { 
         if (buildingData.code) { 
-            existingBuildingIndex = buildingsStore.findIndex(b => b.instituteId === instituteId && b.code === buildingData.code);
+          existingBuilding = await BuildingModel.findOne({ instituteId, code: buildingData.code });
         } else { 
-            existingBuildingIndex = buildingsStore.findIndex(b => b.instituteId === instituteId && b.name.toLowerCase() === name.toLowerCase());
+          existingBuilding = await BuildingModel.findOne({ 
+            instituteId, 
+            name: { $regex: new RegExp(`^${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }
+          });
         }
       }
 
-
-      if (existingBuildingIndex !== -1) {
-        buildingsStore[existingBuildingIndex] = { ...buildingsStore[existingBuildingIndex], ...buildingData };
+      if (existingBuilding) {
+        await BuildingModel.findByIdAndUpdate(existingBuilding._id, buildingData);
         updatedCount++;
       } else {
-        if (buildingData.code && buildingsStore.some(b => b.instituteId === instituteId && b.code === buildingData.code)) {
+        if (buildingData.code) {
+          const duplicateCodeBuilding = await BuildingModel.findOne({ instituteId, code: buildingData.code });
+          if (duplicateCodeBuilding) {
              console.warn(`Skipping new building: Code ${buildingData.code} (for ${name}) already exists in institute ${instituteId}.`);
              skippedCount++;
-             return;
+             continue;
+          }
         }
-         if (!buildingData.code && buildingsStore.some(b => b.instituteId === instituteId && b.name.toLowerCase() === name.toLowerCase())) {
+        
+        if (!buildingData.code) {
+          const duplicateNameBuilding = await BuildingModel.findOne({ 
+            instituteId, 
+            name: { $regex: new RegExp(`^${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }
+          });
+          if (duplicateNameBuilding) {
              console.warn(`Skipping new building: Name ${name} already exists in institute ${instituteId} (and no code provided for differentiation).`);
              skippedCount++;
-             return;
+             continue;
+          }
         }
 
-        const newBuilding: Building = {
-          id: idFromCsv || generateIdForImport(), 
-          ...buildingData,
-        };
-        buildingsStore.push(newBuilding);
+        const newBuilding = new BuildingModel(buildingData);
+        await newBuilding.save();
         newCount++;
       }
-    });
-    (global as any).__API_BUILDINGS_STORE__ = buildingsStore;
+    }
+
     return NextResponse.json({ message: 'Buildings imported successfully.', newCount, updatedCount, skippedCount }, { status: 200 });
 
   } catch (error) {
