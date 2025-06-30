@@ -172,8 +172,9 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const committeesStore = global.__API_COMMITTEES_STORE__ || [];
   try {
+    await connectMongoose();
+    
     const committeeData = await request.json() as Omit<Committee, 'id' | 'createdAt' | 'updatedAt'>;
 
     if (!committeeData.name || !committeeData.name.trim()) {
@@ -194,16 +195,26 @@ export async function POST(request: NextRequest) {
     if (committeeData.dissolutionDate && !isValid(parseISO(committeeData.dissolutionDate))) {
         return NextResponse.json({ message: 'Valid Dissolution Date is required (YYYY-MM-DD) if provided.' }, { status: 400 });
     }
-    if (committeesStore.some(c => c.code.toLowerCase() === committeeData.code.trim().toLowerCase() && c.instituteId === committeeData.instituteId)) {
+    
+    // Check for duplicates
+    const existingByCode = await CommitteeModel.findOne({
+      code: { $regex: new RegExp(`^${committeeData.code.trim()}$`, 'i') },
+      instituteId: committeeData.instituteId
+    });
+    if (existingByCode) {
       return NextResponse.json({ message: `Committee with code '${committeeData.code.trim()}' already exists for this institute.` }, { status: 409 });
     }
-    if (committeesStore.some(c => c.name.toLowerCase() === committeeData.name.trim().toLowerCase() && c.instituteId === committeeData.instituteId)) {
+    
+    const existingByName = await CommitteeModel.findOne({
+      name: { $regex: new RegExp(`^${committeeData.name.trim()}$`, 'i') },
+      instituteId: committeeData.instituteId
+    });
+    if (existingByName) {
       return NextResponse.json({ message: `Committee with name '${committeeData.name.trim()}' already exists for this institute.` }, { status: 409 });
     }
 
-
     const currentTimestamp = new Date().toISOString();
-    const newCommittee: Committee = {
+    const newCommitteeData = {
       id: generateId(),
       name: committeeData.name.trim(),
       code: committeeData.code.trim().toUpperCase(),
@@ -214,20 +225,21 @@ export async function POST(request: NextRequest) {
       dissolutionDate: committeeData.dissolutionDate || undefined,
       status: committeeData.status || 'active',
       convenerId: committeeData.convenerId || undefined,
+      members: committeeData.members || [],
       createdAt: currentTimestamp,
       updatedAt: currentTimestamp,
     };
     
-    committeesStore.push(newCommittee); 
-    global.__API_COMMITTEES_STORE__ = committeesStore;
+    const newCommittee = new CommitteeModel(newCommitteeData);
+    await newCommittee.save();
     
-    await createOrUpdateCommitteeRoles(newCommittee, false); 
-
-    if (newCommittee.convenerId) {
-      await updateUserConvenerRole(newCommittee.convenerId, newCommittee.code, newCommittee.name, true);
-    }
+    // TODO: Role management functions need to be updated for MongoDB
+    // await createOrUpdateCommitteeRoles(newCommittee, false); 
+    // if (newCommittee.convenerId) {
+    //   await updateUserConvenerRole(newCommittee.convenerId, newCommittee.code, newCommittee.name, true);
+    // }
     
-    return NextResponse.json(newCommittee, { status: 201 });
+    return NextResponse.json(newCommittee.toJSON(), { status: 201 });
   } catch (error) {
     console.error('Error creating committee:', error);
     return NextResponse.json({ message: 'Error creating committee', error: (error as Error).message }, { status: 500 });

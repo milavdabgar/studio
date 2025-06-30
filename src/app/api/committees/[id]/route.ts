@@ -3,24 +3,8 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Committee, UserRole, SystemUser as User, Role } from '@/types/entities';
 import { isValid, parseISO } from 'date-fns';
 import { userService } from '@/lib/api/users';
-
-declare global {
-  var __API_COMMITTEES_STORE__: Committee[] | undefined;
-  var __API_ROLES_STORE__: Role[] | undefined;
-  var __API_USERS_STORE__: User[] | undefined;
-}
-
-if (!global.__API_COMMITTEES_STORE__) {
-  global.__API_COMMITTEES_STORE__ = [];
-}
-
-if (!global.__API_ROLES_STORE__) {
-  global.__API_ROLES_STORE__ = [];
-}
-
-if (!global.__API_USERS_STORE__) {
-  global.__API_USERS_STORE__ = [];
-}
+import { connectMongoose } from '@/lib/mongodb';
+import { CommitteeModel } from '@/lib/models';
 
 
 interface RouteParams {
