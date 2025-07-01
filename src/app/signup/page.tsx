@@ -58,7 +58,7 @@ export default function SignupPage() {
             <AppLogo className="h-12 w-auto text-primary" />
           </div>
           <CardTitle className="text-3xl font-bold text-primary">Create an Account</CardTitle>
-          <CardDescription>Join PolyManager and streamline your college experience.</CardDescription>
+          <CardDescription>Join GP Palanpur and streamline your college experience.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">

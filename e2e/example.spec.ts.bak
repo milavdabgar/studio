@@ -7,8 +7,8 @@ test.describe('Landing Page', () => {
   });
 
   test('should have the correct title', async ({ page }) => {
-    // Wait for the title to be "PolyManager"
-    await expect(page).toHaveTitle(/PolyManager/);
+    // Wait for the title to be "GP Palanpur"
+    await expect(page).toHaveTitle(/GP Palanpur/);
   });
 
   test('should display the main heading', async ({ page }) => {

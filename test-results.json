@@ -325,7 +325,7 @@
                           "errors": [],
                           "stdout": [
                             {
-                              "text": "Page title: PolyManager\n"
+                              "text": "Page title: GP Palanpur\n"
                             },
                             {
                               "text": "Page is loading: \u001b[33mfalse\u001b[39m\n"
@@ -5831,10 +5831,10 @@
                           "text": "Current URL: http://localhost:3000/dashboard\n"
                         },
                         {
-                          "text": "Page title: PolyManager\n"
+                          "text": "Page title: GP Palanpur\n"
                         },
                         {
-                          "text": "Available headings: [ \u001b[32m'PolyManager'\u001b[39m, \u001b[32m'Welcome to your Dashboard, Super Admin!'\u001b[39m ]\n"
+                          "text": "Available headings: [ \u001b[32m'GP Palanpur'\u001b[39m, \u001b[32m'Welcome to your Dashboard, Super Admin!'\u001b[39m ]\n"
                         },
                         {
                           "text": "Dashboard-like page detected, proceeding with test...\n"
@@ -6584,7 +6584,7 @@
                           "text": "Current URL: http://localhost:3000/faculty/attendance/mark\n"
                         },
                         {
-                          "text": "Available headings: [ \u001b[32m'PolyManager'\u001b[39m ]\n"
+                          "text": "Available headings: [ \u001b[32m'GP Palanpur'\u001b[39m ]\n"
                         },
                         {
                           "text": "Available card titles: []\n"

@@ -20,7 +20,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
     await page.goto('http://localhost:3000/login');
     
     // Verify page loads with correct title
-    await expect(page).toHaveTitle('PolyManager');
+    await expect(page).toHaveTitle('GP Palanpur');
     
     // Verify login form elements exist using correct ID selectors
     await expect(page.locator('#email')).toBeVisible();
@@ -49,7 +49,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
     await page.goto('http://localhost:3000/signup');
     
     // Verify page loads with correct title
-    await expect(page).toHaveTitle('PolyManager');
+    await expect(page).toHaveTitle('GP Palanpur');
     
     // Verify signup form elements exist using correct ID selectors
     await expect(page.locator('#name')).toBeVisible();
@@ -61,7 +61,7 @@ test.describe('Critical Authentication Flows - MongoDB Migration Safety', () => 
     
     // Verify page content
     await expect(page.locator('text=Create an Account')).toBeVisible();
-    await expect(page.locator('text=Join PolyManager')).toBeVisible();
+    await expect(page.locator('text=Join GP Palanpur')).toBeVisible();
   });
 
   test('should handle valid login - Admin user', async ({ page }) => {

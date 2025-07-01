@@ -30,7 +30,7 @@ describe('Landing Page', () => {
 
   describe('Header Section', () => {
     it('should render the app logo and title', () => {
-      expect(screen.getByText('PolyManager')).toBeInTheDocument();
+      expect(screen.getByText('GP Palanpur')).toBeInTheDocument();
     });
 
     it('should render navigation buttons with correct links', () => {
@@ -48,7 +48,7 @@ describe('Landing Page', () => {
   describe('Hero Section', () => {
     it('should render main heading and description', () => {
       expect(screen.getByText('Streamline Your College Management')).toBeInTheDocument();
-      expect(screen.getByText(/PolyManager is a comprehensive platform for Government Polytechnic Palanpur/)).toBeInTheDocument();
+      expect(screen.getByText(/GP Palanpur is a comprehensive platform for Government Polytechnic Palanpur/)).toBeInTheDocument();
     });
 
     it('should render call-to-action buttons with correct links', () => {
@@ -111,7 +111,7 @@ describe('Landing Page', () => {
     });
 
     it('should render description and benefits list', () => {
-      expect(screen.getByText(/PolyManager is built with modern technology/)).toBeInTheDocument();
+      expect(screen.getByText(/GP Palanpur is built with modern technology/)).toBeInTheDocument();
       
       const benefits = [
         'Secure Authentication',
@@ -129,7 +129,7 @@ describe('Landing Page', () => {
   describe('Footer Section', () => {
     it('should render copyright notice with current year', () => {
       const currentYear = new Date().getFullYear();
-      expect(screen.getByText(new RegExp(`© ${currentYear} PolyManager`))).toBeInTheDocument();
+      expect(screen.getByText(new RegExp(`© ${currentYear} GP Palanpur`))).toBeInTheDocument();
       expect(screen.getAllByText(/Government Polytechnic Palanpur/)).toHaveLength(2); // In description and footer
       expect(screen.getByText(/All rights reserved/)).toBeInTheDocument();
     });
@@ -137,7 +137,7 @@ describe('Landing Page', () => {
 
   describe('Accessibility', () => {
     it('should have proper heading hierarchy', () => {
-      const h1 = screen.getByText('PolyManager');
+      const h1 = screen.getByText('GP Palanpur');
       const h2 = screen.getByText('Streamline Your College Management');
       const h3 = screen.getByText('Empowering Education');
       
@@ -174,7 +174,7 @@ describe('Landing Page', () => {
 
   describe('Responsive Design Classes', () => {
     it('should have responsive layout classes', () => {
-      const container = screen.getByText('PolyManager').closest('div')?.parentElement;
+      const container = screen.getByText('GP Palanpur').closest('div')?.parentElement;
       expect(container).toHaveClass('container mx-auto');
     });
 
@@ -216,7 +216,7 @@ describe('Landing Page', () => {
     });
 
     it('should have consistent brand naming', () => {
-      const polyManagerReferences = screen.getAllByText('PolyManager');
+      const polyManagerReferences = screen.getAllByText('GP Palanpur');
       expect(polyManagerReferences.length).toBeGreaterThanOrEqual(1); // At least in header
     });
 

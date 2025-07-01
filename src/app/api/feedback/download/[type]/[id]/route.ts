@@ -20,8 +20,8 @@ interface RouteParams {
 
 async function generateExcelReportBuffer(analysisResult: AnalysisResult): Promise<Buffer> {
     const workbook = new ExcelJS.Workbook();
-    workbook.creator = 'PolyManager Feedback Analyzer';
-    workbook.lastModifiedBy = 'PolyManager Feedback Analyzer';
+    workbook.creator = 'GP Palanpur Feedback Analyzer';
+    workbook.lastModifiedBy = 'GP Palanpur Feedback Analyzer';
     workbook.created = new Date();
     workbook.modified = new Date();
 

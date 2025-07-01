@@ -8,7 +8,7 @@ test('Landing Page Navigation Test', async ({ page }) => {
   await page.waitForTimeout(3000);
   
   // Check for main heading or title
-  await expect(page.getByRole('heading', { name: 'PolyManager' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'GP Palanpur' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Streamline Your College' })).toBeVisible();
   
   // Check for login link/button

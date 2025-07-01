@@ -11,7 +11,7 @@ export function AppLogo(props: SVGProps<SVGSVGElement>) {
       strokeLinecap="round"
       strokeLinejoin="round"
       role="img"
-      aria-label="PolyManager Logo"
+      aria-label="GP Palanpur Logo"
       {...props}
     >
       <path d="M12 2L2 7l10 5 10-5-10-5z" />

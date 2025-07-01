@@ -1,7 +1,7 @@
 
 {
-  "name": "PolyManager - College Management System",
-  "short_name": "PolyManager",
+  "name": "GP Palanpur - College Management System",
+  "short_name": "GP Palanpur",
   "description": "A comprehensive PWA for managing college operations.",
   "start_url": "/",
   "display": "standalone",

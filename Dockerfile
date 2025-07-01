@@ -1,30 +1,31 @@
-FROM node:18-alpine AS deps
+FROM node:lts-alpine AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
-# Use legacy peer deps to handle dependency conflicts
-RUN npm ci --omit=dev --legacy-peer-deps
+# Use legacy peer deps to handle dependency conflicts and disable npm update notice
+RUN npm ci --omit=dev --legacy-peer-deps --no-fund --quiet --no-audit
 
 # Rebuild the source code only when needed
-FROM node:18-alpine AS builder
+FROM node:lts-alpine AS builder
 WORKDIR /app
 COPY package.json package-lock.json* ./
 # Install all dependencies including dev dependencies for build
-RUN npm ci --legacy-peer-deps
+RUN npm ci --legacy-peer-deps --no-fund --quiet --no-audit
 COPY . .
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_PUBLIC_BASE_URL https://gppalanpur.in
 
 RUN npm run build
 
 # Production image, copy all the files and run next
-FROM node:18-alpine AS runner
+FROM node:lts-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV production

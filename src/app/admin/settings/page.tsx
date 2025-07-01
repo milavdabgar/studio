@@ -62,7 +62,7 @@ export default function AdminSettingsPage() {
             System Settings
           </CardTitle>
           <CardDescription>
-            Configure global settings for the PolyManager application.
+            Configure global settings for the GP Palanpur application.
           </CardDescription>
         </CardHeader>
         <CardContent>

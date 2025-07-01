@@ -22,7 +22,30 @@ export function generateSEOMetadata({
   image,
   type = 'website'
 }: SEOMetaTagsProps): Metadata {
-  const baseUrl = 'https://polymanager.app';
+  // Handle different environments for metadataBase
+  const getBaseUrl = () => {
+    if (typeof window !== 'undefined') {
+      // Client-side
+      return window.location.origin;
+    }
+    
+    // Server-side - prioritize custom domain
+    if (process.env.NEXT_PUBLIC_BASE_URL) {
+      return process.env.NEXT_PUBLIC_BASE_URL;
+    }
+    
+    if (process.env.VERCEL_URL) {
+      return `https://${process.env.VERCEL_URL}`;
+    }
+    
+    if (process.env.NODE_ENV === 'production') {
+      return 'https://gppalanpur.in';
+    }
+    
+    return 'http://localhost:3000';
+  };
+  
+  const baseUrl = getBaseUrl();
   const url = `${baseUrl}${path}`;
   const defaultImage = `${baseUrl}/og-image.png`;
   
@@ -31,6 +54,7 @@ export function generateSEOMetadata({
   const alternateLocale = lang === 'gu' ? 'en_US' : 'gu_IN';
   
   const baseMetadata: Metadata = {
+    metadataBase: new URL(baseUrl),
     title: `${title} | ${siteName}`,
     description,
     alternates: {
@@ -91,7 +115,7 @@ export function generateSEOMetadata({
 
 // JSON-LD Structured Data Component
 export function generateArticleJsonLD(post: PostData, lang: string, url: string) {
-  const baseUrl = 'https://polymanager.app';
+  const baseUrl = 'https://gppalanpur.in';
   
   return {
     '@context': 'https://schema.org',

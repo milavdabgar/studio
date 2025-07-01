@@ -382,7 +382,7 @@ export default function RootLayout({
     return (
        <html lang="en" suppressHydrationWarning>
          <head>
-            <title>PolyManager - Loading...</title>
+            <title>GP Palanpur - Loading...</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
             <link rel="manifest" href="/manifest.json" />
             <meta name="theme-color" content="#1E40AF" />
@@ -390,7 +390,7 @@ export default function RootLayout({
             <link rel="apple-touch-icon" href="/icons/icon-192x192.png" /> 
             <meta name="apple-mobile-web-app-capable" content="yes" />
             <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-            <meta name="apple-mobile-web-app-title" content="PolyManager" />
+            <meta name="apple-mobile-web-app-title" content="GP Palanpur" />
             <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (English)" href="/feed.xml?lang=en" />
             <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (Gujarati)" href="/feed.xml?lang=gu" />
         </head>
@@ -410,7 +410,7 @@ export default function RootLayout({
     return (
       <html lang="en" suppressHydrationWarning>
         <head>
-            <title>PolyManager</title>
+            <title>GP Palanpur</title>
             <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
             <link rel="manifest" href="/manifest.json" />
             <meta name="theme-color" content="#1E40AF" />
@@ -418,7 +418,7 @@ export default function RootLayout({
             <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
             <meta name="apple-mobile-web-app-capable" content="yes" />
             <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-            <meta name="apple-mobile-web-app-title" content="PolyManager" />
+            <meta name="apple-mobile-web-app-title" content="GP Palanpur" />
             <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (English)" href="/feed.xml?lang=en" />
             <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (Gujarati)" href="/feed.xml?lang=gu" />
         </head>
@@ -436,7 +436,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-           <title>PolyManager</title>
+           <title>GP Palanpur</title>
            <meta name="description" content="College Management System for Government Polytechnic Palanpur" />
            <link rel="manifest" href="/manifest.json" />
            <meta name="theme-color" content="#1E40AF" />
@@ -444,7 +444,7 @@ export default function RootLayout({
            <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
            <meta name="apple-mobile-web-app-capable" content="yes" />
            <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-           <meta name="apple-mobile-web-app-title" content="PolyManager" />
+           <meta name="apple-mobile-web-app-title" content="GP Palanpur" />
            <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (English)" href="/feed.xml?lang=en" />
            <link rel="alternate" type="application/rss+xml" title="Blog RSS Feed (Gujarati)" href="/feed.xml?lang=gu" />
        </head>
@@ -455,7 +455,7 @@ export default function RootLayout({
               <SidebarHeader className="p-4 border-b border-sidebar-border">
                 <div className="flex items-center gap-3">
                   <AppLogo className="h-8 w-auto text-sidebar-primary" />
-                  <h1 className="text-xl font-semibold text-sidebar-foreground">PolyManager</h1>
+                  <h1 className="text-xl font-semibold text-sidebar-foreground">GP Palanpur</h1>
                 </div>
               </SidebarHeader>
             <SidebarContent className="p-2">

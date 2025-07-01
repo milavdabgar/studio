@@ -1,4 +1,4 @@
-# **App Name**: PolyManager
+# **App Name**: GP Palanpur
 
 ## Core Features:
 

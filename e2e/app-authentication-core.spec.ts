@@ -16,7 +16,7 @@ test.describe('Authentication & Core User Journeys', () => {
   });
 
   test('should load the home page successfully', async ({ page }) => {
-    await expect(page).toHaveTitle(/PolyManager|College|Institute/);
+    await expect(page).toHaveTitle(/GP Palanpur|College|Institute/);
     
     // Should have main navigation elements
     await expect(page.locator('nav')).toBeVisible();
