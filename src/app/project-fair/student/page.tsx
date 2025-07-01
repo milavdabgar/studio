@@ -214,8 +214,8 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
                           description: project.abstract || 'No description available',
                           status: 'draft' as const,
                           category: project.category || 'General',
-                          technologies: project.technologies || [],
-                          teamSize: project.teamSize || 1
+                          technologies: [],
+                          teamSize: 1
                         })}>View Details</Button>
                       </div>
                     </div>

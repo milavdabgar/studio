@@ -32,7 +32,8 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
         // If API attempts PDF generation (even if via Pandoc -> markdown internally):
         fileExtension = 'pdf';
       } else if (type === 'excel') {
-        fileExtension = 'xlsx';
+        effectiveType = 'excel';
+        fileExtension = 'excel';
       }
 
 

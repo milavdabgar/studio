@@ -142,7 +142,7 @@ export function PostCard({
           
           {post.wordCount && (
             <span className="text-xs text-muted-foreground">
-              {post.wordCount} {t('words') || 'words'}
+              {post.wordCount} {t('word_count') || 'words'}
             </span>
           )}
         </div>
