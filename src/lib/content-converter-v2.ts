@@ -300,7 +300,7 @@ export class ContentConverterV2 {
             const isProduction = process.env.NODE_ENV === 'production';
             
             // Configure browser launch options
-            const launchOptions: Record<string, unknown> = {
+            const launchOptions: any = {
                 headless: true,
                 args: [
                     '--no-sandbox',
@@ -319,8 +319,8 @@ export class ContentConverterV2 {
             // Use chromium package if available in production
             if (isProduction && chromium) {
                 launchOptions.executablePath = await chromium.executablePath('/opt/nodejs/node_modules/@sparticuz/chromium-min/bin');
-                const chromiumArgs = Array.isArray(chromium.args) ? chromium.args.filter((arg): arg is string => typeof arg === 'string') : [];
-                launchOptions.args = [...launchOptions.args, ...chromiumArgs];
+                const chromiumArgs: string[] = Array.isArray(chromium.args) ? chromium.args.filter((arg): arg is string => typeof arg === 'string') : [];
+                launchOptions.args = [...(launchOptions.args || []), ...chromiumArgs];
                 launchOptions.defaultViewport = chromium.defaultViewport;
             }
 

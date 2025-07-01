@@ -118,7 +118,7 @@ export class QueueService extends EventEmitter {
     };
 
     this.jobs.set(jobId, job);
-    this.logger.info(`Job ${jobId} added to queue`);
+    this.logger?.info(`Job ${jobId} added to queue`);
     
     // Schedule job processing
     if (options.delay) {
@@ -153,12 +153,12 @@ export class QueueService extends EventEmitter {
 
   async pause(): Promise<void> {
     this.isPaused = true;
-    this.logger.info('Queue paused');
+    this.logger?.info('Queue paused');
   }
 
   async resume(): Promise<void> {
     this.isPaused = false;
-    this.logger.info('Queue resumed');
+    this.logger?.info('Queue resumed');
     
     // Process pending jobs
     const pendingJobs = Array.from(this.jobs.values()).filter(
@@ -195,19 +195,19 @@ export class QueueService extends EventEmitter {
       }
     }
     
-    this.logger.info(`Cleaned ${jobsToRemove.length} ${status} jobs`);
+    this.logger?.info(`Cleaned ${jobsToRemove.length} ${status} jobs`);
     return jobsToRemove;
   }
 
   async empty(): Promise<void> {
     const jobCount = this.jobs.size;
     this.jobs.clear();
-    this.logger.info(`Emptied queue, removed ${jobCount} jobs`);
+    this.logger?.info(`Emptied queue, removed ${jobCount} jobs`);
   }
 
   async registerWorker(jobName: string, handler: JobHandler): Promise<void> {
     this.handlers.set(jobName, handler);
-    this.logger.info(`Worker registered for job type: ${jobName}`);
+    this.logger?.info(`Worker registered for job type: ${jobName}`);
   }
 
   private async processJob(job: QueueJob): Promise<void> {
@@ -217,7 +217,7 @@ export class QueueService extends EventEmitter {
 
     const handler = this.handlers.get(job.name);
     if (!handler) {
-      this.logger.warn(`No handler found for job type: ${job.name}`);
+      this.logger?.warn(`No handler found for job type: ${job.name}`);
       return;
     }
 
@@ -225,14 +225,14 @@ export class QueueService extends EventEmitter {
     job.attemptsMade = (job.attemptsMade || 0) + 1;
     
     this.emit('active', job);
-    this.logger.debug(`Processing job ${job.id}`);
+    this.logger?.debug(`Processing job ${job.id}`);
 
     try {
       const result = await handler(job);
       job.finishedOn = Date.now();
       
       this.emit('completed', job, result);
-      this.logger.info(`Job ${job.id} completed successfully`);
+      this.logger?.info(`Job ${job.id} completed successfully`);
       
       // Clean up completed job if configured to do so
       if (this.config.defaultJobOptions?.removeOnComplete === true) {
@@ -244,7 +244,7 @@ export class QueueService extends EventEmitter {
       job.finishedOn = Date.now();
       
       this.emit('failed', job, error);
-      this.logger.error(`Job ${job.id} failed: ${errorMessage}`);
+      this.logger?.error(`Job ${job.id} failed: ${errorMessage}`);
       
       // Retry logic
       const maxAttempts = this.config.defaultJobOptions?.attempts || 3;
@@ -261,7 +261,7 @@ export class QueueService extends EventEmitter {
           }
         }
         
-        this.logger.info(`Retrying job ${job.id} in ${delay}ms (attempt ${job.attemptsMade + 1}/${maxAttempts})`);
+        this.logger?.info(`Retrying job ${job.id} in ${delay}ms (attempt ${job.attemptsMade + 1}/${maxAttempts})`);
         
         setTimeout(() => {
           job.processedOn = undefined;
@@ -293,7 +293,7 @@ export class QueueService extends EventEmitter {
     // Remove all listeners
     this.removeAllListeners();
     
-    this.logger.info('Queue service shutdown complete');
+    this.logger?.info('Queue service shutdown complete');
   }
 
   // Event emitter methods

@@ -338,7 +338,7 @@ export class PaymentService {
       return {
         id: refund.id,
         amount: refund.amount,
-        status: refund.status,
+        status: refund.status as string,
       };
     } catch (error) {
       throw this.handleStripeError(error);
