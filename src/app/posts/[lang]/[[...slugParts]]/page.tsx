@@ -4,9 +4,8 @@ import { getPostData, getSortedPostsData, getPaginatedPosts, getSubPostsForDirec
 import { format, parseISO, isValid } from 'date-fns';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, FileText } from 'lucide-react';
+import { FileText } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
 import 'katex/dist/katex.min.css'; // Ensure KaTeX CSS is imported
 import PostRenderer from '@/components/blog/PostRenderer';
 import { BlogLayout } from '@/components/blog/BlogLayout';
@@ -137,12 +136,6 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
     return (
       <BlogLayout currentLang={pageParams.lang}>
         <div className="container mx-auto px-4 py-8">
-          <Button variant="outline" className="mb-6 inline-block" asChild>
-            <Link href="/">
-              <ArrowLeft className="mr-2 h-4 w-4" /> {backText}
-            </Link>
-          </Button>
-          
           {/* Breadcrumbs */}
           <Breadcrumbs items={breadcrumbItems} currentLang={pageParams.lang} />
           
@@ -242,12 +235,6 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
             <div className="container mx-auto px-4 py-8 max-w-7xl">
               {/* Header Section */}
               <div className="mb-8">
-                <Button variant="outline" className="mb-6 inline-block shadow-sm hover:shadow-md transition-shadow" asChild>
-                  <Link href={parentPath}>
-                    <ArrowLeft className="mr-2 h-4 w-4" /> {backText}
-                  </Link>
-                </Button>
-                
                 {/* Breadcrumbs */}
                 <Breadcrumbs items={breadcrumbItems} currentLang={pageParams.lang} />
                 
@@ -344,12 +331,6 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
       <BlogLayout currentLang={langForLinks}>
         <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
           <div className="container mx-auto px-4 py-8 max-w-7xl">
-            <Button variant="outline" className="mb-6 inline-block shadow-sm hover:shadow-md transition-shadow" asChild>
-              <Link href={backLinkHref}>
-                <ArrowLeft className="mr-2 h-4 w-4" /> {backLinkText}
-              </Link>
-            </Button>
-            
             {/* Breadcrumbs */}
             <Breadcrumbs items={breadcrumbItems} currentLang={langForLinks} />
             
@@ -461,12 +442,6 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
       
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
         <div className="container mx-auto px-4 py-8 max-w-6xl">
-          <Button variant="outline" className="mb-6 inline-block shadow-sm hover:shadow-md transition-shadow" asChild>
-            <Link href={backLinkHref}>
-              <ArrowLeft className="mr-2 h-4 w-4" /> {backLinkText}
-            </Link>
-          </Button>
-          
           {/* Breadcrumbs */}
           <Breadcrumbs items={breadcrumbItems} currentLang={langForLinks} />
           

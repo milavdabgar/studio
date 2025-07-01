@@ -28,7 +28,7 @@ export default function HomePage() {
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 py-16 md:py-24">
+      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16 md:py-24">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -37,11 +37,11 @@ export default function HomePage() {
                 <Badge variant="outline" className="text-sm">AICTE Approved</Badge>
                 <Badge variant="outline" className="text-sm">GTU Affiliated</Badge>
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
                 Premier Government Polytechnic in 
                 <span className="text-primary"> Banaskantha District</span>
               </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
                 Building technical excellence for over 40 years with modern infrastructure, 
                 experienced faculty, and industry-focused education on our 18.8-acre green campus.
               </p>
@@ -55,7 +55,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="relative">
-              <div className="bg-white p-8 rounded-2xl shadow-xl">
+              <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border dark:border-gray-700">
                 <Image
                   src="/newsletters/imgs/IMG_20241014_072640_109.jpg"
                   alt="Government Polytechnic Palanpur Campus"
@@ -66,15 +66,15 @@ export default function HomePage() {
                 <div className="mt-6 grid grid-cols-3 gap-4 text-center">
                   <div>
                     <div className="text-2xl font-bold text-primary">6</div>
-                    <div className="text-sm text-gray-600">Departments</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Departments</div>
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-primary">66</div>
-                    <div className="text-sm text-gray-600">Faculty</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Faculty</div>
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-primary">3</div>
-                    <div className="text-sm text-gray-600">NBA Accredited</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">NBA Accredited</div>
                   </div>
                 </div>
               </div>
@@ -84,13 +84,13 @@ export default function HomePage() {
       </section>
 
       {/* College Introduction Video */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Discover GP Palanpur
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Take a virtual tour of our campus and learn about our commitment to excellence in technical education
             </p>
           </div>
@@ -105,7 +105,7 @@ export default function HomePage() {
               ></iframe>
             </div>
             <div className="text-center mt-6">
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-400">
                 Experience our state-of-the-art facilities, dedicated faculty, and vibrant campus life
               </p>
             </div>
@@ -114,49 +114,49 @@ export default function HomePage() {
       </section>
 
       {/* Quick Stats */}
-      <section className="py-12 bg-white">
+      <section className="py-12 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4">
                 <Calendar className="h-8 w-8 text-primary" />
               </div>
-              <div className="text-3xl font-bold text-gray-900">40+</div>
-              <div className="text-gray-600">Years of Excellence</div>
+              <div className="text-3xl font-bold text-gray-900 dark:text-white">40+</div>
+              <div className="text-gray-600 dark:text-gray-400">Years of Excellence</div>
             </div>
             <div className="text-center">
-              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4">
                 <Users className="h-8 w-8 text-primary" />
               </div>
-              <div className="text-3xl font-bold text-gray-900">171</div>
-              <div className="text-gray-600">Job Offers (2024)</div>
+              <div className="text-3xl font-bold text-gray-900 dark:text-white">171</div>
+              <div className="text-gray-600 dark:text-gray-400">Job Offers (2024)</div>
             </div>
             <div className="text-center">
-              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4">
                 <Building className="h-8 w-8 text-primary" />
               </div>
-              <div className="text-3xl font-bold text-gray-900">25+</div>
-              <div className="text-gray-600">Modern Labs</div>
+              <div className="text-3xl font-bold text-gray-900 dark:text-white">25+</div>
+              <div className="text-gray-600 dark:text-gray-400">Modern Labs</div>
             </div>
             <div className="text-center">
-              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4">
                 <BookOpen className="h-8 w-8 text-primary" />
               </div>
-              <div className="text-3xl font-bold text-gray-900">18K+</div>
-              <div className="text-gray-600">Library Books</div>
+              <div className="text-3xl font-bold text-gray-900 dark:text-white">18K+</div>
+              <div className="text-gray-600 dark:text-gray-400">Library Books</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Academic Programs */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Academic Programs
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Choose from 6 engineering departments with modern curriculum and industry exposure
             </p>
           </div>
@@ -268,78 +268,78 @@ export default function HomePage() {
       </section>
 
       {/* Key Features */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Why Choose GP Palanpur?
             </h2>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0">
-                <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg">
+                <div className="flex items-center justify-center w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg">
                   <Award className="h-6 w-6 text-primary" />
                 </div>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">AICTE Approved</h3>
-                <p className="text-gray-600">Government-recognized institution with quality assurance</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">AICTE Approved</h3>
+                <p className="text-gray-600 dark:text-gray-400">Government-recognized institution with quality assurance</p>
               </div>
             </div>
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0">
-                <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg">
+                <div className="flex items-center justify-center w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg">
                   <Star className="h-6 w-6 text-primary" />
                 </div>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">NBA Accredited Programs</h3>
-                <p className="text-gray-600">Three programs with National Board of Accreditation</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">NBA Accredited Programs</h3>
+                <p className="text-gray-600 dark:text-gray-400">Three programs with National Board of Accreditation</p>
               </div>
             </div>
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0">
-                <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg">
+                <div className="flex items-center justify-center w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg">
                   <TrendingUp className="h-6 w-6 text-primary" />
                 </div>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Strong Placements</h3>
-                <p className="text-gray-600">171 job offers in 2024 with industry partnerships</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Strong Placements</h3>
+                <p className="text-gray-600 dark:text-gray-400">171 job offers in 2024 with industry partnerships</p>
               </div>
             </div>
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0">
-                <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg">
+                <div className="flex items-center justify-center w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg">
                   <Building className="h-6 w-6 text-primary" />
                 </div>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Modern Infrastructure</h3>
-                <p className="text-gray-600">18.8-acre campus with state-of-the-art facilities</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Modern Infrastructure</h3>
+                <p className="text-gray-600 dark:text-gray-400">18.8-acre campus with state-of-the-art facilities</p>
               </div>
             </div>
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0">
-                <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg">
+                <div className="flex items-center justify-center w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg">
                   <Shield className="h-6 w-6 text-primary" />
                 </div>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Green Energy</h3>
-                <p className="text-gray-600">Solar power plant generating 86,000 units annually</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Green Energy</h3>
+                <p className="text-gray-600 dark:text-gray-400">Solar power plant generating 86,000 units annually</p>
               </div>
             </div>
             <div className="flex items-start space-x-4">
               <div className="flex-shrink-0">
-                <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg">
+                <div className="flex items-center justify-center w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg">
                   <Users className="h-6 w-6 text-primary" />
                 </div>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Experienced Faculty</h3>
-                <p className="text-gray-600">66 GPSC selected faculty including 6 PhDs</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Experienced Faculty</h3>
+                <p className="text-gray-600 dark:text-gray-400">66 GPSC selected faculty including 6 PhDs</p>
               </div>
             </div>
           </div>
@@ -347,32 +347,32 @@ export default function HomePage() {
       </section>
 
       {/* Contact & Location */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Visit Our Campus</h2>
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Visit Our Campus</h2>
               <div className="space-y-4 mb-8">
                 <div className="flex items-start space-x-3">
                   <MapPin className="h-5 w-5 text-primary mt-1" />
                   <div>
-                    <p className="font-medium">Address</p>
-                    <p className="text-gray-600">Outside Malan Gate, Near Dhaniyana Crossroads</p>
-                    <p className="text-gray-600">Palanpur-385001, Banaskantha, Gujarat</p>
+                    <p className="font-medium dark:text-white">Address</p>
+                    <p className="text-gray-600 dark:text-gray-400">Outside Malan Gate, Near Dhaniyana Crossroads</p>
+                    <p className="text-gray-600 dark:text-gray-400">Palanpur-385001, Banaskantha, Gujarat</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Phone className="h-5 w-5 text-primary" />
                   <div>
-                    <p className="font-medium">Phone</p>
-                    <p className="text-gray-600">02742-245219 / 262115</p>
+                    <p className="font-medium dark:text-white">Phone</p>
+                    <p className="text-gray-600 dark:text-gray-400">02742-245219 / 262115</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Mail className="h-5 w-5 text-primary" />
                   <div>
-                    <p className="font-medium">Email</p>
-                    <p className="text-gray-600">gppalanpur@gmail.com</p>
+                    <p className="font-medium dark:text-white">Email</p>
+                    <p className="text-gray-600 dark:text-gray-400">gppalanpur@gmail.com</p>
                   </div>
                 </div>
               </div>
@@ -381,24 +381,24 @@ export default function HomePage() {
               </Button>
             </div>
             <div>
-              <div className="bg-white p-6 rounded-xl shadow-lg">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">Quick Links</h3>
+              <div className="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg border dark:border-gray-600">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Quick Links</h3>
                 <div className="grid grid-cols-2 gap-4">
-                  <Link href="/admissions" className="p-3 rounded-lg border hover:bg-gray-50 transition-colors">
-                    <div className="font-medium text-gray-900">Admissions</div>
-                    <div className="text-sm text-gray-600">Apply for 2025-26</div>
+                  <Link href="/admissions" className="p-3 rounded-lg border dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                    <div className="font-medium text-gray-900 dark:text-white">Admissions</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Apply for 2025-26</div>
                   </Link>
-                  <Link href="/facilities" className="p-3 rounded-lg border hover:bg-gray-50 transition-colors">
-                    <div className="font-medium text-gray-900">Facilities</div>
-                    <div className="text-sm text-gray-600">Campus Tour</div>
+                  <Link href="/facilities" className="p-3 rounded-lg border dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                    <div className="font-medium text-gray-900 dark:text-white">Facilities</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Campus Tour</div>
                   </Link>
-                  <Link href="/login" className="p-3 rounded-lg border hover:bg-gray-50 transition-colors">
-                    <div className="font-medium text-gray-900">Portal</div>
-                    <div className="text-sm text-gray-600">Access Dashboard</div>
+                  <Link href="/login" className="p-3 rounded-lg border dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                    <div className="font-medium text-gray-900 dark:text-white">Portal</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Access Dashboard</div>
                   </Link>
-                  <Link href="/departments" className="p-3 rounded-lg border hover:bg-gray-50 transition-colors">
-                    <div className="font-medium text-gray-900">Departments</div>
-                    <div className="text-sm text-gray-600">Programs Offered</div>
+                  <Link href="/departments" className="p-3 rounded-lg border dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                    <div className="font-medium text-gray-900 dark:text-white">Departments</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Programs Offered</div>
                   </Link>
                 </div>
               </div>

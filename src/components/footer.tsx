@@ -41,11 +41,11 @@ export function Footer({ variant = 'default' }: FooterProps) {
   ];
 
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-gray-900 dark:bg-gray-950 text-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Institution Info */}
-          <div className="md:col-span-2">
+          <div className="lg:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
               <GraduationCap className="h-8 w-8 text-primary" />
               <div>
@@ -87,9 +87,21 @@ export function Footer({ variant = 'default' }: FooterProps) {
               <li><Link href="/about" className="text-gray-400 hover:text-white transition-colors">About</Link></li>
               <li><Link href="/departments" className="text-gray-400 hover:text-white transition-colors">Departments</Link></li>
               <li><Link href="/admissions" className="text-gray-400 hover:text-white transition-colors">Admissions</Link></li>
-              <li><Link href="/ssip" className="text-gray-400 hover:text-white transition-colors">SSIP</Link></li>
               <li><Link href="/facilities" className="text-gray-400 hover:text-white transition-colors">Facilities</Link></li>
               <li><Link href="/contact" className="text-gray-400 hover:text-white transition-colors">Contact</Link></li>
+            </ul>
+          </div>
+
+          {/* Resources */}
+          <div>
+            <h4 className="font-semibold text-lg mb-4">Resources</h4>
+            <ul className="space-y-2 text-sm">
+              <li><Link href="/posts/en" className="text-gray-400 hover:text-white transition-colors">Blog Posts</Link></li>
+              <li><Link href="/categories/en" className="text-gray-400 hover:text-white transition-colors">Categories</Link></li>
+              <li><Link href="/tags/en" className="text-gray-400 hover:text-white transition-colors">Tags</Link></li>
+              <li><Link href="/ssip" className="text-gray-400 hover:text-white transition-colors">SSIP</Link></li>
+              <li><Link href="/tpo" className="text-gray-400 hover:text-white transition-colors">TPO</Link></li>
+              <li><Link href="/library" className="text-gray-400 hover:text-white transition-colors">Library</Link></li>
             </ul>
           </div>
 
