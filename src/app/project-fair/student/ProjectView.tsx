@@ -130,7 +130,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, onEdit }) =>
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-gray-500" />
                   <span className="text-sm">
-                    Due: {new Date(project.dueDate).toLocaleDateString()}
+                    Due: {new Date(project.dueDate || new Date()).toLocaleDateString()}
                   </span>
                 </div>
               )}
@@ -139,7 +139,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, onEdit }) =>
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-gray-500" />
                   <span className="text-sm">
-                    Submitted: {new Date(project.submittedAt).toLocaleDateString()}
+                    Submitted: {new Date(project.submittedAt || new Date()).toLocaleDateString()}
                   </span>
                 </div>
               )}

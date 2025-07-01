@@ -1,5 +1,21 @@
 import { v4 as uuidv4 } from 'uuid';
 
+// Define the Express types locally since they're not available
+declare namespace Express {
+  export namespace Multer {
+    export interface File {
+      fieldname: string;
+      originalname: string;
+      encoding: string;
+      mimetype: string;
+      size: number;
+      buffer: Buffer;
+      filename?: string;
+      path?: string;
+    }
+  }
+}
+
 // Mock for missing dependencies - these would normally be actual imports
 const mockStorage = {
   uploadFile: jest.fn().mockResolvedValue({

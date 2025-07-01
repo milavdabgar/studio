@@ -127,7 +127,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
                 {project.dueDate && (
                   <div className="flex items-center gap-1">
                     <Calendar className="h-3 w-3" />
-                    <span>Due {new Date(project.dueDate).toLocaleDateString()}</span>
+                    <span>Due {new Date(project.dueDate || new Date()).toLocaleDateString()}</span>
                   </div>
                 )}
               </div>

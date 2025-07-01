@@ -40,7 +40,7 @@ export class DatabaseService {
     });
   }
 
-  async query<T = any>(
+  async query<T extends Record<string, any> = any>(
     text: string, 
     params?: any[], 
     options?: QueryOptions

@@ -67,7 +67,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const posts = await getSortedPostsData(lang);
       
       for (const post of posts) {
-        const postDate = new Date(post.date);
+        const postDate = new Date(post.date || new Date());
         sitemap.push({
           url: `${baseUrl}${post.href}`,
           lastModified: postDate,

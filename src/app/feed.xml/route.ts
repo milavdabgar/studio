@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     <link>${baseUrl}</link>
   </image>
   ${posts.slice(0, 20).map(post => {
-    const postDate = new Date(post.date);
+    const postDate = new Date(post.date || new Date());
     const postUrl = `${baseUrl}${post.href}`;
     
     return `

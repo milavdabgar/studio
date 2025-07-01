@@ -222,10 +222,10 @@ export class ContentConverterV2 {
         htmlContent = this.processMermaidDiagrams(htmlContent);
         
         // Generate the complete HTML
-        const title = options.title || frontmatter.title || 'Document';
-        const author = options.author || frontmatter.author || 'Unknown';
+        const title = String(options.title || frontmatter.title || 'Document');
+        const author = String(options.author || frontmatter.author || 'Unknown');
         
-        return this.generateHtmlTemplate(htmlContent, title, author, options || {});
+        return this.generateHtmlTemplate(htmlContent, title, author, options);
     }
 
     private async convertToPdfChrome(content: string, frontmatter: Record<string, unknown>, options: ConversionOptions): Promise<Buffer> {
@@ -319,7 +319,8 @@ export class ContentConverterV2 {
             // Use chromium package if available in production
             if (isProduction && chromium) {
                 launchOptions.executablePath = await chromium.executablePath('/opt/nodejs/node_modules/@sparticuz/chromium-min/bin');
-                launchOptions.args = [...launchOptions.args, ...(Array.isArray(chromium.args) ? chromium.args : [])];
+                const chromiumArgs = Array.isArray(chromium.args) ? chromium.args : [];
+                launchOptions.args = [...launchOptions.args, ...chromiumArgs];
                 launchOptions.defaultViewport = chromium.defaultViewport;
             }
 

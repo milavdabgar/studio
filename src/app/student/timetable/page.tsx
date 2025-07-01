@@ -165,7 +165,7 @@ export default function StudentTimetablePage() {
             <Clock className="h-6 w-6" /> My Timetable
           </CardTitle>
           <CardDescription>
-            Your weekly class schedule. {studentTimetable ? `(Version: ${studentTimetable.version}, Effective: ${format(new Date(studentTimetable.effectiveDate), "PPP")})` : ""}
+            Your weekly class schedule. {studentTimetable ? `(Version: ${studentTimetable.version}, Effective: ${format(new Date(studentTimetable.effectiveDate || new Date()), "PPP")})` : ""}
           </CardDescription>
         </CardHeader>
         <CardContent>

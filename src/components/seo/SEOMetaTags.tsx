@@ -104,7 +104,7 @@ export function generateSEOMetadata({
     baseMetadata.openGraph = {
       ...baseMetadata.openGraph,
       type: 'article',
-      publishedTime: new Date(post.date).toISOString(),
+      publishedTime: new Date(post.date || new Date()).toISOString(),
       authors: post.author ? (Array.isArray(post.author) ? post.author : [post.author]) : ['Milav Dabgar'],
       tags: post.tags || [],
     };
@@ -136,8 +136,8 @@ export function generateArticleJsonLD(post: PostData, lang: string, url: string)
         url: `${baseUrl}/logo.png`,
       },
     },
-    datePublished: new Date(post.date).toISOString(),
-    dateModified: new Date(post.date).toISOString(),
+    datePublished: new Date(post.date || new Date()).toISOString(),
+    dateModified: new Date(post.date || new Date()).toISOString(),
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': url,
