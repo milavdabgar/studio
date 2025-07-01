@@ -31,7 +31,7 @@ describe('LeaveService Tests', () => {
       expect(requests[1]).toMatchObject({
         id: '2',
         userId: 'FAC002',
-        type: 'vacation',
+        type: 'earned',
         status: 'pending'
       });
     });
@@ -56,11 +56,11 @@ describe('LeaveService Tests', () => {
         expect(request).toHaveProperty('type');
         expect(request).toHaveProperty('startDate');
         expect(request).toHaveProperty('endDate');
-        expect(request).toHaveProperty('days');
+        expect(request).toHaveProperty('totalDays');
         expect(request).toHaveProperty('reason');
         expect(request).toHaveProperty('status');
         expect(request).toHaveProperty('appliedAt');
-        expect(typeof request.days).toBe('number');
+        expect(typeof request.totalDays).toBe('number');
       });
     });
   });
@@ -196,7 +196,7 @@ describe('LeaveService Tests', () => {
       
       expect(updatedRequest).not.toBeNull();
       expect(updatedRequest?.reason).toBe('Updated reason');
-      expect(updatedRequest?.days).toBe(4);
+      expect(updatedRequest?.totalDays).toBe(4);
       expect(updatedRequest?.id).toBe('1');
       expect(updatedRequest?.userId).toBe('FAC001'); // unchanged fields should remain
     });
@@ -225,7 +225,7 @@ describe('LeaveService Tests', () => {
       expect(approvedRequest?.status).toBe('approved');
       expect(approvedRequest?.actionTakenBy).toBe('ADM001');
       expect(approvedRequest?.actionTakenAt).toBeDefined();
-      expect(approvedRequest?.comments).toBe('Approved by manager');
+      expect(approvedRequest?.remarks).toBe('Approved by manager');
       expect(new Date(approvedRequest!.actionTakenAt!)).toBeInstanceOf(Date);
     });
 
@@ -234,7 +234,7 @@ describe('LeaveService Tests', () => {
       
       expect(approvedRequest?.status).toBe('approved');
       expect(approvedRequest?.actionTakenBy).toBe('ADM002');
-      expect(approvedRequest?.comments).toBeUndefined();
+      expect(approvedRequest?.remarks).toBeUndefined();
     });
 
     it('should return null for non-existent request', async () => {
@@ -251,7 +251,7 @@ describe('LeaveService Tests', () => {
       expect(rejectedRequest?.status).toBe('rejected');
       expect(rejectedRequest?.actionTakenBy).toBe('ADM001');
       expect(rejectedRequest?.actionTakenAt).toBeDefined();
-      expect(rejectedRequest?.comments).toBe('Insufficient leave balance');
+      expect(rejectedRequest?.rejectionReason).toBe('Insufficient leave balance');
     });
 
     it('should reject leave request without comments', async () => {
@@ -259,7 +259,7 @@ describe('LeaveService Tests', () => {
       
       expect(rejectedRequest?.status).toBe('rejected');
       expect(rejectedRequest?.actionTakenBy).toBe('ADM002');
-      expect(rejectedRequest?.comments).toBeUndefined();
+      expect(rejectedRequest?.rejectionReason).toBeUndefined();
     });
 
     it('should return null for non-existent request', async () => {

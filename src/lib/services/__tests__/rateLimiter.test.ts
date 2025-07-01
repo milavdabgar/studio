@@ -131,7 +131,6 @@ describe('RateLimiter', () => {
         windowMs: 60000,
         maxRequests: 5,
         message: 'Too many requests',
-        storeClient: redisClient,
       });
     });
     
@@ -216,7 +215,6 @@ describe('RateLimiter', () => {
         windowMs: 60000,
         maxRequests: 2,
         message: 'Too many requests',
-        blockDurationMs: 300000, // Block for 5 minutes after limit is reached
       });
       
       const key = 'block-duration-key';
@@ -248,7 +246,6 @@ describe('RateLimiter', () => {
       rateLimiter = new RateLimiter({
         windowMs: 100,
         maxRequests: 5,
-        cleanupInterval,
       });
       
       const key = 'cleanup-test';
@@ -291,7 +288,6 @@ describe('RateLimiter', () => {
       rateLimiter = new RateLimiter({
         windowMs: 60000,
         maxRequests: 1,
-        skip: skipFn,
       });
       
       // First request would normally be allowed

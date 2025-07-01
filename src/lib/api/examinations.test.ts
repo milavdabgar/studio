@@ -200,7 +200,7 @@ describe('ExaminationService Tests', () => {
       const updatedExam = await updateExamination('1', updates);
       
       expect(updatedExam?.updatedAt).toBeDefined();
-      expect(new Date(updatedExam!.updatedAt)).toBeInstanceOf(Date);
+      expect(new Date(updatedExam!.updatedAt as string)).toBeInstanceOf(Date);
     });
 
     it('should return null for non-existent examination', async () => {

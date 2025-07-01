@@ -1,5 +1,5 @@
 import { projectService } from './projects';
-import type { Project, EvaluationData, ProjectStatistics, User, Department, ProjectTeam, ProjectEvent, ProjectLocation } from '@/types/entities';
+import type { Project, EvaluationData, ProjectStatistics, ProjectStatus, User, Department, ProjectTeam, ProjectEvent, ProjectLocation } from '@/types/entities';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
 // Helper to create mock responses
@@ -132,7 +132,12 @@ describe('ProjectService API Tests', () => {
   });
   
   describe('evaluateProjectByDepartment', () => {
-    const evalData: EvaluationData = { score: 80, feedback: "Good"};
+    const evalData: EvaluationData = { 
+      projectId: 'proj1',
+      evaluatorId: 'eval1',
+      scores: { overall: 80 }, 
+      timestamp: '2024-01-01T00:00:00.000Z'
+    };
     const evaluatedProject = {...mockProject, deptEvaluation: { completed: true, ...evalData }};
     it('should submit department evaluation successfully', async () => {
         mockFetch.mockResolvedValueOnce(createMockResponse({ok:true, json: async () => ({ data: { project: evaluatedProject}})}) );
@@ -143,7 +148,12 @@ describe('ProjectService API Tests', () => {
   });
   
   describe('evaluateProjectByCentral', () => {
-    const evalData: EvaluationData = { score: 85, feedback: "Excellent"};
+    const evalData: EvaluationData = { 
+      projectId: 'proj1',
+      evaluatorId: 'eval1',
+      scores: { overall: 85 }, 
+      timestamp: '2024-01-01T00:00:00.000Z'
+    };
     const evaluatedProject = {...mockProject, centralEvaluation: { completed: true, ...evalData }};
     it('should submit central evaluation successfully', async () => {
         mockFetch.mockResolvedValueOnce(createMockResponse({ok:true, json: async () => ({ data: { project: evaluatedProject}})}) );
@@ -196,7 +206,16 @@ describe('ProjectService API Tests', () => {
   });
   
   describe('getProjectStatistics', () => {
-    const mockStats: ProjectStatistics = { total: 10, evaluated: 5, pending: 5, averageScore: 80, departmentWise: {"CS": {total: 5, evaluated: 2, averageScore: 75}}};
+    const mockStats: ProjectStatistics = { 
+      totalProjects: 10,
+      total: 10, 
+      evaluated: 5, 
+      pending: 5, 
+      averageScore: 80, 
+      departmentStats: [{ departmentId: 'CS', departmentName: 'Computer Science', projectCount: 5 }],
+      departmentWise: {"CS": 5},
+      statusCounts: {} as Record<ProjectStatus, number>
+    };
     it('should fetch project statistics successfully', async () => {
         mockFetch.mockResolvedValueOnce(createMockResponse({ok: true, json: async () => ({data: mockStats}) }));
         const result = await projectService.getProjectStatistics('event1');

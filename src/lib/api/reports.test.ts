@@ -27,47 +27,37 @@ global.fetch = mockFetch;
 
 describe('ReportService API Tests', () => {
   const mockStudentStrengthReport: StudentStrengthReport = {
-    totalStudents: 1500,
+    overallTotal: 1500,
     byInstitute: [
-      { instituteName: "Institute A", count: 800 },
-      { instituteName: "Institute B", count: 700 }
-    ],
-    byProgram: [
-      { programName: "Computer Science", count: 600 },
-      { programName: "Electrical Engineering", count: 500 },
-      { programName: "Mechanical Engineering", count: 400 }
-    ],
-    bySemester: [
-      { semester: 1, count: 300 },
-      { semester: 2, count: 300 },
-      { semester: 3, count: 250 },
-      { semester: 4, count: 250 },
-      { semester: 5, count: 200 },
-      { semester: 6, count: 200 }
-    ],
-    generatedAt: new Date().toISOString()
+      { instituteId: "inst1", instituteName: "Institute A", instituteCode: "INST1", totalStudents: 800, programs: [] },
+      { instituteId: "inst2", instituteName: "Institute B", instituteCode: "INST2", totalStudents: 700, programs: [] }
+    ]
   };
 
   const mockCourseEnrollmentData: CourseEnrollmentData[] = [
     {
-      courseId: "course1",
+      courseOfferingId: "course1",
       courseName: "Data Structures",
       courseCode: "CS201",
+      programName: "Computer Science",
+      batchName: "2023-24",
+      semester: 3,
+      academicYear: "2023-24",
+      facultyNames: ["Dr. Smith"],
       enrolledStudents: 45,
-      capacity: 50,
-      enrollmentPercentage: 90,
-      program: "Computer Science",
-      semester: 3
+      maxIntake: 50
     },
     {
-      courseId: "course2",
+      courseOfferingId: "course2",
       courseName: "Digital Circuits",
       courseCode: "EE101",
+      programName: "Electrical Engineering",
+      batchName: "2023-24",
+      semester: 2,
+      academicYear: "2023-24",
+      facultyNames: ["Dr. Johnson"],
       enrolledStudents: 38,
-      capacity: 40,
-      enrollmentPercentage: 95,
-      program: "Electrical Engineering",
-      semester: 2
+      maxIntake: 40
     }
   ];
 

@@ -47,7 +47,7 @@ describe('RoomService', () => {
 
   describe('createRoom', () => {
     it('should create a new room', async () => {
-      const newRoomData = { name: 'Room 103', capacity: 50, buildingId: 'building1', floor: 1, roomNumber: '103', status: 'active' };
+      const newRoomData = { name: 'Room 103', capacity: 50, buildingId: 'building1', floor: 1, roomNumber: '103', type: 'classroom' as RoomType, status: 'active' as RoomStatus };
       const createdRoom = { id: '3', ...newRoomData };
       jest.spyOn(roomService, 'createRoom').mockResolvedValue(createdRoom);
       const room = await roomService.createRoom(newRoomData);
@@ -56,7 +56,7 @@ describe('RoomService', () => {
     });
 
     it('should throw an error if createRoom API call fails', async () => {
-      const newRoomData = { name: 'Room 103', capacity: 50, buildingId: 'building1', floor: 1, roomNumber: '103', status: 'active' };
+      const newRoomData = { name: 'Room 103', capacity: 50, buildingId: 'building1', floor: 1, roomNumber: '103', type: 'classroom' as RoomType, status: 'active' as RoomStatus };
       jest.spyOn(roomService, 'createRoom').mockRejectedValue(new Error('API Error'));
       await expect(roomService.createRoom(newRoomData)).rejects.toThrow('API Error');
       expect(roomService.createRoom).toHaveBeenCalledWith(newRoomData);

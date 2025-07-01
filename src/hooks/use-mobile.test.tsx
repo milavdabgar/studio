@@ -133,7 +133,7 @@ describe('useIsMobile', () => {
       });
       
       // Call the change handler that was registered
-      const changeHandler = mockMediaQueryList.addEventListener.mock.calls[0][1];
+      const changeHandler = mockMediaQueryList.addEventListener.mock.calls[0][1] as () => void;
       changeHandler();
     });
 
@@ -158,7 +158,7 @@ describe('useIsMobile', () => {
         configurable: true,
         value: 375,
       });
-      const changeHandler = mockMediaQueryList.addEventListener.mock.calls[0][1];
+      const changeHandler = mockMediaQueryList.addEventListener.mock.calls[0][1] as () => void;
       changeHandler();
     });
 
@@ -170,7 +170,7 @@ describe('useIsMobile', () => {
         configurable: true,
         value: 1200,
       });
-      const changeHandler = mockMediaQueryList.addEventListener.mock.calls[0][1];
+      const changeHandler = mockMediaQueryList.addEventListener.mock.calls[0][1] as () => void;
       changeHandler();
     });
 
