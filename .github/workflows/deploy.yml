@@ -1,0 +1,93 @@
+name: Deploy Studio to Production
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js application
+        run: npm run build
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: unnecessary
+          if_key_exists: replace
+
+      - name: Add SSH known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H server.gppalanpur.in >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Copy files to server
+        env:
+          REMOTE_HOST: milav@server.gppalanpur.in
+        run: |
+          # Clean up and recreate deployment directory on server
+          ssh $REMOTE_HOST '
+            rm -rf ~/studio/*
+            mkdir -p ~/studio
+          '
+          
+          # Copy Docker files
+          scp docker-compose.yml $REMOTE_HOST:~/studio/
+          scp Dockerfile $REMOTE_HOST:~/studio/
+          
+          # Copy built application and necessary files
+          rsync -av --delete \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='.next/cache' \
+            --exclude='coverage' \
+            --exclude='test-results' \
+            --exclude='playwright-report' \
+            --exclude='e2e' \
+            --exclude='__tests__' \
+            --exclude='__mocks__' \
+            --exclude='*.md' \
+            --exclude='*.log' \
+            --exclude='tmp' \
+            --exclude='venv' \
+            --exclude='__pycache__' \
+            . $REMOTE_HOST:~/studio/
+
+      - name: Deploy
+        env:
+          REMOTE_HOST: milav@server.gppalanpur.in
+        run: |
+          ssh $REMOTE_HOST '
+            cd ~/studio
+            
+            # Stop and remove containers, networks, and volumes
+            docker compose down -v || true
+            
+            # Build and start the container
+            docker compose build --no-cache
+            docker compose up -d
+            
+            # Clean up old images and volumes
+            docker image prune -f
+            docker volume prune -f
+            
+            # Show container status
+            docker compose ps
+          '

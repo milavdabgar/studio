@@ -1,0 +1,17 @@
+services:
+  studio:
+    build: .
+    container_name: studio-app
+    expose:
+      - "3000"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+    networks:
+      - npm-network
+
+networks:
+  npm-network:
+    external: true
