@@ -129,15 +129,7 @@ describe('Select Component', () => {
     renderSelect();
     
     const trigger = screen.getByRole('combobox');
-    expect(trigger).toHaveClass(
-      'flex',
-      'h-10',
-      'w-full',
-      'items-center',
-      'justify-between',
-      'rounded-md',
-      'border'
-    );
+    expect(trigger).toHaveClass('flex h-10 w-full items-center justify-between rounded-md border');
   });
 
   it('includes chevron icon in trigger', () => {

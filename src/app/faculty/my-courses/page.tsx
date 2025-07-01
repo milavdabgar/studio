@@ -86,18 +86,18 @@ export default function MyCoursesPage() {
         const [offeringsData, coursesData, batchesData, programsData] = await Promise.all([
           courseOfferingService.getAllCourseOfferings(),
           courseService.getAllCourses(),
-          batchService.getAllCourses(),
+          batchService.getAllBatches(),
           programService.getAllPrograms(),
         ]);
 
-        const assignedOfferings = offeringsData.filter(offering => 
+        const assignedOfferings = offeringsData.filter((offering: CourseOffering) => 
           offering.facultyIds && offering.facultyIds.includes(facultyProfile.id)
         );
         
-        const enriched = assignedOfferings.map(offering => {
-          const course = coursesData.find(c => c.id === offering.courseId);
-          const batch = batchesData.find(b => b.id === offering.batchId);
-          const program = batch ? programsData.find(p => p.id === batch.programId) : undefined;
+        const enriched = assignedOfferings.map((offering: CourseOffering) => {
+          const course = coursesData.find((c: Course) => c.id === offering.courseId);
+          const batch = batchesData.find((b: Batch) => b.id === offering.batchId);
+          const program = batch ? programsData.find((p: Program) => p.id === batch.programId) : undefined;
           return {
             ...offering,
             courseName: course?.subjectName || 'Unknown Course',

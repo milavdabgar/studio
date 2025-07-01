@@ -108,7 +108,7 @@ export default function FacultyProfilePage() {
       <Card className="shadow-xl">
         <CardHeader className="items-center text-center">
           <Avatar className="w-24 h-24 mb-4 ring-2 ring-primary ring-offset-2">
-            <AvatarImage src={user?.avatarUrl || `https://picsum.photos/seed/${faculty.id}/100/100`} alt={fullName} data-ai-hint="faculty avatar" />
+            <AvatarImage src={`https://picsum.photos/seed/${faculty.id}/100/100`} alt={fullName} data-ai-hint="faculty avatar" />
             <AvatarFallback>{(faculty.firstName?.[0] || 'F').toUpperCase()}{(faculty.lastName?.[0] || 'M').toUpperCase()}</AvatarFallback>
           </Avatar>
           <CardTitle className="text-3xl font-bold text-primary">{fullName}</CardTitle>

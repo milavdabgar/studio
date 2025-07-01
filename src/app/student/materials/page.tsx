@@ -123,7 +123,7 @@ export default function StudyMaterialsPage() {
       setIsLoading(false);
     };
 
-    fetchStudentDataAndCourseData();
+    fetchStudentAndCourseData();
   }, [user, toast]);
   
   const uniqueCourseOfferingsForFilter = useMemo(() => {

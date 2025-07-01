@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useEffect, useState, FormEvent, useCallback } from 'react';
+import React, { useEffect, useState, FormEvent, useCallback, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";

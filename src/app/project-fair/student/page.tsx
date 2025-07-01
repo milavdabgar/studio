@@ -8,7 +8,7 @@ import { ChevronLeft, Home, User, Award, Calendar, Info, Clock, Check, Filter, U
 import { projectService } from '@/lib/api/projects';
 import { projectTeamService } from '@/lib/api/projectTeams';
 import { useToast } from '@/hooks/use-toast';
-import type { Project, ProjectEvent, ProjectTeam as Team, SystemUser } from '@/types/entities';
+import type { Project as EntityProject, ProjectEvent, ProjectTeam as Team, SystemUser } from '@/types/entities';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -36,7 +36,7 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
   const [user, setUser] = useState<UserCookie | null>(null);
   const [viewMode, setViewMode] = useState<'list' | 'details' | 'my-projects'>('list');
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
-  const [myProjects, setMyProjects] = useState<Project[]>([]);
+  const [myProjects, setMyProjects] = useState<EntityProject[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
   const [editingTeam, setEditingTeam] = useState<Team | null>(null);
@@ -77,8 +77,8 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
     }
   }, [user, viewMode, toast]);
 
-  const handleViewProject = (projectId: string) => {
-    setSelectedProjectId(projectId);
+  const handleViewProject = (project: EntityProject) => {
+    setSelectedProjectId(project.id);
     setViewMode('details');
   };
 
@@ -101,7 +101,7 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
     }
   };
 
-  const openTeamManagementModal = async (project: Project) => {
+  const openTeamManagementModal = async (project: EntityProject) => {
     if (!project.teamId || typeof project.teamId !== 'string') {
         toast({variant: "destructive", title: "Error", description: "Project does not have a valid team ID."});
         return;
@@ -208,7 +208,7 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
                         <Button variant="outline" size="sm" onClick={() => openTeamManagementModal(project)}>
                             <UsersIconLucide className="mr-2 h-4 w-4"/> Manage Team
                         </Button>
-                        <Button size="sm" onClick={() => handleViewProject(project.id)}>View Details</Button>
+                        <Button size="sm" onClick={() => handleViewProject(project)}>View Details</Button>
                       </div>
                     </div>
                   ))}
@@ -224,7 +224,18 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
                 <ChevronLeft size={20} className="mr-1" />
                 Back to Projects
               </button>
-              <ProjectView projectId={selectedProjectId} event={event} />
+              <ProjectView 
+                project={{ 
+                  id: selectedProjectId || '', 
+                  title: 'Loading...', 
+                  description: '', 
+                  status: 'draft' as const, 
+                  category: '', 
+                  technologies: [], 
+                  teamSize: 0 
+                }} 
+                onBack={handleBackToList} 
+              />
             </div>
           )}
           {/* Team Management Modal */}

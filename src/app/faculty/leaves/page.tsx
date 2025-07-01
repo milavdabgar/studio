@@ -68,7 +68,7 @@ export default function FacultyLeavesPage() {
   const [formToDate, setFormToDate] = useState<Date | undefined>(new Date());
   const [formReason, setFormReason] = useState('');
   const [formIsHalfDay, setFormIsHalfDay] = useState(false);
-  const [formHalfDayPeriod, setFormHalfDayPeriod] = useState<'first_half' | 'second_half'>('first_half');
+  const [formHalfDayPeriod, setFormHalfDayPeriod] = useState<'morning' | 'afternoon'>('morning');
 
 
   const fetchFacultyAndLeaves = useCallback(async () => {
@@ -125,7 +125,7 @@ export default function FacultyLeavesPage() {
     setFormToDate(new Date());
     setFormReason('');
     setFormIsHalfDay(false);
-    setFormHalfDayPeriod('first_half');
+    setFormHalfDayPeriod('morning');
   };
 
   const handleApplyLeave = () => {
@@ -153,18 +153,24 @@ export default function FacultyLeavesPage() {
     }
 
     setIsSubmitting(true);
-    const leaveRequestData: Omit<LeaveRequest, 'id' | 'status' | 'appliedAt' | 'actionTakenAt' | 'actionTakenBy' | 'rejectionReason' | 'createdAt' | 'updatedAt'> = {
+    const leaveRequestData: Omit<LeaveRequest, 'id' | 'status' | 'appliedAt'> = {
+      userId: currentFaculty.userId || '',
       facultyId: currentFaculty.id,
-      instituteId: currentFaculty.instituteId || "inst1", // Assuming faculty has instituteId
-      departmentId: currentFaculty.departmentId, // Assuming faculty has departmentId
+      instituteId: currentFaculty.instituteId || "inst1",
+      departmentId: currentFaculty.departmentId,
+      type: formLeaveType,
       leaveType: formLeaveType,
+      reason: formReason.trim(),
+      startDate: format(formFromDate, "yyyy-MM-dd"),
+      endDate: format(formToDate, "yyyy-MM-dd"),
       fromDate: format(formFromDate, "yyyy-MM-dd"),
       toDate: format(formToDate, "yyyy-MM-dd"),
-      reason: formReason.trim(),
       isHalfDay: formIsHalfDay,
       halfDayPeriod: formIsHalfDay ? formHalfDayPeriod : undefined,
-      // contactAddress: currentFaculty.contactNumber || '', // Or a specific leave contact
-      // 담당자 (approver) will be set by backend or HOD/Admin
+      totalDays: formIsHalfDay ? 0.5 : differenceInCalendarDays(formToDate, formFromDate) + 1,
+      days: formIsHalfDay ? 0.5 : differenceInCalendarDays(formToDate, formFromDate) + 1,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     try {
@@ -193,7 +199,8 @@ export default function FacultyLeavesPage() {
     setIsSubmitting(false);
   };
   
-  const calculateLeaveDays = (fromDateStr: string, toDateStr: string, isHalfDay?: boolean) => {
+  const calculateLeaveDays = (fromDateStr: string | undefined, toDateStr: string | undefined, isHalfDay?: boolean) => {
+    if (!fromDateStr || !toDateStr) return "N/A";
     if (!isValid(parseISO(fromDateStr)) || !isValid(parseISO(toDateStr))) return "N/A";
     if (isHalfDay) return "0.5";
     const diff = differenceInCalendarDays(parseISO(toDateStr), parseISO(fromDateStr)) + 1;
@@ -236,9 +243,9 @@ export default function FacultyLeavesPage() {
                 {myLeaves.map(leave => (
                   <TableRow key={leave.id}>
                     <TableCell className="capitalize">{leave.leaveType}</TableCell>
-                    <TableCell>{format(parseISO(leave.fromDate), "PPP")}</TableCell>
-                    <TableCell>{format(parseISO(leave.toDate), "PPP")}</TableCell>
-                    <TableCell>{calculateLeaveDays(leave.fromDate, leave.toDate, leave.isHalfDay)} {leave.isHalfDay ? `(${leave.halfDayPeriod?.replace('_',' ')})` : ''}</TableCell>
+                    <TableCell>{leave.fromDate ? format(parseISO(leave.fromDate), "PPP") : leave.startDate ? format(parseISO(leave.startDate), "PPP") : "N/A"}</TableCell>
+                    <TableCell>{leave.toDate ? format(parseISO(leave.toDate), "PPP") : leave.endDate ? format(parseISO(leave.endDate), "PPP") : "N/A"}</TableCell>
+                    <TableCell>{calculateLeaveDays(leave.fromDate || leave.startDate, leave.toDate || leave.endDate, leave.isHalfDay)} {leave.isHalfDay ? `(${leave.halfDayPeriod || 'morning'})` : ''}</TableCell>
                     <TableCell className="max-w-xs truncate" title={leave.reason}>{leave.reason}</TableCell>
                     <TableCell>
                         <span className={cn("px-2 py-0.5 text-xs font-semibold rounded-full", 
@@ -281,7 +288,7 @@ export default function FacultyLeavesPage() {
                 <Label htmlFor="formIsHalfDay" className="text-sm font-normal">Request Half Day</Label>
             </div>
             {formIsHalfDay && (
-                <div><Label htmlFor="formHalfDayPeriod">Half Day Period *</Label><Select value={formHalfDayPeriod} onValueChange={val => setFormHalfDayPeriod(val as 'first_half' | 'second_half')} required={formIsHalfDay}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent><SelectItem value="first_half">First Half</SelectItem><SelectItem value="second_half">Second Half</SelectItem></SelectContent></Select></div>
+                <div><Label htmlFor="formHalfDayPeriod">Half Day Period *</Label><Select value={formHalfDayPeriod} onValueChange={val => setFormHalfDayPeriod(val as 'morning' | 'afternoon')} required={formIsHalfDay}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent><SelectItem value="morning">Morning</SelectItem><SelectItem value="afternoon">Afternoon</SelectItem></SelectContent></Select></div>
             )}
             <div><Label htmlFor="formReason">Reason *</Label><Textarea id="formReason" value={formReason} onChange={e => setFormReason(e.target.value)} rows={3} required placeholder="Briefly state the reason for your leave."/></div>
             <DialogFooter className="pt-4">
