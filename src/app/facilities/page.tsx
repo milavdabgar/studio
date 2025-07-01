@@ -38,32 +38,32 @@ export default function FacilitiesPage() {
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 py-16">
+      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
               Campus Facilities
             </h1>
-            <p className="text-xl text-gray-600 mb-8">
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
               Our {collegeInfo.basic_info.campus_area} campus provides modern infrastructure and 
               comprehensive facilities to support academic excellence and student life.
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">{collegeInfo.infrastructure.total_labs}+</div>
-                <div className="text-sm text-gray-600">Modern Labs</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Modern Labs</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">{collegeInfo.infrastructure.library_books.toLocaleString()}</div>
-                <div className="text-sm text-gray-600">Library Books</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Library Books</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">{collegeInfo.infrastructure.hostel_capacity.total}</div>
-                <div className="text-sm text-gray-600">Hostel Capacity</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Hostel Capacity</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">200</div>
-                <div className="text-sm text-gray-600">Mbps Internet</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Mbps Internet</div>
               </div>
             </div>
           </div>
@@ -71,11 +71,11 @@ export default function FacilitiesPage() {
       </section>
 
       {/* Campus Overview */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
                 Modern Infrastructure for Excellence
               </h2>
               <p className="text-lg text-gray-600 mb-6">

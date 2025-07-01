@@ -24,32 +24,32 @@ export default function DepartmentsPage() {
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 py-16">
+      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
               Engineering Departments
             </h1>
-            <p className="text-xl text-gray-600 mb-8">
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
               Choose from 6 specialized engineering programs designed to meet industry demands 
               with modern curriculum, experienced faculty, and state-of-the-art laboratories.
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">6</div>
-                <div className="text-sm text-gray-600">Departments</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Departments</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">428</div>
-                <div className="text-sm text-gray-600">Total Seats</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Total Seats</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">3</div>
-                <div className="text-sm text-gray-600">NBA Accredited</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">NBA Accredited</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">54+</div>
-                <div className="text-sm text-gray-600">Faculty</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Faculty</div>
               </div>
             </div>
           </div>
@@ -57,7 +57,7 @@ export default function DepartmentsPage() {
       </section>
 
       {/* Departments Grid */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-8">
             {departments.map((dept) => (
@@ -66,15 +66,15 @@ export default function DepartmentsPage() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <CardTitle className="text-2xl text-gray-900">{dept.name}</CardTitle>
+                        <CardTitle className="text-2xl text-gray-900 dark:text-white">{dept.name}</CardTitle>
                         {dept.nba_status && (
-                          <Badge variant="secondary" className="bg-green-100 text-green-800">
+                          <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                             NBA Accredited
                           </Badge>
                         )}
                       </div>
                       <CardDescription className="text-base">
-                        <div className="flex items-center gap-4 text-gray-600">
+                        <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400">
                           <span className="flex items-center gap-1">
                             <Calendar className="h-4 w-4" />
                             Est. {dept.established}
@@ -97,19 +97,19 @@ export default function DepartmentsPage() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <p className="text-gray-700 leading-relaxed">
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
                     {dept.overview}
                   </p>
 
                   {/* Faculty Info */}
                   {dept.faculty_count && (
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                       <div className="flex items-center space-x-2">
                         <Users className="h-5 w-5 text-primary" />
-                        <span className="font-medium">Faculty: {dept.faculty_count}</span>
+                        <span className="font-medium text-gray-900 dark:text-white">Faculty: {dept.faculty_count}</span>
                       </div>
                       {dept.head_of_department && (
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-gray-600 dark:text-gray-400">
                           HOD: {dept.head_of_department}
                         </div>
                       )}
@@ -118,7 +118,7 @@ export default function DepartmentsPage() {
 
                   {/* Specializations */}
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
                       <BookOpen className="h-4 w-4" />
                       Key Specializations
                     </h4>
@@ -138,11 +138,11 @@ export default function DepartmentsPage() {
 
                   {/* Career Opportunities */}
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
                       <Briefcase className="h-4 w-4" />
                       Career Opportunities
                     </h4>
-                    <ul className="space-y-1 text-sm text-gray-600">
+                    <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
                       {dept.career_opportunities.slice(0, 3).map((career, idx) => (
                         <li key={idx} className="flex items-start gap-2">
                           <ArrowRight className="h-3 w-3 mt-1 text-primary flex-shrink-0" />
@@ -154,18 +154,18 @@ export default function DepartmentsPage() {
 
                   {/* Laboratories */}
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
                       <Building className="h-4 w-4" />
                       Laboratories ({dept.laboratories.length})
                     </h4>
                     <div className="grid grid-cols-1 gap-2">
                       {dept.laboratories.slice(0, 3).map((lab, idx) => (
-                        <div key={idx} className="text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded">
+                        <div key={idx} className="text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 px-3 py-2 rounded">
                           {lab}
                         </div>
                       ))}
                       {dept.laboratories.length > 3 && (
-                        <div className="text-sm text-gray-500 px-3 py-2">
+                        <div className="text-sm text-gray-500 dark:text-gray-500 px-3 py-2">
                           +{dept.laboratories.length - 3} more labs
                         </div>
                       )}
@@ -187,12 +187,12 @@ export default function DepartmentsPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
             Ready to Start Your Engineering Journey?
           </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
             Join one of our acclaimed engineering programs and build your future with industry-relevant skills and knowledge.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

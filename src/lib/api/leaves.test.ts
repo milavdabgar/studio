@@ -156,9 +156,7 @@ describe('LeaveService Tests', () => {
         startDate: '2025-08-01',
         endDate: '2025-08-02',
         totalDays: 2,
-        reason: 'Personal work',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        reason: 'Personal work'
       };
 
       const createdRequest = await createLeaveRequest(newRequestData);
@@ -167,6 +165,8 @@ describe('LeaveService Tests', () => {
       expect(createdRequest.id).toBeDefined();
       expect(createdRequest.status).toBe('pending');
       expect(createdRequest.appliedAt).toBeDefined();
+      expect(createdRequest.createdAt).toBeDefined();
+      expect(createdRequest.updatedAt).toBeDefined();
       expect(new Date(createdRequest.appliedAt)).toBeInstanceOf(Date);
     });
 

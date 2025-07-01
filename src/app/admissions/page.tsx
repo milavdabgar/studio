@@ -36,36 +36,36 @@ export default function AdmissionsPage() {
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 py-16">
+      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
             <div className="flex justify-center space-x-2 mb-6">
               <Badge variant="secondary" className="text-sm">Academic Year 2025-26</Badge>
               <Badge variant="outline" className="text-sm">Applications Open</Badge>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
               Admissions 2025-26
             </h1>
-            <p className="text-xl text-gray-600 mb-8">
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
               Join Government Polytechnic Palanpur and embark on your journey towards a successful 
               engineering career. Apply now for our diploma engineering programs.
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">{totalSeats}</div>
-                <div className="text-sm text-gray-600">Total Seats</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Total Seats</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">6</div>
-                <div className="text-sm text-gray-600">Programs</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Programs</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">3</div>
-                <div className="text-sm text-gray-600">NBA Accredited</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">NBA Accredited</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">171</div>
-                <div className="text-sm text-gray-600">Placements 2024</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Placements 2024</div>
               </div>
             </div>
           </div>
@@ -73,11 +73,11 @@ export default function AdmissionsPage() {
       </section>
 
       {/* Important Notice */}
-      <section className="py-8 bg-yellow-50 border-b border-yellow-200">
+      <section className="py-8 bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <Alert className="border-yellow-200 bg-yellow-50">
-            <AlertCircle className="h-4 w-4 text-yellow-600" />
-            <AlertDescription className="text-yellow-800">
+          <Alert className="border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20">
+            <AlertCircle className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
+            <AlertDescription className="text-yellow-800 dark:text-yellow-200">
               <strong>Important:</strong> Admissions for 2025-26 are conducted through ACPDC (Admission Committee for Professional Diploma Courses). 
               Visit the official ACPDC portal for application process and important dates.
             </AlertDescription>
@@ -86,13 +86,13 @@ export default function AdmissionsPage() {
       </section>
 
       {/* Available Programs */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
               Available Programs
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-300">
               Choose from 6 engineering disciplines with industry-focused curriculum
             </p>
           </div>
@@ -102,15 +102,15 @@ export default function AdmissionsPage() {
               <Card key={dept.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">{dept.name}</CardTitle>
+                    <CardTitle className="text-lg text-gray-900 dark:text-white">{dept.name}</CardTitle>
                     {dept.nba_status && (
-                      <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs">
+                      <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs">
                         NBA
                       </Badge>
                     )}
                   </div>
                   <CardDescription>
-                    <div className="flex items-center gap-4 text-sm">
+                    <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
                         Est. {dept.established}
@@ -123,7 +123,7 @@ export default function AdmissionsPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600 text-sm mb-4">
+                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
                     {dept.overview.substring(0, 120)}...
                   </p>
                   <div className="flex items-center justify-between">

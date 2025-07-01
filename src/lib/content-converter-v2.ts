@@ -97,7 +97,7 @@ export class ContentConverterV2 {
                 }
                 
                 // Handle special cases that Shiki doesn't support
-                const unsupportedLanguages = ['goat', 'ascii', 'diagram', 'text', 'plain'];
+                const unsupportedLanguages = ['goat', 'ascii', 'diagram', 'text', 'plain', 'assembly', 'asm', 'x86', 'arm', 'nasm', 'masm'];
                 
                 if (!language || unsupportedLanguages.includes(language.toLowerCase())) {
                     // For ASCII diagrams and plain text, render without syntax highlighting

@@ -22,7 +22,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language, className = '' })
     const highlightCode = async () => {
       try {
         // Handle special cases that Shiki doesn't support
-        const unsupportedLanguages = ['goat', 'ascii', 'diagram', 'text', 'plain'];
+        const unsupportedLanguages = ['goat', 'ascii', 'diagram', 'text', 'plain', 'assembly', 'asm', 'x86', 'arm', 'nasm', 'masm'];
         
         if (unsupportedLanguages.includes(language.toLowerCase())) {
           // For ASCII diagrams and plain text, render without syntax highlighting
@@ -91,6 +91,17 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language, className = '' })
       case 'text':
       case 'plain':
         return 'Plain Text';
+      case 'assembly':
+      case 'asm':
+        return 'Assembly';
+      case 'x86':
+        return 'x86 Assembly';
+      case 'arm':
+        return 'ARM Assembly';
+      case 'nasm':
+        return 'NASM Assembly';
+      case 'masm':
+        return 'MASM Assembly';
       default:
         return lang;
     }

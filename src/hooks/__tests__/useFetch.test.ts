@@ -31,7 +31,9 @@ describe('useFetch', () => {
     });
 
     // After fetch
-    expect(global.fetch).toHaveBeenCalledWith(mockUrl);
+    expect(global.fetch).toHaveBeenCalledWith(mockUrl, expect.objectContaining({
+      signal: expect.any(AbortSignal)
+    }));
     expect(result.current.data).toEqual(mockData);
     expect(result.current.loading).toBe(false);
     expect(result.current.error).toBeNull();
