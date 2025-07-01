@@ -131,17 +131,14 @@ export default function AssignmentDetailPage() {
     }
     setIsSubmitting(true);
     try {
-      const formData = new FormData();
-      formData.append('studentId', currentStudent.id);
-      formData.append('assessmentId', assignment.id);
-      if (selectedFile) {
-        formData.append('file0', selectedFile); // Assuming single file upload for now
-      }
-      if (submissionComments.trim()) {
-        formData.append('comments', submissionComments.trim());
-      }
+      const submissionData = {
+        studentId: currentStudent.id,
+        assessmentId: assignment.id,
+        files: selectedFile ? [selectedFile] : undefined,
+        comments: submissionComments.trim() || undefined,
+      };
 
-      const result = await studentAssessmentScoreService.submitStudentAssignment(formData);
+      const result = await studentAssessmentScoreService.submitStudentAssignment(submissionData);
       setSubmission(result); 
       toast({ title: "Submission Successful", description: "Your assignment has been submitted." });
       setSelectedFile(null); 

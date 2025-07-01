@@ -190,7 +190,7 @@ export default function StudentResultsPage() {
                                         </span>
                                     </div>
                                     <p className="text-xs text-muted-foreground mb-2">Declared: {result.declarationDate ? format(parseISO(result.declarationDate), "PPP") : 'N/A'}</p>
-                                    <Table size="sm">
+                                    <Table>
                                         <TableHeader>
                                         <TableRow>
                                             <TableHead className="w-1/4">Subject Code</TableHead>

@@ -88,7 +88,7 @@ export default function StudentCourseDetailPage() {
           <div>
             <h3 className="text-lg font-semibold mb-2 text-secondary">Course Description</h3>
             <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-              {course.description || "No detailed description available."}
+              {"No detailed description available for this course."}
             </p>
           </div>
 

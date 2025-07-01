@@ -20,17 +20,19 @@ export interface Project {
 }
 
 interface ProjectListProps {
-  projects: Project[];
+  projects?: Project[];
   onViewProject: (project: Project) => void;
   onEditProject?: (project: Project) => void;
   loading?: boolean;
+  event?: any; // Add event prop to match usage
 }
 
 const ProjectList: React.FC<ProjectListProps> = ({ 
-  projects, 
+  projects = [], 
   onViewProject, 
   onEditProject,
-  loading = false 
+  loading = false,
+  event 
 }) => {
   if (loading) {
     return (

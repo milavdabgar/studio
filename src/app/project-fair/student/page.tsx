@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import ProjectList from './ProjectList';
+import ProjectList, { Project as ProjectListProject } from './ProjectList';
 import ProjectView from './ProjectView';
 import { ChevronLeft, Home, User, Award, Calendar, Info, Clock, Check, Filter, Users as UsersIconLucide, Edit2 } from 'lucide-react';
 import { projectService } from '@/lib/api/projects';
@@ -77,7 +77,7 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
     }
   }, [user, viewMode, toast]);
 
-  const handleViewProject = (project: EntityProject) => {
+  const handleViewProject = (project: ProjectListProject) => {
     setSelectedProjectId(project.id);
     setViewMode('details');
   };
@@ -208,7 +208,15 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
                         <Button variant="outline" size="sm" onClick={() => openTeamManagementModal(project)}>
                             <UsersIconLucide className="mr-2 h-4 w-4"/> Manage Team
                         </Button>
-                        <Button size="sm" onClick={() => handleViewProject(project)}>View Details</Button>
+                        <Button size="sm" onClick={() => handleViewProject({
+                          id: project.id,
+                          title: project.title || 'Untitled Project',
+                          description: project.abstract || 'No description available',
+                          status: 'draft' as const,
+                          category: project.category || 'General',
+                          technologies: project.technologies || [],
+                          teamSize: project.teamSize || 1
+                        })}>View Details</Button>
                       </div>
                     </div>
                   ))}
