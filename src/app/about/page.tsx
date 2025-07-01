@@ -34,7 +34,7 @@ export default function AboutPage() {
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16 dark:from-primary/10 dark:to-secondary/20">
+      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
             <div className="flex justify-center space-x-2 mb-6">
@@ -42,7 +42,7 @@ export default function AboutPage() {
               <Badge variant="outline" className="text-sm">{collegeInfo.basic_info.approval}</Badge>
               <Badge variant="outline" className="text-sm">GTU Affiliated</Badge>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 dark:text-white">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
               About {collegeInfo.name}
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 dark:text-gray-400">
@@ -488,7 +488,7 @@ export default function AboutPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-primary/5 dark:bg-primary/10 dark:bg-primary/20 dark:bg-primary/20">
+      <section className="py-16 bg-primary/5 dark:bg-primary/10 dark:bg-primary/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
             Join Our Legacy of Excellence
