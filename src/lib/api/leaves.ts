@@ -32,23 +32,27 @@ const mockLeaveRequests: LeaveRequest[] = [
     type: 'sick',
     startDate: '2025-06-20',
     endDate: '2025-06-22',
-    days: 3,
+    totalDays: 3,
     reason: 'Fever and flu symptoms',
     status: 'approved',
     appliedAt: '2025-06-18T09:00:00Z',
-    reviewedBy: 'ADM001',
-    reviewedAt: '2025-06-18T14:00:00Z',
+    actionTakenBy: 'ADM001',
+    actionTakenAt: '2025-06-18T14:00:00Z',
+    createdAt: '2025-06-18T09:00:00Z',
+    updatedAt: '2025-06-18T14:00:00Z',
   },
   {
     id: '2',
     userId: 'FAC002',
-    type: 'vacation',
+    type: 'earned',
     startDate: '2025-07-01',
     endDate: '2025-07-05',
-    days: 5,
+    totalDays: 5,
     reason: 'Family vacation',
     status: 'pending',
     appliedAt: '2025-06-17T10:00:00Z',
+    createdAt: '2025-06-17T10:00:00Z',
+    updatedAt: '2025-06-17T10:00:00Z',
   },
 ];
 
@@ -87,12 +91,15 @@ export async function getLeaveBalance(userId: string, year: number = new Date().
   return Promise.resolve(balance || null);
 }
 
-export async function createLeaveRequest(request: Omit<LeaveRequest, 'id' | 'appliedAt' | 'status'>): Promise<LeaveRequest> {
+export async function createLeaveRequest(request: Omit<LeaveRequest, 'id' | 'appliedAt' | 'status' | 'createdAt' | 'updatedAt'>): Promise<LeaveRequest> {
+  const now = new Date().toISOString();
   const newRequest: LeaveRequest = {
     ...request,
     id: Date.now().toString(),
     status: 'pending',
-    appliedAt: new Date().toISOString(),
+    appliedAt: now,
+    createdAt: now,
+    updatedAt: now,
   };
   return Promise.resolve(newRequest);
 }
@@ -104,6 +111,7 @@ export async function updateLeaveRequest(id: string, updates: Partial<LeaveReque
   const updatedRequest = {
     ...request,
     ...updates,
+    updatedAt: new Date().toISOString(),
   };
   return Promise.resolve(updatedRequest);
 }
@@ -111,18 +119,18 @@ export async function updateLeaveRequest(id: string, updates: Partial<LeaveReque
 export async function approveLeaveRequest(id: string, reviewerId: string, comments?: string): Promise<LeaveRequest | null> {
   return updateLeaveRequest(id, {
     status: 'approved',
-    reviewedBy: reviewerId,
-    reviewedAt: new Date().toISOString(),
-    comments,
+    actionTakenBy: reviewerId,
+    actionTakenAt: new Date().toISOString(),
+    remarks: comments,
   });
 }
 
 export async function rejectLeaveRequest(id: string, reviewerId: string, comments?: string): Promise<LeaveRequest | null> {
   return updateLeaveRequest(id, {
     status: 'rejected',
-    reviewedBy: reviewerId,
-    reviewedAt: new Date().toISOString(),
-    comments,
+    actionTakenBy: reviewerId,
+    actionTakenAt: new Date().toISOString(),
+    rejectionReason: comments,
   });
 }
 

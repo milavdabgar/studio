@@ -65,7 +65,7 @@ export const studentAssessmentScoreService = {
         existingScoreRecord = await this.getStudentScoreForAssessment(assessmentId, studentId);
     } catch (e) {
         // Ignore if not found, we'll create it
-        if(!e.message?.includes("Failed to fetch student score") && !e.message?.includes("404")) { // Re-throw unexpected errors
+        if(!((e as Error)?.message?.includes("Failed to fetch student score") || (e as Error)?.message?.includes("404"))) { // Re-throw unexpected errors
             throw e;
         }
     }

@@ -225,7 +225,7 @@ export class ContentConverterV2 {
         const title = options.title || frontmatter.title || 'Document';
         const author = options.author || frontmatter.author || 'Unknown';
         
-        return this.generateHtmlTemplate(htmlContent, title, author, options);
+        return this.generateHtmlTemplate(htmlContent, title, author, options || {});
     }
 
     private async convertToPdfChrome(content: string, frontmatter: Record<string, unknown>, options: ConversionOptions): Promise<Buffer> {
@@ -319,7 +319,7 @@ export class ContentConverterV2 {
             // Use chromium package if available in production
             if (isProduction && chromium) {
                 launchOptions.executablePath = await chromium.executablePath('/opt/nodejs/node_modules/@sparticuz/chromium-min/bin');
-                launchOptions.args = [...launchOptions.args, ...chromium.args];
+                launchOptions.args = [...launchOptions.args, ...(Array.isArray(chromium.args) ? chromium.args : [])];
                 launchOptions.defaultViewport = chromium.defaultViewport;
             }
 
@@ -481,12 +481,12 @@ export class ContentConverterV2 {
 
         const title = options.title || frontmatter.title || 'Document';
         const author = options.author || frontmatter.author || '';
-        const date = frontmatter.date ? new Date(frontmatter.date).toLocaleDateString() : '';
+        const date = frontmatter.date ? new Date(frontmatter.date as string).toLocaleDateString() : '';
         
         let header = title;
         if (author) header += `\nBy: ${author}`;
         if (date) header += `\nDate: ${date}`;
-        header += '\n' + '='.repeat(title.length) + '\n\n';
+        header += '\n' + '='.repeat(String(title).length) + '\n\n';
         
         return header + text;
     }
@@ -536,7 +536,7 @@ ${rtf}
             // Create frontmatter content
             const title = options.title || frontmatter.title || 'Document';
             const author = options.author || frontmatter.author || '';
-            const date = frontmatter.date ? new Date(frontmatter.date).toLocaleDateString() : '';
+            const date = frontmatter.date ? new Date(frontmatter.date as string).toLocaleDateString() : '';
             
             const markdownWithMeta = `---
 title: "${title}"

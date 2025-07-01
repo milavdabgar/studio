@@ -1,18 +1,18 @@
 // Database service mock/stub
 export const user = {
-  findMany: () => Promise.resolve([]),
-  findUnique: () => Promise.resolve(null),
-  create: () => Promise.resolve({}),
-  update: () => Promise.resolve({}),
-  delete: () => Promise.resolve({}),
+  findMany: (args?: any) => Promise.resolve([]),
+  findUnique: (args?: any) => Promise.resolve(null),
+  create: (args?: any) => Promise.resolve({ id: 1, email: 'test@example.com', ...args?.data }),
+  update: (args?: any) => Promise.resolve({ id: 1, ...args?.data }),
+  delete: (args?: any) => Promise.resolve({ id: 1 }),
 };
 
 export const assessment = {
-  findMany: () => Promise.resolve([]),
-  findUnique: () => Promise.resolve(null),
-  create: () => Promise.resolve({}),
-  update: () => Promise.resolve({}),
-  delete: () => Promise.resolve({}),
+  findMany: (args?: any) => Promise.resolve([]),
+  findUnique: (args?: any) => Promise.resolve(null),
+  create: (args?: any) => Promise.resolve({ id: 1, ...args?.data }),
+  update: (args?: any) => Promise.resolve({ id: 1, ...args?.data }),
+  delete: (args?: any) => Promise.resolve({ id: 1 }),
 };
 
 export const db = {
