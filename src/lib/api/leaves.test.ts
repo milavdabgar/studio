@@ -82,15 +82,15 @@ describe('LeaveService Tests', () => {
 
     it('should return approved request with review details', async () => {
       const request = await getLeaveRequest('1');
-      expect(request?.reviewedBy).toBe('ADM001');
-      expect(request?.reviewedAt).toBeDefined();
+      expect(request?.actionTakenBy).toBe('ADM001');
+      expect(request?.actionTakenAt).toBeDefined();
       expect(request?.status).toBe('approved');
     });
 
     it('should return pending request without review details', async () => {
       const request = await getLeaveRequest('2');
-      expect(request?.reviewedBy).toBeUndefined();
-      expect(request?.reviewedAt).toBeUndefined();
+      expect(request?.actionTakenBy).toBeUndefined();
+      expect(request?.actionTakenAt).toBeUndefined();
       expect(request?.status).toBe('pending');
     });
   });
@@ -155,8 +155,10 @@ describe('LeaveService Tests', () => {
         type: 'casual' as const,
         startDate: '2025-08-01',
         endDate: '2025-08-02',
-        days: 2,
-        reason: 'Personal work'
+        totalDays: 2,
+        reason: 'Personal work',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
 
       const createdRequest = await createLeaveRequest(newRequestData);
@@ -174,7 +176,7 @@ describe('LeaveService Tests', () => {
         type: 'emergency' as const,
         startDate: '2025-08-05',
         endDate: '2025-08-05',
-        days: 1,
+        totalDays: 1,
         reason: 'Emergency'
       };
 
@@ -187,7 +189,7 @@ describe('LeaveService Tests', () => {
     it('should update existing leave request', async () => {
       const updates = {
         reason: 'Updated reason',
-        days: 4
+        totalDays: 4
       };
 
       const updatedRequest = await updateLeaveRequest('1', updates);
@@ -221,17 +223,17 @@ describe('LeaveService Tests', () => {
       
       expect(approvedRequest).not.toBeNull();
       expect(approvedRequest?.status).toBe('approved');
-      expect(approvedRequest?.reviewedBy).toBe('ADM001');
-      expect(approvedRequest?.reviewedAt).toBeDefined();
+      expect(approvedRequest?.actionTakenBy).toBe('ADM001');
+      expect(approvedRequest?.actionTakenAt).toBeDefined();
       expect(approvedRequest?.comments).toBe('Approved by manager');
-      expect(new Date(approvedRequest!.reviewedAt!)).toBeInstanceOf(Date);
+      expect(new Date(approvedRequest!.actionTakenAt!)).toBeInstanceOf(Date);
     });
 
     it('should approve leave request without comments', async () => {
       const approvedRequest = await approveLeaveRequest('2', 'ADM002');
       
       expect(approvedRequest?.status).toBe('approved');
-      expect(approvedRequest?.reviewedBy).toBe('ADM002');
+      expect(approvedRequest?.actionTakenBy).toBe('ADM002');
       expect(approvedRequest?.comments).toBeUndefined();
     });
 
@@ -247,8 +249,8 @@ describe('LeaveService Tests', () => {
       
       expect(rejectedRequest).not.toBeNull();
       expect(rejectedRequest?.status).toBe('rejected');
-      expect(rejectedRequest?.reviewedBy).toBe('ADM001');
-      expect(rejectedRequest?.reviewedAt).toBeDefined();
+      expect(rejectedRequest?.actionTakenBy).toBe('ADM001');
+      expect(rejectedRequest?.actionTakenAt).toBeDefined();
       expect(rejectedRequest?.comments).toBe('Insufficient leave balance');
     });
 
@@ -256,7 +258,7 @@ describe('LeaveService Tests', () => {
       const rejectedRequest = await rejectLeaveRequest('2', 'ADM002');
       
       expect(rejectedRequest?.status).toBe('rejected');
-      expect(rejectedRequest?.reviewedBy).toBe('ADM002');
+      expect(rejectedRequest?.actionTakenBy).toBe('ADM002');
       expect(rejectedRequest?.comments).toBeUndefined();
     });
 

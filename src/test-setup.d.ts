@@ -1,32 +1,29 @@
-import '@testing-library/jest-dom'
+/// <reference types="@testing-library/jest-dom" />
 
 declare global {
   namespace jest {
     interface Matchers<R> {
       toBeInTheDocument(): R;
-      toBeEnabled(): R;
-      toBeDisabled(): R;
-      toBeRequired(): R;
-      toBeChecked(): R;
-      toBePartiallyChecked(): R;
-      toHaveValue(value?: string | string[] | number): R;
-      toHaveDisplayValue(value: string | string[]): R;
-      toBeVisible(): R;
-      toBeEmptyDOMElement(): R;
       toHaveAttribute(attr: string, value?: any): R;
-      toHaveTextContent(text: string | RegExp): R;
       toHaveClass(...classNames: string[]): R;
-      toHaveStyle(css: string | Record<string, any>): R;
+      toHaveTextContent(text: string | RegExp): R;
+      toHaveValue(value: string | string[] | number): R;
+      toBeVisible(): R;
+      toBeDisabled(): R;
+      toBeEnabled(): R;
+      toHaveDisplayValue(value: string | RegExp | (string | RegExp)[]): R;
       toHaveFocus(): R;
       toHaveFormValues(expectedValues: Record<string, any>): R;
-      toHaveAccessibleName(name?: string | RegExp): R;
-      toHaveAccessibleDescription(description?: string | RegExp): R;
+      toHaveStyle(css: string | Record<string, any>): R;
       toBeInvalid(): R;
       toBeValid(): R;
-      toContainElement(element: HTMLElement | null): R;
-      toContainHTML(htmlText: string): R;
-      toHaveErrorMessage(text?: string | RegExp): R;
+      toBeRequired(): R;
+      toBePartiallyChecked(): R;
+      toBeChecked(): R;
       toHaveDescription(text?: string | RegExp): R;
+      toHaveAccessibleDescription(text?: string | RegExp): R;
+      toHaveAccessibleName(text?: string | RegExp): R;
+      toHaveErrorMessage(text?: string | RegExp): R;
     }
   }
 }

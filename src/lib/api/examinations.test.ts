@@ -20,15 +20,13 @@ describe('ExaminationService Tests', () => {
       expect(examinations).toHaveLength(2);
       expect(examinations[0]).toMatchObject({
         id: '1',
-        courseId: 'CS101',
-        title: 'Introduction to Computer Science - Midterm',
-        type: 'midterm'
+        name: 'Mid Semester Examination - Fall 2024',
+        examType: 'Mid Semester'
       });
       expect(examinations[1]).toMatchObject({
         id: '2',
-        courseId: 'CS102',
-        title: 'Data Structures - Final Exam',
-        type: 'final'
+        name: 'End Semester Examination - Fall 2024',
+        examType: 'End Semester Theory'
       });
     });
 
@@ -36,13 +34,13 @@ describe('ExaminationService Tests', () => {
       const examinations = await getExaminations();
       examinations.forEach(exam => {
         expect(exam).toHaveProperty('id');
-        expect(exam).toHaveProperty('courseId');
-        expect(exam).toHaveProperty('title');
-        expect(exam).toHaveProperty('type');
-        expect(exam).toHaveProperty('date');
-        expect(exam).toHaveProperty('duration');
-        expect(exam).toHaveProperty('maxMarks');
-        expect(exam).toHaveProperty('venue');
+        expect(exam).toHaveProperty('name');
+        expect(exam).toHaveProperty('examType');
+        expect(exam).toHaveProperty('startDate');
+        expect(exam).toHaveProperty('endDate');
+        expect(exam).toHaveProperty('academicYear');
+        expect(exam).toHaveProperty('programIds');
+        expect(exam).toHaveProperty('status');
         expect(exam).toHaveProperty('createdAt');
         expect(exam).toHaveProperty('updatedAt');
       });
@@ -68,7 +66,7 @@ describe('ExaminationService Tests', () => {
       const finalExam = await getExamination('2');
       
       expect(midtermExam?.examType).toBe('Mid Semester');
-      expect(finalExam?.examType).toBe('Final');
+      expect(finalExam?.examType).toBe('End Semester Theory');
     });
   });
 
@@ -206,18 +204,18 @@ describe('ExaminationService Tests', () => {
     });
 
     it('should return null for non-existent examination', async () => {
-      const updates = { title: 'New Title' };
+      const updates = { name: 'New Name' };
       const result = await updateExamination('nonexistent', updates);
       
       expect(result).toBeNull();
     });
 
     it('should handle partial updates', async () => {
-      const updates = { maxMarks: 200 };
+      const updates = { academicYear: '2025-26' };
       const updatedExam = await updateExamination('1', updates);
       
-      expect(updatedExam?.maxMarks).toBe(200);
-      expect(updatedExam?.title).toBe('Introduction to Computer Science - Midterm'); // other fields unchanged
+      expect(updatedExam?.academicYear).toBe('2025-26');
+      expect(updatedExam?.name).toBe('Mid Semester Examination - Fall 2024'); // other fields unchanged
     });
   });
 

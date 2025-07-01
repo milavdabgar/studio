@@ -1,20 +1,10 @@
+/// <reference types="@testing-library/jest-dom" />
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Alert, AlertTitle, AlertDescription } from './alert';
 import { describe, it, expect } from '@jest/globals';
 
-// Extend Jest matchers
-declare global {
-  namespace jest {
-    interface Matchers<R> {
-      toBeInTheDocument(): R;
-      toHaveAttribute(attr: string, value?: any): R;
-      toHaveTextContent(text: string | RegExp): R;
-      toHaveClass(...classNames: string[]): R;
-    }
-  }
-}
 
 describe('Alert Components', () => {
   describe('Alert', () => {
