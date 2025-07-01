@@ -5,12 +5,15 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json package-lock.json* ./
-RUN npm ci --only=production
+# Use legacy peer deps to handle dependency conflicts
+RUN npm ci --omit=dev --legacy-peer-deps
 
 # Rebuild the source code only when needed
 FROM node:18-alpine AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+COPY package.json package-lock.json* ./
+# Install all dependencies including dev dependencies for build
+RUN npm ci --legacy-peer-deps
 COPY . .
 
 # Next.js collects completely anonymous telemetry data about general usage.
@@ -41,6 +44,9 @@ RUN chown nextjs:nodejs .next
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Copy production node_modules
+COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
 
 USER nextjs
 
