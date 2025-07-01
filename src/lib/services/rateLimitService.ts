@@ -5,7 +5,8 @@ export class RateLimitExceededError extends Error {
     message: string,
     public retryAfter: number,
     public limit: number,
-    public remaining: number = 0
+    public remaining: number = 0,
+    public resetTime?: Date
   ) {
     super(message);
     this.name = 'RateLimitExceededError';
@@ -13,90 +14,223 @@ export class RateLimitExceededError extends Error {
 }
 
 export interface RateLimitOptions {
-  windowSizeMs: number;
-  maxRequests: number;
-  keyGenerator?: (identifier: string) => string;
+  windowMs?: number;
+  maxRequests?: number;
+  keyGenerator?: (req: any) => string;
+  skip?: (req: any) => boolean;
+  throwOnLimit?: boolean;
+}
+
+export interface RateLimitConfig {
+  redis?: IORedis | {
+    host?: string;
+    port?: number;
+    password?: string;
+    db?: number;
+  };
+  defaultWindowMs?: number;
+  defaultMaxRequests?: number;
+  logger?: {
+    warn?: (message: string, meta?: any) => void;
+    error?: (message: string, meta?: any) => void;
+    debug?: (message: string, meta?: any) => void;
+  };
 }
 
 export interface RateLimitResult {
   allowed: boolean;
-  limit: number;
   remaining: number;
-  resetTime: number;
-  retryAfter?: number;
+  resetTime: Date;
+  retryAfter: number;
+  total: number;
 }
 
 export class RateLimitService {
   private redis: IORedis;
-  private options: RateLimitOptions;
+  private defaultWindowMs: number;
+  private defaultMaxRequests: number;
+  private logger?: RateLimitConfig['logger'];
 
-  constructor(redis: IORedis, options: RateLimitOptions) {
-    this.redis = redis;
-    this.options = options;
-  }
-
-  async checkLimit(identifier: string): Promise<RateLimitResult> {
-    const key = this.options.keyGenerator 
-      ? this.options.keyGenerator(identifier)
-      : `rate_limit:${identifier}`;
-    
-    const now = Date.now();
-    const windowStart = now - this.options.windowSizeMs;
-
-    // Use Redis pipeline for atomic operations
-    const pipeline = this.redis.pipeline();
-    pipeline.zremrangebyscore(key, 0, windowStart);
-    pipeline.zcard(key);
-    pipeline.zadd(key, now, `${now}-${Math.random()}`);
-    pipeline.expire(key, Math.ceil(this.options.windowSizeMs / 1000));
-
-    const results = await pipeline.exec();
-    
-    if (!results) {
-      throw new Error('Redis pipeline execution failed');
+  constructor(config: RateLimitConfig) {
+    // Set up Redis connection
+    if (config.redis instanceof IORedis) {
+      this.redis = config.redis;
+    } else if (config.redis) {
+      this.redis = new IORedis(config.redis);
+    } else {
+      this.redis = new IORedis();
     }
 
-    const currentCount = (results[1][1] as number) || 0;
-    const remaining = Math.max(0, this.options.maxRequests - currentCount - 1);
-    const resetTime = now + this.options.windowSizeMs;
+    this.defaultWindowMs = config.defaultWindowMs || 60000; // 1 minute
+    this.defaultMaxRequests = config.defaultMaxRequests || 100;
+    this.logger = config.logger;
+  }
 
-    if (currentCount >= this.options.maxRequests) {
-      const retryAfter = Math.ceil(this.options.windowSizeMs / 1000);
-      throw new RateLimitExceededError(
-        `Rate limit exceeded. Try again in ${retryAfter} seconds.`,
+  async checkRateLimit(
+    key: string, 
+    options: RateLimitOptions = {}
+  ): Promise<RateLimitResult> {
+    const windowMs = options.windowMs || this.defaultWindowMs;
+    const maxRequests = options.maxRequests || this.defaultMaxRequests;
+    const now = Date.now();
+    const resetTime = new Date(now + windowMs);
+
+    try {
+      // Lua script for atomic rate limiting with sliding window
+      const luaScript = `
+        local key = KEYS[1]
+        local limit = tonumber(ARGV[1])
+        local window = tonumber(ARGV[2])
+        local now = tonumber(ARGV[3])
+        
+        -- Remove expired entries
+        redis.call('zremrangebyscore', key, 0, now - window)
+        
+        -- Get current count
+        local current = redis.call('zcard', key)
+        
+        if current < limit then
+          -- Add current request
+          redis.call('zadd', key, now, now .. '-' .. math.random())
+          redis.call('expire', key, math.ceil(window / 1000))
+          return {current + 1, now + window}
+        else
+          return {current, now + window}
+        end
+      `;
+
+      const result = await this.redis.eval(
+        luaScript,
+        1,
+        `rate_limit:${key}`,
+        maxRequests.toString(),
+        windowMs.toString(),
+        now.toString()
+      ) as [number, number];
+
+      const [count, resetTimeMs] = result;
+      const remaining = Math.max(0, maxRequests - count);
+      const allowed = count <= maxRequests;
+      const retryAfter = allowed ? 0 : Math.ceil((resetTimeMs - now) / 1000);
+
+      const rateLimitResult: RateLimitResult = {
+        allowed,
+        remaining,
+        resetTime: new Date(resetTimeMs),
         retryAfter,
-        this.options.maxRequests,
-        0
-      );
+        total: maxRequests,
+      };
+
+      if (!allowed && options.throwOnLimit) {
+        throw new RateLimitExceededError(
+          'Rate limit exceeded',
+          retryAfter,
+          maxRequests,
+          remaining,
+          rateLimitResult.resetTime
+        );
+      }
+
+      return rateLimitResult;
+    } catch (error) {
+      // Re-throw RateLimitExceededError as it's intentional
+      if (error instanceof RateLimitExceededError) {
+        throw error;
+      }
+      
+      // Fail open - allow the request if Redis fails
+      this.logger?.error?.('Rate limit check failed', { error, key });
+      return {
+        allowed: true,
+        remaining: maxRequests,
+        resetTime: new Date(now + windowMs),
+        retryAfter: 0,
+        total: maxRequests,
+      };
+    }
+  }
+
+  getRateLimitHeaders(result?: RateLimitResult): Record<string, string> {
+    if (!result) {
+      return {
+        'X-RateLimit-Limit': '0',
+        'X-RateLimit-Remaining': '0',
+        'X-RateLimit-Reset': '0',
+        'Retry-After': '0',
+      };
     }
 
     return {
-      allowed: true,
-      limit: this.options.maxRequests,
-      remaining,
-      resetTime,
+      'X-RateLimit-Limit': result.total.toString(),
+      'X-RateLimit-Remaining': result.remaining.toString(),
+      'X-RateLimit-Reset': Math.ceil(result.resetTime.getTime() / 1000).toString(),
+      'Retry-After': result.retryAfter.toString(),
     };
   }
 
-  async resetLimit(identifier: string): Promise<void> {
-    const key = this.options.keyGenerator 
-      ? this.options.keyGenerator(identifier)
-      : `rate_limit:${identifier}`;
-    
-    await this.redis.del(key);
+  middleware(options: RateLimitOptions = {}) {
+    return async (req: any, res: any, next: any) => {
+      try {
+        // Check if request should be skipped
+        if (options.skip && options.skip(req)) {
+          return next();
+        }
+
+        // Generate key for this request
+        const key = options.keyGenerator 
+          ? options.keyGenerator(req)
+          : req.ip || 'unknown';
+
+        // Check rate limit
+        const result = await this.checkRateLimit(key, options);
+
+        // Set rate limit headers
+        const headers = this.getRateLimitHeaders(result);
+        Object.entries(headers).forEach(([header, value]) => {
+          res.setHeader(header, value);
+        });
+
+        if (!result.allowed) {
+          return res.status(429).json({
+            error: 'Too Many Requests',
+            message: 'Rate limit exceeded',
+            retryAfter: result.retryAfter,
+          });
+        }
+
+        next();
+      } catch (error) {
+        this.logger?.error?.('Rate limiting middleware error', { error });
+        next(); // Fail open
+      }
+    };
   }
 
-  async getRemainingRequests(identifier: string): Promise<number> {
-    const key = this.options.keyGenerator 
-      ? this.options.keyGenerator(identifier)
-      : `rate_limit:${identifier}`;
-    
-    const now = Date.now();
-    const windowStart = now - this.options.windowSizeMs;
+  async close(): Promise<void> {
+    try {
+      await this.redis.quit();
+    } catch (error) {
+      this.logger?.error?.('Failed to close Redis connection', error);
+    }
+  }
 
-    await this.redis.zremrangebyscore(key, 0, windowStart);
-    const currentCount = await this.redis.zcard(key);
-    
-    return Math.max(0, this.options.maxRequests - currentCount);
+  async resetLimit(key: string): Promise<void> {
+    await this.redis.del(`rate_limit:${key}`);
+  }
+
+  async getRemainingRequests(key: string, options: RateLimitOptions = {}): Promise<number> {
+    const windowMs = options.windowMs || this.defaultWindowMs;
+    const maxRequests = options.maxRequests || this.defaultMaxRequests;
+    const now = Date.now();
+
+    try {
+      const redisKey = `rate_limit:${key}`;
+      await this.redis.zremrangebyscore(redisKey, 0, now - windowMs);
+      const currentCount = await this.redis.zcard(redisKey);
+      return Math.max(0, maxRequests - currentCount);
+    } catch (error) {
+      this.logger?.error?.('Failed to get remaining requests', { error, key });
+      return maxRequests; // Fail open
+    }
   }
 }

@@ -1,421 +1,361 @@
-import { EmailService } from '../emailService';
-import nodemailer from 'nodemailer';
-import { createTransport } from 'nodemailer';
+import { EmailService, EmailConfig, EmailOptions, TemplateEmailOptions } from '../emailService';
 import fs from 'fs/promises';
-import path from 'path';
-import handlebars from 'handlebars';
 
-// Mock nodemailer
-jest.mock('nodemailer');
+// Mock fs
 jest.mock('fs/promises');
-jest.mock('handlebars');
+const mockFs = fs as jest.Mocked<typeof fs>;
 
-// Mock the createTransport function
-const mockCreateTransport = createTransport as jest.MockedFunction<typeof createTransport>;
-const mockSendMail = jest.fn();
-const mockVerify = jest.fn();
-
-// Mock the transport object
-const mockTransport = {
-  sendMail: mockSendMail,
-  verify: mockVerify,
-  close: jest.fn(),
-};
-
-// Mock the compiled template
-const mockCompiledTemplate = {
-  html: '<p>Test Template</p>',
-  text: 'Test Template',
-  subject: 'Test Email'
-};
-
-// Mock the template compilation
-const mockCompile = jest.fn().mockReturnValue(() => mockCompiledTemplate);
-
-// Mock the readFile function
-(fs.readFile as jest.Mock).mockImplementation(async (filePath) => {
-  if (filePath.includes('test-template.hbs')) {
-    return '<p>Hello {{name}}</p>';
-  }
-  throw new Error('Template not found');
-});
-
-// Setup mocks before each test
-beforeEach(() => {
-  jest.clearAllMocks();
-  
-  // Reset the mock transport
-  mockCreateTransport.mockReturnValue(mockTransport as any);
-  mockSendMail.mockImplementation((mailOptions, callback) => {
-    callback(null, { messageId: 'test-message-id' });
-  });
-  mockVerify.mockImplementation((callback) => {
-    callback(null, true);
-  });
-  
-  // Reset the template mock
-  (handlebars.compile as jest.Mock) = mockCompile;
-});
+// Mock handlebars
+jest.mock('handlebars', () => ({
+  compile: jest.fn().mockReturnValue(jest.fn().mockReturnValue('<h1>Test Template</h1>')),
+}));
 
 describe('EmailService', () => {
   let emailService: EmailService;
+  let mockTransporter: any;
   
-  const testConfig = {
-    host: 'smtp.test.com',
+  const testConfig: EmailConfig = {
+    host: 'smtp.example.com',
     port: 587,
     secure: false,
     auth: {
       user: 'test@example.com',
-      pass: 'test-password',
+      pass: 'password123',
     },
-    from: 'Test Sender <test@example.com>',
-    templatesDir: '/path/to/templates',
   };
-  
-  const testRecipient = 'recipient@example.com';
-  const testSubject = 'Test Email';
-  const testText = 'This is a test email';
-  const testHtml = '<p>This is a test email</p>';
-  
+
   beforeEach(() => {
+    jest.clearAllMocks();
+    
+    // Mock the transporter
+    mockTransporter = {
+      sendMail: jest.fn().mockResolvedValue({ messageId: 'test-message-id' }),
+      verify: jest.fn().mockResolvedValue(true),
+      close: jest.fn(),
+    };
+
+    // Mock nodemailer.createTransporter to return our mock
+    const nodemailerMock = require('../emailService');
+    nodemailerMock.nodemailer = {
+      createTransport: jest.fn().mockReturnValue(mockTransporter),
+    };
+
     emailService = new EmailService(testConfig);
-  });
-  
-  afterEach(async () => {
-    await emailService.close();
   });
 
   describe('initialization', () => {
-    it('should create a transport with the provided config', () => {
-      expect(nodemailer.createTransport).toHaveBeenCalledWith({
-        host: testConfig.host,
-        port: testConfig.port,
-        secure: testConfig.secure,
-        auth: testConfig.auth,
-      });
+    it('should initialize email service successfully', async () => {
+      await emailService.initialize();
+      
+      expect(mockTransporter.verify).toHaveBeenCalled();
     });
-    
-    it('should verify the connection on initialization when verifyOnInit is true', async () => {
-      const verifyEmailService = new EmailService({
-        ...testConfig,
-        verifyOnInit: true,
-      });
+
+    it('should handle verification failure gracefully', async () => {
+      mockTransporter.verify.mockRejectedValue(new Error('Connection failed'));
       
-      expect(mockVerify).toHaveBeenCalled();
-      await verifyEmailService.close();
-    });
-  });
-  
-  describe('sending emails', () => {
-    it('should send a plain text email', async () => {
-      const result = await emailService.sendEmail({
-        to: testRecipient,
-        subject: testSubject,
-        text: testText,
-      });
+      await emailService.initialize();
       
-      expect(mockSendMail).toHaveBeenCalledWith(
-        {
-          from: testConfig.from,
-          to: testRecipient,
-          subject: testSubject,
-          text: testText,
-          html: undefined,
-          attachments: undefined,
-          replyTo: undefined,
-          cc: undefined,
-          bcc: undefined,
-        },
-        expect.any(Function)
-      );
-      
-      expect(result).toEqual({
-        messageId: 'test-message-id',
-        success: true,
-      });
-    });
-    
-    it('should send an HTML email', async () => {
-      const result = await emailService.sendEmail({
-        to: testRecipient,
-        subject: testSubject,
-        html: testHtml,
-      });
-      
-      expect(mockSendMail).toHaveBeenCalledWith(
-        expect.objectContaining({
-          html: testHtml,
-        }),
-        expect.any(Function)
-      );
-      
-      expect(result.success).toBe(true);
-    });
-    
-    it('should handle multiple recipients', async () => {
-      const recipients = ['user1@example.com', 'user2@example.com'];
-      
-      await emailService.sendEmail({
-        to: recipients,
-        subject: testSubject,
-        text: testText,
-      });
-      
-      expect(mockSendMail).toHaveBeenCalledWith(
-        expect.objectContaining({
-          to: recipients.join(', '),
-        }),
-        expect.any(Function)
-      );
-    });
-    
-    it('should handle CC and BCC recipients', async () => {
-      const cc = ['cc1@example.com', 'cc2@example.com'];
-      const bcc = ['bcc@example.com'];
-      
-      await emailService.sendEmail({
-        to: testRecipient,
-        cc,
-        bcc,
-        subject: testSubject,
-        text: testText,
-      });
-      
-      expect(mockSendMail).toHaveBeenCalledWith(
-        expect.objectContaining({
-          cc: cc.join(', '),
-          bcc: bcc.join(', '),
-        }),
-        expect.any(Function)
-      );
-    });
-    
-    it('should handle email attachments', async () => {
-      const attachments = [
-        {
-          filename: 'test.txt',
-          content: 'test content',
-        },
-        {
-          filename: 'test.pdf',
-          path: '/path/to/test.pdf',
-        },
-      ];
-      
-      await emailService.sendEmail({
-        to: testRecipient,
-        subject: testSubject,
-        text: testText,
-        attachments,
-      });
-      
-      expect(mockSendMail).toHaveBeenCalledWith(
-        expect.objectContaining({
-          attachments: expect.arrayContaining([
-            expect.objectContaining({
-              filename: 'test.txt',
-            }),
-            expect.objectContaining({
-              filename: 'test.pdf',
-            }),
-          ]),
-        }),
-        expect.any(Function)
-      );
-    });
-    
-    it('should handle email sending errors', async () => {
-      const error = new Error('SMTP error');
-      mockSendMail.mockImplementationOnce((mailOptions, callback) => {
-        callback(error, null);
-      });
-      
-      const result = await emailService.sendEmail({
-        to: testRecipient,
-        subject: testSubject,
-        text: testText,
-      });
-      
-      expect(result).toEqual({
-        success: false,
-        error: error.message,
-      });
-    });
-  });
-  
-  describe('templated emails', () => {
-    const templateName = 'test-template';
-    const templateData = { name: 'Test User' };
-    const templatePath = path.join(testConfig.templatesDir, `${templateName}.hbs`);
-    
-    it('should send an email using a template', async () => {
-      const result = await emailService.sendTemplatedEmail({
-        to: testRecipient,
-        template: templateName,
-        data: templateData,
-      });
-      
-      // Verify template was loaded
-      expect(fs.readFile).toHaveBeenCalledWith(
-        templatePath,
-        'utf-8'
-      );
-      
-      // Verify template was compiled with data
-      expect(mockCompile).toHaveBeenCalledWith(expect.stringContaining('Hello {{name}}'));
-      
-      // Verify email was sent with compiled template
-      expect(mockSendMail).toHaveBeenCalledWith(
-        expect.objectContaining({
-          subject: mockCompiledTemplate.subject,
-          text: mockCompiledTemplate.text,
-          html: mockCompiledTemplate.html,
-        }),
-        expect.any(Function)
-      );
-      
-      expect(result.success).toBe(true);
-    });
-    
-    it('should handle template compilation errors', async () => {
-      const templateError = new Error('Template error');
-      (handlebars.compile as jest.Mock).mockImplementationOnce(() => {
-        throw templateError;
-      });
-      
-      const result = await emailService.sendTemplatedEmail({
-        to: testRecipient,
-        template: 'invalid-template',
-        data: {},
-      });
-      
-      expect(result).toEqual({
-        success: false,
-        error: `Failed to compile email template: ${templateError.message}`,
-      });
-    });
-    
-    it('should handle template file not found', async () => {
-      (fs.readFile as jest.Mock).mockRejectedValueOnce(new Error('File not found'));
-      
-      const result = await emailService.sendTemplatedEmail({
-        to: testRecipient,
-        template: 'nonexistent-template',
-        data: {},
-      });
-      
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('Failed to load email template');
-    });
-  });
-  
-  describe('email verification', () => {
-    it('should verify the SMTP connection', async () => {
-      const result = await emailService.verifyConnection();
-      
-      expect(mockVerify).toHaveBeenCalled();
-      expect(result).toBe(true);
-    });
-    
-    it('should handle verification errors', async () => {
-      const error = new Error('Connection failed');
-      mockVerify.mockImplementationOnce((callback) => {
-        callback(error);
-      });
-      
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
       const result = await emailService.verifyConnection();
       
       expect(result).toBe(false);
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Email service verification failed:',
+        expect.any(Error)
+      );
+      
+      consoleSpy.mockRestore();
+    });
+
+    it('should throw error when verifying connection without initialization', async () => {
+      await expect(emailService.verifyConnection()).rejects.toThrow(
+        'Email service not initialized'
+      );
     });
   });
-  
-  describe('template management', () => {
-    it('should precompile templates', async () => {
-      const templates = ['welcome', 'password-reset'];
-      
-      await emailService.precompileTemplates(templates);
-      
-      templates.forEach(template => {
-        expect(fs.readFile).toHaveBeenCalledWith(
-          path.join(testConfig.templatesDir, `${template}.hbs`),
-          'utf-8'
-        );
-      });
-      
-      expect(handlebars.compile).toHaveBeenCalledTimes(templates.length);
+
+  describe('sendEmail', () => {
+    beforeEach(async () => {
+      await emailService.initialize();
     });
-    
-    it('should handle template cache', async () => {
-      const templateName = 'cached-template';
-      
-      // First call - should compile
-      await emailService.getCompiledTemplate(templateName);
-      
-      // Second call - should use cache
-      await emailService.getCompiledTemplate(templateName);
-      
-      // Should only read and compile once
-      expect(fs.readFile).toHaveBeenCalledTimes(1);
-      expect(handlebars.compile).toHaveBeenCalledTimes(1);
-    });
-  });
-  
-  describe('error handling', () => {
-    it('should handle transport creation errors', async () => {
-      const error = new Error('Transport creation failed');
-      mockCreateTransport.mockImplementationOnce(() => {
-        throw error;
+
+    it('should send a simple email successfully', async () => {
+      const emailOptions: EmailOptions = {
+        to: 'recipient@example.com',
+        subject: 'Test Subject',
+        html: '<h1>Test Email</h1>',
+        text: 'Test Email',
+      };
+
+      await emailService.sendEmail(emailOptions);
+
+      expect(mockTransporter.sendMail).toHaveBeenCalledWith({
+        from: testConfig.auth.user,
+        to: 'recipient@example.com',
+        subject: 'Test Subject',
+        html: '<h1>Test Email</h1>',
+        text: 'Test Email',
+        cc: undefined,
+        bcc: undefined,
+        attachments: undefined,
       });
-      
-      const failingService = new EmailService(testConfig);
+    });
+
+    it('should send email with multiple recipients', async () => {
+      const emailOptions: EmailOptions = {
+        to: ['user1@example.com', 'user2@example.com'],
+        subject: 'Test Subject',
+        html: '<h1>Test Email</h1>',
+      };
+
+      await emailService.sendEmail(emailOptions);
+
+      expect(mockTransporter.sendMail).toHaveBeenCalledWith({
+        from: testConfig.auth.user,
+        to: 'user1@example.com, user2@example.com',
+        subject: 'Test Subject',
+        html: '<h1>Test Email</h1>',
+        text: undefined,
+        cc: undefined,
+        bcc: undefined,
+        attachments: undefined,
+      });
+    });
+
+    it('should send email with custom from address', async () => {
+      const emailOptions: EmailOptions = {
+        to: 'recipient@example.com',
+        subject: 'Test Subject',
+        html: '<h1>Test Email</h1>',
+        from: 'custom@example.com',
+      };
+
+      await emailService.sendEmail(emailOptions);
+
+      expect(mockTransporter.sendMail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          from: 'custom@example.com',
+        })
+      );
+    });
+
+    it('should send email with CC and BCC recipients', async () => {
+      const emailOptions: EmailOptions = {
+        to: 'recipient@example.com',
+        subject: 'Test Subject',
+        html: '<h1>Test Email</h1>',
+        cc: ['cc1@example.com', 'cc2@example.com'],
+        bcc: 'bcc@example.com',
+      };
+
+      await emailService.sendEmail(emailOptions);
+
+      expect(mockTransporter.sendMail).toHaveBeenCalledWith({
+        from: testConfig.auth.user,
+        to: 'recipient@example.com',
+        subject: 'Test Subject',
+        html: '<h1>Test Email</h1>',
+        text: undefined,
+        cc: 'cc1@example.com, cc2@example.com',
+        bcc: 'bcc@example.com',
+        attachments: undefined,
+      });
+    });
+
+    it('should send email with attachments', async () => {
+      const emailOptions: EmailOptions = {
+        to: 'recipient@example.com',
+        subject: 'Test Subject',
+        html: '<h1>Test Email</h1>',
+        attachments: [
+          {
+            filename: 'test.pdf',
+            content: Buffer.from('test content'),
+            contentType: 'application/pdf',
+          },
+        ],
+      };
+
+      await emailService.sendEmail(emailOptions);
+
+      expect(mockTransporter.sendMail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          attachments: [
+            {
+              filename: 'test.pdf',
+              content: Buffer.from('test content'),
+              contentType: 'application/pdf',
+            },
+          ],
+        })
+      );
+    });
+
+    it('should throw error when sending email without initialization', async () => {
+      const uninitializedService = new EmailService(testConfig);
       
       await expect(
-        failingService.sendEmail({
-          to: testRecipient,
-          subject: testSubject,
-          text: testText,
+        uninitializedService.sendEmail({
+          to: 'test@example.com',
+          subject: 'Test',
+          html: 'Test',
         })
-      ).rejects.toThrow(error);
-      
-      await failingService.close();
-    });
-    
-    it('should handle transport close errors', async () => {
-      const error = new Error('Failed to close transport');
-      mockTransport.close.mockImplementationOnce((callback) => {
-        callback(error);
-      });
-      
-      const service = new EmailService(testConfig);
-      
-      // Should not throw when closing with error
-      await expect(service.close()).resolves.not.toThrow();
+      ).rejects.toThrow('Email service not initialized');
     });
   });
-  
-  describe('template helpers', () => {
-    it('should register template helpers', () => {
-      const helperName = 'uppercase';
-      const helperFn = jest.fn();
+
+  describe('sendTemplateEmail', () => {
+    beforeEach(async () => {
+      await emailService.initialize();
+    });
+
+    it('should send email using template', async () => {
+      mockFs.readFile.mockResolvedValue('Hello {{name}}!');
       
-      emailService.registerHelper(helperName, helperFn);
-      
-      expect(handlebars.registerHelper).toHaveBeenCalledWith(
-        helperName,
-        helperFn
+      const templateOptions: TemplateEmailOptions = {
+        to: 'recipient@example.com',
+        subject: 'Template Test',
+        template: 'welcome',
+        data: { name: 'John Doe' },
+      };
+
+      await emailService.sendTemplateEmail(templateOptions);
+
+      expect(mockFs.readFile).toHaveBeenCalledWith(
+        expect.stringContaining('welcome.hbs'),
+        'utf-8'
+      );
+      expect(mockTransporter.sendMail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: 'recipient@example.com',
+          subject: 'Template Test',
+          html: '<h1>Test Template</h1>',
+        })
       );
     });
-    
-    it('should register partials', () => {
-      const partialName = 'header';
-      const partialContent = '<header>Test Header</header>';
+
+    it('should cache templates for reuse', async () => {
+      mockFs.readFile.mockResolvedValue('Hello {{name}}!');
       
-      emailService.registerPartial(partialName, partialContent);
+      const templateOptions: TemplateEmailOptions = {
+        to: 'recipient@example.com',
+        subject: 'Template Test',
+        template: 'welcome',
+        data: { name: 'John Doe' },
+      };
+
+      // Send email twice with same template
+      await emailService.sendTemplateEmail(templateOptions);
+      await emailService.sendTemplateEmail(templateOptions);
+
+      // Should only read file once (cached on second call)
+      expect(mockFs.readFile).toHaveBeenCalledTimes(1);
+      expect(mockTransporter.sendMail).toHaveBeenCalledTimes(2);
+    });
+
+    it('should handle template not found error', async () => {
+      mockFs.readFile.mockRejectedValue(new Error('Template file not found'));
       
-      expect(handlebars.registerPartial).toHaveBeenCalledWith(
-        partialName,
-        partialContent
+      const templateOptions: TemplateEmailOptions = {
+        to: 'recipient@example.com',
+        subject: 'Template Test',
+        template: 'nonexistent',
+        data: { name: 'John Doe' },
+      };
+
+      await expect(emailService.sendTemplateEmail(templateOptions)).rejects.toThrow(
+        'Template file not found'
       );
+    });
+  });
+
+  describe('sendBulkEmail', () => {
+    beforeEach(async () => {
+      await emailService.initialize();
+    });
+
+    it('should send emails to multiple recipients', async () => {
+      const recipients = ['user1@example.com', 'user2@example.com', 'user3@example.com'];
+      const emailOptions = {
+        subject: 'Bulk Email Test',
+        html: '<h1>Bulk Email</h1>',
+      };
+
+      await emailService.sendBulkEmail(recipients, emailOptions);
+
+      expect(mockTransporter.sendMail).toHaveBeenCalledTimes(3);
+      expect(mockTransporter.sendMail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: 'user1@example.com',
+          subject: 'Bulk Email Test',
+          html: '<h1>Bulk Email</h1>',
+        })
+      );
+      expect(mockTransporter.sendMail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: 'user2@example.com',
+          subject: 'Bulk Email Test',
+          html: '<h1>Bulk Email</h1>',
+        })
+      );
+      expect(mockTransporter.sendMail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: 'user3@example.com',
+          subject: 'Bulk Email Test',
+          html: '<h1>Bulk Email</h1>',
+        })
+      );
+    });
+
+    it('should handle bulk email errors gracefully', async () => {
+      mockTransporter.sendMail
+        .mockResolvedValueOnce({ messageId: 'success1' })
+        .mockRejectedValueOnce(new Error('Failed to send'))
+        .mockResolvedValueOnce({ messageId: 'success3' });
+
+      const recipients = ['user1@example.com', 'user2@example.com', 'user3@example.com'];
+      const emailOptions = {
+        subject: 'Bulk Email Test',
+        html: '<h1>Bulk Email</h1>',
+      };
+
+      await expect(emailService.sendBulkEmail(recipients, emailOptions)).rejects.toThrow(
+        'Failed to send'
+      );
+    });
+  });
+
+  describe('close', () => {
+    it('should close the transporter connection', async () => {
+      await emailService.initialize();
+      await emailService.close();
+
+      expect(mockTransporter.close).toHaveBeenCalled();
+    });
+
+    it('should handle closing when not initialized', async () => {
+      await emailService.close();
+      
+      // Should not throw error
+      expect(mockTransporter.close).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('error handling', () => {
+    beforeEach(async () => {
+      await emailService.initialize();
+    });
+
+    it('should handle transporter sendMail errors', async () => {
+      mockTransporter.sendMail.mockRejectedValue(new Error('SMTP Error'));
+      
+      await expect(
+        emailService.sendEmail({
+          to: 'test@example.com',
+          subject: 'Test',
+          html: 'Test',
+        })
+      ).rejects.toThrow('SMTP Error');
     });
   });
 });

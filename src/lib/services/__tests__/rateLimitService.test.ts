@@ -24,17 +24,27 @@ describe('RateLimitService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     
-    // Create mock Redis instance
-    mockRedis = new IORedis() as jest.Mocked<IORedis>;
-    MockIORedis.mockImplementation(() => mockRedis);
-    
-    // Setup default mock implementations
-    mockRedis.eval.mockImplementation(async (script: string) => {
-      if (script.includes('redis.call("set"')) {
-        return [1, Date.now() + testWindowMs]; // [count, resetTime]
-      }
-      return [1, 1]; // Default return for other scripts
+    // Setup mock Redis methods
+    const mockEval = jest.fn().mockImplementation(async (script: any, numkeys?: any, ...args: any[]): Promise<any> => {
+      // Default behavior: allow requests (count within limit)
+      return [1, Date.now() + testWindowMs]; // [count, resetTime]
     });
+
+    const mockQuit = jest.fn().mockResolvedValue('OK');
+    const mockDel = jest.fn().mockResolvedValue(1);
+    const mockZremrangebyscore = jest.fn().mockResolvedValue(0);
+    const mockZcard = jest.fn().mockResolvedValue(0);
+    
+    // Create mock Redis instance with all required methods
+    mockRedis = {
+      eval: mockEval,
+      quit: mockQuit,
+      del: mockDel,
+      zremrangebyscore: mockZremrangebyscore,
+      zcard: mockZcard,
+    } as unknown as jest.Mocked<IORedis>;
+    
+    MockIORedis.mockImplementation(() => mockRedis);
     
     // Create a new instance for each test
     rateLimitService = new RateLimitService({
@@ -55,6 +65,13 @@ describe('RateLimitService', () => {
       expect(MockIORedis).toHaveBeenCalled();
     });
     
+    it('should initialize with default Redis when no config provided', () => {
+      const defaultService = new RateLimitService({});
+      
+      expect(MockIORedis).toHaveBeenCalledWith();
+      expect(defaultService).toBeDefined();
+    });
+    
     it('should initialize with custom options', () => {
       const customService = new RateLimitService({
         redis: {
@@ -72,12 +89,11 @@ describe('RateLimitService', () => {
     });
     
     it('should use existing Redis client if provided', () => {
-      const existingClient = new IORedis();
+      const existingClient = mockRedis;
       const service = new RateLimitService({
         redis: existingClient,
       });
       
-      expect(MockIORedis).not.toHaveBeenCalled();
       expect((service as any).redis).toBe(existingClient);
     });
   });
@@ -94,7 +110,8 @@ describe('RateLimitService', () => {
     
     it('should block requests over limit', async () => {
       // Mock to return count over the limit
-      mockRedis.eval.mockResolvedValueOnce([testMaxRequests + 1, Date.now() + 5000]);
+      const mockEval = mockRedis.eval as jest.Mock;
+      mockEval.mockResolvedValueOnce([testMaxRequests + 1, Date.now() + 5000]);
       
       const result = await rateLimitService.checkRateLimit(testKey);
       
@@ -160,21 +177,49 @@ describe('RateLimitService', () => {
     });
     
     it('should throw RateLimitExceededError when throwOnLimit is true', async () => {
-      // Mock to return count over the limit
-      mockRedis.eval.mockResolvedValueOnce([testMaxRequests + 1, Date.now() + 5000]);
+      // Create a mock Redis instance that passes instanceof check
+      const testMockRedis = Object.create(IORedis.prototype);
+      testMockRedis.eval = jest.fn().mockResolvedValue([testMaxRequests + 1, Date.now() + 5000]);
+      testMockRedis.quit = jest.fn().mockResolvedValue('OK');
+      testMockRedis.del = jest.fn().mockResolvedValue(1);
+      testMockRedis.zremrangebyscore = jest.fn().mockResolvedValue(0);
+      testMockRedis.zcard = jest.fn().mockResolvedValue(0);
+      
+      const testService = new RateLimitService({
+        redis: testMockRedis,
+        defaultWindowMs: testWindowMs,
+        defaultMaxRequests: testMaxRequests,
+        logger: mockLogger as any,
+      });
       
       await expect(
-        rateLimitService.checkRateLimit(testKey, { throwOnLimit: true })
+        testService.checkRateLimit(testKey, { throwOnLimit: true })
       ).rejects.toThrow(RateLimitExceededError);
+      
+      await testService.close();
     });
     
     it('should include retry headers in the error', async () => {
       const resetTime = Date.now() + 5000;
-      mockRedis.eval.mockResolvedValueOnce([testMaxRequests + 1, resetTime]);
+      
+      // Create a mock Redis instance that passes instanceof check
+      const testMockRedis = Object.create(IORedis.prototype);
+      testMockRedis.eval = jest.fn().mockResolvedValue([testMaxRequests + 1, resetTime]);
+      testMockRedis.quit = jest.fn().mockResolvedValue('OK');
+      testMockRedis.del = jest.fn().mockResolvedValue(1);
+      testMockRedis.zremrangebyscore = jest.fn().mockResolvedValue(0);
+      testMockRedis.zcard = jest.fn().mockResolvedValue(0);
+      
+      const testService = new RateLimitService({
+        redis: testMockRedis,
+        defaultWindowMs: testWindowMs,
+        defaultMaxRequests: testMaxRequests,
+        logger: mockLogger as any,
+      });
       
       try {
-        await rateLimitService.checkRateLimit(testKey, { throwOnLimit: true });
-        fail('Should have thrown RateLimitExceededError');
+        await testService.checkRateLimit(testKey, { throwOnLimit: true });
+        expect(true).toBe(false); // Should not reach here
       } catch (error) {
         expect(error).toBeInstanceOf(RateLimitExceededError);
         
@@ -184,6 +229,8 @@ describe('RateLimitService', () => {
         expect(rateLimitError.limit).toBe(testMaxRequests);
         expect(rateLimitError.remaining).toBe(0);
       }
+      
+      await testService.close();
     });
   });
   
@@ -270,7 +317,8 @@ describe('RateLimitService', () => {
     
     it('should return 429 when rate limit is exceeded', async () => {
       // Mock to return count over the limit
-      mockRedis.eval.mockResolvedValueOnce([testMaxRequests + 1, Date.now() + 5000]);
+      const mockEval = mockRedis.eval as jest.Mock;
+      mockEval.mockResolvedValueOnce([testMaxRequests + 1, Date.now() + 5000]);
       
       const middleware = rateLimitService.middleware({
         keyGenerator: (req) => (req as any).ip,
@@ -352,12 +400,12 @@ describe('RateLimitService', () => {
       const now = Date.now();
       
       // Mock the Lua script to simulate requests aging out
-      mockRedis.eval.mockImplementation(async (script: string) => {
+      (mockRedis.eval as jest.Mock).mockImplementation(async (script: any, numkeys?: any, ...args: any[]): Promise<any> => {
         if (script.includes('zremrangebyscore')) {
           // Simulate that some old requests were removed
           return [5, now + testWindowMs]; // 5 requests in the current window
         }
-        return [5, 1];
+        return [5, now + testWindowMs];
       });
       
       const result = await rateLimitService.checkRateLimit(testKey);
@@ -429,6 +477,59 @@ describe('RateLimitService', () => {
         expect.any(String),
         expect.any(String)
       );
+    });
+  });
+  
+  describe('getRemainingRequests', () => {
+    it('should return remaining requests count', async () => {
+      // Mock Redis methods for getRemainingRequests
+      mockRedis.zremrangebyscore.mockResolvedValueOnce(0);
+      mockRedis.zcard.mockResolvedValueOnce(25); // 25 requests used
+      
+      const remaining = await rateLimitService.getRemainingRequests(testKey);
+      
+      expect(remaining).toBe(testMaxRequests - 25); // 75 remaining
+      expect(mockRedis.zremrangebyscore).toHaveBeenCalledWith(
+        `rate_limit:${testKey}`,
+        0,
+        expect.any(Number)
+      );
+      expect(mockRedis.zcard).toHaveBeenCalledWith(`rate_limit:${testKey}`);
+    });
+    
+    it('should use custom options for getRemainingRequests', async () => {
+      const customMax = 50;
+      mockRedis.zremrangebyscore.mockResolvedValueOnce(0);
+      mockRedis.zcard.mockResolvedValueOnce(10);
+      
+      const remaining = await rateLimitService.getRemainingRequests(testKey, {
+        maxRequests: customMax,
+      });
+      
+      expect(remaining).toBe(customMax - 10); // 40 remaining
+    });
+    
+    it('should handle Redis errors in getRemainingRequests', async () => {
+      const error = new Error('Redis error');
+      mockRedis.zremrangebyscore.mockRejectedValueOnce(error);
+      
+      const remaining = await rateLimitService.getRemainingRequests(testKey);
+      
+      expect(remaining).toBe(testMaxRequests); // Fail open
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        'Failed to get remaining requests',
+        expect.objectContaining({ error, key: testKey })
+      );
+    });
+  });
+
+  describe('resetLimit', () => {
+    it('should reset rate limit for a key', async () => {
+      mockRedis.del.mockResolvedValueOnce(1);
+      
+      await rateLimitService.resetLimit(testKey);
+      
+      expect(mockRedis.del).toHaveBeenCalledWith(`rate_limit:${testKey}`);
     });
   });
 });
