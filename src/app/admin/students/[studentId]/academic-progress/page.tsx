@@ -230,13 +230,13 @@ export default function AdminStudentAcademicProgressPage() {
                 <CardHeader><CardTitle className="text-xl">Academic Progress Overview</CardTitle></CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="p-3 rounded-md bg-muted/50 border"><Label className="text-xs text-muted-foreground">Overall CPI</Label><p className="text-2xl font-semibold">{academicProgress.latestCpi.toFixed(2)}</p></div>
-                        <div className="p-3 rounded-md bg-muted/50 border"><Label className="text-xs text-muted-foreground">Credits Earned</Label><p className="text-2xl font-semibold">{academicProgress.earnedCredits} / {academicProgress.totalProgramCredits}</p></div>
-                        <div className="p-3 rounded-md bg-muted/50 border"><Label className="text-xs text-muted-foreground">Status</Label><p className={`text-lg font-semibold ${academicProgress.backlogs.length > 0 ? 'text-destructive' : 'text-success'}`}>{academicProgress.statusMessage}</p></div>
+                        <div className="p-3 rounded-md bg-muted/50 border dark:border-gray-700"><Label className="text-xs text-muted-foreground">Overall CPI</Label><p className="text-2xl font-semibold">{academicProgress.latestCpi.toFixed(2)}</p></div>
+                        <div className="p-3 rounded-md bg-muted/50 border dark:border-gray-700"><Label className="text-xs text-muted-foreground">Credits Earned</Label><p className="text-2xl font-semibold">{academicProgress.earnedCredits} / {academicProgress.totalProgramCredits}</p></div>
+                        <div className="p-3 rounded-md bg-muted/50 border dark:border-gray-700"><Label className="text-xs text-muted-foreground">Status</Label><p className={`text-lg font-semibold ${academicProgress.backlogs.length > 0 ? 'text-destructive' : 'text-success'}`}>{academicProgress.statusMessage}</p></div>
                     </div>
                     <div><Label className="text-sm font-medium">Credit Completion</Label><Progress value={academicProgress.progressPercentage} className="w-full mt-1 h-3" /><p className="text-xs text-muted-foreground text-right">{academicProgress.progressPercentage.toFixed(1)}% Complete</p></div>
                     {academicProgress.semesterSgpa && Object.keys(academicProgress.semesterSgpa).length > 0 && (
-                        <div><h4 className="text-md font-semibold mb-1">Semester Performance (SGPA)</h4><div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">{Object.entries(academicProgress.semesterSgpa).sort(([semA], [semB]) => parseInt(semA) - parseInt(semB)).map(([semester, data]) => (<div key={semester} className="p-2 border rounded-md text-xs bg-background"><span className="font-medium">Sem {semester}:</span> {data.sgpa.toFixed(2)}</div>))}</div></div>
+                        <div><h4 className="text-md font-semibold mb-1">Semester Performance (SGPA)</h4><div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">{Object.entries(academicProgress.semesterSgpa).sort(([semA], [semB]) => parseInt(semA) - parseInt(semB)).map(([semester, data]) => (<div key={semester} className="p-2 border rounded-md text-xs bg-background dark:border-gray-700"><span className="font-medium">Sem {semester}:</span> {data.sgpa.toFixed(2)}</div>))}</div></div>
                     )}
                     {academicProgress.backlogs.length > 0 && (<div><h4 className="text-md font-semibold mb-1 text-destructive flex items-center gap-1"><AlertCircle className="h-4 w-4"/> Current Backlogs</h4><ul className="list-disc list-inside pl-4 text-sm text-muted-foreground">{academicProgress.backlogs.map((backlog, index) => (<li key={index}>{backlog.name} ({backlog.code}) - Sem {backlog.semester}</li>))}</ul></div>)}
                 </CardContent>
@@ -264,7 +264,7 @@ export default function AdminStudentAcademicProgressPage() {
                             <div key={semester} className="mb-4">
                                 <h3 className="text-lg font-semibold mb-1">Semester {semester}</h3>
                                 {semesterResults.sort((a,b) => new Date(b.declarationDate || 0).getTime() - new Date(a.declarationDate || 0).getTime()).map(res => (
-                                    <div key={res._id} className="p-2 border rounded-md mb-2 bg-background">
+                                    <div key={res._id} className="p-2 border rounded-md mb-2 bg-background dark:border-gray-700">
                                         <div className="flex justify-between items-baseline"><h4 className="font-medium">{res.exam}</h4><span className="text-xs text-muted-foreground">Declared: {res.declarationDate ? format(parseISO(res.declarationDate), "PPP") : "N/A"}</span></div>
                                         <p className="text-sm">SPI: <span className="font-semibold">{res.spi.toFixed(2)}</span> | CPI: <span className="font-semibold">{res.cpi.toFixed(2)}</span> | Result: <span className={`font-semibold ${res.result === 'PASS' ? 'text-success' : 'text-destructive'}`}>{res.result}</span></p>
                                         <Link href={`/admin/results/detailed/${res._id}`} ><Button variant="link" size="sm" className="p-0 h-auto text-xs">View Full Marksheet</Button></Link>

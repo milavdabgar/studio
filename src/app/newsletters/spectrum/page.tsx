@@ -120,13 +120,13 @@ export default function SpectrumNewsletterPage() {
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <h1 className="text-4xl font-bold text-gray-900 mb-4 dark:text-white">
           Spectrum Newsletter
         </h1>
-        <p className="text-xl text-gray-600 mb-2">
+        <p className="text-xl text-gray-600 mb-2 dark:text-gray-400">
           Electronics & Communication Engineering Department
         </p>
-        <p className="text-lg text-gray-500 mb-4">
+        <p className="text-lg text-gray-500 mb-4 dark:text-gray-400">
           Government Polytechnic, Palanpur
         </p>
         <div className="flex justify-center space-x-4 mb-6">
@@ -152,19 +152,19 @@ export default function SpectrumNewsletterPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div className="text-center p-4 bg-blue-50 rounded-lg">
               <div className="text-2xl font-bold text-blue-600">85%</div>
-              <div className="text-sm text-gray-600">Placement Rate</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Placement Rate</div>
             </div>
             <div className="text-center p-4 bg-green-50 rounded-lg">
               <div className="text-2xl font-bold text-green-600">20+</div>
-              <div className="text-sm text-gray-600">Research Papers</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Research Papers</div>
             </div>
             <div className="text-center p-4 bg-purple-50 rounded-lg">
               <div className="text-2xl font-bold text-purple-600">150+</div>
-              <div className="text-sm text-gray-600">Students</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Students</div>
             </div>
             <div className="text-center p-4 bg-orange-50 rounded-lg">
               <div className="text-2xl font-bold text-orange-600">₹4.8L</div>
-              <div className="text-sm text-gray-600">Avg. Package</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Avg. Package</div>
             </div>
           </div>
 
@@ -208,7 +208,7 @@ export default function SpectrumNewsletterPage() {
                     {format.icon}
                     <span className="font-semibold">{format.name}</span>
                   </div>
-                  <p className="text-sm text-gray-600 mb-3">
+                  <p className="text-sm text-gray-600 mb-3 dark:text-gray-400">
                     {format.description}
                   </p>
                   <Button 
@@ -219,7 +219,7 @@ export default function SpectrumNewsletterPage() {
                   >
                     {isExporting === format.id ? (
                       <span className="flex items-center space-x-2">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current dark:border-gray-700"></div>
                         <span>Exporting...</span>
                       </span>
                     ) : (
@@ -260,7 +260,7 @@ export default function SpectrumNewsletterPage() {
                 <MapPin className="h-5 w-5 text-gray-400 mt-0.5" />
                 <div>
                   <p className="font-medium">Address</p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     Government Polytechnic, Deesa Road<br />
                     Palanpur, Banaskantha<br />
                     Gujarat - 385001, India
@@ -272,7 +272,7 @@ export default function SpectrumNewsletterPage() {
                 <Phone className="h-5 w-5 text-gray-400 mt-0.5" />
                 <div>
                   <p className="font-medium">Phone</p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     Principal: +91-2742-251793<br />
                     EC Department: +91-2742-251794
                   </p>
@@ -285,7 +285,7 @@ export default function SpectrumNewsletterPage() {
                 <Mail className="h-5 w-5 text-gray-400 mt-0.5" />
                 <div>
                   <p className="font-medium">Email</p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     principal.gpp@gujaratpoly.in<br />
                     hod.ec.gpp@gujaratpoly.in
                   </p>

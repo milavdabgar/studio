@@ -116,7 +116,7 @@ export default function FacultyProfilePage() {
         </CardHeader>
         <CardContent className="grid md:grid-cols-2 gap-x-8 gap-y-4 px-6 md:px-10">
            {profileItems.map((item, index) => (
-            <div key={index} className="flex items-start space-x-3 py-2 border-b border-muted last:border-b-0 md:last:border-b">
+            <div key={index} className="flex items-start space-x-3 py-2 border-b border-muted last:border-b-0 md:last:border-b dark:border-gray-700">
               <item.icon className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
               <div>
                 <p className="text-sm font-medium text-muted-foreground">{item.label}</p>

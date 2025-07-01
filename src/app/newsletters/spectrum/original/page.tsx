@@ -126,14 +126,14 @@ export default function OriginalHTMLNewsletterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-800">
       {/* Export Toolbar */}
-      <div className="sticky top-0 z-50 bg-white border-b shadow-sm">
+      <div className="sticky top-0 z-50 bg-white border-b shadow-sm dark:bg-gray-900 dark:border-gray-700">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Spectrum Newsletter</h1>
-              <p className="text-sm text-gray-600">Original Design Version</p>
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">Spectrum Newsletter</h1>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Original Design Version</p>
             </div>
             
             <div className="flex items-center space-x-2">
@@ -155,7 +155,7 @@ export default function OriginalHTMLNewsletterPage() {
                 className="flex items-center space-x-2"
               >
                 {isExporting === 'pdf' ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current dark:border-gray-700"></div>
                 ) : (
                   <FileText className="h-4 w-4" />
                 )}
@@ -170,7 +170,7 @@ export default function OriginalHTMLNewsletterPage() {
                 className="flex items-center space-x-2"
               >
                 {isExporting === 'docx' ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current dark:border-gray-700"></div>
                 ) : (
                   <File className="h-4 w-4" />
                 )}
@@ -185,7 +185,7 @@ export default function OriginalHTMLNewsletterPage() {
                 className="flex items-center space-x-2"
               >
                 {isExporting === 'html' ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current dark:border-gray-700"></div>
                 ) : (
                   <Globe className="h-4 w-4" />
                 )}
@@ -204,7 +204,7 @@ export default function OriginalHTMLNewsletterPage() {
               <iframe
                 ref={iframeRef}
                 srcDoc={htmlContent}
-                className="w-full border-0"
+                className="w-full border-0 dark:border-gray-700"
                 style={{ height: '100vh', minHeight: '800px' }}
                 title="Spectrum Newsletter"
                 sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
@@ -212,8 +212,8 @@ export default function OriginalHTMLNewsletterPage() {
             ) : (
               <div className="flex items-center justify-center h-96">
                 <div className="text-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                  <p className="text-gray-600">Loading newsletter...</p>
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4 dark:border-gray-700"></div>
+                  <p className="text-gray-600 dark:text-gray-400">Loading newsletter...</p>
                 </div>
               </div>
             )}

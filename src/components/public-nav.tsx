@@ -86,7 +86,7 @@ export function PublicNav() {
   };
 
   return (
-    <header className="bg-white dark:bg-gray-900 shadow-sm border-b dark:border-gray-700 sticky top-0 z-50">
+    <header className="bg-white dark:bg-gray-900 shadow-sm border-b dark:border-gray-700 sticky top-0 z-50 dark:bg-gray-900 dark:border-gray-700">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center space-x-4">
@@ -106,13 +106,13 @@ export function PublicNav() {
                 {item.href ? (
                   <Link 
                     href={item.href} 
-                    className="text-gray-700 dark:text-gray-300 hover:text-primary transition-colors"
+                    className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors dark:text-gray-300"
                   >
                     {item.label}
                   </Link>
                 ) : (
                   <button
-                    className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-primary transition-colors"
+                    className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors dark:text-gray-300"
                     onMouseEnter={() => setActiveDropdown(item.label)}
                     onMouseLeave={() => setActiveDropdown(null)}
                   >
@@ -135,12 +135,12 @@ export function PublicNav() {
                         <Link
                           key={dropdownItem.href}
                           href={dropdownItem.href}
-                          className="block px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary transition-colors"
+                          className="block px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-primary transition-colors dark:bg-gray-800 dark:text-gray-300"
                           onClick={closeAllMenus}
                         >
                           <div className="font-medium">{dropdownItem.label}</div>
                           {dropdownItem.description && (
-                            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{dropdownItem.description}</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 dark:text-gray-400">{dropdownItem.description}</div>
                           )}
                         </Link>
                       ))}
@@ -159,7 +159,7 @@ export function PublicNav() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 rounded-md text-gray-600 dark:text-gray-400 hover:text-primary"
+            className="md:hidden p-2 rounded-md text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary dark:text-gray-400"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -168,14 +168,14 @@ export function PublicNav() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-700 dark:border-gray-700">
             <nav className="flex flex-col space-y-2">
               {navItems.map((item) => (
                 <div key={item.label}>
                   {item.href ? (
                     <Link 
                       href={item.href}
-                      className="text-gray-700 dark:text-gray-300 hover:text-primary px-4 py-2 block transition-colors"
+                      className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-4 py-2 block transition-colors dark:text-gray-300"
                       onClick={closeAllMenus}
                     >
                       {item.label}
@@ -183,7 +183,7 @@ export function PublicNav() {
                   ) : (
                     <>
                       <button
-                        className="flex items-center justify-between w-full text-gray-700 dark:text-gray-300 hover:text-primary px-4 py-2 transition-colors"
+                        className="flex items-center justify-between w-full text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-4 py-2 transition-colors dark:text-gray-300"
                         onClick={() => handleDropdownToggle(item.label)}
                       >
                         <span>{item.label}</span>
@@ -196,17 +196,17 @@ export function PublicNav() {
                       
                       {/* Mobile Dropdown */}
                       {item.dropdown && activeDropdown === item.label && (
-                        <div className="bg-gray-50 dark:bg-gray-800 border-l-2 border-primary ml-4">
+                        <div className="bg-gray-50 dark:bg-gray-800 border-l-2 border-primary ml-4 dark:bg-gray-800 dark:border-gray-700">
                           {item.dropdown.map((dropdownItem) => (
                             <Link
                               key={dropdownItem.href}
                               href={dropdownItem.href}
-                              className="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-primary transition-colors"
+                              className="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors dark:text-gray-400"
                               onClick={closeAllMenus}
                             >
                               <div className="font-medium">{dropdownItem.label}</div>
                               {dropdownItem.description && (
-                                <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">{dropdownItem.description}</div>
+                                <div className="text-xs text-gray-500 dark:text-gray-500 mt-1 dark:text-gray-400">{dropdownItem.description}</div>
                               )}
                             </Link>
                           ))}

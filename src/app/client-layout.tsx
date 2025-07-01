@@ -148,7 +148,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                 ))}
               </SidebarMenu>
             </SidebarContent>
-            <SidebarFooter className="p-4 border-t border-sidebar-border">
+            <SidebarFooter className="p-4 border-t border-sidebar-border dark:border-gray-700">
               <div className="flex items-center gap-3 mb-4">
                 {currentUser.avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -167,10 +167,10 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                 <div className="mb-4">
                   <Label htmlFor="role-switcher" className="text-xs text-sidebar-foreground/70 mb-1 block">Switch Role:</Label>
                   <Select value={currentUser.activeRole} onValueChange={handleRoleChange}>
-                    <SelectTrigger id="role-switcher" className="w-full bg-sidebar-accent text-sidebar-accent-foreground border-sidebar-border focus:ring-sidebar-ring text-xs h-9">
+                    <SelectTrigger id="role-switcher" className="w-full bg-sidebar-accent text-sidebar-accent-foreground border-sidebar-border focus:ring-sidebar-ring text-xs h-9 dark:border-gray-700">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-sidebar text-sidebar-foreground border-sidebar-border">
+                    <SelectContent className="bg-sidebar text-sidebar-foreground border-sidebar-border dark:border-gray-700">
                       {currentUser.availableRoles.map(roleCode => { 
                         const roleObj = allSystemRoles.find(sysR => sysR.code === roleCode);
                         return roleObj ? (
@@ -208,7 +208,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
             </SidebarFooter>
           </Sidebar>
           <SidebarInset>
-            <header className="sticky top-0 z-50 flex items-center justify-between h-16 px-4 border-b bg-background/80 backdrop-blur-sm">
+            <header className="sticky top-0 z-50 flex items-center justify-between h-16 px-4 border-b bg-background/80 backdrop-blur-sm dark:border-gray-700">
               <SidebarTrigger />
               <div className="flex items-center gap-4">
                 <NotificationBell />

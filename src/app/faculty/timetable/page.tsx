@@ -174,23 +174,23 @@ export default function FacultyTimetablePage() {
         <CardContent>
           {facultyTimetableEntries.length > 0 ? (
             <div className="overflow-x-auto">
-              <Table className="min-w-full border">
+              <Table className="min-w-full border dark:border-gray-700">
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="border w-28">Time</TableHead>
+                    <TableHead className="border w-28 dark:border-gray-700">Time</TableHead>
                     {DAYS_OF_WEEK.map(day => (
-                      <TableHead key={day} className="border text-center">{day}</TableHead>
+                      <TableHead key={day} className="border text-center dark:border-gray-700">{day}</TableHead>
                     ))}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {TIME_SLOTS.map((slot, slotIndex) => (
                     <TableRow key={slot}>
-                      <TableCell className="border font-medium">{slot}</TableCell>
+                      <TableCell className="border font-medium dark:border-gray-700">{slot}</TableCell>
                       {DAYS_OF_WEEK.map((day, dayIndex) => {
                         const entry = timetableGrid[slotIndex]?.[dayIndex];
                         return (
-                          <TableCell key={`${day}-${slot}`} className="border p-1 h-24 align-top">
+                          <TableCell key={`${day}-${slot}`} className="border p-1 h-24 align-top dark:border-gray-700">
                             {entry ? (
                               <div className="bg-secondary/20 p-1.5 rounded-md text-xs h-full flex flex-col justify-between">
                                 <div>

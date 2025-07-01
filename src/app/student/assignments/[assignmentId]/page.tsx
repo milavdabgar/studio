@@ -264,13 +264,13 @@ export default function AssignmentDetailPage() {
         </Card>
       )}
       {!canSubmit && submission?.submissionDate && (
-          <div className="text-center p-4 border rounded-md bg-green-50 border-green-200 text-green-700 dark:bg-green-900/30 dark:text-green-300">
+          <div className="text-center p-4 border rounded-md bg-green-50 border-green-200 text-green-700 dark:bg-green-900/30 dark:text-green-300 dark:border-gray-700">
               <CheckCircle className="inline-block mr-2 h-5 w-5" />
               Assignment already graded. No further submissions allowed.
           </div>
       )}
        {!canSubmit && isPastDueDate && !submission?.submissionDate && (
-          <div className="text-center p-4 border rounded-md bg-red-50 border-red-200 text-red-700 dark:bg-red-900/30 dark:text-red-300">
+          <div className="text-center p-4 border rounded-md bg-red-50 border-red-200 text-red-700 dark:bg-red-900/30 dark:text-red-300 dark:border-gray-700">
               <AlertTriangle className="inline-block mr-2 h-5 w-5" />
               The due date for this assignment has passed, and no submission was made.
           </div>

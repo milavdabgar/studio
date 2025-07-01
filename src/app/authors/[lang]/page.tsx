@@ -64,7 +64,7 @@ export default async function AuthorsPage({ params }: AuthorsPageProps) {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {authors.map((author) => (
               <Link key={author.name} href={`/authors/${lang}/${encodeURIComponent(author.name)}`}>
-                <Card className="hover:shadow-md transition-all duration-200 hover:border-primary/20">
+                <Card className="hover:shadow-md transition-all duration-200 hover:border-primary/20 dark:border-gray-700">
                   <CardHeader className="pb-3">
                     <CardTitle className="flex items-center justify-between text-lg">
                       <span className="flex items-center gap-2">

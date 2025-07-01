@@ -81,7 +81,7 @@ export function Carousel({
   };
 
   if (normalizedImages.length === 0) {
-    return <div className="text-gray-500">No images provided</div>;
+    return <div className="text-gray-500 dark:text-gray-400">No images provided</div>;
   }
 
   const currentCaption = captionArray[currentIndex];

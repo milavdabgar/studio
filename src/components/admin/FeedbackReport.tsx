@@ -85,7 +85,7 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="p-6 rounded-lg shadow-lg border bg-card">
+        <div className="p-6 rounded-lg shadow-lg border bg-card dark:border-gray-700">
           <h3 className="text-xl font-semibold mb-4 text-card-foreground">Branch-wise Performance</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={analysisResult.branch_scores}>
@@ -99,7 +99,7 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
           </ResponsiveContainer>
         </div>
 
-        <div className="p-6 rounded-lg shadow-lg border bg-card">
+        <div className="p-6 rounded-lg shadow-lg border bg-card dark:border-gray-700">
           <h3 className="text-xl font-semibold mb-4 text-card-foreground">Faculty Performance</h3>
           <ResponsiveContainer width="100%" height={300}>
             <RadarChart cx="50%" cy="50%" outerRadius="80%" data={facultyRadarData}>
@@ -114,7 +114,7 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
            <p className="text-xs text-muted-foreground mt-2 text-center">Radar chart shows score for Q1 for each faculty. Adapt for multi-series or average.</p>
         </div>
 
-        <div className="p-6 rounded-lg shadow-lg border bg-card">
+        <div className="p-6 rounded-lg shadow-lg border bg-card dark:border-gray-700">
           <h3 className="text-xl font-semibold mb-4 text-card-foreground">Subject Performance</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={analysisResult.subject_scores}>
@@ -128,7 +128,7 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
           </ResponsiveContainer>
         </div>
 
-        <div className="p-6 rounded-lg shadow-lg border bg-card">
+        <div className="p-6 rounded-lg shadow-lg border bg-card dark:border-gray-700">
           <h3 className="text-xl font-semibold mb-4 text-card-foreground">Parameter-wise Analysis (Avg. Subject Score)</h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={parameterLineData}>
@@ -143,7 +143,7 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
         </div>
       </div>
 
-      <div className="mt-12 p-6 rounded-lg shadow-lg border bg-card">
+      <div className="mt-12 p-6 rounded-lg shadow-lg border bg-card dark:border-gray-700">
         <h3 className="text-xl font-semibold mb-6 text-center text-card-foreground">Download Full Report</h3>
         <div className="flex flex-wrap justify-center gap-4">
           <Button onClick={() => downloadReport('markdown', analysisResult.id)} variant="outline">
@@ -165,9 +165,9 @@ const FeedbackReport: React.FC<FeedbackReportProps> = ({ analysisResult }) => {
         <p className="text-xs text-muted-foreground mt-4 text-center">Note: PDF generation via wkhtmltopdf/LaTeX might provide a Markdown file if server-side conversion tools are not fully configured.</p>
       </div>
       
-      <div className="mt-12 p-6 rounded-lg shadow-lg border bg-card">
+      <div className="mt-12 p-6 rounded-lg shadow-lg border bg-card dark:border-gray-700">
         <h3 className="text-xl font-semibold mb-4 text-card-foreground">Generated Markdown Report Preview</h3>
-        <div className="prose prose-sm dark:prose-invert max-w-none max-h-[600px] overflow-y-auto p-4 border rounded-md bg-background">
+        <div className="prose prose-sm dark:prose-invert max-w-none max-h-[600px] overflow-y-auto p-4 border rounded-md bg-background dark:border-gray-700">
             <pre className="whitespace-pre-wrap">{analysisResult.markdownReport}</pre>
         </div>
       </div>

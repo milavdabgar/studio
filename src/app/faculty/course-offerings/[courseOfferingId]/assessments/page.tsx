@@ -343,7 +343,7 @@ export default function ManageCourseOfferingAssessmentsPage() {
           )}
         </CardContent>
         {paginatedAssessments.length > 0 && (
-            <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 border-t">
+            <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 border-t dark:border-gray-700">
                 <div className="text-sm text-muted-foreground">Showing {Math.min((currentPage -1) * itemsPerPage + 1, filteredAndSortedAssessments.length)} to {Math.min(currentPage * itemsPerPage, filteredAndSortedAssessments.length)} of {filteredAndSortedAssessments.length} assessments.</div>
                 <div className="flex items-center gap-2">
                     <Select value={String(itemsPerPage)} onValueChange={(value) => {setItemsPerPage(Number(value)); setCurrentPage(1);}}><SelectTrigger className="w-[70px] h-8 text-xs"><SelectValue /></SelectTrigger><SelectContent side="top">{ITEMS_PER_PAGE_OPTIONS.map(sz => <SelectItem key={sz} value={String(sz)} className="text-xs">{sz}</SelectItem>)}</SelectContent></Select>

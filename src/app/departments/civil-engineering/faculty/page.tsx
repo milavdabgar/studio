@@ -165,11 +165,11 @@ export default function CivilFacultyPage() {
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 py-16">
+      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 py-16 dark:from-primary/10 dark:to-secondary/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center space-x-2 mb-6">
-              <Link href="/departments/civil-engineering" className="flex items-center space-x-2 text-gray-600 hover:text-primary">
+              <Link href="/departments/civil-engineering" className="flex items-center space-x-2 text-gray-600 hover:text-primary dark:hover:text-primary dark:text-gray-400">
                 <ChevronLeft className="h-4 w-4" />
                 <span>Back to Civil Engineering</span>
               </Link>
@@ -178,15 +178,15 @@ export default function CivilFacultyPage() {
             <div className="flex flex-wrap gap-2 mb-6">
               <Badge variant="secondary" className="text-sm">{departmentStats.totalFaculty} Faculty Members</Badge>
               <Badge variant="outline" className="text-sm">{departmentStats.avgExperience} Avg Experience</Badge>
-              <Badge variant="outline" className="text-sm bg-green-50 text-green-700 border-green-200">
+              <Badge variant="outline" className="text-sm bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700 dark:border-gray-700">
                 Highly Qualified
               </Badge>
             </div>
             
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 dark:text-white">
               Faculty Members
             </h1>
-            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed dark:text-gray-400">
               Meet our experienced and dedicated faculty members who bring together academic excellence 
               and industry expertise to guide students in their civil engineering journey.
             </p>
@@ -194,19 +194,19 @@ export default function CivilFacultyPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">{departmentStats.totalFaculty}</div>
-                <div className="text-sm text-gray-600">Faculty Members</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Faculty Members</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">{departmentStats.avgExperience}</div>
-                <div className="text-sm text-gray-600">Avg Experience</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Avg Experience</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">{departmentStats.researchPapers}</div>
-                <div className="text-sm text-gray-600">Research Papers</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Research Papers</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">{departmentStats.industryProjects}</div>
-                <div className="text-sm text-gray-600">Industry Projects</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Industry Projects</div>
               </div>
             </div>
           </div>
@@ -214,11 +214,11 @@ export default function CivilFacultyPage() {
       </section>
 
       {/* Faculty Grid */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Faculty Team</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">Our Faculty Team</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Dedicated educators committed to excellence in civil engineering education
             </p>
           </div>
@@ -228,19 +228,19 @@ export default function CivilFacultyPage() {
               <Card key={index} className="hover:shadow-xl transition-all duration-300">
                 <CardHeader className="pb-4">
                   <div className="flex items-start space-x-4">
-                    <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                    <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 dark:bg-primary/20">
                       <User className="h-10 w-10 text-primary" />
                     </div>
                     <div className="flex-1">
-                      <CardTitle className="text-xl text-gray-900 mb-2">{faculty.name}</CardTitle>
+                      <CardTitle className="text-xl text-gray-900 mb-2 dark:text-white">{faculty.name}</CardTitle>
                       <CardDescription className="text-primary font-medium mb-2">
                         {faculty.designation}
                       </CardDescription>
-                      <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                      <div className="flex items-center gap-2 text-sm text-gray-600 mb-2 dark:text-gray-400">
                         <GraduationCap className="h-4 w-4" />
                         {faculty.qualification}
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                         <Calendar className="h-4 w-4" />
                         {faculty.experience} Experience
                       </div>
@@ -251,7 +251,7 @@ export default function CivilFacultyPage() {
                 <CardContent className="space-y-6">
                   {/* Specializations */}
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 dark:text-white">
                       <Star className="h-4 w-4 text-primary" />
                       Specializations
                     </h4>
@@ -266,11 +266,11 @@ export default function CivilFacultyPage() {
 
                   {/* Subjects */}
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 dark:text-white">
                       <BookOpen className="h-4 w-4 text-primary" />
                       Subjects Taught
                     </h4>
-                    <ul className="space-y-1 text-sm text-gray-600">
+                    <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
                       {faculty.subjects.map((subject, idx) => (
                         <li key={idx} className="flex items-start gap-2">
                           <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
@@ -282,7 +282,7 @@ export default function CivilFacultyPage() {
 
                   {/* Research Areas */}
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 dark:text-white">
                       <Building className="h-4 w-4 text-primary" />
                       Research Areas
                     </h4>
@@ -297,11 +297,11 @@ export default function CivilFacultyPage() {
 
                   {/* Achievements */}
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 dark:text-white">
                       <Award className="h-4 w-4 text-primary" />
                       Key Achievements
                     </h4>
-                    <ul className="space-y-1 text-sm text-gray-600">
+                    <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
                       {faculty.achievements.map((achievement, idx) => (
                         <li key={idx} className="flex items-start gap-2">
                           <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
@@ -312,13 +312,13 @@ export default function CivilFacultyPage() {
                   </div>
 
                   {/* Contact */}
-                  <div className="pt-4 border-t">
+                  <div className="pt-4 border-t dark:border-gray-700">
                     <div className="flex flex-col sm:flex-row gap-3">
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                         <Mail className="h-4 w-4 text-primary" />
                         <span className="break-all">{faculty.email}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                         <Phone className="h-4 w-4 text-primary" />
                         <span>{faculty.phone}</span>
                       </div>
@@ -332,11 +332,11 @@ export default function CivilFacultyPage() {
       </section>
 
       {/* Faculty Statistics */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Faculty Excellence</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">Faculty Excellence</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Our faculty's commitment to academic and research excellence
             </p>
           </div>
@@ -345,36 +345,36 @@ export default function CivilFacultyPage() {
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <Users className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">100%</h3>
-                <p className="text-gray-600 font-medium">Post Graduate</p>
-                <p className="text-sm text-gray-500 mt-1">All faculty hold M.E./M.Tech degrees</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2 dark:text-white">100%</h3>
+                <p className="text-gray-600 font-medium dark:text-gray-400">Post Graduate</p>
+                <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">All faculty hold M.E./M.Tech degrees</p>
               </CardContent>
             </Card>
             
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <BookOpen className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">25+</h3>
-                <p className="text-gray-600 font-medium">Research Papers</p>
-                <p className="text-sm text-gray-500 mt-1">Published in reputed journals</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2 dark:text-white">25+</h3>
+                <p className="text-gray-600 font-medium dark:text-gray-400">Research Papers</p>
+                <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">Published in reputed journals</p>
               </CardContent>
             </Card>
             
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <Building className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">15+</h3>
-                <p className="text-gray-600 font-medium">Industry Projects</p>
-                <p className="text-sm text-gray-500 mt-1">Consultancy and collaboration</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2 dark:text-white">15+</h3>
+                <p className="text-gray-600 font-medium dark:text-gray-400">Industry Projects</p>
+                <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">Consultancy and collaboration</p>
               </CardContent>
             </Card>
             
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <Award className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">8+</h3>
-                <p className="text-gray-600 font-medium">Years Avg</p>
-                <p className="text-sm text-gray-500 mt-1">Average teaching experience</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2 dark:text-white">8+</h3>
+                <p className="text-gray-600 font-medium dark:text-gray-400">Years Avg</p>
+                <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">Average teaching experience</p>
               </CardContent>
             </Card>
           </div>
@@ -382,11 +382,11 @@ export default function CivilFacultyPage() {
       </section>
 
       {/* Research Activities */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Research & Development</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">Research & Development</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Active research areas and ongoing projects
             </p>
           </div>
@@ -395,8 +395,8 @@ export default function CivilFacultyPage() {
             <Card className="hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <Building className="h-10 w-10 text-primary mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">Structural Engineering</h3>
-                <p className="text-gray-600 text-sm mb-4">
+                <h3 className="font-bold text-gray-900 mb-2 dark:text-white">Structural Engineering</h3>
+                <p className="text-gray-600 text-sm mb-4 dark:text-gray-400">
                   Advanced concrete technology, seismic design, and structural optimization
                 </p>
                 <div className="flex flex-wrap gap-1">
@@ -409,8 +409,8 @@ export default function CivilFacultyPage() {
             <Card className="hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <Users className="h-10 w-10 text-primary mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">Environmental Engineering</h3>
-                <p className="text-gray-600 text-sm mb-4">
+                <h3 className="font-bold text-gray-900 mb-2 dark:text-white">Environmental Engineering</h3>
+                <p className="text-gray-600 text-sm mb-4 dark:text-gray-400">
                   Water treatment, waste management, and environmental sustainability
                 </p>
                 <div className="flex flex-wrap gap-1">
@@ -423,8 +423,8 @@ export default function CivilFacultyPage() {
             <Card className="hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <Star className="h-10 w-10 text-primary mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">Transportation Engineering</h3>
-                <p className="text-gray-600 text-sm mb-4">
+                <h3 className="font-bold text-gray-900 mb-2 dark:text-white">Transportation Engineering</h3>
+                <p className="text-gray-600 text-sm mb-4 dark:text-gray-400">
                   Traffic optimization, pavement design, and intelligent transportation systems
                 </p>
                 <div className="flex flex-wrap gap-1">
@@ -440,10 +440,10 @@ export default function CivilFacultyPage() {
       {/* Call to Action */}
       <section className="py-16 bg-primary/5">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">
             Learn from the Best
           </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto dark:text-gray-400">
             Join our Civil Engineering program and learn from experienced faculty members 
             who are committed to your success and professional growth.
           </p>

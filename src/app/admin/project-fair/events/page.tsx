@@ -417,7 +417,7 @@ evt_s1,TechFest 2025,"Annual technical festival",2024-25,2025-03-15T10:00:00Z,20
 
                   <div className="md:col-span-2">
                     <Label>Target Departments (Optional)</Label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 p-2 border rounded-md max-h-40 overflow-y-auto">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 p-2 border rounded-md max-h-40 overflow-y-auto dark:border-gray-700">
                         {departments.map(dept => (
                             <div key={dept.id} className="flex items-center space-x-2">
                                 <Checkbox 
@@ -446,7 +446,7 @@ evt_s1,TechFest 2025,"Annual technical festival",2024-25,2025-03-15T10:00:00Z,20
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 p-4 border rounded-lg space-y-4">
+          <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
             <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Project Events from CSV</h3>
             <div className="flex flex-col sm:flex-row gap-2 items-center">
               <Input type="file" id="csvImportEvent" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
@@ -464,7 +464,7 @@ evt_s1,TechFest 2025,"Annual technical festival",2024-25,2025-03-15T10:00:00Z,20
             </div>
           </div>
 
-          <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 border rounded-lg">
+          <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div>
               <Label htmlFor="searchEvent">Search Events</Label>
               <div className="relative">

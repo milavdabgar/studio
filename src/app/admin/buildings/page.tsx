@@ -419,7 +419,7 @@ bldg_sample_1,Science Block,SCI,"Labs for Physics and Chemistry",inst1,"Governme
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 p-4 border rounded-lg space-y-4">
+          <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
             <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Buildings from CSV</h3>
             <div className="flex flex-col sm:flex-row gap-2 items-center">
               <Input type="file" id="csvImportBuilding" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
@@ -437,7 +437,7 @@ bldg_sample_1,Science Block,SCI,"Labs for Physics and Chemistry",inst1,"Governme
             </div>
           </div>
 
-          <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 border rounded-lg">
+          <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div>
               <Label htmlFor="searchBuilding">Search Buildings</Label>
               <div className="relative">

@@ -424,3 +424,111 @@ pre.shiki {
     @apply text-xs;
   }
 }
+
+/* Global Dark Mode Enhancements */
+@layer base {
+  /* Ensure all elements respect dark mode by default */
+  .dark {
+    color-scheme: dark;
+  }
+  
+  /* Default text colors in dark mode */
+  .dark p:not([class*="text-"]) {
+    @apply text-gray-300;
+  }
+  
+  .dark h1:not([class*="text-"]),
+  .dark h2:not([class*="text-"]),
+  .dark h3:not([class*="text-"]),
+  .dark h4:not([class*="text-"]),
+  .dark h5:not([class*="text-"]),
+  .dark h6:not([class*="text-"]) {
+    @apply text-white;
+  }
+  
+  /* Ensure all links have proper dark mode colors */
+  .dark a:not([class*="text-"]):not([class*="btn"]):not([class*="button"]) {
+    @apply text-blue-400 hover:text-blue-300;
+  }
+  
+  /* Better scrollbar for dark mode */
+  .dark::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .dark::-webkit-scrollbar-track {
+    @apply bg-gray-800;
+  }
+  
+  .dark::-webkit-scrollbar-thumb {
+    @apply bg-gray-600 rounded;
+  }
+  
+  .dark::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+  }
+  
+  /* Dark mode for form elements */
+  .dark input:not([class*="bg-"]),
+  .dark textarea:not([class*="bg-"]),
+  .dark select:not([class*="bg-"]) {
+    @apply bg-gray-800 border-gray-600 text-white;
+  }
+  
+  .dark input:focus:not([class*="bg-"]),
+  .dark textarea:focus:not([class*="bg-"]),
+  .dark select:focus:not([class*="bg-"]) {
+    @apply border-blue-500 ring-blue-500;
+  }
+}
+
+@layer components {
+  /* Enhanced card styling for dark mode */
+  .dark .card:not([class*="bg-"]) {
+    @apply bg-gray-800 border-gray-700;
+  }
+  
+  /* Enhanced button styling for dark mode */
+  .dark .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white;
+  }
+  
+  .dark .btn-secondary {
+    @apply bg-gray-700 hover:bg-gray-600 text-white;
+  }
+  
+  /* Enhanced badge styling for dark mode */
+  .dark .badge:not([class*="bg-"]) {
+    @apply bg-gray-700 text-gray-200;
+  }
+}
+
+/* Utilities for dark mode consistency */
+@layer utilities {
+  .dark-mode-text {
+    @apply text-gray-900 dark:text-white;
+  }
+  
+  .dark-mode-text-muted {
+    @apply text-gray-600 dark:text-gray-400;
+  }
+  
+  .dark-mode-bg {
+    @apply bg-white dark:bg-gray-900;
+  }
+  
+  .dark-mode-bg-muted {
+    @apply bg-gray-50 dark:bg-gray-800;
+  }
+  
+  .dark-mode-border {
+    @apply border-gray-200 dark:border-gray-700;
+  }
+}
+
+/* Animation improvements for dark mode */
+@layer utilities {
+  .dark-mode-transition {
+    @apply transition-colors duration-200 ease-in-out;
+  }
+}

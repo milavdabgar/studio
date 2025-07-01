@@ -150,14 +150,14 @@ export default function ReportingAnalyticsPage() {
                   <AccordionContent className="pl-4 space-y-2">
                     {instData.programs.length === 0 ? <p className="text-sm text-muted-foreground">No programs with students.</p> :
                     instData.programs.map((progData, progIndex) => (
-                      <AccordionItem value={`institute-${instIndex}-program-${progIndex}`} key={progData.programId} className="border-l pl-4">
+                      <AccordionItem value={`institute-${instIndex}-program-${progIndex}`} key={progData.programId} className="border-l pl-4 dark:border-gray-700">
                         <AccordionTrigger className="text-md hover:no-underline">
                           {progData.programName} ({progData.programCode}) - Total: {progData.totalStudents}
                         </AccordionTrigger>
                         <AccordionContent className="pl-4 space-y-1">
                           {progData.batches.length === 0 ? <p className="text-sm text-muted-foreground">No batches with students.</p> :
                           progData.batches.map((batchData, batchIndex) => (
-                             <AccordionItem value={`institute-${instIndex}-program-${progIndex}-batch-${batchIndex}`} key={batchData.batchId} className="border-l pl-4">
+                             <AccordionItem value={`institute-${instIndex}-program-${progIndex}-batch-${batchIndex}`} key={batchData.batchId} className="border-l pl-4 dark:border-gray-700">
                                 <AccordionTrigger className="text-sm hover:no-underline">
                                     {batchData.batchName} - Total: {batchData.totalStudents}
                                 </AccordionTrigger>

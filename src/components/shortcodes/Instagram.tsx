@@ -40,10 +40,10 @@ export function Instagram({
         <div className="flex flex-col items-center gap-4">
           <InstagramIcon className="h-12 w-12 text-pink-500" />
           <div>
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 dark:text-white">
               Unable to load Instagram post
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 dark:text-gray-400">
               This post might be private, deleted, or there might be a network issue.
             </p>
             <a
@@ -66,11 +66,11 @@ export function Instagram({
       <div className="relative">
         {!isLoaded && (
           <div 
-            className="flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg border"
+            className="flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg border dark:bg-gray-800 dark:border-gray-700"
             style={{ width, height: 600 }}
           >
             <div className="flex flex-col items-center gap-3">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500 dark:border-gray-700"></div>
               <span className="text-sm text-gray-600 dark:text-gray-400">Loading Instagram post...</span>
             </div>
           </div>
@@ -94,7 +94,7 @@ export function Instagram({
           href={instagramUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs text-gray-500 hover:text-pink-600 dark:hover:text-pink-400 inline-flex items-center gap-1"
+          className="text-xs text-gray-500 hover:text-pink-600 dark:hover:text-pink-400 inline-flex items-center gap-1 dark:text-gray-400"
         >
           <ExternalLink className="h-3 w-3" />
           View on Instagram

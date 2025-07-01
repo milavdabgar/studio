@@ -130,10 +130,10 @@ export default function NewslettersPage() {
               Spectrum Newsletter
             </h1>
           </div>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto dark:text-gray-400">
             Department of Electronics & Communication Engineering
           </p>
-          <p className="text-lg text-gray-500 mt-2">
+          <p className="text-lg text-gray-500 mt-2 dark:text-gray-400">
             Three different approaches to showcase our newsletter content with varying levels of interactivity and design fidelity.
           </p>
         </div>
@@ -141,7 +141,7 @@ export default function NewslettersPage() {
         {/* Approaches Grid */}
         <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-3 max-w-7xl mx-auto">
           {approaches.map((approach) => (
-            <Card key={approach.id} className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 group">
+            <Card key={approach.id} className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 group dark:border-gray-700">
               <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100 opacity-50" />
               <div className="relative">
                 <CardHeader className="pb-4">
@@ -167,10 +167,10 @@ export default function NewslettersPage() {
                       )}
                     </div>
                   </div>
-                  <CardTitle className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                  <CardTitle className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors dark:text-white">
                     {approach.title}
                   </CardTitle>
-                  <CardDescription className="text-gray-600 leading-relaxed">
+                  <CardDescription className="text-gray-600 leading-relaxed dark:text-gray-400">
                     {approach.description}
                   </CardDescription>
                 </CardHeader>
@@ -184,7 +184,7 @@ export default function NewslettersPage() {
                     </h4>
                     <ul className="space-y-1">
                       {approach.pros.map((pro, index) => (
-                        <li key={index} className="text-sm text-gray-600 flex items-start gap-2">
+                        <li key={index} className="text-sm text-gray-600 flex items-start gap-2 dark:text-gray-400">
                           <div className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0" />
                           {pro}
                         </li>
@@ -200,7 +200,7 @@ export default function NewslettersPage() {
                     </h4>
                     <ul className="space-y-1">
                       {approach.cons.map((con, index) => (
-                        <li key={index} className="text-sm text-gray-600 flex items-start gap-2">
+                        <li key={index} className="text-sm text-gray-600 flex items-start gap-2 dark:text-gray-400">
                           <div className="w-1.5 h-1.5 bg-orange-400 rounded-full mt-2 flex-shrink-0" />
                           {con}
                         </li>
@@ -209,7 +209,7 @@ export default function NewslettersPage() {
                   </div>
 
                   {/* Action Button */}
-                  <div className="pt-4 border-t border-gray-200">
+                  <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
                     <Link href={approach.href}>
                       <Button 
                         className="w-full group-hover:scale-105 transition-transform duration-300 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
@@ -240,33 +240,33 @@ export default function NewslettersPage() {
 
         {/* Additional Info */}
         <div className="mt-16 text-center">
-          <Card className="max-w-4xl mx-auto bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+          <Card className="max-w-4xl mx-auto bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200 dark:border-gray-700">
             <CardContent className="p-8">
               <div className="flex items-center justify-center gap-3 mb-4">
                 <Code className="h-6 w-6 text-blue-600" />
-                <h3 className="text-2xl font-bold text-gray-900">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
                   Technical Implementation
                 </h3>
               </div>
-              <p className="text-gray-700 leading-relaxed mb-6">
+              <p className="text-gray-700 leading-relaxed mb-6 dark:text-gray-300">
                 This project demonstrates three different approaches to content presentation and export:
               </p>
               <div className="grid md:grid-cols-3 gap-6 text-left">
                 <div className="space-y-2">
                   <h4 className="font-semibold text-blue-700">Markdown Approach</h4>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     Uses marked.js for parsing, with custom content converter supporting multiple export formats via Pandoc and Puppeteer.
                   </p>
                 </div>
                 <div className="space-y-2">
                   <h4 className="font-semibold text-purple-700">HTML Approach</h4>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     Serves static HTML with Puppeteer-based PDF generation and HTML-to-Markdown conversion for other formats.
                   </p>
                 </div>
                 <div className="space-y-2">
                   <h4 className="font-semibold text-green-700">Interactive Approach</h4>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     React components with shadcn/ui, server-side rendering to HTML, and multi-format export capabilities.
                   </p>
                 </div>

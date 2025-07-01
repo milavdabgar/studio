@@ -213,7 +213,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({
             <div><Label htmlFor="projGuideContact">Guide Contact</Label><Input id="projGuideContact" value={guide.contactNumber} onChange={e => setGuide(g => ({ ...g, contactNumber: e.target.value }))} disabled={isSubmitting} /></div>
           </div>
           
-          <div className="space-y-2 border p-4 rounded-md bg-muted/30">
+          <div className="space-y-2 border p-4 rounded-md bg-muted/30 dark:border-gray-700">
             <h4 className="text-sm font-medium">Requirements</h4>
             <div className="flex items-center space-x-2"><Switch id="reqPower" checked={requirements.power} onCheckedChange={c => setRequirements(r => ({...r, power:c}))} disabled={isSubmitting} /><Label htmlFor="reqPower">Power Outlet</Label></div>
             <div className="flex items-center space-x-2"><Switch id="reqInternet" checked={requirements.internet} onCheckedChange={c => setRequirements(r => ({...r, internet:c}))} disabled={isSubmitting} /><Label htmlFor="reqInternet">Internet Access</Label></div>
@@ -223,7 +223,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({
           
           <div><Label htmlFor="projStatus">Status *</Label><Select value={status} onValueChange={s => setStatus(s as ProjectStatus)} required disabled={isSubmitting}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{PROJECT_STATUS_OPTIONS.map(s => <SelectItem key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</SelectItem>)}</SelectContent></Select></div>
 
-          <DialogFooter className="pt-4 border-t">
+          <DialogFooter className="pt-4 border-t dark:border-gray-700">
             <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}><XCircle className="mr-2 h-4 w-4"/>Cancel</Button>
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}

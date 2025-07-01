@@ -205,7 +205,7 @@ export default function EventEvaluationsPage() {
             <CardDescription>Assign jury members to projects and monitor evaluation progress.</CardDescription>
         </CardHeader>
         <CardContent>
-            <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 border rounded-lg">
+            <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 border rounded-lg dark:border-gray-700">
                 <div><Label htmlFor="evalSearch">Search Projects</Label><Input id="evalSearch" placeholder="Title, ID..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} /></div>
                 <div><Label htmlFor="evalDeptFilter">Department</Label><Select value={filterDepartment} onValueChange={setFilterDepartment}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Departments</SelectItem>{departments.map(d=><SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}</SelectContent></Select></div>
                 <div><Label htmlFor="evalDeptStatusFilter">Dept. Eval Status</Label><Select value={filterDeptEvalStatus} onValueChange={s => setFilterDeptEvalStatus(s as EvaluationStatusFilter)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All</SelectItem><SelectItem value="pending">Pending</SelectItem><SelectItem value="completed">Completed</SelectItem><SelectItem value="assigned">Assigned</SelectItem><SelectItem value="unassigned">Unassigned</SelectItem></SelectContent></Select></div>
@@ -252,7 +252,7 @@ export default function EventEvaluationsPage() {
             </Table>
             }
         </CardContent>
-        <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 border-t">
+        <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 border-t dark:border-gray-700">
             <div className="text-sm text-muted-foreground">Showing {paginatedProjects.length > 0 ? Math.min((currentPage -1) * itemsPerPage + 1, filteredAndSortedProjects.length): 0} to {Math.min(currentPage * itemsPerPage, filteredAndSortedProjects.length)} of {filteredAndSortedProjects.length} projects.</div>
             <div className="flex items-center gap-2">
                 <Select value={String(itemsPerPage)} onValueChange={(value) => {setItemsPerPage(Number(value)); setCurrentPage(1);}}><SelectTrigger className="w-[70px] h-8 text-xs"><SelectValue /></SelectTrigger><SelectContent side="top">{ITEMS_PER_PAGE_OPTIONS.map(sz => <SelectItem key={sz} value={String(sz)} className="text-xs">{sz}</SelectItem>)}</SelectContent></Select>

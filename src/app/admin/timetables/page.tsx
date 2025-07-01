@@ -351,7 +351,7 @@ export default function TimetableManagementPage() {
           <Button onClick={() => { resetForm(); setIsDialogOpen(true); }} disabled={programs.length === 0 || batches.length === 0}><PlusCircle className="mr-2 h-5 w-5" />New Timetable</Button>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 border rounded-lg">
+          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div><Label htmlFor="searchTerm">Search Name/Year</Label><Input id="searchTerm" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Keyword..." /></div>
             <div><Label htmlFor="filterProgram">Filter Program</Label><Select value={filterProgram} onValueChange={setFilterProgram}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Programs</SelectItem>{programs.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent></Select></div>
             <div><Label htmlFor="filterBatch">Filter Batch</Label><Select value={filterBatch} onValueChange={setFilterBatch} disabled={filterProgram === 'all'}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Batches</SelectItem>{batches.filter(b=>b.programId === filterProgram).map(b => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}</SelectContent></Select></div>
@@ -415,8 +415,8 @@ export default function TimetableManagementPage() {
               <div><Label htmlFor="ttStatus">Status</Label><Select value={formStatus} onValueChange={val => setFormStatus(val as TimetableStatus)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{STATUS_OPTIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}</SelectContent></Select></div>
               <div><Label htmlFor="ttEffectiveDate">Effective Date</Label><Popover><PopoverTrigger asChild><Button variant="outline" className={cn("w-full justify-start", !formEffectiveDate && "text-muted-foreground")}><CalendarIcon className="mr-2 h-4 w-4" />{formEffectiveDate ? format(formEffectiveDate, "PPP") : <span>Pick date</span>}</Button></PopoverTrigger><PopoverContent className="w-auto p-0"><Calendar mode="single" selected={formEffectiveDate} onSelect={setFormEffectiveDate} /></PopoverContent></Popover></div>
             </div>
-            <h4 className="text-md font-semibold pt-4 border-t mt-4">Timetable Entries</h4>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end border p-3 rounded-md">
+            <h4 className="text-md font-semibold pt-4 border-t mt-4 dark:border-gray-700">Timetable Entries</h4>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end border p-3 rounded-md dark:border-gray-700">
                 <div><Label>Day</Label><Select value={entryDayOfWeek} onValueChange={val => setEntryDayOfWeek(val as DayOfWeek)}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{DAY_OPTIONS.map(d=><SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent></Select></div>
                 <div><Label>Start Time</Label><Input type="time" value={entryStartTime} onChange={e=>setEntryStartTime(e.target.value)} /></div>
                 <div><Label>End Time</Label><Input type="time" value={entryEndTime} onChange={e=>setEntryEndTime(e.target.value)} /></div>
@@ -429,7 +429,7 @@ export default function TimetableManagementPage() {
                     {entryEditingIndex !== null && <Button type="button" variant="ghost" size="sm" onClick={() => {setEntryEditingIndex(null); setEntryDayOfWeek('Monday'); setEntryStartTime('09:00'); setEntryEndTime('10:00'); setEntryCourseOfferingId(''); setEntryFacultyId(''); setEntryRoomId(''); setEntryType('lecture'); }}>Cancel Edit</Button>}
                 </div>
             </div>
-            <div className="max-h-60 overflow-y-auto border rounded-md">
+            <div className="max-h-60 overflow-y-auto border rounded-md dark:border-gray-700">
                 {currentEntries.length > 0 ? <Table><TableHeader><TableRow><TableHead>Day</TableHead><TableHead>Time</TableHead><TableHead>Course</TableHead><TableHead>Faculty</TableHead><TableHead>Room</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader>
                 <TableBody>{currentEntries.map((entry, index) => (
                     <TableRow key={index}>
@@ -445,7 +445,7 @@ export default function TimetableManagementPage() {
                 ))}</TableBody></Table> : <p className="p-4 text-sm text-muted-foreground text-center">No entries added yet.</p>}
             </div>
           </form>
-          <DialogFooter className="pt-4 border-t mt-auto"> 
+          <DialogFooter className="pt-4 border-t mt-auto dark:border-gray-700"> 
             <DialogClose asChild><Button type="button" variant="outline" disabled={isSubmitting}>Cancel</Button></DialogClose>
             <Button type="submit" form="timetableForm" disabled={isSubmitting}>
               {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

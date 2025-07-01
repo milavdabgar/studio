@@ -83,7 +83,7 @@ export function Figure({
           className={`bg-gray-200 dark:bg-gray-700 flex items-center justify-center ${className}`}
           style={{ width, height: height || width * 0.6 }}
         >
-          <span className="text-gray-500 text-sm">Image failed to load</span>
+          <span className="text-gray-500 text-sm dark:text-gray-400">Image failed to load</span>
         </div>
       ) : (
         <Image

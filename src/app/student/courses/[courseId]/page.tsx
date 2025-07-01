@@ -129,7 +129,7 @@ export default function StudentCourseDetailPage() {
             {relatedAssessments.length > 0 ? (
                 <ul className="space-y-2">
                     {relatedAssessments.map(assessment => (
-                        <li key={assessment.id} className="p-3 rounded-md border flex justify-between items-center">
+                        <li key={assessment.id} className="p-3 rounded-md border flex justify-between items-center dark:border-gray-700">
                             <div>
                                 <Link
                                   href={`/student/assignments/${assessment.id}`}

@@ -279,7 +279,7 @@ export default function StudentProfilePage() {
         </CardHeader>
         <CardContent className="grid md:grid-cols-2 gap-x-8 gap-y-4 px-6 md:px-10">
           {profileItems.map((item, index) => (
-            <div key={index} className="flex items-start space-x-3 py-2 border-b border-muted last:border-b-0 md:last:border-b">
+            <div key={index} className="flex items-start space-x-3 py-2 border-b border-muted last:border-b-0 md:last:border-b dark:border-gray-700">
               <item.icon className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
               <div>
                 <p className="text-sm font-medium text-muted-foreground">{item.label}</p>
@@ -338,15 +338,15 @@ export default function StudentProfilePage() {
         </CardHeader>
         <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-3 rounded-md bg-muted/50 border">
+                <div className="p-3 rounded-md bg-muted/50 border dark:border-gray-700">
                     <Label className="text-xs text-muted-foreground">Overall CPI</Label>
                     <p className="text-2xl font-semibold">{academicProgress.latestCpi.toFixed(2)}</p>
                 </div>
-                <div className="p-3 rounded-md bg-muted/50 border">
+                <div className="p-3 rounded-md bg-muted/50 border dark:border-gray-700">
                     <Label className="text-xs text-muted-foreground">Credits Earned</Label>
                     <p className="text-2xl font-semibold">{academicProgress.earnedCredits} / {academicProgress.totalProgramCredits}</p>
                 </div>
-                <div className="p-3 rounded-md bg-muted/50 border">
+                <div className="p-3 rounded-md bg-muted/50 border dark:border-gray-700">
                     <Label className="text-xs text-muted-foreground">Status</Label>
                     <p className={`text-lg font-semibold ${academicProgress.backlogs.length > 0 ? 'text-destructive' : 'text-success'}`}>{academicProgress.statusMessage}</p>
                 </div>
@@ -364,7 +364,7 @@ export default function StudentProfilePage() {
                         {Object.entries(academicProgress.semesterSgpa)
                             .sort(([semA], [semB]) => parseInt(semA) - parseInt(semB))
                             .map(([semester, data]) => (
-                            <div key={semester} className="p-2 border rounded-md text-xs bg-background">
+                            <div key={semester} className="p-2 border rounded-md text-xs bg-background dark:border-gray-700">
                                 <span className="font-medium">Sem {semester}:</span> {data.sgpa.toFixed(2)}
                             </div>
                         ))}

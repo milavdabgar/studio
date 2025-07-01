@@ -172,7 +172,7 @@ export default function AllNotificationsPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 p-4 border rounded-lg">
+          <div className="mb-6 p-4 border rounded-lg dark:border-gray-700">
             <Label htmlFor="notificationTypeFilter" className="text-sm">Filter by Type:</Label>
             <Select value={filterType} onValueChange={(value) => setFilterType(value as NotificationType | 'all' | 'unread')}>
                 <SelectTrigger id="notificationTypeFilter" className="mt-1">
@@ -229,7 +229,7 @@ export default function AllNotificationsPage() {
           )}
         </CardContent>
         {filteredNotifications.length > 0 && (
-            <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 border-t">
+            <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 border-t dark:border-gray-700">
                 <div className="text-sm text-muted-foreground">Showing {paginatedNotifications.length > 0 ? Math.min((currentPage -1) * itemsPerPage + 1, filteredNotifications.length): 0} to {Math.min(currentPage * itemsPerPage, filteredNotifications.length)} of {filteredNotifications.length} notifications.</div>
                 <div className="flex items-center gap-2">
                     <Select value={String(itemsPerPage)} onValueChange={(value) => {setItemsPerPage(Number(value)); setCurrentPage(1);}}>

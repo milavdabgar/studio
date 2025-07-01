@@ -156,7 +156,7 @@ export function BlogSearch({ currentLang }: BlogSearchProps) {
 
       {isOpen && (
         <div className="absolute right-0 top-full mt-2 w-96 max-w-[90vw] z-50">
-          <Card className="shadow-lg border">
+          <Card className="shadow-lg border dark:border-gray-700">
             <CardContent className="p-4">
               <div className="flex items-center space-x-2 mb-4">
                 <Search className="h-4 w-4 text-muted-foreground" />
@@ -166,7 +166,7 @@ export function BlogSearch({ currentLang }: BlogSearchProps) {
                   placeholder={currentLang === 'gu' ? 'શોધો...' : 'Search...'}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="border-0 focus-visible:ring-0 px-0"
+                  className="border-0 focus-visible:ring-0 px-0 dark:border-gray-700"
                 />
                 <Button
                   variant="ghost"

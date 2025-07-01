@@ -223,11 +223,11 @@ export default function CivilFacilitiesPage() {
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 py-16">
+      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 py-16 dark:from-primary/10 dark:to-secondary/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center space-x-2 mb-6">
-              <Link href="/departments/civil-engineering" className="flex items-center space-x-2 text-gray-600 hover:text-primary">
+              <Link href="/departments/civil-engineering" className="flex items-center space-x-2 text-gray-600 hover:text-primary dark:hover:text-primary dark:text-gray-400">
                 <ChevronLeft className="h-4 w-4" />
                 <span>Back to Civil Engineering</span>
               </Link>
@@ -236,15 +236,15 @@ export default function CivilFacilitiesPage() {
             <div className="flex flex-wrap gap-2 mb-6">
               <Badge variant="secondary" className="text-sm">5 Major Labs</Badge>
               <Badge variant="outline" className="text-sm">Modern Equipment</Badge>
-              <Badge variant="outline" className="text-sm bg-green-50 text-green-700 border-green-200">
+              <Badge variant="outline" className="text-sm bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700 dark:border-gray-700">
                 Industry Standard
               </Badge>
             </div>
             
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 dark:text-white">
               Laboratory Facilities
             </h1>
-            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed dark:text-gray-400">
               State-of-the-art laboratories equipped with modern instruments and equipment to provide 
               hands-on training in all areas of civil engineering. Our facilities ensure practical 
               learning aligned with industry standards.
@@ -253,19 +253,19 @@ export default function CivilFacilitiesPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">5</div>
-                <div className="text-sm text-gray-600">Major Labs</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Major Labs</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">50+</div>
-                <div className="text-sm text-gray-600">Equipment</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Equipment</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">150</div>
-                <div className="text-sm text-gray-600">Students Capacity</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Students Capacity</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">900</div>
-                <div className="text-sm text-gray-600">Sq.m Total Area</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Sq.m Total Area</div>
               </div>
             </div>
           </div>
@@ -273,11 +273,11 @@ export default function CivilFacilitiesPage() {
       </section>
 
       {/* Laboratories Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Major Laboratories</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">Major Laboratories</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Specialized laboratories for comprehensive practical training
             </p>
           </div>
@@ -289,13 +289,13 @@ export default function CivilFacilitiesPage() {
                 <Card key={index} className="hover:shadow-xl transition-all duration-300">
                   <CardHeader>
                     <div className="flex items-start space-x-4">
-                      <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0 dark:bg-primary/20">
                         <IconComponent className="h-8 w-8 text-primary" />
                       </div>
                       <div className="flex-1">
-                        <CardTitle className="text-2xl text-gray-900 mb-2">{lab.name}</CardTitle>
-                        <CardDescription className="text-gray-600 mb-4">{lab.description}</CardDescription>
-                        <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                        <CardTitle className="text-2xl text-gray-900 mb-2 dark:text-white">{lab.name}</CardTitle>
+                        <CardDescription className="text-gray-600 mb-4 dark:text-gray-400">{lab.description}</CardDescription>
+                        <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400">
                           <div className="flex items-center gap-2">
                             <Building className="h-4 w-4" />
                             <span>Area: {lab.area}</span>
@@ -312,11 +312,11 @@ export default function CivilFacilitiesPage() {
                   <CardContent className="grid lg:grid-cols-3 gap-8">
                     {/* Equipment List */}
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2 dark:text-white">
                         <Wrench className="h-4 w-4 text-primary" />
                         Major Equipment
                       </h4>
-                      <ul className="space-y-2 text-sm text-gray-600">
+                      <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                         {lab.equipment.map((item, idx) => (
                           <li key={idx} className="flex items-start gap-2">
                             <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
@@ -328,11 +328,11 @@ export default function CivilFacilitiesPage() {
 
                     {/* Practicals */}
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2 dark:text-white">
                         <Target className="h-4 w-4 text-primary" />
                         Key Practicals
                       </h4>
-                      <ul className="space-y-2 text-sm text-gray-600">
+                      <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                         {lab.practicals.map((practical, idx) => (
                           <li key={idx} className="flex items-start gap-2">
                             <span className="w-1.5 h-1.5 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
@@ -352,7 +352,7 @@ export default function CivilFacilitiesPage() {
                           className="object-cover"
                         />
                       </div>
-                      <p className="text-sm text-gray-600 mt-2 text-center">
+                      <p className="text-sm text-gray-600 mt-2 text-center dark:text-gray-400">
                         Modern equipment and spacious layout
                       </p>
                     </div>
@@ -365,11 +365,11 @@ export default function CivilFacilitiesPage() {
       </section>
 
       {/* Additional Infrastructure */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Supporting Infrastructure</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">Supporting Infrastructure</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Additional facilities to enhance the learning experience
             </p>
           </div>
@@ -381,13 +381,13 @@ export default function CivilFacilitiesPage() {
                 <Card key={index} className="hover:shadow-lg transition-shadow">
                   <CardContent className="p-6">
                     <div className="flex flex-col items-center text-center">
-                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                      <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 dark:bg-primary/20">
                         <IconComponent className="h-8 w-8 text-primary" />
                       </div>
-                      <h3 className="font-bold text-gray-900 mb-2">{facility.name}</h3>
-                      <p className="text-sm text-gray-600 mb-4">{facility.description}</p>
+                      <h3 className="font-bold text-gray-900 mb-2 dark:text-white">{facility.name}</h3>
+                      <p className="text-sm text-gray-600 mb-4 dark:text-gray-400">{facility.description}</p>
                       <Badge variant="outline" className="mb-3">{facility.capacity}</Badge>
-                      <ul className="space-y-1 text-xs text-gray-600">
+                      <ul className="space-y-1 text-xs text-gray-600 dark:text-gray-400">
                         {facility.features.map((feature, idx) => (
                           <li key={idx} className="flex items-center gap-2">
                             <span className="w-1 h-1 bg-primary rounded-full"></span>
@@ -405,11 +405,11 @@ export default function CivilFacilitiesPage() {
       </section>
 
       {/* Equipment Inventory */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Major Equipment Inventory</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">Major Equipment Inventory</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Comprehensive list of testing and measuring equipment
             </p>
           </div>
@@ -419,10 +419,10 @@ export default function CivilFacilitiesPage() {
               <Card key={index} className="hover:shadow-lg transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-semibold text-gray-900">{item.name}</h4>
+                    <h4 className="font-semibold text-gray-900 dark:text-white">{item.name}</h4>
                     <Badge variant="secondary">Qty: {item.qty}</Badge>
                   </div>
-                  <p className="text-sm text-gray-600">{item.specification}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{item.specification}</p>
                 </CardContent>
               </Card>
             ))}
@@ -431,11 +431,11 @@ export default function CivilFacilitiesPage() {
       </section>
 
       {/* Safety Features */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Safety & Security</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">Safety & Security</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Comprehensive safety measures for student and staff protection
             </p>
           </div>
@@ -444,13 +444,13 @@ export default function CivilFacilitiesPage() {
             <CardContent className="p-8">
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
-                  <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2 dark:text-white">
                     <HardHat className="h-5 w-5 text-primary" />
                     Safety Measures
                   </h3>
                   <ul className="space-y-3">
                     {safetyFeatures.map((feature, index) => (
-                      <li key={index} className="flex items-start gap-3 text-gray-600">
+                      <li key={index} className="flex items-start gap-3 text-gray-600 dark:text-gray-400">
                         <span className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></span>
                         {feature}
                       </li>
@@ -479,11 +479,11 @@ export default function CivilFacilitiesPage() {
       </section>
 
       {/* Maintenance & Upgrades */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Continuous Improvement</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">Continuous Improvement</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Regular maintenance and technology upgrades ensure optimal performance
             </p>
           </div>
@@ -492,8 +492,8 @@ export default function CivilFacilitiesPage() {
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <Wrench className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">Regular Maintenance</h3>
-                <p className="text-gray-600 text-sm">
+                <h3 className="font-bold text-gray-900 mb-2 dark:text-white">Regular Maintenance</h3>
+                <p className="text-gray-600 text-sm dark:text-gray-400">
                   Scheduled maintenance of all equipment to ensure accuracy and reliability
                 </p>
               </CardContent>
@@ -502,8 +502,8 @@ export default function CivilFacilitiesPage() {
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <Calculator className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">Technology Upgrades</h3>
-                <p className="text-gray-600 text-sm">
+                <h3 className="font-bold text-gray-900 mb-2 dark:text-white">Technology Upgrades</h3>
+                <p className="text-gray-600 text-sm dark:text-gray-400">
                   Regular updates to software and technology to match industry standards
                 </p>
               </CardContent>
@@ -512,8 +512,8 @@ export default function CivilFacilitiesPage() {
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <Microscope className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">Calibration Services</h3>
-                <p className="text-gray-600 text-sm">
+                <h3 className="font-bold text-gray-900 mb-2 dark:text-white">Calibration Services</h3>
+                <p className="text-gray-600 text-sm dark:text-gray-400">
                   Professional calibration services to maintain testing accuracy
                 </p>
               </CardContent>
@@ -525,10 +525,10 @@ export default function CivilFacilitiesPage() {
       {/* Call to Action */}
       <section className="py-16 bg-primary/5">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">
             Experience World-Class Facilities
           </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto dark:text-gray-400">
             Visit our laboratories and see the modern equipment and facilities that will 
             shape your engineering education and career.
           </p>

@@ -36,17 +36,17 @@ export default function AdmissionsPage() {
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16">
+      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16 dark:from-primary/10 dark:to-secondary/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
             <div className="flex justify-center space-x-2 mb-6">
               <Badge variant="secondary" className="text-sm">Academic Year 2025-26</Badge>
               <Badge variant="outline" className="text-sm">Applications Open</Badge>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 dark:text-white">
               Admissions 2025-26
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 dark:text-gray-400">
               Join Government Polytechnic Palanpur and embark on your journey towards a successful 
               engineering career. Apply now for our diploma engineering programs.
             </p>
@@ -73,9 +73,9 @@ export default function AdmissionsPage() {
       </section>
 
       {/* Important Notice */}
-      <section className="py-8 bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800">
+      <section className="py-8 bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border dark:border-gray-700-yellow-800 dark:border-gray-700">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <Alert className="border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20">
+          <Alert className="border-yellow-200 dark:border dark:border-gray-700-yellow-800 bg-yellow-50 dark:bg-yellow-900/20 dark:border-gray-700">
             <AlertCircle className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
             <AlertDescription className="text-yellow-800 dark:text-yellow-200">
               <strong>Important:</strong> Admissions for 2025-26 are conducted through ACPDC (Admission Committee for Professional Diploma Courses). 
@@ -89,10 +89,10 @@ export default function AdmissionsPage() {
       <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               Available Programs
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
+            <p className="text-xl text-gray-600 dark:text-gray-300 dark:text-gray-400">
               Choose from 6 engineering disciplines with industry-focused curriculum
             </p>
           </div>
@@ -104,7 +104,7 @@ export default function AdmissionsPage() {
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg text-gray-900 dark:text-white">{dept.name}</CardTitle>
                     {dept.nba_status && (
-                      <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs">
+                      <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs dark:bg-green-900/30">
                         NBA
                       </Badge>
                     )}
@@ -123,7 +123,7 @@ export default function AdmissionsPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 dark:text-gray-400">
                     {dept.overview.substring(0, 120)}...
                   </p>
                   <div className="flex items-center justify-between">
@@ -150,58 +150,58 @@ export default function AdmissionsPage() {
       </section>
 
       {/* Admission Process */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               Admission Process
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-300 dark:text-gray-400">
               Step-by-step guide to join GP Palanpur
             </p>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="text-center p-6">
-              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4 dark:bg-primary/20">
                 <FileText className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Step 1</h3>
-              <h4 className="font-medium text-gray-900 mb-2">Check Eligibility</h4>
-              <p className="text-gray-600 text-sm">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Step 1</h3>
+              <h4 className="font-medium text-gray-900 dark:text-white mb-2 dark:text-white">Check Eligibility</h4>
+              <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">
                 Ensure you meet the eligibility criteria for diploma engineering programs
               </p>
             </Card>
             
             <Card className="text-center p-6">
-              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4 dark:bg-primary/20">
                 <ExternalLink className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Step 2</h3>
-              <h4 className="font-medium text-gray-900 mb-2">Apply Online</h4>
-              <p className="text-gray-600 text-sm">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Step 2</h3>
+              <h4 className="font-medium text-gray-900 dark:text-white mb-2 dark:text-white">Apply Online</h4>
+              <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">
                 Submit application through ACPDC official portal
               </p>
             </Card>
             
             <Card className="text-center p-6">
-              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4 dark:bg-primary/20">
                 <BookOpen className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Step 3</h3>
-              <h4 className="font-medium text-gray-900 mb-2">Merit List</h4>
-              <p className="text-gray-600 text-sm">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Step 3</h3>
+              <h4 className="font-medium text-gray-900 dark:text-white mb-2 dark:text-white">Merit List</h4>
+              <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">
                 Check merit list published by ACPDC and attend counseling as per schedule
               </p>
             </Card>
             
             <Card className="text-center p-6">
-              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4 dark:bg-primary/20">
                 <CheckCircle className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Step 4</h3>
-              <h4 className="font-medium text-gray-900 mb-2">Admission</h4>
-              <p className="text-gray-600 text-sm">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Step 4</h3>
+              <h4 className="font-medium text-gray-900 dark:text-white mb-2 dark:text-white">Admission</h4>
+              <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">
                 Complete documentation and confirm your admission
               </p>
             </Card>
@@ -210,11 +210,11 @@ export default function AdmissionsPage() {
       </section>
 
       {/* Eligibility & Requirements */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 dark:text-white">
                 Eligibility Criteria
               </h2>
               <Card className="mb-6">
@@ -228,22 +228,22 @@ export default function AdmissionsPage() {
                   <div className="flex items-start space-x-3">
                     <CheckCircle className="h-5 w-5 text-green-600 mt-1 flex-shrink-0" />
                     <div>
-                      <p className="font-medium text-gray-900">10th Standard (SSC)</p>
-                      <p className="text-gray-600 text-sm">Passed 10th standard from recognized board</p>
+                      <p className="font-medium text-gray-900 dark:text-white">10th Standard (SSC)</p>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">Passed 10th standard from recognized board</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
                     <CheckCircle className="h-5 w-5 text-green-600 mt-1 flex-shrink-0" />
                     <div>
-                      <p className="font-medium text-gray-900">Science & Mathematics</p>
-                      <p className="text-gray-600 text-sm">Must have studied Science and Mathematics in 10th</p>
+                      <p className="font-medium text-gray-900 dark:text-white">Science & Mathematics</p>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">Must have studied Science and Mathematics in 10th</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
                     <CheckCircle className="h-5 w-5 text-green-600 mt-1 flex-shrink-0" />
                     <div>
-                      <p className="font-medium text-gray-900">Minimum Percentage</p>
-                      <p className="text-gray-600 text-sm">As per DTE Gujarat norms (varies by category)</p>
+                      <p className="font-medium text-gray-900 dark:text-white">Minimum Percentage</p>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">As per DTE Gujarat norms (varies by category)</p>
                     </div>
                   </div>
                 </CardContent>
@@ -257,10 +257,10 @@ export default function AdmissionsPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">
                     Reservations are as per ACPDC norms and Gujarat State Government guidelines:
                   </p>
-                  <ul className="space-y-2 text-sm text-gray-600">
+                  <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300 dark:text-gray-400">
                     <li className="flex items-center space-x-2">
                       <div className="w-2 h-2 bg-primary rounded-full"></div>
                       <span>General Category</span>
@@ -279,7 +279,7 @@ export default function AdmissionsPage() {
             </div>
             
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 dark:text-white">
                 Important Documents
               </h2>
               <Card className="mb-6">
@@ -303,7 +303,7 @@ export default function AdmissionsPage() {
                     ].map((doc, index) => (
                       <div key={index} className="flex items-start space-x-3">
                         <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                        <span className="text-gray-700 text-sm">{doc}</span>
+                        <span className="text-gray-700 dark:text-gray-300 text-sm dark:text-gray-300">{doc}</span>
                       </div>
                     ))}
                   </div>
@@ -323,13 +323,13 @@ export default function AdmissionsPage() {
       </section>
 
       {/* Important Dates */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               Important Dates
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-300 dark:text-gray-400">
               Stay updated with admission timeline
             </p>
           </div>
@@ -339,48 +339,48 @@ export default function AdmissionsPage() {
               <CardContent className="p-8">
                 <div className="space-y-6">
                   <div className="flex items-center space-x-4 p-4 bg-blue-50 rounded-lg">
-                    <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full">
+                    <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full dark:bg-blue-900/30">
                       <Calendar className="h-6 w-6 text-blue-600" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">Application Period</h3>
-                      <p className="text-gray-600">Applications open as per ACPDC schedule</p>
+                      <h3 className="font-semibold text-gray-900 dark:text-white">Application Period</h3>
+                      <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">Applications open as per ACPDC schedule</p>
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-4 p-4 bg-green-50 rounded-lg">
-                    <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-full">
+                    <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-full dark:bg-green-900/30">
                       <FileText className="h-6 w-6 text-green-600" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">Merit List Publication</h3>
-                      <p className="text-gray-600">Merit lists published on ACPDC website</p>
+                      <h3 className="font-semibold text-gray-900 dark:text-white">Merit List Publication</h3>
+                      <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">Merit lists published on ACPDC website</p>
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-4 p-4 bg-purple-50 rounded-lg">
-                    <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-full">
+                    <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-full dark:bg-purple-900/30">
                       <Users className="h-6 w-6 text-purple-600" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">Counseling & Admission</h3>
-                      <p className="text-gray-600">Document verification and seat allocation</p>
+                      <h3 className="font-semibold text-gray-900 dark:text-white">Counseling & Admission</h3>
+                      <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">Document verification and seat allocation</p>
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-4 p-4 bg-orange-50 rounded-lg">
-                    <div className="flex items-center justify-center w-12 h-12 bg-orange-100 rounded-full">
+                    <div className="flex items-center justify-center w-12 h-12 bg-orange-100 rounded-full dark:bg-orange-900/30">
                       <Clock className="h-6 w-6 text-orange-600" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">Classes Commence</h3>
-                      <p className="text-gray-600">Academic session begins in July/August</p>
+                      <h3 className="font-semibold text-gray-900 dark:text-white">Classes Commence</h3>
+                      <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">Academic session begins in July/August</p>
                     </div>
                   </div>
                 </div>
                 
                 <div className="mt-8 text-center">
-                  <Alert className="border-blue-200 bg-blue-50">
+                  <Alert className="border dark:border-gray-700-blue-200 bg-blue-50 dark:border-gray-700">
                     <AlertCircle className="h-4 w-4 text-blue-600" />
                     <AlertDescription className="text-blue-800">
                       For exact dates and detailed schedule, please visit the official ACPDC website 
@@ -395,44 +395,44 @@ export default function AdmissionsPage() {
       </section>
 
       {/* Why Choose GP Palanpur */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               Why Choose GP Palanpur?
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-300 dark:text-gray-400">
               Advantages that set us apart
             </p>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4 dark:bg-green-900/30">
                 <Award className="h-8 w-8 text-green-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">NBA Accreditation</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">NBA Accreditation</h3>
+              <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">
                 3 programs accredited by National Board of Accreditation ensuring quality education
               </p>
             </div>
             
             <div className="text-center">
-              <div className="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4 dark:bg-blue-900/30">
                 <TrendingUp className="h-8 w-8 text-blue-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Excellent Placements</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Excellent Placements</h3>
+              <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">
                 171 job offers in 2024 with strong industry partnerships and placement support
               </p>
             </div>
             
             <div className="text-center">
-              <div className="flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mx-auto mb-4 dark:bg-purple-900/30">
                 <Star className="h-8 w-8 text-purple-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Experienced Faculty</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Experienced Faculty</h3>
+              <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">
                 66 GPSC selected faculty members including 6 PhD holders providing quality education
               </p>
             </div>
@@ -441,12 +441,12 @@ export default function AdmissionsPage() {
       </section>
 
       {/* Contact for Admissions */}
-      <section className="py-16 bg-primary/5">
+      <section className="py-16 bg-primary/5 dark:bg-primary/10 dark:bg-primary/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
             Need Help with Admissions?
           </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto dark:text-gray-400">
             Our admission office is here to help you with any questions about the application process, 
             eligibility, or program details.
           </p>

@@ -186,7 +186,7 @@ export default function EnrollmentManagementPage() {
         <CardDescription>Review and manage student course enrollment requests.</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="mb-6 p-4 border rounded-lg grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="mb-6 p-4 border rounded-lg grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 dark:border-gray-700">
           <div><Label htmlFor="searchTermEnroll">Search Student/Course</Label><Input id="searchTermEnroll" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Name, Enroll No, Course..." /></div>
           <div><Label htmlFor="filterProgramEnroll">Program</Label><Select value={filterProgramId} onValueChange={setFilterProgramId}><SelectTrigger><SelectValue placeholder="All Programs"/></SelectTrigger><SelectContent><SelectItem value="all">All Programs</SelectItem>{programs.map(p=><SelectItem key={p.id} value={p.id}>{p.name} ({p.code})</SelectItem>)}</SelectContent></Select></div>
           <div><Label htmlFor="filterBatchEnroll">Batch</Label><Select value={filterBatchId} onValueChange={setFilterBatchId} disabled={filterProgramId === 'all' && batches.length === 0}><SelectTrigger><SelectValue placeholder="All Batches"/></SelectTrigger><SelectContent><SelectItem value="all">All Batches</SelectItem>{batches.filter(b=> filterProgramId==='all' || b.programId === filterProgramId).map(b=><SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}</SelectContent></Select></div>
@@ -220,12 +220,12 @@ export default function EnrollmentManagementPage() {
                   <TableCell className="text-right space-x-1">
                     {enroll.status === 'requested' && (
                       <>
-                        <Button size="xs" variant="outline" className="text-green-600 border-green-600 hover:bg-green-50 hover:text-green-700" onClick={() => handleUpdateStatus(enroll.id, 'enrolled')} disabled={isSubmitting}><CheckCircle className="mr-1 h-3 w-3"/>Approve</Button>
-                        <Button size="xs" variant="outline" className="text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700" onClick={() => handleUpdateStatus(enroll.id, 'rejected')} disabled={isSubmitting}><XCircle className="mr-1 h-3 w-3"/>Reject</Button>
+                        <Button size="xs" variant="outline" className="text-green-600 border-green-600 hover:bg-green-50 hover:text-green-700 dark:border-gray-700" onClick={() => handleUpdateStatus(enroll.id, 'enrolled')} disabled={isSubmitting}><CheckCircle className="mr-1 h-3 w-3"/>Approve</Button>
+                        <Button size="xs" variant="outline" className="text-red-600 border-red-600 hover:bg-red-50 hover:text-red-700 dark:border-gray-700" onClick={() => handleUpdateStatus(enroll.id, 'rejected')} disabled={isSubmitting}><XCircle className="mr-1 h-3 w-3"/>Reject</Button>
                       </>
                     )}
                     {enroll.status === 'enrolled' && (
-                         <Button size="xs" variant="outline" className="text-orange-600 border-orange-600 hover:bg-orange-50 hover:text-orange-700" onClick={() => handleUpdateStatus(enroll.id, 'withdrawn')} disabled={isSubmitting}><XCircle className="mr-1 h-3 w-3"/>Withdraw</Button>
+                         <Button size="xs" variant="outline" className="text-orange-600 border-orange-600 hover:bg-orange-50 hover:text-orange-700 dark:border-gray-700" onClick={() => handleUpdateStatus(enroll.id, 'withdrawn')} disabled={isSubmitting}><XCircle className="mr-1 h-3 w-3"/>Withdraw</Button>
                     )}
                   </TableCell>
                 </TableRow>
@@ -234,7 +234,7 @@ export default function EnrollmentManagementPage() {
           </Table>
         )}
       </CardContent>
-      <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 border-t">
+      <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 border-t dark:border-gray-700">
             <div className="text-sm text-muted-foreground">Showing {paginatedEnrollments.length > 0 ? Math.min((currentPage -1) * itemsPerPage + 1, filteredAndSortedEnrollments.length): 0} to {Math.min(currentPage * itemsPerPage, filteredAndSortedEnrollments.length)} of {filteredAndSortedEnrollments.length} enrollments.</div>
             <div className="flex items-center gap-2">
                  <Select value={String(itemsPerPage)} onValueChange={(value) => {setItemsPerPage(Number(value)); setCurrentPage(1);}}><SelectTrigger className="w-[70px] h-8 text-xs"><SelectValue /></SelectTrigger><SelectContent side="top">{ITEMS_PER_PAGE_OPTIONS.map(sz => <SelectItem key={sz} value={String(sz)} className="text-xs">{sz}</SelectItem>)}</SelectContent></Select>

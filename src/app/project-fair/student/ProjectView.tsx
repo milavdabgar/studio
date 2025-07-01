@@ -67,7 +67,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, onEdit }) =>
               <CardTitle>Project Description</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+              <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap dark:text-gray-300">
                 {project.description}
               </p>
             </CardContent>
@@ -104,7 +104,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, onEdit }) =>
                       key={index}
                       src={screenshot}
                       alt={`Screenshot ${index + 1}`}
-                      className="rounded-lg border shadow-sm"
+                      className="rounded-lg border shadow-sm dark:border-gray-700"
                     />
                   ))}
                 </div>
@@ -122,13 +122,13 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, onEdit }) =>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-2">
-                <Users className="h-4 w-4 text-gray-500" />
+                <Users className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                 <span className="text-sm">{project.teamSize} team members</span>
               </div>
 
               {project.dueDate && (
                 <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-gray-500" />
+                  <Calendar className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                   <span className="text-sm">
                     Due: {new Date(project.dueDate || new Date()).toLocaleDateString()}
                   </span>
@@ -137,7 +137,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, onEdit }) =>
 
               {project.submittedAt && (
                 <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-gray-500" />
+                  <Calendar className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                   <span className="text-sm">
                     Submitted: {new Date(project.submittedAt || new Date()).toLocaleDateString()}
                   </span>

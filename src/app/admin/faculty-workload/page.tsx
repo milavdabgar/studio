@@ -174,7 +174,7 @@ export default function FacultyWorkloadPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 border rounded-lg">
+          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div>
               <Label htmlFor="searchFacultyWorkload">Search Faculty</Label>
               <div className="relative">

@@ -39,7 +39,7 @@ export default function Swatches({
         return (
           <div key={index} className="swatch-item flex flex-col items-center">
             <div 
-              className="swatch-color w-16 h-16 rounded-lg border-2 border-neutral-200 dark:border-neutral-700 shadow-sm"
+              className="swatch-color w-16 h-16 rounded-lg border-2 border-neutral-200 dark:border-neutral-700 shadow-sm dark:border-gray-700"
               style={{ backgroundColor: color }}
               title={`${name}: ${color}`}
             />

@@ -184,7 +184,7 @@ const NotificationBell: React.FC = () => {
             ))
           )}
         </ScrollArea>
-        <div className="p-2 border-t text-center">
+        <div className="p-2 border-t text-center dark:border-gray-700">
             <Button variant="link" size="sm" className="text-xs w-full" onClick={() => setIsOpen(false)} asChild>
                 <Link href="/notifications">
                     View All Notifications

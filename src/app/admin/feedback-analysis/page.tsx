@@ -111,7 +111,7 @@ export default function FeedbackAnalysisPage() {
                 type="file"
                 accept=".csv"
                 onChange={handleFileChange}
-                className="flex-grow file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+                className="flex-grow file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 dark:border-gray-700 dark:bg-primary/20"
                 disabled={isLoading}
               />
             </div>

@@ -384,7 +384,7 @@ inst_sample_1,Another Polytechnic,AP,123 Sample Street,contact@ap.edu,123-456-78
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 p-4 border rounded-lg space-y-4">
+          <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
             <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Institutes from CSV</h3>
             <div className="flex flex-col sm:flex-row gap-2 items-center">
               <Input type="file" id="csvImportInstitute" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
@@ -402,7 +402,7 @@ inst_sample_1,Another Polytechnic,AP,123 Sample Street,contact@ap.edu,123-456-78
             </div>
           </div>
 
-          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 border rounded-lg">
+          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div>
               <Label htmlFor="searchInstitute">Search Institutes</Label>
               <div className="relative">

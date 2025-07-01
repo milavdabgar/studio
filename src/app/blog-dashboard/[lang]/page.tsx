@@ -188,10 +188,10 @@ export default async function BlogDashboard({ params }: DashboardPageProps) {
               <CardContent>
                 <div className="space-y-4">
                   {recentPosts.map((post) => (
-                    <div key={`${post.lang}-${post.id}`} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div key={`${post.lang}-${post.id}`} className="flex items-center justify-between p-4 border rounded-lg dark:border-gray-700">
                       <div className="flex-1">
                         <h4 className="font-medium">
-                          <Link href={post.href} className="hover:text-primary">
+                          <Link href={post.href} className="hover:text-primary dark:hover:text-primary">
                             {post.title}
                           </Link>
                         </h4>

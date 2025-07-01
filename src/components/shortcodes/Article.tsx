@@ -14,7 +14,7 @@ export default function Article({ link, title, target = '_blank', rel = 'noopene
   }
 
   return (
-    <div className="article-shortcode my-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800">
+    <div className="article-shortcode my-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
       <a 
         href={link} 
         target={target} 

@@ -88,7 +88,7 @@ const PostRenderer: React.FC<PostRendererProps> = ({ contentHtml }) => {
           <CodeBlock 
             code={code} 
             language={language}
-            className="my-4 rounded-lg border overflow-hidden"
+            className="my-4 rounded-lg border overflow-hidden dark:border-gray-700"
           />
         );
       });

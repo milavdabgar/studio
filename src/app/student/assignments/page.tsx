@@ -193,7 +193,7 @@ export default function StudentAssignmentsPage() {
             </div>
           ) : (
             <>
-            <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 border rounded-lg">
+            <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 border rounded-lg dark:border-gray-700">
                 <div>
                     <Label htmlFor="courseFilterStudentAssignments" className="text-sm">Filter by Course:</Label>
                     <Select value={filterCourse} onValueChange={setFilterCourse}>

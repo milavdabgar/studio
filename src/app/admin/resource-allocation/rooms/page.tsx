@@ -278,7 +278,7 @@ export default function RoomAllocationManagementPage() {
           <Button onClick={() => setIsDialogOpen(true)} disabled={rooms.length === 0}><PlusCircle className="mr-2 h-5 w-5" />New Allocation</Button>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 border rounded-lg">
+          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div><Label htmlFor="searchTerm">Search Title/Room/Notes</Label><Input id="searchTerm" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Keyword..." /></div>
             <div><Label htmlFor="filterRoom">Filter by Room</Label><Select value={filterRoomId} onValueChange={setFilterRoomId}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Rooms</SelectItem>{rooms.map(r => <SelectItem key={r.id} value={r.id}>{r.roomNumber} ({r.name || r.type})</SelectItem>)}</SelectContent></Select></div>
             <div><Label htmlFor="filterPurpose">Filter by Purpose</Label><Select value={filterPurpose} onValueChange={val => setFilterPurpose(val as RoomAllocationPurpose | 'all')}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Purposes</SelectItem>{PURPOSE_OPTIONS.map(p => <SelectItem key={p} value={p}>{p.charAt(0).toUpperCase() + p.slice(1)}</SelectItem>)}</SelectContent></Select></div>

@@ -240,7 +240,7 @@ export default function AttendanceReportsPage() {
           <CardDescription>View and export attendance reports for your course offerings.</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border rounded-lg">
+          <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div>
               <Label htmlFor="courseOfferingSelect">Course Offering</Label>
               <Select value={selectedCourseOfferingId} onValueChange={setSelectedCourseOfferingId} disabled={isLoading || allCourseOfferings.length === 0}>

@@ -34,7 +34,7 @@ export default function AboutPage() {
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16">
+      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16 dark:from-primary/10 dark:to-secondary/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
             <div className="flex justify-center space-x-2 mb-6">
@@ -42,10 +42,10 @@ export default function AboutPage() {
               <Badge variant="outline" className="text-sm">{collegeInfo.basic_info.approval}</Badge>
               <Badge variant="outline" className="text-sm">GTU Affiliated</Badge>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 dark:text-white">
               About {collegeInfo.name}
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 dark:text-gray-400">
               {collegeInfo.motto} - Building technical excellence in Banaskantha district for over {collegeInfo.achievements.established_years} years
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -75,10 +75,10 @@ export default function AboutPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 dark:text-white">
                 Our Legacy of Excellence
               </h2>
-              <div className="prose prose-lg text-gray-600 dark:text-gray-300 space-y-4">
+              <div className="prose prose-lg text-gray-600 dark:text-gray-300 space-y-4 dark:text-gray-400">
                 <p>
                   Government Polytechnic Palanpur stands as a premier technical institution in Gujarat, 
                   established in {collegeInfo.basic_info.established} with a commitment to providing world-class 
@@ -99,14 +99,14 @@ export default function AboutPage() {
                 </p>
               </div>
               <div className="mt-8 grid md:grid-cols-2 gap-4">
-                <div className="flex items-center space-x-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div className="flex items-center space-x-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg dark:bg-gray-800">
                   <Award className="h-8 w-8 text-primary" />
                   <div>
                     <div className="font-semibold text-gray-900 dark:text-white">{collegeInfo.basic_info.approval}</div>
                     <div className="text-sm text-gray-600 dark:text-gray-400">Quality Assured</div>
                   </div>
                 </div>
-                <div className="flex items-center space-x-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div className="flex items-center space-x-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg dark:bg-gray-800">
                   <Building className="h-8 w-8 text-primary" />
                   <div>
                     <div className="font-semibold text-gray-900 dark:text-white">{collegeInfo.basic_info.campus_area}</div>
@@ -116,7 +116,7 @@ export default function AboutPage() {
               </div>
             </div>
             <div className="relative">
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl border dark:border-gray-700">
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl border dark:border dark:border-gray-700-gray-700 dark:bg-gray-900 dark:border-gray-700">
                 <Image
                   src="https://picsum.photos/seed/gpp-about/600/400"
                   alt="Government Polytechnic Palanpur - About Us"
@@ -125,7 +125,7 @@ export default function AboutPage() {
                   className="rounded-xl"
                 />
                 <div className="mt-6 text-center">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Principal's Office</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Principal's Office</h3>
                   <p className="text-gray-600 dark:text-gray-400">Led by {collegeInfo.administration.principal}</p>
                 </div>
               </div>
@@ -138,21 +138,21 @@ export default function AboutPage() {
       <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               Our Vision & Mission
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto dark:text-gray-400">
               Guiding principles that drive our commitment to excellence in technical education
             </p>
           </div>
           
           <div className="grid md:grid-cols-2 gap-8">
             <Card className="p-8 text-center hover:shadow-xl transition-shadow">
-              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-6">
+              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-6 dark:bg-primary/20">
                 <Target className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Our Vision</h3>
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">Our Vision</h3>
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed dark:text-gray-400">
                 To be a center of excellence in technical education, fostering innovation, 
                 research, and industry collaboration while producing skilled engineers who 
                 contribute to national development and technological advancement.
@@ -160,11 +160,11 @@ export default function AboutPage() {
             </Card>
             
             <Card className="p-8 text-center hover:shadow-xl transition-shadow">
-              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-6">
+              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-6 dark:bg-primary/20">
                 <Lightbulb className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Our Mission</h3>
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">Our Mission</h3>
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed dark:text-gray-400">
                 To provide quality technical education through modern curriculum, experienced faculty, 
                 state-of-the-art infrastructure, and industry partnerships, preparing students for 
                 successful careers and lifelong learning in engineering and technology.
@@ -178,61 +178,61 @@ export default function AboutPage() {
       <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               Key Achievements & Recognition
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
+            <p className="text-xl text-gray-600 dark:text-gray-300 dark:text-gray-400">
               Milestones that showcase our commitment to excellence
             </p>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="text-center p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4 dark:bg-green-900/30">
                 <Star className="h-8 w-8 text-green-600" />
               </div>
               <h3 className="text-2xl font-bold text-primary mb-2">
                 {collegeInfo.achievements.nba_accredited_programs}
               </h3>
-              <p className="text-gray-600 font-medium">NBA Accredited Programs</p>
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-gray-600 dark:text-gray-300 font-medium dark:text-gray-400">NBA Accredited Programs</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 dark:text-gray-400">
                 Civil, Electrical & Mechanical Engineering
               </p>
             </Card>
             
             <Card className="text-center p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full mx-auto mb-4 dark:bg-blue-900/30">
                 <TrendingUp className="h-8 w-8 text-blue-600" />
               </div>
               <h3 className="text-2xl font-bold text-primary mb-2">
                 {collegeInfo.achievements.job_offers_2024}
               </h3>
-              <p className="text-gray-600 dark:text-gray-300 font-medium">Job Offers in 2024</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+              <p className="text-gray-600 dark:text-gray-300 font-medium dark:text-gray-400">Job Offers in 2024</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 dark:text-gray-400">
                 With {collegeInfo.achievements.placement_companies}+ recruiting companies
               </p>
             </Card>
             
             <Card className="text-center p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-center w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full mx-auto mb-4 dark:bg-purple-900/30">
                 <Users className="h-8 w-8 text-purple-600" />
               </div>
               <h3 className="text-2xl font-bold text-primary mb-2">
                 {collegeInfo.administration.total_faculty}
               </h3>
-              <p className="text-gray-600 dark:text-gray-300 font-medium">GPSC Selected Faculty</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+              <p className="text-gray-600 dark:text-gray-300 font-medium dark:text-gray-400">GPSC Selected Faculty</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 dark:text-gray-400">
                 Including {collegeInfo.administration.faculty_with_phd} PhD holders
               </p>
             </Card>
             
             <Card className="text-center p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-center w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full mx-auto mb-4 dark:bg-orange-900/30">
                 <Trophy className="h-8 w-8 text-orange-600" />
               </div>
               <h3 className="text-2xl font-bold text-primary mb-2">4</h3>
-              <p className="text-gray-600 dark:text-gray-300 font-medium">Published Patents</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+              <p className="text-gray-600 dark:text-gray-300 font-medium dark:text-gray-400">Published Patents</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 dark:text-gray-400">
                 Through SSIP Innovation Cell
               </p>
             </Card>
@@ -244,21 +244,21 @@ export default function AboutPage() {
       <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               Infrastructure & Facilities
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
+            <p className="text-xl text-gray-600 dark:text-gray-300 dark:text-gray-400">
               Modern amenities supporting comprehensive technical education
             </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4 dark:bg-primary/20">
                 <BookOpen className="h-10 w-10 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Academic Excellence</h3>
-              <div className="space-y-2 text-gray-600 dark:text-gray-300">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Academic Excellence</h3>
+              <div className="space-y-2 text-gray-600 dark:text-gray-300 dark:text-gray-400">
                 <p><strong>{collegeInfo.infrastructure.total_labs}+</strong> Modern Laboratories</p>
                 <p><strong>{collegeInfo.infrastructure.library_books.toLocaleString()}</strong> Library Books</p>
                 <p>Smart Classrooms with CCTV</p>
@@ -267,11 +267,11 @@ export default function AboutPage() {
             </div>
             
             <div className="text-center">
-              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4 dark:bg-primary/20">
                 <Building className="h-10 w-10 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Campus Life</h3>
-              <div className="space-y-2 text-gray-600 dark:text-gray-300">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Campus Life</h3>
+              <div className="space-y-2 text-gray-600 dark:text-gray-300 dark:text-gray-400">
                 <p><strong>{collegeInfo.infrastructure.hostel_capacity.total}</strong> Hostel Capacity</p>
                 <p>Sports Complex & Facilities</p>
                 <p>Modern Auditorium</p>
@@ -280,11 +280,11 @@ export default function AboutPage() {
             </div>
             
             <div className="text-center">
-              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4 dark:bg-primary/20">
                 <Shield className="h-10 w-10 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Green & Digital</h3>
-              <div className="space-y-2 text-gray-600 dark:text-gray-300">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Green & Digital</h3>
+              <div className="space-y-2 text-gray-600 dark:text-gray-300 dark:text-gray-400">
                 <p><strong>86,000 units</strong> Solar Power Plant</p>
                 <p><strong>14</strong> NaMo WiFi Access Points</p>
                 <p>National Digital Library Access</p>
@@ -300,67 +300,67 @@ export default function AboutPage() {
       <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               Leadership Team
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
+            <p className="text-xl text-gray-600 dark:text-gray-300 dark:text-gray-400">
               Meet the professionals leading GP Palanpur
             </p>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <Card className="p-6 text-center hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4 dark:bg-primary/20">
                 <Users className="h-10 w-10 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Mr. S D Dabhi</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1 dark:text-white">Mr. S D Dabhi</h3>
               <p className="text-primary font-medium mb-2">Principal</p>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">Leading the institution with vision and excellence</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">Leading the institution with vision and excellence</p>
             </Card>
             
             <Card className="p-6 text-center hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4 dark:bg-primary/20">
                 <Cog className="h-10 w-10 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Mr. D D Prajapati</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1 dark:text-white">Mr. D D Prajapati</h3>
               <p className="text-primary font-medium mb-2">HOD - Mechanical Engineering</p>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">Expert in mechanical systems and manufacturing</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">Expert in mechanical systems and manufacturing</p>
             </Card>
             
             <Card className="p-6 text-center hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4 dark:bg-primary/20">
                 <Building className="h-10 w-10 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Mr. D N Sheth</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1 dark:text-white">Mr. D N Sheth</h3>
               <p className="text-primary font-medium mb-2">HOD - Civil Engineering</p>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">Specialist in structural and construction engineering</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">Specialist in structural and construction engineering</p>
             </Card>
             
             <Card className="p-6 text-center hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4 dark:bg-primary/20">
                 <Zap className="h-10 w-10 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Mr. A D Shah</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1 dark:text-white">Mr. A D Shah</h3>
               <p className="text-primary font-medium mb-2">HOD - Electrical Engineering</p>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">Expert in electrical systems and power engineering</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">Expert in electrical systems and power engineering</p>
             </Card>
             
             <Card className="p-6 text-center hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4 dark:bg-primary/20">
                 <Zap className="h-10 w-10 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Mr. S J Chauhan</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1 dark:text-white">Mr. S J Chauhan</h3>
               <p className="text-primary font-medium mb-2">HOD - Electronics & Communication | ICT</p>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">Leading both EC and ICT departments with expertise in communication systems</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">Leading both EC and ICT departments with expertise in communication systems</p>
             </Card>
             
             <Card className="p-6 text-center hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-20 h-20 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4 dark:bg-primary/20">
                 <BookOpen className="h-10 w-10 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Ms. M M Shah</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1 dark:text-white">Ms. M M Shah</h3>
               <p className="text-primary font-medium mb-2">HOD - Information Technology</p>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">Expert in IT systems and software development</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">Expert in IT systems and software development</p>
             </Card>
           </div>
         </div>
@@ -371,10 +371,10 @@ export default function AboutPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
                 Our Commitment to Excellence
               </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-300">
+              <p className="text-xl text-gray-600 dark:text-gray-300 dark:text-gray-400">
                 What we promise to every student who joins GP Palanpur
               </p>
             </div>
@@ -382,72 +382,72 @@ export default function AboutPage() {
             <div className="grid md:grid-cols-2 gap-6">
               <Card className="p-6 hover:shadow-lg transition-shadow">
                 <div className="flex items-start space-x-4">
-                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 dark:bg-primary/20 rounded-full flex-shrink-0 mt-1">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 dark:bg-primary/20 rounded-full flex-shrink-0 mt-1 dark:bg-primary/20">
                     <BookOpen className="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Academic Excellence</h3>
-                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed">Through quality teaching and continuous assessment methods</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Academic Excellence</h3>
+                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed dark:text-gray-300">Through quality teaching and continuous assessment methods</p>
                   </div>
                 </div>
               </Card>
               
               <Card className="p-6 hover:shadow-lg transition-shadow">
                 <div className="flex items-start space-x-4">
-                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 dark:bg-primary/20 rounded-full flex-shrink-0 mt-1">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 dark:bg-primary/20 rounded-full flex-shrink-0 mt-1 dark:bg-primary/20">
                     <Cog className="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Skill Development</h3>
-                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed">Through practical training and industry exposure programs</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Skill Development</h3>
+                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed dark:text-gray-300">Through practical training and industry exposure programs</p>
                   </div>
                 </div>
               </Card>
               
               <Card className="p-6 hover:shadow-lg transition-shadow">
                 <div className="flex items-start space-x-4">
-                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 dark:bg-primary/20 rounded-full flex-shrink-0 mt-1">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 dark:bg-primary/20 rounded-full flex-shrink-0 mt-1 dark:bg-primary/20">
                     <Lightbulb className="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Innovation Culture</h3>
-                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed">Through project-based learning and SSIP initiatives</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Innovation Culture</h3>
+                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed dark:text-gray-300">Through project-based learning and SSIP initiatives</p>
                   </div>
                 </div>
               </Card>
               
               <Card className="p-6 hover:shadow-lg transition-shadow">
                 <div className="flex items-start space-x-4">
-                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 dark:bg-primary/20 rounded-full flex-shrink-0 mt-1">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 dark:bg-primary/20 rounded-full flex-shrink-0 mt-1 dark:bg-primary/20">
                     <Users className="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Holistic Growth</h3>
-                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed">Through extracurricular activities and value-based education</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Holistic Growth</h3>
+                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed dark:text-gray-300">Through extracurricular activities and value-based education</p>
                   </div>
                 </div>
               </Card>
               
               <Card className="p-6 hover:shadow-lg transition-shadow">
                 <div className="flex items-start space-x-4">
-                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 dark:bg-primary/20 rounded-full flex-shrink-0 mt-1">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 dark:bg-primary/20 rounded-full flex-shrink-0 mt-1 dark:bg-primary/20">
                     <Building className="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Industry Connect</h3>
-                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed">Through expert lectures, industrial visits, and internships</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Industry Connect</h3>
+                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed dark:text-gray-300">Through expert lectures, industrial visits, and internships</p>
                   </div>
                 </div>
               </Card>
               
               <Card className="p-6 hover:shadow-lg transition-shadow">
                 <div className="flex items-start space-x-4">
-                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 dark:bg-primary/20 rounded-full flex-shrink-0 mt-1">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 dark:bg-primary/20 rounded-full flex-shrink-0 mt-1 dark:bg-primary/20">
                     <Award className="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Continuous Excellence</h3>
-                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed">Maintaining high standards through NBA accreditation and quality initiatives</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Continuous Excellence</h3>
+                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed dark:text-gray-300">Maintaining high standards through NBA accreditation and quality initiatives</p>
                   </div>
                 </div>
               </Card>
@@ -460,10 +460,10 @@ export default function AboutPage() {
       <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               Experience GP Palanpur
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto dark:text-gray-400">
               Watch our campus tour and discover what makes Government Polytechnic Palanpur 
               a leading institution in technical education
             </p>
@@ -488,12 +488,12 @@ export default function AboutPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-primary/5 dark:bg-primary/10">
+      <section className="py-16 bg-primary/5 dark:bg-primary/10 dark:bg-primary/20 dark:bg-primary/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
             Join Our Legacy of Excellence
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto dark:text-gray-400">
             Become part of GP Palanpur's proud tradition of producing skilled engineers 
             who make meaningful contributions to society and industry.
           </p>

@@ -113,11 +113,11 @@ export default function CivilCurriculumPage() {
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 py-16">
+      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 py-16 dark:from-primary/10 dark:to-secondary/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center space-x-2 mb-6">
-              <Link href="/departments/civil-engineering" className="flex items-center space-x-2 text-gray-600 hover:text-primary">
+              <Link href="/departments/civil-engineering" className="flex items-center space-x-2 text-gray-600 hover:text-primary dark:hover:text-primary dark:text-gray-400">
                 <ChevronLeft className="h-4 w-4" />
                 <span>Back to Civil Engineering</span>
               </Link>
@@ -126,15 +126,15 @@ export default function CivilCurriculumPage() {
             <div className="flex flex-wrap gap-2 mb-6">
               <Badge variant="secondary" className="text-sm">3 Years Program</Badge>
               <Badge variant="outline" className="text-sm">162 Credits</Badge>
-              <Badge variant="outline" className="text-sm bg-green-50 text-green-700 border-green-200">
+              <Badge variant="outline" className="text-sm bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700 dark:border-gray-700">
                 GTU Affiliated
               </Badge>
             </div>
             
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 dark:text-white">
               Civil Engineering Curriculum
             </h1>
-            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed dark:text-gray-400">
               Comprehensive 3-year diploma program designed to develop skilled civil engineers with 
               strong foundation in structural design, construction technology, and infrastructure development.
             </p>
@@ -142,19 +142,19 @@ export default function CivilCurriculumPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">3</div>
-                <div className="text-sm text-gray-600">Years Program</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Years Program</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">6</div>
-                <div className="text-sm text-gray-600">Semesters</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Semesters</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">162</div>
-                <div className="text-sm text-gray-600">Total Credits</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Total Credits</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">35+</div>
-                <div className="text-sm text-gray-600">Subjects</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Subjects</div>
               </div>
             </div>
           </div>
@@ -162,11 +162,11 @@ export default function CivilCurriculumPage() {
       </section>
 
       {/* Program Details */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Program Details</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">Program Details</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Essential information about the Civil Engineering diploma program
             </p>
           </div>
@@ -177,8 +177,8 @@ export default function CivilCurriculumPage() {
                 <div className="flex items-center space-x-3 mb-4">
                   <Clock className="h-8 w-8 text-primary" />
                   <div>
-                    <h3 className="font-semibold text-gray-900">Duration</h3>
-                    <p className="text-gray-600">{programDetails.duration}</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">Duration</h3>
+                    <p className="text-gray-600 dark:text-gray-400">{programDetails.duration}</p>
                   </div>
                 </div>
               </CardContent>
@@ -189,8 +189,8 @@ export default function CivilCurriculumPage() {
                 <div className="flex items-center space-x-3 mb-4">
                   <Target className="h-8 w-8 text-primary" />
                   <div>
-                    <h3 className="font-semibold text-gray-900">Total Credits</h3>
-                    <p className="text-gray-600">{programDetails.totalCredits} Credits</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">Total Credits</h3>
+                    <p className="text-gray-600 dark:text-gray-400">{programDetails.totalCredits} Credits</p>
                   </div>
                 </div>
               </CardContent>
@@ -201,8 +201,8 @@ export default function CivilCurriculumPage() {
                 <div className="flex items-center space-x-3 mb-4">
                   <Award className="h-8 w-8 text-primary" />
                   <div>
-                    <h3 className="font-semibold text-gray-900">Affiliated To</h3>
-                    <p className="text-gray-600">{programDetails.affiliatedTo}</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">Affiliated To</h3>
+                    <p className="text-gray-600 dark:text-gray-400">{programDetails.affiliatedTo}</p>
                   </div>
                 </div>
               </CardContent>
@@ -219,16 +219,16 @@ export default function CivilCurriculumPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">For SSC Students:</h4>
-                  <p className="text-gray-600">{programDetails.eligibilitySSC}</p>
+                  <h4 className="font-semibold text-gray-900 mb-2 dark:text-white">For SSC Students:</h4>
+                  <p className="text-gray-600 dark:text-gray-400">{programDetails.eligibilitySSC}</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">For HSC Students:</h4>
-                  <p className="text-gray-600">{programDetails.eligibilityHSC}</p>
+                  <h4 className="font-semibold text-gray-900 mb-2 dark:text-white">For HSC Students:</h4>
+                  <p className="text-gray-600 dark:text-gray-400">{programDetails.eligibilityHSC}</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Admission Process:</h4>
-                  <p className="text-gray-600">{programDetails.admissionProcess}</p>
+                  <h4 className="font-semibold text-gray-900 mb-2 dark:text-white">Admission Process:</h4>
+                  <p className="text-gray-600 dark:text-gray-400">{programDetails.admissionProcess}</p>
                 </div>
               </CardContent>
             </Card>
@@ -243,7 +243,7 @@ export default function CivilCurriculumPage() {
               <CardContent>
                 <ul className="space-y-2">
                   {learningOutcomes.map((outcome, index) => (
-                    <li key={index} className="flex items-start gap-2 text-gray-600">
+                    <li key={index} className="flex items-start gap-2 text-gray-600 dark:text-gray-400">
                       <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></span>
                       {outcome}
                     </li>
@@ -256,13 +256,13 @@ export default function CivilCurriculumPage() {
       </section>
 
       {/* Semester-wise Curriculum */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">
               Semester-wise Curriculum
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Detailed subject-wise breakdown for each semester
             </p>
           </div>
@@ -282,10 +282,10 @@ export default function CivilCurriculumPage() {
                 <CardContent>
                   <div className="space-y-3">
                     {semester.subjects.map((subject, subIndex) => (
-                      <div key={subIndex} className="flex items-center justify-between p-3 bg-white rounded-lg border">
+                      <div key={subIndex} className="flex items-center justify-between p-3 bg-white rounded-lg border dark:bg-gray-900 dark:border-gray-700">
                         <div className="flex-1">
-                          <h4 className="font-medium text-gray-900 mb-1">{subject.name}</h4>
-                          <div className="flex items-center gap-4 text-sm text-gray-600">
+                          <h4 className="font-medium text-gray-900 mb-1 dark:text-white">{subject.name}</h4>
+                          <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
                             <span>Code: {subject.code}</span>
                             <span>{subject.type}</span>
                           </div>
@@ -304,11 +304,11 @@ export default function CivilCurriculumPage() {
       </section>
 
       {/* Assessment Methods */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Assessment Methods</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">Assessment Methods</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Comprehensive evaluation system ensuring quality learning
             </p>
           </div>
@@ -317,8 +317,8 @@ export default function CivilCurriculumPage() {
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <BookOpen className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">Theory Examination</h3>
-                <p className="text-gray-600 mb-4">
+                <h3 className="font-bold text-gray-900 mb-2 dark:text-white">Theory Examination</h3>
+                <p className="text-gray-600 mb-4 dark:text-gray-400">
                   Mid-semester and end-semester examinations for theoretical subjects
                 </p>
                 <Badge variant="outline">50% Weightage</Badge>
@@ -328,8 +328,8 @@ export default function CivilCurriculumPage() {
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <Target className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">Practical Assessment</h3>
-                <p className="text-gray-600 mb-4">
+                <h3 className="font-bold text-gray-900 mb-2 dark:text-white">Practical Assessment</h3>
+                <p className="text-gray-600 mb-4 dark:text-gray-400">
                   Laboratory work, site visits, and practical examinations
                 </p>
                 <Badge variant="outline">30% Weightage</Badge>
@@ -339,8 +339,8 @@ export default function CivilCurriculumPage() {
             <Card className="text-center hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <Users className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">Continuous Assessment</h3>
-                <p className="text-gray-600 mb-4">
+                <h3 className="font-bold text-gray-900 mb-2 dark:text-white">Continuous Assessment</h3>
+                <p className="text-gray-600 mb-4 dark:text-gray-400">
                   Assignments, projects, and internal assessments
                 </p>
                 <Badge variant="outline">20% Weightage</Badge>
@@ -353,10 +353,10 @@ export default function CivilCurriculumPage() {
       {/* Call to Action */}
       <section className="py-16 bg-primary/5">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">
             Ready to Start Your Civil Engineering Journey?
           </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto dark:text-gray-400">
             Join our comprehensive Civil Engineering program and build a strong foundation for your career.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -27,13 +27,13 @@ export default function ContactPage() {
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16">
+      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16 dark:from-primary/10 dark:to-secondary/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 dark:text-white">
               Contact Us
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 dark:text-gray-400">
               Get in touch with Government Polytechnic Palanpur for admissions, inquiries, or campus visits. 
               We're here to help you begin your engineering journey.
             </p>
@@ -57,22 +57,22 @@ export default function ContactPage() {
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Contact Details */}
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 dark:text-white">
                 Get in Touch
               </h2>
               <div className="space-y-6">
-                <Card className="border-l-4 border-l-primary">
+                <Card className="border-l-4 border dark:border-gray-700-l-primary dark:border-gray-700">
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-4">
-                      <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg">
+                      <div className="flex items-center justify-center w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg dark:bg-primary/20">
                         <MapPin className="h-6 w-6 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-2">Campus Address</h3>
-                        <p className="text-gray-600 leading-relaxed">
+                        <h3 className="font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Campus Address</h3>
+                        <p className="text-gray-600 dark:text-gray-300 leading-relaxed dark:text-gray-400">
                           {collegeInfo.address}
                         </p>
-                        <p className="text-gray-600 font-medium mt-1">
+                        <p className="text-gray-600 dark:text-gray-300 font-medium mt-1 dark:text-gray-400">
                           {collegeInfo.location}
                         </p>
                       </div>
@@ -80,18 +80,18 @@ export default function ContactPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="border-l-4 border-l-primary">
+                <Card className="border-l-4 border dark:border-gray-700-l-primary dark:border-gray-700">
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-4">
-                      <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg">
+                      <div className="flex items-center justify-center w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg dark:bg-primary/20">
                         <Phone className="h-6 w-6 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-2">Phone Numbers</h3>
-                        <p className="text-gray-600">
+                        <h3 className="font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Phone Numbers</h3>
+                        <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">
                           {collegeInfo.contact.phone}
                         </p>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 dark:text-gray-400">
                           Office hours: Monday to Friday, 9:00 AM - 5:00 PM
                         </p>
                       </div>
@@ -99,18 +99,18 @@ export default function ContactPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="border-l-4 border-l-primary">
+                <Card className="border-l-4 border dark:border-gray-700-l-primary dark:border-gray-700">
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-4">
-                      <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg">
+                      <div className="flex items-center justify-center w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg dark:bg-primary/20">
                         <Mail className="h-6 w-6 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-2">Email Address</h3>
-                        <p className="text-gray-600">
+                        <h3 className="font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Email Address</h3>
+                        <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">
                           {collegeInfo.contact.email}
                         </p>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 dark:text-gray-400">
                           We typically respond within 24-48 hours
                         </p>
                       </div>
@@ -118,19 +118,19 @@ export default function ContactPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="border-l-4 border-l-primary">
+                <Card className="border-l-4 border dark:border-gray-700-l-primary dark:border-gray-700">
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-4">
-                      <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg">
+                      <div className="flex items-center justify-center w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg dark:bg-primary/20">
                         <Globe className="h-6 w-6 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-2">Websites</h3>
+                        <h3 className="font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Websites</h3>
                         <div className="space-y-1">
-                          <p className="text-gray-600">
+                          <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">
                             <strong>Main Website:</strong> {collegeInfo.contact.website}
                           </p>
-                          <p className="text-gray-600">
+                          <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">
                             <strong>Institutional:</strong> {collegeInfo.contact.institutional_website}
                           </p>
                         </div>
@@ -191,7 +191,7 @@ export default function ContactPage() {
                     Send Message
                   </Button>
                   
-                  <p className="text-xs text-gray-500 text-center">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 text-center dark:text-gray-400">
                     By submitting this form, you agree to our privacy policy and consent to be contacted by GP Palanpur.
                   </p>
                 </CardContent>
@@ -202,24 +202,24 @@ export default function ContactPage() {
       </section>
 
       {/* Quick Contact Cards */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               Quick Contact Options
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-300 dark:text-gray-400">
               Choose the best way to reach us based on your needs
             </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="text-center p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4 dark:bg-primary/20">
                 <Users className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Admissions Office</h3>
-              <p className="text-gray-600 mb-4">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Admissions Office</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4 dark:text-gray-400">
                 For admission inquiries, application status, and enrollment procedures
               </p>
               <Button variant="outline" asChild>
@@ -228,11 +228,11 @@ export default function ContactPage() {
             </Card>
             
             <Card className="text-center p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4 dark:bg-primary/20">
                 <Building className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Administration</h3>
-              <p className="text-gray-600 mb-4">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Administration</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4 dark:text-gray-400">
                 For general inquiries, official documents, and administrative matters
               </p>
               <Button variant="outline">
@@ -242,11 +242,11 @@ export default function ContactPage() {
             </Card>
             
             <Card className="text-center p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4 dark:bg-primary/20">
                 <GraduationCap className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Academic Departments</h3>
-              <p className="text-gray-600 mb-4">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Academic Departments</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4 dark:text-gray-400">
                 For program-specific questions and departmental information
               </p>
               <Button variant="outline" asChild>
@@ -258,27 +258,27 @@ export default function ContactPage() {
       </section>
 
       {/* Principal & Leadership */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 dark:text-white">
               Leadership
             </h2>
             <Card className="p-8 shadow-lg">
               <div className="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8">
                 <div className="flex-shrink-0">
-                  <div className="w-32 h-32 bg-primary/10 rounded-full flex items-center justify-center">
+                  <div className="w-32 h-32 bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center dark:bg-primary/20">
                     <GraduationCap className="h-16 w-16 text-primary" />
                   </div>
                 </div>
                 <div className="text-center md:text-left">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 dark:text-white">
                     {collegeInfo.administration.principal}
                   </h3>
                   <p className="text-lg text-primary font-semibold mb-4">
                     Principal
                   </p>
-                  <p className="text-gray-600 leading-relaxed">
+                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed dark:text-gray-400">
                     Leading Government Polytechnic Palanpur with {collegeInfo.achievements.established_years} years of 
                     institutional excellence, overseeing {collegeInfo.administration.total_faculty} faculty members and 
                     {collegeInfo.infrastructure.total_departments} engineering departments committed to providing 
@@ -287,15 +287,15 @@ export default function ContactPage() {
                   <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                     <div className="text-center">
                       <div className="font-bold text-primary">{collegeInfo.administration.total_faculty}</div>
-                      <div className="text-gray-600">Total Faculty</div>
+                      <div className="text-gray-600 dark:text-gray-300 dark:text-gray-400">Total Faculty</div>
                     </div>
                     <div className="text-center">
                       <div className="font-bold text-primary">{collegeInfo.administration.faculty_with_phd}</div>
-                      <div className="text-gray-600">PhD Faculty</div>
+                      <div className="text-gray-600 dark:text-gray-300 dark:text-gray-400">PhD Faculty</div>
                     </div>
                     <div className="text-center">
                       <div className="font-bold text-primary">{collegeInfo.administration.faculty_with_masters}</div>
-                      <div className="text-gray-600">Masters Faculty</div>
+                      <div className="text-gray-600 dark:text-gray-300 dark:text-gray-400">Masters Faculty</div>
                     </div>
                   </div>
                 </div>
@@ -306,31 +306,31 @@ export default function ContactPage() {
       </section>
 
       {/* Directions */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 dark:text-white">
               Directions to Campus
             </h2>
             <Card className="p-8 shadow-lg">
               <div className="text-left space-y-6">
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">By Road</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 dark:text-white">By Road</h3>
+                  <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">
                     GP Palanpur is easily accessible by road from major cities in Gujarat. 
                     The campus is located outside Malan Gate, near Dhaniyana Crossroads in Palanpur.
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">Public Transportation</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 dark:text-white">Public Transportation</h3>
+                  <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">
                     Regular bus services connect Palanpur to major cities. The campus is a short 
                     auto-rickshaw or taxi ride from the main bus station.
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">Railway</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3 dark:text-white">Railway</h3>
+                  <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">
                     Palanpur Junction is the nearest railway station, well-connected to major cities 
                     across Gujarat and India. The campus is approximately 10 minutes from the station.
                   </p>

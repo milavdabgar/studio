@@ -525,7 +525,7 @@ export default function UserManagementPage() {
 
                   <div className="md:col-span-2">
                     <Label>Roles *</Label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-2 border rounded-md max-h-40 overflow-y-auto">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-2 border rounded-md max-h-40 overflow-y-auto dark:border-gray-700">
                       {allSystemRoles.filter(role => !role.isSystemRole || ['admin', 'student', 'faculty', 'hod', 'jury', 'super_admin', 'committee_convener', 'committee_member', 'committee_co_convener'].includes(role.code) || role.isCommitteeRole).map(role => ( 
                         <div key={role.id} className="flex items-center space-x-2">
                           <Checkbox
@@ -570,7 +570,7 @@ export default function UserManagementPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 p-4 border rounded-lg space-y-4">
+          <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
             <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Users from CSV</h3>
             <div className="flex flex-col sm:flex-row gap-2 items-center">
               <Input type="file" id="csvImportUser" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
@@ -589,7 +589,7 @@ export default function UserManagementPage() {
             </div>
           </div>
 
-          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 border rounded-lg">
+          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div>
               <Label htmlFor="searchUser">Search Users</Label>
               <div className="relative">

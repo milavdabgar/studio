@@ -461,7 +461,7 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
                   </div>
                   
                   {/* Hours & Credits */}
-                  <div className="md:col-span-3 border p-3 rounded-md grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="md:col-span-3 border p-3 rounded-md grid grid-cols-1 md:grid-cols-4 gap-4 dark:border-gray-700">
                     <h4 className="md:col-span-full text-sm font-medium mb-1">Hours & Credits</h4>
                     <div><Label htmlFor="lectureHours">Lecture (L)</Label><Input id="lectureHours" type="number" value={formLectureHours} onChange={e => setFormLectureHours(parseInt(e.target.value) || 0)} min="0" disabled={isSubmitting} /></div>
                     <div><Label htmlFor="tutorialHours">Tutorial (T)</Label><Input id="tutorialHours" type="number" value={formTutorialHours} onChange={e => setFormTutorialHours(parseInt(e.target.value) || 0)} min="0" disabled={isSubmitting} /></div>
@@ -470,7 +470,7 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
                   </div>
 
                   {/* Marks Distribution */}
-                  <div className="md:col-span-3 border p-3 rounded-md grid grid-cols-1 md:grid-cols-5 gap-4">
+                  <div className="md:col-span-3 border p-3 rounded-md grid grid-cols-1 md:grid-cols-5 gap-4 dark:border-gray-700">
                     <h4 className="md:col-span-full text-sm font-medium mb-1">Marks Distribution</h4>
                     <div><Label htmlFor="theoryEseMarks">Theory ESE (E)</Label><Input id="theoryEseMarks" type="number" value={formTheoryEseMarks} onChange={e => setFormTheoryEseMarks(parseInt(e.target.value) || 0)} min="0" disabled={isSubmitting} /></div>
                     <div><Label htmlFor="theoryPaMarks">Theory PA (M)</Label><Input id="theoryPaMarks" type="number" value={formTheoryPaMarks} onChange={e => setFormTheoryPaMarks(parseInt(e.target.value) || 0)} min="0" disabled={isSubmitting} /></div>
@@ -480,7 +480,7 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
                   </div>
                   
                   {/* Switches & Durations */}
-                  <div className="md:col-span-3 border p-3 rounded-md grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-4 items-start">
+                  <div className="md:col-span-3 border p-3 rounded-md grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-4 items-start dark:border-gray-700">
                     <div className="flex items-center space-x-2"><Switch id="isElective" checked={formIsElective} onCheckedChange={setFormIsElective} disabled={isSubmitting} /><Label htmlFor="isElective">Is Elective</Label></div>
                     <div className="flex items-center space-x-2"><Switch id="isTheory" checked={formIsTheory} onCheckedChange={setFormIsTheory} disabled={isSubmitting} /><Label htmlFor="isTheory">Is Theory</Label></div>
                     {formIsTheory && <div><Label htmlFor="theoryExamDuration">Theory Exam Duration</Label><Input id="theoryExamDuration" value={formTheoryExamDuration} onChange={e => setFormTheoryExamDuration(e.target.value)} placeholder="e.g., 2.5 Hrs" disabled={isSubmitting || !formIsTheory} /></div>}
@@ -506,7 +506,7 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 p-4 border rounded-lg space-y-4">
+          <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
             <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Courses from CSV</h3>
             <div className="flex flex-col sm:flex-row gap-2 items-center">
               <Input type="file" id="csvImportCourse" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
@@ -524,7 +524,7 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
             </div>
           </div>
 
-          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border rounded-lg">
+          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div>
               <Label htmlFor="searchCourse">Search Courses</Label>
               <div className="relative">

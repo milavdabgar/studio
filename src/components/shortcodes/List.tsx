@@ -122,10 +122,10 @@ const List: React.FC<ListProps> = ({
             <Link 
               key={index}
               href={article.slug}
-              className="group block bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:border-primary-300 dark:hover:border-primary-600 transition-colors duration-200 overflow-hidden"
+              className="group block bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:border-primary-300 dark:hover:border-primary-600 transition-colors duration-200 overflow-hidden dark:bg-gray-900 dark:border-gray-700"
             >
               <div className="p-4">
-                <h4 className="font-medium text-neutral-900 dark:text-neutral-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200 mb-2">
+                <h4 className="font-medium text-neutral-900 dark:text-neutral-100 group-hover:text-primary dark:hover:text-primary-600 dark:group-hover:text-primary dark:hover:text-primary-400 transition-colors duration-200 mb-2">
                   {article.title}
                 </h4>
                 <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-3 line-clamp-2">
@@ -171,7 +171,7 @@ const List: React.FC<ListProps> = ({
             className="group flex items-start space-x-3 p-3 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors duration-200"
           >
             <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-neutral-900 dark:text-neutral-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200 mb-1">
+              <h4 className="font-medium text-neutral-900 dark:text-neutral-100 group-hover:text-primary dark:hover:text-primary-600 dark:group-hover:text-primary dark:hover:text-primary-400 transition-colors duration-200 mb-1">
                 {article.title}
               </h4>
               <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-2 line-clamp-2">
@@ -196,7 +196,7 @@ const List: React.FC<ListProps> = ({
               </div>
             </div>
             <svg 
-              className="w-5 h-5 text-neutral-400 group-hover:text-primary-500 transition-colors duration-200 flex-shrink-0 mt-1" 
+              className="w-5 h-5 text-neutral-400 group-hover:text-primary dark:hover:text-primary-500 transition-colors duration-200 flex-shrink-0 mt-1" 
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"

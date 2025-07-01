@@ -112,7 +112,7 @@ export const DataTable = <T extends Record<string, any>>({
       <div className="flex justify-center items-center h-32">
         <div 
           role="progressbar" 
-          className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
+          className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 dark:border-gray-700"
           aria-label="Loading"
         />
       </div>
@@ -128,14 +128,14 @@ export const DataTable = <T extends Record<string, any>>({
             placeholder="Search..."
             value={searchTerm}
             onChange={handleSearchChange}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:border-gray-600"
           />
         </div>
       )}
 
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-700">
+          <thead className="bg-gray-50 dark:bg-gray-800">
             <tr role="row" aria-label="header-row">
               {columns.map((column, index) => (
                 <th
@@ -157,10 +157,10 @@ export const DataTable = <T extends Record<string, any>>({
               ))}
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-900">
             {paginatedData.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="px-6 py-8 text-center text-gray-500">
+                <td colSpan={columns.length} className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
                   {emptyMessage}
                 </td>
               </tr>
@@ -174,7 +174,7 @@ export const DataTable = <T extends Record<string, any>>({
                     className={`${onRowClick ? 'hover:bg-gray-50 cursor-pointer' : ''} ${customClassName}`}
                   >
                     {columns.map((column, colIndex) => (
-                      <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                         {column.render
                           ? column.render(item[column.key], item)
                           : item[column.key]?.toString() || ''}
@@ -190,7 +190,7 @@ export const DataTable = <T extends Record<string, any>>({
 
       {pageSize && sortedData.length > pageSize && (
         <nav role="navigation" aria-label="Table pagination" className="flex items-center justify-between">
-          <div className="text-sm text-gray-700">
+          <div className="text-sm text-gray-700 dark:text-gray-300">
             Showing {startRecord}-{endRecord} of {sortedData.length} results
           </div>
           <div className="flex items-center space-x-2">
@@ -198,18 +198,18 @@ export const DataTable = <T extends Record<string, any>>({
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
               aria-label="Previous page"
-              className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:border-gray-600"
             >
               Previous
             </button>
-            <span className="text-sm text-gray-700">
+            <span className="text-sm text-gray-700 dark:text-gray-300">
               Page {currentPage} of {totalPages}
             </span>
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
               aria-label="Next page"
-              className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:border-gray-600"
             >
               Next
             </button>

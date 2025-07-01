@@ -65,7 +65,7 @@ export default function StudentSectionPage() {
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16">
+      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16 dark:from-primary/10 dark:to-secondary/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
             <div className="flex justify-center space-x-2 mb-6">
@@ -73,29 +73,29 @@ export default function StudentSectionPage() {
               <Badge variant="outline" className="text-sm">Support & Welfare</Badge>
               <Badge variant="outline" className="text-sm">Official Updates</Badge>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 dark:text-white">
               Student Section
             </h1>
-            <p className="text-xl text-gray-600 mb-8">
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 dark:text-gray-400">
               Your one-stop destination for all student-related services, information, and support at 
               Government Polytechnic Palanpur. Stay connected and informed about campus life.
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">2000+</div>
-                <div className="text-sm text-gray-600">Active Students</div>
+                <div className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-400">Active Students</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">50+</div>
-                <div className="text-sm text-gray-600">Annual Events</div>
+                <div className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-400">Annual Events</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">6</div>
-                <div className="text-sm text-gray-600">Student Clubs</div>
+                <div className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-400">Student Clubs</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">24/7</div>
-                <div className="text-sm text-gray-600">Support Available</div>
+                <div className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-400">Support Available</div>
               </div>
             </div>
           </div>
@@ -107,10 +107,10 @@ export default function StudentSectionPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 dark:text-white">
                 Dedicated to Student Success
               </h2>
-              <div className="prose prose-lg text-gray-600 space-y-4">
+              <div className="prose prose-lg text-gray-600 dark:text-gray-300 space-y-4 dark:text-gray-400">
                 <p>
                   The Student Section at Government Polytechnic Palanpur is committed to providing 
                   comprehensive support services that enhance the overall student experience. From 
@@ -130,7 +130,7 @@ export default function StudentSectionPage() {
               </div>
             </div>
             <div className="relative">
-              <div className="bg-white p-6 rounded-2xl shadow-xl">
+              <div className="bg-white dark:bg-gray-900 p-6 rounded dark:bg-gray-800-2xl shadow dark:bg-gray-800-xl dark:bg-gray-900">
                 <Image
                   src="https://picsum.photos/seed/student-section/600/400"
                   alt="Student Section Office"
@@ -139,8 +139,8 @@ export default function StudentSectionPage() {
                   className="rounded-xl"
                 />
                 <div className="mt-6 text-center">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Student Services Center</h3>
-                  <p className="text-gray-600">Central hub for all student support services</p>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Student Services Center</h3>
+                  <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">Central hub for all student support services</p>
                 </div>
               </div>
             </div>
@@ -149,13 +149,13 @@ export default function StudentSectionPage() {
       </section>
 
       {/* Services Provided */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               Student Support Services
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto dark:text-gray-400">
               Comprehensive services designed to support your academic and personal growth
             </p>
           </div>
@@ -163,11 +163,11 @@ export default function StudentSectionPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
               <Card key={index} className="p-6 text-center hover:shadow-xl transition-shadow">
-                <div className="flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4">
+                <div className="flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4 dark:bg-primary/20">
                   <service.icon className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{service.title}</h3>
-                <p className="text-gray-600 text-sm">{service.description}</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">{service.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">{service.description}</p>
               </Card>
             ))}
           </div>
@@ -175,18 +175,18 @@ export default function StudentSectionPage() {
       </section>
 
       {/* Official Blog */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
-            <Card className="p-8 bg-primary/5 border border-primary/20">
+            <Card className="p-8 bg-primary/5 border border dark:border-gray-700-primary/20 dark:border-gray-700">
               <CardHeader className="text-center">
-                <div className="flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4">
+                <div className="flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4 dark:bg-primary/20">
                   <Newspaper className="h-8 w-8 text-primary" />
                 </div>
-                <CardTitle className="text-2xl text-gray-900 mb-2">
+                <CardTitle className="text-2xl text-gray-900 dark:text-white mb-2 dark:text-white">
                   Official Student Section Blog
                 </CardTitle>
-                <CardDescription className="text-lg text-gray-600">
+                <CardDescription className="text-lg text-gray-600 dark:text-gray-300 dark:text-gray-400">
                   Stay connected with the latest news, announcements, events, and important updates 
                   from the student section through our dedicated blog platform.
                 </CardDescription>
@@ -194,29 +194,29 @@ export default function StudentSectionPage() {
               <CardContent className="text-center">
                 <div className="grid md:grid-cols-2 gap-6 mb-6">
                   <div className="space-y-4">
-                    <div className="flex items-center justify-center space-x-2 text-gray-600">
+                    <div className="flex items-center justify-center space-x-2 text-gray-600 dark:text-gray-400">
                       <Megaphone className="h-4 w-4" />
                       <span>Latest announcements and notices</span>
                     </div>
-                    <div className="flex items-center justify-center space-x-2 text-gray-600">
+                    <div className="flex items-center justify-center space-x-2 text-gray-600 dark:text-gray-300 dark:text-gray-400">
                       <Calendar className="h-4 w-4" />
                       <span>Upcoming events and activities</span>
                     </div>
-                    <div className="flex items-center justify-center space-x-2 text-gray-600">
+                    <div className="flex items-center justify-center space-x-2 text-gray-600 dark:text-gray-300 dark:text-gray-400">
                       <Award className="h-4 w-4" />
                       <span>Student achievements and recognitions</span>
                     </div>
                   </div>
                   <div className="space-y-4">
-                    <div className="flex items-center justify-center space-x-2 text-gray-600">
+                    <div className="flex items-center justify-center space-x-2 text-gray-600 dark:text-gray-300 dark:text-gray-400">
                       <FileText className="h-4 w-4" />
                       <span>Important forms and documents</span>
                     </div>
-                    <div className="flex items-center justify-center space-x-2 text-gray-600">
+                    <div className="flex items-center justify-center space-x-2 text-gray-600 dark:text-gray-300 dark:text-gray-400">
                       <Activity className="h-4 w-4" />
                       <span>Campus life updates and stories</span>
                     </div>
-                    <div className="flex items-center justify-center space-x-2 text-gray-600">
+                    <div className="flex items-center justify-center space-x-2 text-gray-600 dark:text-gray-300 dark:text-gray-400">
                       <MessageCircle className="h-4 w-4" />
                       <span>Student feedback and testimonials</span>
                     </div>
@@ -235,54 +235,54 @@ export default function StudentSectionPage() {
       </section>
 
       {/* Key Features */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               What We Offer
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-300 dark:text-gray-400">
               Comprehensive support for your academic journey
             </p>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4 dark:bg-blue-900/30">
                 <BookOpen className="h-8 w-8 text-blue-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Academic Support</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Academic Support</h3>
+              <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">
                 Guidance for academic procedures, course registrations, and academic planning
               </p>
             </div>
             
             <div className="text-center">
-              <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4 dark:bg-green-900/30">
                 <Heart className="h-8 w-8 text-green-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Welfare Services</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Welfare Services</h3>
+              <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">
                 Health support, counseling services, and personal development programs
               </p>
             </div>
             
             <div className="text-center">
-              <div className="flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mx-auto mb-4 dark:bg-purple-900/30">
                 <Users className="h-8 w-8 text-purple-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Community Building</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Community Building</h3>
+              <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">
                 Student clubs, cultural activities, and community engagement programs
               </p>
             </div>
             
             <div className="text-center">
-              <div className="flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mx-auto mb-4 dark:bg-orange-900/30">
                 <Target className="h-8 w-8 text-orange-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Career Guidance</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Career Guidance</h3>
+              <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">
                 Placement support, career counseling, and professional development
               </p>
             </div>
@@ -291,13 +291,13 @@ export default function StudentSectionPage() {
       </section>
 
       {/* Contact Information */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               Contact Student Section
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-300 dark:text-gray-400">
               We're here to help with all your academic and personal needs
             </p>
           </div>
@@ -308,8 +308,8 @@ export default function StudentSectionPage() {
                 <div className="flex items-start space-x-4">
                   <MapPin className="h-6 w-6 text-primary mt-1" />
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">Office Location</h3>
-                    <p className="text-gray-600">
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1 dark:text-white">Office Location</h3>
+                    <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">
                       Student Section Office<br />
                       Administrative Block<br />
                       Government Polytechnic Palanpur<br />
@@ -321,24 +321,24 @@ export default function StudentSectionPage() {
                 <div className="flex items-start space-x-4">
                   <Phone className="h-6 w-6 text-primary mt-1" />
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">Phone</h3>
-                    <p className="text-gray-600">02742-245219</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1 dark:text-white">Phone</h3>
+                    <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">02742-245219</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start space-x-4">
                   <Mail className="h-6 w-6 text-primary mt-1" />
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">Email</h3>
-                    <p className="text-gray-600">student-section@guj.edu.in</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1 dark:text-white">Email</h3>
+                    <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">student-section@guj.edu.in</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start space-x-4">
                   <Calendar className="h-6 w-6 text-primary mt-1" />
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">Office Hours</h3>
-                    <p className="text-gray-600">
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1 dark:text-white">Office Hours</h3>
+                    <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">
                       Monday to Friday: 9:00 AM - 5:00 PM<br />
                       Saturday: 9:00 AM - 1:00 PM<br />
                       Sunday: Closed
@@ -352,12 +352,12 @@ export default function StudentSectionPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-primary/5">
+      <section className="py-16 bg-primary/5 dark:bg-primary/10 dark:bg-primary/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
             Stay Connected
           </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto dark:text-gray-400">
             Follow our blog for the latest updates and engage with the vibrant student 
             community at Government Polytechnic Palanpur.
           </p>

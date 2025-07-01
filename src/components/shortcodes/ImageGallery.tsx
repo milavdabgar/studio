@@ -69,7 +69,7 @@ export function ImageGallery({
   // Check if images is provided and handle it safely
   if (!images) {
     return (
-      <div className="p-4 text-center text-gray-500 border border-gray-200 rounded">
+      <div className="p-4 text-center text-gray-500 border border-gray-200 rounded dark:text-gray-400 dark:border-gray-700">
         No images provided for gallery
       </div>
     );
@@ -116,7 +116,7 @@ export function ImageGallery({
   };
 
   if (fixedImageArray.length === 0) {
-    return <div className="text-gray-500">No images provided</div>;
+    return <div className="text-gray-500 dark:text-gray-400">No images provided</div>;
   }
 
   const currentCaption = captionArray[currentIndex];

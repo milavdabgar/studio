@@ -77,7 +77,7 @@ const CodeImporter: React.FC<CodeImporterProps> = ({
 
   if (error) {
     return (
-      <div className="my-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+      <div className="my-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg dark:border-gray-700">
         <div className="flex items-center space-x-2 text-red-700 dark:text-red-400">
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -99,7 +99,7 @@ const CodeImporter: React.FC<CodeImporterProps> = ({
   return (
     <div className="my-6">
       {/* URL header */}
-      <div className="flex items-center justify-between p-3 bg-neutral-100 dark:bg-neutral-800 rounded-t-lg border-b border-neutral-200 dark:border-neutral-700">
+      <div className="flex items-center justify-between p-3 bg-neutral-100 dark:bg-neutral-800 rounded-t-lg border-b border-neutral-200 dark:border-neutral-700 dark:border-gray-700">
         <div className="flex items-center space-x-2 text-sm text-neutral-600 dark:text-neutral-400">
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -115,7 +115,7 @@ const CodeImporter: React.FC<CodeImporterProps> = ({
 
       {/* Code content */}
       <div className="relative">
-        <pre className="!mt-0 !rounded-t-none overflow-x-auto bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-b-lg">
+        <pre className="!mt-0 !rounded-t-none overflow-x-auto bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-b-lg dark:border-gray-700">
           <code className={`${getLanguageClass()} block p-4 text-sm`}>
             {code}
           </code>

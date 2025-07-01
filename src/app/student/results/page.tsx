@@ -182,7 +182,7 @@ export default function StudentResultsPage() {
                         </CardHeader>
                         <CardContent>
                              {semesterResults.sort((a,b) => new Date(b.declarationDate || 0).getTime() - new Date(a.declarationDate || 0).getTime()).map(result => (
-                                <div key={result._id} className="mb-4 p-3 border rounded-md bg-background">
+                                <div key={result._id} className="mb-4 p-3 border rounded-md bg-background dark:border-gray-700">
                                     <div className="flex justify-between items-center mb-2">
                                         <h4 className="font-semibold">{result.exam || 'Exam Result'}</h4>
                                         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${result.result === 'PASS' ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'}`}>

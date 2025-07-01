@@ -83,7 +83,7 @@ export function YouTube({
         
         {/* Video title */}
         <div className="p-2">
-          <h4 className="font-medium text-gray-900 dark:text-gray-100">{title}</h4>
+          <h4 className="font-medium text-gray-900 dark:text-gray-100 dark:text-white">{title}</h4>
           <p className="text-sm text-gray-600 dark:text-gray-400">YouTube Video</p>
         </div>
       </div>
@@ -93,8 +93,8 @@ export function YouTube({
   return (
     <div className={`relative rounded-lg overflow-hidden w-full max-w-xl sm:max-w-2xl mx-auto ${className}`}>
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-800 z-10">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-800 z-10 dark:bg-gray-800">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 dark:border-gray-700"></div>
         </div>
       )}
       

@@ -152,7 +152,7 @@ ${sampleEnrollment},${sampleEnrollment},REGULAR,12345,WINTER 2023,2024-01-15,202
         </CardHeader>
         <CardContent>
           {/* Standard Results Import Section */}
-          <form onSubmit={handleStandardSubmit} className="space-y-6 mb-8 p-6 border rounded-lg shadow-sm">
+          <form onSubmit={handleStandardSubmit} className="space-y-6 mb-8 p-6 border rounded-lg shadow-sm dark:border-gray-700">
             <h3 className="text-xl font-semibold text-secondary">Standard Result Import</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -175,7 +175,7 @@ ${sampleEnrollment},${sampleEnrollment},REGULAR,12345,WINTER 2023,2024-01-15,202
             
             <div>
               <Label htmlFor="standardResultsFile">Standard Results CSV File *</Label>
-              <Input id="standardResultsFile" type="file" accept=".csv" onChange={handleStandardFileChange} disabled={isSubmitting} className="mt-1 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+              <Input id="standardResultsFile" type="file" accept=".csv" onChange={handleStandardFileChange} disabled={isSubmitting} className="mt-1 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 dark:border-gray-700 dark:bg-primary/20" />
               {standardFile && <p className="text-xs text-muted-foreground mt-1">Selected: {standardFile.name}</p>}
             </div>
 
@@ -191,11 +191,11 @@ ${sampleEnrollment},${sampleEnrollment},REGULAR,12345,WINTER 2023,2024-01-15,202
           </form>
 
           {/* GTU Results Import Section */}
-          <form onSubmit={handleGtuSubmit} className="space-y-6 p-6 border rounded-lg shadow-sm bg-muted/20">
+          <form onSubmit={handleGtuSubmit} className="space-y-6 p-6 border rounded-lg shadow-sm bg-muted/20 dark:border-gray-700">
             <h3 className="text-xl font-semibold text-accent-foreground">GTU Result Import</h3>
              <div>
               <Label htmlFor="gtuResultsFile">GTU Results CSV File *</Label>
-              <Input id="gtuResultsFile" type="file" accept=".csv" onChange={handleGtuFileChange} disabled={isSubmitting} className="mt-1 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent/10 file:text-accent hover:file:bg-accent/20" />
+              <Input id="gtuResultsFile" type="file" accept=".csv" onChange={handleGtuFileChange} disabled={isSubmitting} className="mt-1 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent/10 file:text-accent hover:file:bg-accent/20 dark:border-gray-700" />
                {gtuFile && <p className="text-xs text-muted-foreground mt-1">Selected: {gtuFile.name}</p>}
             </div>
 

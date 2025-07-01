@@ -369,7 +369,7 @@ curr_2,prog_dme_gpp,DME,2.1,2025-01-01,draft,course_me101_dme_gpp,ME101,1,false
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 p-4 border rounded-lg space-y-4">
+          <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
             <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Curricula from CSV</h3>
             <div className="flex flex-col sm:flex-row gap-2 items-center">
               <Input type="file" id="csvImportCurriculum" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
@@ -381,7 +381,7 @@ curr_2,prog_dme_gpp,DME,2.1,2025-01-01,draft,course_me101_dme_gpp,ME101,1,false
             </div>
           </div>
 
-          <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 border rounded-lg">
+          <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div><Label htmlFor="searchCurriculum">Search Version/Program</Label><div className="relative"><Input id="searchCurriculum" placeholder="Version, Prog. Name/Code..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pr-8"/><Search className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" /></div></div>
             <div><Label htmlFor="filterProgCurriculum">Filter by Program</Label><Select value={filterProgramVal} onValueChange={setFilterProgramVal} disabled={programs.length === 0}><SelectTrigger><SelectValue placeholder="All Programs"/></SelectTrigger><SelectContent><SelectItem value="all">All Programs</SelectItem>{programs.map(p => <SelectItem key={p.id} value={p.id}>{p.name} ({p.code})</SelectItem>)}</SelectContent></Select></div>
             <div><Label htmlFor="filterStatusCurriculum">Filter by Status</Label><Select value={filterStatusVal} onValueChange={(value) => setFilterStatusVal(value as CurriculumStatus | 'all')}><SelectTrigger><SelectValue placeholder="All Statuses"/></SelectTrigger><SelectContent>{[{value: 'all', label: 'All Statuses'} as {value: CurriculumStatus | 'all', label: string}, ...CURRICULUM_STATUS_OPTIONS].map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}</SelectContent></Select></div>
@@ -446,9 +446,9 @@ curr_2,prog_dme_gpp,DME,2.1,2025-01-01,draft,course_me101_dme_gpp,ME101,1,false
                 <div><Label htmlFor="currStatus">Status *</Label><Select value={formStatus} onValueChange={val => setFormStatus(val as CurriculumStatus)} required disabled={isSubmitting}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{CURRICULUM_STATUS_OPTIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}</SelectContent></Select></div>
             </div>
 
-            <div className="pt-4 border-t mt-4">
+            <div className="pt-4 border-t mt-4 dark:border-gray-700">
                 <h4 className="text-md font-semibold mb-2">Manage Courses in Curriculum</h4>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end p-3 border rounded-md bg-muted/30">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-end p-3 border rounded-md bg-muted/30 dark:border-gray-700">
                     <div><Label htmlFor="tempCourse">Course *</Label><Select value={tempCourseId} onValueChange={setTempCourseId} disabled={allCourses.length === 0}><SelectTrigger><SelectValue placeholder="Select Course"/></SelectTrigger><SelectContent>{allCourses.filter(c => c.programId === formProgramId).map(c => <SelectItem key={c.id} value={c.id}>{c.subjectName} ({c.subcode})</SelectItem>)}</SelectContent></Select></div>
                     <div><Label htmlFor="tempSemester">Semester *</Label><Input id="tempSemester" type="number" value={tempSemester} onChange={e=>setTempSemester(Number(e.target.value))} min="1" max="12"/></div>
                     <div className="flex items-center pt-6 space-x-2"><Switch id="tempIsElective" checked={tempIsElective} onCheckedChange={setTempIsElective}/><Label htmlFor="tempIsElective">Is Elective</Label></div>
@@ -474,7 +474,7 @@ curr_2,prog_dme_gpp,DME,2.1,2025-01-01,draft,course_me101_dme_gpp,ME101,1,false
                 </div>
             </div>
           </form>
-          <DialogFooter className="pt-4 border-t mt-auto">
+          <DialogFooter className="pt-4 border-t mt-auto dark:border-gray-700">
             <DialogClose asChild><Button type="button" variant="outline" disabled={isSubmitting}>Cancel</Button></DialogClose>
             <Button type="submit" form="curriculumForm" disabled={isSubmitting}>{isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}{currentCurriculum?.id ? "Save Changes" : "Create Curriculum"}</Button>
           </DialogFooter>

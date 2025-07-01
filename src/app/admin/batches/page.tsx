@@ -416,7 +416,7 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 p-4 border rounded-lg space-y-4">
+          <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
             <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Batches from CSV</h3>
             <div className="flex flex-col sm:flex-row gap-2 items-center">
               <Input type="file" id="csvImportBatch" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
@@ -434,7 +434,7 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
             </div>
           </div>
 
-          <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 border rounded-lg">
+          <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div>
               <Label htmlFor="searchBatch">Search Batches</Label>
               <div className="relative">

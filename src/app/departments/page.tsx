@@ -24,13 +24,13 @@ export default function DepartmentsPage() {
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16">
+      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16 dark:from-primary/10 dark:to-secondary/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 dark:text-white">
               Engineering Departments
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 dark:text-gray-400">
               Choose from 6 specialized engineering programs designed to meet industry demands 
               with modern curriculum, experienced faculty, and state-of-the-art laboratories.
             </p>
@@ -61,14 +61,14 @@ export default function DepartmentsPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-8">
             {departments.map((dept) => (
-              <Card key={dept.id} className="hover:shadow-xl transition-all duration-300 border-0 shadow-lg">
+              <Card key={dept.id} className="hover:shadow-xl transition-all duration-300 border dark:border-gray-700-0 shadow-lg dark:border-gray-700">
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <CardTitle className="text-2xl text-gray-900 dark:text-white">{dept.name}</CardTitle>
                         {dept.nba_status && (
-                          <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                          <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 dark:bg-green-900/30">
                             NBA Accredited
                           </Badge>
                         )}
@@ -97,13 +97,13 @@ export default function DepartmentsPage() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed dark:text-gray-300">
                     {dept.overview}
                   </p>
 
                   {/* Faculty Info */}
                   {dept.faculty_count && (
-                    <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg dark:bg-gray-800">
                       <div className="flex items-center space-x-2">
                         <Users className="h-5 w-5 text-primary" />
                         <span className="font-medium text-gray-900 dark:text-white">Faculty: {dept.faculty_count}</span>
@@ -118,7 +118,7 @@ export default function DepartmentsPage() {
 
                   {/* Specializations */}
                   <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2 dark:text-white">
                       <BookOpen className="h-4 w-4" />
                       Key Specializations
                     </h4>
@@ -138,7 +138,7 @@ export default function DepartmentsPage() {
 
                   {/* Career Opportunities */}
                   <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2 dark:text-white">
                       <Briefcase className="h-4 w-4" />
                       Career Opportunities
                     </h4>
@@ -154,25 +154,25 @@ export default function DepartmentsPage() {
 
                   {/* Laboratories */}
                   <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2 dark:text-white">
                       <Building className="h-4 w-4" />
                       Laboratories ({dept.laboratories.length})
                     </h4>
                     <div className="grid grid-cols-1 gap-2">
                       {dept.laboratories.slice(0, 3).map((lab, idx) => (
-                        <div key={idx} className="text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 px-3 py-2 rounded">
+                        <div key={idx} className="text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 px-3 py-2 rounded dark:bg-gray-800 dark:text-gray-400">
                           {lab}
                         </div>
                       ))}
                       {dept.laboratories.length > 3 && (
-                        <div className="text-sm text-gray-500 dark:text-gray-500 px-3 py-2">
+                        <div className="text-sm text-gray-500 dark:text-gray-500 dark:text-gray-400 px-3 py-2 dark:text-gray-400">
                           +{dept.laboratories.length - 3} more labs
                         </div>
                       )}
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t">
+                  <div className="pt-4 border dark:border-gray-700-t dark:border-gray-700">
                     <Button asChild className="w-full">
                       <Link href={`/departments/${dept.slug}`}>
                         Learn More About {dept.name}
@@ -189,10 +189,10 @@ export default function DepartmentsPage() {
       {/* Call to Action */}
       <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
             Ready to Start Your Engineering Journey?
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto dark:text-gray-400">
             Join one of our acclaimed engineering programs and build your future with industry-relevant skills and knowledge.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

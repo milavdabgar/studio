@@ -132,7 +132,7 @@ export default function GradeHistoryView({ studentEnrollmentNo }: GradeHistoryVi
                 ))
             )}
              {results.length > 0 && (
-                 <div className="mt-6 p-4 border rounded-lg bg-muted/30">
+                 <div className="mt-6 p-4 border rounded-lg bg-muted/30 dark:border-gray-700">
                     <h3 className="text-md font-semibold mb-2 flex items-center gap-2"><BarChart3 className="text-primary"/>Performance Trend (Placeholder)</h3>
                     <div className="h-40 flex items-center justify-center text-muted-foreground bg-background rounded">
                         Graph/Chart visualizing CPI/SPI trend over semesters will be shown here.

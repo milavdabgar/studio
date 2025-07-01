@@ -59,7 +59,7 @@ const Ref: React.FC<RefProps> = (props) => {
   return (
     <Link 
       href={href}
-      className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-200 underline decoration-primary-600/30 hover:decoration-primary-600/60"
+      className="text-primary-600 dark:text-primary-400 hover:text-primary dark:hover:text-primary-700 dark:hover:text-primary dark:hover:text-primary-300 transition-colors duration-200 underline decoration-primary-600/30 hover:decoration-primary-600/60"
       title={title}
     >
       {displayText}

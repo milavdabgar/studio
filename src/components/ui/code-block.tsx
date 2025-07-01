@@ -109,7 +109,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language, className = '' })
 
   return (
     <div className={`relative group ${className}`}>
-      <div className="flex justify-between items-center bg-muted/50 border-b px-4 py-2 text-sm">
+      <div className="flex justify-between items-center bg-muted/50 border-b px-4 py-2 text-sm dark:border-gray-700">
         <span className="text-muted-foreground font-mono">
           {getDisplayLanguage(language)}
         </span>

@@ -49,7 +49,7 @@ export function Timeline({ children }: TimelineProps) {
   // If children is React nodes, render normally
   if (typeof children !== 'string') {
     return (
-      <ol className="border-l-2 border-primary-500 dark:border-primary-300 list-none">
+      <ol className="border-l-2 border-primary-500 dark:border-primary-300 list-none dark:border-gray-700">
         {children}
       </ol>
     );
@@ -59,7 +59,7 @@ export function Timeline({ children }: TimelineProps) {
   return (
     <ol 
       ref={containerRef}
-      className="border-l-2 border-primary-500 dark:border-primary-300 list-none"
+      className="border-l-2 border-primary-500 dark:border-primary-300 list-none dark:border-gray-700"
     />
   );
 }

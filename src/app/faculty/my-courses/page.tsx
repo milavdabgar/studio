@@ -166,7 +166,7 @@ export default function MyCoursesPage() {
                   <CardContent className="flex-grow">
                     <p className="text-sm text-muted-foreground">Status: <span className="font-medium capitalize">{offering.status}</span></p>
                   </CardContent>
-                  <CardFooter className="flex flex-col items-stretch gap-2 pt-4 border-t">
+                  <CardFooter className="flex flex-col items-stretch gap-2 pt-4 border-t dark:border-gray-700">
                     <Link
                       href={`/faculty/course-offerings/${offering.id}/students`}
                       >

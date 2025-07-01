@@ -94,7 +94,7 @@ export default function DetailedResultView({ resultId }: DetailedResultViewProps
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid md:grid-cols-2 gap-6 p-4 border rounded-lg bg-muted/30">
+        <div className="grid md:grid-cols-2 gap-6 p-4 border rounded-lg bg-muted/30 dark:border-gray-700">
             <div>
                 <Label className="text-sm text-muted-foreground">Student Name</Label>
                 <p className="font-semibold">{student?.firstName} {student?.lastName || result.name}</p>
@@ -140,8 +140,8 @@ export default function DetailedResultView({ resultId }: DetailedResultViewProps
             </TableBody>
         </Table>
         
-        <div className="grid md:grid-cols-3 gap-4 pt-4 border-t">
-            <div className="p-3 rounded-md bg-primary/10 text-center">
+        <div className="grid md:grid-cols-3 gap-4 pt-4 border-t dark:border-gray-700">
+            <div className="p-3 rounded-md bg-primary/10 text-center dark:bg-primary/20">
                 <Label className="text-sm text-primary/80">Semester Performance Index (SPI)</Label>
                 <p className="text-2xl font-bold text-primary">{result.spi.toFixed(2)}</p>
             </div>
@@ -170,7 +170,7 @@ export default function DetailedResultView({ resultId }: DetailedResultViewProps
             </Alert>
         )}
          {result.result === "PASS" && (result.currentBacklog === undefined || result.currentBacklog === 0) && (
-            <Alert variant="default" className="mt-4 bg-green-50 border-green-200 text-green-700 dark:bg-green-900/30 dark:border-green-700 dark:text-green-300">
+            <Alert variant="default" className="mt-4 bg-green-50 border-green-200 text-green-700 dark:bg-green-900/30 dark:border-green-700 dark:text-green-300 dark:border-gray-700">
                 <CheckCircle className="h-4 w-4" />
                 <AlertDescription>
                     Congratulations on passing this semester!

@@ -93,9 +93,9 @@ export function TwitterEmbed({
           
           {/* Loading state */}
           {!embedLoaded && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-50 dark:bg-gray-800 rounded-lg border">
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-50 dark:bg-gray-800 rounded-lg border dark:bg-gray-800 dark:border-gray-700">
               <div className="flex flex-col items-center gap-3">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 dark:border-gray-700"></div>
                 <span className="text-sm text-gray-600 dark:text-gray-400">Loading tweet...</span>
               </div>
             </div>
@@ -103,7 +103,7 @@ export function TwitterEmbed({
         </div>
       ) : (
         // Fallback UI
-        <div className="border border-gray-300 dark:border-gray-600 rounded-lg p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-700 max-w-lg">
+        <div className="border border-gray-300 dark:border-gray-600 rounded-lg p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-700 max-w-lg dark:border-gray-700 dark:border-gray-600">
           <div className="flex items-start gap-4">
             <div className="flex-shrink-0">
               <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
@@ -112,15 +112,15 @@ export function TwitterEmbed({
             </div>
             <div className="flex-1 min-w-0">
               <div className="mb-3">
-                <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-lg dark:text-white">
                   Twitter/X Post
                 </h4>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">
                   @{user}
                 </p>
               </div>
               
-              <p className="text-gray-700 dark:text-gray-300 text-sm mb-4">
+              <p className="text-gray-700 dark:text-gray-300 text-sm mb-4 dark:text-gray-300">
                 This tweet is hosted by Twitter. By viewing it, you agree to Twitter&apos;s privacy policy and terms of service.
               </p>
               

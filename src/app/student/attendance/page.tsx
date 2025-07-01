@@ -179,7 +179,7 @@ export default function StudentAttendancePage() {
                         {Object.entries(attendanceSummary).map(([course, summary]) => {
                             const percentage = summary.total > 0 ? ((summary.present + summary.late * 0.5 + summary.excused) / summary.total * 100).toFixed(1) : 0;
                             return (
-                            <div key={course} className="mb-3 pb-3 border-b last:border-b-0">
+                            <div key={course} className="mb-3 pb-3 border-b last:border-b-0 dark:border-gray-700">
                                 <h4 className="font-semibold">{course}</h4>
                                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 text-sm">
                                     <p>Total: <span className="font-medium">{summary.total}</span></p>

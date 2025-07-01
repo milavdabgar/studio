@@ -91,7 +91,7 @@ export default function ShortcodesDemo() {
                 <CardDescription>How to use these shortcodes in your content</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg font-mono text-sm space-y-2">
+                <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg font-mono text-sm space-y-2 dark:bg-gray-800">
                   <div>{`{{< youtube "dQw4w9WgXcQ" >}}`}</div>
                   <div>{`{{< figure src="/image.jpg" alt="Description" caption="My Caption" >}}`}</div>
                   <div>{`{{< gallery images="img1.jpg,img2.jpg,img3.jpg" >}}`}</div>

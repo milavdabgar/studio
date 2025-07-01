@@ -65,7 +65,7 @@ export function PostCard({
         <CardTitle className="text-xl">
           <Link
             href={post.href}
-            className="text-primary hover:text-primary/80 transition-colors"
+            className="text-primary hover:text-primary dark:hover:text-primary/80 transition-colors"
           >
             {post.title}
           </Link>
@@ -135,7 +135,7 @@ export function PostCard({
         <div className="flex justify-between items-center">
           <Link
             href={post.href}
-            className="text-sm text-primary hover:text-primary/80 transition-colors"
+            className="text-sm text-primary hover:text-primary dark:hover:text-primary/80 transition-colors"
           >
             {t('read_more') || 'Read more'} →
           </Link>

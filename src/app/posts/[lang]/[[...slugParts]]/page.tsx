@@ -254,7 +254,7 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
               {/* Section content if it exists */}
               {sectionContent && (
                 <div className="mb-12">
-                  <Card className="shadow-lg border-0 bg-gradient-to-r from-card to-card/80">
+                  <Card className="shadow-lg border-0 bg-gradient-to-r from-card to-card/80 dark:border-gray-700">
                     <CardHeader>
                       <CardTitle className="text-xl text-primary">
                         {pageParams.lang === 'gu' ? 'વિભાગ માહિતી' : 'Section Information'}
@@ -356,7 +356,7 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
               )}
               
               {postData.contentHtml && postData.contentHtml.trim() && (
-                <Card className="shadow-lg border-0 bg-gradient-to-r from-card to-card/80 mb-8">
+                <Card className="shadow-lg border-0 bg-gradient-to-r from-card to-card/80 mb-8 dark:border-gray-700">
                   <CardContent className="p-8">
                     <div className="prose prose-lg dark:prose-invert max-w-4xl mx-auto">
                       <PostRenderer contentHtml={postData.contentHtml} />
@@ -376,7 +376,7 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
               </h2>
               
               {subPosts.length === 0 ? (
-                <Card className="shadow-lg border-0">
+                <Card className="shadow-lg border-0 dark:border-gray-700">
                   <CardContent className="py-12 text-center">
                     <div className="mb-4 opacity-50">
                       <FileText className="h-12 w-12 mx-auto text-muted-foreground" />
@@ -449,8 +449,8 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
             {/* Main content */}
             <div className="flex-1">
               <article>
-                <Card className="shadow-xl border-0 bg-gradient-to-br from-card to-card/90 overflow-hidden">
-                  <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5 border-b border-border/50">
+                <Card className="shadow-xl border-0 bg-gradient-to-br from-card to-card/90 overflow-hidden dark:border-gray-700">
+                  <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5 border-b border-border/50 dark:border-gray-700">
                     <div className="space-y-4">
                       <CardTitle className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-tight">
                         {postData.title}

@@ -191,11 +191,11 @@ export default function CivilEngineeringPage() {
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 py-16">
+      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 py-16 dark:from-primary/10 dark:to-secondary/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center space-x-2 mb-6">
-              <Link href="/departments" className="flex items-center space-x-2 text-gray-600 hover:text-primary">
+              <Link href="/departments" className="flex items-center space-x-2 text-gray-600 hover:text-primary dark:hover:text-primary dark:text-gray-400">
                 <ChevronLeft className="h-4 w-4" />
                 <span>Back to Departments</span>
               </Link>
@@ -204,15 +204,15 @@ export default function CivilEngineeringPage() {
             <div className="flex flex-wrap gap-2 mb-6">
               <Badge variant="secondary" className="text-sm">Est. 1984</Badge>
               <Badge variant="outline" className="text-sm">118 Seats</Badge>
-              <Badge variant="outline" className="text-sm bg-green-50 text-green-700 border-green-200">
+              <Badge variant="outline" className="text-sm bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700 dark:border-gray-700">
                 NBA Accredited
               </Badge>
             </div>
             
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 dark:text-white">
               Civil Engineering Department
             </h1>
-            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed dark:text-gray-400">
               Building the future through innovative design, sustainable construction, and infrastructure development. 
               Our program combines theoretical knowledge with practical skills to create competent civil engineers 
               ready to meet industry challenges.
@@ -221,19 +221,19 @@ export default function CivilEngineeringPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">1984</div>
-                <div className="text-sm text-gray-600">Established</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Established</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">118</div>
-                <div className="text-sm text-gray-600">Seats Available</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Seats Available</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">13</div>
-                <div className="text-sm text-gray-600">Faculty Members</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Faculty Members</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">5</div>
-                <div className="text-sm text-gray-600">Laboratories</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Laboratories</div>
               </div>
             </div>
           </div>
@@ -241,14 +241,14 @@ export default function CivilEngineeringPage() {
       </section>
 
       {/* Department Overview */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 mb-6 dark:text-white">
                 Department Overview
               </h2>
-              <div className="space-y-4 text-gray-600 leading-relaxed">
+              <div className="space-y-4 text-gray-600 leading-relaxed dark:text-gray-400">
                 <p>
                   The Civil Engineering Department at Government Polytechnic Palanpur has been a pioneer 
                   in technical education since 1984. We focus on developing skilled diploma engineers 
@@ -265,18 +265,18 @@ export default function CivilEngineeringPage() {
                 </p>
               </div>
               
-              <div className="mt-8 p-6 bg-gray-50 rounded-lg">
-                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <div className="mt-8 p-6 bg-gray-50 rounded-lg dark:bg-gray-800">
+                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2 dark:text-white">
                   <User className="h-5 w-5 text-primary" />
                   Head of Department
                 </h3>
-                <p className="text-gray-700 font-medium">Mr. D N Sheth</p>
-                <p className="text-sm text-gray-600 mt-1">M.E. (Structural Engineering)</p>
+                <p className="text-gray-700 font-medium dark:text-gray-300">Mr. D N Sheth</p>
+                <p className="text-sm text-gray-600 mt-1 dark:text-gray-400">M.E. (Structural Engineering)</p>
               </div>
             </div>
             
             <div className="relative">
-              <div className="bg-white p-6 rounded-2xl shadow-xl">
+              <div className="bg-white p-6 rounded-2xl shadow-xl dark:bg-gray-900">
                 <Image
                   src="https://picsum.photos/seed/civil-engineering/600/400"
                   alt="Civil Engineering Department"
@@ -285,10 +285,10 @@ export default function CivilEngineeringPage() {
                   className="rounded-xl"
                 />
                 <div className="mt-6 text-center">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2 dark:text-white">
                     Civil Engineering Lab
                   </h3>
-                  <p className="text-gray-600">State-of-the-art facilities for hands-on learning</p>
+                  <p className="text-gray-600 dark:text-gray-400">State-of-the-art facilities for hands-on learning</p>
                 </div>
               </div>
             </div>
@@ -297,13 +297,13 @@ export default function CivilEngineeringPage() {
       </section>
 
       {/* Department Video */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 dark:text-white">
               Discover Civil Engineering at GP Palanpur
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto dark:text-gray-400">
               Get an inside look at our civil engineering program, facilities, and student experiences
             </p>
           </div>
@@ -318,7 +318,7 @@ export default function CivilEngineeringPage() {
               ></iframe>
             </div>
             <div className="text-center mt-6">
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-400">
                 Explore our civil engineering labs, meet our faculty, and see students in action
               </p>
             </div>
@@ -327,13 +327,13 @@ export default function CivilEngineeringPage() {
       </section>
 
       {/* Specializations */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">
               Areas of Specialization
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Comprehensive curriculum covering key areas of civil engineering
             </p>
           </div>
@@ -352,12 +352,12 @@ export default function CivilEngineeringPage() {
                 <Card key={index} className="hover:shadow-lg transition-shadow">
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-3">
-                      <div className="flex items-center justify-center w-10 h-10 bg-primary/10 rounded-full flex-shrink-0 mt-1">
+                      <div className="flex items-center justify-center w-10 h-10 bg-primary/10 rounded-full flex-shrink-0 mt-1 dark:bg-primary/20">
                         <IconComponent className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-2">{specialization.name}</h3>
-                        <p className="text-sm text-gray-600">{specialization.desc}</p>
+                        <h3 className="font-semibold text-gray-900 mb-2 dark:text-white">{specialization.name}</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">{specialization.desc}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -369,11 +369,11 @@ export default function CivilEngineeringPage() {
       </section>
 
       {/* Faculty Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Faculty</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">Our Faculty</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Experienced educators and industry professionals guiding your journey
             </p>
           </div>
@@ -382,13 +382,13 @@ export default function CivilEngineeringPage() {
             {facultyMembers.map((faculty, index) => (
               <Card key={index} className="hover:shadow-lg transition-shadow">
                 <CardContent className="p-6 text-center">
-                  <div className="w-20 h-20 bg-primary/10 rounded-full mx-auto mb-4 flex items-center justify-center">
+                  <div className="w-20 h-20 bg-primary/10 rounded-full mx-auto mb-4 flex items-center justify-center dark:bg-primary/20">
                     <User className="h-10 w-10 text-primary" />
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-2">{faculty.name}</h3>
+                  <h3 className="font-bold text-gray-900 mb-2 dark:text-white">{faculty.name}</h3>
                   <p className="text-sm text-primary font-medium mb-2">{faculty.designation}</p>
-                  <p className="text-xs text-gray-600 mb-1">{faculty.qualification}</p>
-                  <p className="text-xs text-gray-600 mb-2">{faculty.experience}</p>
+                  <p className="text-xs text-gray-600 mb-1 dark:text-gray-400">{faculty.qualification}</p>
+                  <p className="text-xs text-gray-600 mb-2 dark:text-gray-400">{faculty.experience}</p>
                   <Badge variant="outline" className="text-xs">
                     {faculty.specialization}
                   </Badge>
@@ -400,13 +400,13 @@ export default function CivilEngineeringPage() {
       </section>
 
       {/* Laboratories */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">
               Laboratory Facilities
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               State-of-the-art laboratories for hands-on learning and research
             </p>
           </div>
@@ -428,8 +428,8 @@ export default function CivilEngineeringPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    <h4 className="font-semibold text-sm text-gray-900">Key Equipment:</h4>
-                    <ul className="text-sm text-gray-600 space-y-1">
+                    <h4 className="font-semibold text-sm text-gray-900 dark:text-white">Key Equipment:</h4>
+                    <ul className="text-sm text-gray-600 space-y-1 dark:text-gray-400">
                       {lab.equipment.map((item, idx) => (
                         <li key={idx} className="flex items-center gap-2">
                           <ArrowRight className="h-3 w-3 text-primary" />
@@ -446,11 +446,11 @@ export default function CivilEngineeringPage() {
       </section>
 
       {/* Achievements */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Achievements</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">Our Achievements</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Recognition and milestones in academic excellence
             </p>
           </div>
@@ -461,11 +461,11 @@ export default function CivilEngineeringPage() {
               return (
                 <Card key={index} className="hover:shadow-lg transition-shadow text-center">
                   <CardContent className="p-6">
-                    <div className="w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <div className="w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4 flex items-center justify-center dark:bg-primary/20">
                       <IconComponent className="h-8 w-8 text-primary" />
                     </div>
-                    <h3 className="font-bold text-gray-900 mb-2">{achievement.title}</h3>
-                    <p className="text-sm text-gray-600 mb-2">{achievement.description}</p>
+                    <h3 className="font-bold text-gray-900 mb-2 dark:text-white">{achievement.title}</h3>
+                    <p className="text-sm text-gray-600 mb-2 dark:text-gray-400">{achievement.description}</p>
                     <Badge variant="secondary">{achievement.year}</Badge>
                   </CardContent>
                 </Card>
@@ -476,11 +476,11 @@ export default function CivilEngineeringPage() {
       </section>
 
       {/* Navigation Links */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Explore More</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">Explore More</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Discover detailed information about our programs and facilities
             </p>
           </div>
@@ -489,8 +489,8 @@ export default function CivilEngineeringPage() {
             <Card className="hover:shadow-lg transition-shadow">
               <CardContent className="p-6 text-center">
                 <BookOpen className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">Curriculum</h3>
-                <p className="text-sm text-gray-600 mb-4">Detailed semester-wise curriculum and subjects</p>
+                <h3 className="font-bold text-gray-900 mb-2 dark:text-white">Curriculum</h3>
+                <p className="text-sm text-gray-600 mb-4 dark:text-gray-400">Detailed semester-wise curriculum and subjects</p>
                 <Button asChild className="w-full">
                   <Link href="/departments/civil-engineering/curriculum">View Curriculum</Link>
                 </Button>
@@ -500,8 +500,8 @@ export default function CivilEngineeringPage() {
             <Card className="hover:shadow-lg transition-shadow">
               <CardContent className="p-6 text-center">
                 <Users className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">Faculty</h3>
-                <p className="text-sm text-gray-600 mb-4">Meet our experienced faculty members</p>
+                <h3 className="font-bold text-gray-900 mb-2 dark:text-white">Faculty</h3>
+                <p className="text-sm text-gray-600 mb-4 dark:text-gray-400">Meet our experienced faculty members</p>
                 <Button asChild className="w-full">
                   <Link href="/departments/civil-engineering/faculty">View Faculty</Link>
                 </Button>
@@ -511,8 +511,8 @@ export default function CivilEngineeringPage() {
             <Card className="hover:shadow-lg transition-shadow">
               <CardContent className="p-6 text-center">
                 <Building className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">Facilities</h3>
-                <p className="text-sm text-gray-600 mb-4">Explore our laboratories and infrastructure</p>
+                <h3 className="font-bold text-gray-900 mb-2 dark:text-white">Facilities</h3>
+                <p className="text-sm text-gray-600 mb-4 dark:text-gray-400">Explore our laboratories and infrastructure</p>
                 <Button asChild className="w-full">
                   <Link href="/departments/civil-engineering/facilities">View Facilities</Link>
                 </Button>
@@ -522,8 +522,8 @@ export default function CivilEngineeringPage() {
             <Card className="hover:shadow-lg transition-shadow">
               <CardContent className="p-6 text-center">
                 <Star className="h-12 w-12 text-primary mx-auto mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">Achievements</h3>
-                <p className="text-sm text-gray-600 mb-4">Department achievements and student success</p>
+                <h3 className="font-bold text-gray-900 mb-2 dark:text-white">Achievements</h3>
+                <p className="text-sm text-gray-600 mb-4 dark:text-gray-400">Department achievements and student success</p>
                 <Button asChild className="w-full">
                   <Link href="/departments/civil-engineering/achievements">View Achievements</Link>
                 </Button>
@@ -536,10 +536,10 @@ export default function CivilEngineeringPage() {
       {/* Call to Action */}
       <section className="py-16 bg-primary/5">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">
             Ready to Join Civil Engineering?
           </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto dark:text-gray-400">
             Take the first step towards an exciting career in civil engineering. 
             Apply now for admission to Government Polytechnic Palanpur.
           </p>

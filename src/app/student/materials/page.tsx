@@ -177,7 +177,7 @@ export default function StudyMaterialsPage() {
             </div>
           ) : (
             <>
-             <div className="mb-6 p-4 border rounded-lg">
+             <div className="mb-6 p-4 border rounded-lg dark:border-gray-700">
                 <div>
                     <Label htmlFor="courseOfferingFilterMaterials" className="text-sm">Filter by Course Offering:</Label>
                     <Select value={selectedCourseOfferingFilter} onValueChange={setSelectedCourseOfferingFilter} disabled={uniqueCourseOfferingsForFilter.length === 0}>
@@ -198,7 +198,7 @@ export default function StudyMaterialsPage() {
                 <Accordion type="multiple" className="w-full">
                 {Object.entries(materialsGroupedByCourseOffering).map(([offeringDisplayKey, offeringMaterials]) => (
                     <AccordionItem value={offeringDisplayKey} key={offeringDisplayKey}>
-                    <AccordionTrigger className="text-lg font-semibold text-secondary hover:text-primary">
+                    <AccordionTrigger className="text-lg font-semibold text-secondary hover:text-primary dark:hover:text-primary">
                         {offeringDisplayKey}
                     </AccordionTrigger>
                     <AccordionContent>

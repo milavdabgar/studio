@@ -98,7 +98,7 @@ export function QRCode({
   if (isLoading) {
     return (
       <div className={`flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg p-8 ${className}`}>
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-gray-100 mb-4"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-gray-100 mb-4 dark:border-gray-700"></div>
         <span className="text-sm text-gray-600 dark:text-gray-400">Generating QR code...</span>
       </div>
     );
@@ -128,7 +128,7 @@ export function QRCode({
           alt={alt || `QR code for: ${text}`}
           width={size}
           height={size}
-          className="rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm"
+          className="rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm dark:border-gray-700"
         />
         
         {/* Hover overlay with actions */}
@@ -139,7 +139,7 @@ export function QRCode({
                 variant="secondary"
                 size="sm"
                 onClick={handleDownload}
-                className="bg-white text-gray-900 hover:bg-gray-100"
+                className="bg-white text-gray-900 hover:bg-gray-100 dark:bg-gray-900 dark:bg-gray-800 dark:text-white"
               >
                 <Download className="h-4 w-4" />
               </Button>
@@ -149,7 +149,7 @@ export function QRCode({
                 variant="secondary"
                 size="sm"
                 onClick={handleCopy}
-                className="bg-white text-gray-900 hover:bg-gray-100"
+                className="bg-white text-gray-900 hover:bg-gray-100 dark:bg-gray-900 dark:bg-gray-800 dark:text-white"
               >
                 {copied ? (
                   <Check className="h-4 w-4 text-green-600" />
@@ -164,7 +164,7 @@ export function QRCode({
 
       {/* Text display */}
       <div className="text-center max-w-xs">
-        <p className="text-xs text-gray-600 dark:text-gray-400 break-all">
+        <p className="text-xs text-gray-600 dark:text-gray-400 break-all dark:text-gray-400">
           {text}
         </p>
         

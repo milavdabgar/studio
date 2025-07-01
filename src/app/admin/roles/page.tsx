@@ -345,7 +345,7 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
                   </div>
                   <div>
                     <Label>Permissions</Label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-60 overflow-y-auto p-2 border rounded-md">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-60 overflow-y-auto p-2 border rounded-md dark:border-gray-700">
                       {allPermissions.map(permission => (
                         <div key={permission} className="flex items-center space-x-2">
                           <Checkbox
@@ -381,7 +381,7 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 p-4 border rounded-lg">
+          <div className="mb-6 p-4 border rounded-lg dark:border-gray-700">
             <h3 className="text-lg font-medium mb-2 flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Roles from CSV</h3>
             <div className="flex flex-col sm:flex-row gap-2 items-center">
               <Input type="file" id="csvImport" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />

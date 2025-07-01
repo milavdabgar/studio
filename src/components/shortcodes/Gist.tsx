@@ -85,7 +85,7 @@ const Gist: React.FC<GistProps> = (props) => {
 
   if (error || !gistData) {
     return (
-      <div className="my-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+      <div className="my-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg dark:border-gray-700">
         <div className="flex items-center space-x-2 text-red-700 dark:text-red-400">
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -109,7 +109,7 @@ const Gist: React.FC<GistProps> = (props) => {
 
   if (filesToShow.length === 0) {
     return (
-      <div className="my-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+      <div className="my-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg dark:border-gray-700">
         <div className="flex items-center space-x-2 text-yellow-700 dark:text-yellow-400">
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -124,9 +124,9 @@ const Gist: React.FC<GistProps> = (props) => {
   }
 
   return (
-    <div className="my-6 border border-neutral-200 dark:border-neutral-700 rounded-lg overflow-hidden">
+    <div className="my-6 border border-neutral-200 dark:border-neutral-700 rounded-lg overflow-hidden dark:border-gray-700">
       {/* Gist header */}
-      <div className="flex items-center justify-between p-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700">
+      <div className="flex items-center justify-between p-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700 dark:border-gray-700">
         <div className="flex items-center space-x-3">
           <img 
             src={gistData.owner.avatar_url} 
@@ -154,7 +154,7 @@ const Gist: React.FC<GistProps> = (props) => {
           href={gistData.html_url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-200"
+          className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary dark:hover:text-primary-700 dark:hover:text-primary dark:hover:text-primary-300 transition-colors duration-200"
         >
           View on GitHub
         </a>
@@ -183,7 +183,7 @@ const Gist: React.FC<GistProps> = (props) => {
             
             {/* File content */}
             <div className="relative">
-              <pre className="overflow-x-auto bg-white dark:bg-neutral-900 p-4 text-sm">
+              <pre className="overflow-x-auto bg-white dark:bg-neutral-900 p-4 text-sm dark:bg-gray-900">
                 <code className={`language-${file.language?.toLowerCase() || 'text'}`}>
                   {file.content}
                 </code>

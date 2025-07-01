@@ -193,7 +193,7 @@ export function TableOfContents({
                       key={`mobile-toc-${item.id}-${index}`}
                       onClick={() => scrollToHeading(item.id)}
                       className={cn(
-                        'block w-full text-left text-sm hover:text-primary transition-colors py-1',
+                        'block w-full text-left text-sm hover:text-primary dark:hover:text-primary transition-colors py-1',
                         activeId === item.id ? 'text-primary font-medium' : 'text-muted-foreground',
                         item.level === 1 && 'font-semibold',
                         item.level === 2 && 'pl-4',
@@ -227,7 +227,7 @@ export function TableOfContents({
                   key={`desktop-toc-${item.id}-${index}`}
                   onClick={() => scrollToHeading(item.id)}
                   className={cn(
-                    'group flex items-start w-full text-left text-sm hover:text-primary transition-colors py-1 leading-tight',
+                    'group flex items-start w-full text-left text-sm hover:text-primary dark:hover:text-primary transition-colors py-1 leading-tight',
                     activeId === item.id ? 'text-primary font-medium' : 'text-muted-foreground',
                     item.level === 1 && 'font-semibold',
                     item.level === 2 && 'pl-4',

@@ -79,7 +79,7 @@ const GitLab: React.FC<GitLabProps> = ({ projectID, baseURL = 'https://gitlab.co
 
   if (error || !projectData) {
     return (
-      <div className="my-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+      <div className="my-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg dark:border-gray-700">
         <div className="flex items-center space-x-2 text-red-700 dark:text-red-400">
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -103,7 +103,7 @@ const GitLab: React.FC<GitLabProps> = ({ projectID, baseURL = 'https://gitlab.co
         href={projectData.web_url}
         target="_blank"
         rel="noopener noreferrer"
-        className="block p-4 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg hover:border-primary-300 dark:hover:border-primary-600 transition-colors duration-200 group"
+        className="block p-4 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg hover:border-primary-300 dark:hover:border-primary-600 transition-colors duration-200 group dark:bg-gray-900 dark:border-gray-700"
       >
         <div className="flex items-start space-x-3">
           {/* GitLab logo */}
@@ -116,10 +116,10 @@ const GitLab: React.FC<GitLabProps> = ({ projectID, baseURL = 'https://gitlab.co
           <div className="flex-1 min-w-0">
             {/* Project name */}
             <div className="flex items-center space-x-2 mb-2">
-              <h3 className="font-semibold text-neutral-900 dark:text-neutral-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200">
+              <h3 className="font-semibold text-neutral-900 dark:text-neutral-100 group-hover:text-primary dark:hover:text-primary-600 dark:group-hover:text-primary dark:hover:text-primary-400 transition-colors duration-200">
                 {projectData.name}
               </h3>
-              <span className="px-2 py-1 text-xs bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 rounded">
+              <span className="px-2 py-1 text-xs bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 rounded dark:bg-orange-900/30">
                 {isGitLabCom ? 'GitLab' : 'GitLab SE'}
               </span>
             </div>
@@ -159,7 +159,7 @@ const GitLab: React.FC<GitLabProps> = ({ projectID, baseURL = 'https://gitlab.co
           
           {/* External link icon */}
           <div className="flex-shrink-0">
-            <svg className="w-5 h-5 text-neutral-400 group-hover:text-primary-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-neutral-400 group-hover:text-primary dark:hover:text-primary-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
           </div>

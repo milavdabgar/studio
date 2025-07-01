@@ -10,14 +10,14 @@ export default function DepartmentNotFound() {
     <div className="flex flex-col min-h-screen">
       <PublicNav />
       
-      <div className="flex-1 flex items-center justify-center bg-gray-50">
+      <div className="flex-1 flex items-center justify-center bg-gray-50 dark:bg-gray-800">
         <div className="max-w-md mx-auto text-center px-4">
           <div className="mb-8">
             <GraduationCap className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2 dark:text-white">
               Department Not Found
             </h1>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-400">
               Sorry, we couldn't find the department you're looking for. 
               Please check the URL or browse our available departments.
             </p>
@@ -54,7 +54,7 @@ export default function DepartmentNotFound() {
               <Link href="/contact" className="text-gray-400 hover:text-white">Contact</Link>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-6 pt-6 text-center text-sm text-gray-400">
+          <div className="border-t border-gray-800 mt-6 pt-6 text-center text-sm text-gray-400 dark:border-gray-700">
             <p>&copy; {new Date().getFullYear()} Government Polytechnic Palanpur. All rights reserved.</p>
           </div>
         </div>

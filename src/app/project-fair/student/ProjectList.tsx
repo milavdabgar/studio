@@ -58,7 +58,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
   if (projects.length === 0) {
     return (
       <div className="text-center py-12">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">No projects found</h3>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 dark:text-white">No projects found</h3>
         <p className="text-gray-600 dark:text-gray-400">Start by creating your first project.</p>
       </div>
     );
@@ -98,7 +98,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
           </CardHeader>
           
           <CardContent>
-            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 mb-4">
+            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 mb-4 dark:text-gray-400">
               {project.description}
             </p>
             
@@ -118,7 +118,7 @@ const ProjectList: React.FC<ProjectListProps> = ({
                 </div>
               )}
               
-              <div className="flex items-center gap-4 text-xs text-gray-500">
+              <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
                 <div className="flex items-center gap-1">
                   <Users className="h-3 w-3" />
                   <span>{project.teamSize} members</span>

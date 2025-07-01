@@ -243,7 +243,7 @@ export default function AdminResultsPage() {
 
   const renderResultsTab = () => (
     <>
-      <div className="mb-6 p-4 border rounded-lg grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="mb-6 p-4 border rounded-lg grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 dark:border-gray-700">
         <div>
           <Label htmlFor="searchTermResults">Search Student</Label>
           <Input id="searchTermResults" placeholder="ID, Name, Exam..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="mt-1"/>
@@ -331,7 +331,7 @@ export default function AdminResultsPage() {
       ) : batches.length === 0 ? (
         <p className="text-center text-muted-foreground py-8">No upload batches found. Import results to create batches.</p>
       ) : (
-        <ul className="divide-y divide-border rounded-md border">
+        <ul className="divide-y divide-border rounded-md border dark:border-gray-700">
           {batches.map((batch) => (
             <li key={batch._id} className="p-4 hover:bg-muted/50 flex justify-between items-center">
               <div>
@@ -357,7 +357,7 @@ export default function AdminResultsPage() {
 
   const renderAnalysisTab = () => (
     <>
-     <div className="mb-6 p-4 border rounded-lg grid grid-cols-1 sm:grid-cols-2 gap-4">
+     <div className="mb-6 p-4 border rounded-lg grid grid-cols-1 sm:grid-cols-2 gap-4 dark:border-gray-700">
         <div>
           <Label htmlFor="analysisAcademicYear">Academic Year</Label>
           <Input id="analysisAcademicYear" name="academicYear" value={filters.academicYear || ''} onChange={handleFilterChange} placeholder="e.g. 2023-24" className="mt-1"/>
@@ -429,7 +429,7 @@ export default function AdminResultsPage() {
             </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 border-b border-border">
+          <div className="mb-6 border-b border-border dark:border-gray-700">
             <nav className="-mb-px flex space-x-6">
               {([
                 { label: 'Results', value: 'results' }, 
@@ -456,7 +456,7 @@ export default function AdminResultsPage() {
 
         </CardContent>
         {activeTab === 'results' && (
-             <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 border-t">
+             <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 border-t dark:border-gray-700">
                 <div className="text-sm text-muted-foreground">
                     Showing {pagination.total > 0 ? Math.min((pagination.page -1) * pagination.limit + 1, pagination.total): 0} to {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} results.
                 </div>

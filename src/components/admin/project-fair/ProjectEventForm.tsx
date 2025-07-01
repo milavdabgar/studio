@@ -125,7 +125,7 @@ const ProjectEventForm: React.FC<ProjectEventFormProps> = ({ existingEvent, onEv
       
       <div>
         <Label>Target Departments (Optional)</Label>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 p-3 border rounded-md max-h-48 overflow-y-auto bg-muted/20 mt-1">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 p-3 border rounded-md max-h-48 overflow-y-auto bg-muted/20 mt-1 dark:border-gray-700">
             {departments.map(dept => (
                 <div key={dept.id} className="flex items-center space-x-2">
                     <Checkbox 

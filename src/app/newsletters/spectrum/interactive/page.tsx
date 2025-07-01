@@ -144,7 +144,7 @@ export default function InteractiveNewsletterPage() {
               {currentData.logos && (
                 <div className="flex justify-center gap-8 mb-4">
                   {currentData.logos.map((logo, index) => (
-                    <div key={index} className="w-36 h-36 bg-white/95 p-6 rounded-3xl shadow-lg border-2 border-white/30 backdrop-blur-md">
+                    <div key={index} className="w-36 h-36 bg-white/95 p-6 rounded-3xl shadow-lg border-2 border-white/30 backdrop-blur-md dark:bg-gray-900 dark:border-gray-700">
                       <img src={logo.src} alt={logo.alt} className="w-full h-full object-contain" />
                     </div>
                   ))}
@@ -156,7 +156,7 @@ export default function InteractiveNewsletterPage() {
             <div className="flex-1 flex flex-col justify-center gap-8">
               <div>
                 <h1 className="text-7xl font-black m-0 text-shadow-lg tracking-tighter text-white">Spectrum</h1>
-                <div className="inline-block bg-white/95 text-blue-800 px-10 py-3 rounded-full backdrop-blur-md border-2 border-white/80 shadow-lg font-bold text-xl mt-2">{getBandNumber(selectedYear)}</div>
+                <div className="inline-block bg-white/95 text-blue-800 px-10 py-3 rounded-full backdrop-blur-md border-2 border-white/80 shadow-lg font-bold text-xl mt-2 dark:bg-gray-900 dark:border-gray-700">{getBandNumber(selectedYear)}</div>
               </div>
 
               <div>
@@ -165,7 +165,7 @@ export default function InteractiveNewsletterPage() {
               </div>
 
               <div>
-                <div className="inline-block bg-white/95 text-blue-800 px-8 py-4 rounded-full backdrop-blur-md border-2 border-white/80 shadow-lg font-semibold text-lg">Academic Year {selectedYear}</div>
+                <div className="inline-block bg-white/95 text-blue-800 px-8 py-4 rounded-full backdrop-blur-md border-2 border-white/80 shadow-lg font-semibold text-lg dark:bg-gray-900 dark:border-gray-700">Academic Year {selectedYear}</div>
               </div>
             </div>
 
@@ -194,10 +194,10 @@ export default function InteractiveNewsletterPage() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             {/* Year Selection */}
-            <div className="bg-white/10 backdrop-blur-md rounded-lg p-4">
+            <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 dark:bg-gray-900">
               <label className="text-white text-sm font-medium mb-2 block">Select Academic Year</label>
               <Select value={selectedYear} onValueChange={setSelectedYear}>
-                <SelectTrigger className="w-64 bg-white/90 text-gray-900">
+                <SelectTrigger className="w-64 bg-white/90 text-gray-900 dark:bg-gray-900 dark:text-white">
                   <SelectValue placeholder="Select academic year" />
                 </SelectTrigger>
                 <SelectContent>
@@ -211,23 +211,23 @@ export default function InteractiveNewsletterPage() {
             </div>
 
             {/* Image Quality Selection */}
-            <div className="bg-white/10 backdrop-blur-md rounded-lg p-4">
+            <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 dark:bg-gray-900">
               <label className="text-white text-sm font-medium mb-2 block">Image Quality</label>
               <Select value={imageQuality} onValueChange={(value: 'standard' | 'high') => setImageQuality(value)}>
-                <SelectTrigger className="w-64 bg-white/90 text-gray-900">
+                <SelectTrigger className="w-64 bg-white/90 text-gray-900 dark:bg-gray-900 dark:text-white">
                   <SelectValue placeholder="Select image quality" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="standard">
                     <div className="flex flex-col">
                       <span>Standard Quality</span>
-                      <span className="text-xs text-gray-500">Smaller file size, faster download</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">Smaller file size, faster download</span>
                     </div>
                   </SelectItem>
                   <SelectItem value="high">
                     <div className="flex flex-col">
                       <span>High Quality</span>
-                      <span className="text-xs text-gray-500">Original quality, larger file size</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">Original quality, larger file size</span>
                     </div>
                   </SelectItem>
                 </SelectContent>
@@ -291,31 +291,31 @@ export default function InteractiveNewsletterPage() {
               </CardHeader>
               <CardContent className="p-6 space-y-6">
                 {/* About This Newsletter */}
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center space-x-2">
+                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm dark:bg-gray-900 dark:border-gray-700">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center space-x-2 dark:text-white">
                     <span>📰</span>
                     <span>About This Newsletter</span>
                   </h3>
-                  <p className="text-gray-700 leading-relaxed mb-4">
+                  <p className="text-gray-700 leading-relaxed mb-4 dark:text-gray-300">
                     Welcome to <strong>Spectrum - {getBandNumber(selectedYear)}</strong>, the official newsletter of the Electronics & Communication Engineering Department. 
                     This edition showcases our department&apos;s achievements, student accomplishments, faculty contributions, and major events from the academic year {selectedYear}.
                   </p>
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg dark:bg-gray-800">
                       <span className="text-lg">📖</span>
-                      <span className="text-sm font-medium text-gray-700">Comprehensive Coverage</span>
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Comprehensive Coverage</span>
                     </div>
-                    <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg dark:bg-gray-800">
                       <span className="text-lg">🏆</span>
-                      <span className="text-sm font-medium text-gray-700">Student Achievements</span>
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Student Achievements</span>
                     </div>
-                    <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg dark:bg-gray-800">
                       <span className="text-lg">🔬</span>
-                      <span className="text-sm font-medium text-gray-700">Faculty Research</span>
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Faculty Research</span>
                     </div>
-                    <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg dark:bg-gray-800">
                       <span className="text-lg">🎉</span>
-                      <span className="text-sm font-medium text-gray-700">Department Events</span>
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Department Events</span>
                     </div>
                   </div>
                 </div>
@@ -324,12 +324,12 @@ export default function InteractiveNewsletterPage() {
                 {currentData.highlights && (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {currentData.highlights.map((highlight, index) => (
-                      <div key={index} className="bg-gradient-to-br from-slate-50 to-white p-4 rounded-lg border border-slate-200 hover:shadow-md transition-shadow">
+                      <div key={index} className="bg-gradient-to-br from-slate-50 to-white p-4 rounded-lg border border-slate-200 hover:shadow-md transition-shadow dark:border-gray-700">
                         <div className="flex items-start space-x-3">
                           <div className="text-2xl flex-shrink-0">{highlight.icon}</div>
                           <div>
-                            <h4 className="font-semibold text-gray-900 mb-1">{highlight.title}</h4>
-                            <p className="text-sm text-gray-600 leading-relaxed">{highlight.description}</p>
+                            <h4 className="font-semibold text-gray-900 mb-1 dark:text-white">{highlight.title}</h4>
+                            <p className="text-sm text-gray-600 leading-relaxed dark:text-gray-400">{highlight.description}</p>
                           </div>
                         </div>
                       </div>
@@ -346,9 +346,9 @@ export default function InteractiveNewsletterPage() {
                         <CardContent className="p-6">
                           <div className="flex items-center justify-between">
                             <div>
-                              <p className="text-sm font-medium text-gray-600">{stat.label}</p>
+                              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{stat.label}</p>
                               <div className="flex items-center space-x-2">
-                                <span className="text-2xl font-bold text-gray-900">
+                                <span className="text-2xl font-bold text-gray-900 dark:text-white">
                                   {typeof stat.value === 'number' && stat.value % 1 !== 0 ? stat.value.toFixed(1) : stat.value}
                                   {stat.label.includes('Rate') ? '%' : ''}
                                 </span>
@@ -385,14 +385,14 @@ export default function InteractiveNewsletterPage() {
                 </CardHeader>
                 <CardContent className="p-6 space-y-6">
                   {/* Department Header */}
-                  <div className="text-center bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-lg border border-purple-200">
-                    <h3 className="text-xl font-semibold text-gray-900 mb-1">Electronics & Communication Engineering</h3>
-                    <p className="text-gray-600">Government Polytechnic, Palanpur</p>
+                  <div className="text-center bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-lg border border-purple-200 dark:border-gray-700">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-1 dark:text-white">Electronics & Communication Engineering</h3>
+                    <p className="text-gray-600 dark:text-gray-400">Government Polytechnic, Palanpur</p>
                   </div>
 
                   {/* Department Description */}
-                  <div className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-xl border border-slate-200">
-                    <p className="text-gray-700 leading-relaxed whitespace-pre-line text-justify m-0">
+                  <div className="bg-gradient-to-br from-slate-50 to-white p-6 rounded-xl border border-slate-200 dark:border-gray-700">
+                    <p className="text-gray-700 leading-relaxed whitespace-pre-line text-justify m-0 dark:text-gray-300">
                       {currentData.essence.departmentOverview}
                     </p>
                   </div>
@@ -400,7 +400,7 @@ export default function InteractiveNewsletterPage() {
                   {/* Vision & Mission Integrated */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Vision */}
-                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
+                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200 dark:border-gray-700">
                       <div className="flex items-center mb-4">
                         <div className="bg-blue-600 text-white p-3 rounded-lg mr-3 text-lg">
                           🔭
@@ -413,7 +413,7 @@ export default function InteractiveNewsletterPage() {
                     </div>
 
                     {/* Mission */}
-                    <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border border-green-200">
+                    <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border border-green-200 dark:border-gray-700">
                       <div className="flex items-center mb-4">
                         <div className="bg-green-600 text-white p-3 rounded-lg mr-3 text-lg">
                           🚀
@@ -455,19 +455,19 @@ export default function InteractiveNewsletterPage() {
                 <CardDescription>Message from the HOD</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-lg border border-green-200">
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-lg border border-green-200 dark:border-gray-700">
                   <div className="flex items-start space-x-4">
                     <div className="bg-green-600 text-white p-3 rounded-full">
                       <BookOpen className="w-6 h-6" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-1 dark:text-white">
                         {currentData.essence.hodMessage?.name || 'HOD Name'}
                       </h3>
-                      <p className="text-sm text-gray-600 mb-4">
+                      <p className="text-sm text-gray-600 mb-4 dark:text-gray-400">
                         {currentData.essence.hodMessage?.designation || 'Head of Department'}
                       </p>
-                      <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                      <p className="text-gray-700 leading-relaxed whitespace-pre-line dark:text-gray-300">
                         {currentData.essence.hodMessage?.message || 'HOD message content will be displayed here.'}
                       </p>
                     </div>
@@ -491,11 +491,11 @@ export default function InteractiveNewsletterPage() {
               <CardContent>
                 <div className="space-y-6">
                   {canvasItems.map((item, index) => (
-                    <div key={index} className="bg-gradient-to-r from-purple-50 to-indigo-50 p-6 rounded-lg border border-purple-200">
+                    <div key={index} className="bg-gradient-to-r from-purple-50 to-indigo-50 p-6 rounded-lg border border-purple-200 dark:border-gray-700">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.title}</h3>
-                          <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2 dark:text-white">{item.title}</h3>
+                          <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3 dark:text-gray-400">
                             <span className="flex items-center">
                               <Users className="w-4 h-4 mr-1" />
                               {item.author}
@@ -529,11 +529,11 @@ export default function InteractiveNewsletterPage() {
                       </div>
                       <div className="prose prose-sm max-w-none">
                         {item.type === 'poem' ? (
-                          <pre className="whitespace-pre-wrap font-sans text-sm text-gray-700 leading-relaxed">
+                          <pre className="whitespace-pre-wrap font-sans text-sm text-gray-700 leading-relaxed dark:text-gray-300">
 {(item.content || '').trim()}
                           </pre>
                         ) : (
-                          <p className="text-gray-700 leading-relaxed">
+                          <p className="text-gray-700 leading-relaxed dark:text-gray-300">
                             {item.content || ''}
                           </p>
                         )}
@@ -542,7 +542,7 @@ export default function InteractiveNewsletterPage() {
                       {/* Images for canvas items */}
                       {item.images && item.images.length > 0 && (
                         <div className="mt-6">
-                          <h4 className="text-sm font-medium text-gray-600 mb-3">Photo Gallery</h4>
+                          <h4 className="text-sm font-medium text-gray-600 mb-3 dark:text-gray-400">Photo Gallery</h4>
                           <div className={`gap-4 ${
                             item.images.length === 1 
                               ? 'flex justify-center' 
@@ -595,7 +595,7 @@ export default function InteractiveNewsletterPage() {
                       )}
                     </div>
                   )) || (
-                    <div className="text-center py-8 text-gray-500">
+                    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                       <Star className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                       <p>No canvas content available for this year.</p>
                     </div>
@@ -639,8 +639,8 @@ export default function InteractiveNewsletterPage() {
                               <Badge variant="outline" className={`mb-2 ${textColor} ${borderColor}`}>
                                 {event.date}
                               </Badge>
-                              <h3 className="text-xl font-semibold text-gray-900 mb-2">{event.title}</h3>
-                              <p className="text-gray-700 leading-relaxed">
+                              <h3 className="text-xl font-semibold text-gray-900 mb-2 dark:text-white">{event.title}</h3>
+                              <p className="text-gray-700 leading-relaxed dark:text-gray-300">
                                 {event.description}
                               </p>
                               {event.tags && (
@@ -655,7 +655,7 @@ export default function InteractiveNewsletterPage() {
 
                           {event.images && event.images.length > 0 && (
                             <div className="mt-6">
-                              <h4 className="text-sm font-medium text-gray-600 mb-3">Event Gallery</h4>
+                              <h4 className="text-sm font-medium text-gray-600 mb-3 dark:text-gray-400">Event Gallery</h4>
                               <div className={`gap-4 ${
                                 event.images.length === 1 
                                   ? 'flex justify-center' 
@@ -763,21 +763,21 @@ export default function InteractiveNewsletterPage() {
                               <div>
                                 {item.person && (
                                   <div className="mb-2">
-                                    <span className="text-lg font-semibold text-gray-900">{item.person}</span>
+                                    <span className="text-lg font-semibold text-gray-900 dark:text-white">{item.person}</span>
                                     {item.designation && (
-                                      <div className="text-sm text-gray-600">{item.designation}</div>
+                                      <div className="text-sm text-gray-600 dark:text-gray-400">{item.designation}</div>
                                     )}
                                   </div>
                                 )}
-                                <h3 className="text-md font-medium text-gray-800 mb-1">{item.title}</h3>
-                                <p className="text-gray-700 text-sm mb-2">{item.description}</p>
+                                <h3 className="text-md font-medium text-gray-800 mb-1 dark:text-gray-200">{item.title}</h3>
+                                <p className="text-gray-700 text-sm mb-2 dark:text-gray-300">{item.description}</p>
                                 {item.studentId && (
-                                  <div className="text-sm text-gray-600">
+                                  <div className="text-sm text-gray-600 dark:text-gray-400">
                                     <span className="font-medium">Student ID: {item.studentId}</span>
                                   </div>
                                 )}
                                 {item.details && (
-                                  <div className="text-sm text-gray-600 mt-2 p-2 bg-white/50 rounded">
+                                  <div className="text-sm text-gray-600 mt-2 p-2 bg-white/50 rounded dark:bg-gray-900 dark:text-gray-400">
                                     <span className="font-medium">
                                       {item.category === 'placement' && 'Company & Position:'}
                                       {item.category === 'higher-education' && 'Institution:'}
@@ -807,10 +807,10 @@ export default function InteractiveNewsletterPage() {
                                     <img
                                       src={image.src}
                                       alt={image.alt}
-                                      className="w-full max-w-md rounded-lg shadow-md border border-gray-200"
+                                      className="w-full max-w-md rounded-lg shadow-md border border-gray-200 dark:border-gray-700"
                                     />
                                     {image.caption && (
-                                      <p className="text-xs text-gray-600 mt-2 italic">{image.caption}</p>
+                                      <p className="text-xs text-gray-600 mt-2 italic dark:text-gray-400">{image.caption}</p>
                                     )}
                                   </div>
                                 ))}
@@ -821,7 +821,7 @@ export default function InteractiveNewsletterPage() {
                                 {item.achievements.map((achievement, achIndex) => (
                                   <div key={achIndex} className="flex items-start space-x-2 text-sm">
                                     <Star className={`w-4 h-4 text-${color}-600 mt-0.5 flex-shrink-0`} />
-                                    <span className="text-gray-700">{achievement}</span>
+                                    <span className="text-gray-700 dark:text-gray-300">{achievement}</span>
                                   </div>
                                 ))}
                               </div>
@@ -832,7 +832,7 @@ export default function InteractiveNewsletterPage() {
                     );
                   })}
                   {spotlightItems.length === 0 && (
-                    <div className="text-center py-8 text-gray-500">
+                    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                       <Trophy className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                       <p>No spotlight content available for this year.</p>
                     </div>
@@ -857,21 +857,21 @@ export default function InteractiveNewsletterPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Contact Card */}
-                    <div className="bg-white/95 backdrop-blur-md rounded-xl p-5 shadow-lg border-2 border-white/80">
+                    <div className="bg-white/95 backdrop-blur-md rounded-xl p-5 shadow-lg border-2 border-white/80 dark:bg-gray-900 dark:border-gray-700">
                       <h3 className="text-blue-900 font-bold text-lg mb-4 flex items-center">
                         <Mail className="w-5 h-5 mr-2" />
                         Department Contact
                       </h3>
                       <div className="space-y-3">
-                        <div className="flex justify-between items-center border-b border-blue-100 pb-2">
+                        <div className="flex justify-between items-center border-b border-blue-100 pb-2 dark:border-gray-700">
                           <span className="font-medium text-blue-800">Email:</span>
                           <span className="font-semibold text-blue-900">{currentData.reachout?.email || 'gppec11@gmail.com'}</span>
                         </div>
-                        <div className="flex justify-between items-center border-b border-blue-100 pb-2">
+                        <div className="flex justify-between items-center border-b border-blue-100 pb-2 dark:border-gray-700">
                           <span className="font-medium text-blue-800">Phone:</span>
                           <span className="font-semibold text-blue-900">{currentData.reachout?.phone || '02742-245219'}</span>
                         </div>
-                        <div className="flex justify-between items-center border-b border-blue-100 pb-2">
+                        <div className="flex justify-between items-center border-b border-blue-100 pb-2 dark:border-gray-700">
                           <span className="font-medium text-blue-800">Website:</span>
                           <span className="font-semibold text-blue-900">{currentData.reachout?.website || 'ec.gppalanpur.in'}</span>
                         </div>
@@ -885,7 +885,7 @@ export default function InteractiveNewsletterPage() {
                     </div>
 
                     {/* Address Card */}
-                    <div className="bg-white/95 backdrop-blur-md rounded-xl p-5 shadow-lg border-2 border-white/80">
+                    <div className="bg-white/95 backdrop-blur-md rounded-xl p-5 shadow-lg border-2 border-white/80 dark:bg-gray-900 dark:border-gray-700">
                       <h3 className="text-blue-900 font-bold text-lg mb-4 flex items-center">
                         <MapPin className="w-5 h-5 mr-2" />
                         Visit Us
@@ -902,14 +902,14 @@ export default function InteractiveNewsletterPage() {
                   <div className="mt-6">
                     <h3 className="text-xl font-semibold mb-4 text-center">🎓 Our Programs</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="bg-white/95 backdrop-blur-md rounded-lg p-4 flex items-center gap-4 border-2 border-white/80 shadow-lg">
+                      <div className="bg-white/95 backdrop-blur-md rounded-lg p-4 flex items-center gap-4 border-2 border-white/80 shadow-lg dark:bg-gray-900 dark:border-gray-700">
                         <div className="text-2xl">📡</div>
                         <div>
                           <strong className="text-blue-900 block">Electronics & Communication</strong>
                           <span className="text-blue-800 text-sm">3-Year Diploma • 38 Students Intake</span>
                         </div>
                       </div>
-                      <div className="bg-white/95 backdrop-blur-md rounded-lg p-4 flex items-center gap-4 border-2 border-white/80 shadow-lg">
+                      <div className="bg-white/95 backdrop-blur-md rounded-lg p-4 flex items-center gap-4 border-2 border-white/80 shadow-lg dark:bg-gray-900 dark:border-gray-700">
                         <div className="text-2xl">💻</div>
                         <div>
                           <strong className="text-blue-900 block">Information & Communication Technology</strong>
@@ -923,19 +923,19 @@ export default function InteractiveNewsletterPage() {
                   <div className="mt-6">
                     <h3 className="text-xl font-semibold mb-4 text-center">📋 Quick Information</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="bg-white/95 backdrop-blur-md rounded-lg p-3 text-center shadow-lg border-2 border-white/80">
+                      <div className="bg-white/95 backdrop-blur-md rounded-lg p-3 text-center shadow-lg border-2 border-white/80 dark:bg-gray-900 dark:border-gray-700">
                         <div className="text-xl font-bold text-blue-900">40+</div>
                         <div className="text-sm font-medium text-blue-800">Years of Excellence</div>
                       </div>
-                      <div className="bg-white/95 backdrop-blur-md rounded-lg p-3 text-center shadow-lg border-2 border-white/80">
+                      <div className="bg-white/95 backdrop-blur-md rounded-lg p-3 text-center shadow-lg border-2 border-white/80 dark:bg-gray-900 dark:border-gray-700">
                         <div className="text-xl font-bold text-blue-900">100+</div>
                         <div className="text-sm font-medium text-blue-800">Alumni Network</div>
                       </div>
-                      <div className="bg-white/95 backdrop-blur-md rounded-lg p-3 text-center shadow-lg border-2 border-white/80">
+                      <div className="bg-white/95 backdrop-blur-md rounded-lg p-3 text-center shadow-lg border-2 border-white/80 dark:bg-gray-900 dark:border-gray-700">
                         <div className="text-xl font-bold text-blue-900">116</div>
                         <div className="text-sm font-medium text-blue-800">Total Intake</div>
                       </div>
-                      <div className="bg-white/95 backdrop-blur-md rounded-lg p-3 text-center shadow-lg border-2 border-white/80">
+                      <div className="bg-white/95 backdrop-blur-md rounded-lg p-3 text-center shadow-lg border-2 border-white/80 dark:bg-gray-900 dark:border-gray-700">
                         <div className="text-xl font-bold text-blue-900">100%</div>
                         <div className="text-sm font-medium text-blue-800">Placement Focus</div>
                       </div>
@@ -948,7 +948,7 @@ export default function InteractiveNewsletterPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {currentData.editorialTeam && currentData.editorialTeam.length > 0 ? (
                         currentData.editorialTeam.map((member, index) => (
-                          <div key={index} className="bg-white/95 backdrop-blur-md rounded-lg p-4 flex items-center gap-4 border-2 border-white/80 shadow-lg">
+                          <div key={index} className="bg-white/95 backdrop-blur-md rounded-lg p-4 flex items-center gap-4 border-2 border-white/80 shadow-lg dark:bg-gray-900 dark:border-gray-700">
                             <div className={`${index === 0 ? 'bg-blue-600' : 'bg-purple-600'} text-white p-2 rounded-lg`}>
                               <Users className="w-5 h-5" />
                             </div>
@@ -960,7 +960,7 @@ export default function InteractiveNewsletterPage() {
                         ))
                       ) : (
                         <>
-                          <div className="bg-white/95 backdrop-blur-md rounded-lg p-4 flex items-center gap-4 border-2 border-white/80 shadow-lg">
+                          <div className="bg-white/95 backdrop-blur-md rounded-lg p-4 flex items-center gap-4 border-2 border-white/80 shadow-lg dark:bg-gray-900 dark:border-gray-700">
                             <div className="bg-blue-600 text-white p-2 rounded-lg">
                               <Users className="w-5 h-5" />
                             </div>
@@ -969,7 +969,7 @@ export default function InteractiveNewsletterPage() {
                               <span className="text-blue-800 text-sm">Newsletter Editor</span>
                             </div>
                           </div>
-                          <div className="bg-white/95 backdrop-blur-md rounded-lg p-4 flex items-center gap-4 border-2 border-white/80 shadow-lg">
+                          <div className="bg-white/95 backdrop-blur-md rounded-lg p-4 flex items-center gap-4 border-2 border-white/80 shadow-lg dark:bg-gray-900 dark:border-gray-700">
                             <div className="bg-purple-600 text-white p-2 rounded-lg">
                               <Users className="w-5 h-5" />
                             </div>

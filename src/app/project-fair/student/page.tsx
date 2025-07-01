@@ -183,7 +183,7 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
   return (
       <div className="p-4">
           {event && (
-            <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4 dark:border-gray-700">
               {/* ... event banner ... */}
             </div>
           )}
@@ -202,7 +202,7 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
               ) : (
                 <div className="grid gap-6">
                   {myProjects.map((project) => (
-                    <div key={project.id} className="bg-white rounded-lg shadow p-6">
+                    <div key={project.id} className="bg-white rounded-lg shadow p-6 dark:bg-gray-900">
                       {/* ... project summary ... */}
                       <div className="flex justify-end space-x-2 mt-2">
                         <Button variant="outline" size="sm" onClick={() => openTeamManagementModal(project)}>
@@ -227,7 +227,7 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
             <div>
               <button
                 onClick={handleBackToList}
-                className="mb-4 px-4 py-2 text-gray-600 hover:text-gray-900 flex items-center"
+                className="mb-4 px-4 py-2 text-gray-600 hover:text-gray-900 flex items-center dark:text-white dark:text-gray-400"
               >
                 <ChevronLeft size={20} className="mr-1" />
                 Back to Projects
@@ -259,7 +259,7 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
                               <h4 className="font-semibold mb-2">Current Members:</h4>
                               <ul className="space-y-2">
                                   {editingTeam.members.map(member => (
-                                      <li key={member.userId} className="flex justify-between items-center p-2 border rounded-md">
+                                      <li key={member.userId} className="flex justify-between items-center p-2 border rounded-md dark:border-gray-700">
                                           <div>
                                               <p className="font-medium">{member.name} ({member.enrollmentNo})</p>
                                               <p className="text-xs text-muted-foreground">{member.role} {member.isLeader && "(Leader)"}</p>
@@ -277,7 +277,7 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
                               </ul>
                           </div>
                           {editingTeam.members.length < 4 && (
-                            <div className="pt-4 border-t">
+                            <div className="pt-4 border-t dark:border-gray-700">
                                 <h4 className="font-semibold mb-2">Add New Member:</h4>
                                 <div className="flex gap-2 mb-2">
                                     <Input 

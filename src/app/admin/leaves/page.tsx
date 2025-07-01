@@ -229,7 +229,7 @@ export default function AdminLeavesManagementPage() {
           <CardDescription>Review and manage faculty and staff leave requests.</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 p-4 border rounded-lg grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 items-end">
+          <div className="mb-6 p-4 border rounded-lg grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 items-end dark:border-gray-700">
             <div><Label htmlFor="searchTermLeaves">Search</Label><Input id="searchTermLeaves" placeholder="Faculty, Reason, Type..." value={searchTerm} onChange={e=>setSearchTerm(e.target.value)}/></div>
             <div><Label htmlFor="filterInstituteLeaves">Institute</Label><Select value={filterInstitute} onValueChange={val => {setFilterInstitute(val); setFilterDepartment('all'); setFilterFaculty('all');}}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent><SelectItem value="all">All Institutes</SelectItem>{institutes.map(i=><SelectItem key={i.id} value={i.id}>{i.name}</SelectItem>)}</SelectContent></Select></div>
             <div><Label htmlFor="filterDepartmentLeaves">Department</Label><Select value={filterDepartment} onValueChange={val => {setFilterDepartment(val); setFilterFaculty('all');}} disabled={filterInstitute === 'all' && departments.length === 0}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent><SelectItem value="all">All Departments</SelectItem>{filteredDepartmentsForSelect.map(d=><SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}</SelectContent></Select></div>
@@ -268,7 +268,7 @@ export default function AdminLeavesManagementPage() {
                     <TableCell className="max-w-xs truncate" title={req.reason}>{req.reason}</TableCell>
                     <TableCell><span className={cn("px-2 py-0.5 text-xs font-semibold rounded-full", req.status === 'pending' && 'bg-yellow-100 text-yellow-800', req.status === 'approved' && 'bg-green-100 text-green-800', req.status === 'rejected' && 'bg-red-100 text-red-800', req.status === 'cancelled' && 'bg-slate-100 text-slate-800', req.status === 'taken' && 'bg-blue-100 text-blue-800')}>{LEAVE_STATUS_OPTIONS.find(s => s.value === req.status)?.label || req.status}</span></TableCell>
                     <TableCell className="text-right space-x-1">
-                        {req.status === 'pending' && (<><Button variant="outline" size="xs" className="text-success border-success hover:bg-success/10" onClick={()=>openActionDialog(req, 'approve')}><CheckCircle className="mr-1 h-3 w-3"/>Approve</Button><Button variant="outline" size="xs" className="text-destructive border-destructive hover:bg-destructive/10" onClick={()=>openActionDialog(req, 'reject')}><XCircle className="mr-1 h-3 w-3"/>Reject</Button></>)}
+                        {req.status === 'pending' && (<><Button variant="outline" size="xs" className="text-success border-success hover:bg-success/10 dark:border-gray-700" onClick={()=>openActionDialog(req, 'approve')}><CheckCircle className="mr-1 h-3 w-3"/>Approve</Button><Button variant="outline" size="xs" className="text-destructive border-destructive hover:bg-destructive/10 dark:border-gray-700" onClick={()=>openActionDialog(req, 'reject')}><XCircle className="mr-1 h-3 w-3"/>Reject</Button></>)}
                         {(req.status === 'approved' || req.status === 'rejected') && <Button variant="ghost" size="xs" onClick={()=>openActionDialog(req, req.status as 'approve' | 'reject')}><Edit className="mr-1 h-3 w-3"/>Review</Button>}
                     </TableCell>
                   </TableRow>
@@ -278,7 +278,7 @@ export default function AdminLeavesManagementPage() {
           )}
         </CardContent>
         {filteredAndSortedLeaveRequests.length > 0 && (
-            <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 border-t">
+            <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 border-t dark:border-gray-700">
                 <div className="text-sm text-muted-foreground">Showing {Math.min((currentPage -1) * itemsPerPage + 1, filteredAndSortedLeaveRequests.length)} to {Math.min(currentPage * itemsPerPage, filteredAndSortedLeaveRequests.length)} of {filteredAndSortedLeaveRequests.length} requests.</div>
                 <div className="flex items-center gap-2">
                     <Select value={String(itemsPerPage)} onValueChange={(value) => {setItemsPerPage(Number(value)); setCurrentPage(1);}}><SelectTrigger className="w-[70px] h-8 text-xs"><SelectValue /></SelectTrigger><SelectContent side="top">{ITEMS_PER_PAGE_OPTIONS.map(sz => <SelectItem key={sz} value={String(sz)} className="text-xs">{sz}</SelectItem>)}</SelectContent></Select>

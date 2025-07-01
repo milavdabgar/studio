@@ -55,7 +55,7 @@ export function GitHub({ repo, showThumbnail = true }: GitHubProps) {
   return (
     <div className="github-card-wrapper">
       <a target="_blank" href={githubData.html_url} className="cursor-pointer">
-        <div className="w-full md:w-auto p-0 m-0 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-2xl">
+        <div className="w-full md:w-auto p-0 m-0 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-2xl dark:border-gray-700">
           {showThumbnail && (
             <div className="w-full nozoom">
               <img

@@ -144,7 +144,7 @@ export function Footer({ variant = 'default' }: FooterProps) {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-800 mt-8 pt-8">
+        <div className="border-t border-gray-800 mt-8 pt-8 dark:border-gray-700">
           <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
             <p>&copy; {new Date().getFullYear()} Government Polytechnic Palanpur{variant === 'ssip' ? ' SSIP Cell' : ''}. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">

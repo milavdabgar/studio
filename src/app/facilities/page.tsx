@@ -38,13 +38,13 @@ export default function FacilitiesPage() {
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16">
+      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16 dark:from-primary/10 dark:to-secondary/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 dark:text-white">
               Campus Facilities
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 dark:text-gray-400">
               Our {collegeInfo.basic_info.campus_area} campus provides modern infrastructure and 
               comprehensive facilities to support academic excellence and student life.
             </p>
@@ -75,43 +75,43 @@ export default function FacilitiesPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 dark:text-white">
                 Modern Infrastructure for Excellence
               </h2>
-              <p className="text-lg text-gray-600 mb-6">
+              <p className="text-lg text-gray-600 dark:text-gray-400 mb-6 dark:text-gray-400">
                 Our sprawling {collegeInfo.basic_info.campus_area} campus in Palanpur provides 
                 a conducive environment for learning with state-of-the-art facilities, 
                 modern laboratories, and comfortable living spaces.
               </p>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 dark:bg-primary/20 rounded-full dark:bg-primary/20">
                     <MapPin className="h-4 w-4 text-primary" />
                   </div>
-                  <span className="text-gray-700">
+                  <span className="text-gray-700 dark:text-gray-300">
                     <strong>Location:</strong> {collegeInfo.basic_info.location_type} campus in Palanpur
                   </span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 dark:bg-primary/20 rounded-full dark:bg-primary/20">
                     <Building className="h-4 w-4 text-primary" />
                   </div>
-                  <span className="text-gray-700">
+                  <span className="text-gray-700 dark:text-gray-300">
                     <strong>Established:</strong> {collegeInfo.basic_info.established} - {collegeInfo.achievements.established_years} years of excellence
                   </span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
+                  <div className="flex items-center justify-center w-8 h-8 bg-primary/10 dark:bg-primary/20 rounded-full dark:bg-primary/20">
                     <Zap className="h-4 w-4 text-primary" />
                   </div>
-                  <span className="text-gray-700">
+                  <span className="text-gray-700 dark:text-gray-300">
                     <strong>Green Energy:</strong> {collegeInfo.infrastructure.green_energy}
                   </span>
                 </div>
               </div>
             </div>
             <div className="relative">
-              <div className="bg-white p-6 rounded-2xl shadow-xl">
+              <div className="bg-white dark:bg-gray-900 p-6 rounded dark:bg-gray-800-2xl shadow dark:bg-gray-800-xl dark:bg-gray-900">
                 <Image
                   src="https://picsum.photos/seed/gpp-overview/600/400"
                   alt="GP Palanpur Campus Overview"
@@ -126,13 +126,13 @@ export default function FacilitiesPage() {
       </section>
 
       {/* Facilities Grid */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               Comprehensive Campus Facilities
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto dark:text-gray-400">
               Everything you need for a complete educational experience
             </p>
           </div>
@@ -142,15 +142,15 @@ export default function FacilitiesPage() {
               const IconComponent = facilityIcons[facility.type as keyof typeof facilityIcons] || Building;
               
               return (
-                <Card key={facility.id} className="hover:shadow-xl transition-all duration-300 border-0 shadow-lg h-full">
+                <Card key={facility.id} className="hover:shadow-xl transition-all duration-300 border dark:border-gray-700-0 shadow-lg h-full dark:border-gray-700">
                   <CardHeader>
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center space-x-3">
-                        <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg">
+                        <div className="flex items-center justify-center w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg dark:bg-primary/20">
                           <IconComponent className="h-6 w-6 text-primary" />
                         </div>
                         <div>
-                          <CardTitle className="text-xl text-gray-900">{facility.name}</CardTitle>
+                          <CardTitle className="text-xl text-gray-900 dark:text-white">{facility.name}</CardTitle>
                           <Badge variant="outline" className="text-xs mt-1">
                             {facility.type}
                           </Badge>
@@ -167,14 +167,14 @@ export default function FacilitiesPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <CardDescription className="text-gray-700 mb-4 text-base">
+                    <CardDescription className="text-gray-700 dark:text-gray-300 mb-4 text-base dark:text-gray-300">
                       {facility.description}
                     </CardDescription>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-3">Key Features</h4>
+                      <h4 className="font-semibold text-gray-900 dark:text-white mb-3 dark:text-white">Key Features</h4>
                       <ul className="space-y-2">
                         {facility.features.map((feature, idx) => (
-                          <li key={idx} className="flex items-center space-x-2 text-sm text-gray-600">
+                          <li key={idx} className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300 dark:text-gray-400">
                             <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0"></div>
                             <span>{feature}</span>
                           </li>
@@ -190,49 +190,49 @@ export default function FacilitiesPage() {
       </section>
 
       {/* Special Highlights */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               Special Highlights
             </h2>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="text-center p-6">
-              <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4 dark:bg-green-900/30">
                 <Zap className="h-8 w-8 text-green-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Solar Power Plant</h3>
-              <p className="text-gray-600 mb-4">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Solar Power Plant</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4 dark:text-gray-400">
                 Environmentally conscious campus with renewable energy generating 86,000 units annually
               </p>
-              <Badge variant="secondary" className="bg-green-100 text-green-800">
+              <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900/30">
                 Eco-Friendly
               </Badge>
             </Card>
             
             <Card className="text-center p-6">
-              <div className="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4 dark:bg-blue-900/30">
                 <Wifi className="h-8 w-8 text-blue-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">High-Speed Connectivity</h3>
-              <p className="text-gray-600 mb-4">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">High-Speed Connectivity</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4 dark:text-gray-400">
                 200 Mbps internet with NAMO WiFi covering the entire campus for seamless learning
               </p>
-              <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+              <Badge variant="secondary" className="bg-blue-100 text-blue-800 dark:bg-blue-900/30">
                 Digital Ready
               </Badge>
             </Card>
             
             <Card className="text-center p-6">
-              <div className="flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mx-auto mb-4 dark:bg-purple-900/30">
                 <Microscope className="h-8 w-8 text-purple-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Advanced Laboratories</h3>
-              <p className="text-gray-600 mb-4">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Advanced Laboratories</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4 dark:text-gray-400">
                 25+ modern laboratories equipped with latest instruments for hands-on learning
               </p>
-              <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+              <Badge variant="secondary" className="bg-purple-100 text-purple-800 dark:bg-purple-900/30">
                 State-of-art
               </Badge>
             </Card>
@@ -241,14 +241,14 @@ export default function FacilitiesPage() {
       </section>
 
       {/* Hostel Information */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 dark:text-white">
                 Comfortable Accommodation
               </h2>
-              <p className="text-lg text-gray-600 mb-6">
+              <p className="text-lg text-gray-600 dark:text-gray-400 mb-6 dark:text-gray-400">
                 Our hostel facilities provide a safe and comfortable living environment for students 
                 from different parts of Gujarat and beyond.
               </p>
@@ -261,7 +261,7 @@ export default function FacilitiesPage() {
                   <p className="text-2xl font-bold text-primary mb-1">
                     {collegeInfo.infrastructure.hostel_capacity.boys}
                   </p>
-                  <p className="text-sm text-gray-600">Capacity</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-400">Capacity</p>
                 </Card>
                 <Card className="p-4">
                   <div className="flex items-center space-x-3 mb-3">
@@ -271,12 +271,12 @@ export default function FacilitiesPage() {
                   <p className="text-2xl font-bold text-primary mb-1">
                     {collegeInfo.infrastructure.hostel_capacity.girls}
                   </p>
-                  <p className="text-sm text-gray-600">Capacity</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 dark:text-gray-400">Capacity</p>
                 </Card>
               </div>
               <div className="mt-6">
-                <h4 className="font-semibold text-gray-900 mb-3">Hostel Features</h4>
-                <ul className="space-y-2 text-gray-600">
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-3 dark:text-white">Hostel Features</h4>
+                <ul className="space-y-2 text-gray-600 dark:text-gray-300 dark:text-gray-400">
                   <li className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-primary rounded-full"></div>
                     <span>Comfortable rooms with modern amenities</span>
@@ -297,7 +297,7 @@ export default function FacilitiesPage() {
               </div>
             </div>
             <div className="relative">
-              <div className="bg-white p-6 rounded-2xl shadow-xl">
+              <div className="bg-white dark:bg-gray-900 p-6 rounded dark:bg-gray-800-2xl shadow dark:bg-gray-800-xl dark:bg-gray-900">
                 <Image
                   src="https://picsum.photos/seed/gpp-hostel/600/400"
                   alt="GP Palanpur Hostel Facilities"
@@ -312,12 +312,12 @@ export default function FacilitiesPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
             Experience Our Campus
           </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto dark:text-gray-400">
             Visit our campus to see our world-class facilities firsthand and discover why GP Palanpur 
             is the right choice for your engineering education.
           </p>
@@ -347,7 +347,7 @@ export default function FacilitiesPage() {
               <Link href="/contact" className="text-gray-400 hover:text-white">Contact</Link>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-6 pt-6 text-center text-sm text-gray-400">
+          <div className="border-t border dark:border-gray-700-gray-800 mt-6 pt-6 text-center text-sm text-gray-400 dark:border-gray-700">
             <p>&copy; {new Date().getFullYear()} Government Polytechnic Palanpur. All rights reserved.</p>
           </div>
         </div>

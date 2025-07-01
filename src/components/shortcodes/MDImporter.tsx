@@ -63,7 +63,7 @@ const MDImporter: React.FC<MDImporterProps> = ({ url, children }) => {
 
   if (error) {
     return (
-      <div className="my-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+      <div className="my-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg dark:border-gray-700">
         <div className="flex items-center space-x-2 text-red-700 dark:text-red-400">
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -88,14 +88,14 @@ const MDImporter: React.FC<MDImporterProps> = ({ url, children }) => {
           href={url} 
           target="_blank" 
           rel="noopener noreferrer"
-          className="font-mono text-xs text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-200 break-all"
+          className="font-mono text-xs text-primary-600 dark:text-primary-400 hover:text-primary dark:hover:text-primary-700 dark:hover:text-primary dark:hover:text-primary-300 transition-colors duration-200 break-all"
         >
           {url}
         </a>
       </div>
 
       {/* Imported markdown content */}
-      <div className="imported-markdown border border-neutral-200 dark:border-neutral-700 rounded-lg p-4 bg-white dark:bg-neutral-900">
+      <div className="imported-markdown border border-neutral-200 dark:border-neutral-700 rounded-lg p-4 bg-white dark:bg-neutral-900 dark:bg-gray-900 dark:border-gray-700">
         {content}
       </div>
     </div>

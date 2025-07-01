@@ -134,7 +134,7 @@ export function CodeBlock({
   return (
     <div className={`relative bg-gray-900 rounded-lg overflow-hidden m-0 ${className}`}>
       {/* Header */}
-      <div className="flex items-center justify-between bg-gray-800 px-4 py-2 border-b border-gray-700">
+      <div className="flex items-center justify-between bg-gray-800 px-4 py-2 border-b border-gray-700 dark:border-gray-700">
         <div className="flex items-center gap-3">
           {/* Traffic light dots */}
           <div className="flex gap-1.5">
@@ -191,7 +191,7 @@ export function CodeBlock({
       >
         <div className="flex">
           {showLineNumbers && (
-            <div className="select-none bg-gray-800 px-3 py-4 text-right border-r border-gray-700">
+            <div className="select-none bg-gray-800 px-3 py-4 text-right border-r border-gray-700 dark:border-gray-700">
               {lines.map((_, index) => (
                 <div
                   key={index}

@@ -207,11 +207,11 @@ export default function CivilAchievementsPage() {
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 py-16">
+      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 py-16 dark:from-primary/10 dark:to-secondary/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center space-x-2 mb-6">
-              <Link href="/departments/civil-engineering" className="flex items-center space-x-2 text-gray-600 hover:text-primary">
+              <Link href="/departments/civil-engineering" className="flex items-center space-x-2 text-gray-600 hover:text-primary dark:hover:text-primary dark:text-gray-400">
                 <ChevronLeft className="h-4 w-4" />
                 <span>Back to Civil Engineering</span>
               </Link>
@@ -220,15 +220,15 @@ export default function CivilAchievementsPage() {
             <div className="flex flex-wrap gap-2 mb-6">
               <Badge variant="secondary" className="text-sm">NBA Accredited</Badge>
               <Badge variant="outline" className="text-sm">85% Placement</Badge>
-              <Badge variant="outline" className="text-sm bg-green-50 text-green-700 border-green-200">
+              <Badge variant="outline" className="text-sm bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700 dark:border-gray-700">
                 Award Winning
               </Badge>
             </div>
             
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 dark:text-white">
               Achievements & Recognition
             </h1>
-            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed dark:text-gray-400">
               A showcase of our department's excellence in academics, research, student achievements, 
               and industry recognition. Our consistent performance demonstrates our commitment to 
               quality engineering education.
@@ -237,19 +237,19 @@ export default function CivilAchievementsPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">2020</div>
-                <div className="text-sm text-gray-600">NBA Accredited</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">NBA Accredited</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">85%</div>
-                <div className="text-sm text-gray-600">Placement Rate</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Placement Rate</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">25+</div>
-                <div className="text-sm text-gray-600">Awards Won</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Awards Won</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-primary">₹12L+</div>
-                <div className="text-sm text-gray-600">Research Funding</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Research Funding</div>
               </div>
             </div>
           </div>
@@ -257,11 +257,11 @@ export default function CivilAchievementsPage() {
       </section>
 
       {/* Major Achievements */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Major Achievements</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">Major Achievements</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Milestone achievements that define our excellence
             </p>
           </div>
@@ -273,12 +273,12 @@ export default function CivilAchievementsPage() {
                 <Card key={index} className="hover:shadow-xl transition-all duration-300">
                   <CardHeader>
                     <div className="flex items-start space-x-4">
-                      <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0 dark:bg-primary/20">
                         <IconComponent className="h-8 w-8 text-primary" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-2">
-                          <CardTitle className="text-xl text-gray-900">{achievement.title}</CardTitle>
+                          <CardTitle className="text-xl text-gray-900 dark:text-white">{achievement.title}</CardTitle>
                           <Badge variant="outline">{achievement.year}</Badge>
                         </div>
                         <Badge className={achievement.color} variant="outline">
@@ -288,10 +288,10 @@ export default function CivilAchievementsPage() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-600 mb-4">{achievement.description}</p>
-                    <div className="p-3 bg-gray-50 rounded-lg">
-                      <h4 className="font-semibold text-gray-900 mb-1">Impact:</h4>
-                      <p className="text-sm text-gray-600">{achievement.impact}</p>
+                    <p className="text-gray-600 mb-4 dark:text-gray-400">{achievement.description}</p>
+                    <div className="p-3 bg-gray-50 rounded-lg dark:bg-gray-800">
+                      <h4 className="font-semibold text-gray-900 mb-1 dark:text-white">Impact:</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{achievement.impact}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -302,11 +302,11 @@ export default function CivilAchievementsPage() {
       </section>
 
       {/* Student Achievements */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Student Achievements</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">Student Achievements</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Outstanding performance by our students in competitions and events
             </p>
           </div>
@@ -319,16 +319,16 @@ export default function CivilAchievementsPage() {
                     <div className="lg:col-span-2">
                       <div className="flex items-center space-x-3 mb-2">
                         <Medal className="h-6 w-6 text-yellow-500" />
-                        <h3 className="font-bold text-gray-900">{achievement.achievement}</h3>
+                        <h3 className="font-bold text-gray-900 dark:text-white">{achievement.achievement}</h3>
                         <Badge variant="outline">{achievement.year}</Badge>
                       </div>
                       <p className="text-primary font-medium mb-2">{achievement.event}</p>
-                      <p className="text-gray-600 text-sm">{achievement.description}</p>
+                      <p className="text-gray-600 text-sm dark:text-gray-400">{achievement.description}</p>
                     </div>
                     
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Students:</h4>
-                      <ul className="space-y-1 text-sm text-gray-600">
+                      <h4 className="font-semibold text-gray-900 mb-2 dark:text-white">Students:</h4>
+                      <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
                         {achievement.students.map((student, idx) => (
                           <li key={idx} className="flex items-center gap-2">
                             <Users className="h-3 w-3 text-primary" />
@@ -339,7 +339,7 @@ export default function CivilAchievementsPage() {
                     </div>
                     
                     <div className="text-center">
-                      <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                      <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200 dark:border-gray-700">
                         <Crown className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
                         <p className="font-semibold text-yellow-800">{achievement.prize}</p>
                       </div>
@@ -353,11 +353,11 @@ export default function CivilAchievementsPage() {
       </section>
 
       {/* Faculty Achievements */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Faculty Achievements</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">Faculty Achievements</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Recognition and accomplishments of our dedicated faculty members
             </p>
           </div>
@@ -367,10 +367,10 @@ export default function CivilAchievementsPage() {
               <Card key={index} className="hover:shadow-lg transition-shadow">
                 <CardContent className="p-6 text-center">
                   <Star className="h-12 w-12 text-primary mx-auto mb-4" />
-                  <h3 className="font-bold text-gray-900 mb-2">{achievement.achievement}</h3>
+                  <h3 className="font-bold text-gray-900 mb-2 dark:text-white">{achievement.achievement}</h3>
                   <p className="text-primary font-medium mb-2">{achievement.faculty}</p>
                   <Badge variant="outline" className="mb-3">{achievement.year}</Badge>
-                  <p className="text-sm text-gray-600 mb-3">{achievement.description}</p>
+                  <p className="text-sm text-gray-600 mb-3 dark:text-gray-400">{achievement.description}</p>
                   <Badge variant="secondary" className="text-xs">
                     {achievement.category}
                   </Badge>
@@ -382,38 +382,38 @@ export default function CivilAchievementsPage() {
       </section>
 
       {/* Placement Statistics */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Placement Statistics</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">Placement Statistics</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Excellent placement record demonstrating industry confidence
             </p>
           </div>
           
           <div className="grid lg:grid-cols-2 gap-12">
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Year-wise Performance</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6 dark:text-white">Year-wise Performance</h3>
               <div className="space-y-4">
                 {placementStats.map((stat, index) => (
                   <Card key={index} className="hover:shadow-lg transition-shadow">
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between mb-4">
-                        <h4 className="text-xl font-bold text-gray-900">Academic Year {stat.year}</h4>
+                        <h4 className="text-xl font-bold text-gray-900 dark:text-white">Academic Year {stat.year}</h4>
                         <Badge variant="secondary">{stat.placementRate} Placed</Badge>
                       </div>
                       <div className="grid grid-cols-3 gap-4 text-center">
                         <div>
                           <p className="text-2xl font-bold text-primary">{stat.averagePackage}</p>
-                          <p className="text-sm text-gray-600">Average Package</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">Average Package</p>
                         </div>
                         <div>
                           <p className="text-2xl font-bold text-green-600">{stat.highestPackage}</p>
-                          <p className="text-sm text-gray-600">Highest Package</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">Highest Package</p>
                         </div>
                         <div>
                           <p className="text-2xl font-bold text-blue-600">{stat.companiesVisited}</p>
-                          <p className="text-sm text-gray-600">Companies</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">Companies</p>
                         </div>
                       </div>
                     </CardContent>
@@ -423,14 +423,14 @@ export default function CivilAchievementsPage() {
             </div>
             
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Top Recruiters</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6 dark:text-white">Top Recruiters</h3>
               <Card>
                 <CardContent className="p-6">
                   <div className="grid gap-3">
                     {topRecruiters.map((company, index) => (
-                      <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                      <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg dark:bg-gray-800">
                         <Building className="h-5 w-5 text-primary" />
-                        <span className="font-medium text-gray-900">{company}</span>
+                        <span className="font-medium text-gray-900 dark:text-white">{company}</span>
                       </div>
                     ))}
                   </div>
@@ -442,11 +442,11 @@ export default function CivilAchievementsPage() {
       </section>
 
       {/* Research Projects */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Research Projects</h2>
-            <p className="text-xl text-gray-600">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">Research Projects</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               Funded research projects contributing to technological advancement
             </p>
           </div>
@@ -467,14 +467,14 @@ export default function CivilAchievementsPage() {
                 <CardContent>
                   <div className="space-y-3">
                     <div>
-                      <p className="font-semibold text-gray-900">Principal Investigator:</p>
-                      <p className="text-gray-600">{project.pi}</p>
+                      <p className="font-semibold text-gray-900 dark:text-white">Principal Investigator:</p>
+                      <p className="text-gray-600 dark:text-gray-400">{project.pi}</p>
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-900">Funding Agency:</p>
-                      <p className="text-gray-600">{project.fundingAgency}</p>
+                      <p className="font-semibold text-gray-900 dark:text-white">Funding Agency:</p>
+                      <p className="text-gray-600 dark:text-gray-400">{project.fundingAgency}</p>
                     </div>
-                    <div className="p-3 bg-green-50 rounded-lg border border-green-200">
+                    <div className="p-3 bg-green-50 rounded-lg border border-green-200 dark:border-gray-700">
                       <p className="font-semibold text-green-800">Project Amount:</p>
                       <p className="text-xl font-bold text-green-900">{project.amount}</p>
                     </div>
@@ -489,10 +489,10 @@ export default function CivilAchievementsPage() {
       {/* Call to Action */}
       <section className="py-16 bg-primary/5">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">
             Be Part of Our Success Story
           </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto dark:text-gray-400">
             Join our Civil Engineering department and contribute to our legacy of excellence. 
             Your achievements will be the next chapter in our success story.
           </p>

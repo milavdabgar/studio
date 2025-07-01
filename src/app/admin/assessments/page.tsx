@@ -588,7 +588,7 @@ asm_s1,Midterm 1,crs1,CS101,prog1,DCE,batch1,2024-2027,Midterm,"Covers first 3 u
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-6 p-4 border rounded-lg space-y-4">
+          <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
             <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Assessments from CSV</h3>
             <div className="flex flex-col sm:flex-row gap-2 items-center">
               <Input type="file" id="csvImportAssessment" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
@@ -606,7 +606,7 @@ asm_s1,Midterm 1,crs1,CS101,prog1,DCE,batch1,2024-2027,Midterm,"Covers first 3 u
             </div>
           </div>
 
-          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border rounded-lg">
+          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div>
               <Label htmlFor="searchAssessment">Search Assessments</Label>
               <div className="relative">

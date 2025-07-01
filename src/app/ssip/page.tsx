@@ -99,7 +99,7 @@ export default function SSIPPage() {
       <PublicNav />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16">
+      <section className="bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-primary/10 dark:to-secondary/20 py-16 dark:from-primary/10 dark:to-secondary/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
             <div className="flex justify-center space-x-2 mb-6">
@@ -107,20 +107,20 @@ export default function SSIPPage() {
               <Badge variant="outline" className="text-sm">Patent Support</Badge>
               <Badge variant="outline" className="text-sm">Startup Incubation</Badge>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 dark:text-white">
               SSIP Cell
             </h1>
-            <h2 className="text-2xl md:text-3xl font-medium text-gray-700 mb-6">
+            <h2 className="text-2xl md:text-3xl font-medium text-gray-700 dark:text-gray-300 mb-6 dark:text-gray-300">
               Student Startup and Innovation Policy
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 dark:text-gray-400">
               "Build a culture of innovation and entrepreneurship that empowers students to become job creators"
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {achievements.map((achievement, index) => (
                 <div key={index} className="text-center">
                   <div className="text-3xl font-bold text-primary">{achievement.number}</div>
-                  <div className="text-sm text-gray-600">{achievement.label}</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">{achievement.label}</div>
                 </div>
               ))}
             </div>
@@ -129,14 +129,14 @@ export default function SSIPPage() {
       </section>
 
       {/* About SSIP */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 dark:text-white">
                 Fostering Innovation & Entrepreneurship
               </h2>
-              <div className="prose prose-lg text-gray-600 space-y-4">
+              <div className="prose prose-lg text-gray-600 dark:text-gray-300 space-y-4 dark:text-gray-400">
                 <p>
                   The SSIP (Student Startup and Innovation Policy) Cell at Government Polytechnic Palanpur 
                   serves as the epicenter of innovation and entrepreneurship for our students. Located in the 
@@ -156,7 +156,7 @@ export default function SSIPPage() {
               </div>
             </div>
             <div className="relative">
-              <div className="bg-white p-6 rounded-2xl shadow-xl">
+              <div className="bg-white dark:bg-gray-900 p-6 rounded dark:bg-gray-800-2xl shadow dark:bg-gray-800-xl dark:bg-gray-900">
                 <Image
                   src="https://picsum.photos/seed/ssip-innovation/600/400"
                   alt="SSIP Innovation Lab"
@@ -165,8 +165,8 @@ export default function SSIPPage() {
                   className="rounded-xl"
                 />
                 <div className="mt-6 text-center">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Innovation Lab</h3>
-                  <p className="text-gray-600">State-of-the-art facilities for student projects</p>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Innovation Lab</h3>
+                  <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">State-of-the-art facilities for student projects</p>
                 </div>
               </div>
             </div>
@@ -175,64 +175,64 @@ export default function SSIPPage() {
       </section>
 
       {/* Vision & Objectives */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               Our Vision & Key Objectives
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto dark:text-gray-400">
               Empowering the next generation of innovators and entrepreneurs
             </p>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             <Card className="p-6 text-center hover:shadow-xl transition-shadow">
-              <div className="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mx-auto mb-4 dark:bg-blue-900/30">
                 <Lightbulb className="h-8 w-8 text-blue-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Promote Innovation</h3>
-              <p className="text-gray-600 text-sm">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Promote Innovation</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">
                 Encourage creative thinking and innovative problem-solving approaches
               </p>
             </Card>
             
             <Card className="p-6 text-center hover:shadow-xl transition-shadow">
-              <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4 dark:bg-green-900/30">
                 <Cog className="h-8 w-8 text-green-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Support Prototyping</h3>
-              <p className="text-gray-600 text-sm">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Support Prototyping</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">
                 Provide technical resources and guidance for prototype development
               </p>
             </Card>
             
             <Card className="p-6 text-center hover:shadow-xl transition-shadow">
-              <div className="flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mx-auto mb-4 dark:bg-purple-900/30">
                 <Rocket className="h-8 w-8 text-purple-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Enable Startup Development</h3>
-              <p className="text-gray-600 text-sm">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Enable Startup Development</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">
                 Support the transition from ideas to viable business ventures
               </p>
             </Card>
             
             <Card className="p-6 text-center hover:shadow-xl transition-shadow">
-              <div className="flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mx-auto mb-4 dark:bg-orange-900/30">
                 <Users className="h-8 w-8 text-orange-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Foster Collaboration</h3>
-              <p className="text-gray-600 text-sm">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Foster Collaboration</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">
                 Build partnerships between students, faculty, and industry
               </p>
             </Card>
             
             <Card className="p-6 text-center hover:shadow-xl transition-shadow">
-              <div className="flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mx-auto mb-4">
+              <div className="flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mx-auto mb-4 dark:bg-red-900/30">
                 <Shield className="h-8 w-8 text-red-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Develop IP</h3>
-              <p className="text-gray-600 text-sm">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Develop IP</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">
                 Guide students through intellectual property creation and protection
               </p>
             </Card>
@@ -241,8 +241,8 @@ export default function SSIPPage() {
               <div className="flex items-center justify-center w-16 h-16 bg-teal-100 rounded-full mx-auto mb-4">
                 <Target className="h-8 w-8 text-teal-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Create Job Creators</h3>
-              <p className="text-gray-600 text-sm">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Create Job Creators</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm dark:text-gray-400">
                 Transform students from job seekers to job creators and entrepreneurs
               </p>
             </Card>
@@ -251,13 +251,13 @@ export default function SSIPPage() {
       </section>
 
       {/* Services Provided */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               Services We Provide
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-300 dark:text-gray-400">
               Comprehensive support for your innovation journey
             </p>
           </div>
@@ -266,12 +266,12 @@ export default function SSIPPage() {
             {services.map((service, index) => (
               <Card key={index} className="p-6 hover:shadow-lg transition-shadow">
                 <div className="flex items-center space-x-4 mb-4">
-                  <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full">
+                  <div className="flex items-center justify-center w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-full dark:bg-primary/20">
                     <service.icon className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900">{service.title}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{service.title}</h3>
                 </div>
-                <p className="text-gray-600">{service.description}</p>
+                <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">{service.description}</p>
               </Card>
             ))}
           </div>
@@ -279,13 +279,13 @@ export default function SSIPPage() {
       </section>
 
       {/* Success Stories */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gray-50 dark:bg-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               Notable Success Stories
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-300 dark:text-gray-400">
               Innovative projects developed by our students
             </p>
           </div>
@@ -302,10 +302,10 @@ export default function SSIPPage() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600">{innovation.description}</p>
+                  <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">{innovation.description}</p>
                   <div className="mt-4 flex items-center space-x-2">
                     <Star className="h-4 w-4 text-yellow-500" />
-                    <span className="text-sm text-gray-500">Student Innovation Project</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Student Innovation Project</span>
                   </div>
                 </CardContent>
               </Card>
@@ -315,13 +315,13 @@ export default function SSIPPage() {
       </section>
 
       {/* Impact Metrics */}
-      <section className="py-16 bg-primary/5">
+      <section className="py-16 bg-primary/5 dark:bg-primary/10 dark:bg-primary/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               Our Impact
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-300 dark:text-gray-400">
               Measurable outcomes of our innovation initiatives
             </p>
           </div>
@@ -329,11 +329,11 @@ export default function SSIPPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {achievements.map((achievement, index) => (
               <Card key={index} className="text-center p-6 hover:shadow-lg transition-shadow">
-                <div className="flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mx-auto mb-4">
+                <div className="flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full mx-auto mb-4 dark:bg-primary/20">
                   <achievement.icon className="h-8 w-8 text-primary" />
                 </div>
                 <h3 className="text-3xl font-bold text-primary mb-2">{achievement.number}</h3>
-                <p className="text-gray-600 font-medium">{achievement.label}</p>
+                <p className="text-gray-600 dark:text-gray-300 font-medium dark:text-gray-400">{achievement.label}</p>
               </Card>
             ))}
           </div>
@@ -341,13 +341,13 @@ export default function SSIPPage() {
       </section>
 
       {/* Contact Information */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 dark:text-white">
               Get In Touch
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-300 dark:text-gray-400">
               Ready to start your innovation journey? Contact our SSIP Cell
             </p>
           </div>
@@ -365,34 +365,34 @@ export default function SSIPPage() {
                   <div className="flex items-start space-x-3">
                     <Building className="h-5 w-5 text-gray-400 mt-1" />
                     <div>
-                      <p className="font-medium text-gray-900">SSIP Cell</p>
-                      <p className="text-gray-600">Administrative Block, Ground Floor</p>
-                      <p className="text-gray-600">Government Polytechnic Palanpur</p>
+                      <p className="font-medium text-gray-900 dark:text-white">SSIP Cell</p>
+                      <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">Administrative Block, Ground Floor</p>
+                      <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">Government Polytechnic Palanpur</p>
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-3">
                     <Phone className="h-5 w-5 text-gray-400" />
                     <div>
-                      <p className="font-medium text-gray-900">Phone</p>
-                      <p className="text-gray-600">02742-245219</p>
+                      <p className="font-medium text-gray-900 dark:text-white">Phone</p>
+                      <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">02742-245219</p>
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-3">
                     <Mail className="h-5 w-5 text-gray-400" />
                     <div>
-                      <p className="font-medium text-gray-900">Email</p>
-                      <p className="text-gray-600">ssip-gpp@guj.edu.in</p>
+                      <p className="font-medium text-gray-900 dark:text-white">Email</p>
+                      <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">ssip-gpp@guj.edu.in</p>
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-3">
                     <Clock className="h-5 w-5 text-gray-400" />
                     <div>
-                      <p className="font-medium text-gray-900">Office Hours</p>
-                      <p className="text-gray-600">Monday - Friday</p>
-                      <p className="text-gray-600">10:00 AM - 4:00 PM</p>
+                      <p className="font-medium text-gray-900 dark:text-white">Office Hours</p>
+                      <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">Monday - Friday</p>
+                      <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">10:00 AM - 4:00 PM</p>
                     </div>
                   </div>
                 </CardContent>
@@ -407,7 +407,7 @@ export default function SSIPPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 dark:text-gray-300 dark:text-gray-400">
                       Whether you have an innovative idea, need technical support, or want to 
                       explore entrepreneurship opportunities, our SSIP Cell is here to guide you.
                     </p>
@@ -415,19 +415,19 @@ export default function SSIPPage() {
                     <div className="space-y-3">
                       <div className="flex items-center space-x-2">
                         <CheckCircle className="h-4 w-4 text-green-600" />
-                        <span className="text-sm text-gray-700">Idea validation and development</span>
+                        <span className="text-sm text-gray-700 dark:text-gray-300">Idea validation and development</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <CheckCircle className="h-4 w-4 text-green-600" />
-                        <span className="text-sm text-gray-700">Technical and financial support</span>
+                        <span className="text-sm text-gray-700 dark:text-gray-300">Technical and financial support</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <CheckCircle className="h-4 w-4 text-green-600" />
-                        <span className="text-sm text-gray-700">Patent and IP guidance</span>
+                        <span className="text-sm text-gray-700 dark:text-gray-300">Patent and IP guidance</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <CheckCircle className="h-4 w-4 text-green-600" />
-                        <span className="text-sm text-gray-700">Startup incubation facilities</span>
+                        <span className="text-sm text-gray-700 dark:text-gray-300">Startup incubation facilities</span>
                       </div>
                     </div>
                     
@@ -460,7 +460,7 @@ export default function SSIPPage() {
               <Rocket className="h-4 w-4 mr-2" />
               Start Your Project
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary">
+            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white dark:bg-gray-900 hover:text-primary dark:hover:text-primary dark:border dark:border-gray-700-gray-300 dark:text-gray-300 dark:hover:bg-gray-300 dark:hover:text-gray-900 dark:text-white dark:bg-gray-900 dark:text-white dark:border-gray-700">
               <BookOpen className="h-4 w-4 mr-2" />
               Learn More
             </Button>

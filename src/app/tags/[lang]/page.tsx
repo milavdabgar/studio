@@ -52,7 +52,7 @@ export default async function TagsPage({ params }: TagsPageProps) {
           </div>
 
           {tags.length === 0 ? (
-            <Card className="shadow-lg border-0 bg-gradient-to-r from-card to-card/80">
+            <Card className="shadow-lg border-0 bg-gradient-to-r from-card to-card/80 dark:border-gray-700">
               <CardContent className="py-8 text-center">
                 <p className="text-muted-foreground">{noTagsText}</p>
               </CardContent>
@@ -60,13 +60,13 @@ export default async function TagsPage({ params }: TagsPageProps) {
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {tags.map(({ name, count }) => (
-                <Card key={name} className="hover:shadow-lg transition-all duration-300 hover:scale-105 border-0 bg-gradient-to-br from-card to-card/90">
+                <Card key={name} className="hover:shadow-lg transition-all duration-300 hover:scale-105 border-0 bg-gradient-to-br from-card to-card/90 dark:border-gray-700">
                   <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2 text-lg">
                       <Tag className="h-5 w-5 text-primary" />
                       <Link
                         href={`/tags/${lang}/${encodeURIComponent(name)}`}
-                        className="text-primary hover:text-primary/80 transition-colors flex-1 truncate"
+                        className="text-primary hover:text-primary dark:hover:text-primary/80 transition-colors flex-1 truncate"
                         title={name}
                       >
                         {name}
