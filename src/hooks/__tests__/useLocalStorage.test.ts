@@ -124,7 +124,7 @@ describe('useLocalStorage', () => {
   it('should handle errors and fallback to initial value', () => {
     // Mock localStorage.getItem to throw an error
     const originalGetItem = mockLocalStorage.getItem;
-    mockLocalStorage.getItem = jest.fn(() => {
+    mockLocalStorage.getItem = jest.fn().mockImplementation(() => {
       throw new Error('Storage error');
     });
     

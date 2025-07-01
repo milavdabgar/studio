@@ -300,9 +300,9 @@ describe('Batch API', () => {
       await batchService.importBatches(mockFile, mockPrograms);
       fail('Should have thrown an error');
     } catch (error: unknown) {
-      expect(error.message).toContain('Validation errors');
-      expect(error.data).toBeDefined();
-      expect(error.data.errors.length).toBe(4);
+      expect((error as Error).message).toContain('Validation errors');
+      expect((error as any).data).toBeDefined();
+      expect((error as any).data.errors.length).toBe(4);
     }
   });
 
