@@ -1,10 +1,25 @@
 // Email Service
 // Mock nodemailer since it's not available in this environment
 const nodemailer = {
-  createTransporter: (config: any) => ({
-    sendMail: (options: any) => Promise.resolve({ messageId: 'mock-id' })
-  })
+  createTransport: (config: any) => ({
+    sendMail: (options: any) => Promise.resolve({ messageId: 'mock-id' }),
+    verify: () => Promise.resolve(true),
+    close: () => {}
+  }),
+  Transporter: class {
+    sendMail = (options: any) => Promise.resolve({ messageId: 'mock-id' });
+    verify = () => Promise.resolve(true);
+  }
 };
+
+// Add the namespace for type compatibility
+declare namespace nodemailer {
+  interface Transporter {
+    sendMail(options: any): Promise<any>;
+    verify(): Promise<any>;
+    close(): void;
+  }
+}
 import fs from 'fs/promises';
 import path from 'path';
 import handlebars from 'handlebars';

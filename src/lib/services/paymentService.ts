@@ -82,7 +82,7 @@ export class PaymentService {
 
   constructor(secretKey: string, options?: Stripe.StripeConfig) {
     this.stripe = new Stripe(secretKey, {
-      apiVersion: '2023-10-16',
+      apiVersion: '2025-05-28.basil',
       ...options,
     });
   }
@@ -174,7 +174,7 @@ export class PaymentService {
         email: customer.email!,
         name: customer.name || undefined,
         phone: customer.phone || undefined,
-        address: customer.address || undefined,
+        address: customer.address as any,
         defaultPaymentMethod: customer.default_source as string,
         metadata: customer.metadata,
       };
@@ -196,7 +196,7 @@ export class PaymentService {
         email: customer.email!,
         name: customer.name || undefined,
         phone: customer.phone || undefined,
-        address: customer.address || undefined,
+        address: customer.address as any,
         defaultPaymentMethod: customer.default_source as string,
         metadata: customer.metadata,
       };
@@ -229,8 +229,8 @@ export class PaymentService {
         customerId: subscription.customer as string,
         planId: priceId,
         status: subscription.status as Subscription['status'],
-        currentPeriodStart: new Date(subscription.current_period_start * 1000),
-        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+        currentPeriodStart: new Date((subscription as any).current_period_start * 1000),
+        currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
         trialStart: subscription.trial_start 
           ? new Date(subscription.trial_start * 1000) 
           : undefined,
@@ -266,8 +266,8 @@ export class PaymentService {
         customerId: subscription.customer as string,
         planId: subscription.items.data[0].price.id,
         status: subscription.status as Subscription['status'],
-        currentPeriodStart: new Date(subscription.current_period_start * 1000),
-        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+        currentPeriodStart: new Date((subscription as any).current_period_start * 1000),
+        currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
         trialStart: subscription.trial_start 
           ? new Date(subscription.trial_start * 1000) 
           : undefined,

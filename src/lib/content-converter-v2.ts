@@ -319,7 +319,7 @@ export class ContentConverterV2 {
             // Use chromium package if available in production
             if (isProduction && chromium) {
                 launchOptions.executablePath = await chromium.executablePath('/opt/nodejs/node_modules/@sparticuz/chromium-min/bin');
-                const chromiumArgs = Array.isArray(chromium.args) ? chromium.args : [];
+                const chromiumArgs = Array.isArray(chromium.args) ? chromium.args.filter((arg): arg is string => typeof arg === 'string') : [];
                 launchOptions.args = [...launchOptions.args, ...chromiumArgs];
                 launchOptions.defaultViewport = chromium.defaultViewport;
             }

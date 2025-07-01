@@ -68,7 +68,7 @@ export interface NotificationResult {
     push?: boolean;
     webhook?: boolean;
   };
-  errors?: string[];
+  errors: string[];
   messageId?: string;
 }
 
@@ -205,8 +205,8 @@ export class NotificationService {
         }
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
-        result.errors?.push(`${channel}: ${errorMessage}`);
-        this.logger.error(`Failed to send ${channel} notification`, { error: errorMessage, userId, type });
+        result.errors.push(`${channel}: ${errorMessage}`);
+        this.logger?.error(`Failed to send ${channel} notification`, { error: errorMessage, userId, type });
       }
     }
 
@@ -217,7 +217,7 @@ export class NotificationService {
       await this.updateRateLimit(userId);
     }
 
-    this.logger.info('Notification sent', { userId, type, channels: enabledChannels, success: hasSuccess });
+    this.logger?.info('Notification sent', { userId, type, channels: enabledChannels, success: hasSuccess });
     
     return result;
   }
@@ -266,7 +266,7 @@ export class NotificationService {
       await Promise.allSettled(promises);
     }
 
-    this.logger.info('Batch notification completed', {
+    this.logger?.info('Batch notification completed', {
       totalSent: result.totalSent,
       successful: result.successful,
       failed: result.failed,
@@ -289,9 +289,9 @@ export class NotificationService {
       try {
         await this.sendNotification(notificationRequest);
         this.scheduledNotifications.delete(scheduleId);
-        this.logger.info('Scheduled notification sent', { scheduleId });
+        this.logger?.info('Scheduled notification sent', { scheduleId });
       } catch (error) {
-        this.logger.error('Failed to send scheduled notification', { 
+        this.logger?.error('Failed to send scheduled notification', { 
           scheduleId, 
           error: error instanceof Error ? error.message : String(error) 
         });
@@ -301,7 +301,7 @@ export class NotificationService {
 
     this.scheduledNotifications.set(scheduleId, timer);
     
-    this.logger.info('Notification scheduled', { 
+    this.logger?.info('Notification scheduled', { 
       scheduleId, 
       scheduleAt: scheduleAt.toISOString(),
       delay 
@@ -320,7 +320,7 @@ export class NotificationService {
     clearTimeout(timer);
     this.scheduledNotifications.delete(scheduleId);
     
-    this.logger.info('Scheduled notification cancelled', { scheduleId });
+    this.logger?.info('Scheduled notification cancelled', { scheduleId });
     
     return true;
   }
@@ -409,7 +409,7 @@ export class NotificationService {
     try {
       return await this.config.userRepository.getUserPreferences(userId);
     } catch (error) {
-      this.logger.warn('Failed to get user preferences', { userId, error });
+      this.logger?.warn('Failed to get user preferences', { userId, error });
       return null;
     }
   }
@@ -467,6 +467,6 @@ export class NotificationService {
     // Clear rate limit tracker
     this.rateLimitTracker.clear();
 
-    this.logger.info('Notification service shutdown complete');
+    this.logger?.info('Notification service shutdown complete');
   }
 }
