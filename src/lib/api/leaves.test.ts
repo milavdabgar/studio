@@ -173,7 +173,7 @@ describe('LeaveService Tests', () => {
     it('should set default status to pending', async () => {
       const newRequestData = {
         userId: 'FAC004',
-        type: 'emergency' as const,
+        type: 'unpaid' as const,
         startDate: '2025-08-05',
         endDate: '2025-08-05',
         totalDays: 1,

@@ -259,8 +259,8 @@ describe('Button', () => {
     it('should forward ref when using asChild', () => {
       const ref = React.createRef<HTMLAnchorElement>();
       render(
-        <Button asChild ref={ref}>
-          <a href="/test">Link with ref</a>
+        <Button asChild>
+          <a href="/test" ref={ref}>Link with ref</a>
         </Button>
       );
       
