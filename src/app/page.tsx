@@ -57,7 +57,7 @@ export default function HomePage() {
             <div className="relative">
               <div className="bg-white p-8 rounded-2xl shadow-xl">
                 <Image
-                  src="https://picsum.photos/seed/gpp-campus/600/400"
+                  src="/newsletters/imgs/IMG_20241014_072640_109.jpg"
                   alt="Government Polytechnic Palanpur Campus"
                   width={600}
                   height={400}
