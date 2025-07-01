@@ -7,10 +7,10 @@ import {
   createExamination,
   updateExamination,
   deleteExamination,
-  type Examination,
   type ExaminationResult,
   type TimetableEntry
 } from './examinations';
+import type { Examination } from '@/types/entities';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
 describe('ExaminationService Tests', () => {
@@ -54,8 +54,8 @@ describe('ExaminationService Tests', () => {
       const examination = await getExamination('1');
       expect(examination).not.toBeNull();
       expect(examination?.id).toBe('1');
-      expect(examination?.courseId).toBe('CS101');
-      expect(examination?.title).toBe('Introduction to Computer Science - Midterm');
+      expect(examination?.name).toBe('Mid Semester Examination - Fall 2024');
+      expect(examination?.examType).toBe('Mid Semester');
     });
 
     it('should return null for non-existent examination', async () => {
@@ -67,8 +67,8 @@ describe('ExaminationService Tests', () => {
       const midtermExam = await getExamination('1');
       const finalExam = await getExamination('2');
       
-      expect(midtermExam?.type).toBe('midterm');
-      expect(finalExam?.type).toBe('final');
+      expect(midtermExam?.examType).toBe('Mid Semester');
+      expect(finalExam?.examType).toBe('Final');
     });
   });
 
@@ -145,14 +145,13 @@ describe('ExaminationService Tests', () => {
   describe('createExamination', () => {
     it('should create new examination', async () => {
       const newExamData = {
-        courseId: 'CS103',
-        title: 'Database Systems - Quiz',
-        type: 'quiz' as const,
-        date: '2025-07-25T10:00:00Z',
-        duration: 60,
-        maxMarks: 50,
-        venue: 'Room C-301',
-        instructions: 'No electronic devices allowed'
+        name: 'Database Systems - Quiz',
+        academicYear: '2024-25',
+        examType: 'Mid Semester' as const,
+        startDate: '2025-07-25T10:00:00Z',
+        endDate: '2025-07-25T11:00:00Z',
+        programIds: ['prog_dce_gpp'],
+        status: 'scheduled' as const
       };
 
       const createdExam = await createExamination(newExamData);
@@ -166,19 +165,19 @@ describe('ExaminationService Tests', () => {
 
     it('should set timestamps for new examination', async () => {
       const newExamData = {
-        courseId: 'CS104',
-        title: 'Operating Systems - Assignment',
-        type: 'assignment' as const,
-        date: '2025-08-01T23:59:00Z',
-        duration: 1440, // 24 hours
-        maxMarks: 100,
-        venue: 'Online'
+        name: 'Operating Systems - Assignment',
+        academicYear: '2024-25',
+        examType: 'Mid Semester' as const,
+        startDate: '2025-08-01T00:00:00Z',
+        endDate: '2025-08-01T23:59:00Z',
+        programIds: ['prog_dce_gpp'],
+        status: 'scheduled' as const
       };
 
       const createdExam = await createExamination(newExamData);
       
-      expect(new Date(createdExam.createdAt)).toBeInstanceOf(Date);
-      expect(new Date(createdExam.updatedAt)).toBeInstanceOf(Date);
+      expect(createdExam.createdAt).toBeDefined();
+      expect(createdExam.updatedAt).toBeDefined();
       expect(createdExam.createdAt).toBe(createdExam.updatedAt);
     });
   });
@@ -186,23 +185,20 @@ describe('ExaminationService Tests', () => {
   describe('updateExamination', () => {
     it('should update existing examination', async () => {
       const updates = {
-        title: 'Updated Title',
-        venue: 'Updated Venue',
-        duration: 150
+        name: 'Updated Examination Name',
+        status: 'ongoing' as const
       };
 
       const updatedExam = await updateExamination('1', updates);
       
       expect(updatedExam).not.toBeNull();
-      expect(updatedExam?.title).toBe('Updated Title');
-      expect(updatedExam?.venue).toBe('Updated Venue');
-      expect(updatedExam?.duration).toBe(150);
+      expect(updatedExam?.name).toBe('Updated Examination Name');
+      expect(updatedExam?.status).toBe('ongoing');
       expect(updatedExam?.id).toBe('1');
-      expect(updatedExam?.courseId).toBe('CS101'); // unchanged fields should remain
     });
 
     it('should update timestamp when updating examination', async () => {
-      const updates = { title: 'New Title' };
+      const updates = { name: 'New Name' };
       const updatedExam = await updateExamination('1', updates);
       
       expect(updatedExam?.updatedAt).toBeDefined();
