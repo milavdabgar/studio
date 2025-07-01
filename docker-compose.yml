@@ -9,9 +9,26 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - HOSTNAME=0.0.0.0
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/gpp-studio}
+    networks:
+      - npm-network
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:6.0
+    container_name: studio-mongodb
+    restart: unless-stopped
+    volumes:
+      - mongodb_data:/data/db
+    expose:
+      - "27017"
     networks:
       - npm-network
 
 networks:
   npm-network:
     external: true
+
+volumes:
+  mongodb_data:

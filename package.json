@@ -81,7 +81,8 @@
     "mcp:start": "cd mcp-server && node dist/index.js",
     "mcp:dev": "cd mcp-server && npm run dev",
     "mcp:build": "cd mcp-server && npm run build",
-    "mcp:test": "cd mcp-server && node test-server.js"
+    "mcp:test": "cd mcp-server && node test-server.js",
+    "seed:database": "npx tsx scripts/seed-database.ts"
   },
   "dependencies": {
     "@aws-sdk/s3-request-presigner": "^3.835.0",

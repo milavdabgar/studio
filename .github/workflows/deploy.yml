@@ -69,6 +69,10 @@ jobs:
             --exclude='venv' \
             --exclude='__pycache__' \
             . $REMOTE_HOST:~/studio/
+          
+          # Copy database seeding scripts
+          scp scripts/seed-after-deploy.sh $REMOTE_HOST:~/studio/scripts/
+          ssh $REMOTE_HOST 'chmod +x ~/studio/scripts/seed-after-deploy.sh'
 
       - name: Deploy
         env:
@@ -83,6 +87,13 @@ jobs:
             # Build and start the container
             docker compose build --no-cache
             docker compose up -d
+            
+            # Wait for containers to start
+            echo "Waiting for containers to start..."
+            sleep 10
+            
+            # Run database seeding script
+            ./scripts/seed-after-deploy.sh
             
             # Clean up old images and volumes
             docker image prune -f
