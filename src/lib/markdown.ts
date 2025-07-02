@@ -33,10 +33,14 @@ function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir, curren
     console.warn(`[getAllMarkdownFilesRecursive] Directory not found, cannot read: ${dir}`);
     return files;
   }
+  
+  console.log(`[getAllMarkdownFilesRecursive] Scanning directory: ${dir}, currentPathParts: ${JSON.stringify(currentPathParts)}`);
 
   let entries;
   try {
     entries = fs.readdirSync(dir, { withFileTypes: true });
+    console.log(`[getAllMarkdownFilesRecursive] Directory ${dir} contains ${entries.length} entries:`, 
+      entries.map(e => `${e.name}${e.isDirectory() ? '/' : ''}`).slice(0, 10));
   } catch (e: unknown) {
     const errorMessage = e instanceof Error ? e.message : String(e);
     console.warn(`[getAllMarkdownFilesRecursive] Could not read directory ${dir}:`, errorMessage);
@@ -298,7 +302,11 @@ export function extractExcerpt(content: string, maxLength: number = 150): string
 }
 
 export async function getSortedPostsData(langToFilter?: string): Promise<PostPreview[]> {
+  console.log(`[getSortedPostsData] Starting with langToFilter: ${langToFilter}, contentDirectory: ${contentDirectory}`);
   const allFileDetails = getAllMarkdownFilesRecursive(contentDirectory);
+  console.log(`[getSortedPostsData] Found ${allFileDetails.length} total markdown files`);
+  console.log(`[getSortedPostsData] Sample files:`, allFileDetails.slice(0, 5).map(f => ({ id: f.id, lang: f.lang, fullPath: f.fullPath })));
+  
   const allPostsDataPromises = allFileDetails.map(async (fileDetail) => {
     const filePath = fileDetail.fullPath;
     try {
