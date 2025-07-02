@@ -108,7 +108,6 @@ import { newsletterData2023_24 } from './newsletter-data/2023-24';
 export { 
   newsletterData2021_22,
   newsletterData2022_23,
-  newsletterData2023_24,
   newsletterData2024_25,
   availableYears,
   getNewsletterDataByYear,

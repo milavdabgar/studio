@@ -4,7 +4,8 @@
 // Blowfish MDImporter shortcode - Import markdown from external URLs
 
 import React, { useState, useEffect } from 'react';
-import { processMarkdownWithShortcodes } from '@/lib/shortcodes';
+// Import processMarkdownWithShortcodes from utils to avoid circular dependency
+import { processMarkdownWithShortcodes } from '@/lib/utils/markdown-processor';
 
 interface MDImporterProps {
   url: string;

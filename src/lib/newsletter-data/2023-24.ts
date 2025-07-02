@@ -3,7 +3,7 @@
 // Government Polytechnic Palanpur
 // This is the main data file, moved from the parent directory
 
-import { NewsletterData } from '../newsletter-data';
+import { NewsletterData } from './index';
 
 export const newsletterData2023_24: NewsletterData = {
   stats: [

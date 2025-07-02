@@ -2,7 +2,7 @@
 // Electronics & Communication Engineering Department
 // Government Polytechnic Palanpur
 
-import { NewsletterData } from '../newsletter-data';
+import { NewsletterData } from './index';
 
 export const newsletterData2021_22: NewsletterData = {
   stats: [
