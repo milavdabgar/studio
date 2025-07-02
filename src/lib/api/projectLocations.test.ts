@@ -63,6 +63,40 @@ describe('ProjectLocationService API Tests', () => {
       await projectLocationService.getAllLocations(filters);
       expect(fetch).toHaveBeenCalledWith('/api/project-locations?eventId=event1&isAssigned=false');
     });
+
+    it('should handle all filter parameters', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, json: async () => ({ data: mockLocationsResponse }) }));
+      const filters = { eventId: 'event1', department: 'CS', section: 'A', isAssigned: true, page: 2, limit: 20 };
+      await projectLocationService.getAllLocations(filters);
+      expect(fetch).toHaveBeenCalledWith('/api/project-locations?eventId=event1&department=CS&section=A&isAssigned=true&page=2&limit=20');
+    });
+
+    it('should handle direct response structure', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, json: async () => mockLocationsResponse }));
+      const result = await projectLocationService.getAllLocations();
+      expect(result).toEqual(mockLocationsResponse);
+    });
+
+    it('should return default pagination for unexpected response structure', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, json: async () => ({ someOtherData: 'value' }) }));
+      const result = await projectLocationService.getAllLocations();
+      expect(result).toEqual({ someOtherData: 'value' });
+    });
+
+    it('should handle errors when fetching locations', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Server error' }) }));
+      await expect(projectLocationService.getAllLocations()).rejects.toThrow('Server error');
+    });
+
+    it('should handle errors without message when fetching locations', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => { throw new Error('Invalid JSON'); } }));
+      await expect(projectLocationService.getAllLocations()).rejects.toThrow('Failed to fetch project locations');
+    });
+
+    it('should handle error response without message property', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ error: 'Some other error format' }) }));
+      await expect(projectLocationService.getAllLocations()).rejects.toThrow('Failed to fetch project locations');
+    });
   });
 
   describe('getLocationById', () => {
@@ -71,6 +105,27 @@ describe('ProjectLocationService API Tests', () => {
       const result = await projectLocationService.getLocationById('loc1');
       expect(fetch).toHaveBeenCalledWith('/api/project-locations/loc1');
       expect(result).toEqual(mockLocation);
+    });
+
+    it('should handle direct location object response', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, json: async () => mockLocation }));
+      const result = await projectLocationService.getLocationById('loc1');
+      expect(result).toEqual(mockLocation);
+    });
+
+    it('should handle errors when fetching location by ID', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Location not found' }) }));
+      await expect(projectLocationService.getLocationById('loc999')).rejects.toThrow('Location not found');
+    });
+
+    it('should handle errors without message when fetching location by ID', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => { throw new Error('Invalid JSON'); } }));
+      await expect(projectLocationService.getLocationById('loc1')).rejects.toThrow('Failed to fetch project location with id loc1');
+    });
+
+    it('should handle error response without message property when fetching location by ID', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ error: 'Some other error format' }) }));
+      await expect(projectLocationService.getLocationById('loc1')).rejects.toThrow('Failed to fetch project location with id loc1');
     });
   });
 
@@ -85,6 +140,27 @@ describe('ProjectLocationService API Tests', () => {
       const result = await projectLocationService.createLocation(newLocationData);
       expect(fetch).toHaveBeenCalledWith('/api/project-locations', expect.objectContaining({ method: 'POST', body: JSON.stringify(newLocationData) }));
       expect(result).toEqual(createdLocation);
+    });
+
+    it('should handle direct location object response when creating', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, status: 201, json: async () => createdLocation }));
+      const result = await projectLocationService.createLocation(newLocationData);
+      expect(result).toEqual(createdLocation);
+    });
+
+    it('should handle errors when creating location', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Validation failed' }) }));
+      await expect(projectLocationService.createLocation(newLocationData)).rejects.toThrow('Validation failed');
+    });
+
+    it('should handle errors without message when creating location', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => { throw new Error('Invalid JSON'); } }));
+      await expect(projectLocationService.createLocation(newLocationData)).rejects.toThrow('Failed to create project location');
+    });
+
+    it('should handle error response without message property when creating location', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ error: 'Some other error format' }) }));
+      await expect(projectLocationService.createLocation(newLocationData)).rejects.toThrow('Failed to create project location');
     });
   });
   
@@ -101,6 +177,27 @@ describe('ProjectLocationService API Tests', () => {
       expect(fetch).toHaveBeenCalledWith('/api/project-locations/batch', expect.objectContaining({ method: 'POST', body: JSON.stringify({ locations: batchData }) }));
       expect(result).toEqual(createdBatchResponse);
     });
+
+    it('should handle direct batch response when creating', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, status: 201, json: async () => createdBatchResponse }));
+      const result = await projectLocationService.createLocationBatch(batchData);
+      expect(result).toEqual(createdBatchResponse);
+    });
+
+    it('should handle errors when creating location batch', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Batch creation failed' }) }));
+      await expect(projectLocationService.createLocationBatch(batchData)).rejects.toThrow('Batch creation failed');
+    });
+
+    it('should handle errors without message when creating location batch', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => { throw new Error('Invalid JSON'); } }));
+      await expect(projectLocationService.createLocationBatch(batchData)).rejects.toThrow('Failed to create location batch');
+    });
+
+    it('should handle error response without message property when creating location batch', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ error: 'Some other error format' }) }));
+      await expect(projectLocationService.createLocationBatch(batchData)).rejects.toThrow('Failed to create location batch');
+    });
   });
 
   describe('updateLocation', () => {
@@ -113,6 +210,27 @@ describe('ProjectLocationService API Tests', () => {
       expect(fetch).toHaveBeenCalledWith('/api/project-locations/loc1', expect.objectContaining({ method: 'PUT', body: JSON.stringify(updateData) }));
       expect(result).toEqual(updatedLocation);
     });
+
+    it('should handle direct location object response when updating', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, json: async () => updatedLocation }));
+      const result = await projectLocationService.updateLocation('loc1', updateData);
+      expect(result).toEqual(updatedLocation);
+    });
+
+    it('should handle errors when updating location', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Update failed' }) }));
+      await expect(projectLocationService.updateLocation('loc1', updateData)).rejects.toThrow('Update failed');
+    });
+
+    it('should handle errors without message when updating location', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => { throw new Error('Invalid JSON'); } }));
+      await expect(projectLocationService.updateLocation('loc1', updateData)).rejects.toThrow('Failed to update project location');
+    });
+
+    it('should handle error response without message property when updating location', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ error: 'Some other error format' }) }));
+      await expect(projectLocationService.updateLocation('loc1', updateData)).rejects.toThrow('Failed to update project location');
+    });
   });
 
   describe('deleteLocation', () => {
@@ -120,6 +238,21 @@ describe('ProjectLocationService API Tests', () => {
       mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true }));
       await projectLocationService.deleteLocation('loc1');
       expect(fetch).toHaveBeenCalledWith('/api/project-locations/loc1', expect.objectContaining({ method: 'DELETE' }));
+    });
+
+    it('should handle errors when deleting location', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Delete failed' }) }));
+      await expect(projectLocationService.deleteLocation('loc1')).rejects.toThrow('Delete failed');
+    });
+
+    it('should handle errors without message when deleting location', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => { throw new Error('Invalid JSON'); } }));
+      await expect(projectLocationService.deleteLocation('loc1')).rejects.toThrow('Failed to delete project location with id loc1');
+    });
+
+    it('should handle error response without message property when deleting location', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ error: 'Some other error format' }) }));
+      await expect(projectLocationService.deleteLocation('loc1')).rejects.toThrow('Failed to delete project location with id loc1');
     });
   });
 
@@ -131,6 +264,27 @@ describe('ProjectLocationService API Tests', () => {
         expect(fetch).toHaveBeenCalledWith('/api/project-locations/A-01/assign', expect.objectContaining({method: 'PATCH', body: JSON.stringify({projectId: 'proj1'})}));
         expect(result).toEqual(assignedLocation);
     });
+
+    it('should handle direct location object response when assigning', async () => {
+        mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, json: async () => assignedLocation }));
+        const result = await projectLocationService.assignProjectToLocation('A-01', 'proj1');
+        expect(result).toEqual(assignedLocation);
+    });
+
+    it('should handle errors when assigning project to location', async () => {
+        mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Assignment failed' }) }));
+        await expect(projectLocationService.assignProjectToLocation('A-01', 'proj1')).rejects.toThrow('Assignment failed');
+    });
+
+    it('should handle errors without message when assigning project to location', async () => {
+        mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => { throw new Error('Invalid JSON'); } }));
+        await expect(projectLocationService.assignProjectToLocation('A-01', 'proj1')).rejects.toThrow('Failed to assign project to location');
+    });
+
+    it('should handle error response without message property when assigning project to location', async () => {
+        mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ error: 'Some other error format' }) }));
+        await expect(projectLocationService.assignProjectToLocation('A-01', 'proj1')).rejects.toThrow('Failed to assign project to location');
+    });
   });
   
   describe('unassignProjectFromLocation', () => {
@@ -140,6 +294,27 @@ describe('ProjectLocationService API Tests', () => {
         const result = await projectLocationService.unassignProjectFromLocation('A-01');
         expect(fetch).toHaveBeenCalledWith('/api/project-locations/A-01/unassign', expect.objectContaining({method: 'PATCH'}));
         expect(result).toEqual(unassignedLocation);
+    });
+
+    it('should handle direct location object response when unassigning', async () => {
+        mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, json: async () => unassignedLocation }));
+        const result = await projectLocationService.unassignProjectFromLocation('A-01');
+        expect(result).toEqual(unassignedLocation);
+    });
+
+    it('should handle errors when unassigning project from location', async () => {
+        mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Unassignment failed' }) }));
+        await expect(projectLocationService.unassignProjectFromLocation('A-01')).rejects.toThrow('Unassignment failed');
+    });
+
+    it('should handle errors without message when unassigning project from location', async () => {
+        mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => { throw new Error('Invalid JSON'); } }));
+        await expect(projectLocationService.unassignProjectFromLocation('A-01')).rejects.toThrow('Failed to unassign project from location');
+    });
+
+    it('should handle error response without message property when unassigning project from location', async () => {
+        mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ error: 'Some other error format' }) }));
+        await expect(projectLocationService.unassignProjectFromLocation('A-01')).rejects.toThrow('Failed to unassign project from location');
     });
   });
   
@@ -153,6 +328,70 @@ describe('ProjectLocationService API Tests', () => {
       expect(fetch).toHaveBeenCalledWith('/api/project-locations/import', expect.objectContaining({ method: 'POST', body: expect.any(FormData) }));
       expect(result).toEqual(mockResponse);
     });
+
+    it('should handle import errors with detailed error messages', async () => {
+      const errorResponse = {
+        message: 'Import failed',
+        errors: [
+          { message: 'Row 1: Invalid location ID', data: { row: 1 } },
+          { message: 'Row 2: Missing section', data: { row: 2 } },
+          { message: 'Row 3: Invalid department', data: { row: 3 } },
+          { message: 'Row 4: Duplicate location', data: { row: 4 } }
+        ]
+      };
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => errorResponse }));
+      
+      try {
+        await projectLocationService.importLocations(mockFile, 'event1', mockDepartments);
+        fail('Should have thrown an error');
+      } catch (error: any) {
+        expect(error.message).toBe('Import failed Specific issues: Row 1: Invalid location ID; Row 2: Missing section; Row 3: Invalid department...');
+      }
+    });
+
+    it('should handle import errors with few error messages', async () => {
+      const errorResponse = {
+        message: 'Import failed',
+        errors: [
+          { message: 'Row 1: Invalid location ID', data: { row: 1 } },
+          { message: 'Row 2: Missing section', data: { row: 2 } }
+        ]
+      };
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => errorResponse }));
+      
+      try {
+        await projectLocationService.importLocations(mockFile, 'event1', mockDepartments);
+        fail('Should have thrown an error');
+      } catch (error: any) {
+        expect(error.message).toBe('Import failed Specific issues: Row 1: Invalid location ID; Row 2: Missing section');
+      }
+    });
+
+    it('should handle import errors with errors missing message property', async () => {
+      const errorResponse = {
+        message: 'Import failed',
+        errors: [
+          { data: { row: 1, issue: 'missing field' } },
+          { message: 'Row 2: Valid error', data: { row: 2 } }
+        ]
+      };
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => errorResponse }));
+      
+      try {
+        await projectLocationService.importLocations(mockFile, 'event1', mockDepartments);
+        fail('Should have thrown an error');
+      } catch (error: any) {
+        expect(error.message).toBe('Import failed Specific issues: {"row":1,"issue":"missing field"}; Row 2: Valid error');
+      }
+    });
+
+    it('should handle import errors without detailed errors array', async () => {
+      const errorResponse = { message: 'Simple import failed' };
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => errorResponse }));
+      
+      await expect(projectLocationService.importLocations(mockFile, 'event1', mockDepartments))
+        .rejects.toThrow('Simple import failed');
+    });
   });
   
   describe('exportLocations', () => {
@@ -163,6 +402,19 @@ describe('ProjectLocationService API Tests', () => {
         expect(fetch).toHaveBeenCalledWith('/api/project-locations/export?eventId=event1');
         expect(result).toEqual(csvText);
      });
+
+     it('should export locations without filters', async () => {
+        const csvText = "id,locationId,section\nloc1,A-01,A";
+        mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, text: async () => csvText }));
+        const result = await projectLocationService.exportLocations();
+        expect(fetch).toHaveBeenCalledWith('/api/project-locations/export?');
+        expect(result).toEqual(csvText);
+     });
+
+     it('should handle export errors', async () => {
+        mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false }));
+        await expect(projectLocationService.exportLocations()).rejects.toThrow('Failed to export project locations to CSV');
+     });
   });
   
   describe('autoAssignLocations', () => {
@@ -172,6 +424,34 @@ describe('ProjectLocationService API Tests', () => {
         const result = await projectLocationService.autoAssignLocations('event1', true);
         expect(fetch).toHaveBeenCalledWith('/api/project-locations/auto-assign', expect.objectContaining({ method: 'POST', body: JSON.stringify({eventId: 'event1', departmentWise: true})}));
         expect(result).toEqual(mockAutoAssignResponse);
+      });
+
+      it('should handle default departmentWise parameter', async () => {
+        mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, json: async () => ({ data: mockAutoAssignResponse }) }));
+        const result = await projectLocationService.autoAssignLocations('event1');
+        expect(fetch).toHaveBeenCalledWith('/api/project-locations/auto-assign', expect.objectContaining({ method: 'POST', body: JSON.stringify({ eventId: 'event1', departmentWise: true }) }));
+        expect(result).toEqual(mockAutoAssignResponse);
+      });
+
+      it('should handle direct auto-assign response', async () => {
+        mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, json: async () => mockAutoAssignResponse }));
+        const result = await projectLocationService.autoAssignLocations('event1', false);
+        expect(result).toEqual(mockAutoAssignResponse);
+      });
+
+      it('should handle errors when auto-assigning locations', async () => {
+        mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Auto-assign failed' }) }));
+        await expect(projectLocationService.autoAssignLocations('event1')).rejects.toThrow('Auto-assign failed');
+      });
+
+      it('should handle errors without message when auto-assigning locations', async () => {
+        mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => { throw new Error('Invalid JSON'); } }));
+        await expect(projectLocationService.autoAssignLocations('event1')).rejects.toThrow('Failed to auto-assign locations');
+      });
+
+      it('should handle error response without message property when auto-assigning locations', async () => {
+        mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ error: 'Some other error format' }) }));
+        await expect(projectLocationService.autoAssignLocations('event1')).rejects.toThrow('Failed to auto-assign locations');
       });
   });
 
