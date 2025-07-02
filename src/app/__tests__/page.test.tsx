@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, jest } from '@jest/globals';
+import '@testing-library/jest-dom';
 import HomePage from '../page';
 
 // Mock Next.js components
@@ -15,20 +15,19 @@ jest.mock('next/image', () => {
   };
 });
 
-// Mock components
-jest.mock('@/components/public-nav', () => {
-  return function MockPublicNav() {
+// Mock the PublicNav component (named export)
+jest.mock('@/components/public-nav', () => ({
+  PublicNav: function MockPublicNav() {
     return <nav data-testid="public-nav">Public Navigation</nav>;
-  };
-});
+  }
+}));
 
-jest.mock('@/components/footer', () => {
-  return {
-    Footer: function MockFooter() {
-      return <footer data-testid="footer">Footer</footer>;
-    }
-  };
-});
+// Mock the Footer component (named export)
+jest.mock('@/components/footer', () => ({
+  Footer: function MockFooter() {
+    return <footer data-testid="footer">Footer</footer>;
+  }
+}));
 
 // Mock UI components
 jest.mock('@/components/ui/button', () => ({
@@ -117,7 +116,7 @@ describe('HomePage', () => {
   it('should display establishment badges', () => {
     render(<HomePage />);
     expect(screen.getByText('Est. 1984')).toBeInTheDocument();
-    expect(screen.getByText('AICTE Approved')).toBeInTheDocument();
+    expect(screen.getAllByText('AICTE Approved')).toHaveLength(2); // Appears in badge and features
     expect(screen.getByText('GTU Affiliated')).toBeInTheDocument();
   });
 
@@ -127,22 +126,29 @@ describe('HomePage', () => {
     expect(screen.getByText('Explore Programs')).toBeInTheDocument();
   });
 
-  it('should display statistics', () => {
+  it('should display main content sections', () => {
     render(<HomePage />);
-    expect(screen.getByText('40+')).toBeInTheDocument();
-    expect(screen.getByText('Years of Excellence')).toBeInTheDocument();
-    expect(screen.getByText('171')).toBeInTheDocument();
-    expect(screen.getByText('Job Offers (2024)')).toBeInTheDocument();
-    expect(screen.getByText('25+')).toBeInTheDocument();
-    expect(screen.getByText('Modern Labs')).toBeInTheDocument();
-    expect(screen.getByText('18K+')).toBeInTheDocument();
-    expect(screen.getByText('Library Books')).toBeInTheDocument();
+    
+    // Check for main description
+    expect(screen.getByText(/Building technical excellence for over 40 years/)).toBeInTheDocument();
+    
+    // Check for quick stats
+    expect(screen.getByText('6')).toBeInTheDocument();
+    expect(screen.getAllByText('Departments')).toHaveLength(2); // Appears in stats and quick links
+    expect(screen.getByText('66')).toBeInTheDocument();
+    expect(screen.getByText('Faculty')).toBeInTheDocument();
+    expect(screen.getByText('3')).toBeInTheDocument();
+    expect(screen.getByText('NBA Accredited')).toBeInTheDocument();
   });
 
   it('should display video section', () => {
     render(<HomePage />);
     expect(screen.getByText('Discover GP Palanpur')).toBeInTheDocument();
-    expect(screen.getByTitle('Government Polytechnic Palanpur Introduction')).toBeInTheDocument();
+    
+    // Check for YouTube iframe
+    const iframe = screen.getByTitle('Government Polytechnic Palanpur Introduction');
+    expect(iframe).toBeInTheDocument();
+    expect(iframe).toHaveAttribute('src', 'https://www.youtube.com/embed/Z6w-asbJO9E?start=336');
   });
 
   it('should display academic programs section', () => {
@@ -165,7 +171,7 @@ describe('HomePage', () => {
   it('should display key features section', () => {
     render(<HomePage />);
     expect(screen.getByText('Why Choose GP Palanpur?')).toBeInTheDocument();
-    expect(screen.getByText('AICTE Approved')).toBeInTheDocument();
+    expect(screen.getAllByText('AICTE Approved')).toHaveLength(2); // Badge and features section
     expect(screen.getByText('NBA Accredited Programs')).toBeInTheDocument();
     expect(screen.getByText('Strong Placements')).toBeInTheDocument();
     expect(screen.getByText('Modern Infrastructure')).toBeInTheDocument();
@@ -185,10 +191,10 @@ describe('HomePage', () => {
   it('should display quick links section', () => {
     render(<HomePage />);
     expect(screen.getByText('Quick Links')).toBeInTheDocument();
-    expect(screen.getByText('Admissions')).toBeInTheDocument();
-    expect(screen.getByText('Facilities')).toBeInTheDocument();
+    expect(screen.getByText('Admissions')).toBeInTheDocument(); // Only appears once in quick links
+    expect(screen.getByText('Facilities')).toBeInTheDocument(); // Only appears once in quick links
     expect(screen.getByText('Portal')).toBeInTheDocument();
-    expect(screen.getByText('Departments')).toBeInTheDocument();
+    expect(screen.getAllByText('Departments')).toHaveLength(2); // Appears in stats and quick links
   });
 
   it('should have proper link hrefs', () => {
@@ -209,20 +215,16 @@ describe('HomePage', () => {
     expect(campusImage).toHaveAttribute('src', '/newsletters/imgs/IMG_20241014_072640_109.jpg');
   });
 
-  it('should display faculty statistics', () => {
+  it('should display detailed statistics', () => {
     render(<HomePage />);
-    expect(screen.getByText('6')).toBeInTheDocument();
-    expect(screen.getByText('Departments')).toBeInTheDocument();
-    expect(screen.getByText('66')).toBeInTheDocument();
-    expect(screen.getByText('Faculty')).toBeInTheDocument();
-    expect(screen.getByText('3')).toBeInTheDocument();
-    expect(screen.getByText('NBA Accredited')).toBeInTheDocument();
-  });
-
-  it('should render iframe with correct YouTube video', () => {
-    render(<HomePage />);
-    const iframe = screen.getByTitle('Government Polytechnic Palanpur Introduction');
-    expect(iframe).toHaveAttribute('src', 'https://www.youtube.com/embed/Z6w-asbJO9E?start=336');
+    expect(screen.getByText('40+')).toBeInTheDocument();
+    expect(screen.getByText('Years of Excellence')).toBeInTheDocument();
+    expect(screen.getByText('171')).toBeInTheDocument();
+    expect(screen.getByText('Job Offers (2024)')).toBeInTheDocument();
+    expect(screen.getByText('25+')).toBeInTheDocument();
+    expect(screen.getByText('Modern Labs')).toBeInTheDocument();
+    expect(screen.getByText('18K+')).toBeInTheDocument();
+    expect(screen.getByText('Library Books')).toBeInTheDocument();
   });
 
   it('should display department establishment years', () => {
@@ -241,5 +243,31 @@ describe('HomePage', () => {
     expect(screen.getByText('10 Faculty Members')).toBeInTheDocument(); // Electrical
     expect(screen.getByText('23 Faculty Members')).toBeInTheDocument(); // Mechanical
     expect(screen.getByText('8 Faculty Members')).toBeInTheDocument(); // ECE
+  });
+
+  it('should have proper semantic structure', () => {
+    render(<HomePage />);
+    
+    // Check for main heading
+    const mainHeading = screen.getByRole('heading', { level: 1 });
+    expect(mainHeading).toBeInTheDocument();
+    
+    // Check for multiple sections
+    const sections = document.querySelectorAll('section');
+    expect(sections.length).toBeGreaterThan(3);
+    
+    // Check that navigation and footer are present
+    expect(screen.getByTestId('public-nav')).toBeInTheDocument();
+    expect(screen.getByTestId('footer')).toBeInTheDocument();
+  });
+
+  it('should display feature descriptions correctly', () => {
+    render(<HomePage />);
+    expect(screen.getByText(/Government-recognized institution/)).toBeInTheDocument();
+    expect(screen.getByText(/Three programs with National Board/)).toBeInTheDocument();
+    expect(screen.getByText(/171 job offers in 2024/)).toBeInTheDocument();
+    expect(screen.getByText(/18.8-acre campus/)).toBeInTheDocument();
+    expect(screen.getByText(/Solar power plant/)).toBeInTheDocument();
+    expect(screen.getByText(/66 GPSC selected faculty/)).toBeInTheDocument();
   });
 });
