@@ -49,8 +49,17 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Copy content directory for markdown files
 COPY --from=builder --chown=nextjs:nodejs /app/content ./content
 
-# Copy production node_modules
-COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
+# Copy scripts directory for database seeding
+COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
+
+# Copy TypeScript config for seeding scripts
+COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json ./tsconfig.json
+
+# Copy source directory for seeding script imports
+COPY --from=builder --chown=nextjs:nodejs /app/src ./src
+
+# Copy ALL node_modules (including dev dependencies) for seeding scripts
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 
 USER nextjs
 
