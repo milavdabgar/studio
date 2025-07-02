@@ -19,8 +19,23 @@ const mockLocalStorage = (() => {
   };
 })();
 
-Object.defineProperty(window, 'localStorage', {
-  value: mockLocalStorage,
+// Save original localStorage
+const originalLocalStorage = window.localStorage;
+
+// Setup mock before each test
+beforeAll(() => {
+  Object.defineProperty(window, 'localStorage', { 
+    value: mockLocalStorage,
+    writable: true 
+  });
+});
+
+// Restore original after all tests
+afterAll(() => {
+  Object.defineProperty(window, 'localStorage', { 
+    value: originalLocalStorage,
+    writable: true 
+  });
 });
 
 describe('useLocalStorage', () => {
@@ -30,6 +45,9 @@ describe('useLocalStorage', () => {
   });
 
   it('should initialize with the initial value if no value in localStorage', () => {
+    // Ensure getItem returns null to simulate empty localStorage
+    mockLocalStorage.getItem.mockReturnValueOnce(null);
+    
     const { result } = renderHook(() => 
       useLocalStorage('testKey', 'initialValue')
     );
@@ -40,8 +58,9 @@ describe('useLocalStorage', () => {
   });
 
   it('should retrieve and return the value from localStorage if it exists', () => {
+    // Mock the localStorage to return a specific value
     const storedValue = JSON.stringify('storedValue');
-    mockLocalStorage.setItem('testKey', storedValue);
+    mockLocalStorage.getItem.mockReturnValueOnce(storedValue);
     
     const { result } = renderHook(() => 
       useLocalStorage('testKey', 'initialValue')
@@ -49,14 +68,21 @@ describe('useLocalStorage', () => {
     
     const [value] = result.current;
     expect(value).toBe('storedValue');
+    expect(mockLocalStorage.getItem).toHaveBeenCalledWith('testKey');
   });
 
   it('should update localStorage when value changes', () => {
+    // Initial setup
+    mockLocalStorage.getItem.mockReturnValueOnce(null);
+    
     const { result } = renderHook(() => 
       useLocalStorage('testKey', 'initialValue')
     );
     
     const [, setValue] = result.current;
+    
+    // Reset mocks to clearly see the setItem call
+    jest.clearAllMocks();
     
     act(() => {
       setValue('newValue');
@@ -70,11 +96,17 @@ describe('useLocalStorage', () => {
   });
 
   it('should handle function updates', () => {
+    // Initial setup
+    mockLocalStorage.getItem.mockReturnValueOnce(JSON.stringify(0));
+    
     const { result } = renderHook(() => 
       useLocalStorage('counter', 0)
     );
     
     const [, setValue] = result.current;
+    
+    // Reset mocks to clearly see the setItem call
+    jest.clearAllMocks();
     
     act(() => {
       setValue(prev => prev + 1);
@@ -88,12 +120,18 @@ describe('useLocalStorage', () => {
   });
 
   it('should handle objects and arrays', () => {
+    // Initial setup
     const initialValue = { name: 'John', age: 30 };
+    mockLocalStorage.getItem.mockReturnValueOnce(JSON.stringify(initialValue));
+    
     const { result } = renderHook(() => 
       useLocalStorage('user', initialValue)
     );
     
     const [, setValue] = result.current;
+    
+    // Reset mocks to clearly see the setItem call
+    jest.clearAllMocks();
     
     act(() => {
       setValue({ ...initialValue, age: 31 });
@@ -107,11 +145,17 @@ describe('useLocalStorage', () => {
   });
 
   it('should handle removal of the key', () => {
+    // Initial setup
+    mockLocalStorage.getItem.mockReturnValueOnce(JSON.stringify('value'));
+    
     const { result } = renderHook(() => 
       useLocalStorage('testKey', 'value')
     );
     
     const [, , remove] = result.current;
+    
+    // Reset mocks to clearly see the removeItem call
+    jest.clearAllMocks();
     
     act(() => {
       remove();
@@ -123,8 +167,7 @@ describe('useLocalStorage', () => {
 
   it('should handle errors and fallback to initial value', () => {
     // Mock localStorage.getItem to throw an error
-    const originalGetItem = mockLocalStorage.getItem;
-    mockLocalStorage.getItem = jest.fn().mockImplementation(() => {
+    mockLocalStorage.getItem.mockImplementationOnce(() => {
       throw new Error('Storage error');
     });
     
@@ -133,8 +176,6 @@ describe('useLocalStorage', () => {
     );
     
     expect(result.current[0]).toBe('fallbackValue');
-    
-    // Restore original implementation
-    mockLocalStorage.getItem = originalGetItem;
+    expect(mockLocalStorage.getItem).toHaveBeenCalledWith('testKey');
   });
 });

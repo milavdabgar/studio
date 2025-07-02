@@ -38,6 +38,8 @@ jobs:
           echo "Running test suite..."
           npm test
           echo "✅ All tests passed"
+        env:
+          CI: true
 
       - name: 🏗️ Build Next.js application
         run: |
