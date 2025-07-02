@@ -34,6 +34,14 @@ function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir, curren
     return files;
   }
   
+  // Skip heavy directories that contain mostly PDFs and don't contain blog posts
+  const skipDirectories = ['study-materials', 'images', 'assets'];
+  const currentDirName = currentPathParts[currentPathParts.length - 1];
+  if (skipDirectories.includes(currentDirName)) {
+    console.log(`[getAllMarkdownFilesRecursive] Skipping heavy directory: ${dir}`);
+    return files;
+  }
+  
   console.log(`[getAllMarkdownFilesRecursive] Scanning directory: ${dir}, currentPathParts: ${JSON.stringify(currentPathParts)}`);
 
   let entries;
@@ -50,6 +58,11 @@ function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir, curren
   for (const entry of entries) {
     const fullEntryPath = path.join(dir, entry.name);
     if (entry.isDirectory()) {
+      // Skip directories that might contain too many files (like study materials with many PDFs)
+      if (entry.name.includes('study-materials') || entry.name.includes('images') || entry.name.includes('assets')) {
+        console.log(`[getAllMarkdownFilesRecursive] Skipping directory with many files: ${entry.name}`);
+        continue;
+      }
       files = files.concat(getAllMarkdownFilesRecursive(fullEntryPath, baseDir, [...currentPathParts, entry.name]));
     } else if (entry.isFile() && entry.name.endsWith('.md')) {
       let lang = 'en'; 
