@@ -63,7 +63,7 @@ describe('ProjectService API Tests', () => {
 
     it('should filter out undefined, null, and empty string values', async () => {
       mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, json: async () => mockProjectsResponse }));
-      await projectService.getAllProjects({ category: 'Web', status: undefined, active: null, priority: '', empty: '   ' });
+      await projectService.getAllProjects({ category: 'Web', status: undefined as unknown as string, active: null as any, priority: '' as any, empty: '   ' as any });
       expect(fetch).toHaveBeenCalledWith('/api/projects?category=Web');
     });
 
@@ -395,7 +395,7 @@ describe('ProjectService API Tests', () => {
      it('should filter out undefined, null, and empty string values for export', async () => {
         const csvText = "id,title,category\nproj1,Test Project,Test";
         mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, text: async () => csvText }));
-        await projectService.exportProjects({ category: 'Web', status: undefined, active: null, priority: '' });
+        await projectService.exportProjects({ category: 'Web', status: undefined as unknown as string, active: null as any, priority: '' as any });
         expect(fetch).toHaveBeenCalledWith('/api/projects/export?category=Web');
      });
 

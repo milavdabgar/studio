@@ -688,6 +688,7 @@ export interface ResultFilterParams {
   uploadBatch?: string;
   page?: number;
   limit?: number;
+  search?: string; // Added search parameter
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
 }

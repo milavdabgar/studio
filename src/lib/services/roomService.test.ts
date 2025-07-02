@@ -1,6 +1,26 @@
 import { roomService } from './roomService';
 import type { Room, Building } from '@/types/entities';
 
+// Helper to create mock responses
+const createMockResponse = (options: { ok: boolean; status?: number; json?: () => Promise<any>; statusText?: string }): Response => {
+  return {
+    ok: options.ok,
+    status: options.status || (options.ok ? 200 : 500),
+    statusText: options.statusText || (options.ok ? 'OK' : 'Error'),
+    json: options.json || (async () => ({})),
+    headers: new Headers(),
+    redirected: false,
+    type: 'basic' as ResponseType,
+    url: '',
+    clone: () => createMockResponse(options),
+    text: async () => JSON.stringify(await (options.json ? options.json() : {})),
+    blob: async () => new Blob(),
+    formData: async () => new FormData(),
+    arrayBuffer: async () => new ArrayBuffer(0),
+    bodyUsed: false,
+  } as Response;
+};
+
 // Mock fetch globally
 global.fetch = jest.fn();
 const mockFetch = fetch as jest.MockedFunction<typeof fetch>;
@@ -94,7 +114,7 @@ describe('roomService', () => {
       name: 'Room 103', 
       roomNumber: '103',
       buildingId: 'building1', 
-      type: 'Classroom' as const,
+      type: 'Lecture Hall' as const,
       capacity: 25, 
       status: 'available' as const 
     };
@@ -130,11 +150,11 @@ describe('roomService', () => {
     });
 
     it('should throw default error when creation fails without error message', async () => {
-      mockFetch.mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce(createMockResponse({
         ok: false,
         status: 500,
         json: async () => { throw new Error('Invalid JSON'); },
-      } as Response);
+      }));
 
       await expect(roomService.createRoom(newRoomData)).rejects.toThrow('Failed to create room');
     });
@@ -184,11 +204,11 @@ describe('roomService', () => {
     });
 
     it('should throw default error when update fails without error message', async () => {
-      mockFetch.mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce(createMockResponse({
         ok: false,
         status: 500,
         json: async () => { throw new Error('Invalid JSON'); },
-      } as Response);
+      }));
 
       await expect(roomService.updateRoom('1', updateData)).rejects.toThrow('Failed to update room');
     });
@@ -229,11 +249,11 @@ describe('roomService', () => {
     });
 
     it('should throw default error when deletion fails without error message', async () => {
-      mockFetch.mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce(createMockResponse({
         ok: false,
         status: 500,
         json: async () => { throw new Error('Invalid JSON'); },
-      } as Response);
+      }));
 
       await expect(roomService.deleteRoom('1')).rejects.toThrow('Failed to delete room with id 1');
     });
@@ -335,11 +355,11 @@ describe('roomService', () => {
     });
 
     it('should throw default error when import fails without error message', async () => {
-      mockFetch.mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce(createMockResponse({
         ok: false,
         status: 500,
         json: async () => { throw new Error('Invalid JSON'); },
-      } as Response);
+      }));
 
       await expect(roomService.importRooms(mockFile, mockBuildings))
         .rejects.toThrow('Failed to import rooms');

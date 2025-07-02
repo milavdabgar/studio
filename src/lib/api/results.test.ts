@@ -56,7 +56,7 @@ describe('ResultService API Tests', () => {
       mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, json: async () => mockResultsResponse }));
       const params: ResultFilterParams = {
         branchName: 'CS',
-        semester: '1',
+        semester: 1,
         academicYear: '2024-25',
         search: 'John'
       };
@@ -69,7 +69,7 @@ describe('ResultService API Tests', () => {
       const params: ResultFilterParams = {
         branchName: 'CS',
         semester: undefined,
-        academicYear: null,
+        academicYear: undefined,
         search: ''
       };
       await resultService.getAllResults(params);
@@ -411,7 +411,7 @@ describe('ResultService API Tests', () => {
       mockFetch.mockResolvedValueOnce(mockResponse);
       const params: ResultFilterParams = {
         branchName: 'CS',
-        semester: '1',
+        semester: 1,
         academicYear: '2024-25'
       };
       await resultService.exportResults(params);
@@ -425,7 +425,7 @@ describe('ResultService API Tests', () => {
       const params: ResultFilterParams = {
         branchName: 'CS',
         semester: undefined,
-        academicYear: null,
+        academicYear: undefined,
         search: ''
       };
       await resultService.exportResults(params);
