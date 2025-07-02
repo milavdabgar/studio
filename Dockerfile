@@ -46,6 +46,9 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Copy content directory for markdown files
+COPY --from=builder --chown=nextjs:nodejs /app/content ./content
+
 # Copy production node_modules
 COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
 
