@@ -1,5 +1,9 @@
 name: Deploy Studio to Production
 
+# This workflow runs quality checks (TypeScript compilation and tests) 
+# before deploying to production to ensure we don't deploy buggy code.
+# Deployment only proceeds if all checks pass.
+
 on:
   push:
     branches:
@@ -7,7 +11,8 @@ on:
       - master
 
 jobs:
-  deploy:
+  test-and-deploy:
+    name: Test, Build and Deploy to Production
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -22,8 +27,31 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Next.js application
-        run: npm run build
+      - name: 🔍 Run TypeScript type checking
+        run: |
+          echo "Running TypeScript compilation check..."
+          npx tsc --noEmit
+          echo "✅ TypeScript compilation check passed"
+
+      - name: 🧪 Run test suite
+        run: |
+          echo "Running test suite..."
+          npm test
+          echo "✅ All tests passed"
+
+      - name: 🏗️ Build Next.js application
+        run: |
+          echo "Building Next.js application..."
+          npm run build
+          echo "✅ Build completed successfully"
+
+      - name: 🎯 Prepare for deployment
+        run: |
+          echo "🎉 All quality checks passed!"
+          echo "📦 TypeScript compilation: ✅"
+          echo "🧪 Test suite: ✅" 
+          echo "🏗️ Build: ✅"
+          echo "🚀 Proceeding with deployment to production..."
 
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
