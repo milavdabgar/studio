@@ -9,6 +9,23 @@ window.location = {
   reload: jest.fn() 
 };
 
+// Suppress JSDOM navigation warnings
+const originalConsoleError = console.error;
+beforeAll(() => {
+  console.error = (...args: any[]) => {
+    const message = args[0]?.toString() || '';
+    if (message.includes('Error: Not implemented: navigation') || 
+        message.includes('Not implemented: navigation (except hash changes)')) {
+      return; // Suppress JSDOM navigation errors
+    }
+    originalConsoleError.apply(console, args);
+  };
+});
+
+afterAll(() => {
+  console.error = originalConsoleError;
+});
+
 // Mock basic admin dashboard component since it may not exist or be complex
 const MockAdminDashboard = ({ isLoading = false, error = null, userRole = 'admin' }: any) => {
   const dashboardData = {

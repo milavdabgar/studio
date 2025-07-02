@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import LoginPage from '../page';
 import { roleService } from '@/lib/api/roles';
@@ -82,7 +82,9 @@ describe('Login Page', () => {
   });
 
   it('should render login form with all fields', async () => {
-    render(<LoginPage />);
+    await act(async () => {
+      render(<LoginPage />);
+    });
     
     // Wait for component to mount and load roles
     await waitFor(() => {
@@ -96,7 +98,9 @@ describe('Login Page', () => {
   });
 
   it('should have default values populated', async () => {
-    render(<LoginPage />);
+    await act(async () => {
+      render(<LoginPage />);
+    });
     
     await waitFor(() => {
       expect(screen.getByDisplayValue('admin@gppalanpur.in')).toBeInTheDocument();
@@ -107,7 +111,9 @@ describe('Login Page', () => {
   });
 
   it('should load and display roles in dropdown', async () => {
-    render(<LoginPage />);
+    await act(async () => {
+      render(<LoginPage />);
+    });
     
     await waitFor(() => {
       expect(mockRoleService.getAllRoles).toHaveBeenCalled();
@@ -124,9 +130,13 @@ describe('Login Page', () => {
     }, { timeout: 2000 });
   });
 
-  it('should show loading spinner during initial mount', () => {
+  it('should show loading spinner during initial mount', async () => {
     // Mock the component to not be mounted initially
-    const { rerender } = render(<LoginPage />);
+    let renderResult;
+    await act(async () => {
+      renderResult = render(<LoginPage />);
+    });
+    const { rerender } = renderResult;
     
     // The component should render immediately with form elements
     // since isMounted state is managed internally
@@ -135,7 +145,9 @@ describe('Login Page', () => {
 
   it('should handle successful login with valid credentials', async () => {
     const user = userEvent.setup();
-    render(<LoginPage />);
+    await act(async () => {
+      render(<LoginPage />);
+    });
     
     await waitFor(() => {
       expect(screen.getByDisplayValue('admin@gppalanpur.in')).toBeInTheDocument();
@@ -153,7 +165,9 @@ describe('Login Page', () => {
 
   it('should show error for invalid credentials', async () => {
     const user = userEvent.setup();
-    render(<LoginPage />);
+    await act(async () => {
+      render(<LoginPage />);
+    });
     
     await waitFor(() => {
       expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
@@ -181,7 +195,9 @@ describe('Login Page', () => {
 
   it('should show error for inactive user', async () => {
     const user = userEvent.setup();
-    render(<LoginPage />);
+    await act(async () => {
+      render(<LoginPage />);
+    });
     
     await waitFor(() => {
       expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
@@ -211,7 +227,9 @@ describe('Login Page', () => {
 
   it('should update available roles when email changes', async () => {
     const user = userEvent.setup();
-    render(<LoginPage />);
+    await act(async () => {
+      render(<LoginPage />);
+    });
     
     await waitFor(() => {
       expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
@@ -232,7 +250,9 @@ describe('Login Page', () => {
 
   it('should handle role selection validation', async () => {
     const user = userEvent.setup();
-    render(<LoginPage />);
+    await act(async () => {
+      render(<LoginPage />);
+    });
     
     await waitFor(() => {
       expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
@@ -264,7 +284,9 @@ describe('Login Page', () => {
 
   it('should disable form during submission', async () => {
     const user = userEvent.setup();
-    render(<LoginPage />);
+    await act(async () => {
+      render(<LoginPage />);
+    });
     
     await waitFor(() => {
       expect(screen.getByDisplayValue('admin@gppalanpur.in')).toBeInTheDocument();
@@ -286,7 +308,9 @@ describe('Login Page', () => {
 
   it('should show loading state during submission', async () => {
     const user = userEvent.setup();
-    render(<LoginPage />);
+    await act(async () => {
+      render(<LoginPage />);
+    });
     
     await waitFor(() => {
       expect(screen.getByDisplayValue('admin@gppalanpur.in')).toBeInTheDocument();
@@ -307,7 +331,9 @@ describe('Login Page', () => {
   it('should handle role service error gracefully', async () => {
     mockRoleService.getAllRoles.mockRejectedValue(new Error('Network error'));
     
-    render(<LoginPage />);
+    await act(async () => {
+      render(<LoginPage />);
+    });
     
     await waitFor(() => {
       expect(mockToast).toHaveBeenCalledWith({
@@ -338,7 +364,9 @@ describe('Login Page', () => {
     });
 
     it('should show clear storage button in development', async () => {
-      render(<LoginPage />);
+      await act(async () => {
+        render(<LoginPage />);
+      });
       
       await waitFor(() => {
         expect(screen.getByText(/clear api stores/i)).toBeInTheDocument();
@@ -359,7 +387,9 @@ describe('Login Page', () => {
         writable: true,
       });
       
-      render(<LoginPage />);
+      await act(async () => {
+        render(<LoginPage />);
+      });
       
       await waitFor(() => {
         expect(screen.getByText(/clear api stores/i)).toBeInTheDocument();
@@ -380,7 +410,9 @@ describe('Login Page', () => {
 
   describe('Navigation Links', () => {
     it('should render forgot password link', async () => {
-      render(<LoginPage />);
+      await act(async () => {
+        render(<LoginPage />);
+      });
       
       await waitFor(() => {
         expect(screen.getByText(/forgot password/i)).toBeInTheDocument();
@@ -388,7 +420,9 @@ describe('Login Page', () => {
     });
 
     it('should render sign up link', async () => {
-      render(<LoginPage />);
+      await act(async () => {
+        render(<LoginPage />);
+      });
       
       await waitFor(() => {
         const signUpLink = screen.getByRole('link', { name: /sign up/i });
@@ -401,7 +435,9 @@ describe('Login Page', () => {
   describe('Form Validation', () => {
     it('should require email field', async () => {
       const user = userEvent.setup();
-      render(<LoginPage />);
+      await act(async () => {
+        render(<LoginPage />);
+      });
       
       await waitFor(() => {
         expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
@@ -413,7 +449,9 @@ describe('Login Page', () => {
     });
 
     it('should require password field', async () => {
-      render(<LoginPage />);
+      await act(async () => {
+        render(<LoginPage />);
+      });
       
       await waitFor(() => {
         const passwordInput = screen.getByLabelText(/password/i);
@@ -423,7 +461,9 @@ describe('Login Page', () => {
     });
 
     it('should require role selection', async () => {
-      render(<LoginPage />);
+      await act(async () => {
+        render(<LoginPage />);
+      });
       
       await waitFor(() => {
         const roleSelect = screen.getByRole('combobox');
@@ -434,7 +474,9 @@ describe('Login Page', () => {
 
   describe('UI Elements', () => {
     it('should render app logo', async () => {
-      render(<LoginPage />);
+      await act(async () => {
+        render(<LoginPage />);
+      });
       
       await waitFor(() => {
         expect(screen.getByRole('img')).toBeInTheDocument();
@@ -442,7 +484,9 @@ describe('Login Page', () => {
     });
 
     it('should render welcome message', async () => {
-      render(<LoginPage />);
+      await act(async () => {
+        render(<LoginPage />);
+      });
       
       await waitFor(() => {
         expect(screen.getByText(/welcome back!/i)).toBeInTheDocument();
@@ -451,7 +495,9 @@ describe('Login Page', () => {
     });
 
     it('should have proper styling classes', async () => {
-      render(<LoginPage />);
+      await act(async () => {
+        render(<LoginPage />);
+      });
       
       await waitFor(() => {
         const card = screen.getByText(/welcome back!/i).closest('.shadow-2xl');
@@ -520,7 +566,9 @@ describe('Login Page', () => {
 
   describe('Accessibility', () => {
     it('should have proper form labels', async () => {
-      render(<LoginPage />);
+      await act(async () => {
+        render(<LoginPage />);
+      });
       
       await waitFor(() => {
         expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
@@ -530,7 +578,9 @@ describe('Login Page', () => {
     });
 
     it('should have proper button text and icons', async () => {
-      render(<LoginPage />);
+      await act(async () => {
+        render(<LoginPage />);
+      });
       
       await waitFor(() => {
         const loginButton = screen.getByRole('button', { name: /login/i });
@@ -539,7 +589,9 @@ describe('Login Page', () => {
     });
 
     it('should have proper form structure', async () => {
-      render(<LoginPage />);
+      await act(async () => {
+        render(<LoginPage />);
+      });
       
       await waitFor(() => {
         const form = screen.getByRole('form');

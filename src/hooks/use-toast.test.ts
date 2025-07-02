@@ -2,7 +2,7 @@
 jest.unmock('@/hooks/use-toast');
 
 import { useToast } from './use-toast';
-import { renderHook } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
 
 // Mock timers for testing timeout behavior
@@ -48,7 +48,9 @@ describe('useToast', () => {
       
       // Call the toast function to ensure it doesn't throw
       expect(() => {
-        result.current.toast({ title: 'Test Toast' });
+        act(() => {
+          result.current.toast({ title: 'Test Toast' });
+        });
       }).not.toThrow();
     });
 
@@ -57,7 +59,9 @@ describe('useToast', () => {
       
       // Call the dismiss function to ensure it doesn't throw
       expect(() => {
-        result.current.dismiss();
+        act(() => {
+          result.current.dismiss();
+        });
       }).not.toThrow();
     });
   });

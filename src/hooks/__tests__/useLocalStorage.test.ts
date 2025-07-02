@@ -125,6 +125,9 @@ describe('useLocalStorage', () => {
   });
 
   test('should handle errors and fallback to initial value', () => {
+    // Suppress console.error for this test
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    
     // Override getItem to throw an error for this test
     getItemSpy.mockImplementationOnce(() => {
       throw new Error('Storage error');
@@ -134,5 +137,9 @@ describe('useLocalStorage', () => {
     
     expect(result.current[0]).toBe('fallbackValue');
     expect(getItemSpy).toHaveBeenCalledWith('testKey');
+    expect(consoleSpy).toHaveBeenCalledWith('Error reading from localStorage', expect.any(Error));
+    
+    // Restore console.error
+    consoleSpy.mockRestore();
   });
 });
