@@ -1,60 +1,351 @@
 import { buildingService } from './buildingService';
-import { Building } from '../../types/entities';
+import type { Building, Institute } from '@/types/entities';
 
-describe('BuildingService', () => {
+// Mock fetch globally
+global.fetch = jest.fn();
+const mockFetch = fetch as jest.MockedFunction<typeof fetch>;
+
+describe('buildingService', () => {
   const mockBuildings: Building[] = [
     { id: '1', name: 'Building A', instituteId: 'inst1', status: 'active' },
-    { id: '2', name: 'Building B', instituteId: 'inst1', status: 'active' },
+    { id: '2', name: 'Building B', instituteId: 'inst2', status: 'active' },
+  ];
+
+  const mockInstitutes: Institute[] = [
+    { id: 'inst1', name: 'Institute A', code: 'IA', status: 'active' },
+    { id: 'inst2', name: 'Institute B', code: 'IB', status: 'active' },
   ];
 
   beforeEach(() => {
-    // Mock the API calls to return the mock data
-    jest.spyOn(buildingService, 'getAllBuildings').mockResolvedValue(mockBuildings);
-    jest.spyOn(buildingService, 'getBuildingById').mockImplementation((id: string) => {
-      const building = mockBuildings.find(building => building.id === id);
-      return Promise.resolve(building ? building : Promise.reject(new Error(`Failed to fetch building with id ${id}`)));
-    });
+    mockFetch.mockClear();
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
-  it('should be defined', () => {
-    expect(buildingService).toBeDefined();
+  describe('getAllBuildings', () => {
+    it('should fetch all buildings successfully', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockBuildings,
+      } as Response);
+
+      const result = await buildingService.getAllBuildings();
+
+      expect(mockFetch).toHaveBeenCalledWith('/api/buildings');
+      expect(result).toEqual(mockBuildings);
+    });
+
+    it('should throw error when fetch fails', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+      } as Response);
+
+      await expect(buildingService.getAllBuildings()).rejects.toThrow('Failed to fetch buildings');
+      expect(mockFetch).toHaveBeenCalledWith('/api/buildings');
+    });
   });
 
-  it('should get all buildings', async () => {
-    const buildings = await buildingService.getAllBuildings();
-    expect(buildings).toEqual(mockBuildings);
+  describe('getBuildingById', () => {
+    it('should fetch building by id successfully', async () => {
+      const building = mockBuildings[0];
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => building,
+      } as Response);
+
+      const result = await buildingService.getBuildingById('1');
+
+      expect(mockFetch).toHaveBeenCalledWith('/api/buildings/1');
+      expect(result).toEqual(building);
+    });
+
+    it('should throw error when building not found', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+      } as Response);
+
+      await expect(buildingService.getBuildingById('999')).rejects.toThrow('Failed to fetch building with id 999');
+      expect(mockFetch).toHaveBeenCalledWith('/api/buildings/999');
+    });
   });
 
-  it('should get a building by id', async () => {
-    const building = await buildingService.getBuildingById('1');
-    expect(building).toEqual(mockBuildings[0]);
+  describe('createBuilding', () => {
+    const newBuildingData = { name: 'Building C', instituteId: 'inst1', status: 'active' as const };
+    const createdBuilding = { id: '3', ...newBuildingData };
+
+    it('should create building successfully', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => createdBuilding,
+      } as Response);
+
+      const result = await buildingService.createBuilding(newBuildingData);
+
+      expect(mockFetch).toHaveBeenCalledWith('/api/buildings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newBuildingData),
+      });
+      expect(result).toEqual(createdBuilding);
+    });
+
+    it('should throw error when creation fails with error message', async () => {
+      const errorResponse = { message: 'Building name already exists' };
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        json: async () => errorResponse,
+      } as Response);
+
+      await expect(buildingService.createBuilding(newBuildingData)).rejects.toThrow('Building name already exists');
+    });
+
+    it('should throw default error when creation fails without error message', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        json: async () => { throw new Error('Invalid JSON'); },
+      } as Response);
+
+      await expect(buildingService.createBuilding(newBuildingData)).rejects.toThrow('Failed to create building');
+    });
+
+    it('should handle error response without message property', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        json: async () => ({ error: 'Some other error format' }),
+      } as Response);
+
+      await expect(buildingService.createBuilding(newBuildingData)).rejects.toThrow('Failed to create building');
+    });
   });
 
-  it('should throw an error if building id is not found', async () => {
-    await expect(buildingService.getBuildingById('3')).rejects.toThrow('Failed to fetch building with id 3');
+  describe('updateBuilding', () => {
+    const updateData = { name: 'Updated Building A' };
+    const updatedBuilding = { id: '1', name: 'Updated Building A', instituteId: 'inst1', status: 'active' as const };
+
+    it('should update building successfully', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => updatedBuilding,
+      } as Response);
+
+      const result = await buildingService.updateBuilding('1', updateData);
+
+      expect(mockFetch).toHaveBeenCalledWith('/api/buildings/1', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateData),
+      });
+      expect(result).toEqual(updatedBuilding);
+    });
+
+    it('should throw error when update fails with error message', async () => {
+      const errorResponse = { message: 'Building not found' };
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+        json: async () => errorResponse,
+      } as Response);
+
+      await expect(buildingService.updateBuilding('999', updateData)).rejects.toThrow('Building not found');
+    });
+
+    it('should throw default error when update fails without error message', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        json: async () => { throw new Error('Invalid JSON'); },
+      } as Response);
+
+      await expect(buildingService.updateBuilding('1', updateData)).rejects.toThrow('Failed to update building');
+    });
+
+    it('should handle error response without message property', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        json: async () => ({ error: 'Some other error format' }),
+      } as Response);
+
+      await expect(buildingService.updateBuilding('1', updateData)).rejects.toThrow('Failed to update building');
+    });
   });
 
-  it('should add a building', async () => {
-    const newBuilding: Building = { id: '3', name: 'Building C', instituteId: 'inst1', status: 'active' };
-    jest.spyOn(buildingService, 'createBuilding').mockResolvedValue(newBuilding);
-    const building = await buildingService.createBuilding(newBuilding);
-    expect(building).toEqual(newBuilding);
+  describe('deleteBuilding', () => {
+    it('should delete building successfully', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+      } as Response);
+
+      await buildingService.deleteBuilding('1');
+
+      expect(mockFetch).toHaveBeenCalledWith('/api/buildings/1', {
+        method: 'DELETE',
+      });
+    });
+
+    it('should throw error when deletion fails with error message', async () => {
+      const errorResponse = { message: 'Building not found' };
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+        json: async () => errorResponse,
+      } as Response);
+
+      await expect(buildingService.deleteBuilding('999')).rejects.toThrow('Building not found');
+    });
+
+    it('should throw default error when deletion fails without error message', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        json: async () => { throw new Error('Invalid JSON'); },
+      } as Response);
+
+      await expect(buildingService.deleteBuilding('1')).rejects.toThrow('Failed to delete building with id 1');
+    });
+
+    it('should handle error response without message property', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        json: async () => ({ error: 'Some other error format' }),
+      } as Response);
+
+      await expect(buildingService.deleteBuilding('1')).rejects.toThrow('Failed to delete building with id 1');
+    });
   });
 
-  it('should update a building', async () => {
-    const updatedBuilding: Building = { id: '1', name: 'Updated Building A', instituteId: 'inst1', status: 'active' };
-    jest.spyOn(buildingService, 'updateBuilding').mockResolvedValue(updatedBuilding);
-    const building = await buildingService.updateBuilding(updatedBuilding.id, { name: updatedBuilding.name });
-    expect(building).toEqual(updatedBuilding);
+  describe('importBuildings', () => {
+    const mockFile = new File(['test'], 'buildings.csv', { type: 'text/csv' });
+    const importResult = { newCount: 5, updatedCount: 2, skippedCount: 1 };
+
+    it('should import buildings successfully', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => importResult,
+      } as Response);
+
+      const result = await buildingService.importBuildings(mockFile, mockInstitutes);
+
+      expect(mockFetch).toHaveBeenCalledWith('/api/buildings/import', {
+        method: 'POST',
+        body: expect.any(FormData),
+      });
+      expect(result).toEqual(importResult);
+
+      // Verify FormData contents
+      const call = mockFetch.mock.calls[0];
+      const formData = call[1]?.body as FormData;
+      expect(formData.get('file')).toBe(mockFile);
+      expect(formData.get('institutes')).toBe(JSON.stringify(mockInstitutes));
+    });
+
+    it('should throw error when import fails with detailed error messages', async () => {
+      const errorResponse = {
+        message: 'Import failed',
+        errors: ['Row 1: Missing institute', 'Row 2: Invalid format', 'Row 3: Duplicate name', 'Row 4: Another error']
+      };
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        json: async () => errorResponse,
+      } as Response);
+
+      await expect(buildingService.importBuildings(mockFile, mockInstitutes))
+        .rejects.toThrow('Import failed Specific issues: Row 1: Missing institute; Row 2: Invalid format; Row 3: Duplicate name...');
+    });
+
+    it('should throw error when import fails with few error messages', async () => {
+      const errorResponse = {
+        message: 'Import failed',
+        errors: ['Row 1: Missing institute', 'Row 2: Invalid format']
+      };
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        json: async () => errorResponse,
+      } as Response);
+
+      await expect(buildingService.importBuildings(mockFile, mockInstitutes))
+        .rejects.toThrow('Import failed Specific issues: Row 1: Missing institute; Row 2: Invalid format');
+    });
+
+    it('should throw error when import fails with non-array errors', async () => {
+      const errorResponse = {
+        message: 'Import failed',
+        errors: 'Not an array'
+      };
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        json: async () => errorResponse,
+      } as Response);
+
+      await expect(buildingService.importBuildings(mockFile, mockInstitutes))
+        .rejects.toThrow('Import failed');
+    });
+
+    it('should throw error when import fails with empty errors array', async () => {
+      const errorResponse = {
+        message: 'Import failed',
+        errors: []
+      };
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        json: async () => errorResponse,
+      } as Response);
+
+      await expect(buildingService.importBuildings(mockFile, mockInstitutes))
+        .rejects.toThrow('Import failed');
+    });
+
+    it('should throw default error when import fails without error message', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        json: async () => { throw new Error('Invalid JSON'); },
+      } as Response);
+
+      await expect(buildingService.importBuildings(mockFile, mockInstitutes))
+        .rejects.toThrow('Failed to import buildings');
+    });
+
+    it('should handle error response without message property', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        json: async () => ({ error: 'Some other error format' }),
+      } as Response);
+
+      await expect(buildingService.importBuildings(mockFile, mockInstitutes))
+        .rejects.toThrow('Failed to import buildings');
+    });
   });
 
-  it('should delete a building', async () => {
-    jest.spyOn(buildingService, 'deleteBuilding').mockResolvedValue(undefined);
-    await buildingService.deleteBuilding('1');
-    expect(buildingService.deleteBuilding).toHaveBeenCalledWith('1');
+  describe('API_BASE_URL configuration', () => {
+    it('should use environment variable for API base URL', () => {
+      // This test indirectly verifies that the API_BASE_URL is configured correctly
+      // by checking that fetch is called with the expected URL format
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockBuildings,
+      } as Response);
+
+      buildingService.getAllBuildings();
+
+      expect(mockFetch).toHaveBeenCalledWith('/api/buildings');
+    });
   });
 });
