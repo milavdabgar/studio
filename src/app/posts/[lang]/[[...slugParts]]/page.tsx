@@ -1,5 +1,8 @@
 // src/app/posts/[lang]/[[...slugParts]]/page.tsx
 
+// Force dynamic rendering for this page due to searchParams usage
+export const dynamic = 'force-dynamic';
+
 import { getPostData, getSortedPostsData, getPaginatedPosts, getSubPostsForDirectory, getDirectSubsections, getRelatedPosts, getAdjacentPosts, type PostData, type PostPreview } from '@/lib/markdown'; 
 import { format, parseISO, isValid } from 'date-fns';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';

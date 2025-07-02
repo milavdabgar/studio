@@ -42,8 +42,8 @@ pids
 coverage
 
 # Documentation
-*.md
 docs/
+# Note: Don't ignore *.md files as they contain our content
 
 # Git
 .git
