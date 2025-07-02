@@ -1,6 +1,26 @@
 import { buildingService } from './buildingService';
 import type { Building, Institute } from '@/types/entities';
 
+// Helper to create mock responses
+const createMockResponse = (options: { ok: boolean; status?: number; json?: () => Promise<any>; statusText?: string }): Response => {
+  return {
+    ok: options.ok,
+    status: options.status || (options.ok ? 200 : 500),
+    statusText: options.statusText || (options.ok ? 'OK' : 'Error'),
+    json: options.json || (async () => ({})),
+    headers: new Headers(),
+    redirected: false,
+    type: 'basic' as ResponseType,
+    url: '',
+    clone: () => createMockResponse(options),
+    text: async () => JSON.stringify(await (options.json ? options.json() : {})),
+    blob: async () => new Blob(),
+    formData: async () => new FormData(),
+    arrayBuffer: async () => new ArrayBuffer(0),
+    bodyUsed: false,
+  } as Response;
+};
+
 // Mock fetch globally
 global.fetch = jest.fn();
 const mockFetch = fetch as jest.MockedFunction<typeof fetch>;
@@ -107,11 +127,11 @@ describe('buildingService', () => {
     });
 
     it('should throw default error when creation fails without error message', async () => {
-      mockFetch.mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce(createMockResponse({
         ok: false,
         status: 500,
         json: async () => { throw new Error('Invalid JSON'); },
-      } as Response);
+      }));
 
       await expect(buildingService.createBuilding(newBuildingData)).rejects.toThrow('Failed to create building');
     });
@@ -161,11 +181,11 @@ describe('buildingService', () => {
     });
 
     it('should throw default error when update fails without error message', async () => {
-      mockFetch.mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce(createMockResponse({
         ok: false,
         status: 500,
         json: async () => { throw new Error('Invalid JSON'); },
-      } as Response);
+      }));
 
       await expect(buildingService.updateBuilding('1', updateData)).rejects.toThrow('Failed to update building');
     });
@@ -206,11 +226,11 @@ describe('buildingService', () => {
     });
 
     it('should throw default error when deletion fails without error message', async () => {
-      mockFetch.mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce(createMockResponse({
         ok: false,
         status: 500,
         json: async () => { throw new Error('Invalid JSON'); },
-      } as Response);
+      }));
 
       await expect(buildingService.deleteBuilding('1')).rejects.toThrow('Failed to delete building with id 1');
     });
@@ -312,11 +332,11 @@ describe('buildingService', () => {
     });
 
     it('should throw default error when import fails without error message', async () => {
-      mockFetch.mockResolvedValueOnce({
+      mockFetch.mockResolvedValueOnce(createMockResponse({
         ok: false,
         status: 500,
         json: async () => { throw new Error('Invalid JSON'); },
-      } as Response);
+      }));
 
       await expect(buildingService.importBuildings(mockFile, mockInstitutes))
         .rejects.toThrow('Failed to import buildings');

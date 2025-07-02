@@ -132,11 +132,11 @@ describe('Login Page', () => {
 
   it('should show loading spinner during initial mount', async () => {
     // Mock the component to not be mounted initially
-    let renderResult;
+    let renderResult: ReturnType<typeof render>;
     await act(async () => {
       renderResult = render(<LoginPage />);
     });
-    const { rerender } = renderResult;
+    const { rerender } = renderResult!
     
     // The component should render immediately with form elements
     // since isMounted state is managed internally
