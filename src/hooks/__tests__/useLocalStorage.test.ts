@@ -1,181 +1,138 @@
 import { renderHook, act } from '@testing-library/react';
 import { useLocalStorage } from '../useLocalStorage';
 
-// Mock the localStorage
-const mockLocalStorage = (() => {
-  let store: Record<string, string> = {};
-  
-  return {
-    getItem: jest.fn((key: string) => store[key] || null),
-    setItem: jest.fn((key: string, value: string) => {
-      store[key] = value.toString();
-    }),
-    removeItem: jest.fn((key: string) => {
-      delete store[key];
-    }),
-    clear: jest.fn(() => {
-      store = {};
-    }),
-  };
-})();
+// Create a simple in-memory storage object
+const mockStorage: Record<string, string> = {};
 
-// Save original localStorage
-const originalLocalStorage = window.localStorage;
+// Mocks for Storage prototype methods
+let getItemSpy: jest.SpyInstance;
+let setItemSpy: jest.SpyInstance;
+let removeItemSpy: jest.SpyInstance;
+let clearSpy: jest.SpyInstance;
 
-// Setup mock before each test
+// Setup before running any tests
 beforeAll(() => {
-  Object.defineProperty(window, 'localStorage', { 
-    value: mockLocalStorage,
-    writable: true 
+  // Create mocks that are compatible with both local and CI environments
+  // Need to save references to the spies to use them in tests
+  getItemSpy = jest.spyOn(window.localStorage, 'getItem').mockImplementation(
+    (key: string) => mockStorage[key] || null
+  );
+  
+  setItemSpy = jest.spyOn(window.localStorage, 'setItem').mockImplementation(
+    (key: string, value: string) => {
+      mockStorage[key] = value;
+    }
+  );
+  
+  removeItemSpy = jest.spyOn(window.localStorage, 'removeItem').mockImplementation(
+    (key: string) => {
+      delete mockStorage[key];
+    }
+  );
+  
+  clearSpy = jest.spyOn(window.localStorage, 'clear').mockImplementation(() => {
+    Object.keys(mockStorage).forEach(key => {
+      delete mockStorage[key];
+    });
   });
 });
 
-// Restore original after all tests
+// Clean up after all tests are done
 afterAll(() => {
-  Object.defineProperty(window, 'localStorage', { 
-    value: originalLocalStorage,
-    writable: true 
-  });
+  jest.restoreAllMocks();
 });
 
 describe('useLocalStorage', () => {
+  // Reset mocks between tests
   beforeEach(() => {
-    mockLocalStorage.clear();
+    // Clear mock storage
+    Object.keys(mockStorage).forEach(key => {
+      delete mockStorage[key];
+    });
+    
+    // Clear all mock function calls
     jest.clearAllMocks();
   });
 
-  it('should initialize with the initial value if no value in localStorage', () => {
-    // Ensure getItem returns null to simulate empty localStorage
-    mockLocalStorage.getItem.mockReturnValueOnce(null);
+  test('should initialize with the initial value if no value in localStorage', () => {
+    const { result } = renderHook(() => useLocalStorage('testKey', 'initialValue'));
     
-    const { result } = renderHook(() => 
-      useLocalStorage('testKey', 'initialValue')
-    );
-    
-    const [value] = result.current;
-    expect(value).toBe('initialValue');
-    expect(mockLocalStorage.getItem).toHaveBeenCalledWith('testKey');
+    expect(result.current[0]).toBe('initialValue');
+    expect(getItemSpy).toHaveBeenCalledWith('testKey');
   });
 
-  it('should retrieve and return the value from localStorage if it exists', () => {
-    // Mock the localStorage to return a specific value
-    const storedValue = JSON.stringify('storedValue');
-    mockLocalStorage.getItem.mockReturnValueOnce(storedValue);
+  test('should retrieve and return the value from localStorage if it exists', () => {
+    // Manually set up the mock storage before the test
+    mockStorage['testKey'] = JSON.stringify('storedValue');
     
-    const { result } = renderHook(() => 
-      useLocalStorage('testKey', 'initialValue')
-    );
+    const { result } = renderHook(() => useLocalStorage('testKey', 'initialValue'));
     
-    const [value] = result.current;
-    expect(value).toBe('storedValue');
-    expect(mockLocalStorage.getItem).toHaveBeenCalledWith('testKey');
+    expect(result.current[0]).toBe('storedValue');
+    expect(getItemSpy).toHaveBeenCalledWith('testKey');
   });
 
-  it('should update localStorage when value changes', () => {
-    // Initial setup
-    mockLocalStorage.getItem.mockReturnValueOnce(null);
-    
-    const { result } = renderHook(() => 
-      useLocalStorage('testKey', 'initialValue')
-    );
-    
-    const [, setValue] = result.current;
-    
-    // Reset mocks to clearly see the setItem call
-    jest.clearAllMocks();
+  test('should update localStorage when value changes', () => {
+    const { result } = renderHook(() => useLocalStorage('testKey', 'initialValue'));
     
     act(() => {
-      setValue('newValue');
+      result.current[1]('newValue');
     });
     
     expect(result.current[0]).toBe('newValue');
-    expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-      'testKey', 
-      JSON.stringify('newValue')
-    );
+    expect(setItemSpy).toHaveBeenCalledWith('testKey', JSON.stringify('newValue'));
+    expect(mockStorage['testKey']).toBe(JSON.stringify('newValue'));
   });
 
-  it('should handle function updates', () => {
-    // Initial setup
-    mockLocalStorage.getItem.mockReturnValueOnce(JSON.stringify(0));
+  test('should handle function updates', () => {
+    mockStorage['counter'] = JSON.stringify(0);
     
-    const { result } = renderHook(() => 
-      useLocalStorage('counter', 0)
-    );
-    
-    const [, setValue] = result.current;
-    
-    // Reset mocks to clearly see the setItem call
-    jest.clearAllMocks();
+    const { result } = renderHook(() => useLocalStorage('counter', 0));
     
     act(() => {
-      setValue(prev => prev + 1);
+      result.current[1](prev => prev + 1);
     });
     
     expect(result.current[0]).toBe(1);
-    expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-      'counter', 
-      JSON.stringify(1)
-    );
+    expect(setItemSpy).toHaveBeenCalledWith('counter', JSON.stringify(1));
+    expect(mockStorage['counter']).toBe(JSON.stringify(1));
   });
 
-  it('should handle objects and arrays', () => {
-    // Initial setup
+  test('should handle objects and arrays', () => {
     const initialValue = { name: 'John', age: 30 };
-    mockLocalStorage.getItem.mockReturnValueOnce(JSON.stringify(initialValue));
-    
-    const { result } = renderHook(() => 
-      useLocalStorage('user', initialValue)
-    );
-    
-    const [, setValue] = result.current;
-    
-    // Reset mocks to clearly see the setItem call
-    jest.clearAllMocks();
+    const { result } = renderHook(() => useLocalStorage('user', initialValue));
     
     act(() => {
-      setValue({ ...initialValue, age: 31 });
+      result.current[1]({ ...initialValue, age: 31 });
     });
     
     expect(result.current[0]).toEqual({ name: 'John', age: 31 });
-    expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-      'user', 
-      JSON.stringify({ name: 'John', age: 31 })
-    );
+    expect(setItemSpy).toHaveBeenCalledWith('user', JSON.stringify({ name: 'John', age: 31 }));
+    expect(mockStorage['user']).toBe(JSON.stringify({ name: 'John', age: 31 }));
   });
 
-  it('should handle removal of the key', () => {
-    // Initial setup
-    mockLocalStorage.getItem.mockReturnValueOnce(JSON.stringify('value'));
+  test('should handle removal of the key', () => {
+    mockStorage['testKey'] = JSON.stringify('value');
     
-    const { result } = renderHook(() => 
-      useLocalStorage('testKey', 'value')
-    );
-    
-    const [, , remove] = result.current;
-    
-    // Reset mocks to clearly see the removeItem call
-    jest.clearAllMocks();
+    const { result } = renderHook(() => useLocalStorage('testKey', 'value'));
     
     act(() => {
-      remove();
+      result.current[2]();
     });
     
     expect(result.current[0]).toBeUndefined();
-    expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('testKey');
+    expect(removeItemSpy).toHaveBeenCalledWith('testKey');
+    expect(mockStorage['testKey']).toBeUndefined();
   });
 
-  it('should handle errors and fallback to initial value', () => {
-    // Mock localStorage.getItem to throw an error
-    mockLocalStorage.getItem.mockImplementationOnce(() => {
+  test('should handle errors and fallback to initial value', () => {
+    // Override getItem to throw an error for this test
+    getItemSpy.mockImplementationOnce(() => {
       throw new Error('Storage error');
     });
     
-    const { result } = renderHook(() => 
-      useLocalStorage('testKey', 'fallbackValue')
-    );
+    const { result } = renderHook(() => useLocalStorage('testKey', 'fallbackValue'));
     
     expect(result.current[0]).toBe('fallbackValue');
-    expect(mockLocalStorage.getItem).toHaveBeenCalledWith('testKey');
+    expect(getItemSpy).toHaveBeenCalledWith('testKey');
   });
 });

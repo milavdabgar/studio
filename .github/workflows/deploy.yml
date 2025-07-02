@@ -21,7 +21,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
@@ -36,7 +36,7 @@ jobs:
       - name: 🧪 Run test suite
         run: |
           echo "Running test suite..."
-          npm test -- --testPathIgnorePatterns=src/hooks/__tests__/useLocalStorage.test.ts
+          npm test
           echo "✅ All tests passed"
         env:
           CI: true
