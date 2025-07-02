@@ -13,7 +13,7 @@ const mockAssessmentInstance = {
 };
 
 jest.mock('@/lib/models', () => {
-  const MockAssessmentModelConstructor = jest.fn().mockImplementation(() => mockAssessmentInstance);
+  const MockAssessmentModelConstructor = jest.fn().mockImplementation(() => mockAssessmentInstance) as any;
   MockAssessmentModelConstructor.find = jest.fn();
   MockAssessmentModelConstructor.findOne = jest.fn();
   MockAssessmentModelConstructor.countDocuments = jest.fn();
@@ -24,7 +24,7 @@ jest.mock('@/lib/models', () => {
 });
 
 const mockConnectMongoose = connectMongoose as jest.MockedFunction<typeof connectMongoose>;
-const mockAssessmentModel = AssessmentModel as jest.Mocked<typeof AssessmentModel>;
+const mockAssessmentModel = AssessmentModel as any;
 
 describe('/api/assessments', () => {
   const mockAssessments = [
@@ -477,9 +477,9 @@ describe('/api/assessments', () => {
     });
 
     it('should handle case-insensitive duplicate name checking', async () => {
-      mockAssessmentModel.findOne.mockImplementation((query) => {
+      mockAssessmentModel.findOne.mockImplementation((query: any) => {
         // Simulate case-insensitive matching
-        if (query.name && query.name.$regex) {
+        if (query?.name && query.name.$regex) {
           return Promise.resolve({
             name: 'FINAL EXAM - COMPUTER NETWORKS',
             courseId: 'course_cs201_dce_gpp'

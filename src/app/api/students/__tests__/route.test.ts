@@ -16,7 +16,7 @@ const mockStudentInstance = {
 };
 
 jest.mock('@/lib/models', () => {
-  const MockStudentModelConstructor = jest.fn().mockImplementation(() => mockStudentInstance);
+  const MockStudentModelConstructor = jest.fn().mockImplementation(() => mockStudentInstance) as any;
   MockStudentModelConstructor.find = jest.fn();
   MockStudentModelConstructor.findOne = jest.fn();
   return {
@@ -43,7 +43,7 @@ jest.mock('@/lib/api/programs', () => ({
 }));
 
 const mockConnectMongoose = connectMongoose as jest.MockedFunction<typeof connectMongoose>;
-const mockStudentModel = StudentModel as jest.Mocked<typeof StudentModel>;
+const mockStudentModel = StudentModel as any;
 const mockUserService = userService as jest.Mocked<typeof userService>;
 const mockInstituteService = instituteService as jest.Mocked<typeof instituteService>;
 const mockProgramService = programService as jest.Mocked<typeof programService>;
@@ -90,14 +90,19 @@ describe('/api/students', () => {
     {
       id: 'prog_ce',
       name: 'Computer Engineering',
-      instituteId: 'inst_gpp'
+      code: 'CE',
+      departmentId: 'dept_ce',
+      instituteId: 'inst_gpp',
+      status: 'active' as const
     }
   ];
 
   const mockInstitute = {
     id: 'inst_gpp',
     name: 'Government Polytechnic Palanpur',
-    domain: 'gpp.edu.in'
+    code: 'GPP',
+    domain: 'gpp.edu.in',
+    status: 'active' as const
   };
 
   const mockUser = {
@@ -105,7 +110,9 @@ describe('/api/students', () => {
     email: 'john@gmail.com',
     instituteEmail: 'john.smith@gpp.edu.in',
     displayName: 'JOHN SMITH',
-    roles: ['student'],
+    roles: ['student' as const],
+    currentRole: 'student' as const,
+    authProviders: ['password' as const],
     isActive: true
   };
 
@@ -373,13 +380,14 @@ describe('/api/students', () => {
       const existingUser = { 
         ...mockUser, 
         id: 'existing_user_123', 
-        roles: ['faculty'],
+        roles: ['faculty' as const],
+        currentRole: 'faculty' as const,
         email: 'alice@gmail.com',
         instituteEmail: 'GP24CE001@gpp.edu.in'
       };
       mockUserService.createUser.mockRejectedValue(new Error('User already exists'));
       mockUserService.getAllUsers.mockResolvedValue([existingUser]);
-      mockUserService.updateUser.mockResolvedValue({});
+      mockUserService.updateUser.mockResolvedValue(existingUser);
       
       const request = new NextRequest('http://localhost/api/students', {
         method: 'POST',
@@ -464,7 +472,14 @@ describe('/api/students', () => {
       mockStudentModel.findOne.mockReset();
       mockStudentModel.findOne.mockResolvedValue(null);
       
-      const programWithoutInstitute = [{ id: 'prog_ce', name: 'Computer Engineering' }];
+      const programWithoutInstitute = [{ 
+        id: 'prog_ce', 
+        name: 'Computer Engineering',
+        code: 'CE',
+        departmentId: 'dept_ce',
+        instituteId: 'inst_gpp',
+        status: 'active' as const
+      }];
       mockProgramService.getAllPrograms.mockResolvedValue(programWithoutInstitute);
       
       // Update the toJSON mock to return the expected domain

@@ -157,7 +157,7 @@ describe('EmailService', () => {
 
     beforeEach(() => {
       // Mock template compilation
-      const mockTemplate = jest.fn().mockReturnValue('<h1>Hello John Doe from Test Corp</h1>');
+      const mockTemplate = jest.fn().mockReturnValue('<h1>Hello John Doe from Test Corp</h1>') as any;
       mockHandlebars.compile.mockReturnValue(mockTemplate);
       
       // Mock file reading
@@ -327,7 +327,7 @@ describe('EmailService', () => {
     it('should handle undefined template data', async () => {
       await emailService.initialize();
       
-      const mockTemplate = jest.fn().mockReturnValue('<h1>Hello undefined</h1>');
+      const mockTemplate = jest.fn().mockReturnValue('<h1>Hello undefined</h1>') as any;
       mockHandlebars.compile.mockReturnValue(mockTemplate);
       mockFs.readFile.mockResolvedValue('<h1>Hello {{name}}</h1>');
       
@@ -348,7 +348,7 @@ describe('EmailService', () => {
       await emailService.initialize();
       
       mockFs.readFile.mockResolvedValue('<p>Template content</p>');
-      mockHandlebars.compile.mockReturnValue(jest.fn().mockReturnValue('<p>Compiled</p>'));
+      mockHandlebars.compile.mockReturnValue(jest.fn().mockReturnValue('<p>Compiled</p>') as any);
       
       await emailService.sendTemplateEmail({
         to: 'test@example.com',
@@ -383,7 +383,7 @@ describe('EmailService', () => {
       await emailService.initialize();
       
       mockFs.readFile.mockResolvedValue('<p>{{message}}</p>');
-      const mockTemplate = jest.fn().mockReturnValue('<p>Hello</p>');
+      const mockTemplate = jest.fn().mockReturnValue('<p>Hello</p>') as any;
       mockHandlebars.compile.mockReturnValue(mockTemplate);
       
       const promises = Array.from({ length: 5 }, () => 

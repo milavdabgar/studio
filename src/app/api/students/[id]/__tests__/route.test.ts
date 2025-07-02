@@ -88,7 +88,10 @@ describe('/api/students/[id]', () => {
     email: 'john.smith@gpp.edu.in',
     displayName: 'JOHN SMITH',
     isActive: true,
-    photoURL: 'https://example.com/photo.jpg'
+    photoURL: 'https://example.com/photo.jpg',
+    authProviders: ['password' as const],
+    roles: ['student' as const],
+    currentRole: 'student' as const
   };
 
   beforeEach(() => {
@@ -243,7 +246,7 @@ describe('/api/students/[id]', () => {
   describe('DELETE /api/students/[id]', () => {
     it('should delete an existing student by custom ID', async () => {
       mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
-      mockUserService.deleteUser.mockResolvedValue({});
+      mockUserService.deleteUser.mockResolvedValue(undefined);
       
       const params = Promise.resolve({ id: 'student_123' });
       const response = await DELETE({} as NextRequest, { params });
@@ -261,7 +264,7 @@ describe('/api/students/[id]', () => {
       
       mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(null) } as any);
       mockStudentModel.findByIdAndDelete.mockReturnValue({ lean: () => Promise.resolve(studentWithObjectId) } as any);
-      mockUserService.deleteUser.mockResolvedValue({});
+      mockUserService.deleteUser.mockResolvedValue(undefined);
       
       const params = Promise.resolve({ id: objectId });
       const response = await DELETE({} as NextRequest, { params });
