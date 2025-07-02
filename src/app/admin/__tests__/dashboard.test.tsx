@@ -2,6 +2,13 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 
+// Mock window.location.reload to prevent JSDOM navigation errors
+delete (window as any).location;
+window.location = { 
+  ...window.location, 
+  reload: jest.fn() 
+};
+
 // Mock basic admin dashboard component since it may not exist or be complex
 const MockAdminDashboard = ({ isLoading = false, error = null, userRole = 'admin' }: any) => {
   const dashboardData = {

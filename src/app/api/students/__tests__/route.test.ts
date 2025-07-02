@@ -6,6 +6,20 @@ import { userService } from '@/lib/api/users';
 import { instituteService } from '@/lib/api/institutes';
 import { programService } from '@/lib/api/programs';
 
+// Mock console methods to suppress expected error/warning messages during tests
+const originalConsoleError = console.error;
+const originalConsoleWarn = console.warn;
+
+beforeAll(() => {
+  console.error = jest.fn();
+  console.warn = jest.fn();
+});
+
+afterAll(() => {
+  console.error = originalConsoleError;
+  console.warn = originalConsoleWarn;
+});
+
 // Mock the dependencies
 jest.mock('@/lib/mongodb');
 

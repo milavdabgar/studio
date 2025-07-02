@@ -5,6 +5,20 @@ import { connectMongoose } from '@/lib/mongodb';
 import { userService } from '@/lib/api/users';
 import { Types } from 'mongoose';
 
+// Mock console methods to suppress expected error/warning messages during tests
+const originalConsoleError = console.error;
+const originalConsoleWarn = console.warn;
+
+beforeAll(() => {
+  console.error = jest.fn();
+  console.warn = jest.fn();
+});
+
+afterAll(() => {
+  console.error = originalConsoleError;
+  console.warn = originalConsoleWarn;
+});
+
 // Mock the dependencies
 jest.mock('@/lib/mongodb');
 jest.mock('@/lib/models', () => ({
