@@ -104,15 +104,19 @@ jobs:
               echo "Dependencies already up to date"
             fi
             
-            # Build the application with increased memory
+            # Build the application with increased memory (only once)
             export NODE_OPTIONS="--max-old-space-size=6144"
             npm run build
             
             # Stop containers but preserve volumes (database data)
             docker compose down || true
             
-            # Start containers (skip rebuild if image exists)
-            docker compose up -d --build
+            # Build Docker image using production Dockerfile (no rebuild inside)
+            echo "Building optimized Docker image..."
+            docker build -f Dockerfile.prod -t studio-studio .
+            
+            # Start containers
+            docker compose up -d
             
             # Wait for containers to start
             echo "Waiting for containers to start..."

@@ -1,6 +1,6 @@
 services:
   studio:
-    build: .
+    image: studio-studio
     container_name: studio-app
     expose:
       - "3000"
