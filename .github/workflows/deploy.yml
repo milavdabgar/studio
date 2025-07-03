@@ -96,10 +96,11 @@ jobs:
           ssh $REMOTE_HOST '
             cd ~/studio
             
-            # Install dependencies (production only)
-            npm ci --production
+            # Install all dependencies (needed for build)
+            npm install
             
-            # Build the application
+            # Build the application with increased memory
+            export NODE_OPTIONS="--max-old-space-size=6144"
             npm run build
             
             # Stop containers but preserve volumes (database data)
