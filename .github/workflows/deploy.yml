@@ -76,14 +76,14 @@ jobs:
             # Ensure studio directory exists and is a git repo
             if [ ! -d ~/studio/.git ]; then
               rm -rf ~/studio
-              git clone https://github.com/milavdabgar/gpp-studio.git ~/studio
+              git clone https://github.com/milavdabgar/studio.git ~/studio
             fi
             
             cd ~/studio
             
             # Fetch latest changes and reset to match remote
             git fetch origin
-            git reset --hard origin/main
+            git reset --hard origin/master
             
             # Make scripts executable
             chmod +x scripts/seed-after-deploy.sh
