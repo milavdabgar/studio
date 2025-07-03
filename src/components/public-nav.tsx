@@ -63,6 +63,7 @@ export function PublicNav() {
       label: "Resources", 
       dropdown: [
         { label: "Blog Posts", href: "/posts/en", description: "Articles & Study Materials" },
+        { label: "Study Materials", href: "/posts/en/resources/study-materials", description: "Exam Papers & Solutions" },
         { label: "Categories", href: "/categories/en", description: "Browse by Topic" },
         { label: "Tags", href: "/tags/en", description: "Browse by Tags" },
       ]
