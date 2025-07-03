@@ -101,9 +101,23 @@ jobs:
             
             # Deploy with Docker Compose
             docker compose down
-            docker compose up -d --build
             
-            # Wait and check
-            sleep 10
-            docker compose ps
+            # Build and start (exit on failure)
+            if ! docker compose up -d --build; then
+              echo "❌ Docker build/start failed"
+              docker compose logs
+              exit 1
+            fi
+            
+            # Wait and verify containers are running
+            sleep 15
+            if docker compose ps | grep -q "Up"; then
+              echo "✅ Deployment successful"
+              docker compose ps
+            else
+              echo "❌ Containers not running"
+              docker compose ps
+              docker compose logs
+              exit 1
+            fi
           '
