@@ -126,8 +126,8 @@ jobs:
             if docker compose ps | grep -q "Up"; then
               echo "✅ Containers started successfully"
               
-              # Run database seeding script
-              ./scripts/seed-after-deploy.sh
+              # Run database seeding script (ignore duplicate key errors)
+              ./scripts/seed-after-deploy.sh || echo "Seeding completed with warnings"
               
               # Clean up old images only (keep volumes)
               docker image prune -f

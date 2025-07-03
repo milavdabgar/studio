@@ -12,13 +12,12 @@ playwright-report
 __tests__
 __mocks__
 
-# Next.js (but keep built standalone and static for production)
+# Next.js cache (keep .next/standalone and .next/static)
 .next/cache/
 .next/trace
+.next/server/
+.next/types/
 out/
-
-# Production build
-dist
 
 # Environment variables
 .env*.local
@@ -32,19 +31,6 @@ dist
 # Logs
 *.log
 server.log
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage
-
-# Documentation
-docs/
-# Note: Don't ignore *.md files as they contain our content
 
 # Git
 .git
