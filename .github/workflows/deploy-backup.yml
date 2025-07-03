@@ -68,67 +68,67 @@ jobs:
           ssh-keyscan -H server.gppalanpur.in >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
-      - name: Deploy via Git
+      - name: Copy files to server
         env:
           REMOTE_HOST: milav@server.gppalanpur.in
         run: |
+          # Clean up and recreate deployment directory on server
           ssh $REMOTE_HOST '
-            # Ensure studio directory exists and is a git repo
-            if [ ! -d ~/studio/.git ]; then
-              rm -rf ~/studio
-              git clone https://github.com/milavdabgar/gpp-studio.git ~/studio
-            fi
-            
-            cd ~/studio
-            
-            # Fetch latest changes and reset to match remote
-            git fetch origin
-            git reset --hard origin/main
-            
-            # Make scripts executable
-            chmod +x scripts/seed-after-deploy.sh
+            rm -rf ~/studio/*
+            mkdir -p ~/studio
           '
+          
+          # Copy Docker files
+          scp docker-compose.yml $REMOTE_HOST:~/studio/
+          scp Dockerfile $REMOTE_HOST:~/studio/
+          
+          # Copy built application and necessary files
+          rsync -av --delete \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='.next/cache' \
+            --exclude='coverage' \
+            --exclude='test-results' \
+            --exclude='playwright-report' \
+            --exclude='e2e' \
+            --exclude='__tests__' \
+            --exclude='__mocks__' \
+            --exclude='*.md' \
+            --exclude='*.log' \
+            --exclude='tmp' \
+            --exclude='venv' \
+            --exclude='__pycache__' \
+            . $REMOTE_HOST:~/studio/
+          
+          # Copy database seeding scripts
+          scp scripts/seed-after-deploy.sh $REMOTE_HOST:~/studio/scripts/
+          ssh $REMOTE_HOST 'chmod +x ~/studio/scripts/seed-after-deploy.sh'
 
-      - name: Build and Deploy
+      - name: Deploy
         env:
           REMOTE_HOST: milav@server.gppalanpur.in
         run: |
           ssh $REMOTE_HOST '
             cd ~/studio
             
-            # Install dependencies (production only)
-            npm ci --production
+            # Stop and remove containers, networks, and volumes
+            docker compose down -v || true
             
-            # Build the application
-            npm run build
-            
-            # Stop containers but preserve volumes (database data)
-            docker compose down || true
-            
-            # Build and start containers (use cache for faster builds)
-            docker compose build
+            # Build and start the container
+            docker compose build --no-cache
             docker compose up -d
             
             # Wait for containers to start
             echo "Waiting for containers to start..."
-            sleep 15
+            sleep 10
             
-            # Check container health
-            if docker compose ps | grep -q "Up"; then
-              echo "✅ Containers started successfully"
-              
-              # Run database seeding script
-              ./scripts/seed-after-deploy.sh
-              
-              # Clean up old images only (keep volumes)
-              docker image prune -f
-              
-              # Show final status
-              echo "📊 Deployment Status:"
-              docker compose ps
-            else
-              echo "❌ Container startup failed"
-              docker compose logs
-              exit 1
-            fi
+            # Run database seeding script
+            ./scripts/seed-after-deploy.sh
+            
+            # Clean up old images and volumes
+            docker image prune -f
+            docker volume prune -f
+            
+            # Show container status
+            docker compose ps
           '
