@@ -110,7 +110,7 @@ jobs:
             fi
             
             # Wait and verify containers are running
-            sleep 15
+            sleep 20
             if docker compose ps | grep -q "Up"; then
               echo "✅ Deployment successful"
               docker compose ps
