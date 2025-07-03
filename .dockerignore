@@ -9,5 +9,3 @@ __tests__
 __mocks__
 *.log
 .env*.local
-# Exclude large study materials from Docker build (serve as static files)
-content/resources/study-materials
