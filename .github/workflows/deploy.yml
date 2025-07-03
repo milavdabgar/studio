@@ -89,55 +89,21 @@ jobs:
             chmod +x scripts/seed-after-deploy.sh
           '
 
-      - name: Build and Deploy
+      - name: Deploy
         env:
           REMOTE_HOST: milav@server.gppalanpur.in
         run: |
           ssh $REMOTE_HOST '
             cd ~/studio
             
-            # Install dependencies efficiently
-            if [ ! -d "node_modules" ] || [ "package.json" -nt "node_modules" ]; then
-              echo "Installing fresh dependencies..."
-              npm ci --silent
-            else
-              echo "Dependencies already up to date"
-            fi
+            # Pull latest code
+            git pull origin master
             
-            # Build the application with increased memory (only once)
-            export NODE_OPTIONS="--max-old-space-size=6144"
-            npm run build
+            # Deploy with Docker Compose
+            docker compose down
+            docker compose up -d --build
             
-            # Stop containers but preserve volumes (database data)
-            docker compose down || true
-            
-            # Build Docker image using production Dockerfile (no rebuild inside)
-            echo "Building optimized Docker image..."
-            docker build -f Dockerfile.prod -t studio-studio .
-            
-            # Start containers
-            docker compose up -d
-            
-            # Wait for containers to start
-            echo "Waiting for containers to start..."
-            sleep 15
-            
-            # Check container health
-            if docker compose ps | grep -q "Up"; then
-              echo "✅ Containers started successfully"
-              
-              # Run database seeding script (ignore duplicate key errors)
-              ./scripts/seed-after-deploy.sh || echo "Seeding completed with warnings"
-              
-              # Clean up old images only (keep volumes)
-              docker image prune -f
-              
-              # Show final status
-              echo "📊 Deployment Status:"
-              docker compose ps
-            else
-              echo "❌ Container startup failed"
-              docker compose logs
-              exit 1
-            fi
+            # Wait and check
+            sleep 10
+            docker compose ps
           '

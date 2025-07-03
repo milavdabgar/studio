@@ -1,6 +1,8 @@
 services:
   studio:
-    image: studio-studio
+    build: 
+      context: .
+      dockerfile: Dockerfile.simple
     container_name: studio-app
     expose:
       - "3000"
