@@ -111,9 +111,6 @@ jobs:
             export DOCKER_BUILDKIT=1
             export COMPOSE_DOCKER_CLI_BUILD=1
             
-            # Clean up any previous build artifacts to reduce context
-            docker system prune -f
-            
             if ! timeout 25m docker compose up -d --build; then
               echo "❌ Docker build/start failed or timed out after 25 minutes"
               echo "📋 Build context size: $(du -sh . 2>/dev/null | cut -f1 || echo 'unknown')"
