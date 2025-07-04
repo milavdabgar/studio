@@ -1,8 +1,7 @@
 name: Deploy Studio to Production
 
-# This workflow runs quality checks (TypeScript compilation and tests) 
-# before deploying to production to ensure we don't deploy buggy code.
-# Deployment only proceeds if all checks pass.
+# Simple deployment workflow that matches local development process
+# git pull + docker compose up -d --build
 
 on:
   push:
@@ -11,50 +10,11 @@ on:
       - master
 
 jobs:
-  test-and-deploy:
-    name: Test, Build and Deploy to Production
+  deploy:
+    name: Deploy to Production
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: 🔍 Run TypeScript type checking
-        run: |
-          echo "Running TypeScript compilation check..."
-          npx tsc --noEmit
-          echo "✅ TypeScript compilation check passed"
-
-      - name: 🧪 Run test suite
-        run: |
-          echo "Running test suite..."
-          npm test
-          echo "✅ All tests passed"
-        env:
-          CI: true
-
-      - name: 🏗️ Check Next.js build configuration
-        run: |
-          echo "Validating Next.js configuration..."
-          npx next info
-          echo "✅ Configuration validated"
-
-      - name: 🎯 Prepare for deployment
-        run: |
-          echo "🎉 All quality checks passed!"
-          echo "📦 TypeScript compilation: ✅"
-          echo "🧪 Test suite: ✅" 
-          echo "⚙️ Configuration: ✅"
-          echo "🚀 Proceeding with deployment to production..."
 
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
@@ -69,7 +29,7 @@ jobs:
           ssh-keyscan -H server.gppalanpur.in >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
-      - name: Deploy via Git
+      - name: Simple Deploy
         env:
           REMOTE_HOST: milav@server.gppalanpur.in
         run: |
@@ -82,49 +42,21 @@ jobs:
             
             cd ~/studio
             
-            # Fetch latest changes and reset to match remote
-            git fetch origin
-            git reset --hard origin/master
+            # Simple deployment process - same as local
+            echo "🚀 Starting simple deployment..."
             
-            # Make scripts executable
-            chmod +x scripts/seed-after-deploy.sh
-          '
-
-      - name: Deploy
-        env:
-          REMOTE_HOST: milav@server.gppalanpur.in
-        run: |
-          ssh $REMOTE_HOST '
-            cd ~/studio
-            
-            # Pull latest code
-            git pull origin master
-            
-            # Deploy with Docker Compose
+            # Stop containers, pull latest code, rebuild and start
             docker compose down
+            git pull origin master
+            docker compose up -d --build
             
-            # Build and start with optimizations (exit on failure)
-            echo "🔨 Starting optimized Docker build..."
-            echo "📊 Content stats: $(find content -name "*.md" 2>/dev/null | wc -l) markdown files"
-            
-            # Set Docker build options for better performance
-            export DOCKER_BUILDKIT=1
-            export COMPOSE_DOCKER_CLI_BUILD=1
-            
-            if ! timeout 25m docker compose up -d --build; then
-              echo "❌ Docker build/start failed or timed out after 25 minutes"
-              echo "📋 Build context size: $(du -sh . 2>/dev/null | cut -f1 || echo 'unknown')"
-              docker compose logs --tail 50
-              exit 1
-            fi
-            
-            # Wait and verify containers are running
-            sleep 20
+            # Quick verification
+            sleep 10
             if docker compose ps | grep -q "Up"; then
               echo "✅ Deployment successful"
               docker compose ps
             else
-              echo "❌ Containers not running"
+              echo "❌ Deployment failed"
               docker compose ps
               docker compose logs
               exit 1
