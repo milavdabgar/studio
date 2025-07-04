@@ -15,6 +15,31 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: 🔍 Run TypeScript type checking
+        run: |
+          echo "Running TypeScript compilation check..."
+          npx tsc --noEmit
+          echo "✅ TypeScript compilation check passed"
+
+      - name: 🧪 Run test suite
+        run: |
+          echo "Running test suite..."
+          npm test
+          echo "✅ All tests passed"
+        env:
+          CI: true
 
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
