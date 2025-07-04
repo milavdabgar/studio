@@ -32,6 +32,22 @@ ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED 1
 
+# Install Chromium and dependencies for Puppeteer, plus pandoc for document conversion
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    freetype-dev \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont \
+    pandoc \
+    && rm -rf /var/cache/apk/*
+
+# Set Puppeteer to use the installed Chromium
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
@@ -60,6 +76,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/src ./src
 
 # Copy ALL node_modules (including dev dependencies) for seeding scripts
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+
+# Create tmp directory for file conversions and set permissions
+RUN mkdir -p /app/tmp && chown nextjs:nodejs /app/tmp
 
 USER nextjs
 

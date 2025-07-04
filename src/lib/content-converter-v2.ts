@@ -259,7 +259,13 @@ export class ContentConverterV2 {
                 '--virtual-time-budget=10000'
             ];
             
-            const command = `/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome ${chromeArgs.join(' ')} "${tempHtmlPath}"`;
+            // Use the system chromium binary if available, otherwise try Chrome paths
+            let chromePath = '/usr/bin/chromium-browser'; // Alpine Linux path
+            if (!require('fs').existsSync(chromePath)) {
+                chromePath = '/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome'; // macOS path
+            }
+            
+            const command = `${chromePath} ${chromeArgs.join(' ')} "${tempHtmlPath}"`;
             
             await execAsync(command);
             
@@ -316,12 +322,22 @@ export class ContentConverterV2 {
                 ]
             };
 
-            // Use chromium package if available in production
-            if (isProduction && chromium) {
-                launchOptions.executablePath = await chromium.executablePath('/opt/nodejs/node_modules/@sparticuz/chromium-min/bin');
-                const chromiumArgs: string[] = Array.isArray(chromium.args) ? chromium.args.filter((arg): arg is string => typeof arg === 'string') : [];
-                launchOptions.args = [...(launchOptions.args || []), ...chromiumArgs];
-                launchOptions.defaultViewport = chromium.defaultViewport;
+            // Use system Chromium in production (Docker) or chromium package if available
+            if (isProduction) {
+                // Check if we have PUPPETEER_EXECUTABLE_PATH set (Docker environment)
+                if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+                    launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+                } else if (chromium) {
+                    // Fallback to chromium package if available
+                    try {
+                        launchOptions.executablePath = await chromium.executablePath('/opt/nodejs/node_modules/@sparticuz/chromium-min/bin');
+                        const chromiumArgs: string[] = Array.isArray(chromium.args) ? chromium.args.filter((arg): arg is string => typeof arg === 'string') : [];
+                        launchOptions.args = [...(launchOptions.args || []), ...chromiumArgs];
+                        launchOptions.defaultViewport = chromium.defaultViewport;
+                    } catch (error) {
+                        console.warn('Failed to get chromium executable path:', error);
+                    }
+                }
             }
 
             browser = await puppeteer.launch(launchOptions);
