@@ -70,8 +70,12 @@ jobs:
             # Simple deployment process - same as local
             echo "🚀 Starting simple deployment..."
             
-            # Stop containers, pull latest code, rebuild and start
-            docker compose down
+            # Clean up any manually created containers that might conflict
+            echo "🧹 Cleaning up existing containers..."
+            docker rm -f studio-app studio-mongodb 2>/dev/null || true
+            
+            # Stop compose containers, pull latest code, rebuild and start
+            docker compose down 2>/dev/null || true
             git pull origin master
             docker compose up -d --build
             
