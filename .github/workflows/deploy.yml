@@ -105,15 +105,18 @@ jobs:
             
             # Build and start with optimizations (exit on failure)
             echo "🔨 Starting optimized Docker build..."
-            echo "📊 Content stats: $(find content -name '*.md' | wc -l) markdown files"
+            echo "📊 Content stats: $(find content -name "*.md" 2>/dev/null | wc -l) markdown files"
             
             # Set Docker build options for better performance
             export DOCKER_BUILDKIT=1
             export COMPOSE_DOCKER_CLI_BUILD=1
             
-            if ! timeout 25m docker compose up -d --build --parallel 1; then
+            # Clean up any previous build artifacts to reduce context
+            docker system prune -f
+            
+            if ! timeout 25m docker compose up -d --build; then
               echo "❌ Docker build/start failed or timed out after 25 minutes"
-              echo "📋 Build context size: $(du -sh . | cut -f1)"
+              echo "📋 Build context size: $(du -sh . 2>/dev/null | cut -f1 || echo 'unknown')"
               docker compose logs --tail 50
               exit 1
             fi

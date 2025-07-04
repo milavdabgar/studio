@@ -9,3 +9,35 @@ __tests__
 __mocks__
 *.log
 .env*.local
+
+# Exclude large files that aren't needed for build
+*.pdf
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.svg
+*.ico
+*.zip
+*.tar.gz
+*.rar
+
+# Exclude documentation and reports
+*.md
+!README.md
+!content/**/*.md
+COVERAGE_*.md
+E2E-*.md
+*_REPORT.md
+*_COMPLETE.md
+*_PLAN.md
+*_SUMMARY.md
+*_ANALYSIS.md
+
+# Exclude development files
+.vscode
+.idea
+*.swp
+*.swo
+*~
