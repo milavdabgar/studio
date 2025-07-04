@@ -5,7 +5,7 @@ A comprehensive Next.js application for Government Polytechnic Palanpur, featuri
 ## Features
 
 - 🌐 **Multilingual Support** - English and Gujarati
-- 📝 **Blog System** - Dynamic markdown-based blog with 30+ technical articles
+- 📝 **Blog System** - Dynamic markdown-based blog with 30+ technical articles and 650+ study materials
 - 🎓 **Educational Resources** - Study materials, newsletters, and academic content
 - 🔍 **Search & Navigation** - Advanced search, categorization, and filtering
 - 📱 **Responsive Design** - Mobile-first, modern UI with dark mode support
@@ -19,6 +19,13 @@ The platform includes technical blog posts covering:
 - Programming guides (Python, OpenCV)
 - Server setup and management (Nextcloud, OwnCloud)
 - Educational tools and automation
+
+Plus comprehensive study materials with 650+ solution guides for:
+- Electronics Engineering (11-EC) - All semesters
+- Information Technology (16-IT) - All semesters  
+- ICT (32-ICT) - All semesters
+- General subjects (00-General) - Mathematics, Physics, Chemistry, Communication Skills
+- Exam solutions from 2021-2025 in both English and Gujarati
 
 ## Technology Stack
 
@@ -68,5 +75,7 @@ The application is deployed using Docker with automated builds triggered by GitH
 - ✅ Restored missing markdown content files
 - ✅ Verified Docker build process with complete content inclusion
 - ✅ All 30+ blog posts now displaying correctly on production site
+- ✅ Included 650+ study materials in blog system (exam solutions, course materials)
+- ✅ Removed duplicate GitHub Actions workflows to prevent double deployments
 
 Last updated: July 4, 2025
