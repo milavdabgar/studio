@@ -599,4 +599,219 @@ describe('Login Page', () => {
       });
     });
   });
+
+  describe('localStorage handling', () => {
+    it('should handle localStorage parsing errors gracefully', async () => {
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      
+      // Mock localStorage with invalid JSON
+      Object.defineProperty(window, 'localStorage', {
+        value: {
+          getItem: jest.fn(() => 'invalid-json'),
+          setItem: jest.fn(),
+          removeItem: jest.fn(),
+          clear: jest.fn(),
+        },
+        writable: true,
+      });
+
+      await act(async () => {
+        render(<LoginPage />);
+      });
+      
+      await waitFor(() => {
+        expect(consoleSpy).toHaveBeenCalledWith(
+          'Error reading users from localStorage for login:',
+          expect.any(Error)
+        );
+      });
+
+      consoleSpy.mockRestore();
+    });
+
+    it('should combine users from localStorage with base users', async () => {
+      const storedUsers = [
+        {
+          id: 'stored1',
+          email: 'stored@example.com',
+          password: 'stored123',
+          roles: ['student'],
+          displayName: 'Stored User',
+          isActive: true,
+          instituteId: 'inst1'
+        }
+      ];
+
+      Object.defineProperty(window, 'localStorage', {
+        value: {
+          getItem: jest.fn(() => JSON.stringify(storedUsers)),
+          setItem: jest.fn(),
+          removeItem: jest.fn(),
+          clear: jest.fn(),
+        },
+        writable: true,
+      });
+
+      await act(async () => {
+        render(<LoginPage />);
+      });
+      
+      // Change to the stored user email to verify it's loaded
+      const user = userEvent.setup();
+      await waitFor(() => {
+        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+      });
+
+      const emailInput = screen.getByLabelText(/email/i);
+      await user.clear(emailInput);
+      await user.type(emailInput, 'stored@example.com');
+
+      // Should find the stored user and show their role
+      await waitFor(() => {
+        const trigger = screen.getByRole('combobox');
+        expect(trigger).toHaveTextContent('Student');
+      }, { timeout: 2000 });
+    });
+  });
+
+  describe('Role selection edge cases', () => {
+    it('should fallback to first role when admin role not found', async () => {
+      // Mock roles without admin role
+      const rolesWithoutAdmin: Role[] = [
+        { id: 'role1', code: 'student', name: 'Student', description: 'Student role', createdAt: '2024-01-01', updatedAt: '2024-01-01', permissions: [] },
+        { id: 'role2', code: 'faculty', name: 'Faculty', description: 'Faculty role', createdAt: '2024-01-01', updatedAt: '2024-01-01', permissions: [] },
+      ];
+      
+      mockRoleService.getAllRoles.mockResolvedValue(rolesWithoutAdmin);
+
+      await act(async () => {
+        render(<LoginPage />);
+      });
+      
+      await waitFor(() => {
+        const trigger = screen.getByRole('combobox');
+        expect(trigger).toHaveTextContent('Student'); // Should default to first role
+      }, { timeout: 2000 });
+    });
+
+    it('should set role to unknown when user has no valid roles', async () => {
+      const user = userEvent.setup();
+      
+      await act(async () => {
+        render(<LoginPage />);
+      });
+      
+      await waitFor(() => {
+        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+      });
+
+      const emailInput = screen.getByLabelText(/email/i);
+      // Use an email not in the mock users list
+      await user.clear(emailInput);
+      await user.type(emailInput, 'nonexistent@example.com');
+
+      // Should show admin role as fallback since no user found
+      await waitFor(() => {
+        const trigger = screen.getByRole('combobox');
+        expect(trigger).toHaveTextContent('Administrator');
+      }, { timeout: 2000 });
+    });
+
+    it('should handle role selection validation error', async () => {
+      const user = userEvent.setup();
+      
+      await act(async () => {
+        render(<LoginPage />);
+      });
+      
+      await waitFor(() => {
+        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+      });
+
+      // Change to valid user but manually set invalid role selection
+      const emailInput = screen.getByLabelText(/email/i);
+      await user.clear(emailInput);
+      await user.type(emailInput, 'student@example.com');
+      
+      // Try to simulate selecting a role the user doesn't have
+      const passwordInput = screen.getByLabelText(/password/i);
+      await user.clear(passwordInput);
+      await user.type(passwordInput, 'password');
+      
+      // Manually change to admin role (which student doesn't have)
+      const roleSelect = screen.getByRole('combobox');
+      await user.click(roleSelect);
+      
+      const adminOption = screen.getByText('Administrator');
+      await user.click(adminOption);
+      
+      const submitButton = screen.getByRole('button', { name: /login/i });
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        expect(mockToast).toHaveBeenCalledWith({
+          variant: "destructive",
+          title: "Login Failed",
+          description: "The role 'Administrator' is not assigned to this user.",
+        });
+      }, { timeout: 3000 });
+    });
+
+    it('should show error when no role is selected', async () => {
+      // Mock roles to return empty array to trigger unknown role scenario
+      mockRoleService.getAllRoles.mockResolvedValue([]);
+      
+      const user = userEvent.setup();
+      
+      await act(async () => {
+        render(<LoginPage />);
+      });
+      
+      await waitFor(() => {
+        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+      });
+
+      const submitButton = screen.getByRole('button', { name: /login/i });
+      await user.click(submitButton);
+
+      await waitFor(() => {
+        expect(mockToast).toHaveBeenCalledWith({
+          variant: "destructive",
+          title: "Login Failed",
+          description: "Please select a valid role.",
+        });
+      }, { timeout: 3000 });
+    });
+  });
+
+  describe('Admin role fallback scenarios', () => {
+    it('should handle role selection when system has no admin role but user needs fallback', async () => {
+      const rolesWithoutAdmin: Role[] = [
+        { id: 'role1', code: 'faculty', name: 'Faculty', description: 'Faculty role', createdAt: '2024-01-01', updatedAt: '2024-01-01', permissions: [] },
+        { id: 'role2', code: 'student', name: 'Student', description: 'Student role', createdAt: '2024-01-01', updatedAt: '2024-01-01', permissions: [] },
+      ];
+      
+      mockRoleService.getAllRoles.mockResolvedValue(rolesWithoutAdmin);
+      
+      const user = userEvent.setup();
+      
+      await act(async () => {
+        render(<LoginPage />);
+      });
+      
+      await waitFor(() => {
+        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+      });
+
+      // Change email to trigger the role fallback logic
+      const emailInput = screen.getByLabelText(/email/i);
+      await user.clear(emailInput);
+      await user.type(emailInput, 'nonexistent@example.com');
+
+      await waitFor(() => {
+        const trigger = screen.getByRole('combobox');
+        expect(trigger).toHaveTextContent('Faculty'); // Should fallback to first available role
+      }, { timeout: 2000 });
+    });
+  });
 });

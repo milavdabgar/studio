@@ -572,5 +572,146 @@ describe('/api/users', () => {
       expect(response.status).toBe(409);
       expect(data.message).toContain("User with personal email 'alice.wilson@gmail.com' already exists");
     });
+
+    it('should use fallback email generation when firstName or lastName contain only special characters', async () => {
+      const dataWithSpecialCharNames = {
+        ...validUserData,
+        firstName: '!@#$',  // Will be cleaned to empty string
+        lastName: '%^&*()', // Will be cleaned to empty string
+        email: 'test123@example.com'
+      };
+      
+      mockUserInstance.toJSON.mockReturnValue({
+        ...dataWithSpecialCharNames,
+        id: 'user_12345_abcdef',
+        instituteEmail: 'test123@gpp.edu.in', // Fallback to email username
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String)
+      });
+      
+      const request = new NextRequest('http://localhost/api/users', {
+        method: 'POST',
+        body: JSON.stringify(dataWithSpecialCharNames),
+      });
+      
+      const response = await POST(request);
+      
+      expect(response.status).toBe(201);
+      expect(mockUserModel).toHaveBeenCalledWith(
+        expect.objectContaining({
+          instituteEmail: 'test123@gpp.edu.in'
+        })
+      );
+    });
+
+    it('should use generated ID fallback when email username contains only special characters', async () => {
+      const dataWithSpecialCharNames = {
+        ...validUserData,
+        firstName: '!@#$',  // Will be cleaned to empty string
+        lastName: '%^&*()', // Will be cleaned to empty string  
+        email: '!@#$%^@example.com' // Username will be cleaned to empty
+      };
+      
+      const request = new NextRequest('http://localhost/api/users', {
+        method: 'POST',
+        body: JSON.stringify(dataWithSpecialCharNames),
+      });
+      
+      const response = await POST(request);
+      
+      expect(response.status).toBe(201);
+      expect(mockUserModel).toHaveBeenCalledWith(
+        expect.objectContaining({
+          instituteEmail: expect.stringMatching(/^user\w+@gpp\.edu\.in$/)
+        })
+      );
+    });
+
+    it('should handle institute found but without domain', async () => {
+      mockInstituteService.getInstituteById.mockResolvedValue({
+        ...mockInstitute,
+        domain: undefined
+      });
+      
+      mockUserInstance.toJSON.mockReturnValue({
+        ...validUserData,
+        id: 'user_12345_abcdef',
+        instituteEmail: 'alice.wilson@gpp.ac.in', // Default domain
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String)
+      });
+      
+      const request = new NextRequest('http://localhost/api/users', {
+        method: 'POST',
+        body: JSON.stringify(validUserData),
+      });
+      
+      const response = await POST(request);
+      const data = await response.json();
+      
+      expect(response.status).toBe(201);
+      expect(data.instituteEmail).toBe('alice.wilson@gpp.ac.in');
+    });
+
+    it('should handle empty trimmed names', async () => {
+      const invalidData = { ...validUserData, firstName: '   ', lastName: '   ' };
+      
+      const request = new NextRequest('http://localhost/api/users', {
+        method: 'POST',
+        body: JSON.stringify(invalidData),
+      });
+      
+      const response = await POST(request);
+      const data = await response.json();
+      
+      expect(response.status).toBe(400);
+      expect(data.message).toBe('First Name is required.');
+    });
+
+    it('should handle empty trimmed email', async () => {
+      const invalidData = { ...validUserData, email: '   ' };
+      
+      const request = new NextRequest('http://localhost/api/users', {
+        method: 'POST',
+        body: JSON.stringify(invalidData),
+      });
+      
+      const response = await POST(request);
+      const data = await response.json();
+      
+      expect(response.status).toBe(400);
+      expect(data.message).toBe('Personal Email is required.');
+    });
+
+    // These tests are designed to trigger the parseFullNameForEmail utility function
+    // and the fallback email generation logic that we couldn't reach with the above tests
+    
+    it('should process fullName parsing internally without errors', async () => {
+      // This test ensures the parseFullNameForEmail function (lines 10-18) executes
+      // The function isn't exported but is called internally during user creation
+      const dataWithVariousFullNames = [
+        { ...validUserData, fullName: 'SINGLENAME' },           // Single part
+        { ...validUserData, fullName: 'PATEL RAJ KUMAR' },      // Multiple parts  
+        { ...validUserData, fullName: '   SPACED   NAME   ' },  // Trimming
+      ];
+      
+      for (const userData of dataWithVariousFullNames) {
+        mockUserInstance.toJSON.mockReturnValue({
+          ...userData,
+          id: 'user_12345_abcdef',
+          instituteEmail: 'alice.wilson@gpp.edu.in',
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String)
+        });
+        
+        const request = new NextRequest('http://localhost/api/users', {
+          method: 'POST',
+          body: JSON.stringify(userData),
+        });
+        
+        const response = await POST(request);
+        expect(response.status).toBe(201);
+      }
+    });
   });
 });
