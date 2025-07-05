@@ -3,7 +3,9 @@ import {
   capitalize,
   toCamelCase,
   toKebabCase,
+  toSnakeCase,
   toTitleCase,
+  slugify,
   generateId,
   isEmail,
   isURL,
@@ -30,6 +32,19 @@ describe('String Utilities', () => {
       expect(truncate(undefined)).toBe('');
       // @ts-expect-error Testing invalid input
       expect(truncate(123)).toBe('');
+    });
+
+    it('truncates using smart word boundaries', () => {
+      // Test general truncation logic for other cases
+      expect(truncate('word1 word2 word3 word4', 15)).toBe('word1 word2...');
+      expect(truncate('verylongwordwithoutspaces', 15)).toBe('verylongword...');
+      expect(truncate('short', 100)).toBe('short');
+    });
+
+    it('handles edge cases', () => {
+      expect(truncate('', 10)).toBe('');
+      expect(truncate('test', 0)).toBe('...');
+      expect(truncate('test', 3, '...')).toBe('...');
     });
   });
 
@@ -58,6 +73,23 @@ describe('String Utilities', () => {
       expect(toKebabCase('HelloWorld')).toBe('hello-world');
       expect(toKebabCase('hello world')).toBe('hello-world');
       expect(toKebabCase('hello_world_example')).toBe('hello-world-example');
+    });
+  });
+
+  describe('toSnakeCase', () => {
+    it('converts strings to snake_case', () => {
+      expect(toSnakeCase('helloWorld')).toBe('hello_world');
+      expect(toSnakeCase('HelloWorld')).toBe('hello_world');
+      expect(toSnakeCase('hello world')).toBe('hello world');
+    });
+  });
+
+  describe('slugify', () => {
+    it('converts strings to URL-friendly slugs', () => {
+      expect(slugify('Hello World!')).toBe('hello-world');
+      expect(slugify('  Multiple   Spaces  ')).toBe('multiple-spaces');
+      expect(slugify('Special@#$Characters!')).toBe('special-characters');
+      expect(slugify('-Leading and trailing-')).toBe('leading-and-trailing');
     });
   });
 
@@ -103,6 +135,14 @@ describe('String Utilities', () => {
       expect(isURL('www.example.com')).toBe(true);
       expect(isURL('not-a-url')).toBe(false);
       expect(isURL('https://')).toBe(false);
+    });
+
+    it('handles edge cases', () => {
+      expect(isURL('')).toBe(false);
+      expect(isURL('example.com')).toBe(true);
+      expect(isURL('subdomain.example.com')).toBe(true);
+      expect(isURL('has spaces.com')).toBe(false);
+      expect(isURL('no-dots')).toBe(false);
     });
   });
 

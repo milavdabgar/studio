@@ -217,6 +217,26 @@ describe('/api/students/[id]', () => {
       expect(data.message).toBe('Student not found');
     });
 
+    it('should update student by MongoDB ID if custom ID not found', async () => {
+      const objectId = '507f1f77bcf86cd799439011';
+      const studentWithObjectId = { ...mockStudent, _id: objectId, id: undefined };
+      const updatedStudent = { ...studentWithObjectId, ...updateData };
+      
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(null) } as any);
+      mockStudentModel.findById.mockReturnValue({ lean: () => Promise.resolve(studentWithObjectId) } as any);
+      mockStudentModel.findOneAndUpdate.mockResolvedValue(updatedStudent);
+      mockUserService.getUserById.mockResolvedValue(mockUser);
+      
+      const params = Promise.resolve({ id: objectId });
+      const request = new NextRequest('http://localhost/api/students/123', {
+        method: 'PUT',
+        body: JSON.stringify(updateData),
+      });
+      
+      const response = await PUT(request, { params });
+      expect(response.status).toBe(200);
+    });
+
     it('should return 409 for duplicate enrollment number', async () => {
       const duplicateData = { enrollmentNumber: 'GP23CE002' };
       mockStudentModel.findOne
@@ -235,6 +255,76 @@ describe('/api/students/[id]', () => {
       const data = await response.json();
       expect(data.message).toContain('GP23CE002');
       expect(data.message).toContain('already exists');
+    });
+
+    it('should return 409 for duplicate institute email', async () => {
+      const duplicateData = { instituteEmail: 'duplicate@gpp.edu.in' };
+      mockStudentModel.findOne
+        .mockReturnValueOnce({ lean: () => Promise.resolve(mockStudent) } as any) // Find existing student
+        .mockReturnValueOnce({ lean: () => Promise.resolve({ _id: 'other_student_id' }) } as any); // Found duplicate email
+      
+      const params = Promise.resolve({ id: 'student_123' });
+      const request = new NextRequest('http://localhost/api/students/123', {
+        method: 'PUT',
+        body: JSON.stringify(duplicateData),
+      });
+      
+      const response = await PUT(request, { params });
+      expect(response.status).toBe(409);
+      const data = await response.json();
+      expect(data.message).toContain('duplicate@gpp.edu.in');
+      expect(data.message).toContain('already in use');
+    });
+
+    it('should return 404 if student not found after update', async () => {
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOneAndUpdate.mockResolvedValue(null);
+      
+      const params = Promise.resolve({ id: 'student_123' });
+      const request = new NextRequest('http://localhost/api/students/123', {
+        method: 'PUT',
+        body: JSON.stringify(updateData),
+      });
+      
+      const response = await PUT(request, { params });
+      expect(response.status).toBe(404);
+      const data = await response.json();
+      expect(data.message).toBe('Student not found');
+    });
+
+    it('should update linked user when student data changes', async () => {
+      const updatedStudent = { ...mockStudent, firstName: 'Jonathan', personalEmail: 'jonathan@example.com' };
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOneAndUpdate.mockResolvedValue(updatedStudent);
+      mockUserService.getUserById.mockResolvedValue(mockUser);
+      mockUserService.updateUser.mockResolvedValue(undefined);
+      
+      const params = Promise.resolve({ id: 'student_123' });
+      const request = new NextRequest('http://localhost/api/students/123', {
+        method: 'PUT',
+        body: JSON.stringify({ firstName: 'Jonathan', personalEmail: 'jonathan@example.com' }),
+      });
+      
+      const response = await PUT(request, { params });
+      expect(response.status).toBe(200);
+      expect(mockUserService.updateUser).toHaveBeenCalled();
+    });
+
+    it('should handle user update errors gracefully', async () => {
+      const updatedStudent = { ...mockStudent, firstName: 'Jonathan' };
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOneAndUpdate.mockResolvedValue(updatedStudent);
+      mockUserService.getUserById.mockResolvedValue(mockUser);
+      mockUserService.updateUser.mockRejectedValue(new Error('User update failed'));
+      
+      const params = Promise.resolve({ id: 'student_123' });
+      const request = new NextRequest('http://localhost/api/students/123', {
+        method: 'PUT',
+        body: JSON.stringify({ firstName: 'Jonathan' }),
+      });
+      
+      const response = await PUT(request, { params });
+      expect(response.status).toBe(200); // Should still succeed despite user update failure
     });
 
     it('should handle database errors during update', async () => {
@@ -322,6 +412,43 @@ describe('/api/students/[id]', () => {
       
       expect(response.status).toBe(200);
       expect(mockUserService.deleteUser).not.toHaveBeenCalled();
+    });
+
+    it('should handle administrative user deletion warning', async () => {
+      mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      const adminError = new Error('Cannot delete this administrative user');
+      adminError.message = 'Cannot delete this administrative user';
+      mockUserService.deleteUser.mockRejectedValue(adminError);
+      
+      const params = Promise.resolve({ id: 'student_123' });
+      const response = await DELETE({} as NextRequest, { params });
+      
+      expect(response.status).toBe(200);
+      expect(console.warn).toHaveBeenCalledWith(expect.stringContaining('Administrative user'));
+    });
+
+    it('should handle user deletion with data.message administrative error', async () => {
+      mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      const adminError = { data: { message: 'Cannot delete administrative user' } } as any;
+      mockUserService.deleteUser.mockRejectedValue(adminError);
+      
+      const params = Promise.resolve({ id: 'student_123' });
+      const response = await DELETE({} as NextRequest, { params });
+      
+      expect(response.status).toBe(200);
+      expect(console.warn).toHaveBeenCalledWith(expect.stringContaining('Administrative user'));
+    });
+
+    it('should handle other user deletion errors', async () => {
+      mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      const otherError = new Error('Other user deletion error');
+      mockUserService.deleteUser.mockRejectedValue(otherError);
+      
+      const params = Promise.resolve({ id: 'student_123' });
+      const response = await DELETE({} as NextRequest, { params });
+      
+      expect(response.status).toBe(200);
+      expect(console.error).toHaveBeenCalledWith(expect.stringContaining('Failed to delete linked system user'), otherError);
     });
   });
 });
