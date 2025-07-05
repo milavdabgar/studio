@@ -150,8 +150,8 @@ describe('/api/courses/[id]', () => {
       );
     });
 
-    it('should return 400 for invalid data', async () => {
-      const invalidData = { subjectName: '' }; // Empty subject name
+    it('should return 400 for empty subject code', async () => {
+      const invalidData = { subcode: '' };
       const params = Promise.resolve({ id: mockCourse._id });
       const request = new NextRequest('http://localhost/api/courses/123', {
         method: 'PUT',
@@ -161,7 +161,98 @@ describe('/api/courses/[id]', () => {
       const response = await PUT(request, { params });
       expect(response.status).toBe(400);
       const data = await response.json();
-      expect(data.message).toContain('Subject Name cannot be empty');
+      expect(data.message).toBe('Subject Code cannot be empty.');
+    });
+
+    it('should return 400 for empty subject name', async () => {
+      const invalidData = { subjectName: '' };
+      const params = Promise.resolve({ id: mockCourse._id });
+      const request = new NextRequest('http://localhost/api/courses/123', {
+        method: 'PUT',
+        body: JSON.stringify(invalidData),
+      });
+      
+      const response = await PUT(request, { params });
+      expect(response.status).toBe(400);
+      const data = await response.json();
+      expect(data.message).toBe('Subject Name cannot be empty.');
+    });
+
+    it('should return 400 for missing department ID', async () => {
+      const invalidData = { departmentId: '' };
+      const params = Promise.resolve({ id: mockCourse._id });
+      const request = new NextRequest('http://localhost/api/courses/123', {
+        method: 'PUT',
+        body: JSON.stringify(invalidData),
+      });
+      
+      const response = await PUT(request, { params });
+      expect(response.status).toBe(400);
+      const data = await response.json();
+      expect(data.message).toBe('Department ID is required.');
+    });
+
+    it('should return 400 for missing program ID', async () => {
+      const invalidData = { programId: '' };
+      const params = Promise.resolve({ id: mockCourse._id });
+      const request = new NextRequest('http://localhost/api/courses/123', {
+        method: 'PUT',
+        body: JSON.stringify(invalidData),
+      });
+      
+      const response = await PUT(request, { params });
+      expect(response.status).toBe(400);
+      const data = await response.json();
+      expect(data.message).toBe('Program ID is required.');
+    });
+
+    it('should return 400 for invalid semester', async () => {
+      const invalidData = { semester: 0 };
+      const params = Promise.resolve({ id: mockCourse._id });
+      const request = new NextRequest('http://localhost/api/courses/123', {
+        method: 'PUT',
+        body: JSON.stringify(invalidData),
+      });
+      
+      const response = await PUT(request, { params });
+      expect(response.status).toBe(400);
+      const data = await response.json();
+      expect(data.message).toBe('Semester must be a positive number.');
+    });
+
+    it('should return 404 if course not found after update', async () => {
+      mockCourseModel.findById.mockResolvedValue(mockCourse);
+      mockCourseModel.findOne.mockResolvedValue(null);
+      mockCourseModel.findByIdAndUpdate.mockResolvedValue(null);
+      
+      const params = Promise.resolve({ id: mockCourse._id });
+      const request = new NextRequest('http://localhost/api/courses/123', {
+        method: 'PUT',
+        body: JSON.stringify(updateData),
+      });
+      
+      const response = await PUT(request, { params });
+      expect(response.status).toBe(404);
+      const data = await response.json();
+      expect(data.message).toBe('Course not found');
+    });
+
+    it('should handle database errors during update', async () => {
+      const errorMessage = 'Database update failed';
+      mockCourseModel.findById.mockResolvedValue(mockCourse);
+      mockCourseModel.findOne.mockResolvedValue(null);
+      mockCourseModel.findByIdAndUpdate.mockRejectedValue(new Error(errorMessage));
+      
+      const params = Promise.resolve({ id: mockCourse._id });
+      const request = new NextRequest('http://localhost/api/courses/123', {
+        method: 'PUT',
+        body: JSON.stringify(updateData),
+      });
+      
+      const response = await PUT(request, { params });
+      expect(response.status).toBe(500);
+      const data = await response.json();
+      expect(data.message).toBe('Internal server error');
     });
 
     it('should return 409 for duplicate course code', async () => {
@@ -183,7 +274,7 @@ describe('/api/courses/[id]', () => {
   });
 
   describe('DELETE /api/courses/[id]', () => {
-    it('should delete an existing course', async () => {
+    it('should delete an existing course by MongoDB ID', async () => {
       mockCourseModel.findById.mockResolvedValue(mockCourse);
       mockCourseModel.findByIdAndDelete.mockResolvedValue(mockCourse);
       
@@ -193,6 +284,19 @@ describe('/api/courses/[id]', () => {
       expect(response.status).toBe(200);
       const data = await response.json();
       expect(data.message).toBe('Course deleted successfully');
+      expect(mockCourseModel.findByIdAndDelete).toHaveBeenCalledWith(mockCourse._id);
+    });
+
+    it('should delete an existing course by custom ID', async () => {
+      mockCourseModel.findById.mockResolvedValue(null);
+      mockCourseModel.findOne.mockResolvedValue(mockCourse);
+      mockCourseModel.findByIdAndDelete.mockResolvedValue(mockCourse);
+      
+      const params = Promise.resolve({ id: 'custom_course_id' });
+      const response = await DELETE({} as NextRequest, { params });
+      
+      expect(response.status).toBe(200);
+      expect(mockCourseModel.findOne).toHaveBeenCalledWith({ id: 'custom_course_id' });
       expect(mockCourseModel.findByIdAndDelete).toHaveBeenCalledWith(mockCourse._id);
     });
 

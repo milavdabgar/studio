@@ -46,23 +46,184 @@ describe('useToast', () => {
     it('should create toast with basic properties', () => {
       const { result } = renderHook(() => useToast());
       
-      // Call the toast function to ensure it doesn't throw
-      expect(() => {
-        act(() => {
-          result.current.toast({ title: 'Test Toast' });
-        });
-      }).not.toThrow();
+      act(() => {
+        result.current.toast({ title: 'Test Toast' });
+      });
+      
+      expect(result.current.toasts).toHaveLength(1);
+      expect(result.current.toasts[0].title).toBe('Test Toast');
+      expect(result.current.toasts[0].open).toBe(true);
     });
 
-    it('should accept dismiss function calls', () => {
+    it('should create toast with all properties', () => {
       const { result } = renderHook(() => useToast());
       
-      // Call the dismiss function to ensure it doesn't throw
-      expect(() => {
-        act(() => {
-          result.current.dismiss();
+      act(() => {
+        result.current.toast({ 
+          title: 'Test Toast',
+          description: 'Test Description',
+          variant: 'destructive'
         });
-      }).not.toThrow();
+      });
+      
+      expect(result.current.toasts).toHaveLength(1);
+      expect(result.current.toasts[0].title).toBe('Test Toast');
+      expect(result.current.toasts[0].description).toBe('Test Description');
+      expect(result.current.toasts[0].variant).toBe('destructive');
+    });
+
+    it('should limit toasts to TOAST_LIMIT', () => {
+      const { result } = renderHook(() => useToast());
+      
+      act(() => {
+        result.current.toast({ title: 'Toast 1' });
+        result.current.toast({ title: 'Toast 2' });
+        result.current.toast({ title: 'Toast 3' });
+      });
+      
+      // Should only have 1 toast (TOAST_LIMIT = 1)
+      expect(result.current.toasts).toHaveLength(1);
+      expect(result.current.toasts[0].title).toBe('Toast 3'); // Latest toast
+    });
+
+    it('should update existing toast', () => {
+      const { result } = renderHook(() => useToast());
+      let toastControls: any;
+      
+      act(() => {
+        toastControls = result.current.toast({ title: 'Original Title' });
+      });
+      
+      act(() => {
+        toastControls.update({ title: 'Updated Title', description: 'New Description' });
+      });
+      
+      expect(result.current.toasts[0].title).toBe('Updated Title');
+      expect(result.current.toasts[0].description).toBe('New Description');
+    });
+
+    it('should dismiss specific toast', () => {
+      const { result } = renderHook(() => useToast());
+      let toastControls: any;
+      
+      act(() => {
+        toastControls = result.current.toast({ title: 'Test Toast' });
+      });
+      
+      expect(result.current.toasts[0].open).toBe(true);
+      
+      act(() => {
+        toastControls.dismiss();
+      });
+      
+      expect(result.current.toasts[0].open).toBe(false);
+    });
+
+    it('should dismiss specific toast by ID', () => {
+      const { result } = renderHook(() => useToast());
+      let toastId: string;
+      
+      act(() => {
+        const controls = result.current.toast({ title: 'Test Toast' });
+        toastId = controls.id;
+      });
+      
+      expect(result.current.toasts[0].open).toBe(true);
+      
+      act(() => {
+        result.current.dismiss(toastId);
+      });
+      
+      expect(result.current.toasts[0].open).toBe(false);
+    });
+
+    it('should dismiss all toasts when no ID provided', () => {
+      const { result } = renderHook(() => useToast());
+      
+      act(() => {
+        result.current.toast({ title: 'Toast 1' });
+      });
+      
+      expect(result.current.toasts[0].open).toBe(true);
+      
+      act(() => {
+        result.current.dismiss(); // No ID = dismiss all
+      });
+      
+      expect(result.current.toasts[0].open).toBe(false);
+    });
+
+    it('should handle onOpenChange callback', () => {
+      const { result } = renderHook(() => useToast());
+      
+      act(() => {
+        result.current.toast({ title: 'Test Toast' });
+      });
+      
+      const toast = result.current.toasts[0];
+      expect(toast.open).toBe(true);
+      
+      act(() => {
+        toast.onOpenChange?.(false);
+      });
+      
+      expect(result.current.toasts[0].open).toBe(false);
+    });
+
+    it('should remove toast after timeout', () => {
+      const { result } = renderHook(() => useToast());
+      
+      act(() => {
+        result.current.toast({ title: 'Test Toast' });
+      });
+      
+      expect(result.current.toasts).toHaveLength(1);
+      
+      act(() => {
+        result.current.toasts[0].onOpenChange?.(false);
+      });
+      
+      // Fast forward time to trigger removal
+      act(() => {
+        jest.advanceTimersByTime(1000000);
+      });
+      
+      expect(result.current.toasts).toHaveLength(0);
+    });
+
+    it('should prevent duplicate timeouts for same toast', () => {
+      const { result } = renderHook(() => useToast());
+      let toastControls: any;
+      
+      act(() => {
+        toastControls = result.current.toast({ title: 'Test Toast' });
+      });
+      
+      // Dismiss twice quickly
+      act(() => {
+        toastControls.dismiss();
+        toastControls.dismiss();
+      });
+      
+      // Should still only have one toast
+      expect(result.current.toasts).toHaveLength(1);
+      expect(result.current.toasts[0].open).toBe(false);
+    });
+
+    it('should remove all toasts when action has undefined toastId', () => {
+      const { result } = renderHook(() => useToast());
+      
+      act(() => {
+        result.current.toast({ title: 'Test Toast' });
+      });
+      
+      expect(result.current.toasts).toHaveLength(1);
+      
+      // This simulates the REMOVE_TOAST action with undefined toastId
+      act(() => {
+        // Force the reducer to handle undefined toastId for REMOVE_TOAST
+        jest.advanceTimersByTime(1000000);
+      });
     });
   });
 

@@ -139,7 +139,7 @@ describe('/api/courses', () => {
       expect(mockSave).toHaveBeenCalledTimes(1);
     });
 
-    it('should return 400 when required fields are missing', async () => {
+    it('should return 400 when subject code is empty', async () => {
       const { subcode, ...invalidData } = validCourseData;
       
       const request = new NextRequest('http://localhost/api/courses', {
@@ -152,6 +152,111 @@ describe('/api/courses', () => {
       
       expect(response.status).toBe(400);
       expect(data.message).toBe('Subject code cannot be empty.');
+    });
+
+    it('should return 400 when subject name is empty', async () => {
+      const { subjectName, ...invalidData } = validCourseData;
+      
+      const request = new NextRequest('http://localhost/api/courses', {
+        method: 'POST',
+        body: JSON.stringify(invalidData),
+      });
+      
+      const response = await POST(request);
+      const data = await response.json();
+      
+      expect(response.status).toBe(400);
+      expect(data.message).toBe('Subject name cannot be empty.');
+    });
+
+    it('should return 400 when department ID is missing', async () => {
+      const { departmentId, ...invalidData } = validCourseData;
+      
+      const request = new NextRequest('http://localhost/api/courses', {
+        method: 'POST',
+        body: JSON.stringify(invalidData),
+      });
+      
+      const response = await POST(request);
+      const data = await response.json();
+      
+      expect(response.status).toBe(400);
+      expect(data.message).toBe('Department ID is required.');
+    });
+
+    it('should return 400 when program ID is missing', async () => {
+      const { programId, ...invalidData } = validCourseData;
+      
+      const request = new NextRequest('http://localhost/api/courses', {
+        method: 'POST',
+        body: JSON.stringify(invalidData),
+      });
+      
+      const response = await POST(request);
+      const data = await response.json();
+      
+      expect(response.status).toBe(400);
+      expect(data.message).toBe('Program ID is required.');
+    });
+
+    it('should return 400 when semester is invalid', async () => {
+      const invalidData = { ...validCourseData, semester: 0 };
+      
+      const request = new NextRequest('http://localhost/api/courses', {
+        method: 'POST',
+        body: JSON.stringify(invalidData),
+      });
+      
+      const response = await POST(request);
+      const data = await response.json();
+      
+      expect(response.status).toBe(400);
+      expect(data.message).toBe('Valid semester is required.');
+    });
+
+    it('should return 400 when category is empty', async () => {
+      const { category, ...invalidData } = validCourseData;
+      
+      const request = new NextRequest('http://localhost/api/courses', {
+        method: 'POST',
+        body: JSON.stringify(invalidData),
+      });
+      
+      const response = await POST(request);
+      const data = await response.json();
+      
+      expect(response.status).toBe(400);
+      expect(data.message).toBe('Course category is required.');
+    });
+
+    it('should return 400 when hours are negative', async () => {
+      const invalidData = { ...validCourseData, lectureHours: -1 };
+      
+      const request = new NextRequest('http://localhost/api/courses', {
+        method: 'POST',
+        body: JSON.stringify(invalidData),
+      });
+      
+      const response = await POST(request);
+      const data = await response.json();
+      
+      expect(response.status).toBe(400);
+      expect(data.message).toBe('Hours cannot be negative.');
+    });
+
+    it('should return 400 when credits are zero or negative', async () => {
+      const invalidData = { ...validCourseData, credits: 0 };
+      
+      const request = new NextRequest('http://localhost/api/courses', {
+        method: 'POST',
+        body: JSON.stringify(invalidData),
+      });
+      
+      const response = await POST(request);
+      const data = await response.json();
+      
+      expect(response.status).toBe(400);
+      expect(data.message).toBe('Credits must be greater than 0.');
     });
 
     it('should return 409 when course with same code exists in program', async () => {
