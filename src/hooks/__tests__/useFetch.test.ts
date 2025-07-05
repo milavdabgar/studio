@@ -92,4 +92,109 @@ describe('useFetch', () => {
 
     expect(abortSpy).toHaveBeenCalledTimes(1);
   });
+
+  it('should handle AbortError without updating state', async () => {
+    const abortError = new Error('Request aborted');
+    abortError.name = 'AbortError';
+    
+    (global.fetch as jest.Mock).mockRejectedValueOnce(abortError);
+
+    const { result } = renderHook(() => useFetch(mockUrl));
+
+    // Wait a moment for the fetch to be attempted
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalled();
+    });
+
+    // The state should remain in loading state for AbortError
+    expect(result.current.data).toBeNull();
+    expect(result.current.error).toBeNull();
+  });
+
+  it('should handle refetch when URL is empty', () => {
+    const { result } = renderHook(() => useFetch(''));
+
+    // Call refetch on empty URL - should not cause fetch
+    result.current.refetch();
+
+    expect(global.fetch).not.toHaveBeenCalled();
+    expect(result.current.data).toBeNull();
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe('No URL provided');
+  });
+
+  it('should handle refetch with valid URL', async () => {
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockData,
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ ...mockData, name: 'Refetched Data' }),
+      });
+
+    const { result } = renderHook(() => useFetch(mockUrl));
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    expect(result.current.data).toEqual(mockData);
+
+    // Clear mock to track refetch call
+    (global.fetch as jest.Mock).mockClear();
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ ...mockData, name: 'Refetched Data' }),
+    });
+
+    // Call refetch
+    result.current.refetch();
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('should handle non-Error exceptions', async () => {
+    (global.fetch as jest.Mock).mockClear();
+    (global.fetch as jest.Mock).mockRejectedValueOnce('String error');
+
+    const { result } = renderHook(() => useFetch(mockUrl));
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    expect(result.current.data).toBeNull();
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe('An error occurred');
+  });
+
+  it('should handle fetchData when called without URL', async () => {
+    // Mock a dynamic URL change scenario to test internal URL checking
+    const { result, rerender } = renderHook(
+      ({ url }) => useFetch<any>(url),
+      { initialProps: { url: mockUrl } }
+    );
+
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockData,
+    });
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    // Change to empty URL to trigger the internal URL check in fetchData
+    rerender({ url: '' });
+
+    await waitFor(() => {
+      expect(result.current.error).toBe('No URL provided');
+      expect(result.current.loading).toBe(false);
+      expect(result.current.data).toBeNull();
+    });
+  });
 });
