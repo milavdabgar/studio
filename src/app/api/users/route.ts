@@ -6,17 +6,6 @@ import { UserModel } from '@/lib/models';
 
 const generateId = (): string => `user_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
-const parseFullNameForEmail = (fullName: string | undefined, displayName?: string): { firstName?: string, lastName?: string } => {
-    const nameToParse = fullName || displayName;
-    if (!nameToParse) return {};
-    const parts = nameToParse.trim().split(/\s+/);
-    if (parts.length === 1) return { firstName: parts[0].toLowerCase() };
-    if (parts.length >= 2) { // SURNAME NAME FATHERNAME -> lastName=SURNAME, firstName=NAME
-      return { firstName: parts[1].toLowerCase() , lastName: parts[0].toLowerCase() };
-    }
-    return {};
-};
-
 export async function GET(request: NextRequest) {
   try {
     await connectMongoose();

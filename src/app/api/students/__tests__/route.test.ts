@@ -43,6 +43,7 @@ jest.mock('@/lib/api/users', () => ({
     createUser: jest.fn(),
     getAllUsers: jest.fn(),
     updateUser: jest.fn(),
+    findByEmail: jest.fn(),
   }
 }));
 jest.mock('@/lib/api/institutes', () => ({
@@ -517,6 +518,94 @@ describe('/api/students', () => {
       
       expect(response.status).toBe(201);
       expect(data.instituteEmail).toBe('GP24CE001@gpp.ac.in'); // Default domain used
+    });
+
+    it('should warn when program does not have instituteId', async () => {
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      
+      // Mock program without instituteId
+      const programWithoutInstitute = [{
+        ...mockPrograms[0],
+        instituteId: undefined
+      }];
+      mockProgramService.getAllPrograms.mockResolvedValue(programWithoutInstitute);
+      
+      const request = new NextRequest('http://localhost/api/students', {
+        method: 'POST',
+        body: JSON.stringify(validStudentData),
+      });
+      
+      const response = await POST(request);
+      expect(response.status).toBe(201);
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Could not determine instituteId for student')
+      );
+      
+      consoleSpy.mockRestore();
+    });
+
+    it('should warn when institute ID is not determined', async () => {
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      
+      // Mock empty programs array so no program is found
+      mockProgramService.getAllPrograms.mockResolvedValue([]);
+      
+      const request = new NextRequest('http://localhost/api/students', {
+        method: 'POST',
+        body: JSON.stringify(validStudentData),
+      });
+      
+      const response = await POST(request);
+      expect(response.status).toBe(201);
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Institute ID not determined for student')
+      );
+      
+      consoleSpy.mockRestore();
+    });
+
+    it('should handle error when student cannot be linked to existing user despite already exists error', async () => {
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      
+      // Mock user creation to fail with "already exists" but getAllUsers returns empty array
+      const alreadyExistsError = new Error('User already exists');
+      mockUserService.createUser.mockRejectedValue(alreadyExistsError);
+      mockUserService.getAllUsers.mockResolvedValue([]); // No existing users found
+      
+      const request = new NextRequest('http://localhost/api/students', {
+        method: 'POST',
+        body: JSON.stringify(validStudentData),
+      });
+      
+      const response = await POST(request);
+      expect(response.status).toBe(201); // Student should still be created
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Could not link student')
+      );
+      
+      consoleSpy.mockRestore();
+    });
+
+    it('should handle other user creation errors', async () => {
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      
+      // Mock user creation to fail with different error
+      const otherError = new Error('Database connection failed');
+      mockUserService.createUser.mockRejectedValue(otherError);
+      
+      const request = new NextRequest('http://localhost/api/students', {
+        method: 'POST',
+        body: JSON.stringify(validStudentData),
+      });
+      
+      const response = await POST(request);
+      expect(response.status).toBe(201); // Student should still be created
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Failed to create/link system user'),
+        otherError
+      );
+      
+      consoleSpy.mockRestore();
     });
   });
 });

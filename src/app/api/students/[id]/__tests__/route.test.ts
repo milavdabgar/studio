@@ -358,6 +358,97 @@ describe('/api/students/[id]', () => {
       expect(data.message).toBe('Error updating student');
       expect(data.error).toBe(errorMessage);
     });
+
+    it('should remove undefined fields from update data', async () => {
+      const updatedStudent = { ...mockStudent, firstName: 'Jonathan', lastName: undefined };
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOneAndUpdate.mockResolvedValue(updatedStudent);
+      mockUserService.getUserById.mockResolvedValue(mockUser);
+      
+      const params = Promise.resolve({ id: 'student_123' });
+      const request = new NextRequest('http://localhost/api/students/123', {
+        method: 'PUT',
+        body: JSON.stringify({ firstName: 'Jonathan', lastName: undefined, middleName: null }),
+      });
+      
+      const response = await PUT(request, { params });
+      expect(response.status).toBe(200);
+      // Verify that findOneAndUpdate was called without undefined fields
+      expect(mockStudentModel.findOneAndUpdate).toHaveBeenCalled();
+    });
+
+    it('should update user display name when fullNameGtuFormat changes', async () => {
+      const updatedStudent = { ...mockStudent, fullNameGtuFormat: 'SMITH JONATHAN KUMAR' };
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOneAndUpdate.mockResolvedValue(updatedStudent);
+      mockUserService.getUserById.mockResolvedValue(mockUser);
+      mockUserService.updateUser.mockResolvedValue({
+        ...mockUser,
+        displayName: 'SMITH JONATHAN KUMAR'
+      });
+      
+      const params = Promise.resolve({ id: 'student_123' });
+      const request = new NextRequest('http://localhost/api/students/123', {
+        method: 'PUT',
+        body: JSON.stringify({ fullNameGtuFormat: 'SMITH JONATHAN KUMAR' }),
+      });
+      
+      const response = await PUT(request, { params });
+      expect(response.status).toBe(200);
+      expect(mockUserService.updateUser).toHaveBeenCalledWith(
+        'user_123',
+        expect.objectContaining({ displayName: 'SMITH JONATHAN KUMAR' })
+      );
+    });
+
+    it('should update user isActive status when student status changes', async () => {
+      const updatedStudent = { ...mockStudent, status: 'inactive' as const };
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOneAndUpdate.mockResolvedValue(updatedStudent);
+      mockUserService.getUserById.mockResolvedValue(mockUser);
+      mockUserService.updateUser.mockResolvedValue({
+        ...mockUser,
+        isActive: false
+      });
+      
+      const params = Promise.resolve({ id: 'student_123' });
+      const request = new NextRequest('http://localhost/api/students/123', {
+        method: 'PUT',
+        body: JSON.stringify({ status: 'inactive' }),
+      });
+      
+      const response = await PUT(request, { params });
+      expect(response.status).toBe(200);
+      expect(mockUserService.updateUser).toHaveBeenCalledWith(
+        'user_123',
+        expect.objectContaining({ isActive: false })
+      );
+    });
+
+    it('should update user photo URL when student photo URL changes', async () => {
+      const newPhotoURL = 'https://example.com/new-photo.jpg';
+      const updatedStudent = { ...mockStudent, photoURL: newPhotoURL };
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOneAndUpdate.mockResolvedValue(updatedStudent);
+      mockUserService.getUserById.mockResolvedValue(mockUser);
+      mockUserService.updateUser.mockResolvedValue({
+        ...mockUser,
+        photoURL: newPhotoURL
+      });
+      
+      const params = Promise.resolve({ id: 'student_123' });
+      const request = new NextRequest('http://localhost/api/students/123', {
+        method: 'PUT',
+        body: JSON.stringify({ photoURL: newPhotoURL }),
+      });
+      
+      const response = await PUT(request, { params });
+      expect(response.status).toBe(200);
+      expect(mockUserService.updateUser).toHaveBeenCalledWith(
+        'user_123',
+        expect.objectContaining({ photoURL: newPhotoURL })
+      );
+    });
   });
 
   describe('DELETE /api/students/[id]', () => {
