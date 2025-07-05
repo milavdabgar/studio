@@ -74,7 +74,7 @@ export default function EventLocationsPage() {
       setLocations((locationsDataResponse as any)?.locations || []);
       setDepartments(deptData);
       setProjects(Array.isArray(projectsDataResponse) ? projectsDataResponse : ((projectsDataResponse as any)?.data?.projects || []));
-    } catch (error) {
+    } catch (_error) {
       toast({ variant: "destructive", title: "Error", description: "Could not load event locations data." });
     }
     setIsLoading(false);

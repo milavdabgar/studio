@@ -1,15 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PublicNav } from "@/components/public-nav";
 import Link from "next/link";
 import Image from "next/image";
 import { 
-  GraduationCap, 
   Award,
-  Calendar,
   Users,
   Building,
   Target,
@@ -23,12 +21,9 @@ import {
   Zap
 } from "lucide-react";
 import collegeInfo from "../../../data/content/college-info.json";
-import pages from "../../../data/content/pages.json";
 import { Footer } from "@/components/footer";
 
 export default function AboutPage() {
-  const aboutContent = pages.find(page => page.slug === 'about-us');
-  
   return (
     <div className="flex flex-col min-h-screen">
       <PublicNav />
@@ -125,7 +120,7 @@ export default function AboutPage() {
                   className="rounded-xl"
                 />
                 <div className="mt-6 text-center">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Principal's Office</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 dark:text-white">Principal&apos;s Office</h3>
                   <p className="text-gray-600 dark:text-gray-400">Led by {collegeInfo.administration.principal}</p>
                 </div>
               </div>
@@ -494,7 +489,7 @@ export default function AboutPage() {
             Join Our Legacy of Excellence
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto dark:text-gray-400">
-            Become part of GP Palanpur's proud tradition of producing skilled engineers 
+            Become part of GP Palanpur&apos;s proud tradition of producing skilled engineers 
             who make meaningful contributions to society and industry.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

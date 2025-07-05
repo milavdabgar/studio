@@ -5,7 +5,7 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Loader2, ArrowLeft, Briefcase, PlusCircle, Edit, Trash2, Search, Filter, Download, UploadCloud, FileSpreadsheet, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { Loader2, ArrowLeft, Briefcase, PlusCircle, Edit, Trash2, Download, UploadCloud, FileSpreadsheet, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Project, ProjectEvent, Department, ProjectTeam, ProjectStatus, User as FacultyUser } from '@/types/entities';
 import { projectService } from '@/lib/api/projects';

@@ -74,7 +74,7 @@ export default function EventEvaluationsPage() {
       setDepartments(deptData);
       setTeams(Array.isArray(teamDataResponse) ? teamDataResponse : ((teamDataResponse as any)?.data?.teams || []));
       setJuryMembers(usersData.filter(u => u.roles.some(r => ['jury', 'faculty', 'hod', 'admin', 'super_admin'].includes(r))));
-    } catch (error) {
+    } catch (_error) {
       toast({ variant: "destructive", title: "Error", description: "Could not load event evaluations data." });
     }
     setIsLoading(false);
