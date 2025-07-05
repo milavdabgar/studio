@@ -111,6 +111,17 @@ describe('Department API', () => {
 
       await expect(departmentService.createDepartment(newDepartment as Omit<Department, 'id'>)).rejects.toThrow('Failed to create department');
     });
+
+    it('should handle JSON parsing errors during creation', async () => {
+      const newDepartment = { name: 'New Department' };
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 400,
+        json: async () => { throw new Error('Invalid JSON'); }
+      }));
+
+      await expect(departmentService.createDepartment(newDepartment as Omit<Department, 'id'>)).rejects.toThrow('Failed to create department');
+    });
   });
 
   describe('updateDepartment', () => {
@@ -142,6 +153,16 @@ describe('Department API', () => {
 
       await expect(departmentService.updateDepartment('1', { name: 'Updated Department' })).rejects.toThrow('Failed to update department');
     });
+
+    it('should handle JSON parsing errors during update', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 400,
+        json: async () => { throw new Error('Invalid JSON'); }
+      }));
+
+      await expect(departmentService.updateDepartment('1', { name: 'Updated Department' })).rejects.toThrow('Failed to update department');
+    });
   });
 
   describe('deleteDepartment', () => {
@@ -164,6 +185,74 @@ describe('Department API', () => {
       }));
 
       await expect(departmentService.deleteDepartment('999')).rejects.toThrow('Failed to delete department with id 999');
+    });
+
+    it('should handle JSON parsing errors during deletion', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 400,
+        json: async () => { throw new Error('Invalid JSON'); }
+      }));
+
+      await expect(departmentService.deleteDepartment('1')).rejects.toThrow('Failed to delete department with id 1');
+    });
+  });
+
+  describe('importDepartments', () => {
+    it('should import departments from file successfully', async () => {
+      const mockFile = new File(['test'], 'test.csv', { type: 'text/csv' });
+      const mockResponse = { newCount: 5, updatedCount: 2, skippedCount: 1 };
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true,
+        json: async () => mockResponse
+      }));
+
+      const result = await departmentService.importDepartments(mockFile);
+      expect(result).toEqual(mockResponse);
+      expect(fetch).toHaveBeenCalledWith('/api/departments/import', {
+        method: 'POST',
+        body: expect.any(FormData)
+      });
+    });
+
+    it('should throw an error if import fails', async () => {
+      const mockFile = new File(['test'], 'test.csv', { type: 'text/csv' });
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 400,
+        json: async () => ({ message: 'Invalid file format' })
+      }));
+
+      await expect(departmentService.importDepartments(mockFile)).rejects.toThrow('Invalid file format');
+    });
+
+    it('should handle JSON parsing errors during import', async () => {
+      const mockFile = new File(['test'], 'test.csv', { type: 'text/csv' });
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 400,
+        json: async () => { throw new Error('Invalid JSON'); }
+      }));
+
+      await expect(departmentService.importDepartments(mockFile)).rejects.toThrow('Failed to import departments');
+    });
+
+    it('should handle detailed error messages with errors array', async () => {
+      const mockFile = new File(['test'], 'test.csv', { type: 'text/csv' });
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 400,
+        json: async () => ({ 
+          message: 'Validation failed',
+          errors: ['Row 1: Name is required', 'Row 2: Invalid format', 'Row 3: Duplicate entry', 'Row 4: Too long']
+        })
+      }));
+
+      await expect(departmentService.importDepartments(mockFile)).rejects.toThrow('Validation failed Specific issues: Row 1: Name is required; Row 2: Invalid format; Row 3: Duplicate entry...');
     });
   });
 });

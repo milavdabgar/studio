@@ -63,6 +63,11 @@ describe('EnrollmentService API Tests', () => {
       expect(fetch).toHaveBeenCalledWith('/api/enrollments?courseOfferingId=co1');
       expect(result).toEqual(mockEnrollments);
     });
+
+    it('should throw an error if fetching course offering enrollments fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Fetch error' }) }));
+      await expect(enrollmentService.getEnrollmentsByCourseOffering('co1')).rejects.toThrow('Fetch error');
+    });
   });
 
   describe('getEnrollmentById', () => {
@@ -71,6 +76,11 @@ describe('EnrollmentService API Tests', () => {
       const result = await enrollmentService.getEnrollmentById('enroll1');
       expect(fetch).toHaveBeenCalledWith('/api/enrollments/enroll1');
       expect(result).toEqual(mockEnrollment);
+    });
+
+    it('should throw an error if fetching enrollment by ID fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Enrollment not found' }) }));
+      await expect(enrollmentService.getEnrollmentById('enroll1')).rejects.toThrow('Enrollment not found');
     });
   });
 
@@ -88,6 +98,11 @@ describe('EnrollmentService API Tests', () => {
       expect(fetch).toHaveBeenCalledWith('/api/enrollments', expect.objectContaining({ method: 'POST', body: JSON.stringify(newEnrollmentData) }));
       expect(result).toEqual(createdEnrollment);
     });
+
+    it('should throw an error if creating enrollment fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Creation failed' }) }));
+      await expect(enrollmentService.createEnrollment(newEnrollmentData)).rejects.toThrow('Creation failed');
+    });
   });
 
   describe('updateEnrollmentStatus', () => {
@@ -98,6 +113,11 @@ describe('EnrollmentService API Tests', () => {
       expect(fetch).toHaveBeenCalledWith('/api/enrollments/enroll1', expect.objectContaining({ method: 'PUT', body: JSON.stringify({ status: 'completed' }) }));
       expect(result).toEqual(updatedEnrollment);
     });
+
+    it('should throw an error if updating enrollment status fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Update failed' }) }));
+      await expect(enrollmentService.updateEnrollmentStatus('enroll1', 'completed')).rejects.toThrow('Update failed');
+    });
   });
 
   describe('withdrawEnrollment', () => {
@@ -105,6 +125,25 @@ describe('EnrollmentService API Tests', () => {
       mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true }));
       await enrollmentService.withdrawEnrollment('enroll1');
       expect(fetch).toHaveBeenCalledWith('/api/enrollments/enroll1', expect.objectContaining({ method: 'DELETE' }));
+    });
+
+    it('should throw an error if withdrawing enrollment fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Withdrawal failed' }) }));
+      await expect(enrollmentService.withdrawEnrollment('enroll1')).rejects.toThrow('Withdrawal failed');
+    });
+  });
+
+  describe('getAllEnrollments', () => {
+    it('should fetch all enrollments successfully', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, json: async () => mockEnrollments }));
+      const result = await enrollmentService.getAllEnrollments();
+      expect(fetch).toHaveBeenCalledWith('/api/enrollments');
+      expect(result).toEqual(mockEnrollments);
+    });
+
+    it('should throw an error if fetching all enrollments fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Fetch all failed' }) }));
+      await expect(enrollmentService.getAllEnrollments()).rejects.toThrow('Fetch all failed');
     });
   });
 });

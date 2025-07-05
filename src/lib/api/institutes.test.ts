@@ -116,6 +116,18 @@ describe('Institutes API', () => {
 
       await expect(instituteService.createInstitute(newInstituteData)).rejects.toThrow('Failed to create institute');
     });
+
+    it('should handle JSON parsing errors during creation', async () => {
+      const newInstituteData = { name: 'New Institute', code: 'NEW', status: 'active' } as Omit<Institute, 'id'>;
+
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 400,
+        json: async () => { throw new Error('Invalid JSON'); }
+      }));
+
+      await expect(instituteService.createInstitute(newInstituteData)).rejects.toThrow('Failed to create institute');
+    });
   });
 
   describe('updateInstitute', () => {
@@ -150,6 +162,18 @@ describe('Institutes API', () => {
 
       await expect(instituteService.updateInstitute('3', updatedInstituteData)).rejects.toThrow('Failed to update institute');
     });
+
+    it('should handle JSON parsing errors during update', async () => {
+      const updatedInstituteData = { name: 'Updated Institute', code: 'UPD' };
+
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 400,
+        json: async () => { throw new Error('Invalid JSON'); }
+      }));
+
+      await expect(instituteService.updateInstitute('1', updatedInstituteData)).rejects.toThrow('Failed to update institute');
+    });
   });
 
   describe('deleteInstitute', () => {
@@ -172,6 +196,93 @@ describe('Institutes API', () => {
       }));
 
       await expect(instituteService.deleteInstitute('3')).rejects.toThrow('Failed to delete institute with id 3');
+    });
+  });
+
+  describe('importInstitutes', () => {
+    it('should import institutes from file successfully', async () => {
+      const mockFile = new File(['test'], 'test.csv', { type: 'text/csv' });
+      const mockResponse = { newCount: 3, updatedCount: 1, skippedCount: 0 };
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true,
+        json: async () => mockResponse
+      }));
+
+      const result = await instituteService.importInstitutes(mockFile);
+      expect(result).toEqual(mockResponse);
+      expect(fetch).toHaveBeenCalledWith('/api/institutes/import', {
+        method: 'POST',
+        body: expect.any(FormData)
+      });
+    });
+
+    it('should throw an error if import fails', async () => {
+      const mockFile = new File(['test'], 'test.csv', { type: 'text/csv' });
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 400,
+        json: async () => ({ message: 'Invalid file format' })
+      }));
+
+      await expect(instituteService.importInstitutes(mockFile)).rejects.toThrow('Invalid file format');
+    });
+
+    it('should handle JSON parsing errors during import', async () => {
+      const mockFile = new File(['test'], 'test.csv', { type: 'text/csv' });
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 400,
+        json: async () => { throw new Error('Invalid JSON'); }
+      }));
+
+      await expect(instituteService.importInstitutes(mockFile)).rejects.toThrow('Failed to import institutes');
+    });
+
+    it('should handle detailed error messages with errors array', async () => {
+      const mockFile = new File(['test'], 'test.csv', { type: 'text/csv' });
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: false,
+        status: 400,
+        json: async () => ({ 
+          message: 'Validation failed',
+          errors: ['Row 1: Name is required', 'Row 2: Invalid code format', 'Row 3: Duplicate entry']
+        })
+      }));
+
+      await expect(instituteService.importInstitutes(mockFile)).rejects.toThrow('Validation failed Specific issues: Row 1: Name is required; Row 2: Invalid code format; Row 3: Duplicate entry');
+    });
+  });
+
+  describe('getBaseUrl server-side logic', () => {
+    it('should use server-side URL when window is undefined', async () => {
+      // Mock server-side environment
+      const originalWindow = global.window;
+      // @ts-ignore
+      delete global.window;
+      
+      // Mock environment variables
+      const originalEnv = process.env;
+      process.env = { ...originalEnv, NEXTAUTH_URL: 'https://example.com' };
+      
+      mockFetch.mockResolvedValueOnce(createMockResponse({
+        ok: true,
+        json: async () => mockInstitutes
+      }));
+
+      // Re-import the module to trigger getBaseUrl evaluation
+      jest.resetModules();
+      const { instituteService: serverInstituteService } = await import('./institutes');
+      
+      await serverInstituteService.getAllInstitutes();
+      expect(fetch).toHaveBeenCalledWith('https://example.com/api/institutes');
+      
+      // Restore original environment
+      process.env = originalEnv;
+      global.window = originalWindow;
     });
   });
 });
