@@ -526,7 +526,7 @@ describe('/api/students', () => {
       // Mock program without instituteId
       const programWithoutInstitute = [{
         ...mockPrograms[0],
-        instituteId: undefined
+        instituteId: undefined as any
       }];
       mockProgramService.getAllPrograms.mockResolvedValue(programWithoutInstitute);
       
