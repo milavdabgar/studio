@@ -8,12 +8,12 @@ import {
   RateLimitError,
   CustomError
 } from '../errorHandler';
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { describe, it, expect, beforeEach, jest, afterEach } from '@jest/globals';
 
 describe('errorHandler middleware', () => {
   let mockRequest: NextRequest;
   let mockNext: jest.MockedFunction<any>;
-  let consoleSpy: jest.SpyInstance;
+  let consoleSpy: ReturnType<typeof jest.spyOn>;
 
   beforeEach(() => {
     mockRequest = new NextRequest('http://localhost:3000/api/test');
@@ -297,11 +297,17 @@ describe('errorHandler middleware', () => {
       const originalEnv = process.env.NODE_ENV;
 
       afterEach(() => {
-        process.env.NODE_ENV = originalEnv;
+        Object.defineProperty(process.env, 'NODE_ENV', {
+          value: originalEnv,
+          configurable: true
+        });
       });
 
       it('should handle generic Error in development mode', async () => {
-        process.env.NODE_ENV = 'development';
+        Object.defineProperty(process.env, 'NODE_ENV', {
+          value: 'development',
+          configurable: true
+        });
         const genericError = new Error('Database connection failed');
         genericError.stack = 'Error: Database connection failed\n    at test.js:1:1';
 
@@ -315,7 +321,10 @@ describe('errorHandler middleware', () => {
       });
 
       it('should handle generic Error in production mode', async () => {
-        process.env.NODE_ENV = 'production';
+        Object.defineProperty(process.env, 'NODE_ENV', {
+          value: 'production',
+          configurable: true
+        });
         const genericError = new Error('Sensitive internal error');
 
         const response = await errorHandler(genericError, mockRequest, null, mockNext);
@@ -328,7 +337,10 @@ describe('errorHandler middleware', () => {
       });
 
       it('should handle Error without stack trace', async () => {
-        process.env.NODE_ENV = 'development';
+        Object.defineProperty(process.env, 'NODE_ENV', {
+          value: 'development',
+          configurable: true
+        });
         const error = new Error('Error without stack');
         delete error.stack;
 
@@ -368,7 +380,10 @@ describe('errorHandler middleware', () => {
 
     describe('Edge cases and security', () => {
       it('should handle error with circular references in development', async () => {
-        process.env.NODE_ENV = 'development';
+        Object.defineProperty(process.env, 'NODE_ENV', {
+          value: 'development',
+          configurable: true
+        });
         const circularError = new Error('Circular reference error');
         const circular: any = { error: circularError };
         circular.self = circular;

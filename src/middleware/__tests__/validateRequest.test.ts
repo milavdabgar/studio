@@ -2,12 +2,16 @@ import { NextRequest } from 'next/server';
 import { validateRequest } from '../validateRequest';
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 
+interface MockValidationSchema {
+  validate: jest.MockedFunction<(data: any) => Promise<any>>;
+}
+
 describe('validateRequest middleware', () => {
-  let mockSchema: any;
+  let mockSchema: MockValidationSchema;
 
   beforeEach(() => {
     mockSchema = {
-      validate: jest.fn()
+      validate: jest.fn<(data: any) => Promise<any>>().mockResolvedValue(undefined)
     };
   });
 
@@ -281,8 +285,8 @@ describe('validateRequest middleware', () => {
 
   describe('Schema interface compliance', () => {
     it('should work with async validation schema', async () => {
-      const asyncSchema = {
-        validate: jest.fn().mockImplementation(async (data) => {
+      const asyncSchema: MockValidationSchema = {
+        validate: jest.fn<(data: any) => Promise<any>>().mockImplementation(async (data) => {
           // Simulate async validation (e.g., database check)
           await new Promise(resolve => setTimeout(resolve, 10));
           if (!data.id) {
@@ -307,8 +311,8 @@ describe('validateRequest middleware', () => {
     });
 
     it('should work with sync validation schema', async () => {
-      const syncSchema = {
-        validate: jest.fn().mockImplementation((data) => {
+      const syncSchema: MockValidationSchema = {
+        validate: jest.fn<(data: any) => Promise<any>>().mockImplementation(async (data) => {
           if (!data.name) {
             throw new Error('Name is required');
           }
@@ -331,8 +335,8 @@ describe('validateRequest middleware', () => {
     });
 
     it('should handle schema that returns transformed data', async () => {
-      const transformSchema = {
-        validate: jest.fn().mockImplementation((data) => {
+      const transformSchema: MockValidationSchema = {
+        validate: jest.fn<(data: any) => Promise<any>>().mockImplementation(async (data) => {
           // Transform the data during validation
           return {
             ...data,
@@ -380,8 +384,8 @@ describe('validateRequest middleware', () => {
     });
 
     it('should handle schema validation timeout', async () => {
-      const timeoutSchema = {
-        validate: jest.fn().mockImplementation(async () => {
+      const timeoutSchema: MockValidationSchema = {
+        validate: jest.fn<(data: any) => Promise<any>>().mockImplementation(async () => {
           // Simulate a timeout scenario
           await new Promise(resolve => setTimeout(resolve, 100));
           throw new Error('Validation timeout');
@@ -404,8 +408,8 @@ describe('validateRequest middleware', () => {
     });
 
     it('should handle schema that throws non-Error objects', async () => {
-      const nonErrorSchema = {
-        validate: jest.fn().mockImplementation(() => {
+      const nonErrorSchema: MockValidationSchema = {
+        validate: jest.fn<(data: any) => Promise<any>>().mockImplementation(async () => {
           throw 'String error message';
         })
       };
@@ -477,8 +481,8 @@ describe('validateRequest middleware', () => {
   describe('Integration scenarios', () => {
     it('should work with Yup-like schema', async () => {
       // Simulate a Yup-like validation schema
-      const yupLikeSchema = {
-        validate: jest.fn().mockImplementation(async (data) => {
+      const yupLikeSchema: MockValidationSchema = {
+        validate: jest.fn<(data: any) => Promise<any>>().mockImplementation(async (data) => {
           const errors: any[] = [];
           
           if (!data.name || data.name.length < 2) {
@@ -517,8 +521,8 @@ describe('validateRequest middleware', () => {
 
     it('should work with custom validation library', async () => {
       // Simulate a custom validation library
-      const customSchema = {
-        validate: jest.fn().mockImplementation(async (data) => {
+      const customSchema: MockValidationSchema = {
+        validate: jest.fn<(data: any) => Promise<any>>().mockImplementation(async (data) => {
           // Custom validation logic
           const validatedData = { ...data };
           

@@ -475,7 +475,7 @@ describe('rateLimit middleware', () => {
       const limiter = rateLimit(options);
       
       // Test requests with different IP identification headers
-      const ipHeaders = [
+      const ipHeaders: Record<string, string>[] = [
         { 'X-Forwarded-For': '192.168.1.1, 10.0.0.1' },
         { 'X-Real-IP': '203.0.113.1' },
         { 'X-Forwarded-For': '::1' }, // IPv6

@@ -297,7 +297,20 @@ describe('/api/students/[id]', () => {
       mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
       mockStudentModel.findOneAndUpdate.mockResolvedValue(updatedStudent);
       mockUserService.getUserById.mockResolvedValue(mockUser);
-      mockUserService.updateUser.mockResolvedValue(undefined);
+      mockUserService.updateUser.mockResolvedValue({
+        id: 'user_123',
+        email: 'jonathan@example.com',
+        displayName: 'Jonathan Student',
+        roles: ['student'],
+        currentRole: 'student',
+        isActive: true,
+        isEmailVerified: false,
+        authProviders: ['password'],
+        preferences: { theme: 'system', language: 'en' },
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z',
+        instituteId: 'inst1'
+      });
       
       const params = Promise.resolve({ id: 'student_123' });
       const request = new NextRequest('http://localhost/api/students/123', {
