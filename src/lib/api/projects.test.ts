@@ -310,6 +310,14 @@ describe('ProjectService API Tests', () => {
         expect(fetch).toHaveBeenCalledWith('/api/projects/jury-assignments?eventId=event1&evaluationType=department');
         expect(result).toEqual(juryProjectsResponse.data);
     });
+
+    it('should handle JSON parsing error when fetching projects for jury fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ 
+        ok: false, 
+        json: async () => { throw new Error('Invalid JSON'); }
+      }));
+      await expect(projectService.getProjectsForJury('event1')).rejects.toThrow('Failed to fetch projects for jury');
+    });
   });
   
   describe('evaluateProjectByDepartment', () => {
@@ -325,6 +333,14 @@ describe('ProjectService API Tests', () => {
         const result = await projectService.evaluateProjectByDepartment('proj1', evalData);
         expect(fetch).toHaveBeenCalledWith('/api/projects/proj1/department-evaluation', expect.objectContaining({method:'POST', body: JSON.stringify(evalData)}));
         expect(result).toEqual(evaluatedProject);
+    });
+
+    it('should handle JSON parsing error when department evaluation fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ 
+        ok: false, 
+        json: async () => { throw new Error('Invalid JSON'); }
+      }));
+      await expect(projectService.evaluateProjectByDepartment('proj1', evalData)).rejects.toThrow('Failed to submit department evaluation');
     });
   });
   
@@ -342,6 +358,14 @@ describe('ProjectService API Tests', () => {
         expect(fetch).toHaveBeenCalledWith('/api/projects/proj1/central-evaluation', expect.objectContaining({method:'POST', body: JSON.stringify(evalData)}));
         expect(result).toEqual(evaluatedProject);
     });
+
+    it('should handle JSON parsing error when central evaluation fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ 
+        ok: false, 
+        json: async () => { throw new Error('Invalid JSON'); }
+      }));
+      await expect(projectService.evaluateProjectByCentral('proj1', evalData)).rejects.toThrow('Failed to submit central evaluation');
+    });
   });
   
   describe('generateProjectCertificates', () => {
@@ -351,6 +375,14 @@ describe('ProjectService API Tests', () => {
         const result = await projectService.generateProjectCertificates('event1', 'participation');
         expect(fetch).toHaveBeenCalledWith('/api/projects/event/event1/certificates?type=participation');
         expect(result).toEqual(mockCertificatesResponse.data.certificates);
+    });
+
+    it('should handle JSON parsing error when generating certificates fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ 
+        ok: false, 
+        json: async () => { throw new Error('Invalid JSON'); }
+      }));
+      await expect(projectService.generateProjectCertificates('event1')).rejects.toThrow('Failed to generate certificate data.');
     });
   });
   
@@ -363,6 +395,14 @@ describe('ProjectService API Tests', () => {
         expect(fetch).toHaveBeenCalledWith('/api/projects/certificates/send', expect.objectContaining({method: 'POST', body: JSON.stringify(emailData)}));
         expect(result).toEqual(mockEmailResponse);
     });
+
+    it('should handle JSON parsing error when sending certificate emails fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ 
+        ok: false, 
+        json: async () => { throw new Error('Invalid JSON'); }
+      }));
+      await expect(projectService.sendCertificateEmails({ certificateIds: ['cert1'] })).rejects.toThrow('Failed to send certificate emails.');
+    });
   });
 
   describe('importProjects', () => {
@@ -373,6 +413,17 @@ describe('ProjectService API Tests', () => {
       const result = await projectService.importProjects(mockFile, mockDepartments, mockTeams, mockEvents, mockUsers);
       expect(fetch).toHaveBeenCalledWith('/api/projects/import', expect.objectContaining({ method: 'POST', body: expect.any(FormData) }));
       expect(result).toEqual(mockResponse);
+    });
+
+    it('should handle import errors with details', async () => {
+      const errorResponse = { message: 'Import failed', errors: [{row: 1, message: 'Bad data'}]};
+      mockFetch.mockResolvedValueOnce(createMockResponse({ok: false, status: 400, json: async () => errorResponse}));
+      await expect(projectService.importProjects(mockFile, mockDepartments, mockTeams, mockEvents, mockUsers)).rejects.toThrow('Import failed Specific issues: Bad data');
+    });
+
+    it('should handle generic import error', async () => {
+        mockFetch.mockResolvedValueOnce(createMockResponse({ok: false, status: 500, json: async () => ({ message: 'Server error during import' })}));
+        await expect(projectService.importProjects(mockFile, mockDepartments, mockTeams, mockEvents, mockUsers)).rejects.toThrow('Server error during import');
     });
   });
   

@@ -83,6 +83,19 @@ describe('ProjectEventService API Tests', () => {
       expect(fetch).toHaveBeenCalledWith('/api/project-events/event1');
       expect(result).toEqual(mockProjectEvent);
     });
+
+    it('should throw an error if fetching event by ID fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Event not found' }) }));
+      await expect(projectEventService.getEventById('event1')).rejects.toThrow('Event not found');
+    });
+
+    it('should handle JSON parsing error when fetching event by ID fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ 
+        ok: false, 
+        json: async () => { throw new Error('Invalid JSON'); }
+      }));
+      await expect(projectEventService.getEventById('event1')).rejects.toThrow('Failed to fetch event with id event1');
+    });
   });
 
   describe('createEvent', () => {
@@ -103,6 +116,19 @@ describe('ProjectEventService API Tests', () => {
       expect(fetch).toHaveBeenCalledWith('/api/project-events', expect.objectContaining({ method: 'POST', body: JSON.stringify(newEventData) }));
       expect(result).toEqual(createdEvent);
     });
+
+    it('should throw an error if creating event fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Validation error' }) }));
+      await expect(projectEventService.createEvent(newEventData)).rejects.toThrow('Validation error');
+    });
+
+    it('should handle JSON parsing error when creating event fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ 
+        ok: false, 
+        json: async () => { throw new Error('Invalid JSON'); }
+      }));
+      await expect(projectEventService.createEvent(newEventData)).rejects.toThrow('Failed to create event');
+    });
   });
 
   describe('updateEvent', () => {
@@ -115,6 +141,19 @@ describe('ProjectEventService API Tests', () => {
       expect(fetch).toHaveBeenCalledWith('/api/project-events/event1', expect.objectContaining({ method: 'PUT', body: JSON.stringify(updateData) }));
       expect(result).toEqual(updatedEvent);
     });
+
+    it('should throw an error if updating event fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Update failed' }) }));
+      await expect(projectEventService.updateEvent('event1', updateData)).rejects.toThrow('Update failed');
+    });
+
+    it('should handle JSON parsing error when updating event fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ 
+        ok: false, 
+        json: async () => { throw new Error('Invalid JSON'); }
+      }));
+      await expect(projectEventService.updateEvent('event1', updateData)).rejects.toThrow('Failed to update event');
+    });
   });
 
   describe('deleteEvent', () => {
@@ -122,6 +161,19 @@ describe('ProjectEventService API Tests', () => {
       mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true }));
       await projectEventService.deleteEvent('event1');
       expect(fetch).toHaveBeenCalledWith('/api/project-events/event1', expect.objectContaining({ method: 'DELETE' }));
+    });
+
+    it('should throw an error if deleting event fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Delete failed' }) }));
+      await expect(projectEventService.deleteEvent('event1')).rejects.toThrow('Delete failed');
+    });
+
+    it('should handle JSON parsing error when deleting event fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ 
+        ok: false, 
+        json: async () => { throw new Error('Invalid JSON'); }
+      }));
+      await expect(projectEventService.deleteEvent('event1')).rejects.toThrow('Failed to delete event with id event1');
     });
   });
   
@@ -143,6 +195,19 @@ describe('ProjectEventService API Tests', () => {
       expect(fetch).toHaveBeenCalledWith('/api/project-events/event1/schedule', expect.objectContaining({ method: 'PATCH', body: JSON.stringify({ schedule: newSchedule })}));
       expect(result).toEqual(updatedEventWithSchedule);
     });
+
+    it('should throw an error if updating event schedule fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Schedule update failed' }) }));
+      await expect(projectEventService.updateEventSchedule('event1', { schedule: newSchedule })).rejects.toThrow('Schedule update failed');
+    });
+
+    it('should handle JSON parsing error when updating event schedule fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ 
+        ok: false, 
+        json: async () => { throw new Error('Invalid JSON'); }
+      }));
+      await expect(projectEventService.updateEventSchedule('event1', { schedule: newSchedule })).rejects.toThrow('Failed to update event schedule');
+    });
   });
 
   describe('publishEventResults', () => {
@@ -152,6 +217,19 @@ describe('ProjectEventService API Tests', () => {
       const result = await projectEventService.publishEventResults('event1', true);
       expect(fetch).toHaveBeenCalledWith('/api/project-events/event1', expect.objectContaining({ method: 'PUT', body: JSON.stringify({ publishResults: true })}));
       expect(result).toEqual(updatedEventPublished);
+    });
+
+    it('should throw an error if publishing event results fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, json: async () => ({ message: 'Publish failed' }) }));
+      await expect(projectEventService.publishEventResults('event1', true)).rejects.toThrow('Publish failed');
+    });
+
+    it('should handle JSON parsing error when publishing event results fails', async () => {
+      mockFetch.mockResolvedValueOnce(createMockResponse({ 
+        ok: false, 
+        json: async () => { throw new Error('Invalid JSON'); }
+      }));
+      await expect(projectEventService.publishEventResults('event1', true)).rejects.toThrow('Failed to publish results');
     });
   });
 

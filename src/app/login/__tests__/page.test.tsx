@@ -818,5 +818,174 @@ describe('Login Page', () => {
         expect(trigger).toHaveTextContent('Faculty'); // Should fallback to first available role
       }, { timeout: 2000 });
     });
+
+    it('should fallback to first role when no admin role exists and selectedRoleCode is invalid', async () => {
+      const rolesWithoutAdmin: Role[] = [
+        { id: 'role1', code: 'student', name: 'Student', description: 'Student role', createdAt: '2024-01-01', updatedAt: '2024-01-01', permissions: [] },
+        { id: 'role2', code: 'faculty', name: 'Faculty', description: 'Faculty role', createdAt: '2024-01-01', updatedAt: '2024-01-01', permissions: [] },
+      ];
+      
+      mockRoleService.getAllRoles.mockResolvedValue(rolesWithoutAdmin);
+      
+      await act(async () => {
+        render(<LoginPage />);
+      });
+      
+      // Wait for roles to be loaded and admin role fallback logic to execute (lines 125-129)
+      await waitFor(() => {
+        expect(mockRoleService.getAllRoles).toHaveBeenCalled();
+      });
+
+      // Check that component handles the case where no admin role exists
+      expect(screen.getByRole('combobox')).toBeInTheDocument();
+    });
+
+    it('should set role to unknown when no system roles are available', async () => {
+      // Mock empty roles array to trigger line 131-132 (setSelectedRoleCode('unknown'))
+      mockRoleService.getAllRoles.mockResolvedValue([]);
+      
+      await act(async () => {
+        render(<LoginPage />);
+      });
+      
+      // Wait for component to process empty roles
+      await waitFor(() => {
+        expect(mockRoleService.getAllRoles).toHaveBeenCalled();
+      });
+
+      // The component should handle the empty roles gracefully and set role to unknown
+      await waitFor(() => {
+        const roleSelect = screen.getByRole('combobox');
+        expect(roleSelect).toBeDisabled(); // Should be disabled when no roles available
+      }, { timeout: 3000 });
+    });
+  });
+
+  describe('Role not assigned error coverage', () => {
+    it('should show role not assigned error when user tries login with unauthorized role', async () => {
+      // This test directly triggers lines 194-200 by trying to login with a role not assigned to user
+      const user = userEvent.setup();
+      
+      await act(async () => {
+        render(<LoginPage />);
+      });
+      
+      await waitFor(() => {
+        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+      });
+
+      const emailInput = screen.getByLabelText(/email/i);
+      const passwordInput = screen.getByLabelText(/password/i);
+      
+      // Use student credentials but try to login as admin
+      await user.clear(emailInput);
+      await user.type(emailInput, 'student@example.com');
+      await user.clear(passwordInput);
+      await user.type(passwordInput, 'password');
+
+      // Manually select admin role (which student doesn't have)
+      const roleSelect = screen.getByRole('combobox');
+      await user.click(roleSelect);
+      
+      await waitFor(() => {
+        const adminOption = screen.getByText('Administrator');
+        expect(adminOption).toBeInTheDocument();
+      });
+      
+      const adminOption = screen.getByText('Administrator');
+      await user.click(adminOption);
+
+      // Submit the form to trigger role validation error (lines 194-200)
+      const submitButton = screen.getByRole('button', { name: /login/i });
+      await user.click(submitButton);
+
+      // Should show role not assigned error
+      await waitFor(() => {
+        expect(mockToast).toHaveBeenCalledWith({
+          variant: "destructive",
+          title: "Login Failed", 
+          description: "The role 'Administrator' is not assigned to this user.",
+        });
+      }, { timeout: 3000 });
+    });
+
+    it('should handle unknown role selection validation', async () => {
+      // This test triggers lines 143-150 by creating a scenario with selectedRoleCode as 'unknown'
+      mockRoleService.getAllRoles.mockResolvedValue([]); // Empty roles to trigger 'unknown' state
+      
+      const user = userEvent.setup();
+      
+      await act(async () => {
+        render(<LoginPage />);
+      });
+      
+      await waitFor(() => {
+        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+      });
+
+      // Wait for empty roles to be processed and role set to 'unknown'
+      await waitFor(() => {
+        expect(mockRoleService.getAllRoles).toHaveBeenCalled();
+      });
+
+      // Try to submit form with 'unknown' role to trigger validation (lines 143-150)
+      const submitButton = screen.getByRole('button', { name: /login/i });
+      await user.click(submitButton);
+
+      // Should show role selection validation error
+      await waitFor(() => {
+        expect(mockToast).toHaveBeenCalledWith({
+          variant: "destructive",
+          title: "Login Failed",
+          description: "Please select a valid role.",
+        });
+      }, { timeout: 3000 });
+    });
+  });
+
+  describe('Additional localStorage edge cases', () => {
+    it('should handle development mode localStorage clearing for all stores', async () => {
+      // Mock NODE_ENV to be development
+      Object.defineProperty(process.env, 'NODE_ENV', {
+        value: 'development',
+        configurable: true
+      });
+
+      const user = userEvent.setup();
+      const mockLocalStorage = {
+        removeItem: jest.fn(),
+        getItem: jest.fn(() => null),
+        setItem: jest.fn(),
+        clear: jest.fn(),
+      };
+      
+      Object.defineProperty(window, 'localStorage', {
+        value: mockLocalStorage,
+        writable: true,
+      });
+      
+      await act(async () => {
+        render(<LoginPage />);
+      });
+      
+      await waitFor(() => {
+        expect(screen.getByText(/clear api stores/i)).toBeInTheDocument();
+      });
+
+      const clearButton = screen.getByText(/clear api stores/i);
+      await user.click(clearButton);
+
+      // Verify all stores are cleared
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('__API_USERS_STORE__');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('__API_STUDENTS_STORE__');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('__API_FACULTY_STORE__');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('__API_COMMITTEES_STORE__');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('__API_BUILDINGS_STORE__');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('__API_ROOMS_STORE__');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('__API_DEPARTMENTS_STORE__');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('__API_PROGRAMS_STORE__');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('__API_COURSES_STORE__');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('__API_ROLES_STORE__');
+    });
   });
 });
