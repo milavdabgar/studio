@@ -34,7 +34,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const { eventId } = await params;
 
     const event = await ProjectEventModel.findOne({ 
-      $or: [{ id: eventId }, { _id: eventId }] 
+      id: eventId 
     }).lean() as ProjectEvent | null;
     
     if (!event) {

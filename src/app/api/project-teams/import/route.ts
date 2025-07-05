@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
         // Find existing team in MongoDB
         let existingTeam = null;
         if (csvId) {
-            existingTeam = await ProjectTeamModel.findOne({ $or: [{ id: csvId }, { _id: csvId }] });
+            existingTeam = await ProjectTeamModel.findOne({ id: csvId });
         } else {
             existingTeam = await ProjectTeamModel.findOne({ 
                 name: { $regex: new RegExp(`^${teamData.name}$`, 'i') },

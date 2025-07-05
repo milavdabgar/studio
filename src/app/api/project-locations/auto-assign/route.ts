@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
             assignedCount++;
 
             // --- Notification Trigger ---
-            const team = await ProjectTeamModel.findOne({ $or: [{ id: project.teamId }, { _id: project.teamId }] });
+            const team = await ProjectTeamModel.findOne({ id: project.teamId });
             if (team && team.members) {
                 for (const member of team.members) {
                     try {
@@ -125,7 +125,7 @@ export async function POST(request: NextRequest) {
           assignedCount++;
 
            // --- Notification Trigger ---
-            const team = await ProjectTeamModel.findOne({ $or: [{ id: project.teamId }, { _id: project.teamId }] });
+            const team = await ProjectTeamModel.findOne({ id: project.teamId });
             if (team && team.members) {
                 for (const member of team.members) {
                     try {

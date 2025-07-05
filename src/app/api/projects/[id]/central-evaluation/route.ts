@@ -27,7 +27,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     }
 
     const project = await ProjectModel.findOne({ 
-      $or: [{ id: projectId }, { _id: projectId }] 
+      id: projectId 
     });
 
     if (!project) {
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     };
 
     const updatedProject = await ProjectModel.findOneAndUpdate(
-      { $or: [{ id: projectId }, { _id: projectId }] },
+      { id: projectId },
       { 
         centralEvaluation,
         status: 'evaluated', // Update status after central evaluation

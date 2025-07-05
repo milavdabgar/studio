@@ -31,7 +31,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ message: `Location ${locationIdString} is already assigned to project ${locationToUpdate.projectId}. Unassign it first.` }, { status: 409 });
     }
 
-    const projectToAssign = await ProjectModel.findOne({ $or: [{ id: projectId }, { _id: projectId }] });
+    const projectToAssign = await ProjectModel.findOne({ id: projectId });
     if (!projectToAssign) {
       return NextResponse.json({ message: `Project with ID '${projectId}' not found.` }, { status: 404 });
     }
@@ -53,7 +53,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     // Update project with location
     await ProjectModel.updateOne(
-      { $or: [{ id: projectId }, { _id: projectId }] },
+      { id: projectId },
       { 
         locationId: locationIdString, 
         updatedAt: new Date().toISOString() 
@@ -61,7 +61,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     );
 
     // --- Notification Trigger ---
-    const team = await ProjectTeamModel.findOne({ $or: [{ id: projectToAssign.teamId }, { _id: projectToAssign.teamId }] });
+    const team = await ProjectTeamModel.findOne({ id: projectToAssign.teamId });
     if (team && team.members) {
         for (const member of team.members) {
             try {

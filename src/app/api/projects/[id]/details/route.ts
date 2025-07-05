@@ -22,7 +22,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const { id } = await params;
 
     const project = await ProjectModel.findOne({ 
-      $or: [{ id }, { _id: id }] 
+      id
     }).lean() as Project | null;
 
     if (!project) {
@@ -32,32 +32,32 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     // Fetch related data in parallel
     const [team, location, event, departmentDetails, guideDetails, deptJuryDetails, centralJuryDetails] = await Promise.all([
       ProjectTeamModel.findOne({ 
-        $or: [{ id: project.teamId }, { _id: project.teamId }] 
+        id: project.teamId 
       }).lean() as Promise<ProjectTeam | null>,
       
       ProjectLocationModel.findOne({ locationId: project.locationId }).lean() as Promise<ProjectLocation | null>,
       
       ProjectEventModel.findOne({ 
-        $or: [{ id: project.eventId }, { _id: project.eventId }] 
+        id: project.eventId 
       }).lean() as Promise<ProjectEvent | null>,
       
       DepartmentModel.findOne({ 
-        $or: [{ id: project.department }, { _id: project.department }] 
+        id: project.department 
       }).lean() as Promise<Department | null>,
       
       UserModel.findOne({ 
-        $or: [{ id: project.guide.userId }, { _id: project.guide.userId }] 
+        id: project.guide.userId 
       }).lean() as Promise<SystemUser | null>,
       
       project.deptEvaluation?.juryId ? 
         UserModel.findOne({ 
-          $or: [{ id: project.deptEvaluation.juryId }, { _id: project.deptEvaluation.juryId }] 
+          id: project.deptEvaluation.juryId 
         }).lean() as Promise<SystemUser | null> : 
         Promise.resolve(null),
       
       project.centralEvaluation?.juryId ? 
         UserModel.findOne({ 
-          $or: [{ id: project.centralEvaluation.juryId }, { _id: project.centralEvaluation.juryId }] 
+          id: project.centralEvaluation.juryId 
         }).lean() as Promise<SystemUser | null> : 
         Promise.resolve(null)
     ]);

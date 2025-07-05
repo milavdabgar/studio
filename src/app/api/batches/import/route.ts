@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
 
       if (idFromCsv) {
         existingBatch = await BatchModel.findOne({ 
-          $or: [{ id: idFromCsv }, { _id: idFromCsv }] 
+          id: idFromCsv 
         });
       } else {
         existingBatch = await BatchModel.findOne({ 

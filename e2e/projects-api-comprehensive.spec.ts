@@ -197,6 +197,7 @@ test.describe('Projects API - Critical In-Memory Storage', () => {
   });
 
   test('should handle project statistics endpoint', async ({ page }) => {
+    // Test basic statistics endpoint
     const statsResponse = await page.request.get(`${API_BASE}/projects/statistics`);
     expect(statsResponse.status()).toBe(200);
     
@@ -219,6 +220,43 @@ test.describe('Projects API - Critical In-Memory Storage', () => {
     }
     if (statsData.departmentWise !== undefined) {
       expect(typeof statsData.departmentWise).toBe('object');
+    }
+  });
+
+  test('should handle project statistics endpoint with eventId filter', async ({ page }) => {
+    // This test specifically covers the bug that was occurring with eventId parameter
+    // Test with a realistic eventId that would trigger ObjectId casting error if not fixed
+    const eventId = 'event_techfest_2024_gpp';
+    const statsResponse = await page.request.get(`${API_BASE}/projects/statistics?eventId=${eventId}`);
+    
+    // Should not return 500 error due to ObjectId casting issue
+    expect(statsResponse.status()).toBeLessThan(500);
+    
+    const statsResponseData = await statsResponse.json();
+    
+    if (statsResponse.status() === 200) {
+      // If successful, verify response structure
+      const statsData = statsResponseData.data || statsResponseData;
+      expect(statsData).toHaveProperty('total');
+      expect(statsData).toHaveProperty('evaluated');
+      expect(statsData).toHaveProperty('pending');
+      expect(typeof statsData.total).toBe('number');
+    } else if (statsResponse.status() === 404) {
+      // If event doesn't exist, should return proper 404 message
+      expect(statsResponseData.message).toBe('Event not found.');
+    }
+    
+    // Test with different eventId formats to ensure robustness
+    const otherEventIds = [
+      'event_annual_2024',
+      'proj_fair_2024_ce',
+      'tech_expo_2025'
+    ];
+    
+    for (const eventId of otherEventIds) {
+      const response = await page.request.get(`${API_BASE}/projects/statistics?eventId=${eventId}`);
+      // Should never return 500 due to ObjectId casting issues
+      expect(response.status()).toBeLessThan(500);
     }
   });
 

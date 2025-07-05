@@ -23,7 +23,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     }
 
     const eventToUpdate = await ProjectEventModel.findOneAndUpdate(
-      { $or: [{ id: eventId }, { _id: eventId }] },
+      { id: eventId },
       {
         schedule: schedule,
         updatedAt: new Date().toISOString(),

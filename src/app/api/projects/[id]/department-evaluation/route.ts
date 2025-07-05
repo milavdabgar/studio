@@ -36,7 +36,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     };
 
     const updatedProject = await ProjectModel.findOneAndUpdate(
-      { $or: [{ id: projectId }, { _id: projectId }] },
+      { id: projectId },
       { 
         deptEvaluation,
         updatedAt: new Date().toISOString()

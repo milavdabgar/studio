@@ -20,7 +20,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const { searchParams } = new URL(request.url);
     const certificateType = searchParams.get('type') || 'participation';
 
-    const event = await ProjectEventModel.findOne({ $or: [{ id: eventId }, { _id: eventId }] });
+    const event = await ProjectEventModel.findOne({ id: eventId });
     if (!event) {
       return NextResponse.json({ message: 'Event not found' }, { status: 404 });
     }
@@ -30,12 +30,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     if (certificateType === 'participation') {
       for (const project of eventProjects) {
-        const team = await ProjectTeamModel.findOne({ $or: [{ id: project.teamId }, { _id: project.teamId }] });
+        const team = await ProjectTeamModel.findOne({ id: project.teamId });
         const department = await DepartmentModel.findOne({ 
-          $or: [
-            { id: typeof project.department === 'string' ? project.department : project.department },
-            { _id: typeof project.department === 'string' ? project.department : project.department }
-          ]
+          id: typeof project.department === 'string' ? project.department : project.department
         });
         
         certificates.push({
@@ -65,12 +62,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       for (const [deptId, deptProjects] of departmentWinnersMap) {
           deptProjects.sort((a, b) => (b.deptEvaluation?.score || 0) - (a.deptEvaluation?.score || 0));
           for (const [index, project] of deptProjects.slice(0, 3).entries()) {
-              const team = await ProjectTeamModel.findOne({ $or: [{ id: project.teamId }, { _id: project.teamId }] });
+              const team = await ProjectTeamModel.findOne({ id: project.teamId });
               const department = await DepartmentModel.findOne({ 
-                $or: [
-                  { id: typeof project.department === 'string' ? project.department : project.department },
-                  { _id: typeof project.department === 'string' ? project.department : project.department }
-                ]
+                id: typeof project.department === 'string' ? project.department : project.department
               });
               
               certificates.push({
@@ -96,12 +90,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
           .slice(0,3);
           
        for (const [index, project] of topProjects.entries()) {
-          const team = await ProjectTeamModel.findOne({ $or: [{ id: project.teamId }, { _id: project.teamId }] });
+          const team = await ProjectTeamModel.findOne({ id: project.teamId });
           const department = await DepartmentModel.findOne({ 
-            $or: [
-              { id: typeof project.department === 'string' ? project.department : project.department },
-              { _id: typeof project.department === 'string' ? project.department : project.department }
-            ]
+            id: typeof project.department === 'string' ? project.department : project.department
           });
           
            certificates.push({

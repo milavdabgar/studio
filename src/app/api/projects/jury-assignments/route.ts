@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     }
 
     const event = await ProjectEventModel.findOne({
-      $or: [{ id: eventId }, { _id: eventId }]
+      id: eventId
     }).lean();
     
     if (!event) {

@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
         // Find existing curriculum in MongoDB
         let existingCurriculum = null;
         if (csvId) {
-            existingCurriculum = await CurriculumModel.findOne({ $or: [{ id: csvId }, { _id: csvId }] });
+            existingCurriculum = await CurriculumModel.findOne({ id: csvId });
         } else {
             existingCurriculum = await CurriculumModel.findOne({ 
                 programId: curriculumData.programId, 

@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
       
       if (idFromCsv) {
         existingProject = await ProjectModel.findOne({ 
-          $or: [{ id: idFromCsv }, { _id: idFromCsv }] 
+          id: idFromCsv 
         });
       } else {
         // Check for duplicate based on title, event, and team

@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from '@testing-library/react';
+import { renderHook, waitFor, act } from '@testing-library/react';
 import { useFetch } from '../useFetch';
 
 // Mock the global fetch API
@@ -115,7 +115,9 @@ describe('useFetch', () => {
     const { result } = renderHook(() => useFetch(''));
 
     // Call refetch on empty URL - should not cause fetch
-    result.current.refetch();
+    act(() => {
+      result.current.refetch();
+    });
 
     expect(global.fetch).not.toHaveBeenCalled();
     expect(result.current.data).toBeNull();
@@ -149,8 +151,10 @@ describe('useFetch', () => {
       json: async () => ({ ...mockData, name: 'Refetched Data' }),
     });
 
-    // Call refetch
-    result.current.refetch();
+    // Call refetch wrapped in act
+    act(() => {
+      result.current.refetch();
+    });
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledTimes(1);

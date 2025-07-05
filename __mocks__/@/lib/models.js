@@ -43,6 +43,8 @@ const TimeSlotModel = createMockModel();
 const AttendanceModel = createMockModel();
 const TimetableModel = createMockModel();
 const ProjectModel = createMockModel();
+const ProjectEventModel = createMockModel();
+const ProjectTeamModel = createMockModel();
 const TeamModel = createMockModel();
 const FeedbackModel = createMockModel();
 const FeedbackQuestionModel = createMockModel();
@@ -73,6 +75,8 @@ module.exports = {
   AttendanceModel,
   TimetableModel,
   ProjectModel,
+  ProjectEventModel,
+  ProjectTeamModel,
   TeamModel,
   FeedbackModel,
   FeedbackQuestionModel,

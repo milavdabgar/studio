@@ -26,7 +26,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     }
 
     const previouslyAssignedProjectId = locationToUpdate.projectId;
-    const project = await ProjectModel.findOne({ $or: [{ id: previouslyAssignedProjectId }, { _id: previouslyAssignedProjectId }] });
+    const project = await ProjectModel.findOne({ id: previouslyAssignedProjectId });
 
 
     locationToUpdate.projectId = undefined; 
@@ -38,7 +38,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     if (previouslyAssignedProjectId) {
         await ProjectModel.updateOne(
-          { $or: [{ id: previouslyAssignedProjectId }, { _id: previouslyAssignedProjectId }] },
+          { id: previouslyAssignedProjectId },
           { 
             $unset: { locationId: "" }, 
             updatedAt: new Date().toISOString() 
@@ -48,7 +48,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     // --- Notification Trigger ---
     if (project) {
-        const team = await ProjectTeamModel.findOne({ $or: [{ id: project.teamId }, { _id: project.teamId }] });
+        const team = await ProjectTeamModel.findOne({ id: project.teamId });
         if (team && team.members) {
             for (const member of team.members) {
                 try {
