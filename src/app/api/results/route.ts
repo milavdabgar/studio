@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Build MongoDB query
-    const query: any = {};
+    const query: Record<string, unknown> = {};
     if (filters.branchName) query.branchName = filters.branchName;
     if (filters.semester) query.semester = filters.semester;
     if (filters.academicYear) query.academicYear = filters.academicYear;
@@ -93,9 +93,9 @@ export async function GET(request: NextRequest) {
   }
 }
 
-const processStandardResultCsv = (rows: any[]): { processedResults: Omit<Result, '_id' | 'createdAt' | 'updatedAt'>[], errors: any[] } => {
+const processStandardResultCsv = (rows: Record<string, unknown>[]): { processedResults: Omit<Result, '_id' | 'createdAt' | 'updatedAt'>[], errors: unknown[] } => {
   const processedResults: Omit<Result, '_id' | 'createdAt' | 'updatedAt'>[] = [];
-  const processingErrors: any[] = [];
+  const processingErrors: unknown[] = [];
 
   rows.forEach((row, index) => {
     try {
@@ -125,7 +125,7 @@ const processStandardResultCsv = (rows: any[]): { processedResults: Omit<Result,
         const isBacklog = grade === 'FF';
         
         subjects.push({
-          code, name, credits, grade, isBacklog,
+          code: code!, name: name!, credits, grade: grade!, isBacklog,
         });
         i++;
       }
@@ -134,14 +134,14 @@ const processStandardResultCsv = (rows: any[]): { processedResults: Omit<Result,
         st_id: enrollmentNo, 
         enrollmentNo,
         exam: row.examname?.toString().trim() || 'Standard Exam', 
-        semester: parseInt(row.semester?.toString(), 10) || 0,
+        semester: parseInt(row.semester?.toString() || '0', 10) || 0,
         name: row.studentname?.toString().trim() || 'Unknown Student',
         branchName: row.branchname?.toString().trim() || 'Unknown Branch',
         subjects,
         totalCredits: subjects.reduce((sum, sub) => sum + sub.credits, 0),
         earnedCredits: subjects.reduce((sum, sub) => sum + (sub.isBacklog ? 0 : sub.credits), 0),
-        spi: parseFloat(row.spi?.toString()) || 0,
-        cpi: parseFloat(row.cpi?.toString()) || 0,
+        spi: parseFloat(row.spi?.toString() || '0') || 0,
+        cpi: parseFloat(row.cpi?.toString() || '0') || 0,
         result: row.overallresult?.toString().trim().toUpperCase() || 'PENDING',
         uploadBatch: uuidv4(), 
         academicYear: row.academicyear?.toString().trim(),

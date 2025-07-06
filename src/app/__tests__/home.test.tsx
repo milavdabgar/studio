@@ -69,7 +69,7 @@ const MockHomeComponent = () => {
 
 // Mock Next.js components for future compatibility
 jest.mock('next/link', () => {
-  return function MockLink({ href, children, ...props }: any) {
+  return function MockLink({ href, children, ...props }: { href: string; children: React.ReactNode; [key: string]: unknown }) {
     return (
       <a href={href} {...props}>
         {children}
@@ -79,7 +79,7 @@ jest.mock('next/link', () => {
 });
 
 jest.mock('next/image', () => {
-  return function MockImage({ src, alt, width, height, className, ...props }: any) {
+  return function MockImage({ src, alt, width, height, className, ...props }: { src: string; alt: string; width?: number; height?: number; className?: string; [key: string]: unknown }) {
     return (
       <img
         src={src}
@@ -95,7 +95,7 @@ jest.mock('next/image', () => {
 
 // Mock potential UI components
 jest.mock('@/components/ui/button', () => ({
-  Button: function MockButton({ children, className, variant, size, ...props }: any) {
+  Button: function MockButton({ children, className, variant, size, ...props }: { children: React.ReactNode; className?: string; variant?: string; size?: string; [key: string]: unknown }) {
     return (
       <button className={`btn ${variant} ${size} ${className}`} {...props}>
         {children}
@@ -105,16 +105,16 @@ jest.mock('@/components/ui/button', () => ({
 }));
 
 jest.mock('@/components/ui/card', () => ({
-  Card: function MockCard({ children, className, ...props }: any) {
+  Card: function MockCard({ children, className, ...props }: { children: React.ReactNode; className?: string; [key: string]: unknown }) {
     return <div className={`card ${className}`} {...props}>{children}</div>;
   },
-  CardContent: function MockCardContent({ children, className, ...props }: any) {
+  CardContent: function MockCardContent({ children, className, ...props }: { children: React.ReactNode; className?: string; [key: string]: unknown }) {
     return <div className={`card-content ${className}`} {...props}>{children}</div>;
   },
-  CardHeader: function MockCardHeader({ children, className, ...props }: any) {
+  CardHeader: function MockCardHeader({ children, className, ...props }: { children: React.ReactNode; className?: string; [key: string]: unknown }) {
     return <div className={`card-header ${className}`} {...props}>{children}</div>;
   },
-  CardTitle: function MockCardTitle({ children, className, ...props }: any) {
+  CardTitle: function MockCardTitle({ children, className, ...props }: { children: React.ReactNode; className?: string; [key: string]: unknown }) {
     return <div className={`card-title ${className}`} {...props}>{children}</div>;
   },
 }));

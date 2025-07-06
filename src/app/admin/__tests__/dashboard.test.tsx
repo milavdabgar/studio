@@ -12,7 +12,7 @@ window.location = {
 // Suppress JSDOM navigation warnings
 const originalConsoleError = console.error;
 beforeAll(() => {
-  console.error = (...args: any[]) => {
+  console.error = (...args: unknown[]) => {
     const message = args[0]?.toString() || '';
     if (message.includes('Error: Not implemented: navigation') || 
         message.includes('Not implemented: navigation (except hash changes)')) {
@@ -27,7 +27,7 @@ afterAll(() => {
 });
 
 // Mock basic admin dashboard component since it may not exist or be complex
-const MockAdminDashboard = ({ isLoading = false, error = null, userRole = 'admin' }: any) => {
+const MockAdminDashboard = ({ isLoading = false, error = null, userRole = 'admin' }: { isLoading?: boolean; error?: string | null; userRole?: string }) => {
   const dashboardData = {
     stats: {
       totalStudents: 2145,
@@ -162,7 +162,7 @@ const MockAdminDashboard = ({ isLoading = false, error = null, userRole = 'admin
 
 // Mock Next.js components
 jest.mock('next/link', () => {
-  return function MockLink({ href, children, ...props }: any) {
+  return function MockLink({ href, children, ...props }: { href: string; children: React.ReactNode; [key: string]: unknown }) {
     return (
       <a href={href} {...props}>
         {children}
@@ -184,7 +184,7 @@ jest.mock('next/navigation', () => ({
 
 // Mock UI components
 jest.mock('@/components/ui/button', () => ({
-  Button: function MockButton({ children, className, variant, size, onClick, ...props }: any) {
+  Button: function MockButton({ children, className, variant, size, onClick, ...props }: { children: React.ReactNode; className?: string; variant?: string; size?: string; onClick?: () => void; [key: string]: unknown }) {
     return (
       <button 
         className={`btn ${variant} ${size} ${className}`} 
@@ -198,30 +198,30 @@ jest.mock('@/components/ui/button', () => ({
 }));
 
 jest.mock('@/components/ui/card', () => ({
-  Card: function MockCard({ children, className, ...props }: any) {
+  Card: function MockCard({ children, className, ...props }: { children: React.ReactNode; className?: string; [key: string]: unknown }) {
     return <div className={`card ${className}`} {...props}>{children}</div>;
   },
-  CardContent: function MockCardContent({ children, className, ...props }: any) {
+  CardContent: function MockCardContent({ children, className, ...props }: { children: React.ReactNode; className?: string; [key: string]: unknown }) {
     return <div className={`card-content ${className}`} {...props}>{children}</div>;
   },
-  CardHeader: function MockCardHeader({ children, className, ...props }: any) {
+  CardHeader: function MockCardHeader({ children, className, ...props }: { children: React.ReactNode; className?: string; [key: string]: unknown }) {
     return <div className={`card-header ${className}`} {...props}>{children}</div>;
   },
-  CardTitle: function MockCardTitle({ children, className, ...props }: any) {
+  CardTitle: function MockCardTitle({ children, className, ...props }: { children: React.ReactNode; className?: string; [key: string]: unknown }) {
     return <div className={`card-title ${className}`} {...props}>{children}</div>;
   },
 }));
 
 // Mock icons
 jest.mock('lucide-react', () => ({
-  Users: ({ className, ...props }: any) => <div data-testid="users-icon" className={className} {...props} />,
-  BookOpen: ({ className, ...props }: any) => <div data-testid="book-open-icon" className={className} {...props} />,
-  GraduationCap: ({ className, ...props }: any) => <div data-testid="graduation-cap-icon" className={className} {...props} />,
-  Building: ({ className, ...props }: any) => <div data-testid="building-icon" className={className} {...props} />,
-  Settings: ({ className, ...props }: any) => <div data-testid="settings-icon" className={className} {...props} />,
-  Activity: ({ className, ...props }: any) => <div data-testid="activity-icon" className={className} {...props} />,
-  Calendar: ({ className, ...props }: any) => <div data-testid="calendar-icon" className={className} {...props} />,
-  BarChart: ({ className, ...props }: any) => <div data-testid="bar-chart-icon" className={className} {...props} />,
+  Users: ({ className, ...props }: { className?: string; [key: string]: unknown }) => <div data-testid="users-icon" className={className} {...props} />,
+  BookOpen: ({ className, ...props }: { className?: string; [key: string]: unknown }) => <div data-testid="book-open-icon" className={className} {...props} />,
+  GraduationCap: ({ className, ...props }: { className?: string; [key: string]: unknown }) => <div data-testid="graduation-cap-icon" className={className} {...props} />,
+  Building: ({ className, ...props }: { className?: string; [key: string]: unknown }) => <div data-testid="building-icon" className={className} {...props} />,
+  Settings: ({ className, ...props }: { className?: string; [key: string]: unknown }) => <div data-testid="settings-icon" className={className} {...props} />,
+  Activity: ({ className, ...props }: { className?: string; [key: string]: unknown }) => <div data-testid="activity-icon" className={className} {...props} />,
+  Calendar: ({ className, ...props }: { className?: string; [key: string]: unknown }) => <div data-testid="calendar-icon" className={className} {...props} />,
+  BarChart: ({ className, ...props }: { className?: string; [key: string]: unknown }) => <div data-testid="bar-chart-icon" className={className} {...props} />,
 }));
 
 // Mock authentication hook (optional - remove if use-auth doesn't exist)
@@ -493,13 +493,7 @@ describe('Admin Dashboard (Template)', () => {
   describe('Data Handling', () => {
     it('handles empty data gracefully', () => {
       const EmptyDashboard = () => (
-        <MockAdminDashboard 
-          dashboardData={{
-            stats: { totalStudents: 0, totalFaculty: 0, totalCourses: 0, activeProjects: 0 },
-            recentActivities: [],
-            upcomingEvents: []
-          }}
-        />
+        <MockAdminDashboard />
       );
 
       render(<EmptyDashboard />);

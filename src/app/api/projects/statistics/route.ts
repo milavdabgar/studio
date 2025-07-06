@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     const eventId = searchParams.get('eventId');
 
     // Build query for projects
-    const projectQuery: any = {};
+    const projectQuery: Record<string, unknown> = {};
     if (eventId) {
       const eventExists = await ProjectEventModel.findOne({
         id: eventId
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
 
     relevantProjects.forEach((project: any) => {
       const deptId = project.department; 
-      const deptInfo = departments.find((d: any) => d.id === deptId || d._id.toString() === deptId);
+      const deptInfo = departments.find((d: any) => d.id === deptId || d._id?.toString() === deptId);
 
       if (!departmentStatsMap.has(deptId)) {
         departmentStatsMap.set(deptId, { 
@@ -96,7 +96,7 @@ export async function GET(request: NextRequest) {
       evaluated: overallEvaluated,
       pending: overallPending,
       averageScore: overallAverageScore,
-      departmentWise: departmentWiseArray.reduce((acc: any, curr) => {
+      departmentWise: departmentWiseArray.reduce((acc: Record<string, unknown>, curr) => {
         acc[curr.name] = { 
             total: curr.totalProjects,
             evaluated: curr.evaluatedProjects,

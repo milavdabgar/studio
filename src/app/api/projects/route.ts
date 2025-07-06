@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category');
     
     // Build filter query
-    const filter: any = {};
+    const filter: Record<string, unknown> = {};
     if (eventId) filter.eventId = eventId;
     if (department && department !== 'all') filter.department = department;
     if (status && status !== 'all') filter.status = status;
@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
     // Format projects to ensure proper id field
     const projectsWithId = projects.map(project => ({
       ...project,
-      id: project.id || (project as any)._id.toString()
+      id: project.id || (project as { _id: unknown })._id?.toString()
     }));
     
     return NextResponse.json({ status: 'success', data: { projects: projectsWithId } });

@@ -11,9 +11,9 @@ export async function GET(request: NextRequest) {
     await connectMongoose();
     
     const users = await UserModel.find({}, '-password').lean();
-    const usersWithId = users.map(user => ({
+    const usersWithId = users.map((user: { _id: unknown; [key: string]: unknown }) => ({
       ...user,
-      id: (user as any)._id.toString()
+      id: user._id?.toString()
     }));
     
     return NextResponse.json(usersWithId);

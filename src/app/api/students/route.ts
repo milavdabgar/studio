@@ -15,7 +15,7 @@ export async function GET() {
     const students = await StudentModel.find({}).lean();
     const studentsWithId = students.map(student => ({
       ...student,
-      id: student.id || (student as any)._id.toString()
+      id: student.id || (student as { _id: unknown })._id?.toString()
     }));
     
     return NextResponse.json(studentsWithId);
