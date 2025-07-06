@@ -120,7 +120,7 @@ export default function EventEvaluationsPage() {
     setIsSubmittingJury(false);
   };
 
-  const getEvaluationStatus = (evaluation: ProjectEvaluation | undefined): { text: string; color: string; juryName?: string, score?: number } => {
+  const getEvaluationStatus = useCallback((evaluation: ProjectEvaluation | undefined): { text: string; color: string; juryName?: string, score?: number } => {
     if (!evaluation) return { text: "Not Started", color: "text-gray-500" };
     const jury = evaluation.juryId ? juryMembers.find(j => j.id === evaluation.juryId) : null;
     if (evaluation.completed) {
@@ -130,7 +130,7 @@ export default function EventEvaluationsPage() {
       return { text: "Assigned", color: "text-blue-600", juryName: jury?.displayName };
     }
     return { text: "Pending Assignment", color: "text-yellow-600" };
-  };
+  }, [juryMembers]);
 
   const filteredAndSortedProjects = useMemo(() => {
     let result = [...projects];
@@ -169,7 +169,7 @@ export default function EventEvaluationsPage() {
       });
     }
     return result;
-  }, [projects, searchTerm, filterDepartment, filterDeptEvalStatus, filterCentralEvalStatus, sortField, sortDirection, teams, departments, juryMembers]);
+  }, [projects, searchTerm, filterDepartment, filterDeptEvalStatus, filterCentralEvalStatus, sortField, sortDirection, teams, departments, juryMembers, getEvaluationStatus]);
 
   const paginatedProjects = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
