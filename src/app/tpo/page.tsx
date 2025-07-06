@@ -125,7 +125,7 @@ export default function TPOPage() {
                 />
                 <div className="mt-6 text-center">
                   <Badge variant="outline" className="bg-primary/10 dark:bg-primary/20 text-primary dark:bg-primary/20">
-                    "Bridging Academia & Industry"
+                    &quot;Bridging Academia & Industry&quot;
                   </Badge>
                 </div>
               </div>
@@ -281,8 +281,8 @@ export default function TPOPage() {
                   </div>
                   <div>
                     <blockquote className="text-gray-700 dark:text-gray-300 mb-4 italic dark:text-gray-300">
-                      "Practical knowledge at GPP Palanpur gave me confidence to excel in my career. 
-                      The TPO cell provided excellent guidance throughout the placement process."
+                      &quot;Practical knowledge at GPP Palanpur gave me confidence to excel in my career. 
+                      The TPO cell provided excellent guidance throughout the placement process.&quot;
                     </blockquote>
                     <div>
                       <div className="font-semibold text-gray-900 dark:text-white">Patel Jayesh</div>
@@ -303,8 +303,8 @@ export default function TPOPage() {
                   </div>
                   <div>
                     <blockquote className="text-gray-700 dark:text-gray-300 mb-4 italic dark:text-gray-300">
-                      "Strong foundation provided by GPP helped me excel in my degree studies and 
-                      land a great job. The career counseling was invaluable."
+                      &quot;Strong foundation provided by GPP helped me excel in my degree studies and 
+                      land a great job. The career counseling was invaluable.&quot;
                     </blockquote>
                     <div>
                       <div className="font-semibold text-gray-900 dark:text-white">Desai Ruchi</div>

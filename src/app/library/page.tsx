@@ -206,8 +206,8 @@ export default function LibraryPage() {
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-4 dark:text-white">Our Vision</h3>
               <p className="text-gray-600 leading-relaxed dark:text-gray-400">
-                "To produce competent diploma engineers as per need of Industries, 
-                Entrepreneurs with ethical values."
+                &quot;To produce competent diploma engineers as per need of Industries, 
+                Entrepreneurs with ethical values.&quot;
               </p>
             </Card>
             

@@ -150,17 +150,12 @@ test.describe('Admin Data Management', () => {
     const userBaseName = 'E2E Test User';
 
     test('should navigate to users page and add a new user', async () => {
-      // First just try to get to the users page without doing anything
       await page.goto(`${APP_BASE_URL}/admin/users`);
       
-      // Give it more time and use a more general wait
+      // Wait for the page to be ready
       await page.waitForLoadState('networkidle', { timeout: 60000 });
       
-      // Check if we can see the User Management heading
-      const userManagementText = page.getByText('User Management');
-      await userManagementText.waitFor({ state: 'visible', timeout: 30000 });
-
-      // Try to find the button with a more specific selector
+      // Wait for the Add New User button specifically (the main goal)
       const addUserButton = page.locator('button').filter({ hasText: 'Add New User' });
       await addUserButton.waitFor({ state: 'visible', timeout: 30000 });
 

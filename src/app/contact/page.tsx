@@ -35,7 +35,7 @@ export default function ContactPage() {
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 dark:text-gray-400">
               Get in touch with Government Polytechnic Palanpur for admissions, inquiries, or campus visits. 
-              We're here to help you begin your engineering journey.
+              We&apos;re here to help you begin your engineering journey.
             </p>
             <div className="flex items-center justify-center space-x-6 text-sm text-gray-600 dark:text-gray-400">
               <div className="flex items-center space-x-2">
@@ -147,7 +147,7 @@ export default function ContactPage() {
                 <CardHeader>
                   <CardTitle className="text-2xl">Send us a Message</CardTitle>
                   <CardDescription>
-                    Fill out the form below and we'll get back to you as soon as possible.
+                    Fill out the form below and we&apos;ll get back to you as soon as possible.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
