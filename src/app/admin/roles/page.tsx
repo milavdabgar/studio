@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
+import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -34,7 +34,7 @@ export default function RoleManagementPage() {
 
   const { toast } = useToast();
 
-  const fetchRoles = async () => {
+  const fetchRoles = useCallback(async () => {
     setIsLoading(true);
     try {
       const data = await roleService.getAllRoles();
@@ -44,7 +44,7 @@ export default function RoleManagementPage() {
       toast({ variant: "destructive", title: "Error", description: (error as Error).message || "Could not load roles." });
     }
     setIsLoading(false);
-  };
+  }, [toast]);
 
  useEffect(() => {
     fetchRoles();

@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
+import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -65,7 +65,7 @@ export default function RoomManagementPage() {
 
   const { toast } = useToast();
 
-  const fetchRoomsAndBuildings = async () => {
+  const fetchRoomsAndBuildings = useCallback(async () => {
     setIsLoading(true);
     try {
       const [roomData, buildingData] = await Promise.all([
@@ -82,7 +82,7 @@ export default function RoomManagementPage() {
       toast({ variant: "destructive", title: "Error", description: "Could not load rooms or buildings data." });
     }
     setIsLoading(false);
-  };
+  }, [formBuildingId, toast]);
 
   useEffect(() => {
     fetchRoomsAndBuildings();
