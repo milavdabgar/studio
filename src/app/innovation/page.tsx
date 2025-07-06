@@ -394,8 +394,8 @@ export default function InnovationPage() {
                   ))}
                 </div>
                 <p className="text-gray-600 mb-4 italic dark:text-gray-400">
-                  "SSIP provided me the platform, resources, and guidance to transform my idea 
-                  into a patented invention. The mentorship from faculty was invaluable."
+                  &quot;SSIP provided me the platform, resources, and guidance to transform my idea 
+                  into a patented invention. The mentorship from faculty was invaluable.&quot;
                 </p>
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center dark:bg-blue-900/30">
@@ -417,8 +417,8 @@ export default function InnovationPage() {
                   ))}
                 </div>
                 <p className="text-gray-600 mb-4 italic dark:text-gray-400">
-                  "The design thinking workshops and regular feedback sessions helped refine our 
-                  concept. SSIP's support in securing funding was crucial for building our prototype."
+                  &quot;The design thinking workshops and regular feedback sessions helped refine our 
+                  concept. SSIP&apos;s support in securing funding was crucial for building our prototype.&quot;
                 </p>
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center dark:bg-green-900/30">
@@ -440,8 +440,8 @@ export default function InnovationPage() {
                   ))}
                 </div>
                 <p className="text-gray-600 mb-4 italic dark:text-gray-400">
-                  "Beyond technical support, SSIP helped us understand the business side of 
-                  innovation. The entrepreneurship workshops prepared us for market viability."
+                  &quot;Beyond technical support, SSIP helped us understand the business side of 
+                  innovation. The entrepreneurship workshops prepared us for market viability.&quot;
                 </p>
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center dark:bg-purple-900/30">
@@ -504,7 +504,7 @@ export default function InnovationPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600 mb-6 dark:text-gray-400">
-                    Whether you're a student with an innovative idea, a faculty member wanting 
+                    Whether you&apos;re a student with an innovative idea, a faculty member wanting 
                     to mentor, or an industry partner looking to collaborate, we welcome you 
                     to join our innovation ecosystem.
                   </p>

@@ -23,8 +23,10 @@ export async function GET() {
     const faculty = await FacultyModel.find({}).lean() as unknown as Faculty[];
     const facultyWithId = faculty.map(f => ({
       ...f,
-      id: f.id || (f as any)._id?.toString()
-    } as Faculty));
+      id: f.id || (f as any)._id?.toString(),
+      fullName: `${f.firstName || ''} ${f.middleName || ''} ${f.lastName || ''}`.replace(/\s+/g, ' ').trim(),
+      email: f.instituteEmail || f.personalEmail || ''
+    } as Faculty & { fullName: string; email: string }));
     
     return NextResponse.json(facultyWithId);
   } catch (error) {

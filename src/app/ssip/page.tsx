@@ -93,7 +93,7 @@ export default function SSIPPage() {
               Student Startup and Innovation Policy
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 dark:text-gray-400">
-              "Build a culture of innovation and entrepreneurship that empowers students to become job creators"
+              &quot;Build a culture of innovation and entrepreneurship that empowers students to become job creators&quot;
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {achievements.map((achievement, index) => (

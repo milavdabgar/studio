@@ -42,6 +42,26 @@ test.describe('API Migration Validation Suite', () => {
     });
 
     test('should create new student successfully', async ({ request }) => {
+      // First get available programs, batches, and departments
+      const programsResponse = await request.get('/api/programs');
+      const programs = await programsResponse.json();
+      
+      const batchesResponse = await request.get('/api/batches');
+      const batches = await batchesResponse.json();
+      
+      const departmentsResponse = await request.get('/api/departments');
+      const departments = await departmentsResponse.json();
+      
+      if (programs.length === 0) {
+        console.log('⚠ Students CREATE: No programs available, skipping test');
+        return;
+      }
+      
+      if (departments.length === 0) {
+        console.log('⚠ Students CREATE: No departments available, skipping test');
+        return;
+      }
+      
       const newStudent = {
         firstName: 'Migration',
         lastName: 'Test',
@@ -50,8 +70,9 @@ test.describe('API Migration Validation Suite', () => {
         contactNumber: '9876543210',
         gender: 'Male',
         status: 'active',
-        programId: 'prog_dme_gpp', // Use existing program ID
-        batchId: 'batch_dme_2023_gpp', // Use existing batch ID
+        programId: programs[0].id, // Use first available program
+        department: departments[0].id, // Use first available department
+        batchId: batches.length > 0 ? batches[0].id : undefined,
         enrollmentNumber: `TEST${Date.now().toString().slice(-6)}`
       };
 

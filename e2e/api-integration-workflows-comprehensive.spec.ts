@@ -232,16 +232,27 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
       // Step 3: Create a project
       const projectData = {
         title: `Integration Test Project ${generateUniqueId()}`,
-        description: 'Test project for integration workflow',
+        abstract: 'Test project for integration workflow',
         department: 'Computer Engineering',
         eventId: eventId,
         teamId: teamId,
         category: 'Software',
-        status: 'active',
+        status: 'submitted',
+        requirements: {
+          power: true,
+          internet: true,
+          specialSpace: false
+        },
         guide: {
           userId: 'guide_integration_test',
           name: 'Integration Test Guide',
           department: 'Computer Engineering'
+        },
+        deptEvaluation: {
+          completed: false
+        },
+        centralEvaluation: {
+          completed: false
         }
       };
 

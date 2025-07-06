@@ -338,6 +338,62 @@ async function initializeTestData() {
     }
 
     console.log('Comprehensive test data initialization complete');
+    
+    // Add some specific test data that tests expect
+    console.log('Creating specific test entities for validation tests...');
+    
+    // Create specific program with expected ID format for migration tests
+    try {
+      const specificProgram = {
+        id: 'prog_dme_gpp',
+        name: 'Diploma in Mechanical Engineering',
+        code: 'DME',
+        description: 'Diploma program in Mechanical Engineering',
+        instituteId: instituteId,
+        durationYears: 3,
+        degreeType: 'diploma',
+        status: 'active'
+      };
+      
+      const progResponse = await fetch(`${API_BASE_URL}/programs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(specificProgram)
+      });
+      
+      if (progResponse.ok) {
+        console.log('Created specific program for tests: DME');
+      }
+    } catch (error) {
+      console.log('Specific program creation (non-critical):', error.message);
+    }
+    
+    // Create specific batch with expected ID format
+    try {
+      const specificBatch = {
+        id: 'batch_dme_2023_gpp',
+        name: 'DME Batch 2023',
+        programId: 'prog_dme_gpp',
+        startAcademicYear: 2023,
+        endAcademicYear: 2026,
+        maxIntake: 60,
+        status: 'active'
+      };
+      
+      const batchResponse = await fetch(`${API_BASE_URL}/batches`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(specificBatch)
+      });
+      
+      if (batchResponse.ok) {
+        console.log('Created specific batch for tests: DME 2023');
+      }
+    } catch (error) {
+      console.log('Specific batch creation (non-critical):', error.message);
+    }
+    
+    console.log('Specific test entities creation complete');
   } catch (error) {
     console.error('Error initializing test data:', error);
   }

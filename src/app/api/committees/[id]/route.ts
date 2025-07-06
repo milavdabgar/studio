@@ -1,4 +1,3 @@
-
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Committee, UserRole, SystemUser as User, Role } from '@/types/entities';
 import { isValid, parseISO } from 'date-fns';
@@ -110,30 +109,40 @@ async function createOrUpdateCommitteeRoles(committee: Committee, isUpdate: bool
 }
 
 
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(
+  request: NextRequest,
+  context: RouteParams
+) {
   try {
     await connectMongoose();
-    const { id } = await params;
     
-    const committee = await CommitteeModel.findOne({
-      $or: [{ id }, { _id: id }]
-    }).lean();
+    const { id } = await context.params;
+    
+    // Try to find by custom id field first, then by _id
+    let committee = await CommitteeModel.findOne({ id }).lean();
+    
+    if (!committee) {
+      // Try finding by MongoDB _id if id looks like an ObjectId
+      if (id.match(/^[0-9a-fA-F]{24}$/)) {
+        committee = await CommitteeModel.findById(id).lean();
+      }
+    }
     
     if (!committee) {
       return NextResponse.json({ message: 'Committee not found' }, { status: 404 });
     }
     
-    // Transform MongoDB document to match API response format
-    const committeeResponse = {
+    // Format committee to ensure proper id field
+    const committeeWithId = {
       ...committee,
-      id: (committee as any).id || (committee as any)._id.toString()
+      id: committee.id || (committee as any)._id.toString()
     };
     
-    return NextResponse.json(committeeResponse);
+    return NextResponse.json(committeeWithId);
   } catch (error) {
-    console.error('Error fetching committee:', error);
+    console.error('Error in GET /api/committees/[id]:', error);
     return NextResponse.json({ 
-      message: 'Internal server error during committee fetch.', 
+      message: 'Internal server error fetching committee.', 
       error: (error as Error).message 
     }, { status: 500 });
   }

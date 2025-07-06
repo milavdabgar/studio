@@ -25,10 +25,24 @@ export async function GET(request: NextRequest) {
 
     const enrollments = await EnrollmentModel.find(filter).lean();
     
-    // Format enrollments to ensure proper id field
+    // Get course offerings to map courseOfferingId to courseId
+    const courseOfferingIds = [...new Set(enrollments.map(e => e.courseOfferingId).filter(Boolean))];
+    const courseOfferings = await CourseOfferingModel.find({ 
+      id: { $in: courseOfferingIds } 
+    }).lean();
+    
+    const offeringToCourseMap = new Map();
+    courseOfferings.forEach(offering => {
+      if (offering.id && offering.courseId) {
+        offeringToCourseMap.set(offering.id, offering.courseId);
+      }
+    });
+    
+    // Format enrollments to ensure proper id field and add courseId
     const enrollmentsWithId = enrollments.map(enrollment => ({
       ...enrollment,
-      id: enrollment.id || (enrollment as any)._id.toString()
+      id: enrollment.id || (enrollment as any)._id.toString(),
+      courseId: offeringToCourseMap.get(enrollment.courseOfferingId) || enrollment.courseOfferingId
     }));
 
     return NextResponse.json(enrollmentsWithId);

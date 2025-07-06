@@ -298,7 +298,7 @@ export default function StudentSectionPage() {
               Contact Student Section
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 dark:text-gray-400">
-              We're here to help with all your academic and personal needs
+              We&apos;re here to help with all your academic and personal needs
             </p>
           </div>
           
