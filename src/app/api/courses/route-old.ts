@@ -60,7 +60,6 @@ if (!global.__API_COURSES_STORE__ || global.__API_COURSES_STORE__.length === 0) 
     },
   ];
 }
-const coursesStore: Course[] = global.__API_COURSES_STORE__;
 
 const generateId = (): string => `crs_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 

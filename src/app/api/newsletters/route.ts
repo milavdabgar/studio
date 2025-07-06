@@ -94,7 +94,6 @@ export async function POST(request: NextRequest) {
     // Determine content type and filename based on format
     let contentType: string;
     let fileExtension: string;
-    let filename: string;
 
     switch (format.toLowerCase()) {
       case 'pdf':
@@ -130,7 +129,7 @@ export async function POST(request: NextRequest) {
     // Generate filename with timestamp for uniqueness
     const timestamp = new Date().toISOString().split('T')[0];
     const editionStr = newsletterOptions.edition ? `-${newsletterOptions.edition.replace(/\s+/g, '-')}` : '';
-    filename = `Spectrum-Newsletter${editionStr}-${timestamp}.${fileExtension}`;
+    const filename = `Spectrum-Newsletter${editionStr}-${timestamp}.${fileExtension}`;
 
     // Return the converted content
     const headers = new Headers();

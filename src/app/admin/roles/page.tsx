@@ -253,14 +253,13 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
         continue;
       }
       if (role?.isSystemRole && !role.isCommitteeRole) { // Protect non-committee system roles
-        systemRoleSkipped = true;
         toast({ variant: "warning", title: "System Role Protected", description: `The system role '${role.name}' cannot be deleted.` });
         continue;
       }
       try {
         await roleService.deleteRole(id);
         deletedCount++;
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Delete Failed", description: `Could not delete role ${role?.name || id}.` });
       }
     }

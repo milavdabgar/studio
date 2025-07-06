@@ -238,7 +238,6 @@ export default function AdminResultsPage() {
     </TableHead>
   );
 
-  const getProgramName = (programId: string | undefined) => programs.find(p => p.id === programId)?.name || 'N/A';
 
 
   const renderResultsTab = () => (

@@ -45,7 +45,6 @@ if (!global.__API_BATCHES_STORE__ || global.__API_BATCHES_STORE__.length === 0) 
     },
   ];
 }
-const batchesStore: Batch[] = global.__API_BATCHES_STORE__;
 
 const generateId = (): string => `batch_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 

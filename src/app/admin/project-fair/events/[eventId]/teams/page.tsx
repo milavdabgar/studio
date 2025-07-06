@@ -18,7 +18,7 @@ export default function EventTeamsPage() {
   const eventId = params.eventId as string;
 
   const [event, setEvent] = useState<ProjectEvent | null>(null);
-  const [teams, setTeams] = useState<ProjectTeam[]>([]);
+  const [, setTeams] = useState<ProjectTeam[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 

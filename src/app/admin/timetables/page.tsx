@@ -14,7 +14,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, PlusCircle, Edit, Trash2, Clock, Loader2, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 // import { Textarea } from '@/components/ui/textarea'; // Not used in current implementation
-import { format, parseISO, isValid } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { cn } from "@/lib/utils";
 import type { Timetable, TimetableEntry, TimetableStatus, DayOfWeek, Program, Batch, CourseOffering, Faculty, Room, Course } from '@/types/entities';
 import { timetableService } from '@/lib/api/timetables';
