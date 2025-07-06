@@ -13,8 +13,42 @@ async function initializeTestData() {
     let institutes = await response.json();
     let instituteId = '';
     
+    // Always ensure "Government Polytechnic Palanpur" exists (required by UI tests)
+    const requiredInstitute = institutes?.find(inst => inst.name === 'Government Polytechnic Palanpur');
+    
+    if (!requiredInstitute) {
+      console.log('Creating Government Polytechnic Palanpur institute...');
+      response = await fetch(`${API_BASE_URL}/institutes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: 'Government Polytechnic Palanpur',
+          code: 'GPP',
+          address: 'Polytechnic Campus, Palanpur',
+          city: 'Palanpur',
+          state: 'Gujarat',
+          zip: '385001',
+          country: 'India',
+          phone: '02742-250888',
+          email: 'principal@gpp.edu.in',
+          website: 'https://gpp.edu.in',
+        })
+      });
+      
+      if (response.ok) {
+        const instituteData = await response.json();
+        console.log('✅ Created Government Polytechnic Palanpur institute:', instituteData.data?.id || instituteData.id);
+        instituteId = instituteData.data?.id || instituteData.id;
+      } else {
+        console.error('Failed to create Government Polytechnic Palanpur institute');
+      }
+    } else {
+      console.log('✅ Government Polytechnic Palanpur already exists');
+      instituteId = requiredInstitute.id;
+    }
+    
+    // If we still don't have institutes, create a backup test institute
     if (!institutes || !Array.isArray(institutes) || institutes.length === 0) {
-      // Create a test institute
       response = await fetch(`${API_BASE_URL}/institutes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -34,12 +68,17 @@ async function initializeTestData() {
       
       if (response.ok) {
         const newInstitute = await response.json();
-        instituteId = newInstitute.id;
-        console.log('Created test institute:', newInstitute.name);
+        if (!instituteId) {
+          instituteId = newInstitute.data?.id || newInstitute.id;
+        }
+        console.log('Created backup test institute:', newInstitute.name);
       } else {
-        console.error('Failed to create test institute');
+        console.error('Failed to create backup test institute');
       }
-    } else {
+    }
+    
+    // If we still don't have an instituteId, use any existing institute
+    if (!instituteId && institutes && institutes.length > 0) {
       instituteId = institutes[0].id;
       console.log('Using existing institute:', institutes[0].name);
     }
@@ -264,25 +303,30 @@ async function initializeTestData() {
       console.log('Using existing faculty');
     }
 
-    // Check if we have students
+    // Check if we have students and ensure they have required fields
     response = await fetch(`${API_BASE_URL}/students`);
     let students = await response.json();
     
     if (!students || !Array.isArray(students) || students.length === 0) {
-      // Create a test student
+      // Create a test student with all required fields
       response = await fetch(`${API_BASE_URL}/students`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           enrollmentNo: 'TS2025001',
+          enrollmentNumber: 'TS2025001', // API might expect this field name
           firstName: 'Test',
           lastName: 'Student',
+          fullName: 'Test Student', // Ensure fullName is set
           personalEmail: 'test.student@example.com',
           instituteEmail: 'test.student@gpp.ac.in',
           programId: programId,
+          department: departmentId,
           currentSemester: 1,
           status: 'active',
-          instituteId: instituteId
+          instituteId: instituteId,
+          gender: 'Male',
+          contactNumber: '9876543210'
         })
       });
       
@@ -290,10 +334,56 @@ async function initializeTestData() {
         const newStudent = await response.json();
         console.log('Created test student:', newStudent.firstName, newStudent.lastName);
       } else {
-        console.error('Failed to create test student');
+        const errorText = await response.text();
+        console.error('Failed to create test student:', errorText);
       }
     } else {
       console.log('Using existing students');
+      
+      // Check if existing students have required fields and update if needed
+      console.log('Checking existing students for required fields...');
+      let studentsNeedingUpdate = 0;
+      
+      for (const student of students.slice(0, 5)) { // Check first 5 students
+        if (!student.firstName) {
+          studentsNeedingUpdate++;
+          
+          // Try to extract firstName from fullName or use default
+          let firstName = 'Student';
+          let lastName = 'User';
+          
+          if (student.fullName) {
+            const nameParts = student.fullName.trim().split(' ');
+            firstName = nameParts[0] || 'Student';
+            lastName = nameParts.slice(1).join(' ') || 'User';
+          }
+          
+          try {
+            const updateResponse = await fetch(`${API_BASE_URL}/students/${student.id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                ...student,
+                firstName: firstName,
+                lastName: lastName,
+                fullName: student.fullName || `${firstName} ${lastName}`
+              })
+            });
+            
+            if (updateResponse.ok) {
+              console.log(`✅ Updated student ${student.id} with firstName: ${firstName}`);
+            } else {
+              console.log(`❌ Failed to update student ${student.id}`);
+            }
+          } catch (error) {
+            console.log(`Error updating student ${student.id}:`, error.message);
+          }
+        }
+      }
+      
+      if (studentsNeedingUpdate > 0) {
+        console.log(`Updated ${studentsNeedingUpdate} students with missing firstName field`);
+      }
     }
 
     // Check if we have rooms (needed for timetable tests)
@@ -410,10 +500,14 @@ async function initializeTestData() {
       
       for (let i = 0; i < studentsToCreate; i++) {
         try {
+          const firstName = `Student${i + 1}`;
+          const lastName = 'Test';
           const studentData = {
             enrollmentNumber: `TS${2025}${String(100 + i).padStart(3, '0')}`,
-            firstName: `Student${i + 1}`,
-            lastName: 'Test',
+            enrollmentNo: `TS${2025}${String(100 + i).padStart(3, '0')}`, // backup field name
+            firstName: firstName,
+            lastName: lastName,
+            fullName: `${firstName} ${lastName}`, // Ensure fullName is set
             personalEmail: `student${i + 1}.test@example.com`,
             instituteEmail: `student${i + 1}.test@gpp.ac.in`,
             programId: programId,
@@ -421,7 +515,8 @@ async function initializeTestData() {
             currentSemester: Math.floor(Math.random() * 8) + 1,
             status: 'active',
             gender: i % 2 === 0 ? 'Male' : 'Female',
-            contactNumber: `987654${String(3210 + i).slice(-4)}`
+            contactNumber: `987654${String(3210 + i).slice(-4)}`,
+            instituteId: instituteId
           };
           
           const studentResponse = await fetch(`${API_BASE_URL}/students`, {
