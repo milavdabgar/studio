@@ -99,7 +99,7 @@ export default function UserManagementPage() {
 
   useEffect(() => {
     fetchInitialData();
-  }, []);
+  }, [fetchInitialData]);
 
   const resetForm = () => {
     setFormFullName('');

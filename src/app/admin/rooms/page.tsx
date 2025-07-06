@@ -86,7 +86,7 @@ export default function RoomManagementPage() {
 
   useEffect(() => {
     fetchRoomsAndBuildings();
-  }, []);
+  }, [fetchRoomsAndBuildings]);
 
   const resetForm = () => {
     setFormRoomNumber(''); setFormName(''); 

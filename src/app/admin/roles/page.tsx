@@ -48,7 +48,7 @@ export default function RoleManagementPage() {
 
  useEffect(() => {
     fetchRoles();
-  }, []);
+  }, [fetchRoles]);
 
   const paginatedRoles = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
