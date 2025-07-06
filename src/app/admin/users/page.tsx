@@ -426,7 +426,7 @@ export default function UserManagementPage() {
         try {
             await userService.deleteUser(id);
             deletedCount++;
-        } catch (error) {
+        } catch {
             toast({ variant: "destructive", title: "Delete Failed", description: `Could not delete user ${user?.displayName || id}.`});
         }
     }

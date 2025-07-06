@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     
     // Get the appropriate filename and content type
     const baseFilename = slug || path.basename(contentPath, '.md');
-    const { filename, contentType, isBuffer } = getFileDetails(baseFilename, format);
+    const { filename, contentType } = getFileDetails(baseFilename, format);
     
     // Create response
     const response = new NextResponse(result);

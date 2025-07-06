@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Assessment, AssessmentStatus, AssessmentType, Course, Program, Batch } from '@/types/entities';
+import type { AssessmentStatus, AssessmentType, Course, Program, Batch } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 import { isValid, parseISO, format } from 'date-fns';
 import { AssessmentModel } from '@/lib/models';

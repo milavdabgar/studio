@@ -1,6 +1,5 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Department } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 import { DepartmentModel } from '@/lib/models';
 import mongoose from 'mongoose';

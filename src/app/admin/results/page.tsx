@@ -29,7 +29,7 @@ export default function AdminResultsPage() {
   const [results, setResults] = useState<Result[]>([]);
   const [batches, setBatches] = useState<UploadBatch[]>([]);
   const [branchAnalysis, setBranchAnalysis] = useState<BranchAnalysis[]>([]);
-  const [programs, setPrograms] = useState<Program[]>([]);
+  const [, setPrograms] = useState<Program[]>([]);
   const [examinations, setExaminations] = useState<Examination[]>([]);
   
   const [isLoading, setIsLoading] = useState(false);

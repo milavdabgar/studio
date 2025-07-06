@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
       try {
         const inst = await instituteService.getInstituteById(facultyInstituteId);
         if(inst.domain) instituteDomain = inst.domain;
-      } catch (e) { /* use default */ }
+      } catch { /* use default */ }
 
       const instituteEmail = instituteEmailFromCSV || generateInstituteEmailForFaculty(firstName, lastName, instituteDomain);
 

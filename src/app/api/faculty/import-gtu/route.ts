@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
       try {
         const inst = await instituteService.getInstituteById(facultyInstituteId);
         if(inst.domain) instituteDomain = inst.domain;
-      } catch (e) { /* use default */ }
+      } catch { /* use default */ }
 
       const { title, firstName, middleName, lastName } = parseGtuFacultyNameFromString(gtuName);
       const departmentGTU = row.department?.toString().trim().toUpperCase();

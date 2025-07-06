@@ -244,7 +244,6 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
     setIsSubmitting(true);
     let deletedCount = 0;
     let adminSkipped = false;
-    let systemRoleSkipped = false;
 
     for (const id of selectedRoleIds) {
       const role = roles.find(r => r.id === id);

@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Enrollment, EnrollmentStatus } from '@/types/entities';
+import type { Enrollment } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { EnrollmentModel, StudentModel, CourseOfferingModel } from '@/lib/models';
 import { notificationService } from '@/lib/api/notifications';

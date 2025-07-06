@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
       }
       try {
           if(!isValid(parseISO(date))) throw new Error('Invalid date format');
-      } catch (e) {
+      } catch {
           errors.push(`Invalid date format: ${date}. Must be ISO 8601.`);
           continue;
       }

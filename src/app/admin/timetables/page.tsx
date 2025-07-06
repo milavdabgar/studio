@@ -168,11 +168,6 @@ export default function TimetableManagementPage() {
     setIsSubmitting(false);
   };
 
-  const handleEntryChange = (index: number, field: keyof TimetableEntry, value: unknown) => {
-    const updatedEntries = [...currentEntries];
-    (updatedEntries[index] as any)[field] = value;
-    setCurrentEntries(updatedEntries);
-  };
 
   const addEntry = () => {
     if (!entryCourseOfferingId || !entryFacultyId || !entryRoomId) {

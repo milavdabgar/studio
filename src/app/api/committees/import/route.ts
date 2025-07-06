@@ -178,7 +178,7 @@ export async function POST(request: NextRequest) {
       try {
           formationDate = format(parseISO(formationDateStr), "yyyy-MM-dd");
           if(!isValid(parseISO(formationDate))){ throw new Error("Invalid date format"); }
-      } catch(e) {
+      } catch {
           importErrors.push({ row: rowIndex, message: `Invalid formation date format: ${formationDateStr}. Expected YYYY-MM-DD.`, data: row });
           skippedCount++; continue;
       }
@@ -189,7 +189,7 @@ export async function POST(request: NextRequest) {
         try {
             dissolutionDate = format(parseISO(dissolutionDateStr), "yyyy-MM-dd");
             if(!isValid(parseISO(dissolutionDate))){ throw new Error("Invalid date format"); }
-        } catch(e) {
+        } catch {
             importErrors.push({ row: rowIndex, message: `Invalid dissolution date format: ${dissolutionDateStr}. Expected YYYY-MM-DD.`, data: row });
             skippedCount++; continue;
         }

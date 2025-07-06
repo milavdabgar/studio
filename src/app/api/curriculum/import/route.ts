@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
         try {
             effectiveDate = format(parseISO(effectiveDateStr), "yyyy-MM-dd");
             if(!isValid(parseISO(effectiveDate))){ throw new Error("Invalid date format"); }
-        } catch(e) {
+        } catch {
             importErrors.push({ row: rowIndex, message: `Invalid effective date format: ${effectiveDateStr}. Expected YYYY-MM-DD.`, data: row });
             skippedCount++; continue;
         }

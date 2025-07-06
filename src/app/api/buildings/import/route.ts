@@ -1,11 +1,10 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Building, Institute } from '@/types/entities';
+import type { Building } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 import { BuildingModel, InstituteModel } from '@/lib/models';
 import mongoose from 'mongoose';
 
-const generateIdForImport = (): string => `bldg_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function POST(request: NextRequest) {
   try {
