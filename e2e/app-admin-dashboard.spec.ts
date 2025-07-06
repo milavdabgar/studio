@@ -1,4 +1,20 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
+
+const adminUserCredentials = {
+  email: 'admin@gppalanpur.in',
+  password: 'Admin@123',
+  role: 'Administrator',
+};
+
+async function loginAsAdmin(page: Page) {
+  await page.goto('http://localhost:3000/login');
+  await page.getByLabel(/email/i).fill(adminUserCredentials.email);
+  await page.getByLabel(/password/i).fill(adminUserCredentials.password);
+  await page.getByLabel(/login as/i).click();
+  await page.getByRole('option', { name: adminUserCredentials.role, exact: true }).click();
+  await page.getByRole('button', { name: /login/i }).click();
+  await expect(page).toHaveURL(new RegExp('http://localhost:3000/dashboard'), {timeout: 25000});
+}
 
 /**
  * Complete Application E2E Tests - Admin Dashboard & Management
@@ -10,29 +26,13 @@ import { test, expect } from '@playwright/test';
 test.describe('Admin Dashboard & Management Workflows', () => {
   
   test.beforeEach(async ({ page }) => {
-    // Navigate to admin login and attempt authentication
-    await page.goto('http://localhost:3000/login');
-    
-    // Try to login as admin (will handle both success and failure scenarios)
-    const emailInput = page.locator('input[type="email"], input[name="email"]').first();
-    const passwordInput = page.locator('input[type="password"], input[name="password"]').first();
-    const submitButton = page.locator('button[type="submit"], button:has-text("Login")').first();
-    
-    if (await emailInput.isVisible()) {
-      await emailInput.fill('admin@test.com');
-      await passwordInput.fill('password123');
-      await submitButton.click();
-      await page.waitForLoadState('networkidle');
-    }
-    
-    // Navigate to admin area (will test access control)
-    await page.goto('http://localhost:3000/admin');
-    await page.waitForLoadState('networkidle');
+    // Login as admin with proper credentials
+    await loginAsAdmin(page);
   });
 
   test('should load admin dashboard', async ({ page }) => {
     // Should either show admin dashboard or login prompt
-    const hasAdminAccess = await page.locator('h1:has-text("Admin"), h1:has-text("Dashboard"), .admin-dashboard').isVisible();
+    const hasAdminAccess = await page.locator('h1:has-text("Admin"), h1:has-text("Dashboard"), .admin-dashboard').first().isVisible();
     const needsLogin = await page.locator('text=Login, text=Sign in').first().isVisible();
     const accessDenied = await page.locator('text=Access denied, text=Unauthorized').first().isVisible();
     
@@ -88,7 +88,7 @@ test.describe('Admin Dashboard & Management Workflows', () => {
       // If has content, should have management interface
       if (hasContent) {
         // Should have action buttons
-        const hasActions = await page.locator('button:has-text("Add"), button:has-text("Create"), button:has-text("Import"), .action-button').isVisible();
+        const hasActions = await page.locator('button:has-text("Add"), button:has-text("Create"), button:has-text("Import"), .action-button').first().isVisible();
         
         if (hasActions) {
           expect(hasActions).toBe(true);
@@ -125,12 +125,12 @@ test.describe('Admin Dashboard & Management Workflows', () => {
     await page.waitForLoadState('networkidle');
     
     // Should load results management
-    const hasResultsInterface = await page.locator('h1:has-text("Results"), .results-management').isVisible();
+    const hasResultsInterface = await page.locator('h1:has-text("Results"), .results-management').first().isVisible();
     const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasResultsInterface) {
       // Should have results management features
-      const hasImportButton = await page.locator('button:has-text("Import"), a:has-text("Import")').isVisible();
+      const hasImportButton = await page.locator('button:has-text("Import"), a:has-text("Import")').first().isVisible();
       const hasResultsList = await page.locator('table, .results-list, .data-table').first().isVisible();
       
       expect(hasImportButton || hasResultsList).toBe(true);
@@ -154,13 +154,13 @@ test.describe('Admin Dashboard & Management Workflows', () => {
     await page.waitForLoadState('networkidle');
     
     // Should handle user management
-    const hasUserManagement = await page.locator('h1:has-text("Users"), .user-management').isVisible();
+    const hasUserManagement = await page.locator('h1:has-text("Users"), .user-management').first().isVisible();
     const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasUserManagement) {
       // Should have user list or creation interface
       const hasUserList = await page.locator('table, .user-list, .data-grid').first().isVisible();
-      const hasCreateUser = await page.locator('button:has-text("Add"), button:has-text("Create"), button:has-text("New User")').isVisible();
+      const hasCreateUser = await page.locator('button:has-text("Add"), button:has-text("Create"), button:has-text("New User")').first().isVisible();
       
       expect(hasUserList || hasCreateUser).toBe(true);
     } else {
@@ -173,7 +173,7 @@ test.describe('Admin Dashboard & Management Workflows', () => {
     await page.waitForLoadState('networkidle');
     
     // Should load reporting interface
-    const hasReporting = await page.locator('h1:has-text("Report"), h1:has-text("Analytics"), .analytics-dashboard').isVisible();
+    const hasReporting = await page.locator('h1:has-text("Report"), h1:has-text("Analytics"), .analytics-dashboard').first().isVisible();
     const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
     
     if (hasReporting) {

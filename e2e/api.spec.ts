@@ -69,7 +69,26 @@ test.describe('API Endpoints E2E Tests', () => {
         test(`GET /${entity.name}/[id] - Should return 200 OK for an existing item`, async ({ request }) => {
           const responseList = await request.get(`${API_BASE_URL}/${entity.name}`);
           const bodyList = await responseList.json();
-          const items = Array.isArray(bodyList) ? bodyList : bodyList.data?.[entity.name] || bodyList.data?.events || bodyList.data?.teams || bodyList.data?.locations || bodyList.data?.projects || bodyList.data?.roles || bodyList.data?.users || [];
+          
+          // Handle different response formats
+          let items: any[] = [];
+          if (Array.isArray(bodyList)) {
+            items = bodyList;
+          } else if (bodyList.data) {
+            // Try different possible keys in the data object
+            const entityKey = entity.name;
+            const pluralKey = entityKey.endsWith('s') ? entityKey : entityKey + 's';
+            
+            items = bodyList.data[entityKey] || 
+                   bodyList.data[pluralKey] || 
+                   bodyList.data.events || 
+                   bodyList.data.teams || 
+                   bodyList.data.locations || 
+                   bodyList.data.projects || 
+                   bodyList.data.roles || 
+                   bodyList.data.users || 
+                   (Array.isArray(bodyList.data) ? bodyList.data : []);
+          }
 
 
           if (!items || !Array.isArray(items) || items.length === 0) {

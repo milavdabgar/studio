@@ -34,6 +34,12 @@ export const useForm = <T extends Record<string, any>>(options: UseFormOptions<T
     }
   }, [values, options]);
 
+  const resetForm = useCallback(() => {
+    setValues(options.initialValues);
+    setErrors({});
+    setIsSubmitting(false);
+  }, [options.initialValues]);
+
   const handleSubmit = useCallback(async (e?: React.FormEvent) => {
     e?.preventDefault();
     
@@ -60,12 +66,6 @@ export const useForm = <T extends Record<string, any>>(options: UseFormOptions<T
       setIsSubmitting(false);
     }
   }, [values, options, resetForm]);
-
-  const resetForm = useCallback(() => {
-    setValues(options.initialValues);
-    setErrors({});
-    setIsSubmitting(false);
-  }, [options.initialValues]);
 
   return {
     values,
