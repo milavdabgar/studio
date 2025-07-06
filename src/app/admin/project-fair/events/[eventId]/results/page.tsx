@@ -1,25 +1,21 @@
 // src/app/admin/project-fair/events/[eventId]/results/page.tsx
 "use client";
 
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { Loader2, ArrowLeft, Award, Users, Briefcase, ListChecks, Edit2, Download, Mail, Printer, Eye, EyeOff} from "lucide-react";
+import { Loader2, ArrowLeft, Award, Download, Mail, Eye, EyeOff} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { ProjectEvent, Project, Department, ProjectTeam, User as SystemUser, CertificateInfo, WinnersResponse } from '@/types/entities';
+import type { ProjectEvent, Project, Department } from '@/types/entities';
 import { projectEventService } from '@/lib/api/projectEvents';
 import { projectService } from '@/lib/api/projects';
 import { departmentService } from '@/lib/api/departments'; // For department names
 import { projectTeamService } from '@/lib/api/projectTeams'; // For team names
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { format, parseISO } from 'date-fns';
-import { Checkbox } from '@/components/ui/checkbox'; // Added Checkbox import
 
 interface EnrichedWinner extends Project {
     rank: number;
@@ -99,7 +95,7 @@ export default function EventResultsPage() {
         });
 
       }
-    } catch (error) {
+    } catch {
       toast({ variant: "destructive", title: "Error", description: "Could not load event results data." });
     }
     setIsLoading(false);

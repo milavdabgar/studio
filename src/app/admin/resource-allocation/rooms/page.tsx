@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
+import React, { useState, useEffect, FormEvent, useMemo } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,12 +10,12 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, PlusCircle, Edit, Trash2, DoorOpen, Loader2, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Filter } from "lucide-react";
+import { CalendarIcon, PlusCircle, Edit, Trash2, DoorOpen, Loader2, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
-import { format, parseISO, isValid, setHours, setMinutes, setSeconds, setMilliseconds } from 'date-fns';
+import { format, parseISO, setHours, setMinutes, setSeconds, setMilliseconds } from 'date-fns';
 import { cn } from "@/lib/utils";
-import type { RoomAllocation, RoomAllocationPurpose, RoomAllocationStatus, DayOfWeek, Room, CourseOffering, Faculty, Committee } from '@/types/entities';
+import type { RoomAllocation, RoomAllocationPurpose, RoomAllocationStatus, DayOfWeek, Room } from '@/types/entities';
 import { roomAllocationService } from '@/lib/api/roomAllocations';
 import { roomService } from '@/lib/services/roomService'; 
 // Mock services for related entities - replace with actual when available
@@ -30,7 +30,6 @@ const STATUS_OPTIONS: {value: RoomAllocationStatus, label: string}[] = [
     {value:'completed', label: 'Completed'}, 
     {value:'ongoing', label: 'Ongoing'}
 ];
-const DAY_OPTIONS: DayOfWeek[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 type SortField = keyof RoomAllocation | 'roomNumber' | 'none';
 type SortDirection = 'asc' | 'desc';
@@ -95,7 +94,7 @@ export default function RoomAllocationManagementPage() {
         if (roomsData.length > 0 && !formRoomId) {
           setFormRoomId(roomsData[0].id);
         }
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load initial data." });
       }
       setIsLoading(false);

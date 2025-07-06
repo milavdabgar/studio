@@ -5,7 +5,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BarChart3, FileText, Users, BookOpen, Activity, Loader2, University, Library, UsersRound, CalendarDays } from "lucide-react";
+import { BarChart3, Users, Activity, Loader2, Library } from "lucide-react";
 import { useToast } from '@/hooks/use-toast';
 import { reportService } from '@/lib/api/reports';
 import type { StudentStrengthReport, Institute, CourseEnrollmentData, Program, Batch } from '@/types/entities';
@@ -46,7 +46,7 @@ export default function ReportingAnalyticsPage() {
         setInstitutes(instData);
         setPrograms(progData);
         setBatches(batchData);
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load filter options." });
       }
     };
@@ -60,7 +60,7 @@ export default function ReportingAnalyticsPage() {
       if (strengthFilterInstitute !== 'all') filters.instituteId = strengthFilterInstitute;
       const data = await reportService.getStudentStrengthReport(filters);
       setStudentStrengthData(data);
-    } catch (error) {
+    } catch {
       toast({ variant: "destructive", title: "Error", description: "Could not load student strength report." });
     }
     setIsLoadingStrength(false);
@@ -77,7 +77,7 @@ export default function ReportingAnalyticsPage() {
 
       const data = await reportService.getCourseEnrollmentReport(filters);
       setCourseEnrollmentData(data);
-    } catch (error) {
+    } catch {
       toast({ variant: "destructive", title: "Error", description: "Could not load course enrollment report." });
     }
     setIsLoadingEnrollment(false);
