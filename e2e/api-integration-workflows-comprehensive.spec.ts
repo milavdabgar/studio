@@ -85,13 +85,13 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
       // Step 4: Create assessment for the course
       const assessmentData = {
         name: 'Integration Test Assessment',
-        type: 'midterm',
+        type: 'Midterm',
         courseId: courseOfferingData.courseId,
-        programId: 'prog_dce_gpp',
+        programId: '686a118ee6a9c352cf63c586', // Use actual program ID
         maxMarks: 100,
         weightage: 0.3,
         assessmentDate: '2024-10-15',
-        status: 'active'
+        status: 'Published'
       };
 
       const createAssessmentResponse = await page.request.post(`${API_BASE}/assessments`, {
@@ -120,9 +120,12 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
             theoryEseGrade: 'A'
           }
         ],
+        totalCredits: 3,
+        earnedCredits: 3,
         spi: 9.0,
         cpi: 8.5,
-        result: 'PASS'
+        result: 'PASS',
+        uploadBatch: 'integration_test_batch'
       };
 
       const createResultResponse = await page.request.post(`${API_BASE}/results`, {
@@ -138,7 +141,7 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
         const getEnrollmentsResponse = await page.request.get(`${API_BASE}/enrollments?studentId=${studentId}`);
         expect(getEnrollmentsResponse.status()).toBe(200);
         const enrollments = await getEnrollmentsResponse.json();
-        expect(enrollments.data.enrollments.some((e: any) => e.id === enrollmentId)).toBe(true);
+        expect(enrollments.some((e: any) => e.id === enrollmentId)).toBe(true);
       }
 
       // Check course-offering-assessment relationship
@@ -174,11 +177,12 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
     const eventData = {
       name: `Integration Test Event ${generateUniqueId()}`,
       description: 'Test event for integration testing',
-      eventDate: '2024-10-01',
+      eventDate: '2024-10-01T00:00:00.000Z',
       academicYear: '2024-25',
-      registrationStartDate: '2024-09-01',
-      registrationEndDate: '2024-09-20',
-      status: 'active'
+      registrationStartDate: '2024-09-01T00:00:00.000Z',
+      registrationEndDate: '2024-09-20T00:00:00.000Z',
+      status: 'upcoming',
+      isActive: true
     };
 
     const createEventResponse = await page.request.post(`${API_BASE}/project-events`, {
@@ -199,13 +203,17 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
         status: 'active',
         members: [
           {
-            studentId: 'student_integration_1',
+            userId: 'student_integration_1',
+            name: 'Student One',
+            enrollmentNo: '220010101001',
             role: 'leader',
             isLeader: true,
             joinedAt: new Date().toISOString()
           },
           {
-            studentId: 'student_integration_2',
+            userId: 'student_integration_2',
+            name: 'Student Two',
+            enrollmentNo: '220010101002',
             role: 'member',
             isLeader: false,
             joinedAt: new Date().toISOString()
@@ -364,8 +372,8 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
         semester: 4,
         programId: 'prog_dce_gpp',
         batchId: courseOfferingData.batchId,
-        status: 'active',
-        effectiveDate: '2024-09-01',
+        status: 'published',
+        effectiveDate: '2024-09-01T00:00:00.000Z',
         version: '1.0',
         entries: [
           {
@@ -393,12 +401,10 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
         courseOfferingId: offeringId,
         facultyId: facultyId,
         purpose: 'lecture',
+        title: 'Integration Test Lecture',
         startTime: '2024-09-02T09:00:00.000Z',
         endTime: '2024-09-02T10:00:00.000Z',
-        date: '2024-09-02',
-        status: 'confirmed',
-        academicYear: '2024-25',
-        semester: 4
+        status: 'scheduled'
       };
 
       const createAllocationResponse = await page.request.post(`${API_BASE}/room-allocations`, {
@@ -445,16 +451,27 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
     // Step 1: Create test data for export
     const projectData = {
       title: `Export Test Project ${generateUniqueId()}`,
-      description: 'Project for testing export-import workflow',
+      abstract: 'Project for testing export-import workflow',
       department: 'Computer Engineering',
       eventId: 'event_export_test',
       teamId: 'team_export_test',
       category: 'Software',
-      status: 'active',
+      status: 'submitted',
+      requirements: {
+        power: true,
+        internet: true,
+        specialSpace: false
+      },
       guide: {
         userId: 'guide_export_test',
         name: 'Export Test Guide',
         department: 'Computer Engineering'
+      },
+      deptEvaluation: {
+        completed: false
+      },
+      centralEvaluation: {
+        completed: false
       }
     };
 
@@ -485,7 +502,9 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
         status: 'active',
         members: [
           {
-            studentId: 'student_export_leader',
+            userId: 'student_export_leader',
+            name: 'Export Test Leader',
+            enrollmentNo: '220010101003',
             role: 'leader',
             isLeader: true,
             joinedAt: new Date().toISOString()

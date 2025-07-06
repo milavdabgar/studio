@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -141,8 +142,8 @@ export default function InteractiveNewsletterPage() {
               {currentData.logos && (
                 <div className="flex justify-center gap-8 mb-4">
                   {currentData.logos.map((logo, index) => (
-                    <div key={index} className="w-36 h-36 bg-white/95 p-6 rounded-3xl shadow-lg border-2 border-white/30 backdrop-blur-md dark:bg-gray-900 dark:border-gray-700">
-                      <img src={logo.src} alt={logo.alt} className="w-full h-full object-contain" />
+                    <div key={index} className="w-36 h-36 bg-white/95 p-6 rounded-3xl shadow-lg border-2 border-white/30 backdrop-blur-md dark:bg-gray-900 dark:border-gray-700 relative">
+                      <Image src={logo.src} alt={logo.alt} fill className="object-contain p-6" sizes="144px" unoptimized />
                     </div>
                   ))}
                 </div>
@@ -568,10 +569,13 @@ export default function InteractiveNewsletterPage() {
 
                               return (
                                 <div key={imgIndex} className={`group relative overflow-hidden rounded-lg bg-gray-100 ${aspectClass}`}>
-                                  <img 
+                                  <Image 
                                     src={image.src}
                                     alt={image.alt}
-                                    className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105 group-hover:brightness-110"
+                                    fill
+                                    className="object-cover transition-all duration-300 group-hover:scale-105 group-hover:brightness-110"
+                                    sizes={imageCount === 1 ? "(max-width: 768px) 100vw, 672px" : imageCount === 2 ? "(max-width: 768px) 100vw, 336px" : "(max-width: 768px) 50vw, 224px"}
+                                    unoptimized
                                     onError={(e) => {
                                       console.error('Failed to load image:', image.src);
                                       e.currentTarget.style.display = 'none';
@@ -680,12 +684,15 @@ export default function InteractiveNewsletterPage() {
 
                                   return (
                                     <div key={imgIndex} className={`group relative overflow-hidden rounded-lg bg-gray-100 ${aspectClass}`}>
-                                      <img 
+                                      <Image 
                                         src={image.src}
                                         alt={image.alt}
-                                        className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105 group-hover:brightness-110"
+                                        fill
+                                        className="object-cover transition-all duration-300 group-hover:scale-105 group-hover:brightness-110"
+                                        sizes={event.images.length === 1 ? "(max-width: 768px) 100vw, 672px" : event.images.length === 2 ? "(max-width: 768px) 100vw, 336px" : "(max-width: 768px) 50vw, 224px"}
+                                        unoptimized
                                         onError={(e) => {
-                                          const target = e.target as HTMLImageElement;
+                                          const target = e.currentTarget as HTMLImageElement;
                                           target.src = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzllYTNhOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIE5vdCBGb3VuZDwvdGV4dD48L3N2Zz4=`;
                                         }}
                                       />
@@ -801,11 +808,16 @@ export default function InteractiveNewsletterPage() {
                               <div className="mt-4 space-y-3">
                                 {item.images.map((image, imgIndex) => (
                                   <div key={imgIndex} className="relative">
-                                    <img
-                                      src={image.src}
-                                      alt={image.alt}
-                                      className="w-full max-w-md rounded-lg shadow-md border border-gray-200 dark:border-gray-700"
-                                    />
+                                    <div className="relative w-full max-w-md rounded-lg shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden" style={{ aspectRatio: '16/9' }}>
+                                      <Image
+                                        src={image.src}
+                                        alt={image.alt}
+                                        fill
+                                        className="object-cover"
+                                        sizes="(max-width: 768px) 100vw, 448px"
+                                        unoptimized
+                                      />
+                                    </div>
                                     {image.caption && (
                                       <p className="text-xs text-gray-600 mt-2 italic dark:text-gray-400">{image.caption}</p>
                                     )}

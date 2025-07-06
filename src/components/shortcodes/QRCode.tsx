@@ -4,6 +4,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Download, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import NextImage from 'next/image';
 
 interface QRCodeProps {
   text: string;
@@ -123,12 +124,13 @@ export function QRCode({
   return (
     <div className={`inline-flex flex-col items-center gap-4 ${className}`}>
       <div className="relative group">
-        <img
+        <NextImage
           src={qrDataUrl}
           alt={alt || `QR code for: ${text}`}
           width={size}
           height={size}
           className="rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm dark:border-gray-700"
+          unoptimized
         />
         
         {/* Hover overlay with actions */}

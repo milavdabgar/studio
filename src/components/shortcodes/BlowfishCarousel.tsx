@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import Image from 'next/image';
 
 interface BlowfishCarouselProps {
   images?: string | string[];
@@ -124,12 +125,14 @@ const BlowfishCarousel: React.FC<BlowfishCarouselProps> = ({
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
           {imageList.map((image, index) => (
-            <div key={index} className="w-full h-full flex-shrink-0">
-              <img
+            <div key={index} className="w-full h-full flex-shrink-0 relative">
+              <Image
                 src={image}
                 alt={`Carousel image ${index + 1}`}
-                className="w-full h-full object-cover"
-                loading="lazy"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                unoptimized
               />
             </div>
           ))}

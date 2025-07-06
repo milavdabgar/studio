@@ -9,6 +9,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { 
     Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, Plane, Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Clock, ListChecks, BookOpenCheck, FilePieChart, Paperclip, CheckSquare, UserPlus, BellRing, NotebookPen, BookOpenText, Newspaper} from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { ThemeProvider } from '@/lib/contexts/ThemeContext';
@@ -470,8 +471,15 @@ export default function RootLayout({
             <SidebarFooter className="p-4 border-t border-sidebar-border dark:border-gray-700">
               <div className="flex items-center gap-3 mb-4">
                 {currentUser.avatarUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  (<img src={currentUser.avatarUrl} alt={currentUser.name} data-ai-hint={currentUser.dataAiHint} className="h-10 w-10 rounded-full" />)
+                  <Image 
+                    src={currentUser.avatarUrl} 
+                    alt={currentUser.name} 
+                    data-ai-hint={currentUser.dataAiHint} 
+                    className="h-10 w-10 rounded-full" 
+                    width={40}
+                    height={40}
+                    unoptimized
+                  />
                 ) : (
                   <UserCircle className="h-10 w-10 rounded-full text-sidebar-foreground" />
                 )}
