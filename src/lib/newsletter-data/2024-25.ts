@@ -391,32 +391,32 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['ISTE', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/2024-25/IMG-20240722-WA0022-1024x768.jpg',
+          src: '/newsletters/2024-25/iste-student-chapter-2024-2024-image-01.jpg',
           alt: 'ISTE Student Chapter 2024 - Image 1',
           caption: 'ISTE Student Chapter 2024 - Image 1'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240722-WA0021-1024x768.jpg',
+          src: '/newsletters/2024-25/iste-student-chapter-2024-2024-image-02.jpg',
           alt: 'ISTE Student Chapter 2024 - Image 2',
           caption: 'ISTE Student Chapter 2024 - Image 2'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240722-WA0020-1024x768.jpg',
+          src: '/newsletters/2024-25/iste-student-chapter-2024-2024-image-03.jpg',
           alt: 'ISTE Student Chapter 2024 - Image 3',
           caption: 'ISTE Student Chapter 2024 - Image 3'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240722-WA0019-1024x768.jpg',
+          src: '/newsletters/2024-25/iste-student-chapter-2024-2024-image-04.jpg',
           alt: 'ISTE Student Chapter 2024 - Image 4',
           caption: 'ISTE Student Chapter 2024 - Image 4'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240722-WA0018-1024x768.jpg',
+          src: '/newsletters/2024-25/iste-student-chapter-2024-2024-image-05.jpg',
           alt: 'ISTE Student Chapter 2024 - Image 5',
           caption: 'ISTE Student Chapter 2024 - Image 5'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240722-WA0017-1024x768.jpg',
+          src: '/newsletters/2024-25/iste-student-chapter-2024-2024-image-06.jpg',
           alt: 'ISTE Student Chapter 2024 - Image 6',
           caption: 'ISTE Student Chapter 2024 - Image 6'
         }
@@ -430,27 +430,27 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Industrial Training at Duke Pipes', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/2024-25/20240727_145950-1024x577.jpg',
+          src: '/newsletters/2024-25/industrial-training-at-duke-pipes-2024-image-01.jpg',
           alt: 'Industrial Training at Duke Pipes - Image 1',
           caption: 'Industrial Training at Duke Pipes - Image 1'
         },
         {
-          src: '/newsletters/2024-25/20240727_145947-577x1024.jpg',
+          src: '/newsletters/2024-25/industrial-training-at-duke-pipes-2024-image-02.jpg',
           alt: 'Industrial Training at Duke Pipes - Image 2',
           caption: 'Industrial Training at Duke Pipes - Image 2'
         },
         {
-          src: '/newsletters/2024-25/20240727_144258-577x1024.jpg',
+          src: '/newsletters/2024-25/industrial-training-at-duke-pipes-2024-image-03.jpg',
           alt: 'Industrial Training at Duke Pipes - Image 3',
           caption: 'Industrial Training at Duke Pipes - Image 3'
         },
         {
-          src: '/newsletters/2024-25/20240727_144231-1024x577.jpg',
+          src: '/newsletters/2024-25/industrial-training-at-duke-pipes-2024-image-04.jpg',
           alt: 'Industrial Training at Duke Pipes - Image 4',
           caption: 'Industrial Training at Duke Pipes - Image 4'
         },
         {
-          src: '/newsletters/2024-25/20240727_144216-1024x577.jpg',
+          src: '/newsletters/2024-25/industrial-training-at-duke-pipes-2024-image-05.jpg',
           alt: 'Industrial Training at Duke Pipes - Image 5',
           caption: 'Industrial Training at Duke Pipes - Image 5'
         }
@@ -464,22 +464,22 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Visit', 'Bajrang Paper Products', 'Industry Exposure', 'Paper Manufacturing'],
       images: [
         {
-          src: '/newsletters/2024-25/20240802_121122-1024x577.jpg',
+          src: '/newsletters/2024-25/visit-bajrang-paper-products-palanpur-2024-image-01.jpg',
           alt: 'Visit: Bajrang Paper Products, Palanpur - Image 1',
           caption: 'Visit: Bajrang Paper Products, Palanpur - Image 1'
         },
         {
-          src: '/newsletters/2024-25/20240802_121211-1024x577.jpg',
+          src: '/newsletters/2024-25/visit-bajrang-paper-products-palanpur-2024-image-02.jpg',
           alt: 'Visit: Bajrang Paper Products, Palanpur - Image 2',
           caption: 'Visit: Bajrang Paper Products, Palanpur - Image 2'
         },
         {
-          src: '/newsletters/2024-25/20240802_121621-1024x577.jpg',
+          src: '/newsletters/2024-25/visit-bajrang-paper-products-palanpur-2024-image-03.jpg',
           alt: 'Visit: Bajrang Paper Products, Palanpur - Image 3',
           caption: 'Visit: Bajrang Paper Products, Palanpur - Image 3'
         },
         {
-          src: '/newsletters/2024-25/20240802_121124-1024x577.jpg',
+          src: '/newsletters/2024-25/visit-bajrang-paper-products-palanpur-2024-image-04.jpg',
           alt: 'Visit: Bajrang Paper Products, Palanpur - Image 4',
           caption: 'Visit: Bajrang Paper Products, Palanpur - Image 4'
         }
@@ -493,32 +493,32 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Visit', 'Railway Station', 'Transportation Technology', 'Signal Systems'],
       images: [
         {
-          src: '/newsletters/2024-25/IMG-20240925-WA0041-1024x768.jpg',
+          src: '/newsletters/2024-25/visit-railway-station-palanpur-2024-image-01.jpg',
           alt: 'Visit: Railway Station, Palanpur - Image 1',
           caption: 'Visit: Railway Station, Palanpur - Image 1'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240925-WA0038-766x1024.jpg',
+          src: '/newsletters/2024-25/visit-railway-station-palanpur-2024-image-02.jpg',
           alt: 'Visit: Railway Station, Palanpur - Image 2',
           caption: 'Visit: Railway Station, Palanpur - Image 2'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240925-WA0036-766x1024.jpg',
+          src: '/newsletters/2024-25/visit-railway-station-palanpur-2024-image-03.jpg',
           alt: 'Visit: Railway Station, Palanpur - Image 3',
           caption: 'Visit: Railway Station, Palanpur - Image 3'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240925-WA0034-1024x766.jpg',
+          src: '/newsletters/2024-25/visit-railway-station-palanpur-2024-image-04.jpg',
           alt: 'Visit: Railway Station, Palanpur - Image 4',
           caption: 'Visit: Railway Station, Palanpur - Image 4'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240925-WA0032-1024x766.jpg',
+          src: '/newsletters/2024-25/visit-railway-station-palanpur-2024-image-05.jpg',
           alt: 'Visit: Railway Station, Palanpur - Image 5',
           caption: 'Visit: Railway Station, Palanpur - Image 5'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240925-WA0030-766x1024.jpg',
+          src: '/newsletters/2024-25/visit-railway-station-palanpur-2024-image-06.jpg',
           alt: 'Visit: Railway Station, Palanpur - Image 6',
           caption: 'Visit: Railway Station, Palanpur - Image 6'
         }
@@ -532,37 +532,37 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Workshop', 'Embedded System', 'Microcontroller', 'SOFCON India', 'Programming', 'Electronics'],
       images: [
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0028-1024x766.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-04.jpg',
           alt: 'Workshop: Embedded System - Session in progress',
           caption: 'Workshop: Embedded System - Session in progress'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0029-766x1024.jpg',
+          src: '/newsletters/2024-25/workshop-embedded-system-2024-image-02.jpg',
           alt: 'Workshop: Embedded System - Expert presentation',
           caption: 'Workshop: Embedded System - Expert presentation'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0021-1024x766.jpg',
+          src: '/newsletters/2024-25/workshop-embedded-system-2024-image-03.jpg',
           alt: 'Workshop: Embedded System - Students engaged in learning',
           caption: 'Workshop: Embedded System - Students engaged in learning'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0010-1024x459.jpg',
+          src: '/newsletters/2024-25/workshop-embedded-system-2024-image-04.jpg',
           alt: 'Workshop: Embedded System - Practical demonstration',
           caption: 'Workshop: Embedded System - Practical demonstration'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0008-1024x459.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-09.jpg',
           alt: 'Workshop: Embedded System - Hands-on training session',
           caption: 'Workshop: Embedded System - Hands-on training session'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0005-1024x459.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-11.jpg',
           alt: 'Workshop: Embedded System - Interactive learning environment',
           caption: 'Workshop: Embedded System - Interactive learning environment'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0033-1024x766.jpg',
+          src: '/newsletters/2024-25/workshop-embedded-system-2024-image-07.jpg',
           alt: 'Workshop: Embedded System - Group discussion and Q&A',
           caption: 'Workshop: Embedded System - Group discussion and Q&A'
         }
@@ -576,62 +576,62 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Workshop', 'Web Development', 'Programming', 'SOFCON India', 'Front-end', 'Back-end'],
       images: [
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0035-1024x766.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-01.jpg',
           alt: 'Workshop: Web Development Technologies - Expert session in progress',
           caption: 'Workshop: Web Development Technologies - Expert session in progress'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0031-1024x766.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-02.jpg',
           alt: 'Workshop: Web Development Technologies - Interactive learning session',
           caption: 'Workshop: Web Development Technologies - Interactive learning session'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0027-1024x766.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-03.jpg',
           alt: 'Workshop: Web Development Technologies - Students learning modern frameworks',
           caption: 'Workshop: Web Development Technologies - Students learning modern frameworks'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0028-1024x766.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-04.jpg',
           alt: 'Workshop: Web Development Technologies - Coding demonstration',
           caption: 'Workshop: Web Development Technologies - Coding demonstration'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0025-766x1024.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-05.jpg',
           alt: 'Workshop: Web Development Technologies - Hands-on practice session',
           caption: 'Workshop: Web Development Technologies - Hands-on practice session'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0020-1024x766.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-06.jpg',
           alt: 'Workshop: Web Development Technologies - Group learning activity',
           caption: 'Workshop: Web Development Technologies - Group learning activity'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0018-1024x766.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-07.jpg',
           alt: 'Workshop: Web Development Technologies - Technical discussion',
           caption: 'Workshop: Web Development Technologies - Technical discussion'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0011-1024x459.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-08.jpg',
           alt: 'Workshop: Web Development Technologies - Practical implementation',
           caption: 'Workshop: Web Development Technologies - Practical implementation'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0008-1024x459.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-09.jpg',
           alt: 'Workshop: Web Development Technologies - Front-end development demo',
           caption: 'Workshop: Web Development Technologies - Front-end development demo'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0004-1024x459.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-10.jpg',
           alt: 'Workshop: Web Development Technologies - Back-end technologies overview',
           caption: 'Workshop: Web Development Technologies - Back-end technologies overview'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0005-1024x459.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-11.jpg',
           alt: 'Workshop: Web Development Technologies - Responsive design concepts',
           caption: 'Workshop: Web Development Technologies - Responsive design concepts'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0006-1024x459.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-12.jpg',
           alt: 'Workshop: Web Development Technologies - Career opportunities discussion',
           caption: 'Workshop: Web Development Technologies - Career opportunities discussion'
         }
@@ -645,17 +645,17 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['AI-ML', 'Machine Learning', 'Deep Learning', 'Career Prospects', 'SOFCON India'],
       images: [
         {
-          src: '/newsletters/2024-25/IMG-20240930-WA0007-1024x766.jpg',
+          src: '/newsletters/2024-25/ai-ml-a-new-era-of-future-2024-image-01.jpg',
           alt: 'AI-ML: A New Era of Future - Image 1',
           caption: 'AI-ML: A New Era of Future - Image 1'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240930-WA0006-1024x766.jpg',
+          src: '/newsletters/2024-25/ai-ml-a-new-era-of-future-2024-image-02.jpg',
           alt: 'AI-ML: A New Era of Future - Image 2',
           caption: 'AI-ML: A New Era of Future - Image 2'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240930-WA0003-1024x768.jpg',
+          src: '/newsletters/2024-25/ai-ml-a-new-era-of-future-2024-image-03.jpg',
           alt: 'AI-ML: A New Era of Future - Image 3',
           caption: 'AI-ML: A New Era of Future - Image 3'
         }
@@ -669,17 +669,17 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['EC ICT Rocks', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/2024-25/IMG-20241001-WA0001-768x1024.jpg',
+          src: '/newsletters/2024-25/ec-ict-rocks-ec-ict-rocks---image-2024-image-01.jpg',
           alt: 'EC ICT Rocks - Image 1',
           caption: 'EC ICT Rocks - Image 1'
         },
         {
-          src: '/newsletters/2024-25/IMG-20241001-WA0003-1024x768.jpg',
+          src: '/newsletters/2024-25/ec-ict-rocks-ec-ict-rocks---image-2024-image-02.jpg',
           alt: 'EC ICT Rocks - Image 2',
           caption: 'EC ICT Rocks - Image 2'
         },
         {
-          src: '/newsletters/2024-25/IMG-20241001-WA0002-768x1024.jpg',
+          src: '/newsletters/2024-25/ec-ict-rocks-ec-ict-rocks---image-2024-image-03.jpg',
           alt: 'EC ICT Rocks - Image 3',
           caption: 'EC ICT Rocks - Image 3'
         }
@@ -693,32 +693,32 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Visit', 'Banas Dairy', 'Industry Exposure', 'Practical Learning'],
       images: [
         {
-          src: '/newsletters/2024-25/IMG-20241005-WA0030-1536x1152.jpg',
+          src: '/newsletters/2024-25/visit-banas-dairy-visit-banas-dairy----2024-image-01.jpg',
           alt: 'Visit: Banas Dairy - Group Photo',
           caption: 'Visit: Banas Dairy - Group Photo'
         },
         {
-          src: '/newsletters/2024-25/20241005_114817-768x432.jpg',
+          src: '/newsletters/2024-25/visit-banas-dairy-visit-banas-dairy----2024-image-02.jpg',
           alt: 'Visit: Banas Dairy - Facility Tour',
           caption: 'Visit: Banas Dairy - Facility Tour'
         },
         {
-          src: '/newsletters/2024-25/IMG-20241005-WA0038-2048x914.jpg',
+          src: '/newsletters/2024-25/visit-banas-dairy-visit-banas-dairy----2024-image-03.jpg',
           alt: 'Visit: Banas Dairy - Industrial Learning',
           caption: 'Visit: Banas Dairy - Industrial Learning'
         },
         {
-          src: '/newsletters/2024-25/IMG-20241005-WA0109-768x343.jpg',
+          src: '/newsletters/2024-25/visit-banas-dairy-visit-banas-dairy----2024-image-04.jpg',
           alt: 'Visit: Banas Dairy - Technology Demonstration',
           caption: 'Visit: Banas Dairy - Technology Demonstration'
         },
         {
-          src: '/newsletters/2024-25/IMG-20241005-WA0046-768x343.jpg',
+          src: '/newsletters/2024-25/visit-banas-dairy-visit-banas-dairy----2024-image-05.jpg',
           alt: 'Visit: Banas Dairy - Production Process',
           caption: 'Visit: Banas Dairy - Production Process'
         },
         {
-          src: '/newsletters/2024-25/20241005_101831-768x1364.jpg',
+          src: '/newsletters/2024-25/visit-banas-dairy-visit-banas-dairy----2024-image-06.jpg',
           alt: 'Visit: Banas Dairy - Student Interaction',
           caption: 'Visit: Banas Dairy - Student Interaction'
         }
@@ -732,32 +732,32 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Ambaji', 'Heritage Visit', 'Cultural Exposure', 'Historical Knowledge'],
       images: [
         {
-          src: '/newsletters/imgs/wp-1742488361800218028667489565602-1024x768.jpg',
+          src: '/newsletters/imgs/ambaji-heritage-visit-2024-image-01.jpg',
           alt: 'Ambaji: Heritage Visit - Image 1',
           caption: 'Ambaji: Heritage Visit - Image 1'
         },
         {
-          src: '/newsletters/imgs/wp-17424883659207368792753606873520-1024x768.jpg',
+          src: '/newsletters/imgs/ambaji-heritage-visit-2024-image-02.jpg',
           alt: 'Ambaji: Heritage Visit - Image 2',
           caption: 'Ambaji: Heritage Visit - Image 2'
         },
         {
-          src: '/newsletters/imgs/wp-1742488364967372751161181101326-1024x768.jpg',
+          src: '/newsletters/imgs/ambaji-heritage-visit-2024-image-03.jpg',
           alt: 'Ambaji: Heritage Visit - Image 3',
           caption: 'Ambaji: Heritage Visit - Image 3'
         },
         {
-          src: '/newsletters/imgs/wp-17424883656782587977930620557353-1024x768.jpg',
+          src: '/newsletters/imgs/ambaji-heritage-visit-2024-image-04.jpg',
           alt: 'Ambaji: Heritage Visit - Image 4',
           caption: 'Ambaji: Heritage Visit - Image 4'
         },
         {
-          src: '/newsletters/imgs/wp-17424883654123242325079386387563-768x1024.jpg',
+          src: '/newsletters/imgs/ambaji-heritage-visit-2024-image-05.jpg',
           alt: 'Ambaji: Heritage Visit - Image 5',
           caption: 'Ambaji: Heritage Visit - Image 5'
         },
         {
-          src: '/newsletters/imgs/wp-17424883652066952418897765319133-1024x768.jpg',
+          src: '/newsletters/imgs/ambaji-heritage-visit-2024-image-06.jpg',
           alt: 'Ambaji: Heritage Visit - Image 6',
           caption: 'Ambaji: Heritage Visit - Image 6'
         }
@@ -771,32 +771,32 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['GPP Navratri 2024', 'Cultural Celebration', 'Traditional Activities', 'Student Participation'],
       images: [
         {
-          src: '/newsletters/imgs/wp-17424883680788824720829223007035-768x1024.jpg',
+          src: '/newsletters/imgs/gpp-navratri-2024-gpp-navratri-2024----2024-image-01.jpg',
           alt: 'GPP Navratri (2024) - Image 1',
           caption: 'GPP Navratri (2024) - Image 1'
         },
         {
-          src: '/newsletters/imgs/wp-17424883675966107323110283871159-768x1024.jpg',
+          src: '/newsletters/imgs/gpp-navratri-2024-gpp-navratri-2024----2024-image-02.jpg',
           alt: 'GPP Navratri (2024) - Image 2',
           caption: 'GPP Navratri (2024) - Image 2'
         },
         {
-          src: '/newsletters/imgs/wp-17424883673534072222870050168177-768x1024.jpg',
+          src: '/newsletters/imgs/gpp-navratri-2024-gpp-navratri-2024----2024-image-03.jpg',
           alt: 'GPP Navratri (2024) - Image 3',
           caption: 'GPP Navratri (2024) - Image 3'
         },
         {
-          src: '/newsletters/imgs/wp-17424883679682241653355210603628-768x1024.jpg',
+          src: '/newsletters/imgs/gpp-navratri-2024-gpp-navratri-2024----2024-image-04.jpg',
           alt: 'GPP Navratri (2024) - Image 4',
           caption: 'GPP Navratri (2024) - Image 4'
         },
         {
-          src: '/newsletters/imgs/wp-17424883678391654456985091335810-1024x768.jpg',
+          src: '/newsletters/imgs/gpp-navratri-2024-gpp-navratri-2024----2024-image-05.jpg',
           alt: 'GPP Navratri (2024) - Image 5',
           caption: 'GPP Navratri (2024) - Image 5'
         },
         {
-          src: '/newsletters/imgs/wp-17424883671141432065522376397730-768x1024.jpg',
+          src: '/newsletters/imgs/gpp-navratri-2024-gpp-navratri-2024----2024-image-06.jpg',
           alt: 'GPP Navratri (2024) - Image 6',
           caption: 'GPP Navratri (2024) - Image 6'
         }
@@ -810,22 +810,22 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Visit', 'Community Radio', 'Broadcasting Technology', 'Communication Systems'],
       images: [
         {
-          src: '/newsletters/2024-25/img-20241016-wa00193377510347962355009-1024x459.jpg',
+          src: '/newsletters/2024-25/visit-community-radio-station-palanpur-2024-image-01.jpg',
           alt: 'Visit: Community Radio Station, Palanpur - Image 1',
           caption: 'Visit: Community Radio Station, Palanpur - Image 1'
         },
         {
-          src: '/newsletters/2024-25/img-20241016-wa00151653860351320558089-1024x459.jpg',
+          src: '/newsletters/2024-25/visit-community-radio-station-palanpur-2024-image-02.jpg',
           alt: 'Visit: Community Radio Station, Palanpur - Image 2',
           caption: 'Visit: Community Radio Station, Palanpur - Image 2'
         },
         {
-          src: '/newsletters/2024-25/img-20241016-wa00119047071586767100942-1024x768.jpg',
+          src: '/newsletters/2024-25/visit-community-radio-station-palanpur-2024-image-03.jpg',
           alt: 'Visit: Community Radio Station, Palanpur - Image 3',
           caption: 'Visit: Community Radio Station, Palanpur - Image 3'
         },
         {
-          src: '/newsletters/2024-25/img-20241016-wa00096629569267458144797-1024x459.jpg',
+          src: '/newsletters/2024-25/visit-community-radio-station-palanpur-2024-image-04.jpg',
           alt: 'Visit: Community Radio Station, Palanpur - Image 4',
           caption: 'Visit: Community Radio Station, Palanpur - Image 4'
         }
@@ -839,32 +839,32 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Internet of Things', 'IoT', 'Smart Devices', 'Automation', 'Industrial Applications'],
       images: [
         {
-          src: '/newsletters/imgs/wp-17424885315953636584816384820537-1024x768.jpg',
+          src: '/newsletters/imgs/internet-of-things-iot-2024-image-01.jpg',
           alt: 'Internet of Things (IoT) - Image 1',
           caption: 'Internet of Things (IoT) - Image 1'
         },
         {
-          src: '/newsletters/imgs/wp-17424885317233630030408214762721-1024x768.jpg',
+          src: '/newsletters/imgs/internet-of-things-iot-2024-image-02.jpg',
           alt: 'Internet of Things (IoT) - Image 2',
           caption: 'Internet of Things (IoT) - Image 2'
         },
         {
-          src: '/newsletters/imgs/wp-17424885314624375434163410549868-1024x768.jpg',
+          src: '/newsletters/imgs/internet-of-things-iot-2024-image-03.jpg',
           alt: 'Internet of Things (IoT) - Image 3',
           caption: 'Internet of Things (IoT) - Image 3'
         },
         {
-          src: '/newsletters/imgs/wp-17424885318308173111746315099678-1024x768.jpg',
+          src: '/newsletters/imgs/internet-of-things-iot-2024-image-04.jpg',
           alt: 'Internet of Things (IoT) - Image 4',
           caption: 'Internet of Things (IoT) - Image 4'
         },
         {
-          src: '/newsletters/imgs/wp-17424885324351184278091972462489-1024x768.jpg',
+          src: '/newsletters/imgs/internet-of-things-iot-2024-image-05.jpg',
           alt: 'Internet of Things (IoT) - Image 5',
           caption: 'Internet of Things (IoT) - Image 5'
         },
         {
-          src: '/newsletters/imgs/wp-17424885325568367909233053874117-1024x768.jpg',
+          src: '/newsletters/imgs/internet-of-things-iot-2024-image-06.jpg',
           alt: 'Internet of Things (IoT) - Image 6',
           caption: 'Internet of Things (IoT) - Image 6'
         }
@@ -886,32 +886,32 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Career Awareness', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/2024-25/IMG-20241210-WA0021-1024x768.jpg',
+          src: '/newsletters/2024-25/career-awareness-model-school-deesa-2024-image-01.jpg',
           alt: 'Career Awareness: Model School Deesa - Image 1',
           caption: 'Career Awareness: Model School Deesa - Image 1'
         },
         {
-          src: '/newsletters/2024-25/IMG-20241210-WA0020-1024x768.jpg',
+          src: '/newsletters/2024-25/career-awareness-model-school-deesa-2024-image-02.jpg',
           alt: 'Career Awareness: Model School Deesa - Image 2',
           caption: 'Career Awareness: Model School Deesa - Image 2'
         },
         {
-          src: '/newsletters/2024-25/IMG-20241210-WA0022-1024x768.jpg',
+          src: '/newsletters/2024-25/career-awareness-model-school-deesa-2024-image-03.jpg',
           alt: 'Career Awareness: Model School Deesa - Image 3',
           caption: 'Career Awareness: Model School Deesa - Image 3'
         },
         {
-          src: '/newsletters/2024-25/IMG-20241210-WA0015-1024x768.jpg',
+          src: '/newsletters/2024-25/career-awareness-model-school-deesa-2024-image-04.jpg',
           alt: 'Career Awareness: Model School Deesa - Image 4',
           caption: 'Career Awareness: Model School Deesa - Image 4'
         },
         {
-          src: '/newsletters/2024-25/IMG-20241210-WA0016-1024x768.jpg',
+          src: '/newsletters/2024-25/career-awareness-model-school-deesa-2024-image-05.jpg',
           alt: 'Career Awareness: Model School Deesa - Image 5',
           caption: 'Career Awareness: Model School Deesa - Image 5'
         },
         {
-          src: '/newsletters/2024-25/IMG-20241210-WA0017-1024x768.jpg',
+          src: '/newsletters/2024-25/career-awareness-model-school-deesa-2024-image-06.jpg',
           alt: 'Career Awareness: Model School Deesa - Image 6',
           caption: 'Career Awareness: Model School Deesa - Image 6'
         }
@@ -925,62 +925,62 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['iACE Meet', 'Innovation', 'Applied Computing', 'Electronics', 'Technical Meet', 'EC Department'],
       images: [
         {
-          src: '/newsletters/2024-25/img_20241216_104003_8954274145279917131303-576x1024.jpg',
+          src: '/newsletters/2024-25/iace-meet-iace-meet---technica-2024-image-01.jpg',
           alt: 'iACE Meet - Technical Presentation Session',
           caption: 'iACE Meet - Technical Presentation Session'
         },
         {
-          src: '/newsletters/2024-25/img_20241216_105952_4312806814072538213385-1024x576.jpg',
+          src: '/newsletters/2024-25/iace-meet-iace-meet---innovati-2024-image-02.jpg',
           alt: 'iACE Meet - Innovation Showcase',
           caption: 'iACE Meet - Innovation Showcase'
         },
         {
-          src: '/newsletters/2024-25/img_20241216_104122_9388223817230013926898-1024x576.jpg',
+          src: '/newsletters/2024-25/iace-meet-iace-meet---particip-2024-image-03.jpg',
           alt: 'iACE Meet - Participants and Faculty',
           caption: 'iACE Meet - Participants and Faculty'
         },
         {
-          src: '/newsletters/2024-25/img_20241216_131731_0006505276430652822358-576x1024.jpg',
+          src: '/newsletters/2024-25/iace-meet-iace-meet---project--2024-image-04.jpg',
           alt: 'iACE Meet - Project Demonstration',
           caption: 'iACE Meet - Project Demonstration'
         },
         {
-          src: '/newsletters/2024-25/img_20241216_131739_9152486989411825757832-576x1024.jpg',
+          src: '/newsletters/2024-25/iace-meet-iace-meet---technica-2024-image-05.jpg',
           alt: 'iACE Meet - Technical Discussion',
           caption: 'iACE Meet - Technical Discussion'
         },
         {
-          src: '/newsletters/2024-25/img_20241216_131829_1936526003752083938445-576x1024.jpg',
+          src: '/newsletters/2024-25/iace-meet-iace-meet---student--2024-image-06.jpg',
           alt: 'iACE Meet - Student Presentations',
           caption: 'iACE Meet - Student Presentations'
         },
         {
-          src: '/newsletters/2024-25/img_20241216_131759_1736420146830666547387-576x1024.jpg',
+          src: '/newsletters/2024-25/iace-meet-iace-meet---networki-2024-image-07.jpg',
           alt: 'iACE Meet - Networking Session',
           caption: 'iACE Meet - Networking Session'
         },
         {
-          src: '/newsletters/2024-25/img_20241216_131837_3806695639560423378758-1024x576.jpg',
+          src: '/newsletters/2024-25/iace-meet-iace-meet---group-di-2024-image-08.jpg',
           alt: 'iACE Meet - Group Discussion',
           caption: 'iACE Meet - Group Discussion'
         },
         {
-          src: '/newsletters/2024-25/img_20241216_141329_8085005151785746090546-1024x576.jpg',
+          src: '/newsletters/2024-25/iace-meet-iace-meet---innovati-2024-image-09.jpg',
           alt: 'iACE Meet - Innovation Lab Tour',
           caption: 'iACE Meet - Innovation Lab Tour'
         },
         {
-          src: '/newsletters/2024-25/img_20241216_131850_0088887665314308598192-576x1024.jpg',
+          src: '/newsletters/2024-25/iace-meet-iace-meet---technolo-2024-image-10.jpg',
           alt: 'iACE Meet - Technology Exhibition',
           caption: 'iACE Meet - Technology Exhibition'
         },
         {
-          src: '/newsletters/2024-25/img_20241216_141335_3846112541267892111252-1024x576.jpg',
+          src: '/newsletters/2024-25/iace-meet-iace-meet---collabor-2024-image-11.jpg',
           alt: 'iACE Meet - Collaborative Learning',
           caption: 'iACE Meet - Collaborative Learning'
         },
         {
-          src: '/newsletters/2024-25/img_20241216_133114_1404848896074941679326-1024x576.jpg',
+          src: '/newsletters/2024-25/iace-meet-iace-meet---closing--2024-image-12.jpg',
           alt: 'iACE Meet - Closing Session',
           caption: 'iACE Meet - Closing Session'
         }
@@ -994,7 +994,7 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Appreciation of Students', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/2024-25/WhatsApp-Image-2024-12-17-at-12_23_14_e44e9c99-1024x459.jpg',
+          src: '/newsletters/2024-25/appreciation-of-students-2024-image-01.jpg',
           alt: 'Appreciation of Students - Image 1',
           caption: 'Appreciation of Students - Image 1'
         }
@@ -1008,37 +1008,37 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Career Awareness', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/IMG-20250109-WA0032-1024x576.jpg',
+          src: '/newsletters/imgs/career-awareness-government-secondary-sc-2025-image-01.jpg',
           alt: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 1',
           caption: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 1'
         },
         {
-          src: '/newsletters/imgs/IMG-20250109-WA0030-1024x576.jpg',
+          src: '/newsletters/imgs/career-awareness-government-secondary-sc-2025-image-02.jpg',
           alt: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 2',
           caption: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 2'
         },
         {
-          src: '/newsletters/imgs/IMG-20250109-WA0031-1024x576.jpg',
+          src: '/newsletters/imgs/career-awareness-government-secondary-sc-2025-image-03.jpg',
           alt: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 3',
           caption: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 3'
         },
         {
-          src: '/newsletters/imgs/WhatsApp-Image-2025-01-08-at-16_58_12_76da7e2a-1024x576.jpg',
+          src: '/newsletters/imgs/career-awareness-government-secondary-sc-2025-image-04.jpg',
           alt: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 4',
           caption: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 4'
         },
         {
-          src: '/newsletters/imgs/IMG-20250109-WA0026-1024x576.jpg',
+          src: '/newsletters/imgs/career-awareness-government-secondary-sc-2025-image-05.jpg',
           alt: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 5',
           caption: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 5'
         },
         {
-          src: '/newsletters/imgs/IMG-20250109-WA0027-1024x576.jpg',
+          src: '/newsletters/imgs/career-awareness-government-secondary-sc-2025-image-06.jpg',
           alt: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 6',
           caption: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 6'
         },
         {
-          src: '/newsletters/imgs/IMG-20250109-WA0028-1024x576.jpg',
+          src: '/newsletters/imgs/career-awareness-government-secondary-sc-2025-image-07.jpg',
           alt: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 7',
           caption: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 7'
         }
@@ -1052,7 +1052,7 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Republic Day 2025', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/WhatsApp-Image-2025-01-26-at-11_21_04_7d84b4e4-1024x576.jpg',
+          src: '/newsletters/imgs/republic-day-2025-republic-day-2025----2025-image-01.jpg',
           alt: 'Republic Day 2025 - Image 1',
           caption: 'Republic Day 2025 - Image 1'
         }
@@ -1066,32 +1066,32 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Celebrations', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/IMG-20250203-WA0007-1024x768.jpg',
+          src: '/newsletters/imgs/celebrations-prasadam-2025-image-01.jpg',
           alt: 'Celebrations: Prasadam - Image 1',
           caption: 'Celebrations: Prasadam - Image 1'
         },
         {
-          src: '/newsletters/imgs/IMG-20250203-WA0009-1024x768.jpg',
+          src: '/newsletters/imgs/celebrations-prasadam-2025-image-02.jpg',
           alt: 'Celebrations: Prasadam - Image 2',
           caption: 'Celebrations: Prasadam - Image 2'
         },
         {
-          src: '/newsletters/imgs/IMG-20250203-WA0011-1024x768.jpg',
+          src: '/newsletters/imgs/celebrations-prasadam-2025-image-03.jpg',
           alt: 'Celebrations: Prasadam - Image 3',
           caption: 'Celebrations: Prasadam - Image 3'
         },
         {
-          src: '/newsletters/imgs/IMG-20250203-WA0017-1024x768.jpg',
+          src: '/newsletters/imgs/celebrations-prasadam-2025-image-04.jpg',
           alt: 'Celebrations: Prasadam - Image 4',
           caption: 'Celebrations: Prasadam - Image 4'
         },
         {
-          src: '/newsletters/imgs/IMG-20250203-WA0003-1024x768.jpg',
+          src: '/newsletters/imgs/celebrations-prasadam-2025-image-05.jpg',
           alt: 'Celebrations: Prasadam - Image 5',
           caption: 'Celebrations: Prasadam - Image 5'
         },
         {
-          src: '/newsletters/imgs/IMG-20250203-WA0004-1024x768.jpg',
+          src: '/newsletters/imgs/celebrations-prasadam-2025-image-06.jpg',
           alt: 'Celebrations: Prasadam - Image 6',
           caption: 'Celebrations: Prasadam - Image 6'
         }
@@ -1105,17 +1105,17 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Dept Visit', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/WhatsApp-Image-2025-02-04-at-12_43_38_3c0e85e9-1024x768.jpg',
+          src: '/newsletters/imgs/dept-visit-keshar-school-2025-image-01.jpg',
           alt: 'Dept Visit: Keshar School - Image 1',
           caption: 'Dept Visit: Keshar School - Image 1'
         },
         {
-          src: '/newsletters/imgs/WhatsApp-Image-2025-02-04-at-12_43_38_4ceff701-1024x768.jpg',
+          src: '/newsletters/imgs/dept-visit-keshar-school-2025-image-02.jpg',
           alt: 'Dept Visit: Keshar School - Image 2',
           caption: 'Dept Visit: Keshar School - Image 2'
         },
         {
-          src: '/newsletters/imgs/WhatsApp-Image-2025-02-04-at-12_43_38_79843bf4-1024x768.jpg',
+          src: '/newsletters/imgs/dept-visit-keshar-school-2025-image-03.jpg',
           alt: 'Dept Visit: Keshar School - Image 3',
           caption: 'Dept Visit: Keshar School - Image 3'
         }
@@ -1129,32 +1129,32 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Parent Meeting', 'Academic Progress', 'Career Guidance', 'Student Development'],
       images: [
         {
-          src: '/newsletters/imgs/img-20250329-wa00088277389054831929216-1024x768.jpg',
+          src: '/newsletters/imgs/parent-parents-meeting-sess-2025-image-01.jpg',
           alt: 'Parents Meeting Session 1',
           caption: 'Parents Meeting Session 1'
         },
         {
-          src: '/newsletters/imgs/img-20250329-wa00112767065467598141534-1024x768.jpg',
+          src: '/newsletters/imgs/parent-faculty-parent-inter-2025-image-02.jpg',
           alt: 'Faculty-Parent Interaction',
           caption: 'Faculty-Parent Interaction'
         },
         {
-          src: '/newsletters/imgs/img-20250329-wa00105444893332588759679-1024x768.jpg',
+          src: '/newsletters/imgs/parent-academic-discussion-2025-image-03.jpg',
           alt: 'Academic Discussion',
           caption: 'Academic Discussion'
         },
         {
-          src: '/newsletters/imgs/img-20250329-wa00094637988071813599639-1024x768.jpg',
+          src: '/newsletters/imgs/parent-parent-consultation-2025-image-04.jpg',
           alt: 'Parent Consultation',
           caption: 'Parent Consultation'
         },
         {
-          src: '/newsletters/imgs/img-20250329-wa00121353795816990061287-1024x768.jpg',
+          src: '/newsletters/imgs/parent-student-progress-rev-2025-image-05.jpg',
           alt: 'Student Progress Review',
           caption: 'Student Progress Review'
         },
         {
-          src: '/newsletters/imgs/img-20250329-wa00142801361458530123062-1024x768.jpg',
+          src: '/newsletters/imgs/parent-career-guidance-sess-2025-image-06.jpg',
           alt: 'Career Guidance Session',
           caption: 'Career Guidance Session'
         }
@@ -1168,17 +1168,17 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Workshop', 'HAM Radio', 'Amateur Radio', 'Communication Systems', 'GGP Ahmedabad'],
       images: [
         {
-          src: '/newsletters/imgs/IMG-20250214-WA0086-1024x768.jpg',
+          src: '/newsletters/imgs/workshop-ham-radio-workshop-ham-radio---2025-image-01.jpg',
           alt: 'Workshop: HAM Radio - Image 1',
           caption: 'Workshop: HAM Radio - Image 1'
         },
         {
-          src: '/newsletters/imgs/IMG-20250214-WA0080-1024x768.jpg',
+          src: '/newsletters/imgs/workshop-ham-radio-workshop-ham-radio---2025-image-02.jpg',
           alt: 'Workshop: HAM Radio - Image 2',
           caption: 'Workshop: HAM Radio - Image 2'
         },
         {
-          src: '/newsletters/imgs/IMG-20250214-WA0081-1024x768.jpg',
+          src: '/newsletters/imgs/workshop-ham-radio-workshop-ham-radio---2025-image-03.jpg',
           alt: 'Workshop: HAM Radio - Image 3',
           caption: 'Workshop: HAM Radio - Image 3'
         }
@@ -1192,17 +1192,17 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Workshop', 'Drone Technology', 'UAV', 'Bee-Robokids Academy', 'Palanpur'],
       images: [
         {
-          src: '/newsletters/imgs/IMG-20250215-WA0075-1024x768.jpg',
+          src: '/newsletters/imgs/workshop-drone-technology-2025-image-01.jpg',
           alt: 'Workshop: Drone Technology - Image 1',
           caption: 'Workshop: Drone Technology - Image 1'
         },
         {
-          src: '/newsletters/imgs/IMG-20250215-WA0076-1024x768.jpg',
+          src: '/newsletters/imgs/workshop-drone-technology-2025-image-02.jpg',
           alt: 'Workshop: Drone Technology - Image 2',
           caption: 'Workshop: Drone Technology - Image 2'
         },
         {
-          src: '/newsletters/imgs/IMG-20250215-WA0073-1024x768.jpg',
+          src: '/newsletters/imgs/workshop-drone-technology-2025-image-03.jpg',
           alt: 'Workshop: Drone Technology - Image 3',
           caption: 'Workshop: Drone Technology - Image 3'
         }
@@ -1216,7 +1216,7 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Placement Fair 2025', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/WhatsApp-Image-2025-02-25-at-14_45_59_11601cda-1024x768.jpg',
+          src: '/newsletters/imgs/placement-fair-2025-placement-fair-2025--2025-image-01.jpg',
           alt: 'Placement Fair 2025 - Image 1',
           caption: 'Placement Fair 2025 - Image 1'
         }
@@ -1230,32 +1230,32 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Thalassemia Test 2025', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/IMG-20250228-WA0022-1024x768.jpg',
+          src: '/newsletters/imgs/thalassemia-test-2025-2025-image-01.jpg',
           alt: 'Thalassemia Test 2025 - Image 1',
           caption: 'Thalassemia Test 2025 - Image 1'
         },
         {
-          src: '/newsletters/imgs/IMG-20250228-WA0023-1024x768.jpg',
+          src: '/newsletters/imgs/thalassemia-test-2025-2025-image-02.jpg',
           alt: 'Thalassemia Test 2025 - Image 2',
           caption: 'Thalassemia Test 2025 - Image 2'
         },
         {
-          src: '/newsletters/imgs/IMG-20250228-WA0027-1024x768.jpg',
+          src: '/newsletters/imgs/thalassemia-test-2025-2025-image-03.jpg',
           alt: 'Thalassemia Test 2025 - Image 3',
           caption: 'Thalassemia Test 2025 - Image 3'
         },
         {
-          src: '/newsletters/imgs/IMG-20250228-WA0016-1024x768.jpg',
+          src: '/newsletters/imgs/thalassemia-test-2025-2025-image-04.jpg',
           alt: 'Thalassemia Test 2025 - Image 4',
           caption: 'Thalassemia Test 2025 - Image 4'
         },
         {
-          src: '/newsletters/imgs/IMG-20250228-WA0017-1024x768.jpg',
+          src: '/newsletters/imgs/thalassemia-test-2025-2025-image-05.jpg',
           alt: 'Thalassemia Test 2025 - Image 5',
           caption: 'Thalassemia Test 2025 - Image 5'
         },
         {
-          src: '/newsletters/imgs/IMG-20250228-WA0029-1024x768.jpg',
+          src: '/newsletters/imgs/thalassemia-test-2025-2025-image-06.jpg',
           alt: 'Thalassemia Test 2025 - Image 6',
           caption: 'Thalassemia Test 2025 - Image 6'
         }
@@ -1269,22 +1269,22 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Women\'s Day 2025', 'Gender Equality', 'Women Empowerment', 'Community'],
       images: [
         {
-          src: '/newsletters/2024-25/womens-day-1.jpeg',
+          src: '/newsletters/2024-25/women-2025-image-01.jpeg',
           alt: 'Women\'s Day 2025 Celebration - Main Event',
           caption: 'Women\'s Day 2025 Celebration - Main Event'
         },
         {
-          src: '/newsletters/2024-25/womens-day-2.jpeg',
+          src: '/newsletters/2024-25/women-2025-image-02.jpeg',
           alt: 'Women\'s Day 2025 Celebration - Activities',
           caption: 'Women\'s Day 2025 Celebration - Activities'
         },
         {
-          src: '/newsletters/2024-25/womens-day-3.jpeg',
+          src: '/newsletters/2024-25/women-2025-image-03.jpeg',
           alt: 'Women\'s Day 2025 Celebration - Participants',
           caption: 'Women\'s Day 2025 Celebration - Participants'
         },
         {
-          src: '/newsletters/2024-25/womens-day-group.jpeg',
+          src: '/newsletters/2024-25/women-2025-image-04.jpeg',
           alt: 'Women\'s Day 2025 - Group Photo',
           caption: 'Women\'s Day 2025 - Group Photo'
         }
@@ -1298,12 +1298,12 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Sports Week 2025', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/WhatsApp-Image-2025-03-11-at-14_59_00_87c426bb-1024x768.jpg',
+          src: '/newsletters/imgs/sports-week-2025-sports-week-2025---i-2025-image-01.jpg',
           alt: 'Sports Week 2025 - Image 1',
           caption: 'Sports Week 2025 - Image 1'
         },
         {
-          src: '/newsletters/imgs/WhatsApp-Image-2025-03-11-at-14_59_00_a8afc727-1024x768.jpg',
+          src: '/newsletters/imgs/sports-week-2025-sports-week-2025---i-2025-image-02.jpg',
           alt: 'Sports Week 2025 - Image 2',
           caption: 'Sports Week 2025 - Image 2'
         }
@@ -1317,7 +1317,7 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['PhD Completion (LKP, RNP) Celebrations at Laduma', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/img-20250315-wa00053458429398878103883.jpg',
+          src: '/newsletters/imgs/phd-completion-celebrations-at-laduma-2025-image-01.jpg',
           alt: 'PhD Completion Celebrations at Laduma - Image 1',
           caption: 'PhD Completion Celebrations at Laduma - Image 1'
         }
@@ -1331,47 +1331,47 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Cyber Crime Training Program at IGP - BK', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/img-20250318-wa0003771115917890614088-1024x768.jpg',
+          src: '/newsletters/imgs/cyber-crime-training-program-at-igp-bk-2025-image-01.jpg',
           alt: 'Cyber Crime Training Program at IGP - BK - Image 1',
           caption: 'Cyber Crime Training Program at IGP - BK - Image 1'
         },
         {
-          src: '/newsletters/imgs/img-20250318-wa00148973197549005607506-768x1024.jpg',
+          src: '/newsletters/imgs/cyber-crime-training-program-at-igp-bk-2025-image-02.jpg',
           alt: 'Cyber Crime Training Program at IGP - BK - Image 2',
           caption: 'Cyber Crime Training Program at IGP - BK - Image 2'
         },
         {
-          src: '/newsletters/imgs/img-20250320-wa00002163809518286320899-768x1024.jpg',
+          src: '/newsletters/imgs/cyber-crime-training-program-at-igp-bk-2025-image-03.jpg',
           alt: 'Cyber Crime Training Program at IGP - BK - Image 3',
           caption: 'Cyber Crime Training Program at IGP - BK - Image 3'
         },
         {
-          src: '/newsletters/imgs/img-20250320-wa00022056911376805706864-1024x702.jpg',
+          src: '/newsletters/imgs/cyber-crime-training-program-at-igp-bk-2025-image-04.jpg',
           alt: 'Cyber Crime Training Program at IGP - BK - Image 4',
           caption: 'Cyber Crime Training Program at IGP - BK - Image 4'
         },
         {
-          src: '/newsletters/imgs/img-20250320-wa00016514387201292364585-1024x721.jpg',
+          src: '/newsletters/imgs/cyber-crime-training-program-at-igp-bk-2025-image-05.jpg',
           alt: 'Cyber Crime Training Program at IGP - BK - Image 5',
           caption: 'Cyber Crime Training Program at IGP - BK - Image 5'
         },
         {
-          src: '/newsletters/imgs/img-20250318-wa0012759099033505903971-768x1024.jpg',
+          src: '/newsletters/imgs/cyber-crime-training-program-at-igp-bk-2025-image-06.jpg',
           alt: 'Cyber Crime Training Program at IGP - BK - Image 6',
           caption: 'Cyber Crime Training Program at IGP - BK - Image 6'
         },
         {
-          src: '/newsletters/imgs/img-20250318-wa00073929239868787202507-1024x768.jpg',
+          src: '/newsletters/imgs/cyber-crime-training-program-at-igp-bk-2025-image-07.jpg',
           alt: 'Cyber Crime Training Program at IGP - BK - Image 7',
           caption: 'Cyber Crime Training Program at IGP - BK - Image 7'
         },
         {
-          src: '/newsletters/imgs/img-20250318-wa00096683100535197690775-768x1024.jpg',
+          src: '/newsletters/imgs/cyber-crime-training-program-at-igp-bk-2025-image-08.jpg',
           alt: 'Cyber Crime Training Program at IGP - BK - Image 8',
           caption: 'Cyber Crime Training Program at IGP - BK - Image 8'
         },
         {
-          src: '/newsletters/imgs/img-20250318-wa0005982614006059643825-768x1024.jpg',
+          src: '/newsletters/imgs/cyber-crime-training-program-at-igp-bk-2025-image-09.jpg',
           alt: 'Cyber Crime Training Program at IGP - BK - Image 9',
           caption: 'Cyber Crime Training Program at IGP - BK - Image 9'
         }
@@ -1385,32 +1385,32 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Seminar', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/IMG-20250328-WA0016-1024x768.jpg',
+          src: '/newsletters/imgs/seminar-road-safety-seminar-road-safety--2025-image-01.jpg',
           alt: 'Seminar: Road Safety - Image 1',
           caption: 'Seminar: Road Safety - Image 1'
         },
         {
-          src: '/newsletters/imgs/IMG-20250328-WA0017-1024x768.jpg',
+          src: '/newsletters/imgs/seminar-road-safety-seminar-road-safety--2025-image-02.jpg',
           alt: 'Seminar: Road Safety - Image 2',
           caption: 'Seminar: Road Safety - Image 2'
         },
         {
-          src: '/newsletters/imgs/IMG-20250328-WA0013-1024x768.jpg',
+          src: '/newsletters/imgs/seminar-road-safety-seminar-road-safety--2025-image-03.jpg',
           alt: 'Seminar: Road Safety - Image 3',
           caption: 'Seminar: Road Safety - Image 3'
         },
         {
-          src: '/newsletters/imgs/IMG-20250328-WA0014-1024x768.jpg',
+          src: '/newsletters/imgs/seminar-road-safety-seminar-road-safety--2025-image-04.jpg',
           alt: 'Seminar: Road Safety - Image 4',
           caption: 'Seminar: Road Safety - Image 4'
         },
         {
-          src: '/newsletters/imgs/IMG-20250328-WA0015-1024x768.jpg',
+          src: '/newsletters/imgs/seminar-road-safety-seminar-road-safety--2025-image-05.jpg',
           alt: 'Seminar: Road Safety - Image 5',
           caption: 'Seminar: Road Safety - Image 5'
         },
         {
-          src: '/newsletters/imgs/IMG-20250328-WA0012-1024x768.jpg',
+          src: '/newsletters/imgs/seminar-road-safety-seminar-road-safety--2025-image-06.jpg',
           alt: 'Seminar: Road Safety - Image 6',
           caption: 'Seminar: Road Safety - Image 6'
         }

@@ -27,12 +27,12 @@ export const newsletterData2021_22: NewsletterData = {
       authorType: "faculty",
       images: [
         {
-          src: '/newsletters/2021-22/5g-network.png',
+          src: '/newsletters/2021-22/device-to-device-communication-in-5g-5g-network-architect-2022-image-01.png',
           alt: '5G Network Architecture',
           caption: '5G network architecture showing device-to-device communication capabilities'
         },
         {
-          src: '/newsletters/2021-22/5g-d2d-communication.png',
+          src: '/newsletters/2021-22/device-to-device-communication-in-5g-illustration-of-d2d--2022-image-02.png',
           alt: 'Device to Device Communication in 5G',
           caption: 'Illustration of D2D communication reducing latency and improving spectrum efficiency'
         }
@@ -77,7 +77,7 @@ export const newsletterData2021_22: NewsletterData = {
       authorType: "student",
       images: [
         {
-          src: '/newsletters/2021-22/stuti-poem.jpg',
+          src: '/newsletters/2021-22/dreams-and-circuits-creative-poem-by-stu-2021-image-01.jpg',
           alt: 'Stuti Raval\'s poem "Dreams and Circuits"',
           caption: 'Creative poem by Stuti Raval expressing passion for electronics'
         }
@@ -94,7 +94,7 @@ export const newsletterData2021_22: NewsletterData = {
       authorType: "student",
       images: [
         {
-          src: '/newsletters/2021-22/arman-poem.png',
+          src: '/newsletters/2021-22/a-tribute-to-teachers-a-touching-tribute-t-2021-image-01.png',
           alt: 'Arman Ghasura\'s poem on Teachers',
           caption: 'A touching tribute to teachers by Arman Ghasura on Teacher\'s Day'
         }
@@ -384,7 +384,7 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['Programming', 'TCS', 'Career Development', 'Online Session'],
       images: [
         {
-          src: '/newsletters/2021-22/importance-programming.jpg',
+          src: '/newsletters/2021-22/expert-lecture-on-online-expert-lectur-2021-image-01.jpg',
           alt: 'Expert lecture on Programming by TCS',
           caption: 'Online expert lecture session on "Importance of Programming" by Mr. Pranav Dave from TCS'
         }
@@ -398,7 +398,7 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['NavIC', 'Navigation Systems', 'Satellite Technology', 'Make in India'],
       images: [
         {
-          src: '/newsletters/2021-22/navigation-with-navic.jpg',
+          src: '/newsletters/2021-22/expert-lecture-on-online-expert-lectur-2022-image-01.jpg',
           alt: 'Expert lecture on NavIC navigation system',
           caption: 'Online expert lecture on Navigation with Indian Constellation (NavIC) by Dr. Mehulkumar Desai'
         }
@@ -412,12 +412,12 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['Radio Broadcasting', 'FM Transmission', 'Community Radio', 'Industry Visit'],
       images: [
         {
-          src: '/newsletters/2021-22/radio-palanpur.jpg',
+          src: '/newsletters/2021-22/industrial-visit-community-radio-palanpu-students-visiting-co-2022-image-01.jpg',
           alt: 'Students at Community Radio Palanpur',
           caption: 'Students visiting Community Radio Palanpur - observing broadcasting setup'
         },
         {
-          src: '/newsletters/2021-22/radio-palanpur2.jpg',
+          src: '/newsletters/2021-22/industrial-visit-community-radio-palanpu-students-exploring-r-2022-image-02.jpg',
           alt: 'Recording studio and transmission equipment',
           caption: 'Students exploring recording studio and transmission equipment at Community Radio'
         }
@@ -431,7 +431,7 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['Electronics Repair', 'Samsung', 'Mobile Technology', 'Career Guidance'],
       images: [
         {
-          src: '/newsletters/2021-22/samsung-care.jpg',
+          src: '/newsletters/2021-22/industrial-visit-samsung-customer-care-students-observing-s-2022-image-01.jpg',
           alt: 'Students at Samsung Customer Care center',
           caption: 'Students observing smartphone and tablet servicing techniques at Samsung Customer Care'
         }
@@ -445,7 +445,7 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['Laser Technology', 'Manufacturing', 'RF Technology', 'Automation'],
       images: [
         {
-          src: '/newsletters/2021-22/stlt.jpg',
+          src: '/newsletters/2021-22/industrial-visit-sahajanand-laser-techno-students-observing-l-2022-image-01.jpg',
           alt: 'Students at Sahajanand Laser Technologies',
           caption: 'Students observing LASER cutting and engraving machines at SLTL'
         }
@@ -459,7 +459,7 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['Power Systems', 'Transformers', 'High Voltage', 'Power Distribution'],
       images: [
         {
-          src: '/newsletters/2021-22/jk-industries.jpg',
+          src: '/newsletters/2021-22/industrial-visit-jk-industries-chandisar-students-observing-h-2022-image-01.jpg',
           alt: 'Students learning transformer repair at JK Industries',
           caption: 'Students observing high voltage transformer repairing and troubleshooting at JK Industries'
         }
@@ -473,7 +473,7 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['Farewell', 'Graduation', 'Community Event', 'Students'],
       images: [
         {
-          src: '/newsletters/2021-22/farewell-2022.jpg',
+          src: '/newsletters/2021-22/farewell-for-2022-pass-outs-farewell-ceremony-fo-2022-image-01.jpg',
           alt: 'Farewell ceremony for 2022 graduates',
           caption: 'Farewell ceremony for 2022 pass-outs with faculty and students'
         }
@@ -487,7 +487,7 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['Environment', 'Tree Plantation', 'Green Campus', 'Sustainability'],
       images: [
         {
-          src: '/newsletters/2021-22/tree-plantation.jpg',
+          src: '/newsletters/2021-22/tree-plantation-drive-tree-plantation-even-2021-image-01.jpg',
           alt: 'Tree plantation drive at campus',
           caption: 'Tree plantation event with students and faculty planting various tree species'
         }
@@ -509,7 +509,7 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['Independence Day', 'Patriotic', 'Flag Hoisting', 'National Festival'],
       images: [
         {
-          src: '/newsletters/2021-22/independance-day.jpg',
+          src: '/newsletters/2021-22/75th-independence-day-celebration-flag-hoisting-ceremo-2021-image-01.jpg',
           alt: '75th Independence Day celebration',
           caption: 'Flag hoisting ceremony during 75th Independence Day celebration'
         }
@@ -523,7 +523,7 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['NBA Accreditation', 'Quality Assurance', 'Department Support', 'Academic Excellence'],
       images: [
         {
-          src: '/newsletters/2021-22/nba.jpg',
+          src: '/newsletters/2021-22/nba-visit-for-accreditation-nba-accreditation-vi-2021-image-01.jpg',
           alt: 'NBA accreditation team visit',
           caption: 'NBA accreditation visit - faculty and team members during evaluation process'
         }
@@ -537,7 +537,7 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['Health Awareness', 'Thalassemia', 'Medical Camp', 'Student Welfare'],
       images: [
         {
-          src: '/newsletters/2021-22/thalassemia-camp.png',
+          src: '/newsletters/2021-22/thalassemia-awareness-camp-2021-image-01.png',
           alt: 'Thalassemia awareness and testing camp',
           caption: 'Thalassemia awareness camp conducted by Indian Red Cross Society'
         }
@@ -551,7 +551,7 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['Cultural Event', 'Garba', 'Navaratri', 'Festival Celebration'],
       images: [
         {
-          src: '/newsletters/2021-22/navratri.jpg',
+          src: '/newsletters/2021-22/garba-mahotsav-students-and-faculty-2021-image-01.jpg',
           alt: 'Garba Mahotsav celebration',
           caption: 'Students and faculty celebrating Garba Mahotsav during Navaratri'
         }
@@ -565,7 +565,7 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['Drug Awareness', 'Health Campaign', 'Social Awareness', 'Student Safety'],
       images: [
         {
-          src: '/newsletters/2021-22/vyasan-mukti-abhiyan.jpg',
+          src: '/newsletters/2021-22/drug-awareness-program-vyasan-mukti-abhi-drug-awareness-semin-2021-image-01.jpg',
           alt: 'Drug awareness seminar',
           caption: 'Drug awareness seminar by enforcement officials and counselors'
         }
@@ -579,7 +579,7 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['Cleanliness', 'Swachh Bharat', 'Campus Cleaning', 'Social Responsibility'],
       images: [
         {
-          src: '/newsletters/2021-22/clean-india.jpg',
+          src: '/newsletters/2021-22/clean-india-movement-students-and-faculty-2021-image-01.jpg',
           alt: 'Clean India Movement drive',
           caption: 'Students and faculty participating in campus cleanliness drive'
         }
@@ -593,7 +593,7 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['National Unity', 'Sardar Patel', 'Unity Day', 'Patriotic Event'],
       images: [
         {
-          src: '/newsletters/2021-22/national-unity-day.jpg',
+          src: '/newsletters/2021-22/national-unity-day-pledge-taking-ceremo-2021-image-01.jpg',
           alt: 'National Unity Day celebration',
           caption: 'Pledge taking ceremony during National Unity Day celebration'
         }
@@ -607,12 +607,12 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['Republic Day', 'Flag Salute', 'National Festival', 'Guest Speaker'],
       images: [
         {
-          src: '/newsletters/2021-22/republic-day.jpg',
+          src: '/newsletters/2021-22/73rd-republic-day-celebration-flag-salute-ceremony-2022-image-01.jpg',
           alt: '73rd Republic Day celebration',
           caption: 'Flag salute ceremony during 73rd Republic Day with Hon\'ble former MLA Rekhaben Khanesha'
         },
         {
-          src: '/newsletters/2021-22/republic-day2.jpg',
+          src: '/newsletters/2021-22/73rd-republic-day-celebration-students-and-faculty-2022-image-02.jpg',
           alt: 'Students participating in Republic Day parade',
           caption: 'Students and faculty participating in Republic Day celebration'
         }
@@ -626,7 +626,7 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['Martyrs Day', 'Freedom Struggle', 'Historical Awareness', 'Online Event'],
       images: [
         {
-          src: '/newsletters/2021-22/martyrs-day.jpg',
+          src: '/newsletters/2021-22/martyrs-online-talk-on-india-2022-image-01.jpg',
           alt: 'Martyrs Day commemoration event',
           caption: 'Online talk on Indian Freedom Struggle during Martyrs\' Day commemoration'
         }
@@ -640,12 +640,12 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['Women\'s Day', 'Women Safety', 'Expert Lectures', 'Competition'],
       images: [
         {
-          src: '/newsletters/2021-22/womens-day.jpg',
+          src: '/newsletters/2021-22/women-expert-lectures-and--2022-image-01.jpg',
           alt: 'Women\'s Day celebration activities',
           caption: 'Expert lectures and Food without flame contest during Women\'s Day celebration'
         },
         {
-          src: '/newsletters/2021-22/womens-day-food-without-flames.jpg',
+          src: '/newsletters/2021-22/women-winners-of-food-with-2022-image-02.jpg',
           alt: 'Food without flame contest winners',
           caption: 'Winners of Food without flame contest - Stuti Raval, Bijal Suthar, Khushbu Garasiya, and Khushi Patel'
         }
@@ -659,12 +659,12 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['Placement Fair', 'Industry Connect', 'Career Opportunities', 'District Level'],
       images: [
         {
-          src: '/newsletters/2021-22/placement-fair.jpg',
+          src: '/newsletters/2021-22/district-level-placement-fair-district-level-mega--2022-image-01.jpg',
           alt: 'District level placement fair',
           caption: 'District level mega placement fair with 22 participating industries'
         },
         {
-          src: '/newsletters/2021-22/placement-fair-press-release.png',
+          src: '/newsletters/2021-22/district-level-placement-fair-students-attending-i-2022-image-02.png',
           alt: 'Students attending placement interviews',
           caption: 'Students attending interviews at the district level placement fair'
         }
@@ -678,7 +678,7 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['Voter Awareness', 'NSS Activity', 'Democracy', 'Student Competition'],
       images: [
         {
-          src: '/newsletters/2021-22/voter-awareness-program.jpg',
+          src: '/newsletters/2021-22/voter-awareness-program-nss-organized-drawin-2022-image-01.jpg',
           alt: 'Voter awareness program activities',
           caption: 'NSS organized drawing and essay competitions for voter awareness'
         }
@@ -692,7 +692,7 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['Yoga Day', 'Health Awareness', 'Wellness', 'International Day'],
       images: [
         {
-          src: '/newsletters/2021-22/yoga-day.jpg',
+          src: '/newsletters/2021-22/international-yoga-day-celebration-students-and-faculty-2022-image-01.jpg',
           alt: 'International Yoga Day celebration',
           caption: 'Students and faculty participating in International Yoga Day celebration'
         }
@@ -706,12 +706,12 @@ export const newsletterData2021_22: NewsletterData = {
       tags: ['SSIP', 'School Outreach', 'Robotics', 'Community Service'],
       images: [
         {
-          src: '/newsletters/2021-22/ssip-vidhyamandir.png',
+          src: '/newsletters/2021-22/ssip-activities-school-outreach-students-teaching-ro--image-01.png',
           alt: 'SSIP school outreach program',
           caption: 'Students teaching robotics and drone making to school children at Vidhya Mandir School'
         },
         {
-          src: '/newsletters/2021-22/ssip-jasra-primary-school.jpg',
+          src: '/newsletters/2021-22/ssip-activities-school-outreach-robotics-and-drone-m--image-02.jpg',
           alt: 'Robotics bootcamp at Jasra Primary School',
           caption: 'Robotics and drone making bootcamp at Jasra Primary School'
         }

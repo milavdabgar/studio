@@ -28,82 +28,82 @@ export const newsletterData2023_24: NewsletterData = {
       authorType: "faculty",
       images: [
         {
-          src: '/newsletters/2023-24/nmp/20210926_101936.jpg',
+          src: '/newsletters/2023-24/nmp/in-loving-memory-of-shri-nikunj-m-patel-capturing-moments-of-2023-image-01.jpg',
           alt: 'Shri Nikunj M Patel with students and colleagues',
           caption: 'Capturing moments of dedication and mentorship in the EC Department'
         },
         {
-          src: '/newsletters/2023-24/nmp/20220128_171246.jpg',
+          src: '/newsletters/2023-24/nmp/in-loving-memory-of-shri-nikunj-m-patel-always-present-and-e-2023-image-02.jpg',
           alt: 'Shri Nikunj M Patel during department activities',
           caption: 'Always present and engaged in departmental initiatives and student welfare'
         },
         {
-          src: '/newsletters/2023-24/nmp/20221231_155100.jpg',
+          src: '/newsletters/2023-24/nmp/in-loving-memory-of-shri-nikunj-m-patel-a-beloved-teacher-wh-2023-image-03.jpg',
           alt: 'Shri Nikunj M Patel with faculty and students',
           caption: 'A beloved teacher who brought warmth and wisdom to every gathering'
         },
         {
-          src: '/newsletters/2023-24/nmp/462940275_27529417436649570_7023369186748130685_n.jpg',
+          src: '/newsletters/2023-24/nmp/in-loving-memory-of-shri-nikunj-m-patel-cherished-memories-o-2023-image-04.jpg',
           alt: 'Shri Nikunj M Patel in memorable moments',
           caption: 'Cherished memories of a faculty member who touched countless lives'
         },
         {
-          src: '/newsletters/2023-24/nmp/464242605_9412158062134416_5050199162295147749_n.jpg',
+          src: '/newsletters/2023-24/nmp/in-loving-memory-of-shri-nikunj-m-patel-building-bonds-and-f-2023-image-05.jpg',
           alt: 'Shri Nikunj M Patel with the EC community',
           caption: 'Building bonds and fostering growth in the electronics engineering community'
         },
         {
-          src: '/newsletters/2023-24/nmp/464244071_9412159172134305_6631052670891998215_n.jpg',
+          src: '/newsletters/2023-24/nmp/in-loving-memory-of-shri-nikunj-m-patel-committed-to-excelle-2023-image-06.jpg',
           alt: 'Shri Nikunj M Patel during educational activities',
           caption: 'Committed to excellence in education and student development'
         },
         {
-          src: '/newsletters/2023-24/nmp/464284590_9412157725467783_6967180381419490622_n.jpg',
+          src: '/newsletters/2023-24/nmp/in-loving-memory-of-shri-nikunj-m-patel-a-mentor-who-believe-2023-image-07.jpg',
           alt: 'Shri Nikunj M Patel with students',
           caption: 'A mentor who believed in nurturing both technical skills and human values'
         },
         {
-          src: '/newsletters/2023-24/nmp/IMG-20180928-WA0022.jpg',
+          src: '/newsletters/2023-24/nmp/in-loving-memory-of-shri-nikunj-m-patel-dedicated-service-to-2023-image-08.jpg',
           alt: 'Shri Nikunj M Patel in departmental setting',
           caption: 'Dedicated service to the Electronics & Communication Engineering Department'
         },
         {
-          src: '/newsletters/2023-24/nmp/IMG-20221224-WA0001.jpg',
+          src: '/newsletters/2023-24/nmp/in-loving-memory-of-shri-nikunj-m-patel-professional-excelle-2023-image-09.jpg',
           alt: 'Shri Nikunj M Patel with colleagues',
           caption: 'Professional excellence and collaborative spirit in every endeavor'
         },
         {
-          src: '/newsletters/2023-24/nmp/IMG_20180314_112606.jpg',
+          src: '/newsletters/2023-24/nmp/in-loving-memory-of-shri-nikunj-m-patel-early-years-of-dedic-2023-image-10.jpg',
           alt: 'Shri Nikunj M Patel during academic activities',
           caption: 'Early years of dedicated service and commitment to education'
         },
         {
-          src: '/newsletters/2023-24/nmp/IMG_20180518_140436.jpg',
+          src: '/newsletters/2023-24/nmp/in-loving-memory-of-shri-nikunj-m-patel-patient-guidance-and-2023-image-11.jpg',
           alt: 'Shri Nikunj M Patel with students',
           caption: 'Patient guidance and encouragement for every student who sought help'
         },
         {
-          src: '/newsletters/2023-24/nmp/IMG_20180815_085220.jpg',
+          src: '/newsletters/2023-24/nmp/in-loving-memory-of-shri-nikunj-m-patel-passionate-about-tea-2023-image-12.jpg',
           alt: 'Shri Nikunj M Patel in teaching environment',
           caption: 'Passionate about teaching and making complex concepts accessible to all'
         },
         {
-          src: '/newsletters/2023-24/nmp/IMG_20180815_090133.jpg',
+          src: '/newsletters/2023-24/nmp/in-loving-memory-of-shri-nikunj-m-patel-active-participation-2023-image-13.jpg',
           alt: 'Shri Nikunj M Patel during faculty activities',
           caption: 'Active participation in all departmental activities and responsibilities'
         },
         {
-          src: '/newsletters/2023-24/nmp/IMG_20180815_090712.jpg',
+          src: '/newsletters/2023-24/nmp/in-loving-memory-of-shri-nikunj-m-patel-building-lasting-rel-2023-image-14.jpg',
           alt: 'Shri Nikunj M Patel with academic community',
           caption: 'Building lasting relationships within the academic community'
         },
         {
-          src: '/newsletters/2023-24/nmp/IMG_20180925_211850.jpg',
+          src: '/newsletters/2023-24/nmp/in-loving-memory-of-shri-nikunj-m-patel-celebrating-achievem-2023-image-15.jpg',
           alt: 'Shri Nikunj M Patel during special occasions',
           caption: 'Celebrating achievements and milestones with students and colleagues'
         },
         {
-          src: '/newsletters/2023-24/nmp/IMG_20180928_170327.jpg',
+          src: '/newsletters/2023-24/nmp/in-loving-memory-of-shri-nikunj-m-patel-a-legacy-of-kindness-2023-image-16.jpg',
           alt: 'Shri Nikunj M Patel in memorable moments',
           caption: 'A legacy of kindness, wisdom, and unwavering commitment to education'
         }
@@ -367,7 +367,7 @@ export const newsletterData2023_24: NewsletterData = {
       ],
       images: [
         {
-          src: '/newsletters/2024-25/Screen-Shot-2025-03-20-at-22_44_21-PM.png',
+          src: '/newsletters/2024-25/research-excellence-student-development--mr-nirav-j-chauhan-p-2023-image-01.png',
           alt: 'Mr. Nirav J. Chauhan at ICETCP 2024',
           caption: 'Mr. Nirav J. Chauhan presenting his research paper at ICETCP 2024, Atmiya University'
         }
@@ -555,102 +555,102 @@ With continued commitment to excellence.`
       tags: ['Orientation', 'New Students', 'Academic Programs', 'Career Guidance'],
       images: [
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0035-1024x462.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-01.jpg',
           alt: 'Orientation Session 2023 - Opening ceremony',
           caption: 'Orientation Session 2023 - Opening ceremony'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0034-1024x462.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-02.jpg',
           alt: 'Orientation Session 2023 - Welcome address',
           caption: 'Orientation Session 2023 - Welcome address'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0033-1024x462.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-03.jpg',
           alt: 'Orientation Session 2023 - Department presentation',
           caption: 'Orientation Session 2023 - Department presentation'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0032-1024x462.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-04.jpg',
           alt: 'Orientation Session 2023 - Faculty introduction',
           caption: 'Orientation Session 2023 - Faculty introduction'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0025-1024x766.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-05.jpg',
           alt: 'Orientation Session 2023 - Student interaction',
           caption: 'Orientation Session 2023 - Student interaction'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0024-1024x766.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-06.jpg',
           alt: 'Orientation Session 2023 - Academic guidelines',
           caption: 'Orientation Session 2023 - Academic guidelines'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0023-1024x766.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-07.jpg',
           alt: 'Orientation Session 2023 - Course curriculum overview',
           caption: 'Orientation Session 2023 - Course curriculum overview'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0022-1024x766.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-08.jpg',
           alt: 'Orientation Session 2023 - Laboratory tour',
           caption: 'Orientation Session 2023 - Laboratory tour'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0021-1024x766.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-09.jpg',
           alt: 'Orientation Session 2023 - Facility showcase',
           caption: 'Orientation Session 2023 - Facility showcase'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0020-1024x766.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-10.jpg',
           alt: 'Orientation Session 2023 - Department overview',
           caption: 'Orientation Session 2023 - Department overview'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0019-1024x766.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-11.jpg',
           alt: 'Orientation Session 2023 - Career guidance',
           caption: 'Orientation Session 2023 - Career guidance'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0018-1024x766.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-12.jpg',
           alt: 'Orientation Session 2023 - Student Q&A session',
           caption: 'Orientation Session 2023 - Student Q&A session'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0017-1024x766.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-13.jpg',
           alt: 'Orientation Session 2023 - Academic resources introduction',
           caption: 'Orientation Session 2023 - Academic resources introduction'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0016-1024x766.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-14.jpg',
           alt: 'Orientation Session 2023 - Extracurricular activities presentation',
           caption: 'Orientation Session 2023 - Extracurricular activities presentation'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0015-1024x766.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-15.jpg',
           alt: 'Orientation Session 2023 - Faculty interaction',
           caption: 'Orientation Session 2023 - Faculty interaction'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0014-1024x766.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-16.jpg',
           alt: 'Orientation Session 2023 - Student engagement activities',
           caption: 'Orientation Session 2023 - Student engagement activities'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0013-1024x766.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-17.jpg',
           alt: 'Orientation Session 2023 - Information session',
           caption: 'Orientation Session 2023 - Information session'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0012-1024x766.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-18.jpg',
           alt: 'Orientation Session 2023 - Interactive session',
           caption: 'Orientation Session 2023 - Interactive session'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0010-1024x766.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-19.jpg',
           alt: 'Orientation Session 2023 - Group activities',
           caption: 'Orientation Session 2023 - Group activities'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230718-WA0008-1024x766.jpg',
+          src: '/newsletters/2023-24/orientation-session-2023-2023-image-20.jpg',
           alt: 'Orientation Session 2023 - Welcome session',
           caption: 'Orientation Session 2023 - Welcome session'
         }
@@ -664,102 +664,102 @@ With continued commitment to excellence.`
       tags: ['Environment', 'Tree Plantation', 'Green Campus', 'Conservation'],
       images: [
         {
-          src: '/newsletters/2023-24/20230719_142931-1024x577.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-01.jpg',
           alt: 'Tree Plantation Drive - Environmental conservation activity',
           caption: 'Tree Plantation Drive - Environmental conservation activity'
         },
         {
-          src: '/newsletters/2023-24/20230719_142939-1024x577.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-02.jpg',
           alt: 'Tree Plantation Drive - Campus greening initiative',
           caption: 'Tree Plantation Drive - Campus greening initiative'
         },
         {
-          src: '/newsletters/2023-24/20230719_142940-1024x577.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-03.jpg',
           alt: 'Tree Plantation Drive - Student participation',
           caption: 'Tree Plantation Drive - Student participation'
         },
         {
-          src: '/newsletters/2023-24/20230719_143128-1024x577.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-04.jpg',
           alt: 'Tree Plantation Drive - Ecological awareness',
           caption: 'Tree Plantation Drive - Ecological awareness'
         },
         {
-          src: '/newsletters/2023-24/20230719_143130-1024x577.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-05.jpg',
           alt: 'Tree Plantation Drive - Green campus development',
           caption: 'Tree Plantation Drive - Green campus development'
         },
         {
-          src: '/newsletters/2023-24/20230719_143133-1024x577.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-06.jpg',
           alt: 'Tree Plantation Drive - Environmental initiative',
           caption: 'Tree Plantation Drive - Environmental initiative'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230719-WA0003-1024x768.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-07.jpg',
           alt: 'Tree Plantation Drive - Faculty and students collaboration',
           caption: 'Tree Plantation Drive - Faculty and students collaboration'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230719-WA0004-1024x768.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-08.jpg',
           alt: 'Tree Plantation Drive - Hands-on environmental work',
           caption: 'Tree Plantation Drive - Hands-on environmental work'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230719-WA0005-1024x768.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-09.jpg',
           alt: 'Tree Plantation Drive - Green initiative activity',
           caption: 'Tree Plantation Drive - Green initiative activity'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230719-WA0006-1024x768.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-10.jpg',
           alt: 'Tree Plantation Drive - Environmental conservation effort',
           caption: 'Tree Plantation Drive - Environmental conservation effort'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230719-WA0007-1024x768.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-11.jpg',
           alt: 'Tree Plantation Drive - Campus sustainability project',
           caption: 'Tree Plantation Drive - Campus sustainability project'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230719-WA0008-1024x768.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-12.jpg',
           alt: 'Tree Plantation Drive - Student environmental engagement',
           caption: 'Tree Plantation Drive - Student environmental engagement'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230719-WA0009-1024x768.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-13.jpg',
           alt: 'Tree Plantation Drive - Green campus initiative',
           caption: 'Tree Plantation Drive - Green campus initiative'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230719-WA0010-1024x768.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-14.jpg',
           alt: 'Tree Plantation Drive - Environmental awareness activity',
           caption: 'Tree Plantation Drive - Environmental awareness activity'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230719-WA0011-1024x768.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-15.jpg',
           alt: 'Tree Plantation Drive - Community involvement',
           caption: 'Tree Plantation Drive - Community involvement'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230719-WA0012-1024x768.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-16.jpg',
           alt: 'Tree Plantation Drive - Tree planting ceremony',
           caption: 'Tree Plantation Drive - Tree planting ceremony'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230719-WA0013-1024x768.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-17.jpg',
           alt: 'Tree Plantation Drive - Ecological responsibility',
           caption: 'Tree Plantation Drive - Ecological responsibility'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230719-WA0014-1024x768.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-18.jpg',
           alt: 'Tree Plantation Drive - Environmental stewardship',
           caption: 'Tree Plantation Drive - Environmental stewardship'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230719-WA0015-1024x768.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-19.jpg',
           alt: 'Tree Plantation Drive - Green environment promotion',
           caption: 'Tree Plantation Drive - Green environment promotion'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230719-WA0016-1024x768.jpg',
+          src: '/newsletters/2023-24/tree-plantation-drive-2023-image-20.jpg',
           alt: 'Tree Plantation Drive - Team environmental effort',
           caption: 'Tree Plantation Drive - Team environmental effort'
         }
@@ -773,57 +773,57 @@ With continued commitment to excellence.`
       tags: ['Plasma Science', 'IPR Gandhinagar', 'Educational Camp', 'Science Learning', 'Physics Research'],
       images: [
         {
-          src: '/newsletters/2023-24/20230726_142650-768x1024.jpg',
+          src: '/newsletters/2023-24/plasma-knowledge-camp-institute-of-plasm-2023-image-01.jpg',
           alt: 'Plasma Knowledge Camp - Opening session at Vidhyamandir School',
           caption: 'Plasma Knowledge Camp - Opening session at Vidhyamandir School'
         },
         {
-          src: '/newsletters/2023-24/20230726_142738-768x1024.jpg',
+          src: '/newsletters/2023-24/plasma-knowledge-camp-institute-of-plasm-2023-image-02.jpg',
           alt: 'Plasma Knowledge Camp - Learning about plasma physics',
           caption: 'Plasma Knowledge Camp - Learning about plasma physics'
         },
         {
-          src: '/newsletters/2023-24/20230726_142746-768x1024.jpg',
+          src: '/newsletters/2023-24/plasma-knowledge-camp-institute-of-plasm-2023-image-03.jpg',
           alt: 'Plasma Knowledge Camp - Interactive session on plasma applications',
           caption: 'Plasma Knowledge Camp - Interactive session on plasma applications'
         },
         {
-          src: '/newsletters/2023-24/20230726_142951-1024x768.jpg',
+          src: '/newsletters/2023-24/plasma-knowledge-camp-institute-of-plasm-2023-image-04.jpg',
           alt: 'Plasma Knowledge Camp - Students and faculty gaining scientific knowledge',
           caption: 'Plasma Knowledge Camp - Students and faculty gaining scientific knowledge'
         },
         {
-          src: '/newsletters/2023-24/20230726_143104-768x1024.jpg',
+          src: '/newsletters/2023-24/plasma-knowledge-camp-institute-of-plasm-2023-image-05.jpg',
           alt: 'Plasma Knowledge Camp - Educational outreach by IPR Gandhinagar',
           caption: 'Plasma Knowledge Camp - Educational outreach by IPR Gandhinagar'
         },
         {
-          src: '/newsletters/2023-24/20230726_143225-768x1024.jpg',
+          src: '/newsletters/2023-24/plasma-knowledge-camp-institute-of-plasm-2023-image-06.jpg',
           alt: 'Plasma Knowledge Camp - Students exploring plasma science',
           caption: 'Plasma Knowledge Camp - Students exploring plasma science'
         },
         {
-          src: '/newsletters/2023-24/20230726_143414-768x1024.jpg',
+          src: '/newsletters/2023-24/plasma-knowledge-camp-institute-of-plasm-2023-image-07.jpg',
           alt: 'Plasma Knowledge Camp - Plasma physics education session',
           caption: 'Plasma Knowledge Camp - Plasma physics education session'
         },
         {
-          src: '/newsletters/2023-24/20230726_143459-1024x768.jpg',
+          src: '/newsletters/2023-24/plasma-knowledge-camp-institute-of-plasm-2023-image-08.jpg',
           alt: 'Plasma Knowledge Camp - Faculty and students learning together',
           caption: 'Plasma Knowledge Camp - Faculty and students learning together'
         },
         {
-          src: '/newsletters/2023-24/20230726_143748-768x1024.jpg',
+          src: '/newsletters/2023-24/plasma-knowledge-camp-institute-of-plasm-2023-image-09.jpg',
           alt: 'Plasma Knowledge Camp - Documentation of scientific learning',
           caption: 'Plasma Knowledge Camp - Documentation of scientific learning'
         },
         {
-          src: '/newsletters/2023-24/20230726_143757-1024x768.jpg',
+          src: '/newsletters/2023-24/plasma-knowledge-camp-institute-of-plasm-2023-image-10.jpg',
           alt: 'Plasma Knowledge Camp - Student engagement in plasma research',
           caption: 'Plasma Knowledge Camp - Student engagement in plasma research'
         },
         {
-          src: '/newsletters/2023-24/20230726_144208-768x1024.jpg',
+          src: '/newsletters/2023-24/plasma-knowledge-camp-institute-of-plasm-2023-image-11.jpg',
           alt: 'Plasma Knowledge Camp - Group learning about plasma technology',
           caption: 'Plasma Knowledge Camp - Group learning about plasma technology'
         }
@@ -837,7 +837,7 @@ With continued commitment to excellence.`
       tags: ['Industrial Visit', 'Manufacturing Process', 'Automation', 'Paper Industry'],
       images: [
         {
-          src: '/newsletters/2023-24/20230801_115754-2048x1153.jpg',
+          src: '/newsletters/2023-24/industrial-visit-bajrang-paper-products-2023-image-01.jpg',
           alt: 'Bajrang Paper Products Visit - Students at manufacturing facility',
           caption: 'Bajrang Paper Products Visit - Students at manufacturing facility'
         }
@@ -851,12 +851,12 @@ With continued commitment to excellence.`
       tags: ['SSIP', 'Innovation', 'Startup Policy', 'Student Recognition'],
       images: [
         {
-          src: '/newsletters/2023-24/IMG-20230811-WA0002-1024x576.jpg',
+          src: '/newsletters/2023-24/ssip-20-appreciation-meet-ssip-appreciation-ce-2023-image-01.jpg',
           alt: 'SSIP Appreciation Meet',
           caption: 'SSIP Appreciation Ceremony'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230811-WA0000-576x1024.jpg',
+          src: '/newsletters/2023-24/ssip-20-appreciation-meet-student-innovation-r-2023-image-02.jpg',
           alt: 'Innovation Recognition',
           caption: 'Student Innovation Recognition'
         }
@@ -870,52 +870,52 @@ With continued commitment to excellence.`
       tags: ['Semiconductor Exhibition', 'Technology Trends', 'Industry Exposure', 'SEMICON'],
       images: [
         {
-          src: '/newsletters/2023-24/20230727_071846-1024x577.jpg',
+          src: '/newsletters/2023-24/semicon-2023-exhibition-semicon-2023---exhib-2023-image-01.jpg',
           alt: 'SEMICON 2023 - Exhibition entrance and registration',
           caption: 'SEMICON 2023 - Exhibition entrance and registration'
         },
         {
-          src: '/newsletters/2023-24/20230727_071853-1024x577.jpg',
+          src: '/newsletters/2023-24/semicon-2023-exhibition-semicon-2023---techn-2023-image-02.jpg',
           alt: 'SEMICON 2023 - Technology exhibition hall',
           caption: 'SEMICON 2023 - Technology exhibition hall'
         },
         {
-          src: '/newsletters/2023-24/20230727_071935-1024x577.jpg',
+          src: '/newsletters/2023-24/semicon-2023-exhibition-semicon-2023---semic-2023-image-03.jpg',
           alt: 'SEMICON 2023 - Semiconductor technology displays',
           caption: 'SEMICON 2023 - Semiconductor technology displays'
         },
         {
-          src: '/newsletters/2023-24/20230727_113120-1024x577.jpg',
+          src: '/newsletters/2023-24/semicon-2023-exhibition-semicon-2023---indus-2023-image-04.jpg',
           alt: 'SEMICON 2023 - Industry technology showcase',
           caption: 'SEMICON 2023 - Industry technology showcase'
         },
         {
-          src: '/newsletters/2023-24/20230727_113127-1024x577.jpg',
+          src: '/newsletters/2023-24/semicon-2023-exhibition-semicon-2023---elect-2023-image-05.jpg',
           alt: 'SEMICON 2023 - Electronics manufacturing exhibits',
           caption: 'SEMICON 2023 - Electronics manufacturing exhibits'
         },
         {
-          src: '/newsletters/2023-24/20230727_113133-1024x577.jpg',
+          src: '/newsletters/2023-24/semicon-2023-exhibition-semicon-2023---advan-2023-image-06.jpg',
           alt: 'SEMICON 2023 - Advanced semiconductor equipment',
           caption: 'SEMICON 2023 - Advanced semiconductor equipment'
         },
         {
-          src: '/newsletters/2023-24/20230727_115432-768x1024.jpg',
+          src: '/newsletters/2023-24/semicon-2023-exhibition-semicon-2023---stude-2023-image-07.jpg',
           alt: 'SEMICON 2023 - Students exploring technology trends',
           caption: 'SEMICON 2023 - Students exploring technology trends'
         },
         {
-          src: '/newsletters/2023-24/20230727_115436-1024x768.jpg',
+          src: '/newsletters/2023-24/semicon-2023-exhibition-semicon-2023---indus-2023-image-08.jpg',
           alt: 'SEMICON 2023 - Industry interaction and learning',
           caption: 'SEMICON 2023 - Industry interaction and learning'
         },
         {
-          src: '/newsletters/2023-24/20230727_115708-768x1024.jpg',
+          src: '/newsletters/2023-24/semicon-2023-exhibition-semicon-2023---techn-2023-image-09.jpg',
           alt: 'SEMICON 2023 - Technology demonstration session',
           caption: 'SEMICON 2023 - Technology demonstration session'
         },
         {
-          src: '/newsletters/2023-24/20230727_115958-768x1024.jpg',
+          src: '/newsletters/2023-24/semicon-2023-exhibition-semicon-2023---stude-2023-image-10.jpg',
           alt: 'SEMICON 2023 - Student learning experience',
           caption: 'SEMICON 2023 - Student learning experience'
         }
@@ -937,42 +937,42 @@ With continued commitment to excellence.`
       tags: ['Cultural Event', 'Festival Celebration', 'Student Creativity', 'Cultural Heritage'],
       images: [
         {
-          src: '/newsletters/2023-24/IMG-20231030-WA0001-1024x766.jpg',
+          src: '/newsletters/2023-24/rakhi-rangoli-2023-rakhi-rangoli-2023---2023-image-01.jpg',
           alt: 'Rakhi & Rangoli 2023 - Main celebration event',
           caption: 'Rakhi & Rangoli 2023 - Main celebration event'
         },
         {
-          src: '/newsletters/2023-24/IMG-20231027-WA0004-1024x576.jpg',
+          src: '/newsletters/2023-24/rakhi-rangoli-2023-rakhi-rangoli-2023---2023-image-02.jpg',
           alt: 'Rakhi & Rangoli 2023 - Rangoli art competition',
           caption: 'Rakhi & Rangoli 2023 - Rangoli art competition'
         },
         {
-          src: '/newsletters/2023-24/IMG-20231027-WA0005-1024x576.jpg',
+          src: '/newsletters/2023-24/rakhi-rangoli-2023-rakhi-rangoli-2023---2023-image-03.jpg',
           alt: 'Rakhi & Rangoli 2023 - Student participation in activities',
           caption: 'Rakhi & Rangoli 2023 - Student participation in activities'
         },
         {
-          src: '/newsletters/2023-24/IMG-20231027-WA0006-1024x576.jpg',
+          src: '/newsletters/2023-24/rakhi-rangoli-2023-rakhi-rangoli-2023---2023-image-04.jpg',
           alt: 'Rakhi & Rangoli 2023 - Creative artwork display',
           caption: 'Rakhi & Rangoli 2023 - Creative artwork display'
         },
         {
-          src: '/newsletters/2023-24/IMG-20231027-WA0003-1024x576.jpg',
+          src: '/newsletters/2023-24/rakhi-rangoli-2023-rakhi-rangoli-2023---2023-image-05.jpg',
           alt: 'Rakhi & Rangoli 2023 - Festival celebration activities',
           caption: 'Rakhi & Rangoli 2023 - Festival celebration activities'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230829-WA0012-766x1024.jpg',
+          src: '/newsletters/2023-24/rakhi-rangoli-2023-rakhi-rangoli-2023---2023-image-06.jpg',
           alt: 'Rakhi & Rangoli 2023 - Traditional festival elements',
           caption: 'Rakhi & Rangoli 2023 - Traditional festival elements'
         },
         {
-          src: '/newsletters/2023-24/IMG-20231027-WA0007-1024x576.jpg',
+          src: '/newsletters/2023-24/rakhi-rangoli-2023-rakhi-rangoli-2023---2023-image-07.jpg',
           alt: 'Rakhi & Rangoli 2023 - Cultural expression and creativity',
           caption: 'Rakhi & Rangoli 2023 - Cultural expression and creativity'
         },
         {
-          src: '/newsletters/2023-24/IMG-20230829-WA0013-766x1024.jpg',
+          src: '/newsletters/2023-24/rakhi-rangoli-2023-rakhi-rangoli-2023---2023-image-08.jpg',
           alt: 'Rakhi & Rangoli 2023 - Student engagement in cultural activities',
           caption: 'Rakhi & Rangoli 2023 - Student engagement in cultural activities'
         }
@@ -986,32 +986,32 @@ With continued commitment to excellence.`
       tags: ['Semiconductor Training', 'IIT Bombay', 'Research Exposure', 'SEMIX'],
       images: [
         {
-          src: '/newsletters/2023-24/20231109_102102-1024x768.jpg',
+          src: '/newsletters/2023-24/semix-training-at-iit-bombay-semix-training---iit-2023-image-01.jpg',
           alt: 'SEMIX Training - IIT Bombay campus and facilities',
           caption: 'SEMIX Training - IIT Bombay campus and facilities'
         },
         {
-          src: '/newsletters/2023-24/20231109_154951-768x1024.jpg',
+          src: '/newsletters/2023-24/semix-training-at-iit-bombay-semix-training---adv-2023-image-02.jpg',
           alt: 'SEMIX Training - Advanced research laboratory session',
           caption: 'SEMIX Training - Advanced research laboratory session'
         },
         {
-          src: '/newsletters/2023-24/20231110_120533-768x1024.jpg',
+          src: '/newsletters/2023-24/semix-training-at-iit-bombay-semix-training---sem-2023-image-03.jpg',
           alt: 'SEMIX Training - Semiconductor technology demonstration',
           caption: 'SEMIX Training - Semiconductor technology demonstration'
         },
         {
-          src: '/newsletters/2023-24/IMG-20231108-WA0004.jpg',
+          src: '/newsletters/2023-24/semix-training-at-iit-bombay-semix-training---tec-2023-image-04.jpg',
           alt: 'SEMIX Training - Technical laboratory visit',
           caption: 'SEMIX Training - Technical laboratory visit'
         },
         {
-          src: '/newsletters/2023-24/IMG-20231108-WA0012.jpg',
+          src: '/newsletters/2023-24/semix-training-at-iit-bombay-semix-training---res-2023-image-05.jpg',
           alt: 'SEMIX Training - Research facility exploration',
           caption: 'SEMIX Training - Research facility exploration'
         },
         {
-          src: '/newsletters/2023-24/IMG-20231109-WA0010.jpg',
+          src: '/newsletters/2023-24/semix-training-at-iit-bombay-semix-training---tec-2023-image-06.jpg',
           alt: 'SEMIX Training - Technical discussion and learning',
           caption: 'SEMIX Training - Technical discussion and learning'
         }
@@ -1025,82 +1025,82 @@ With continued commitment to excellence.`
       tags: ['Expert Session', 'Embedded Systems', 'Web Development', 'Industry Insights'],
       images: [
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0004-1024x459.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-10.jpg',
           alt: 'Expert Session - Opening presentation',
           caption: 'Expert Session - Opening presentation'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0005-1024x459.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-11.jpg',
           alt: 'Expert Session - Industry expert speaking',
           caption: 'Expert Session - Industry expert speaking'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0006-1024x459.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-12.jpg',
           alt: 'Expert Session - Technical presentation on embedded systems',
           caption: 'Expert Session - Technical presentation on embedded systems'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0008-1024x459.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-09.jpg',
           alt: 'Expert Session - Student engagement and interaction',
           caption: 'Expert Session - Student engagement and interaction'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0010-1024x459.jpg',
+          src: '/newsletters/2024-25/workshop-embedded-system-2024-image-04.jpg',
           alt: 'Expert Session - Hands-on demonstration',
           caption: 'Expert Session - Hands-on demonstration'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0011-1024x459.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-08.jpg',
           alt: 'Expert Session - Web development technologies overview',
           caption: 'Expert Session - Web development technologies overview'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0018-1024x766.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-07.jpg',
           alt: 'Expert Session - Interactive workshop session',
           caption: 'Expert Session - Interactive workshop session'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0020-1024x766.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-06.jpg',
           alt: 'Expert Session - Technical discussion and Q&A',
           caption: 'Expert Session - Technical discussion and Q&A'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0021-1024x766.jpg',
+          src: '/newsletters/2024-25/workshop-embedded-system-2024-image-03.jpg',
           alt: 'Expert Session - Practical learning session',
           caption: 'Expert Session - Practical learning session'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0025-766x1024.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-05.jpg',
           alt: 'Expert Session - Student participation in workshop',
           caption: 'Expert Session - Student participation in workshop'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0027-1024x766.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-03.jpg',
           alt: 'Expert Session - Industry insights presentation',
           caption: 'Expert Session - Industry insights presentation'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0028-1024x766.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-04.jpg',
           alt: 'Expert Session - Collaborative learning environment',
           caption: 'Expert Session - Collaborative learning environment'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0029-766x1024.jpg',
+          src: '/newsletters/2024-25/workshop-embedded-system-2024-image-02.jpg',
           alt: 'Expert Session - Technical skill development',
           caption: 'Expert Session - Technical skill development'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0031-1024x766.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-02.jpg',
           alt: 'Expert Session - Workshop documentation',
           caption: 'Expert Session - Workshop documentation'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0033-1024x766.jpg',
+          src: '/newsletters/2024-25/workshop-embedded-system-2024-image-07.jpg',
           alt: 'Expert Session - Technology demonstration',
           caption: 'Expert Session - Technology demonstration'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240314-WA0035-1024x766.jpg',
+          src: '/newsletters/2024-25/workshop-web-development-technologies-2024-image-01.jpg',
           alt: 'Expert Session - Group photo with industry expert',
           caption: 'Expert Session - Group photo with industry expert'
         }
@@ -1114,57 +1114,57 @@ With continued commitment to excellence.`
       tags: ['Industrial Visit', 'PCB Manufacturing', 'Practical Learning'],
       images: [
         {
-          src: '/newsletters/2024-25/IMG-20240316-WA0002-1024x766.jpg',
+          src: '/newsletters/2024-25/industrial-visit-pcb-power-and-mcbs-pvt--pcb-power-visit---st-2024-image-01.jpg',
           alt: 'PCB Power Visit - Students at company entrance',
           caption: 'PCB Power Visit - Students at company entrance'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240316-WA0008-1024x472.jpg',
+          src: '/newsletters/2024-25/industrial-visit-pcb-power-and-mcbs-pvt--pcb-power-visit---in-2024-image-02.jpg',
           alt: 'PCB Power Visit - Industrial equipment demonstration',
           caption: 'PCB Power Visit - Industrial equipment demonstration'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240316-WA0009-1024x472.jpg',
+          src: '/newsletters/2024-25/industrial-visit-pcb-power-and-mcbs-pvt--pcb-power-visit---st-2024-image-03.jpg',
           alt: 'PCB Power Visit - Students learning manufacturing processes',
           caption: 'PCB Power Visit - Students learning manufacturing processes'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240316-WA0011-1024x472.jpg',
+          src: '/newsletters/2024-25/industrial-visit-pcb-power-and-mcbs-pvt--pcb-power-visit---te-2024-image-04.jpg',
           alt: 'PCB Power Visit - Technical demonstration session',
           caption: 'PCB Power Visit - Technical demonstration session'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240316-WA0013-1024x472.jpg',
+          src: '/newsletters/2024-25/industrial-visit-pcb-power-and-mcbs-pvt--pcb-power-visit---gr-2024-image-05.jpg',
           alt: 'PCB Power Visit - Group discussion with engineers',
           caption: 'PCB Power Visit - Group discussion with engineers'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240316-WA0014-1024x472.jpg',
+          src: '/newsletters/2024-25/industrial-visit-pcb-power-and-mcbs-pvt--pcb-power-visit---pc-2024-image-06.jpg',
           alt: 'PCB Power Visit - PCB manufacturing line observation',
           caption: 'PCB Power Visit - PCB manufacturing line observation'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240316-WA0015-1024x473.jpg',
+          src: '/newsletters/2024-25/industrial-visit-pcb-power-and-mcbs-pvt--pcb-power-visit---in-2024-image-07.jpg',
           alt: 'PCB Power Visit - Industrial automation systems',
           caption: 'PCB Power Visit - Industrial automation systems'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240316-WA0020-766x1024.jpg',
+          src: '/newsletters/2024-25/industrial-visit-pcb-power-and-mcbs-pvt--pcb-power-visit---st-2024-image-08.jpg',
           alt: 'PCB Power Visit - Students observing production process',
           caption: 'PCB Power Visit - Students observing production process'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240316-WA0021-766x1024.jpg',
+          src: '/newsletters/2024-25/industrial-visit-pcb-power-and-mcbs-pvt--pcb-power-visit---qu-2024-image-09.jpg',
           alt: 'PCB Power Visit - Quality control demonstration',
           caption: 'PCB Power Visit - Quality control demonstration'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240316-WA0022-1024x766.jpg',
+          src: '/newsletters/2024-25/industrial-visit-pcb-power-and-mcbs-pvt--pcb-power-visit---co-2024-image-10.jpg',
           alt: 'PCB Power Visit - Company facility tour',
           caption: 'PCB Power Visit - Company facility tour'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240316-WA0023-1024x766.jpg',
+          src: '/newsletters/2024-25/industrial-visit-pcb-power-and-mcbs-pvt--pcb-power-visit---gr-2024-image-11.jpg',
           alt: 'PCB Power Visit - Group photo at industrial facility',
           caption: 'PCB Power Visit - Group photo at industrial facility'
         }
@@ -1178,32 +1178,32 @@ With continued commitment to excellence.`
       tags: ['Community Service', 'Innovation Projects', 'Social Impact'],
       images: [
         {
-          src: '/newsletters/2024-25/IMG-20240418-WA0035-1024x768.jpg',
+          src: '/newsletters/2024-25/new-palanpur-for-new-india-20-community-project-1-2024-image-01.jpg',
           alt: 'Community Project 1',
           caption: 'Community Project 1'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240418-WA0036-1024x768.jpg',
+          src: '/newsletters/2024-25/new-palanpur-for-new-india-20-community-project-2-2024-image-02.jpg',
           alt: 'Community Project 2',
           caption: 'Community Project 2'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240418-WA0037-1024x768.jpg',
+          src: '/newsletters/2024-25/new-palanpur-for-new-india-20-innovation-display-2024-image-03.jpg',
           alt: 'Innovation Display',
           caption: 'Innovation Display'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240418-WA0039-1024x768.jpg',
+          src: '/newsletters/2024-25/new-palanpur-for-new-india-20-student-presentation-2024-image-04.jpg',
           alt: 'Student Presentation',
           caption: 'Student Presentation'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240418-WA0040-1024x768.jpg',
+          src: '/newsletters/2024-25/new-palanpur-for-new-india-20-project-exhibition-2024-image-05.jpg',
           alt: 'Project Exhibition',
           caption: 'Project Exhibition'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240418-WA0045-1024x768.jpg',
+          src: '/newsletters/2024-25/new-palanpur-for-new-india-20-team-collaboration-2024-image-06.jpg',
           alt: 'Team Collaboration',
           caption: 'Team Collaboration'
         }
@@ -1217,22 +1217,22 @@ With continued commitment to excellence.`
       tags: ['Health Awareness', 'Medical Camp', 'Student Welfare'],
       images: [
         {
-          src: '/newsletters/2024-25/IMG-20240419-WA0009-1024x766.jpg',
+          src: '/newsletters/2024-25/thalassemia-awareness-camp-health-screening-2024-image-01.jpg',
           alt: 'Health Screening',
           caption: 'Health Screening'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240419-WA0012-1024x766.jpg',
+          src: '/newsletters/2024-25/thalassemia-awareness-camp-medical-consultation-2024-image-02.jpg',
           alt: 'Medical Consultation',
           caption: 'Medical Consultation'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240419-WA0013-1024x766.jpg',
+          src: '/newsletters/2024-25/thalassemia-awareness-camp-awareness-session-2024-image-03.jpg',
           alt: 'Awareness Session',
           caption: 'Awareness Session'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240419-WA0017-1024x766.jpg',
+          src: '/newsletters/2024-25/thalassemia-awareness-camp-student-participatio-2024-image-04.jpg',
           alt: 'Student Participation',
           caption: 'Student Participation'
         }
@@ -1246,17 +1246,17 @@ With continued commitment to excellence.`
       tags: ['Safety Training', 'Emergency Procedures', 'Fire Prevention'],
       images: [
         {
-          src: '/newsletters/2024-25/IMG-20240501-WA0011-1024x766.jpg',
+          src: '/newsletters/2024-25/fire-safety-training-safety-demonstration-2024-image-01.jpg',
           alt: 'Fire Safety Demo',
           caption: 'Safety Demonstration'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240501-WA0013-1024x766.jpg',
+          src: '/newsletters/2024-25/fire-safety-training-extinguisher-trainin-2024-image-02.jpg',
           alt: 'Extinguisher Training',
           caption: 'Extinguisher Training'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240501-WA0015-1024x766.jpg',
+          src: '/newsletters/2024-25/fire-safety-training-safety-instructions-2024-image-03.jpg',
           alt: 'Safety Instructions',
           caption: 'Safety Instructions'
         }
@@ -1269,27 +1269,27 @@ With continued commitment to excellence.`
       description: 'Comprehensive orientation program for newly admitted students, introducing them to department facilities, curriculum, and career opportunities in electronics and communication engineering.',
       images: [
         {
-          src: '/newsletters/2024-25/IMG-20240603-WA0035-1024x766.jpg',
+          src: '/newsletters/2024-25/orientation-program-2024-2024-image-01.jpg',
           alt: 'Orientation Program 2024 - Welcome session for new students',
           caption: 'Orientation Program 2024 - Welcome session for new students'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240603-WA0037-1024x766.jpg',
+          src: '/newsletters/2024-25/orientation-program-2024-2024-image-02.jpg',
           alt: 'Orientation Program 2024 - Department overview presentation',
           caption: 'Orientation Program 2024 - Department overview presentation'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240603-WA0038-1024x766.jpg',
+          src: '/newsletters/2024-25/orientation-program-2024-2024-image-03.jpg',
           alt: 'Orientation Program 2024 - Student interaction session',
           caption: 'Orientation Program 2024 - Student interaction session'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240603-WA0040-1024x766.jpg',
+          src: '/newsletters/2024-25/orientation-program-2024-2024-image-04.jpg',
           alt: 'Orientation Program 2024 - Faculty address to new students',
           caption: 'Orientation Program 2024 - Faculty address to new students'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240603-WA0042-1024x766.jpg',
+          src: '/newsletters/2024-25/orientation-program-2024-2024-image-05.jpg',
           alt: 'Orientation Program 2024 - Introduction to department facilities',
           caption: 'Orientation Program 2024 - Introduction to department facilities'
         }
@@ -1303,47 +1303,47 @@ With continued commitment to excellence.`
       tags: ['VLSI Design', 'RTL Programming', 'HDL', 'Circuit Synthesis'],
       images: [
         {
-          src: '/newsletters/2024-25/IMG-20240611-WA0013-1024x459.jpg',
+          src: '/newsletters/2024-25/rtl-design-workshop-rtl-design-workshop--2024-image-01.jpg',
           alt: 'RTL Design Workshop - Introduction to Verilog HDL',
           caption: 'RTL Design Workshop - Introduction to Verilog HDL'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240611-WA0030-1024x459.jpg',
+          src: '/newsletters/2024-25/rtl-design-workshop-rtl-design-workshop--2024-image-02.jpg',
           alt: 'RTL Design Workshop - Digital system design fundamentals',
           caption: 'RTL Design Workshop - Digital system design fundamentals'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240611-WA0040-1024x459.jpg',
+          src: '/newsletters/2024-25/rtl-design-workshop-rtl-design-workshop--2024-image-03.jpg',
           alt: 'RTL Design Workshop - Circuit synthesis techniques',
           caption: 'RTL Design Workshop - Circuit synthesis techniques'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240611-WA0043-1024x459.jpg',
+          src: '/newsletters/2024-25/rtl-design-workshop-rtl-design-workshop--2024-image-04.jpg',
           alt: 'RTL Design Workshop - FPGA implementation session',
           caption: 'RTL Design Workshop - FPGA implementation session'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240611-WA0048-1024x459.jpg',
+          src: '/newsletters/2024-25/rtl-design-workshop-rtl-design-workshop--2024-image-05.jpg',
           alt: 'RTL Design Workshop - Hands-on VLSI design practice',
           caption: 'RTL Design Workshop - Hands-on VLSI design practice'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240611-WA0052-1024x459.jpg',
+          src: '/newsletters/2024-25/rtl-design-workshop-rtl-design-workshop--2024-image-06.jpg',
           alt: 'RTL Design Workshop - Simulation and verification',
           caption: 'RTL Design Workshop - Simulation and verification'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240611-WA0055-1024x459.jpg',
+          src: '/newsletters/2024-25/rtl-design-workshop-rtl-design-workshop--2024-image-07.jpg',
           alt: 'RTL Design Workshop - Register Transfer Level programming',
           caption: 'RTL Design Workshop - Register Transfer Level programming'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240611-WA0066-1024x459.jpg',
+          src: '/newsletters/2024-25/rtl-design-workshop-rtl-design-workshop--2024-image-08.jpg',
           alt: 'RTL Design Workshop - Advanced HDL concepts',
           caption: 'RTL Design Workshop - Advanced HDL concepts'
         },
         {
-          src: '/newsletters/2024-25/IMG-20240611-WA0067-1024x459.jpg',
+          src: '/newsletters/2024-25/rtl-design-workshop-rtl-design-workshop--2024-image-09.jpg',
           alt: 'RTL Design Workshop - Final presentation and evaluation',
           caption: 'RTL Design Workshop - Final presentation and evaluation'
         }
