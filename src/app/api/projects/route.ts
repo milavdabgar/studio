@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category');
     
     // Build filter query
-    let filter: any = {};
+    const filter: any = {};
     if (eventId) filter.eventId = eventId;
     if (department && department !== 'all') filter.department = department;
     if (status && status !== 'all') filter.status = status;

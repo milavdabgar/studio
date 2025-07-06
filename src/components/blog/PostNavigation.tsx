@@ -1,7 +1,6 @@
 // src/components/blog/PostNavigation.tsx
 
 import { PostPreview } from '@/lib/types';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import Link from 'next/link';

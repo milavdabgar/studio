@@ -1,37 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PublicNav } from "@/components/public-nav";
 import Link from "next/link";
 import Image from "next/image";
 import { 
-  GraduationCap, 
-  Briefcase,
-  Users,
-  Target,
-  Award,
-  TrendingUp,
-  Building,
-  FileText,
-  Mail,
-  MapPin,
-  Phone,
-  Clock,
-  Star,
-  CheckCircle,
-  BarChart3,
-  Zap,
-  BookOpen,
-  User,
-  DollarSign,
-  Factory,
-  ArrowRight,
-  Calendar,
-  Globe
-} from "lucide-react";
+  GraduationCap, Briefcase, Users, Award, TrendingUp, Building, FileText, Mail, MapPin, Phone, CheckCircle, Zap, BookOpen, User, Factory} from "lucide-react";
 import { Footer } from "@/components/footer";
 
 export default function TPOPage() {

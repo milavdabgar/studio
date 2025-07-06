@@ -5,7 +5,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookCopy, ClipboardList, Award, BarChart3, Loader2, BookOpenText } from "lucide-react";
+import { BookCopy, ClipboardList, Award, BarChart3, BookOpenText} from "lucide-react";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { programService } from '@/lib/api/programs';

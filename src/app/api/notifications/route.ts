@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Build filter query
-    let filter: any = { userId };
+    const filter: any = { userId };
     if (isRead !== null) filter.isRead = isRead === 'true';
     if (type) filter.type = type;
 

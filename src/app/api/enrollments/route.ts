@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status');
 
     // Build filter query
-    let filter: any = {};
+    const filter: any = {};
     if (studentId) filter.studentId = studentId;
     if (courseOfferingId) filter.courseOfferingId = courseOfferingId;
     if (status) filter.status = status;

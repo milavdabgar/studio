@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
     const isAssignedParam = searchParams.get('isAssigned');
 
     // Build filter query
-    let filter: any = {};
+    const filter: any = {};
     if (eventId) filter.eventId = eventId;
     if (department) filter.department = department;
     if (section) filter.section = section;

@@ -5,10 +5,9 @@ export const dynamic = 'force-dynamic';
 
 import { getPostData, getSortedPostsData, getPaginatedPosts, getSubPostsForDirectory, getDirectSubsections, getRelatedPosts, getAdjacentPosts, type PostData, type PostPreview } from '@/lib/markdown'; 
 import { format, parseISO, isValid } from 'date-fns';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { FileText } from 'lucide-react';
-import Link from 'next/link';
 import 'katex/dist/katex.min.css'; // Ensure KaTeX CSS is imported
 import PostRenderer from '@/components/blog/PostRenderer';
 import { BlogLayout } from '@/components/blog/BlogLayout';

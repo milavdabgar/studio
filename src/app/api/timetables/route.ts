@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
     const semester = searchParams.get('semester');
     
     // Build filter query
-    let filter: any = {};
+    const filter: any = {};
     if (programId) filter.programId = programId;
     if (batchId) filter.batchId = batchId;
     if (academicYear) filter.academicYear = academicYear;

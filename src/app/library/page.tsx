@@ -1,31 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PublicNav } from "@/components/public-nav";
 import Link from "next/link";
 import Image from "next/image";
 import { 
-  BookOpen, 
-  Users, 
-  Monitor,
-  Globe,
-  Clock,
-  MapPin,
-  Phone,
-  Mail,
-  ArrowRight,
-  ExternalLink,
-  Search,
-  Download,
-  FileText,
-  Newspaper,
-  Wifi,
-  Target,
-  Award,
-  Lightbulb
-} from "lucide-react";
+  BookOpen, Users, Monitor, Globe, Clock, MapPin, Phone, ArrowRight, ExternalLink, Search, Download, FileText, Newspaper, Wifi, Target, Lightbulb} from "lucide-react";
 import { Footer } from "@/components/footer";
 import collegeInfo from "../../../data/content/college-info.json";
 

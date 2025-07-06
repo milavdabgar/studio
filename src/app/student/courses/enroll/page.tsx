@@ -13,8 +13,6 @@ import { programService } from '@/lib/api/programs';
 import { batchService } from '@/lib/api/batches';
 import { enrollmentService } from '@/lib/api/enrollments';
 import { format } from 'date-fns';
-import Link from 'next/link';
-
 interface UserCookie {
   email: string;
   name: string;

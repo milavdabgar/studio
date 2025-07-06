@@ -6,10 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { 
-  FileText, Globe, Smartphone, Code, Download, 
-  Eye, Edit, Sparkles, MousePointer, 
-  ArrowRight, CheckCircle
-} from 'lucide-react';
+  FileText, Globe, Smartphone, Code, Eye, Sparkles, MousePointer, ArrowRight, CheckCircle} from 'lucide-react';
 
 interface NewsletterApproach {
   id: string;

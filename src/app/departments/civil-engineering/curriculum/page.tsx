@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PublicNav } from "@/components/public-nav";
 import Link from "next/link";

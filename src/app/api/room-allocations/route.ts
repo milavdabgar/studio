@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
     const date = searchParams.get('date');
 
     // Build filter query
-    let filter: any = {};
+    const filter: any = {};
     if (roomId) filter.roomId = roomId;
     if (courseOfferingId) filter.courseOfferingId = courseOfferingId;
     if (facultyId) filter.facultyId = facultyId;

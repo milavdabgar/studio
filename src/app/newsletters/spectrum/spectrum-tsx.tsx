@@ -3,7 +3,6 @@
 import React from 'react';
 import { Download, FileText, File, Globe, Mail, Phone, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 

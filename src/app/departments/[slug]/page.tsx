@@ -1,27 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PublicNav } from "@/components/public-nav";
 import Link from "next/link";
 import Image from "next/image";
 import { 
-  GraduationCap, 
-  Users, 
-  Building, 
-  ArrowRight,
-  BookOpen,
-  Briefcase,
-  Calendar,
-  Award,
-  Star,
-  ChevronLeft,
-  Mail,
-  Phone,
-  MapPin,
-  User
-} from "lucide-react";
+  GraduationCap, Users, Building, ArrowRight, BookOpen, Briefcase, Award, ChevronLeft, Mail, User} from "lucide-react";
 import { notFound } from "next/navigation";
 import { use } from "react";
 import departments from "../../../../data/content/departments.json";

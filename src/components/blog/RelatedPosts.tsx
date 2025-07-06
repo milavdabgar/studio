@@ -2,7 +2,7 @@
 
 import { PostPreview } from '@/lib/types';
 import { PostCard } from '@/components/blog/PostCard';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent} from '@/components/ui/card';
 import { BookOpen } from 'lucide-react';
 
 interface RelatedPostsProps {

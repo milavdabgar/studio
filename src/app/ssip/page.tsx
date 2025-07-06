@@ -1,33 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PublicNav } from "@/components/public-nav";
-import Link from "next/link";
 import Image from "next/image";
 import { 
-  GraduationCap, 
-  Lightbulb,
-  Users,
-  Target,
-  Award,
-  TrendingUp,
-  Rocket,
-  FileText,
-  Mail,
-  MapPin,
-  Phone,
-  Clock,
-  Star,
-  Cog,
-  Zap,
-  Shield,
-  Building,
-  BookOpen,
-  CheckCircle
-} from "lucide-react";
+  GraduationCap, Lightbulb, Users, Target, Award, TrendingUp, Rocket, FileText, Mail, MapPin, Phone, Clock, Star, Cog, Shield, Building, BookOpen, CheckCircle} from "lucide-react";
 import { Footer } from "@/components/footer";
 
 export default function SSIPPage() {

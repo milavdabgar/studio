@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CalendarIcon, ListFilter, Download, Loader2, BarChart2, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";

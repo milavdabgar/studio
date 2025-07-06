@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Loader2, User, BarChart3, CheckCircle, XCircle, TrendingUp, TrendingDown } from "lucide-react";
+import { Loader2, User, BarChart3, XCircle} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Result, Student, Program } from '@/types/entities';
 import { resultService } from '@/lib/api/results';

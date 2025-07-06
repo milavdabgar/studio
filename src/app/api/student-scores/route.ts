@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     const studentId = searchParams.get('studentId');
 
     // Build filter query
-    let filter: any = {};
+    const filter: any = {};
     if (assessmentId) filter.assessmentId = assessmentId;
     if (studentId) filter.studentId = studentId;
 
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     
     const contentType = request.headers.get('content-type');
     let studentId: string, assessmentId: string, comments: string | undefined, scoreStr: string | undefined, grade: string | undefined, remarks: string | undefined, evaluatedBy: string | undefined;
-    let filesArray: { name: string; type: string; size: number; url: string }[] = [];
+    const filesArray: { name: string; type: string; size: number; url: string }[] = [];
 
     if (contentType?.includes('multipart/form-data')) {
       // Handle FormData (file uploads)

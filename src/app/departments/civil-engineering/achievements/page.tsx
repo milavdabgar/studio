@@ -5,23 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { PublicNav } from "@/components/public-nav";
 import Link from "next/link";
-import Image from "next/image";
 import { 
-  ChevronLeft,
-  Award,
-  Trophy,
-  Star,
-  Users,
-  BookOpen,
-  Building,
-  Target,
-  TrendingUp,
-  Calendar,
-  Medal,
-  Crown,
-  Zap,
-  Briefcase
-} from "lucide-react";
+  ChevronLeft, Award, Trophy, Star, Users, BookOpen, Building, Medal, Crown, Briefcase} from "lucide-react";
 import { Footer } from "@/components/footer";
 
 export default function CivilAchievementsPage() {

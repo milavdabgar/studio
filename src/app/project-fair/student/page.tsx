@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from 'react';
 import ProjectList, { Project as ProjectListProject } from './ProjectList';
 import ProjectView from './ProjectView';
-import { ChevronLeft, Home, User, Award, Calendar, Info, Clock, Check, Filter, Users as UsersIconLucide, Edit2 } from 'lucide-react';
+import { ChevronLeft, User, Check, Users as UsersIconLucide, Edit2} from 'lucide-react';
 import { projectService } from '@/lib/api/projects';
 import { projectTeamService } from '@/lib/api/projectTeams';
 import { useToast } from '@/hooks/use-toast';

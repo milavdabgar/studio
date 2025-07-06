@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
     const programId = searchParams.get('programId');
 
     // Build filter query
-    let filter: any = {};
+    const filter: any = {};
     if (academicYear) filter.academicYear = academicYear;
     if (examType) filter.examType = examType;
     if (status) filter.status = status;

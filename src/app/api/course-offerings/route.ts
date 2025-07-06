@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status');
 
     // Build filter query
-    let filter: any = {};
+    const filter: any = {};
     if (courseId) filter.courseId = courseId;
     if (batchId) filter.batchId = batchId;
     if (academicYear) filter.academicYear = academicYear;

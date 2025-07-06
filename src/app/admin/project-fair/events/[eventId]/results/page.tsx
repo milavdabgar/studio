@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Loader2, ArrowLeft, Award, Users, Briefcase, ListChecks, Edit2, Download, Mail, Printer, Eye, EyeOff, CheckCircle, AlertTriangle, Info } from "lucide-react";
+import { Loader2, ArrowLeft, Award, Users, Briefcase, ListChecks, Edit2, Download, Mail, Printer, Eye, EyeOff} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { ProjectEvent, Project, Department, ProjectTeam, User as SystemUser, CertificateInfo, WinnersResponse } from '@/types/entities';
 import { projectEventService } from '@/lib/api/projectEvents';
@@ -19,7 +19,6 @@ import { projectTeamService } from '@/lib/api/projectTeams'; // For team names
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format, parseISO } from 'date-fns';
-import Link from 'next/link';
 import { Checkbox } from '@/components/ui/checkbox'; // Added Checkbox import
 
 interface EnrichedWinner extends Project {

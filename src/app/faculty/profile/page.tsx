@@ -9,8 +9,6 @@ import { useToast } from "@/hooks/use-toast";
 import type { Faculty, User, Qualification } from '@/types/entities';
 import { facultyService } from '@/lib/api/faculty';
 import { format } from 'date-fns';
-import Link from 'next/link';
-
 interface UserCookie {
   email: string;
   name: string;

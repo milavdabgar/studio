@@ -180,7 +180,7 @@ export async function POST(request: NextRequest) {
       // Create or update linked User account
       const userDisplayName = studentToProcess.fullNameGtuFormat || studentToProcess.enrollmentNumber;
       try {
-        let existingUser = await UserModel.findOne({ 
+        const existingUser = await UserModel.findOne({ 
           $or: [
             { instituteEmail: studentToProcess.instituteEmail },
             { email: studentToProcess.personalEmail }

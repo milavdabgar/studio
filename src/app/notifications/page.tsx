@@ -12,7 +12,6 @@ import { formatDistanceToNow, parseISO } from 'date-fns';
 import Link from 'next/link';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import { ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, ExternalLink } from 'lucide-react'; // Added ExternalLink
 
 

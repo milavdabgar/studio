@@ -4,27 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PublicNav } from "@/components/public-nav";
-import Link from "next/link";
 import Image from "next/image";
 import { 
-  Lightbulb, 
-  Users, 
-  Trophy,
-  FileText,
-  Building,
-  Target,
-  Rocket,
-  Award,
-  BookOpen,
-  Mail,
-  Phone,
-  MapPin,
-  ArrowRight,
-  Star,
-  Zap,
-  Calendar,
-  CheckCircle
-} from "lucide-react";
+  Lightbulb, Users, Trophy, FileText, Building, Target, Rocket, BookOpen, Mail, Phone, MapPin, ArrowRight, Star, Zap, Calendar, CheckCircle} from "lucide-react";
 
 export default function InnovationPage() {
   return (

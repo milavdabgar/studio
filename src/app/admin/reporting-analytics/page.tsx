@@ -6,7 +6,6 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { BarChart3, FileText, Users, BookOpen, Activity, Loader2, University, Library, UsersRound, CalendarDays } from "lucide-react";
-import Link from "next/link";
 import { useToast } from '@/hooks/use-toast';
 import { reportService } from '@/lib/api/reports';
 import type { StudentStrengthReport, Institute, CourseEnrollmentData, Program, Batch } from '@/types/entities';

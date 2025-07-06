@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Loader2, AlertTriangle, ExternalLink, Info } from "lucide-react";
+import { BookOpen, Loader2, AlertTriangle, ExternalLink} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Student, CourseOffering, Course, Program, Batch, Enrollment } from '@/types/entities';
 import { studentService } from '@/lib/api/students';

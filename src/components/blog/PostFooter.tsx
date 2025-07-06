@@ -1,7 +1,6 @@
 // src/components/blog/PostFooter.tsx
 
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Users, Tag as TagIcon, Folder, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 

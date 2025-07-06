@@ -4,7 +4,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CalendarCheck, Loader2, Filter, CheckCircle, AlertTriangle, Clock } from "lucide-react";
+import { CalendarCheck, Loader2, Filter} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Assessment, Student, Course, Program, Batch, StudentAssessmentScore, CourseOffering } from '@/types/entities';
 import { assessmentService } from '@/lib/api/assessments';

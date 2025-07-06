@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"; // Removed DialogClose import
-import { Loader2, Save, PlusCircle, XCircle } from "lucide-react";
+import { Loader2, Save, XCircle} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Project, Department, ProjectTeam, User as FacultyUser, ProjectStatus, ProjectRequirements, ProjectGuide } from '@/types/entities';
 import { projectService } from '@/lib/api/projects';

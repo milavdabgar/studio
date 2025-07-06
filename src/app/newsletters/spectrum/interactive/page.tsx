@@ -9,10 +9,7 @@ import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
-  Download, FileText, File, Globe, Award, Users, 
-  BookOpen, TrendingUp, Building, Phone, Mail, MapPin,
-  Calendar, Star, Trophy, Lightbulb, Target, Rocket
-} from 'lucide-react';
+  FileText, File, Globe, Award, Users, BookOpen, TrendingUp, Building, Phone, Mail, MapPin, Calendar, Star, Trophy, Lightbulb, Rocket} from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { newsletterData, getNewsletterDataByYear, availableYears, getBandNumber, type NewsletterData } from '@/lib/newsletter-data';
 

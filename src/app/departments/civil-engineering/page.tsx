@@ -7,28 +7,7 @@ import { PublicNav } from "@/components/public-nav";
 import Link from "next/link";
 import Image from "next/image";
 import { 
-  GraduationCap, 
-  Users, 
-  Building, 
-  ArrowRight,
-  BookOpen,
-  Briefcase,
-  Calendar,
-  Award,
-  Star,
-  ChevronLeft,
-  Mail,
-  Phone,
-  MapPin,
-  User,
-  Hammer,
-  Ruler,
-  HardHat,
-  Truck,
-  Home,
-  Waves,
-  Mountain
-} from "lucide-react";
+  GraduationCap, Users, Building, ArrowRight, BookOpen, Briefcase, Award, Star, ChevronLeft, User, Hammer, Ruler, HardHat, Truck, Home, Waves, Mountain} from "lucide-react";
 import { Footer } from "@/components/footer";
 
 export default function CivilEngineeringPage() {

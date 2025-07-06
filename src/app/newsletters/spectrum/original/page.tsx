@@ -2,8 +2,8 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Download, FileText, File, Globe, Printer } from 'lucide-react';
+import { Card, CardContent} from '@/components/ui/card';
+import { FileText, File, Globe, Printer} from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function OriginalHTMLNewsletterPage() {

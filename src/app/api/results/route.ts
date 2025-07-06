@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Build MongoDB query
-    let query: any = {};
+    const query: any = {};
     if (filters.branchName) query.branchName = filters.branchName;
     if (filters.semester) query.semester = filters.semester;
     if (filters.academicYear) query.academicYear = filters.academicYear;

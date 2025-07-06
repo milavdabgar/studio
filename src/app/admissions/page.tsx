@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PublicNav } from "@/components/public-nav";
 import Link from "next/link";
-import Image from "next/image";
 import { 
   GraduationCap, 
   Calendar,

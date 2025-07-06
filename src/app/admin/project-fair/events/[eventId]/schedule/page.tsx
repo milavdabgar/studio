@@ -4,8 +4,8 @@
 import React, { useEffect, useState, FormEvent } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Loader2, ArrowLeft, ListChecks, PlusCircle, Edit2, Trash2, Clock, MapPin, UserCircle as UserIcon } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
+import { Loader2, ArrowLeft, ListChecks, PlusCircle, Edit2, Trash2, UserCircle as UserIcon} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { ProjectEvent, ProjectEventScheduleItem, User as SystemUser } from '@/types/entities';
 import { projectEventService } from '@/lib/api/projectEvents';
@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter} from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 
