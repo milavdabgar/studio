@@ -1,7 +1,7 @@
 // src/components/shortcodes/QRCode.tsx
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Download, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -37,11 +37,7 @@ export function QRCode({
   const [error, setError] = useState<string>('');
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-    generateQRCode();
-  }, [text, size, level, darkColor, lightColor, includeMargin, format]);
-
-  const generateQRCode = async () => {
+  const generateQRCode = useCallback(async () => {
     setIsLoading(true);
     setError('');
 
@@ -70,11 +66,15 @@ export function QRCode({
         setIsLoading(false);
       };
       img.src = url;
-    } catch (err) {
+    } catch {
       setError('Failed to generate QR code');
       setIsLoading(false);
     }
-  };
+  }, [text, size, level, darkColor, lightColor, includeMargin, format]);
+
+  useEffect(() => {
+    generateQRCode();
+  }, [generateQRCode]);
 
   const handleDownload = () => {
     if (!qrDataUrl) return;

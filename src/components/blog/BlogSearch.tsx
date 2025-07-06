@@ -1,7 +1,7 @@
 // src/components/blog/BlogSearch.tsx
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Search, X, FileText, Tag, Folder } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -42,7 +42,7 @@ export function BlogSearch({ currentLang }: BlogSearchProps) {
   const router = useRouter();
 
   // Search function using the API route
-  const performSearch = async (searchQuery: string): Promise<SearchResult[]> => {
+  const performSearch = useCallback(async (searchQuery: string): Promise<SearchResult[]> => {
     if (!searchQuery.trim()) return [];
     
     try {
@@ -59,7 +59,7 @@ export function BlogSearch({ currentLang }: BlogSearchProps) {
       console.error('Search error:', error);
       return [];
     }
-  };
+  }, [currentLang]);
 
   useEffect(() => {
     const handleSearch = async () => {
@@ -82,7 +82,7 @@ export function BlogSearch({ currentLang }: BlogSearchProps) {
 
     const debounceTimer = setTimeout(handleSearch, 300);
     return () => clearTimeout(debounceTimer);
-  }, [query]);
+  }, [query, performSearch]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

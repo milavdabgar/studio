@@ -106,6 +106,37 @@ async function initializeTestData() {
       console.log('Using existing program:', programs[0].name);
     }
 
+    // Check if we have departments (needed for courses)
+    response = await fetch(`${API_BASE_URL}/departments`);
+    let departments = await response.json();
+    let departmentId = '';
+    
+    if (!departments || !Array.isArray(departments) || departments.length === 0) {
+      // Create a test department
+      response = await fetch(`${API_BASE_URL}/departments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: 'Computer Engineering',
+          code: 'CE',
+          instituteId: instituteId,
+          status: 'active',
+          establishmentYear: 1984
+        })
+      });
+      
+      if (response.ok) {
+        const newDepartment = await response.json();
+        departmentId = newDepartment.id;
+        console.log('Created test department:', newDepartment.name);
+      } else {
+        console.error('Failed to create test department');
+      }
+    } else {
+      departmentId = departments[0].id;
+      console.log('Using existing department:', departments[0].name);
+    }
+
     // Check if we have at least one batch
     response = await fetch(`${API_BASE_URL}/batches`);
     let batches = await response.json();
@@ -146,12 +177,16 @@ async function initializeTestData() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: 'Test Course',
-          code: 'TC101',
+          subcode: 'TC101',
+          subjectName: 'Test Course',
           description: 'Test Course Description',
           programId: programId,
-          credits: 4,
+          departmentId: departmentId,
           semester: 1,
+          category: 'Core',
+          credits: 4,
+          theoryHours: 3,
+          practicalHours: 1,
           status: 'active'
         })
       });
@@ -196,37 +231,6 @@ async function initializeTestData() {
       }
     } else {
       console.log('Using existing assessment:', assessments[0].name);
-    }
-
-    // Check if we have departments
-    response = await fetch(`${API_BASE_URL}/departments`);
-    let departments = await response.json();
-    let departmentId = '';
-    
-    if (!departments || !Array.isArray(departments) || departments.length === 0) {
-      // Create a test department
-      response = await fetch(`${API_BASE_URL}/departments`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: 'Computer Engineering',
-          code: 'CE',
-          instituteId: instituteId,
-          status: 'active',
-          establishmentYear: 1984
-        })
-      });
-      
-      if (response.ok) {
-        const newDepartment = await response.json();
-        departmentId = newDepartment.id;
-        console.log('Created test department:', newDepartment.name);
-      } else {
-        console.error('Failed to create test department');
-      }
-    } else {
-      departmentId = departments[0].id;
-      console.log('Using existing department:', departments[0].name);
     }
 
     // Check if we have faculty members

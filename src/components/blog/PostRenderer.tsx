@@ -400,7 +400,7 @@ const PostRenderer: React.FC<PostRendererProps> = ({ contentHtml }) => {
       }
     }).catch(e => console.error("Failed to load Mermaid library:", e));
 
-  }, [contentHtml, theme, resolvedTheme]);
+  }, [contentHtml, theme, resolvedTheme, processShortcodeElements]);
 
   return (
     <div 

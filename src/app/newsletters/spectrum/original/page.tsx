@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent} from '@/components/ui/card';
 import { FileText, File, Globe, Printer} from 'lucide-react';
@@ -12,12 +12,7 @@ export default function OriginalHTMLNewsletterPage() {
   const [htmlContent, setHtmlContent] = useState<string>('');
   const { toast } = useToast();
 
-  useEffect(() => {
-    // Load the original HTML content
-    loadOriginalHTML();
-  }, []);
-
-  const loadOriginalHTML = async () => {
+  const loadOriginalHTML = useCallback(async () => {
     try {
       const response = await fetch('/api/newsletters/original-html');
       if (response.ok) {
@@ -34,7 +29,12 @@ export default function OriginalHTMLNewsletterPage() {
         variant: "destructive",
       });
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    // Load the original HTML content
+    loadOriginalHTML();
+  }, [loadOriginalHTML]);
 
   const handleExport = async (format: string) => {
     setIsExporting(format);
