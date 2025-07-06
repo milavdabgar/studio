@@ -85,7 +85,7 @@ const NotificationBell: React.FC = () => {
         prev.map(n => n.id === notificationId ? { ...n, isRead: true, updatedAt: new Date().toISOString() } : n)
       );
       setUnreadCount(prev => Math.max(0, prev - 1));
-    } catch (error) {
+    } catch (_error) {
       toast({
         variant: "destructive",
         title: "Error",
@@ -101,7 +101,7 @@ const NotificationBell: React.FC = () => {
       setNotifications(prev => prev.map(n => ({ ...n, isRead: true, updatedAt: new Date().toISOString() })));
       setUnreadCount(0);
       toast({ title: "Success", description: "All notifications marked as read." });
-    } catch (error) {
+    } catch (_error) {
       toast({
         variant: "destructive",
         title: "Error",

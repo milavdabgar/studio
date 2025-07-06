@@ -60,7 +60,7 @@ export default function DetailedResultView({ resultId }: DetailedResultViewProps
             setCoursesDetails(details);
         }
 
-      } catch (error) {
+      } catch (_error) {
         toast({ variant: "destructive", title: "Error", description: "Could not load result details." });
       }
       setIsLoading(false);

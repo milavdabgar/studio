@@ -55,7 +55,7 @@ export default function DteDashboardPage() {
           totalPrograms: dteProgramsCount,
           totalStudents: dteStudentsCount,
         });
-      } catch (error) {
+      } catch (_error) {
         toast({ variant: "destructive", title: "Error", description: "Could not load DTE dashboard statistics." });
       }
       setIsLoading(false);

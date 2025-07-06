@@ -46,7 +46,7 @@ export default function StudentCourseDetailPage() {
         setRelatedAssessments(allAssessments.filter(a => a.courseId === courseId && (a.type === 'Assignment' || a.type === 'Project' || a.type === 'Quiz')));
 
 
-      } catch (error) {
+      } catch (_error) {
         toast({ variant: "destructive", title: "Error", description: "Could not load course details." });
         setCourse(null); // Ensure course is null on error
       }

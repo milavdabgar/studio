@@ -53,7 +53,7 @@ export default function EventSchedulePage() {
         setEvent(eventData);
         setSchedule(eventData.schedule || []);
         setFacultyUsers(usersData);
-      } catch (error) {
+      } catch (_error) {
         toast({ variant: "destructive", title: "Error", description: "Could not load event schedule data." });
       }
       setIsLoading(false);

@@ -23,7 +23,7 @@ async function applyRateLimiting(request: NextRequest): Promise<RateLimiterRes |
   const ipAddress = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
   try {
     return await rateLimiter.consume(ipAddress);
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 }

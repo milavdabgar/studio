@@ -33,7 +33,7 @@ export default function ImportResultsPage() {
       try {
         const progData = await programService.getAllPrograms();
         setPrograms(progData);
-      } catch (error) {
+      } catch (_error) {
         toast({ variant: "destructive", title: "Error Loading Programs", description: "Could not load programs for mapping. GTU import might not work correctly." });
       }
       setIsLoading(false);

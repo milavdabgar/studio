@@ -94,7 +94,7 @@ export default function LoginPage() {
              if (adminRole) setSelectedRoleCode(adminRole.code);
              else setSelectedRoleCode(roles[0].code); // Fallback to first role code
         }
-      } catch (error) {
+      } catch (_error) {
         toast({ variant: "destructive", title: "Error", description: "Could not load system roles."});
       }
     };

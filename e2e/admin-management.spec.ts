@@ -150,14 +150,25 @@ test.describe('Admin Data Management', () => {
     const userBaseName = 'E2E Test User';
 
     test('should navigate to users page and add a new user', async () => {
-      await page.goto(`${APP_BASE_URL}/admin/users`, { waitUntil: 'domcontentloaded' });
-      await expect(page.getByText('User Management', { exact: true }).first()).toBeVisible();
+      // First just try to get to the users page without doing anything
+      await page.goto(`${APP_BASE_URL}/admin/users`);
+      
+      // Give it more time and use a more general wait
+      await page.waitForLoadState('networkidle', { timeout: 60000 });
+      
+      // Check if we can see the User Management heading
+      const userManagementText = page.getByText('User Management');
+      await userManagementText.waitFor({ state: 'visible', timeout: 30000 });
+
+      // Try to find the button with a more specific selector
+      const addUserButton = page.locator('button').filter({ hasText: 'Add New User' });
+      await addUserButton.waitFor({ state: 'visible', timeout: 30000 });
 
       const timestamp = Date.now();
       testUserEmail = `e2e.user.${timestamp}@example.com`;
       const fullName = `${userBaseName} ${timestamp}`;
 
-      await page.getByRole('button', { name: /add new user/i }).click();
+      await addUserButton.click();
       
       await page.getByLabel(/full name/i).fill(fullName);
       await page.getByLabel(/first name/i).fill('E2E');

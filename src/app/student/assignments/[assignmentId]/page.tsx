@@ -62,7 +62,7 @@ export default function AssignmentDetailPage() {
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setUser(parsedUser);
-      } catch (error) { /* Handled by global layout or redirect */ }
+      } catch (_error) { /* Handled by global layout or redirect */ }
     }
   }, []);
 
@@ -101,7 +101,7 @@ export default function AssignmentDetailPage() {
             setSubmission(subData);
             if (subData?.comments) setSubmissionComments(subData.comments);
         }
-      } catch (error) {
+      } catch (_error) {
         toast({ variant: "destructive", title: "Error", description: "Could not load assignment details." });
       }
       setIsLoading(false);

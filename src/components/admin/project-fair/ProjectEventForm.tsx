@@ -53,7 +53,7 @@ const ProjectEventForm: React.FC<ProjectEventFormProps> = ({ existingEvent, onEv
       try {
         const deptData = await departmentService.getAllDepartments();
         setDepartments(deptData);
-      } catch (error) {
+      } catch (_error) {
         toast({ variant: "destructive", title: "Error loading departments" });
       }
     };

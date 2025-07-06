@@ -26,7 +26,7 @@ export default function EditProjectEventPage() {
         try {
           const eventData = await projectEventService.getEventById(eventId);
           setEvent(eventData);
-        } catch (error) {
+        } catch (_error) {
           toast({ variant: "destructive", title: "Error", description: "Could not load event data for editing."});
           router.push('/admin/project-fair/events');
         }

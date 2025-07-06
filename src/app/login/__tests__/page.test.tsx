@@ -75,7 +75,7 @@ describe('Login Page', () => {
         value: '',
         configurable: true,
       });
-    } catch (error) {
+    } catch (_error) {
       // If we can't redefine it, just set it directly
       (document as any).cookie = '';
     }

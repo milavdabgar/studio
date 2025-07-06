@@ -8,7 +8,7 @@ import path from 'path';
 let puppeteer: any;
 try {
   puppeteer = require('puppeteer');
-} catch (error) {
+} catch (_error) {
   console.log('Puppeteer not available, PDF generation will be limited');
 }
 

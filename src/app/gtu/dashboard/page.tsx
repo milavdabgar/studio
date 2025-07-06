@@ -38,7 +38,7 @@ export default function GtuDashboardPage() {
           totalCourses: coursesData.length,
           totalCurricula: curriculaData.length,
         });
-      } catch (error) {
+      } catch (_error) {
         toast({ variant: "destructive", title: "Error", description: "Could not load GTU dashboard statistics." });
       }
       setIsLoading(false);
