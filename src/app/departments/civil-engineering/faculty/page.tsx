@@ -336,7 +336,7 @@ export default function CivilFacultyPage() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4 dark:text-white">Faculty Excellence</h2>
             <p className="text-xl text-gray-600 dark:text-gray-400">
-              Our faculty's commitment to academic and research excellence
+              Our faculty&apos;s commitment to academic and research excellence
             </p>
           </div>
           
