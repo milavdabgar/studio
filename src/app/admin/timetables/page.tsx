@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
+import React, { useState, useEffect, FormEvent, useMemo } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,10 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, PlusCircle, Edit, Trash2, Clock, Loader2, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Filter} from "lucide-react";
+import { CalendarIcon, PlusCircle, Edit, Trash2, Clock, Loader2, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Textarea } from '@/components/ui/textarea';
-import { format, parseISO, isValid, setHours, setMinutes, setSeconds, setMilliseconds } from 'date-fns';
+// import { Textarea } from '@/components/ui/textarea'; // Not used in current implementation
+import { format, parseISO, isValid } from 'date-fns';
 import { cn } from "@/lib/utils";
 import type { Timetable, TimetableEntry, TimetableStatus, DayOfWeek, Program, Batch, CourseOffering, Faculty, Room, Course } from '@/types/entities';
 import { timetableService } from '@/lib/api/timetables';
@@ -111,13 +111,13 @@ export default function TimetableManagementPage() {
 
 
         if (progData.length > 0 && !formProgramId) setFormProgramId(progData[0].id);
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load initial data." });
       }
       setIsLoading(false);
     };
     fetchInitialData();
-  }, [toast]); // Removed formProgramId from dependency array to avoid re-fetch on form change.
+  }, [formProgramId, toast]);
   
   const filteredBatchesForForm = useMemo(() => {
       if(!formProgramId) return [];

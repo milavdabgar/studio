@@ -37,7 +37,7 @@ export const useFormValidation = <T extends Record<string, any>>(
 
   const validateForm = useCallback((): Record<string, string> => {
     return options.validate(values);
-  }, [values, options.validate]);
+  }, [values, options]);
 
   const resetForm = useCallback(() => {
     setValues(options.initialValues);
@@ -68,7 +68,7 @@ export const useFormValidation = <T extends Record<string, any>>(
       
       return newValues;
     });
-  }, [options.validate, options.validateOnChange]);
+  }, [options]);
 
   const handleBlur = useCallback((e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name } = e.target;
@@ -79,7 +79,7 @@ export const useFormValidation = <T extends Record<string, any>>(
       const validationErrors = options.validate(values);
       setErrors(validationErrors);
     }
-  }, [options.validate, options.validateOnBlur, values]);
+  }, [options, values]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,7 +126,7 @@ export const useFormValidation = <T extends Record<string, any>>(
     } finally {
       setIsSubmitting(false);
     }
-  }, [values, validateForm, options.asyncValidate, options.onSubmit, resetForm]);
+  }, [values, validateForm, options, resetForm]);
 
   const setFieldValue = useCallback((name: string, value: any) => {
     setValues(prev => {
@@ -140,7 +140,7 @@ export const useFormValidation = <T extends Record<string, any>>(
       
       return newValues;
     });
-  }, [options.validate, options.validateOnChange]);
+  }, [options]);
 
   const setFieldTouched = useCallback((name: string, touched: boolean) => {
     setTouched(prev => ({ ...prev, [name]: touched }));

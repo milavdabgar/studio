@@ -99,7 +99,7 @@ export default function LoginPage() {
       }
     };
     fetchAllRoles();
-  }, []); // Removed toast from dependencies to avoid unnecessary re-runs
+  }, [selectedRoleCode, toast]);
 
   useEffect(() => {
     const user = MOCK_USERS.find(u => u.email === email);
@@ -132,7 +132,7 @@ export default function LoginPage() {
         }
       }
     }
-  }, [email, MOCK_USERS, allSystemRoles]); // Removed selectedRoleCode from dependencies 
+  }, [email, MOCK_USERS, allSystemRoles, selectedRoleCode]); 
 
 
   const handleSubmit = async (event: FormEvent) => {

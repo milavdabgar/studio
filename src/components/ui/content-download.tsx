@@ -71,7 +71,7 @@ export function ContentDownload({
     };
 
     loadFormats();
-  }, []);
+  }, [toast]);
 
   const handleDownload = async () => {
     if (!selectedFormat) {

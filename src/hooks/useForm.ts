@@ -59,7 +59,7 @@ export const useForm = <T extends Record<string, any>>(options: UseFormOptions<T
     } finally {
       setIsSubmitting(false);
     }
-  }, [values, options]);
+  }, [values, options, resetForm]);
 
   const resetForm = useCallback(() => {
     setValues(options.initialValues);

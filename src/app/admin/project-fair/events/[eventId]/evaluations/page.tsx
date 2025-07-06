@@ -169,7 +169,7 @@ export default function EventEvaluationsPage() {
       });
     }
     return result;
-  }, [projects, searchTerm, filterDepartment, filterDeptEvalStatus, filterCentralEvalStatus, sortField, sortDirection, teams, departments, juryMembers, getEvaluationStatus]);
+  }, [projects, searchTerm, filterDepartment, filterDeptEvalStatus, filterCentralEvalStatus, sortField, sortDirection, teams, departments, getEvaluationStatus]);
 
   const paginatedProjects = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;

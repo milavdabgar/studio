@@ -95,7 +95,7 @@ export default function UserManagementPage() {
       toast({ variant: "destructive", title: "Error", description: (error as Error).message || "Could not load data." });
     }
     setIsLoading(false);
-  }, [toast]);
+  }, [formUserRoles.length, toast]);
 
   useEffect(() => {
     fetchInitialData();
