@@ -732,32 +732,32 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Ambaji', 'Heritage Visit', 'Cultural Exposure', 'Historical Knowledge'],
       images: [
         {
-          src: '/newsletters/imgs/ambaji-heritage-visit-2024-image-01.jpg',
+          src: '/newsletters/2024-25/ambaji-heritage-visit-2024-image-01.jpg',
           alt: 'Ambaji: Heritage Visit - Image 1',
           caption: 'Ambaji: Heritage Visit - Image 1'
         },
         {
-          src: '/newsletters/imgs/ambaji-heritage-visit-2024-image-02.jpg',
+          src: '/newsletters/2024-25/ambaji-heritage-visit-2024-image-02.jpg',
           alt: 'Ambaji: Heritage Visit - Image 2',
           caption: 'Ambaji: Heritage Visit - Image 2'
         },
         {
-          src: '/newsletters/imgs/ambaji-heritage-visit-2024-image-03.jpg',
+          src: '/newsletters/2024-25/ambaji-heritage-visit-2024-image-03.jpg',
           alt: 'Ambaji: Heritage Visit - Image 3',
           caption: 'Ambaji: Heritage Visit - Image 3'
         },
         {
-          src: '/newsletters/imgs/ambaji-heritage-visit-2024-image-04.jpg',
+          src: '/newsletters/2024-25/ambaji-heritage-visit-2024-image-04.jpg',
           alt: 'Ambaji: Heritage Visit - Image 4',
           caption: 'Ambaji: Heritage Visit - Image 4'
         },
         {
-          src: '/newsletters/imgs/ambaji-heritage-visit-2024-image-05.jpg',
+          src: '/newsletters/2024-25/ambaji-heritage-visit-2024-image-05.jpg',
           alt: 'Ambaji: Heritage Visit - Image 5',
           caption: 'Ambaji: Heritage Visit - Image 5'
         },
         {
-          src: '/newsletters/imgs/ambaji-heritage-visit-2024-image-06.jpg',
+          src: '/newsletters/2024-25/ambaji-heritage-visit-2024-image-06.jpg',
           alt: 'Ambaji: Heritage Visit - Image 6',
           caption: 'Ambaji: Heritage Visit - Image 6'
         }
@@ -771,32 +771,32 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['GPP Navratri 2024', 'Cultural Celebration', 'Traditional Activities', 'Student Participation'],
       images: [
         {
-          src: '/newsletters/imgs/gpp-navratri-2024-gpp-navratri-2024----2024-image-01.jpg',
+          src: '/newsletters/2024-25/gpp-navratri-2024-gpp-navratri-2024----2024-image-01.jpg',
           alt: 'GPP Navratri (2024) - Image 1',
           caption: 'GPP Navratri (2024) - Image 1'
         },
         {
-          src: '/newsletters/imgs/gpp-navratri-2024-gpp-navratri-2024----2024-image-02.jpg',
+          src: '/newsletters/2024-25/gpp-navratri-2024-gpp-navratri-2024----2024-image-02.jpg',
           alt: 'GPP Navratri (2024) - Image 2',
           caption: 'GPP Navratri (2024) - Image 2'
         },
         {
-          src: '/newsletters/imgs/gpp-navratri-2024-gpp-navratri-2024----2024-image-03.jpg',
+          src: '/newsletters/2024-25/gpp-navratri-2024-gpp-navratri-2024----2024-image-03.jpg',
           alt: 'GPP Navratri (2024) - Image 3',
           caption: 'GPP Navratri (2024) - Image 3'
         },
         {
-          src: '/newsletters/imgs/gpp-navratri-2024-gpp-navratri-2024----2024-image-04.jpg',
+          src: '/newsletters/2024-25/gpp-navratri-2024-gpp-navratri-2024----2024-image-04.jpg',
           alt: 'GPP Navratri (2024) - Image 4',
           caption: 'GPP Navratri (2024) - Image 4'
         },
         {
-          src: '/newsletters/imgs/gpp-navratri-2024-gpp-navratri-2024----2024-image-05.jpg',
+          src: '/newsletters/2024-25/gpp-navratri-2024-gpp-navratri-2024----2024-image-05.jpg',
           alt: 'GPP Navratri (2024) - Image 5',
           caption: 'GPP Navratri (2024) - Image 5'
         },
         {
-          src: '/newsletters/imgs/gpp-navratri-2024-gpp-navratri-2024----2024-image-06.jpg',
+          src: '/newsletters/2024-25/gpp-navratri-2024-gpp-navratri-2024----2024-image-06.jpg',
           alt: 'GPP Navratri (2024) - Image 6',
           caption: 'GPP Navratri (2024) - Image 6'
         }
@@ -839,32 +839,32 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Internet of Things', 'IoT', 'Smart Devices', 'Automation', 'Industrial Applications'],
       images: [
         {
-          src: '/newsletters/imgs/internet-of-things-iot-2024-image-01.jpg',
+          src: '/newsletters/2024-25/internet-of-things-iot-2024-image-01.jpg',
           alt: 'Internet of Things (IoT) - Image 1',
           caption: 'Internet of Things (IoT) - Image 1'
         },
         {
-          src: '/newsletters/imgs/internet-of-things-iot-2024-image-02.jpg',
+          src: '/newsletters/2024-25/internet-of-things-iot-2024-image-02.jpg',
           alt: 'Internet of Things (IoT) - Image 2',
           caption: 'Internet of Things (IoT) - Image 2'
         },
         {
-          src: '/newsletters/imgs/internet-of-things-iot-2024-image-03.jpg',
+          src: '/newsletters/2024-25/internet-of-things-iot-2024-image-03.jpg',
           alt: 'Internet of Things (IoT) - Image 3',
           caption: 'Internet of Things (IoT) - Image 3'
         },
         {
-          src: '/newsletters/imgs/internet-of-things-iot-2024-image-04.jpg',
+          src: '/newsletters/2024-25/internet-of-things-iot-2024-image-04.jpg',
           alt: 'Internet of Things (IoT) - Image 4',
           caption: 'Internet of Things (IoT) - Image 4'
         },
         {
-          src: '/newsletters/imgs/internet-of-things-iot-2024-image-05.jpg',
+          src: '/newsletters/2024-25/internet-of-things-iot-2024-image-05.jpg',
           alt: 'Internet of Things (IoT) - Image 5',
           caption: 'Internet of Things (IoT) - Image 5'
         },
         {
-          src: '/newsletters/imgs/internet-of-things-iot-2024-image-06.jpg',
+          src: '/newsletters/2024-25/internet-of-things-iot-2024-image-06.jpg',
           alt: 'Internet of Things (IoT) - Image 6',
           caption: 'Internet of Things (IoT) - Image 6'
         }

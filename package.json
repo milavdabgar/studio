@@ -84,7 +84,8 @@
     "mcp:test": "cd mcp-server && node test-server.js",
     "seed:database": "npx tsx scripts/seed-database.ts",
     "download-newsletter-images": "node scripts/download-newsletter-images.js",
-    "verify-newsletter-images": "node scripts/verify-newsletter-images.js"
+    "verify-newsletter-images": "node scripts/verify-newsletter-images.js",
+    "organize-newsletter-images": "node scripts/organize-newsletter-images-by-year.js"
   },
   "dependencies": {
     "@aws-sdk/s3-request-presigner": "^3.835.0",
