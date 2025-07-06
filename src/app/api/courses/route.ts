@@ -3,7 +3,6 @@ import type { Course } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { CourseModel } from '@/lib/models';
 
-const generateId = (): string => `course_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function GET() {
   try {

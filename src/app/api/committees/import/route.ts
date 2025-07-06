@@ -1,6 +1,6 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Committee, CommitteeStatus, Institute, SystemUser as User, UserRole, Role } from '@/types/entities';
+import type { Committee, CommitteeStatus, Institute, SystemUser as User, UserRole } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 import { isValid, parseISO, format } from 'date-fns';
 import { userService } from '@/lib/api/users';

@@ -1,20 +1,11 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Faculty, FacultyProfile, User } from '@/types/entities'; 
-import { userService } from '@/lib/api/users'; 
-import { instituteService } from '@/lib/api/institutes';
+import type { Faculty } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { FacultyModel } from '@/lib/models';
 
 
 const generateId = (): string => `fac_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
-const parseFullName = (fullName: string | undefined): { firstName?: string, middleName?: string, lastName?: string } => {
-    if (!fullName) return {};
-    const parts = fullName.trim().split(/\s+/);
-    if (parts.length === 1) return { firstName: parts[0] };
-    if (parts.length === 2) return { lastName: parts[0], firstName: parts[1] }; 
-    return { lastName: parts[0], firstName: parts[1], middleName: parts.slice(2).join(' ') };
-};
 
 export async function GET() {
   try {
@@ -136,9 +127,6 @@ export async function POST(request: NextRequest) {
       createdAt: currentTimestamp,
       updatedAt: currentTimestamp,
     };
-    
-    // Simplified user creation (skip user service calls that may timeout)
-    const displayName = facultyData.gtuName || `${facultyData.title || ''} ${facultyData.firstName || ''} ${facultyData.middleName || ''} ${facultyData.lastName || ''}`.replace(/\s+/g, ' ').trim() || facultyData.staffCode;
     
     // TODO: Restore user service integration once institute service timeout is fixed
     // For now, create faculty without linked user to avoid timeouts

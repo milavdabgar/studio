@@ -1,11 +1,10 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Program, Department } from '@/types/entities';
+import type { Program } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 import { ProgramModel, DepartmentModel } from '@/lib/models';
 import mongoose from 'mongoose';
 
-const generateIdForImport = (): string => `prog_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function POST(request: NextRequest) {
   try {

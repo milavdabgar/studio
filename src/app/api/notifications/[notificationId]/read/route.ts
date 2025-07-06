@@ -1,6 +1,5 @@
 // src/app/api/notifications/[notificationId]/read/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Notification } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { NotificationModel } from '@/lib/models';
 

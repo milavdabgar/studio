@@ -51,7 +51,6 @@ if (!global.__API_PROGRAMS_STORE__ || global.__API_PROGRAMS_STORE__.length === 0
     },
   ];
 }
-const programsStore: Program[] = global.__API_PROGRAMS_STORE__;
 
 const generateId = (): string => `prog_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 

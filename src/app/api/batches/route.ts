@@ -3,7 +3,6 @@ import type { Batch } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { BatchModel } from '@/lib/models';
 
-const generateId = (): string => `batch_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function GET() {
   try {

@@ -3,7 +3,6 @@ import type { Program } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { ProgramModel } from '@/lib/models';
 
-const generateId = (): string => `prog_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function GET() {
   try {

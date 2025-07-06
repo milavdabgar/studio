@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { RateLimiterMemory, RateLimiterRes } from 'rate-limiter-flexible';
 import { z } from 'zod';
-import type { Permission } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { PermissionModel } from '@/lib/models';
 
@@ -23,7 +22,7 @@ async function applyRateLimiting(request: NextRequest): Promise<RateLimiterRes |
   const ipAddress = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
   try {
     return await rateLimiter.consume(ipAddress);
-  } catch (_error) {
+  } catch {
     return null;
   }
 }
@@ -174,17 +173,6 @@ async function getPermission(id: string) {
   return NextResponse.json(permission.toJSON());
 }
 
-async function getAllPermissions() {
-  const permissions = await PermissionModel.find({}).lean();
-  
-  // Format permissions to ensure proper id field
-  const permissionsWithId = permissions.map(permission => ({
-    ...permission,
-    id: permission.id || (permission as any)._id.toString()
-  }));
-  
-  return NextResponse.json(permissionsWithId);
-}
 
 async function updatePermission(id: string, data: z.infer<typeof permissionSchema>) {
   // Try to find by custom id first, then by MongoDB _id if it's a valid ObjectId

@@ -4,7 +4,6 @@ import type { Department } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { DepartmentModel } from '@/lib/models';
 
-const generateId = (): string => `dept_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function GET() {
   try {

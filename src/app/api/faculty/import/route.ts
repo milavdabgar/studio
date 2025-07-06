@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Faculty, FacultyStatus, JobType, Gender, User, Institute, StaffCategory, UserRole } from '@/types/entities'; 
+import type { Faculty, FacultyStatus, JobType, Gender, StaffCategory, UserRole } from '@/types/entities'; 
 import { parse, type ParseError } from 'papaparse';
-import { userService } from '@/lib/api/users';
 import { instituteService } from '@/lib/api/institutes'; 
 import mongoose from 'mongoose';
 import { FacultyModel, UserModel } from '@/lib/models';
