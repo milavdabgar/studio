@@ -82,7 +82,9 @@
     "mcp:dev": "cd mcp-server && npm run dev",
     "mcp:build": "cd mcp-server && npm run build",
     "mcp:test": "cd mcp-server && node test-server.js",
-    "seed:database": "npx tsx scripts/seed-database.ts"
+    "seed:database": "npx tsx scripts/seed-database.ts",
+    "download-newsletter-images": "node scripts/download-newsletter-images.js",
+    "verify-newsletter-images": "node scripts/verify-newsletter-images.js"
   },
   "dependencies": {
     "@aws-sdk/s3-request-presigner": "^3.835.0",
