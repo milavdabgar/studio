@@ -2,6 +2,7 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -100,10 +101,12 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project, onBack, onEdit }) =>
               <CardContent>
                 <div className="grid gap-4 md:grid-cols-2">
                   {project.screenshots.map((screenshot, index) => (
-                    <img
+                    <Image
                       key={index}
                       src={screenshot}
                       alt={`Screenshot ${index + 1}`}
+                      width={400}
+                      height={300}
                       className="rounded-lg border shadow-sm dark:border-gray-700"
                     />
                   ))}
