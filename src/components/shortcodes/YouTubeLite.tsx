@@ -3,6 +3,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { PlayIcon } from '@heroicons/react/24/solid';
 
 interface YouTubeLiteProps {
@@ -86,11 +87,11 @@ export default function YouTubeLite({
         aria-label={label}
       >
         {/* Thumbnail */}
-        <img
+        <Image
           src={getThumbnailUrl()}
           alt={title || 'Video thumbnail'}
+          fill
           className="w-full h-full object-cover"
-          loading="lazy"
           onError={(e) => {
             // Fallback to default thumbnail
             const target = e.target as HTMLImageElement;

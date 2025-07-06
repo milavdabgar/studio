@@ -18,7 +18,7 @@ export default function DepartmentNotFound() {
               Department Not Found
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Sorry, we couldn't find the department you're looking for. 
+              Sorry, we couldn&apos;t find the department you&apos;re looking for. 
               Please check the URL or browse our available departments.
             </p>
           </div>

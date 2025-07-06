@@ -43,7 +43,7 @@ export default function CivilAchievementsPage() {
       year: "2023",
       description: "Faculty research work recognized by Gujarat Council of Science and Technology",
       category: "Research Achievement",
-      impact: "Boost to department's research profile",
+      impact: "Boost to department&apos;s research profile",
       icon: Star,
       color: "bg-purple-100 text-purple-800 border-purple-200"
     }
@@ -214,7 +214,7 @@ export default function CivilAchievementsPage() {
               Achievements & Recognition
             </h1>
             <p className="text-xl text-gray-600 mb-8 leading-relaxed dark:text-gray-400">
-              A showcase of our department's excellence in academics, research, student achievements, 
+              A showcase of our department&apos;s excellence in academics, research, student achievements, 
               and industry recognition. Our consistent performance demonstrates our commitment to 
               quality engineering education.
             </p>

@@ -4,6 +4,7 @@
 // Blowfish Gist shortcode - Embed GitHub Gists
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 interface GistProps {
   // Positional parameters: username, gistId, filename
@@ -128,9 +129,11 @@ const Gist: React.FC<GistProps> = (props) => {
       {/* Gist header */}
       <div className="flex items-center justify-between p-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700 dark:border-gray-700">
         <div className="flex items-center space-x-3">
-          <img 
+          <Image 
             src={gistData.owner.avatar_url} 
             alt={gistData.owner.login}
+            width={32}
+            height={32}
             className="w-8 h-8 rounded-full"
           />
           <div>

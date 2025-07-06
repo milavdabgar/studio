@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Icon } from './Icon';
 
 interface GitHubProps {
@@ -58,9 +59,11 @@ export function GitHub({ repo, showThumbnail = true }: GitHubProps) {
         <div className="w-full md:w-auto p-0 m-0 border border-neutral-200 dark:border-neutral-700 rounded-md shadow-2xl dark:border-gray-700">
           {showThumbnail && (
             <div className="w-full nozoom">
-              <img
+              <Image
                 src={githubThumbnailURL}
                 alt="GitHub Repository Thumbnail"
+                width={600}
+                height={315}
                 className="nozoom mt-0 mb-0 w-full h-full object-cover"
               />
             </div>
