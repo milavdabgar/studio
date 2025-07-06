@@ -1008,37 +1008,37 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Career Awareness', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/career-awareness-government-secondary-sc-2025-image-01.jpg',
+          src: '/newsletters/2024-25/career-awareness-government-secondary-sc-2025-image-01.jpg',
           alt: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 1',
           caption: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 1'
         },
         {
-          src: '/newsletters/imgs/career-awareness-government-secondary-sc-2025-image-02.jpg',
+          src: '/newsletters/2024-25/career-awareness-government-secondary-sc-2025-image-02.jpg',
           alt: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 2',
           caption: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 2'
         },
         {
-          src: '/newsletters/imgs/career-awareness-government-secondary-sc-2025-image-03.jpg',
+          src: '/newsletters/2024-25/career-awareness-government-secondary-sc-2025-image-03.jpg',
           alt: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 3',
           caption: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 3'
         },
         {
-          src: '/newsletters/imgs/career-awareness-government-secondary-sc-2025-image-04.jpg',
+          src: '/newsletters/2024-25/career-awareness-government-secondary-sc-2025-image-04.jpg',
           alt: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 4',
           caption: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 4'
         },
         {
-          src: '/newsletters/imgs/career-awareness-government-secondary-sc-2025-image-05.jpg',
+          src: '/newsletters/2024-25/career-awareness-government-secondary-sc-2025-image-05.jpg',
           alt: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 5',
           caption: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 5'
         },
         {
-          src: '/newsletters/imgs/career-awareness-government-secondary-sc-2025-image-06.jpg',
+          src: '/newsletters/2024-25/career-awareness-government-secondary-sc-2025-image-06.jpg',
           alt: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 6',
           caption: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 6'
         },
         {
-          src: '/newsletters/imgs/career-awareness-government-secondary-sc-2025-image-07.jpg',
+          src: '/newsletters/2024-25/career-awareness-government-secondary-sc-2025-image-07.jpg',
           alt: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 7',
           caption: 'Career Awareness: Government Secondary School, Jamda, Tharad. - Image 7'
         }
@@ -1052,7 +1052,7 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Republic Day 2025', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/republic-day-2025-republic-day-2025----2025-image-01.jpg',
+          src: '/newsletters/2024-25/republic-day-2025-republic-day-2025----2025-image-01.jpg',
           alt: 'Republic Day 2025 - Image 1',
           caption: 'Republic Day 2025 - Image 1'
         }
@@ -1066,32 +1066,32 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Celebrations', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/celebrations-prasadam-2025-image-01.jpg',
+          src: '/newsletters/2024-25/celebrations-prasadam-2025-image-01.jpg',
           alt: 'Celebrations: Prasadam - Image 1',
           caption: 'Celebrations: Prasadam - Image 1'
         },
         {
-          src: '/newsletters/imgs/celebrations-prasadam-2025-image-02.jpg',
+          src: '/newsletters/2024-25/celebrations-prasadam-2025-image-02.jpg',
           alt: 'Celebrations: Prasadam - Image 2',
           caption: 'Celebrations: Prasadam - Image 2'
         },
         {
-          src: '/newsletters/imgs/celebrations-prasadam-2025-image-03.jpg',
+          src: '/newsletters/2024-25/celebrations-prasadam-2025-image-03.jpg',
           alt: 'Celebrations: Prasadam - Image 3',
           caption: 'Celebrations: Prasadam - Image 3'
         },
         {
-          src: '/newsletters/imgs/celebrations-prasadam-2025-image-04.jpg',
+          src: '/newsletters/2024-25/celebrations-prasadam-2025-image-04.jpg',
           alt: 'Celebrations: Prasadam - Image 4',
           caption: 'Celebrations: Prasadam - Image 4'
         },
         {
-          src: '/newsletters/imgs/celebrations-prasadam-2025-image-05.jpg',
+          src: '/newsletters/2024-25/celebrations-prasadam-2025-image-05.jpg',
           alt: 'Celebrations: Prasadam - Image 5',
           caption: 'Celebrations: Prasadam - Image 5'
         },
         {
-          src: '/newsletters/imgs/celebrations-prasadam-2025-image-06.jpg',
+          src: '/newsletters/2024-25/celebrations-prasadam-2025-image-06.jpg',
           alt: 'Celebrations: Prasadam - Image 6',
           caption: 'Celebrations: Prasadam - Image 6'
         }
@@ -1105,17 +1105,17 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Dept Visit', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/dept-visit-keshar-school-2025-image-01.jpg',
+          src: '/newsletters/2024-25/dept-visit-keshar-school-2025-image-01.jpg',
           alt: 'Dept Visit: Keshar School - Image 1',
           caption: 'Dept Visit: Keshar School - Image 1'
         },
         {
-          src: '/newsletters/imgs/dept-visit-keshar-school-2025-image-02.jpg',
+          src: '/newsletters/2024-25/dept-visit-keshar-school-2025-image-02.jpg',
           alt: 'Dept Visit: Keshar School - Image 2',
           caption: 'Dept Visit: Keshar School - Image 2'
         },
         {
-          src: '/newsletters/imgs/dept-visit-keshar-school-2025-image-03.jpg',
+          src: '/newsletters/2024-25/dept-visit-keshar-school-2025-image-03.jpg',
           alt: 'Dept Visit: Keshar School - Image 3',
           caption: 'Dept Visit: Keshar School - Image 3'
         }
@@ -1129,32 +1129,32 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Parent Meeting', 'Academic Progress', 'Career Guidance', 'Student Development'],
       images: [
         {
-          src: '/newsletters/imgs/parent-parents-meeting-sess-2025-image-01.jpg',
+          src: '/newsletters/2024-25/parent-parents-meeting-sess-2025-image-01.jpg',
           alt: 'Parents Meeting Session 1',
           caption: 'Parents Meeting Session 1'
         },
         {
-          src: '/newsletters/imgs/parent-faculty-parent-inter-2025-image-02.jpg',
+          src: '/newsletters/2024-25/parent-faculty-parent-inter-2025-image-02.jpg',
           alt: 'Faculty-Parent Interaction',
           caption: 'Faculty-Parent Interaction'
         },
         {
-          src: '/newsletters/imgs/parent-academic-discussion-2025-image-03.jpg',
+          src: '/newsletters/2024-25/parent-academic-discussion-2025-image-03.jpg',
           alt: 'Academic Discussion',
           caption: 'Academic Discussion'
         },
         {
-          src: '/newsletters/imgs/parent-parent-consultation-2025-image-04.jpg',
+          src: '/newsletters/2024-25/parent-parent-consultation-2025-image-04.jpg',
           alt: 'Parent Consultation',
           caption: 'Parent Consultation'
         },
         {
-          src: '/newsletters/imgs/parent-student-progress-rev-2025-image-05.jpg',
+          src: '/newsletters/2024-25/parent-student-progress-rev-2025-image-05.jpg',
           alt: 'Student Progress Review',
           caption: 'Student Progress Review'
         },
         {
-          src: '/newsletters/imgs/parent-career-guidance-sess-2025-image-06.jpg',
+          src: '/newsletters/2024-25/parent-career-guidance-sess-2025-image-06.jpg',
           alt: 'Career Guidance Session',
           caption: 'Career Guidance Session'
         }
@@ -1168,17 +1168,17 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Workshop', 'HAM Radio', 'Amateur Radio', 'Communication Systems', 'GGP Ahmedabad'],
       images: [
         {
-          src: '/newsletters/imgs/workshop-ham-radio-workshop-ham-radio---2025-image-01.jpg',
+          src: '/newsletters/2024-25/workshop-ham-radio-workshop-ham-radio---2025-image-01.jpg',
           alt: 'Workshop: HAM Radio - Image 1',
           caption: 'Workshop: HAM Radio - Image 1'
         },
         {
-          src: '/newsletters/imgs/workshop-ham-radio-workshop-ham-radio---2025-image-02.jpg',
+          src: '/newsletters/2024-25/workshop-ham-radio-workshop-ham-radio---2025-image-02.jpg',
           alt: 'Workshop: HAM Radio - Image 2',
           caption: 'Workshop: HAM Radio - Image 2'
         },
         {
-          src: '/newsletters/imgs/workshop-ham-radio-workshop-ham-radio---2025-image-03.jpg',
+          src: '/newsletters/2024-25/workshop-ham-radio-workshop-ham-radio---2025-image-03.jpg',
           alt: 'Workshop: HAM Radio - Image 3',
           caption: 'Workshop: HAM Radio - Image 3'
         }
@@ -1192,17 +1192,17 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Workshop', 'Drone Technology', 'UAV', 'Bee-Robokids Academy', 'Palanpur'],
       images: [
         {
-          src: '/newsletters/imgs/workshop-drone-technology-2025-image-01.jpg',
+          src: '/newsletters/2024-25/workshop-drone-technology-2025-image-01.jpg',
           alt: 'Workshop: Drone Technology - Image 1',
           caption: 'Workshop: Drone Technology - Image 1'
         },
         {
-          src: '/newsletters/imgs/workshop-drone-technology-2025-image-02.jpg',
+          src: '/newsletters/2024-25/workshop-drone-technology-2025-image-02.jpg',
           alt: 'Workshop: Drone Technology - Image 2',
           caption: 'Workshop: Drone Technology - Image 2'
         },
         {
-          src: '/newsletters/imgs/workshop-drone-technology-2025-image-03.jpg',
+          src: '/newsletters/2024-25/workshop-drone-technology-2025-image-03.jpg',
           alt: 'Workshop: Drone Technology - Image 3',
           caption: 'Workshop: Drone Technology - Image 3'
         }
@@ -1216,7 +1216,7 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Placement Fair 2025', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/placement-fair-2025-placement-fair-2025--2025-image-01.jpg',
+          src: '/newsletters/2024-25/placement-fair-2025-placement-fair-2025--2025-image-01.jpg',
           alt: 'Placement Fair 2025 - Image 1',
           caption: 'Placement Fair 2025 - Image 1'
         }
@@ -1230,32 +1230,32 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Thalassemia Test 2025', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/thalassemia-test-2025-2025-image-01.jpg',
+          src: '/newsletters/2024-25/thalassemia-test-2025-2025-image-01.jpg',
           alt: 'Thalassemia Test 2025 - Image 1',
           caption: 'Thalassemia Test 2025 - Image 1'
         },
         {
-          src: '/newsletters/imgs/thalassemia-test-2025-2025-image-02.jpg',
+          src: '/newsletters/2024-25/thalassemia-test-2025-2025-image-02.jpg',
           alt: 'Thalassemia Test 2025 - Image 2',
           caption: 'Thalassemia Test 2025 - Image 2'
         },
         {
-          src: '/newsletters/imgs/thalassemia-test-2025-2025-image-03.jpg',
+          src: '/newsletters/2024-25/thalassemia-test-2025-2025-image-03.jpg',
           alt: 'Thalassemia Test 2025 - Image 3',
           caption: 'Thalassemia Test 2025 - Image 3'
         },
         {
-          src: '/newsletters/imgs/thalassemia-test-2025-2025-image-04.jpg',
+          src: '/newsletters/2024-25/thalassemia-test-2025-2025-image-04.jpg',
           alt: 'Thalassemia Test 2025 - Image 4',
           caption: 'Thalassemia Test 2025 - Image 4'
         },
         {
-          src: '/newsletters/imgs/thalassemia-test-2025-2025-image-05.jpg',
+          src: '/newsletters/2024-25/thalassemia-test-2025-2025-image-05.jpg',
           alt: 'Thalassemia Test 2025 - Image 5',
           caption: 'Thalassemia Test 2025 - Image 5'
         },
         {
-          src: '/newsletters/imgs/thalassemia-test-2025-2025-image-06.jpg',
+          src: '/newsletters/2024-25/thalassemia-test-2025-2025-image-06.jpg',
           alt: 'Thalassemia Test 2025 - Image 6',
           caption: 'Thalassemia Test 2025 - Image 6'
         }
@@ -1298,12 +1298,12 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Sports Week 2025', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/sports-week-2025-sports-week-2025---i-2025-image-01.jpg',
+          src: '/newsletters/2024-25/sports-week-2025-sports-week-2025---i-2025-image-01.jpg',
           alt: 'Sports Week 2025 - Image 1',
           caption: 'Sports Week 2025 - Image 1'
         },
         {
-          src: '/newsletters/imgs/sports-week-2025-sports-week-2025---i-2025-image-02.jpg',
+          src: '/newsletters/2024-25/sports-week-2025-sports-week-2025---i-2025-image-02.jpg',
           alt: 'Sports Week 2025 - Image 2',
           caption: 'Sports Week 2025 - Image 2'
         }
@@ -1317,7 +1317,7 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['PhD Completion (LKP, RNP) Celebrations at Laduma', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/phd-completion-celebrations-at-laduma-2025-image-01.jpg',
+          src: '/newsletters/2024-25/phd-completion-celebrations-at-laduma-2025-image-01.jpg',
           alt: 'PhD Completion Celebrations at Laduma - Image 1',
           caption: 'PhD Completion Celebrations at Laduma - Image 1'
         }
@@ -1331,47 +1331,47 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Cyber Crime Training Program at IGP - BK', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/cyber-crime-training-program-at-igp-bk-2025-image-01.jpg',
+          src: '/newsletters/2024-25/cyber-crime-training-program-at-igp-bk-2025-image-01.jpg',
           alt: 'Cyber Crime Training Program at IGP - BK - Image 1',
           caption: 'Cyber Crime Training Program at IGP - BK - Image 1'
         },
         {
-          src: '/newsletters/imgs/cyber-crime-training-program-at-igp-bk-2025-image-02.jpg',
+          src: '/newsletters/2024-25/cyber-crime-training-program-at-igp-bk-2025-image-02.jpg',
           alt: 'Cyber Crime Training Program at IGP - BK - Image 2',
           caption: 'Cyber Crime Training Program at IGP - BK - Image 2'
         },
         {
-          src: '/newsletters/imgs/cyber-crime-training-program-at-igp-bk-2025-image-03.jpg',
+          src: '/newsletters/2024-25/cyber-crime-training-program-at-igp-bk-2025-image-03.jpg',
           alt: 'Cyber Crime Training Program at IGP - BK - Image 3',
           caption: 'Cyber Crime Training Program at IGP - BK - Image 3'
         },
         {
-          src: '/newsletters/imgs/cyber-crime-training-program-at-igp-bk-2025-image-04.jpg',
+          src: '/newsletters/2024-25/cyber-crime-training-program-at-igp-bk-2025-image-04.jpg',
           alt: 'Cyber Crime Training Program at IGP - BK - Image 4',
           caption: 'Cyber Crime Training Program at IGP - BK - Image 4'
         },
         {
-          src: '/newsletters/imgs/cyber-crime-training-program-at-igp-bk-2025-image-05.jpg',
+          src: '/newsletters/2024-25/cyber-crime-training-program-at-igp-bk-2025-image-05.jpg',
           alt: 'Cyber Crime Training Program at IGP - BK - Image 5',
           caption: 'Cyber Crime Training Program at IGP - BK - Image 5'
         },
         {
-          src: '/newsletters/imgs/cyber-crime-training-program-at-igp-bk-2025-image-06.jpg',
+          src: '/newsletters/2024-25/cyber-crime-training-program-at-igp-bk-2025-image-06.jpg',
           alt: 'Cyber Crime Training Program at IGP - BK - Image 6',
           caption: 'Cyber Crime Training Program at IGP - BK - Image 6'
         },
         {
-          src: '/newsletters/imgs/cyber-crime-training-program-at-igp-bk-2025-image-07.jpg',
+          src: '/newsletters/2024-25/cyber-crime-training-program-at-igp-bk-2025-image-07.jpg',
           alt: 'Cyber Crime Training Program at IGP - BK - Image 7',
           caption: 'Cyber Crime Training Program at IGP - BK - Image 7'
         },
         {
-          src: '/newsletters/imgs/cyber-crime-training-program-at-igp-bk-2025-image-08.jpg',
+          src: '/newsletters/2024-25/cyber-crime-training-program-at-igp-bk-2025-image-08.jpg',
           alt: 'Cyber Crime Training Program at IGP - BK - Image 8',
           caption: 'Cyber Crime Training Program at IGP - BK - Image 8'
         },
         {
-          src: '/newsletters/imgs/cyber-crime-training-program-at-igp-bk-2025-image-09.jpg',
+          src: '/newsletters/2024-25/cyber-crime-training-program-at-igp-bk-2025-image-09.jpg',
           alt: 'Cyber Crime Training Program at IGP - BK - Image 9',
           caption: 'Cyber Crime Training Program at IGP - BK - Image 9'
         }
@@ -1385,32 +1385,32 @@ I'm proud of our progressive approach and excited about the innovations ahead.`
       tags: ['Seminar', 'EC Department', 'Student Activity'],
       images: [
         {
-          src: '/newsletters/imgs/seminar-road-safety-seminar-road-safety--2025-image-01.jpg',
+          src: '/newsletters/2024-25/seminar-road-safety-seminar-road-safety--2025-image-01.jpg',
           alt: 'Seminar: Road Safety - Image 1',
           caption: 'Seminar: Road Safety - Image 1'
         },
         {
-          src: '/newsletters/imgs/seminar-road-safety-seminar-road-safety--2025-image-02.jpg',
+          src: '/newsletters/2024-25/seminar-road-safety-seminar-road-safety--2025-image-02.jpg',
           alt: 'Seminar: Road Safety - Image 2',
           caption: 'Seminar: Road Safety - Image 2'
         },
         {
-          src: '/newsletters/imgs/seminar-road-safety-seminar-road-safety--2025-image-03.jpg',
+          src: '/newsletters/2024-25/seminar-road-safety-seminar-road-safety--2025-image-03.jpg',
           alt: 'Seminar: Road Safety - Image 3',
           caption: 'Seminar: Road Safety - Image 3'
         },
         {
-          src: '/newsletters/imgs/seminar-road-safety-seminar-road-safety--2025-image-04.jpg',
+          src: '/newsletters/2024-25/seminar-road-safety-seminar-road-safety--2025-image-04.jpg',
           alt: 'Seminar: Road Safety - Image 4',
           caption: 'Seminar: Road Safety - Image 4'
         },
         {
-          src: '/newsletters/imgs/seminar-road-safety-seminar-road-safety--2025-image-05.jpg',
+          src: '/newsletters/2024-25/seminar-road-safety-seminar-road-safety--2025-image-05.jpg',
           alt: 'Seminar: Road Safety - Image 5',
           caption: 'Seminar: Road Safety - Image 5'
         },
         {
-          src: '/newsletters/imgs/seminar-road-safety-seminar-road-safety--2025-image-06.jpg',
+          src: '/newsletters/2024-25/seminar-road-safety-seminar-road-safety--2025-image-06.jpg',
           alt: 'Seminar: Road Safety - Image 6',
           caption: 'Seminar: Road Safety - Image 6'
         }

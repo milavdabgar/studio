@@ -29,10 +29,10 @@ const YEAR_PATTERNS = {
   ],
   '2024-25': [
     /2024/i,
+    /2025/i,  // 2025 events belong to 2024-25 academic year
     /2024-25/i
   ],
   'imgs': [
-    /2025/i,  // Keep 2025 images in imgs for now since we don't have a 2025-26 folder yet
     /gpp-logo/i,
     /ec-logo/i,
     /logo/i
