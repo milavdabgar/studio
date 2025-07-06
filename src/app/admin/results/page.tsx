@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, ChangeEvent, useMemo } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter} from "@/components/ui/dialog"; 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Trash2, FileText as ResultIcon, Loader2, UploadCloud, Download, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, ExternalLink, User, Filter, BookCheck} from "lucide-react";
+import { Trash2, Loader2, UploadCloud, Download, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, ExternalLink, User, Filter, BookCheck} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
 import type { Result, UploadBatch, BranchAnalysis, ResultFilterParams, Pagination as PaginationType, Program, Examination } from '@/types/entities';
@@ -68,7 +68,7 @@ export default function AdminResultsPage() {
         ]);
         setPrograms(progData);
         setExaminations(examData);
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load filter options." });
       }
     };
@@ -99,7 +99,7 @@ export default function AdminResultsPage() {
       if (response.data.pagination) {
         setPagination(response.data.pagination);
       }
-    } catch (error) {
+    } catch {
       toast({ variant: "destructive", title: "Error", description: "Failed to fetch results." });
     } finally {
       setIsLoading(false);
@@ -111,7 +111,7 @@ export default function AdminResultsPage() {
     try {
       const response = await resultService.getUploadBatches();
       setBatches(response.data.batches);
-    } catch (error) {
+    } catch {
       toast({ variant: "destructive", title: "Error", description: "Failed to fetch upload batches." });
     } finally {
       setIsLoading(false);
@@ -129,7 +129,7 @@ export default function AdminResultsPage() {
       
       const response = await resultService.getBranchAnalysis(params);
       setBranchAnalysis(response.data.analysis);
-    } catch (error) {
+    } catch {
       toast({ variant: "destructive", title: "Error", description: "Failed to fetch branch analysis." });
     } finally {
       setIsLoading(false);

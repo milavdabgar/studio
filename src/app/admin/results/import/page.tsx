@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/comp
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FileSpreadsheet, UploadCloud, Loader2, Download, BookCheck } from "lucide-react";
+import { FileSpreadsheet, UploadCloud, Loader2, BookCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { resultService } from '@/lib/api/results';
@@ -33,7 +33,7 @@ export default function ImportResultsPage() {
       try {
         const progData = await programService.getAllPrograms();
         setPrograms(progData);
-      } catch (_error) {
+      } catch {
         toast({ variant: "destructive", title: "Error Loading Programs", description: "Could not load programs for mapping. GTU import might not work correctly." });
       }
       setIsLoading(false);
@@ -209,7 +209,7 @@ ${sampleEnrollment},${sampleEnrollment},REGULAR,12345,WINTER 2023,2024-01-15,202
                 </Button>
             </div>
              <p className="text-xs text-muted-foreground mt-1">
-                Ensure programs with matching Branch Codes (BR_CODE from CSV) exist in the system before importing GTU results. The sample uses program codes like 'DCE'.
+                Ensure programs with matching Branch Codes (BR_CODE from CSV) exist in the system before importing GTU results. The sample uses program codes like &#39;DCE&#39;.
             </p>
           </form>
         </CardContent>

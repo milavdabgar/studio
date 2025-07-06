@@ -8,19 +8,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, ArrowLeft, UserCircle, BookOpen, AlertCircle, Save} from "lucide-react";
+import { Loader2, ArrowLeft, UserCircle, AlertCircle} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Student, Program, Batch, Result, Course, ResultSubject, StudentStatus } from '@/types/entities';
+import type { Student, Program, Batch, Result, Course, StudentStatus } from '@/types/entities';
 import { studentService } from '@/lib/api/students';
 import { programService } from '@/lib/api/programs';
 import { batchService } from '@/lib/api/batches';
 import { resultService } from '@/lib/api/results';
 import { courseService } from '@/lib/api/courses';
-import { format, parseISO, isValid } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { Progress } from '@/components/ui/progress';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+// Table components are commented out as they're not used in current implementation
+// import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 
 // Helper for grade points (can be moved to a utils file)
@@ -116,7 +117,7 @@ export default function AdminStudentAcademicProgressPage() {
 
     studentResults.forEach(res => {
         let currentSemTotalCredits = 0;
-        let currentSemEarnedCredits = 0;
+        // let currentSemEarnedCredits = 0; // Calculated but not used
         let currentSemCreditPoints = 0;
 
         res.subjects.forEach(sub => {
@@ -126,7 +127,7 @@ export default function AdminStudentAcademicProgressPage() {
 
             if (sub.grade && sub.grade.toUpperCase() !== 'FF' && !sub.isBacklog) {
                 earnedCredits += credits;
-                currentSemEarnedCredits += credits;
+                // currentSemEarnedCredits += credits; // Calculated but not used
                 currentSemCreditPoints += getGradePoint(sub.grade) * credits;
             } else {
                 if (!backlogs.some(b => b.code === sub.code)) {

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Loader2, ArrowLeft, Briefcase, PlusCircle, Edit, Trash2, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Project, ProjectEvent, Department, ProjectTeam, ProjectStatus, User as FacultyUser } from '@/types/entities';
+import type { Project, ProjectEvent, Department, ProjectTeam, ProjectStatus } from '@/types/entities';
 import { projectService } from '@/lib/api/projects';
 import { projectEventService } from '@/lib/api/projectEvents';
 import { departmentService } from '@/lib/api/departments';

@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import Link from 'next/link';
 
 // Mock basic home component since it doesn't exist yet
 const MockHomeComponent = () => {
@@ -9,9 +10,9 @@ const MockHomeComponent = () => {
         <h1>Welcome to GP Palanpur</h1>
         <nav>
           <ul>
-            <li><a href="/about">About</a></li>
-            <li><a href="/admissions">Admissions</a></li>
-            <li><a href="/departments">Departments</a></li>
+            <li><Link href="/about">About</Link></li>
+            <li><Link href="/admissions">Admissions</Link></li>
+            <li><Link href="/departments">Departments</Link></li>
           </ul>
         </nav>
       </header>

@@ -15,7 +15,9 @@ export async function GET() {
     const students = await StudentModel.find({}).lean();
     const studentsWithId = students.map(student => ({
       ...student,
-      id: student.id || (student as { _id: unknown })._id?.toString()
+      id: student.id || (student as { _id: unknown })._id?.toString(),
+      fullName: student.fullNameGtuFormat || `${student.firstName || ''} ${student.middleName || ''} ${student.lastName || ''}`.replace(/\s+/g, ' ').trim(),
+      email: student.instituteEmail || student.personalEmail || ''
     }));
     
     return NextResponse.json(studentsWithId);
@@ -144,8 +146,12 @@ export async function POST(request: NextRequest) {
     const newStudent = new StudentModel(newStudentData);
     await newStudent.save();
     
-    // Return student with properly formatted id
-    const studentToReturn = newStudent.toJSON();
+    // Return student with properly formatted id and computed fields
+    const studentToReturn = {
+      ...newStudent.toJSON(),
+      fullName: newStudent.fullNameGtuFormat || `${newStudent.firstName || ''} ${newStudent.middleName || ''} ${newStudent.lastName || ''}`.replace(/\s+/g, ' ').trim(),
+      email: newStudent.instituteEmail || newStudent.personalEmail || ''
+    };
 
     return NextResponse.json(studentToReturn, { status: 201 });
   } catch (error) {

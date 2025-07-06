@@ -394,6 +394,55 @@ async function initializeTestData() {
     }
     
     console.log('Specific test entities creation complete');
+    
+    // Create additional students to meet test expectations (30+ students)
+    console.log('Creating additional test students...');
+    
+    const totalStudentsResponse = await fetch(`${API_BASE_URL}/students`);
+    const existingStudents = await totalStudentsResponse.json();
+    const currentStudentCount = Array.isArray(existingStudents) ? existingStudents.length : 0;
+    
+    console.log(`Current student count: ${currentStudentCount}`);
+    
+    if (currentStudentCount < 30) {
+      const studentsToCreate = 30 - currentStudentCount;
+      console.log(`Creating ${studentsToCreate} additional students...`);
+      
+      for (let i = 0; i < studentsToCreate; i++) {
+        try {
+          const studentData = {
+            enrollmentNumber: `TS${2025}${String(100 + i).padStart(3, '0')}`,
+            firstName: `Student${i + 1}`,
+            lastName: 'Test',
+            personalEmail: `student${i + 1}.test@example.com`,
+            instituteEmail: `student${i + 1}.test@gpp.ac.in`,
+            programId: programId,
+            department: departmentId,
+            currentSemester: Math.floor(Math.random() * 8) + 1,
+            status: 'active',
+            gender: i % 2 === 0 ? 'Male' : 'Female',
+            contactNumber: `987654${String(3210 + i).slice(-4)}`
+          };
+          
+          const studentResponse = await fetch(`${API_BASE_URL}/students`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(studentData)
+          });
+          
+          if (studentResponse.ok) {
+            if (i === 0 || (i + 1) % 10 === 0) {
+              console.log(`Created ${i + 1} students...`);
+            }
+          }
+        } catch (error) {
+          console.log(`Failed to create student ${i + 1}:`, error.message);
+        }
+      }
+      console.log(`Completed creating additional students`);
+    } else {
+      console.log('Sufficient students already exist');
+    }
   } catch (error) {
     console.error('Error initializing test data:', error);
   }

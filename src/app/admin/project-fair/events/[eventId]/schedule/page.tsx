@@ -5,7 +5,7 @@ import React, { useEffect, useState, FormEvent } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
-import { Loader2, ArrowLeft, ListChecks, PlusCircle, Edit2, Trash2, UserCircle as UserIcon} from "lucide-react";
+import { Loader2, ArrowLeft, ListChecks, PlusCircle, Edit2, Trash2} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { ProjectEvent, ProjectEventScheduleItem, User as SystemUser } from '@/types/entities';
 import { projectEventService } from '@/lib/api/projectEvents';
@@ -53,7 +53,7 @@ export default function EventSchedulePage() {
         setEvent(eventData);
         setSchedule(eventData.schedule || []);
         setFacultyUsers(usersData);
-      } catch (_error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load event schedule data." });
       }
       setIsLoading(false);

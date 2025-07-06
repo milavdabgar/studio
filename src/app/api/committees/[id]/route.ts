@@ -135,7 +135,7 @@ export async function GET(
     // Format committee to ensure proper id field
     const committeeWithId = {
       ...committee,
-      id: committee.id || (committee as any)._id.toString()
+      id: (committee as any).id || (committee as any)._id.toString()
     };
     
     return NextResponse.json(committeeWithId);
