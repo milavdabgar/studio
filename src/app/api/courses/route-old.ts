@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Course } from '@/types/entities';
 
 declare global {
+  // eslint-disable-next-line no-var
   var __API_COURSES_STORE__: Course[] | undefined;
 }
 

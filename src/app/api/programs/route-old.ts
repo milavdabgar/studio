@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import type { Program } from '@/types/entities'; 
 
 declare global {
+  // eslint-disable-next-line no-var
   var __API_PROGRAMS_STORE__: Program[] | undefined;
 }
 
