@@ -7,7 +7,7 @@ import { PublicNav } from "@/components/public-nav";
 import Link from "next/link";
 import Image from "next/image";
 import { 
-  GraduationCap, Users, Building, ArrowRight, BookOpen, Briefcase, Award, Star, ChevronLeft, User, Hammer, Ruler, HardHat, Truck, Home, Waves, Mountain} from "lucide-react";
+  Users, Building, ArrowRight, BookOpen, Briefcase, Award, Star, ChevronLeft, User, Hammer, Truck, Home, Waves, Mountain} from "lucide-react";
 import { Footer } from "@/components/footer";
 
 export default function CivilEngineeringPage() {
@@ -102,7 +102,8 @@ export default function CivilEngineeringPage() {
     }
   ];
 
-  const courses = [
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _courses = [
     {
       semester: "Semester 1",
       subjects: [

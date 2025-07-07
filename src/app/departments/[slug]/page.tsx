@@ -7,7 +7,7 @@ import { PublicNav } from "@/components/public-nav";
 import Link from "next/link";
 import Image from "next/image";
 import { 
-  GraduationCap, Users, Building, ArrowRight, BookOpen, Briefcase, Award, ChevronLeft, Mail, User} from "lucide-react";
+  Users, Building, ArrowRight, BookOpen, Award, ChevronLeft, Mail, User} from "lucide-react";
 import { notFound } from "next/navigation";
 import { use } from "react";
 import departments from "../../../../data/content/departments.json";

@@ -25,7 +25,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     if (student) {
       const studentWithId: Student = {
         ...student,
-        id: student.id || (student as any)._id?.toString() || id
+        id: student.id || (student as unknown as Record<string, unknown>)._id?.toString() || id
       };
       return NextResponse.json(studentWithId);
     }
@@ -61,7 +61,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (studentDataToUpdate.enrollmentNumber && studentDataToUpdate.enrollmentNumber.trim() !== existingStudent.enrollmentNumber) {
       const duplicateEnrollment = await StudentModel.findOne({
         enrollmentNumber: studentDataToUpdate.enrollmentNumber.trim(),
-        _id: { $ne: (existingStudent as any)._id }
+        _id: { $ne: (existingStudent as unknown as Record<string, unknown>)._id }
       });
       if (duplicateEnrollment) {
         return NextResponse.json({ message: `Enrollment number '${studentDataToUpdate.enrollmentNumber.trim()}' already exists.` }, { status: 409 });
@@ -72,7 +72,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (studentDataToUpdate.instituteEmail && studentDataToUpdate.instituteEmail.trim().toLowerCase() !== existingStudent.instituteEmail?.toLowerCase()) {
       const duplicateEmail = await StudentModel.findOne({
         instituteEmail: { $regex: new RegExp(`^${studentDataToUpdate.instituteEmail.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') },
-        _id: { $ne: (existingStudent as any)._id }
+        _id: { $ne: (existingStudent as unknown as Record<string, unknown>)._id }
       });
       if (duplicateEmail) {
         return NextResponse.json({ message: `Institute email '${studentDataToUpdate.instituteEmail.trim()}' is already in use.` }, { status: 409 });
@@ -80,7 +80,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
 
     // Prepare update data
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       ...studentDataToUpdate,
       updatedAt: new Date().toISOString()
     };
@@ -96,7 +96,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     // Update the student
     const updatedStudent = await StudentModel.findOneAndUpdate(
-      { _id: (existingStudent as any)._id },
+      { _id: (existingStudent as unknown as Record<string, unknown>)._id },
       updateData,
       { new: true, lean: true }
     ) as Student | null;
@@ -154,7 +154,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Format response
     const studentToReturn: Student = {
       ...updatedStudent,
-      id: updatedStudent.id || (updatedStudent as any)._id?.toString() || id
+      id: updatedStudent.id || (updatedStudent as unknown as Record<string, unknown>)._id?.toString() || id
     };
 
     return NextResponse.json(studentToReturn);

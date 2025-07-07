@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     const clientFacultyUsers: SystemUser[] = JSON.parse(usersJson);
 
     const fileText = await file.text();
-    const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
+    const { data: parsedData, errors: parseErrors } = parse<Record<string, unknown>>(fileText, {
       header: true,
       skipEmptyLines: 'greedy',
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, ''),

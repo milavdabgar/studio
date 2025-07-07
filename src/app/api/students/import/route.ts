@@ -1,13 +1,11 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Student, SemesterStatus, StudentStatus, User, Program } from '@/types/entities'; // Updated User import
+import type { Student, SemesterStatus, StudentStatus, Program } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
-import { userService } from '@/lib/api/users';
-import { programService } from '@/lib/api/programs'; // To get program details for instituteId
 import mongoose from 'mongoose';
 import { StudentModel, UserModel } from '@/lib/models';
 
-const generateIdForImport = (): string => `std_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+
 
 const parseGtuNameFromString = (gtuName: string | undefined): { firstName?: string, middleName?: string, lastName?: string } => {
     if (!gtuName) return {};
@@ -54,7 +52,7 @@ export async function POST(request: NextRequest) {
     const clientPrograms: Program[] = JSON.parse(programsJson);
 
     const fileText = await file.text();
-    const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
+    const { data: parsedData, errors: parseErrors } = parse<Record<string, unknown>>(fileText, {
       header: true,
       skipEmptyLines: true,
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9_]/gi, ''),
@@ -147,7 +145,7 @@ export async function POST(request: NextRequest) {
       };
       
       const idFromCsv = row.id?.toString().trim();
-      let existingStudent: any = null;
+      let existingStudent: Record<string, unknown> | null = null;
       
       // Check for existing student by ID or enrollment number
       if (idFromCsv) {
@@ -166,7 +164,7 @@ export async function POST(request: NextRequest) {
       if (existingStudent) {
         // Update existing student
         Object.assign(existingStudent, studentData);
-        studentToProcess = await existingStudent.save();
+        studentToProcess = await (existingStudent as {save: () => Promise<Student>}).save();
         updatedCount++;
       } else {
         // Create new student
@@ -212,12 +210,13 @@ export async function POST(request: NextRequest) {
         
         // Update student with userId
         await StudentModel.findOneAndUpdate(
-          { $or: [{ id: studentToProcess.id }, { _id: (studentToProcess as any)._id }] },
+          { $or: [{ id: studentToProcess.id }, { _id: (studentToProcess as unknown as Record<string, unknown>)._id }] },
           { userId: studentToProcess.userId }
         );
 
-      } catch(userError: any) {
-        importErrors.push({row:rowIndex, message: `User account linking/creation failed for ${enrollmentNumber}: ${userError.message}`, data: row});
+      } catch(userError: unknown) {
+        const error = userError as Error;
+        importErrors.push({row:rowIndex, message: `User account linking/creation failed for ${enrollmentNumber}: ${error.message}`, data: row});
       }
     }
     

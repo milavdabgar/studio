@@ -314,6 +314,10 @@ sequenceDiagram
 **Cybercrime Definition:**
 Criminal activities conducted through computers or internet networks.
 
+**Diagram:**
+
+![Cybercrime Overview](diagrams/cybercrime-overview.svg)
+
 **Cybercriminal Types:**
 
 | Type | Motivation | Skills | Target |
@@ -383,24 +387,9 @@ Criminal activities conducted through computers or internet networks.
 | **Digital Property** | Data theft | Stealing digital information | Database breaches |
 | **Virtual Property** | Gaming asset theft | Stealing virtual goods | Online game currency theft |
 
-**Specific Property Crimes:**
+**Diagram:**
 
-```mermaid
-mindmap
-  root((Property Crimes))
-    Software Piracy
-      Unauthorized copying
-      License violations
-    Credit Card Fraud
-      Skimming
-      Online fraud
-    Trademark Violations
-      Domain squatting
-      Brand impersonation
-    Data Breaches
-      Personal information
-      Corporate secrets
-```
+![Property-Based Cybercrime Classification](diagrams/property-based-cybercrime.svg)
 
 **Legal Aspects:**
 
@@ -670,6 +659,8 @@ Unauthorized access to computer systems or networks to exploit vulnerabilities.
 **Answer**:
 
 **Essential Kali Linux Commands:**
+
+![Kali Linux Commands](diagrams/kali-linux-commands-detailed.svg)
 
 | Command | Function | Example |
 |---------|----------|---------|

@@ -1,11 +1,10 @@
 // src/app/categories/[lang]/[category]/page.tsx
 
-import { getPostsByCategory, getPaginatedPostsByCategory, getAllCategories } from '@/lib/markdown';
+import { getPaginatedPostsByCategory, getAllCategories } from '@/lib/markdown';
 import { BlogLayout } from '@/components/blog/BlogLayout';
 import { PostCard } from '@/components/blog/PostCard';
 import { Pagination, PaginationInfo } from '@/components/ui/pagination';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, Folder } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -46,7 +45,6 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     notFound();
   }
   
-  const pageTitle = `${lang === 'gu' ? 'શ્રેણી' : 'Category'}: ${decodedCategory}`;
   const backText = lang === 'gu' ? 'બધી શ્રેણીઓ પર પાછા જાઓ' : 'Back to all categories';
 
   return (

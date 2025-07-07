@@ -4,19 +4,18 @@ import { GeistSans } from 'geist/font/sans';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
 import { 
-    Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, Plane, Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Clock, ListChecks, BookOpenCheck, FilePieChart, Paperclip, CheckSquare, UserPlus, BellRing, NotebookPen, BookOpenText, Newspaper} from 'lucide-react';
+    Home, Settings, LogOut, UserCircle, Briefcase, BookOpen, Award, CalendarCheck, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Clock, UserPlus, BellRing, BookOpenText, Newspaper} from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { AppLogo } from '@/components/app-logo';
 import React, { useEffect, useState, useCallback } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import type { UserRole as UserRoleCode, Role } from '@/types/entities'; 
 import { roleService } from '@/lib/api/roles'; 
-import { useToast } from '@/hooks/use-toast';
 import NotificationBell from '@/components/notifications/NotificationBell';
 
 interface User {
@@ -96,8 +95,6 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User>(DEFAULT_USER);
   const [allSystemRoles, setAllSystemRoles] = useState<Role[]>([]);
   const router = useRouter();
-  const pathname = usePathname();
-  const { toast } = useToast();
 
   const fetchRoles = useCallback(async () => {
     try {

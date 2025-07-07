@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     const categoryFilter = searchParams.get('category');
 
     // Build query filters
-    const query: any = {};
+    const query: Record<string, unknown> = {};
     if (eventId) query.eventId = eventId;
     if (departmentIdFilter) query.department = departmentIdFilter;
     if (statusFilter) query.status = statusFilter;
@@ -34,13 +34,18 @@ export async function GET(request: NextRequest) {
     const events = await ProjectEventModel.find({}).lean();
     const users = await UserModel.find({}).lean();
     
-    const projectDataForCsv = filteredProjects.map((project: any) => {
-      const department = departments.find((d: any) => d.id === project.department || d._id.toString() === project.department);
-      const team = teams.find((t: any) => t.id === project.teamId || t._id.toString() === project.teamId);
-      const event = events.find((e: any) => e.id === project.eventId || e._id.toString() === project.eventId);
-      const guideUser = users.find((u: any) => u.id === project.guide?.userId || u._id.toString() === project.guide?.userId);
-      const guideDepartment = departments.find((d: any) => d.id === project.guide?.department || d._id.toString() === project.guide?.department);
+    const projectDataForCsv = filteredProjects.map((project: Record<string, unknown>) => {
+      const department = departments.find((d: Record<string, unknown>) => d.id === project.department || d._id?.toString() === project.department);
+      const team = teams.find((t: Record<string, unknown>) => t.id === project.teamId || t._id?.toString() === project.teamId);
+      const event = events.find((e: Record<string, unknown>) => e.id === project.eventId || e._id?.toString() === project.eventId);
+      const guide = project.guide as Record<string, unknown> || {};
+      const guideUser = users.find((u: Record<string, unknown>) => u.id === guide.userId || u._id?.toString() === guide.userId);
+      const guideDepartment = departments.find((d: Record<string, unknown>) => d.id === guide.department || d._id?.toString() === guide.department);
 
+      const requirements = project.requirements as Record<string, unknown> || {};
+      const deptEval = project.deptEvaluation as Record<string, unknown> || {};
+      const centralEval = project.centralEvaluation as Record<string, unknown> || {};
+      
       return {
         id: project.id,
         title: project.title,
@@ -49,24 +54,24 @@ export async function GET(request: NextRequest) {
         departmentName: department?.name || project.department,
         departmentCode: department?.code || '',
         status: project.status,
-        powerRequired: project.requirements?.power || false,
-        internetRequired: project.requirements?.internet || false,
-        specialSpaceRequired: project.requirements?.specialSpace || false,
-        otherRequirements: project.requirements?.otherRequirements || '',
-        guideName: guideUser?.displayName || project.guide?.name || '',
-        guideDepartmentName: guideDepartment?.name || project.guide?.department || '',
-        guideContact: project.guide?.contactNumber || '',
+        powerRequired: requirements.power || false,
+        internetRequired: requirements.internet || false,
+        specialSpaceRequired: requirements.specialSpace || false,
+        otherRequirements: requirements.otherRequirements || '',
+        guideName: guideUser?.displayName || guide.name || '',
+        guideDepartmentName: guideDepartment?.name || guide.department || '',
+        guideContact: guide.contactNumber || '',
         teamName: team?.name || project.teamId,
         eventName: event?.name || project.eventId,
         locationId: project.locationId || 'N/A',
-        deptEvaluationCompleted: project.deptEvaluation?.completed || false,
-        deptEvaluationScore: project.deptEvaluation?.score ?? '',
-        deptEvaluationFeedback: project.deptEvaluation?.feedback || '',
-        centralEvaluationCompleted: project.centralEvaluation?.completed || false,
-        centralEvaluationScore: project.centralEvaluation?.score ?? '',
-        centralEvaluationFeedback: project.centralEvaluation?.feedback || '',
-        createdAt: project.createdAt ? new Date(project.createdAt).toISOString() : '',
-        updatedAt: project.updatedAt ? new Date(project.updatedAt).toISOString() : '',
+        deptEvaluationCompleted: deptEval.completed || false,
+        deptEvaluationScore: deptEval.score ?? '',
+        deptEvaluationFeedback: deptEval.feedback || '',
+        centralEvaluationCompleted: centralEval.completed || false,
+        centralEvaluationScore: centralEval.score ?? '',
+        centralEvaluationFeedback: centralEval.feedback || '',
+        createdAt: project.createdAt ? new Date(project.createdAt as string).toISOString() : '',
+        updatedAt: project.updatedAt ? new Date(project.updatedAt as string).toISOString() : '',
       };
     });
 

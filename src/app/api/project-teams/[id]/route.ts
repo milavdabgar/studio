@@ -6,8 +6,14 @@ import { ProjectTeamModel } from '@/lib/models';
 
 interface RouteParams {
   params: Promise<{
-    id: string; // Team ID
+    id: string;
   }>;
+}
+
+interface MongoDocument {
+  _id: string;
+  id?: string;
+  [key: string]: unknown;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
@@ -25,7 +31,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     if (team) {
       const teamWithId = {
         ...team,
-        id: (team as any).id || (team as any)._id.toString()
+        id: (team as MongoDocument).id || (team as MongoDocument)._id.toString()
       };
       return NextResponse.json({ status: 'success', data: { team: teamWithId } });
     }
@@ -69,7 +75,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     }
 
     // Prepare update data
-    const updateData: Record<string, any> = {
+    const updateData: Record<string, unknown> = {
       ...teamDataToUpdate,
       updatedBy: "user_admin_placeholder_update",
       updatedAt: new Date().toISOString()
@@ -86,7 +92,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     // Update the team
     const updatedTeam = await ProjectTeamModel.findOneAndUpdate(
-      { _id: (existingTeam as any)._id },
+      { _id: (existingTeam as MongoDocument)._id },
       updateData,
       { new: true, lean: true }
     );
@@ -98,7 +104,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     // Format response
     const teamToReturn = {
       ...updatedTeam,
-      id: (updatedTeam as any).id || (updatedTeam as any)._id.toString()
+      id: (updatedTeam as MongoDocument).id || (updatedTeam as MongoDocument)._id.toString()
     };
 
     return NextResponse.json({ status: 'success', data: { team: teamToReturn } });

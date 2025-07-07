@@ -1,12 +1,13 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import type { User, UserRole } from '@/types/entities'; 
+import type { User } from '@/types/entities'; 
 import { instituteService } from '@/lib/api/institutes';
 import { connectMongoose } from '@/lib/mongodb';
 import { UserModel } from '@/lib/models';
 
+
 const generateId = (): string => `user_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     await connectMongoose();
     

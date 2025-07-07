@@ -1,9 +1,10 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { User, UserRole, Institute, Role } from '@/types/entities'; 
+import type { UserRole, Institute, Role } from '@/types/entities'; 
 import { parse, type ParseError } from 'papaparse';
 import { UserModel } from '@/lib/models';
 import mongoose from 'mongoose';
+
 
 const generateIdForImport = (): string => `user_imp_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     const fileText = await file.text();
 
-    const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
+    const { data: parsedData, errors: parseErrors } = parse<Record<string, unknown>>(fileText, {
       header: true,
       skipEmptyLines: true,
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9_]/gi, ''),
@@ -60,7 +61,7 @@ export async function POST(request: NextRequest) {
     const now = new Date().toISOString();
 
     for (let i = 0; i < parsedData.length; i++) {
-      const row = parsedData[i] as any;
+      const row = parsedData[i] as Record<string, unknown>;
       const rowIndex = i + 2; 
 
       const personalEmail = row.email?.toString().trim().toLowerCase();

@@ -123,7 +123,7 @@ export default function NewProjectFairEventPage() {
             </div>
              <div>
               <Label htmlFor="status">Initial Status *</Label>
-              <Select value={status} onValueChange={(value) => setStatus(value as any)} disabled={isLoading}>
+              <Select value={status} onValueChange={(value) => setStatus(value as 'planning' | 'open_for_registration' | 'ongoing' | 'completed' | 'cancelled')} disabled={isLoading}>
                 <SelectTrigger id="status">
                   <SelectValue placeholder="Select Status" />
                 </SelectTrigger>

@@ -9,7 +9,6 @@ import Image from "next/image";
 import { 
   ChevronLeft,
   Building,
-  Beaker,
   Ruler,
   Mountain,
   Waves,

@@ -5,7 +5,7 @@ import { Users2 as CommitteeIcon, CalendarCheck, ListChecks, Loader2 } from "luc
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState, useCallback } from 'react';
-import type { Role, UserRole as UserRoleCode } from '@/types/entities'; // UserRole is now UserRoleCode
+import type { UserRole as UserRoleCode } from '@/types/entities'; // UserRole is now UserRoleCode
 import { roleService } from '@/lib/api/roles'; // To fetch all roles
 
 interface User {

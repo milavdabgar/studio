@@ -28,7 +28,7 @@
   <rect x="450" y="70" width="300" height="120" class="computer"/>
   <text x="600" y="95" text-anchor="middle" class="text" font-weight="bold" font-size="16">Computer Security</text>
   <text x="600" y="115" text-anchor="middle" class="text">Individual computer systems</text>
-  <text x="600" y="135" text-anchor="middle" class="text">Physical hardware & software</text>
+  <text x="600" y="135" text-anchor="middle" class="text">Physical hardware &amp; software</text>
   <text x="600" y="155" text-anchor="middle" class="text">Local system protection</text>
   <text x="600" y="175" text-anchor="middle" class="text" font-weight="bold">Scope: Single system</text>
   

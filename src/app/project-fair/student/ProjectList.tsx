@@ -24,7 +24,7 @@ interface ProjectListProps {
   onViewProject: (project: Project) => void;
   onEditProject?: (project: Project) => void;
   loading?: boolean;
-  event?: any; // Add event prop to match usage
+  event?: { id: string; name: string; status: string } | null; // Add event prop to match usage
 }
 
 const ProjectList: React.FC<ProjectListProps> = ({ 
@@ -32,7 +32,8 @@ const ProjectList: React.FC<ProjectListProps> = ({
   onViewProject, 
   onEditProject,
   loading = false,
-  event 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  event: _event = null 
 }) => {
   if (loading) {
     return (

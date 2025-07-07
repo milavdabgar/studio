@@ -14,7 +14,7 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState } from 'react';
-import type { UserRole as UserRoleCode, Role } from '@/types/entities'; 
+import type { UserRole as UserRoleCode } from '@/types/entities'; 
 import { userService } from "@/lib/api/users";
 import { studentService } from "@/lib/api/students";
 import { facultyService } from "@/lib/api/faculty";

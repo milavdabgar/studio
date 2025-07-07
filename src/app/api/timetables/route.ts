@@ -1,8 +1,9 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Timetable, TimetableEntry } from '@/types/entities';
+import type { Timetable } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { TimetableModel } from '@/lib/models';
+
 
 // Initialize default timetables if none exist
 async function initializeDefaultTimetables() {
@@ -65,7 +66,7 @@ export async function GET(request: NextRequest) {
     const semester = searchParams.get('semester');
     
     // Build filter query
-    const filter: any = {};
+    const filter: Record<string, unknown> = {};
     if (programId) filter.programId = programId;
     if (batchId) filter.batchId = batchId;
     if (academicYear) filter.academicYear = academicYear;
@@ -76,7 +77,7 @@ export async function GET(request: NextRequest) {
     // Format timetables to ensure proper id field
     const timetablesWithId = timetables.map(timetable => ({
       ...timetable,
-      id: timetable.id || (timetable as any)._id.toString()
+      id: timetable.id || (timetable as Record<string, unknown>)._id?.toString()
     }));
     
     return NextResponse.json(timetablesWithId);

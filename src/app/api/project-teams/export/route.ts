@@ -29,11 +29,12 @@ export async function GET(request: NextRequest) {
     const departments = await DepartmentModel.find({}).lean();
     const events = await ProjectEventModel.find({}).lean();
 
-    const teamDataForCsv = await Promise.all(filteredTeams.map(async (team: any) => {
-        const department = departments.find((d: any) => d.id === team.department || (d._id && d._id.toString() === team.department));
-        const event = events.find((e: any) => e.id === team.eventId || (e._id && e._id.toString() === team.eventId));
+    const teamDataForCsv = await Promise.all(filteredTeams.map(async (team: Record<string, unknown>) => {
+        const department = departments.find((d: Record<string, unknown>) => d.id === team.department || (d._id && d._id.toString() === team.department));
+        const event = events.find((e: Record<string, unknown>) => e.id === team.eventId || (e._id && e._id.toString() === team.eventId));
         
-        if (team.members.length === 0) {
+        const members = team.members as ProjectTeamMember[] || [];
+        if (members.length === 0) {
             return [{ // Return a row even for teams with no members
                 teamId: team.id || team._id,
                 teamName: team.name,
@@ -47,11 +48,11 @@ export async function GET(request: NextRequest) {
                 memberRole: '',
                 memberIsLeader: '',
                 createdBy: team.createdBy || '',
-                createdAt: team.createdAt ? new Date(team.createdAt).toISOString() : '',
+                createdAt: team.createdAt ? new Date(team.createdAt as string).toISOString() : '',
             }];
         }
 
-        return await Promise.all(team.members.map(async (member: ProjectTeamMember) => {
+        return await Promise.all(members.map(async (member: ProjectTeamMember) => {
             // Find user by userId with flexible matching
             const isValidUserObjectId = /^[0-9a-fA-F]{24}$/.test(member.userId);
             const userQuery = isValidUserObjectId 
@@ -65,17 +66,17 @@ export async function GET(request: NextRequest) {
                 departmentName: department?.name || team.department,
                 departmentCode: department?.code || '',
                 eventName: event?.name || team.eventId,
-                memberCount: team.members.length,
+                memberCount: members.length,
                 memberUserId: member.userId,
-                memberName: (user as any)?.displayName || member.name,
+                memberName: (user as Record<string, unknown>)?.displayName || member.name,
                 memberEnrollmentNo: member.enrollmentNo,
                 memberRole: member.role,
                 memberIsLeader: member.isLeader,
                 createdBy: team.createdBy || '',
-                createdAt: team.createdAt ? new Date(team.createdAt).toISOString() : '',
+                createdAt: team.createdAt ? new Date(team.createdAt as string).toISOString() : '',
             };
         }));
-    })).then((results: Array<Array<Record<string, string | number | boolean>>>) => results.flat());
+    })).then((results) => results.flat());
     
     if (teamDataForCsv.length === 0) {
          return NextResponse.json({ message: 'No team data processed for export.' }, { status: 404 });

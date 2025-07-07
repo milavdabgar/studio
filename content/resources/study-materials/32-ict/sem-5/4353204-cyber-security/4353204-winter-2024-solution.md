@@ -15,6 +15,10 @@ tags: ["study-material", "solutions", "cyber-security", "4353204", "2024", "wint
 - **Cyber Security**: Protection of internet-connected systems including hardware, software, and data from cyber threats. It focuses on defending networks, devices, and programs from unauthorized digital attacks.
 - **Computer Security**: Protection of individual computer systems and data from theft, damage, or unauthorized access. It focuses on safeguarding the physical computer hardware and the software installed on it.
 
+**Diagram:**
+
+![Cyber Security vs Computer Security](diagrams/cyber-vs-computer-security-comparison.svg)
+
 **Mnemonic:** "Cyber Circles Networks, Computer Covers Machines"
 
 ## Question 1(b) [4 marks]
@@ -189,6 +193,10 @@ Password verification is the process of authenticating user credentials against 
 | **Trojans** | Disguised as legitimate software but performs malicious actions. Creates backdoors for attackers to access systems. Example: Remote Access Trojans (RATs). |
 | **Spyware** | Collects user information without consent. Monitors activities, keystrokes, and browsing habits. Can steal passwords and financial information. |
 
+**Diagram:**
+
+![Malicious Software Attacks](diagrams/malware-attacks-detailed.svg)
+
 **Mnemonic:** "RTS: Ransom Takes Systems, Trojans Sneak In, Spyware Steals Info"
 
 ## Question 3(a) [3 marks]
@@ -319,6 +327,10 @@ HTTPS (Hypertext Transfer Protocol Secure) is a secure version of HTTP:
 | 4. Port 80 | b. Default port for HTTP |
 | 5. Integrity | a. Ensures data is not altered during transmission |
 | 6. VPN (Virtual Private Network) | d. Creates a secure connection over the internet |
+
+**Diagram:**
+
+![Cybersecurity Terms Matching](diagrams/cybersecurity-matching-diagram.svg)
 
 **Mnemonic:** "Disrupt HTTPS, Secure HTTP, Intact VPN"
 

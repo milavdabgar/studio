@@ -1,10 +1,11 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { User } from '@/types/entities'; // Updated import
+import type { User } from '@/types/entities';
 import { instituteService } from '@/lib/api/institutes';
 import { connectMongoose } from '@/lib/mongodb';
 import { UserModel } from '@/lib/models';
 import mongoose from 'mongoose';
+
 
 interface RouteParams {
   params: Promise<{
@@ -91,7 +92,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         try {
             const institute = await instituteService.getInstituteById(userDataToUpdate.instituteId);
             if (institute && institute.domain) instituteDomain = institute.domain;
-        } catch (e) { /* ignore, use default */ }
+        } catch {
+          /* ignore, use default */
+        }
 
         const displayName = userDataToUpdate.displayName || userDataToUpdate.fullName || existingUser.displayName;
         const { firstName, lastName } = parseFullName(userDataToUpdate.fullName || displayName);
@@ -114,8 +117,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
 
     // Update user data (excluding password if not provided)
-    const { password, fullName, ...otherUpdates } = userDataToUpdate;
-    const updateData: any = { 
+    const { password, ...otherUpdates } = userDataToUpdate;
+    const updateData: Record<string, unknown> = { 
         ...otherUpdates,
         displayName: userDataToUpdate.displayName || userDataToUpdate.fullName || existingUser.displayName,
         updatedAt: new Date().toISOString(),

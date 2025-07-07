@@ -1,6 +1,6 @@
 // src/app/authors/[lang]/[author]/page.tsx
 
-import { getPostsByAuthor, getPaginatedPostsByAuthor, getAllAuthors, getPostData } from '@/lib/markdown';
+import { getPaginatedPostsByAuthor, getAllAuthors } from '@/lib/markdown';
 import { BlogLayout } from '@/components/blog/BlogLayout';
 import { PostCard } from '@/components/blog/PostCard';
 import { Pagination, PaginationInfo } from '@/components/ui/pagination';
@@ -82,9 +82,7 @@ export default async function AuthorPage({ params, searchParams }: AuthorPagePro
 
   const authorInfo = await getAuthorInfo(decodedAuthor, lang);
   
-  const pageTitle = `${lang === 'gu' ? 'લેખક' : 'Author'}: ${authorInfo.title}`;
   const backText = lang === 'gu' ? 'બધા લેખકો પર પાછા જાઓ' : 'Back to all authors';
-  const noPostsText = lang === 'gu' ? 'આ લેખક માટે કોઈ પોસ્ટ્સ મળ્યા નથી' : 'No posts found for this author';
   const postsCountText = lang === 'gu' ? 'પોસ્ટ્સ' : 'posts';
 
   return (

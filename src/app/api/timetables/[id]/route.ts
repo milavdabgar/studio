@@ -23,7 +23,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     // Format timetable to ensure proper id field
     const timetableWithId = {
       ...timetable,
-      id: (timetable as any).id || (timetable as any)._id.toString()
+      id: (timetable as Record<string, unknown>).id || (timetable as Record<string, unknown>)._id?.toString()
     };
     
     return NextResponse.json(timetableWithId);
@@ -75,7 +75,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Format timetable to ensure proper id field
     const timetableWithId = {
       ...updatedTimetable,
-      id: (updatedTimetable as any).id || (updatedTimetable as any)._id.toString()
+      id: (updatedTimetable as Record<string, unknown>).id || (updatedTimetable as Record<string, unknown>)._id?.toString()
     };
 
     return NextResponse.json(timetableWithId);

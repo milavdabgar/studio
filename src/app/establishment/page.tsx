@@ -7,7 +7,6 @@ import { PublicNav } from "@/components/public-nav";
 import Link from "next/link";
 import Image from "next/image";
 import { 
-  GraduationCap, 
   ExternalLink,
   Building,
   Users,
@@ -19,8 +18,7 @@ import {
   Shield,
   BookOpen,
   Award,
-  Target,
-  Briefcase
+  Target
 } from "lucide-react";
 import { Footer } from "@/components/footer";
 

@@ -1,13 +1,11 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Student, SemesterStatus, User, Program, Institute, UserRole } from '@/types/entities'; // Updated User import
+import type { Student, SemesterStatus, Program, UserRole } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
-import { userService } from '@/lib/api/users';
-import { programService } from '@/lib/api/programs'; // To find program by code
-import { departmentService } from '@/lib/api/departments'; // To find department by code to link to program
-import { instituteService } from '@/lib/api/institutes'; // To get institute domain
+import { instituteService } from '@/lib/api/institutes';
 import mongoose from 'mongoose';
 import { StudentModel, UserModel } from '@/lib/models';
+
 
 const generateIdForImport = (): string => `std_gtu_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
@@ -44,16 +42,6 @@ const normalizeShiftFromString = (shift: string | undefined): Student['shift'] |
     return shift as Student['shift'];
 };
 
-const DEPARTMENT_CODE_TO_NAME_MAP: { [key: string]: string } = {
-  "CE": "Computer Engineering", "07": "Computer Engineering",
-  "ME": "Mechanical Engineering", "19": "Mechanical Engineering",
-  "EE": "Electrical Engineering", "09": "Electrical Engineering",
-  "CV": "Civil Engineering", "06": "Civil Engineering", // Assuming CV for Civil
-  "EC": "Electronics & Communication Engineering", "11": "Electronics & Communication Engineering",
-  "IT": "Information Technology", "16": "Information Technology",
-  "CH": "Chemical Engineering", "05": "Chemical Engineering",
-  "GEN": "General Department", // For subjects like Maths, Physics under General Dept
-};
 
 
 export async function POST(request: NextRequest) {
@@ -74,7 +62,7 @@ export async function POST(request: NextRequest) {
     const clientPrograms: Program[] = JSON.parse(programsJson);
 
     const fileText = await file.text();
-    const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
+    const { data: parsedData, errors: parseErrors } = parse<Record<string, unknown>>(fileText, {
       header: true,
       skipEmptyLines: true,
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9_]/gi, ''),
@@ -141,7 +129,9 @@ export async function POST(request: NextRequest) {
           try {
               const inst = await instituteService.getInstituteById(studentInstituteId);
               if (inst.domain) instituteDomain = inst.domain;
-          } catch(e) { /* use default */ }
+          } catch {
+            /* use default */
+          }
       }
       const instituteEmail = `${enrollmentNumber}@${instituteDomain}`;
 

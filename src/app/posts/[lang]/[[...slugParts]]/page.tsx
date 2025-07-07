@@ -3,8 +3,7 @@
 // Force dynamic rendering for this page due to searchParams usage
 export const dynamic = 'force-dynamic';
 
-import { getPostData, getSortedPostsData, getPaginatedPosts, getSubPostsForDirectory, getDirectSubsections, getRelatedPosts, getAdjacentPosts, type PostData, type PostPreview } from '@/lib/markdown'; 
-import { format, parseISO, isValid } from 'date-fns';
+import { getPostData, getPaginatedPosts, getSubPostsForDirectory, getDirectSubsections, getRelatedPosts, getAdjacentPosts } from '@/lib/markdown'; 
 import { Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { FileText } from 'lucide-react';
@@ -49,8 +48,8 @@ export async function generateStaticParams() {
       slugParts: s.slugParts && s.slugParts.length > 0 ? s.slugParts : undefined, // Pass undefined if slugParts is empty
     }));
     console.log(`[PostPage generateStaticParams] Successfully generated ${paramsList.length} static params. Sample:`, paramsList.slice(0, 2));
-  } catch (e: any) {
-    console.error("[PostPage generateStaticParams] CRITICAL ERROR:", e.message);
+  } catch (e: unknown) {
+    console.error("[PostPage generateStaticParams] CRITICAL ERROR:", e instanceof Error ? e.message : String(e));
     // Provide a minimal fallback if slug generation fails.
     paramsList = [{ lang: 'en', slugParts: undefined }, { lang: 'gu', slugParts: undefined }];
   }
@@ -127,7 +126,6 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
     const { posts, pagination } = paginatedData;
     
     const pageTitle = pageParams.lang === 'gu' ? 'બ્લોગ પોસ્ટ્સ' : 'Blog Posts';
-    const backText = pageParams.lang === 'gu' ? 'હોમ પર પાછા જાઓ' : 'Back to Home';
     
     // Breadcrumb for main blog listing - just shows current page
     const breadcrumbItems = [{
@@ -210,11 +208,6 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
       // Show subsection listing (Hugo-like behavior) instead of individual posts
       const sectionTitle = pageParams.slugParts[pageParams.slugParts.length - 1];
       const pageTitle = pageParams.lang === 'gu' ? `વિભાગ: ${sectionTitle}` : `Section: ${sectionTitle}`;
-      const backText = pageParams.lang === 'gu' ? 'પાછળ જાઓ' : 'Go Back';
-      
-      const parentPath = pageParams.slugParts.length > 1 
-        ? `/posts/${pageParams.lang}/${pageParams.slugParts.slice(0, -1).join('/')}`
-        : `/posts/${pageParams.lang}`;
 
       // If there's also an index file, show its content at the top
       const sectionContent = postData?.contentHtml;
@@ -305,11 +298,6 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
   const langForLinks = postData.lang;
   const slugPartsForLinks = postData.slugParts || [];
 
-  const backLinkText = langForLinks === 'gu' ? 'બધા લેખો પર પાછા જાઓ' : 'Back to all articles';
-  
-  // For now, always link back to the language root posts page
-  // This ensures the back button always works and doesn't lead to 404s
-  const backLinkHref = `/posts/${langForLinks}`;
 
 
   // Check if this is a directory listing (Hugo-style _index.md behavior)
