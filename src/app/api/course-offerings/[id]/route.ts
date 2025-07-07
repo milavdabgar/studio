@@ -22,7 +22,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       // Format offering to ensure proper id field
       const offeringWithId = {
         ...offering,
-        id: (offering as any).id || (offering as any)._id.toString()
+        id: (offering as unknown as { id?: string; _id: { toString(): string } }).id || (offering as unknown as { id?: string; _id: { toString(): string } })._id.toString()
       };
       return NextResponse.json(offeringWithId);
     }
@@ -61,15 +61,15 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       if (newStartDate >= newEndDate) {
         return NextResponse.json({ message: 'End date must be after start date for update.' }, { status: 400 });
       }
-    } else if (offeringDataToUpdate.startDate && (existingOffering as any).endDate) {
+    } else if (offeringDataToUpdate.startDate && (existingOffering as unknown as { endDate?: string }).endDate) {
       const newStartDate = parseISO(offeringDataToUpdate.startDate);
-      const existingEndDate = parseISO((existingOffering as any).endDate);
+      const existingEndDate = parseISO((existingOffering as unknown as { endDate: string }).endDate);
       
       if (newStartDate >= existingEndDate) {
         return NextResponse.json({ message: 'Start date must be before existing end date.' }, { status: 400 });
       }
-    } else if (offeringDataToUpdate.endDate && (existingOffering as any).startDate) {
-      const existingStartDate = parseISO((existingOffering as any).startDate);
+    } else if (offeringDataToUpdate.endDate && (existingOffering as unknown as { startDate?: string }).startDate) {
+      const existingStartDate = parseISO((existingOffering as unknown as { startDate: string }).startDate);
       const newEndDate = parseISO(offeringDataToUpdate.endDate);
       
       if (existingStartDate >= newEndDate) {
@@ -93,7 +93,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Format offering to ensure proper id field
     const offeringWithId = {
       ...updatedOffering,
-      id: (updatedOffering as any).id || (updatedOffering as any)._id.toString()
+      id: (updatedOffering as unknown as { id?: string; _id: { toString(): string } }).id || (updatedOffering as unknown as { id?: string; _id: { toString(): string } })._id.toString()
     };
 
     return NextResponse.json(offeringWithId);

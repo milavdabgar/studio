@@ -43,7 +43,7 @@ export async function GET() {
     // Format curriculum to ensure proper id field
     const curriculumWithId = curriculum.map(curr => ({
       ...curr,
-      id: curr.id || (curr as any)._id.toString()
+      id: curr.id || (curr as unknown as { _id: { toString(): string } })._id.toString()
     }));
 
     return NextResponse.json(curriculumWithId);

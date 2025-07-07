@@ -21,7 +21,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       // Format enrollment to ensure proper id field
       const enrollmentWithId = {
         ...enrollment,
-        id: (enrollment as any).id || (enrollment as any)._id.toString()
+        id: (enrollment as unknown as { id?: string; _id: { toString(): string } }).id || (enrollment as unknown as { id?: string; _id: { toString(): string } })._id.toString()
       };
       return NextResponse.json(enrollmentWithId);
     }
@@ -72,7 +72,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Format enrollment to ensure proper id field
     const enrollmentWithId = {
       ...updatedEnrollment,
-      id: (updatedEnrollment as any).id || (updatedEnrollment as any)._id.toString()
+      id: (updatedEnrollment as unknown as { id?: string; _id: { toString(): string } }).id || (updatedEnrollment as unknown as { id?: string; _id: { toString(): string } })._id.toString()
     };
 
     return NextResponse.json(enrollmentWithId);

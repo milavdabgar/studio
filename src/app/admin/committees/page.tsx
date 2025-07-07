@@ -203,8 +203,9 @@ export default function CommitteeManagementPage() {
         await fetchInitialData();
         toast({ title: "Import Successful", description: `${result.newCount} committees added, ${result.updatedCount} updated. Skipped: ${result.skippedCount}`});
         if (result.errors && result.errors.length > 0) {
-          result.errors.slice(0, 3).forEach((err: any) => {
-            toast({ variant: "destructive", title: `Import Warning (Row ${err.row})`, description: err.message });
+          result.errors.slice(0, 3).forEach((err: unknown) => {
+            const error = err as { row?: number; message?: string };
+            toast({ variant: "destructive", title: `Import Warning (Row ${error.row || 'unknown'})`, description: error.message || 'Unknown error' });
           });
         }
     } catch (error: unknown) {

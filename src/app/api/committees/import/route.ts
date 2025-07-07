@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
     const clientFacultyUsers: User[] = JSON.parse(facultyUsersJson);
 
     const fileText = await file.text();
-    const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
+    const { data: parsedData, errors: parseErrors } = parse<Record<string, unknown>>(fileText, {
       header: true,
       skipEmptyLines: true,
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, ''),
@@ -233,7 +233,7 @@ export async function POST(request: NextRequest) {
       };
 
       const idFromCsv = row.id?.toString().trim();
-      let existingCommittee: any = null;
+      let existingCommittee: unknown = null;
       let oldCommitteeSnapshot: Committee | undefined = undefined;
 
       // Find existing committee
@@ -260,7 +260,7 @@ export async function POST(request: NextRequest) {
         oldCommitteeSnapshot = existingCommittee as Committee;
         
         const updatedCommittee = await CommitteeModel.findOneAndUpdate(
-          { _id: existingCommittee._id },
+          { _id: (existingCommittee as Record<string, unknown>)._id },
           { ...committeeDataFromCsv, updatedAt: now },
           { new: true, lean: true }
         );
@@ -270,7 +270,7 @@ export async function POST(request: NextRequest) {
           skippedCount++; continue;
         }
         
-        const committee = updatedCommittee as any as Committee;
+        const committee = updatedCommittee as unknown as Committee;
         updatedCount++;
 
         if (oldCommitteeSnapshot && (committee.name !== oldCommitteeSnapshot.name || committee.code !== oldCommitteeSnapshot.code)) {

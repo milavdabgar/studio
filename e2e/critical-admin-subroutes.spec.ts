@@ -19,7 +19,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
     await waitForPageLoad(page, '/admin/batches');
     
     // Verify page loads correctly
-    await expect(page.locator('text=Batches')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: 'Import Batches from CSV' })).toBeVisible({ timeout: 10000 });
     
     // Verify key elements exist
     await expect(page.locator('text=Add')).toBeVisible();
@@ -51,7 +51,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
   test('should access admin buildings management', async ({ page }) => {
     await waitForPageLoad(page, '/admin/buildings');
     
-    await expect(page.locator('text=Buildings')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: 'Import Buildings from CSV' })).toBeVisible({ timeout: 10000 });
     
     // Test building creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
@@ -74,7 +74,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
   test('should access admin curriculum management', async ({ page }) => {
     await waitForPageLoad(page, '/admin/curriculum');
     
-    await expect(page.locator('text=Curriculum')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Curriculum Management')).toBeVisible({ timeout: 10000 });
     
     // Test curriculum creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
@@ -97,7 +97,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
   test('should access admin departments management', async ({ page }) => {
     await waitForPageLoad(page, '/admin/departments');
     
-    await expect(page.locator('text=Departments')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: 'Import Departments from CSV' })).toBeVisible({ timeout: 10000 });
     
     // Test department creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
@@ -120,7 +120,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
   test('should access admin institutes management', async ({ page }) => {
     await waitForPageLoad(page, '/admin/institutes');
     
-    await expect(page.locator('text=Institutes')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: 'Import Institutes from CSV' })).toBeVisible({ timeout: 10000 });
     
     // Test institute creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
@@ -143,7 +143,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
   test('should access admin programs management', async ({ page }) => {
     await waitForPageLoad(page, '/admin/programs');
     
-    await expect(page.locator('text=Programs')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: 'Import Programs from CSV' })).toBeVisible({ timeout: 10000 });
     
     // Test program creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
@@ -166,7 +166,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
   test('should access admin roles management', async ({ page }) => {
     await waitForPageLoad(page, '/admin/roles');
     
-    await expect(page.locator('text=Roles')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Manage user roles and their permissions within th…')).toBeVisible({ timeout: 10000 });
     
     // Test role creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
@@ -188,7 +188,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
   test('should access admin assignments management', async ({ page }) => {
     await waitForPageLoad(page, '/admin/assignments');
     
-    await expect(page.locator('text=Assignments')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Oversee and manage all assignments and projects a…')).toBeVisible({ timeout: 10000 });
     
     // Test assignment creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
@@ -211,7 +211,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
   test('should access admin courses management', async ({ page }) => {
     await waitForPageLoad(page, '/admin/courses');
     
-    await expect(page.locator('text=Courses')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: 'Import Courses from CSV' })).toBeVisible({ timeout: 10000 });
     
     // Test course creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
@@ -234,7 +234,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
   test('should access admin enrollments management', async ({ page }) => {
     await waitForPageLoad(page, '/admin/enrollments');
     
-    await expect(page.locator('text=Enrollments')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Manage student enrollments in courses and programs.')).toBeVisible({ timeout: 10000 });
     
     // Test enrollment creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
@@ -252,7 +252,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
   test('should access admin rooms management', async ({ page }) => {
     await waitForPageLoad(page, '/admin/rooms');
     
-    await expect(page.locator('text=Rooms')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: 'Import Rooms from CSV' })).toBeVisible({ timeout: 10000 });
     
     // Test room creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
@@ -275,7 +275,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
   test('should access admin leaves management', async ({ page }) => {
     await waitForPageLoad(page, '/admin/leaves');
     
-    await expect(page.locator('text=Leaves')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('link', { name: 'Leaves' })).toBeVisible({ timeout: 10000 });
     
     // Verify leave requests list or management interface
     const leaveElements = [
@@ -304,7 +304,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
   test('should access admin faculty workload page', async ({ page }) => {
     await waitForPageLoad(page, '/admin/faculty-workload');
     
-    await expect(page.locator('text=Faculty Workload')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Faculty Workload Overview')).toBeVisible({ timeout: 10000 });
     
     // Verify workload-related elements
     const workloadElements = [
@@ -332,7 +332,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
   test('should access admin resource allocation page', async ({ page }) => {
     await waitForPageLoad(page, '/admin/resource-allocation');
     
-    await expect(page.locator('text=Resource Allocation')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Resource Allocation Management')).toBeVisible({ timeout: 10000 });
     
     // Verify resource allocation elements
     const resourceElements = [
@@ -360,7 +360,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
   test('should access admin resource allocation rooms page', async ({ page }) => {
     await waitForPageLoad(page, '/admin/resource-allocation/rooms');
     
-    await expect(page.locator('text=Room')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Room Allocation Management')).toBeVisible({ timeout: 10000 });
     
     // Verify room allocation specific elements
     const roomElements = [
@@ -388,7 +388,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
   test('should access admin reporting analytics page', async ({ page }) => {
     await waitForPageLoad(page, '/admin/reporting-analytics');
     
-    await expect(page.locator('text=Report')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Reporting & Analytics')).toBeVisible({ timeout: 10000 });
     
     // Verify analytics elements
     const analyticsElements = [

@@ -23,7 +23,7 @@ jest.mock('@/lib/mongodb');
 jest.mock('@/lib/models');
 
 const mockConnectMongoose = connectMongoose as jest.MockedFunction<typeof connectMongoose>;
-const mockCourseModel = CourseModel as jest.Mocked<typeof CourseModel> & jest.MockedFunction<any>;
+const mockCourseModel = CourseModel as jest.Mocked<typeof CourseModel>;
 
 describe('/api/courses', () => {
   beforeEach(() => {
@@ -119,8 +119,8 @@ describe('/api/courses', () => {
       
       // Mock the instance that will be created
       const mockSave = jest.fn().mockResolvedValue(savedCourse);
-      (mockCourseModel as any).mockImplementation((data: any) => ({
-        ...data,
+      (mockCourseModel as unknown as jest.MockedFunction<(data: unknown) => unknown>).mockImplementation((data: unknown) => ({
+        ...(data as Record<string, unknown>),
         _id: 'course_new_123',
         save: mockSave
       }));
@@ -286,8 +286,8 @@ describe('/api/courses', () => {
       
       // Mock the instance that will be created to throw an error on save
       const mockSave = jest.fn().mockRejectedValue(new Error(errorMessage));
-      (mockCourseModel as any).mockImplementation((data: any) => ({
-        ...data,
+      (mockCourseModel as unknown as jest.MockedFunction<(data: unknown) => unknown>).mockImplementation((data: unknown) => ({
+        ...(data as Record<string, unknown>),
         _id: 'course_new_123',
         save: mockSave
       }));

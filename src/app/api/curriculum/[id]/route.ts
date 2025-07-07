@@ -21,7 +21,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       // Format curriculum to ensure proper id field
       const curriculumWithId = {
         ...curriculum,
-        id: (curriculum as any).id || (curriculum as any)._id.toString()
+        id: (curriculum as unknown as { id?: string; _id: { toString(): string } }).id || (curriculum as unknown as { id?: string; _id: { toString(): string } })._id.toString()
       };
       return NextResponse.json(curriculumWithId);
     }

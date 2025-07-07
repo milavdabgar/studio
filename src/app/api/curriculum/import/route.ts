@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     const clientCourses: Course[] = JSON.parse(coursesJson);
 
     const fileText = await file.text();
-    const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
+    const { data: parsedData, errors: parseErrors } = parse<Record<string, unknown>>(fileText, {
       header: true,
       skipEmptyLines: 'greedy', // Skips lines that are empty or only whitespace
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, ''),
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
         const version = row.version?.toString().trim();
         const effectiveDateStr = row.effectivedate?.toString().trim();
         const statusRaw = row.status?.toString().trim().toLowerCase();
-        const status = ['draft', 'active', 'archived'].includes(statusRaw) ? statusRaw as Curriculum['status'] : undefined;
+        const status = statusRaw && ['draft', 'active', 'archived'].includes(statusRaw) ? statusRaw as Curriculum['status'] : undefined;
         
         const courseIdCsv = row.courseid?.toString().trim();
         const courseSubcodeCsv = row.coursesubcode?.toString().trim().toUpperCase();

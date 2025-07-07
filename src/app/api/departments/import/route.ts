@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     const fileText = await file.text();
 
-    const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
+    const { data: parsedData, errors: parseErrors } = parse<Record<string, unknown>>(fileText, {
       header: true,
       skipEmptyLines: true,
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, ''),
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     const now = new Date().toISOString();
 
     for (let i = 0; i < parsedData.length; i++) {
-      const row = parsedData[i] as any;
+      const row = parsedData[i] as Record<string, unknown>;
       const rowIndex = i + 2;
 
       const name = row.name?.toString().trim();

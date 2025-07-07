@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
     const fileText = await file.text();
 
-    const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
+    const { data: parsedData, errors: parseErrors } = parse<Record<string, unknown>>(fileText, {
       header: true,
       skipEmptyLines: true,
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, ''),
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
 
     for (const row of parsedData) {
       // Type the row object
-      const csvRow = row as any;
+      const csvRow = row as Record<string, unknown>;
       
       const name = csvRow.name?.toString().trim();
       const status = csvRow.status?.toString().trim().toLowerCase() as Building['status'];

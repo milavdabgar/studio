@@ -27,7 +27,12 @@ const mockAssessmentInstance = {
 };
 
 jest.mock('@/lib/models', () => {
-  const MockAssessmentModelConstructor = jest.fn().mockImplementation(() => mockAssessmentInstance) as any;
+  const MockAssessmentModelConstructor = jest.fn().mockImplementation(() => mockAssessmentInstance) as unknown as typeof AssessmentModel & {
+    find: jest.MockedFunction<typeof AssessmentModel.find>;
+    findOne: jest.MockedFunction<typeof AssessmentModel.findOne>;
+    countDocuments: jest.MockedFunction<typeof AssessmentModel.countDocuments>;
+    insertMany: jest.MockedFunction<typeof AssessmentModel.insertMany>;
+  };
   MockAssessmentModelConstructor.find = jest.fn();
   MockAssessmentModelConstructor.findOne = jest.fn();
   MockAssessmentModelConstructor.countDocuments = jest.fn();
@@ -38,7 +43,13 @@ jest.mock('@/lib/models', () => {
 });
 
 const mockConnectMongoose = connectMongoose as jest.MockedFunction<typeof connectMongoose>;
-const mockAssessmentModel = AssessmentModel as any;
+const mockAssessmentModel = AssessmentModel as unknown as typeof AssessmentModel & {
+  find: jest.MockedFunction<typeof AssessmentModel.find>;
+  findOne: jest.MockedFunction<typeof AssessmentModel.findOne>;
+  countDocuments: jest.MockedFunction<typeof AssessmentModel.countDocuments>;
+  insertMany: jest.MockedFunction<typeof AssessmentModel.insertMany>;
+  mockClear: jest.MockedFunction<() => void>;
+};
 
 describe('/api/assessments', () => {
   const mockAssessments = [
@@ -76,7 +87,7 @@ describe('/api/assessments', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockConnectMongoose.mockResolvedValue(undefined);
-    (mockAssessmentModel as any).mockClear();
+    mockAssessmentModel.mockClear();
     mockAssessmentInstance.save.mockClear();
     mockAssessmentInstance.toJSON.mockClear();
   });
@@ -85,7 +96,7 @@ describe('/api/assessments', () => {
     it('should return all assessments with proper id mapping', async () => {
       mockAssessmentModel.countDocuments.mockResolvedValue(2);
       const leanResult = Promise.resolve(mockAssessments);
-      mockAssessmentModel.find.mockReturnValue({ lean: () => leanResult } as any);
+      mockAssessmentModel.find.mockReturnValue({ lean: () => leanResult } as unknown as ReturnType<typeof AssessmentModel.find>);
       
       const response = await GET();
       const data = await response.json();
@@ -104,7 +115,7 @@ describe('/api/assessments', () => {
       mockAssessmentModel.countDocuments.mockResolvedValue(0);
       mockAssessmentModel.insertMany.mockResolvedValue([]);
       const leanResult = Promise.resolve([]);
-      mockAssessmentModel.find.mockReturnValue({ lean: () => leanResult } as any);
+      mockAssessmentModel.find.mockReturnValue({ lean: () => leanResult } as unknown as ReturnType<typeof AssessmentModel.find>);
       
       const response = await GET();
       const data = await response.json();
@@ -136,7 +147,7 @@ describe('/api/assessments', () => {
       
       mockAssessmentModel.countDocuments.mockResolvedValue(2);
       const leanResult = Promise.resolve(assessmentsWithoutId);
-      mockAssessmentModel.find.mockReturnValue({ lean: () => leanResult } as any);
+      mockAssessmentModel.find.mockReturnValue({ lean: () => leanResult } as unknown as ReturnType<typeof AssessmentModel.find>);
       
       const response = await GET();
       const data = await response.json();
@@ -214,7 +225,7 @@ describe('/api/assessments', () => {
 
     it('should return 400 for missing assessment name', async () => {
       const invalidData = { ...validAssessmentData };
-      delete (invalidData as any).name;
+      delete (invalidData as Record<string, unknown>).name;
       
       const request = new NextRequest('http://localhost/api/assessments', {
         method: 'POST',
@@ -245,7 +256,7 @@ describe('/api/assessments', () => {
 
     it('should return 400 for missing course ID', async () => {
       const invalidData = { ...validAssessmentData };
-      delete (invalidData as any).courseId;
+      delete (invalidData as Record<string, unknown>).courseId;
       
       const request = new NextRequest('http://localhost/api/assessments', {
         method: 'POST',
@@ -261,7 +272,7 @@ describe('/api/assessments', () => {
 
     it('should return 400 for missing program ID', async () => {
       const invalidData = { ...validAssessmentData };
-      delete (invalidData as any).programId;
+      delete (invalidData as Record<string, unknown>).programId;
       
       const request = new NextRequest('http://localhost/api/assessments', {
         method: 'POST',
@@ -277,7 +288,7 @@ describe('/api/assessments', () => {
 
     it('should return 400 for missing assessment type', async () => {
       const invalidData = { ...validAssessmentData };
-      delete (invalidData as any).type;
+      delete (invalidData as Record<string, unknown>).type;
       
       const request = new NextRequest('http://localhost/api/assessments', {
         method: 'POST',
@@ -322,7 +333,7 @@ describe('/api/assessments', () => {
     });
 
     it('should return 400 for invalid max marks (non-numeric)', async () => {
-      const invalidData = { ...validAssessmentData, maxMarks: 'invalid' as any };
+      const invalidData = { ...validAssessmentData, maxMarks: 'invalid' as unknown as number };
       
       const request = new NextRequest('http://localhost/api/assessments', {
         method: 'POST',
@@ -491,16 +502,12 @@ describe('/api/assessments', () => {
     });
 
     it('should handle case-insensitive duplicate name checking', async () => {
-      mockAssessmentModel.findOne.mockImplementation((query: any) => {
-        // Simulate case-insensitive matching
-        if (query?.name && query.name.$regex) {
-          return Promise.resolve({
-            name: 'FINAL EXAM - COMPUTER NETWORKS',
-            courseId: 'course_cs201_dce_gpp'
-          });
-        }
-        return Promise.resolve(null);
-      });
+      mockAssessmentModel.findOne.mockReturnValue({
+        exec: () => Promise.resolve({
+          name: 'FINAL EXAM - COMPUTER NETWORKS',
+          courseId: 'course_cs201_dce_gpp'
+        })
+      } as any);
       
       const dataWithDifferentCase = {
         ...validAssessmentData,

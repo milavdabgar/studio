@@ -71,10 +71,10 @@ export default function EventLocationsPage() {
         projectService.getAllProjects({ eventId }), // Fetch projects for this event
       ]);
       setEvent(eventData);
-      setLocations((locationsDataResponse as any)?.locations || []);
+      setLocations((locationsDataResponse as Record<string, unknown>)?.locations as ProjectLocation[] || []);
       setDepartments(deptData);
-      setProjects(Array.isArray(projectsDataResponse) ? projectsDataResponse : ((projectsDataResponse as any)?.data?.projects || []));
-    } catch (_error) {
+      setProjects(Array.isArray(projectsDataResponse) ? projectsDataResponse : ((projectsDataResponse as Record<string, unknown>)?.data as Record<string, unknown>)?.projects as Project[] || []);
+    } catch {
       toast({ variant: "destructive", title: "Error", description: "Could not load event locations data." });
     }
     setIsLoading(false);
@@ -170,8 +170,8 @@ export default function EventLocationsPage() {
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA: any = a[sortField as keyof ProjectLocation];
-        let valB: any = b[sortField as keyof ProjectLocation];
+        let valA: unknown = a[sortField as keyof ProjectLocation];
+        let valB: unknown = b[sortField as keyof ProjectLocation];
         if (sortField === 'projectName') {
             valA = projects.find(p => p.id === a.projectId)?.title || '';
             valB = projects.find(p => p.id === b.projectId)?.title || '';
@@ -256,7 +256,7 @@ export default function EventLocationsPage() {
                 <div><Label htmlFor="locSearch">Search Location/Project</Label><Input id="locSearch" placeholder="ID, Title..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} /></div>
                 <div><Label htmlFor="locSectionFilter">Section</Label><Select value={filterSection} onValueChange={setFilterSection}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Sections</SelectItem>{Array.from(new Set(locations.map(l => l.section))).map(s=><SelectItem key={s} value={s}>Section {s}</SelectItem>)}</SelectContent></Select></div>
                 <div><Label htmlFor="locDeptFilter">Department</Label><Select value={filterDepartment} onValueChange={setFilterDepartment}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All Departments</SelectItem>{departments.map(d=><SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}</SelectContent></Select></div>
-                <div><Label htmlFor="locAssignedFilter">Assignment Status</Label><Select value={filterAssigned} onValueChange={s => setFilterAssigned(s as any)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All</SelectItem><SelectItem value="assigned">Assigned</SelectItem><SelectItem value="unassigned">Unassigned</SelectItem></SelectContent></Select></div>
+                <div><Label htmlFor="locAssignedFilter">Assignment Status</Label><Select value={filterAssigned} onValueChange={s => setFilterAssigned(s as 'all' | 'assigned' | 'unassigned')}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All</SelectItem><SelectItem value="assigned">Assigned</SelectItem><SelectItem value="unassigned">Unassigned</SelectItem></SelectContent></Select></div>
             </div>
             {selectedLocationIds.length > 0 && (
                 <div className="mb-4 flex items-center gap-2">

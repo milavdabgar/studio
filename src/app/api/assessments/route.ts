@@ -57,7 +57,7 @@ export async function GET() {
     // Format assessments to ensure proper id field
     const assessmentsWithId = assessments.map(assessment => ({
       ...assessment,
-      id: assessment.id || (assessment as any)._id.toString()
+      id: assessment.id || (assessment as unknown as { _id: { toString(): string } })._id.toString()
     }));
     
     return NextResponse.json(assessmentsWithId);

@@ -63,8 +63,9 @@ export default function ImportResultsPage() {
       setStandardFile(null);
       const fileInput = document.getElementById('standardResultsFile') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
-    } catch (error: any) {
-      toast({ variant: "destructive", title: "Import Failed", description: error.message || "Could not import standard results." });
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Could not import standard results.";
+      toast({ variant: "destructive", title: "Import Failed", description: errorMessage });
     }
     setIsSubmitting(false);
   };
@@ -86,8 +87,9 @@ export default function ImportResultsPage() {
       setGtuFile(null);
       const fileInput = document.getElementById('gtuResultsFile') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
-    } catch (error: any) {
-      toast({ variant: "destructive", title: "GTU Import Failed", description: error.message || "Could not import GTU results." });
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Could not import GTU results.";
+      toast({ variant: "destructive", title: "GTU Import Failed", description: errorMessage });
     }
     setIsSubmitting(false);
   };

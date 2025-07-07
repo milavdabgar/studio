@@ -129,8 +129,8 @@ export default function EnrollmentManagementPage() {
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA = a[sortField as keyof EnrichedEnrollment] as any;
-        let valB = b[sortField as keyof EnrichedEnrollment] as any;
+        let valA = a[sortField as keyof EnrichedEnrollment] as unknown;
+        let valB = b[sortField as keyof EnrichedEnrollment] as unknown;
         if (sortField === 'createdAt' || sortField === 'updatedAt' || sortField === 'enrolledAt') {
             valA = a[sortField] ? new Date(a[sortField]!).getTime() : 0;
             valB = b[sortField] ? new Date(b[sortField]!).getTime() : 0;

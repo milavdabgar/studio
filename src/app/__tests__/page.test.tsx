@@ -1,16 +1,29 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import HomePage from '../page';
+import { ReactNode } from 'react';
 
 // Mock Next.js components
+interface MockLinkProps {
+  children: ReactNode;
+  href: string;
+  [key: string]: unknown;
+}
+
 jest.mock('next/link', () => {
-  return function MockLink({ children, href, ...props }: any) {
+  return function MockLink({ children, href, ...props }: MockLinkProps) {
     return <a href={href} {...props}>{children}</a>;
   };
 });
 
+interface MockImageProps {
+  src: string;
+  alt: string;
+  [key: string]: unknown;
+}
+
 jest.mock('next/image', () => {
-  return function MockImage({ src, alt, ...props }: any) {
+  return function MockImage({ src, alt, ...props }: MockImageProps) {
     // eslint-disable-next-line @next/next/no-img-element
     return <img src={src} alt={alt} {...props} />;
   };
@@ -31,72 +44,87 @@ jest.mock('@/components/footer', () => ({
 }));
 
 // Mock UI components
+interface MockButtonProps {
+  children: ReactNode;
+  asChild?: boolean;
+  [key: string]: unknown;
+}
+
 jest.mock('@/components/ui/button', () => ({
-  Button: function MockButton({ children, asChild, ...props }: any) {
+  Button: function MockButton({ children, asChild, ...props }: MockButtonProps) {
     return asChild ? children : <button {...props}>{children}</button>;
   }
 }));
 
+interface MockCardProps {
+  children: ReactNode;
+  [key: string]: unknown;
+}
+
 jest.mock('@/components/ui/card', () => ({
-  Card: function MockCard({ children, ...props }: any) {
+  Card: function MockCard({ children, ...props }: MockCardProps) {
     return <div data-testid="card" {...props}>{children}</div>;
   },
-  CardHeader: function MockCardHeader({ children, ...props }: any) {
+  CardHeader: function MockCardHeader({ children, ...props }: MockCardProps) {
     return <div data-testid="card-header" {...props}>{children}</div>;
   },
-  CardContent: function MockCardContent({ children, ...props }: any) {
+  CardContent: function MockCardContent({ children, ...props }: MockCardProps) {
     return <div data-testid="card-content" {...props}>{children}</div>;
   },
-  CardTitle: function MockCardTitle({ children, ...props }: any) {
+  CardTitle: function MockCardTitle({ children, ...props }: MockCardProps) {
     return <h3 data-testid="card-title" {...props}>{children}</h3>;
   },
-  CardDescription: function MockCardDescription({ children, ...props }: any) {
+  CardDescription: function MockCardDescription({ children, ...props }: MockCardProps) {
     return <p data-testid="card-description" {...props}>{children}</p>;
   }
 }));
 
 jest.mock('@/components/ui/badge', () => ({
-  Badge: function MockBadge({ children, ...props }: any) {
+  Badge: function MockBadge({ children, ...props }: MockCardProps) {
     return <span data-testid="badge" {...props}>{children}</span>;
   }
 }));
 
 // Mock Lucide React icons
+interface MockIconProps {
+  [key: string]: unknown;
+}
+
 jest.mock('lucide-react', () => ({
-  GraduationCap: function MockGraduationCap(props: any) {
+  GraduationCap: function MockGraduationCap(props: MockIconProps) {
     return <svg data-testid="graduation-cap-icon" {...props} />;
   },
-  Users: function MockUsers(props: any) {
+  Users: function MockUsers(props: MockIconProps) {
     return <svg data-testid="users-icon" {...props} />;
   },
-  Building: function MockBuilding(props: any) {
+  Building: function MockBuilding(props: MockIconProps) {
     return <svg data-testid="building-icon" {...props} />;
   },
-  Award: function MockAward(props: any) {
+  Award: function MockAward(props: MockIconProps) {
     return <svg data-testid="award-icon" {...props} />;
   },
-  BookOpen: function MockBookOpen(props: any) {
+  BookOpen: function MockBookOpen(props: MockIconProps) {
     return <svg data-testid="book-open-icon" {...props} />;
   },
-  MapPin: function MockMapPin(props: any) {
+  MapPin: function MockMapPin(props: MockIconProps) {
     return <svg data-testid="map-pin-icon" {...props} />;
   },
-  Phone: function MockPhone(props: any) {
+  Phone: function MockPhone(props: MockIconProps) {
     return <svg data-testid="phone-icon" {...props} />;
   },
-  Mail: function MockMail(props: any) {
+  Mail: function MockMail(props: MockIconProps) {
     return <svg data-testid="mail-icon" {...props} />;
   },
-  Calendar: function MockCalendar(props: any) {
+  Calendar: function MockCalendar(props: MockIconProps) {
     return <svg data-testid="calendar-icon" {...props} />;
   },
-  Star: function MockStar(props: any) {
+  Star: function MockStar(props: MockIconProps) {
     return <svg data-testid="star-icon" {...props} />;
   },
-  TrendingUp: function MockTrendingUp(props: any) {
+  TrendingUp: function MockTrendingUp(props: MockIconProps) {
     return <svg data-testid="trending-up-icon" {...props} />;
   },
-  Shield: function MockShield(props: any) {
+  Shield: function MockShield(props: MockIconProps) {
     return <svg data-testid="shield-icon" {...props} />;
   }
 }));

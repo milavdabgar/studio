@@ -125,7 +125,7 @@ export default function FacultyWorkloadPage() {
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA: any, valB: any;
+        let valA: unknown, valB: unknown;
         if (sortField === 'departmentName') { // Assuming Faculty has department name directly
             valA = a.department || '';
             valB = b.department || '';

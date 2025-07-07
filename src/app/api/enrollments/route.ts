@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status');
 
     // Build filter query
-    const filter: any = {};
+    const filter: Record<string, unknown> = {};
     if (studentId) filter.studentId = studentId;
     if (courseOfferingId) filter.courseOfferingId = courseOfferingId;
     if (status) filter.status = status;
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     // Format enrollments to ensure proper id field and add courseId
     const enrollmentsWithId = enrollments.map(enrollment => ({
       ...enrollment,
-      id: enrollment.id || (enrollment as any)._id.toString(),
+      id: enrollment.id || (enrollment as unknown as { _id: { toString(): string } })._id.toString(),
       courseId: offeringToCourseMap.get(enrollment.courseOfferingId) || enrollment.courseOfferingId
     }));
 

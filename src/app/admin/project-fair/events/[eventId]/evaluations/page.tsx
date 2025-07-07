@@ -70,11 +70,11 @@ export default function EventEvaluationsPage() {
         userService.getAllUsers(),
       ]);
       setEvent(eventData);
-      setProjects(Array.isArray(projectsDataResponse) ? projectsDataResponse : ((projectsDataResponse as any)?.data?.projects || []));
+      setProjects(Array.isArray(projectsDataResponse) ? projectsDataResponse : ((projectsDataResponse as Record<string, unknown>)?.data as Record<string, unknown>)?.projects as Project[] || []);
       setDepartments(deptData);
-      setTeams(Array.isArray(teamDataResponse) ? teamDataResponse : ((teamDataResponse as any)?.data?.teams || []));
+      setTeams(Array.isArray(teamDataResponse) ? teamDataResponse : ((teamDataResponse as Record<string, unknown>)?.data as Record<string, unknown>)?.teams as ProjectTeam[] || []);
       setJuryMembers(usersData.filter(u => u.roles.some(r => ['jury', 'faculty', 'hod', 'admin', 'super_admin'].includes(r))));
-    } catch (_error) {
+    } catch {
       toast({ variant: "destructive", title: "Error", description: "Could not load event evaluations data." });
     }
     setIsLoading(false);

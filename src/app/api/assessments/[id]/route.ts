@@ -87,7 +87,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         }
     }
     
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
         ...assessmentDataToUpdate,
         updatedAt: new Date().toISOString(),
     };

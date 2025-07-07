@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 
 // Mock window.location.reload to prevent JSDOM navigation errors
-delete (window as any).location;
+delete (window as unknown as Record<string, unknown>).location;
 window.location = { 
   ...window.location, 
   reload: jest.fn() 

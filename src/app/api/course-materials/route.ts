@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     // Format materials to ensure proper id field
     const materialsWithId = materials.map(material => ({
       ...material,
-      id: material.id || (material as any)._id.toString()
+      id: material.id || (material as unknown as { _id: { toString(): string } })._id.toString()
     }));
 
     return NextResponse.json(materialsWithId);

@@ -83,7 +83,7 @@ export default function AdminResultsPage() {
         limit: currentLimit,
         ...Object.entries(filters).reduce((acc, [key, value]) => {
           if (value !== '' && value !== undefined && value !== null) {
-            acc[key as keyof ResultFilterParams] = value as any;
+            acc[key as keyof ResultFilterParams] = value as never;
           }
           return acc;
         }, {} as ResultFilterParams)
@@ -196,7 +196,7 @@ export default function AdminResultsPage() {
         const currentFilters: ResultFilterParams = {
             ...Object.entries(filters).reduce((acc, [key, value]) => {
               if (value !== '' && value !== undefined && value !== null) {
-                acc[key as keyof ResultFilterParams] = value as any;
+                acc[key as keyof ResultFilterParams] = value as never;
               }
               return acc;
             }, {} as ResultFilterParams)

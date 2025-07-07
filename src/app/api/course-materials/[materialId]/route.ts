@@ -21,7 +21,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       // Format material to ensure proper id field
       const materialWithId = {
         ...material,
-        id: (material as any).id || (material as any)._id?.toString()
+        id: (material as unknown as { id?: string; _id?: { toString(): string } }).id || (material as unknown as { id?: string; _id?: { toString(): string } })._id?.toString()
       };
       return NextResponse.json(materialWithId);
     }
@@ -44,7 +44,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         return NextResponse.json({ message: 'Title cannot be empty if provided.' }, { status: 400 });
     }
 
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       updatedAt: new Date().toISOString()
     };
     
@@ -71,7 +71,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Format material to ensure proper id field
     const materialWithId = {
       ...updatedMaterial,
-      id: (updatedMaterial as any).id || (updatedMaterial as any)._id?.toString()
+      id: (updatedMaterial as unknown as { id?: string; _id?: { toString(): string } }).id || (updatedMaterial as unknown as { id?: string; _id?: { toString(): string } })._id?.toString()
     };
 
     return NextResponse.json(materialWithId);

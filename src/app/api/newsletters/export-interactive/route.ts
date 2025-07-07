@@ -2730,7 +2730,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24', imag
                                     <div style="margin-top: 1rem;">
                                         <h4 style="font-size: 0.875rem; font-weight: 500; color: #6b7280; margin-bottom: 0.75rem;">Photo Gallery</h4>
                                         <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                                            ${item.images.map((image, _) => `
+                                            ${item.images.map((image) => `
                                                 <div style="position: relative;">
                                                     <img 
                                                         src="${processImageSrc(image.src, imageQuality)}" 
@@ -2761,7 +2761,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24', imag
             </div>
             <div class="section-content">
                 <div class="chronicles-grid">
-                    ${data.chronicles.map((event, index) => {
+                    ${data.chronicles.map((event) => {
                       const category = event.category || 'workshop';
                       const imageCount = event.images ? event.images.length : 0;
                       let imageGridClass = 'single';
@@ -2788,7 +2788,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24', imag
                                 <div class="chronicle-gallery">
                                     <h4 class="chronicle-gallery-title">Event Gallery</h4>
                                     <div class="chronicle-images ${imageGridClass}">
-                                        ${event.images.map((image, _) => `
+                                        ${event.images.map((image) => `
                                             <div class="chronicle-image-container">
                                                 <img 
                                                     src="${processImageSrc(image.src, imageQuality)}" 
@@ -2819,7 +2819,7 @@ function generateStaticHtml(data: NewsletterData, year: string = '2023-24', imag
             </div>
             <div class="section-content">
                 <div class="canvas-grid">
-                    ${data.canvas && data.canvas.length > 0 ? data.canvas.map((item, index) => {
+                    ${data.canvas && data.canvas.length > 0 ? data.canvas.map((item) => {
                       const imageCount = item.images ? item.images.length : 0;
                       let imageGridClass = 'single';
                       if (imageCount === 2) imageGridClass = 'double';

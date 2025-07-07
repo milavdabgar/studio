@@ -45,7 +45,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Format record to ensure proper id field
     const recordWithId = {
       ...updatedRecord,
-      id: (updatedRecord as any).id || (updatedRecord as any)._id?.toString()
+      id: (updatedRecord as unknown as { id?: string; _id?: { toString(): string } }).id || (updatedRecord as unknown as { id?: string; _id?: { toString(): string } })._id?.toString()
     };
 
     return NextResponse.json(recordWithId);

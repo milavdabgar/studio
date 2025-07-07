@@ -211,7 +211,7 @@ export default function UserManagementPage() {
         await userService.updateUser(currentUser.id, userData);
         toast({ title: "User Updated", description: "The user has been successfully updated." });
       } else {
-        await userService.createUser(userData as any); 
+        await userService.createUser(userData as Parameters<typeof userService.createUser>[0]); 
         toast({ title: "User Created", description: "The new user has been successfully created." });
       }
       await fetchInitialData();
@@ -243,13 +243,16 @@ export default function UserManagementPage() {
       await fetchInitialData();
       toast({ title: "Import Successful", description: `${result.newCount} users added, ${result.updatedCount} users updated. Skipped: ${result.skippedCount}` });
       if(result.errors && result.errors.length > 0){
-          result.errors.slice(0,3).forEach((err:any) => {
-            toast({variant: "warning", title: `Import Warning (Row ${err.row})`, description: err.message, duration: 7000});
+          result.errors.slice(0,3).forEach((err: unknown) => {
+            const error = err as { row?: number; message?: string };
+            toast({variant: "warning", title: `Import Warning (Row ${error.row || 'unknown'})`, description: error.message || 'Unknown error', duration: 7000});
           });
       }
     } catch (error: unknown) {
       console.error("Error processing CSV file for User Import:", error);
-      toast({ variant: "destructive", title: "Import Failed", description: (error as any).data?.message || (error as Error).message || "Could not process the CSV file." });
+      const errorMessage = error instanceof Error ? error.message : 
+        (error as { data?: { message?: string } }).data?.message || "Could not process the CSV file.";
+      toast({ variant: "destructive", title: "Import Failed", description: errorMessage });
     } finally {
       setIsSubmitting(false);
       setSelectedFile(null); 

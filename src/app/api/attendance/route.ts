@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
     const date = searchParams.get('date'); 
 
     // Build filter query
-    const filter: any = {};
+    const filter: Record<string, unknown> = {};
     if (studentId) filter.studentId = studentId;
     if (courseOfferingId) filter.courseOfferingId = courseOfferingId;
     if (date) {
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
     // Format records to ensure proper id field
     const recordsWithId = attendanceRecords.map(record => ({
       ...record,
-      id: record.id || (record as any)._id.toString()
+      id: record.id || (record as unknown as { _id: { toString(): string } })._id.toString()
     }));
 
     return NextResponse.json(recordsWithId);
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
     
     const body = await request.json();
     const recordsToCreate = Array.isArray(body) ? body : [body];
-    const createdRecords: any[] = [];
+    const createdRecords: unknown[] = [];
     const errors: string[] = [];
 
     for (const recordData of recordsToCreate) {

@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status');
 
     // Build filter query
-    const filter: any = {};
+    const filter: Record<string, unknown> = {};
     if (courseId) filter.courseId = courseId;
     if (batchId) filter.batchId = batchId;
     if (academicYear) filter.academicYear = academicYear;
@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
     // Format course offerings to ensure proper id field
     const courseOfferingsWithId = courseOfferings.map(courseOffering => ({
       ...courseOffering,
-      id: courseOffering.id || (courseOffering as any)._id.toString()
+      id: courseOffering.id || (courseOffering as unknown as { _id: { toString(): string } })._id.toString()
     }));
 
     return NextResponse.json(courseOfferingsWithId);

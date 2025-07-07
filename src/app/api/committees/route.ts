@@ -1,10 +1,9 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Committee, UserRole, SystemUser as User } from '@/types/entities';
+import type { Committee } from '@/types/entities';
 import { isValid, parseISO } from 'date-fns';
-import { userService } from '@/lib/api/users';
 import { connectMongoose } from '@/lib/mongodb';
-import { CommitteeModel, RoleModel } from '@/lib/models';
+import { CommitteeModel } from '@/lib/models';
 
 // Initialize default committees if none exist
 async function initializeDefaultCommittees() {
@@ -49,7 +48,6 @@ async function initializeDefaultCommittees() {
 
 
 const generateId = (): string => `cmt_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-const generateRoleId = (): string => `role_cmt_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
 
 
 
@@ -63,7 +61,7 @@ export async function GET() {
     // Format committees to ensure proper id field
     const committeesWithId = committees.map(committee => ({
       ...committee,
-      id: committee.id || (committee as any)._id.toString()
+      id: committee.id || (committee as Record<string, unknown>)._id?.toString()
     }));
 
     return NextResponse.json(committeesWithId);

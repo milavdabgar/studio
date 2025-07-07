@@ -166,7 +166,7 @@ export default function AdminLeavesManagementPage() {
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA: any, valB: any;
+        let valA: unknown, valB: unknown;
         if (sortField === 'facultyName') {
             const facA = faculties.find(f => f.id === a.facultyId);
             const facB = faculties.find(f => f.id === b.facultyId);

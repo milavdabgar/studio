@@ -135,7 +135,7 @@ export async function GET(
     // Format committee to ensure proper id field
     const committeeWithId = {
       ...committee,
-      id: (committee as any).id || (committee as any)._id.toString()
+      id: (committee as unknown as { id?: string; _id: { toString(): string } }).id || (committee as unknown as { id?: string; _id: { toString(): string } })._id.toString()
     };
     
     return NextResponse.json(committeeWithId);
@@ -234,7 +234,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
 
     // Cast to Committee type for consistency
-    const committee = updatedCommittee as any as Committee;
+    const committee = updatedCommittee as unknown as Committee;
     
     if (committee.name !== oldCommitteeDetails.name || committee.code !== oldCommitteeDetails.code) {
         await createOrUpdateCommitteeRoles(committee, true, oldCommitteeDetails);
@@ -253,7 +253,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Transform response
     const committeeResponse = {
       ...committee,
-      id: committee.id || (committee as any)._id?.toString()
+      id: committee.id || (committee as unknown as { _id?: { toString(): string } })._id?.toString()
     };
 
     return NextResponse.json(committeeResponse);
