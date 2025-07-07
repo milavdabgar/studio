@@ -1,0 +1,59 @@
+{
+  "planningInterval": 1800000,
+  "bugScanInterval": 900000,
+  "maxTasksPerHour": 5,
+  "maxCommitsPerDay": 50,
+  "safetyMode": true,
+  "autonomyLevel": "supervised",
+  "workingHours": {
+    "enabled": false,
+    "start": "09:00",
+    "end": "18:00",
+    "timezone": "UTC"
+  },
+  "taskPriorities": {
+    "bug-hunting": 10,
+    "security-fixes": 9,
+    "test-coverage": 8,
+    "performance-optimization": 7,
+    "code-quality": 6,
+    "feature-planning": 5,
+    "documentation": 4,
+    "refactoring": 3
+  },
+  "safety": {
+    "requireApprovalFor": [
+      "database-migrations",
+      "breaking-changes",
+      "security-related",
+      "dependency-updates"
+    ],
+    "autoMergeThreshold": 0.95,
+    "rollbackOnFailure": true,
+    "maxBranchAge": "24h"
+  },
+  "notifications": {
+    "email": null,
+    "slack": null,
+    "discord": null,
+    "webhook": null,
+    "criticalOnly": false
+  },
+  "monitoring": {
+    "healthCheckInterval": 60000,
+    "metricsRetention": "7d",
+    "alertThresholds": {
+      "testFailures": 1,
+      "buildFailures": 1,
+      "securityVulnerabilities": 0,
+      "performanceDegradation": 0.1
+    }
+  },
+  "development": {
+    "preferredLanguages": ["typescript", "javascript"],
+    "testFrameworks": ["jest", "playwright"],
+    "codeStyle": "prettier",
+    "linting": "eslint",
+    "documentation": "jsdoc"
+  }
+}
