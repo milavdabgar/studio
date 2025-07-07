@@ -141,7 +141,7 @@ describe('/api/assessments', () => {
 
     it('should map _id to id when id field is missing', async () => {
       const assessmentsWithoutId = mockAssessments.map(assessment => {
-        const { id, ...assessmentWithoutId } = assessment;
+        const { id: _removedId, ...assessmentWithoutId } = assessment;
         return assessmentWithoutId;
       });
       
@@ -507,7 +507,7 @@ describe('/api/assessments', () => {
           name: 'FINAL EXAM - COMPUTER NETWORKS',
           courseId: 'course_cs201_dce_gpp'
         })
-      } as any);
+      } as unknown as ReturnType<typeof AssessmentModel.findOne>);
       
       const dataWithDifferentCase = {
         ...validAssessmentData,

@@ -29,8 +29,8 @@ export async function loginAsAdmin(page: any) {
   // Wait for successful login and redirect
   await page.waitForURL('/dashboard', { timeout: 15000 });
   
-  // Verify we're logged in by checking for dashboard content (use more specific selector)
-  await expect(page.locator('h1').filter({ hasText: 'Welcome to your Dashboard' })).toBeVisible();
+  // Verify we're logged in by checking for faculty dashboard content
+  await expect(page.locator('h1').filter({ hasText: 'Welcome to your Faculty Dashboard' })).toBeVisible();
 }
 
 export async function loginAsFaculty(page: any) {
@@ -50,10 +50,11 @@ export async function loginAsFaculty(page: any) {
   
   await page.click('button[type="submit"]');
   
+  // Wait for successful login and redirect
   await page.waitForURL('/dashboard', { timeout: 15000 });
   
-  // Faculty will also redirect to dashboard, but with faculty role active
-  await expect(page.locator('h1').filter({ hasText: 'Welcome to your Dashboard' })).toBeVisible();
+  // Verify we're logged in by checking for faculty dashboard content
+  await expect(page.locator('h1').filter({ hasText: 'Welcome to your Faculty Dashboard' })).toBeVisible();
 }
 
 export async function loginAsStudent(page: any) {
@@ -73,10 +74,10 @@ export async function loginAsStudent(page: any) {
   
   await page.click('button[type="submit"]');
   
-  await page.waitForURL('/dashboard', { timeout: 15000 });
+  await page.waitForURL('/student', { timeout: 15000 });
   
-  // Student will also redirect to dashboard, but with student role active
-  await expect(page.locator('h1').filter({ hasText: 'Welcome to your Dashboard' })).toBeVisible();
+  // Verify we're logged in by checking for student dashboard content
+  await expect(page.locator('h1').filter({ hasText: 'Welcome to your Student Dashboard' })).toBeVisible();
 }
 
 /**

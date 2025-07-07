@@ -34,7 +34,7 @@ export default function ProjectEventDashboardPage() {
         
         // Fetch projects for this event
         const projectsData = await projectService.getAllProjects({ eventId: eventId });
-        setProjects(Array.isArray(projectsData) ? projectsData : ((projectsData as any)?.data?.projects || []));
+        setProjects(Array.isArray(projectsData) ? projectsData : ((projectsData as { data?: { projects?: Project[] } })?.data?.projects || []));
 
 
         // Fetch statistics for this event
@@ -47,7 +47,7 @@ export default function ProjectEventDashboardPage() {
           averageScore: 0, 
           departmentWise: {}, 
           departmentStats: [], 
-          statusCounts: {} as any 
+          statusCounts: {} as Record<string, number> 
         });
 
 

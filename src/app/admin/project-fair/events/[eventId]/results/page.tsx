@@ -62,14 +62,14 @@ export default function EventResultsPage() {
         
         const allDepartments = await departmentService.getAllDepartments();
         const allTeamsResponse = await projectTeamService.getAllTeams({ eventId });
-        const allTeams = Array.isArray(allTeamsResponse) ? allTeamsResponse : ((allTeamsResponse as any)?.data?.teams || []);
+        const allTeams = Array.isArray(allTeamsResponse) ? allTeamsResponse : ((allTeamsResponse as { data?: { teams?: Array<{ id: string; name: string }> } })?.data?.teams || []);
 
         const enrichWinners = (projects: (Project & { rank?: number })[]): EnrichedWinner[] => {
           return projects.map(p => ({
             ...p,
             rank: p.rank || 0,
-            teamName: allTeams?.find((t: any) => t.id === p.teamId)?.name || 'N/A',
-            departmentName: allDepartments.find(d => d.id === (typeof p.department === 'string' ? p.department : (p.department as any)?.id))?.name || 'N/A',
+            teamName: allTeams?.find((t) => t.id === p.teamId)?.name || 'N/A',
+            departmentName: allDepartments.find(d => d.id === (typeof p.department === 'string' ? p.department : (p.department as { id?: string })?.id))?.name || 'N/A',
           }));
         };
         
@@ -83,7 +83,7 @@ export default function EventResultsPage() {
 
         // Mock certificate stats
         const allProjectsResponse = await projectService.getAllProjects({eventId});
-        const allProjects = Array.isArray(allProjectsResponse) ? allProjectsResponse : ((allProjectsResponse as any)?.data?.projects || []);
+        const allProjects = Array.isArray(allProjectsResponse) ? allProjectsResponse : ((allProjectsResponse as { data?: { projects?: Project[] } })?.data?.projects || []);
         const participationTotal = allProjects.length;
         const deptWinnersTotal = deptWinnersEnriched.reduce((sum, dept) => sum + dept.winners.length, 0);
         const instWinnersTotal = (winnersData.instituteWinners || []).length;
@@ -126,7 +126,7 @@ export default function EventResultsPage() {
           department: 'department-winner',
           institute: 'institute-winner'
       }
-      const certsToProcess = await projectService.generateProjectCertificates(event.id, typeMapping[certType] as any);
+      const certsToProcess = await projectService.generateProjectCertificates(event.id, typeMapping[certType] as 'participation' | 'department-winner' | 'institute-winner');
 
       if (actionType === 'email') {
           const certIds = certsToProcess.map(c => c.projectId); // Assuming cert has projectId

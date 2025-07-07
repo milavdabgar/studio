@@ -21,7 +21,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       // Format curriculum to ensure proper id field
       const curriculumWithId = {
         ...curriculum,
-        id: (curriculum as unknown as { id?: string; _id: { toString(): string } }).id || (curriculum as unknown as { id?: string; _id: { toString(): string } })._id.toString()
+        id: curriculum.id || curriculum._id.toString()
       };
       return NextResponse.json(curriculumWithId);
     }
@@ -56,10 +56,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
     
     // Check for duplicate version
-    if (curriculumDataToUpdate.version && curriculumDataToUpdate.version.trim().toLowerCase() !== (existingCurriculum as any).version.toLowerCase()) {
+    if (curriculumDataToUpdate.version && curriculumDataToUpdate.version.trim().toLowerCase() !== (existingCurriculum as { version: string }).version.toLowerCase()) {
         const duplicateCurriculum = await CurriculumModel.findOne({
           id: { $ne: id },
-          programId: curriculumDataToUpdate.programId || (existingCurriculum as any).programId,
+          programId: curriculumDataToUpdate.programId || (existingCurriculum as { programId: string }).programId,
           version: { $regex: new RegExp(`^${curriculumDataToUpdate.version.trim()}$`, 'i') }
         });
         
@@ -68,7 +68,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         }
     }
 
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       ...curriculumDataToUpdate,
       updatedAt: new Date().toISOString()
     };
@@ -90,7 +90,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Format curriculum to ensure proper id field
     const curriculumWithId = {
       ...updatedCurriculum,
-      id: (updatedCurriculum as any).id || (updatedCurriculum as any)._id.toString()
+      id: updatedCurriculum.id || updatedCurriculum._id.toString()
     };
 
     return NextResponse.json(curriculumWithId);

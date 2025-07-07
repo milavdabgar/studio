@@ -46,9 +46,9 @@ export default function ExamResultEntryPage() {
           setExamination(examData);
 
           // Check if the examination has a timetable property (needs type definition fix)
-          const timetable = (examData as any).examinationTimeTable;
+          const timetable = (examData as unknown as { examinationTimeTable?: Array<{ courseId: string }> }).examinationTimeTable;
           if (timetable && timetable.length > 0) {
-            const courseIds = Array.from(new Set(timetable.map((entry: any) => entry.courseId)));
+            const courseIds = Array.from(new Set(timetable.map((entry) => entry.courseId)));
             const allCourses = await courseService.getAllCourses();
             const relevantCourses = allCourses.filter(c => courseIds.includes(c.id));
             setCoursesInExam(relevantCourses);

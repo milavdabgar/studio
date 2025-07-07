@@ -27,10 +27,12 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
     // Test batch creation form
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
     if (await addButton.isVisible()) {
+      await expect(addButton).toBeEnabled();
       await addButton.click();
       
       // Verify form fields
-      await expect(page.locator('[name="batchName"], [name="name"]')).toBeVisible({ timeout: 5000 });
+      await page.waitForSelector('[name="batchName"], [name="name"]', { timeout: 10000 });
+      await expect(page.locator('[name="batchName"], [name="name"]')).toBeVisible();
       await expect(page.locator('[name="programId"], [name="program"]')).toBeVisible();
       await expect(page.locator('[name="academicYear"]')).toBeVisible();
       
@@ -56,9 +58,11 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
     // Test building creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
     if (await addButton.isVisible()) {
+      await expect(addButton).toBeEnabled();
       await addButton.click();
       
-      await expect(page.locator('[name="buildingName"], [name="name"]')).toBeVisible({ timeout: 5000 });
+      await page.waitForSelector('[name="buildingName"], [name="name"]', { timeout: 10000 });
+      await expect(page.locator('[name="buildingName"], [name="name"]')).toBeVisible();
       await expect(page.locator('[name="buildingCode"], [name="code"]')).toBeVisible();
       
       await fillForm(page, {
@@ -79,9 +83,11 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
     // Test curriculum creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
     if (await addButton.isVisible()) {
+      await expect(addButton).toBeEnabled();
       await addButton.click();
       
-      await expect(page.locator('[name="curriculumName"], [name="name"]')).toBeVisible({ timeout: 5000 });
+      await page.waitForSelector('[name="curriculumName"], [name="name"]', { timeout: 10000 });
+      await expect(page.locator('[name="curriculumName"], [name="name"]')).toBeVisible();
       await expect(page.locator('[name="programId"], [name="program"]')).toBeVisible();
       
       await fillForm(page, {
@@ -102,9 +108,11 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
     // Test department creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
     if (await addButton.isVisible()) {
+      await expect(addButton).toBeEnabled();
       await addButton.click();
       
-      await expect(page.locator('[name="departmentName"], [name="name"]')).toBeVisible({ timeout: 5000 });
+      await page.waitForSelector('[name="departmentName"], [name="name"]', { timeout: 10000 });
+      await expect(page.locator('[name="departmentName"], [name="name"]')).toBeVisible();
       await expect(page.locator('[name="departmentCode"], [name="code"]')).toBeVisible();
       
       await fillForm(page, {
@@ -125,9 +133,11 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
     // Test institute creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
     if (await addButton.isVisible()) {
+      await expect(addButton).toBeEnabled();
       await addButton.click();
       
-      await expect(page.locator('[name="instituteName"], [name="name"]')).toBeVisible({ timeout: 5000 });
+      await page.waitForSelector('[name="instituteName"], [name="name"]', { timeout: 10000 });
+      await expect(page.locator('[name="instituteName"], [name="name"]')).toBeVisible();
       await expect(page.locator('[name="instituteCode"], [name="code"]')).toBeVisible();
       
       await fillForm(page, {
@@ -148,9 +158,11 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
     // Test program creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
     if (await addButton.isVisible()) {
+      await expect(addButton).toBeEnabled();
       await addButton.click();
       
-      await expect(page.locator('[name="programName"], [name="name"]')).toBeVisible({ timeout: 5000 });
+      await page.waitForSelector('[name="programName"], [name="name"]', { timeout: 10000 });
+      await expect(page.locator('[name="programName"], [name="name"]')).toBeVisible();
       await expect(page.locator('[name="programCode"], [name="code"]')).toBeVisible();
       
       await fillForm(page, {
@@ -171,9 +183,11 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
     // Test role creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
     if (await addButton.isVisible()) {
+      await expect(addButton).toBeEnabled();
       await addButton.click();
       
-      await expect(page.locator('[name="roleName"], [name="name"]')).toBeVisible({ timeout: 5000 });
+      await page.waitForSelector('[name="roleName"], [name="name"]', { timeout: 10000 });
+      await expect(page.locator('[name="roleName"], [name="name"]')).toBeVisible();
       
       await fillForm(page, {
         roleName: 'Test Role',
@@ -193,9 +207,11 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
     // Test assignment creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
     if (await addButton.isVisible()) {
+      await expect(addButton).toBeEnabled();
       await addButton.click();
       
-      await expect(page.locator('[name="assignmentName"], [name="title"]')).toBeVisible({ timeout: 5000 });
+      await page.waitForSelector('[name="assignmentName"], [name="title"]', { timeout: 10000 });
+      await expect(page.locator('[name="assignmentName"], [name="title"]')).toBeVisible();
       await expect(page.locator('[name="courseId"], [name="course"]')).toBeVisible();
       
       await fillForm(page, {
@@ -216,9 +232,11 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
     // Test course creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
     if (await addButton.isVisible()) {
+      await expect(addButton).toBeEnabled();
       await addButton.click();
       
-      await expect(page.locator('[name="courseName"], [name="name"]')).toBeVisible({ timeout: 5000 });
+      await page.waitForSelector('[name="courseName"], [name="name"]', { timeout: 10000 });
+      await expect(page.locator('[name="courseName"], [name="name"]')).toBeVisible();
       await expect(page.locator('[name="courseCode"], [name="code"]')).toBeVisible();
       
       await fillForm(page, {
@@ -239,9 +257,11 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
     // Test enrollment creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
     if (await addButton.isVisible()) {
+      await expect(addButton).toBeEnabled();
       await addButton.click();
       
-      await expect(page.locator('[name="studentId"], [name="student"]')).toBeVisible({ timeout: 5000 });
+      await page.waitForSelector('[name="studentId"], [name="student"]', { timeout: 10000 });
+      await expect(page.locator('[name="studentId"], [name="student"]')).toBeVisible();
       await expect(page.locator('[name="courseOfferingId"], [name="courseOffering"]')).toBeVisible();
       
       await submitForm(page);
@@ -257,9 +277,11 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
     // Test room creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
     if (await addButton.isVisible()) {
+      await expect(addButton).toBeEnabled();
       await addButton.click();
       
-      await expect(page.locator('[name="roomNumber"], [name="number"]')).toBeVisible({ timeout: 5000 });
+      await page.waitForSelector('[name="roomNumber"], [name="number"]', { timeout: 10000 });
+      await expect(page.locator('[name="roomNumber"], [name="number"]')).toBeVisible();
       await expect(page.locator('[name="buildingId"], [name="building"]')).toBeVisible();
       
       await fillForm(page, {

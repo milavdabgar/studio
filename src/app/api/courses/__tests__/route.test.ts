@@ -2,7 +2,6 @@ import { NextRequest } from 'next/server';
 import { GET, POST } from '../route';
 import { CourseModel } from '@/lib/models';
 import { connectMongoose } from '@/lib/mongodb';
-import { Document } from 'mongoose';
 
 // Mock console methods to suppress expected error/warning messages during tests
 const originalConsoleError = console.error;
@@ -140,7 +139,7 @@ describe('/api/courses', () => {
     });
 
     it('should return 400 when subject code is empty', async () => {
-      const { subcode, ...invalidData } = validCourseData;
+      const { subcode: _subcode, ...invalidData } = validCourseData;
       
       const request = new NextRequest('http://localhost/api/courses', {
         method: 'POST',
@@ -155,7 +154,7 @@ describe('/api/courses', () => {
     });
 
     it('should return 400 when subject name is empty', async () => {
-      const { subjectName, ...invalidData } = validCourseData;
+      const { subjectName: _subjectName, ...invalidData } = validCourseData;
       
       const request = new NextRequest('http://localhost/api/courses', {
         method: 'POST',
@@ -170,7 +169,7 @@ describe('/api/courses', () => {
     });
 
     it('should return 400 when department ID is missing', async () => {
-      const { departmentId, ...invalidData } = validCourseData;
+      const { departmentId: _departmentId, ...invalidData } = validCourseData;
       
       const request = new NextRequest('http://localhost/api/courses', {
         method: 'POST',
@@ -185,7 +184,7 @@ describe('/api/courses', () => {
     });
 
     it('should return 400 when program ID is missing', async () => {
-      const { programId, ...invalidData } = validCourseData;
+      const { programId: _programId, ...invalidData } = validCourseData;
       
       const request = new NextRequest('http://localhost/api/courses', {
         method: 'POST',
@@ -215,7 +214,7 @@ describe('/api/courses', () => {
     });
 
     it('should return 400 when category is empty', async () => {
-      const { category, ...invalidData } = validCourseData;
+      const { category: _removedCategory, ...invalidData } = validCourseData;
       
       const request = new NextRequest('http://localhost/api/courses', {
         method: 'POST',

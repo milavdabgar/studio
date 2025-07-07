@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Faculty, FacultyProfile, User } from '@/types/entities'; 
+import type { Faculty, User } from '@/types/entities'; 
 import { userService } from '@/lib/api/users';
 import { connectMongoose } from '@/lib/mongodb';
 import { FacultyModel } from '@/lib/models';
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     if (faculty) {
       const facultyWithId: Faculty = {
         ...faculty,
-        id: faculty.id || (faculty as any)._id?.toString() || id
+        id: faculty.id || faculty._id?.toString() || id
       };
       return NextResponse.json(facultyWithId);
     }
@@ -61,7 +61,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (facultyDataToUpdate.staffCode && facultyDataToUpdate.staffCode.trim() !== existingFaculty.staffCode) {
       const duplicateStaffCode = await FacultyModel.findOne({
         staffCode: facultyDataToUpdate.staffCode.trim(),
-        _id: { $ne: (existingFaculty as any)._id }
+        _id: { $ne: existingFaculty._id }
       });
       if (duplicateStaffCode) {
         return NextResponse.json({ message: `Staff code '${facultyDataToUpdate.staffCode.trim()}' already exists.` }, { status: 409 });
@@ -72,7 +72,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (facultyDataToUpdate.instituteEmail && facultyDataToUpdate.instituteEmail.trim().toLowerCase() !== existingFaculty.instituteEmail?.toLowerCase()) {
       const duplicateEmail = await FacultyModel.findOne({
         instituteEmail: { $regex: new RegExp(`^${facultyDataToUpdate.instituteEmail.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') },
-        _id: { $ne: (existingFaculty as any)._id }
+        _id: { $ne: existingFaculty._id }
       });
       if (duplicateEmail) {
         return NextResponse.json({ message: `Institute email '${facultyDataToUpdate.instituteEmail.trim()}' is already in use.` }, { status: 409 });
@@ -80,7 +80,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
 
     // Prepare update data with explicit field handling
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       updatedAt: new Date().toISOString()
     };
 
@@ -98,7 +98,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     fieldsToUpdate.forEach(field => {
       if (facultyDataToUpdate.hasOwnProperty(field)) {
-        const value = (facultyDataToUpdate as any)[field];
+        const value = (facultyDataToUpdate as Record<string, unknown>)[field];
         if (value !== undefined) {
           if (typeof value === 'string') {
             updateData[field] = value.trim();
@@ -129,7 +129,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     // Update the faculty
     const updatedFaculty = await FacultyModel.findOneAndUpdate(
-      { _id: (existingFaculty as any)._id },
+      { _id: existingFaculty._id },
       updateData,
       { new: true, lean: true }
     ) as Faculty | null;
@@ -173,7 +173,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
         // Update roles based on staffCategory if it changed
         if (updatedFaculty.staffCategory !== existingFaculty.staffCategory) {
-          const baseRole = updatedFaculty.staffCategory === 'Teaching' ? 'faculty' : (updatedFaculty.staffCategory?.toLowerCase() + '_staff' as any) || 'faculty';
+          const baseRole = updatedFaculty.staffCategory === 'Teaching' ? 'faculty' : (updatedFaculty.staffCategory?.toLowerCase() + '_staff') || 'faculty';
           if (existingUserRecord) {
             const newRoles = existingUserRecord.roles.filter(r => !r.endsWith('_staff') && r !== 'faculty');
             if (!newRoles.includes(baseRole)) {
@@ -195,7 +195,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Format response
     const facultyToReturn: Faculty = {
       ...updatedFaculty,
-      id: updatedFaculty.id || (updatedFaculty as any)._id?.toString() || id
+      id: updatedFaculty.id || updatedFaculty._id?.toString() || id
     };
 
     return NextResponse.json(facultyToReturn);

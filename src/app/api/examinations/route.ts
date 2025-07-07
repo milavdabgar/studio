@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
     const programId = searchParams.get('programId');
 
     // Build filter query
-    const filter: any = {};
+    const filter: Record<string, unknown> = {};
     if (academicYear) filter.academicYear = academicYear;
     if (examType) filter.examType = examType;
     if (status) filter.status = status;
@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
     // Format examinations to ensure proper id field
     const examinationsWithId = examinations.map(examination => ({
       ...examination,
-      id: examination.id || (examination as any)._id.toString()
+      id: examination.id || examination._id.toString()
     }));
 
     return NextResponse.json(examinationsWithId);

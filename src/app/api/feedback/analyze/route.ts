@@ -2,7 +2,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { FeedbackDataRow, AnalysisResult, SubjectScore, FacultyScore, SemesterScore, BranchScore, TermYearScore } from '@/types/feedback';
 import { parse } from 'papaparse';
-import { marked } from 'marked';
 import mongoose from 'mongoose';
 import { FeedbackAnalysisModel } from '@/lib/models';
 

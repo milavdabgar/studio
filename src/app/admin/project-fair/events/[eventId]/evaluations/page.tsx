@@ -153,7 +153,7 @@ export default function EventEvaluationsPage() {
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
-        let valA: any, valB: any;
+        let valA: unknown, valB: unknown;
         // Populate valA and valB based on sortField
         if (sortField === 'teamName') { valA = teams.find(t => t.id === a.teamId)?.name || ''; valB = teams.find(t => t.id === b.teamId)?.name || ''; }
         else if (sortField === 'departmentName') { valA = departments.find(d => d.id === a.department)?.name || ''; valB = departments.find(d => d.id === b.department)?.name || ''; }
