@@ -1,6 +1,8 @@
 // src/app/api/student-scores/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
 import type { StudentAssessmentScore } from '@/types/entities';
+import type { IStudentAssessmentScore, IAssessment, IStudent } from '@/lib/models';
+import type { Document, FlattenMaps } from 'mongoose';
 import { notificationService } from '@/lib/api/notifications';
 import { connectMongoose } from '@/lib/mongodb';
 import { StudentAssessmentScoreModel, AssessmentModel, StudentModel } from '@/lib/models';
@@ -16,16 +18,16 @@ export async function GET(request: NextRequest) {
     const studentId = searchParams.get('studentId');
 
     // Build filter query
-    const filter: any = {};
+    const filter: Record<string, unknown> = {};
     if (assessmentId) filter.assessmentId = assessmentId;
     if (studentId) filter.studentId = studentId;
 
-    const scores = await StudentAssessmentScoreModel.find(filter).lean();
+    const scores = await StudentAssessmentScoreModel.find(filter).lean() as unknown as FlattenMaps<IStudentAssessmentScore>[];
 
     // Format scores to ensure proper id field
-    const scoresWithId = scores.map((score: any) => ({
+    const scoresWithId = scores.map((score) => ({
       ...score,
-      id: (score as any).id || (score as any)._id.toString()
+      id: score.id || score._id.toString()
     }));
 
     if (assessmentId && studentId) {
@@ -88,31 +90,31 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'studentId and assessmentId are required.' }, { status: 400 });
     }
     
-    const assessment = await AssessmentModel.findOne({ id: assessmentId }).lean();
+    const assessment = await AssessmentModel.findOne({ id: assessmentId }).lean() as FlattenMaps<IAssessment> | null;
     if (!assessment) {
         return NextResponse.json({ message: 'Assessment not found.' }, { status: 404 });
     }
-    const student = await StudentModel.findOne({ id: studentId }).lean();
+    const student = await StudentModel.findOne({ id: studentId }).lean() as FlattenMaps<IStudent> | null;
     if (!student) {
         return NextResponse.json({ message: 'Student not found.' }, { status: 404 });
     }
 
     const score = scoreStr !== undefined ? parseFloat(scoreStr) : undefined;
-    if (score !== undefined && (isNaN(score) || score < 0 || score > (assessment as any).maxMarks)) {
-        return NextResponse.json({ message: `Score must be a non-negative number and not exceed assessment max marks (${(assessment as any).maxMarks}).` }, { status: 400 });
+    if (score !== undefined && (isNaN(score) || score < 0 || score > assessment.maxMarks)) {
+        return NextResponse.json({ message: `Score must be a non-negative number and not exceed assessment max marks (${assessment.maxMarks}).` }, { status: 400 });
     }
 
     const currentTimestamp = new Date().toISOString();
     const existingRecord = await StudentAssessmentScoreModel.findOne({
       studentId,
       assessmentId
-    });
+    }) as Document & IStudentAssessmentScore | null;
 
-    let savedScoreRecord: any;
+    let savedScoreRecord: (FlattenMaps<IStudentAssessmentScore> & { _id: unknown }) | null;
 
     if (existingRecord) {
       // Update existing submission/score record
-      const updateData: any = {
+      const updateData: Partial<IStudentAssessmentScore> & { updatedAt: string } = {
         updatedAt: currentTimestamp
       };
       
@@ -142,10 +144,10 @@ export async function POST(request: NextRequest) {
       }
 
       savedScoreRecord = await StudentAssessmentScoreModel.findByIdAndUpdate(
-        (existingRecord as any)._id,
+        existingRecord._id,
         updateData,
         { new: true, lean: true }
-      );
+      ) as (FlattenMaps<IStudentAssessmentScore> & { _id: unknown }) | null;
     } else {
       // Create new submission/score record
       const newScoreData = {
@@ -166,13 +168,21 @@ export async function POST(request: NextRequest) {
       
       const newScore = new StudentAssessmentScoreModel(newScoreData);
       await newScore.save();
-      savedScoreRecord = (newScore as any).toJSON();
+      const scoreDoc = newScore.toJSON();
+      savedScoreRecord = {
+        ...scoreDoc,
+        _id: scoreDoc._id
+      } as FlattenMaps<IStudentAssessmentScore> & { _id: unknown };
     }
 
     // Format score to ensure proper id field
+    if (!savedScoreRecord) {
+      throw new Error('Failed to save score record');
+    }
+    
     const scoreWithId = {
       ...savedScoreRecord,
-      id: (savedScoreRecord as any).id || (savedScoreRecord as any)._id.toString()
+      id: savedScoreRecord.id || savedScoreRecord._id?.toString()
     };
 
     // Notification Trigger
@@ -180,7 +190,7 @@ export async function POST(request: NextRequest) {
         try {
             await notificationService.createNotification({
               userId: studentId, 
-              message: `Your submission for '${(assessment as any).name}' has been graded. Score: ${(scoreWithId as any).score !== undefined ? (scoreWithId as any).score : 'N/A'}.`,
+              message: `Your submission for '${assessment.name}' has been graded. Score: ${scoreWithId.score !== undefined ? scoreWithId.score : 'N/A'}.`,
               type: 'assignment_graded',
               link: `/student/assignments/${assessmentId}`, 
             });
@@ -188,11 +198,11 @@ export async function POST(request: NextRequest) {
             console.error("Failed to create grading notification for student:", notifError);
           }
     } else if (filesArray.length > 0 || comments) { // This implies a student submission
-        if ((assessment as any).facultyId) {
+        if (assessment.facultyId) {
           try {
             await notificationService.createNotification({
-              userId: (assessment as any).facultyId, 
-              message: `New submission for '${(assessment as any).name}' by ${(student as any).firstName || (student as any).enrollmentNumber}.`,
+              userId: assessment.facultyId, 
+              message: `New submission for '${assessment.name}' by ${student.firstName || student.enrollmentNumber}.`,
               type: 'assignment_new',
               link: `/faculty/assessments/grade?assessmentId=${assessmentId}&studentId=${studentId}`, 
             });

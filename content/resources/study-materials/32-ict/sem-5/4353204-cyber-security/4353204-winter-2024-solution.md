@@ -32,12 +32,7 @@ The CIA triad represents the three fundamental principles of information securit
 
 **Diagram:**
 
-```mermaid
-graph TD
-    A[CIA Triad] --> B[Confidentiality]
-    A --> C[Integrity]
-    A --> D[Availability]
-```
+![CIA Triad](diagrams/cia-triad.svg)
 
 **Mnemonic:** "CIA Keeps Information Properly Accessible"
 
@@ -59,27 +54,7 @@ graph TD
 
 **Diagram:**
 
-```goat
-+----------------+     +----------------+     +----------------+
-|                |     |                |     |                |
-|   Adversary    +---->+     Threat     +---->+     Attack     |
-|                |     |                |     |                |
-+----------------+     +----------------+     +-------+--------+
-                                                      |
-                                                      v
-+----------------+     +----------------+     +----------------+
-|                |     |                |     |                |
-|      Risk      +<----+  Vulnerability +<----+System Resource |
-|                |     |                |     |                |
-+-------+--------+     +----------------+     +----------------+
-        |
-        v
-+----------------+     +----------------+
-|                |     |                |
-|Countermeasure  +<----+Security Policy |
-|                |     |                |
-+----------------+     +----------------+
-```
+![Security Threat Model](diagrams/security-threat-model.svg)
 
 **Mnemonic:** "ARTSVSC: All Resources Typically Secure Various System Components"
 
@@ -97,14 +72,7 @@ MD5 (Message Digest 5) is a widely used cryptographic hash function that produce
 
 **Diagram:**
 
-```mermaid
-graph LR
-    A[Input Message] --> B[Padding]
-    B --> C[Divide into Blocks]
-    C --> D[Process Blocks]
-    D --> E[Four Processing Rounds]
-    E --> F[128-bit Output Hash]
-```
+![MD5 Algorithm](diagrams/md5-algorithm.svg)
 
 - **Weakness**: Not collision-resistant; shouldn't be used for security-critical applications
 - **Usage**: File integrity verification and non-security critical applications
@@ -143,22 +111,7 @@ Public key cryptography uses two mathematically related keys for secure communic
 
 **Diagram:**
 
-```goat
-                Public Key
-+-------------+ -------> +-------------+
-|             |          |             |
-|    Alice    |  Message | Encryption  | --> Ciphertext
-|   (Sender)  |          |             |
-+-------------+          +-------------+
-                                |
-                                v
-+-------------+          +-------------+
-|             |          |             |
-|     Bob     | <------- | Decryption  | <-- Ciphertext
-|  (Receiver) |          |             |
-+-------------+  Private +-------------+
-                   Key
-```
+![Public Key Cryptography Example](diagrams/public-key-cryptography-example.svg)
 
 **Mnemonic:** "Public to Lock, Private to Unlock"
 
@@ -175,15 +128,7 @@ Public key cryptography uses two mathematically related keys for secure communic
 
 **Diagram:**
 
-```mermaid
-graph LR
-    A[Client] --> B[Packet Filter]
-    B -->|Allowed Packets| C[Server]
-    B -->|Blocked Packets| D[Dropped]
-
-    E[Client] --> F[Application Proxy]
-    F -->|New Connection| G[Server]
-```
+![Packet Filter vs Application Proxy](diagrams/packet-filter-vs-proxy.svg)
 
 **Mnemonic:** "Packets Check Headers, Proxies Check Content"
 
@@ -197,6 +142,10 @@ Multi-factor authentication (MFA) requires users to provide two or more verifica
 - **Something you know**: Password, PIN, security question
 - **Something you have**: Mobile phone, smart card, security token
 - **Something you are**: Fingerprint, facial recognition, voice pattern
+
+**Diagram:**
+
+![Multi-Factor Authentication](diagrams/multi-factor-authentication.svg)
 
 **Mnemonic:** "Know, Have, Are - Triple Security"
 
@@ -214,15 +163,7 @@ Password verification is the process of authenticating user credentials against 
 
 **Diagram:**
 
-```mermaid
-flowchart LR
-    A[User Input] --> B[Hash Function]
-    B --> C[Compare Hashes]
-    D[Stored Hash] --> C
-    C --> E{Match?}
-    E --> |Yes| F[Access Granted]
-    E --> |No| G[Access Denied]
-```
+![Password Verification Process](diagrams/password-verification-process.svg)
 
 **Mnemonic:** "Enter, Hash, Compare, Decide"
 
@@ -275,15 +216,7 @@ A Virtual Private Network (VPN) is a technology that:
 
 **Diagram:**
 
-```goat
-                Encrypted Tunnel
-+-------------+ ================ +-------------+
-|             |                  |             |
-|    User     |     Internet     |   Private   |
-|   Device    |                  |   Network   |
-+-------------+                  +-------------+
-   Public IP                       Private IP
-```
+![VPN Architecture](diagrams/vpn-architecture.svg)
 
 **Mnemonic:** "Tunnel, Encrypt, Protect, Connect"
 
@@ -304,14 +237,7 @@ Web security threats have significant impacts on organizations and individuals:
 
 **Diagram:**
 
-```mermaid
-graph TD
-    A[Web Security Threats] --> B[Data Breaches]
-    A --> C[Financial Loss]
-    A --> D[Operational Disruption]
-    A --> E[Reputation Damage]
-    A --> F[Legal Consequences]
-```
+![Web Security Threats Impact](diagrams/web-security-threats-impact.svg)
 
 **Mnemonic:** "DFROL: Data, Finances, Resources, Opinion, Legal"
 
@@ -345,12 +271,7 @@ HTTPS (Hypertext Transfer Protocol Secure) is a secure version of HTTP:
 
 **Diagram:**
 
-```mermaid
-graph LR
-    A[Browser] -->|Encrypted Data| B[TLS/SSL Layer]
-    B -->|Secure Connection| C[Web Server]
-    D[Certificate Authority] -->|Validates| B
-```
+![HTTPS Process](diagrams/https-process.svg)
 
 **Mnemonic:** "Secured Pages Show Padlock"
 
@@ -368,21 +289,7 @@ graph LR
 
 **Diagram:**
 
-```goat
-    Machine in the Middle Attack
-
-    A                   M                   B
-+-------+           +--------+           +-------+
-|       |           |        |           |       |
-| Alice |---------->| Hacker |---------->|  Bob  |
-|       |           |        |           |       |
-+-------+           +--------+           +-------+
-    ^                   |                   |
-    |                   v                   |
-Thinks                Sees               Thinks
-talking             all data            talking
-to Bob             exchanged           to Alice
-```
+![Man-in-the-Middle Attack](diagrams/mitm-attack.svg)
 
 **Mnemonic:** "SEVeM: Social Engineers Voice Messages and Mediate connections"
 
@@ -418,13 +325,7 @@ to Bob             exchanged           to Alice
 
 **Diagram:**
 
-```mermaid
-graph TD
-    A[Hacker Types] --> B[White Hat: Protect]
-    A --> C[Black Hat: Attack]
-    A --> D[Gray Hat: Mixed]
-    A --> E[Script Kiddie: Amateur]
-```
+![Hacker Types](diagrams/hacker-types.svg)
 
 **Mnemonic:** "White Protects, Black Attacks, Gray Mixes, Kids Script"
 
@@ -450,15 +351,7 @@ SSH (Secure Shell) protocol stack provides secure remote access and file transfe
 
 **Diagram:**
 
-```mermaid
-graph TD
-    A[SSH Protocol Stack] --> B[Transport Layer]
-    A --> C[User Authentication Layer]
-    A --> D[Connection Layer]
-    B --> E[Encryption & Server Authentication]
-    C --> F[Client Identity Verification]
-    D --> G[Channel Management]
-```
+![SSH Protocol Stack](diagrams/ssh-protocol-stack.svg)
 
 **Mnemonic:** "Transport Secures, Users Authenticate, Connections Multiplex"
 
@@ -491,22 +384,7 @@ Scanning is the process of actively probing a target system to identify live hos
 
 **Diagram:**
 
-```goat
-+-------------+          +-------------+
-|             |--Probe-->|             |
-|   Scanner   |          |   Target    |
-|             |<-Reply---|             |
-+-------------+          +-------------+
-       |
-       v
-+---------------+
-|  Open Ports   |
-|    Active     |
-|   Services    |
-|  Potential    |
-|Vulnerabilities|
-+---------------+
-```
+![Port Scanning Process](diagrams/port-scanning-ethical-hacking.svg)
 
 **Mnemonic:** "PONS: Ports Open, Network Services"
 
@@ -523,16 +401,7 @@ Scanning is the process of actively probing a target system to identify live hos
 
 **Diagram:**
 
-```mermaid
-graph TD
-    A[Injection Attack] --> B[Input Vulnerable Application]
-    B --> C[Execute Malicious Code]
-    C --> D[Access Database/System]
-
-    E[Phishing Attack] --> F[Send Fraudulent Message]
-    F --> G[User Clicks Malicious Link]
-    G --> H[Steal Credentials/Data]
-```
+![Injection vs Phishing Attacks](diagrams/injection-vs-phishing-attacks.svg)
 
 **Mnemonic:** "Inject Code, Phish People"
 
@@ -564,13 +433,7 @@ Disk forensics is the examination of storage media to recover, analyze, and pres
 
 **Diagram:**
 
-```mermaid
-graph TD
-    A[Password Cracking] --> B[Brute Force]
-    A --> C[Dictionary Attack]
-    A --> D[Rainbow Table]
-    A --> E[Social Engineering]
-```
+![Password Cracking Methods](diagrams/password-cracking-methods.svg)
 
 **Mnemonic:** "BDRS: Brute Dictionary Rainbow Social"
 
@@ -591,22 +454,7 @@ A Remote Administration Tool (RAT) is software that enables remote control of a 
 
 **Diagram:**
 
-```goat
-+-------------+        Control        +-------------+
-|             |<--------------------- |             |
-|   Victim    |                       |  Attacker   |
-|  Computer   |--------------------->>|  Computer   |
-| (RAT Server)|        Data           | (RAT Client)|
-+-------------+                       +-------------+
-     ^    |
-     |    v
-+--------------+
-|  File System |
-|   Webcam     |
-|   Keyboard   |
-|   Screen     |
-+--------------+
-```
+![RAT Attack Architecture](diagrams/rat-attack-architecture.svg)
 
 **Mnemonic:** "RCASD: Remote Control Access Steals Data"
 
@@ -640,12 +488,7 @@ Mobile forensics is the science of recovering digital evidence from mobile devic
 
 **Diagram:**
 
-```mermaid
-graph LR
-    A[Mobile Device] --> B[Data Acquisition]
-    B --> C[Data Analysis]
-    C --> D[Evidence Reporting]
-```
+![Mobile Forensics Process](diagrams/mobile-forensics-process.svg)
 
 **Mnemonic:** "GEAR: Get Evidence, Analyze, Report"
 
@@ -664,12 +507,6 @@ graph LR
 
 **Diagram:**
 
-```mermaid
-graph TD
-    A[Attack Types] --> B[Salami: Small Thefts]
-    A --> C[Web Jacking: Site Hijacking]
-    A --> D[Data Diddling: Alter Input]
-    A --> E[Ransomware: Encrypt & Extort]
-```
+![Cybercrime Attack Types](diagrams/cybercrime-attack-types.svg)
 
 **Mnemonic:** "SWDR: Small slices, Websites hijacked, Data altered, Ransom demanded"

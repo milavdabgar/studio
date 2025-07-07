@@ -61,7 +61,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     departments.forEach(dept => {
       const projectsInDept = eventProjects
         .filter(p => {
-          const deptId = typeof p.department === 'string' ? p.department : (p.department as any)?.id;
+          const deptId = typeof p.department === 'string' ? p.department : (p.department as { id?: string })?.id;
           return deptId === dept.id && p.deptEvaluation?.completed && typeof p.deptEvaluation.score === 'number';
         })
         .sort((a, b) => (b.deptEvaluation!.score!) - (a.deptEvaluation!.score!))
@@ -90,7 +90,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         rank: index + 1,
         teamDetails: teams.find(t => t.id === project.teamId),
         departmentDetails: departments.find(d => {
-          const deptId = typeof project.department === 'string' ? project.department : (project.department as any)?.id;
+          const deptId = typeof project.department === 'string' ? project.department : (project.department as { id?: string })?.id;
           return d.id === deptId;
         })
       } as WinnerProject));

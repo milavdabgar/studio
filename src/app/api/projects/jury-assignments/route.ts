@@ -1,6 +1,7 @@
 // src/app/api/projects/jury-assignments/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
 import { ProjectModel, ProjectEventModel } from '@/lib/models';
+import type { Project } from '@/types/entities';
 import mongoose from 'mongoose';
 
 export async function GET(request: NextRequest) {
@@ -30,28 +31,29 @@ export async function GET(request: NextRequest) {
       status: 'approved'
     }).lean();
 
-    const evaluatedProjects: any[] = [];
-    const pendingProjects: any[] = [];
+    const evaluatedProjects: Project[] = [];
+    const pendingProjects: Project[] = [];
 
     projectsForEvent.forEach(project => {
+      const projectData = project as unknown as Project;
       if (evaluationType === 'central') {
-        if ((project as any).centralEvaluation?.completed) {
-          evaluatedProjects.push(project);
+        if (projectData.centralEvaluation?.completed) {
+          evaluatedProjects.push(projectData);
         } else {
-          pendingProjects.push(project);
+          pendingProjects.push(projectData);
         }
       } else { // Default to department evaluation
-        if ((project as any).deptEvaluation?.completed) {
-          evaluatedProjects.push(project);
+        if (projectData.deptEvaluation?.completed) {
+          evaluatedProjects.push(projectData);
         } else {
-          pendingProjects.push(project);
+          pendingProjects.push(projectData);
         }
       }
     });
     
     // Optionally sort pending projects, e.g., by location or title
-    pendingProjects.sort((a, b) => ((a as any).locationId || '').localeCompare((b as any).locationId || '') || (a as any).title.localeCompare((b as any).title));
-    evaluatedProjects.sort((a, b) => ((a as any).locationId || '').localeCompare((b as any).locationId || '') || (a as any).title.localeCompare((b as any).title));
+    pendingProjects.sort((a, b) => (a.locationId || '').localeCompare(b.locationId || '') || a.title.localeCompare(b.title));
+    evaluatedProjects.sort((a, b) => (a.locationId || '').localeCompare(b.locationId || '') || a.title.localeCompare(b.title));
 
     return NextResponse.json({
       status: 'success',

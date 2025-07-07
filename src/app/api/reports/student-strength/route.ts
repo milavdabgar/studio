@@ -12,10 +12,10 @@ export async function GET(request: NextRequest) {
     const filterInstituteId = searchParams.get('instituteId');
 
     // Fetch data from MongoDB
-    const studentsStore = await StudentModel.find({}).lean() as any[] as Student[];
-    const programsStore = await ProgramModel.find({}).lean() as any[] as Program[];
-    const batchesStore = await BatchModel.find({}).lean() as any[] as Batch[];
-    const institutesStore = await InstituteModel.find({}).lean() as any[] as Institute[];
+    const studentsStore = await StudentModel.find({}).lean() as unknown as Student[];
+    const programsStore = await ProgramModel.find({}).lean() as unknown as Program[];
+    const batchesStore = await BatchModel.find({}).lean() as unknown as Batch[];
+    const institutesStore = await InstituteModel.find({}).lean() as unknown as Institute[];
 
     const reportData: {
       byInstitute: Array<{
@@ -57,7 +57,21 @@ export async function GET(request: NextRequest) {
         instituteName: institute.name,
         instituteCode: institute.code,
         totalStudents: 0,
-        programs: [] as any[],
+        programs: [] as Array<{
+          programId: string;
+          programName: string;
+          programCode: string;
+          totalStudents: number;
+          batches: Array<{
+            batchId: string;
+            batchName: string;
+            totalStudents: number;
+            semesters: Array<{
+              semester: number;
+              totalStudents: number;
+            }>;
+          }>;
+        }>,
       };
 
       institutePrograms.forEach(program => {
@@ -67,7 +81,15 @@ export async function GET(request: NextRequest) {
           programName: program.name,
           programCode: program.code,
           totalStudents: 0,
-          batches: [] as any[],
+          batches: [] as Array<{
+            batchId: string;
+            batchName: string;
+            totalStudents: number;
+            semesters: Array<{
+              semester: number;
+              totalStudents: number;
+            }>;
+          }>,
         };
 
         programBatches.forEach(batch => {
@@ -76,7 +98,10 @@ export async function GET(request: NextRequest) {
             batchId: batch.id,
             batchName: batch.name,
             totalStudents: studentsInBatch.length,
-            semesters: [] as any[],
+            semesters: [] as Array<{
+              semester: number;
+              totalStudents: number;
+            }>,
           };
 
           const studentsBySemester = studentsInBatch.reduce((acc, student) => {

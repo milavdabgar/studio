@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     }
 
     const fileText = await file.text();
-    const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
+    const { data: parsedData, errors: parseErrors } = parse<Record<string, unknown>>(fileText, {
       header: true,
       skipEmptyLines: true,
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, ''),
@@ -49,14 +49,14 @@ export async function POST(request: NextRequest) {
 
     for (const row of parsedData) {
       // Type the row object
-      const csvRow = row as any;
+      const csvRow = row as Record<string, unknown>;
       
       const roomNumber = csvRow.roomnumber?.toString().trim().toUpperCase();
       const typeRaw = csvRow.type?.toString().trim().toLowerCase();
-      const type = ROOM_TYPE_OPTIONS_LOWER.includes(typeRaw) ? (typeRaw.charAt(0).toUpperCase() + typeRaw.slice(1).replace(/\s([a-z])/g, (match: string) => ` ${match.trim().toUpperCase()}`)) as RoomType : 'Other';
+      const type: RoomType = typeRaw && ROOM_TYPE_OPTIONS_LOWER.includes(typeRaw) ? (typeRaw.charAt(0).toUpperCase() + typeRaw.slice(1).replace(/\s([a-z])/g, (match: string) => ` ${match.trim().toUpperCase()}`)) as RoomType : 'Other';
       
       const statusRaw = csvRow.status?.toString().trim().toLowerCase();
-      const status = ROOM_STATUS_OPTIONS_LOWER.includes(statusRaw) ? statusRaw as RoomStatus : 'unavailable';
+      const status: RoomStatus = statusRaw && ROOM_STATUS_OPTIONS_LOWER.includes(statusRaw) ? statusRaw as RoomStatus : 'unavailable';
 
       if (!roomNumber) {
          console.warn(`Skipping room row: Missing room number. Row: ${JSON.stringify(row)}`);

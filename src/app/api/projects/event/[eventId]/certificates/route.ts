@@ -1,7 +1,7 @@
 
 // src/app/api/projects/event/[eventId]/certificates/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Project, CertificateInfo } from '@/types/entities';
+import type { Project, CertificateInfo, ProjectTeamMember } from '@/types/entities';
 import mongoose from 'mongoose';
 import { ProjectModel, ProjectEventModel, DepartmentModel, ProjectTeamModel } from '@/lib/models';
 
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
           projectId: project.id,
           title: project.title,
           teamName: team?.name,
-          teamMembers: team?.members.map((m: any) => m.name),
+          teamMembers: team?.members.map((m: ProjectTeamMember) => m.name),
           departmentName: department?.name,
           certificateType: 'participation',
           eventName: event.name,
@@ -71,7 +71,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
                   projectId: project.id,
                   title: project.title,
                   teamName: team?.name,
-                  teamMembers: team?.members.map((m: any) => m.name),
+                  teamMembers: team?.members.map((m: ProjectTeamMember) => m.name),
                   departmentName: department?.name,
                   score: project.deptEvaluation?.score,
                   rank: index + 1,
@@ -99,7 +99,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
               projectId: project.id,
               title: project.title,
               teamName: team?.name,
-              teamMembers: team?.members.map((m: any) => m.name),
+              teamMembers: team?.members.map((m: ProjectTeamMember) => m.name),
               departmentName: department?.name,
               score: project.centralEvaluation?.score,
               rank: index + 1,

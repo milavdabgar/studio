@@ -9,12 +9,12 @@ export async function GET(request: NextRequest) {
     await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
     
     // Fetch data from MongoDB
-    const courseOfferingsStore = await CourseOfferingModel.find({}).lean() as any[] as CourseOffering[];
-    const coursesStore = await CourseModel.find({}).lean() as any[] as Course[];
-    const programsStore = await ProgramModel.find({}).lean() as any[] as Program[];
-    const batchesStore = await BatchModel.find({}).lean() as any[] as Batch[];
-    const enrollmentsStore = await EnrollmentModel.find({}).lean() as any[] as Enrollment[];
-    const facultyStore = await FacultyModel.find({}).lean() as any[] as Faculty[];
+    const courseOfferingsStore = await CourseOfferingModel.find({}).lean() as unknown as CourseOffering[];
+    const coursesStore = await CourseModel.find({}).lean() as unknown as Course[];
+    const programsStore = await ProgramModel.find({}).lean() as unknown as Program[];
+    const batchesStore = await BatchModel.find({}).lean() as unknown as Batch[];
+    const enrollmentsStore = await EnrollmentModel.find({}).lean() as unknown as Enrollment[];
+    const facultyStore = await FacultyModel.find({}).lean() as unknown as Faculty[];
 
 
     const { searchParams } = new URL(request.url);
@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
       const enrolledStudents = enrollmentsStore.filter(e => e.courseOfferingId === co.id && e.status === 'enrolled').length;
       const facultyNames = co.facultyIds.map(fid => {
         const faculty = facultyStore.find(f => f.id === fid);
-        return faculty ? (faculty as any).name || (faculty as any).displayName || 'Unknown Faculty' : 'Unknown Faculty';
+        return faculty ? (faculty as Faculty & { name?: string; displayName?: string }).name || (faculty as Faculty & { name?: string; displayName?: string }).displayName || 'Unknown Faculty' : 'Unknown Faculty';
       }).filter(Boolean);
 
       return {

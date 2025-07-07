@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     const examidFilter = searchParams.get('examid');
 
     // Build MongoDB query from filters
-    const query: any = {};
+    const query: Record<string, string | number> = {};
     if (academicYearFilter) {
       query.academicYear = academicYearFilter;
     }

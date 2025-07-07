@@ -2,6 +2,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import mongoose from 'mongoose';
 import { ProjectModel, ProjectEventModel, DepartmentModel } from '@/lib/models';
+import type { Project, Department } from '@/types/entities';
 
 
 export async function GET(request: NextRequest) {
@@ -36,15 +37,21 @@ export async function GET(request: NextRequest) {
     
     const departmentStatsMap = new Map<string, { departmentId: string; name: string; code: string; total: number; evaluated: number; totalScore: number; scoreCount: number }>();
 
-    relevantProjects.forEach((project: any) => {
-      const deptId = project.department; 
-      const deptInfo = departments.find((d: any) => d.id === deptId || d._id?.toString() === deptId);
+    relevantProjects.forEach((project: unknown) => {
+      const projectData = project as Project;
+      const deptId = projectData.department; 
+      const deptInfo = departments.find((d: unknown) => {
+        const dept = d as Department;
+        const mongoDoc = d as Record<string, unknown> & { _id?: { toString(): string } };
+        return dept.id === deptId || mongoDoc._id?.toString() === deptId;
+      });
 
+      const departmentInfo = deptInfo as Department | undefined;
       if (!departmentStatsMap.has(deptId)) {
         departmentStatsMap.set(deptId, { 
             departmentId: deptId,
-            name: deptInfo?.name || 'Unknown Department', 
-            code: deptInfo?.code || 'UNK', 
+            name: departmentInfo?.name || 'Unknown Department', 
+            code: departmentInfo?.code || 'UNK', 
             total: 0, 
             evaluated: 0,
             totalScore: 0,
@@ -53,10 +60,10 @@ export async function GET(request: NextRequest) {
       }
       const stats = departmentStatsMap.get(deptId)!;
       stats.total++;
-      const deptEvalScore = project.deptEvaluation?.score;
-      const centralEvalScore = project.centralEvaluation?.score;
+      const deptEvalScore = projectData.deptEvaluation?.score;
+      const centralEvalScore = projectData.centralEvaluation?.score;
       
-      if ((project.deptEvaluation?.completed && typeof deptEvalScore === 'number') || (project.centralEvaluation?.completed && typeof centralEvalScore === 'number')) {
+      if ((projectData.deptEvaluation?.completed && typeof deptEvalScore === 'number') || (projectData.centralEvaluation?.completed && typeof centralEvalScore === 'number')) {
         stats.evaluated++;
         const scoreToConsider = typeof centralEvalScore === 'number' ? centralEvalScore : (typeof deptEvalScore === 'number' ? deptEvalScore : undefined);
         if (scoreToConsider !== undefined) {
@@ -76,13 +83,17 @@ export async function GET(request: NextRequest) {
     }));
 
     const overallTotal = relevantProjects.length;
-    const overallEvaluated = relevantProjects.filter((p: any) => (p.deptEvaluation?.completed && typeof p.deptEvaluation.score === 'number') || (p.centralEvaluation?.completed && typeof p.centralEvaluation.score === 'number')).length;
+    const overallEvaluated = relevantProjects.filter((p: unknown) => {
+      const project = p as Project;
+      return (project.deptEvaluation?.completed && typeof project.deptEvaluation.score === 'number') || (project.centralEvaluation?.completed && typeof project.centralEvaluation.score === 'number');
+    }).length;
     const overallPending = overallTotal - overallEvaluated;
     
     let sumOfScores = 0;
     let countOfScoredProjects = 0;
-    relevantProjects.forEach((p: any) => {
-        const scoreToConsider = typeof p.centralEvaluation?.score === 'number' ? p.centralEvaluation.score : (typeof p.deptEvaluation?.score === 'number' ? p.deptEvaluation.score : undefined);
+    relevantProjects.forEach((p: unknown) => {
+        const project = p as Project;
+        const scoreToConsider = typeof project.centralEvaluation?.score === 'number' ? project.centralEvaluation.score : (typeof project.deptEvaluation?.score === 'number' ? project.deptEvaluation.score : undefined);
         if (scoreToConsider !== undefined) {
             sumOfScores += scoreToConsider;
             countOfScoredProjects++;

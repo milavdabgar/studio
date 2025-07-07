@@ -1,6 +1,6 @@
 // src/app/api/project-teams/export/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { ProjectTeam } from '@/types/entities';
+import type { ProjectTeamMember } from '@/types/entities';
 import { Parser } from 'json2csv';
 import { connectMongoose } from '@/lib/mongodb';
 import { ProjectTeamModel, DepartmentModel, UserModel, ProjectEventModel } from '@/lib/models';
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const departmentIdFilter = searchParams.get('department');
 
     // Build query filters
-    const query: any = {};
+    const query: Record<string, string> = {};
     if (eventId) query.eventId = eventId;
     if (departmentIdFilter) query.department = departmentIdFilter;
 
@@ -30,52 +30,52 @@ export async function GET(request: NextRequest) {
     const events = await ProjectEventModel.find({}).lean();
 
     const teamDataForCsv = await Promise.all(filteredTeams.map(async (team: any) => {
-        const department = departments.find((d: any) => (d as any).id === (team as any).department || ((d as any)._id && (d as any)._id.toString() === (team as any).department));
-        const event = events.find((e: any) => (e as any).id === (team as any).eventId || ((e as any)._id && (e as any)._id.toString() === (team as any).eventId));
+        const department = departments.find((d: any) => d.id === team.department || (d._id && d._id.toString() === team.department));
+        const event = events.find((e: any) => e.id === team.eventId || (e._id && e._id.toString() === team.eventId));
         
-        if ((team as any).members.length === 0) {
+        if (team.members.length === 0) {
             return [{ // Return a row even for teams with no members
-                teamId: (team as any).id || (team as any)._id,
-                teamName: (team as any).name,
-                departmentName: (department as any)?.name || (team as any).department,
-                departmentCode: (department as any)?.code || '',
-                eventName: (event as any)?.name || (team as any).eventId,
+                teamId: team.id || team._id,
+                teamName: team.name,
+                departmentName: department?.name || team.department,
+                departmentCode: department?.code || '',
+                eventName: event?.name || team.eventId,
                 memberCount: 0,
                 memberUserId: '',
                 memberName: '',
                 memberEnrollmentNo: '',
                 memberRole: '',
                 memberIsLeader: '',
-                createdBy: (team as any).createdBy || '',
-                createdAt: (team as any).createdAt ? new Date((team as any).createdAt).toISOString() : '',
+                createdBy: team.createdBy || '',
+                createdAt: team.createdAt ? new Date(team.createdAt).toISOString() : '',
             }];
         }
 
-        return await Promise.all((team as any).members.map(async (member: any) => {
+        return await Promise.all(team.members.map(async (member: ProjectTeamMember) => {
             // Find user by userId with flexible matching
-            const isValidUserObjectId = /^[0-9a-fA-F]{24}$/.test((member as any).userId);
+            const isValidUserObjectId = /^[0-9a-fA-F]{24}$/.test(member.userId);
             const userQuery = isValidUserObjectId 
-              ? { $or: [{ id: (member as any).userId }, { _id: (member as any).userId }] }
-              : { id: (member as any).userId };
+              ? { $or: [{ id: member.userId }, { _id: member.userId }] }
+              : { id: member.userId };
             const user = await UserModel.findOne(userQuery).lean();
             
             return {
-                teamId: (team as any).id || (team as any)._id,
-                teamName: (team as any).name,
-                departmentName: (department as any)?.name || (team as any).department,
-                departmentCode: (department as any)?.code || '',
-                eventName: (event as any)?.name || (team as any).eventId,
-                memberCount: (team as any).members.length,
-                memberUserId: (member as any).userId,
-                memberName: (user as any)?.displayName || (member as any).name,
-                memberEnrollmentNo: (member as any).enrollmentNo,
-                memberRole: (member as any).role,
-                memberIsLeader: (member as any).isLeader,
-                createdBy: (team as any).createdBy || '',
-                createdAt: (team as any).createdAt ? new Date((team as any).createdAt).toISOString() : '',
+                teamId: team.id || team._id,
+                teamName: team.name,
+                departmentName: department?.name || team.department,
+                departmentCode: department?.code || '',
+                eventName: event?.name || team.eventId,
+                memberCount: team.members.length,
+                memberUserId: member.userId,
+                memberName: (user as any)?.displayName || member.name,
+                memberEnrollmentNo: member.enrollmentNo,
+                memberRole: member.role,
+                memberIsLeader: member.isLeader,
+                createdBy: team.createdBy || '',
+                createdAt: team.createdAt ? new Date(team.createdAt).toISOString() : '',
             };
         }));
-    })).then((results: any) => results.flat());
+    })).then((results: Array<Array<Record<string, string | number | boolean>>>) => results.flat());
     
     if (teamDataForCsv.length === 0) {
          return NextResponse.json({ message: 'No team data processed for export.' }, { status: 404 });

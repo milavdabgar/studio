@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
 
   try {
     // Build MongoDB query from filters
-    const query: any = {};
+    const query: Record<string, string | number> = {};
     if (filters.branchName) query.branchName = filters.branchName;
     if (filters.semester) query.semester = filters.semester;
     if (filters.academicYear) query.academicYear = filters.academicYear;
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
     }
 
     const csvData = filteredResults.map(result => {
-      const flatResult: any = {
+      const flatResult: Record<string, string | number> = {
         st_id: result.st_id,
         enrollmentNo: result.enrollmentNo,
         extype: result.extype,

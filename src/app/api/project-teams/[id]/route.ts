@@ -1,6 +1,6 @@
 // src/app/api/project-teams/[id]/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { ProjectTeam } from '@/types/entities';
+import type { ProjectTeam, ProjectTeamMember } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { ProjectTeamModel } from '@/lib/models';
 
@@ -64,23 +64,23 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     if (teamDataToUpdate.members && teamDataToUpdate.members.length === 0) {
         return NextResponse.json({ message: 'Team must have at least one member.' }, { status: 400 });
     }
-    if (teamDataToUpdate.members && !teamDataToUpdate.members.some((m: any) => (m as any).isLeader)) {
+    if (teamDataToUpdate.members && !teamDataToUpdate.members.some((m: ProjectTeamMember) => m.isLeader)) {
         return NextResponse.json({ message: 'Team must have at least one leader.' }, { status: 400 });
     }
 
     // Prepare update data
-    const updateData: any = {
+    const updateData: Record<string, any> = {
       ...teamDataToUpdate,
       updatedBy: "user_admin_placeholder_update",
       updatedAt: new Date().toISOString()
     };
 
     // Remove undefined fields and trim strings
-    Object.keys(updateData).forEach((key: any) => {
-      if ((updateData as any)[key] === undefined) {
-        delete (updateData as any)[key];
-      } else if (typeof (updateData as any)[key] === 'string') {
-        (updateData as any)[key] = (updateData as any)[key].trim();
+    Object.keys(updateData).forEach((key: string) => {
+      if (updateData[key] === undefined) {
+        delete updateData[key];
+      } else if (typeof updateData[key] === 'string') {
+        updateData[key] = updateData[key].trim();
       }
     });
 

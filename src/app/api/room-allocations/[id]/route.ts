@@ -1,5 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { RoomAllocation } from '@/types/entities';
+import type { IRoomAllocation } from '@/lib/models';
+import type { FlattenMaps } from 'mongoose';
 import { isValid, parseISO } from 'date-fns';
 import { connectMongoose } from '@/lib/mongodb';
 import { RoomAllocationModel } from '@/lib/models';
@@ -16,12 +18,12 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
     
-    const allocation = await RoomAllocationModel.findOne({ id }).lean();
+    const allocation = await RoomAllocationModel.findOne({ id }).lean() as FlattenMaps<IRoomAllocation> | null;
     if (allocation) {
       // Format allocation to ensure proper id field
       const allocationWithId = {
         ...allocation,
-        id: (allocation as any).id || (allocation as any)._id.toString()
+        id: allocation.id || allocation._id.toString()
       };
       return NextResponse.json(allocationWithId);
     }
@@ -40,7 +42,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     
     const allocationDataToUpdate = await request.json() as Partial<Omit<RoomAllocation, 'id' | 'createdAt' | 'updatedAt'>>;
     
-    const existingAllocation = await RoomAllocationModel.findOne({ id }).lean();
+    const existingAllocation = await RoomAllocationModel.findOne({ id }).lean() as FlattenMaps<IRoomAllocation> | null;
     if (!existingAllocation) {
       return NextResponse.json({ message: 'Room allocation not found' }, { status: 404 });
     }
@@ -54,8 +56,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
     
     // Check time order if both times are being updated
-    const finalStartTime = allocationDataToUpdate.startTime || (existingAllocation as any).startTime;
-    const finalEndTime = allocationDataToUpdate.endTime || (existingAllocation as any).endTime;
+    const finalStartTime = allocationDataToUpdate.startTime || existingAllocation.startTime;
+    const finalEndTime = allocationDataToUpdate.endTime || existingAllocation.endTime;
     
     if (parseISO(finalStartTime) >= parseISO(finalEndTime)) {
         return NextResponse.json({ message: 'End time must be after start time.' }, { status: 400 });
@@ -63,7 +65,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     // Check for time slot conflicts if times or room are being changed
     if (allocationDataToUpdate.startTime || allocationDataToUpdate.endTime || allocationDataToUpdate.roomId) {
-      const finalRoomId = allocationDataToUpdate.roomId || (existingAllocation as any).roomId;
+      const finalRoomId = allocationDataToUpdate.roomId || existingAllocation.roomId;
       
       const conflict = await RoomAllocationModel.findOne({
         id: { $ne: id },
@@ -75,16 +77,16 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
             endTime: { $gt: finalStartTime }
           }
         ]
-      });
+      }).lean() as FlattenMaps<IRoomAllocation> | null;
 
       if (conflict) {
           return NextResponse.json({ 
-            message: `Time slot conflict for room ${finalRoomId}. Room already booked from ${(conflict as any).startTime} to ${(conflict as any).endTime}.` 
+            message: `Time slot conflict for room ${finalRoomId}. Room already booked from ${conflict.startTime} to ${conflict.endTime}.` 
           }, { status: 409 });
       }
     }
 
-    const updateData: any = {
+    const updateData: Partial<IRoomAllocation> & { updatedAt: string } = {
       ...allocationDataToUpdate,
       updatedAt: new Date().toISOString()
     };
@@ -93,7 +95,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       { id },
       updateData,
       { new: true, lean: true }
-    );
+    ) as FlattenMaps<IRoomAllocation> | null;
 
     if (!updatedAllocation) {
       return NextResponse.json({ message: 'Room allocation not found' }, { status: 404 });
@@ -102,7 +104,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Format allocation to ensure proper id field
     const allocationWithId = {
       ...updatedAllocation,
-      id: (updatedAllocation as any).id || (updatedAllocation as any)._id.toString()
+      id: updatedAllocation.id || updatedAllocation._id.toString()
     };
 
     return NextResponse.json(allocationWithId);

@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     });
 
     // Build MongoDB query
-    const query: any = {};
+    const query: Record<string, string> = {};
     if (filters.department) {
       query.department = filters.department;
     }
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
     // Format teams with proper id field
     const teamsWithId = teams.map(team => ({
       ...team,
-      id: team.id || (team as any)._id.toString()
+      id: team.id || (team as Record<string, unknown> & { _id: { toString(): string } })._id.toString()
     }));
 
     return NextResponse.json({

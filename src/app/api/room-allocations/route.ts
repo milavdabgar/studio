@@ -1,5 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { RoomAllocation } from '@/types/entities';
+import type { IRoomAllocation } from '@/lib/models';
+import type { Document, FlattenMaps } from 'mongoose';
 import { isValid, parseISO } from 'date-fns';
 import { connectMongoose } from '@/lib/mongodb';
 import { RoomAllocationModel } from '@/lib/models';
@@ -59,7 +61,7 @@ export async function GET(request: NextRequest) {
     const date = searchParams.get('date');
 
     // Build filter query
-    const filter: any = {};
+    const filter: Record<string, unknown> = {};
     if (roomId) filter.roomId = roomId;
     if (courseOfferingId) filter.courseOfferingId = courseOfferingId;
     if (facultyId) filter.facultyId = facultyId;
@@ -70,12 +72,12 @@ export async function GET(request: NextRequest) {
       filter.startTime = { $regex: `^${date}` };
     }
 
-    const roomAllocations = await RoomAllocationModel.find(filter).lean();
+    const roomAllocations = await RoomAllocationModel.find(filter).lean() as unknown as FlattenMaps<IRoomAllocation>[];
     
     // Format room allocations to ensure proper id field
-    const roomAllocationsWithId = roomAllocations.map(allocation => ({
+    const roomAllocationsWithId = roomAllocations.map((allocation) => ({
       ...allocation,
-      id: allocation.id || (allocation as any)._id.toString()
+      id: allocation.id || allocation._id.toString()
     }));
 
     return NextResponse.json(roomAllocationsWithId);

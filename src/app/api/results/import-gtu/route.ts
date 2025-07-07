@@ -6,11 +6,11 @@ import { ResultModel } from '@/lib/models';
 import mongoose from 'mongoose';
 
 // Helper functions adapted from reference/result.controller.ts
-const extractEnrollmentNo = (row: any): string => {
+const extractEnrollmentNo = (row: Record<string, unknown>): string => {
   return row.mapnumber?.toString().trim() || row.stid?.toString().trim() || '';
 };
 
-const extractStId = (row: any): string => {
+const extractStId = (row: Record<string, unknown>): string => {
   return row.stid?.toString().trim() || row.mapnumber?.toString().trim() || '';
 };
 
@@ -24,9 +24,9 @@ const mapSemesterCodeToStatus = (code: string | undefined | null): Student['sem1
 };
 
 
-const processGtuResultCsvForApi = (rows: any[], clientPrograms: Program[]): { processedResults: Omit<Result, '_id' | 'createdAt' | 'updatedAt'>[], errors: any[] } => {
+const processGtuResultCsvForApi = (rows: Record<string, unknown>[], clientPrograms: Program[]): { processedResults: Omit<Result, '_id' | 'createdAt' | 'updatedAt'>[], errors: Array<{ row: number; message: string; data: Record<string, unknown> }> } => {
   const processedResults: Omit<Result, '_id' | 'createdAt' | 'updatedAt'>[] = [];
-  const processingErrors: any[] = [];
+  const processingErrors: Array<{ row: number; message: string; data: Record<string, unknown> }> = [];
 
   rows.forEach((row, index) => {
     try {
@@ -67,7 +67,7 @@ const processGtuResultCsvForApi = (rows: any[], clientPrograms: Program[]): { pr
         
         if (!subCode || !subName) continue;
         
-        const credits = parseFloat(row[creditsKey]?.toString()) || 0;
+        const credits = parseFloat(row[creditsKey]?.toString() || '0') || 0;
         const grade = row[gradeKey]?.toString().trim().toUpperCase() || '';
         
         subjects.push({
@@ -89,15 +89,15 @@ const processGtuResultCsvForApi = (rows: any[], clientPrograms: Program[]): { pr
         st_id,
         enrollmentNo,
         extype: row.extype?.toString().trim(),
-        examid: parseInt(row.examid?.toString(), 10) || undefined,
+        examid: parseInt(row.examid?.toString() || '0', 10) || undefined,
         exam: row.exam?.toString().trim(),
-        declarationDate: row.declarationdate ? new Date(row.declarationdate).toISOString() : undefined,
+        declarationDate: row.declarationdate ? new Date(row.declarationdate as string).toISOString() : undefined,
         academicYear: row.academicyear?.toString().trim(),
-        semester: parseInt(row.sem?.toString(), 10) || 0,
-        unitNo: parseFloat(row.unitno?.toString()) || undefined, 
-        examNumber: parseFloat(row.examnumber?.toString()) || undefined,
+        semester: parseInt(row.sem?.toString() || '0', 10) || 0,
+        unitNo: parseFloat(row.unitno?.toString() || '0') || undefined, 
+        examNumber: parseFloat(row.examnumber?.toString() || '0') || undefined,
         name: row.name?.toString().trim() || 'Unknown Student',
-        instcode: parseInt(row.instcode?.toString(), 10) || undefined,
+        instcode: parseInt(row.instcode?.toString() || '0', 10) || undefined,
         instName: row.instname?.toString().trim(),
         courseName: row.coursename?.toString().trim(),
         branchCode: parseInt(branchCodeCsv, 10) || undefined, 
@@ -105,14 +105,14 @@ const processGtuResultCsvForApi = (rows: any[], clientPrograms: Program[]): { pr
         subjects,
         totalCredits: subjects.reduce((sum, sub) => sum + sub.credits, 0),
         earnedCredits: subjects.reduce((sum, sub) => sum + (sub.isBacklog ? 0 : sub.credits), 0),
-        spi: parseFloat(row.spi?.toString()) || 0,
-        cpi: parseFloat(row.cpi?.toString()) || 0,
-        cgpa: parseFloat(row.cgpa?.toString()) || undefined,
+        spi: parseFloat(row.spi?.toString() || '0') || 0,
+        cpi: parseFloat(row.cpi?.toString() || '0') || 0,
+        cgpa: parseFloat(row.cgpa?.toString() || '0') || undefined,
         result: row.result?.toString().trim().toUpperCase() || 'PENDING',
-        trials: parseInt(row.trial?.toString(), 10) || 1,
+        trials: parseInt(row.trial?.toString() || '1', 10) || 1,
         remark: row.remark?.toString().trim(),
-        currentBacklog: parseInt(row.curbackl?.toString(), 10) || 0,
-        totalBacklog: parseInt(row.totbackl?.toString(), 10) || 0,
+        currentBacklog: parseInt(row.curbackl?.toString() || '0', 10) || 0,
+        totalBacklog: parseInt(row.totbackl?.toString() || '0', 10) || 0,
         uploadBatch: uuidv4(), 
         programId: programForBranch.id, 
       };
@@ -139,7 +139,7 @@ export async function POST(request: NextRequest) {
     const clientPrograms: Program[] = JSON.parse(programsJson);
 
     const fileText = await file.text();
-    const { data: parsedCsvData, errors: parseErrors, meta } = parse<any>(fileText, {
+    const { data: parsedCsvData, errors: parseErrors, meta } = parse<Record<string, unknown>>(fileText, {
       header: true,
       skipEmptyLines: 'greedy', 
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9_]/gi, ''),

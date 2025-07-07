@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     const roles = await RoleModel.find({}).lean();
     const rolesWithId = roles.map(role => ({
       ...role,
-      id: (role as any)._id.toString()
+      id: (role as { _id: { toString(): string } })._id.toString()
     }));
     
     return NextResponse.json(rolesWithId);
