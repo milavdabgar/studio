@@ -1,6 +1,5 @@
 // src/app/api/projects/jury-assignments/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Project, ProjectEvent } from '@/types/entities';
 import { ProjectModel, ProjectEventModel } from '@/lib/models';
 import mongoose from 'mongoose';
 

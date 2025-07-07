@@ -1,6 +1,6 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Role, UserRole } from '@/types/entities';
+import type { UserRole } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 import { allPermissions } from '@/lib/api/roles';
 import { RoleModel } from '@/lib/models';

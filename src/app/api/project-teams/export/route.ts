@@ -1,6 +1,6 @@
 // src/app/api/project-teams/export/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { ProjectTeam, Department, ProjectEvent, User as SystemUser, ProjectTeamMember } from '@/types/entities';
+import type { ProjectTeam } from '@/types/entities';
 import { Parser } from 'json2csv';
 import { connectMongoose } from '@/lib/mongodb';
 import { ProjectTeamModel, DepartmentModel, UserModel, ProjectEventModel } from '@/lib/models';

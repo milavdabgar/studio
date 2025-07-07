@@ -1,6 +1,6 @@
 // src/app/api/projects/import/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Project, Department, ProjectTeam, ProjectEvent, User as SystemUser, ProjectStatus, ProjectRequirements, ProjectGuide } from '@/types/entities';
+import type { Department, ProjectTeam, ProjectEvent, User as SystemUser, ProjectStatus, ProjectRequirements, ProjectGuide } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 import { ProjectModel } from '@/lib/models';
 import mongoose from 'mongoose';

@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Result, ResultFilterParams, ResultSubject } from '@/types/entities';
+import type { ResultFilterParams, ResultSubject } from '@/types/entities';
 import { Parser } from 'json2csv';
 import { ResultModel } from '@/lib/models';
 import mongoose from 'mongoose';

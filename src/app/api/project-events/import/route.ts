@@ -1,6 +1,6 @@
 // src/app/api/project-events/import/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { ProjectEvent, Department, ProjectEventStatus } from '@/types/entities';
+import type { ProjectEventStatus } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 import { isValid, parseISO, format } from 'date-fns';
 import { ProjectEventModel } from '@/lib/models';

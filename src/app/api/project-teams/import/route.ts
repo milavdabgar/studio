@@ -1,7 +1,7 @@
 // src/app/api/project-teams/import/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
 import type { ProjectTeam, Department, ProjectEvent, User as SystemUser, ProjectTeamMember } from '@/types/entities';
-import { parse, type ParseError } from 'papaparse';
+import { parse } from 'papaparse';
 import mongoose from 'mongoose';
 import { ProjectTeamModel } from '@/lib/models';
 

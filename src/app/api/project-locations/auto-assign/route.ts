@@ -1,7 +1,7 @@
 // src/app/api/project-locations/auto-assign/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
 import mongoose from 'mongoose';
-import { ProjectLocationModel, ProjectModel, DepartmentModel, ProjectTeamModel } from '@/lib/models';
+import { ProjectLocationModel, ProjectModel, ProjectTeamModel } from '@/lib/models';
 import { notificationService } from '@/lib/api/notifications';
 
 export async function POST(request: NextRequest) {

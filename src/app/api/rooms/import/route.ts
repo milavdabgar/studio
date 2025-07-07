@@ -1,6 +1,6 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Room, Building, RoomType, RoomStatus } from '@/types/entities';
+import type { Room, RoomType, RoomStatus } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 import { RoomModel, BuildingModel } from '@/lib/models';
 import mongoose from 'mongoose';

@@ -1,7 +1,7 @@
 
 // src/app/api/projects/event/[eventId]/certificates/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Project, ProjectEvent, Department, ProjectTeam as Team, CertificateInfo } from '@/types/entities';
+import type { Project, CertificateInfo } from '@/types/entities';
 import mongoose from 'mongoose';
 import { ProjectModel, ProjectEventModel, DepartmentModel, ProjectTeamModel } from '@/lib/models';
 

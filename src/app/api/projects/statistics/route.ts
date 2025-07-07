@@ -1,6 +1,5 @@
 // src/app/api/projects/statistics/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Project, ProjectEvent, Department } from '@/types/entities';
 import mongoose from 'mongoose';
 import { ProjectModel, ProjectEventModel, DepartmentModel } from '@/lib/models';
 

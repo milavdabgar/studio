@@ -1,6 +1,6 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Project, ProjectTeam, ProjectLocation } from '@/types/entities';
+import type { Project } from '@/types/entities';
 import { notificationService } from '@/lib/api/notifications';
 import { connectMongoose } from '@/lib/mongodb';
 import { ProjectModel, ProjectTeamModel, ProjectLocationModel } from '@/lib/models';

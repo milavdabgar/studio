@@ -1,6 +1,6 @@
 // src/app/api/projects/[id]/central-evaluation/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Project, ProjectEvaluation } from '@/types/entities';
+import type { ProjectEvaluation } from '@/types/entities';
 import { ProjectModel } from '@/lib/models';
 import mongoose from 'mongoose';
 

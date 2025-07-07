@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Role, User } from '@/types/entities'; // Import User
+import type { Role } from '@/types/entities';
 import { allPermissions } from '@/lib/api/roles'; 
 import { connectMongoose } from '@/lib/mongodb';
 import { RoleModel, UserModel } from '@/lib/models';

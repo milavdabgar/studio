@@ -1,6 +1,6 @@
 // src/app/api/student-scores/[scoreId]/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { StudentAssessmentScore, Assessment } from '@/types/entities';
+import type { StudentAssessmentScore } from '@/types/entities';
 import { notificationService } from '@/lib/api/notifications';
 import { connectMongoose } from '@/lib/mongodb';
 import { StudentAssessmentScoreModel, AssessmentModel } from '@/lib/models';

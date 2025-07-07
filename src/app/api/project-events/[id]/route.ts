@@ -1,7 +1,7 @@
 
 // src/app/api/project-events/[id]/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
-import type { ProjectEvent, ProjectEventStatus, ProjectEventScheduleItem, ProjectTeam } from '@/types/entities';
+import type { ProjectEvent } from '@/types/entities';
 import { isValid, parseISO } from 'date-fns';
 import { notificationService } from '@/lib/api/notifications';
 import { connectMongoose } from '@/lib/mongodb';

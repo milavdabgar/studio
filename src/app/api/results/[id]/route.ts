@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Result, ResultSubject } from '@/types/entities';
+import type { Result } from '@/types/entities';
 import mongoose from 'mongoose';
 import { ResultModel } from '@/lib/models';
 

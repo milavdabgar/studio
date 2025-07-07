@@ -2851,7 +2851,7 @@ ${item.type === 'poem' ? (item.content || '').trim() : (item.content || '')}</di
                                 <div class="canvas-images">
                                     <h4 class="canvas-gallery-title">Photo Gallery</h4>
                                     <div class="canvas-image-grid ${imageGridClass}">
-                                        ${item.images.map((image, _) => `
+                                        ${item.images.map((image) => `
                                             <div class="canvas-image-container">
                                                 <img 
                                                     src="${processImageSrc(image.src, imageQuality)}" 

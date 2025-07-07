@@ -1,6 +1,5 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Institute } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 import { connectMongoose } from '@/lib/mongodb';
 import { InstituteModel } from '@/lib/models';
