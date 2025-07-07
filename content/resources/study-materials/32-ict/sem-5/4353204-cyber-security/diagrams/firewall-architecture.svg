@@ -22,6 +22,13 @@
   <text x="500" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">Network</text>
   <text x="500" y="118" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">(Protected)</text>
   
+  <!-- Arrow marker -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+  </defs>
+  
   <!-- Arrows -->
   <path d="M140 100 L250 100" stroke="#333" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
   <path d="M350 100 L450 100" stroke="#333" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
@@ -34,13 +41,6 @@
   
   <!-- Allowed traffic -->
   <text x="400" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#27ae60">Allowed</text>
-  
-  <!-- Arrow marker -->
-  <defs>
-    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
-    </marker>
-  </defs>
   
   <!-- Firewall Types -->
   <text x="300" y="200" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2c3e50">Firewall Types</text>
@@ -80,5 +80,5 @@
   <text x="150" y="365" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">• Access Control</text>
   
   <text x="450" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">• Intrusion Prevention</text>
-  <text x="450" y="365" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">• Logging & Monitoring</text>
+  <text x="450" y="365" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#2c3e50">• Logging &amp; Monitoring</text>
 </svg>
