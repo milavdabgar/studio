@@ -3,6 +3,12 @@ import type { ProjectLocation } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { ProjectLocationModel } from '@/lib/models';
 
+type ProjectLocationLean = Omit<ProjectLocation, 'id'> & { 
+  _id: string; 
+  id?: string; 
+  __v?: number; 
+};
+
 interface RouteParams {
   params: Promise<{
     id: string; // This ID can be either the MongoDB _id or the user-friendly locationId string (e.g., A-01)
@@ -30,7 +36,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     // Format location to ensure proper id field
     const locationWithId = {
       ...location,
-      id: (location as any).id || (location as any)._id.toString()
+      id: (location as { id?: string; _id: { toString(): string } }).id || (location as { _id: { toString(): string } })._id.toString()
     };
     
     return NextResponse.json({ status: 'success', data: { location: locationWithId }});
@@ -54,7 +60,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         { id: id },
         { locationId: id }
       ]
-    }).lean();
+    }).lean() as ProjectLocationLean | null;
 
     if (!existingLocation) {
       return NextResponse.json({ message: 'Project location not found' }, { status: 404 });
@@ -73,12 +79,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     
     // Uniqueness check for locationId within the same event if it's being changed
     if (locationDataToUpdate.locationId && 
-        locationDataToUpdate.locationId.toLowerCase() !== (existingLocation as any).locationId.toLowerCase()) {
+        locationDataToUpdate.locationId.toLowerCase() !== existingLocation.locationId?.toLowerCase()) {
         
         const duplicateLocation = await ProjectLocationModel.findOne({
           locationId: { $regex: new RegExp(`^${locationDataToUpdate.locationId.trim()}$`, 'i') },
-          eventId: locationDataToUpdate.eventId || (existingLocation as any).eventId,
-          id: { $ne: (existingLocation as any).id }
+          eventId: locationDataToUpdate.eventId || existingLocation.eventId,
+          id: { $ne: existingLocation.id }
         });
         
         if (duplicateLocation) {
@@ -108,7 +114,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Format location to ensure proper id field
     const locationWithId = {
       ...updatedLocation,
-      id: (updatedLocation as any).id || (updatedLocation as any)._id.toString()
+      id: (updatedLocation as { id?: string; _id: { toString(): string } }).id || (updatedLocation as { _id: { toString(): string } })._id.toString()
     };
 
     return NextResponse.json({ status: 'success', data: { location: locationWithId }});

@@ -4,6 +4,12 @@ import { isValid, parseISO } from 'date-fns';
 import { connectMongoose } from '@/lib/mongodb';
 import { ExaminationModel } from '@/lib/models';
 
+type ExaminationLean = Omit<Examination, 'id'> & { 
+  _id: string; 
+  id?: string; 
+  __v?: number; 
+};
+
 // Initialize default examinations if none exist
 async function initializeDefaultExaminations() {
   await connectMongoose();
@@ -78,7 +84,7 @@ export async function GET(request: NextRequest) {
     if (status) filter.status = status;
     if (programId) filter.programIds = { $in: [programId] };
 
-    const examinations = await ExaminationModel.find(filter).lean();
+    const examinations = await ExaminationModel.find(filter).lean() as ExaminationLean[];
     
     // Format examinations to ensure proper id field
     const examinationsWithId = examinations.map(examination => ({

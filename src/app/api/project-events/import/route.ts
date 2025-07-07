@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     const clientDepartments: Department[] = JSON.parse(departmentsJson);
 
     const fileText = await file.text();
-    const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
+    const { data: parsedData, errors: parseErrors } = parse<Record<string, unknown>>(fileText, {
       header: true,
       skipEmptyLines: 'greedy',
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, ''),
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       const regStartDateStr = row.registrationstartdate?.toString().trim();
       const regEndDateStr = row.registrationenddate?.toString().trim();
       const statusRaw = row.status?.toString().trim().toLowerCase();
-      const status = EVENT_STATUS_OPTIONS_LOWER.includes(statusRaw) ? statusRaw as ProjectEventStatus : undefined;
+      const status = EVENT_STATUS_OPTIONS_LOWER.includes(statusRaw || '') ? statusRaw as ProjectEventStatus : undefined;
 
       if (!name || !academicYear || !eventDateStr || !regStartDateStr || !regEndDateStr || !status) {
         importErrors.push({ row: rowIndex, message: "Missing required fields: name, academicYear, eventDate, registrationStartDate, registrationEndDate, or status.", data: row });

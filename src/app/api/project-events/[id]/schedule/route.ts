@@ -5,6 +5,18 @@ import { notificationService } from '@/lib/api/notifications';
 import { ProjectEventModel, ProjectTeamModel } from '@/lib/models';
 import mongoose from 'mongoose';
 
+type ProjectEventLean = Omit<ProjectEvent, 'id'> & { 
+  _id: string; 
+  id?: string; 
+  __v?: number; 
+};
+
+type ProjectTeamLean = Omit<ProjectTeam, 'id'> & { 
+  _id: string; 
+  id?: string; 
+  __v?: number; 
+};
+
 interface RouteParams {
   params: Promise<{
     id: string; // Event ID
@@ -30,25 +42,25 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
         updatedBy: "user_admin_placeholder_schedule_patch"
       },
       { new: true, lean: true }
-    );
+    ) as ProjectEventLean | null;
 
     if (!eventToUpdate) {
       return NextResponse.json({ message: 'Event not found for schedule update' }, { status: 404 });
     }
 
     // --- Notification Trigger ---
-    const teamsForEvent = await ProjectTeamModel.find({ eventId: eventId }).lean();
+    const teamsForEvent = await ProjectTeamModel.find({ eventId: eventId }).lean() as ProjectTeamLean[];
     const userIdsToNotify: Set<string> = new Set();
     
     teamsForEvent.forEach(team => {
-        (team as any).members.forEach((member: any) => userIdsToNotify.add(member.userId));
+        team.members?.forEach((member: { userId: string }) => userIdsToNotify.add(member.userId));
     });
 
     for (const userId of userIdsToNotify) {
         try {
             await notificationService.createNotification({
                 userId: userId,
-                message: `The schedule for event '${(eventToUpdate as any).name}' has been updated. Please check the portal.`,
+                message: `The schedule for event '${eventToUpdate.name}' has been updated. Please check the portal.`,
                 type: 'event_schedule_update',
                 link: `/project-fair/student`, // Or a more specific event schedule page
             });

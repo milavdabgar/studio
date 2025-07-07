@@ -10,13 +10,19 @@ interface RouteParams {
   }>;
 }
 
+type ExaminationLean = Omit<Examination, 'id'> & { 
+  _id: string; 
+  id?: string; 
+  __v?: number; 
+};
+
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
   
   try {
     await connectMongoose();
     
-    const examination = await ExaminationModel.findOne({ id }).lean();
+    const examination = await ExaminationModel.findOne({ id }).lean() as ExaminationLean | null;
     if (examination) {
       // Format examination to ensure proper id field
       const examinationWithId = {
@@ -40,7 +46,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     
     const examinationDataToUpdate = await request.json() as Partial<Omit<Examination, 'id' | 'createdAt' | 'updatedAt'>>;
     
-    const existingExamination = await ExaminationModel.findOne({ id }).lean();
+    const existingExamination = await ExaminationModel.findOne({ id }).lean() as ExaminationLean | null;
     if (!existingExamination) {
       return NextResponse.json({ message: 'Examination not found' }, { status: 404 });
     }
@@ -54,8 +60,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
     
     // Check date order if both dates are being updated
-    const finalStartDate = examinationDataToUpdate.startDate || (existingExamination as { startDate: string }).startDate;
-    const finalEndDate = examinationDataToUpdate.endDate || (existingExamination as { endDate: string }).endDate;
+    const finalStartDate = examinationDataToUpdate.startDate || existingExamination.startDate;
+    const finalEndDate = examinationDataToUpdate.endDate || existingExamination.endDate;
     
     if (parseISO(finalStartDate) >= parseISO(finalEndDate)) {
         return NextResponse.json({ message: 'End date must be after start date.' }, { status: 400 });
@@ -63,9 +69,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     // Check for duplicate examination if key fields are being changed
     if (examinationDataToUpdate.name || examinationDataToUpdate.academicYear || examinationDataToUpdate.examType) {
-      const finalName = examinationDataToUpdate.name || (existingExamination as { name: string }).name;
-      const finalAcademicYear = examinationDataToUpdate.academicYear || (existingExamination as { academicYear: string }).academicYear;
-      const finalExamType = examinationDataToUpdate.examType || (existingExamination as { examType: string }).examType;
+      const finalName = examinationDataToUpdate.name || existingExamination.name;
+      const finalAcademicYear = examinationDataToUpdate.academicYear || existingExamination.academicYear;
+      const finalExamType = examinationDataToUpdate.examType || existingExamination.examType;
       
       const duplicateExamination = await ExaminationModel.findOne({
         id: { $ne: id },
@@ -88,7 +94,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       { id },
       updateData,
       { new: true, lean: true }
-    );
+    ) as ExaminationLean | null;
 
     if (!updatedExamination) {
       return NextResponse.json({ message: 'Examination not found' }, { status: 404 });

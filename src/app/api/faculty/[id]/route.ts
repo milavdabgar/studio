@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Faculty, User } from '@/types/entities'; 
+import type { FacultyProfile, User } from '@/types/entities'; 
 import { userService } from '@/lib/api/users';
 import { connectMongoose } from '@/lib/mongodb';
 import { FacultyModel } from '@/lib/models';
@@ -10,6 +10,12 @@ interface RouteParams {
   }>;
 }
 
+type FacultyLean = Omit<FacultyProfile, 'id'> & { 
+  _id: string; 
+  id?: string; 
+  __v?: number; 
+};
+
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     await connectMongoose();
@@ -17,13 +23,13 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const { id } = await params;
     
     // Try to find by custom id first, then by MongoDB _id if it's a valid ObjectId
-    let faculty = await FacultyModel.findOne({ id }).lean() as Faculty | null;
+    let faculty = await FacultyModel.findOne({ id }).lean() as FacultyLean | null;
     if (!faculty && id.match(/^[0-9a-fA-F]{24}$/)) {
-      faculty = await FacultyModel.findById(id).lean() as Faculty | null;
+      faculty = await FacultyModel.findById(id).lean() as FacultyLean | null;
     }
     
     if (faculty) {
-      const facultyWithId: Faculty = {
+      const facultyWithId: FacultyProfile = {
         ...faculty,
         id: faculty.id || faculty._id?.toString() || id
       };
@@ -45,12 +51,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     await connectMongoose();
     
     const { id } = await params;
-    const facultyDataToUpdate = await request.json() as Partial<Omit<Faculty, 'id' | 'userId' | 'createdAt' | 'updatedAt'>>;
+    const facultyDataToUpdate = await request.json() as Partial<Omit<FacultyProfile, 'id' | 'userId' | 'createdAt' | 'updatedAt'>>;
     
     // Find the existing faculty
-    let existingFaculty = await FacultyModel.findOne({ id }).lean() as Faculty | null;
+    let existingFaculty = await FacultyModel.findOne({ id }).lean() as FacultyLean | null;
     if (!existingFaculty && id.match(/^[0-9a-fA-F]{24}$/)) {
-      existingFaculty = await FacultyModel.findById(id).lean() as Faculty | null;
+      existingFaculty = await FacultyModel.findById(id).lean() as FacultyLean | null;
     }
     
     if (!existingFaculty) {
@@ -132,7 +138,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       { _id: existingFaculty._id },
       updateData,
       { new: true, lean: true }
-    ) as Faculty | null;
+    ) as FacultyLean | null;
 
     if (!updatedFaculty) {
       return NextResponse.json({ message: 'Faculty not found' }, { status: 404 });
@@ -193,7 +199,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
 
     // Format response
-    const facultyToReturn: Faculty = {
+    const facultyToReturn: FacultyProfile = {
       ...updatedFaculty,
       id: updatedFaculty.id || updatedFaculty._id?.toString() || id
     };
@@ -212,9 +218,9 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     const { id } = await params;
     
     // Find and delete the faculty
-    let deletedFaculty = await FacultyModel.findOneAndDelete({ id }).lean() as Faculty | null;
+    let deletedFaculty = await FacultyModel.findOneAndDelete({ id }).lean() as FacultyLean | null;
     if (!deletedFaculty && id.match(/^[0-9a-fA-F]{24}$/)) {
-      deletedFaculty = await FacultyModel.findByIdAndDelete(id).lean() as Faculty | null;
+      deletedFaculty = await FacultyModel.findByIdAndDelete(id).lean() as FacultyLean | null;
     }
 
     if (!deletedFaculty) {

@@ -10,13 +10,19 @@ interface RouteParams {
   }>;
 }
 
+type CurriculumLean = Omit<Curriculum, 'id'> & { 
+  _id: string; 
+  id?: string; 
+  __v?: number; 
+};
+
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
   
   try {
     await connectMongoose();
     
-    const curriculum = await CurriculumModel.findOne({ id }).lean();
+    const curriculum = await CurriculumModel.findOne({ id }).lean() as CurriculumLean | null;
     if (curriculum) {
       // Format curriculum to ensure proper id field
       const curriculumWithId = {
@@ -40,7 +46,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     
     const curriculumDataToUpdate = await request.json() as Partial<Omit<Curriculum, 'id' | 'createdAt' | 'updatedAt'>>;
     
-    const existingCurriculum = await CurriculumModel.findOne({ id }).lean();
+    const existingCurriculum = await CurriculumModel.findOne({ id }).lean() as CurriculumLean | null;
     if (!existingCurriculum) {
       return NextResponse.json({ message: 'Curriculum not found' }, { status: 404 });
     }
@@ -56,10 +62,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
     
     // Check for duplicate version
-    if (curriculumDataToUpdate.version && curriculumDataToUpdate.version.trim().toLowerCase() !== (existingCurriculum as { version: string }).version.toLowerCase()) {
+    if (curriculumDataToUpdate.version && curriculumDataToUpdate.version.trim().toLowerCase() !== existingCurriculum.version?.toLowerCase()) {
         const duplicateCurriculum = await CurriculumModel.findOne({
           id: { $ne: id },
-          programId: curriculumDataToUpdate.programId || (existingCurriculum as { programId: string }).programId,
+          programId: curriculumDataToUpdate.programId || existingCurriculum.programId,
           version: { $regex: new RegExp(`^${curriculumDataToUpdate.version.trim()}$`, 'i') }
         });
         
@@ -81,7 +87,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       { id },
       updateData,
       { new: true, lean: true }
-    );
+    ) as CurriculumLean | null;
 
     if (!updatedCurriculum) {
       return NextResponse.json({ message: 'Curriculum not found' }, { status: 404 });

@@ -1,7 +1,13 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Faculty } from '@/types/entities';
+import type { FacultyProfile } from '@/types/entities';
 import { connectMongoose } from '@/lib/mongodb';
 import { FacultyModel } from '@/lib/models';
+
+type FacultyLean = Omit<FacultyProfile, 'id'> & { 
+  _id: string; 
+  id?: string; 
+  __v?: number; 
+};
 
 
 const generateId = (): string => `fac_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
@@ -11,13 +17,13 @@ export async function GET() {
   try {
     await connectMongoose();
     
-    const faculty = await FacultyModel.find({}).lean() as unknown as Faculty[];
+    const faculty = await FacultyModel.find({}).lean() as FacultyLean[];
     const facultyWithId = faculty.map(f => ({
       ...f,
       id: f.id || f._id?.toString(),
       fullName: `${f.firstName || ''} ${f.middleName || ''} ${f.lastName || ''}`.replace(/\s+/g, ' ').trim(),
       email: f.instituteEmail || f.personalEmail || ''
-    } as Faculty & { fullName: string; email: string }));
+    } as FacultyProfile & { fullName: string; email: string }));
     
     return NextResponse.json(facultyWithId);
   } catch (error) {
@@ -33,7 +39,7 @@ export async function POST(request: NextRequest) {
   try {
     await connectMongoose();
     
-    const facultyData = await request.json() as Omit<Faculty, 'id' | 'userId'> & { userId?: string, instituteId: string };
+    const facultyData = await request.json() as Omit<FacultyProfile, 'id' | 'userId'> & { userId?: string, instituteId: string };
 
     if (!facultyData.staffCode || !facultyData.staffCode.trim()) {
       return NextResponse.json({ message: 'Staff Code is required.' }, { status: 400 });
