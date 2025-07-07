@@ -59,7 +59,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
               departmentWinnersMap.get(deptId)?.push(p);
           });
 
-      for (const [deptId, deptProjects] of departmentWinnersMap) {
+      for (const [_deptId, deptProjects] of departmentWinnersMap) {
           deptProjects.sort((a, b) => (b.deptEvaluation?.score || 0) - (a.deptEvaluation?.score || 0));
           for (const [index, project] of deptProjects.slice(0, 3).entries()) {
               const team = await ProjectTeamModel.findOne({ id: project.teamId });

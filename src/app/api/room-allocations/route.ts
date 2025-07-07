@@ -104,8 +104,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ message: 'End time must be after start time.' }, { status: 400 });
     }
     
-    const newStartTime = parseISO(allocationData.startTime);
-    const newEndTime = parseISO(allocationData.endTime);
+    const _newStartTime = parseISO(allocationData.startTime);
+    const _newEndTime = parseISO(allocationData.endTime);
 
     // Check for time slot conflicts
     const conflict = await RoomAllocationModel.findOne({

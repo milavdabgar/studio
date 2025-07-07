@@ -31,14 +31,14 @@ const rateLimiterMiddleware = async (req: NextRequest) => {
     try {
         const clientIP = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'anonymous';
         await rateLimiter.consume(clientIP);
-    } catch (rejRes) {
+    } catch (_rejRes) {
         throw new Error('Too Many Requests');
     }
 };
 
-const generateId = (): string => `role_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+const _generateId = (): string => `role_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     await connectMongoose();
     

@@ -3,7 +3,7 @@ import type { UploadBatch } from '@/types/entities';
 import { ResultModel } from '@/lib/models';
 import mongoose from 'mongoose';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
   } catch (error) {

@@ -14,7 +14,7 @@ const extractStId = (row: Record<string, unknown>): string => {
   return row.stid?.toString().trim() || row.mapnumber?.toString().trim() || '';
 };
 
-const mapSemesterCodeToStatus = (code: string | undefined | null): Student['sem1Status'] => { // Using Student['sem1Status'] for type safety
+const _mapSemesterCodeToStatus = (code: string | undefined | null): Student['sem1Status'] => { // Using Student['sem1Status'] for type safety
     if (!code) return 'N/A';
     const codeStr = String(code).trim();
     if (codeStr === '2') return 'Passed';

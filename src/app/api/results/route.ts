@@ -1,6 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { Result, ResultFilterParams, ResultSubject } from '@/types/entities';
-import { parse, type ParseError } from 'papaparse';
 import { v4 as uuidv4 } from 'uuid';
 import { connectMongoose } from '@/lib/mongodb';
 import { ResultModel } from '@/lib/models';
@@ -93,7 +92,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-const processStandardResultCsv = (rows: Record<string, unknown>[]): { processedResults: Omit<Result, '_id' | 'createdAt' | 'updatedAt'>[], errors: unknown[] } => {
+const _processStandardResultCsv = (rows: Record<string, unknown>[]): { processedResults: Omit<Result, '_id' | 'createdAt' | 'updatedAt'>[], errors: unknown[] } => {
   const processedResults: Omit<Result, '_id' | 'createdAt' | 'updatedAt'>[] = [];
   const processingErrors: unknown[] = [];
 

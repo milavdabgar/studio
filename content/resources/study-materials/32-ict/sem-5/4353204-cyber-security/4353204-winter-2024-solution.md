@@ -90,6 +90,10 @@ Authentication is the process of verifying the identity of a user, system, or en
 - **Verifies**: Identity using credentials (passwords, biometrics, tokens)
 - **Precedes**: Authorization (what you can access after authentication)
 
+**Diagram:**
+
+![Authentication Process](diagrams/authentication-process.svg)
+
 **Mnemonic:** "Verify Before Entry"
 
 ## Question 2(b) [4 marks]
@@ -198,6 +202,10 @@ Ports are virtual endpoints for network communications that:
 - **Enable Filtering**: Firewalls control traffic by allowing/blocking specific ports
 - **Reduce Attack Surface**: Closing unnecessary ports enhances security
 
+**Diagram:**
+
+![Port Security Importance](diagrams/port-security-importance.svg)
+
 **Mnemonic:** "Every Port Is An Entry Point"
 
 ## Question 3(b) [4 marks]
@@ -252,6 +260,10 @@ Digital signatures authenticate electronic documents and verify their integrity:
 2. **Encryption**: Sender encrypts the hash using their private key
 3. **Verification**: Recipient decrypts using sender's public key
 4. **Validation**: Comparing decrypted hash with newly generated hash
+
+**Diagram:**
+
+![Digital Signature Working](diagrams/digital-signature-working.svg)
 
 **Mnemonic:** "Hash, Sign, Send, Verify"
 
@@ -366,6 +378,10 @@ Footprinting is the first phase of ethical hacking where information is gathered
 - **Methods**: WHOIS lookup, DNS analysis, social media research
 - **Outcomes**: Identifying potential entry points and vulnerabilities
 
+**Diagram:**
+
+![Footprinting in Ethical Hacking](diagrams/footprinting-ethical-hacking.svg)
+
 **Mnemonic:** "Gather Before Attack"
 
 ## Question 4(b OR) [4 marks]
@@ -415,6 +431,10 @@ Disk forensics is the examination of storage media to recover, analyze, and pres
 - **Purpose**: Recover deleted files, analyze file systems, and establish timelines
 - **Methods**: Bit-by-bit imaging, hash verification, and specialized tools
 - **Applications**: Criminal investigations, corporate security incidents, data recovery
+
+**Diagram:**
+
+![Disk Forensics Process](diagrams/disk-forensics-process.svg)
 
 **Mnemonic:** "Recover, Analyze, Present"
 
@@ -469,6 +489,10 @@ Major challenges in combating cybercrime include:
 - **Technical Complexity**: Constantly evolving attack methods
 - **Attribution Problems**: Difficulty identifying perpetrators
 - **Evidence Collection**: Volatile and easily altered digital evidence
+
+**Diagram:**
+
+![Cybercrime Challenges](diagrams/cybercrime-challenges.svg)
 
 **Mnemonic:** "JTAE: Jurisdictions, Technology, Attribution, Evidence"
 

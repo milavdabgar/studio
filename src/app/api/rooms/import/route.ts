@@ -5,7 +5,7 @@ import { parse, type ParseError } from 'papaparse';
 import { RoomModel, BuildingModel } from '@/lib/models';
 import mongoose from 'mongoose';
 
-const generateIdForImport = (): string => `room_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+const _generateIdForImport = (): string => `room_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 const ROOM_TYPE_OPTIONS_LOWER: string[] = ['lecture hall', 'laboratory', 'office', 'staff room', 'workshop', 'library', 'store room', 'other'];
 const ROOM_STATUS_OPTIONS_LOWER: string[] = ['available', 'occupied', 'under_maintenance', 'unavailable'];
