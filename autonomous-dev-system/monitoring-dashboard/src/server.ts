@@ -1,7 +1,7 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { createServer } from 'http';
-const { Server: SocketIOServer } = require('socket.io');
-const cron = require('node-cron');
+import { Server as SocketIOServer } from 'socket.io';
+import * as cron from 'node-cron';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
@@ -101,7 +101,7 @@ class AutonomousMonitor {
 
     const metrics: SystemMetrics = {
       timestamp: new Date(),
-      cpuUsage: process.cpuUsage ? Math.random() * 100 : 0, // Simplified for demo
+      cpuUsage: process.cpuUsage ? process.cpuUsage().user / 1000000 : Math.random() * 100, // Convert to percentage
       memoryUsage: (process.memoryUsage().heapUsed / process.memoryUsage().heapTotal) * 100,
       diskUsage: Math.random() * 100, // Would need actual disk usage calculation
       activeOperations: activeOps,
@@ -225,39 +225,39 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // API Routes
-app.get('/api/operations', (req, res) => {
+app.get('/api/operations', (req: Request, res: Response) => {
   res.json(monitor.getOperations());
 });
 
-app.get('/api/metrics', (req, res) => {
+app.get('/api/metrics', (req: Request, res: Response) => {
   res.json(monitor.getMetrics());
 });
 
-app.get('/api/summary', (req, res) => {
+app.get('/api/summary', (req: Request, res: Response) => {
   res.json(monitor.getSystemSummary());
 });
 
-app.post('/api/operations', (req, res) => {
+app.post('/api/operations', (req: Request, res: Response) => {
   const { type, metadata } = req.body;
   const id = monitor.startOperation(type, metadata);
   res.json({ id });
 });
 
-app.patch('/api/operations/:id', (req, res) => {
+app.patch('/api/operations/:id', (req: Request, res: Response) => {
   const { id } = req.params;
   const updates = req.body;
   monitor.updateOperation(id, updates);
   res.json({ success: true });
 });
 
-app.post('/api/operations/:id/log', (req, res) => {
+app.post('/api/operations/:id/log', (req: Request, res: Response) => {
   const { id } = req.params;
   const { message } = req.body;
   monitor.addLog(id, message);
   res.json({ success: true });
 });
 
-app.post('/api/operations/:id/error', (req, res) => {
+app.post('/api/operations/:id/error', (req: Request, res: Response) => {
   const { id } = req.params;
   const { error } = req.body;
   monitor.addError(id, error);
@@ -265,7 +265,7 @@ app.post('/api/operations/:id/error', (req, res) => {
 });
 
 // Socket.IO connection handling
-io.on('connection', (socket) => {
+io.on('connection', (socket: any) => {
   console.log('Client connected to monitoring dashboard');
   
   // Send current state to new client

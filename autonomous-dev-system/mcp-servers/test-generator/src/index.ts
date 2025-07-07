@@ -10,7 +10,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
 import { parse } from '@babel/parser';
-import traverse, { NodePath } from '@babel/traverse';
+import traverse, { NodePath, Visitor } from '@babel/traverse';
 import * as t from '@babel/types';
 
 // Type definitions for Babel parser
@@ -79,42 +79,43 @@ class TestGenerator {
         plugins: ['typescript', 'jsx', 'decorators-legacy'],
       });
 
-      traverse.default(ast, {
-        FunctionDeclaration(path) {
+      const self = this;
+      traverse(ast, {
+        FunctionDeclaration(path: NodePath<t.FunctionDeclaration>) {
           const func = path.node;
           if (func.id) {
             functions.push({
               name: func.id.name,
-              params: func.params.map(p => t.isIdentifier(p) ? p.name : 'param'),
+              params: func.params.map((p: any) => t.isIdentifier(p) ? p.name : 'param'),
               returnType: func.returnType ? 'typed' : 'any',
               isAsync: func.async,
-              isExported: this.isExported(path),
+              isExported: self.isExported(path),
             });
           }
         },
         
-        FunctionExpression(path) {
+        FunctionExpression(path: NodePath<t.FunctionExpression>) {
           const parent = path.parent;
           if (t.isVariableDeclarator(parent) && t.isIdentifier(parent.id)) {
             functions.push({
               name: parent.id.name,
-              params: path.node.params.map(p => t.isIdentifier(p) ? p.name : 'param'),
+              params: path.node.params.map((p: any) => t.isIdentifier(p) ? p.name : 'param'),
               returnType: 'any',
               isAsync: path.node.async,
-              isExported: this.isExported(path),
+              isExported: self.isExported(path),
             });
           }
         },
         
-        ArrowFunctionExpression(path) {
+        ArrowFunctionExpression(path: NodePath<t.ArrowFunctionExpression>) {
           const parent = path.parent;
           if (t.isVariableDeclarator(parent) && t.isIdentifier(parent.id)) {
             functions.push({
               name: parent.id.name,
-              params: path.node.params.map(p => t.isIdentifier(p) ? p.name : 'param'),
+              params: path.node.params.map((p: any) => t.isIdentifier(p) ? p.name : 'param'),
               returnType: 'any',
               isAsync: path.node.async,
-              isExported: this.isExported(path),
+              isExported: self.isExported(path),
             });
           }
         },
@@ -135,23 +136,24 @@ class TestGenerator {
         plugins: ['typescript', 'jsx', 'decorators-legacy'],
       });
 
-      traverse.default(ast, {
-        ClassDeclaration(path) {
+      const self = this;
+      traverse(ast, {
+        ClassDeclaration(path: NodePath<t.ClassDeclaration>) {
           const cls = path.node;
           if (cls.id) {
             const methods: FunctionInfo[] = [];
             const properties: string[] = [];
             
-            cls.body.body.forEach(member => {
-              if (t.isMethodDefinition(member) && t.isIdentifier(member.key)) {
+            cls.body.body.forEach((member: any) => {
+              if (t.isMethod(member) && t.isIdentifier(member.key)) {
                 methods.push({
                   name: member.key.name,
-                  params: member.value.params.map(p => t.isIdentifier(p) ? p.name : 'param'),
+                  params: member.params.map((p: any) => t.isIdentifier(p) ? p.name : 'param'),
                   returnType: 'any',
-                  isAsync: member.value.async || false,
+                  isAsync: member.async || false,
                   isExported: false,
                 });
-              } else if (t.isPropertyDefinition(member) && t.isIdentifier(member.key)) {
+              } else if (t.isClassProperty(member) && t.isIdentifier(member.key)) {
                 properties.push(member.key.name);
               }
             });
@@ -160,7 +162,7 @@ class TestGenerator {
               name: cls.id.name,
               methods,
               properties,
-              isExported: this.isExported(path),
+              isExported: self.isExported(path),
             });
           }
         },
@@ -181,33 +183,34 @@ class TestGenerator {
         plugins: ['typescript', 'jsx', 'decorators-legacy'],
       });
 
-      traverse.default(ast, {
-        FunctionDeclaration(path) {
+      const self = this;
+      traverse(ast, {
+        FunctionDeclaration(path: NodePath<t.FunctionDeclaration>) {
           const func = path.node;
-          if (func.id && this.isReactComponent(path)) {
-            const props = this.extractPropsFromFunction(func);
-            const hooks = this.extractHooksFromFunction(path);
+          if (func.id && self.isReactComponent(path)) {
+            const props = self.extractPropsFromFunction(func);
+            const hooks = self.extractHooksFromFunction(path);
             
             components.push({
               name: func.id.name,
               props,
               hooks,
-              isExported: this.isExported(path),
+              isExported: self.isExported(path),
             });
           }
         },
         
-        ArrowFunctionExpression(path) {
+        ArrowFunctionExpression(path: NodePath<t.ArrowFunctionExpression>) {
           const parent = path.parent;
-          if (t.isVariableDeclarator(parent) && t.isIdentifier(parent.id) && this.isReactComponent(path)) {
-            const props = this.extractPropsFromArrowFunction(path.node);
-            const hooks = this.extractHooksFromFunction(path);
+          if (t.isVariableDeclarator(parent) && t.isIdentifier(parent.id) && self.isReactComponent(path)) {
+            const props = self.extractPropsFromArrowFunction(path.node);
+            const hooks = self.extractHooksFromFunction(path);
             
             components.push({
               name: parent.id.name,
               props,
               hooks,
-              isExported: this.isExported(path),
+              isExported: self.isExported(path),
             });
           }
         },
