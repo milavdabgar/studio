@@ -336,6 +336,8 @@ Criminal activities conducted through computers or internet networks.
 
 **Digital Harassment Comparison:**
 
+![Cyber Stalking vs Cyber Bullying](diagrams/cyber-stalking-vs-bullying.svg)
+
 | Aspect | Cyber Stalking | Cyber Bullying |
 |--------|----------------|----------------|
 | **Target** | Specific individual | Often minors |
@@ -432,6 +434,8 @@ mindmap
 **Data Diddling Definition:**
 Unauthorized alteration of data before or during input into computer systems.
 
+![Data Diddling Process](diagrams/data-diddling-process.svg)
+
 **Characteristics:**
 
 | Aspect | Description |
@@ -453,6 +457,8 @@ Unauthorized alteration of data before or during input into computer systems.
 **Answer**:
 
 **Cyber Threats Comparison:**
+
+![Cyber Spying vs Cyber Terrorism](diagrams/cyber-spying-vs-terrorism.svg)
 
 | Aspect | Cyber Spying | Cyber Terrorism |
 |--------|--------------|-----------------|
@@ -491,6 +497,8 @@ Unauthorized alteration of data before or during input into computer systems.
 **Answer**:
 
 **Digital Security Components:**
+
+![Digital Signatures and Certificates](diagrams/digital-signatures-certificates.svg)
 
 | Component | Purpose | Function | Benefit |
 |-----------|---------|----------|---------|
@@ -549,6 +557,8 @@ Unauthorized access to computer systems or networks to exploit vulnerabilities.
 
 **Hacker Classifications:**
 
+![Types of Hackers](diagrams/hacker-types.svg)
+
 | Type | Intent | Legal Status |
 |------|--------|--------------|
 | **White Hat** | Security improvement | Legal |
@@ -568,6 +578,8 @@ Unauthorized access to computer systems or networks to exploit vulnerabilities.
 **Answer**:
 
 **Security Terminology:**
+
+![Vulnerability vs 0-Day](diagrams/vulnerability-vs-0day.svg)
 
 | Term | Definition | Risk Level | Example |
 |------|------------|------------|---------|
@@ -680,6 +692,8 @@ Unauthorized access to computer systems or networks to exploit vulnerabilities.
 **Session Hijacking Overview:**
 Attack where attacker takes over legitimate user's session.
 
+![Session Hijacking Process](diagrams/session-hijacking-process.svg)
+
 **Types of Session Hijacking:**
 
 | Type | Method | Prevention |
@@ -774,6 +788,8 @@ Attack where attacker takes over legitimate user's session.
 **Network Forensics Definition:**
 Investigation of network traffic to detect and analyze security incidents.
 
+![Network Forensics Process](diagrams/network-forensics-process.svg)
+
 **Key Components:**
 
 | Component | Purpose | Tools |
@@ -795,6 +811,8 @@ Investigation of network traffic to detect and analyze security incidents.
 **Answer**:
 
 **CCTV in Digital Forensics:**
+
+![CCTV in Digital Forensics](diagrams/cctv-digital-forensics.svg)
 
 | Aspect | Importance | Value |
 |--------|------------|-------|
@@ -899,6 +917,8 @@ Investigation of network traffic to detect and analyze security incidents.
 
 **Microcontroller Security Applications:**
 
+![Microcontroller Security Applications](diagrams/microcontroller-security-applications.svg)
+
 | Field | Application | Security Function |
 |-------|-------------|-------------------|
 | **IoT Security** | Smart home devices | Authentication, encryption |
@@ -918,6 +938,8 @@ Investigation of network traffic to detect and analyze security incidents.
 **Answer**:
 
 **Port Scanning in Ethical Hacking:**
+
+![Port Scanning in Ethical Hacking](diagrams/port-scanning-ethical-hacking.svg)
 
 | Aspect | Importance | Benefit |
 |--------|------------|---------|
@@ -951,6 +973,10 @@ Investigation of network traffic to detect and analyze security incidents.
 **Vulnerability Assessment Process:**
 
 ![Vulnerability Assessment Process](diagrams/vulnerability-assessment-process.svg)
+
+**Kali Linux Tools and Commands:**
+
+![Kali Linux Commands](diagrams/kali-linux-commands.svg)
 
 **Step-by-Step Process:**
 
