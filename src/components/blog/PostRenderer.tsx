@@ -119,11 +119,40 @@ const PostRenderer: React.FC<PostRendererProps> = ({ contentHtml }) => {
       });
     };
 
-    // Enhance images with lazy loading and captions
+    // Enhance images with lazy loading, captions, and fix relative paths
     const enhanceImages = () => {
       const images = containerRef.current?.querySelectorAll('img');
       images?.forEach((img) => {
         img.setAttribute('loading', 'lazy');
+        
+        // Fix relative image paths to use content-images API
+        const src = img.getAttribute('src');
+        if (src && !src.startsWith('http') && !src.startsWith('/api/')) {
+          // Get the current page path to determine relative path context
+          const currentPath = window.location.pathname;
+          let newSrc;
+          
+          if (src.startsWith('/')) {
+            // Absolute path within content, use as-is with content-images API
+            newSrc = `/api/content-images${src}`;
+          } else {
+            // Relative path, need to resolve based on current page location
+            // Extract content path from current URL
+            const contentMatch = currentPath.match(/^\/posts\/[^\/]+\/(.+)$/);
+            if (contentMatch) {
+              const contentPath = contentMatch[1];
+              const contentDir = contentPath.split('/').slice(0, -1).join('/');
+              newSrc = `/api/content-images/${contentDir}/${src}`;
+            } else {
+              // Fallback for other page structures
+              newSrc = `/api/content-images/${src}`;
+            }
+          }
+          
+          console.log('PostRenderer: Converting image src:', src, '→', newSrc);
+          img.setAttribute('src', newSrc);
+        }
+        
         const alt = img.getAttribute('alt');
         if (alt && !img.nextElementSibling?.classList.contains('image-caption')) {
           const caption = document.createElement('figcaption');
