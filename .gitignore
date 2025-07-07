@@ -55,3 +55,28 @@ mcp-server/*.log
 # MCP Server build artifacts and logs
 mcp-server/coverage/
 mcp-server/test-results/
+
+# Autonomous Development System
+autonomous-dev-system/*/node_modules/
+autonomous-dev-system/*/dist/
+autonomous-dev-system/*/coverage/
+autonomous-dev-system/*/test-results/
+autonomous-dev-system/monitoring-dashboard/data/
+autonomous-dev-system/monitoring-dashboard/public/uploads/
+
+# Autonomous operations
+.autonomous/
+autonomous-logs/
+autonomous-temp/
+
+# Additional IDE files
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db
+
+# Backup files
+*.backup
+*.bak
+*.orig

@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "test-generator": {
+      "type": "stdio",
+      "command": "npx tsx autonomous-dev-system/mcp-servers/test-generator/src/simple-index.ts",
+      "args": [],
+      "env": {}
+    }
+  }
+}

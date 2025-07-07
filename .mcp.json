@@ -1,0 +1,40 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "type": "stdio",
+      "command": "npx @modelcontextprotocol/server-filesystem",
+      "args": [],
+      "env": {}
+    },
+    "git": {
+      "type": "stdio",
+      "command": "npx @modelcontextprotocol/server-git",
+      "args": [],
+      "env": {}
+    },
+    "npm": {
+      "type": "stdio",
+      "command": "npx @modelcontextprotocol/server-npm",
+      "args": [],
+      "env": {}
+    },
+    "mongodb": {
+      "type": "stdio",
+      "command": "npx @modelcontextprotocol/server-mongodb",
+      "args": [],
+      "env": {}
+    },
+    "puppeteer": {
+      "type": "stdio",
+      "command": "npx @modelcontextprotocol/server-puppeteer",
+      "args": [],
+      "env": {}
+    },
+    "requirements-parser": {
+      "type": "stdio",
+      "command": "npx tsx autonomous-dev-system/mcp-servers/requirements-parser/src/index.ts",
+      "args": [],
+      "env": {}
+    }
+  }
+}
