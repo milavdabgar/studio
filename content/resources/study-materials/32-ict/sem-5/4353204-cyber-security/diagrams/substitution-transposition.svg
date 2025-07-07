@@ -1,0 +1,179 @@
+<svg viewBox="0 0 1400 1200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1400" height="1200" fill="#f8fafc"/>
+  
+  <!-- Title -->
+  <text x="700" y="40" text-anchor="middle" font-size="28" font-weight="bold" fill="#1e293b">Substitution and Transposition Techniques</text>
+  
+  <!-- Main sections -->
+  <g transform="translate(50, 80)">
+    <!-- Substitution Section -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="650" height="500" rx="15" fill="#fef3c7" stroke="#f59e0b" stroke-width="3"/>
+      <text x="325" y="30" text-anchor="middle" font-size="22" font-weight="bold" fill="#92400e">Substitution Techniques</text>
+      <text x="325" y="55" text-anchor="middle" font-size="14" fill="#78350f">Replace elements of plaintext with corresponding ciphertext elements</text>
+      
+      <!-- Caesar Cipher -->
+      <g transform="translate(20, 80)">
+        <rect x="0" y="0" width="280" height="160" rx="10" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+        <text x="140" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#991b1b">Caesar Cipher</text>
+        <text x="15" y="45" font-size="12" fill="#7f1d1d">Shift each letter by fixed positions</text>
+        <text x="15" y="65" font-size="12" font-weight="bold" fill="#7f1d1d">Example (Shift = 3):</text>
+        <text x="15" y="85" font-size="11" fill="#7f1d1d">Plaintext:  HELLO</text>
+        <text x="15" y="100" font-size="11" fill="#7f1d1d">Ciphertext: KHOOR</text>
+        <text x="15" y="120" font-size="11" fill="#7f1d1d">H→K, E→H, L→O, O→R</text>
+        <text x="15" y="140" font-size="10" fill="#7f1d1d">Advantage: Simple to implement</text>
+        <text x="15" y="155" font-size="10" fill="#7f1d1d">Weakness: Easy to break (only 25 keys)</text>
+      </g>
+      
+      <!-- Monoalphabetic Cipher -->
+      <g transform="translate(320, 80)">
+        <rect x="0" y="0" width="280" height="160" rx="10" fill="#f3e8ff" stroke="#8b5cf6" stroke-width="2"/>
+        <text x="140" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#6b21a8">Monoalphabetic Cipher</text>
+        <text x="15" y="45" font-size="12" fill="#581c87">Each letter mapped to another letter</text>
+        <text x="15" y="65" font-size="12" font-weight="bold" fill="#581c87">Example:</text>
+        <text x="15" y="85" font-size="11" fill="#581c87">A→Q, B→W, C→E, D→R...</text>
+        <text x="15" y="100" font-size="11" fill="#581c87">Plaintext:  HELLO</text>
+        <text x="15" y="115" font-size="11" fill="#581c87">Ciphertext: ITSSK</text>
+        <text x="15" y="135" font-size="10" fill="#581c87">Advantage: Large key space (26!)</text>
+        <text x="15" y="150" font-size="10" fill="#581c87">Weakness: Frequency analysis</text>
+      </g>
+      
+      <!-- Playfair Cipher -->
+      <g transform="translate(20, 260)">
+        <rect x="0" y="0" width="280" height="160" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+        <text x="140" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#065f46">Playfair Cipher</text>
+        <text x="15" y="45" font-size="12" fill="#047857">Encrypts pairs using 5x5 matrix</text>
+        <text x="15" y="65" font-size="12" font-weight="bold" fill="#047857">Example (Key: KEYWORD):</text>
+        <text x="15" y="85" font-size="10" fill="#047857">K E Y W O</text>
+        <text x="15" y="100" font-size="10" fill="#047857">R D A B C</text>
+        <text x="15" y="115" font-size="10" fill="#047857">F G H I J</text>
+        <text x="15" y="130" font-size="10" fill="#047857">L M N P Q</text>
+        <text x="15" y="145" font-size="10" fill="#047857">S T U V X</text>
+        <text x="150" y="100" font-size="10" fill="#047857">HE → DR</text>
+        <text x="150" y="115" font-size="10" fill="#047857">LL → MM</text>
+        <text x="150" y="130" font-size="10" fill="#047857">OX → PJ</text>
+      </g>
+      
+      <!-- Vigenère Cipher -->
+      <g transform="translate(320, 260)">
+        <rect x="0" y="0" width="280" height="160" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+        <text x="140" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e40af">Vigenère Cipher</text>
+        <text x="15" y="45" font-size="12" fill="#1d4ed8">Uses keyword to shift letters</text>
+        <text x="15" y="65" font-size="12" font-weight="bold" fill="#1d4ed8">Example (Key: KEY):</text>
+        <text x="15" y="85" font-size="11" fill="#1d4ed8">Plaintext:  HELLO</text>
+        <text x="15" y="100" font-size="11" fill="#1d4ed8">Key:        KEYKE</text>
+        <text x="15" y="115" font-size="11" fill="#1d4ed8">Ciphertext: RIJVS</text>
+        <text x="15" y="135" font-size="10" fill="#1d4ed8">Advantage: Resists frequency analysis</text>
+        <text x="15" y="150" font-size="10" fill="#1d4ed8">Weakness: Kasiski examination</text>
+      </g>
+    </g>
+    
+    <!-- Transposition Section -->
+    <g transform="translate(700, 0)">
+      <rect x="0" y="0" width="650" height="500" rx="15" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+      <text x="325" y="30" text-anchor="middle" font-size="22" font-weight="bold" fill="#0e7490">Transposition Techniques</text>
+      <text x="325" y="55" text-anchor="middle" font-size="14" fill="#0891b2">Rearrange characters of plaintext according to a system</text>
+      
+      <!-- Rail Fence Cipher -->
+      <g transform="translate(20, 80)">
+        <rect x="0" y="0" width="280" height="180" rx="10" fill="#fef7ff" stroke="#a855f7" stroke-width="2"/>
+        <text x="140" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#7e22ce">Rail Fence Cipher</text>
+        <text x="15" y="45" font-size="12" fill="#6b21a8">Zigzag pattern across multiple rails</text>
+        <text x="15" y="65" font-size="12" font-weight="bold" fill="#6b21a8">Example (3 rails):</text>
+        <text x="15" y="85" font-size="11" fill="#6b21a8">Plaintext: HELLO WORLD</text>
+        <text x="15" y="105" font-size="11" fill="#6b21a8">H   L   O   R   D</text>
+        <text x="15" y="120" font-size="11" fill="#6b21a8"> E L   W O L</text>
+        <text x="15" y="135" font-size="11" fill="#6b21a8">Ciphertext: HLORDEL WOL</text>
+        <text x="15" y="155" font-size="10" fill="#6b21a8">Advantage: Simple implementation</text>
+        <text x="15" y="170" font-size="10" fill="#6b21a8">Weakness: Pattern recognition</text>
+      </g>
+      
+      <!-- Columnar Transposition -->
+      <g transform="translate(320, 80)">
+        <rect x="0" y="0" width="280" height="180" rx="10" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+        <text x="140" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#15803d">Columnar Transposition</text>
+        <text x="15" y="45" font-size="12" fill="#166534">Write in grid, read columns in order</text>
+        <text x="15" y="65" font-size="12" font-weight="bold" fill="#166534">Example (Key: ZEBRA):</text>
+        <text x="15" y="85" font-size="10" fill="#166534">Key order: 5 2 1 4 3</text>
+        <text x="15" y="100" font-size="10" fill="#166534">Z E B R A</text>
+        <text x="15" y="115" font-size="10" fill="#166534">H E L L O</text>
+        <text x="15" y="130" font-size="10" fill="#166534">W O R L D</text>
+        <text x="15" y="145" font-size="10" fill="#166534">Ciphertext: LROL EHELWO</text>
+        <text x="15" y="165" font-size="10" fill="#166534">Advantage: Better than simple transposition</text>
+      </g>
+      
+      <!-- Route Cipher -->
+      <g transform="translate(20, 280)">
+        <rect x="0" y="0" width="280" height="140" rx="10" fill="#fff1f2" stroke="#f43f5e" stroke-width="2"/>
+        <text x="140" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#be123c">Route Cipher</text>
+        <text x="15" y="45" font-size="12" fill="#9f1239">Specify route to read characters</text>
+        <text x="15" y="65" font-size="12" font-weight="bold" fill="#9f1239">Example (Spiral route):</text>
+        <text x="15" y="85" font-size="11" fill="#9f1239">H E L</text>
+        <text x="15" y="100" font-size="11" fill="#9f1239">W O R</text>
+        <text x="15" y="115" font-size="11" fill="#9f1239">Route: H→E→L→R→O→W</text>
+        <text x="15" y="130" font-size="10" fill="#9f1239">Ciphertext: HELROW</text>
+      </g>
+      
+      <!-- Block Cipher -->
+      <g transform="translate(320, 280)">
+        <rect x="0" y="0" width="280" height="140" rx="10" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="2"/>
+        <text x="140" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#7c3aed">Block Transposition</text>
+        <text x="15" y="45" font-size="12" fill="#6d28d9">Rearrange within fixed-size blocks</text>
+        <text x="15" y="65" font-size="12" font-weight="bold" fill="#6d28d9">Example (Block size 4):</text>
+        <text x="15" y="85" font-size="11" fill="#6d28d9">HELL → LLEH</text>
+        <text x="15" y="100" font-size="11" fill="#6d28d9">OWOR → ROWO</text>
+        <text x="15" y="115" font-size="11" fill="#6d28d9">Ciphertext: LLEHROWO</text>
+        <text x="15" y="130" font-size="10" fill="#6d28d9">Advantage: Fixed block processing</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- Comparison Section -->
+  <g transform="translate(50, 620)">
+    <rect x="0" y="0" width="1300" height="180" rx="15" fill="#f1f5f9" stroke="#64748b" stroke-width="2"/>
+    <text x="650" y="30" text-anchor="middle" font-size="20" font-weight="bold" fill="#1e293b">Comparison: Substitution vs Transposition</text>
+    
+    <!-- Substitution Column -->
+    <g transform="translate(100, 50)">
+      <text x="200" y="0" text-anchor="middle" font-size="16" font-weight="bold" fill="#dc2626">Substitution</text>
+      <text x="20" y="25" font-size="12" fill="#1e293b">✓ Changes character identity</text>
+      <text x="20" y="45" font-size="12" fill="#1e293b">✓ Maintains character position</text>
+      <text x="20" y="65" font-size="12" fill="#1e293b">✗ Vulnerable to frequency analysis</text>
+      <text x="20" y="85" font-size="12" fill="#1e293b">✗ Statistical patterns preserved</text>
+      <text x="20" y="105" font-size="12" fill="#1e293b">Examples: Caesar, Vigenère, Playfair</text>
+    </g>
+    
+    <!-- Transposition Column -->
+    <g transform="translate(750, 50)">
+      <text x="200" y="0" text-anchor="middle" font-size="16" font-weight="bold" fill="#0891b2">Transposition</text>
+      <text x="20" y="25" font-size="12" fill="#1e293b">✓ Maintains character identity</text>
+      <text x="20" y="45" font-size="12" fill="#1e293b">✓ Changes character position</text>
+      <text x="20" y="65" font-size="12" fill="#1e293b">✓ Resistant to frequency analysis</text>
+      <text x="20" y="85" font-size="12" fill="#1e293b">✗ Vulnerable to pattern analysis</text>
+      <text x="20" y="105" font-size="12" fill="#1e293b">Examples: Rail Fence, Columnar, Route</text>
+    </g>
+    
+    <!-- Dividing line -->
+    <line x1="650" y1="50" x2="650" y2="150" stroke="#64748b" stroke-width="2"/>
+  </g>
+  
+  <!-- Security Analysis -->
+  <g transform="translate(50, 840)">
+    <rect x="0" y="0" width="1300" height="120" rx="15" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+    <text x="650" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#991b1b">Security Analysis</text>
+    
+    <g transform="translate(100, 50)">
+      <text x="0" y="0" font-size="14" font-weight="bold" fill="#7f1d1d">Modern Cryptography Combines Both:</text>
+      <text x="20" y="25" font-size="12" fill="#7f1d1d">• Advanced Encryption Standard (AES) uses both substitution and transposition</text>
+      <text x="20" y="45" font-size="12" fill="#7f1d1d">• Multiple rounds of each technique increase security</text>
+      <text x="20" y="65" font-size="12" fill="#7f1d1d">• Classical techniques are educational but not secure for modern use</text>
+    </g>
+  </g>
+  
+  <!-- Footer -->
+  <g transform="translate(50, 1000)">
+    <rect x="0" y="0" width="1300" height="40" rx="10" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+    <text x="650" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Classical Cryptography: Foundation of Modern Security Techniques</text>
+  </g>
+</svg>

@@ -1,0 +1,228 @@
+<svg viewBox="0 0 1000 700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="clientGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A90E2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#357ABD;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="serverGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#50C878;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#228B22;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="tunnelGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="encryptionGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6B6B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E74C3C;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="3" dy="3" stdDeviation="2" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+    <pattern id="networkPattern" patternUnits="userSpaceOnUse" width="20" height="20">
+      <rect width="20" height="20" fill="#F0F0F0"/>
+      <circle cx="10" cy="10" r="2" fill="#CCCCCC"/>
+    </pattern>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1000" height="700" fill="#F8F9FA"/>
+  
+  <!-- Title -->
+  <text x="500" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#2C3E50">
+    SSH (Secure Shell) Architecture and Flow
+  </text>
+  
+  <!-- Network Cloud -->
+  <ellipse cx="500" cy="350" rx="200" ry="80" fill="url(#networkPattern)" stroke="#CCCCCC" stroke-width="2" opacity="0.3"/>
+  <text x="500" y="355" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#666">Unsecured Network</text>
+  
+  <!-- SSH Client -->
+  <g transform="translate(80, 200)">
+    <rect x="0" y="0" width="160" height="120" rx="10" fill="url(#clientGradient)" stroke="#357ABD" stroke-width="2" filter="url(#shadow)"/>
+    <text x="80" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">SSH Client</text>
+    <text x="80" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">User's Computer</text>
+    
+    <!-- Computer icon -->
+    <rect x="20" y="60" width="40" height="30" rx="3" fill="white" opacity="0.3"/>
+    <rect x="25" y="65" width="30" height="20" rx="2" fill="white" opacity="0.5"/>
+    <rect x="50" y="92" width="20" height="8" rx="4" fill="white" opacity="0.3"/>
+    
+    <!-- Key icon -->
+    <g transform="translate(100, 70)">
+      <circle cx="0" cy="0" r="8" fill="white" opacity="0.7"/>
+      <rect x="8" y="-2" width="15" height="4" rx="2" fill="white" opacity="0.7"/>
+      <rect x="20" y="-5" width="3" height="2" fill="white" opacity="0.7"/>
+      <rect x="20" y="1" width="3" height="2" fill="white" opacity="0.7"/>
+    </g>
+    
+    <text x="80" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">Private Key</text>
+  </g>
+  
+  <!-- SSH Server -->
+  <g transform="translate(760, 200)">
+    <rect x="0" y="0" width="160" height="120" rx="10" fill="url(#serverGradient)" stroke="#228B22" stroke-width="2" filter="url(#shadow)"/>
+    <text x="80" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">SSH Server</text>
+    <text x="80" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">Remote Host</text>
+    
+    <!-- Server icon -->
+    <rect x="20" y="60" width="50" height="35" rx="5" fill="white" opacity="0.3"/>
+    <rect x="25" y="65" width="40" height="6" rx="3" fill="white" opacity="0.5"/>
+    <rect x="25" y="73" width="40" height="6" rx="3" fill="white" opacity="0.5"/>
+    <rect x="25" y="81" width="40" height="6" rx="3" fill="white" opacity="0.5"/>
+    
+    <!-- Public Key icon -->
+    <g transform="translate(100, 70)">
+      <circle cx="0" cy="0" r="8" fill="white" opacity="0.7"/>
+      <rect x="8" y="-2" width="15" height="4" rx="2" fill="white" opacity="0.7"/>
+      <rect x="20" y="-5" width="3" height="2" fill="white" opacity="0.7"/>
+      <rect x="20" y="1" width="3" height="2" fill="white" opacity="0.7"/>
+    </g>
+    
+    <text x="80" y="105" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">Public Key</text>
+  </g>
+  
+  <!-- SSH Tunnel -->
+  <g>
+    <!-- Tunnel Path -->
+    <path d="M 240 260 Q 500 220 760 260" stroke="url(#tunnelGradient)" stroke-width="8" fill="none" stroke-dasharray="10,5"/>
+    <text x="500" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#FF8C00">Encrypted SSH Tunnel</text>
+    
+    <!-- Encryption Icons -->
+    <g transform="translate(350, 250)">
+      <circle cx="0" cy="0" r="12" fill="url(#encryptionGradient)" opacity="0.8"/>
+      <text x="0" y="5" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">🔐</text>
+    </g>
+    
+    <g transform="translate(450, 240)">
+      <circle cx="0" cy="0" r="12" fill="url(#encryptionGradient)" opacity="0.8"/>
+      <text x="0" y="5" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">🔐</text>
+    </g>
+    
+    <g transform="translate(550, 240)">
+      <circle cx="0" cy="0" r="12" fill="url(#encryptionGradient)" opacity="0.8"/>
+      <text x="0" y="5" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">🔐</text>
+    </g>
+    
+    <g transform="translate(650, 250)">
+      <circle cx="0" cy="0" r="12" fill="url(#encryptionGradient)" opacity="0.8"/>
+      <text x="0" y="5" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">🔐</text>
+    </g>
+  </g>
+  
+  <!-- SSH Authentication Flow -->
+  <g transform="translate(50, 400)">
+    <rect x="0" y="0" width="900" height="250" rx="15" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" filter="url(#shadow)"/>
+    <text x="450" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2C3E50">SSH Authentication Flow</text>
+    
+    <!-- Steps -->
+    <g>
+      <!-- Step 1: Connection Request -->
+      <g transform="translate(30, 60)">
+        <circle cx="20" cy="20" r="15" fill="#4A90E2" stroke="#357ABD" stroke-width="2"/>
+        <text x="20" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">1</text>
+        <text x="20" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Connection</text>
+        <text x="20" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Request</text>
+      </g>
+      
+      <!-- Step 2: Version Exchange -->
+      <g transform="translate(180, 60)">
+        <circle cx="20" cy="20" r="15" fill="#50C878" stroke="#228B22" stroke-width="2"/>
+        <text x="20" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">2</text>
+        <text x="20" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Version</text>
+        <text x="20" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Exchange</text>
+      </g>
+      
+      <!-- Step 3: Key Exchange -->
+      <g transform="translate(330, 60)">
+        <circle cx="20" cy="20" r="15" fill="#FFD700" stroke="#FFA500" stroke-width="2"/>
+        <text x="20" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">3</text>
+        <text x="20" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Key</text>
+        <text x="20" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Exchange</text>
+      </g>
+      
+      <!-- Step 4: Authentication -->
+      <g transform="translate(480, 60)">
+        <circle cx="20" cy="20" r="15" fill="#FF6B6B" stroke="#E74C3C" stroke-width="2"/>
+        <text x="20" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">4</text>
+        <text x="20" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">User</text>
+        <text x="20" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Authentication</text>
+      </g>
+      
+      <!-- Step 5: Secure Session -->
+      <g transform="translate(630, 60)">
+        <circle cx="20" cy="20" r="15" fill="#9B59B6" stroke="#8E44AD" stroke-width="2"/>
+        <text x="20" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">5</text>
+        <text x="20" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Secure</text>
+        <text x="20" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Session</text>
+      </g>
+      
+      <!-- Step 6: Data Transfer -->
+      <g transform="translate(780, 60)">
+        <circle cx="20" cy="20" r="15" fill="#E67E22" stroke="#D68910" stroke-width="2"/>
+        <text x="20" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">6</text>
+        <text x="20" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Encrypted</text>
+        <text x="20" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Data Transfer</text>
+      </g>
+      
+      <!-- Flow Arrows -->
+      <g stroke="#666" stroke-width="2" fill="none" marker-end="url(#arrowhead)">
+        <path d="M 65 80 L 165 80"/>
+        <path d="M 215 80 L 315 80"/>
+        <path d="M 365 80 L 465 80"/>
+        <path d="M 515 80 L 615 80"/>
+        <path d="M 665 80 L 765 80"/>
+      </g>
+    </g>
+    
+    <!-- Authentication Methods -->
+    <g transform="translate(50, 140)">
+      <text x="0" y="0" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2C3E50">Authentication Methods:</text>
+      
+      <!-- Password Authentication -->
+      <g transform="translate(0, 25)">
+        <rect x="0" y="0" width="250" height="40" rx="5" fill="#E8F4FD" stroke="#4A90E2" stroke-width="1"/>
+        <text x="10" y="15" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#4A90E2">Password Authentication</text>
+        <text x="10" y="30" font-family="Arial, sans-serif" font-size="10" fill="#666">User provides username/password</text>
+      </g>
+      
+      <!-- Public Key Authentication -->
+      <g transform="translate(270, 25)">
+        <rect x="0" y="0" width="250" height="40" rx="5" fill="#E8F8F5" stroke="#50C878" stroke-width="1"/>
+        <text x="10" y="15" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#50C878">Public Key Authentication</text>
+        <text x="10" y="30" font-family="Arial, sans-serif" font-size="10" fill="#666">Uses cryptographic key pairs</text>
+      </g>
+      
+      <!-- Multi-Factor Authentication -->
+      <g transform="translate(540, 25)">
+        <rect x="0" y="0" width="250" height="40" rx="5" fill="#FFF3E0" stroke="#FF8C00" stroke-width="1"/>
+        <text x="10" y="15" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FF8C00">Multi-Factor Authentication</text>
+        <text x="10" y="30" font-family="Arial, sans-serif" font-size="10" fill="#666">Combines multiple auth methods</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- Features -->
+  <g transform="translate(50, 50)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2C3E50">SSH Features:</text>
+    <text x="0" y="20" font-family="Arial, sans-serif" font-size="12" fill="#666">• Secure Remote Access</text>
+    <text x="0" y="35" font-family="Arial, sans-serif" font-size="12" fill="#666">• Strong Encryption (AES, 3DES)</text>
+    <text x="0" y="50" font-family="Arial, sans-serif" font-size="12" fill="#666">• Port Forwarding/Tunneling</text>
+    <text x="0" y="65" font-family="Arial, sans-serif" font-size="12" fill="#666">• File Transfer (SCP, SFTP)</text>
+  </g>
+  
+  <g transform="translate(750, 50)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2C3E50">Common SSH Ports:</text>
+    <text x="0" y="20" font-family="Arial, sans-serif" font-size="12" fill="#666">• Port 22 (Default SSH)</text>
+    <text x="0" y="35" font-family="Arial, sans-serif" font-size="12" fill="#666">• Port 443 (SSH over HTTPS)</text>
+    <text x="0" y="50" font-family="Arial, sans-serif" font-size="12" fill="#666">• Port 2222 (Alternative SSH)</text>
+    <text x="0" y="65" font-family="Arial, sans-serif" font-size="12" fill="#666">• Custom ports for security</text>
+  </g>
+  
+  <!-- Arrow marker definition -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+    </marker>
+  </defs>
+</svg>

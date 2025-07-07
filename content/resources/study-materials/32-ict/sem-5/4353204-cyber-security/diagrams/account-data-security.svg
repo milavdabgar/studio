@@ -1,0 +1,393 @@
+<svg viewBox="0 0 1400 1200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1400" height="1200" fill="#f8fafc"/>
+  
+  <!-- Title -->
+  <text x="700" y="40" text-anchor="middle" font-size="28" font-weight="bold" fill="#1e293b">Account &amp; Data Security</text>
+  
+  <!-- Authentication Section -->
+  <g transform="translate(50, 80)">
+    <rect x="0" y="0" width="1300" height="450" rx="15" fill="#e0f2fe" stroke="#0891b2" stroke-width="3"/>
+    <text x="650" y="30" text-anchor="middle" font-size="22" font-weight="bold" fill="#0e7490">Authentication Methods</text>
+    
+    <!-- Password Authentication -->
+    <g transform="translate(50, 60)">
+      <rect x="0" y="0" width="220" height="160" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+      <text x="110" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#991b1b">Password Authentication</text>
+      
+      <!-- Password visual -->
+      <g transform="translate(20, 40)">
+        <rect x="0" y="0" width="180" height="30" rx="5" fill="#fee2e2" stroke="#dc2626" stroke-width="1"/>
+        <text x="90" y="20" text-anchor="middle" font-size="12" fill="#991b1b">Password: ●●●●●●●●</text>
+      </g>
+      
+      <text x="20" y="90" font-size="11" fill="#991b1b">✓ Simple to implement</text>
+      <text x="20" y="105" font-size="11" fill="#991b1b">✓ Low cost</text>
+      <text x="20" y="120" font-size="11" fill="#991b1b">✗ Vulnerable to attacks</text>
+      <text x="20" y="135" font-size="11" fill="#991b1b">✗ Password fatigue</text>
+      <text x="20" y="150" font-size="11" fill="#991b1b">✗ Sharing/reuse issues</text>
+    </g>
+    
+    <!-- Biometric Authentication -->
+    <g transform="translate(290, 60)">
+      <rect x="0" y="0" width="220" height="160" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+      <text x="110" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#15803d">Biometric Authentication</text>
+      
+      <!-- Biometric icons -->
+      <g transform="translate(20, 40)">
+        <circle cx="45" cy="15" r="12" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+        <text x="45" y="20" text-anchor="middle" font-size="10" fill="#15803d">👁</text>
+        <text x="45" y="35" text-anchor="middle" font-size="8" fill="#15803d">Iris</text>
+        
+        <circle cx="90" cy="15" r="12" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+        <text x="90" y="20" text-anchor="middle" font-size="10" fill="#15803d">👆</text>
+        <text x="90" y="35" text-anchor="middle" font-size="8" fill="#15803d">Fingerprint</text>
+        
+        <circle cx="135" cy="15" r="12" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+        <text x="135" y="20" text-anchor="middle" font-size="10" fill="#15803d">👤</text>
+        <text x="135" y="35" text-anchor="middle" font-size="8" fill="#15803d">Face</text>
+      </g>
+      
+      <text x="20" y="90" font-size="11" fill="#15803d">✓ Unique to individual</text>
+      <text x="20" y="105" font-size="11" fill="#15803d">✓ Hard to forge</text>
+      <text x="20" y="120" font-size="11" fill="#15803d">✗ Privacy concerns</text>
+      <text x="20" y="135" font-size="11" fill="#15803d">✗ Hardware requirements</text>
+      <text x="20" y="150" font-size="11" fill="#15803d">✗ False positives/negatives</text>
+    </g>
+    
+    <!-- Multi-Factor Authentication -->
+    <g transform="translate(530, 60)">
+      <rect x="0" y="0" width="220" height="160" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+      <text x="110" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#92400e">Multi-Factor Authentication</text>
+      
+      <!-- MFA factors -->
+      <g transform="translate(20, 40)">
+        <rect x="0" y="0" width="180" height="20" rx="5" fill="#fff7ed" stroke="#f59e0b" stroke-width="1"/>
+        <text x="90" y="15" text-anchor="middle" font-size="10" fill="#92400e">Something You Know (Password)</text>
+        
+        <rect x="0" y="25" width="180" height="20" rx="5" fill="#fff7ed" stroke="#f59e0b" stroke-width="1"/>
+        <text x="90" y="40" text-anchor="middle" font-size="10" fill="#92400e">Something You Have (Token)</text>
+        
+        <rect x="0" y="50" width="180" height="20" rx="5" fill="#fff7ed" stroke="#f59e0b" stroke-width="1"/>
+        <text x="90" y="65" text-anchor="middle" font-size="10" fill="#92400e">Something You Are (Biometric)</text>
+      </g>
+      
+      <text x="20" y="120" font-size="11" fill="#92400e">✓ Highest security</text>
+      <text x="20" y="135" font-size="11" fill="#92400e">✓ Layered protection</text>
+      <text x="20" y="150" font-size="11" fill="#92400e">✗ User complexity</text>
+    </g>
+    
+    <!-- Single Sign-On -->
+    <g transform="translate(770, 60)">
+      <rect x="0" y="0" width="220" height="160" rx="10" fill="#f3e8ff" stroke="#8b5cf6" stroke-width="2"/>
+      <text x="110" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#6b21a8">Single Sign-On (SSO)</text>
+      
+      <!-- SSO flow -->
+      <g transform="translate(20, 40)">
+        <circle cx="30" cy="15" r="15" fill="#faf5ff" stroke="#8b5cf6" stroke-width="2"/>
+        <text x="30" y="20" text-anchor="middle" font-size="10" fill="#6b21a8">User</text>
+        
+        <rect x="70" y="0" width="40" height="30" rx="5" fill="#faf5ff" stroke="#8b5cf6" stroke-width="1"/>
+        <text x="90" y="20" text-anchor="middle" font-size="8" fill="#6b21a8">SSO Server</text>
+        
+        <rect x="130" y="0" width="50" height="30" rx="5" fill="#faf5ff" stroke="#8b5cf6" stroke-width="1"/>
+        <text x="155" y="20" text-anchor="middle" font-size="8" fill="#6b21a8">Apps</text>
+        
+        <path d="M 45 15 L 70 15" stroke="#8b5cf6" stroke-width="2" marker-end="url(#arrowhead-purple)"/>
+        <path d="M 110 15 L 130 15" stroke="#8b5cf6" stroke-width="2" marker-end="url(#arrowhead-purple)"/>
+      </g>
+      
+      <text x="20" y="90" font-size="11" fill="#6b21a8">✓ User convenience</text>
+      <text x="20" y="105" font-size="11" fill="#6b21a8">✓ Centralized management</text>
+      <text x="20" y="120" font-size="11" fill="#6b21a8">✗ Single point of failure</text>
+      <text x="20" y="135" font-size="11" fill="#6b21a8">✗ Integration complexity</text>
+    </g>
+    
+    <!-- Cookies -->
+    <g transform="translate(1010, 60)">
+      <rect x="0" y="0" width="220" height="160" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+      <text x="110" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e40af">Cookie-Based Auth</text>
+      
+      <!-- Cookie representation -->
+      <g transform="translate(20, 40)">
+        <rect x="0" y="0" width="180" height="50" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+        <text x="90" y="15" text-anchor="middle" font-size="10" fill="#1e40af">SessionID: abc123xyz</text>
+        <text x="90" y="30" text-anchor="middle" font-size="10" fill="#1e40af">UserID: user@domain.com</text>
+        <text x="90" y="45" text-anchor="middle" font-size="10" fill="#1e40af">Expires: 2024-12-31</text>
+      </g>
+      
+      <text x="20" y="115" font-size="11" fill="#1e40af">✓ Stateful sessions</text>
+      <text x="20" y="130" font-size="11" fill="#1e40af">✓ Remember preferences</text>
+      <text x="20" y="145" font-size="11" fill="#1e40af">✗ Session hijacking risk</text>
+    </g>
+    
+    <!-- Authentication Flow -->
+    <g transform="translate(50, 240)">
+      <text x="600" y="0" text-anchor="middle" font-size="18" font-weight="bold" fill="#0e7490">Authentication Flow</text>
+      
+      <!-- Step 1 -->
+      <g transform="translate(0, 30)">
+        <rect x="0" y="0" width="120" height="60" rx="8" fill="#f0f9ff" stroke="#0891b2" stroke-width="2"/>
+        <text x="60" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#0891b2">1. User Request</text>
+        <text x="60" y="35" text-anchor="middle" font-size="10" fill="#0891b2">Access to</text>
+        <text x="60" y="50" text-anchor="middle" font-size="10" fill="#0891b2">Protected Resource</text>
+      </g>
+      
+      <!-- Arrow 1 -->
+      <path d="M 130 60 L 180 60" stroke="#0891b2" stroke-width="3" marker-end="url(#arrowhead-blue)"/>
+      
+      <!-- Step 2 -->
+      <g transform="translate(190, 30)">
+        <rect x="0" y="0" width="120" height="60" rx="8" fill="#f0f9ff" stroke="#0891b2" stroke-width="2"/>
+        <text x="60" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#0891b2">2. Challenge</text>
+        <text x="60" y="35" text-anchor="middle" font-size="10" fill="#0891b2">Provide</text>
+        <text x="60" y="50" text-anchor="middle" font-size="10" fill="#0891b2">Credentials</text>
+      </g>
+      
+      <!-- Arrow 2 -->
+      <path d="M 320 60 L 370 60" stroke="#0891b2" stroke-width="3" marker-end="url(#arrowhead-blue)"/>
+      
+      <!-- Step 3 -->
+      <g transform="translate(380, 30)">
+        <rect x="0" y="0" width="120" height="60" rx="8" fill="#f0f9ff" stroke="#0891b2" stroke-width="2"/>
+        <text x="60" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#0891b2">3. Verification</text>
+        <text x="60" y="35" text-anchor="middle" font-size="10" fill="#0891b2">Validate</text>
+        <text x="60" y="50" text-anchor="middle" font-size="10" fill="#0891b2">Credentials</text>
+      </g>
+      
+      <!-- Arrow 3 -->
+      <path d="M 510 60 L 560 60" stroke="#0891b2" stroke-width="3" marker-end="url(#arrowhead-blue)"/>
+      
+      <!-- Step 4 -->
+      <g transform="translate(570, 30)">
+        <rect x="0" y="0" width="120" height="60" rx="8" fill="#f0f9ff" stroke="#0891b2" stroke-width="2"/>
+        <text x="60" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#0891b2">4. Authorization</text>
+        <text x="60" y="35" text-anchor="middle" font-size="10" fill="#0891b2">Grant/Deny</text>
+        <text x="60" y="50" text-anchor="middle" font-size="10" fill="#0891b2">Access</text>
+      </g>
+      
+      <!-- Arrow 4 -->
+      <path d="M 700 60 L 750 60" stroke="#0891b2" stroke-width="3" marker-end="url(#arrowhead-blue)"/>
+      
+      <!-- Step 5 -->
+      <g transform="translate(760, 30)">
+        <rect x="0" y="0" width="120" height="60" rx="8" fill="#f0f9ff" stroke="#0891b2" stroke-width="2"/>
+        <text x="60" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#0891b2">5. Session</text>
+        <text x="60" y="35" text-anchor="middle" font-size="10" fill="#0891b2">Maintain</text>
+        <text x="60" y="50" text-anchor="middle" font-size="10" fill="#0891b2">Access State</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- Authorization Section -->
+  <g transform="translate(50, 560)">
+    <rect x="0" y="0" width="1300" height="280" rx="15" fill="#fef3c7" stroke="#f59e0b" stroke-width="3"/>
+    <text x="650" y="30" text-anchor="middle" font-size="22" font-weight="bold" fill="#92400e">Authorization &amp; Access Control</text>
+    
+    <!-- Role-Based Access Control -->
+    <g transform="translate(50, 60)">
+      <rect x="0" y="0" width="250" height="180" rx="10" fill="#fff7ed" stroke="#f59e0b" stroke-width="2"/>
+      <text x="125" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#92400e">Role-Based Access Control</text>
+      <text x="125" y="45" text-anchor="middle" font-size="12" fill="#92400e">(RBAC)</text>
+      
+      <!-- Role hierarchy -->
+      <g transform="translate(20, 60)">
+        <rect x="0" y="0" width="210" height="25" rx="5" fill="#fed7aa" stroke="#f59e0b" stroke-width="1"/>
+        <text x="105" y="17" text-anchor="middle" font-size="11" fill="#92400e">Admin → Full Access</text>
+        
+        <rect x="0" y="30" width="210" height="25" rx="5" fill="#fed7aa" stroke="#f59e0b" stroke-width="1"/>
+        <text x="105" y="47" text-anchor="middle" font-size="11" fill="#92400e">Manager → Read/Write</text>
+        
+        <rect x="0" y="60" width="210" height="25" rx="5" fill="#fed7aa" stroke="#f59e0b" stroke-width="1"/>
+        <text x="105" y="77" text-anchor="middle" font-size="11" fill="#92400e">Employee → Read Only</text>
+        
+        <rect x="0" y="90" width="210" height="25" rx="5" fill="#fed7aa" stroke="#f59e0b" stroke-width="1"/>
+        <text x="105" y="107" text-anchor="middle" font-size="11" fill="#92400e">Guest → Limited Access</text>
+      </g>
+    </g>
+    
+    <!-- Attribute-Based Access Control -->
+    <g transform="translate(320, 60)">
+      <rect x="0" y="0" width="250" height="180" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+      <text x="125" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#047857">Attribute-Based Access</text>
+      <text x="125" y="45" text-anchor="middle" font-size="12" fill="#047857">(ABAC)</text>
+      
+      <!-- Attributes -->
+      <g transform="translate(20, 60)">
+        <text x="0" y="15" font-size="12" font-weight="bold" fill="#047857">Attributes:</text>
+        <text x="20" y="35" font-size="11" fill="#047857">• User: Department, Role, Clearance</text>
+        <text x="20" y="50" font-size="11" fill="#047857">• Resource: Classification, Owner</text>
+        <text x="20" y="65" font-size="11" fill="#047857">• Environment: Time, Location</text>
+        <text x="20" y="80" font-size="11" fill="#047857">• Action: Read, Write, Delete</text>
+        
+        <text x="0" y="105" font-size="12" font-weight="bold" fill="#047857">Policy Example:</text>
+        <text x="20" y="125" font-size="10" fill="#047857">IF (User.Dept = "Finance" AND</text>
+        <text x="20" y="140" font-size="10" fill="#047857">    Time = "Business Hours")</text>
+        <text x="20" y="155" font-size="10" fill="#047857">THEN Allow Access</text>
+      </g>
+    </g>
+    
+    <!-- Access Control Lists -->
+    <g transform="translate(590, 60)">
+      <rect x="0" y="0" width="250" height="180" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+      <text x="125" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#1e40af">Access Control Lists</text>
+      <text x="125" y="45" text-anchor="middle" font-size="12" fill="#1e40af">(ACL)</text>
+      
+      <!-- ACL example -->
+      <g transform="translate(20, 60)">
+        <text x="0" y="15" font-size="12" font-weight="bold" fill="#1e40af">File: /data/finance.xlsx</text>
+        
+        <rect x="0" y="25" width="210" height="20" rx="3" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+        <text x="105" y="39" text-anchor="middle" font-size="10" fill="#1e40af">alice@company.com: Read/Write</text>
+        
+        <rect x="0" y="50" width="210" height="20" rx="3" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+        <text x="105" y="64" text-anchor="middle" font-size="10" fill="#1e40af">bob@company.com: Read Only</text>
+        
+        <rect x="0" y="75" width="210" height="20" rx="3" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+        <text x="105" y="89" text-anchor="middle" font-size="10" fill="#1e40af">finance-group: Read/Write</text>
+        
+        <rect x="0" y="100" width="210" height="20" rx="3" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+        <text x="105" y="114" text-anchor="middle" font-size="10" fill="#1e40af">everyone: Deny</text>
+      </g>
+    </g>
+    
+    <!-- Principle of Least Privilege -->
+    <g transform="translate(860, 60)">
+      <rect x="0" y="0" width="250" height="180" rx="10" fill="#f3e8ff" stroke="#8b5cf6" stroke-width="2"/>
+      <text x="125" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#6b21a8">Principle of Least</text>
+      <text x="125" y="45" text-anchor="middle" font-size="12" fill="#6b21a8">Privilege</text>
+      
+      <!-- Principle visualization -->
+      <g transform="translate(20, 60)">
+        <text x="0" y="15" font-size="12" font-weight="bold" fill="#6b21a8">Grant minimum necessary access:</text>
+        
+        <circle cx="30" cy="40" r="15" fill="#faf5ff" stroke="#8b5cf6" stroke-width="2"/>
+        <text x="30" y="45" text-anchor="middle" font-size="10" fill="#6b21a8">User</text>
+        
+        <rect x="70" y="25" width="120" height="30" rx="5" fill="#faf5ff" stroke="#8b5cf6" stroke-width="1"/>
+        <text x="130" y="35" text-anchor="middle" font-size="10" fill="#6b21a8">Only Required</text>
+        <text x="130" y="48" text-anchor="middle" font-size="10" fill="#6b21a8">Permissions</text>
+        
+        <path d="M 45 40 L 70 40" stroke="#8b5cf6" stroke-width="2" marker-end="url(#arrowhead-purple)"/>
+        
+        <text x="0" y="80" font-size="11" fill="#6b21a8">Benefits:</text>
+        <text x="15" y="95" font-size="10" fill="#6b21a8">• Reduced attack surface</text>
+        <text x="15" y="110" font-size="10" fill="#6b21a8">• Limited damage potential</text>
+        <text x="15" y="125" font-size="10" fill="#6b21a8">• Easier compliance</text>
+        <text x="15" y="140" font-size="10" fill="#6b21a8">• Better audit trails</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- Data Security -->
+  <g transform="translate(50, 870)">
+    <rect x="0" y="0" width="1300" height="260" rx="15" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+    <text x="650" y="30" text-anchor="middle" font-size="22" font-weight="bold" fill="#15803d">Data Security Measures</text>
+    
+    <!-- Data Encryption -->
+    <g transform="translate(50, 60)">
+      <rect x="0" y="0" width="200" height="160" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+      <text x="100" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="#15803d">Data Encryption</text>
+      
+      <!-- Encryption process -->
+      <g transform="translate(20, 40)">
+        <rect x="0" y="0" width="160" height="80" rx="5" fill="#f0fdf4" stroke="#16a34a" stroke-width="1"/>
+        <text x="80" y="15" text-anchor="middle" font-size="10" fill="#15803d">Plaintext Data</text>
+        <text x="80" y="30" text-anchor="middle" font-size="12" fill="#15803d">↓ Encryption Key</text>
+        <text x="80" y="45" text-anchor="middle" font-size="10" fill="#15803d">Encrypted Data</text>
+        <text x="80" y="60" text-anchor="middle" font-size="12" fill="#15803d">↓ Decryption Key</text>
+        <text x="80" y="75" text-anchor="middle" font-size="10" fill="#15803d">Original Data</text>
+      </g>
+      
+      <text x="20" y="140" font-size="10" fill="#15803d">• At Rest • In Transit • In Use</text>
+    </g>
+    
+    <!-- Data Backup -->
+    <g transform="translate(270, 60)">
+      <rect x="0" y="0" width="200" height="160" rx="10" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+      <text x="100" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e40af">Data Backup</text>
+      
+      <!-- Backup strategy -->
+      <g transform="translate(20, 40)">
+        <text x="0" y="15" font-size="12" font-weight="bold" fill="#1e40af">3-2-1 Rule:</text>
+        <text x="20" y="35" font-size="11" fill="#1e40af">• 3 copies of data</text>
+        <text x="20" y="50" font-size="11" fill="#1e40af">• 2 different media types</text>
+        <text x="20" y="65" font-size="11" fill="#1e40af">• 1 offsite backup</text>
+        
+        <text x="0" y="90" font-size="12" font-weight="bold" fill="#1e40af">Types:</text>
+        <text x="20" y="105" font-size="10" fill="#1e40af">• Full • Incremental</text>
+        <text x="20" y="120" font-size="10" fill="#1e40af">• Differential • Cloud</text>
+      </g>
+    </g>
+    
+    <!-- Data Loss Prevention -->
+    <g transform="translate(490, 60)">
+      <rect x="0" y="0" width="200" height="160" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+      <text x="100" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="#92400e">Data Loss Prevention</text>
+      <text x="100" y="40" text-anchor="middle" font-size="12" fill="#92400e">(DLP)</text>
+      
+      <!-- DLP components -->
+      <g transform="translate(20, 55)">
+        <text x="0" y="15" font-size="11" font-weight="bold" fill="#92400e">Monitor:</text>
+        <text x="20" y="30" font-size="10" fill="#92400e">• Email attachments</text>
+        <text x="20" y="45" font-size="10" fill="#92400e">• File transfers</text>
+        <text x="20" y="60" font-size="10" fill="#92400e">• USB devices</text>
+        <text x="20" y="75" font-size="10" fill="#92400e">• Cloud uploads</text>
+        
+        <text x="0" y="100" font-size="11" font-weight="bold" fill="#92400e">Actions: Block, Alert, Log</text>
+      </g>
+    </g>
+    
+    <!-- Access Monitoring -->
+    <g transform="translate(710, 60)">
+      <rect x="0" y="0" width="200" height="160" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+      <text x="100" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="#991b1b">Access Monitoring</text>
+      
+      <!-- Monitoring elements -->
+      <g transform="translate(20, 40)">
+        <text x="0" y="15" font-size="11" font-weight="bold" fill="#991b1b">Log &amp; Monitor:</text>
+        <text x="20" y="30" font-size="10" fill="#991b1b">• Login attempts</text>
+        <text x="20" y="45" font-size="10" fill="#991b1b">• File access</text>
+        <text x="20" y="60" font-size="10" fill="#991b1b">• Permission changes</text>
+        <text x="20" y="75" font-size="10" fill="#991b1b">• Failed authentications</text>
+        
+        <text x="0" y="100" font-size="11" font-weight="bold" fill="#991b1b">SIEM Integration</text>
+        <text x="20" y="115" font-size="10" fill="#991b1b">Real-time analysis</text>
+      </g>
+    </g>
+    
+    <!-- Privacy Controls -->
+    <g transform="translate(930, 60)">
+      <rect x="0" y="0" width="200" height="160" rx="10" fill="#f3e8ff" stroke="#8b5cf6" stroke-width="2"/>
+      <text x="100" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="#6b21a8">Privacy Controls</text>
+      
+      <!-- Privacy measures -->
+      <g transform="translate(20, 40)">
+        <text x="0" y="15" font-size="11" font-weight="bold" fill="#6b21a8">Techniques:</text>
+        <text x="20" y="30" font-size="10" fill="#6b21a8">• Data masking</text>
+        <text x="20" y="45" font-size="10" fill="#6b21a8">• Anonymization</text>
+        <text x="20" y="60" font-size="10" fill="#6b21a8">• Pseudonymization</text>
+        <text x="20" y="75" font-size="10" fill="#6b21a8">• Data minimization</text>
+        
+        <text x="0" y="100" font-size="11" font-weight="bold" fill="#6b21a8">Compliance:</text>
+        <text x="20" y="115" font-size="10" fill="#6b21a8">GDPR, CCPA, HIPAA</text>
+      </g>
+    </g>
+  </g>
+  
+  <!-- Bottom Summary -->
+  <g transform="translate(50, 1150)">
+    <rect x="0" y="0" width="1300" height="40" rx="10" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+    <text x="650" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Security Triangle: Authentication (Who you are) + Authorization (What you can do) + Accounting (What you did)</text>
+  </g>
+  
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrowhead-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6"/>
+    </marker>
+    <marker id="arrowhead-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8b5cf6"/>
+    </marker>
+  </defs>
+</svg>

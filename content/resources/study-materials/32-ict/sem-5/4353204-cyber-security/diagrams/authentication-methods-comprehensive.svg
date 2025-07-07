@@ -1,0 +1,187 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#1a1a2e"/>
+  
+  <!-- Title -->
+  <text x="600" y="40" text-anchor="middle" fill="#e43f5a" font-family="Arial, sans-serif" font-size="28" font-weight="bold">AUTHENTICATION METHODS</text>
+  
+  <!-- Authentication Factors -->
+  <g transform="translate(50, 80)">
+    <text x="0" y="0" fill="#e43f5a" font-family="Arial, sans-serif" font-size="20" font-weight="bold">AUTHENTICATION FACTORS</text>
+    
+    <!-- Something You Know -->
+    <g transform="translate(0, 40)">
+      <rect x="0" y="0" width="350" height="140" rx="15" fill="#ff4757" stroke="#fff" stroke-width="2"/>
+      <text x="175" y="30" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">SOMETHING YOU KNOW</text>
+      <text x="175" y="50" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14">(Knowledge Factor)</text>
+      <text x="20" y="80" fill="white" font-family="Arial, sans-serif" font-size="13">• Passwords &amp; Passphrases</text>
+      <text x="20" y="100" fill="white" font-family="Arial, sans-serif" font-size="13">• PINs &amp; Security Questions</text>
+      <text x="20" y="120" fill="white" font-family="Arial, sans-serif" font-size="13">• Secret patterns &amp; codes</text>
+    </g>
+    
+    <!-- Something You Have -->
+    <g transform="translate(425, 40)">
+      <rect x="0" y="0" width="350" height="140" rx="15" fill="#5f27cd" stroke="#fff" stroke-width="2"/>
+      <text x="175" y="30" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">SOMETHING YOU HAVE</text>
+      <text x="175" y="50" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14">(Possession Factor)</text>
+      <text x="20" y="80" fill="white" font-family="Arial, sans-serif" font-size="13">• Security tokens &amp; key fobs</text>
+      <text x="20" y="100" fill="white" font-family="Arial, sans-serif" font-size="13">• Smart cards &amp; mobile devices</text>
+      <text x="20" y="120" fill="white" font-family="Arial, sans-serif" font-size="13">• Hardware authentication keys</text>
+    </g>
+    
+    <!-- Something You Are -->
+    <g transform="translate(800, 40)">
+      <rect x="0" y="0" width="350" height="140" rx="15" fill="#00d2d3" stroke="#fff" stroke-width="2"/>
+      <text x="175" y="30" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">SOMETHING YOU ARE</text>
+      <text x="175" y="50" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14">(Inherence Factor)</text>
+      <text x="20" y="80" fill="white" font-family="Arial, sans-serif" font-size="13">• Fingerprints &amp; iris scans</text>
+      <text x="20" y="100" fill="white" font-family="Arial, sans-serif" font-size="13">• Facial recognition &amp; voice</text>
+      <text x="20" y="120" fill="white" font-family="Arial, sans-serif" font-size="13">• DNA &amp; behavioral patterns</text>
+    </g>
+  </g>
+  
+  <!-- Authentication Methods -->
+  <g transform="translate(50, 280)">
+    <text x="0" y="0" fill="#e43f5a" font-family="Arial, sans-serif" font-size="20" font-weight="bold">AUTHENTICATION METHODS</text>
+    
+    <!-- Single Factor -->
+    <g transform="translate(0, 40)">
+      <rect x="0" y="0" width="280" height="120" rx="10" fill="#16213e" stroke="#ff4757" stroke-width="2"/>
+      <text x="140" y="25" text-anchor="middle" fill="#ff4757" font-family="Arial, sans-serif" font-size="16" font-weight="bold">SINGLE FACTOR</text>
+      <text x="20" y="50" fill="white" font-family="Arial, sans-serif" font-size="12">• Uses one authentication factor</text>
+      <text x="20" y="70" fill="white" font-family="Arial, sans-serif" font-size="12">• Most common: passwords</text>
+      <text x="20" y="90" fill="white" font-family="Arial, sans-serif" font-size="12">• Less secure but convenient</text>
+      <text x="20" y="110" fill="white" font-family="Arial, sans-serif" font-size="12">• Vulnerable to compromise</text>
+    </g>
+    
+    <!-- Two Factor -->
+    <g transform="translate(320, 40)">
+      <rect x="0" y="0" width="280" height="120" rx="10" fill="#16213e" stroke="#5f27cd" stroke-width="2"/>
+      <text x="140" y="25" text-anchor="middle" fill="#5f27cd" font-family="Arial, sans-serif" font-size="16" font-weight="bold">TWO FACTOR (2FA)</text>
+      <text x="20" y="50" fill="white" font-family="Arial, sans-serif" font-size="12">• Uses two different factors</text>
+      <text x="20" y="70" fill="white" font-family="Arial, sans-serif" font-size="12">• Password + SMS/App code</text>
+      <text x="20" y="90" fill="white" font-family="Arial, sans-serif" font-size="12">• Significantly more secure</text>
+      <text x="20" y="110" fill="white" font-family="Arial, sans-serif" font-size="12">• Widely adopted standard</text>
+    </g>
+    
+    <!-- Multi Factor -->
+    <g transform="translate(640, 40)">
+      <rect x="0" y="0" width="280" height="120" rx="10" fill="#16213e" stroke="#00d2d3" stroke-width="2"/>
+      <text x="140" y="25" text-anchor="middle" fill="#00d2d3" font-family="Arial, sans-serif" font-size="16" font-weight="bold">MULTI FACTOR (MFA)</text>
+      <text x="20" y="50" fill="white" font-family="Arial, sans-serif" font-size="12">• Uses multiple factors</text>
+      <text x="20" y="70" fill="white" font-family="Arial, sans-serif" font-size="12">• Combines 2+ authentication types</text>
+      <text x="20" y="90" fill="white" font-family="Arial, sans-serif" font-size="12">• Highest security level</text>
+      <text x="20" y="110" fill="white" font-family="Arial, sans-serif" font-size="12">• Enterprise standard</text>
+    </g>
+  </g>
+  
+  <!-- Specific Methods -->
+  <g transform="translate(50, 460)">
+    <text x="0" y="0" fill="#e43f5a" font-family="Arial, sans-serif" font-size="20" font-weight="bold">SPECIFIC AUTHENTICATION METHODS</text>
+    
+    <!-- Password Authentication -->
+    <g transform="translate(0, 40)">
+      <rect x="0" y="0" width="220" height="100" rx="8" fill="#2d3436" stroke="#fff" stroke-width="1"/>
+      <text x="110" y="20" text-anchor="middle" fill="#e43f5a" font-family="Arial, sans-serif" font-size="14" font-weight="bold">PASSWORD AUTH</text>
+      <text x="10" y="40" fill="white" font-family="Arial, sans-serif" font-size="11">• Most common method</text>
+      <text x="10" y="55" fill="white" font-family="Arial, sans-serif" font-size="11">• Vulnerable to attacks</text>
+      <text x="10" y="70" fill="white" font-family="Arial, sans-serif" font-size="11">• Requires strong policies</text>
+      <text x="10" y="85" fill="white" font-family="Arial, sans-serif" font-size="11">• Hash-based storage</text>
+    </g>
+    
+    <!-- Biometric Authentication -->
+    <g transform="translate(240, 40)">
+      <rect x="0" y="0" width="220" height="100" rx="8" fill="#2d3436" stroke="#fff" stroke-width="1"/>
+      <text x="110" y="20" text-anchor="middle" fill="#e43f5a" font-family="Arial, sans-serif" font-size="14" font-weight="bold">BIOMETRIC AUTH</text>
+      <text x="10" y="40" fill="white" font-family="Arial, sans-serif" font-size="11">• Unique biological traits</text>
+      <text x="10" y="55" fill="white" font-family="Arial, sans-serif" font-size="11">• Hard to forge</text>
+      <text x="10" y="70" fill="white" font-family="Arial, sans-serif" font-size="11">• Convenient for users</text>
+      <text x="10" y="85" fill="white" font-family="Arial, sans-serif" font-size="11">• Privacy concerns</text>
+    </g>
+    
+    <!-- Token-based Authentication -->
+    <g transform="translate(480, 40)">
+      <rect x="0" y="0" width="220" height="100" rx="8" fill="#2d3436" stroke="#fff" stroke-width="1"/>
+      <text x="110" y="20" text-anchor="middle" fill="#e43f5a" font-family="Arial, sans-serif" font-size="14" font-weight="bold">TOKEN AUTH</text>
+      <text x="10" y="40" fill="white" font-family="Arial, sans-serif" font-size="11">• Physical/software tokens</text>
+      <text x="10" y="55" fill="white" font-family="Arial, sans-serif" font-size="11">• Time-based codes</text>
+      <text x="10" y="70" fill="white" font-family="Arial, sans-serif" font-size="11">• Enhanced security</text>
+      <text x="10" y="85" fill="white" font-family="Arial, sans-serif" font-size="11">• Portable authentication</text>
+    </g>
+    
+    <!-- Single Sign-On -->
+    <g transform="translate(720, 40)">
+      <rect x="0" y="0" width="220" height="100" rx="8" fill="#2d3436" stroke="#fff" stroke-width="1"/>
+      <text x="110" y="20" text-anchor="middle" fill="#e43f5a" font-family="Arial, sans-serif" font-size="14" font-weight="bold">SINGLE SIGN-ON</text>
+      <text x="10" y="40" fill="white" font-family="Arial, sans-serif" font-size="11">• One login for multiple apps</text>
+      <text x="10" y="55" fill="white" font-family="Arial, sans-serif" font-size="11">• Improves user experience</text>
+      <text x="10" y="70" fill="white" font-family="Arial, sans-serif" font-size="11">• Centralized management</text>
+      <text x="10" y="85" fill="white" font-family="Arial, sans-serif" font-size="11">• Single point of failure</text>
+    </g>
+    
+    <!-- Cookie-based Authentication -->
+    <g transform="translate(960, 40)">
+      <rect x="0" y="0" width="220" height="100" rx="8" fill="#2d3436" stroke="#fff" stroke-width="1"/>
+      <text x="110" y="20" text-anchor="middle" fill="#e43f5a" font-family="Arial, sans-serif" font-size="14" font-weight="bold">COOKIE AUTH</text>
+      <text x="10" y="40" fill="white" font-family="Arial, sans-serif" font-size="11">• Session management</text>
+      <text x="10" y="55" fill="white" font-family="Arial, sans-serif" font-size="11">• Stateful authentication</text>
+      <text x="10" y="70" fill="white" font-family="Arial, sans-serif" font-size="11">• Web-based systems</text>
+      <text x="10" y="85" fill="white" font-family="Arial, sans-serif" font-size="11">• Security considerations</text>
+    </g>
+  </g>
+  
+  <!-- Authentication Flow -->
+  <g transform="translate(50, 620)">
+    <text x="0" y="0" fill="#e43f5a" font-family="Arial, sans-serif" font-size="20" font-weight="bold">AUTHENTICATION PROCESS FLOW</text>
+    
+    <!-- Flow steps -->
+    <g transform="translate(0, 30)">
+      <rect x="0" y="0" width="120" height="60" rx="8" fill="#ff4757" stroke="#fff" stroke-width="1"/>
+      <text x="60" y="25" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" font-weight="bold">1. IDENTITY</text>
+      <text x="60" y="40" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" font-weight="bold">CLAIM</text>
+      <text x="60" y="55" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="10">User provides ID</text>
+    </g>
+    
+    <g transform="translate(160, 30)">
+      <rect x="0" y="0" width="120" height="60" rx="8" fill="#5f27cd" stroke="#fff" stroke-width="1"/>
+      <text x="60" y="25" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" font-weight="bold">2. CREDENTIAL</text>
+      <text x="60" y="40" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" font-weight="bold">PROVISION</text>
+      <text x="60" y="55" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="10">Provides proof</text>
+    </g>
+    
+    <g transform="translate(320, 30)">
+      <rect x="0" y="0" width="120" height="60" rx="8" fill="#00d2d3" stroke="#fff" stroke-width="1"/>
+      <text x="60" y="25" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" font-weight="bold">3. CREDENTIAL</text>
+      <text x="60" y="40" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" font-weight="bold">VERIFICATION</text>
+      <text x="60" y="55" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="10">System validates</text>
+    </g>
+    
+    <g transform="translate(480, 30)">
+      <rect x="0" y="0" width="120" height="60" rx="8" fill="#2ecc71" stroke="#fff" stroke-width="1"/>
+      <text x="60" y="25" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" font-weight="bold">4. ACCESS</text>
+      <text x="60" y="40" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" font-weight="bold">DECISION</text>
+      <text x="60" y="55" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="10">Grant/deny access</text>
+    </g>
+    
+    <!-- Flow arrows -->
+    <defs>
+      <marker id="arrowhead3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#e43f5a"/>
+      </marker>
+    </defs>
+    
+    <line x1="120" y1="60" x2="150" y2="60" stroke="#e43f5a" stroke-width="2" marker-end="url(#arrowhead3)"/>
+    <line x1="280" y1="60" x2="310" y2="60" stroke="#e43f5a" stroke-width="2" marker-end="url(#arrowhead3)"/>
+    <line x1="440" y1="60" x2="470" y2="60" stroke="#e43f5a" stroke-width="2" marker-end="url(#arrowhead3)"/>
+    
+    <!-- Best practices -->
+    <g transform="translate(650, 30)">
+      <rect x="0" y="0" width="500" height="100" rx="8" fill="#16213e" stroke="#e43f5a" stroke-width="2"/>
+      <text x="250" y="20" text-anchor="middle" fill="#e43f5a" font-family="Arial, sans-serif" font-size="14" font-weight="bold">AUTHENTICATION BEST PRACTICES</text>
+      <text x="10" y="40" fill="white" font-family="Arial, sans-serif" font-size="11">• Implement strong password policies (length, complexity, rotation)</text>
+      <text x="10" y="55" fill="white" font-family="Arial, sans-serif" font-size="11">• Deploy multi-factor authentication where possible</text>
+      <text x="10" y="70" fill="white" font-family="Arial, sans-serif" font-size="11">• Use secure storage for credentials (hashing, salting)</text>
+      <text x="10" y="85" fill="white" font-family="Arial, sans-serif" font-size="11">• Implement account lockout and rate limiting mechanisms</text>
+    </g>
+  </g>
+</svg>

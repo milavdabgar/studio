@@ -1,0 +1,118 @@
+<svg viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="timelineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4a90e2;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#7b68ee;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff6b6b;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#00000030"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1000" height="600" fill="#f8f9fa"/>
+  
+  <!-- Title -->
+  <text x="500" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#2c3e50">
+    Cyber Security Evolution Timeline
+  </text>
+  
+  <!-- Main Timeline -->
+  <line x1="100" y1="100" x2="900" y2="100" stroke="url(#timelineGrad)" stroke-width="8" stroke-linecap="round"/>
+  
+  <!-- 1960s -->
+  <circle cx="150" cy="100" r="8" fill="#4a90e2" filter="url(#shadow)"/>
+  <line x1="150" y1="100" x2="150" y2="150" stroke="#4a90e2" stroke-width="3"/>
+  <rect x="100" y="150" width="100" height="80" rx="8" fill="#4a90e2" filter="url(#shadow)"/>
+  <text x="150" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">1960s</text>
+  <text x="150" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">Computer</text>
+  <text x="150" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">Systems &amp;</text>
+  <text x="150" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">Networks</text>
+  
+  <!-- 1970s-1980s -->
+  <circle cx="280" cy="100" r="8" fill="#5ba3f5" filter="url(#shadow)"/>
+  <line x1="280" y1="100" x2="280" y2="280" stroke="#5ba3f5" stroke-width="3"/>
+  <rect x="220" y="280" width="120" height="80" rx="8" fill="#5ba3f5" filter="url(#shadow)"/>
+  <text x="280" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">1970s-1980s</text>
+  <text x="280" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">ARPANET</text>
+  <text x="280" y="335" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">Network</text>
+  <text x="280" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">Security</text>
+  
+  <!-- 1990s -->
+  <circle cx="450" cy="100" r="8" fill="#7b68ee" filter="url(#shadow)"/>
+  <line x1="450" y1="100" x2="450" y2="150" stroke="#7b68ee" stroke-width="3"/>
+  <rect x="380" y="150" width="140" height="80" rx="8" fill="#7b68ee" filter="url(#shadow)"/>
+  <text x="450" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">1990s</text>
+  <text x="450" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">Internet Rise</text>
+  <text x="450" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">Firewalls &amp;</text>
+  <text x="450" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">Antivirus</text>
+  
+  <!-- 2000s -->
+  <circle cx="650" cy="100" r="8" fill="#ff8c42" filter="url(#shadow)"/>
+  <line x1="650" y1="100" x2="650" y2="280" stroke="#ff8c42" stroke-width="3"/>
+  <rect x="580" y="280" width="140" height="80" rx="8" fill="#ff8c42" filter="url(#shadow)"/>
+  <text x="650" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">2000s</text>
+  <text x="650" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">Strategic Priority</text>
+  <text x="650" y="335" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">Advanced</text>
+  <text x="650" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">Protocols</text>
+  
+  <!-- 2010s-Present -->
+  <circle cx="850" cy="100" r="8" fill="#ff6b6b" filter="url(#shadow)"/>
+  <line x1="850" y1="100" x2="850" y2="150" stroke="#ff6b6b" stroke-width="3"/>
+  <rect x="770" y="150" width="160" height="100" rx="8" fill="#ff6b6b" filter="url(#shadow)"/>
+  <text x="850" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">2010s-Present</text>
+  <text x="850" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">Sophisticated</text>
+  <text x="850" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">Threats</text>
+  <text x="850" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">Ransomware, APTs</text>
+  <text x="850" y="235" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">Frameworks</text>
+  
+  <!-- Key Technologies Icons -->
+  <!-- Computer Icon (1960s) -->
+  <g transform="translate(125, 400)">
+    <rect x="0" y="0" width="50" height="35" rx="3" fill="#34495e" stroke="#2c3e50" stroke-width="2"/>
+    <rect x="5" y="5" width="40" height="25" fill="#3498db"/>
+    <rect x="20" y="40" width="10" height="15" fill="#34495e"/>
+    <rect x="15" y="55" width="20" height="3" fill="#34495e"/>
+  </g>
+  
+  <!-- Network Icon (1970s-1980s) -->
+  <g transform="translate(255, 400)">
+    <circle cx="10" cy="10" r="8" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+    <circle cx="40" cy="10" r="8" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+    <circle cx="25" cy="35" r="8" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+    <line x1="18" y1="10" x2="32" y2="10" stroke="#34495e" stroke-width="2"/>
+    <line x1="15" y1="15" x2="22" y2="28" stroke="#34495e" stroke-width="2"/>
+    <line x1="35" y1="15" x2="28" y2="28" stroke="#34495e" stroke-width="2"/>
+  </g>
+  
+  <!-- Internet Icon (1990s) -->
+  <g transform="translate(425, 400)">
+    <circle cx="25" cy="25" r="20" fill="none" stroke="#3498db" stroke-width="3"/>
+    <ellipse cx="25" cy="25" rx="20" ry="10" fill="none" stroke="#3498db" stroke-width="2"/>
+    <ellipse cx="25" cy="25" rx="10" ry="20" fill="none" stroke="#3498db" stroke-width="2"/>
+    <circle cx="25" cy="25" r="3" fill="#3498db"/>
+  </g>
+  
+  <!-- Shield Icon (2000s) -->
+  <g transform="translate(625, 400)">
+    <path d="M25 5 L45 15 L45 35 Q45 45 25 50 Q5 45 5 35 L5 15 Z" fill="#2ecc71" stroke="#27ae60" stroke-width="2"/>
+    <path d="M25 15 L35 25 L25 35 L15 25 Z" fill="white"/>
+  </g>
+  
+  <!-- Advanced Threat Icon (2010s-Present) -->
+  <g transform="translate(825, 400)">
+    <circle cx="25" cy="25" r="20" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+    <path d="M15 15 L35 35 M35 15 L15 35" stroke="white" stroke-width="3" stroke-linecap="round"/>
+    <text x="25" y="60" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#e74c3c">⚠</text>
+  </g>
+  
+  <!-- Legend -->
+  <rect x="50" y="520" width="900" height="60" rx="8" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1"/>
+  <text x="500" y="540" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2c3e50">
+    Evolution Highlights
+  </text>
+  <text x="500" y="560" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#34495e">
+    From basic computer security to comprehensive frameworks defending against advanced persistent threats
+  </text>
+</svg>

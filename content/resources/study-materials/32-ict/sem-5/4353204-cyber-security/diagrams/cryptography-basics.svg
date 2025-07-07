@@ -1,0 +1,190 @@
+<svg viewBox="0 0 1400 1000" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1400" height="1000" fill="#f8fafc"/>
+  
+  <!-- Title -->
+  <text x="700" y="40" text-anchor="middle" font-size="28" font-weight="bold" fill="#1e293b">Cryptography Basics Overview</text>
+  
+  <!-- Key Concepts Section -->
+  <g transform="translate(50, 80)">
+    <text x="0" y="0" font-size="20" font-weight="bold" fill="#1e293b">Key Concepts</text>
+    
+    <!-- CIA Triad for Crypto -->
+    <g transform="translate(0, 30)">
+      <rect x="0" y="0" width="300" height="120" rx="10" fill="#3b82f6" stroke="#1e40af" stroke-width="2"/>
+      <text x="150" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Four Pillars of Cryptography</text>
+      <text x="20" y="45" font-size="12" font-weight="bold" fill="white">• Confidentiality</text>
+      <text x="20" y="60" font-size="12" font-weight="bold" fill="white">• Integrity</text>
+      <text x="20" y="75" font-size="12" font-weight="bold" fill="white">• Authentication</text>
+      <text x="20" y="90" font-size="12" font-weight="bold" fill="white">• Non-repudiation</text>
+    </g>
+  </g>
+  
+  <!-- Three Types of Cryptography -->
+  <g transform="translate(50, 280)">
+    <text x="0" y="0" font-size="20" font-weight="bold" fill="#1e293b">Types of Cryptography</text>
+    
+    <!-- Symmetric Cryptography -->
+    <g transform="translate(0, 30)">
+      <rect x="0" y="0" width="400" height="180" rx="10" fill="#10b981" stroke="#059669" stroke-width="2"/>
+      <text x="200" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Symmetric Key Cryptography</text>
+      <text x="20" y="50" font-size="12" font-weight="bold" fill="white">Same key for encryption &amp; decryption</text>
+      <text x="20" y="70" font-size="12" fill="white">Advantages:</text>
+      <text x="30" y="85" font-size="10" fill="white">• Fast and efficient</text>
+      <text x="30" y="100" font-size="10" fill="white">• Good for large data volumes</text>
+      <text x="20" y="120" font-size="12" fill="white">Disadvantages:</text>
+      <text x="30" y="135" font-size="10" fill="white">• Key distribution challenge</text>
+      <text x="30" y="150" font-size="10" fill="white">• Scalability issues</text>
+      <text x="20" y="170" font-size="12" font-weight="bold" fill="white">Examples: AES, DES, Blowfish</text>
+    </g>
+    
+    <!-- Asymmetric Cryptography -->
+    <g transform="translate(450, 30)">
+      <rect x="0" y="0" width="400" height="180" rx="10" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
+      <text x="200" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Asymmetric Key Cryptography</text>
+      <text x="20" y="50" font-size="12" font-weight="bold" fill="white">Public key + Private key pair</text>
+      <text x="20" y="70" font-size="12" fill="white">Advantages:</text>
+      <text x="30" y="85" font-size="10" fill="white">• Easier key management</text>
+      <text x="30" y="100" font-size="10" fill="white">• Scalable for many users</text>
+      <text x="20" y="120" font-size="12" fill="white">Disadvantages:</text>
+      <text x="30" y="135" font-size="10" fill="white">• Computationally intensive</text>
+      <text x="30" y="150" font-size="10" fill="white">• Slower than symmetric</text>
+      <text x="20" y="170" font-size="12" font-weight="bold" fill="white">Examples: RSA, ECC</text>
+    </g>
+    
+    <!-- Hash Functions -->
+    <g transform="translate(900, 30)">
+      <rect x="0" y="0" width="400" height="180" rx="10" fill="#8b5cf6" stroke="#7c3aed" stroke-width="2"/>
+      <text x="200" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Hash Functions</text>
+      <text x="20" y="50" font-size="12" font-weight="bold" fill="white">Fixed-size output from any input</text>
+      <text x="20" y="70" font-size="12" fill="white">Properties:</text>
+      <text x="30" y="85" font-size="10" fill="white">• Deterministic</text>
+      <text x="30" y="100" font-size="10" fill="white">• Avalanche effect</text>
+      <text x="30" y="115" font-size="10" fill="white">• Collision resistant</text>
+      <text x="20" y="135" font-size="12" fill="white">Uses:</text>
+      <text x="30" y="150" font-size="10" fill="white">• Data integrity</text>
+      <text x="30" y="165" font-size="10" fill="white">• Digital signatures</text>
+      <text x="20" y="180" font-size="12" font-weight="bold" fill="white">Examples: SHA-256, MD5</text>
+    </g>
+  </g>
+  
+  <!-- Cryptographic Process Flow -->
+  <g transform="translate(50, 520)">
+    <text x="0" y="0" font-size="20" font-weight="bold" fill="#1e293b">Cryptographic Process Flow</text>
+    
+    <!-- Encryption Process -->
+    <g transform="translate(0, 30)">
+      <!-- Plaintext -->
+      <rect x="0" y="0" width="120" height="60" rx="8" fill="#e5e7eb" stroke="#6b7280" stroke-width="2"/>
+      <text x="60" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#1f2937">Plaintext</text>
+      <text x="60" y="35" text-anchor="middle" font-size="10" fill="#1f2937">"Hello World"</text>
+      <text x="60" y="50" text-anchor="middle" font-size="10" fill="#1f2937">(Readable)</text>
+      
+      <!-- Arrow 1 -->
+      <path d="M 130 30 L 180 30" stroke="#4b5563" stroke-width="2" marker-end="url(#arrowhead)"/>
+      <text x="155" y="20" text-anchor="middle" font-size="10" fill="#4b5563">+ Key</text>
+      
+      <!-- Encryption -->
+      <rect x="190" y="0" width="120" height="60" rx="8" fill="#3b82f6" stroke="#1e40af" stroke-width="2"/>
+      <text x="250" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="white">Encryption</text>
+      <text x="250" y="35" text-anchor="middle" font-size="10" fill="white">Algorithm</text>
+      <text x="250" y="50" text-anchor="middle" font-size="10" fill="white">(AES, RSA)</text>
+      
+      <!-- Arrow 2 -->
+      <path d="M 320 30 L 370 30" stroke="#4b5563" stroke-width="2" marker-end="url(#arrowhead)"/>
+      
+      <!-- Ciphertext -->
+      <rect x="380" y="0" width="120" height="60" rx="8" fill="#dc2626" stroke="#991b1b" stroke-width="2"/>
+      <text x="440" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="white">Ciphertext</text>
+      <text x="440" y="35" text-anchor="middle" font-size="10" fill="white">"X7#9kL@2"</text>
+      <text x="440" y="50" text-anchor="middle" font-size="10" fill="white">(Encrypted)</text>
+    </g>
+    
+    <!-- Decryption Process -->
+    <g transform="translate(0, 100)">
+      <!-- Ciphertext -->
+      <rect x="0" y="0" width="120" height="60" rx="8" fill="#dc2626" stroke="#991b1b" stroke-width="2"/>
+      <text x="60" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="white">Ciphertext</text>
+      <text x="60" y="35" text-anchor="middle" font-size="10" fill="white">"X7#9kL@2"</text>
+      <text x="60" y="50" text-anchor="middle" font-size="10" fill="white">(Encrypted)</text>
+      
+      <!-- Arrow 3 -->
+      <path d="M 130 30 L 180 30" stroke="#4b5563" stroke-width="2" marker-end="url(#arrowhead)"/>
+      <text x="155" y="20" text-anchor="middle" font-size="10" fill="#4b5563">+ Key</text>
+      
+      <!-- Decryption -->
+      <rect x="190" y="0" width="120" height="60" rx="8" fill="#10b981" stroke="#059669" stroke-width="2"/>
+      <text x="250" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="white">Decryption</text>
+      <text x="250" y="35" text-anchor="middle" font-size="10" fill="white">Algorithm</text>
+      <text x="250" y="50" text-anchor="middle" font-size="10" fill="white">(Reverse)</text>
+      
+      <!-- Arrow 4 -->
+      <path d="M 320 30 L 370 30" stroke="#4b5563" stroke-width="2" marker-end="url(#arrowhead)"/>
+      
+      <!-- Plaintext -->
+      <rect x="380" y="0" width="120" height="60" rx="8" fill="#e5e7eb" stroke="#6b7280" stroke-width="2"/>
+      <text x="440" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#1f2937">Plaintext</text>
+      <text x="440" y="35" text-anchor="middle" font-size="10" fill="#1f2937">"Hello World"</text>
+      <text x="440" y="50" text-anchor="middle" font-size="10" fill="#1f2937">(Readable)</text>
+    </g>
+  </g>
+  
+  <!-- Applications Section -->
+  <g transform="translate(600, 520)">
+    <text x="0" y="0" font-size="20" font-weight="bold" fill="#1e293b">Applications</text>
+    
+    <!-- Application boxes -->
+    <g transform="translate(0, 30)">
+      <rect x="0" y="0" width="180" height="80" rx="8" fill="#06b6d4" stroke="#0891b2" stroke-width="2"/>
+      <text x="90" y="20" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Secure Communication</text>
+      <text x="15" y="40" font-size="10" fill="white">• Email encryption (PGP)</text>
+      <text x="15" y="55" font-size="10" fill="white">• Web security (HTTPS)</text>
+      <text x="15" y="70" font-size="10" fill="white">• Messaging apps</text>
+    </g>
+    
+    <g transform="translate(200, 30)">
+      <rect x="0" y="0" width="180" height="80" rx="8" fill="#84cc16" stroke="#65a30d" stroke-width="2"/>
+      <text x="90" y="20" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Data Protection</text>
+      <text x="15" y="40" font-size="10" fill="white">• Disk encryption</text>
+      <text x="15" y="55" font-size="10" fill="white">• Database encryption</text>
+      <text x="15" y="70" font-size="10" fill="white">• File encryption</text>
+    </g>
+    
+    <g transform="translate(400, 30)">
+      <rect x="0" y="0" width="180" height="80" rx="8" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
+      <text x="90" y="20" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Authentication</text>
+      <text x="15" y="40" font-size="10" fill="white">• Digital signatures</text>
+      <text x="15" y="55" font-size="10" fill="white">• Certificates</text>
+      <text x="15" y="70" font-size="10" fill="white">• Password hashing</text>
+    </g>
+    
+    <g transform="translate(0, 130)">
+      <rect x="0" y="0" width="180" height="80" rx="8" fill="#8b5cf6" stroke="#7c3aed" stroke-width="2"/>
+      <text x="90" y="20" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Blockchain</text>
+      <text x="15" y="40" font-size="10" fill="white">• Cryptocurrency</text>
+      <text x="15" y="55" font-size="10" fill="white">• Smart contracts</text>
+      <text x="15" y="70" font-size="10" fill="white">• Transaction integrity</text>
+    </g>
+    
+    <g transform="translate(200, 130)">
+      <rect x="0" y="0" width="180" height="80" rx="8" fill="#ec4899" stroke="#db2777" stroke-width="2"/>
+      <text x="90" y="20" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Network Security</text>
+      <text x="15" y="40" font-size="10" fill="white">• VPN tunnels</text>
+      <text x="15" y="55" font-size="10" fill="white">• Secure routing</text>
+      <text x="15" y="70" font-size="10" fill="white">• Firewalls</text>
+    </g>
+  </g>
+  
+  <!-- Arrow marker definition -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4b5563"/>
+    </marker>
+  </defs>
+  
+  <!-- Bottom note -->
+  <g transform="translate(50, 950)">
+    <rect x="0" y="0" width="1300" height="40" rx="10" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+    <text x="650" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Cryptography: The Foundation of Modern Information Security</text>
+  </g>
+</svg>

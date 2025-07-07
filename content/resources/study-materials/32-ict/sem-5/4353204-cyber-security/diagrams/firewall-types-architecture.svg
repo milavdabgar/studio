@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#1a1a2e"/>
+  
+  <!-- Title -->
+  <text x="600" y="40" text-anchor="middle" fill="#e43f5a" font-family="Arial, sans-serif" font-size="28" font-weight="bold">FIREWALL TYPES &amp; ARCHITECTURE</text>
+  
+  <!-- Network Diagram -->
+  <g transform="translate(50, 80)">
+    <!-- Internet -->
+    <ellipse cx="100" cy="100" rx="80" ry="50" fill="#ff6b6b" stroke="#fff" stroke-width="2"/>
+    <text x="100" y="95" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14" font-weight="bold">INTERNET</text>
+    <text x="100" y="110" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12">(Untrusted)</text>
+    
+    <!-- Firewall -->
+    <rect x="350" y="50" width="150" height="100" rx="10" fill="#16213e" stroke="#e43f5a" stroke-width="3"/>
+    <text x="425" y="90" text-anchor="middle" fill="#e43f5a" font-family="Arial, sans-serif" font-size="16" font-weight="bold">FIREWALL</text>
+    <text x="425" y="110" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12">Security Barrier</text>
+    
+    <!-- Internal Network -->
+    <ellipse cx="700" cy="100" rx="80" ry="50" fill="#2ecc71" stroke="#fff" stroke-width="2"/>
+    <text x="700" y="95" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14" font-weight="bold">INTERNAL</text>
+    <text x="700" y="110" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12">(Trusted)</text>
+    
+    <!-- Connection arrows -->
+    <path d="M 180 100 L 340 100" stroke="#e43f5a" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+    <path d="M 510 100 L 620 100" stroke="#e43f5a" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+    
+    <!-- Blocked traffic -->
+    <text x="250" y="75" text-anchor="middle" fill="#ff6b6b" font-family="Arial, sans-serif" font-size="12">Malicious Traffic</text>
+    <text x="250" y="125" text-anchor="middle" fill="#2ecc71" font-family="Arial, sans-serif" font-size="12">Legitimate Traffic</text>
+    
+    <!-- Arrow marker -->
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#e43f5a"/>
+      </marker>
+    </defs>
+  </g>
+  
+  <!-- Firewall Types -->
+  <g transform="translate(50, 220)">
+    <text x="0" y="0" fill="#e43f5a" font-family="Arial, sans-serif" font-size="20" font-weight="bold">FIREWALL TYPES</text>
+    
+    <!-- Packet Filter Firewall -->
+    <g transform="translate(0, 40)">
+      <rect x="0" y="0" width="350" height="140" rx="10" fill="#ff4757" stroke="#fff" stroke-width="2"/>
+      <text x="175" y="25" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="16" font-weight="bold">PACKET FILTER FIREWALL</text>
+      <text x="10" y="50" fill="white" font-family="Arial, sans-serif" font-size="12">• Examines individual packets</text>
+      <text x="10" y="70" fill="white" font-family="Arial, sans-serif" font-size="12">• Operates at Network Layer (Layer 3)</text>
+      <text x="10" y="90" fill="white" font-family="Arial, sans-serif" font-size="12">• Filters based on IP addresses, ports, protocols</text>
+      <text x="10" y="110" fill="white" font-family="Arial, sans-serif" font-size="12">• Fast and efficient</text>
+      <text x="10" y="130" fill="white" font-family="Arial, sans-serif" font-size="12">• Basic security level</text>
+    </g>
+    
+    <!-- Application Proxy Firewall -->
+    <g transform="translate(400, 40)">
+      <rect x="0" y="0" width="350" height="140" rx="10" fill="#5f27cd" stroke="#fff" stroke-width="2"/>
+      <text x="175" y="25" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="16" font-weight="bold">APPLICATION PROXY FIREWALL</text>
+      <text x="10" y="50" fill="white" font-family="Arial, sans-serif" font-size="12">• Acts as intermediary/proxy</text>
+      <text x="10" y="70" fill="white" font-family="Arial, sans-serif" font-size="12">• Operates at Application Layer (Layer 7)</text>
+      <text x="10" y="90" fill="white" font-family="Arial, sans-serif" font-size="12">• Inspects application content</text>
+      <text x="10" y="110" fill="white" font-family="Arial, sans-serif" font-size="12">• Advanced security features</text>
+      <text x="10" y="130" fill="white" font-family="Arial, sans-serif" font-size="12">• Slower but more secure</text>
+    </g>
+    
+    <!-- Personal Firewall -->
+    <g transform="translate(800, 40)">
+      <rect x="0" y="0" width="350" height="140" rx="10" fill="#00d2d3" stroke="#fff" stroke-width="2"/>
+      <text x="175" y="25" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="16" font-weight="bold">PERSONAL FIREWALL</text>
+      <text x="10" y="50" fill="white" font-family="Arial, sans-serif" font-size="12">• Software-based on individual devices</text>
+      <text x="10" y="70" fill="white" font-family="Arial, sans-serif" font-size="12">• Protects single endpoint</text>
+      <text x="10" y="90" fill="white" font-family="Arial, sans-serif" font-size="12">• Monitors incoming/outgoing traffic</text>
+      <text x="10" y="110" fill="white" font-family="Arial, sans-serif" font-size="12">• User-configurable rules</text>
+      <text x="10" y="130" fill="white" font-family="Arial, sans-serif" font-size="12">• Alerts and notifications</text>
+    </g>
+  </g>
+  
+  <!-- Firewall Features -->
+  <g transform="translate(50, 420)">
+    <text x="0" y="0" fill="#e43f5a" font-family="Arial, sans-serif" font-size="20" font-weight="bold">FIREWALL FEATURES &amp; CAPABILITIES</text>
+    
+    <rect x="0" y="20" width="1100" height="200" rx="10" fill="#16213e" stroke="#e43f5a" stroke-width="2"/>
+    
+    <!-- Feature boxes -->
+    <g transform="translate(20, 50)">
+      <rect x="0" y="0" width="200" height="80" rx="5" fill="#2d3436" stroke="#fff" stroke-width="1"/>
+      <text x="100" y="20" text-anchor="middle" fill="#e43f5a" font-family="Arial, sans-serif" font-size="14" font-weight="bold">ACCESS CONTROL</text>
+      <text x="10" y="40" fill="white" font-family="Arial, sans-serif" font-size="11">• Allow/deny traffic</text>
+      <text x="10" y="55" fill="white" font-family="Arial, sans-serif" font-size="11">• Rule-based filtering</text>
+      <text x="10" y="70" fill="white" font-family="Arial, sans-serif" font-size="11">• Policy enforcement</text>
+    </g>
+    
+    <g transform="translate(240, 50)">
+      <rect x="0" y="0" width="200" height="80" rx="5" fill="#2d3436" stroke="#fff" stroke-width="1"/>
+      <text x="100" y="20" text-anchor="middle" fill="#e43f5a" font-family="Arial, sans-serif" font-size="14" font-weight="bold">STATEFUL INSPECTION</text>
+      <text x="10" y="40" fill="white" font-family="Arial, sans-serif" font-size="11">• Tracks connection state</text>
+      <text x="10" y="55" fill="white" font-family="Arial, sans-serif" font-size="11">• Maintains session info</text>
+      <text x="10" y="70" fill="white" font-family="Arial, sans-serif" font-size="11">• Dynamic filtering</text>
+    </g>
+    
+    <g transform="translate(460, 50)">
+      <rect x="0" y="0" width="200" height="80" rx="5" fill="#2d3436" stroke="#fff" stroke-width="1"/>
+      <text x="100" y="20" text-anchor="middle" fill="#e43f5a" font-family="Arial, sans-serif" font-size="14" font-weight="bold">LOGGING</text>
+      <text x="10" y="40" fill="white" font-family="Arial, sans-serif" font-size="11">• Activity recording</text>
+      <text x="10" y="55" fill="white" font-family="Arial, sans-serif" font-size="11">• Audit trails</text>
+      <text x="10" y="70" fill="white" font-family="Arial, sans-serif" font-size="11">• Forensic analysis</text>
+    </g>
+    
+    <g transform="translate(680, 50)">
+      <rect x="0" y="0" width="200" height="80" rx="5" fill="#2d3436" stroke="#fff" stroke-width="1"/>
+      <text x="100" y="20" text-anchor="middle" fill="#e43f5a" font-family="Arial, sans-serif" font-size="14" font-weight="bold">INTRUSION PREVENTION</text>
+      <text x="10" y="40" fill="white" font-family="Arial, sans-serif" font-size="11">• Threat detection</text>
+      <text x="10" y="55" fill="white" font-family="Arial, sans-serif" font-size="11">• Real-time blocking</text>
+      <text x="10" y="70" fill="white" font-family="Arial, sans-serif" font-size="11">• Attack prevention</text>
+    </g>
+    
+    <g transform="translate(880, 50)">
+      <rect x="0" y="0" width="200" height="80" rx="5" fill="#2d3436" stroke="#fff" stroke-width="1"/>
+      <text x="100" y="20" text-anchor="middle" fill="#e43f5a" font-family="Arial, sans-serif" font-size="14" font-weight="bold">VPN SUPPORT</text>
+      <text x="10" y="40" fill="white" font-family="Arial, sans-serif" font-size="11">• Secure remote access</text>
+      <text x="10" y="55" fill="white" font-family="Arial, sans-serif" font-size="11">• Encrypted tunnels</text>
+      <text x="10" y="70" fill="white" font-family="Arial, sans-serif" font-size="11">• Authentication</text>
+    </g>
+    
+    <g transform="translate(340, 150)">
+      <rect x="0" y="0" width="200" height="80" rx="5" fill="#2d3436" stroke="#fff" stroke-width="1"/>
+      <text x="100" y="20" text-anchor="middle" fill="#e43f5a" font-family="Arial, sans-serif" font-size="14" font-weight="bold">NAT/PAT</text>
+      <text x="10" y="40" fill="white" font-family="Arial, sans-serif" font-size="11">• Address translation</text>
+      <text x="10" y="55" fill="white" font-family="Arial, sans-serif" font-size="11">• IP masquerading</text>
+      <text x="10" y="70" fill="white" font-family="Arial, sans-serif" font-size="11">• Network hiding</text>
+    </g>
+    
+    <g transform="translate(560, 150)">
+      <rect x="0" y="0" width="200" height="80" rx="5" fill="#2d3436" stroke="#fff" stroke-width="1"/>
+      <text x="100" y="20" text-anchor="middle" fill="#e43f5a" font-family="Arial, sans-serif" font-size="14" font-weight="bold">CONTENT FILTERING</text>
+      <text x="10" y="40" fill="white" font-family="Arial, sans-serif" font-size="11">• URL filtering</text>
+      <text x="10" y="55" fill="white" font-family="Arial, sans-serif" font-size="11">• Application control</text>
+      <text x="10" y="70" fill="white" font-family="Arial, sans-serif" font-size="11">• Malware scanning</text>
+    </g>
+  </g>
+  
+  <!-- Operation Modes -->
+  <g transform="translate(50, 660)">
+    <text x="0" y="0" fill="#e43f5a" font-family="Arial, sans-serif" font-size="16" font-weight="bold">OPERATION MODES:</text>
+    <text x="150" y="0" fill="white" font-family="Arial, sans-serif" font-size="14">Bridge Mode</text>
+    <text x="250" y="0" fill="white" font-family="Arial, sans-serif" font-size="14">• Router Mode</text>
+    <text x="350" y="0" fill="white" font-family="Arial, sans-serif" font-size="14">• Transparent Mode</text>
+    <text x="480" y="0" fill="white" font-family="Arial, sans-serif" font-size="14">• Proxy Mode</text>
+    
+    <text x="0" y="25" fill="#e43f5a" font-family="Arial, sans-serif" font-size="16" font-weight="bold">DEPLOYMENT:</text>
+    <text x="120" y="25" fill="white" font-family="Arial, sans-serif" font-size="14">Network-based</text>
+    <text x="240" y="25" fill="white" font-family="Arial, sans-serif" font-size="14">• Host-based</text>
+    <text x="340" y="25" fill="white" font-family="Arial, sans-serif" font-size="14">• Cloud-based</text>
+    <text x="440" y="25" fill="white" font-family="Arial, sans-serif" font-size="14">• Hybrid</text>
+  </g>
+</svg>
