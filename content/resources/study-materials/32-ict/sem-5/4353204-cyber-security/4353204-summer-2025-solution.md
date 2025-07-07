@@ -14,6 +14,8 @@ tags: ["study-material", "solutions", "cyber-security", "4353204", "2025", "summ
 
 **CIA Triad Components:**
 
+![CIA Triad](diagrams/cia-triad.svg)
+
 | Component | Definition | Example |
 |-----------|------------|---------|
 | **Confidentiality** | Protecting data from unauthorized access | Password protection on bank accounts |
@@ -34,11 +36,7 @@ tags: ["study-material", "solutions", "cyber-security", "4353204", "2025", "summ
 
 **Public Key Cryptography (Asymmetric):**
 
-```mermaid
-graph LR
-    A[Sender] -->|Encrypts with Public Key| B[Encrypted Message]
-    B -->|Decrypts with Private Key| C[Receiver]
-```
+![Public Key Cryptography](diagrams/public-key-cryptography.svg)
 
 **Key Characteristics:**
 
@@ -61,6 +59,8 @@ graph LR
 **Answer**:
 
 **OSI Security Framework:**
+
+![OSI Security Framework](diagrams/osi-security-framework.svg)
 
 | Layer | Attacks | Mechanisms | Services |
 |-------|---------|------------|----------|
@@ -88,6 +88,8 @@ graph LR
 **Answer**:
 
 **Hash Function Comparison:**
+
+![Hash Function Process](diagrams/hash-function-process.svg)
 
 | Feature | MD5 | SHA-1 | SHA-256 |
 |---------|-----|-------|---------|
@@ -127,6 +129,8 @@ graph LR
 **Firewall Definition:**
 Network security device that monitors and controls incoming/outgoing traffic based on security rules.
 
+![Firewall Architecture](diagrams/firewall-architecture.svg)
+
 **Types of Firewalls:**
 
 | Type | Function | Level |
@@ -153,16 +157,7 @@ Hypertext Transfer Protocol Secure - HTTP over SSL/TLS encryption.
 
 **HTTPS Working Process:**
 
-```mermaid
-sequenceDiagram
-    participant C as Client
-    participant S as Server
-    C->>S: 1. HTTPS Request
-    S->>C: 2. SSL Certificate
-    C->>S: 3. Encrypted Session Key
-    S->>C: 4. Encrypted Response
-    Note over C,S: Secure Communication Established
-```
+![HTTPS Process](diagrams/https-process.svg)
 
 **HTTPS Components:**
 
@@ -187,6 +182,8 @@ sequenceDiagram
 **Answer**:
 
 **Malware Classification:**
+
+![Malware Classification](diagrams/malware-classification.svg)
 
 | Type | Behavior | Effect | Example |
 |------|----------|--------|---------|
@@ -224,6 +221,8 @@ sequenceDiagram
 Process of verifying user identity before granting system access.
 
 **Authentication Methods:**
+
+![Authentication Methods](diagrams/authentication-methods.svg)
 
 | Method | Description | Example |
 |--------|-------------|---------|
@@ -266,6 +265,8 @@ Process of verifying user identity before granting system access.
 **Answer**:
 
 **SSL/TLS Protocol Evolution:**
+
+![SSL/TLS Handshake](diagrams/ssl-tls-handshake.svg)
 
 | Version | Year | Status | Security Level |
 |---------|------|--------|----------------|
@@ -604,13 +605,7 @@ Unauthorized access to computer systems or networks to exploit vulnerabilities.
 
 **Hacking Methodology:**
 
-```mermaid
-graph LR
-    A[Reconnaissance] --> B[Scanning]
-    B --> C[Gaining Access]
-    C --> D[Maintaining Access]
-    D --> E[Covering Tracks]
-```
+![Hacking Steps](diagrams/hacking-steps.svg)
 
 **Detailed Steps:**
 
@@ -718,13 +713,7 @@ Attack where attacker takes over legitimate user's session.
 
 **VPN Architecture:**
 
-```mermaid
-graph LR
-    A[User Device] -->|Encrypted Tunnel| B[VPN Server]
-    B --> C[Internet]
-    C --> D[Destination Server]
-    E[ISP] -.->|Cannot See Traffic| A
-```
+![VPN Architecture](diagrams/vpn-architecture.svg)
 
 **VPN Components:**
 
@@ -838,14 +827,7 @@ Investigation of network traffic to detect and analyze security incidents.
 
 **Digital Forensics Investigation Phases:**
 
-```mermaid
-graph LR
-    A[Identification] --> B[Preservation]
-    B --> C[Collection]
-    C --> D[Examination]
-    D --> E[Analysis]
-    E --> F[Presentation]
-```
+![Digital Forensics Phases](diagrams/digital-forensics-phases.svg)
 
 **Detailed Phase Breakdown:**
 
@@ -968,13 +950,7 @@ graph LR
 
 **Vulnerability Assessment Process:**
 
-```mermaid
-graph LR
-    A[Reconnaissance] --> B[Port Scanning]
-    B --> C[Service Enumeration]
-    C --> D[Vulnerability Scanning]
-    D --> E[Analysis & Reporting]
-```
+![Vulnerability Assessment Process](diagrams/vulnerability-assessment-process.svg)
 
 **Step-by-Step Process:**
 
