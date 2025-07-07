@@ -115,6 +115,9 @@ const config: Config = {
     '^fs/promises$': '<rootDir>/__mocks__/fs/promises.js',
     '^stream$': '<rootDir>/__mocks__/stream.js',
     '^node-mocks-http$': '<rootDir>/__mocks__/node-mocks-http.js',
+    '^shiki$': '<rootDir>/__mocks__/shiki.js',
+    '^puppeteer$': '<rootDir>/__mocks__/puppeteer.js',
+    '^katex$': '<rootDir>/__mocks__/katex.js',
     // Fix deprecated testing library
     '^@testing-library/react-hooks$': '@testing-library/react'
   },
@@ -208,7 +211,7 @@ const config: Config = {
   },
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   transformIgnorePatterns: [
-    '/node_modules/(?!(lucide-react|remark.*|rehype.*|unified.*|.*\\.mjs$|mongodb|bson))' // Transform lucide-react, remark ecosystem, mjs files, mongodb, and bson
+    '/node_modules/(?!(lucide-react|remark.*|rehype.*|unified.*|.*\\.mjs$|mongodb|bson|shiki))' // Transform lucide-react, remark ecosystem, mjs files, mongodb, bson, and shiki
   ],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them

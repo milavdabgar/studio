@@ -221,6 +221,9 @@ export class ContentConverterV2 {
         // Process Mermaid diagrams
         htmlContent = this.processMermaidDiagrams(htmlContent);
         
+        // Process SVG images for PDF compatibility
+        htmlContent = await this.processSvgImages(htmlContent);
+        
         // Generate the complete HTML
         const title = String(options.title || frontmatter.title || 'Document');
         const author = String(options.author || frontmatter.author || 'Unknown');
@@ -367,7 +370,7 @@ export class ContentConverterV2 {
 
             // Set content and wait for resources
             await page.setContent(htmlContent, { 
-                waitUntil: options.pdfOptions?.waitForNetwork ? 'networkidle0' : 'domcontentloaded',
+                waitUntil: options.pdfOptions?.waitForNetwork ? 'networkidle0' : 'load',
                 timeout: options.pdfOptions?.timeout || 30000
             });
 
@@ -459,7 +462,10 @@ export class ContentConverterV2 {
                     bottom: '20mm',
                     left: '20mm'
                 },
-                preferCSSPageSize: true
+                preferCSSPageSize: true,
+                // Ensure embedded images and SVGs are properly rendered
+                omitBackground: false,
+                tagged: false
             };
 
             // Generate PDF
@@ -903,6 +909,91 @@ ${presentationContent}`;
         });
         
         return html;
+    }
+
+    /**
+     * Process SVG images to ensure they embed properly in PDFs
+     * Converts SVG file references to base64 data URLs
+     */
+    private async processSvgImages(html: string): Promise<string> {
+        // Find all img tags with SVG sources
+        const imgRegex = /<img([^>]*?)src=["']([^"']*\.svg)["']([^>]*?)>/gi;
+        const matches = Array.from(html.matchAll(imgRegex));
+        
+        if (matches.length === 0) {
+            return html;
+        }
+
+        let processedHtml = html;
+        
+        // Process each SVG image
+        for (const match of matches) {
+            const [fullMatch, beforeSrc, svgPath, afterSrc] = match;
+            
+            try {
+                // Resolve the SVG file path
+                const resolvedPath = this.resolveSvgPath(svgPath);
+                
+                if (fs.existsSync(resolvedPath)) {
+                    // Read the SVG content
+                    const svgContent = fs.readFileSync(resolvedPath, 'utf8');
+                    
+                    // Convert to base64 data URL
+                    const base64Data = Buffer.from(svgContent).toString('base64');
+                    const dataUrl = `data:image/svg+xml;base64,${base64Data}`;
+                    
+                    // Replace the image src with the data URL
+                    const newImg = `<img${beforeSrc}src="${dataUrl}"${afterSrc}>`;
+                    processedHtml = processedHtml.replace(fullMatch, newImg);
+                    
+                    console.log(`Converted SVG to base64: ${svgPath}`);
+                } else {
+                    console.warn(`SVG file not found: ${resolvedPath}`);
+                    // Keep the original but add error handling
+                    const errorImg = `<img${beforeSrc}src="${svgPath}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"${afterSrc}><div style="display:none; color:red; font-size:12px; border:1px solid #ccc; padding:10px; background:#f9f9f9;">[SVG Image Not Found: ${svgPath}]</div>`;
+                    processedHtml = processedHtml.replace(fullMatch, errorImg);
+                }
+            } catch (error) {
+                console.error(`Error processing SVG ${svgPath}:`, error);
+                // Keep original image with error fallback
+                const errorImg = `<img${beforeSrc}src="${svgPath}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"${afterSrc}><div style="display:none; color:red; font-size:12px; border:1px solid #ccc; padding:10px; background:#f9f9f9;">[SVG Processing Error: ${svgPath}]</div>`;
+                processedHtml = processedHtml.replace(fullMatch, errorImg);
+            }
+        }
+        
+        return processedHtml;
+    }
+
+    /**
+     * Resolve SVG file path relative to content directory
+     */
+    private resolveSvgPath(svgPath: string): string {
+        // If it's already an absolute path, use it
+        if (path.isAbsolute(svgPath)) {
+            return svgPath;
+        }
+        
+        // Try different base directories
+        const possiblePaths = [
+            // Relative to current working directory
+            path.resolve(process.cwd(), svgPath),
+            // Relative to content directory
+            path.resolve(process.cwd(), 'content', svgPath),
+            // Relative to public directory
+            path.resolve(process.cwd(), 'public', svgPath),
+            // Check if it's in the content directory structure
+            path.resolve(process.cwd(), 'content', 'resources', svgPath),
+        ];
+        
+        // Find the first path that exists
+        for (const possiblePath of possiblePaths) {
+            if (fs.existsSync(possiblePath)) {
+                return possiblePath;
+            }
+        }
+        
+        // Default fallback
+        return path.resolve(process.cwd(), svgPath);
     }
 
     private generateHtmlTemplate(content: string, title: string, author: string, options: ConversionOptions): string {
