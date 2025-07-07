@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Build filter query
-    const filter: any = { userId };
+    const filter: Record<string, unknown> = { userId };
     if (isRead !== null) filter.isRead = isRead === 'true';
     if (type) filter.type = type;
 
@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
     // Format notifications to ensure proper id field
     const notificationsWithId = notifications.map(notification => ({
       ...notification,
-      id: notification.id || (notification as any)._id.toString()
+      id: notification.id || (notification as { _id: { toString(): string } })._id.toString()
     }));
 
     return NextResponse.json(notificationsWithId);

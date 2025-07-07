@@ -299,10 +299,10 @@ export async function GET() {
       },
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error serving original HTML:', error);
     return NextResponse.json(
-      { error: 'Failed to serve original HTML', details: error.message },
+      { error: 'Failed to serve original HTML', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

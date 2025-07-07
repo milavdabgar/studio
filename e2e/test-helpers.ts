@@ -29,8 +29,8 @@ export async function loginAsAdmin(page: any) {
   // Wait for successful login and redirect
   await page.waitForURL('/dashboard', { timeout: 15000 });
   
-  // Verify we're logged in by checking for faculty dashboard content
-  await expect(page.locator('h1').filter({ hasText: 'Welcome to your Faculty Dashboard' })).toBeVisible();
+  // Verify we're logged in by checking for admin dashboard content
+  await expect(page.locator('h1').filter({ hasText: 'Welcome to your Dashboard' })).toBeVisible();
 }
 
 export async function loginAsFaculty(page: any) {
@@ -53,8 +53,8 @@ export async function loginAsFaculty(page: any) {
   // Wait for successful login and redirect
   await page.waitForURL('/dashboard', { timeout: 15000 });
   
-  // Verify we're logged in by checking for faculty dashboard content
-  await expect(page.locator('h1').filter({ hasText: 'Welcome to your Faculty Dashboard' })).toBeVisible();
+  // Verify we're logged in by checking for admin dashboard content
+  await expect(page.locator('h1').filter({ hasText: 'Welcome to your Dashboard' })).toBeVisible();
 }
 
 export async function loginAsStudent(page: any) {

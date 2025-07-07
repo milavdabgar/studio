@@ -27,7 +27,7 @@ export async function GET() {
           
           // Extract basic metadata from frontmatter
           const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-          const metadata: any = { slug, filename: file };
+          const metadata: Record<string, unknown> = { slug, filename: file };
           
           if (frontmatterMatch) {
             const frontmatter = frontmatterMatch[1];
@@ -50,10 +50,10 @@ export async function GET() {
 
     return NextResponse.json({ newsletters });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error listing newsletters:', error);
     return NextResponse.json(
-      { error: 'Failed to list newsletters', details: error.message },
+      { error: 'Failed to list newsletters', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

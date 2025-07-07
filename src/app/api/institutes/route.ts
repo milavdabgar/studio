@@ -16,7 +16,7 @@ export async function GET() {
     // Format institutes to ensure proper id field
     const institutesWithId = institutes.map(institute => ({
       ...institute,
-      id: institute.id || (institute as any)._id.toString()
+      id: institute.id || (institute as { _id: { toString(): string } })._id.toString()
     }));
     
     return NextResponse.json(institutesWithId);

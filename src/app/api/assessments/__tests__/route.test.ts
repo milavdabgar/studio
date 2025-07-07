@@ -141,7 +141,8 @@ describe('/api/assessments', () => {
 
     it('should map _id to id when id field is missing', async () => {
       const assessmentsWithoutId = mockAssessments.map(assessment => {
-        const { id: _removedId, ...assessmentWithoutId } = assessment;
+        const { id, ...assessmentWithoutId } = assessment;
+        void id; // Mark as used
         return assessmentWithoutId;
       });
       

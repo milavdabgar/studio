@@ -184,7 +184,9 @@ function calculateGenericScores<T extends { scores: { [key: string]: number }, c
         const overallScore = validQuestionCount > 0 ? totalSumOfAverages / validQuestionCount : 0;
         
         const resultEntry: Partial<FeedbackDataRow> & { Score: number } & { [key: string]: number } = { Score: overallScore };
-        groupByKeys.forEach(k => (resultEntry as any)[k] = (entry as any)[k]);
+        groupByKeys.forEach(k => {
+          (resultEntry as Record<string, unknown>)[k as string] = (entry as Record<string, unknown>)[k as string];
+        });
         Object.assign(resultEntry, averageScores);
         
         return resultEntry;
@@ -236,8 +238,8 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id'|'markdownRepor
         if (section.data && section.data.length > 0) {
             report += `| ${section.keys.join(' | ')} |\n`;
             report += `|${section.keys.map(() => '------').join('|')}|\n`;
-            section.data.forEach((item: any) => {
-                report += `| ${section.keys.map(key => typeof item[key] === 'number' ? formatFloat(item[key]) : item[key] || '-').join(' | ')} |\n`;
+            section.data.forEach((item: SubjectScore | FacultyScore | BranchScore | TermYearScore) => {
+                report += `| ${section.keys.map(key => typeof item[key as keyof typeof item] === 'number' ? formatFloat(item[key as keyof typeof item] as number) : item[key as keyof typeof item] || '-').join(' | ')} |\n`;
             });
         } else {
             report += `_No data available for ${section.title}._\n`;
@@ -261,8 +263,8 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id'|'markdownRepor
             const allKeys = [...section.baseKeys, ...section.scoreKeys, section.overallScoreKey];
             report += `| ${allKeys.join(' | ')} |\n`;
             report += `|${allKeys.map(() => '------').join('|')}|\n`;
-            section.data.forEach((item: any) => {
-                report += `| ${allKeys.map(key => typeof item[key] === 'number' ? formatFloat(item[key]) : item[key] || '-').join(' | ')} |\n`;
+            section.data.forEach((item: SubjectScore | FacultyScore | BranchScore | TermYearScore) => {
+                report += `| ${allKeys.map(key => typeof item[key as keyof typeof item] === 'number' ? formatFloat(item[key as keyof typeof item] as number) : item[key as keyof typeof item] || '-').join(' | ')} |\n`;
             });
         } else {
             report += `_No data available for ${section.title}._\n`;
@@ -344,7 +346,7 @@ export async function POST(request: NextRequest) {
     }
 
     feedbackData = parseResult.data.map(row => {
-      const newRow: any = { ...row };
+      const newRow: Record<string, unknown> = { ...row };
       for (let i = 1; i <= 12; i++) {
         const qKey = `Q${i}`;
         const val = row[qKey];
@@ -356,9 +358,9 @@ export async function POST(request: NextRequest) {
 
     const subjectScores = calculateSubjectScores(feedbackData);
     const facultyScores = calculateFacultyScores(subjectScores);
-    const semesterScores = calculateGenericScores<any, keyof FeedbackDataRow>(feedbackData, ['Year', 'Term', 'Branch', 'Sem']) as SemesterScore[];
-    const branchScores = calculateGenericScores<any, keyof FeedbackDataRow>(feedbackData, ['Branch']) as BranchScore[];
-    const termYearScores = calculateGenericScores<any, keyof FeedbackDataRow>(feedbackData, ['Year', 'Term']) as TermYearScore[];
+    const semesterScores = calculateGenericScores<{ scores: { [key: string]: number }, count: number }, keyof FeedbackDataRow>(feedbackData, ['Year', 'Term', 'Branch', 'Sem']) as SemesterScore[];
+    const branchScores = calculateGenericScores<{ scores: { [key: string]: number }, count: number }, keyof FeedbackDataRow>(feedbackData, ['Branch']) as BranchScore[];
+    const termYearScores = calculateGenericScores<{ scores: { [key: string]: number }, count: number }, keyof FeedbackDataRow>(feedbackData, ['Year', 'Term']) as TermYearScore[];
     
     const analysisPayloadForReport = {
         subject_scores: subjectScores,

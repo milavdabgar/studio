@@ -102,7 +102,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         const teamsForEvent = await ProjectTeamModel.find({ eventId: id });
         const userIdsToNotify: Set<string> = new Set();
         teamsForEvent.forEach(team => {
-            team.members.forEach((member: any) => userIdsToNotify.add(member.userId));
+            team.members.forEach((member: { userId: string }) => userIdsToNotify.add(member.userId));
         });
 
         for (const userId of userIdsToNotify) {

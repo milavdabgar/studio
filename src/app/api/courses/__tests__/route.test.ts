@@ -139,7 +139,8 @@ describe('/api/courses', () => {
     });
 
     it('should return 400 when subject code is empty', async () => {
-      const { subcode: _subcode, ...invalidData } = validCourseData;
+      const { subcode, ...invalidData } = validCourseData;
+      void subcode; // Mark as used
       
       const request = new NextRequest('http://localhost/api/courses', {
         method: 'POST',
@@ -154,7 +155,8 @@ describe('/api/courses', () => {
     });
 
     it('should return 400 when subject name is empty', async () => {
-      const { subjectName: _subjectName, ...invalidData } = validCourseData;
+      const { subjectName, ...invalidData } = validCourseData;
+      void subjectName; // Mark as used
       
       const request = new NextRequest('http://localhost/api/courses', {
         method: 'POST',
@@ -169,7 +171,8 @@ describe('/api/courses', () => {
     });
 
     it('should return 400 when department ID is missing', async () => {
-      const { departmentId: _departmentId, ...invalidData } = validCourseData;
+      const { departmentId, ...invalidData } = validCourseData;
+      void departmentId; // Mark as used
       
       const request = new NextRequest('http://localhost/api/courses', {
         method: 'POST',
@@ -184,7 +187,8 @@ describe('/api/courses', () => {
     });
 
     it('should return 400 when program ID is missing', async () => {
-      const { programId: _programId, ...invalidData } = validCourseData;
+      const { programId, ...invalidData } = validCourseData;
+      void programId; // Mark as used
       
       const request = new NextRequest('http://localhost/api/courses', {
         method: 'POST',
@@ -214,7 +218,8 @@ describe('/api/courses', () => {
     });
 
     it('should return 400 when category is empty', async () => {
-      const { category: _removedCategory, ...invalidData } = validCourseData;
+      const { category, ...invalidData } = validCourseData;
+      void category; // Mark as used
       
       const request = new NextRequest('http://localhost/api/courses', {
         method: 'POST',

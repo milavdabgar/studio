@@ -4,10 +4,10 @@ import fs from 'fs';
 import path from 'path';
 
 // Import Puppeteer for direct HTML to PDF conversion
-let puppeteer: any;
+let puppeteer: typeof import('puppeteer') | undefined;
 try {
   puppeteer = require('puppeteer');
-} catch (_error) {
+} catch {
   console.log('Puppeteer not available, PDF generation will be limited');
 }
 
@@ -30,7 +30,18 @@ function htmlToSimpleMarkdown(html: string): string {
 }
 
 // Direct HTML to PDF conversion using Puppeteer
-async function generatePdfFromHtml(htmlContent: string, options: any): Promise<Buffer> {
+interface PdfOptions {
+  format?: string;
+  margin?: {
+    top?: string;
+    right?: string;
+    bottom?: string;
+    left?: string;
+  };
+  title?: string;
+}
+
+async function generatePdfFromHtml(htmlContent: string, options: PdfOptions): Promise<Buffer> {
   if (!puppeteer) {
     throw new Error('Puppeteer is not available for PDF generation');
   }
@@ -40,7 +51,7 @@ async function generatePdfFromHtml(htmlContent: string, options: any): Promise<B
     // Try with full configuration first
     try {
       browser = await puppeteer.launch({
-        headless: 'new',
+        headless: true,
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
@@ -95,7 +106,7 @@ async function generatePdfFromHtml(htmlContent: string, options: any): Promise<B
 
     // Generate PDF with improved settings
     const pdfBuffer = await page.pdf({
-      format: options.format || 'A4',
+      format: (options.format as 'A4' | 'Letter' | undefined) || 'A4',
       printBackground: true,
       margin: options.margin || {
         top: '20mm',
@@ -110,9 +121,9 @@ async function generatePdfFromHtml(htmlContent: string, options: any): Promise<B
 
     return Buffer.from(pdfBuffer);
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('PDF generation error:', error);
-    throw new Error(`PDF generation failed: ${error.message || error}`);
+    throw new Error(`PDF generation failed: ${error instanceof Error ? error.message : String(error)}`);
   } finally {
     if (browser) {
       try {
@@ -249,14 +260,14 @@ export async function POST(request: NextRequest) {
       }
     }
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[HTML Export] General error:', error);
     
     return NextResponse.json(
       { 
         error: 'Failed to export HTML content',
-        details: error.message || 'Unknown error occurred',
-        suggestion: error.message && error.message.includes('PDF') 
+        details: error instanceof Error ? error.message : 'Unknown error occurred',
+        suggestion: error instanceof Error && error.message.includes('PDF') 
           ? 'Try exporting as HTML or DOCX format instead.'
           : 'Please try again or contact support if the issue persists.'
       },

@@ -34,22 +34,23 @@ async function generateExcelReportBuffer(analysisResult: AnalysisResult): Promis
         }
     }
     
-    const addSheetFromData = (sheetName: string, data: any[]) => {
+    const addSheetFromData = (sheetName: string, data: unknown[]) => {
         if (data && data.length > 0) {
             const sheet = workbook.addWorksheet(sheetName);
             // Ensure headers are derived correctly even if some objects miss keys by checking all objects
             const allKeys = new Set<string>();
-            data.forEach(row => Object.keys(row).forEach(key => allKeys.add(key)));
+            data.forEach(row => Object.keys(row as Record<string, unknown>).forEach(key => allKeys.add(key)));
             const headers = Array.from(allKeys);
             
             sheet.columns = headers.map(key => ({ header: key, key: key, width: key.toLowerCase().includes('name') || key.toLowerCase().includes('fullname') ? 30 : (key.toLowerCase().includes('code') || key.toLowerCase().includes('initial') ? 15 : 12) }));
             
             sheet.addRows(data.map(row => {
-                const newRow: any = {};
+                const newRow: Record<string, unknown> = {};
+                const rowData = row as Record<string, unknown>;
                 for (const key of headers) { // Iterate over consistent headers
-                    if (row[key] !== undefined && row[key] !== null) {
-                       if (typeof row[key] === 'number') newRow[key] = parseFloat(row[key].toFixed(2));
-                       else newRow[key] = row[key];
+                    if (rowData[key] !== undefined && rowData[key] !== null) {
+                       if (typeof rowData[key] === 'number') newRow[key] = parseFloat((rowData[key] as number).toFixed(2));
+                       else newRow[key] = rowData[key];
                     } else {
                         newRow[key] = ''; // Or null, depending on preference for empty cells
                     }

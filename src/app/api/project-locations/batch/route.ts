@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     }
     
     const createdLocations: ProjectLocation[] = [];
-    const errors: { data: any, message: string }[] = [];
+    const errors: { data: unknown, message: string }[] = [];
     const currentTimestamp = new Date().toISOString();
 
     for (const locationData of locationsToCreateData) {

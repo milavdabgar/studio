@@ -5,10 +5,10 @@ import fs from 'fs';
 import path from 'path';
 
 // Import Puppeteer for direct React component to PDF conversion
-let puppeteer: any;
+let puppeteer: typeof import('puppeteer') | undefined;
 try {
   puppeteer = require('puppeteer');
-} catch (_error) {
+} catch {
   console.log('Puppeteer not available, PDF generation will be limited');
 }
 
@@ -3068,7 +3068,7 @@ async function generatePdfFromHtml(htmlContent: string): Promise<Buffer> {
     // Try with full configuration first
     try {
       browser = await puppeteer.launch({
-        headless: 'new',
+        headless: true,
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',

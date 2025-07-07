@@ -151,13 +151,13 @@ export async function POST(request: NextRequest) {
       });
     }
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Newsletter conversion error:', error);
     
     return NextResponse.json(
       { 
         error: 'Failed to convert newsletter',
-        details: error.message || 'Unknown error occurred'
+        details: error instanceof Error ? error.message : 'Unknown error occurred'
       },
       { status: 500 }
     );
@@ -183,7 +183,7 @@ export async function GET() {
         
         // Extract basic metadata from frontmatter
         const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-        const metadata: any = { slug, filename: file };
+        const metadata: Record<string, unknown> = { slug, filename: file };
         
         if (frontmatterMatch) {
           try {
@@ -206,7 +206,7 @@ export async function GET() {
 
     return NextResponse.json({ newsletters });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error listing newsletters:', error);
     return NextResponse.json(
       { error: 'Failed to list newsletters' },

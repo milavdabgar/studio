@@ -62,16 +62,18 @@ export async function GET(request: NextRequest) {
     // Format events to ensure proper id field
     const eventsWithId = events.map(event => ({
       ...event,
-      id: event.id || (event as any)._id.toString()
+      id: event.id || (event as { _id: { toString(): string } })._id.toString()
     }));
     
     // Sort events
     eventsWithId.sort((a, b) => {
-      const dateA = (a as any).eventDate ? parseISO((a as any).eventDate).getTime() : 0;
-      const dateB = (b as any).eventDate ? parseISO((b as any).eventDate).getTime() : 0;
-      if ((a as any).isActive && !(b as any).isActive) return -1;
-      if (!(a as any).isActive && (b as any).isActive) return 1;
-      if ((a as any).isActive) return dateA - dateB; 
+      const eventA = a as { eventDate?: string; isActive?: boolean };
+      const eventB = b as { eventDate?: string; isActive?: boolean };
+      const dateA = eventA.eventDate ? parseISO(eventA.eventDate).getTime() : 0;
+      const dateB = eventB.eventDate ? parseISO(eventB.eventDate).getTime() : 0;
+      if (eventA.isActive && !eventB.isActive) return -1;
+      if (!eventA.isActive && eventB.isActive) return 1;
+      if (eventA.isActive) return dateA - dateB; 
       return dateB - dateA; 
     });
 

@@ -5,6 +5,21 @@ import { parse, type ParseError } from 'papaparse';
 import { connectMongoose } from '@/lib/mongodb';
 import { InstituteModel } from '@/lib/models';
 
+interface InstituteCSVRow {
+  id?: string;
+  name?: string;
+  code?: string;
+  status?: string;
+  address?: string;
+  contactemail?: string;
+  contactphone?: string;
+  website?: string;
+  domain?: string;
+  establishmentyear?: string | number;
+  administrators?: string;
+  [key: string]: unknown;
+}
+
 const generateInstituteIdForImport = (): string => `inst_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 export async function POST(request: NextRequest) {
@@ -20,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     const fileText = await file.text();
 
-    const { data: parsedData, errors: parseErrors } = parse<any>(fileText, {
+    const { data: parsedData, errors: parseErrors } = parse<InstituteCSVRow>(fileText, {
       header: true,
       skipEmptyLines: true,
       transformHeader: header => header.trim().toLowerCase().replace(/\s+/g, ''),
@@ -46,9 +61,9 @@ export async function POST(request: NextRequest) {
     let skippedCount = 0;
 
     for (const row of parsedData) {
-      const name = (row as any).name?.toString().trim();
-      const code = (row as any).code?.toString().trim().toUpperCase();
-      const status = (row as any).status?.toString().trim().toLowerCase() as 'active' | 'inactive';
+      const name = row.name?.toString().trim();
+      const code = row.code?.toString().trim().toUpperCase();
+      const status = row.status?.toString().trim().toLowerCase() as 'active' | 'inactive';
 
       if (!name || !code || !['active', 'inactive'].includes(status)) {
         console.warn(`Skipping institute row: Missing or invalid required data (name, code, status). Row: ${JSON.stringify(row)}`);
@@ -56,7 +71,7 @@ export async function POST(request: NextRequest) {
         continue;
       }
       
-      const establishmentYear = (row as any).establishmentyear !== undefined && (row as any).establishmentyear !== null && !isNaN(Number((row as any).establishmentyear)) ? Number((row as any).establishmentyear) : undefined;
+      const establishmentYear = row.establishmentyear !== undefined && row.establishmentyear !== null && !isNaN(Number(row.establishmentyear)) ? Number(row.establishmentyear) : undefined;
       if (establishmentYear && (establishmentYear < 1800 || establishmentYear > new Date().getFullYear())) {
         console.warn(`Skipping institute row for ${name}: Invalid establishment year ${establishmentYear}.`);
         skippedCount++;
@@ -67,16 +82,16 @@ export async function POST(request: NextRequest) {
         name,
         code,
         status,
-        address: (row as any).address?.toString().trim() || undefined,
-        contactEmail: (row as any).contactemail?.toString().trim() || undefined,
-        contactPhone: (row as any).contactphone?.toString().trim() || undefined,
-        website: (row as any).website?.toString().trim() || undefined,
-        domain: (row as any).domain?.toString().trim() || `${code.toLowerCase()}.ac.in`,
+        address: row.address?.toString().trim() || undefined,
+        contactEmail: row.contactemail?.toString().trim() || undefined,
+        contactPhone: row.contactphone?.toString().trim() || undefined,
+        website: row.website?.toString().trim() || undefined,
+        domain: row.domain?.toString().trim() || `${code.toLowerCase()}.ac.in`,
         establishmentYear,
-        administrators: (row as any).administrators ? JSON.parse((row as any).administrators) : [],
+        administrators: row.administrators ? JSON.parse(row.administrators) : [],
       };
 
-      const idFromCsv = (row as any).id?.toString().trim();
+      const idFromCsv = row.id?.toString().trim();
       let existingInstitute;
 
       if (idFromCsv) {

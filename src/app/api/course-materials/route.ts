@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     }
     
     const currentTimestamp = new Date().toISOString();
-    const newMaterialData = {
+    const newMaterialData: Partial<CourseMaterial> = {
       id: generateId(),
       courseOfferingId,
       title: title.trim(),

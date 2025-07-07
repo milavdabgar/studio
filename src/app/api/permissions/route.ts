@@ -15,7 +15,7 @@ const permissionSchema = z.object({
   description: z.string().min(3).max(1000),
   resource: z.string().min(3).max(255),
   action: z.string().min(3).max(255),
-  conditions: z.any().optional(),
+  conditions: z.unknown().optional(),
 });
 
 async function applyRateLimiting(request: NextRequest): Promise<RateLimiterRes | null> {
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
       // Format permissions to ensure proper id field
       const permissionsWithId = permissions.map(permission => ({
         ...permission,
-        id: permission.id || (permission as any)._id.toString()
+        id: permission.id || (permission as { _id: { toString(): string } })._id.toString()
       }));
       
       return NextResponse.json(permissionsWithId);

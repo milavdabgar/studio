@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
     const isAssignedParam = searchParams.get('isAssigned');
 
     // Build filter query
-    const filter: any = {};
+    const filter: Record<string, unknown> = {};
     if (eventId) filter.eventId = eventId;
     if (department) filter.department = department;
     if (section) filter.section = section;
@@ -78,7 +78,7 @@ export async function GET(request: NextRequest) {
     // Format locations to ensure proper id field
     const locationsWithId = locations.map(location => ({
       ...location,
-      id: location.id || (location as any)._id.toString()
+      id: location.id || (location as { _id: { toString(): string } })._id.toString()
     }));
 
     return NextResponse.json({ 
