@@ -503,33 +503,34 @@ Analyze, decide, and implement autonomously - choose the highest-impact work.`;
         
         fs.writeFileSync(promptFile, prompt);
         
+        const provider = this.config.llmProvider || 'claude';
         console.log(`📝 Prompt saved to: ${promptFile}`);
-        console.log(`🤖 Executing: ./scripts/claude-pipe.sh "${prompt.substring(0, 100)}..."`);
+        console.log(`🤖 Executing: ./scripts/llm-pipe.sh ${provider} "${prompt.substring(0, 100)}..."`);
         
-        // Use simple pipe script to send prompt to Claude
-        const autoScript = path.join(process.cwd(), 'scripts', 'claude-pipe.sh');
-        const claudeProcess = spawn(autoScript, [prompt], {
+        // Use LLM pipe script with configured provider
+        const autoScript = path.join(process.cwd(), 'scripts', 'llm-pipe.sh');
+        const llmProcess = spawn(autoScript, [provider, prompt], {
           stdio: ['pipe', 'inherit', 'inherit'],
           env: process.env
         });
         
         // Set timeout for the process
         const timeout = setTimeout(() => {
-          console.log('⏰ Process timeout, killing Claude...');
-          claudeProcess.kill('SIGTERM');
+          console.log(`⏰ Process timeout, killing ${provider}...`);
+          llmProcess.kill('SIGTERM');
           resolve({ success: false, error: 'Process timeout' });
-        }, 30 * 60 * 1000); // 30 minutes timeout
+        }, this.config.llmProviders[provider]?.timeout || 30 * 60 * 1000);
         
-        claudeProcess.on('close', (code) => {
+        llmProcess.on('close', (code) => {
           clearTimeout(timeout);
           const success = code === 0;
-          console.log(`🔍 Claude ${success ? 'completed successfully' : 'failed'} (exit code: ${code})`);
+          console.log(`🔍 ${provider} ${success ? 'completed successfully' : 'failed'} (exit code: ${code})`);
           resolve({ success, code });
         });
         
-        claudeProcess.on('error', (error) => {
+        llmProcess.on('error', (error) => {
           clearTimeout(timeout);
-          console.error('❌ Error running Claude:', error);
+          console.error(`❌ Error running ${provider}:`, error);
           resolve({ success: false, error });
         });
         

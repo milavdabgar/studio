@@ -2,12 +2,19 @@
 
 ## 🤖 AUTONOMOUS DEVELOPMENT SYSTEM - OPERATIONAL!
 
-**Status**: ✅ **FULLY FUNCTIONAL** - True autonomous development using Claude CLI
+**Status**: ✅ **FULLY FUNCTIONAL** - True autonomous development with Claude CLI & Gemini CLI
 
 ### 🚀 Quick Start Autonomous Development
 ```bash
-# Start 24/7 autonomous development
+# Start with Claude (default)
 ./autonomous start
+
+# Start with Gemini
+./autonomous start --provider=gemini
+
+# Switch providers
+./autonomous provider --provider=claude
+./autonomous provider --provider=gemini
 
 # Check status
 ./autonomous status
@@ -26,6 +33,7 @@
 - ⚡ **Auto-Optimizes Performance** - Identifies and resolves bottlenecks
 - 🔒 **Auto-Enhances Security** - Scans vulnerabilities, applies fixes
 - 🔀 **Auto-Manages PRs** - Creates detailed pull requests autonomously
+- 🤖 **Multi-LLM Support** - Choose between Claude CLI and Gemini CLI
 
 **See `AUTONOMOUS_README.md` for complete documentation.**
 
