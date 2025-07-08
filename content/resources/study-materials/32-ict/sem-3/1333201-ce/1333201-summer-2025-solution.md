@@ -26,6 +26,8 @@ tags: ["study-material", "solutions", "communication-engineering", "1333201", "2
 
 **Answer**:
 
+![Communication System](diagrams/1333201-s2025-q1b.svg)
+
 ```mermaid
 graph LR
     A[Information Source] --> B[Transmitter]
@@ -55,6 +57,8 @@ graph LR
 Amplitude Modulation is the process where the amplitude of a high-frequency carrier wave varies according to the instantaneous value of the modulating signal.
 
 **Waveform and Equation:**
+
+![AM Waveform](diagrams/1333201-s2025-q1c.svg)
 
 ```mermaid
 graph TD
@@ -228,6 +232,8 @@ graph LR
 
 **Answer**:
 
+![Ratio Detector](diagrams/1333201-s2025-q2b.svg)
+
 ```mermaid
 graph LR
     A[FM Input] --> B[Secondary Winding]
@@ -256,6 +262,8 @@ graph LR
 **Draw block diagram of AM radio receiver and explain working of each block.**
 
 **Answer**:
+
+![AM Radio Receiver](diagrams/1333201-s2025-q2c.svg)
 
 ```mermaid
 graph LR
@@ -307,6 +315,8 @@ graph LR
 
 **Answer**:
 
+![Sample and Hold Circuit](diagrams/1333201-s2025-q3a.svg)
+
 ```mermaid
 graph LR
     A[Analog Input] --> B[Electronic Switch]
@@ -324,11 +334,7 @@ graph LR
 
 **Waveform:**
 
-```
-Analog Input: ~~~
-Clock:        ‾|_|‾|_|‾|_|‾|_|‾
-Output:       ‾‾|____|‾‾‾|____|‾‾
-```
+![Sample and Hold Waveform](diagrams/1333201-s2025-q3b.svg)
 
 **Applications:**
 
@@ -345,6 +351,8 @@ Output:       ‾‾|____|‾‾‾|____|‾‾
 **Answer**:
 
 **Quantization**: Process of mapping a large set of input values to a smaller set of discrete output values.
+
+![Quantization Process](diagrams/1333201-s2025-q3c.svg)
 
 ```mermaid
 graph LR
@@ -490,6 +498,8 @@ PPM:        ‖  ‖   ‖ ‖  ‖   ‖
 
 **Space Wave Propagation**: Mode where radio waves travel through lower atmosphere (troposphere) directly or via ground reflection.
 
+![Space Wave Propagation](diagrams/1333201-s2025-q4a.svg)
+
 ```mermaid
 graph LR
     A[Transmitter] --> B[Direct Wave]
@@ -512,6 +522,8 @@ graph LR
 **Explain working of Differential PCM (DPCM) transmitter.**
 
 **Answer**:
+
+![DPCM Transmitter](diagrams/1333201-s2025-q4b.svg)
 
 ```mermaid
 graph LR
@@ -544,6 +556,8 @@ graph LR
 **Answer**:
 
 **Delta Modulation (DM)**: Simplest form of differential PCM where the difference signal is encoded with just 1 bit.
+
+![Delta Modulator](diagrams/1333201-s2025-q4c.svg)
 
 ```mermaid
 graph LR
@@ -688,6 +702,8 @@ graph LR
 
 **Answer**:
 
+![Antenna Parameters](diagrams/1333201-s2025-q5a.svg)
+
 | Parameter | Definition |
 |-----------|------------|
 | **Radiation Pattern** | Graphical representation of radiation properties (field strength or power) as function of space coordinates |
@@ -705,6 +721,8 @@ graph LR
 **Answer**:
 
 **Microstrip (Patch) Antenna**: Low-profile antenna consisting of a metal patch on a substrate with ground plane.
+
+![Microstrip Antenna](diagrams/1333201-s2025-q5b.svg)
 
 ```mermaid
 graph TD
@@ -752,6 +770,8 @@ graph LR
 ```
 
 **PCM Receiver:**
+
+![PCM System](diagrams/1333201-s2025-q5c.svg)
 
 ```mermaid
 graph LR

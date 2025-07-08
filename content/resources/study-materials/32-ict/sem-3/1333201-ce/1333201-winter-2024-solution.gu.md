@@ -64,50 +64,11 @@ tags: ["study-material", "solutions", "communication-engineering", "1333201", "2
 
 **આકૃતિ: AM વેવફોર્મ**
 
-```mermaid
-graph TD
-    subgraph "AM Waveform"
-    A[Carrier Wave] --> D[Modulated Wave]
-    B[Modulating Signal] --> D
-    end
-    style D fill:#f9f,stroke:#333,stroke-width:2px
-```
-
-```goat
-     Carrier
-      /\  /\  /\  /\  /\  /\  /\
-     /  \/  \/  \/  \/  \/  \/  \
-    
-    Modulating
-     /\              /\
-    /  \            /  \
-         \        /
-          \/    \/
-           
-    AM Signal
-      /\    /\          /\    /\
-     /  \  /  \        /  \  /  \
-    /    \/    \      /    \/    \
-                \    /
-                 \  /
-                  \/
-```
+![AM વેવફોર્મ](diagrams/1333201-w2024-q1c.svg)
 
 **DSBFC AM નું ફ્રિક્વન્સી સ્પેક્ટ્રમ**
 
-```goat
-    Amplitude
-        |
-        |     A₁
-        |      ↓
-        |      █
-        |      
-        |m·A₁/2 ↓     ↓
-        |      █      █
-        |______|______|______|______▶ Frequency
-               |      |      |
-             fc-fm    fc    fc+fm
-```
+![DSBFC AM સ્પેક્ટ્રમ](diagrams/1333201-w2024-q1cb.svg)
 
 - **બેન્ડવિડ્થ**: AM સિગ્નલની બેન્ડવિડ્થ 2 × fm છે
 - **સાઇડબેન્ડ્સ**: અપર સાઇડબેન્ડ (USB) fc+fm પર અને લોઅર સાઇડબેન્ડ (LSB) fc-fm પર
@@ -148,19 +109,7 @@ graph TD
 
 **આકૃતિ: પાવર વિતરણ**
 
-```goat
-    Power
-    ^
-    |                       
-    |  66.67%               
-    |   ┌───┐                
-    |   │   │                
-    |   │   │   16.67%  16.67%    
-    |   │   │   ┌───┐  ┌───┐     
-    |   │   │   │   │  │   │     
-    └───┴───┴───┴───┴──┴───┴────► Freq
-        Carrier   LSB    USB
-```
+![પાવર વિતરણ](diagrams/1333201-w2024-q1cor.svg)
 
 **મેમરી ટ્રીક:** "CAST-83" (Carrier And Sideband Transmission, 83% saved in SSB)
 
@@ -192,14 +141,7 @@ graph TD
 
 **આકૃતિ: એન્વેલપ ડિટેક્ટર**
 
-```goat
-    AM Signal                   
-     ───────→┌─────┐    ┌──────┐     ┌─────┐     Demodulated
-             │     │    │      │     │     │     Output
-             │Diode│───→│ RC   │────→│ Load│───→
-             │     │    │Filter│     │     │
-             └─────┘    └──────┘     └─────┘
-```
+![એન્વેલપ ડિટેક્ટર](diagrams/1333201-w2024-q2a.svg)
 
 **કોષ્ટક: ઘટકો અને તેમના કાર્યો**
 
@@ -223,17 +165,7 @@ graph TD
 
 **આકૃતિ: FM રેડિયો રીસીવર**
 
-```mermaid
-flowchart LR
-    A[Antenna] --> B[RF Amplifier]
-    B --> C[Mixer]
-    D[Local Oscillator] --> C
-    C --> E[IF Amplifier]
-    E --> F[Limiter]
-    F --> G[FM Discriminator]
-    G --> H[Audio Amplifier]
-    H --> I[Speaker]
-```
+![FM રેડિયો રીસીવર](diagrams/1333201-w2024-q2b.svg)
 
 **કોષ્ટક: દરેક બ્લોકનાં કાર્યો**
 
@@ -262,23 +194,7 @@ flowchart LR
 
 **આકૃતિ: FM અને PM વેવફોર્મ્સ**
 
-```goat
-Modulating Signal
-    ────┐     ┌─────
-        │     │     
-        │     │     
-    ────┘     └─────
-        
-FM Signal
-    /\/\/\     /\/\/\/\/\/\     /\/\/\
-   /      \   /            \   /      \
-  /        \ /              \ /        \
-            
-PM Signal
-    /\/\/\/\/\  /\/\  /\/\/\/\/\
-   /          \/    \/          \
-  /                              \
-```
+![FM અને PM વેવફોર્મ્સ](diagrams/1333201-w2024-q2c.svg)
 
 **મુખ્ય લક્ષણો:**
 
@@ -318,18 +234,7 @@ PM Signal
 
 **આકૃતિ: AM રેડિયો રીસીવર**
 
-```mermaid
-flowchart LR
-    A[Antenna] --> B[RF Tuner & Amplifier]
-    B --> C[Mixer]
-    D[Local Oscillator] --> C
-    C --> E[IF Amplifier]
-    E --> F[Detector]
-    F --> G[AGC]
-    G --> E
-    F --> H[Audio Amplifier]
-    H --> I[Speaker]
-```
+![AM રેડિયો રીસીવર](diagrams/1333201-w2024-q2d.svg)
 
 **કોષ્ટક: દરેક બ્લોકનાં કાર્યો**
 

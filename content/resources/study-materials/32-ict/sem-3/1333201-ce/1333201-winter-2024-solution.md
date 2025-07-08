@@ -27,6 +27,10 @@ Modulation is the process of varying one or more properties of a high-frequency 
 
 **Mnemonic:** "RARE Messages" (Range, Antenna, Reduce interference, Enable multiplexing)
 
+**Diagram: Communication System**
+
+![Communication System Block Diagram](diagrams/1333201-w2024-q1ab.svg)
+
 ## Question 1(b) [4 marks]
 
 **Compare AM and FM.**
@@ -64,6 +68,8 @@ Amplitude Modulation (AM) is a technique where the amplitude of a carrier wave i
 
 **Diagram: AM Waveform**
 
+![AM Waveform](diagrams/1333201-w2024-q1c.svg)
+
 ```mermaid
 graph TD
     subgraph "AM Waveform"
@@ -94,6 +100,8 @@ graph TD
 ```
 
 **Frequency Spectrum of DSBFC AM**
+
+![AM Frequency Spectrum](diagrams/1333201-am-frequency-spectrum.svg)
 
 ```goat
     Amplitude
@@ -192,6 +200,8 @@ graph TD
 
 **Diagram: Envelope Detector**
 
+![Envelope Detector](diagrams/1333201-w2024-q2b.svg)
+
 ```goat
     AM Signal                   
      ───────→┌──────┐    ┌──────┐     ┌─────┐     Demodulated
@@ -222,6 +232,8 @@ graph TD
 **Answer**:
 
 **Diagram: FM Radio Receiver**
+
+![FM Radio Receiver](diagrams/1333201-w2024-q2c.svg)
 
 ```mermaid
 flowchart LR
@@ -380,6 +392,8 @@ flowchart LR
 
 **Diagram: Sample and Hold Circuit**
 
+![Sample and Hold Circuit](diagrams/1333201-w2024-q3b.svg)
+
 ```goat
     Analog       ┌───────┐      Sampled
     Input ───────│Sample &│─────→Output
@@ -438,6 +452,8 @@ Sampled Output
 | Non-uniform Sampling | Samples taken at varying intervals | Used for specialized applications |
 
 **Diagram: Sampling Types**
+
+![Sampling Types](diagrams/1333201-w2024-q3c.svg)
 
 ```goat
 Original Signal
@@ -610,6 +626,8 @@ Granular Noise:
 
 **Diagram: TDM Frame Structure**
 
+![TDM Frame Structure](diagrams/1333201-w2024-q4b.svg)
+
 ```goat
     ┌───────────────────────────────────┐
     │ FS │ CH1 │ CH2 │ CH3 │...│ CHn │ FS │
@@ -645,6 +663,8 @@ Granular Noise:
 **Answer**:
 
 **Diagram: PCM System**
+
+![PCM System](diagrams/1333201-w2024-q4c.svg)
 
 ```mermaid
 flowchart LR
@@ -842,6 +862,8 @@ Difference (DPCM):
 
 **Diagram: Microstrip Patch Antenna**
 
+![Microstrip Patch Antenna](diagrams/1333201-w2024-q5b.svg)
+
 ```goat
     ┌───────────────────┐  ←Patch (radiating element)
     │                   │
@@ -882,6 +904,8 @@ Difference (DPCM):
 Delta Modulation (DM) is the simplest form of differential pulse code modulation where the difference between successive samples is encoded into a single bit.
 
 **Diagram: Delta Modulator**
+
+![Delta Modulator](diagrams/1333201-w2024-q5c.svg)
 
 ```mermaid
 flowchart LR

@@ -32,6 +32,8 @@ Modulation is the process of varying one or more properties of a high-frequency 
 **Answer**:
 A communication system transfers information from source to destination through a channel.
 
+![Communication System Block Diagram](diagrams/1333201-s2024-q1b.svg)
+
 ```mermaid
 graph LR
     A[Information Source] --> B[Transmitter]
@@ -72,6 +74,9 @@ Amplitude modulation varies the amplitude of carrier signal proportionally to th
 - Using identity (cos A·cos B): s(t) = Ac·cos(ωct) + (μ·Ac/2)[cos(ωc+ωm)t + cos(ωc-ωm)t]
 
 **Diagram: AM Signal in Time Domain**
+
+![AM Signal in Time Domain](diagrams/1333201-s2024-q1c.svg)
+
 ```mermaid
 %%{init: {"theme": "neutral", "themeVariables": {"primaryColor": "#f6f6f6"}}}%%
 xychart-beta
@@ -135,6 +140,8 @@ If both 100 MHz and 120 MHz signals exist, both will produce 10 MHz IF, causing 
 
 **Answer**:
 Envelope detector extracts the modulating signal from AM wave by following the envelope.
+
+![Envelope Detector](diagrams/1333201-s2024-q2a.svg)
 
 ```mermaid
 graph LR
@@ -212,6 +219,8 @@ graph LR
 **Answer**:
 Ratio detector extracts audio from FM signals while rejecting amplitude variations.
 
+![Ratio Detector](diagrams/1333201-s2024-q2b.svg)
+
 ```mermaid
 graph LR
     A[FM Input] --> B[Transformer]
@@ -283,6 +292,8 @@ graph LR
 
 **Diagram: Signal Representations**
 
+![Signal Representations](diagrams/1333201-s2024-q3a.svg)
+
 ```goat
                   Time Domain                     Frequency Domain
 Sine     /\      /\      /\          |
@@ -319,6 +330,8 @@ Sampling theorem states the conditions for accurate signal reconstruction from s
 
 **Diagram: Aliasing Effect**
 
+![Aliasing Effect](diagrams/1333201-s2024-q3b.svg)
+
 ```goat
                         
   Original               Proper Sampling           Undersampling (Aliasing)
@@ -347,6 +360,8 @@ These are pulse modulation techniques where a parameter of pulse is varied.
 | **PWM** | Pulse Width Modulation | Width/Duration | Superior noise immunity, widely used in control systems |
 
 **Diagram: Pulse Modulation Techniques**
+
+![Pulse Modulation Techniques](diagrams/1333201-s2024-q3c.svg)
 
 ```goat
 Message:   /\/\/\
@@ -616,6 +631,8 @@ Adaptive Delta Modulation adjusts step size based on signal characteristics.
 
 **Diagram: Step Size Adaptation**
 
+![Step Size Adaptation](diagrams/1333201-s2024-q4c.svg)
+
 ```goat
 Signal:   /\      /\
          /  \    /  \
@@ -644,6 +661,8 @@ Steps:   _                  Larger steps
 | **Antenna Gain** | Measure of antenna's ability to direct or concentrate radio energy in a particular direction | Expressed in dB, compared to isotropic radiator (dBi) |
 
 **Diagram: Radiation Pattern Types**
+
+![Radiation Pattern Types](diagrams/1333201-s2024-q5a.svg)
 
 ```goat
                   y                      y
@@ -683,6 +702,8 @@ Different antenna designs serve different purposes in wireless communication sys
 | **Diversity** | Space/polarization diversity | Rarely implemented |
 
 **Diagram: Antenna Types**
+
+![Antenna Types](diagrams/1333201-s2024-q5b.svg)
 
 ```goat
 Base Station:                  Mobile Station:
@@ -727,6 +748,8 @@ Base Station:                  Mobile Station:
 | **Polarization** | Orientation of electric field vector of radiated wave | Linear (vertical/horizontal), circular, elliptical |
 
 **Diagram: Polarization Types**
+
+![Polarization Types](diagrams/1333201-s2024-q5c.svg)
 
 ```goat
 Vertical:     Horizontal:     Circular:

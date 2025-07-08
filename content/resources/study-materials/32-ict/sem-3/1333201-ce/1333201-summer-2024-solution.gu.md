@@ -32,6 +32,8 @@ tags: ["study-material", "solutions", "communication-engineering", "1333201", "2
 **Answer**:
 કોમ્યુનિકેશન સિસ્ટમ માહિતીને સ્ત્રોતથી ચેનલ મારફતે ગંતવ્ય સુધી પહોંચાડે છે.
 
+![કોમ્યુનિકેશન સિસ્ટમ](diagrams/1333201-s2024-q1b.svg)
+
 ```mermaid
 graph LR
     A[માહિતી સ્ત્રોત] --> B[ટ્રાન્સમીટર]
@@ -72,6 +74,8 @@ graph LR
 - આઇડેન્ટિટી (cos A·cos B) વાપરીને: s(t) = Ac·cos(ωct) + (μ·Ac/2)[cos(ωc+ωm)t + cos(ωc-ωm)t]
 
 **Diagram: ટાઈમ ડોમેનમાં AM સિગ્નલ**
+
+![AM વેવફોર્મ](diagrams/1333201-s2024-q1c.svg)
 
 ```mermaid
 %%{init: {"theme": "neutral", "themeVariables": {"primaryColor": "#f6f6f6"}}}%%
@@ -137,6 +141,8 @@ xychart-beta
 **Answer**:
 એન્વેલપ ડિટેક્ટર AM વેવમાંથી એન્વેલપને અનુસરીને મોડ્યુલેટિંગ સિગ્નલ કાઢે છે.
 
+![એન્વેલપ ડિટેક્ટર](diagrams/1333201-s2024-q2b.svg)
+
 ```mermaid
 graph LR
     A[AM ઇનપુટ] --> B[ડાયોડ]
@@ -161,6 +167,8 @@ graph LR
 
 **Answer**:
 AM રિસીવર રેડિયો સિગ્નલને ઓડિયો આઉટપુટમાં રૂપાંતરિત કરે છે.
+
+![AM રેડિયો રિસીવર](diagrams/1333201-s2024-q2c.svg)
 
 ```mermaid
 graph LR
@@ -212,6 +220,8 @@ graph LR
 
 **Answer**:
 રેશિયો ડિટેક્ટર FM સિગ્નલમાંથી એમ્પ્લિટ્યુડ વેરિએશન્સને અવગણીને ઓડિયો કાઢે છે.
+
+![રેશિયો ડિટેક્ટર](diagrams/1333201-s2024-q2bor.svg)
 
 ```mermaid
 graph LR
@@ -565,6 +575,8 @@ graph LR
 
 **Answer**:
 PCM-TDM મલ્ટિપલ ડિજિટાઇઝ્ડ સિગ્નલ્સને એક સિંગલ હાઇ-સ્પીડ ચેનલમાં જોડે છે.
+
+![PCM-TDM સિસ્ટમ](diagrams/1333201-s2024-q4c.svg)
 
 ```mermaid
 graph LR
