@@ -119,9 +119,93 @@ const PostRenderer: React.FC<PostRendererProps> = ({ contentHtml }) => {
       });
     };
 
-    // Enhance images with lazy loading, captions, and fix relative paths
+    // Inline SVG images to make text selectable
+    const inlineSvgImages = async () => {
+      const images = containerRef.current?.querySelectorAll('img[src$=".svg"]');
+      const inlinePromises = Array.from(images || []).map(async (img) => {
+        try {
+          const src = img.getAttribute('src');
+          if (!src) return;
+          
+          // Build the API URL if it's a relative path
+          let svgUrl = src;
+          if (!src.startsWith('http') && !src.startsWith('/api/')) {
+            const currentPath = window.location.pathname;
+            if (src.startsWith('/')) {
+              svgUrl = `/api/content-images${src}`;
+            } else {
+              const contentMatch = currentPath.match(/^\/posts\/[^\/]+\/(.+)$/);
+              if (contentMatch) {
+                const contentPath = contentMatch[1];
+                const contentDir = contentPath.split('/').slice(0, -1).join('/');
+                svgUrl = `/api/content-images/${contentDir}/${src}`;
+              } else {
+                svgUrl = `/api/content-images/${src}`;
+              }
+            }
+          }
+          
+          console.log('PostRenderer: Fetching SVG for inlining:', svgUrl);
+          
+          // Fetch the SVG content
+          const response = await fetch(svgUrl);
+          if (!response.ok) {
+            console.warn('PostRenderer: Failed to fetch SVG:', svgUrl, response.status);
+            return;
+          }
+          
+          const svgContent = await response.text();
+          
+          // Create a container div with the same attributes as the original img
+          const container = document.createElement('div');
+          container.className = 'inline-svg-container';
+          
+          // Copy img attributes to the container
+          const alt = img.getAttribute('alt');
+          const title = img.getAttribute('title');
+          const className = img.getAttribute('class');
+          
+          if (className) container.className += ` ${className}`;
+          if (title) container.setAttribute('title', title);
+          
+          // Parse SVG and ensure it has proper styling
+          const parser = new DOMParser();
+          const svgDoc = parser.parseFromString(svgContent, 'image/svg+xml');
+          const svgElement = svgDoc.querySelector('svg');
+          
+          if (svgElement) {
+            // Ensure SVG is responsive and properly styled
+            svgElement.setAttribute('class', 'inline-svg max-w-full h-auto');
+            svgElement.style.maxWidth = '100%';
+            svgElement.style.height = 'auto';
+            
+            // Add the SVG to the container
+            container.innerHTML = svgElement.outerHTML;
+            
+            // Add caption if alt text exists
+            if (alt) {
+              const caption = document.createElement('figcaption');
+              caption.className = 'image-caption text-sm text-muted-foreground mt-2 text-center';
+              caption.textContent = alt;
+              container.appendChild(caption);
+            }
+            
+            // Replace the img element with the container
+            img.parentNode?.replaceChild(container, img);
+            
+            console.log('PostRenderer: Successfully inlined SVG:', src);
+          }
+        } catch (error) {
+          console.error('PostRenderer: Error inlining SVG:', error);
+        }
+      });
+      
+      await Promise.all(inlinePromises);
+    };
+
+    // Enhance remaining non-SVG images with lazy loading, captions, and fix relative paths
     const enhanceImages = () => {
-      const images = containerRef.current?.querySelectorAll('img');
+      const images = containerRef.current?.querySelectorAll('img:not([src$=".svg"])');
       images?.forEach((img) => {
         img.setAttribute('loading', 'lazy');
         
@@ -171,12 +255,17 @@ const PostRenderer: React.FC<PostRendererProps> = ({ contentHtml }) => {
       processShortcodeElements(containerRef);
     };
     
-    generateHeadingIds();
-    enhanceCodeBlocks();
-    enhanceLinks();
-    enhanceTables();
-    enhanceImages();
-    processShortcodesInContent();
+    const initializeContent = async () => {
+      generateHeadingIds();
+      enhanceCodeBlocks();
+      enhanceLinks();
+      enhanceTables();
+      await inlineSvgImages(); // Inline SVGs first to make text selectable
+      enhanceImages(); // Then enhance remaining non-SVG images
+      processShortcodesInContent();
+    };
+    
+    initializeContent();
 
     // Initialize Mermaid for diagrams
     import('mermaid').then((mermaid) => {

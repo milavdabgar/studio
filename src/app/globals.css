@@ -503,6 +503,37 @@ pre.shiki {
   }
 }
 
+/* Inline SVG styling for text selectability */
+.inline-svg-container {
+  @apply rounded-lg shadow-md mx-auto my-6 max-w-full;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inline-svg-container .inline-svg {
+  @apply max-w-full h-auto;
+  display: block;
+}
+
+.inline-svg-container .inline-svg text {
+  /* Ensure SVG text is selectable and properly styled */
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  cursor: text;
+}
+
+.inline-svg-container figcaption {
+  @apply text-sm text-muted-foreground text-center mt-2 italic;
+}
+
+/* Dark mode support for inline SVGs */
+.dark .inline-svg-container .inline-svg {
+  filter: brightness(0.9) contrast(1.1);
+}
+
 /* Utilities for dark mode consistency */
 @layer utilities {
   .dark-mode-text {
