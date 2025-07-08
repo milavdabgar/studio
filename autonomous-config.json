@@ -62,18 +62,24 @@
     "linting": "eslint",
     "documentation": "jsdoc"
   },
-  "llmProvider": "gemini",
+  "llmProvider": "auto",
   "llmProviders": {
     "claude": {
       "command": "claude",
       "timeout": 1800000,
-      "description": "Claude CLI - Interactive AI assistant"
+      "description": "Claude CLI - Interactive AI assistant",
+      "specialties": ["feature-planning", "bug-hunting", "refactoring", "documentation", "security-audit"]
     },
     "gemini": {
-      "command": "gemini",
+      "command": "gemini", 
       "timeout": 900000,
-      "description": "Gemini CLI - Google's AI model"
+      "description": "Gemini CLI - Google's AI model",
+      "specialties": ["code-quality", "test-coverage", "performance-optimization"]
     }
+  },
+  "providerSelection": {
+    "strategy": "task-based",
+    "fallback": "claude"
   },
   "continuousImprovement": {
     "enabled": true,

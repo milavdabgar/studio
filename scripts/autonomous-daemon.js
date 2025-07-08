@@ -93,14 +93,17 @@ class AutonomousDaemon {
       console.log(`🌿 Creating branch: ${branchName}`);
       execSync(`git checkout -b ${branchName}`, { stdio: 'inherit' });
       
-      // Execute Claude Code autonomously
+      // Select appropriate LLM provider for this task
+      const provider = this.selectProviderForTask(task);
+      console.log(`🧠 Selected ${provider} for ${task.type} task`);
+      
+      // Execute with selected provider
       const prompt = this.generateTaskPrompt(task);
-      console.log(`🧠 Executing Claude Code with autonomous prompt...`);
+      console.log(`🚀 Executing ${provider} with autonomous prompt...`);
       
-      // Use Claude Code CLI directly
-      const claudeResult = await this.executeClaudeCode(prompt);
+      const result = await this.executeLLMProvider(provider, prompt);
       
-      if (claudeResult.success) {
+      if (result.success) {
         console.log(`✅ Task completed successfully`);
         await this.handleTaskCompletion(task, branchName);
         this.metrics.tasksCompleted++;
@@ -138,13 +141,46 @@ WORK AUTONOMOUSLY - NO HUMAN INPUT NEEDED.
 
     switch (task.type) {
       case 'feature-planning':
+        const isProactive = task.proactive || false;
+        const proactiveSection = isProactive ? `
+
+🎯 PROACTIVE FEATURE DISCOVERY MODE
+
+Since all systems are healthy and no critical issues exist, it's time to enhance the application with valuable new features!
+
+DISCOVERY QUESTIONS TO CONSIDER:
+- What would make users more productive with this system?
+- What integrations or automations could save time?
+- What analytics or insights are missing?
+- What would improve the developer experience?
+- What features do similar applications have that we lack?
+
+ANALYSIS APPROACH:
+1. Examine user journeys and identify friction points
+2. Look for repetitive manual tasks that could be automated
+3. Consider data that's collected but not utilized
+4. Identify gaps in the current feature set
+5. Think about scalability and future needs
+
+FEATURE PROPOSAL FORMAT:
+For each feature you consider, analyze:
+- User value and impact
+- Implementation complexity
+- Technical requirements
+- Integration points
+- Testing strategy
+
+SELECT THE HIGHEST-VALUE FEATURE and implement it completely.
+
+💡 Remember: You have full autonomy to choose and implement what you believe will be most valuable!` : '';
+
         return `${baseContext}
 
 🧠 AUTONOMOUS FEATURE DEVELOPER
 
 You are an autonomous software developer with full agency to implement valuable features.
 
-MISSION: Analyze the codebase, identify the most valuable next feature, and implement it completely.
+MISSION: Analyze the codebase, identify the most valuable next feature, and implement it completely.${proactiveSection}
 
 EXECUTION PLAN:
 1. **Codebase Analysis**: Study the architecture, existing features, and user patterns
@@ -489,6 +525,73 @@ Analyze, decide, and implement autonomously - choose the highest-impact work.`;
     }
   }
 
+  selectProviderForTask(task) {
+    if (this.config.llmProvider !== 'auto') {
+      return this.config.llmProvider;
+    }
+
+    // Task-based provider selection
+    for (const [providerName, config] of Object.entries(this.config.llmProviders)) {
+      if (config.specialties && config.specialties.includes(task.type)) {
+        return providerName;
+      }
+    }
+
+    // Fallback to configured fallback or default
+    return this.config.providerSelection?.fallback || 'claude';
+  }
+
+  async executeLLMProvider(provider, prompt) {
+    const providerConfig = this.config.llmProviders[provider];
+    if (!providerConfig) {
+      console.error(`❌ Unknown provider: ${provider}`);
+      return { success: false, error: `Unknown provider: ${provider}` };
+    }
+
+    try {
+      console.log(`🔧 Executing ${provider} command: ${providerConfig.command}`);
+      
+      const result = await new Promise((resolve, reject) => {
+        const child = spawn(providerConfig.command, ['--non-interactive'], {
+          stdio: ['pipe', 'pipe', 'pipe'],
+          timeout: providerConfig.timeout
+        });
+
+        let output = '';
+        let errorOutput = '';
+
+        child.stdout.on('data', (data) => {
+          output += data.toString();
+        });
+
+        child.stderr.on('data', (data) => {
+          errorOutput += data.toString();
+        });
+
+        child.on('close', (code) => {
+          if (code === 0) {
+            resolve({ success: true, output, provider });
+          } else {
+            resolve({ success: false, error: errorOutput, provider });
+          }
+        });
+
+        child.on('error', (error) => {
+          reject(error);
+        });
+
+        // Send the prompt
+        child.stdin.write(prompt);
+        child.stdin.end();
+      });
+
+      return result;
+    } catch (error) {
+      console.error(`❌ Error executing ${provider}:`, error);
+      return { success: false, error: error.message, provider };
+    }
+  }
+
   async executeClaudeCode(prompt) {
     return new Promise((resolve) => {
       try {
@@ -701,8 +804,9 @@ Analyze, decide, and implement autonomously - choose the highest-impact work.`;
       tasks.push({
         type: 'feature-planning',
         priority: 'medium',
-        reason: 'No critical issues found, planning next feature',
-        created: new Date()
+        reason: 'All systems healthy - ready for next feature development',
+        created: new Date(),
+        proactive: true
       });
     }
     
