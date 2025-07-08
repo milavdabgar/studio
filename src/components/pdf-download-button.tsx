@@ -169,32 +169,41 @@ export function PdfDownloadButton({
         </DropdownMenuTrigger>
         <DropdownMenuContent 
           align="end" 
-          className="w-56 sm:w-64 max-h-[80vh] overflow-y-auto border shadow-lg"
+          className="w-72 sm:w-80 md:w-96 lg:w-[28rem] xl:w-[36rem] max-h-[80vh] overflow-y-auto border shadow-lg"
           side="bottom"
           sideOffset={4}
         >
           {Object.entries(formatsByCategory).map(([category, categoryFormats], categoryIndex) => (
             <div key={category}>
               {categoryIndex > 0 && <DropdownMenuSeparator />}
-              <div className="px-2 py-1.5 text-sm font-semibold text-muted-foreground sticky top-0 bg-popover z-10">
+              <div className="px-3 py-2 text-sm font-semibold text-muted-foreground sticky top-0 bg-popover z-10 border-b border-border/50">
                 {category.charAt(0).toUpperCase() + category.slice(1)}
               </div>
-              {categoryFormats.map((format) => (
-                <DropdownMenuItem
-                  key={format.id}
-                  onClick={() => handleDownload(format.id)}
-                  className={`cursor-pointer ${format.id === 'mp3' ? 'opacity-75' : ''}`}
-                >
-                  <span className="mr-2 text-base">{getIconForFormat(format.id)}</span>
-                  <div className="flex flex-col min-w-0 flex-1">
-                    <span className="font-medium truncate">
-                      {format.name}
-                      {format.id === 'mp3' && <span className="ml-2 text-xs text-yellow-600 font-normal">(Coming Soon)</span>}
-                    </span>
-                    <span className="text-xs text-muted-foreground">{format.description}</span>
-                  </div>
-                </DropdownMenuItem>
-              ))}
+              <div className="p-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-1">
+                  {categoryFormats.map((format) => (
+                    <DropdownMenuItem
+                      key={format.id}
+                      onClick={() => handleDownload(format.id)}
+                      className={`cursor-pointer p-3 h-auto flex-col items-start text-left ${format.id === 'mp3' ? 'opacity-75' : ''}`}
+                    >
+                      <div className="flex items-center w-full mb-1">
+                        <span className="mr-2 text-base">{getIconForFormat(format.id)}</span>
+                        <span className="font-medium truncate flex-1">
+                          {format.name}
+                          {format.id === 'mp3' && <span className="ml-1 text-xs text-yellow-600 font-normal">(Soon)</span>}
+                        </span>
+                      </div>
+                      <span className="text-xs text-muted-foreground leading-tight">
+                        {format.description.length > 60 
+                          ? `${format.description.substring(0, 60)}...` 
+                          : format.description
+                        }
+                      </span>
+                    </DropdownMenuItem>
+                  ))}
+                </div>
+              </div>
             </div>
           ))}
         </DropdownMenuContent>
