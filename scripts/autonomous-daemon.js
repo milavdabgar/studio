@@ -668,7 +668,7 @@ Analyze, decide, and implement autonomously - choose the highest-impact work.`;
     }
     
     // Medium priority improvements
-    if (analysis.lintIssues > 20) {
+    if (analysis.lintIssues > 5) {
       tasks.push({
         type: 'code-quality',
         priority: 'medium',

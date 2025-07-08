@@ -12,11 +12,11 @@
     "timezone": "UTC"
   },
   "taskPriorities": {
-    "bug-hunting": 10,
-    "security-audit": 9,
-    "test-coverage": 8,
-    "performance-optimization": 7,
-    "code-quality": 6,
+    "code-quality": 10,
+    "bug-hunting": 9,
+    "security-audit": 8,
+    "test-coverage": 7,
+    "performance-optimization": 6,
     "feature-planning": 5,
     "documentation": 4,
     "refactoring": 3
