@@ -38,7 +38,7 @@
   
   <!-- Title -->
   <text x="600" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#2C3E50">
-    Risk Assessment Framework & Management Process
+    Risk Assessment Framework &amp; Management Process
   </text>
   
   <!-- Central Risk Assessment Circle -->
@@ -55,7 +55,7 @@
   <g transform="translate(150, 150)">
     <rect x="0" y="0" width="200" height="120" rx="15" fill="url(#identifyGradient)" stroke="#357ABD" stroke-width="3" filter="url(#shadow)"/>
     <text x="100" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white">1. Identify</text>
-    <text x="100" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="white">Assets & Threats</text>
+    <text x="100" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="white">Assets &amp; Threats</text>
     
     <!-- Magnifying glass icon -->
     <g transform="translate(85, 60)">
@@ -124,7 +124,7 @@
   <g transform="translate(500, 80)">
     <rect x="0" y="0" width="200" height="120" rx="15" fill="url(#monitorGradient)" stroke="#D68910" stroke-width="3" filter="url(#shadow)"/>
     <text x="100" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white">5. Monitor</text>
-    <text x="100" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="white">& Review</text>
+    <text x="100" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="white">&amp; Review</text>
     
     <!-- Monitor icon -->
     <g transform="translate(85, 60)">
@@ -288,8 +288,8 @@
   <!-- Key Components -->
   <g transform="translate(50, 50)">
     <text x="0" y="0" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2C3E50">Key Components:</text>
-    <text x="0" y="15" font-family="Arial, sans-serif" font-size="10" fill="#666">• Asset Identification & Valuation</text>
-    <text x="0" y="30" font-family="Arial, sans-serif" font-size="10" fill="#666">• Threat & Vulnerability Assessment</text>
-    <text x="0" y="45" font-family="Arial, sans-serif" font-size="10" fill="#666">• Risk Calculation & Prioritization</text>
+    <text x="0" y="15" font-family="Arial, sans-serif" font-size="10" fill="#666">• Asset Identification &amp; Valuation</text>
+    <text x="0" y="30" font-family="Arial, sans-serif" font-size="10" fill="#666">• Threat &amp; Vulnerability Assessment</text>
+    <text x="0" y="45" font-family="Arial, sans-serif" font-size="10" fill="#666">• Risk Calculation &amp; Prioritization</text>
   </g>
 </svg>

@@ -250,7 +250,7 @@
   <!-- Benefits -->
   <g transform="translate(50, 730)">
     <text x="0" y="0" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2C3E50">VPN Benefits:</text>
-    <text x="0" y="20" font-family="Arial, sans-serif" font-size="12" fill="#666">• Data Privacy & Confidentiality</text>
+    <text x="0" y="20" font-family="Arial, sans-serif" font-size="12" fill="#666">• Data Privacy &amp; Confidentiality</text>
     <text x="0" y="35" font-family="Arial, sans-serif" font-size="12" fill="#666">• Secure Remote Access</text>
     <text x="0" y="50" font-family="Arial, sans-serif" font-size="12" fill="#666">• Bypass Geo-restrictions</text>
   </g>
@@ -258,7 +258,7 @@
   <g transform="translate(400, 730)">
     <text x="0" y="0" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2C3E50">Security Features:</text>
     <text x="0" y="20" font-family="Arial, sans-serif" font-size="12" fill="#666">• Strong Encryption (AES-256)</text>
-    <text x="0" y="35" font-family="Arial, sans-serif" font-size="12" fill="#666">• Authentication & Access Control</text>
+    <text x="0" y="35" font-family="Arial, sans-serif" font-size="12" fill="#666">• Authentication &amp; Access Control</text>
     <text x="0" y="50" font-family="Arial, sans-serif" font-size="12" fill="#666">• Tunneling Protocols</text>
   </g>
   

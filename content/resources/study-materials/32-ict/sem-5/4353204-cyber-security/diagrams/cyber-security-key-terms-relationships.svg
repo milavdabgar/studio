@@ -1,0 +1,102 @@
+<svg width="900" height="650" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; fill: #2c3e50; }
+      .section-title { font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; fill: #ffffff; }
+      .text { font-family: Arial, sans-serif; font-size: 12px; fill: #ffffff; }
+      .adversary { fill: #e74c3c; stroke: #c0392b; stroke-width: 2; }
+      .asset { fill: #27ae60; stroke: #229954; stroke-width: 2; }
+      .attack { fill: #f39c12; stroke: #e67e22; stroke-width: 2; }
+      .threat { fill: #9b59b6; stroke: #8e44ad; stroke-width: 2; }
+      .vulnerability { fill: #3498db; stroke: #2980b9; stroke-width: 2; }
+      .risk { fill: #34495e; stroke: #2c3e50; stroke-width: 2; }
+    </style>
+  </defs>
+  
+  <!-- Title -->
+  <text x="450" y="30" text-anchor="middle" class="title">Cyber Security Key Terms &amp; Relationships</text>
+  
+  <!-- Adversary -->
+  <rect x="50" y="70" width="180" height="100" class="adversary" rx="10"/>
+  <text x="140" y="100" text-anchor="middle" class="section-title">Adversary</text>
+  <text x="60" y="125" class="text">• Individual or group</text>
+  <text x="60" y="145" class="text">• Intent to harm</text>
+  <text x="60" y="160" class="text">• Malicious actor</text>
+  
+  <!-- Asset -->
+  <rect x="670" y="70" width="180" height="100" class="asset" rx="10"/>
+  <text x="760" y="100" text-anchor="middle" class="section-title">Asset</text>
+  <text x="680" y="125" class="text">• Valuable resource</text>
+  <text x="680" y="145" class="text">• Data, systems</text>
+  <text x="680" y="160" class="text">• Needs protection</text>
+  
+  <!-- Attack -->
+  <rect x="360" y="70" width="180" height="100" class="attack" rx="10"/>
+  <text x="450" y="100" text-anchor="middle" class="section-title">Attack</text>
+  <text x="370" y="125" class="text">• Deliberate action</text>
+  <text x="370" y="145" class="text">• Exploits weakness</text>
+  <text x="370" y="160" class="text">• Causes harm</text>
+  
+  <!-- Threat -->
+  <rect x="50" y="230" width="180" height="100" class="threat" rx="10"/>
+  <text x="140" y="260" text-anchor="middle" class="section-title">Threat</text>
+  <text x="60" y="285" class="text">• Potential danger</text>
+  <text x="60" y="305" class="text">• Circumstance/event</text>
+  <text x="60" y="320" class="text">• Could exploit</text>
+  
+  <!-- Vulnerability -->
+  <rect x="360" y="230" width="180" height="100" class="vulnerability" rx="10"/>
+  <text x="450" y="260" text-anchor="middle" class="section-title">Vulnerability</text>
+  <text x="370" y="285" class="text">• Weakness/flaw</text>
+  <text x="370" y="305" class="text">• Security gap</text>
+  <text x="370" y="320" class="text">• Can be exploited</text>
+  
+  <!-- Risk -->
+  <rect x="670" y="230" width="180" height="100" class="risk" rx="10"/>
+  <text x="760" y="260" text-anchor="middle" class="section-title">Risk</text>
+  <text x="680" y="285" class="text">• Probability of loss</text>
+  <text x="680" y="305" class="text">• Impact assessment</text>
+  <text x="680" y="320" class="text">• Threat + Vulnerability</text>
+  
+  <!-- Relationships (Central diagram) -->
+  <rect x="200" y="400" width="500" height="200" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="2" rx="15"/>
+  <text x="450" y="430" text-anchor="middle" class="title" fill="#2c3e50">Security Relationship Model</text>
+  
+  <!-- Inner relationship boxes -->
+  <rect x="220" y="450" width="120" height="60" fill="#e74c3c" rx="5"/>
+  <text x="280" y="475" text-anchor="middle" class="text">Adversary</text>
+  <text x="280" y="495" text-anchor="middle" class="text">creates</text>
+  
+  <rect x="360" y="450" width="120" height="60" fill="#9b59b6" rx="5"/>
+  <text x="420" y="475" text-anchor="middle" class="text">Threat</text>
+  <text x="420" y="495" text-anchor="middle" class="text">exploits</text>
+  
+  <rect x="500" y="450" width="120" height="60" fill="#3498db" rx="5"/>
+  <text x="560" y="475" text-anchor="middle" class="text">Vulnerability</text>
+  <text x="560" y="495" text-anchor="middle" class="text">in</text>
+  
+  <rect x="290" y="530" width="120" height="60" fill="#27ae60" rx="5"/>
+  <text x="350" y="555" text-anchor="middle" class="text">Asset</text>
+  <text x="350" y="575" text-anchor="middle" class="text">creating</text>
+  
+  <rect x="430" y="530" width="120" height="60" fill="#34495e" rx="5"/>
+  <text x="490" y="555" text-anchor="middle" class="text">Risk</text>
+  <text x="490" y="575" text-anchor="middle" class="text">requiring mitigation</text>
+  
+  <!-- Connecting arrows -->
+  <polygon points="230,120 250,120 240,140" fill="#2c3e50"/>
+  <polygon points="540,120 560,120 550,140" fill="#2c3e50"/>
+  <polygon points="450,170 450,190 470,180" fill="#2c3e50"/>
+  
+  <!-- Connection lines -->
+  <line x1="140" y1="170" x2="140" y2="230" stroke="#2c3e50" stroke-width="2"/>
+  <line x1="230" y1="280" x2="360" y2="280" stroke="#2c3e50" stroke-width="2"/>
+  <line x1="540" y1="280" x2="670" y2="280" stroke="#2c3e50" stroke-width="2"/>
+  
+  <!-- Central connecting lines to relationship model -->
+  <line x1="140" y1="330" x2="280" y2="450" stroke="#2c3e50" stroke-width="2"/>
+  <line x1="450" y1="330" x2="420" y2="450" stroke="#2c3e50" stroke-width="2"/>
+  <line x1="760" y1="330" x2="560" y2="450" stroke="#2c3e50" stroke-width="2"/>
+  <line x1="450" y1="170" x2="350" y2="530" stroke="#2c3e50" stroke-width="2"/>
+  <line x1="560" y1="510" x2="490" y2="530" stroke="#2c3e50" stroke-width="2"/>
+</svg>

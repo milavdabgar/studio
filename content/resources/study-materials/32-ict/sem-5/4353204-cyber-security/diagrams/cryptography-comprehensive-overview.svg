@@ -1,0 +1,89 @@
+<svg width="900" height="700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; fill: #2c3e50; }
+      .section-title { font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; fill: #ffffff; }
+      .text { font-family: Arial, sans-serif; font-size: 12px; fill: #ffffff; }
+      .algo-text { font-family: monospace; font-size: 11px; fill: #2c3e50; }
+      .symmetric { fill: #3498db; stroke: #2980b9; stroke-width: 2; }
+      .asymmetric { fill: #e74c3c; stroke: #c0392b; stroke-width: 2; }
+      .hash { fill: #27ae60; stroke: #229954; stroke-width: 2; }
+      .process { fill: #f39c12; stroke: #e67e22; stroke-width: 2; }
+    </style>
+  </defs>
+  
+  <!-- Title -->
+  <text x="450" y="30" text-anchor="middle" class="title">Cryptography Comprehensive Overview</text>
+  
+  <!-- Symmetric Cryptography -->
+  <rect x="50" y="70" width="250" height="180" class="symmetric" rx="10"/>
+  <text x="175" y="100" text-anchor="middle" class="section-title">Symmetric Cryptography</text>
+  <text x="60" y="125" class="text">Same key for encryption &amp; decryption</text>
+  <text x="60" y="145" class="text">• Fast and efficient</text>
+  <text x="60" y="165" class="text">• Key distribution challenge</text>
+  <text x="60" y="185" class="text">• Examples:</text>
+  <text x="70" y="205" class="text">- DES, 3DES</text>
+  <text x="70" y="225" class="text">- AES (Rijndael)</text>
+  <text x="70" y="240" class="text">- Blowfish, Twofish</text>
+  
+  <!-- Asymmetric Cryptography -->
+  <rect x="350" y="70" width="250" height="180" class="asymmetric" rx="10"/>
+  <text x="475" y="100" text-anchor="middle" class="section-title">Asymmetric Cryptography</text>
+  <text x="360" y="125" class="text">Different keys (public/private pair)</text>
+  <text x="360" y="145" class="text">• Solves key distribution</text>
+  <text x="360" y="165" class="text">• Slower than symmetric</text>
+  <text x="360" y="185" class="text">• Examples:</text>
+  <text x="370" y="205" class="text">- RSA</text>
+  <text x="370" y="225" class="text">- Elliptic Curve (ECC)</text>
+  <text x="370" y="240" class="text">- Diffie-Hellman</text>
+  
+  <!-- Hash Functions -->
+  <rect x="650" y="70" width="200" height="180" class="hash" rx="10"/>
+  <text x="750" y="100" text-anchor="middle" class="section-title">Hash Functions</text>
+  <text x="660" y="125" class="text">One-way function</text>
+  <text x="660" y="145" class="text">• Fixed output size</text>
+  <text x="660" y="165" class="text">• Integrity verification</text>
+  <text x="660" y="185" class="text">• Examples:</text>
+  <text x="670" y="205" class="text">- MD5</text>
+  <text x="670" y="225" class="text">- SHA-1, SHA-256</text>
+  <text x="670" y="240" class="text">- SHA-3</text>
+  
+  <!-- Substitution Techniques -->
+  <rect x="50" y="280" width="400" height="150" class="process" rx="10"/>
+  <text x="250" y="310" text-anchor="middle" class="section-title">Substitution Techniques</text>
+  <text x="60" y="335" class="text">Replace characters with other characters</text>
+  <text x="60" y="355" class="text">• Caesar Cipher: Shift by n positions</text>
+  <text x="70" y="375" class="algo-text">Example: A→D, B→E, C→F (shift=3)</text>
+  <text x="60" y="395" class="text">• Monoalphabetic: Fixed substitution</text>
+  <text x="60" y="415" class="text">• Polyalphabetic: Multiple substitutions</text>
+  
+  <!-- Transposition Techniques -->
+  <rect x="470" y="280" width="380" height="150" class="process" rx="10"/>
+  <text x="660" y="310" text-anchor="middle" class="section-title">Transposition Techniques</text>
+  <text x="480" y="335" class="text">Rearrange character positions</text>
+  <text x="480" y="355" class="text">• Columnar Transposition</text>
+  <text x="480" y="375" class="text">• Rail Fence Cipher</text>
+  <text x="480" y="395" class="text">• Route Cipher</text>
+  <text x="480" y="415" class="text">Characters moved, not changed</text>
+  
+  <!-- Key Management -->
+  <rect x="200" y="460" width="500" height="120" fill="#95a5a6" stroke="#7f8c8d" stroke-width="2" rx="10"/>
+  <text x="450" y="490" text-anchor="middle" class="section-title" fill="white">Key Management Principles</text>
+  <text x="210" y="515" class="text">• Key Generation: Use strong random number generators</text>
+  <text x="210" y="535" class="text">• Key Distribution: Secure channels for symmetric keys</text>
+  <text x="210" y="555" class="text">• Key Storage: Hardware Security Modules (HSMs)</text>
+  <text x="210" y="575" class="text">• Key Rotation: Regular key updates and lifecycle management</text>
+  
+  <!-- Algorithm Comparison Chart -->
+  <rect x="50" y="600" width="800" height="80" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="2" rx="10"/>
+  <text x="450" y="625" text-anchor="middle" class="title" fill="#2c3e50">Algorithm Comparison</text>
+  <text x="60" y="645" class="algo-text">Symmetric: Fast, same key, key distribution problem | Asymmetric: Slow, key pairs, solves distribution</text>
+  <text x="60" y="660" class="algo-text">Hash: One-way, integrity check, fixed output | Hybrid: Combines symmetric speed with asymmetric security</text>
+  <text x="60" y="675" class="algo-text">Modern Practice: Use asymmetric to exchange symmetric keys, symmetric for bulk data encryption</text>
+  
+  <!-- Connecting arrows -->
+  <line x1="175" y1="250" x2="250" y2="280" stroke="#2c3e50" stroke-width="2"/>
+  <line x1="475" y1="250" x2="660" y2="280" stroke="#2c3e50" stroke-width="2"/>
+  <line x1="250" y1="430" x2="350" y2="460" stroke="#2c3e50" stroke-width="2"/>
+  <line x1="660" y1="430" x2="550" y2="460" stroke="#2c3e50" stroke-width="2"/>
+</svg>

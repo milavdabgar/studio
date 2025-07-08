@@ -51,9 +51,13 @@ The field of cyber security has evolved significantly over the decades, driven b
 
 In this unit, we embark on the foundational journey of understanding **Cyber Security** and **Cryptography**. With the digital landscape continuously evolving, the importance of safeguarding information and securing communication channels has become crucial. This unit will introduce you to the basic concepts, importance, and evolution of cyber security and cryptography.
 
+![Cyber Security Fundamentals Overview](diagrams/cyber-security-fundamentals-overview.svg)
+
 ### Cyber Security Basics
 
 **Cyber Security** refers to the practice of protecting systems, networks, and programs from digital attacks. These attacks are usually aimed at accessing, changing, or destroying sensitive information, extorting money from users, or interrupting normal business processes.
+
+![Security Domains Comparison](diagrams/security-domains-comparison.svg)
 
 #### Importance
 
@@ -79,6 +83,8 @@ The journey of cyber security has evolved significantly over the decades:
 The CIA Triad is a fundamental concept in cybersecurity, representing the three core principles that guide information security policies within organizations. CIA stands for **Confidentiality**, **Integrity**, and **Availability**.
 
 ![CIA Triad Comprehensive](diagrams/cia-triad-comprehensive.svg)
+
+![CIA Triad Detailed Implementation](diagrams/cia-triad-detailed-implementation.svg)
 
 #### Confidentiality
 
@@ -138,11 +144,13 @@ While each component of the CIA Triad serves a distinct purpose, they are interc
 - Encrypting data (Confidentiality) helps protect it from unauthorized access, while checksums (Integrity) ensure it has not been tampered with.
 - Redundancy and backup systems (Availability) support the continuous protection and integrity of data.
 
-### Key Terms of Cyber Security
+### Cyber Security Key Terms
 
-Understanding the fundamental terminology in cyber security is essential for grasping the concepts and practices that underpin the field. Here are the key terms and definitions:
+Understanding the fundamental terminology is crucial for grasping cyber security concepts. These terms form the foundation of security discussions and help in analyzing threats and implementing appropriate countermeasures.
 
 ![Cyber Security Key Terms](diagrams/cyber-security-key-terms.svg)
+
+![Cyber Security Key Terms Relationships](diagrams/cyber-security-key-terms-relationships.svg)
 
 #### Adversary
 
@@ -243,6 +251,10 @@ To remember these key terms, use the following mnemonic:
 Understanding security attacks, mechanisms, and services in relation to the OSI (Open Systems Interconnection) model is crucial for designing and implementing robust security measures across different layers of a network. The OSI model has seven layers, each with specific security concerns and countermeasures.
 
 ![OSI Model Security](diagrams/osi-model-security.svg)
+
+![OSI Model Complete Security](diagrams/osi-model-complete-security.svg)
+
+![Security Attacks Mechanisms Services](diagrams/security-attacks-mechanisms-services.svg)
 
 #### Layer 1: Physical Layer
 
@@ -372,9 +384,21 @@ To remember security concerns for each OSI layer, use the following mnemonic:
 
 ### Cryptography Basics
 
-Cryptography is the science and art of securing communication and data through the use of mathematical techniques. It ensures that information is protected from unauthorized access and tampering, providing confidentiality, integrity, authentication, and non-repudiation.
+#### Cryptography Overview
+
+Cryptography is the science of protecting information by transforming it into an unreadable format. It encompasses various techniques and algorithms to ensure data confidentiality, integrity, and authenticity.
 
 ![Cryptography Basics](diagrams/cryptography-basics.svg)
+
+![Cryptography Comprehensive Overview](diagrams/cryptography-comprehensive-overview.svg)
+
+#### Symmetric vs Asymmetric Encryption
+
+![Symmetric vs Asymmetric Encryption](diagrams/symmetric-vs-asymmetric.svg)
+
+![Symmetric vs Asymmetric Detailed](diagrams/symmetric-vs-asymmetric-detailed.svg)
+
+##### Symmetric Encryption
 
 #### Key Concepts in Cryptography
 

@@ -1,0 +1,81 @@
+<svg width="900" height="700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; fill: #2c3e50; }
+      .section-title { font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; fill: #ffffff; }
+      .layer-text { font-family: Arial, sans-serif; font-size: 14px; fill: #ffffff; }
+      .detail-text { font-family: Arial, sans-serif; font-size: 11px; fill: #ffffff; }
+      .layer-num { font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; fill: #ffffff; }
+      .layer1 { fill: #e74c3c; stroke: #c0392b; stroke-width: 2; }
+      .layer2 { fill: #f39c12; stroke: #e67e22; stroke-width: 2; }
+      .layer3 { fill: #f1c40f; stroke: #f4d03f; stroke-width: 2; }
+      .layer4 { fill: #27ae60; stroke: #229954; stroke-width: 2; }
+      .layer5 { fill: #3498db; stroke: #2980b9; stroke-width: 2; }
+      .layer6 { fill: #9b59b6; stroke: #8e44ad; stroke-width: 2; }
+      .layer7 { fill: #34495e; stroke: #2c3e50; stroke-width: 2; }
+    </style>
+  </defs>
+  
+  <!-- Title -->
+  <text x="450" y="30" text-anchor="middle" class="title">OSI Model - Complete Security Framework</text>
+  
+  <!-- Layer 7: Application -->
+  <rect x="50" y="60" width="800" height="80" class="layer7" rx="5"/>
+  <text x="70" y="85" class="layer-num">7</text>
+  <text x="120" y="85" class="section-title">Application Layer</text>
+  <text x="70" y="110" class="detail-text">Attacks: SQL Injection, XSS, Buffer Overflow | Mechanisms: Input Validation, WAF, HTTPS</text>
+  <text x="70" y="125" class="detail-text">Services: Application Security, User Authentication, Secure Coding Practices</text>
+  
+  <!-- Layer 6: Presentation -->
+  <rect x="50" y="150" width="800" height="80" class="layer6" rx="5"/>
+  <text x="70" y="175" class="layer-num">6</text>
+  <text x="120" y="175" class="section-title">Presentation Layer</text>
+  <text x="70" y="200" class="detail-text">Attacks: Man-in-the-Middle, Data Interception | Mechanisms: Encryption/Decryption, Compression</text>
+  <text x="70" y="215" class="detail-text">Services: Data Encryption, Format Conversion, SSL/TLS Implementation</text>
+  
+  <!-- Layer 5: Session -->
+  <rect x="50" y="240" width="800" height="80" class="layer5" rx="5"/>
+  <text x="70" y="265" class="layer-num">5</text>
+  <text x="120" y="265" class="section-title">Session Layer</text>
+  <text x="70" y="290" class="detail-text">Attacks: Session Hijacking, Session Fixation | Mechanisms: Session Tokens, Timeouts</text>
+  <text x="70" y="305" class="detail-text">Services: Session Management, Authentication Tokens, Secure Session Establishment</text>
+  
+  <!-- Layer 4: Transport -->
+  <rect x="50" y="330" width="800" height="80" class="layer4" rx="5"/>
+  <text x="70" y="355" class="layer-num">4</text>
+  <text x="120" y="355" class="section-title">Transport Layer</text>
+  <text x="70" y="380" class="detail-text">Attacks: Port Scanning, TCP Hijacking | Mechanisms: TLS, TCP Wrappers, Secure Protocols</text>
+  <text x="70" y="395" class="detail-text">Services: End-to-End Encryption, Secure Data Transfer, Port Security</text>
+  
+  <!-- Layer 3: Network -->
+  <rect x="50" y="420" width="800" height="80" class="layer3" rx="5"/>
+  <text x="70" y="445" class="layer-num">3</text>
+  <text x="120" y="445" class="section-title">Network Layer</text>
+  <text x="70" y="470" class="detail-text">Attacks: IP Spoofing, Routing Attacks, DDoS | Mechanisms: Firewalls, IDS/IPS, IPSec</text>
+  <text x="70" y="485" class="detail-text">Services: Packet Filtering, Network Access Control, Secure Routing Protocols</text>
+  
+  <!-- Layer 2: Data Link -->
+  <rect x="50" y="510" width="800" height="80" class="layer2" rx="5"/>
+  <text x="70" y="535" class="layer-num">2</text>
+  <text x="120" y="535" class="section-title">Data Link Layer</text>
+  <text x="70" y="560" class="detail-text">Attacks: MAC Spoofing, ARP Poisoning, Switch Attacks | Mechanisms: MAC Filtering, Port Security</text>
+  <text x="70" y="575" class="detail-text">Services: Link Encryption, Frame Authentication, Secure Switching</text>
+  
+  <!-- Layer 1: Physical -->
+  <rect x="50" y="600" width="800" height="80" class="layer1" rx="5"/>
+  <text x="70" y="625" class="layer-num">1</text>
+  <text x="120" y="625" class="section-title">Physical Layer</text>
+  <text x="70" y="650" class="detail-text">Attacks: Eavesdropping, Physical Damage, Wiretapping | Mechanisms: Shielded Cables, Physical Security</text>
+  <text x="70" y="665" class="detail-text">Services: Physical Protection, Environmental Controls, Hardware Security</text>
+  
+  <!-- Side arrows showing data flow -->
+  <polygon points="30,100 40,95 40,105" fill="#2c3e50"/>
+  <polygon points="30,190 40,185 40,195" fill="#2c3e50"/>
+  <polygon points="30,280 40,275 40,285" fill="#2c3e50"/>
+  <polygon points="30,370 40,365 40,375" fill="#2c3e50"/>
+  <polygon points="30,460 40,455 40,465" fill="#2c3e50"/>
+  <polygon points="30,550 40,545 40,555" fill="#2c3e50"/>
+  <polygon points="30,640 40,635 40,645" fill="#2c3e50"/>
+  
+  <text x="15" y="350" class="section-title" fill="#2c3e50" transform="rotate(-90, 15, 350)">Data Flow</text>
+</svg>

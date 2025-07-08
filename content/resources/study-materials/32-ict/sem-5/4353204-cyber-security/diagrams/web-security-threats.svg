@@ -43,7 +43,7 @@
     <circle cx="0" cy="0" r="80" fill="url(#webPattern)" stroke="#4A90E2" stroke-width="4" filter="url(#shadow)"/>
     <text x="0" y="-10" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2C3E50">Web</text>
     <text x="0" y="10" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2C3E50">Application</text>
-    <text x="0" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">Server & Services</text>
+    <text x="0" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">Server &amp; Services</text>
   </g>
   
   <!-- CIA Triad + Authentication Pillars -->

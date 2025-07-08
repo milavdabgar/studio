@@ -3,7 +3,7 @@
   <rect width="1400" height="1000" fill="#f8fafc"/>
   
   <!-- Title -->
-  <text x="700" y="40" text-anchor="middle" font-size="28" font-weight="bold" fill="#1e293b">OSI Model: Security Attacks, Mechanisms & Services</text>
+  <text x="700" y="40" text-anchor="middle" font-size="28" font-weight="bold" fill="#1e293b">OSI Model: Security Attacks, Mechanisms &amp; Services</text>
   
   <!-- OSI Layers -->
   <g transform="translate(50, 80)">

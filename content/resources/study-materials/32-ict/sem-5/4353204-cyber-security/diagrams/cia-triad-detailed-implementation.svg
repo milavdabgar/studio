@@ -1,0 +1,89 @@
+<svg width="900" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font-family: Arial, sans-serif; font-size: 24px; font-weight: bold; fill: #2c3e50; }
+      .section-title { font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; fill: #ffffff; }
+      .text { font-family: Arial, sans-serif; font-size: 12px; fill: #ffffff; }
+      .center-text { font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; fill: #2c3e50; }
+      .confidentiality { fill: #3498db; stroke: #2980b9; stroke-width: 3; }
+      .integrity { fill: #e74c3c; stroke: #c0392b; stroke-width: 3; }
+      .availability { fill: #27ae60; stroke: #229954; stroke-width: 3; }
+      .center { fill: #f39c12; stroke: #e67e22; stroke-width: 3; }
+      .overlap { fill: #9b59b6; stroke: #8e44ad; stroke-width: 2; }
+    </style>
+  </defs>
+  
+  <!-- Title -->
+  <text x="450" y="30" text-anchor="middle" class="title">CIA Triad - Detailed Implementation</text>
+  
+  <!-- Confidentiality Circle -->
+  <circle cx="300" cy="200" r="120" class="confidentiality" fill-opacity="0.7"/>
+  <text x="300" y="120" text-anchor="middle" class="section-title">CONFIDENTIALITY</text>
+  <text x="200" y="160" class="text">• Encryption</text>
+  <text x="200" y="180" class="text">• Access Controls</text>
+  <text x="200" y="200" class="text">• Authentication</text>
+  <text x="200" y="220" class="text">• Data Masking</text>
+  <text x="200" y="240" class="text">• Secure Channels</text>
+  
+  <!-- Integrity Circle -->
+  <circle cx="600" cy="200" r="120" class="integrity" fill-opacity="0.7"/>
+  <text x="600" y="120" text-anchor="middle" class="section-title">INTEGRITY</text>
+  <text x="650" y="160" class="text">• Hash Functions</text>
+  <text x="650" y="180" class="text">• Digital Signatures</text>
+  <text x="650" y="200" class="text">• Checksums</text>
+  <text x="650" y="220" class="text">• Version Control</text>
+  <text x="650" y="240" class="text">• Audit Trails</text>
+  
+  <!-- Availability Circle -->
+  <circle cx="450" cy="350" r="120" class="availability" fill-opacity="0.7"/>
+  <text x="450" y="480" text-anchor="middle" class="section-title">AVAILABILITY</text>
+  <text x="350" y="400" class="text">• Redundancy</text>
+  <text x="350" y="420" class="text">• Load Balancing</text>
+  <text x="350" y="440" class="text">• Disaster Recovery</text>
+  <text x="500" y="400" class="text">• Backups</text>
+  <text x="500" y="420" class="text">• Monitoring</text>
+  <text x="500" y="440" class="text">• Maintenance</text>
+  
+  <!-- Center intersection -->
+  <circle cx="450" cy="250" r="40" class="center"/>
+  <text x="450" y="250" text-anchor="middle" class="center-text">CIA</text>
+  <text x="450" y="265" text-anchor="middle" class="center-text">Triad</text>
+  
+  <!-- Overlap areas with examples -->
+  <!-- Confidentiality + Integrity -->
+  <text x="380" y="170" class="center-text" font-size="10">Secure Authentication</text>
+  
+  <!-- Integrity + Availability -->
+  <text x="520" y="310" class="center-text" font-size="10">Reliable Data</text>
+  
+  <!-- Confidentiality + Availability -->
+  <text x="350" y="310" class="center-text" font-size="10">Secure Access</text>
+  
+  <!-- Implementation Examples -->
+  <rect x="50" y="450" width="800" height="130" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="2" rx="10"/>
+  <text x="450" y="475" text-anchor="middle" class="title" fill="#2c3e50">Real-World Implementation Examples</text>
+  
+  <!-- Three columns of examples -->
+  <rect x="70" y="490" width="240" height="80" class="confidentiality" rx="5"/>
+  <text x="190" y="510" text-anchor="middle" class="section-title">Confidentiality in Practice</text>
+  <text x="80" y="530" class="text">• HTTPS for web traffic</text>
+  <text x="80" y="545" class="text">• VPN for remote access</text>
+  <text x="80" y="560" class="text">• File encryption (AES)</text>
+  
+  <rect x="330" y="490" width="240" height="80" class="integrity" rx="5"/>
+  <text x="450" y="510" text-anchor="middle" class="section-title">Integrity in Practice</text>
+  <text x="340" y="530" class="text">• Code signing certificates</text>
+  <text x="340" y="545" class="text">• Database constraints</text>
+  <text x="340" y="560" class="text">• Message authentication</text>
+  
+  <rect x="590" y="490" width="240" height="80" class="availability" rx="5"/>
+  <text x="710" y="510" text-anchor="middle" class="section-title">Availability in Practice</text>
+  <text x="600" y="530" class="text">• Cloud load balancers</text>
+  <text x="600" y="545" class="text">• Database replication</text>
+  <text x="600" y="560" class="text">• Failover systems</text>
+  
+  <!-- Threats to each component -->
+  <text x="150" y="80" class="center-text" font-size="12">Threats: Data breaches, Eavesdropping</text>
+  <text x="650" y="80" class="center-text" font-size="12">Threats: Data tampering, Corruption</text>
+  <text x="450" y="520" class="center-text" font-size="12">Threats: DDoS, Hardware failure</text>
+</svg>
