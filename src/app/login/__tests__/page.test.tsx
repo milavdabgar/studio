@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import LoginPage from '../page';
 import { roleService } from '@/lib/api/roles';
@@ -136,7 +136,7 @@ describe('Login Page', () => {
     await act(async () => {
       renderResult = render(<LoginPage />);
     });
-    const { rerender } = renderResult!
+    const { rerender: _rerender } = renderResult!
     
     // The component should render immediately with form elements
     // since isMounted state is managed internally
@@ -434,7 +434,7 @@ describe('Login Page', () => {
 
   describe('Form Validation', () => {
     it('should require email field', async () => {
-      const user = userEvent.setup();
+      const _user = userEvent.setup();
       await act(async () => {
         render(<LoginPage />);
       });

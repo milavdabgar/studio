@@ -4,16 +4,13 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CalendarCheck, Loader2, Filter} from "lucide-react";
+import { CalendarCheck, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Assessment, Student, Course, Program, Batch, StudentAssessmentScore, CourseOffering } from '@/types/entities';
+import type { Assessment, Student, StudentAssessmentScore } from '@/types/entities';
 import { assessmentService } from '@/lib/api/assessments';
 import { courseService } from '@/lib/api/courses';
-import { programService } from '@/lib/api/programs';
-import { batchService } from '@/lib/api/batches';
 import { studentService } from '@/lib/api/students';
 import { studentAssessmentScoreService } from '@/lib/api/studentAssessmentScores';
-import { courseOfferingService } from '@/lib/api/courseOfferings';
 import { format, isPast, isValid, parseISO } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -55,7 +52,7 @@ export default function StudentAssignmentsPage() {
   const [assignments, setAssignments] = useState<EnrichedAssignment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserCookie | null>(null);
-  const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
+  const [_currentStudent, setCurrentStudent] = useState<Student | null>(null);
   
   const [filterCourse, setFilterCourse] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
@@ -69,7 +66,7 @@ export default function StudentAssignmentsPage() {
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setUser(parsedUser);
-      } catch (error) {
+      } catch (_error) {
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
       }
     } else {
@@ -148,7 +145,7 @@ export default function StudentAssignmentsPage() {
           setAssignments([]);
           toast({ variant: "warning", title: "No Profile", description: "Student profile not found." });
         }
-      } catch (error) {
+      } catch (_error) {
         toast({ variant: "destructive", title: "Error", description: "Could not load assignments data." });
       }
       setIsLoading(false);

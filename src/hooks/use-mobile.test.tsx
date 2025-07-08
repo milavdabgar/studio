@@ -1,4 +1,4 @@
-import React from 'react';
+// React import not needed for hooks tests
 import { renderHook, act } from '@testing-library/react';
 import { useIsMobile } from './use-mobile';
 import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';

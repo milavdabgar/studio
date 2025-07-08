@@ -8,7 +8,7 @@ const mockStorage: Record<string, string> = {};
 let getItemSpy: jest.SpyInstance;
 let setItemSpy: jest.SpyInstance;
 let removeItemSpy: jest.SpyInstance;
-let clearSpy: jest.SpyInstance;
+let _clearSpy: jest.SpyInstance;
 
 // Setup before running any tests
 beforeAll(() => {
@@ -30,7 +30,7 @@ beforeAll(() => {
     }
   );
   
-  clearSpy = jest.spyOn(window.localStorage, 'clear').mockImplementation(() => {
+  _clearSpy = jest.spyOn(window.localStorage, 'clear').mockImplementation(() => {
     Object.keys(mockStorage).forEach(key => {
       delete mockStorage[key];
     });

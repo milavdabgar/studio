@@ -7,9 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { FilePieChart, Loader2, CheckSquare, Users, BookOpen } from "lucide-react";
+import { FilePieChart, Loader2, CheckSquare } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Assessment, Course, Student, StudentAssessmentScore, User, Batch, Program, CourseOffering } from '@/types/entities';
+import type { Assessment, StudentAssessmentScore, CourseOffering } from '@/types/entities';
 import { assessmentService } from '@/lib/api/assessments';
 import { courseService } from '@/lib/api/courses';
 import { studentService } from '@/lib/api/students';
@@ -69,7 +69,7 @@ function getCookie(name: string): string | undefined {
 }
 
 export default function GradeAssessmentsPage() {
-  const [user, setUser] = useState<UserCookie | null>(null);
+  const [_user, setUser] = useState<UserCookie | null>(null);
   const [facultyId, setFacultyId] = useState<string | null>(null); // Assuming faculty ID is derived from user ID
 
   const [courseOfferings, setCourseOfferings] = useState<(CourseOffering & { courseName?: string, batchName?: string, programName?: string })[]>([]);
@@ -98,7 +98,7 @@ export default function GradeAssessmentsPage() {
         // Assuming user.id from cookie is the SystemUser ID, which links to FacultyProfile.userId
         // This requires FacultyProfile to have userId field and API to filter faculty by userId
         setFacultyId(parsedUser.id || null); 
-      } catch (error) {
+      } catch (_error) {
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
       }
     } else {
@@ -137,7 +137,7 @@ export default function GradeAssessmentsPage() {
         } else {
           toast({title: "No Courses", description: "You are not assigned to any active course offerings."});
         }
-      } catch (error) {
+      } catch (_error) {
         toast({ variant: "destructive", title: "Error", description: "Failed to load your course offerings." });
       }
       setIsLoadingOfferings(false);
@@ -162,7 +162,8 @@ export default function GradeAssessmentsPage() {
         const courseAssessments = allAssessments.filter(asmnt => 
             asmnt.courseId === offering.courseId && 
             // This programId comparison logic might need adjustment based on how program info is stored on offering
-            asmnt.programId === (offering as any).programId && // Assuming offering has programId, or find program by batch
+            // Note: programId comparison removed as CourseOffering doesn't have programId
+            // TODO: Implement proper program filtering through batch-to-program lookup
             (asmnt.batchId === offering.batchId || !asmnt.batchId) // Batch specific or program-wide for course
         );
         setAssessments(courseAssessments);
@@ -174,7 +175,7 @@ export default function GradeAssessmentsPage() {
             setScores({});
             toast({title: "No Assessments", description: "No assessments found for this course offering."});
         }
-      } catch (error) {
+      } catch (_error) {
         toast({ variant: "destructive", title: "Error", description: "Failed to load assessments." });
       }
       setIsLoadingAssessments(false);
@@ -209,7 +210,7 @@ export default function GradeAssessmentsPage() {
         });
         setScores(initialScores);
 
-      } catch (error) {
+      } catch (_error) {
         toast({ variant: "destructive", title: "Error", description: "Failed to load student data or scores." });
       }
       setIsLoadingStudents(false);
@@ -253,8 +254,8 @@ export default function GradeAssessmentsPage() {
     try {
       await mockStudentAssessmentScoreService.saveScores(scoresToSubmit);
       toast({ title: "Success", description: "Scores saved successfully." });
-    } catch (error) {
-      toast({ variant: "destructive", title: "Submission Failed", description: (error as Error).message || "Could not save scores." });
+    } catch (_error) {
+      toast({ variant: "destructive", title: "Submission Failed", description: (_error as Error).message || "Could not save scores." });
     } finally {
       setIsSubmitting(false);
     }

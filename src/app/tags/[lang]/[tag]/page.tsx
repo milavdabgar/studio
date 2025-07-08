@@ -1,11 +1,10 @@
 // src/app/tags/[lang]/[tag]/page.tsx
 
-import { getPostsByTag, getPaginatedPostsByTag, getAllTags } from '@/lib/markdown';
+import { getPaginatedPostsByTag, getAllTags } from '@/lib/markdown';
 import { BlogLayout } from '@/components/blog/BlogLayout';
 import { PostCard } from '@/components/blog/PostCard';
 import { Pagination, PaginationInfo } from '@/components/ui/pagination';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { ArrowLeft, Tag } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -46,7 +45,7 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
     notFound();
   }
   
-  const pageTitle = `${lang === 'gu' ? 'ટેગ' : 'Tag'}: ${decodedTag}`;
+  const _pageTitle = `${lang === 'gu' ? 'ટેગ' : 'Tag'}: ${decodedTag}`;
   const backText = lang === 'gu' ? 'બધા ટેગ્સ પર પાછા જાઓ' : 'Back to all tags';
 
   return (

@@ -9,11 +9,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, CheckSquare, UserCheck, Loader2, Users } from "lucide-react";
+import { CalendarIcon, CheckSquare, UserCheck, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from 'date-fns';
 import { cn } from "@/lib/utils";
-import type { CourseOffering, Student, AttendanceRecord, AttendanceStatus, Batch, Course, Program } from '@/types/entities';
+import type { CourseOffering, Student, AttendanceRecord, AttendanceStatus } from '@/types/entities';
 // Mock services - replace with actual API calls
 import { studentService } from '@/lib/api/students'; // Assuming this exists
 import { courseService } from '@/lib/api/courses'; // Assuming this exists
@@ -65,7 +65,7 @@ export default function MarkAttendancePage() {
         if (enrichedOfferings.length > 0) {
           setSelectedCourseOffering(enrichedOfferings[0].id);
         }
-      } catch (error) {
+      } catch (_error) {
         toast({ variant: "destructive", title: "Error", description: "Failed to load course offerings." });
       }
       setIsLoading(false);
@@ -105,7 +105,7 @@ export default function MarkAttendancePage() {
         });
         setAttendanceData(newAttendanceData);
 
-      } catch (error) {
+      } catch (_error) {
         toast({ variant: "destructive", title: "Error", description: "Failed to load students or attendance." });
         setStudents([]);
         setAttendanceData({});
@@ -139,8 +139,8 @@ export default function MarkAttendancePage() {
     try {
       await attendanceService.markAttendance(recordsToSubmit);
       toast({ title: "Success", description: "Attendance marked successfully." });
-    } catch (error) {
-      toast({ variant: "destructive", title: "Submission Failed", description: (error as Error).message || "Could not save attendance." });
+    } catch (_error) {
+      toast({ variant: "destructive", title: "Submission Failed", description: (_error as Error).message || "Could not save attendance." });
     } finally {
       setIsSubmitting(false);
     }

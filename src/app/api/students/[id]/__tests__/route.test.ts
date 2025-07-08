@@ -116,7 +116,7 @@ describe('/api/students/[id]', () => {
   describe('GET /api/students/[id]', () => {
     it('should return student by custom ID', async () => {
       const leanResult = Promise.resolve(mockStudent);
-      mockStudentModel.findOne.mockReturnValue({ lean: () => leanResult } as any);
+      mockStudentModel.findOne.mockReturnValue({ lean: () => leanResult } as { lean: () => Promise<typeof mockStudent> });
       
       const params = Promise.resolve({ id: 'student_123' });
       const response = await GET({} as NextRequest, { params });
