@@ -98,7 +98,7 @@ class AutonomousDaemon {
       console.log(`🧠 Selected ${provider} for ${task.type} task`);
       
       // Execute with selected provider
-      const prompt = this.generateTaskPrompt(task);
+      const prompt = this.generateTaskPrompt(task, provider);
       console.log(`🚀 Executing ${provider} with autonomous prompt...`);
       
       const result = await this.executeLLMProvider(provider, prompt);
@@ -124,7 +124,8 @@ class AutonomousDaemon {
     }
   }
 
-  generateTaskPrompt(task) {
+  generateTaskPrompt(task, provider = 'claude') {
+    const providerDocFile = `${provider.toUpperCase()}.md`;
     const baseContext = `
 AUTONOMOUS DEVELOPMENT CONTEXT:
 - Project: ${path.basename(process.cwd())}
@@ -135,6 +136,13 @@ AUTONOMOUS DEVELOPMENT CONTEXT:
 - Current test status: ${this.getTestStatus()}
 - TypeScript errors: ${this.getTypeScriptErrors()}
 - Lint warnings: ${this.getLintWarnings()}
+
+DOCUMENTATION TRACKING:
+- Update your progress in the file: ${providerDocFile}
+- Read existing tasks from ${providerDocFile} to understand current context
+- Mark completed tasks with timestamps
+- Add new discoveries to your specialization areas
+- Cross-reference work with other providers when needed
 
 WORK AUTONOMOUSLY - NO HUMAN INPUT NEEDED.
 `;
@@ -264,6 +272,13 @@ Hunt and fix autonomously - be thorough and systematic.`;
 You are an autonomous code quality specialist with authority to improve the codebase.
 
 MISSION: Systematically improve code quality, maintainability, and developer experience.
+
+SPECIAL INSTRUCTIONS FOR GEMINI:
+- Read and update GEMINI.md with your progress
+- Current lint issues: 859 warnings to fix
+- Focus on high-impact, quick wins first
+- Track metrics and progress in GEMINI.md
+- Use automated tools where possible (eslint --fix, prettier)
 
 QUALITY IMPROVEMENT STRATEGY:
 1. **Code Analysis**: Identify complex, hard-to-maintain code

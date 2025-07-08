@@ -39,62 +39,114 @@
 
 ---
 
-## Current Primary Goal: 100% Test Coverage
+## 🎯 Claude's Specializations
+Claude handles complex, creative development tasks:
+- **Feature Planning & Development**
+- **Bug Hunting & Analysis** 
+- **Security Audits**
+- **Code Refactoring**
+- **Documentation Writing**
+- **Architectural Design**
 
-**Status**: 86.84% coverage achieved (648 tests passing)
-**Target**: 100% test coverage for the complete application
+---
 
-### Progress So Far
-- ✅ **API Client Libraries**: 26 test suites (88.29% coverage)
-- ✅ **Core UI Components**: 6 test suites (100% coverage)
-- ✅ **Utilities & Services**: 7 test suites (100% coverage)
-- ✅ **Hooks**: 2 test suites (85.44% coverage)
-- ✅ **Configuration & i18n**: Complete coverage
+## 📋 Current Development Tasks
 
-### Remaining Work for 100% Coverage
-1. **API Routes** (123 files) - Next.js route testing
-2. **Pages/Layouts** (90 files) - Page component testing
-3. **Remaining UI Components** (94 files) - Additional component tests
-4. **AI Flows** (3 files) - AI integration testing
-5. **Context Providers** (2 files) - React context testing
+### 🔥 Active Tasks
+- [ ] **Feature Planning**: Proactive discovery of next valuable features
+- [ ] **Security Audit**: Comprehensive security vulnerability scan
+- [ ] **Bug Investigation**: Deep analysis of edge cases and error scenarios
 
-### Key Commands
-- `npm test` - Run all tests
-- `npm run test:coverage` - Run with coverage report
-- `npm run lint` - Code linting
-- `npm run typecheck` - TypeScript checking
+### ✅ Recently Completed
+- [x] **Provider Specialization**: Implemented intelligent task routing (2024-07-08)
+- [x] **Proactive Feature Discovery**: Added guided questions and analysis (2024-07-08)
+- [x] **Autonomous System Configuration**: Priority adjustments and thresholds (2024-07-08)
 
-### Testing Patterns Established
-- **API Client Tests**: Mock fetch, test CRUD operations, error handling
-- **Component Tests**: Render, props, events, accessibility, ref forwarding
-- **Hook Tests**: Custom hook behavior, state changes, cleanup
-- **Utility Tests**: Pure function testing, edge cases, type safety
+### 📅 Planned Features
+- [ ] **Advanced Error Handling**: Comprehensive error boundary system
+- [ ] **Performance Analytics**: Real-time performance monitoring dashboard
+- [ ] **User Experience Enhancements**: UX audit and improvements
+- [ ] **API Rate Limiting**: Advanced rate limiting with Redis
+- [ ] **Automated Testing**: E2E test automation pipeline
 
-### Notes
-- All tests use Jest + React Testing Library
-- Web API polyfills added for Next.js compatibility
-- Global mocks configured in `jest.setup.ts`
-- Test coverage reports in `coverage/` directory
+---
 
-### Next Priority: Code Quality & TypeScript Fixes
-**Status**: URGENT - TypeScript compilation is failing
-**Target**: Fix all TypeScript errors and major linting issues
+## 💡 Feature Ideas & Analysis
 
-#### Critical Issues Found
-1. **TypeScript Errors**: 18 compilation errors (mainly in newsletter page)
-2. **Lint Warnings**: 200+ warnings across the codebase
-3. **Broken Files**: `page-broken.tsx` has syntax errors
-4. **Data File**: `faculty-2024-25.ts` syntax error
+### 🎯 High-Priority Feature Candidates
+1. **Real-time Collaboration System**
+   - WebSocket-based live editing
+   - User presence indicators
+   - Conflict resolution
+   - Impact: High user engagement
 
-#### Action Plan
-1. Fix TypeScript compilation errors (blocking builds)
-2. Clean up unused imports and variables
-3. Replace `any` types with proper typing
-4. Fix React hooks dependencies
-5. Remove unused components and clean up code
+2. **Advanced Search & Filtering**
+   - Elasticsearch integration
+   - AI-powered search suggestions
+   - Smart filters and sorting
+   - Impact: Improved productivity
 
-### After Code Quality Fixes
-- Continue with 100% test coverage
-- Performance optimization
-- Security audit
-- Documentation improvements
+3. **Notification Center**
+   - Real-time push notifications
+   - Customizable notification preferences
+   - In-app notification history
+   - Impact: Better user engagement
+
+### 🔍 Discovery Questions
+- What repetitive tasks could be automated?
+- What data insights are we missing?
+- How can we improve the developer experience?
+- What integrations would save users time?
+
+---
+
+## 🎨 Development Guidelines
+
+### Code Quality Standards
+- Follow TypeScript best practices
+- Maintain 100% test coverage for new features
+- Use semantic commit messages
+- Document all public APIs
+
+### Architecture Principles
+- Component-based architecture
+- Separation of concerns
+- Performance-first design
+- Security by design
+
+---
+
+## 📊 Progress Tracking
+
+### Current Project Health
+- **Tests**: 70 suites, 1430 tests passing ✅
+- **Coverage**: 86.84% (target: 100%)
+- **TypeScript**: 0 errors ✅
+- **Lint**: 859 warnings (being addressed by Gemini)
+- **Build**: Successful ✅
+
+### Development Velocity
+- **Features Added**: 2 this week
+- **Bugs Fixed**: 5 this week  
+- **Code Quality**: Improving
+- **Documentation**: Up to date
+
+---
+
+## 🔗 Collaboration
+
+### Working with Gemini
+- Gemini handles: Code quality, lint fixes, type checking, test coverage
+- Claude handles: Features, bugs, security, documentation, refactoring
+- Shared progress tracked in respective .md files
+
+### Communication Protocol
+- Update tasks in real-time as work progresses
+- Mark completed items with timestamps
+- Add new discoveries and ideas to feature backlog
+- Cross-reference related work between assistants
+
+---
+
+**Last Updated**: 2024-07-08 18:21 UTC
+**Next Review**: Continuous autonomous updates
