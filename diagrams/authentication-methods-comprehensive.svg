@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="1000" height="800" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+<svg width="1000" height="820" viewBox="0 0 1000 820" xmlns="http://www.w3.org/2000/svg">
   <title>authentication methods comprehensive</title>
   <defs>
     <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -17,7 +17,7 @@
   </defs>
   
   <!-- Background -->
-  <rect width="1000" height="800" fill="#f8fafc"/>
+  <rect width="1000" height="820" fill="#f8fafc"/>
   
   <!-- Header -->
   <rect x="50" y="20" width="900" height="60" fill="url(#gradient)" rx="10" filter="url(#shadow)"/>
@@ -209,8 +209,15 @@
   </g>
   
   <!-- Security indicators -->
-  <text x="80" y="750" fill="#374151" font-size="12">Password only → Easy to crack, single point of failure</text>
-  <text x="280" y="750" fill="#374151" font-size="12">Something you know + have → Better protection</text>
-  <text x="480" y="750" fill="#374151" font-size="12">Multiple independent factors → Strong protection</text>
-  <text x="680" y="750" fill="#374151" font-size="12">Biological + multiple factors → Maximum security</text>
+  <text x="90" y="750" text-anchor="middle" fill="#374151" font-size="10">Password only</text>
+  <text x="90" y="762" text-anchor="middle" fill="#374151" font-size="10">Easy to crack</text>
+  
+  <text x="290" y="750" text-anchor="middle" fill="#374151" font-size="10">Know + Have</text>
+  <text x="290" y="762" text-anchor="middle" fill="#374151" font-size="10">Better protection</text>
+  
+  <text x="490" y="750" text-anchor="middle" fill="#374151" font-size="10">Multiple factors</text>
+  <text x="490" y="762" text-anchor="middle" fill="#374151" font-size="10">Strong protection</text>
+  
+  <text x="700" y="750" text-anchor="middle" fill="#374151" font-size="10">Bio + Multiple</text>
+  <text x="700" y="762" text-anchor="middle" fill="#374151" font-size="10">Maximum security</text>
 </svg>
