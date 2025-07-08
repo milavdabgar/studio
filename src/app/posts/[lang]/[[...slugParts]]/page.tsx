@@ -60,11 +60,13 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<PostPageParams> }) {
   const pageParams = await params;
   const slugPartsArray = Array.isArray(pageParams.slugParts) ? pageParams.slugParts : [];
+  // Decode URL-encoded slug parts for metadata generation
+  const decodedSlugPartsArray = slugPartsArray.map(part => decodeURIComponent(part));
   
   try {
     const postData = await getPostData({
       lang: pageParams.lang,
-      slugParts: slugPartsArray,
+      slugParts: decodedSlugPartsArray,
     });
 
     if (!postData) {
@@ -195,32 +197,35 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
 
   // console.log(`[PostPage Rendering] Received raw pageParams in component: ${JSON.stringify(pageParams)}`);
 
+  // Decode URL-encoded slug parts to handle filenames with spaces and special characters
+  const decodedSlugParts = pageParams.slugParts?.map(part => decodeURIComponent(part));
+
   const postData = await getPostData({
     lang: pageParams.lang, // Access lang directly here
-    slugParts: pageParams.slugParts, // Pass slugParts directly, getPostData will handle if undefined
+    slugParts: decodedSlugParts, // Pass decoded slugParts to handle URL-encoded characters
   });
 
   // Check if this is a directory with subsections that should show Hugo-like section listing
-  if (pageParams.slugParts && pageParams.slugParts.length > 0) {
-    const subsections = await getDirectSubsections(pageParams.slugParts, pageParams.lang);
+  if (decodedSlugParts && decodedSlugParts.length > 0) {
+    const subsections = await getDirectSubsections(decodedSlugParts, pageParams.lang);
     
     if (subsections.length > 0) {
       // Show subsection listing (Hugo-like behavior) instead of individual posts
-      const sectionTitle = pageParams.slugParts[pageParams.slugParts.length - 1];
+      const sectionTitle = decodedSlugParts[decodedSlugParts.length - 1];
       const pageTitle = pageParams.lang === 'gu' ? `વિભાગ: ${sectionTitle}` : `Section: ${sectionTitle}`;
 
       // If there's also an index file, show its content at the top
       const sectionContent = postData?.contentHtml;
 
-      // Generate breadcrumb items for subsection view
+      // Generate breadcrumb items for subsection view (use original encoded slugParts for URLs)
       const breadcrumbItems = [];
       let currentPath = `/posts/${pageParams.lang}`;
       
-      for (let i = 0; i < pageParams.slugParts.length; i++) {
-        currentPath += `/${pageParams.slugParts[i]}`;
+      for (let i = 0; i < (pageParams.slugParts?.length || 0); i++) {
+        currentPath += `/${pageParams.slugParts![i]}`;
         breadcrumbItems.push({
-          label: pageParams.slugParts[i],
-          href: i === pageParams.slugParts.length - 1 ? '' : currentPath
+          label: decodedSlugParts[i], // Use decoded for display
+          href: i === (pageParams.slugParts?.length || 0) - 1 ? '' : currentPath
         });
       }
 
@@ -286,12 +291,12 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
 
   if (!postData) {
     // If no subsections found, show 404
-    console.log(`[PostPage Rendering] Post data is null for lang: "${pageParams.lang}", slugParts: ${JSON.stringify(pageParams.slugParts || [])}. Triggering notFound().`);
+    console.log(`[PostPage Rendering] Post data is null for lang: "${pageParams.lang}", slugParts: ${JSON.stringify(decodedSlugParts || [])}. Triggering notFound().`);
     notFound();
   }
 
   // Check if this is a directory with sub-posts that should show a hybrid view
-  const subPosts = pageParams.slugParts ? await getSubPostsForDirectory(pageParams.slugParts, pageParams.lang) : [];
+  const subPosts = decodedSlugParts ? await getSubPostsForDirectory(decodedSlugParts, pageParams.lang) : [];
   const showHybridView = subPosts.length > 0;
   
   // Now that postData is confirmed, use its properties for links and display
