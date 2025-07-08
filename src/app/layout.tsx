@@ -7,7 +7,7 @@ import './globals.css';
 import { SidebarProvider, Sidebar, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Toaster } from "@/components/ui/toaster";
 import { 
-    Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, Plane, Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Clock, ListChecks, BookOpenCheck, FilePieChart, Paperclip, CheckSquare, UserPlus, BellRing, NotebookPen, BookOpenText, Newspaper} from 'lucide-react';
+    Home, Settings, LogOut, UserCircle, BotMessageSquare, Briefcase, BookOpen, Award, CalendarCheck, Loader2, UserCog, BookUser, Building2, BookCopy, ClipboardList, Landmark, Plane, Building, DoorOpen, Users2 as CommitteeIcon, Users as UsersIconLucide, FileText as AssessmentIcon, BarChart3, CalendarRange, UserCheck as AttendanceIcon, Settings2 as ResourceIcon, Clock, ListChecks, BookOpenCheck, FilePieChart, Paperclip, UserPlus, BellRing, NotebookPen, BookOpenText, Newspaper} from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';

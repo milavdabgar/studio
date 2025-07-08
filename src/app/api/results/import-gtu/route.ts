@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Result, Student, Program, ResultSubject } from '@/types/entities';
+import type { Result, Program, ResultSubject } from '@/types/entities';
 import { parse, type ParseError } from 'papaparse';
 import { v4 as uuidv4 } from 'uuid';
 import { ResultModel } from '@/lib/models';

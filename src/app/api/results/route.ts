@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import type { Result, ResultFilterParams, ResultSubject } from '@/types/entities';
+import type { Result, ResultFilterParams } from '@/types/entities';
 import { v4 as uuidv4 } from 'uuid';
 import { connectMongoose } from '@/lib/mongodb';
 import { ResultModel } from '@/lib/models';

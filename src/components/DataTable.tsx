@@ -5,7 +5,7 @@ interface Column<T> {
   key: keyof T;
   header: string;
   sortable?: boolean;
-  render?: (value: any, item: T) => React.ReactNode;
+  render?: (value: T[keyof T], item: T) => React.ReactNode;
 }
 
 interface DataTableProps<T> {
@@ -21,7 +21,7 @@ interface DataTableProps<T> {
 
 type SortDirection = 'asc' | 'desc' | null;
 
-export const DataTable = <T extends Record<string, any>>({
+export const DataTable = <T extends Record<string, unknown>>({
   data,
   columns,
   onRowClick,

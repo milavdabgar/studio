@@ -1,7 +1,7 @@
 // src/components/seo/StructuredData.tsx
 
 interface StructuredDataProps {
-  data: Record<string, any>;
+  data: Record<string, unknown>;
 }
 
 export function StructuredData({ data }: StructuredDataProps) {

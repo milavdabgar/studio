@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { FileText, Download, Loader2, ChevronDown } from 'lucide-react';
+import { Download, Loader2, ChevronDown } from 'lucide-react';
 
 interface DownloadButtonProps {
   slug: string;
@@ -41,7 +41,7 @@ const getIconForFormat = (formatId: string) => {
 
 export function PdfDownloadButton({ 
   slug, 
-  lang = 'en', 
+  lang: _lang = 'en', 
   title,
   className,
   variant = 'outline',

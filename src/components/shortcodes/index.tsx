@@ -10,39 +10,9 @@ import { QRCode } from './QRCode';
 import { CodeBlock } from './CodeBlock';
 import { Carousel } from './Carousel';
 
-// Blowfish shortcodes
-import { Alert } from './Alert';
-import { Badge } from './Badge';
-import { Button } from './Button';
-import { Timeline } from './Timeline';
-import { TimelineItem } from './TimelineItem';
-import { GitHub } from './GitHub';
-import { Mermaid } from './Mermaid';
-import { Icon } from './Icon';
-import { Lead } from './Lead';
-import { Keyword } from './Keyword';
-import { KeywordList } from './KeywordList';
-import { TypeIt } from './TypeIt';
-import { Swatches } from './Swatches';
-import { YouTubeLite } from './YouTubeLite';
-import Article from './Article';
-import { Chart } from './Chart';
+// Re-export shortcodes (imports handled in re-export section below)
 
-// New Blowfish shortcodes
-import BlowfishCarousel from './BlowfishCarousel';
-import CodeImporter from './CodeImporter';
-import Codeberg from './Codeberg';
-import Forgejo from './Forgejo';
-import Gist from './Gist';
-import Gitea from './Gitea';
-import GitLab from './GitLab';
-import KaTeX from './KaTeX';
-import List from './List';
-import Gallery from './Gallery';
-import LTR from './LTR';
-import RTL from './RTL';
-import MDImporter from './MDImporter';
-import Ref from './Ref';
+// Re-export extended shortcodes (imports handled in re-export section below)
 
 // Named exports - Blowfish shortcodes (exact API compatibility)
 export { Alert } from './Alert';

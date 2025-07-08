@@ -7,7 +7,7 @@ import { format, parseISO, isValid } from 'date-fns';
 import Link from 'next/link';
 
 interface PostMetaProps {
-  date?: any;
+  date?: string | Date;
   author?: string | string[];
   readingTime?: number;
   tags?: string[];
@@ -33,7 +33,7 @@ export function PostMeta({
   showAuthor = true,
   className = ''
 }: PostMetaProps) {
-  const formatDate = (dateInput: any) => {
+  const formatDate = (dateInput: string | Date | undefined) => {
     try {
       if (!dateInput) {
         return lang === 'gu' ? 'તારીખ ઉપલબ્ધ નથી' : 'Date not available';

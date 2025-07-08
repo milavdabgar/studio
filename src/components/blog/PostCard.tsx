@@ -28,10 +28,10 @@ export function PostCard({
 }: PostCardProps) {
   const { t } = useLanguage();
 
-  const formatDate = (dateInput: any) => {
+  const formatDate = (dateInput: string | Date | undefined) => {
     try {
       if (!dateInput) {
-        return t('date_not_available' as any) || 'Date not available';
+        return t('date_not_available') || 'Date not available';
       }
       
       if (dateInput instanceof Date && !isNaN(dateInput.getTime())) {
@@ -52,10 +52,10 @@ export function PostCard({
         }
       }
       
-      return t('date_not_available' as any) || 'Date not available';
+      return t('date_not_available') || 'Date not available';
     } catch (error) {
       console.warn('Date formatting error:', error, 'for date:', dateInput);
-      return t('date_not_available' as any) || 'Date not available';
+      return t('date_not_available') || 'Date not available';
     }
   };
 

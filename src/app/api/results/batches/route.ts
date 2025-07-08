@@ -1,4 +1,4 @@
-import { NextResponse, type NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import type { UploadBatch } from '@/types/entities';
 import { ResultModel } from '@/lib/models';
 import mongoose from 'mongoose';
