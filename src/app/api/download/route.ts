@@ -51,8 +51,14 @@ export async function POST(request: NextRequest) {
       markdownContent = fs.readFileSync(filePath, 'utf8');
     }
 
+    // Add contentPath to options for relative path resolution
+    const enhancedOptions = {
+      ...options,
+      contentPath: contentPath || (slug ? `blog/${slug}.md` : undefined)
+    };
+    
     // Convert content based on format
-    const result = await converter.convert(markdownContent, format, options);
+    const result = await converter.convert(markdownContent, format, enhancedOptions);
     
     // Get the appropriate filename and content type
     const baseFilename = slug || path.basename(contentPath, '.md');

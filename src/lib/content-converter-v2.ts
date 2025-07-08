@@ -63,6 +63,7 @@ interface ConversionOptions {
     author?: string;
     language?: string;
     includeStyles?: boolean;
+    contentPath?: string;  // Path to the content file for resolving relative paths
     pdfEngine?: 'puppeteer' | 'chrome';  // Choose PDF generation engine
     pdfOptions?: {
         format?: 'A4' | 'Letter';
@@ -222,7 +223,7 @@ export class ContentConverterV2 {
         htmlContent = this.processMermaidDiagrams(htmlContent);
         
         // Process SVG images for PDF compatibility
-        htmlContent = await this.processSvgImages(htmlContent);
+        htmlContent = await this.processSvgImages(htmlContent, options);
         
         // Generate the complete HTML
         const title = String(options.title || frontmatter.title || 'Document');
@@ -915,7 +916,7 @@ ${presentationContent}`;
      * Process SVG images to ensure they embed properly in PDFs
      * Converts SVG file references to base64 data URLs
      */
-    private async processSvgImages(html: string): Promise<string> {
+    private async processSvgImages(html: string, options: ConversionOptions = {}): Promise<string> {
         // Find all img tags with SVG sources
         const imgRegex = /<img([^>]*?)src=["']([^"']*\.svg)["']([^>]*?)>/gi;
         const matches = Array.from(html.matchAll(imgRegex));
@@ -931,13 +932,39 @@ ${presentationContent}`;
             const [fullMatch, beforeSrc, svgPath, afterSrc] = match;
             
             try {
-                // Resolve the SVG file path
-                const resolvedPath = this.resolveSvgPath(svgPath);
+                let svgContent: string | null = null;
                 
-                if (fs.existsSync(resolvedPath)) {
-                    // Read the SVG content
-                    const svgContent = fs.readFileSync(resolvedPath, 'utf8');
+                // First try to get SVG content from API or filesystem
+                if (svgPath.startsWith('/api/content-images/')) {
+                    // SVG is served through API - fetch it
+                    svgContent = await this.fetchSvgFromApi(svgPath);
+                } else if (svgPath.startsWith('/')) {
+                    // Absolute path - try API first, then filesystem
+                    const apiPath = `/api/content-images${svgPath}`;
+                    svgContent = await this.fetchSvgFromApi(apiPath);
+                    if (!svgContent) {
+                        const resolvedPath = this.resolveSvgPath(svgPath);
+                        if (fs.existsSync(resolvedPath)) {
+                            svgContent = fs.readFileSync(resolvedPath, 'utf8');
+                        }
+                    }
+                } else {
+                    // Relative path - resolve using content path context
+                    const resolvedApiPath = this.resolveRelativeSvgPath(svgPath, options.contentPath);
+                    if (resolvedApiPath) {
+                        svgContent = await this.fetchSvgFromApi(resolvedApiPath);
+                    }
                     
+                    // Fallback to filesystem resolution
+                    if (!svgContent) {
+                        const resolvedPath = this.resolveSvgPath(svgPath);
+                        if (fs.existsSync(resolvedPath)) {
+                            svgContent = fs.readFileSync(resolvedPath, 'utf8');
+                        }
+                    }
+                }
+                
+                if (svgContent) {
                     // Convert to base64 data URL
                     const base64Data = Buffer.from(svgContent).toString('base64');
                     const dataUrl = `data:image/svg+xml;base64,${base64Data}`;
@@ -948,7 +975,7 @@ ${presentationContent}`;
                     
                     console.log(`Converted SVG to base64: ${svgPath}`);
                 } else {
-                    console.warn(`SVG file not found: ${resolvedPath}`);
+                    console.warn(`SVG file not found: ${svgPath}`);
                     // Keep the original but add error handling
                     const errorImg = `<img${beforeSrc}src="${svgPath}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"${afterSrc}><div style="display:none; color:red; font-size:12px; border:1px solid #ccc; padding:10px; background:#f9f9f9;">[SVG Image Not Found: ${svgPath}]</div>`;
                     processedHtml = processedHtml.replace(fullMatch, errorImg);
@@ -962,6 +989,50 @@ ${presentationContent}`;
         }
         
         return processedHtml;
+    }
+
+    /**
+     * Resolve relative SVG paths to API endpoints using content path context
+     */
+    private resolveRelativeSvgPath(svgPath: string, contentPath?: string): string | null {
+        if (!contentPath) {
+            return null;
+        }
+        
+        // Extract the directory part of the content path
+        const contentDir = path.dirname(contentPath);
+        
+        // Construct the API path
+        const apiPath = `/api/content-images/${contentDir}/${svgPath}`;
+        
+        console.log(`Resolving relative SVG path: ${svgPath} -> ${apiPath}`);
+        
+        return apiPath;
+    }
+
+    /**
+     * Fetch SVG content from API endpoint
+     */
+    private async fetchSvgFromApi(apiPath: string): Promise<string | null> {
+        try {
+            // Construct the full URL for the API call
+            const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+            const fullUrl = `${baseUrl}${apiPath}`;
+            
+            console.log(`Fetching SVG from API: ${fullUrl}`);
+            
+            const response = await fetch(fullUrl);
+            if (response.ok) {
+                const svgContent = await response.text();
+                return svgContent;
+            } else {
+                console.error(`Failed to fetch SVG from API: ${response.status} ${response.statusText}`);
+                return null;
+            }
+        } catch (error) {
+            console.error(`Error fetching SVG from API ${apiPath}:`, error);
+            return null;
+        }
     }
 
     /**
