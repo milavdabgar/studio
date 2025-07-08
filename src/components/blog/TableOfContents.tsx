@@ -158,7 +158,7 @@ export function TableOfContents({
     <>
       {/* Mobile TOC Toggle Button */}
       {showMobileToggle && (
-        <div className="fixed bottom-4 right-4 z-50">
+        <div className="fixed bottom-4 right-4 z-50 lg:hidden">
           <Button
             onClick={() => setIsOpen(true)}
             size="icon"
@@ -173,9 +173,9 @@ export function TableOfContents({
       {/* Mobile TOC Overlay */}
       {showMobileToggle && isOpen && (
         <div className="lg:hidden fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
-          <div className="fixed inset-x-4 top-4 bottom-4 overflow-auto">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
+          <div className="fixed inset-x-4 top-4 bottom-4 overflow-hidden">
+            <Card className="h-full flex flex-col">
+              <CardHeader className="flex flex-row items-center justify-between shrink-0">
                 <CardTitle className="text-lg">Table of Contents</CardTitle>
                 <Button
                   variant="ghost"
@@ -186,17 +186,17 @@ export function TableOfContents({
                   <X className="h-4 w-4" />
                 </Button>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex-1 overflow-y-auto">
                 <nav className="space-y-2">
                   {tocItems.map((item, index) => (
                     <button
                       key={`mobile-toc-${item.id}-${index}`}
                       onClick={() => scrollToHeading(item.id)}
                       className={cn(
-                        'block w-full text-left text-sm hover:text-primary dark:hover:text-primary transition-colors py-1',
-                        activeId === item.id ? 'text-primary font-medium' : 'text-muted-foreground',
+                        'block w-full text-left text-sm hover:text-primary dark:hover:text-primary transition-colors py-2 px-2 rounded-md',
+                        activeId === item.id ? 'text-primary font-medium bg-primary/10' : 'text-muted-foreground',
                         item.level === 1 && 'font-semibold',
-                        item.level === 2 && 'pl-4',
+                        item.level === 2 && 'pl-6',
                         item.level === 3 && 'pl-8',
                         item.level === 4 && 'pl-12'
                       )}
@@ -213,7 +213,7 @@ export function TableOfContents({
 
       {/* Desktop TOC Sidebar */}
       {showDesktopSidebar && (
-        <Card className={cn('hidden lg:block sticky top-24 max-h-[calc(100vh-7rem)] overflow-auto', className)}>
+        <Card className={cn('hidden lg:block sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto', className)}>
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
               <List className="h-4 w-4" />
@@ -221,18 +221,18 @@ export function TableOfContents({
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
-            <nav className="space-y-2">
+            <nav className="space-y-1">
               {tocItems.map((item, index) => (
                 <button
                   key={`desktop-toc-${item.id}-${index}`}
                   onClick={() => scrollToHeading(item.id)}
                   className={cn(
-                    'group flex items-start w-full text-left text-sm hover:text-primary dark:hover:text-primary transition-colors py-1 leading-tight',
-                    activeId === item.id ? 'text-primary font-medium' : 'text-muted-foreground',
+                    'group flex items-start w-full text-left text-sm hover:text-primary dark:hover:text-primary transition-colors py-1.5 px-2 rounded-md leading-tight',
+                    activeId === item.id ? 'text-primary font-medium bg-primary/10' : 'text-muted-foreground',
                     item.level === 1 && 'font-semibold',
-                    item.level === 2 && 'pl-4',
-                    item.level === 3 && 'pl-8',
-                    item.level === 4 && 'pl-12'
+                    item.level === 2 && 'pl-6',
+                    item.level === 3 && 'pl-10',
+                    item.level === 4 && 'pl-14'
                   )}
                 >
                   <ChevronRight className={cn(

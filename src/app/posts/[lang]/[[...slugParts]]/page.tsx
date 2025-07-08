@@ -431,18 +431,18 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
       <StructuredData data={breadcrumbJsonLD} />
       
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5">
-        <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <div className="container mx-auto px-4 py-4 sm:py-8 max-w-6xl">
           {/* Breadcrumbs */}
           <Breadcrumbs items={breadcrumbItems} currentLang={langForLinks} />
           
-          <div className="flex gap-8">
+          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
             {/* Main content */}
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <article>
                 <Card className="shadow-xl border-0 bg-gradient-to-br from-card to-card/90 overflow-hidden dark:border-gray-700">
                   <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5 border-b border-border/50 dark:border-gray-700">
                     <div className="space-y-4">
-                      <CardTitle className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-tight">
+                      <CardTitle className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-tight">
                         {postData.title}
                       </CardTitle>
                       
@@ -454,11 +454,11 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
                         tags={postData.tags}
                         categories={postData.categories}
                         lang={langForLinks}
-                        className="justify-center md:justify-start"
+                        className="justify-center sm:justify-start"
                       />
                       
                       {/* PDF Download Button */}
-                      <div className="flex justify-center md:justify-start">
+                      <div className="flex justify-center sm:justify-start">
                         <PdfDownloadButton 
                           slug={slugPartsForLinks.join('/')}
                           lang={langForLinks}
@@ -469,8 +469,8 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="p-8">
-                    <div className="prose prose-lg dark:prose-invert max-w-4xl mx-auto">
+                  <CardContent className="p-4 sm:p-6 lg:p-8">
+                    <div className="prose prose-sm sm:prose-base lg:prose-lg dark:prose-invert max-w-none">
                       <PostRenderer contentHtml={postData.contentHtml} />
                     </div>
                   </CardContent>
@@ -496,8 +496,8 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
             
             {/* Desktop Table of Contents Sidebar */}
             {postData.contentHtml && (
-              <div className="hidden lg:block w-64 shrink-0">
-                <div className="sticky top-8">
+              <div className="hidden lg:block w-64 xl:w-72 shrink-0">
+                <div className="sticky top-4 lg:top-8">
                   <TableOfContents 
                     content={postData.contentHtml} 
                     showDesktopSidebar={true}

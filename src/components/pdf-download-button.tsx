@@ -167,11 +167,16 @@ export function PdfDownloadButton({
             )}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuContent 
+          align="end" 
+          className="w-56 sm:w-64 max-h-[80vh] overflow-y-auto border shadow-lg"
+          side="bottom"
+          sideOffset={4}
+        >
           {Object.entries(formatsByCategory).map(([category, categoryFormats], categoryIndex) => (
             <div key={category}>
               {categoryIndex > 0 && <DropdownMenuSeparator />}
-              <div className="px-2 py-1.5 text-sm font-semibold text-muted-foreground">
+              <div className="px-2 py-1.5 text-sm font-semibold text-muted-foreground sticky top-0 bg-popover z-10">
                 {category.charAt(0).toUpperCase() + category.slice(1)}
               </div>
               {categoryFormats.map((format) => (
@@ -181,8 +186,8 @@ export function PdfDownloadButton({
                   className={`cursor-pointer ${format.id === 'mp3' ? 'opacity-75' : ''}`}
                 >
                   <span className="mr-2 text-base">{getIconForFormat(format.id)}</span>
-                  <div className="flex flex-col">
-                    <span className="font-medium">
+                  <div className="flex flex-col min-w-0 flex-1">
+                    <span className="font-medium truncate">
                       {format.name}
                       {format.id === 'mp3' && <span className="ml-2 text-xs text-yellow-600 font-normal">(Coming Soon)</span>}
                     </span>
