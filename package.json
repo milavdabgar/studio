@@ -135,6 +135,7 @@
     "gray-matter": "^4.0.3",
     "ioredis": "^5.6.1",
     "ioredis-mock": "^8.9.0",
+    "jsdom": "^26.1.0",
     "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.2",
     "katex": "^0.16.22",
