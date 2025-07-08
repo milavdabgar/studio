@@ -1,6 +1,6 @@
 {
-  "planningInterval": 1800000,
-  "bugScanInterval": 900000,
+  "planningInterval": 3600000,
+  "bugScanInterval": 1800000,
   "maxTasksPerHour": 5,
   "maxCommitsPerDay": 50,
   "safetyMode": true,
@@ -13,7 +13,7 @@
   },
   "taskPriorities": {
     "bug-hunting": 10,
-    "security-fixes": 9,
+    "security-audit": 9,
     "test-coverage": 8,
     "performance-optimization": 7,
     "code-quality": 6,
@@ -55,5 +55,42 @@
     "codeStyle": "prettier",
     "linting": "eslint",
     "documentation": "jsdoc"
+  },
+  "llmProviders": {
+    "primary": "claude",
+    "fallback": "gemini",
+    "config": {
+      "claude": {
+        "command": "claude",
+        "args": [],
+        "timeout": 1800000
+      },
+      "gemini": {
+        "command": "gemini",
+        "args": [],
+        "timeout": 900000
+      },
+      "openai": {
+        "command": "openai",
+        "args": ["chat", "completions"],
+        "timeout": 900000,
+        "model": "gpt-4"
+      }
+    }
+  },
+  "continuousImprovement": {
+    "enabled": true,
+    "focusAreas": [
+      "test-coverage",
+      "type-safety",
+      "performance",
+      "security"
+    ],
+    "targetMetrics": {
+      "testCoverage": 100,
+      "typeScriptErrors": 0,
+      "lintWarnings": 0,
+      "buildTime": 30
+    }
   }
 }

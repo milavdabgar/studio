@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# Simple autonomous development command
+# Usage: ./autonomous [start|stop|status|dashboard]
+
+case "$1" in
+    start)
+        echo "🤖 Starting autonomous development..."
+        ./scripts/start-autonomous.sh --daemon-only
+        ;;
+    stop)
+        echo "🛑 Stopping autonomous development..."
+        pkill -f autonomous-daemon.js
+        echo "✅ Stopped"
+        ;;
+    status)
+        if pgrep -f autonomous-daemon.js > /dev/null; then
+            echo "🟢 Autonomous development is running"
+            echo "📊 Dashboard: ./autonomous dashboard"
+            echo "🛑 Stop: ./autonomous stop"
+        else
+            echo "🔴 Autonomous development is not running"
+            echo "🚀 Start: ./autonomous start"
+        fi
+        ;;
+    dashboard)
+        echo "📊 Opening autonomous development dashboard..."
+        ./scripts/autonomous-dashboard.js
+        ;;
+    logs)
+        echo "📄 Showing autonomous development logs..."
+        tail -f .autonomous/logs/daemon.log
+        ;;
+    clean)
+        echo "🧹 Cleaning autonomous files..."
+        rm -rf .autonomous/task-queue.json .autonomous/current-prompt.md
+        echo "✅ Cleaned"
+        ;;
+    test)
+        echo "🧪 Testing autonomous system..."
+        ./scripts/test-autonomous.js
+        ;;
+    help|*)
+        echo "🤖 Autonomous Development System"
+        echo ""
+        echo "Usage: ./autonomous [command]"
+        echo ""
+        echo "Commands:"
+        echo "  start      Start autonomous development daemon"
+        echo "  stop       Stop autonomous development daemon"
+        echo "  status     Check if daemon is running"
+        echo "  dashboard  Open monitoring dashboard"
+        echo "  logs       Show daemon logs"
+        echo "  clean      Clean up autonomous files"
+        echo "  test       Test the autonomous system"
+        echo "  help       Show this help"
+        echo ""
+        echo "The autonomous system will:"
+        echo "  • Analyze codebase every hour"
+        echo "  • Hunt bugs every 30 minutes"
+        echo "  • Fix issues automatically"
+        echo "  • Create PRs with improvements"
+        echo "  • Work 24/7 without human intervention"
+        ;;
+esac

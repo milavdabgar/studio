@@ -1,19 +1,22 @@
 # Claude Development Notes
 
-## 🤖 NEW: 24/7 AUTONOMOUS DEVELOPMENT SYSTEM - OPERATIONAL!
+## 🤖 AUTONOMOUS DEVELOPMENT SYSTEM - OPERATIONAL!
 
-**Status**: ✅ **FULLY FUNCTIONAL** - True autonomous development without human intervention
+**Status**: ✅ **FULLY FUNCTIONAL** - True autonomous development using Claude CLI
 
 ### 🚀 Quick Start Autonomous Development
 ```bash
-# Start 24/7 autonomous development (daemon + dashboard)
-./scripts/start-autonomous.sh
+# Start 24/7 autonomous development
+./autonomous start
 
-# Start daemon only (background 24/7)  
-./scripts/start-autonomous.sh --daemon-only
+# Check status
+./autonomous status
 
-# Monitor autonomous activity
-./scripts/start-autonomous.sh --dashboard-only
+# View dashboard
+./autonomous dashboard
+
+# Stop autonomous development
+./autonomous stop
 ```
 
 ### 🎯 Autonomous Capabilities
