@@ -555,7 +555,10 @@ ${rtf}
         
         try {
             // Convert Mermaid diagrams to images first
-            const processedContent = await this.convertMermaidToImages(content);
+            let processedContent = await this.convertMermaidToImages(content);
+            
+            // Process SVG images for Pandoc compatibility
+            processedContent = await this.processSvgForPandoc(processedContent, options);
             
             // Create frontmatter content
             const title = options.title || frontmatter.title || 'Document';
@@ -604,6 +607,9 @@ ${processedContent}`;
         const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
         const tempEpubPath = path.join(this.tempDir, `output-${Date.now()}.epub`);
         
+        // Process SVG images for Pandoc compatibility
+        const processedContent = await this.processSvgForPandoc(content, options);
+        
         // Create complete markdown with frontmatter
         const title = options.title || frontmatter.title || 'Document';
         const author = options.author || frontmatter.author || 'Unknown Author';
@@ -616,7 +622,7 @@ date: ${date}
 lang: ${options.language || 'en'}
 ---
 
-${content}`;
+${processedContent}`;
         
         try {
             fs.writeFileSync(tempMdPath, fullMarkdown);
@@ -658,6 +664,9 @@ ${content}`;
         const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
         const tempTexPath = path.join(this.tempDir, `output-${Date.now()}.tex`);
         
+        // Process SVG images for Pandoc compatibility
+        const processedContent = await this.processSvgForPandoc(content, options);
+        
         // Create complete markdown with frontmatter
         const title = options.title || frontmatter.title || 'Document';
         const author = options.author || frontmatter.author || 'Unknown Author';
@@ -669,7 +678,7 @@ author: "${author}"
 date: ${date}
 ---
 
-${content}`;
+${processedContent}`;
         
         try {
             fs.writeFileSync(tempMdPath, fullMarkdown);
@@ -714,7 +723,10 @@ ${content}`;
         
         try {
             // Convert Mermaid diagrams to images first
-            const processedContent = await this.convertMermaidToImages(content);
+            let processedContent = await this.convertMermaidToImages(content);
+            
+            // Process SVG images for Pandoc compatibility
+            processedContent = await this.processSvgForPandoc(processedContent, options);
             
             // Create complete markdown with frontmatter
             const title = options.title || frontmatter.title || 'Document';
@@ -775,7 +787,10 @@ ${processedContent}`;
         
         try {
             // Convert Mermaid diagrams to images first
-            const processedContent = await this.convertMermaidToImages(content);
+            let processedContent = await this.convertMermaidToImages(content);
+            
+            // Process SVG images for Pandoc compatibility
+            processedContent = await this.processSvgForPandoc(processedContent, options);
             
             // Create complete markdown with frontmatter optimized for presentation
             const title = options.title || frontmatter.title || 'Presentation';
@@ -989,6 +1004,77 @@ ${presentationContent}`;
         }
         
         return processedHtml;
+    }
+
+    /**
+     * Process SVG images in markdown content for Pandoc formats
+     * Converts SVG file references to base64 data URLs in markdown syntax
+     */
+    private async processSvgForPandoc(content: string, options: ConversionOptions = {}): Promise<string> {
+        // Find all markdown image references with SVG sources
+        const imgRegex = /!\[([^\]]*)\]\(([^)]*\.svg)\)/g;
+        const matches = Array.from(content.matchAll(imgRegex));
+        
+        if (matches.length === 0) {
+            return content;
+        }
+
+        let processedContent = content;
+        
+        // Process each SVG image
+        for (const match of matches) {
+            const [fullMatch, altText, svgPath] = match;
+            
+            try {
+                let svgContent: string | null = null;
+                
+                // Resolve SVG path using the same logic as HTML processing
+                if (svgPath.startsWith('/api/content-images/')) {
+                    svgContent = await this.fetchSvgFromApi(svgPath);
+                } else if (svgPath.startsWith('/')) {
+                    const apiPath = `/api/content-images${svgPath}`;
+                    svgContent = await this.fetchSvgFromApi(apiPath);
+                    if (!svgContent) {
+                        const resolvedPath = this.resolveSvgPath(svgPath);
+                        if (fs.existsSync(resolvedPath)) {
+                            svgContent = fs.readFileSync(resolvedPath, 'utf8');
+                        }
+                    }
+                } else {
+                    // Relative path - resolve using content path context
+                    const resolvedApiPath = this.resolveRelativeSvgPath(svgPath, options.contentPath);
+                    if (resolvedApiPath) {
+                        svgContent = await this.fetchSvgFromApi(resolvedApiPath);
+                    }
+                    
+                    // Fallback to filesystem resolution
+                    if (!svgContent) {
+                        const resolvedPath = this.resolveSvgPath(svgPath);
+                        if (fs.existsSync(resolvedPath)) {
+                            svgContent = fs.readFileSync(resolvedPath, 'utf8');
+                        }
+                    }
+                }
+                
+                if (svgContent) {
+                    // Convert to base64 data URL
+                    const base64Data = Buffer.from(svgContent).toString('base64');
+                    const dataUrl = `data:image/svg+xml;base64,${base64Data}`;
+                    
+                    // Replace the markdown image with data URL
+                    const newImageRef = `![${altText}](${dataUrl})`;
+                    processedContent = processedContent.replace(fullMatch, newImageRef);
+                    
+                    console.log(`Converted SVG to base64 for Pandoc: ${svgPath}`);
+                } else {
+                    console.warn(`SVG file not found for Pandoc: ${svgPath}`);
+                }
+            } catch (error) {
+                console.error(`Error processing SVG for Pandoc ${svgPath}:`, error);
+            }
+        }
+        
+        return processedContent;
     }
 
     /**
