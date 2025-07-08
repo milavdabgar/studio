@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { allPermissions } from '@/lib/api/roles';
+
 import { connectMongoose } from '@/lib/mongodb';
 import { RoleModel } from '@/lib/models';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
@@ -31,14 +31,14 @@ const rateLimiterMiddleware = async (req: NextRequest) => {
     try {
         const clientIP = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'anonymous';
         await rateLimiter.consume(clientIP);
-    } catch (_rejRes) {
+    } catch {
         throw new Error('Too Many Requests');
     }
 };
 
-const _generateId = (): string => `role_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
-export async function GET(_request: NextRequest) {
+
+export async function GET() {
   try {
     await connectMongoose();
     

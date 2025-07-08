@@ -92,69 +92,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-const _processStandardResultCsv = (rows: Record<string, unknown>[]): { processedResults: Omit<Result, '_id' | 'createdAt' | 'updatedAt'>[], errors: unknown[] } => {
-  const processedResults: Omit<Result, '_id' | 'createdAt' | 'updatedAt'>[] = [];
-  const processingErrors: unknown[] = [];
 
-  rows.forEach((row, index) => {
-    try {
-      const enrollmentNo = row.enrollmentnumber?.toString().trim();
-      if (!enrollmentNo) {
-        processingErrors.push({ row: index + 2, message: `Missing EnrollmentNumber.`, data: row });
-        return;
-      }
-
-      const subjects: ResultSubject[] = [];
-      let i = 1;
-      while (row[`subjectcode${i}`] || row[`subjectname${i}`]) { 
-        const code = row[`subjectcode${i}`]?.toString().trim();
-        const name = row[`subjectname${i}`]?.toString().trim();
-        const creditsStr = row[`subjectcredits${i}`]?.toString().trim();
-        const grade = row[`subjectgrade${i}`]?.toString().trim().toUpperCase();
-
-        if (!code || !name) { 
-            if(code || name || creditsStr || grade) { 
-                 processingErrors.push({ row: index + 2, message: `Incomplete data for Subject ${i}. Code and Name are required.`, data: row });
-            }
-            i++; 
-            continue; 
-        }
-        
-        const credits = creditsStr && !isNaN(parseFloat(creditsStr)) ? parseFloat(creditsStr) : 0;
-        const isBacklog = grade === 'FF';
-        
-        subjects.push({
-          code: code!, name: name!, credits, grade: grade!, isBacklog,
-        });
-        i++;
-      }
-      
-      const resultEntry: Omit<Result, '_id' | 'createdAt' | 'updatedAt'> = {
-        st_id: enrollmentNo, 
-        enrollmentNo,
-        exam: row.examname?.toString().trim() || 'Standard Exam', 
-        semester: parseInt(row.semester?.toString() || '0', 10) || 0,
-        name: row.studentname?.toString().trim() || 'Unknown Student',
-        branchName: row.branchname?.toString().trim() || 'Unknown Branch',
-        subjects,
-        totalCredits: subjects.reduce((sum, sub) => sum + sub.credits, 0),
-        earnedCredits: subjects.reduce((sum, sub) => sum + (sub.isBacklog ? 0 : sub.credits), 0),
-        spi: parseFloat(row.spi?.toString() || '0') || 0,
-        cpi: parseFloat(row.cpi?.toString() || '0') || 0,
-        result: row.overallresult?.toString().trim().toUpperCase() || 'PENDING',
-        uploadBatch: uuidv4(), 
-        academicYear: row.academicyear?.toString().trim(),
-        examid: row.examid ? parseInt(row.examid.toString(), 10) : undefined, 
-        programId: row.programid?.toString().trim() || undefined, 
-        studentId: row.studentid?.toString().trim() || `std_${enrollmentNo}`, // Generate a studentId if not provided
-      };
-      processedResults.push(resultEntry);
-    } catch (e) {
-        processingErrors.push({row: index + 2, message: `Error processing row: ${(e as Error).message}`, data: row});
-    }
-  });
-  return { processedResults, errors: processingErrors };
-};
 
 
 export async function POST(request: NextRequest) { 

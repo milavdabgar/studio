@@ -19,6 +19,8 @@ class AutonomousDaemon {
       featuresAdded: 0,
       startTime: new Date()
     };
+    // Track active tasks per provider for parallel execution
+    this.activeTasks = new Map(); // provider -> { task, branchName, promise }
   }
 
   loadConfig() {
@@ -77,11 +79,24 @@ class AutonomousDaemon {
   async orchestrateWork() {
     const status = await this.getSystemStatus();
     
+    // Clean up completed tasks
+    await this.cleanupCompletedTasks();
+    
     if (status.pendingTasks.length > 0 && this.canExecuteTask()) {
-      const task = status.pendingTasks[0];
-      console.log(`🎯 Executing autonomous task: ${task.type}`);
+      // Find tasks that can be executed in parallel (different providers)
+      const availableTasks = status.pendingTasks.filter(task => {
+        const provider = this.selectProviderForTask(task);
+        return !this.activeTasks.has(provider);
+      });
       
-      await this.executeAutonomousTask(task);
+      // Execute multiple tasks in parallel if different providers
+      for (const task of availableTasks.slice(0, 2)) { // Limit to 2 parallel tasks
+        const provider = this.selectProviderForTask(task);
+        if (!this.activeTasks.has(provider)) {
+          console.log(`🎯 Starting parallel task: ${task.type} with ${provider}`);
+          this.executeAutonomousTaskAsync(task, provider);
+        }
+      }
     }
   }
 
@@ -120,6 +135,74 @@ class AutonomousDaemon {
         execSync(`git checkout master`, { stdio: 'inherit' });
       } catch (e) {
         console.error('Error switching back to master:', e);
+      }
+    }
+  }
+
+  async executeAutonomousTaskAsync(task, provider) {
+    const branchName = `autonomous/${task.type}-${provider}-${Date.now()}`;
+    
+    console.log(`🌿 Creating parallel branch: ${branchName} for ${provider}`);
+    
+    try {
+      // Create branch from current master
+      execSync(`git checkout master`, { stdio: 'pipe' });
+      execSync(`git checkout -b ${branchName}`, { stdio: 'inherit' });
+      
+      // Track this active task
+      const taskPromise = this.executeLLMProvider(provider, this.generateTaskPrompt(task, provider))
+        .then(async (result) => {
+          if (result.success) {
+            console.log(`✅ Parallel task completed: ${task.type} by ${provider}`);
+            await this.handleTaskCompletion(task, branchName);
+            await this.removeCompletedTask(task.id);
+            this.metrics.tasksCompleted++;
+          } else {
+            console.log(`❌ Parallel task failed: ${task.type} by ${provider}`);
+            execSync(`git checkout master`, { stdio: 'pipe' });
+            execSync(`git branch -D ${branchName}`, { stdio: 'pipe' });
+          }
+          return result;
+        })
+        .catch(async (error) => {
+          console.error(`❌ Error in parallel task ${task.type}:`, error);
+          try {
+            execSync(`git checkout master`, { stdio: 'pipe' });
+            execSync(`git branch -D ${branchName}`, { stdio: 'pipe' });
+          } catch (e) {
+            console.error('Error cleaning up branch:', e);
+          }
+          return { success: false, error: error.message };
+        });
+      
+      this.activeTasks.set(provider, {
+        task,
+        branchName,
+        promise: taskPromise
+      });
+      
+    } catch (error) {
+      console.error(`❌ Error starting parallel task:`, error);
+    }
+  }
+
+  async cleanupCompletedTasks() {
+    for (const [provider, activeTask] of this.activeTasks.entries()) {
+      try {
+        // Check if promise is settled (completed or failed)
+        const isSettled = await Promise.race([
+          activeTask.promise.then(() => true),
+          Promise.resolve(false)
+        ]);
+        
+        if (isSettled) {
+          console.log(`🧹 Cleaning up completed task for ${provider}`);
+          this.activeTasks.delete(provider);
+        }
+      } catch (error) {
+        // Task failed, clean it up
+        console.log(`🧹 Cleaning up failed task for ${provider}`);
+        this.activeTasks.delete(provider);
       }
     }
   }
@@ -566,8 +649,14 @@ Analyze, decide, and implement autonomously - choose the highest-impact work.`;
     try {
       console.log(`🔧 Executing ${provider} command: ${providerConfig.command}`);
       
+      // Handle Claude CLI differently - it needs file-based input
+      if (provider === 'claude') {
+        return await this.executeClaudeProvider(prompt);
+      }
+      
       const result = await new Promise((resolve, reject) => {
-        const child = spawn(providerConfig.command, ['--non-interactive'], {
+        const args = providerConfig.args || [];
+        const child = spawn(providerConfig.command, args, {
           stdio: ['pipe', 'pipe', 'pipe'],
           timeout: providerConfig.timeout
         });
@@ -595,7 +684,7 @@ Analyze, decide, and implement autonomously - choose the highest-impact work.`;
           reject(error);
         });
 
-        // Send the prompt
+        // Send the prompt for stdin-capable providers (like Gemini)
         child.stdin.write(prompt);
         child.stdin.end();
       });
@@ -604,6 +693,65 @@ Analyze, decide, and implement autonomously - choose the highest-impact work.`;
     } catch (error) {
       console.error(`❌ Error executing ${provider}:`, error);
       return { success: false, error: error.message, provider };
+    }
+  }
+
+  async executeClaudeProvider(prompt) {
+    try {
+      console.log(`📝 Executing Claude CLI with prompt length: ${prompt.length}`);
+      
+      // For long prompts, use a temporary file to avoid command line length limits
+      const promptFile = path.join(process.cwd(), '.autonomous', 'claude-prompt.md');
+      const promptDir = path.dirname(promptFile);
+      
+      if (!fs.existsSync(promptDir)) {
+        fs.mkdirSync(promptDir, { recursive: true });
+      }
+      
+      fs.writeFileSync(promptFile, prompt);
+      console.log(`📄 Prompt written to file: ${promptFile}`);
+      
+      const result = await new Promise((resolve, reject) => {
+        // Use the file as argument instead of inline prompt
+        const args = ['--print', `Please read and execute the task in: ${promptFile}`];
+        const child = spawn('claude', args, {
+          stdio: ['inherit', 'pipe', 'pipe'],
+          timeout: this.config.llmProviders.claude.timeout
+        });
+
+        let output = '';
+        let errorOutput = '';
+
+        child.stdout.on('data', (data) => {
+          output += data.toString();
+        });
+
+        child.stderr.on('data', (data) => {
+          errorOutput += data.toString();
+        });
+
+        child.on('close', (code) => {
+          // Clean up prompt file
+          try { fs.unlinkSync(promptFile); } catch {}
+          
+          if (code === 0) {
+            resolve({ success: true, output, provider: 'claude' });
+          } else {
+            resolve({ success: false, error: errorOutput || `Claude CLI exited with code ${code}`, provider: 'claude' });
+          }
+        });
+
+        child.on('error', (error) => {
+          // Clean up prompt file
+          try { fs.unlinkSync(promptFile); } catch {}
+          reject(error);
+        });
+      });
+
+      return result;
+    } catch (error) {
+      console.error(`❌ Error executing Claude CLI:`, error);
+      return { success: false, error: error.message, provider: 'claude' };
     }
   }
 
@@ -785,8 +933,15 @@ Analyze, decide, and implement autonomously - choose the highest-impact work.`;
       });
     }
     
-    // Medium priority improvements
-    if (analysis.lintIssues > 5) {
+    // High priority code quality (lots of lint issues)
+    if (analysis.lintIssues > 100) {
+      tasks.push({
+        type: 'code-quality',
+        priority: 'high',
+        reason: `${analysis.lintIssues} lint issues (high volume)`,
+        created: new Date()
+      });
+    } else if (analysis.lintIssues > 5) {
       tasks.push({
         type: 'code-quality',
         priority: 'medium',
@@ -858,7 +1013,17 @@ Analyze, decide, and implement autonomously - choose the highest-impact work.`;
       const errors = (result.match(/error/gi) || []).length;
       return errors + warnings;
     } catch (error) {
-      return 0;
+      // ESLint exits with non-zero when issues found, parse stderr/stdout
+      const output = error.stdout ? error.stdout.toString() : '';
+      const errorOutput = error.stderr ? error.stderr.toString() : '';
+      const combined = output + errorOutput;
+      
+      const warnings = (combined.match(/warning/gi) || []).length;
+      const errors = (combined.match(/error/gi) || []).length;
+      const total = errors + warnings;
+      
+      console.log(`🔍 Detected ${total} lint issues (${errors} errors, ${warnings} warnings)`);
+      return total;
     }
   }
 

@@ -2,7 +2,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { StudentAssessmentScore } from '@/types/entities';
 import type { IStudentAssessmentScore, IAssessment } from '@/lib/models';
-import type { Document, FlattenMaps } from 'mongoose';
+import type { FlattenMaps } from 'mongoose';
 import { notificationService } from '@/lib/api/notifications';
 import { connectMongoose } from '@/lib/mongodb';
 import { StudentAssessmentScoreModel, AssessmentModel } from '@/lib/models';

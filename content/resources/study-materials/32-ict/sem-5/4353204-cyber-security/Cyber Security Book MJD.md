@@ -41,6 +41,8 @@ header-includes:
 
 Cyber security, also known as information security or computer security, is the practice of protecting systems, networks, and programs from digital attacks. These cyberattacks are usually aimed at accessing, changing, or destroying sensitive information; extorting money from users; or interrupting normal business processes.
 
+![Complete Cybersecurity Framework](/diagrams/complete-cybersecurity-framework.svg)
+
 ![Cyber Security Evolution Timeline](diagrams/cyber-security-evolution-timeline.svg)
 
 ### Evolution of Cyber Security
@@ -51,7 +53,11 @@ The field of cyber security has evolved significantly over the decades, driven b
 
 In this unit, we embark on the foundational journey of understanding **Cyber Security** and **Cryptography**. With the digital landscape continuously evolving, the importance of safeguarding information and securing communication channels has become crucial. This unit will introduce you to the basic concepts, importance, and evolution of cyber security and cryptography.
 
+![Unit 1 Complete Overview](diagrams/unit1-complete-overview.svg)
+
 ![Cyber Security Fundamentals Overview](diagrams/cyber-security-fundamentals-overview.svg)
+
+![Information Security Framework](diagrams/information-security-framework.svg)
 
 ### Cyber Security Basics
 
@@ -127,7 +133,12 @@ The CIA Triad is a fundamental concept in cybersecurity, representing the three 
 **Key Points:**
 
 - **Redundancy:** Implementing backup systems to ensure continuity.
-- **Disaster Recovery Plans:** Preparing for and recovering from unexpected disruptions.
+- **Disaster Recovery Plans:** Procedures to recover data and continue operations after a disaster.
+  - *Example:* Off-site backups and data recovery processes in place for critical systems.
+
+![Backup and Disaster Recovery Framework](/diagrams/backup-disaster-recovery.svg)
+
+- **Maintenance:** Regular updates and maintenance to prevent system failures.
 - **Load Balancing:** Distributing workloads across multiple systems to prevent overloads.
 - **Regular Maintenance:** Performing updates and checks to keep systems running smoothly.
 
@@ -192,6 +203,10 @@ Risk in cyber security refers to the potential for loss or damage when a threat 
 - **Vulnerability:** Weaknesses that could be exploited.
 - **Impact:** The potential damage or loss.
 
+![Risk Assessment Process](/diagrams/risk-assessment-process.svg)
+
+![Threat Vulnerability Risk Relationship](/diagrams/threat-vulnerability-risk-relationship.svg)
+
 #### Security Policy
 
 A security policy is a formal set of rules and practices that define how an organization manages, protects, and distributes sensitive information. It outlines responsibilities and expected behaviors to ensure security.
@@ -201,6 +216,8 @@ A security policy is a formal set of rules and practices that define how an orga
 - Access control policies
 - Data protection guidelines
 - Incident response procedures
+
+![Security Policy Components](/diagrams/security-policy-components.svg)
 
 #### System Resource
 
@@ -221,6 +238,8 @@ A threat is any potential event or action that could cause harm to an informatio
 - Natural disasters
 - Human errors
 - Cyber attacks
+
+![Types of Security Threats](/diagrams/types-of-security-threats.svg)
 
 #### Vulnerability
 
@@ -255,6 +274,12 @@ Understanding security attacks, mechanisms, and services in relation to the OSI 
 ![OSI Model Complete Security](diagrams/osi-model-complete-security.svg)
 
 ![Security Attacks Mechanisms Services](diagrams/security-attacks-mechanisms-services.svg)
+
+#### Security Attack Classification
+
+Security attacks can be broadly classified into two main categories: passive attacks and active attacks. Understanding this classification helps in designing appropriate security measures.
+
+![Security Attack Classification](diagrams/security-attack-classification.svg)
 
 #### Layer 1: Physical Layer
 
@@ -491,13 +516,33 @@ Cryptography is the science of protecting information by transforming it into an
 
 3. **Digital Signatures**:
    - **Process**: Uses a private key to create a signature that can be verified using the corresponding public key.
-   - **Purpose**: Ensure data integrity and non-repudiation.
+   - **Purpose**: Ensures the authenticity and integrity of a message, document, or software.
+
+![Digital Signatures](diagrams/digital-signatures.svg)
+
+#### Public Key Infrastructure (PKI)
+
+Public Key Infrastructure (PKI) is a framework that enables secure electronic transfer of information by providing authentication, confidentiality, integrity, and non-repudiation services through digital certificates.
+
+![Public Key Infrastructure](diagrams/public-key-infrastructure.svg)
 
 4. **Key Exchange**:
    - **Process**: Securely exchanging cryptographic keys between parties.
    - **Examples**: Diffie-Hellman key exchange, RSA key exchange.
 
+![Diffie-Hellman Key Exchange](diagrams/diffie-hellman-key-exchange.svg)
+
 #### Applications of Cryptography
+
+![Cryptography Applications](diagrams/cryptography-applications.svg)
+
+![Cryptography Challenges](diagrams/cryptography-challenges.svg)
+
+#### Cryptographic Key Lifecycle
+
+Managing cryptographic keys throughout their lifecycle is crucial for maintaining security. The key lifecycle encompasses generation, distribution, storage, usage, rotation, revocation, archival, and destruction.
+
+![Cryptographic Key Lifecycle](diagrams/cryptographic-key-lifecycle.svg)
 
 1. **Secure Communication**:
    - **Email Encryption**: PGP, S/MIME.
@@ -516,10 +561,16 @@ Cryptography is the science of protecting information by transforming it into an
    - **Cryptocurrencies**: Bitcoin, Ethereum using cryptographic protocols.
 
 5. **Network Security**:
-   - **VPNs (Virtual Private Networks)**: Encrypting data over public networks.
-   - **Secure Routing**: Protecting data transmission between network nodes.
+   - **Purpose**: Protecting networks and the data they transmit.
+   - **Components**: Implementing secure network protocols and intrusion detection systems.
+
+![Network Security Components](diagrams/network-security-components.svg)
+
+#### Key Applications of Cryptography
 
 #### Challenges in Cryptography
+
+![Cryptography Challenges](diagrams/cryptography-challenges.svg)
 
 1. **Quantum Computing**:
    - Potential to break current cryptographic algorithms.
@@ -542,6 +593,8 @@ Cryptography is an essential component of modern information security, providing
 ### Substitution and Transposition Techniques in Cryptography
 
 Cryptographic techniques are used to convert plaintext into ciphertext to secure the data. Two basic techniques used in classical cryptography are substitution and transposition. Here's an in-depth explanation of both:
+
+![Substitution and Transposition](diagrams/substitution-transposition.svg)
 
 ![Substitution and Transposition](diagrams/substitution-transposition.svg)
 
@@ -579,6 +632,8 @@ Cryptographic techniques are used to convert plaintext into ciphertext to secure
    - **Description**: Uses linear algebra and matrix multiplication to encrypt blocks of text.
    - **Example**: Using a 2x2 key matrix:
    - **Plaintext**: HELLO (converted to numbers and multiplied by the key matrix)
+
+![Hill Cipher](diagrams/hill-cipher.svg)
 
 **Advantages**:
 
@@ -632,6 +687,8 @@ Cryptographic techniques are used to convert plaintext into ciphertext to secure
        ```
      - **Route**: Diagonally, zigzag, or spiral.
 
+![Route Cipher](diagrams/route-cipher.svg)
+
 **Advantages**:
 
 - Less vulnerable to frequency analysis because the letters retain their frequencies.
@@ -653,10 +710,14 @@ Cryptographic techniques are used to convert plaintext into ciphertext to secure
 | **Common Examples**    | Caesar Cipher, Monoalphabetic Cipher, Vigenère Cipher  | Rail Fence Cipher, Columnar Transposition              |
 | **Cryptanalysis**      | Frequency analysis, pattern recognition                | Pattern analysis, route analysis                       |
 
+![Cryptanalysis Techniques](diagrams/cryptanalysis-techniques.svg)
+
 ### Caesar Cipher
 
 **Definition**:
 The Caesar Cipher is one of the simplest and oldest known encryption techniques. Named after Julius Caesar, who reportedly used it to communicate with his officials, the cipher involves shifting each letter in the plaintext by a fixed number of positions down the alphabet.
+
+![Caesar Cipher](diagrams/caesar-cipher.svg)
 
 **Mechanism**:
 
@@ -855,6 +916,8 @@ Symmetric encryption, also known as secret-key encryption, is a method of encryp
 
 #### Common Symmetric Encryption Algorithms
 
+![Common Symmetric Encryption Algorithms](/diagrams/common-symmetric-encryption-algorithms.svg)
+
 1. **AES (Advanced Encryption Standard):**
    - **Key Sizes:** 128, 192, or 256 bits.
    - **Security:** Highly secure and widely adopted. Used by the U.S. government and various organizations globally.
@@ -933,6 +996,8 @@ Symmetric encryption, also known as secret-key encryption, is a method of encryp
    - Encrypting messages in instant messaging apps (e.g., Signal, WhatsApp) using symmetric encryption for speed and efficiency.
 
 ### Asymmetric Encryption
+
+![Common Asymmetric Encryption Algorithms](/diagrams/common-asymmetric-encryption-algorithms.svg)
 
 Asymmetric encryption, also known as public-key encryption, is a method of encryption that uses a pair of cryptographic keys: a public key and a private key. These keys are mathematically related but serve different functions. Asymmetric encryption is fundamental in ensuring secure communication, especially over untrusted networks like the Internet.
 
@@ -1421,6 +1486,8 @@ Biometrics authentication offers a robust and user-friendly approach to identity
 
 #### Multi-factor Authentication (MFA)
 
+![Multi-Factor Authentication](/diagrams/multi-factor-authentication.svg)
+
 Multi-factor authentication (MFA) is a security measure that requires users to provide two or more verification factors to gain access to a system, application, or account. By combining multiple factors, MFA enhances security beyond traditional password-only methods, mitigating the risks of unauthorized access and account compromise.
 
 ##### Authentication Factors
@@ -1482,6 +1549,8 @@ MFA represents a robust approach to authentication, leveraging multiple factors 
 
 #### Single Sign-On (SSO)
 
+![Single Sign-On (SSO)](diagrams/sso-single-sign-on.svg)
+
 Single Sign-On (SSO) is an authentication process that allows users to access multiple applications or services with a single set of login credentials. Instead of requiring users to log in separately to each application, SSO enables seamless and secure access by verifying the user's identity once.
 
 ##### Mechanism
@@ -1494,6 +1563,8 @@ Single Sign-On (SSO) is an authentication process that allows users to access mu
 2. **Session Management**:
    - The SSO service manages the user's session, maintaining authentication state and ensuring seamless access to authorized resources.
    - Users can navigate between integrated applications or services without encountering repeated login prompts.
+
+![Session Management Security](/diagrams/session-management-security.svg)
 
 ##### Types of SSO
 
@@ -1599,6 +1670,8 @@ Authorization plays a crucial role in cybersecurity by:
 - **Risk Mitigation**: Reducing the risk of unauthorized access and potential breaches by enforcing granular permissions and restrictions.
   
 - **Compliance**: Ensuring adherence to regulatory requirements and organizational policies regarding data protection and privacy.
+
+![Privacy and Data Protection Framework](/diagrams/privacy-data-protection-framework.svg)
   
 - **Accountability**: Establishing a clear audit trail of user actions and access attempts, aiding in forensic investigations and incident response.
 
@@ -1629,6 +1702,8 @@ Authorization plays a crucial role in cybersecurity by:
 Authorization ensures that only authorized users or systems can access specific resources, helping organizations maintain data confidentiality, integrity, and availability while adhering to regulatory standards and internal security policies.
 
 ### Authorization Methods
+
+![Authorization & Access Control Models](diagrams/authorization-access-control-models.svg)
 
 Authorization methods in cybersecurity encompass various approaches to controlling access rights and privileges based on authenticated identities. These methods ensure that users, systems, or applications can only access resources or perform actions that align with organizational policies and security requirements.
 
@@ -2581,6 +2656,8 @@ Understanding the nature and implications of web security threats enables organi
 
 ### Network Ports
 
+![Network Ports Comprehensive](diagrams/network-ports-comprehensive.svg)
+
 Network ports are essential elements in networking that facilitate communication between devices and services over a network. Understanding their importance, types, and common examples is crucial for managing and securing network traffic effectively.
 
 #### Importance of Network Ports
@@ -2618,6 +2695,8 @@ Network ports are essential elements in networking that facilitate communication
 Understanding the role and management of network ports is essential for network administrators and cybersecurity professionals to ensure efficient and secure communication across networks while mitigating potential security risks.
 
 ### HTTPS
+
+![HTTPS SSL TLS Handshake](diagrams/https-ssl-tls-handshake.svg)
 
 HTTPS (HyperText Transfer Protocol Secure) is a secure extension of HTTP, the protocol used for transferring data between a web browser and a web server over the internet. HTTPS encrypts the data exchanged between the client (e.g., web browser) and the server (e.g., web server), ensuring confidentiality and integrity of information transmitted. Here’s a detailed explanation of HTTPS:
 
@@ -2666,6 +2745,28 @@ Understanding HTTPS is crucial for ensuring secure communication and protecting 
 ### SSL (Secure Sockets Layer)
 
 SSL (Secure Sockets Layer) is a cryptographic protocol designed to secure communication over a computer network. It provides encryption, data integrity, and authentication, making it a foundational technology for ensuring secure transmission of sensitive information over the internet. Here’s a detailed explanation of SSL:
+
+### Cyber Laws and Legal Framework
+
+Cyber laws are legal frameworks that deal with issues related to the internet, computers, software, and information systems. They are designed to protect users and organizations from cyber crimes and to ensure proper conduct in the digital space. In many countries, these laws are codified into specific sections. Here, we discuss the provisions under Article Section 65 and Section 66, often referencing the Information Technology Act, 2000 (India).
+
+![Cyber Law and Legal Framework](/diagrams/cyber-law-legal-framework.svg)
+
+**Section 65: Tampering with Computer Source Documents**
+
+### Digital Certificates
+
+Digital certificates are electronic documents used to verify the identity of individuals, organizations, or devices in online transactions and communications. They play a crucial role in establishing trust, enabling secure communication, and ensuring authenticity across digital environments. Here's a detailed explanation of digital certificates:
+
+### Digital Signatures
+
+![Digital Signatures Comprehensive](diagrams/digital-signatures-comprehensive.svg)
+
+Digital signatures are cryptographic mechanisms used to ensure the authenticity, integrity, and non-repudiation of digital messages, documents, or transactions.
+
+![Digital Certificates](diagrams/digital-certificates.svg)
+
+#### Definition and Purpose
 
 #### Development and Evolution
 
@@ -3218,7 +3319,7 @@ Ethical hacking fundamentals are essential for ensuring robust cybersecurity def
 
 ### Five Steps of Hacking
 
-![Hacking Methodology Steps](diagrams/hacking-methodology-steps.svg)
+![Five Steps Hacking Methodology](diagrams/five-steps-hacking-methodology.svg)
 
 Hacking typically involves a series of steps that malicious actors follow to compromise a system or network. Here are the five common steps of hacking:
 
@@ -4210,6 +4311,8 @@ Session hijacking poses a significant threat to the security and integrity of on
 
 ## Cyber Crime & Cyber Forensics
 
+![Cybercrime and Cyber Forensics Overview](/diagrams/cybercrime-cyber-forensics-comprehensive.svg)
+
 In today's interconnected digital world, the prevalence of cybercrime poses significant challenges to individuals, organizations, and governments alike. Unit V explores the multifaceted landscape of cybercrime and the pivotal role of cyber forensics in investigating and combating these malicious activities. This unit delves into understanding the nature, types, and impacts of cybercrime, emphasizing the importance of proactive measures and robust forensic techniques to secure digital environments.
 
 Cybercrime encompasses a wide spectrum of illicit activities conducted through cyberspace, ranging from financial fraud and data breaches to identity theft and cyber terrorism. Understanding the motives and methods employed by cybercriminals is crucial in developing effective strategies to mitigate risks and protect digital assets. Moreover, Unit V explores the emerging trends and challenges in cybercrime, highlighting the evolving nature of threats and the need for continuous adaptation in cybersecurity practices.
@@ -5058,6 +5161,10 @@ Email forensics focuses on the examination and analysis of email messages, attac
 - **Email Server Logs:** Access and analyze email server logs, transaction logs, SMTP logs, IMAP/POP3 logs, email routing logs, and audit trails to trace email activities, detect anomalies, and reconstruct email flow paths.
 
 Email forensics plays a crucial role in digital investigations by enabling forensic examiners, cybersecurity professionals, legal teams, and law enforcement agencies to uncover digital evidence, analyze email communications, reconstruct timelines, and support investigative efforts to address cyber threats, criminal activities, and regulatory compliance issues effectively.
+
+## Unit 1 Complete Overview
+
+![Unit 1 Cryptography Complete Map](diagrams/unit1-cryptography-complete-map.svg)
 
 ## GTU Paper Solutions
 
@@ -6141,6 +6248,8 @@ Hacking often follows a systematic approach to exploit vulnerabilities and gain 
      - **Deleting Log Files:** Removing or altering system logs and audit trails to hide unauthorized access.
      - **Using Encryption:** Encrypting communication channels and files to prevent detection of stolen data.
      - **Steganography:** Hiding data within other non-suspicious files or communications.
+
+![Steganography](diagrams/steganography.svg)
 
 **Impact of Hacking:**
 

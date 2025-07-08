@@ -14,14 +14,7 @@ const extractStId = (row: Record<string, unknown>): string => {
   return row.stid?.toString().trim() || row.mapnumber?.toString().trim() || '';
 };
 
-const _mapSemesterCodeToStatus = (code: string | undefined | null): Student['sem1Status'] => { // Using Student['sem1Status'] for type safety
-    if (!code) return 'N/A';
-    const codeStr = String(code).trim();
-    if (codeStr === '2') return 'Passed';
-    if (codeStr === '1') return 'Pending';
-    if (codeStr === '') return 'Not Appeared';
-    return 'N/A';
-};
+
 
 
 const processGtuResultCsvForApi = (rows: Record<string, unknown>[], clientPrograms: Program[]): { processedResults: Omit<Result, '_id' | 'createdAt' | 'updatedAt'>[], errors: Array<{ row: number; message: string; data: Record<string, unknown> }> } => {

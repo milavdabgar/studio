@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { RoomAllocation } from '@/types/entities';
 import type { IRoomAllocation } from '@/lib/models';
-import type { Document, FlattenMaps } from 'mongoose';
+import type { FlattenMaps } from 'mongoose';
 import { isValid, parseISO } from 'date-fns';
 import { connectMongoose } from '@/lib/mongodb';
 import { RoomAllocationModel } from '@/lib/models';
@@ -103,9 +103,6 @@ export async function POST(request: NextRequest) {
     if (parseISO(allocationData.startTime) >= parseISO(allocationData.endTime)) {
         return NextResponse.json({ message: 'End time must be after start time.' }, { status: 400 });
     }
-    
-    const _newStartTime = parseISO(allocationData.startTime);
-    const _newEndTime = parseISO(allocationData.endTime);
 
     // Check for time slot conflicts
     const conflict = await RoomAllocationModel.findOne({
