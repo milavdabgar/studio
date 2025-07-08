@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <title>ssh architecture flow</title>
   <defs>
     <linearGradient id="sshGradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
@@ -22,10 +23,10 @@
     <!-- SSH Client -->
     <rect x="50" y="70" width="150" height="100" rx="10" fill="url(#clientGradient)" stroke="#333" stroke-width="2"/>
     <text x="125" y="95" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="white">SSH CLIENT</text>
-    <text x="125" y="115" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="white">• Terminal/PuTTY</text>
-    <text x="125" y="130" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="white">• OpenSSH</text>
-    <text x="125" y="145" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="white">• 192.168.1.100</text>
-    <text x="125" y="160" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="white">• Port 22 (default)</text>
+    <text x="125" y="115" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">• Terminal/PuTTY</text>
+    <text x="125" y="130" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">• OpenSSH</text>
+    <text x="125" y="145" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">• 192.168.1.100</text>
+    <text x="125" y="160" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">• Port 22 (default)</text>
 
     <!-- Encrypted Channel -->
     <rect x="250" y="60" width="700" height="120" rx="15" fill="url(#sshGradient)" stroke="#333" stroke-width="3"/>
@@ -34,28 +35,28 @@
     
     <!-- Security features -->
     <rect x="300" y="130" width="120" height="35" rx="5" fill="white" stroke="#333" stroke-width="1"/>
-    <text x="360" y="150" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#333">🔐 End-to-End</text>
-    <text x="360" y="162" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">Encryption</text>
+    <text x="360" y="150" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">🔐 End-to-End</text>
+    <text x="360" y="162" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Encryption</text>
 
     <rect x="440" y="130" width="120" height="35" rx="5" fill="white" stroke="#333" stroke-width="1"/>
-    <text x="500" y="150" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#333">🔑 Strong</text>
-    <text x="500" y="162" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">Authentication</text>
+    <text x="500" y="150" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">🔑 Strong</text>
+    <text x="500" y="162" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Authentication</text>
 
     <rect x="580" y="130" width="120" height="35" rx="5" fill="white" stroke="#333" stroke-width="1"/>
-    <text x="640" y="150" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#333">✓ Data</text>
-    <text x="640" y="162" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">Integrity</text>
+    <text x="640" y="150" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">✓ Data</text>
+    <text x="640" y="162" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Integrity</text>
 
     <rect x="720" y="130" width="120" height="35" rx="5" fill="white" stroke="#333" stroke-width="1"/>
-    <text x="780" y="150" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#333">🛡️ Forward</text>
-    <text x="780" y="162" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">Secrecy</text>
+    <text x="780" y="150" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">🛡️ Forward</text>
+    <text x="780" y="162" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Secrecy</text>
 
     <!-- SSH Server -->
     <rect x="1000" y="70" width="150" height="100" rx="10" fill="url(#serverGradient)" stroke="#333" stroke-width="2"/>
     <text x="1075" y="95" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="white">SSH SERVER</text>
-    <text x="1075" y="115" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="white">• OpenSSH daemon</text>
-    <text x="1075" y="130" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="white">• Linux/Unix server</text>
-    <text x="1075" y="145" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="white">• 10.0.0.1</text>
-    <text x="1075" y="160" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="white">• Listening on :22</text>
+    <text x="1075" y="115" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">• OpenSSH daemon</text>
+    <text x="1075" y="130" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">• Linux/Unix server</text>
+    <text x="1075" y="145" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">• 10.0.0.1</text>
+    <text x="1075" y="160" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">• Listening on :22</text>
 
     <!-- Connection arrows -->
     <path d="M 200 120 L 240 120" stroke="#2196F3" stroke-width="4" fill="none" marker-end="url(#blueArrow)"/>
@@ -72,10 +73,10 @@
       <circle cx="150" cy="280" r="25" fill="#2196F3" stroke="#333" stroke-width="2"/>
       <text x="150" y="286" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="white">1</text>
       <rect x="80" y="310" width="140" height="70" rx="5" fill="white" stroke="#2196F3" stroke-width="2"/>
-      <text x="150" y="330" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">TCP Connection</text>
-      <text x="150" y="345" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">Client initiates</text>
-      <text x="150" y="357" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">TCP connection</text>
-      <text x="150" y="369" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">to server port 22</text>
+      <text x="150" y="330" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">TCP Connection</text>
+      <text x="150" y="345" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Client initiates</text>
+      <text x="150" y="357" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">TCP connection</text>
+      <text x="150" y="369" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">to server port 22</text>
     </g>
 
     <!-- Step 2: Protocol Negotiation -->
@@ -83,10 +84,10 @@
       <circle cx="350" cy="280" r="25" fill="#4CAF50" stroke="#333" stroke-width="2"/>
       <text x="350" y="286" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="white">2</text>
       <rect x="280" y="310" width="140" height="70" rx="5" fill="white" stroke="#4CAF50" stroke-width="2"/>
-      <text x="350" y="330" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Protocol Version</text>
-      <text x="350" y="345" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">Exchange SSH</text>
-      <text x="350" y="357" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">version strings</text>
-      <text x="350" y="369" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">(SSH-2.0)</text>
+      <text x="350" y="330" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">Protocol Version</text>
+      <text x="350" y="345" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Exchange SSH</text>
+      <text x="350" y="357" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">version strings</text>
+      <text x="350" y="369" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">(SSH-2.0)</text>
     </g>
 
     <!-- Step 3: Algorithm Negotiation -->
@@ -94,10 +95,10 @@
       <circle cx="550" cy="280" r="25" fill="#FF9800" stroke="#333" stroke-width="2"/>
       <text x="550" y="286" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="white">3</text>
       <rect x="480" y="310" width="140" height="70" rx="5" fill="white" stroke="#FF9800" stroke-width="2"/>
-      <text x="550" y="330" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Algorithm Exchange</text>
-      <text x="550" y="345" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">Negotiate crypto</text>
-      <text x="550" y="357" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">algorithms, MAC,</text>
-      <text x="550" y="369" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">compression</text>
+      <text x="550" y="330" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">Algorithm Exchange</text>
+      <text x="550" y="345" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Negotiate crypto</text>
+      <text x="550" y="357" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">algorithms, MAC,</text>
+      <text x="550" y="369" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">compression</text>
     </g>
 
     <!-- Step 4: Key Exchange -->
@@ -105,10 +106,10 @@
       <circle cx="750" cy="280" r="25" fill="#9C27B0" stroke="#333" stroke-width="2"/>
       <text x="750" y="286" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="white">4</text>
       <rect x="680" y="310" width="140" height="70" rx="5" fill="white" stroke="#9C27B0" stroke-width="2"/>
-      <text x="750" y="330" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Key Exchange</text>
-      <text x="750" y="345" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">Diffie-Hellman</text>
-      <text x="750" y="357" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">Generate session</text>
-      <text x="750" y="369" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">encryption keys</text>
+      <text x="750" y="330" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">Key Exchange</text>
+      <text x="750" y="345" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Diffie-Hellman</text>
+      <text x="750" y="357" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Generate session</text>
+      <text x="750" y="369" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">encryption keys</text>
     </g>
 
     <!-- Step 5: Authentication -->
@@ -116,10 +117,10 @@
       <circle cx="950" cy="280" r="25" fill="#F44336" stroke="#333" stroke-width="2"/>
       <text x="950" y="286" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="white">5</text>
       <rect x="880" y="310" width="140" height="70" rx="5" fill="white" stroke="#F44336" stroke-width="2"/>
-      <text x="950" y="330" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Authentication</text>
-      <text x="950" y="345" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">Password or</text>
-      <text x="950" y="357" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">public key</text>
-      <text x="950" y="369" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">authentication</text>
+      <text x="950" y="330" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">Authentication</text>
+      <text x="950" y="345" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Password or</text>
+      <text x="950" y="357" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">public key</text>
+      <text x="950" y="369" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">authentication</text>
     </g>
 
     <!-- Flow arrows -->
@@ -137,30 +138,30 @@
     <!-- Password Auth -->
     <rect x="80" y="485" width="140" height="90" rx="5" fill="white" stroke="#FF9800" stroke-width="2"/>
     <text x="150" y="505" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#F57C00">Password Auth</text>
-    <text x="150" y="520" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">• Username/password</text>
-    <text x="150" y="535" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">• Simple setup</text>
-    <text x="150" y="550" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">• Brute force risk</text>
-    <text x="150" y="565" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">⚠️ Less secure</text>
+    <text x="150" y="520" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Username/password</text>
+    <text x="150" y="535" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Simple setup</text>
+    <text x="150" y="550" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Brute force risk</text>
+    <text x="150" y="565" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">⚠️ Less secure</text>
 
     <!-- Public Key Auth -->
     <rect x="240" y="485" width="140" height="90" rx="5" fill="white" stroke="#4CAF50" stroke-width="2"/>
     <text x="310" y="505" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#2E7D32">Public Key Auth</text>
-    <text x="310" y="520" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">• RSA/ECDSA keys</text>
-    <text x="310" y="535" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">• Cryptographic proof</text>
-    <text x="310" y="550" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">• No password needed</text>
-    <text x="310" y="565" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">✅ Most secure</text>
+    <text x="310" y="520" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• RSA/ECDSA keys</text>
+    <text x="310" y="535" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Cryptographic proof</text>
+    <text x="310" y="550" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• No password needed</text>
+    <text x="310" y="565" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">✅ Most secure</text>
 
     <!-- Host-based Auth -->
     <rect x="400" y="485" width="140" height="90" rx="5" fill="white" stroke="#9C27B0" stroke-width="2"/>
     <text x="470" y="505" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#7B1FA2">Host-based Auth</text>
-    <text x="470" y="520" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">• Host key validation</text>
-    <text x="470" y="535" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">• Machine trust</text>
-    <text x="470" y="550" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">• Complex setup</text>
-    <text x="470" y="565" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#333">🏢 Enterprise use</text>
+    <text x="470" y="520" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Host key validation</text>
+    <text x="470" y="535" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Machine trust</text>
+    <text x="470" y="550" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Complex setup</text>
+    <text x="470" y="565" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">🏢 Enterprise use</text>
 
     <!-- Multi-factor -->
     <rect x="160" y="590" width="200" height="20" rx="5" fill="#FFEB3B" stroke="#F57F17" stroke-width="2"/>
-    <text x="260" y="603" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#333">🔐 Multi-Factor Authentication (MFA) Support</text>
+    <text x="260" y="603" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#333">🔐 Multi-Factor Authentication (MFA) Support</text>
   </g>
 
   <!-- SSH Features &amp; Capabilities -->
@@ -170,36 +171,36 @@
 
     <!-- Remote Shell -->
     <rect x="640" y="485" width="120" height="60" rx="5" fill="white" stroke="#4CAF50" stroke-width="2"/>
-    <text x="700" y="505" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#2E7D32">Remote Shell</text>
-    <text x="700" y="520" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">• Command execution</text>
-    <text x="700" y="532" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">• Interactive terminal</text>
+    <text x="700" y="505" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#2E7D32">Remote Shell</text>
+    <text x="700" y="520" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Command execution</text>
+    <text x="700" y="532" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Interactive terminal</text>
 
     <!-- File Transfer -->
     <rect x="780" y="485" width="120" height="60" rx="5" fill="white" stroke="#2196F3" stroke-width="2"/>
-    <text x="840" y="505" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#1976D2">File Transfer</text>
-    <text x="840" y="520" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">• SCP/SFTP</text>
-    <text x="840" y="532" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">• Secure file copy</text>
+    <text x="840" y="505" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#1976D2">File Transfer</text>
+    <text x="840" y="520" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• SCP/SFTP</text>
+    <text x="840" y="532" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Secure file copy</text>
 
     <!-- Port Forwarding -->
     <rect x="920" y="485" width="120" height="60" rx="5" fill="white" stroke="#9C27B0" stroke-width="2"/>
-    <text x="980" y="505" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#7B1FA2">Port Forwarding</text>
-    <text x="980" y="520" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">• Tunnel traffic</text>
-    <text x="980" y="532" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">• Local/Remote/Dynamic</text>
+    <text x="980" y="505" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#7B1FA2">Port Forwarding</text>
+    <text x="980" y="520" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Tunnel traffic</text>
+    <text x="980" y="532" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">• Local/Remote/Dynamic</text>
 
     <!-- X11 Forwarding -->
     <rect x="640" y="560" width="120" height="40" rx="5" fill="white" stroke="#FF5722" stroke-width="2"/>
-    <text x="700" y="580" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#D84315">X11 Forwarding</text>
-    <text x="700" y="593" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">GUI applications</text>
+    <text x="700" y="580" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#D84315">X11 Forwarding</text>
+    <text x="700" y="593" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">GUI applications</text>
 
     <!-- Agent Forwarding -->
     <rect x="780" y="560" width="120" height="40" rx="5" fill="white" stroke="#795548" stroke-width="2"/>
-    <text x="840" y="580" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#5D4037">Agent Forwarding</text>
-    <text x="840" y="593" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">Key management</text>
+    <text x="840" y="580" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#5D4037">Agent Forwarding</text>
+    <text x="840" y="593" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Key management</text>
 
     <!-- Compression -->
     <rect x="920" y="560" width="120" height="40" rx="5" fill="white" stroke="#607D8B" stroke-width="2"/>
-    <text x="980" y="580" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#455A64">Compression</text>
-    <text x="980" y="593" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">Data compression</text>
+    <text x="980" y="580" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#455A64">Compression</text>
+    <text x="980" y="593" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Data compression</text>
   </g>
 
   <!-- Security Best Practices -->
@@ -209,38 +210,38 @@
 
     <!-- Key-based Auth -->
     <rect x="80" y="690" width="140" height="45" rx="5" fill="white" stroke="#4CAF50" stroke-width="1"/>
-    <text x="150" y="710" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#2E7D32">Use Key Auth</text>
-    <text x="150" y="723" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">Disable passwords</text>
+    <text x="150" y="710" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#2E7D32">Use Key Auth</text>
+    <text x="150" y="723" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Disable passwords</text>
 
     <!-- Change Port -->
     <rect x="240" y="690" width="140" height="45" rx="5" fill="white" stroke="#FF9800" stroke-width="1"/>
-    <text x="310" y="710" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#F57C00">Change Port</text>
-    <text x="310" y="723" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">Non-standard port</text>
+    <text x="310" y="710" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#F57C00">Change Port</text>
+    <text x="310" y="723" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Non-standard port</text>
 
     <!-- Limit Access -->
     <rect x="400" y="690" width="140" height="45" rx="5" fill="white" stroke="#2196F3" stroke-width="1"/>
-    <text x="470" y="710" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#1976D2">Limit Access</text>
-    <text x="470" y="723" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">AllowUsers/Groups</text>
+    <text x="470" y="710" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#1976D2">Limit Access</text>
+    <text x="470" y="723" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">AllowUsers/Groups</text>
 
     <!-- Disable Root -->
     <rect x="560" y="690" width="140" height="45" rx="5" fill="white" stroke="#F44336" stroke-width="1"/>
-    <text x="630" y="710" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#D32F2F">Disable Root</text>
-    <text x="630" y="723" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">PermitRootLogin no</text>
+    <text x="630" y="710" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#D32F2F">Disable Root</text>
+    <text x="630" y="723" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">PermitRootLogin no</text>
 
     <!-- Timeout -->
     <rect x="720" y="690" width="140" height="45" rx="5" fill="white" stroke="#9C27B0" stroke-width="1"/>
-    <text x="790" y="710" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#7B1FA2">Set Timeout</text>
-    <text x="790" y="723" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">ClientAliveInterval</text>
+    <text x="790" y="710" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#7B1FA2">Set Timeout</text>
+    <text x="790" y="723" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">ClientAliveInterval</text>
 
     <!-- Log Monitoring -->
     <rect x="880" y="690" width="140" height="45" rx="5" fill="white" stroke="#607D8B" stroke-width="1"/>
-    <text x="950" y="710" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#455A64">Monitor Logs</text>
-    <text x="950" y="723" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">Auth attempts</text>
+    <text x="950" y="710" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#455A64">Monitor Logs</text>
+    <text x="950" y="723" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Auth attempts</text>
 
     <!-- Firewall -->
     <rect x="1040" y="690" width="100" height="45" rx="5" fill="white" stroke="#FF5722" stroke-width="1"/>
-    <text x="1090" y="710" font-family="Arial, sans-serif" font-size="9" font-weight="bold" text-anchor="middle" fill="#D84315">Firewall</text>
-    <text x="1090" y="723" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#333">Restrict IPs</text>
+    <text x="1090" y="710" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#D84315">Firewall</text>
+    <text x="1090" y="723" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Restrict IPs</text>
   </g>
 
   <!-- Arrow markers -->

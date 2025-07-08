@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="800" height="800" xmlns="http://www.w3.org/2000/svg">
+  <title>cryptographic algorithms</title>
   <!-- Background -->
   <rect width="800" height="800" fill="#f5f5f5"/>
   

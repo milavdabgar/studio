@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="900" height="700" xmlns="http://www.w3.org/2000/svg">
+  <title>osi model complete security</title>
     <style>
         .main-title { font-family: Arial; font-size: 24px; font-weight: bold; fill: #333; }
         .subtitle { font-family: Arial; font-size: 16px; font-style: italic; fill: #666; }
@@ -7,7 +8,7 @@
         .section-title { font-family: Arial; font-size: 14px; font-weight: bold; }
         .layer-title { font-family: Arial; font-size: 18px; font-weight: bold; }
         .layer-number { font-family: Arial; font-size: 16px; font-weight: bold; }
-        .item { font-family: Arial; font-size: 11px; }
+        .item { font-family: Arial; font-size: 12px; }
         .attack { fill: #cc0000; }
         .mechanism { fill: #6aa84f; }
         .service { fill: #4a86e8; }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="1000" height="800" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+  <title>authentication methods comprehensive</title>
   <defs>
     <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
@@ -51,21 +52,21 @@
   <!-- Password Types -->
   <rect x="70" y="280" width="180" height="120" fill="#fef9e7" stroke="#d97706" stroke-width="2" rx="6"/>
   <text x="160" y="300" text-anchor="middle" fill="#92400e" font-size="14" font-weight="bold">Types</text>
-  <text x="80" y="320" fill="#92400e" font-size="11">• Static passwords</text>
-  <text x="80" y="335" fill="#92400e" font-size="11">• Dynamic passwords (OTP)</text>
-  <text x="80" y="350" fill="#92400e" font-size="11">• Passphrases</text>
-  <text x="80" y="365" fill="#92400e" font-size="11">• Graphical passwords</text>
-  <text x="80" y="380" fill="#92400e" font-size="11">• Cognitive passwords</text>
+  <text x="80" y="320" fill="#92400e" font-size="12">• Static passwords</text>
+  <text x="80" y="335" fill="#92400e" font-size="12">• Dynamic passwords (OTP)</text>
+  <text x="80" y="350" fill="#92400e" font-size="12">• Passphrases</text>
+  <text x="80" y="365" fill="#92400e" font-size="12">• Graphical passwords</text>
+  <text x="80" y="380" fill="#92400e" font-size="12">• Cognitive passwords</text>
   
   <!-- Password Security -->
   <rect x="270" y="280" width="200" height="120" fill="#f0f9ff" stroke="#0284c7" stroke-width="2" rx="6"/>
   <text x="370" y="300" text-anchor="middle" fill="#0369a1" font-size="14" font-weight="bold">Security Best Practices</text>
-  <text x="280" y="320" fill="#0369a1" font-size="11">• Minimum 12 characters</text>
-  <text x="280" y="335" fill="#0369a1" font-size="11">• Mix of upper/lower/numbers/symbols</text>
-  <text x="280" y="350" fill="#0369a1" font-size="11">• Avoid dictionary words</text>
-  <text x="280" y="365" fill="#0369a1" font-size="11">• Regular password changes</text>
-  <text x="280" y="380" fill="#0369a1" font-size="11">• Unique per account</text>
-  <text x="280" y="395" fill="#0369a1" font-size="11">• Use password managers</text>
+  <text x="280" y="320" fill="#0369a1" font-size="12">• Minimum 12 characters</text>
+  <text x="280" y="335" fill="#0369a1" font-size="12">• Mix of upper/lower/numbers/symbols</text>
+  <text x="280" y="350" fill="#0369a1" font-size="12">• Avoid dictionary words</text>
+  <text x="280" y="365" fill="#0369a1" font-size="12">• Regular password changes</text>
+  <text x="280" y="380" fill="#0369a1" font-size="12">• Unique per account</text>
+  <text x="280" y="395" fill="#0369a1" font-size="12">• Use password managers</text>
   
   <!-- Biometric Authentication -->
   <rect x="520" y="240" width="430" height="180" fill="white" stroke="#e2e8f0" stroke-width="2" rx="8" filter="url(#shadow)"/>
@@ -75,7 +76,7 @@
   <rect x="540" y="280" width="120" height="60" fill="#f0fdf4" stroke="#22c55e" stroke-width="2" rx="6"/>
   <rect x="550" y="290" width="30" height="30" fill="url(#fingerprint)"/>
   <text x="590" y="305" fill="#16a34a" font-size="12" font-weight="bold">Fingerprint</text>
-  <text x="550" y="325" fill="#16a34a" font-size="10">• Unique ridge patterns</text>
+  <text x="550" y="325" fill="#16a34a" font-size="12">• Unique ridge patterns</text>
   
   <!-- Facial Recognition -->
   <rect x="680" y="280" width="120" height="60" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" rx="6"/>
@@ -84,7 +85,7 @@
   <circle cx="725" cy="300" r="2" fill="#92400e"/>
   <path d="M 715 310 Q 720 315 725 310" stroke="#92400e" stroke-width="2" fill="none"/>
   <text x="750" y="305" fill="#92400e" font-size="12" font-weight="bold">Face</text>
-  <text x="690" y="325" fill="#92400e" font-size="10">• Facial geometry analysis</text>
+  <text x="690" y="325" fill="#92400e" font-size="12">• Facial geometry analysis</text>
   
   <!-- Iris Scanning -->
   <rect x="540" y="350" width="120" height="60" fill="#e0e7ff" stroke="#6366f1" stroke-width="2" rx="6"/>
@@ -92,14 +93,14 @@
   <circle cx="580" cy="375" r="8" fill="none" stroke="#6366f1" stroke-width="1"/>
   <circle cx="580" cy="375" r="4" fill="none" stroke="#6366f1" stroke-width="1"/>
   <text x="605" y="375" fill="#4f46e5" font-size="12" font-weight="bold">Iris</text>
-  <text x="550" y="395" fill="#4f46e5" font-size="10">• Unique eye patterns</text>
+  <text x="550" y="395" fill="#4f46e5" font-size="12">• Unique eye patterns</text>
   
   <!-- Voice Recognition -->
   <rect x="680" y="350" width="120" height="60" fill="#fce7f3" stroke="#ec4899" stroke-width="2" rx="6"/>
   <path d="M 720 365 Q 715 370 720 375 Q 725 380 720 385" stroke="#ec4899" stroke-width="2" fill="none"/>
   <circle cx="710" cy="375" r="3" fill="#ec4899"/>
   <text x="750" y="375" fill="#be185d" font-size="12" font-weight="bold">Voice</text>
-  <text x="690" y="395" fill="#be185d" font-size="10">• Speech patterns</text>
+  <text x="690" y="395" fill="#be185d" font-size="12">• Speech patterns</text>
   
   <!-- Multi-Factor Authentication -->
   <rect x="50" y="440" width="450" height="200" fill="white" stroke="#e2e8f0" stroke-width="2" rx="8" filter="url(#shadow)"/>
@@ -109,32 +110,32 @@
   <g transform="translate(70, 480)">
     <!-- Step 1 -->
     <rect x="0" y="0" width="80" height="50" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" rx="4"/>
-    <text x="40" y="20" text-anchor="middle" fill="#92400e" font-size="10" font-weight="bold">Factor 1</text>
-    <text x="40" y="35" text-anchor="middle" fill="#92400e" font-size="9">Password</text>
+    <text x="40" y="20" text-anchor="middle" fill="#92400e" font-size="12" font-weight="bold">Factor 1</text>
+    <text x="40" y="35" text-anchor="middle" fill="#92400e" font-size="12">Password</text>
     
     <!-- Plus -->
     <text x="95" y="30" text-anchor="middle" fill="#374151" font-size="16" font-weight="bold">+</text>
     
     <!-- Step 2 -->
     <rect x="110" y="0" width="80" height="50" fill="#dcfce7" stroke="#16a34a" stroke-width="2" rx="4"/>
-    <text x="150" y="20" text-anchor="middle" fill="#15803d" font-size="10" font-weight="bold">Factor 2</text>
-    <text x="150" y="35" text-anchor="middle" fill="#15803d" font-size="9">SMS Code</text>
+    <text x="150" y="20" text-anchor="middle" fill="#15803d" font-size="12" font-weight="bold">Factor 2</text>
+    <text x="150" y="35" text-anchor="middle" fill="#15803d" font-size="12">SMS Code</text>
     
     <!-- Plus -->
     <text x="205" y="30" text-anchor="middle" fill="#374151" font-size="16" font-weight="bold">+</text>
     
     <!-- Step 3 -->
     <rect x="220" y="0" width="80" height="50" fill="#e0e7ff" stroke="#6366f1" stroke-width="2" rx="4"/>
-    <text x="260" y="20" text-anchor="middle" fill="#4f46e5" font-size="10" font-weight="bold">Factor 3</text>
-    <text x="260" y="35" text-anchor="middle" fill="#4f46e5" font-size="9">Fingerprint</text>
+    <text x="260" y="20" text-anchor="middle" fill="#4f46e5" font-size="12" font-weight="bold">Factor 3</text>
+    <text x="260" y="35" text-anchor="middle" fill="#4f46e5" font-size="12">Fingerprint</text>
     
     <!-- Equals -->
     <text x="315" y="30" text-anchor="middle" fill="#374151" font-size="16" font-weight="bold">=</text>
     
     <!-- Result -->
     <rect x="330" y="0" width="80" height="50" fill="#dcf7dc" stroke="#16a34a" stroke-width="3" rx="4"/>
-    <text x="370" y="20" text-anchor="middle" fill="#16a34a" font-size="10" font-weight="bold">Secure</text>
-    <text x="370" y="35" text-anchor="middle" fill="#16a34a" font-size="9">Access</text>
+    <text x="370" y="20" text-anchor="middle" fill="#16a34a" font-size="12" font-weight="bold">Secure</text>
+    <text x="370" y="35" text-anchor="middle" fill="#16a34a" font-size="12">Access</text>
   </g>
   
   <!-- MFA Types -->
@@ -152,15 +153,15 @@
   <g transform="translate(540, 480)">
     <!-- User -->
     <circle cx="30" cy="30" r="20" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
-    <text x="30" y="35" text-anchor="middle" fill="#1d4ed8" font-size="10" font-weight="bold">User</text>
+    <text x="30" y="35" text-anchor="middle" fill="#1d4ed8" font-size="12" font-weight="bold">User</text>
     
     <!-- Arrow to SSO -->
     <line x1="55" y1="30" x2="85" y2="30" stroke="#374151" stroke-width="2" marker-end="url(#arrowhead)"/>
     
     <!-- SSO Provider -->
     <rect x="90" y="10" width="80" height="40" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" rx="4"/>
-    <text x="130" y="25" text-anchor="middle" fill="#92400e" font-size="10" font-weight="bold">SSO</text>
-    <text x="130" y="40" text-anchor="middle" fill="#92400e" font-size="9">Provider</text>
+    <text x="130" y="25" text-anchor="middle" fill="#92400e" font-size="12" font-weight="bold">SSO</text>
+    <text x="130" y="40" text-anchor="middle" fill="#92400e" font-size="12">Provider</text>
     
     <!-- Arrows to applications -->
     <line x1="170" y1="20" x2="220" y2="10" stroke="#374151" stroke-width="2" marker-end="url(#arrowhead)"/>
@@ -169,13 +170,13 @@
     
     <!-- Applications -->
     <rect x="230" y="0" width="60" height="20" fill="#dcfce7" stroke="#16a34a" stroke-width="1" rx="3"/>
-    <text x="260" y="13" text-anchor="middle" fill="#15803d" font-size="8">App 1</text>
+    <text x="260" y="13" text-anchor="middle" fill="#15803d" font-size="12">App 1</text>
     
     <rect x="230" y="25" width="60" height="20" fill="#dcfce7" stroke="#16a34a" stroke-width="1" rx="3"/>
-    <text x="260" y="38" text-anchor="middle" fill="#15803d" font-size="8">App 2</text>
+    <text x="260" y="38" text-anchor="middle" fill="#15803d" font-size="12">App 2</text>
     
     <rect x="230" y="50" width="60" height="20" fill="#dcfce7" stroke="#16a34a" stroke-width="1" rx="3"/>
-    <text x="260" y="63" text-anchor="middle" fill="#15803d" font-size="8">App 3</text>
+    <text x="260" y="63" text-anchor="middle" fill="#15803d" font-size="12">App 3</text>
   </g>
   
   <!-- SSO Protocols -->
@@ -208,8 +209,8 @@
   </g>
   
   <!-- Security indicators -->
-  <text x="80" y="750" fill="#374151" font-size="11">Password only → Easy to crack, single point of failure</text>
-  <text x="280" y="750" fill="#374151" font-size="11">Something you know + have → Better protection</text>
-  <text x="480" y="750" fill="#374151" font-size="11">Multiple independent factors → Strong protection</text>
-  <text x="680" y="750" fill="#374151" font-size="11">Biological + multiple factors → Maximum security</text>
+  <text x="80" y="750" fill="#374151" font-size="12">Password only → Easy to crack, single point of failure</text>
+  <text x="280" y="750" fill="#374151" font-size="12">Something you know + have → Better protection</text>
+  <text x="480" y="750" fill="#374151" font-size="12">Multiple independent factors → Strong protection</text>
+  <text x="680" y="750" fill="#374151" font-size="12">Biological + multiple factors → Maximum security</text>
 </svg>

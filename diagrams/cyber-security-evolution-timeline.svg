@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+  <title>cyber security evolution timeline</title>
     <style>
         .timeline { stroke: #333; stroke-width: 3; }
         .timeline-point { fill: #4a86e8; stroke: #333; stroke-width: 2; }

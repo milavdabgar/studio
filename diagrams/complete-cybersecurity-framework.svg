@@ -1,4 +1,5 @@
 <svg viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+  <title>complete cybersecurity framework</title>
   <defs>
     <linearGradient id="masterGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
@@ -36,13 +37,13 @@
     <text x="90" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Cryptography &amp;</text>
     <text x="90" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Fundamentals</text>
     <circle cx="30" cy="85" r="4" fill="white"/>
-    <text x="40" y="90" font-family="Arial, sans-serif" font-size="10" fill="white">CIA Triad</text>
+    <text x="40" y="90" font-family="Arial, sans-serif" font-size="12" fill="white">CIA Triad</text>
     <circle cx="30" cy="100" r="4" fill="white"/>
-    <text x="40" y="105" font-family="Arial, sans-serif" font-size="10" fill="white">Encryption</text>
+    <text x="40" y="105" font-family="Arial, sans-serif" font-size="12" fill="white">Encryption</text>
     <circle cx="120" cy="85" r="4" fill="white"/>
-    <text x="130" y="90" font-family="Arial, sans-serif" font-size="10" fill="white">PKI</text>
+    <text x="130" y="90" font-family="Arial, sans-serif" font-size="12" fill="white">PKI</text>
     <circle cx="120" cy="100" r="4" fill="white"/>
-    <text x="130" y="105" font-family="Arial, sans-serif" font-size="10" fill="white">Ciphers</text>
+    <text x="130" y="105" font-family="Arial, sans-serif" font-size="12" fill="white">Ciphers</text>
   </g>
   
   <!-- Unit II: Account &amp; Data Security -->
@@ -52,13 +53,13 @@
     <text x="90" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Account &amp; Data</text>
     <text x="90" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Security</text>
     <circle cx="30" cy="85" r="4" fill="white"/>
-    <text x="40" y="90" font-family="Arial, sans-serif" font-size="10" fill="white">Authentication</text>
+    <text x="40" y="90" font-family="Arial, sans-serif" font-size="12" fill="white">Authentication</text>
     <circle cx="30" cy="100" r="4" fill="white"/>
-    <text x="40" y="105" font-family="Arial, sans-serif" font-size="10" fill="white">Authorization</text>
+    <text x="40" y="105" font-family="Arial, sans-serif" font-size="12" fill="white">Authorization</text>
     <circle cx="120" cy="85" r="4" fill="white"/>
-    <text x="130" y="90" font-family="Arial, sans-serif" font-size="10" fill="white">Firewalls</text>
+    <text x="130" y="90" font-family="Arial, sans-serif" font-size="12" fill="white">Firewalls</text>
     <circle cx="120" cy="100" r="4" fill="white"/>
-    <text x="130" y="105" font-family="Arial, sans-serif" font-size="10" fill="white">Malware</text>
+    <text x="130" y="105" font-family="Arial, sans-serif" font-size="12" fill="white">Malware</text>
   </g>
   
   <!-- Unit III: Network &amp; System Security -->
@@ -68,13 +69,13 @@
     <text x="90" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Network &amp; System</text>
     <text x="90" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Security</text>
     <circle cx="30" cy="85" r="4" fill="white"/>
-    <text x="40" y="90" font-family="Arial, sans-serif" font-size="10" fill="white">Web Security</text>
+    <text x="40" y="90" font-family="Arial, sans-serif" font-size="12" fill="white">Web Security</text>
     <circle cx="30" cy="100" r="4" fill="white"/>
-    <text x="40" y="105" font-family="Arial, sans-serif" font-size="10" fill="white">VPN/SSH</text>
+    <text x="40" y="105" font-family="Arial, sans-serif" font-size="12" fill="white">VPN/SSH</text>
     <circle cx="120" cy="85" r="4" fill="white"/>
-    <text x="130" y="90" font-family="Arial, sans-serif" font-size="10" fill="white">HTTPS/TLS</text>
+    <text x="130" y="90" font-family="Arial, sans-serif" font-size="12" fill="white">HTTPS/TLS</text>
     <circle cx="120" cy="100" r="4" fill="white"/>
-    <text x="130" y="105" font-family="Arial, sans-serif" font-size="10" fill="white">Certificates</text>
+    <text x="130" y="105" font-family="Arial, sans-serif" font-size="12" fill="white">Certificates</text>
   </g>
   
   <!-- Unit IV: Ethical Hacking -->
@@ -84,13 +85,13 @@
     <text x="90" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Ethical</text>
     <text x="90" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Hacking</text>
     <circle cx="30" cy="85" r="4" fill="white"/>
-    <text x="40" y="90" font-family="Arial, sans-serif" font-size="10" fill="white">Footprinting</text>
+    <text x="40" y="90" font-family="Arial, sans-serif" font-size="12" fill="white">Footprinting</text>
     <circle cx="30" cy="100" r="4" fill="white"/>
-    <text x="40" y="105" font-family="Arial, sans-serif" font-size="10" fill="white">Scanning</text>
+    <text x="40" y="105" font-family="Arial, sans-serif" font-size="12" fill="white">Scanning</text>
     <circle cx="120" cy="85" r="4" fill="white"/>
-    <text x="130" y="90" font-family="Arial, sans-serif" font-size="10" fill="white">Enumeration</text>
+    <text x="130" y="90" font-family="Arial, sans-serif" font-size="12" fill="white">Enumeration</text>
     <circle cx="120" cy="100" r="4" fill="white"/>
-    <text x="130" y="105" font-family="Arial, sans-serif" font-size="10" fill="white">Penetration</text>
+    <text x="130" y="105" font-family="Arial, sans-serif" font-size="12" fill="white">Penetration</text>
   </g>
   
   <!-- Unit V: Cybercrime &amp; Forensics -->
@@ -100,13 +101,13 @@
     <text x="100" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Cybercrime &amp;</text>
     <text x="100" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Forensics</text>
     <circle cx="30" cy="85" r="4" fill="white"/>
-    <text x="40" y="90" font-family="Arial, sans-serif" font-size="10" fill="white">Digital Evidence</text>
+    <text x="40" y="90" font-family="Arial, sans-serif" font-size="12" fill="white">Digital Evidence</text>
     <circle cx="30" cy="100" r="4" fill="white"/>
-    <text x="40" y="105" font-family="Arial, sans-serif" font-size="10" fill="white">Investigation</text>
+    <text x="40" y="105" font-family="Arial, sans-serif" font-size="12" fill="white">Investigation</text>
     <circle cx="130" cy="85" r="4" fill="white"/>
-    <text x="140" y="90" font-family="Arial, sans-serif" font-size="10" fill="white">Legal Framework</text>
+    <text x="140" y="90" font-family="Arial, sans-serif" font-size="12" fill="white">Legal Framework</text>
     <circle cx="130" cy="100" r="4" fill="white"/>
-    <text x="140" y="105" font-family="Arial, sans-serif" font-size="10" fill="white">Cyber Laws</text>
+    <text x="140" y="105" font-family="Arial, sans-serif" font-size="12" fill="white">Cyber Laws</text>
   </g>
   
   <!-- Core Security Principles -->
@@ -117,43 +118,43 @@
     <circle cx="100" cy="60" r="50" fill="#E3F2FD" stroke="#1976D2" stroke-width="3"/>
     <text x="100" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1976D2">CIA</text>
     <text x="100" y="60" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1976D2">TRIAD</text>
-    <text x="100" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">Foundation</text>
+    <text x="100" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Foundation</text>
   </g>
   
   <!-- Security Mechanisms -->
   <g transform="translate(100, 500)">
     <rect x="0" y="0" width="140" height="60" rx="8" fill="#FFF3E0" stroke="#F57C00" stroke-width="2"/>
     <text x="70" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#F57C00">Prevention</text>
-    <text x="70" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">Firewalls, Encryption</text>
-    <text x="70" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">Access Control</text>
+    <text x="70" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Firewalls, Encryption</text>
+    <text x="70" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Access Control</text>
   </g>
   
   <g transform="translate(260, 500)">
     <rect x="0" y="0" width="140" height="60" rx="8" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="2"/>
     <text x="70" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#7B1FA2">Detection</text>
-    <text x="70" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">IDS, Monitoring</text>
-    <text x="70" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">Log Analysis</text>
+    <text x="70" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">IDS, Monitoring</text>
+    <text x="70" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Log Analysis</text>
   </g>
   
   <g transform="translate(420, 500)">
     <rect x="0" y="0" width="140" height="60" rx="8" fill="#E8F5E8" stroke="#388E3C" stroke-width="2"/>
     <text x="70" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#388E3C">Response</text>
-    <text x="70" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">Incident Handling</text>
-    <text x="70" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">Recovery</text>
+    <text x="70" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Incident Handling</text>
+    <text x="70" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Recovery</text>
   </g>
   
   <g transform="translate(580, 500)">
     <rect x="0" y="0" width="140" height="60" rx="8" fill="#FFEBEE" stroke="#D32F2F" stroke-width="2"/>
     <text x="70" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#D32F2F">Recovery</text>
-    <text x="70" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">Backup, Disaster</text>
-    <text x="70" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">Business Continuity</text>
+    <text x="70" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Backup, Disaster</text>
+    <text x="70" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Business Continuity</text>
   </g>
   
   <g transform="translate(740, 500)">
     <rect x="0" y="0" width="140" height="60" rx="8" fill="#E1F5FE" stroke="#0277BD" stroke-width="2"/>
     <text x="70" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#0277BD">Governance</text>
-    <text x="70" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">Policies, Compliance</text>
-    <text x="70" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">Legal Framework</text>
+    <text x="70" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Policies, Compliance</text>
+    <text x="70" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#333">Legal Framework</text>
   </g>
   
   <!-- Threat Landscape -->
@@ -162,32 +163,32 @@
   <!-- Threats -->
   <g transform="translate(100, 620)">
     <ellipse cx="70" cy="30" rx="60" ry="25" fill="#FFEBEE" stroke="#D32F2F" stroke-width="2"/>
-    <text x="70" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#D32F2F">Malware</text>
-    <text x="70" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">Viruses, Trojans, Worms</text>
+    <text x="70" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#D32F2F">Malware</text>
+    <text x="70" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">Viruses, Trojans, Worms</text>
   </g>
   
   <g transform="translate(240, 620)">
     <ellipse cx="70" cy="30" rx="60" ry="25" fill="#FFEBEE" stroke="#D32F2F" stroke-width="2"/>
-    <text x="70" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#D32F2F">Social Engineering</text>
-    <text x="70" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">Phishing, Pretexting</text>
+    <text x="70" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#D32F2F">Social Engineering</text>
+    <text x="70" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">Phishing, Pretexting</text>
   </g>
   
   <g transform="translate(380, 620)">
     <ellipse cx="70" cy="30" rx="60" ry="25" fill="#FFEBEE" stroke="#D32F2F" stroke-width="2"/>
-    <text x="70" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#D32F2F">Network Attacks</text>
-    <text x="70" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">DoS, MITM, Hijacking</text>
+    <text x="70" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#D32F2F">Network Attacks</text>
+    <text x="70" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">DoS, MITM, Hijacking</text>
   </g>
   
   <g transform="translate(520, 620)">
     <ellipse cx="70" cy="30" rx="60" ry="25" fill="#FFEBEE" stroke="#D32F2F" stroke-width="2"/>
-    <text x="70" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#D32F2F">Web Threats</text>
-    <text x="70" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">XSS, SQL Injection</text>
+    <text x="70" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#D32F2F">Web Threats</text>
+    <text x="70" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">XSS, SQL Injection</text>
   </g>
   
   <g transform="translate(660, 620)">
     <ellipse cx="70" cy="30" rx="60" ry="25" fill="#FFEBEE" stroke="#D32F2F" stroke-width="2"/>
-    <text x="70" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#D32F2F">Insider Threats</text>
-    <text x="70" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666">Privilege Abuse</text>
+    <text x="70" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#D32F2F">Insider Threats</text>
+    <text x="70" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">Privilege Abuse</text>
   </g>
   
   <!-- Technology Stack -->
@@ -195,27 +196,27 @@
   
   <g transform="translate(150, 720)">
     <rect x="0" y="0" width="100" height="40" rx="4" fill="#E3F2FD" stroke="#1976D2" stroke-width="1"/>
-    <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#1976D2">Cryptography</text>
+    <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1976D2">Cryptography</text>
   </g>
   
   <g transform="translate(270, 720)">
     <rect x="0" y="0" width="100" height="40" rx="4" fill="#FFF3E0" stroke="#F57C00" stroke-width="1"/>
-    <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#F57C00">Biometrics</text>
+    <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#F57C00">Biometrics</text>
   </g>
   
   <g transform="translate(390, 720)">
     <rect x="0" y="0" width="100" height="40" rx="4" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="1"/>
-    <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#7B1FA2">AI/ML Security</text>
+    <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#7B1FA2">AI/ML Security</text>
   </g>
   
   <g transform="translate(510, 720)">
     <rect x="0" y="0" width="100" height="40" rx="4" fill="#E8F5E8" stroke="#388E3C" stroke-width="1"/>
-    <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#388E3C">Blockchain</text>
+    <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#388E3C">Blockchain</text>
   </g>
   
   <g transform="translate(630, 720)">
     <rect x="0" y="0" width="100" height="40" rx="4" fill="#FFEBEE" stroke="#D32F2F" stroke-width="1"/>
-    <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#D32F2F">IoT Security</text>
+    <text x="50" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#D32F2F">IoT Security</text>
   </g>
   
   <!-- Connecting lines from units to CIA Triad -->
