@@ -1,0 +1,1922 @@
+{
+  "timestamp": "2025-07-08T15:31:30.451Z",
+  "totalFiles": 70,
+  "successful": 70,
+  "errors": 0,
+  "summary": {
+    "filesWithTextIssues": 22,
+    "filesWithOverlaps": 44,
+    "filesWithoutTitles": 25,
+    "totalTextElements": 3953,
+    "totalRectElements": 1300
+  },
+  "details": [
+    {
+      "file": "account-data-security.svg",
+      "screenshot": "account-data-security.png",
+      "dimensions": {
+        "width": "900",
+        "height": "700",
+        "viewBox": "0 0 900 700"
+      },
+      "elements": {
+        "texts": 73,
+        "rectangles": 23,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 3 and 5 may be overlapping",
+        "Text elements 8 and 66 may be overlapping",
+        "Text elements 11 and 13 may be overlapping",
+        "Text elements 15 and 17 may be overlapping",
+        "Text elements 18 and 24 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "authentication-methods-comprehensive.svg",
+      "screenshot": "authentication-methods-comprehensive.png",
+      "dimensions": {
+        "width": "1000",
+        "height": "800",
+        "viewBox": "0 0 1000 800"
+      },
+      "elements": {
+        "texts": 69,
+        "rectangles": 32,
+        "circles": 11,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 54 is outside viewBox bounds",
+        "Text element 62 is outside viewBox bounds",
+        "Text element 64 is outside viewBox bounds",
+        "Text elements 0 and 42 may be overlapping",
+        "Text elements 0 and 43 may be overlapping",
+        "Text elements 0 and 45 may be overlapping",
+        "Text elements 0 and 55 may be overlapping",
+        "Text elements 13 and 15 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "authentication-methods.svg",
+      "screenshot": "authentication-methods.png",
+      "dimensions": {
+        "width": "800",
+        "height": "650",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 22,
+        "rectangles": 15,
+        "circles": 1,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "authentication-vs-authorization.svg",
+      "screenshot": "authentication-vs-authorization.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 31,
+        "rectangles": 15,
+        "circles": 2,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "authorization-access-control-models.svg",
+      "screenshot": "authorization-access-control-models.png",
+      "dimensions": {
+        "width": null,
+        "height": null,
+        "viewBox": "0 0 1200 800"
+      },
+      "elements": {
+        "texts": 90,
+        "rectangles": 72,
+        "circles": 3,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "backup-disaster-recovery.svg",
+      "screenshot": "backup-disaster-recovery.png",
+      "dimensions": {
+        "width": null,
+        "height": null,
+        "viewBox": "0 0 900 700"
+      },
+      "elements": {
+        "texts": 60,
+        "rectangles": 15,
+        "circles": 3,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 6 is outside viewBox bounds",
+        "Text element 11 is outside viewBox bounds",
+        "Text element 13 is outside viewBox bounds",
+        "Text element 16 is outside viewBox bounds",
+        "Text element 18 is outside viewBox bounds",
+        "Text element 21 is outside viewBox bounds",
+        "Text element 23 is outside viewBox bounds",
+        "Text element 27 is outside viewBox bounds",
+        "Text element 29 is outside viewBox bounds",
+        "Text element 30 is outside viewBox bounds",
+        "Text element 32 is outside viewBox bounds",
+        "Text element 33 is outside viewBox bounds",
+        "Text element 34 is outside viewBox bounds",
+        "Text element 35 is outside viewBox bounds",
+        "Text element 36 is outside viewBox bounds",
+        "Text element 37 is outside viewBox bounds",
+        "Text element 38 is outside viewBox bounds",
+        "Text element 40 is outside viewBox bounds",
+        "Text element 41 is outside viewBox bounds",
+        "Text element 42 is outside viewBox bounds",
+        "Text element 43 is outside viewBox bounds",
+        "Text element 44 is outside viewBox bounds",
+        "Text element 45 is outside viewBox bounds",
+        "Text element 46 is outside viewBox bounds",
+        "Text element 47 is outside viewBox bounds",
+        "Text element 48 is outside viewBox bounds",
+        "Text element 49 is outside viewBox bounds",
+        "Text element 50 is outside viewBox bounds",
+        "Text element 51 is outside viewBox bounds",
+        "Text element 52 is outside viewBox bounds",
+        "Text element 53 is outside viewBox bounds",
+        "Text element 54 is outside viewBox bounds",
+        "Text elements 1 and 8 may be overlapping",
+        "Text elements 1 and 20 may be overlapping",
+        "Text elements 1 and 25 may be overlapping",
+        "Text elements 1 and 31 may be overlapping",
+        "Text elements 2 and 15 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "caesar-cipher.svg",
+      "screenshot": "caesar-cipher.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 29,
+        "rectangles": 12,
+        "circles": 3,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "captcha-systems-comprehensive.svg",
+      "screenshot": "captcha-systems-comprehensive.png",
+      "dimensions": {
+        "width": "900",
+        "height": "700",
+        "viewBox": "0 0 900 700"
+      },
+      "elements": {
+        "texts": 55,
+        "rectangles": 29,
+        "circles": 9,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 48 is outside viewBox bounds",
+        "Text element 50 is outside viewBox bounds",
+        "Text elements 0 and 51 may be overlapping",
+        "Text elements 7 and 9 may be overlapping",
+        "Text elements 8 and 11 may be overlapping",
+        "Text elements 13 and 15 may be overlapping",
+        "Text elements 18 and 20 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "cia-triad-comprehensive.svg",
+      "screenshot": "cia-triad-comprehensive.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 44,
+        "rectangles": 3,
+        "circles": 1,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 6 and 25 may be overlapping",
+        "Text elements 8 and 29 may be overlapping",
+        "Text elements 8 and 33 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "cia-triad-detailed-implementation.svg",
+      "screenshot": "cia-triad-detailed-implementation.png",
+      "dimensions": {
+        "width": "800",
+        "height": "700",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 53,
+        "rectangles": 12,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "columnar-transposition-cipher.svg",
+      "screenshot": "columnar-transposition-cipher.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 39,
+        "rectangles": 8,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "common-asymmetric-encryption-algorithms.svg",
+      "screenshot": "common-asymmetric-encryption-algorithms.png",
+      "dimensions": {
+        "width": "1376",
+        "height": "826",
+        "viewBox": "-150 -176 1376 826"
+      },
+      "elements": {
+        "texts": 56,
+        "rectangles": 37,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 2 is outside viewBox bounds",
+        "Text element 3 is outside viewBox bounds",
+        "Text element 4 is outside viewBox bounds",
+        "Text element 5 is outside viewBox bounds",
+        "Text element 6 is outside viewBox bounds",
+        "Text element 7 is outside viewBox bounds",
+        "Text element 8 is outside viewBox bounds",
+        "Text element 9 is outside viewBox bounds",
+        "Text element 10 is outside viewBox bounds",
+        "Text element 11 is outside viewBox bounds",
+        "Text element 12 is outside viewBox bounds",
+        "Text element 13 is outside viewBox bounds",
+        "Text element 14 is outside viewBox bounds",
+        "Text element 15 is outside viewBox bounds",
+        "Text element 16 is outside viewBox bounds",
+        "Text element 19 is outside viewBox bounds",
+        "Text element 47 is outside viewBox bounds",
+        "Text element 48 is outside viewBox bounds",
+        "Text element 49 is outside viewBox bounds",
+        "Text element 50 is outside viewBox bounds",
+        "Text element 52 is outside viewBox bounds",
+        "Text element 53 is outside viewBox bounds",
+        "Text element 54 is outside viewBox bounds",
+        "Text elements 0 and 23 may be overlapping",
+        "Text elements 0 and 24 may be overlapping",
+        "Text elements 0 and 25 may be overlapping",
+        "Text elements 0 and 26 may be overlapping",
+        "Text elements 1 and 28 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "common-symmetric-encryption-algorithms.svg",
+      "screenshot": "common-symmetric-encryption-algorithms.png",
+      "dimensions": {
+        "width": "1134",
+        "height": "851",
+        "viewBox": "-250 -201 1134 851"
+      },
+      "elements": {
+        "texts": 67,
+        "rectangles": 49,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 2 is outside viewBox bounds",
+        "Text element 3 is outside viewBox bounds",
+        "Text element 4 is outside viewBox bounds",
+        "Text element 5 is outside viewBox bounds",
+        "Text element 6 is outside viewBox bounds",
+        "Text element 7 is outside viewBox bounds",
+        "Text element 8 is outside viewBox bounds",
+        "Text element 9 is outside viewBox bounds",
+        "Text element 10 is outside viewBox bounds",
+        "Text element 11 is outside viewBox bounds",
+        "Text element 12 is outside viewBox bounds",
+        "Text element 13 is outside viewBox bounds",
+        "Text element 14 is outside viewBox bounds",
+        "Text element 15 is outside viewBox bounds",
+        "Text element 16 is outside viewBox bounds",
+        "Text element 17 is outside viewBox bounds",
+        "Text element 18 is outside viewBox bounds",
+        "Text element 19 is outside viewBox bounds",
+        "Text element 62 is outside viewBox bounds",
+        "Text element 63 is outside viewBox bounds",
+        "Text element 64 is outside viewBox bounds",
+        "Text element 65 is outside viewBox bounds",
+        "Text element 66 is outside viewBox bounds",
+        "Text elements 0 and 21 may be overlapping",
+        "Text elements 0 and 28 may be overlapping",
+        "Text elements 0 and 29 may be overlapping",
+        "Text elements 0 and 30 may be overlapping",
+        "Text elements 0 and 31 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "complete-cybersecurity-framework.svg",
+      "screenshot": "complete-cybersecurity-framework.png",
+      "dimensions": {
+        "width": null,
+        "height": null,
+        "viewBox": "0 0 1000 800"
+      },
+      "elements": {
+        "texts": 74,
+        "rectangles": 17,
+        "circles": 21,
+        "ellipses": 5
+      },
+      "issues": [
+        "Text element 9 is outside viewBox bounds",
+        "Text element 16 is outside viewBox bounds",
+        "Text element 17 is outside viewBox bounds",
+        "Text element 19 is outside viewBox bounds",
+        "Text element 21 is outside viewBox bounds",
+        "Text element 23 is outside viewBox bounds",
+        "Text element 24 is outside viewBox bounds",
+        "Text element 25 is outside viewBox bounds",
+        "Text element 26 is outside viewBox bounds",
+        "Text element 28 is outside viewBox bounds",
+        "Text element 30 is outside viewBox bounds",
+        "Text element 31 is outside viewBox bounds",
+        "Text element 32 is outside viewBox bounds",
+        "Text element 33 is outside viewBox bounds",
+        "Text element 35 is outside viewBox bounds",
+        "Text element 36 is outside viewBox bounds",
+        "Text element 38 is outside viewBox bounds",
+        "Text element 40 is outside viewBox bounds",
+        "Text element 41 is outside viewBox bounds",
+        "Text element 43 is outside viewBox bounds",
+        "Text element 44 is outside viewBox bounds",
+        "Text element 46 is outside viewBox bounds",
+        "Text element 47 is outside viewBox bounds",
+        "Text element 48 is outside viewBox bounds",
+        "Text element 49 is outside viewBox bounds",
+        "Text element 50 is outside viewBox bounds",
+        "Text element 51 is outside viewBox bounds",
+        "Text element 52 is outside viewBox bounds",
+        "Text element 53 is outside viewBox bounds",
+        "Text element 54 is outside viewBox bounds",
+        "Text element 55 is outside viewBox bounds",
+        "Text element 57 is outside viewBox bounds",
+        "Text element 58 is outside viewBox bounds",
+        "Text element 59 is outside viewBox bounds",
+        "Text element 60 is outside viewBox bounds",
+        "Text element 61 is outside viewBox bounds",
+        "Text element 62 is outside viewBox bounds",
+        "Text element 63 is outside viewBox bounds",
+        "Text element 64 is outside viewBox bounds",
+        "Text element 65 is outside viewBox bounds",
+        "Text element 66 is outside viewBox bounds",
+        "Text element 68 is outside viewBox bounds",
+        "Text element 69 is outside viewBox bounds",
+        "Text element 70 is outside viewBox bounds",
+        "Text element 71 is outside viewBox bounds",
+        "Text element 72 is outside viewBox bounds",
+        "Text elements 2 and 10 may be overlapping",
+        "Text elements 2 and 11 may be overlapping",
+        "Text elements 2 and 18 may be overlapping",
+        "Text elements 2 and 34 may be overlapping",
+        "Text elements 2 and 42 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "cryptanalysis-techniques.svg",
+      "screenshot": "cryptanalysis-techniques.png",
+      "dimensions": {
+        "width": "900",
+        "height": "801",
+        "viewBox": "-50 -51 900 801"
+      },
+      "elements": {
+        "texts": 66,
+        "rectangles": 20,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 4 is outside viewBox bounds",
+        "Text element 45 is outside viewBox bounds",
+        "Text element 50 is outside viewBox bounds",
+        "Text element 61 is outside viewBox bounds",
+        "Text element 63 is outside viewBox bounds",
+        "Text element 64 is outside viewBox bounds",
+        "Text elements 0 and 47 may be overlapping",
+        "Text elements 0 and 55 may be overlapping",
+        "Text elements 0 and 58 may be overlapping",
+        "Text elements 1 and 12 may be overlapping",
+        "Text elements 1 and 14 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "cryptographic-algorithms.svg",
+      "screenshot": "cryptographic-algorithms.png",
+      "dimensions": {
+        "width": "800",
+        "height": "800",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 46,
+        "rectangles": 14,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "cryptographic-key-lifecycle.svg",
+      "screenshot": "cryptographic-key-lifecycle.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": "0 0 800 600"
+      },
+      "elements": {
+        "texts": 45,
+        "rectangles": 9,
+        "circles": 8,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 2 and 3 may be overlapping",
+        "Text elements 6 and 7 may be overlapping",
+        "Text elements 10 and 11 may be overlapping",
+        "Text elements 18 and 19 may be overlapping",
+        "Text elements 22 and 23 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "cryptography-applications.svg",
+      "screenshot": "cryptography-applications.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 33,
+        "rectangles": 17,
+        "circles": 1,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "cryptography-basics.svg",
+      "screenshot": "cryptography-basics.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 37,
+        "rectangles": 7,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "cryptography-challenges.svg",
+      "screenshot": "cryptography-challenges.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 30,
+        "rectangles": 9,
+        "circles": 6,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 26 and 28 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "cryptography-comprehensive-overview.svg",
+      "screenshot": "cryptography-comprehensive-overview.png",
+      "dimensions": {
+        "width": "900",
+        "height": "700",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 57,
+        "rectangles": 20,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "cyber-law-legal-framework.svg",
+      "screenshot": "cyber-law-legal-framework.png",
+      "dimensions": {
+        "width": "1478",
+        "height": "800",
+        "viewBox": "-50 -50 1478 800"
+      },
+      "elements": {
+        "texts": 57,
+        "rectangles": 16,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 1 is outside viewBox bounds",
+        "Text element 7 is outside viewBox bounds",
+        "Text element 12 is outside viewBox bounds",
+        "Text element 13 is outside viewBox bounds",
+        "Text element 19 is outside viewBox bounds",
+        "Text element 21 is outside viewBox bounds",
+        "Text element 23 is outside viewBox bounds",
+        "Text element 24 is outside viewBox bounds",
+        "Text element 25 is outside viewBox bounds",
+        "Text element 27 is outside viewBox bounds",
+        "Text element 31 is outside viewBox bounds",
+        "Text element 35 is outside viewBox bounds",
+        "Text element 36 is outside viewBox bounds",
+        "Text element 37 is outside viewBox bounds",
+        "Text element 38 is outside viewBox bounds",
+        "Text element 39 is outside viewBox bounds",
+        "Text element 40 is outside viewBox bounds",
+        "Text element 41 is outside viewBox bounds",
+        "Text element 43 is outside viewBox bounds",
+        "Text element 44 is outside viewBox bounds",
+        "Text element 45 is outside viewBox bounds",
+        "Text element 48 is outside viewBox bounds",
+        "Text element 50 is outside viewBox bounds",
+        "Text element 52 is outside viewBox bounds",
+        "Text element 53 is outside viewBox bounds",
+        "Text element 54 is outside viewBox bounds",
+        "Text element 55 is outside viewBox bounds",
+        "Text elements 0 and 1 may be overlapping",
+        "Text elements 0 and 7 may be overlapping",
+        "Text elements 2 and 7 may be overlapping",
+        "Text elements 2 and 14 may be overlapping",
+        "Text elements 2 and 29 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "cyber-security-evolution-timeline.svg",
+      "screenshot": "cyber-security-evolution-timeline.png",
+      "dimensions": {
+        "width": "800",
+        "height": "400",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 26,
+        "rectangles": 0,
+        "circles": 7,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 8 and 11 may be overlapping",
+        "Text elements 9 and 12 may be overlapping",
+        "Text elements 11 and 14 may be overlapping",
+        "Text elements 12 and 15 may be overlapping",
+        "Text elements 15 and 18 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "cyber-security-fundamentals-overview.svg",
+      "screenshot": "cyber-security-fundamentals-overview.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 33,
+        "rectangles": 6,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "cyber-security-key-terms-relationships.svg",
+      "screenshot": "cyber-security-key-terms-relationships.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 23,
+        "rectangles": 9,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "cyber-security-key-terms.svg",
+      "screenshot": "cyber-security-key-terms.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 46,
+        "rectangles": 9,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "cybercrime-cyber-forensics-comprehensive.svg",
+      "screenshot": "cybercrime-cyber-forensics-comprehensive.png",
+      "dimensions": {
+        "width": null,
+        "height": null,
+        "viewBox": "0 0 1400 1100"
+      },
+      "elements": {
+        "texts": 185,
+        "rectangles": 46,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 184 is outside viewBox bounds",
+        "Text elements 3 and 5 may be overlapping",
+        "Text elements 4 and 7 may be overlapping",
+        "Text elements 9 and 11 may be overlapping",
+        "Text elements 10 and 13 may be overlapping",
+        "Text elements 15 and 17 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "diffie-hellman-key-exchange.svg",
+      "screenshot": "diffie-hellman-key-exchange.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 29,
+        "rectangles": 13,
+        "circles": 2,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 17 and 20 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "digital-certificates.svg",
+      "screenshot": "digital-certificates.png",
+      "dimensions": {
+        "width": "1284",
+        "height": "705",
+        "viewBox": "-50 -50 1284 705"
+      },
+      "elements": {
+        "texts": 42,
+        "rectangles": 6,
+        "circles": 5,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 6 and 8 may be overlapping",
+        "Text elements 16 and 18 may be overlapping",
+        "Text elements 33 and 37 may be overlapping",
+        "Text elements 35 and 38 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "digital-signatures-comprehensive.svg",
+      "screenshot": "digital-signatures-comprehensive.png",
+      "dimensions": {
+        "width": null,
+        "height": null,
+        "viewBox": "0 0 1200 900"
+      },
+      "elements": {
+        "texts": 101,
+        "rectangles": 41,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 11 and 13 may be overlapping",
+        "Text elements 25 and 33 may be overlapping",
+        "Text elements 27 and 29 may be overlapping",
+        "Text elements 31 and 34 may be overlapping",
+        "Text elements 31 and 42 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "digital-signatures.svg",
+      "screenshot": "digital-signatures.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 25,
+        "rectangles": 19,
+        "circles": 1,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 20 and 22 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "ethical-hacking-comprehensive.svg",
+      "screenshot": "ethical-hacking-comprehensive.png",
+      "dimensions": {
+        "width": null,
+        "height": null,
+        "viewBox": "0 0 1400 1000"
+      },
+      "elements": {
+        "texts": 143,
+        "rectangles": 39,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 142 is outside viewBox bounds",
+        "Text elements 3 and 5 may be overlapping",
+        "Text elements 4 and 7 may be overlapping",
+        "Text elements 9 and 11 may be overlapping",
+        "Text elements 10 and 13 may be overlapping",
+        "Text elements 15 and 17 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "firewall-types-architecture.svg",
+      "screenshot": "firewall-types-architecture.png",
+      "dimensions": {
+        "width": "1000",
+        "height": "800",
+        "viewBox": "0 0 1000 800"
+      },
+      "elements": {
+        "texts": 94,
+        "rectangles": 51,
+        "circles": 5,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 8 is outside viewBox bounds",
+        "Text element 30 is outside viewBox bounds",
+        "Text element 31 is outside viewBox bounds",
+        "Text element 46 is outside viewBox bounds",
+        "Text element 47 is outside viewBox bounds",
+        "Text element 49 is outside viewBox bounds",
+        "Text element 55 is outside viewBox bounds",
+        "Text element 56 is outside viewBox bounds",
+        "Text element 57 is outside viewBox bounds",
+        "Text element 58 is outside viewBox bounds",
+        "Text element 64 is outside viewBox bounds",
+        "Text element 74 is outside viewBox bounds",
+        "Text element 75 is outside viewBox bounds",
+        "Text elements 0 and 76 may be overlapping",
+        "Text elements 0 and 78 may be overlapping",
+        "Text elements 0 and 81 may be overlapping",
+        "Text elements 0 and 87 may be overlapping",
+        "Text elements 0 and 88 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "five-steps-hacking-methodology.svg",
+      "screenshot": "five-steps-hacking-methodology.png",
+      "dimensions": {
+        "width": null,
+        "height": null,
+        "viewBox": "0 0 1200 800"
+      },
+      "elements": {
+        "texts": 80,
+        "rectangles": 18,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 2 and 3 may be overlapping",
+        "Text elements 7 and 8 may be overlapping",
+        "Text elements 12 and 13 may be overlapping",
+        "Text elements 17 and 18 may be overlapping",
+        "Text elements 22 and 23 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "hashing-algorithms.svg",
+      "screenshot": "hashing-algorithms.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 26,
+        "rectangles": 15,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "hill-cipher.svg",
+      "screenshot": "hill-cipher.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": "0 0 800 600"
+      },
+      "elements": {
+        "texts": 30,
+        "rectangles": 11,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 0 and 21 may be overlapping",
+        "Text elements 0 and 22 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "https-ssl-tls-handshake.svg",
+      "screenshot": "https-ssl-tls-handshake.png",
+      "dimensions": {
+        "width": null,
+        "height": null,
+        "viewBox": "0 0 1200 900"
+      },
+      "elements": {
+        "texts": 57,
+        "rectangles": 18,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 0 and 39 may be overlapping",
+        "Text elements 0 and 45 may be overlapping",
+        "Text elements 1 and 34 may be overlapping",
+        "Text elements 2 and 36 may be overlapping",
+        "Text elements 40 and 43 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "information-security-framework.svg",
+      "screenshot": "information-security-framework.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": "0 0 800 600"
+      },
+      "elements": {
+        "texts": 45,
+        "rectangles": 18,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "malware-types-comprehensive.svg",
+      "screenshot": "malware-types-comprehensive.png",
+      "dimensions": {
+        "width": null,
+        "height": null,
+        "viewBox": "0 0 1000 700"
+      },
+      "elements": {
+        "texts": 93,
+        "rectangles": 20,
+        "circles": 1,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "multi-factor-authentication.svg",
+      "screenshot": "multi-factor-authentication.png",
+      "dimensions": {
+        "width": "1120",
+        "height": "831",
+        "viewBox": "-190 -181 1120 831"
+      },
+      "elements": {
+        "texts": 42,
+        "rectangles": 8,
+        "circles": 1,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 5 is outside viewBox bounds",
+        "Text element 6 is outside viewBox bounds",
+        "Text element 7 is outside viewBox bounds",
+        "Text element 8 is outside viewBox bounds",
+        "Text element 9 is outside viewBox bounds",
+        "Text element 10 is outside viewBox bounds",
+        "Text element 11 is outside viewBox bounds",
+        "Text element 12 is outside viewBox bounds",
+        "Text element 13 is outside viewBox bounds",
+        "Text element 14 is outside viewBox bounds",
+        "Text element 15 is outside viewBox bounds",
+        "Text element 16 is outside viewBox bounds",
+        "Text element 17 is outside viewBox bounds",
+        "Text element 18 is outside viewBox bounds",
+        "Text element 19 is outside viewBox bounds",
+        "Text element 20 is outside viewBox bounds",
+        "Text element 21 is outside viewBox bounds",
+        "Text element 22 is outside viewBox bounds",
+        "Text element 23 is outside viewBox bounds",
+        "Text element 24 is outside viewBox bounds",
+        "Text element 30 is outside viewBox bounds",
+        "Text element 31 is outside viewBox bounds",
+        "Text element 32 is outside viewBox bounds",
+        "Text element 33 is outside viewBox bounds",
+        "Text element 35 is outside viewBox bounds",
+        "Text element 36 is outside viewBox bounds",
+        "Text element 37 is outside viewBox bounds",
+        "Text element 38 is outside viewBox bounds",
+        "Text element 39 is outside viewBox bounds",
+        "Text elements 0 and 40 may be overlapping",
+        "Text elements 0 and 41 may be overlapping",
+        "Text elements 5 and 13 may be overlapping",
+        "Text elements 6 and 12 may be overlapping",
+        "Text elements 7 and 14 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "network-ports-comprehensive.svg",
+      "screenshot": "network-ports-comprehensive.png",
+      "dimensions": {
+        "width": null,
+        "height": null,
+        "viewBox": "0 0 1000 800"
+      },
+      "elements": {
+        "texts": 87,
+        "rectangles": 21,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "network-security-components.svg",
+      "screenshot": "network-security-components.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": "0 0 800 600"
+      },
+      "elements": {
+        "texts": 30,
+        "rectangles": 16,
+        "circles": 2,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 4 and 8 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "osi-model-complete-security.svg",
+      "screenshot": "osi-model-complete-security.png",
+      "dimensions": {
+        "width": "900",
+        "height": "700",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 133,
+        "rectangles": 7,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 132 has zero dimensions",
+        "Text elements 4 and 13 may be overlapping",
+        "Text elements 7 and 8 may be overlapping",
+        "Text elements 9 and 11 may be overlapping",
+        "Text elements 12 and 28 may be overlapping",
+        "Text elements 16 and 32 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "osi-model-security.svg",
+      "screenshot": "osi-model-security.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 45,
+        "rectangles": 9,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 1 and 2 may be overlapping",
+        "Text elements 6 and 7 may be overlapping",
+        "Text elements 11 and 12 may be overlapping",
+        "Text elements 16 and 17 may be overlapping",
+        "Text elements 21 and 22 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "playfair-cipher.svg",
+      "screenshot": "playfair-cipher.png",
+      "dimensions": {
+        "width": "900",
+        "height": "690",
+        "viewBox": "-50 -50 900 690"
+      },
+      "elements": {
+        "texts": 53,
+        "rectangles": 11,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 2 and 17 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "privacy-data-protection-framework.svg",
+      "screenshot": "privacy-data-protection-framework.png",
+      "dimensions": {
+        "width": null,
+        "height": null,
+        "viewBox": "0 0 900 650"
+      },
+      "elements": {
+        "texts": 78,
+        "rectangles": 16,
+        "circles": 5,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 5 is outside viewBox bounds",
+        "Text element 8 is outside viewBox bounds",
+        "Text element 9 is outside viewBox bounds",
+        "Text element 11 is outside viewBox bounds",
+        "Text element 12 is outside viewBox bounds",
+        "Text element 13 is outside viewBox bounds",
+        "Text element 15 is outside viewBox bounds",
+        "Text element 16 is outside viewBox bounds",
+        "Text element 18 is outside viewBox bounds",
+        "Text element 19 is outside viewBox bounds",
+        "Text element 21 is outside viewBox bounds",
+        "Text element 22 is outside viewBox bounds",
+        "Text element 24 is outside viewBox bounds",
+        "Text element 25 is outside viewBox bounds",
+        "Text element 27 is outside viewBox bounds",
+        "Text element 28 is outside viewBox bounds",
+        "Text element 29 is outside viewBox bounds",
+        "Text element 31 is outside viewBox bounds",
+        "Text element 32 is outside viewBox bounds",
+        "Text element 33 is outside viewBox bounds",
+        "Text element 34 is outside viewBox bounds",
+        "Text element 36 is outside viewBox bounds",
+        "Text element 37 is outside viewBox bounds",
+        "Text element 38 is outside viewBox bounds",
+        "Text element 39 is outside viewBox bounds",
+        "Text element 41 is outside viewBox bounds",
+        "Text element 42 is outside viewBox bounds",
+        "Text element 43 is outside viewBox bounds",
+        "Text element 44 is outside viewBox bounds",
+        "Text element 46 is outside viewBox bounds",
+        "Text element 47 is outside viewBox bounds",
+        "Text element 48 is outside viewBox bounds",
+        "Text element 49 is outside viewBox bounds",
+        "Text element 51 is outside viewBox bounds",
+        "Text element 52 is outside viewBox bounds",
+        "Text element 53 is outside viewBox bounds",
+        "Text element 54 is outside viewBox bounds",
+        "Text element 57 is outside viewBox bounds",
+        "Text element 58 is outside viewBox bounds",
+        "Text element 59 is outside viewBox bounds",
+        "Text element 60 is outside viewBox bounds",
+        "Text element 61 is outside viewBox bounds",
+        "Text element 62 is outside viewBox bounds",
+        "Text element 63 is outside viewBox bounds",
+        "Text element 64 is outside viewBox bounds",
+        "Text element 65 is outside viewBox bounds",
+        "Text element 66 is outside viewBox bounds",
+        "Text element 67 is outside viewBox bounds",
+        "Text element 68 is outside viewBox bounds",
+        "Text element 69 is outside viewBox bounds",
+        "Text element 70 is outside viewBox bounds",
+        "Text element 71 is outside viewBox bounds",
+        "Text element 72 is outside viewBox bounds",
+        "Text element 73 is outside viewBox bounds",
+        "Text element 74 is outside viewBox bounds",
+        "Text element 75 is outside viewBox bounds",
+        "Text element 76 is outside viewBox bounds",
+        "Text element 77 is outside viewBox bounds",
+        "Text elements 2 and 6 may be overlapping",
+        "Text elements 2 and 10 may be overlapping",
+        "Text elements 2 and 26 may be overlapping",
+        "Text elements 2 and 55 may be overlapping",
+        "Text elements 3 and 10 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "public-key-infrastructure.svg",
+      "screenshot": "public-key-infrastructure.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": "0 0 800 600"
+      },
+      "elements": {
+        "texts": 33,
+        "rectangles": 8,
+        "circles": 6,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "rail-fence-cipher.svg",
+      "screenshot": "rail-fence-cipher.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": "0 0 800 600"
+      },
+      "elements": {
+        "texts": 61,
+        "rectangles": 5,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "risk-assessment-process.svg",
+      "screenshot": "risk-assessment-process.png",
+      "dimensions": {
+        "width": "1609",
+        "height": "901",
+        "viewBox": "-175 -251 1609 901"
+      },
+      "elements": {
+        "texts": 35,
+        "rectangles": 18,
+        "circles": 1,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 2 is outside viewBox bounds",
+        "Text element 3 is outside viewBox bounds",
+        "Text element 4 is outside viewBox bounds",
+        "Text element 5 is outside viewBox bounds",
+        "Text element 6 is outside viewBox bounds",
+        "Text element 7 is outside viewBox bounds",
+        "Text element 8 is outside viewBox bounds",
+        "Text element 9 is outside viewBox bounds",
+        "Text element 10 is outside viewBox bounds",
+        "Text element 11 is outside viewBox bounds",
+        "Text element 12 is outside viewBox bounds",
+        "Text element 13 is outside viewBox bounds",
+        "Text element 14 is outside viewBox bounds",
+        "Text element 15 is outside viewBox bounds",
+        "Text element 16 is outside viewBox bounds",
+        "Text element 17 is outside viewBox bounds",
+        "Text element 18 is outside viewBox bounds",
+        "Text element 19 is outside viewBox bounds",
+        "Text element 20 is outside viewBox bounds",
+        "Text element 21 is outside viewBox bounds",
+        "Text element 22 is outside viewBox bounds",
+        "Text element 23 is outside viewBox bounds",
+        "Text element 24 is outside viewBox bounds",
+        "Text element 25 is outside viewBox bounds",
+        "Text element 28 is outside viewBox bounds",
+        "Text element 29 is outside viewBox bounds",
+        "Text element 30 is outside viewBox bounds",
+        "Text element 31 is outside viewBox bounds",
+        "Text element 32 is outside viewBox bounds",
+        "Text elements 2 and 8 may be overlapping",
+        "Text elements 2 and 13 may be overlapping",
+        "Text elements 3 and 8 may be overlapping",
+        "Text elements 3 and 9 may be overlapping",
+        "Text elements 3 and 13 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "route-cipher.svg",
+      "screenshot": "route-cipher.png",
+      "dimensions": {
+        "width": "905",
+        "height": "761",
+        "viewBox": "-55 -111 905 761"
+      },
+      "elements": {
+        "texts": 77,
+        "rectangles": 46,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 35 is outside viewBox bounds",
+        "Text element 36 is outside viewBox bounds",
+        "Text element 37 is outside viewBox bounds",
+        "Text element 38 is outside viewBox bounds",
+        "Text element 39 is outside viewBox bounds",
+        "Text element 40 is outside viewBox bounds",
+        "Text element 41 is outside viewBox bounds",
+        "Text element 42 is outside viewBox bounds",
+        "Text element 43 is outside viewBox bounds",
+        "Text element 44 is outside viewBox bounds",
+        "Text element 45 is outside viewBox bounds",
+        "Text element 46 is outside viewBox bounds",
+        "Text element 47 is outside viewBox bounds",
+        "Text element 48 is outside viewBox bounds",
+        "Text element 49 is outside viewBox bounds",
+        "Text element 54 is outside viewBox bounds",
+        "Text element 58 is outside viewBox bounds",
+        "Text element 59 is outside viewBox bounds",
+        "Text element 60 is outside viewBox bounds",
+        "Text element 61 is outside viewBox bounds",
+        "Text element 62 is outside viewBox bounds",
+        "Text element 63 is outside viewBox bounds",
+        "Text element 64 is outside viewBox bounds",
+        "Text element 65 is outside viewBox bounds",
+        "Text element 66 is outside viewBox bounds",
+        "Text element 67 is outside viewBox bounds",
+        "Text elements 0 and 9 may be overlapping",
+        "Text elements 1 and 16 may be overlapping",
+        "Text elements 1 and 17 may be overlapping",
+        "Text elements 1 and 18 may be overlapping",
+        "Text elements 1 and 19 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "security-attack-classification.svg",
+      "screenshot": "security-attack-classification.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": "0 0 800 600"
+      },
+      "elements": {
+        "texts": 51,
+        "rectangles": 9,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "security-attacks-mechanisms-services.svg",
+      "screenshot": "security-attacks-mechanisms-services.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 56,
+        "rectangles": 3,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 26 and 52 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "security-domains-comparison.svg",
+      "screenshot": "security-domains-comparison.png",
+      "dimensions": {
+        "width": "800",
+        "height": "500",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 25,
+        "rectangles": 7,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 5 and 10 may be overlapping",
+        "Text elements 11 and 18 may be overlapping",
+        "Text elements 16 and 20 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "security-policy-components.svg",
+      "screenshot": "security-policy-components.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": "0 0 800 600"
+      },
+      "elements": {
+        "texts": 30,
+        "rectangles": 12,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 19 is outside viewBox bounds",
+        "Text element 20 is outside viewBox bounds",
+        "Text element 23 is outside viewBox bounds",
+        "Text elements 0 and 16 may be overlapping",
+        "Text elements 0 and 21 may be overlapping",
+        "Text elements 0 and 22 may be overlapping",
+        "Text elements 0 and 25 may be overlapping",
+        "Text elements 0 and 26 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "security-services-mechanisms.svg",
+      "screenshot": "security-services-mechanisms.png",
+      "dimensions": {
+        "width": "1204",
+        "height": "1026",
+        "viewBox": "-130 -376 1204 1026"
+      },
+      "elements": {
+        "texts": 47,
+        "rectangles": 17,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 8 is outside viewBox bounds",
+        "Text element 9 is outside viewBox bounds",
+        "Text element 10 is outside viewBox bounds",
+        "Text element 11 is outside viewBox bounds",
+        "Text element 12 is outside viewBox bounds",
+        "Text element 13 is outside viewBox bounds",
+        "Text element 14 is outside viewBox bounds",
+        "Text element 15 is outside viewBox bounds",
+        "Text element 16 is outside viewBox bounds",
+        "Text element 17 is outside viewBox bounds",
+        "Text element 18 is outside viewBox bounds",
+        "Text element 19 is outside viewBox bounds",
+        "Text element 20 is outside viewBox bounds",
+        "Text element 21 is outside viewBox bounds",
+        "Text element 22 is outside viewBox bounds",
+        "Text element 23 is outside viewBox bounds",
+        "Text element 24 is outside viewBox bounds",
+        "Text element 25 is outside viewBox bounds",
+        "Text element 26 is outside viewBox bounds",
+        "Text element 27 is outside viewBox bounds",
+        "Text element 28 is outside viewBox bounds",
+        "Text element 29 is outside viewBox bounds",
+        "Text element 30 is outside viewBox bounds",
+        "Text element 31 is outside viewBox bounds",
+        "Text element 32 is outside viewBox bounds",
+        "Text element 33 is outside viewBox bounds",
+        "Text element 34 is outside viewBox bounds",
+        "Text element 35 is outside viewBox bounds",
+        "Text element 36 is outside viewBox bounds",
+        "Text element 37 is outside viewBox bounds",
+        "Text element 38 is outside viewBox bounds",
+        "Text element 39 is outside viewBox bounds",
+        "Text element 40 is outside viewBox bounds",
+        "Text element 41 is outside viewBox bounds",
+        "Text element 42 is outside viewBox bounds",
+        "Text element 43 is outside viewBox bounds",
+        "Text element 44 is outside viewBox bounds",
+        "Text element 45 is outside viewBox bounds",
+        "Text element 46 is outside viewBox bounds",
+        "Text elements 4 and 5 may be overlapping",
+        "Text elements 6 and 7 may be overlapping",
+        "Text elements 8 and 16 may be overlapping",
+        "Text elements 9 and 13 may be overlapping",
+        "Text elements 9 and 16 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "session-management-security.svg",
+      "screenshot": "session-management-security.png",
+      "dimensions": {
+        "width": null,
+        "height": null,
+        "viewBox": "0 0 800 600"
+      },
+      "elements": {
+        "texts": 41,
+        "rectangles": 12,
+        "circles": 4,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 4 is outside viewBox bounds",
+        "Text element 7 is outside viewBox bounds",
+        "Text element 8 is outside viewBox bounds",
+        "Text element 15 is outside viewBox bounds",
+        "Text element 19 is outside viewBox bounds",
+        "Text element 26 is outside viewBox bounds",
+        "Text element 28 is outside viewBox bounds",
+        "Text element 29 is outside viewBox bounds",
+        "Text element 31 is outside viewBox bounds",
+        "Text element 32 is outside viewBox bounds",
+        "Text element 34 is outside viewBox bounds",
+        "Text element 35 is outside viewBox bounds",
+        "Text element 37 is outside viewBox bounds",
+        "Text element 38 is outside viewBox bounds",
+        "Text elements 1 and 5 may be overlapping",
+        "Text elements 1 and 9 may be overlapping",
+        "Text elements 1 and 15 may be overlapping",
+        "Text elements 1 and 22 may be overlapping",
+        "Text elements 2 and 6 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "ssh-architecture-flow.svg",
+      "screenshot": "ssh-architecture-flow.png",
+      "dimensions": {
+        "width": null,
+        "height": null,
+        "viewBox": "0 0 1200 800"
+      },
+      "elements": {
+        "texts": 95,
+        "rectangles": 33,
+        "circles": 5,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "sso-single-sign-on.svg",
+      "screenshot": "sso-single-sign-on.png",
+      "dimensions": {
+        "width": null,
+        "height": null,
+        "viewBox": "0 0 1000 700"
+      },
+      "elements": {
+        "texts": 45,
+        "rectangles": 14,
+        "circles": 5,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "steganography.svg",
+      "screenshot": "steganography.png",
+      "dimensions": {
+        "width": "800",
+        "height": "700",
+        "viewBox": "0 0 800 700"
+      },
+      "elements": {
+        "texts": 47,
+        "rectangles": 36,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 0 and 20 may be overlapping",
+        "Text elements 0 and 35 may be overlapping",
+        "Text elements 0 and 37 may be overlapping",
+        "Text elements 1 and 11 may be overlapping",
+        "Text elements 1 and 23 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "substitution-transposition.svg",
+      "screenshot": "substitution-transposition.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 31,
+        "rectangles": 5,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "symmetric-vs-asymmetric-detailed.svg",
+      "screenshot": "symmetric-vs-asymmetric-detailed.png",
+      "dimensions": {
+        "width": "900",
+        "height": "600",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 41,
+        "rectangles": 20,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "symmetric-vs-asymmetric.svg",
+      "screenshot": "symmetric-vs-asymmetric.png",
+      "dimensions": {
+        "width": "800",
+        "height": "500",
+        "viewBox": null
+      },
+      "elements": {
+        "texts": 30,
+        "rectangles": 11,
+        "circles": 4,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "threat-vulnerability-risk-relationship.svg",
+      "screenshot": "threat-vulnerability-risk-relationship.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": "0 0 800 600"
+      },
+      "elements": {
+        "texts": 22,
+        "rectangles": 4,
+        "circles": 3,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 9 and 21 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "types-of-security-attacks.svg",
+      "screenshot": "types-of-security-attacks.png",
+      "dimensions": {
+        "width": "1205",
+        "height": "851",
+        "viewBox": "-300 -201 1205 851"
+      },
+      "elements": {
+        "texts": 42,
+        "rectangles": 21,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 8 is outside viewBox bounds",
+        "Text element 9 is outside viewBox bounds",
+        "Text element 10 is outside viewBox bounds",
+        "Text element 11 is outside viewBox bounds",
+        "Text element 12 is outside viewBox bounds",
+        "Text element 13 is outside viewBox bounds",
+        "Text element 14 is outside viewBox bounds",
+        "Text element 15 is outside viewBox bounds",
+        "Text element 16 is outside viewBox bounds",
+        "Text element 17 is outside viewBox bounds",
+        "Text element 18 is outside viewBox bounds",
+        "Text element 19 is outside viewBox bounds",
+        "Text element 20 is outside viewBox bounds",
+        "Text element 21 is outside viewBox bounds",
+        "Text element 22 is outside viewBox bounds",
+        "Text element 23 is outside viewBox bounds",
+        "Text element 24 is outside viewBox bounds",
+        "Text element 25 is outside viewBox bounds",
+        "Text element 32 is outside viewBox bounds",
+        "Text element 33 is outside viewBox bounds",
+        "Text element 34 is outside viewBox bounds",
+        "Text element 35 is outside viewBox bounds",
+        "Text element 37 is outside viewBox bounds",
+        "Text element 39 is outside viewBox bounds",
+        "Text elements 8 and 16 may be overlapping",
+        "Text elements 9 and 13 may be overlapping",
+        "Text elements 9 and 16 may be overlapping",
+        "Text elements 9 and 34 may be overlapping",
+        "Text elements 10 and 38 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "types-of-security-threats.svg",
+      "screenshot": "types-of-security-threats.png",
+      "dimensions": {
+        "width": "1290",
+        "height": "936",
+        "viewBox": "-160 -186 1290 936"
+      },
+      "elements": {
+        "texts": 39,
+        "rectangles": 36,
+        "circles": 1,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 4 is outside viewBox bounds",
+        "Text element 5 is outside viewBox bounds",
+        "Text element 6 is outside viewBox bounds",
+        "Text element 7 is outside viewBox bounds",
+        "Text element 8 is outside viewBox bounds",
+        "Text element 9 is outside viewBox bounds",
+        "Text element 22 is outside viewBox bounds",
+        "Text element 26 is outside viewBox bounds",
+        "Text element 27 is outside viewBox bounds",
+        "Text element 28 is outside viewBox bounds",
+        "Text element 29 is outside viewBox bounds",
+        "Text element 30 is outside viewBox bounds",
+        "Text element 31 is outside viewBox bounds",
+        "Text element 32 is outside viewBox bounds",
+        "Text element 34 is outside viewBox bounds",
+        "Text element 35 is outside viewBox bounds",
+        "Text element 36 is outside viewBox bounds",
+        "Text element 37 is outside viewBox bounds",
+        "Text elements 0 and 16 may be overlapping",
+        "Text elements 0 and 17 may be overlapping",
+        "Text elements 2 and 3 may be overlapping",
+        "Text elements 4 and 18 may be overlapping",
+        "Text elements 4 and 23 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "unit1-complete-overview.svg",
+      "screenshot": "unit1-complete-overview.png",
+      "dimensions": {
+        "width": "1000",
+        "height": "700",
+        "viewBox": "0 0 1000 700"
+      },
+      "elements": {
+        "texts": 43,
+        "rectangles": 18,
+        "circles": 0,
+        "ellipses": 11
+      },
+      "issues": [
+        "Text elements 2 and 3 may be overlapping",
+        "Text elements 3 and 4 may be overlapping",
+        "Text elements 5 and 6 may be overlapping",
+        "Text elements 13 and 14 may be overlapping",
+        "Text elements 17 and 18 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "unit1-cryptography-complete-map.svg",
+      "screenshot": "unit1-cryptography-complete-map.png",
+      "dimensions": {
+        "width": "1000",
+        "height": "800",
+        "viewBox": "0 0 1000 800"
+      },
+      "elements": {
+        "texts": 98,
+        "rectangles": 27,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 3 and 5 may be overlapping",
+        "Text elements 4 and 7 may be overlapping",
+        "Text elements 10 and 12 may be overlapping",
+        "Text elements 11 and 14 may be overlapping",
+        "Text elements 16 and 18 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "vigenere-cipher.svg",
+      "screenshot": "vigenere-cipher.png",
+      "dimensions": {
+        "width": "800",
+        "height": "600",
+        "viewBox": "0 0 800 600"
+      },
+      "elements": {
+        "texts": 78,
+        "rectangles": 5,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text elements 50 and 55 may be overlapping",
+        "Text elements 51 and 55 may be overlapping",
+        "Text elements 52 and 57 may be overlapping",
+        "Text elements 53 and 57 may be overlapping",
+        "Text elements 74 and 76 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    },
+    {
+      "file": "vpn-architecture-types.svg",
+      "screenshot": "vpn-architecture-types.png",
+      "dimensions": {
+        "width": null,
+        "height": null,
+        "viewBox": "0 0 1200 800"
+      },
+      "elements": {
+        "texts": 95,
+        "rectangles": 27,
+        "circles": 5,
+        "ellipses": 0
+      },
+      "issues": [],
+      "hasTitle": false,
+      "hasDescription": false
+    },
+    {
+      "file": "web-security-threats.svg",
+      "screenshot": "web-security-threats.png",
+      "dimensions": {
+        "width": null,
+        "height": null,
+        "viewBox": "0 0 1200 800"
+      },
+      "elements": {
+        "texts": 112,
+        "rectangles": 28,
+        "circles": 0,
+        "ellipses": 0
+      },
+      "issues": [
+        "Text element 111 is outside viewBox bounds",
+        "Text elements 11 and 13 may be overlapping",
+        "Text elements 12 and 15 may be overlapping",
+        "Text elements 17 and 19 may be overlapping",
+        "Text elements 18 and 21 may be overlapping",
+        "Text elements 22 and 24 may be overlapping"
+      ],
+      "hasTitle": true,
+      "hasDescription": true
+    }
+  ]
+}
