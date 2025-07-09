@@ -5,6 +5,8 @@ import { connectMongoose } from '@/lib/mongodb';
 import { userService } from '@/lib/api/users';
 import { Types } from 'mongoose';
 
+// Using any for test mocks to avoid complex Mongoose type issues
+
 // Mock console methods to suppress expected error/warning messages during tests
 const originalConsoleError = console.error;
 const originalConsoleWarn = console.warn;
@@ -116,7 +118,7 @@ describe('/api/students/[id]', () => {
   describe('GET /api/students/[id]', () => {
     it('should return student by custom ID', async () => {
       const leanResult = Promise.resolve(mockStudent);
-      mockStudentModel.findOne.mockReturnValue({ lean: () => leanResult } as { lean: () => Promise<typeof mockStudent> });
+      mockStudentModel.findOne.mockReturnValue({ lean: () => leanResult } as any);
       
       const params = Promise.resolve({ id: 'student_123' });
       const response = await GET({} as NextRequest, { params });
@@ -533,7 +535,7 @@ describe('/api/students/[id]', () => {
 
     it('should handle user deletion with data.message administrative error', async () => {
       mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
-      const adminError = { data: { message: 'Cannot delete administrative user' } } as any;
+      const adminError: { data: { message: string } } = { data: { message: 'Cannot delete administrative user' } };
       mockUserService.deleteUser.mockRejectedValue(adminError);
       
       const params = Promise.resolve({ id: 'student_123' });

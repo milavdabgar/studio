@@ -95,7 +95,7 @@ describe('/api/users', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockConnectMongoose.mockResolvedValue(undefined);
-    (mockUserModel as any).mockClear();
+    mockUserModel.mockClear();
     mockUserInstance.save.mockClear();
     mockUserInstance.toJSON.mockClear();
   });
@@ -103,7 +103,7 @@ describe('/api/users', () => {
   describe('GET /api/users', () => {
     it('should return all users without passwords and with proper id mapping', async () => {
       const leanResult = Promise.resolve(mockUsers);
-      mockUserModel.find.mockReturnValue({ lean: () => leanResult } as any);
+      mockUserModel.find.mockReturnValue({ lean: () => leanResult } as { lean: () => Promise<typeof mockUsers> });
       
       const response = await GET();
       const data = await response.json();
@@ -121,7 +121,7 @@ describe('/api/users', () => {
 
     it('should return empty array when no users exist', async () => {
       const leanResult = Promise.resolve([]);
-      mockUserModel.find.mockReturnValue({ lean: () => leanResult } as any);
+      mockUserModel.find.mockReturnValue({ lean: () => leanResult } as { lean: () => Promise<never[]> });
       
       const response = await GET();
       const data = await response.json();
@@ -133,7 +133,7 @@ describe('/api/users', () => {
 
     it('should handle database errors', async () => {
       const errorMessage = 'Database connection failed';
-      mockUserModel.find.mockReturnValue({ lean: () => Promise.reject(new Error(errorMessage)) } as any);
+      mockUserModel.find.mockReturnValue({ lean: () => Promise.reject(new Error(errorMessage)) } as { lean: () => Promise<never> });
       
       const response = await GET();
       const data = await response.json();
@@ -205,7 +205,7 @@ describe('/api/users', () => {
 
     it('should return 400 for missing full name', async () => {
       const invalidData = { ...validUserData };
-      delete (invalidData as any).fullName;
+      delete (invalidData as { fullName?: string }).fullName;
       
       const request = new NextRequest('http://localhost/api/users', {
         method: 'POST',
@@ -236,7 +236,7 @@ describe('/api/users', () => {
 
     it('should return 400 for missing first name', async () => {
       const invalidData = { ...validUserData };
-      delete (invalidData as any).firstName;
+      delete (invalidData as { firstName?: string }).firstName;
       
       const request = new NextRequest('http://localhost/api/users', {
         method: 'POST',
@@ -252,7 +252,7 @@ describe('/api/users', () => {
 
     it('should return 400 for missing last name', async () => {
       const invalidData = { ...validUserData };
-      delete (invalidData as any).lastName;
+      delete (invalidData as { lastName?: string }).lastName;
       
       const request = new NextRequest('http://localhost/api/users', {
         method: 'POST',
@@ -268,7 +268,7 @@ describe('/api/users', () => {
 
     it('should return 400 for missing email', async () => {
       const invalidData = { ...validUserData };
-      delete (invalidData as any).email;
+      delete (invalidData as { email?: string }).email;
       
       const request = new NextRequest('http://localhost/api/users', {
         method: 'POST',
@@ -284,7 +284,7 @@ describe('/api/users', () => {
 
     it('should return 400 for missing roles', async () => {
       const invalidData = { ...validUserData };
-      delete (invalidData as any).roles;
+      delete (invalidData as { roles?: string[] }).roles;
       
       const request = new NextRequest('http://localhost/api/users', {
         method: 'POST',
@@ -315,7 +315,7 @@ describe('/api/users', () => {
 
     it('should return 400 for missing password', async () => {
       const invalidData = { ...validUserData };
-      delete (invalidData as any).password;
+      delete (invalidData as { password?: string }).password;
       
       const request = new NextRequest('http://localhost/api/users', {
         method: 'POST',
@@ -407,7 +407,8 @@ describe('/api/users', () => {
       });
       
       const response = await POST(request);
-      const data = await response.json();
+      const _data = await response.json();
+      void _data; // Acknowledge unused variable
       
       expect(response.status).toBe(201);
       expect(mockUserModel).toHaveBeenCalledWith(
@@ -419,7 +420,7 @@ describe('/api/users', () => {
 
     it('should create user without optional institute ID', async () => {
       const dataWithoutInstitute = { ...validUserData };
-      delete (dataWithoutInstitute as any).instituteId;
+      delete (dataWithoutInstitute as { instituteId?: string }).instituteId;
       
       mockUserInstance.toJSON.mockReturnValue({
         ...dataWithoutInstitute,
@@ -553,7 +554,7 @@ describe('/api/users', () => {
 
     it('should handle case-insensitive email conflict checking', async () => {
       mockUserModel.findOne.mockImplementation((query: any) => {
-        if (query?.email && query.email.$regex) {
+        if (query?.email && (query.email as any).$regex) {
           return Promise.resolve({
             email: 'ALICE.WILSON@GMAIL.COM'
           });
@@ -630,7 +631,7 @@ describe('/api/users', () => {
     it('should handle institute found but without domain', async () => {
       mockInstituteService.getInstituteById.mockResolvedValue({
         ...mockInstitute,
-        domain: undefined
+        domain: undefined as string | undefined
       });
       
       mockUserInstance.toJSON.mockReturnValue({

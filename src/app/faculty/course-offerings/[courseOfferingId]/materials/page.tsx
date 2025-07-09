@@ -10,14 +10,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
-import { Loader2, PlusCircle, Edit2, Trash2, FileText, ExternalLink, Download, ArrowLeft, BookOpenCheck, Paperclip} from "lucide-react";
+import { Loader2, PlusCircle, Edit2, Trash2, ExternalLink, Download, ArrowLeft, BookOpenCheck} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { courseMaterialService } from '@/lib/api/courseMaterials';
 import type { CourseMaterial, CourseOffering, CourseMaterialFileType } from '@/types/entities';
 import { courseOfferingService } from '@/lib/api/courseOfferings';
 import { format, parseISO } from 'date-fns';
 import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
 
 const FILE_TYPE_OPTIONS: CourseMaterialFileType[] = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'txt', 'zip', 'link', 'video', 'image', 'other'];
 
@@ -53,7 +52,7 @@ export default function ManageCourseMaterialsPage() {
         ]);
         setCourseOffering(offeringData);
         setMaterials(materialsData);
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load data." });
       }
       setIsLoading(false);

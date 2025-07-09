@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Users, CalendarCheck, Edit3, Loader2, AlertTriangle, Paperclip, FileText as AssessmentIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { CourseOffering, Course, Batch, Program, Faculty, User as SystemUser } from '@/types/entities';
+import type { CourseOffering, Course, Batch, Program, Faculty } from '@/types/entities';
 import { courseOfferingService } from '@/lib/api/courseOfferings';
 import { courseService } from '@/lib/api/courses';
 import { batchService } from '@/lib/api/batches';
@@ -55,7 +55,7 @@ export default function MyCoursesPage() {
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setCurrentUser(parsedUser);
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
       }
     } else {

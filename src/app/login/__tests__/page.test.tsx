@@ -75,8 +75,9 @@ describe('Login Page', () => {
         value: '',
         configurable: true,
       });
-    } catch (_error) {
+    } catch (error) {
       // If we can't redefine it, just set it directly
+      void error; // Acknowledge unused variable
       (document as any).cookie = '';
     }
   });
@@ -136,7 +137,8 @@ describe('Login Page', () => {
     await act(async () => {
       renderResult = render(<LoginPage />);
     });
-    const { rerender: _rerender } = renderResult!
+    const { rerender } = renderResult!
+    void rerender; // Acknowledge unused variable
     
     // The component should render immediately with form elements
     // since isMounted state is managed internally
@@ -434,7 +436,8 @@ describe('Login Page', () => {
 
   describe('Form Validation', () => {
     it('should require email field', async () => {
-      const _user = userEvent.setup();
+      const user = userEvent.setup();
+      void user; // Acknowledge unused variable
       await act(async () => {
         render(<LoginPage />);
       });

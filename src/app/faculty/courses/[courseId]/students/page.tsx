@@ -5,11 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Users, Loader2, Search, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Course, Student, Program, Batch } from '@/types/entities';
+import type { Course, Student, Program } from '@/types/entities';
 import { courseService } from '@/lib/api/courses';
 import { studentService } from '@/lib/api/students';
 import { programService } from '@/lib/api/programs';
-import { batchService } from '@/lib/api/batches';
 import { useParams, useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -50,7 +49,7 @@ export default function FacultyCourseStudentsPage() {
           setEnrolledStudents([]);
         }
 
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load course or student data." });
         setCourse(null);
         setProgram(null);

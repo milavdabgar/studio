@@ -4,15 +4,14 @@
 import React, { useEffect, useState } from 'react';
 import ProjectList, { Project as ProjectListProject } from './ProjectList';
 import ProjectView from './ProjectView';
-import { ChevronLeft, User, Check, Users as UsersIconLucide, Edit2} from 'lucide-react';
+import { ChevronLeft, Users as UsersIconLucide} from 'lucide-react';
 import { projectService } from '@/lib/api/projects';
 import { projectTeamService } from '@/lib/api/projectTeams';
 import { useToast } from '@/hooks/use-toast';
-import type { Project as EntityProject, ProjectEvent, ProjectTeam as Team, SystemUser } from '@/types/entities';
+import type { Project as EntityProject, ProjectEvent, ProjectTeam as Team } from '@/types/entities';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { userService } from '@/lib/api/users'; // To search for users to add
 
@@ -41,7 +40,7 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
   const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
   const [editingTeam, setEditingTeam] = useState<Team | null>(null);
   const [teamMemberSearch, setTeamMemberSearch] = useState('');
-  const [searchedUsers, setSearchedUsers] = useState<SystemUser[]>([]);
+  const [searchedUsers, setSearchedUsers] = useState<any[]>([]);
   const [newMemberFormData, setNewMemberFormData] = useState<TeamMemberFormData>({ userId: '', name: '', enrollmentNo: '', role: 'Member' });
 
 
@@ -52,7 +51,7 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
         const decodedCookie = decodeURIComponent(authUserCookie.split('=')[1]);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setUser(parsedUser);
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
       }
     }
@@ -65,7 +64,7 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
       try {
         const projectsData = await projectService.getMyProjects();
         setMyProjects(Array.isArray(projectsData) ? projectsData : []);
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Failed to fetch your projects." });
       } finally {
         setLoading(false);
@@ -87,19 +86,6 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
     setSelectedProjectId(null);
   };
 
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return 'Date not set';
-    try {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-        });
-    } catch (e) {
-        return "Invalid Date";
-    }
-  };
 
   const openTeamManagementModal = async (project: EntityProject) => {
     if (!project.teamId || typeof project.teamId !== 'string') {
@@ -110,7 +96,7 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
         const teamDetails = await projectTeamService.getTeamById(project.teamId);
         setEditingTeam(teamDetails);
         setIsTeamModalOpen(true);
-    } catch (error) {
+    } catch {
         toast({variant: "destructive", title: "Error", description: "Could not load team details."});
     }
   };

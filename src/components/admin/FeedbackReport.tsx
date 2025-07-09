@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, LineChart, Line } from 'recharts';
-import type { AnalysisResult, BranchScore, FacultyScore, SubjectScore } from '@/types/feedback';
+import type { AnalysisResult, FacultyScore, SubjectScore } from '@/types/feedback';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';

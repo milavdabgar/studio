@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { PublicNav } from "@/components/public-nav";
 import Image from "next/image";
 import { 
-  GraduationCap, Lightbulb, Users, Target, Award, TrendingUp, Rocket, FileText, Mail, MapPin, Phone, Clock, Star, Cog, Shield, Building, BookOpen, CheckCircle} from "lucide-react";
+  Lightbulb, Users, Target, Award, TrendingUp, Rocket, FileText, Mail, MapPin, Phone, Clock, Star, Cog, Shield, Building, BookOpen, CheckCircle} from "lucide-react";
 import { Footer } from "@/components/footer";
 
 export default function SSIPPage() {

@@ -134,7 +134,7 @@ describe('/api/students', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockConnectMongoose.mockResolvedValue(undefined);
-    (mockStudentModel as any).mockClear();
+    mockStudentModel.mockClear();
     mockStudentInstance.save.mockClear();
     mockStudentInstance.toJSON.mockClear();
   });
@@ -142,7 +142,7 @@ describe('/api/students', () => {
   describe('GET /api/students', () => {
     it('should return all students with proper id mapping', async () => {
       const leanResult = Promise.resolve(mockStudents);
-      mockStudentModel.find.mockReturnValue({ lean: () => leanResult } as any);
+      mockStudentModel.find.mockReturnValue({ lean: () => leanResult } as { lean: () => Promise<typeof mockStudents> });
       
       const response = await GET();
       const data = await response.json();
@@ -160,11 +160,12 @@ describe('/api/students', () => {
     it('should map _id to id when id field is missing', async () => {
       const studentsWithoutId = mockStudents.map(student => {
         const { id, ...studentWithoutId } = student;
+        void id; // Acknowledge unused variable
         return studentWithoutId;
       });
       
       const leanResult = Promise.resolve(studentsWithoutId);
-      mockStudentModel.find.mockReturnValue({ lean: () => leanResult } as any);
+      mockStudentModel.find.mockReturnValue({ lean: () => leanResult } as { lean: () => Promise<typeof studentsWithoutId> });
       
       const response = await GET();
       const data = await response.json();
@@ -176,7 +177,7 @@ describe('/api/students', () => {
 
     it('should return empty array when no students exist', async () => {
       const leanResult = Promise.resolve([]);
-      mockStudentModel.find.mockReturnValue({ lean: () => leanResult } as any);
+      mockStudentModel.find.mockReturnValue({ lean: () => leanResult } as { lean: () => Promise<never[]> });
       
       const response = await GET();
       const data = await response.json();
@@ -188,7 +189,7 @@ describe('/api/students', () => {
 
     it('should handle database errors', async () => {
       const errorMessage = 'Database connection failed';
-      mockStudentModel.find.mockReturnValue({ lean: () => Promise.reject(new Error(errorMessage)) } as any);
+      mockStudentModel.find.mockReturnValue({ lean: () => Promise.reject(new Error(errorMessage)) } as { lean: () => Promise<never> });
       
       const response = await GET();
       const data = await response.json();
@@ -255,7 +256,7 @@ describe('/api/students', () => {
 
     it('should return 400 for missing enrollment number', async () => {
       const invalidData = { ...validStudentData };
-      delete (invalidData as any).enrollmentNumber;
+      delete (invalidData as { enrollmentNumber?: string }).enrollmentNumber;
       
       const request = new NextRequest('http://localhost/api/students', {
         method: 'POST',
@@ -271,9 +272,9 @@ describe('/api/students', () => {
 
     it('should return 400 for missing student name', async () => {
       const invalidData = { ...validStudentData };
-      delete (invalidData as any).fullNameGtuFormat;
-      delete (invalidData as any).firstName;
-      delete (invalidData as any).lastName;
+      delete (invalidData as { fullNameGtuFormat?: string; firstName?: string; lastName?: string }).fullNameGtuFormat;
+      delete (invalidData as { fullNameGtuFormat?: string; firstName?: string; lastName?: string }).firstName;
+      delete (invalidData as { fullNameGtuFormat?: string; firstName?: string; lastName?: string }).lastName;
       
       const request = new NextRequest('http://localhost/api/students', {
         method: 'POST',
@@ -289,7 +290,7 @@ describe('/api/students', () => {
 
     it('should return 400 for missing program ID', async () => {
       const invalidData = { ...validStudentData };
-      delete (invalidData as any).programId;
+      delete (invalidData as { programId?: string }).programId;
       
       const request = new NextRequest('http://localhost/api/students', {
         method: 'POST',
@@ -410,7 +411,8 @@ describe('/api/students', () => {
       });
       
       const response = await POST(request);
-      const data = await response.json();
+      const _data = await response.json();
+      void _data; // Acknowledge unused variable
       
       expect(response.status).toBe(201);
       expect(mockUserService.updateUser).toHaveBeenCalledWith(
@@ -426,7 +428,7 @@ describe('/api/students', () => {
         lastName: 'Johnson',
         middleName: 'K'
       };
-      delete (dataWithoutGtuFormat as any).fullNameGtuFormat;
+      delete (dataWithoutGtuFormat as { fullNameGtuFormat?: string }).fullNameGtuFormat;
       
       const request = new NextRequest('http://localhost/api/students', {
         method: 'POST',
@@ -472,7 +474,8 @@ describe('/api/students', () => {
       });
       
       const response = await POST(request);
-      const data = await response.json();
+      const _data = await response.json();
+      void _data; // Acknowledge unused variable
       
       expect(response.status).toBe(201);
       expect(mockStudentModel).toHaveBeenCalledWith(

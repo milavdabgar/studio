@@ -13,7 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { CalendarIcon, Loader2, Save, XCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { format, parseISO, isValid } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { cn } from "@/lib/utils";
 import type { ProjectEvent, Department, ProjectEventStatus } from '@/types/entities';
 import { projectEventService } from '@/lib/api/projectEvents';
@@ -53,7 +53,7 @@ const ProjectEventForm: React.FC<ProjectEventFormProps> = ({ existingEvent, onEv
       try {
         const deptData = await departmentService.getAllDepartments();
         setDepartments(deptData);
-      } catch (_error) {
+      } catch {
         toast({ variant: "destructive", title: "Error loading departments" });
       }
     };

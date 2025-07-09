@@ -2,7 +2,7 @@
 // src/app/faculty/course-offerings/[courseOfferingId]/assessments/page.tsx
 "use client";
 
-import React, { useState, useEffect, FormEvent, ChangeEvent, useMemo } from 'react';
+import React, { useState, useEffect, FormEvent, useMemo } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -15,9 +15,9 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, PlusCircle, Edit, Trash2, FileText as AssessmentIcon, Loader2, Search, ArrowUpDown, ArrowLeft, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
-import { format, parseISO, isValid, setHours, setMinutes, setSeconds, setMilliseconds } from 'date-fns';
+import { format, parseISO, isValid } from 'date-fns';
 import { cn } from "@/lib/utils";
-import type { Assessment, AssessmentStatus, AssessmentType, CourseOffering, Course, Program, Batch, Faculty, User as SystemUser } from '@/types/entities';
+import type { Assessment, AssessmentStatus, AssessmentType, CourseOffering, Course, Program, Batch, Faculty } from '@/types/entities';
 import { assessmentService } from '@/lib/api/assessments';
 import { courseOfferingService } from '@/lib/api/courseOfferings';
 import { courseService } from '@/lib/api/courses';
@@ -95,7 +95,7 @@ export default function ManageCourseOfferingAssessmentsPage() {
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         userIdFromCookie = parsedUser.id;
-      } catch (error) { console.error("Error parsing user cookie:", error); }
+      } catch { console.error("Error parsing user cookie:"); }
     }
 
     if (!courseOfferingId) return;

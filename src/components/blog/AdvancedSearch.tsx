@@ -141,9 +141,6 @@ export function AdvancedSearch({
     key !== 'sortBy' && key !== 'sortOrder' && value
   );
 
-  const handlePageChange = (page: number) => {
-    performSearch(filters, page);
-  };
 
   return (
     <div className="w-full space-y-6">

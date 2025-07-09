@@ -4,9 +4,9 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CalendarIcon, ListFilter, Download, Loader2, BarChart2, Users } from "lucide-react";
+import { CalendarIcon, Download, Loader2, BarChart2, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { AttendanceRecord, Student, User as SystemUser, CourseOffering, Course, Faculty, Program, Batch } from '@/types/entities';
+import type { AttendanceRecord, Student, CourseOffering, Faculty } from '@/types/entities';
 import { attendanceService } from '@/lib/api/attendance';
 import { studentService } from '@/lib/api/students';
 import { courseService } from '@/lib/api/courses';
@@ -14,7 +14,7 @@ import { facultyService } from '@/lib/api/faculty';
 import { programService } from '@/lib/api/programs';
 import { batchService } from '@/lib/api/batches';
 import { courseOfferingService } from '@/lib/api/courseOfferings'; 
-import { format, startOfMonth, endOfMonth, parseISO, isValid, eachDayOfInterval } from 'date-fns';
+import { format, startOfMonth, endOfMonth, parseISO, isValid } from 'date-fns';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -52,7 +52,7 @@ function getCookie(name: string): string | undefined {
 
 export default function AttendanceReportsPage() {
   const [user, setUser] = useState<UserCookie | null>(null);
-  const [currentFaculty, setCurrentFaculty] = useState<Faculty | null>(null);
+  const [, setCurrentFaculty] = useState<Faculty | null>(null);
   
   const [allCourseOfferings, setAllCourseOfferings] = useState<(CourseOffering & { courseName?: string, batchName?: string, programName?: string })[]>([]);
   const [selectedCourseOfferingId, setSelectedCourseOfferingId] = useState<string>("");
@@ -75,7 +75,7 @@ export default function AttendanceReportsPage() {
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setUser(parsedUser);
-      } catch (error) { 
+      } catch { 
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
        }
     } else {
@@ -128,7 +128,7 @@ export default function AttendanceReportsPage() {
       const studentsData = await studentService.getAllStudents();
       setAllStudents(studentsData);
 
-    } catch (error) {
+    } catch {
       toast({ variant: "destructive", title: "Error", description: "Failed to load initial data for reports." });
     }
     setIsLoading(false);
@@ -165,7 +165,7 @@ export default function AttendanceReportsPage() {
         };
       });
       setAttendanceRecords(enriched);
-    } catch (error) {
+    } catch {
       toast({ variant: "destructive", title: "Error", description: "Failed to load attendance records for the selected criteria." });
     }
     setIsLoading(false);

@@ -1,5 +1,5 @@
 import { userService } from './users';
-import { User, UserRole } from '@/types/entities';
+import { User, Institute, Role } from '@/types/entities';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
 // Mock the fetch function
@@ -7,7 +7,7 @@ const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
 global.fetch = mockFetch;
 
 // Helper to create mock responses
-const createMockResponse = (options: { ok: boolean; status?: number; json: () => Promise<any> }): Response => {
+const createMockResponse = (options: { ok: boolean; status?: number; json: () => Promise<unknown> }): Response => {
   return {
     ok: options.ok,
     status: options.status || (options.ok ? 200 : 500),
@@ -148,8 +148,8 @@ describe('User API Functions', () => {
     }));
     
     const mockFile = new File([""], "users.csv", { type: 'text/csv' });
-    const mockInstitutes: any[] = [{ id: 'inst1', name: 'Test Institute' }];
-    const mockSystemRoles: any[] = [{ id: 'role1', name: 'User', code: 'user' }];
+    const mockInstitutes: Institute[] = [{ id: 'inst1', name: 'Test Institute', code: 'TI', status: 'active' }];
+    const mockSystemRoles: Role[] = [{ id: 'role1', name: 'User', code: 'student' as any, description: 'User role', permissions: [] }];
     
     const result = await userService.importUsers(mockFile, mockInstitutes, mockSystemRoles);
     expect(fetch).toHaveBeenCalledWith('/api/users/import', expect.anything());

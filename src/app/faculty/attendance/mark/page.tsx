@@ -65,7 +65,7 @@ export default function MarkAttendancePage() {
         if (enrichedOfferings.length > 0) {
           setSelectedCourseOffering(enrichedOfferings[0].id);
         }
-      } catch (_error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Failed to load course offerings." });
       }
       setIsLoading(false);
@@ -105,7 +105,7 @@ export default function MarkAttendancePage() {
         });
         setAttendanceData(newAttendanceData);
 
-      } catch (_error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Failed to load students or attendance." });
         setStudents([]);
         setAttendanceData({});
@@ -139,8 +139,8 @@ export default function MarkAttendancePage() {
     try {
       await attendanceService.markAttendance(recordsToSubmit);
       toast({ title: "Success", description: "Attendance marked successfully." });
-    } catch (_error) {
-      toast({ variant: "destructive", title: "Submission Failed", description: (_error as Error).message || "Could not save attendance." });
+    } catch (error) {
+      toast({ variant: "destructive", title: "Submission Failed", description: (error as Error).message || "Could not save attendance." });
     } finally {
       setIsSubmitting(false);
     }

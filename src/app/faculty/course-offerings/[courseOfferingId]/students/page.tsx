@@ -62,7 +62,7 @@ export default function CourseOfferingStudentsPage() {
           setEnrolledStudents([]);
         }
 
-      } catch (_error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load course offering or student data." });
         setCourseOffering(null);
         setCourse(null);

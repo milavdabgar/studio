@@ -4,7 +4,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, BellRing, CheckCheck, XCircle, Info, AlertTriangle as AlertTriangleIcon, CheckCircle as CheckCircleIcon, Filter, Trash2, Clock } from "lucide-react";
+import { Loader2, BellRing, CheckCheck, XCircle, Info, AlertTriangle as AlertTriangleIcon, CheckCircle as CheckCircleIcon, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Notification, NotificationType } from '@/types/entities';
 import { notificationService } from '@/lib/api/notifications';
@@ -59,7 +59,7 @@ export default function AllNotificationsPage() {
           toast({ variant: "destructive", title: "User ID Missing", description: "Could not identify user for notifications." });
           setIsLoading(false);
         }
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
         setIsLoading(false);
       }
@@ -75,7 +75,7 @@ export default function AllNotificationsPage() {
     try {
       const data = await notificationService.getNotificationsForUser(userId);
       setNotifications(data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
-    } catch (error) {
+    } catch {
       toast({ variant: "destructive", title: "Error", description: "Could not load notifications." });
     }
     setIsLoading(false);
@@ -93,7 +93,7 @@ export default function AllNotificationsPage() {
       setNotifications(prev => 
         prev.map(n => n.id === notificationId ? { ...n, isRead: true, updatedAt: new Date().toISOString() } : n)
       );
-    } catch (error) {
+    } catch {
       toast({ variant: "destructive", title: "Error", description: "Failed to mark notification as read." });
     }
   };
@@ -104,18 +104,11 @@ export default function AllNotificationsPage() {
       await notificationService.markAllNotificationsAsRead(userId);
       setNotifications(prev => prev.map(n => ({ ...n, isRead: true, updatedAt: new Date().toISOString() })));
       toast({ title: "Success", description: "All notifications marked as read." });
-    } catch (error) {
+    } catch {
       toast({ variant: "destructive", title: "Error", description: "Failed to mark all as read." });
     }
   };
   
-  const handleDeleteNotification = async (notificationId: string) => {
-    // Note: Delete API is not implemented yet, this is a placeholder for UI
-    if (window.confirm("Are you sure you want to delete this notification? This is a mock action.")) {
-        setNotifications(prev => prev.filter(n => n.id !== notificationId));
-        toast({title: "Mock Delete", description: `Notification ${notificationId} would be deleted.`});
-    }
-  };
 
 
   const getIconForType = (type: Notification['type']) => {

@@ -3,7 +3,6 @@
 import React, { useState, useEffect, FormEvent, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog";
@@ -16,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import { format, parseISO, isValid, differenceInCalendarDays } from 'date-fns';
 import { cn } from "@/lib/utils";
-import type { LeaveRequest, LeaveType, LeaveRequestStatus, Faculty, User as SystemUser } from '@/types/entities';
+import type { LeaveRequest, LeaveType, LeaveRequestStatus, Faculty } from '@/types/entities';
 import { leaveService } from '@/lib/api/leaves';
 import { facultyService } from '@/lib/api/faculty';
 
@@ -84,7 +83,7 @@ export default function FacultyLeavesPage() {
       const decodedCookie = decodeURIComponent(authUserCookie);
       const parsedUser = JSON.parse(decodedCookie) as UserCookie;
       userIdFromCookie = parsedUser.id;
-    } catch (error) {
+    } catch {
       toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
       setIsLoading(false);
       return;

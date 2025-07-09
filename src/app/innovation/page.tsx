@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { PublicNav } from "@/components/public-nav";
 import Image from "next/image";
 import { 
-  Lightbulb, Users, Trophy, FileText, Building, Target, Rocket, BookOpen, Mail, Phone, MapPin, ArrowRight, Star, Zap, Calendar, CheckCircle} from "lucide-react";
+  Lightbulb, Users, Trophy, FileText, Building, Target, Rocket, Mail, Phone, MapPin, ArrowRight, Star, Zap, Calendar, CheckCircle} from "lucide-react";
 
 export default function InnovationPage() {
   return (

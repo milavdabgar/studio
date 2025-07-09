@@ -6,7 +6,7 @@ const mockFetch = jest.fn();
 global.fetch = mockFetch;
 
 // Helper to create mock responses
-const createMockResponse = (options: { ok: boolean; status?: number; json: () => Promise<any> }) => {
+const createMockResponse = (options: { ok: boolean; status?: number; json: () => Promise<unknown> }) => {
   return {
     ok: options.ok,
     status: options.status || (options.ok ? 200 : 500),

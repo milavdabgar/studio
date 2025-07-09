@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Clock, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Timetable, TimetableEntry, Faculty, User, Course, Room, Program, Batch } from '@/types/entities';
+import type { TimetableEntry, Faculty } from '@/types/entities';
 import { timetableService } from '@/lib/api/timetables';
 import { facultyService } from '@/lib/api/faculty';
 import { courseService } from '@/lib/api/courses';
@@ -53,7 +53,7 @@ function getCookie(name: string): string | undefined {
 export default function FacultyTimetablePage() {
   const [facultyTimetableEntries, setFacultyTimetableEntries] = useState<EnrichedTimetableEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentFaculty, setCurrentFaculty] = useState<Faculty | null>(null);
+  const [, setCurrentFaculty] = useState<Faculty | null>(null);
   const [user, setUser] = useState<UserCookie | null>(null);
 
   const { toast } = useToast();
@@ -65,7 +65,7 @@ export default function FacultyTimetablePage() {
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setUser(parsedUser);
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
       }
     } else {

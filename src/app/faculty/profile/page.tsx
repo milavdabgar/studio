@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { UserCircle, Mail, Phone, CalendarDays, Briefcase, Edit, Loader2, Building, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Faculty, User, Qualification } from '@/types/entities';
+import type { Faculty } from '@/types/entities';
 import { facultyService } from '@/lib/api/faculty';
 import { format } from 'date-fns';
 interface UserCookie {
@@ -43,7 +43,7 @@ export default function FacultyProfilePage() {
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setUser(parsedUser);
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
       }
     } else {
@@ -65,7 +65,7 @@ export default function FacultyProfilePage() {
         } else {
           toast({ variant: "destructive", title: "Profile Not Found", description: "Could not find your faculty profile." });
         }
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load profile data." });
       }
       setIsLoading(false);
