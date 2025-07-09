@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 interface ValidationSchema {
-  validate: (data: any) => Promise<any>;
+  validate: (data: unknown) => Promise<unknown>;
 }
 
 export const validateRequest = (schema: ValidationSchema) => {

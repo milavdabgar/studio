@@ -18,22 +18,22 @@ declare namespace Express {
 
 // Mock for missing dependencies - these would normally be actual imports
 const mockStorage = {
-  uploadFile: (_options?: any) => Promise.resolve({
+  uploadFile: (_params: any) => Promise.resolve({
     url: 'https://storage.example.com/files/test.jpg',
     key: 'files/test.jpg',
   }),
-  deleteFile: (_key?: string) => Promise.resolve(true),
-  getSignedUrl: (_key?: string, _expiresIn?: number) => Promise.resolve('https://signed-url.example.com/test.jpg'),
+  deleteFile: (_key: string) => Promise.resolve(true),
+  getSignedUrl: (_key: string, _expiresIn?: number) => Promise.resolve('https://signed-url.example.com/test.jpg'),
 };
 
-const mockSharp = (_input?: any) => ({
+const mockSharp = () => ({
   metadata: () => Promise.resolve({
     width: 1200,
     height: 800,
     format: 'jpeg',
   }),
   resize: (_width?: number, _height?: number) => mockSharp(),
-  toFormat: (_format?: string) => mockSharp(),
+  toFormat: (_format: string) => mockSharp(),
   toBuffer: () => Promise.resolve(Buffer.from('processed-image')),
   jpeg: (_options?: any) => mockSharp(),
   png: (_options?: any) => mockSharp(),
@@ -45,7 +45,7 @@ export interface UploadOptions {
   allowedTypes?: string[];
   maxSize?: number;
   fileName?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface UploadResult {
@@ -54,7 +54,7 @@ export interface UploadResult {
   size: number;
   filename: string;
   mimetype: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ImageProcessingOptions {

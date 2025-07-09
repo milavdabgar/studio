@@ -16,8 +16,8 @@ export class RateLimitExceededError extends Error {
 export interface RateLimitOptions {
   windowMs?: number;
   maxRequests?: number;
-  keyGenerator?: (req: any) => string;
-  skip?: (req: any) => boolean;
+  keyGenerator?: (req: unknown) => string;
+  skip?: (req: unknown) => boolean;
   throwOnLimit?: boolean;
 }
 
@@ -31,9 +31,9 @@ export interface RateLimitConfig {
   defaultWindowMs?: number;
   defaultMaxRequests?: number;
   logger?: {
-    warn?: (message: string, meta?: any) => void;
-    error?: (message: string, meta?: any) => void;
-    debug?: (message: string, meta?: any) => void;
+    warn?: (message: string, meta?: unknown) => void;
+    error?: (message: string, meta?: unknown) => void;
+    debug?: (message: string, meta?: unknown) => void;
   };
 }
 

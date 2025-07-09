@@ -4,16 +4,16 @@ export interface FeatureFlagUser {
   name?: string;
   role?: string;
   groups?: string[];
-  attributes?: Record<string, any>;
-  custom?: Record<string, any>;
+  attributes?: Record<string, unknown>;
+  custom?: Record<string, unknown>;
 }
 
 export interface FeatureFlagCondition {
-  [key: string]: any;
-  $eq?: any;
-  $ne?: any;
-  $in?: any[];
-  $nin?: any[];
+  [key: string]: unknown;
+  $eq?: unknown;
+  $ne?: unknown;
+  $in?: unknown[];
+  $nin?: unknown[];
   $gt?: number;
   $gte?: number;
   $lt?: number;
@@ -26,15 +26,15 @@ export interface FeatureFlagCondition {
 }
 
 export interface FeatureFlagRule {
-  condition?: Record<string, FeatureFlagCondition | any>;
-  value?: any;
+  condition?: Record<string, FeatureFlagCondition | unknown>;
+  value?: unknown;
   variant?: string;
   percentage?: number;
   weight?: number; // Alternative to percentage (0-1 range)
   // Legacy support for old rule format  
   attribute?: string;
   operator?: 'equals' | 'contains' | 'startsWith' | 'endsWith' | 'in' | 'gt' | 'lt';
-  conditions?: Record<string, FeatureFlagCondition | any>;
+  conditions?: Record<string, FeatureFlagCondition | unknown>;
 }
 
 export interface FeatureFlagConfig {
@@ -45,7 +45,7 @@ export interface FeatureFlagConfig {
   userGroups?: string[];
   userIds?: string[];
   rules?: FeatureFlagRule[];
-  variants?: Record<string, any>;
+  variants?: Record<string, unknown>;
 }
 
 export interface FeatureFlag {
@@ -58,20 +58,26 @@ export interface FeatureFlag {
 }
 
 export interface Logger {
-  warn: (message: string, ...args: any[]) => void;
-  error: (message: string, ...args: any[]) => void;
-  info: (message: string, ...args: any[]) => void;
+  warn: (message: string, ...args: unknown[]) => void;
+  error: (message: string, ...args: unknown[]) => void;
+  info: (message: string, ...args: unknown[]) => void;
 }
 
 export interface FeatureFlagServiceConfig {
-  storage?: any;
+  storage?: {
+    getItem(key: string): Promise<string | null>;
+    setItem(key: string, value: string): Promise<void>;
+  };
   flags?: Record<string, FeatureFlagConfig>;
   logger?: Logger;
 }
 
 export class FeatureFlagService {
   private flags: Map<string, FeatureFlag> = new Map();
-  private storage: any;
+  private storage: {
+    getItem(key: string): Promise<string | null>;
+    setItem(key: string, value: string): Promise<void>;
+  } | undefined;
   private logger: Logger;
 
   constructor(config?: FeatureFlagServiceConfig) {
@@ -107,7 +113,7 @@ export class FeatureFlagService {
   }
 
   private async loadFlags(): Promise<void> {
-    if (this.storage && typeof this.storage.getItem === 'function') {
+    if (this.storage) {
       try {
         const stored = await this.storage.getItem('featureFlags');
         if (stored) {
@@ -123,7 +129,7 @@ export class FeatureFlagService {
   }
 
   private async saveFlags(): Promise<void> {
-    if (this.storage && typeof this.storage.setItem === 'function') {
+    if (this.storage) {
       try {
         const flagConfigs: Record<string, FeatureFlagConfig> = {};
         for (const [key, flag] of this.flags.entries()) {
@@ -138,8 +144,8 @@ export class FeatureFlagService {
   }
 
   getFlags(flagKeys?: string[]): Record<string, FeatureFlagConfig>;
-  getFlags(flagKeys: string[], user: FeatureFlagUser): Promise<Record<string, any>>;
-  getFlags(flagKeys?: string[] | FeatureFlagUser, user?: FeatureFlagUser): Record<string, FeatureFlagConfig> | Promise<Record<string, any>> {
+  getFlags(flagKeys: string[], user: FeatureFlagUser): Promise<Record<string, unknown>>;
+  getFlags(flagKeys?: string[] | FeatureFlagUser, user?: FeatureFlagUser): Record<string, FeatureFlagConfig> | Promise<Record<string, unknown>> {
     // If first parameter is a user object (no flagKeys array), it's getAllFlags with user
     if (flagKeys && !Array.isArray(flagKeys) && typeof flagKeys === 'object' && 'id' in flagKeys) {
       return this.getAllFlags(flagKeys as FeatureFlagUser);
@@ -171,8 +177,8 @@ export class FeatureFlagService {
   }
 
   async getAllFlags(): Promise<FeatureFlag[]>;
-  async getAllFlags(user: FeatureFlagUser): Promise<Record<string, any>>;
-  async getAllFlags(user?: FeatureFlagUser): Promise<FeatureFlag[] | Record<string, any>> {
+  async getAllFlags(user: FeatureFlagUser): Promise<Record<string, unknown>>;
+  async getAllFlags(user?: FeatureFlagUser): Promise<FeatureFlag[] | Record<string, unknown>> {
     if (user) {
       const flagKeys = Array.from(this.flags.keys());
       return this.getMultipleFlags(flagKeys, user);
@@ -255,16 +261,16 @@ export class FeatureFlagService {
                 const hash = this.hashUser(user.id, key);
                 const percentage = (hash % 100) + 1;
                 if (percentage <= rolloutPercent) {
-                  return rule.value !== undefined ? rule.value : true;
+                  return rule.value !== undefined ? Boolean(rule.value) : true;
                 }
               } else {
                 // For users without ID, use random
                 if (Math.random() * 100 < rolloutPercent) {
-                  return rule.value !== undefined ? rule.value : true;
+                  return rule.value !== undefined ? Boolean(rule.value) : true;
                 }
               }
             } else {
-              return rule.value !== undefined ? rule.value : true;
+              return rule.value !== undefined ? Boolean(rule.value) : true;
             }
           }
         }
@@ -295,7 +301,7 @@ export class FeatureFlagService {
     }
   }
 
-  async getVariant(key: string, user?: FeatureFlagUser): Promise<any> {
+  async getVariant(key: string, user?: FeatureFlagUser): Promise<unknown> {
     const flag = this.flags.get(key);
     
     if (!flag) {
@@ -411,8 +417,8 @@ export class FeatureFlagService {
     }
   }
 
-  async getMultipleFlags(flagKeys: string[], user?: FeatureFlagUser): Promise<Record<string, any>> {
-    const results: Record<string, any> = {};
+  async getMultipleFlags(flagKeys: string[], user?: FeatureFlagUser): Promise<Record<string, unknown>> {
+    const results: Record<string, unknown> = {};
     
     for (const key of flagKeys) {
       const flag = this.flags.get(key);
@@ -445,7 +451,7 @@ export class FeatureFlagService {
     return results;
   }
 
-  private evaluateConditions(conditions: Record<string, any>, user: FeatureFlagUser): boolean {
+  private evaluateConditions(conditions: Record<string, unknown>, user: FeatureFlagUser): boolean {
     try {
       // Empty conditions should match all users
       if (Object.keys(conditions).length === 0) {
@@ -476,7 +482,7 @@ export class FeatureFlagService {
     }
   }
 
-  private evaluateCondition(userValue: any, operator: string, value: any): boolean {
+  private evaluateCondition(userValue: unknown, operator: string, value: unknown): boolean {
     switch (operator) {
       case '$eq':
         return userValue === value;
@@ -497,7 +503,7 @@ export class FeatureFlagService {
       case '$exists':
         return value ? userValue !== undefined : userValue === undefined;
       case '$regex':
-        return new RegExp(value).test(String(userValue));
+        return new RegExp(String(value)).test(String(userValue));
       case '$endsWith':
         return String(userValue).endsWith(String(value));
       case '$startsWith':
@@ -588,15 +594,15 @@ export class FeatureFlagService {
     }
   }
 
-  private getUserAttribute(user: FeatureFlagUser, attribute: string): any {
+  private getUserAttribute(user: FeatureFlagUser, attribute: string): unknown {
     // Handle dot notation for nested attributes
     if (attribute.includes('.')) {
       const parts = attribute.split('.');
-      let value: any = user;
+      let value: unknown = user;
       
       for (const part of parts) {
         if (value && typeof value === 'object') {
-          value = value[part];
+          value = (value as any)[part];
         } else {
           return undefined;
         }

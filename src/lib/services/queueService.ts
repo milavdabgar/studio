@@ -3,7 +3,7 @@ import { EventEmitter } from 'events';
 export interface QueueJob {
   id: string;
   name: string;
-  data: any;
+  data: unknown;
   timestamp: number;
   attemptsMade?: number;
   finishedOn?: number;
@@ -21,10 +21,10 @@ export interface QueueConfig {
     db?: number;
   };
   logger?: {
-    info: (message: string, ...args: any[]) => void;
-    error: (message: string, ...args: any[]) => void;
-    debug: (message: string, ...args: any[]) => void;
-    warn: (message: string, ...args: any[]) => void;
+    info: (message: string, ...args: unknown[]) => void;
+    error: (message: string, ...args: unknown[]) => void;
+    debug: (message: string, ...args: unknown[]) => void;
+    warn: (message: string, ...args: unknown[]) => void;
   };
   defaultJobOptions?: {
     removeOnComplete?: boolean | number;
@@ -67,7 +67,7 @@ export class QueueError extends Error {
   }
 }
 
-export type JobHandler = (job: QueueJob) => Promise<any>;
+export type JobHandler = (job: QueueJob) => Promise<unknown>;
 
 export class QueueService extends EventEmitter {
   private config: QueueConfig;
@@ -102,7 +102,7 @@ export class QueueService extends EventEmitter {
 
   async addJob(
     name: string,
-    data: any,
+    data: unknown,
     options: JobOptions = {}
   ): Promise<string> {
     const jobId = `${name}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -297,15 +297,15 @@ export class QueueService extends EventEmitter {
   }
 
   // Event emitter methods
-  on(event: string, listener: (...args: any[]) => void): this {
+  on(event: string, listener: (...args: unknown[]) => void): this {
     return super.on(event, listener);
   }
 
-  off(event: string, listener: (...args: any[]) => void): this {
+  off(event: string, listener: (...args: unknown[]) => void): this {
     return super.off(event, listener);
   }
 
-  emit(event: string, ...args: any[]): boolean {
+  emit(event: string, ...args: unknown[]): boolean {
     return super.emit(event, ...args);
   }
 

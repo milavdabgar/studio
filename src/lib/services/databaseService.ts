@@ -40,9 +40,9 @@ export class DatabaseService {
     });
   }
 
-  async query<T extends Record<string, any> = any>(
+  async query<T extends Record<string, unknown> = Record<string, unknown>>(
     text: string, 
-    params?: any[]
+    params?: unknown[]
   ): Promise<QueryResult<T>> {
     const start = Date.now();
     

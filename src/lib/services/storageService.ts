@@ -17,14 +17,14 @@ try {
 } catch {
   // Mock implementations for testing
   S3Client = class {
-    constructor() {}
-    send() { return Promise.resolve({}); }
+    constructor(_config?: any) {}
+    send(_command: any) { return Promise.resolve({}); }
   };
-  PutObjectCommand = class { constructor() {} };
-  GetObjectCommand = class { constructor() {} };
-  DeleteObjectCommand = class { constructor() {} };
-  HeadObjectCommand = class { constructor() {} };
-  getSignedUrl = () => Promise.resolve('mock-signed-url');
+  PutObjectCommand = class { constructor(_params?: any) {} };
+  GetObjectCommand = class { constructor(_params?: any) {} };
+  DeleteObjectCommand = class { constructor(_params?: any) {} };
+  HeadObjectCommand = class { constructor(_params?: any) {} };
+  getSignedUrl = (_client: any, _command: any, _options?: any) => Promise.resolve('mock-signed-url');
 }
 import { createReadStream, createWriteStream, unlinkSync, existsSync, mkdirSync, statSync } from 'fs';
 import { rm } from 'fs/promises';
@@ -85,7 +85,7 @@ export class StorageService {
     this.config = config;
     
     if (config.s3) {
-      this.s3Client = new S3Client({
+      this.s3Client = new (S3Client as any)({
         region: config.s3.region,
         credentials: config.s3.accessKeyId && config.s3.secretAccessKey ? {
           accessKeyId: config.s3.accessKeyId,

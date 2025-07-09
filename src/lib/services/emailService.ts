@@ -1,13 +1,13 @@
 // Email Service
 // Mock nodemailer since it's not available in this environment
 const nodemailer = {
-  createTransport: (_config?: any) => ({
-    sendMail: (_options?: any) => Promise.resolve({ messageId: 'mock-id' }),
+  createTransport: () => ({
+    sendMail: () => Promise.resolve({ messageId: 'mock-id' }),
     verify: () => Promise.resolve(true),
     close: () => {}
   }),
   Transporter: class {
-    sendMail = (_options?: any) => Promise.resolve({ messageId: 'mock-id' });
+    sendMail = () => Promise.resolve({ messageId: 'mock-id' });
     verify = () => Promise.resolve(true);
   }
 };
@@ -15,8 +15,8 @@ const nodemailer = {
 // Add the namespace for type compatibility
 declare namespace nodemailer {
   interface Transporter {
-    sendMail(options: any): Promise<any>;
-    verify(): Promise<any>;
+    sendMail(options: Record<string, unknown>): Promise<{ messageId: string }>;
+    verify(): Promise<boolean>;
     close(): void;
   }
 }
@@ -53,7 +53,7 @@ export interface TemplateEmailOptions {
   to: string | string[];
   subject: string;
   template: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   from?: string;
   cc?: string | string[];
   bcc?: string | string[];
@@ -69,11 +69,11 @@ export class EmailService {
   }
 
   async initialize(): Promise<void> {
-    this.transporter = nodemailer.createTransport(this.config);
+    this.transporter = nodemailer.createTransport();
     await this.verifyConnection();
   }
 
-  async verifyConnection(_config?: any): Promise<boolean> {
+  async verifyConnection(): Promise<boolean> {
     if (!this.transporter) {
       throw new Error('Email service not initialized');
     }

@@ -6,7 +6,7 @@ export interface CacheOptions {
   useRedis?: boolean;
 }
 
-export interface CacheItem<T = any> {
+export interface CacheItem<T = unknown> {
   value: T;
   expiry: number;
 }
@@ -55,7 +55,7 @@ export class CacheService {
     }
   }
 
-  async get<T = any>(key: string): Promise<T | null> {
+  async get<T = unknown>(key: string): Promise<T | null> {
     const fullKey = this.getKey(key);
     
     if (this.useRedis && this.redis) {
@@ -84,7 +84,7 @@ export class CacheService {
     return item.value as T;
   }
 
-  async set<T = any>(key: string, value: T, ttl?: number): Promise<void> {
+  async set<T = unknown>(key: string, value: T, ttl?: number): Promise<void> {
     const fullKey = this.getKey(key);
     const effectiveTtl = ttl !== undefined ? ttl : this.defaultTtl;
     
@@ -166,12 +166,12 @@ export class CacheService {
       );
   }
 
-  async mget<T = any>(keys: string[]): Promise<(T | null)[]> {
+  async mget<T = unknown>(keys: string[]): Promise<(T | null)[]> {
     const promises = keys.map(key => this.get<T>(key));
     return Promise.all(promises);
   }
 
-  async mset<T = any>(entries: Array<[string, T]>, ttl?: number): Promise<void> {
+  async mset<T = unknown>(entries: Array<[string, T]>, ttl?: number): Promise<void> {
     const promises = entries.map(([key, value]) => this.set(key, value, ttl));
     await Promise.all(promises);
   }
@@ -187,7 +187,7 @@ export class CacheService {
     return this.increment(key, -delta);
   }
 
-  async getOrSet<T = any>(
+  async getOrSet<T = unknown>(
     key: string, 
     factory: (isCacheMiss?: boolean) => Promise<T> | T, 
     ttl?: number
@@ -203,7 +203,7 @@ export class CacheService {
     return value;
   }
 
-  async remember<T = any>(
+  async remember<T = unknown>(
     key: string,
     ttl: number,
     factory: () => Promise<T> | T
@@ -246,7 +246,7 @@ export class CacheService {
     return `${base}:${hash}`;
   }
 
-  cached<T extends (...args: any[]) => Promise<any>>(
+  cached<T extends (...args: unknown[]) => Promise<unknown>>(
     key: string,
     fn: T,
     ttl?: number
@@ -267,11 +267,11 @@ export class CacheService {
 
   async clearByPattern(pattern: string): Promise<number> {
     if (this.useRedis && this.redis) {
-      const keys = await (this.redis as any).keys(pattern);
+      const keys = await (this.redis as RedisClient & { keys: (pattern: string) => Promise<string[]> }).keys(pattern);
       if (keys.length === 0) {
         return 0;
       }
-      await (this.redis as any).del(...keys);
+      await (this.redis as RedisClient & { del: (...keys: string[]) => Promise<number> }).del(...keys);
       return keys.length;
     }
     
@@ -286,7 +286,7 @@ export class CacheService {
 
   async flushAll(): Promise<void> {
     if (this.useRedis && this.redis) {
-      await (this.redis as any).flushdb();
+      await (this.redis as RedisClient & { flushdb: () => Promise<void> }).flushdb();
       return;
     }
     

@@ -174,7 +174,7 @@ export class PaymentService {
         email: customer.email!,
         name: customer.name || undefined,
         phone: customer.phone || undefined,
-        address: customer.address as any,
+        address: customer.address as Customer['address'],
         defaultPaymentMethod: customer.default_source as string,
         metadata: customer.metadata,
       };
@@ -187,17 +187,17 @@ export class PaymentService {
     try {
       const customer = await this.stripe.customers.retrieve(customerId);
       
-      if ((customer as any).deleted) {
+      if ('deleted' in customer && customer.deleted) {
         throw new PaymentError('Customer has been deleted', 'customer_deleted');
       }
 
-      const activeCustomer = customer as any;
+      const activeCustomer = customer as Stripe.Customer;
       return {
         id: activeCustomer.id,
         email: activeCustomer.email!,
         name: activeCustomer.name || undefined,
         phone: activeCustomer.phone || undefined,
-        address: activeCustomer.address as any,
+        address: activeCustomer.address as Customer['address'],
         defaultPaymentMethod: activeCustomer.default_source as string,
         metadata: activeCustomer.metadata,
       };
@@ -225,14 +225,14 @@ export class PaymentService {
         expand: ['latest_invoice.payment_intent'],
       });
 
-      const sub = subscription as any;
+      const sub = subscription as Stripe.Subscription;
       return {
         id: sub.id,
         customerId: sub.customer as string,
         planId: priceId,
         status: sub.status as Subscription['status'],
-        currentPeriodStart: new Date(sub.current_period_start * 1000),
-        currentPeriodEnd: new Date(sub.current_period_end * 1000),
+        currentPeriodStart: new Date((sub as any).current_period_start * 1000),
+        currentPeriodEnd: new Date((sub as any).current_period_end * 1000),
         trialStart: sub.trial_start 
           ? new Date(sub.trial_start * 1000) 
           : undefined,
@@ -263,14 +263,14 @@ export class PaymentService {
         }
       );
 
-      const sub = subscription as any;
+      const sub = subscription as Stripe.Subscription;
       return {
         id: sub.id,
         customerId: sub.customer as string,
         planId: sub.items.data[0].price.id,
         status: sub.status as Subscription['status'],
-        currentPeriodStart: new Date(sub.current_period_start * 1000),
-        currentPeriodEnd: new Date(sub.current_period_end * 1000),
+        currentPeriodStart: new Date((sub as any).current_period_start * 1000),
+        currentPeriodEnd: new Date((sub as any).current_period_end * 1000),
         trialStart: sub.trial_start 
           ? new Date(sub.trial_start * 1000) 
           : undefined,
@@ -360,7 +360,7 @@ export class PaymentService {
     }
   }
 
-  private handleStripeError(error: any): PaymentError {
+  private handleStripeError(error: unknown): PaymentError {
     if (error instanceof Stripe.errors.StripeError) {
       return new PaymentError(
         error.message,
@@ -370,7 +370,7 @@ export class PaymentService {
     }
     
     return new PaymentError(
-      error.message || 'An unknown payment error occurred',
+      error instanceof Error ? error.message : 'An unknown payment error occurred',
       'unknown_error'
     );
   }

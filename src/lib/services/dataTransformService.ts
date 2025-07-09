@@ -1,7 +1,7 @@
 export interface NormalizedResponse {
-  entities: Record<string, Record<string | number, any>>;
+  entities: Record<string, Record<string | number, unknown>>;
   result: (string | number)[];
-  meta?: Record<string, any>;
+  meta?: Record<string, unknown>;
 }
 
 export interface NormalizationOptions {
@@ -180,7 +180,7 @@ export class DataTransformService {
         if (!result[arrayKey]) {
           result[arrayKey] = [];
         }
-        result[arrayKey].push(value);
+        (result[arrayKey] as string[]).push(value);
       } else {
         result[key] = value;
       }
@@ -208,15 +208,15 @@ export class DataTransformService {
   }
 
   // Legacy methods for backward compatibility
-  static transformToApiFormat(data: unknown): unknown {
+  static transformToApiFormat(data: any): any {
     return data;
   }
 
-  static transformFromApiFormat(data: unknown): unknown {
+  static transformFromApiFormat(data: any): any {
     return data;
   }
 
-  static sanitizeData(data: unknown): unknown {
+  static sanitizeData(data: any): any {
     return data;
   }
 }

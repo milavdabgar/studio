@@ -1,24 +1,24 @@
 import { z } from 'zod';
 
 export class ConfigValidationError extends Error {
-  constructor(message: string, public field: string, public value: any) {
+  constructor(message: string, public field: string, public value: unknown) {
     super(message);
     this.name = 'ConfigValidationError';
   }
 }
 
 export interface ConfigSchema {
-  [key: string]: z.ZodType<any>;
+  [key: string]: z.ZodType<unknown>;
 }
 
 export interface ConfigOptions {
   throwOnValidationError?: boolean;
-  defaultValues?: Record<string, any>;
+  defaultValues?: Record<string, unknown>;
   requiredFields?: string[];
 }
 
 export class ConfigService {
-  private config: Record<string, any> = {};
+  private config: Record<string, unknown> = {};
   private schema: ConfigSchema = {};
   private options: ConfigOptions;
 
@@ -79,7 +79,7 @@ export class ConfigService {
     return value as T;
   }
 
-  set(key: string, value: any): void {
+  set(key: string, value: unknown): void {
     // Validate against schema if available
     if (this.schema[key]) {
       try {
@@ -117,7 +117,7 @@ export class ConfigService {
     return value;
   }
 
-  getAll(): Record<string, any> {
+  getAll(): Record<string, unknown> {
     return { ...this.config };
   }
 

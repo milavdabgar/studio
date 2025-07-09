@@ -304,7 +304,7 @@ describe('RateLimiter', () => {
     it('should use custom key generator', async () => {
       const customLimiter = new RateLimiter({
         ...defaultConfig,
-        keyGenerator: (req) => req.userId || 'anonymous',
+        keyGenerator: (req: any) => req.userId || 'anonymous',
       });
 
       const middleware = customLimiter.middleware();

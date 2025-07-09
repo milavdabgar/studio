@@ -1,14 +1,14 @@
 export interface NotificationConfig {
-  emailService?: any;
-  smsService?: any;
-  pushService?: any;
-  webhookService?: any;
-  userRepository?: any;
+  emailService?: { sendTemplatedEmail: (params: { to: string; subject: string; template: string; data: Record<string, unknown> }) => Promise<boolean> };
+  smsService?: { sendSms: (params: { to: string; message: string }) => Promise<boolean> };
+  pushService?: { sendPush: (params: { userId: string; title: string; body: string; data?: Record<string, unknown> }) => Promise<boolean> };
+  webhookService?: { sendWebhook: (params: { event: string; payload: Record<string, unknown> }) => Promise<{ success: boolean }> };
+  userRepository?: { findById: (id: string) => Promise<{ email?: string; phone?: string; deviceTokens?: string[] } | null>; getUserPreferences: (userId: string) => Promise<Record<string, boolean> | null> };
   logger?: {
-    info: (message: string, ...args: any[]) => void;
-    error: (message: string, ...args: any[]) => void;
-    debug: (message: string, ...args: any[]) => void;
-    warn: (message: string, ...args: any[]) => void;
+    info: (message: string, ...args: unknown[]) => void;
+    error: (message: string, ...args: unknown[]) => void;
+    debug: (message: string, ...args: unknown[]) => void;
+    warn: (message: string, ...args: unknown[]) => void;
   };
   templates?: Record<string, NotificationTemplate>;
   rateLimits?: {
@@ -42,11 +42,11 @@ export interface NotificationRequest {
   type: string;
   title: string;
   message: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
   channels?: ('email' | 'sms' | 'push' | 'webhook')[];
   template?: string;
   priority?: 'low' | 'medium' | 'high' | 'urgent';
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface BatchNotificationRequest {
@@ -116,7 +116,7 @@ export class NotificationService {
     }
 
     // Get user data if userId provided
-    let user: any = null;
+    let user: { email?: string; phone?: string; deviceTokens?: string[] } | null = null;
     if (userId && this.config.userRepository) {
       user = await this.config.userRepository.findById(userId);
       if (!user) {
@@ -140,7 +140,7 @@ export class NotificationService {
         case 'sms':
           return (user?.phone || phone) && this.config.smsService;
         case 'push':
-          return user?.deviceTokens?.length > 0 && this.config.pushService;
+          return user?.deviceTokens && user.deviceTokens.length > 0 && this.config.pushService;
         case 'webhook':
           return this.config.webhookService;
         default:
@@ -330,7 +330,7 @@ export class NotificationService {
     subject: string;
     message: string;
     template?: string;
-    data?: any;
+    data?: Record<string, unknown>;
   }): Promise<boolean> {
     if (!this.config.emailService) {
       throw new NotificationError('Email service not configured', 'EMAIL_SERVICE_NOT_CONFIGURED');
@@ -351,7 +351,7 @@ export class NotificationService {
     to: string;
     message: string;
     template?: string;
-    data?: any;
+    data?: Record<string, unknown>;
   }): Promise<boolean> {
     if (!this.config.smsService) {
       throw new NotificationError('SMS service not configured', 'SMS_SERVICE_NOT_CONFIGURED');
@@ -367,7 +367,7 @@ export class NotificationService {
     userId: string;
     title: string;
     message: string;
-    data?: any;
+    data?: Record<string, unknown>;
   }): Promise<boolean> {
     if (!this.config.pushService) {
       throw new NotificationError('Push service not configured', 'PUSH_SERVICE_NOT_CONFIGURED');

@@ -4,8 +4,8 @@ export interface RateLimiterConfig {
   message?: string;
   skipSuccessfulRequests?: boolean;
   skipFailedRequests?: boolean;
-  keyGenerator?: (req: any) => string;
-  onLimitReached?: (req: any, res: any) => void;
+  keyGenerator?: (req: unknown) => string;
+  onLimitReached?: (req: unknown, res: unknown) => void;
 }
 
 export interface RateLimitResult {

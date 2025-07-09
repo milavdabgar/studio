@@ -46,9 +46,9 @@ export class RateLimitError extends Error {
 
 export class CustomError extends Error {
   public statusCode: number;
-  public data?: any;
+  public data?: unknown;
   
-  constructor(message: string, statusCode: number = 500, data?: any) {
+  constructor(message: string, statusCode: number = 500, data?: unknown) {
     super(message);
     this.name = 'CustomError';
     this.statusCode = statusCode;
@@ -59,7 +59,7 @@ export class CustomError extends Error {
 export const errorHandler = async (
   error: Error | unknown,
   _req: NextRequest,
-  _res: any,
+  _res: unknown,
   next: Function
 ) => {
   // If no error, call next
@@ -82,7 +82,7 @@ export const errorHandler = async (
   console.error(error);
 
   let status = 500;
-  let responseData: any = {
+  let responseData: Record<string, unknown> = {
     status: 'error',
     message: 'Internal server error',
   };
@@ -94,7 +94,7 @@ export const errorHandler = async (
     responseData = {
       status: 'error',
       message: error.message,
-      errors: (error as any).inner?.map((err: any) => ({
+      errors: (error as { inner?: { path: string; message: string }[] }).inner?.map((err: { path: string; message: string }) => ({
         path: err.path,
         message: err.message,
       })) || [],
@@ -141,7 +141,7 @@ export const errorHandler = async (
     responseData = {
       status: 'error',
       message: error.message,
-      ...(customError.data && { data: customError.data }),
+      ...(customError.data ? { data: customError.data } : {}),
     };
   }
   // Handle generic errors
@@ -155,7 +155,7 @@ export const errorHandler = async (
     }
   }
 
-  const responseOptions: any = { status };
+  const responseOptions: { status: number; headers?: Record<string, string> } = { status };
   if (Object.keys(headers).length > 0) {
     responseOptions.headers = headers;
   }

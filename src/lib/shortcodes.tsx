@@ -180,7 +180,7 @@ function parseShortcodeParams(paramString: string): Record<string, unknown> {
 }
 
 // Parse string values to appropriate types
-function parseValue(value: string): unknown {
+function parseValue(value: string): string | number | boolean {
   if (!value) return value;
   
   // Boolean values

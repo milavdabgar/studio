@@ -4,10 +4,10 @@ export interface ValidationErrorDetail {
   path: (string | number)[];
   message: string;
   code: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
-export interface ValidationResult<T = any> {
+export interface ValidationResult<T = unknown> {
   success: boolean;
   data?: T;
   errors?: ValidationErrorDetail[];
@@ -15,9 +15,9 @@ export interface ValidationResult<T = any> {
 
 export interface ValidationServiceConfig {
   logger?: {
-    debug: (message: string, ...args: any[]) => void;
-    warn: (message: string, ...args: any[]) => void;
-    error: (message: string, ...args: any[]) => void;
+    debug: (message: string, ...args: unknown[]) => void;
+    warn: (message: string, ...args: unknown[]) => void;
+    error: (message: string, ...args: unknown[]) => void;
   };
   formatError?: (error: z.ZodIssue) => ValidationErrorDetail;
 }

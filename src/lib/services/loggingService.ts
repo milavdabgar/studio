@@ -18,7 +18,7 @@ export interface LogContext {
   userAgent?: string;
   action?: string;
   resource?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface LogEntry {

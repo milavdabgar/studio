@@ -140,7 +140,7 @@ export async function cancelLeaveRequest(id: string): Promise<LeaveRequest | nul
   });
 }
 
-export async function deleteLeaveRequest(_id?: string): Promise<boolean> {
+export async function deleteLeaveRequest(_id: string): Promise<boolean> {
   return Promise.resolve(true);
 }
 
