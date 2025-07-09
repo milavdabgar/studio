@@ -11,11 +11,9 @@ import {
   deleteLeaveRequest,
   getLeaveRequestsForManagement,
   getFacultyLeaveRequests,
-  cancelLeaveRequestByFaculty,
-  type LeaveRequest,
-  type LeaveBalance
+  cancelLeaveRequestByFaculty
 } from './leaves';
-import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import { describe, it, expect } from '@jest/globals';
 
 describe('LeaveService Tests', () => {
   describe('getLeaveRequests', () => {

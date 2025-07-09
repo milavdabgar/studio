@@ -103,9 +103,8 @@ export async function getExaminationResults(examId: string): Promise<Examination
   return Promise.resolve(results);
 }
 
-export async function getExaminationTimetable(examId: string): Promise<TimetableEntry[]> {
+export async function getExaminationTimetable(): Promise<TimetableEntry[]> {
   // Mock timetable data
-  // examId parameter acknowledged but unused in mock implementation
   const timetable: TimetableEntry[] = [
     {
       id: '1',

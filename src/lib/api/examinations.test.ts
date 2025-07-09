@@ -6,12 +6,9 @@ import {
   getExaminationTimetable,
   createExamination,
   updateExamination,
-  deleteExamination,
-  type ExaminationResult,
-  type TimetableEntry
+  deleteExamination
 } from './examinations';
-import type { Examination } from '@/types/entities';
-import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import { describe, it, expect } from '@jest/globals';
 
 describe('ExaminationService Tests', () => {
   describe('getExaminations', () => {

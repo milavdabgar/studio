@@ -5,11 +5,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Loader2, FileText, CheckCircle, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label"; // Added Label import
-import type { Result, Student, Program, Course } from '@/types/entities';
+import type { Result, Student, Program } from '@/types/entities';
 import { resultService } from '@/lib/api/results';
 import { studentService } from '@/lib/api/students';
 import { programService } from '@/lib/api/programs';
-import { courseService } from '@/lib/api/courses';
 import { format } from 'date-fns';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 

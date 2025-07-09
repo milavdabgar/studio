@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CalendarCheck, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Assessment, Student, StudentAssessmentScore } from '@/types/entities';
+import type { Assessment, StudentAssessmentScore } from '@/types/entities';
 import { assessmentService } from '@/lib/api/assessments';
 import { courseService } from '@/lib/api/courses';
 import { studentService } from '@/lib/api/students';

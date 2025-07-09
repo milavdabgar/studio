@@ -4,6 +4,8 @@ export const sendSMS = async (to: string, message: string): Promise<void> => {
   console.log(`Sending SMS to ${to}: ${message}`);
 };
 
-export default {
+const smsService = {
   sendSMS,
 };
+
+export default smsService;

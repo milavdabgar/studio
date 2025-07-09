@@ -5,7 +5,6 @@
 
 import { ContentConverterV2 } from '../content-converter-v2';
 import fs from 'fs';
-import path from 'path';
 
 // Mock file system for testing
 jest.mock('fs');
