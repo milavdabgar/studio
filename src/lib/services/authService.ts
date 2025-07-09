@@ -53,7 +53,7 @@ export class AuthService {
     const createData: {
       email: string;
       password: string;
-      name: string;
+      name?: string;
       role?: string;
     } = {
       email: userData.email,

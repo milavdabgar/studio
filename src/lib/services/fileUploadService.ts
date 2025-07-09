@@ -18,12 +18,12 @@ declare namespace Express {
 
 // Mock for missing dependencies - these would normally be actual imports
 const mockStorage = {
-  uploadFile: () => Promise.resolve({
+  uploadFile: (params?: any) => Promise.resolve({
     url: 'https://storage.example.com/files/test.jpg',
     key: 'files/test.jpg',
   }),
-  deleteFile: () => Promise.resolve(true),
-  getSignedUrl: () => Promise.resolve('https://signed-url.example.com/test.jpg'),
+  deleteFile: (key?: string) => Promise.resolve(true),
+  getSignedUrl: (key?: string, expires?: number) => Promise.resolve('https://signed-url.example.com/test.jpg'),
 };
 
 const mockSharp = () => ({
@@ -32,12 +32,12 @@ const mockSharp = () => ({
     height: 800,
     format: 'jpeg',
   }),
-  resize: () => mockSharp(),
-  toFormat: () => mockSharp(),
+  resize: (width?: number, height?: number) => mockSharp(),
+  toFormat: (format?: string) => mockSharp(),
   toBuffer: () => Promise.resolve(Buffer.from('processed-image')),
-  jpeg: () => mockSharp(),
-  png: () => mockSharp(),
-  webp: () => mockSharp(),
+  jpeg: (options?: any) => mockSharp(),
+  png: (options?: any) => mockSharp(),
+  webp: (options?: any) => mockSharp(),
 });
 
 export interface UploadOptions {
@@ -203,7 +203,7 @@ export class FileUploadService {
 
   static async generatePresignedUrl(key: string, expiresIn: number = 3600): Promise<string> {
     try {
-      return await mockStorage.getSignedUrl(key, { expiresIn });
+      return await mockStorage.getSignedUrl(key, expiresIn);
     } catch (error) {
       throw new FileUploadError(
         `Failed to generate presigned URL: ${error instanceof Error ? error.message : String(error)}`,

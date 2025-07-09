@@ -47,7 +47,7 @@ import MDImporter from '@/components/shortcodes/MDImporter';
 import Ref from '@/components/shortcodes/Ref';
 
 // Type for shortcode components
-type ShortcodeComponent = React.ComponentType<Record<string, unknown>>;
+type ShortcodeComponent = React.ComponentType<any>;
 
 // Shortcode registry mapping with exact Blowfish API compatibility
 const shortcodeRegistry: Record<string, ShortcodeComponent> = {

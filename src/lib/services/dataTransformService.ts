@@ -5,7 +5,7 @@ export interface NormalizedResponse {
 }
 
 export interface NormalizationOptions {
-  [key: string]: string;
+  [key: string]: string | undefined;
   entityType?: string;
 }
 
@@ -34,7 +34,7 @@ export class DataTransformService {
         // Handle nested objects based on options
         if (options) {
           Object.entries(options).forEach(([key, entityName]) => {
-            if (key !== 'entityType' && normalizedItem[key]) {
+            if (key !== 'entityType' && entityName && normalizedItem[key]) {
               if (Array.isArray(normalizedItem[key])) {
                 // Handle arrays of nested objects
                 if (!entities[entityName]) entities[entityName] = {};

@@ -47,18 +47,7 @@ export default function DetailedResultView({ resultId }: DetailedResultViewProps
           }
         }
 
-        // Fetch details for all courses in the result subjects
-        if (resultData.subjects && resultData.subjects.length > 0) {
-            const courseSubcodes = resultData.subjects.map(s => s.code); // Assuming subject.code is course.subcode
-            const allCourses = await courseService.getAllCourses(); // Pass an empty object for query options
-            const details: Record<string, Course> = {};
-            const courseIds = courseSubcodes; // Assuming courseSubcodes is the intended variable name
-            courseIds.forEach(subcode => {
-                const course = allCourses.find(c => c.subcode === subcode && c.programId === resultData.programId && c.semester === resultData.semester);
-                if(course) details[subcode] = course;
-            });
-            setCoursesDetails(details);
-        }
+        // Course details are already available in resultData.subjects, no need to fetch separately
 
       } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load result details." });

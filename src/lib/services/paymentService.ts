@@ -191,14 +191,15 @@ export class PaymentService {
         throw new PaymentError('Customer has been deleted', 'customer_deleted');
       }
 
+      const activeCustomer = customer as any;
       return {
-        id: customer.id,
-        email: customer.email!,
-        name: customer.name || undefined,
-        phone: customer.phone || undefined,
-        address: customer.address as any,
-        defaultPaymentMethod: customer.default_source as string,
-        metadata: customer.metadata,
+        id: activeCustomer.id,
+        email: activeCustomer.email!,
+        name: activeCustomer.name || undefined,
+        phone: activeCustomer.phone || undefined,
+        address: activeCustomer.address as any,
+        defaultPaymentMethod: activeCustomer.default_source as string,
+        metadata: activeCustomer.metadata,
       };
     } catch (error) {
       throw this.handleStripeError(error);
@@ -224,23 +225,24 @@ export class PaymentService {
         expand: ['latest_invoice.payment_intent'],
       });
 
+      const sub = subscription as any;
       return {
-        id: subscription.id,
-        customerId: subscription.customer as string,
+        id: sub.id,
+        customerId: sub.customer as string,
         planId: priceId,
-        status: subscription.status as Subscription['status'],
-        currentPeriodStart: new Date(subscription.current_period_start * 1000),
-        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-        trialStart: subscription.trial_start 
-          ? new Date(subscription.trial_start * 1000) 
+        status: sub.status as Subscription['status'],
+        currentPeriodStart: new Date(sub.current_period_start * 1000),
+        currentPeriodEnd: new Date(sub.current_period_end * 1000),
+        trialStart: sub.trial_start 
+          ? new Date(sub.trial_start * 1000) 
           : undefined,
-        trialEnd: subscription.trial_end 
-          ? new Date(subscription.trial_end * 1000) 
+        trialEnd: sub.trial_end 
+          ? new Date(sub.trial_end * 1000) 
           : undefined,
-        canceledAt: subscription.canceled_at 
-          ? new Date(subscription.canceled_at * 1000) 
+        canceledAt: sub.canceled_at 
+          ? new Date(sub.canceled_at * 1000) 
           : undefined,
-        cancelAtPeriodEnd: subscription.cancel_at_period_end,
+        cancelAtPeriodEnd: sub.cancel_at_period_end,
         metadata: subscription.metadata,
       };
     } catch (error) {
@@ -261,23 +263,24 @@ export class PaymentService {
         }
       );
 
+      const sub = subscription as any;
       return {
-        id: subscription.id,
-        customerId: subscription.customer as string,
-        planId: subscription.items.data[0].price.id,
-        status: subscription.status as Subscription['status'],
-        currentPeriodStart: new Date(subscription.current_period_start * 1000),
-        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-        trialStart: subscription.trial_start 
-          ? new Date(subscription.trial_start * 1000) 
+        id: sub.id,
+        customerId: sub.customer as string,
+        planId: sub.items.data[0].price.id,
+        status: sub.status as Subscription['status'],
+        currentPeriodStart: new Date(sub.current_period_start * 1000),
+        currentPeriodEnd: new Date(sub.current_period_end * 1000),
+        trialStart: sub.trial_start 
+          ? new Date(sub.trial_start * 1000) 
           : undefined,
-        trialEnd: subscription.trial_end 
-          ? new Date(subscription.trial_end * 1000) 
+        trialEnd: sub.trial_end 
+          ? new Date(sub.trial_end * 1000) 
           : undefined,
-        canceledAt: subscription.canceled_at 
-          ? new Date(subscription.canceled_at * 1000) 
+        canceledAt: sub.canceled_at 
+          ? new Date(sub.canceled_at * 1000) 
           : undefined,
-        cancelAtPeriodEnd: subscription.cancel_at_period_end,
+        cancelAtPeriodEnd: sub.cancel_at_period_end,
         metadata: subscription.metadata,
       };
     } catch (error) {

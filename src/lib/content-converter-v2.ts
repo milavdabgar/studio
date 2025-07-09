@@ -344,7 +344,8 @@ export class ContentConverterV2 {
                     try {
                         launchOptions.executablePath = await chromium.executablePath('/opt/nodejs/node_modules/@sparticuz/chromium-min/bin');
                         const chromiumArgs: string[] = Array.isArray(chromium.args) ? chromium.args.filter((arg): arg is string => typeof arg === 'string') : [];
-                        launchOptions.args = [...(launchOptions.args || []), ...chromiumArgs];
+                        const currentArgs = Array.isArray(launchOptions.args) ? launchOptions.args : [];
+                        launchOptions.args = [...currentArgs, ...chromiumArgs];
                         launchOptions.defaultViewport = chromium.defaultViewport;
                     } catch (error) {
                         console.warn('Failed to get chromium executable path:', error);
