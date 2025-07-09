@@ -1,5 +1,5 @@
 
-import type { ProjectTeam, Department, ProjectEvent, User, ProjectTeamMember } from '@/types/entities';
+import type { ProjectTeam, Department, ProjectEvent, User } from '@/types/entities';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 

@@ -60,7 +60,7 @@ export default function DetailedResultView({ resultId }: DetailedResultViewProps
             setCoursesDetails(details);
         }
 
-      } catch (_error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load result details." });
       }
       setIsLoading(false);
@@ -126,7 +126,6 @@ export default function DetailedResultView({ resultId }: DetailedResultViewProps
             </TableHeader>
             <TableBody>
                 {result.subjects.map((subject, index) => {
-                    const courseDetail = coursesDetails[subject.code];
                     return (
                         <TableRow key={subject.code + index} className={subject.isBacklog ? "bg-red-50 dark:bg-red-900/30" : ""}>
                             <TableCell>{subject.code}</TableCell>

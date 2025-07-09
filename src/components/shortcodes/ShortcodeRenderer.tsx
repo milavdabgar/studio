@@ -58,7 +58,7 @@ export function ShortcodeRenderer({ contentHtml }: ShortcodeRendererProps) {
           
           // Render the React component
           const root = createRoot(componentContainer);
-          root.render(React.createElement(Component as any, params));
+          root.render(React.createElement(Component as React.ComponentType<unknown>, params));
         }
       } catch (error) {
         console.error('Error rendering shortcode:', shortcodeName, error);

@@ -70,8 +70,7 @@ const List: React.FC<ListProps> = ({
   title = "Recent",
   cardView = false,
   where,
-  value,
-  children
+  value
 }) => {
   // Parse limit to number
   const limitNum = typeof limit === 'string' ? parseInt(limit) : limit;

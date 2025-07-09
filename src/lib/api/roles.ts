@@ -1,5 +1,5 @@
 
-import type { Role, UserRole } from '@/types/entities';
+import type { Role } from '@/types/entities';
 // Removed papaparse import as it's not directly used in this service file
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';

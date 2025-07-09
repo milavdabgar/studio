@@ -1,5 +1,5 @@
 
-import type { Project, ProjectEvent, ProjectTeam, Department, ProjectLocation, ProjectStatistics, EvaluationData, CategoryCounts, User, ProjectEvaluationScore, CertificateInfo, WinnersResponse } from '@/types/entities';
+import type { Project, ProjectEvent, ProjectTeam, Department, ProjectLocation, ProjectStatistics, EvaluationData, User, CertificateInfo, WinnersResponse } from '@/types/entities';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 

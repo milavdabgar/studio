@@ -4,7 +4,6 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
-import html from 'remark-html';
 import gfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -268,7 +267,7 @@ export async function getPostData({
   } else if (normalizedDate && typeof normalizedDate !== 'string') {
     try {
       normalizedDate = new Date(normalizedDate).toISOString();
-    } catch (e) {
+    } catch (e: unknown) {
       console.warn('Failed to convert date, using current date:', e);
       normalizedDate = new Date().toISOString();
     }
@@ -369,7 +368,7 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
         if (dateA < dateB) return 1;
         if (dateA > dateB) return -1;
         return 0;
-    } catch (e) {
+    } catch {
         return a.title.localeCompare(b.title);
     }
   });

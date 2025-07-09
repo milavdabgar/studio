@@ -1,12 +1,12 @@
 // src/app/student/materials/page.tsx
 "use client";
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Download, Loader2, FileText, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Course, Student, CourseOffering, CourseMaterial } from '@/types/entities';
+import type { Student, CourseOffering, CourseMaterial } from '@/types/entities';
 import { studentService } from '@/lib/api/students';
 import { courseService } from '@/lib/api/courses';
 import { courseOfferingService } from '@/lib/api/courseOfferings';
@@ -48,7 +48,6 @@ export default function StudyMaterialsPage() {
   const [allMaterials, setAllMaterials] = useState<EnrichedCourseMaterial[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserCookie | null>(null);
-  const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
   const [studentCourseOfferings, setStudentCourseOfferings] = useState<CourseOffering[]>([]);
   
   const [selectedCourseOfferingFilter, setSelectedCourseOfferingFilter] = useState<string>("all");
@@ -63,7 +62,7 @@ export default function StudyMaterialsPage() {
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setUser(parsedUser);
-      } catch (_error) { 
+      } catch { 
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
        }
     } else {
@@ -79,7 +78,6 @@ export default function StudyMaterialsPage() {
       try {
         const allStudents = await studentService.getAllStudents();
         const studentProfile = allStudents.find(s => s.userId === user.id);
-        setCurrentStudent(studentProfile || null);
 
         if (studentProfile && studentProfile.batchId) {
           const allCOs = await courseOfferingService.getAllCourseOfferings();
@@ -116,8 +114,8 @@ export default function StudyMaterialsPage() {
             toast({ variant: "warning", title: "No Profile", description: "Student profile not found." });
           }
         }
-      } catch (_error) {
-        console.error("Error fetching study materials:", _error);
+      } catch (error) {
+        console.error("Error fetching study materials:", error);
         toast({ variant: "destructive", title: "Error", description: "Could not load study materials." });
       }
       setIsLoading(false);
@@ -126,32 +124,26 @@ export default function StudyMaterialsPage() {
     fetchStudentAndCourseData();
   }, [user, toast]);
   
-  const uniqueCourseOfferingsForFilter = useMemo(() => {
-    return studentCourseOfferings.map(co => {
-      const course = allMaterials.find(m => m.courseOfferingId === co.id); // Find a material to get courseName
-      return {
-        id: co.id,
-        name: course?.courseName ? `${course.courseName} (Sem ${course.semester || 'N/A'})` : `Offering ${co.id.slice(-4)}`
-      };
-    });
-  }, [studentCourseOfferings, allMaterials]);
+  const uniqueCourseOfferingsForFilter = studentCourseOfferings.map(co => {
+    const course = allMaterials.find(m => m.courseOfferingId === co.id); // Find a material to get courseName
+    return {
+      id: co.id,
+      name: course?.courseName ? `${course.courseName} (Sem ${course.semester || 'N/A'})` : `Offering ${co.id.slice(-4)}`
+    };
+  });
 
-  const filteredMaterials = useMemo(() => {
-    return allMaterials.filter(mat => {
-        return selectedCourseOfferingFilter === "all" || mat.courseOfferingId === selectedCourseOfferingFilter;
-    });
-  }, [allMaterials, selectedCourseOfferingFilter]);
+  const filteredMaterials = allMaterials.filter(mat => {
+    return selectedCourseOfferingFilter === "all" || mat.courseOfferingId === selectedCourseOfferingFilter;
+  });
   
-  const materialsGroupedByCourseOffering = useMemo(() => {
-    return filteredMaterials.reduce((acc, material) => {
-      const key = `${material.courseName || "Uncategorized"} (Sem ${material.semester || 'N/A'}) - Offering ID: ${material.courseOfferingId.slice(-6)}`;
-      if (!acc[key]) {
-        acc[key] = [];
-      }
-      acc[key].push(material);
-      return acc;
-    }, {} as Record<string, EnrichedCourseMaterial[]>);
-  }, [filteredMaterials]);
+  const materialsGroupedByCourseOffering = filteredMaterials.reduce((acc, material) => {
+    const key = `${material.courseName || "Uncategorized"} (Sem ${material.semester || 'N/A'}) - Offering ID: ${material.courseOfferingId.slice(-6)}`;
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(material);
+    return acc;
+  }, {} as Record<string, EnrichedCourseMaterial[]>);
 
 
   if (isLoading) {

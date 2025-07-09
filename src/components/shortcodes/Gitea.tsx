@@ -25,7 +25,7 @@ interface GiteaRepo {
   };
 }
 
-const Gitea: React.FC<GiteaProps> = ({ repo, server, children }) => {
+const Gitea: React.FC<GiteaProps> = ({ repo, server }) => {
   const [repoData, setRepoData] = useState<GiteaRepo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

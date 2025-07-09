@@ -25,7 +25,7 @@ interface ForgejoRepo {
   };
 }
 
-const Forgejo: React.FC<ForgejoProps> = ({ repo, server, children }) => {
+const Forgejo: React.FC<ForgejoProps> = ({ repo, server }) => {
   const [repoData, setRepoData] = useState<ForgejoRepo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

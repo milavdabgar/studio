@@ -7,12 +7,12 @@ interface UseFormOptions<T> {
   validate?: (values: T) => Record<string, string>;
 }
 
-export const useForm = <T extends Record<string, any>>(options: UseFormOptions<T>) => {
+export const useForm = <T extends Record<string, unknown>>(options: UseFormOptions<T>) => {
   const [values, setValues] = useState<T>(options.initialValues);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement> | { target: { name: string; value: any } }) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement> | { target: { name: string; value: unknown } }) => {
     const { name, value } = e.target;
     setValues(prev => ({ ...prev, [name]: value }));
     

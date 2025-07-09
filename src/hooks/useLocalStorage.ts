@@ -53,7 +53,7 @@ export const useLocalStorage = <T>(key: string, initialValue: T) => {
   const remove = () => {
     try {
       // Update state
-      setStoredValue(undefined as any);
+      setStoredValue(undefined as T);
       
       // Remove from localStorage
       if (typeof window !== 'undefined') {

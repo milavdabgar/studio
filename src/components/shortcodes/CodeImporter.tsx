@@ -17,8 +17,7 @@ const CodeImporter: React.FC<CodeImporterProps> = ({
   url,
   type = 'text',
   startLine,
-  endLine,
-  children
+  endLine
 }) => {
   const [code, setCode] = useState<string>('');
   const [loading, setLoading] = useState(true);

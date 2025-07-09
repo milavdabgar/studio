@@ -5,10 +5,9 @@ interface ArticleProps {
   title?: string;
   target?: string;
   rel?: string;
-  [key: string]: any;
 }
 
-export default function Article({ link, title, target = '_blank', rel = 'noopener', ...props }: ArticleProps) {
+export default function Article({ link, title, target = '_blank', rel = 'noopener' }: ArticleProps) {
   if (!link) {
     return <div className="text-red-500">Article shortcode requires a link parameter</div>;
   }

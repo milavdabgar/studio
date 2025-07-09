@@ -1,6 +1,6 @@
 // src/lib/api/examinations.ts
 
-import type { Examination, ExaminationType, ExaminationStatus, ExaminationTimeTableEntry } from '@/types/entities';
+import type { Examination } from '@/types/entities';
 
 export interface ExaminationResult {
   id: string;

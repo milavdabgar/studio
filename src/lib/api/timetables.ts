@@ -1,5 +1,5 @@
 
-import type { Timetable, TimetableEntry } from '@/types/entities';
+import type { Timetable } from '@/types/entities';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 

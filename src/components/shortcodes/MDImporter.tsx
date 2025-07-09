@@ -12,7 +12,7 @@ interface MDImporterProps {
   children?: React.ReactNode;
 }
 
-const MDImporter: React.FC<MDImporterProps> = ({ url, children }) => {
+const MDImporter: React.FC<MDImporterProps> = ({ url }) => {
   const [content, setContent] = useState<React.ReactNode>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

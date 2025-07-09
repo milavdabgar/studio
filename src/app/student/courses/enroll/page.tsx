@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, BookOpenCheck, AlertTriangle, PlusCircle, CheckCircle, Clock } from "lucide-react";
@@ -12,7 +12,6 @@ import { courseService } from '@/lib/api/courses';
 import { programService } from '@/lib/api/programs';
 import { batchService } from '@/lib/api/batches';
 import { enrollmentService } from '@/lib/api/enrollments';
-import { format } from 'date-fns';
 interface UserCookie {
   email: string;
   name: string;
@@ -47,7 +46,6 @@ export default function EnrollCoursesPage() {
   const [currentUser, setCurrentUser] = useState<UserCookie | null>(null);
   const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
   const [availableOfferings, setAvailableOfferings] = useState<EnrichedCourseOffering[]>([]);
-  const [myEnrollments, setMyEnrollments] = useState<Enrollment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
@@ -58,7 +56,7 @@ export default function EnrollCoursesPage() {
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setCurrentUser(parsedUser);
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
       }
     } else {
@@ -87,7 +85,6 @@ export default function EnrollCoursesPage() {
             batchService.getAllBatches(),
             enrollmentService.getEnrollmentsByStudent(studentProfile.id),
           ]);
-          setMyEnrollments(studentEnrollments);
 
           const relevantOfferings = allCOs
             .filter(co => 
@@ -123,7 +120,7 @@ export default function EnrollCoursesPage() {
           setAvailableOfferings([]);
           toast({ variant: "warning", title: "Profile Error", description: "Student profile not found." });
         }
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load course enrollment data." });
       }
       setIsLoading(false);
@@ -145,8 +142,7 @@ export default function EnrollCoursesPage() {
       });
       toast({ title: "Enrollment Requested", description: "Your request has been submitted for approval." });
       // Re-fetch enrollments and update offering status
-      const updatedEnrollments = await enrollmentService.getEnrollmentsByStudent(currentStudent.id);
-      setMyEnrollments(updatedEnrollments);
+      await enrollmentService.getEnrollmentsByStudent(currentStudent.id);
       setAvailableOfferings(prev => prev.map(co => 
         co.id === courseOfferingId ? { ...co, enrollmentStatus: 'requested' } : co
       ));

@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CalendarCheck, Loader2 } from "lucide-react";
@@ -52,7 +52,7 @@ export default function StudentAssignmentsPage() {
   const [assignments, setAssignments] = useState<EnrichedAssignment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserCookie | null>(null);
-  const [_currentStudent, setCurrentStudent] = useState<Student | null>(null);
+  const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
   
   const [filterCourse, setFilterCourse] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
@@ -66,7 +66,7 @@ export default function StudentAssignmentsPage() {
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setUser(parsedUser);
-      } catch (_error) {
+      } catch {
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
       }
     } else {
@@ -103,7 +103,7 @@ export default function StudentAssignmentsPage() {
             let submission: Partial<StudentAssessmentScore> | null = null;
             try {
               submission = await studentAssessmentScoreService.getStudentScoreForAssessment(asmnt.id, studentProfile.id);
-            } catch (e) {
+            } catch (e: unknown) {
               // If 404, it means no submission, which is fine. Other errors will be caught by main try-catch
               if (!(e instanceof Error && e.message.includes('404'))) {
                  console.warn(`Could not fetch submission for assessment ${asmnt.id}:`, e)
@@ -145,7 +145,7 @@ export default function StudentAssignmentsPage() {
           setAssignments([]);
           toast({ variant: "warning", title: "No Profile", description: "Student profile not found." });
         }
-      } catch (_error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load assignments data." });
       }
       setIsLoading(false);
@@ -154,18 +154,13 @@ export default function StudentAssignmentsPage() {
     fetchAssignmentsData();
   }, [user, toast]);
 
-  const uniqueCoursesForFilter = useMemo(() => {
-    const courseNames = new Set(assignments.map(a => a.courseName).filter(Boolean));
-    return Array.from(courseNames) as string[];
-  }, [assignments]);
+  const uniqueCoursesForFilter = Array.from(new Set(assignments.map(a => a.courseName).filter(Boolean))) as string[];
 
-  const filteredAssignments = useMemo(() => {
-    return assignments.filter(a => {
-      const courseMatch = filterCourse === "all" || a.courseName === filterCourse;
-      const statusMatch = filterStatus === "all" || a.submissionStatus === filterStatus;
-      return courseMatch && statusMatch;
-    });
-  }, [assignments, filterCourse, filterStatus]);
+  const filteredAssignments = assignments.filter(a => {
+    const courseMatch = filterCourse === "all" || a.courseName === filterCourse;
+    const statusMatch = filterStatus === "all" || a.submissionStatus === filterStatus;
+    return courseMatch && statusMatch;
+  });
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;

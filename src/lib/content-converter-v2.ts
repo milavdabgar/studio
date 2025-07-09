@@ -9,7 +9,7 @@ import { marked } from 'marked';
 import matter from 'gray-matter';
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { codeToHtml, BundledLanguage, BundledTheme } from 'shiki';
+import { codeToHtml, BundledLanguage } from 'shiki';
 
 const execAsync = promisify(exec);
 
@@ -37,7 +37,7 @@ try {
     // For production environments, also try chromium
     try {
         chromium = require('@sparticuz/chromium-min');
-    } catch (e) {
+    } catch {
         console.log('Chromium package not available, using default Puppeteer');
     }
 } catch (error) {
@@ -54,7 +54,7 @@ let katex: {
 } | null = null;
 try {
     katex = require('katex');
-} catch (error) {
+} catch {
     console.log('KaTeX not available, math rendering will be limited');
 }
 

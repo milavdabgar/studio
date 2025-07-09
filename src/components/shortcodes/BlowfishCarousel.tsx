@@ -18,8 +18,7 @@ interface BlowfishCarouselProps {
 const BlowfishCarousel: React.FC<BlowfishCarouselProps> = ({
   images = '',
   aspectRatio = '16-9',
-  interval = 2000,
-  children
+  interval = 2000
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageList, setImageList] = useState<string[]>([]);

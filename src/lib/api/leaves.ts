@@ -1,6 +1,6 @@
 // src/lib/api/leaves.ts
 
-import type { LeaveRequest as EntityLeaveRequest, LeaveType, LeaveRequestStatus } from '@/types/entities';
+import type { LeaveRequest as EntityLeaveRequest } from '@/types/entities';
 
 export type LeaveRequest = EntityLeaveRequest;
 

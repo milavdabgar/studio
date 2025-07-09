@@ -3,18 +3,19 @@
 
 import React, { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
+import { Chart as ChartJS } from 'chart.js/auto';
 
 interface ChartProps {
   children?: string; // Chart configuration as string
   type?: string;
-  data?: any;
-  options?: any;
+  data?: unknown;
+  options?: unknown;
   className?: string;
 }
 
 export function Chart({ children, type, data, options, className }: ChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const chartRef = useRef<any>(null);
+  const chartRef = useRef<ChartJS | null>(null);
 
   useEffect(() => {
     const loadChartJs = async () => {
@@ -103,7 +104,7 @@ export function Chart({ children, type, data, options, className }: ChartProps) 
   const parseSimpleConfig = (configString: string) => {
     // Simple parser for YAML-like configuration
     const lines = configString.split('\n').filter(line => line.trim());
-    const config: any = {};
+    const config: Record<string, unknown> = {};
     
     lines.forEach(line => {
       const [key, ...valueParts] = line.split(':');

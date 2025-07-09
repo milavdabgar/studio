@@ -1,5 +1,5 @@
 
-import type { Department, SystemUser as User } from '@/types/entities';
+import type { Department } from '@/types/entities';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 

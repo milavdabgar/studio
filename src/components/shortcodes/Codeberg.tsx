@@ -24,7 +24,7 @@ interface CodebergRepo {
   };
 }
 
-const Codeberg: React.FC<CodebergProps> = ({ repo, children }) => {
+const Codeberg: React.FC<CodebergProps> = ({ repo }) => {
   const [repoData, setRepoData] = useState<CodebergRepo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

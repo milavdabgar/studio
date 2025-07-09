@@ -119,8 +119,8 @@ const KaTeX: React.FC<KaTeXProps> = ({ children }) => {
 // Declare global types for KaTeX
 declare global {
   interface Window {
-    katex: any;
-    renderMathInElement: (element: Element, options?: any) => void;
+    katex: unknown;
+    renderMathInElement: (element: Element, options?: unknown) => void;
   }
 }
 

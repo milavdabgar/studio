@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CalendarCheck, Loader2, Filter } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { AttendanceRecord, Student, User, CourseOffering, Course } from '@/types/entities';
+import type { AttendanceRecord, Student, CourseOffering, Course } from '@/types/entities';
 import { attendanceService } from '@/lib/api/attendance';
 import { studentService } from '@/lib/api/students';
 import { courseService } from '@/lib/api/courses';
@@ -49,10 +49,8 @@ function getCookie(name: string): string | undefined {
 
 export default function StudentAttendancePage() {
   const [attendanceRecords, setAttendanceRecords] = useState<EnrichedAttendanceRecord[]>([]);
-  const [courses, setCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserCookie | null>(null);
-  const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
   const [selectedCourseFilter, setSelectedCourseFilter] = useState<string>("all");
 
   const { toast } = useToast();
@@ -64,7 +62,7 @@ export default function StudentAttendancePage() {
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setUser(parsedUser);
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
       }
     } else {
@@ -80,12 +78,10 @@ export default function StudentAttendancePage() {
       try {
         const allStudents = await studentService.getAllStudents();
         const studentProfile = allStudents.find(s => s.userId === user.id);
-        setCurrentStudent(studentProfile || null);
 
         if (studentProfile) {
           const records = await attendanceService.getAttendanceRecords({ studentId: studentProfile.id });
           const allCourses = await courseService.getAllCourses();
-          setCourses(allCourses);
           
           // Enrich records with course names
           const enrichedRecords = records.map(record => {
@@ -101,7 +97,7 @@ export default function StudentAttendancePage() {
           setAttendanceRecords([]);
           toast({ variant: "warning", title: "No Profile", description: "Student profile not found." });
         }
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load attendance data." });
       }
       setIsLoading(false);
@@ -110,30 +106,21 @@ export default function StudentAttendancePage() {
     fetchStudentAndAttendanceData();
   }, [user, toast]);
   
-  const uniqueCourseNames = useMemo(() => {
-    const names = new Set(attendanceRecords.map(r => r.courseName).filter(Boolean));
-    return Array.from(names) as string[];
-  }, [attendanceRecords]);
+  const uniqueCourseNames = Array.from(new Set(attendanceRecords.map(r => r.courseName).filter(Boolean))) as string[];
 
-  const filteredAttendanceRecords = useMemo(() => {
-    if (selectedCourseFilter === "all") {
-      return attendanceRecords;
+  const filteredAttendanceRecords = selectedCourseFilter === "all" 
+    ? attendanceRecords
+    : attendanceRecords.filter(record => record.courseName === selectedCourseFilter);
+
+  const attendanceSummary: Record<string, { present: number, absent: number, late: number, excused: number, total: number }> = {};
+  filteredAttendanceRecords.forEach(record => {
+    const courseKey = record.courseName || "Unknown Course";
+    if (!attendanceSummary[courseKey]) {
+      attendanceSummary[courseKey] = { present: 0, absent: 0, late: 0, excused: 0, total: 0 };
     }
-    return attendanceRecords.filter(record => record.courseName === selectedCourseFilter);
-  }, [attendanceRecords, selectedCourseFilter]);
-
-  const attendanceSummary = useMemo(() => {
-    const summary: Record<string, { present: number, absent: number, late: number, excused: number, total: number }> = {};
-    filteredAttendanceRecords.forEach(record => {
-      const courseKey = record.courseName || "Unknown Course";
-      if (!summary[courseKey]) {
-        summary[courseKey] = { present: 0, absent: 0, late: 0, excused: 0, total: 0 };
-      }
-      summary[courseKey].total++;
-      summary[courseKey][record.status]++;
-    });
-    return summary;
-  }, [filteredAttendanceRecords]);
+    attendanceSummary[courseKey].total++;
+    attendanceSummary[courseKey][record.status]++;
+  });
 
 
   if (isLoading) {

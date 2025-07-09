@@ -36,7 +36,7 @@ export interface ChangePasswordData {
 }
 
 export class AuthService {
-  static async register(userData: RegisterData): Promise<User> {
+  static async register(userData: RegisterData): Promise<Omit<User, 'password'>> {
     // Check if user already exists
     const existingUser = await db.user.findUnique({
       where: { email: userData.email },
@@ -62,11 +62,11 @@ export class AuthService {
 
     const user = await db.user.create({
       data: createData,
-    });
+    }) as User;
 
     // Return user without password
     const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword as User;
+    return userWithoutPassword as Omit<User, 'password'>;
   }
 
   static async login(credentials: LoginCredentials): Promise<{ user: User; token: string }> {
@@ -80,7 +80,7 @@ export class AuthService {
     }
 
     // Verify password
-    const isValid = await compare(credentials.password, user.password);
+    const isValid = await compare(credentials.password, (user as any).password);
     if (!isValid) {
       throw new Error('Invalid credentials');
     }

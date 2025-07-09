@@ -20,14 +20,14 @@ export interface FormState<T> {
   handleBlur: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
   handleSubmit: (e: React.FormEvent) => Promise<void>;
   resetForm: () => void;
-  setFieldValue: (name: string, value: any) => void;
+  setFieldValue: (name: string, value: unknown) => void;
   setFieldTouched: (name: string, touched: boolean) => void;
   setFieldError: (name: string, error: string) => void;
   clearFieldError: (name: string) => void;
   clearAllErrors: () => void;
 }
 
-export const useFormValidation = <T extends Record<string, any>>(
+export const useFormValidation = <T extends Record<string, unknown>>(
   options: UseFormValidationOptions<T>
 ): FormState<T> => {
   const [values, setValues] = useState<T>(options.initialValues);
@@ -50,7 +50,7 @@ export const useFormValidation = <T extends Record<string, any>>(
     const { name, value, type } = e.target;
     
     // Handle different input types
-    let finalValue: any = value;
+    let finalValue: unknown = value;
     if (type === 'checkbox') {
       finalValue = (e.target as HTMLInputElement).checked;
     } else if (type === 'number') {
@@ -128,7 +128,7 @@ export const useFormValidation = <T extends Record<string, any>>(
     }
   }, [values, validateForm, options, resetForm]);
 
-  const setFieldValue = useCallback((name: string, value: any) => {
+  const setFieldValue = useCallback((name: string, value: unknown) => {
     setValues(prev => {
       const newValues = { ...prev, [name]: value };
       

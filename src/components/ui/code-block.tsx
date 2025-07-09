@@ -38,7 +38,6 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ code, language, className = '' })
 
         const lightTheme: BundledTheme = 'github-light';
         const darkTheme: BundledTheme = 'one-dark-pro'; // Using a high-contrast dark theme
-        const _selectedTheme = theme === 'dark' ? darkTheme : lightTheme;
         
         // Handle language aliases
         let actualLanguage = language;

@@ -24,7 +24,7 @@ interface GitLabProject {
   };
 }
 
-const GitLab: React.FC<GitLabProps> = ({ projectID, baseURL = 'https://gitlab.com/', children }) => {
+const GitLab: React.FC<GitLabProps> = ({ projectID, baseURL = 'https://gitlab.com/' }) => {
   const [projectData, setProjectData] = useState<GitLabProject | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

@@ -1,5 +1,5 @@
 // src/lib/api/projectLocations.ts
-import type { ProjectLocation, Department, ProjectEvent, Project } from '@/types/entities';
+import type { ProjectLocation, Department } from '@/types/entities';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 

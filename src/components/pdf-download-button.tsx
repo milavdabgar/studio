@@ -41,7 +41,6 @@ const getIconForFormat = (formatId: string) => {
 
 export function PdfDownloadButton({ 
   slug, 
-  lang: _lang = 'en', 
   title,
   className,
   variant = 'outline',

@@ -3,6 +3,7 @@
 "use client";
 
 import React, { useEffect, useRef } from 'react';
+import TypeItLib from 'typeit';
 
 interface TypeItProps {
   children?: React.ReactNode;
@@ -30,14 +31,11 @@ export default function TypeIt({
   className = ''
 }: TypeItProps) {
   const elementRef = useRef<HTMLElement>(null);
-  const typeItRef = useRef<any>(null);
+  const typeItRef = useRef<TypeItLib | null>(null);
 
   useEffect(() => {
     const loadTypeIt = async () => {
       try {
-        // Dynamically import TypeIt to avoid SSR issues
-        const TypeItLib = (await import('typeit')).default;
-        
         if (!elementRef.current) return;
 
         // Destroy existing instance

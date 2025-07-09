@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { FileText, UploadCloud, Loader2, ArrowLeft, CheckCircle, AlertTriangle, Info, Paperclip, Clock } from "lucide-react";
+import { FileText, UploadCloud, Loader2, ArrowLeft, CheckCircle, AlertTriangle, Info, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Assessment, Student, Course, StudentAssessmentScore } from '@/types/entities';
 import { assessmentService } from '@/lib/api/assessments';
@@ -62,7 +62,7 @@ export default function AssignmentDetailPage() {
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setUser(parsedUser);
-      } catch (_error) { /* Handled by global layout or redirect */ }
+      } catch { /* Handled by global layout or redirect */ }
     }
   }, []);
 
@@ -77,7 +77,7 @@ export default function AssignmentDetailPage() {
             } else {
                  toast({ variant: "destructive", title: "Profile Error", description: "Student profile not found." });
             }
-        } catch (e) {
+        } catch {
             toast({ variant: "destructive", title: "Profile Error", description: "Could not load student profile." });
         }
     };
@@ -101,7 +101,7 @@ export default function AssignmentDetailPage() {
             setSubmission(subData);
             if (subData?.comments) setSubmissionComments(subData.comments);
         }
-      } catch (_error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load assignment details." });
       }
       setIsLoading(false);
@@ -109,13 +109,6 @@ export default function AssignmentDetailPage() {
     fetchAssignmentDetails();
   }, [assignmentId, currentStudent, toast]);
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setSelectedFile(event.target.files[0]);
-    } else {
-      setSelectedFile(null);
-    }
-  };
 
   const handleSubmitAssignment = async (event: FormEvent) => {
     event.preventDefault();
