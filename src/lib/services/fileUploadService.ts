@@ -18,26 +18,26 @@ declare namespace Express {
 
 // Mock for missing dependencies - these would normally be actual imports
 const mockStorage = {
-  uploadFile: jest.fn().mockResolvedValue({
+  uploadFile: () => Promise.resolve({
     url: 'https://storage.example.com/files/test.jpg',
     key: 'files/test.jpg',
   }),
-  deleteFile: jest.fn().mockResolvedValue(true),
-  getSignedUrl: jest.fn().mockResolvedValue('https://signed-url.example.com/test.jpg'),
+  deleteFile: () => Promise.resolve(true),
+  getSignedUrl: () => Promise.resolve('https://signed-url.example.com/test.jpg'),
 };
 
 const mockSharp = () => ({
-  metadata: jest.fn().mockResolvedValue({
+  metadata: () => Promise.resolve({
     width: 1200,
     height: 800,
     format: 'jpeg',
   }),
-  resize: jest.fn().mockReturnThis(),
-  toFormat: jest.fn().mockReturnThis(),
-  toBuffer: jest.fn().mockResolvedValue(Buffer.from('processed-image')),
-  jpeg: jest.fn().mockReturnThis(),
-  png: jest.fn().mockReturnThis(),
-  webp: jest.fn().mockReturnThis(),
+  resize: () => mockSharp(),
+  toFormat: () => mockSharp(),
+  toBuffer: () => Promise.resolve(Buffer.from('processed-image')),
+  jpeg: () => mockSharp(),
+  png: () => mockSharp(),
+  webp: () => mockSharp(),
 });
 
 export interface UploadOptions {
@@ -166,10 +166,7 @@ export class FileUploadService {
 
       // Apply transformations
       if (options.width || options.height) {
-        processor = processor.resize(options.width, options.height, {
-          fit: options.crop ? 'cover' : 'inside',
-          withoutEnlargement: true,
-        });
+        processor = processor.resize(options.width, options.height);
       }
 
       if (options.format) {

@@ -73,7 +73,6 @@ export class RateLimitService {
     const windowMs = options.windowMs || this.defaultWindowMs;
     const maxRequests = options.maxRequests || this.defaultMaxRequests;
     const now = Date.now();
-    const resetTime = new Date(now + windowMs);
 
     try {
       // Lua script for atomic rate limiting with sliding window

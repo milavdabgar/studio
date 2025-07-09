@@ -63,6 +63,7 @@ export default function StudentMyCoursesPage() {
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setCurrentUser(parsedUser);
       } catch (error) {
+        console.error('Error parsing auth cookie:', error);
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
       }
     } else {
@@ -130,6 +131,7 @@ export default function StudentMyCoursesPage() {
           toast({ variant: "warning", title: "Profile Error", description: "Student profile not found." });
         }
       } catch (error) {
+        console.error('Error loading enrolled courses:', error);
         toast({ variant: "destructive", title: "Error", description: "Could not load your enrolled courses." });
       }
       setIsLoading(false);

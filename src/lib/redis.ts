@@ -4,8 +4,8 @@ export interface RedisClient {
   set(key: string, value: string, mode?: string, duration?: number): Promise<string>;
   del(key: string): Promise<number>;
   expire(key: string, seconds: number): Promise<number>;
-  multi(): any;
-  exec(): Promise<any>;
+  multi(): RedisClient;
+  exec(): Promise<unknown[]>;
 }
 
 const mockRedisClient: RedisClient = {

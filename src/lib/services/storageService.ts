@@ -1,12 +1,7 @@
 // Mock AWS SDK imports to prevent test issues
 type S3ClientType = any;
-type PutObjectCommandType = any;
-type GetObjectCommandType = any;
-type DeleteObjectCommandType = any;
-type HeadObjectCommandType = any;
-type GetObjectCommandOutputType = any;
 
-let S3Client: any, PutObjectCommand: any, GetObjectCommand: any, DeleteObjectCommand: any, HeadObjectCommand: any, GetObjectCommandOutput: any;
+let S3Client: any, PutObjectCommand: any, GetObjectCommand: any, DeleteObjectCommand: any, HeadObjectCommand: any;
 let getSignedUrl: any;
 
 try {
@@ -18,7 +13,6 @@ try {
   GetObjectCommand = awsClient.GetObjectCommand;
   DeleteObjectCommand = awsClient.DeleteObjectCommand;
   HeadObjectCommand = awsClient.HeadObjectCommand;
-  GetObjectCommandOutput = awsClient.GetObjectCommandOutput;
   getSignedUrl = awsPresigner.getSignedUrl;
 } catch (error) {
   // Mock implementations for testing
@@ -30,7 +24,6 @@ try {
   GetObjectCommand = class { constructor() {} };
   DeleteObjectCommand = class { constructor() {} };
   HeadObjectCommand = class { constructor() {} };
-  GetObjectCommandOutput = {};
   getSignedUrl = () => Promise.resolve('mock-signed-url');
 }
 import { createReadStream, createWriteStream, unlinkSync, existsSync, mkdirSync, statSync } from 'fs';
@@ -371,7 +364,7 @@ export class StorageService {
         } else {
           this.tempFiles.delete(tempFile);
         }
-      } catch (error) {
+      } catch {
         // Ignore errors during cleanup
         this.tempFiles.delete(tempFile);
       }

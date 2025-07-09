@@ -62,9 +62,10 @@ export default function StudyMaterialsPage() {
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setUser(parsedUser);
-      } catch { 
+      } catch (error) {
+        console.error('Error parsing auth cookie:', error);
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
-       }
+      }
     } else {
         toast({ variant: "destructive", title: "Authentication Error", description: "User not logged in." });
     }
@@ -115,7 +116,7 @@ export default function StudyMaterialsPage() {
           }
         }
       } catch (error) {
-        console.error("Error fetching study materials:", error);
+        console.error('Error fetching study materials:', error);
         toast({ variant: "destructive", title: "Error", description: "Could not load study materials." });
       }
       setIsLoading(false);

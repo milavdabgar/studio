@@ -95,7 +95,7 @@ export const projectEventService = {
     return response.json();
   },
 
-  async importEvents(file: File, departments: Department[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number, errors?: any[] }> {
+  async importEvents(file: File, departments: Department[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number, errors?: Record<string, unknown>[] }> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('departments', JSON.stringify(departments));
@@ -108,7 +108,7 @@ export const projectEventService = {
     if (!response.ok) {
       let detailedMessage = responseData.message || 'Failed to import project events.';
       if (responseData.errors && Array.isArray(responseData.errors) && responseData.errors.length > 0) {
-        detailedMessage += ` Specific issues: ${responseData.errors.slice(0,3).map((e: any) => e.message || JSON.stringify(e.data)).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
+        detailedMessage += ` Specific issues: ${responseData.errors.slice(0,3).map((e: Record<string, unknown>) => e.message || JSON.stringify(e.data)).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
       }
       throw new Error(detailedMessage);
     }

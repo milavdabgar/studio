@@ -64,7 +64,7 @@ export class CacheService {
       
       try {
         return JSON.parse(value);
-      } catch (error) {
+      } catch {
         // If JSON parsing fails, return null
         return null;
       }
@@ -230,14 +230,14 @@ export class CacheService {
     });
   }
 
-  generateCacheKey(base: string, params: Record<string, any>): string {
+  generateCacheKey(base: string, params: Record<string, string | number | boolean>): string {
     const crypto = require('crypto');
     const sortedParams = Object.keys(params)
       .sort()
       .reduce((sorted, key) => {
         sorted[key] = params[key];
         return sorted;
-      }, {} as Record<string, any>);
+      }, {} as Record<string, string | number | boolean>);
     
     const hash = crypto.createHash('md5')
       .update(JSON.stringify(sortedParams))

@@ -4,7 +4,7 @@ declare global {
   namespace jest {
     interface Matchers<R> {
       toBeInTheDocument(): R;
-      toHaveAttribute(attr: string, value?: any): R;
+      toHaveAttribute(attr: string, value?: unknown): R;
       toHaveClass(...classNames: string[]): R;
       toHaveTextContent(text: string | RegExp): R;
       toHaveValue(value: string | string[] | number): R;
@@ -13,8 +13,8 @@ declare global {
       toBeEnabled(): R;
       toHaveDisplayValue(value: string | RegExp | (string | RegExp)[]): R;
       toHaveFocus(): R;
-      toHaveFormValues(expectedValues: Record<string, any>): R;
-      toHaveStyle(css: string | Record<string, any>): R;
+      toHaveFormValues(expectedValues: Record<string, unknown>): R;
+      toHaveStyle(css: string | Record<string, unknown>): R;
       toBeInvalid(): R;
       toBeValid(): R;
       toBeRequired(): R;

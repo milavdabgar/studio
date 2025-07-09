@@ -53,7 +53,7 @@ export const projectLocationService = {
     return responseData.data?.location || responseData;
   },
   
-  async createLocationBatch(batchData: Array<Omit<ProjectLocation, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>>): Promise<{count: number, locations: ProjectLocation[], errors?: any[]}> {
+  async createLocationBatch(batchData: Array<Omit<ProjectLocation, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>>): Promise<{count: number, locations: ProjectLocation[], errors?: Record<string, unknown>[]}> {
     const response = await fetch(`${API_BASE_URL}/project-locations/batch`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -117,7 +117,7 @@ export const projectLocationService = {
     return responseData.data?.location || responseData;
   },
 
-  async importLocations(file: File, eventId: string, departments: Department[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number, errors?: any[] }> {
+  async importLocations(file: File, eventId: string, departments: Department[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number, errors?: Record<string, unknown>[] }> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('eventId', eventId);
@@ -132,7 +132,7 @@ export const projectLocationService = {
     if (!response.ok) {
       let detailedMessage = responseData.message || 'Failed to import project locations.';
       if (responseData.errors && Array.isArray(responseData.errors) && responseData.errors.length > 0) {
-        detailedMessage += ` Specific issues: ${responseData.errors.slice(0,3).map((e: any) => e.message || JSON.stringify(e.data)).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
+        detailedMessage += ` Specific issues: ${responseData.errors.slice(0,3).map((e: Record<string, unknown>) => e.message || JSON.stringify(e.data)).join('; ')}${responseData.errors.length > 3 ? '...' : ''}`;
       }
       throw new Error(detailedMessage);
     }

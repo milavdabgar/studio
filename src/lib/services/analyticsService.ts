@@ -19,7 +19,7 @@ export interface UserIdentity {
   userId?: string;
   email?: string;
   anonymousId?: string;
-  traits?: Record<string, any>;
+  traits?: Record<string, string | number | boolean>;
 }
 
 export interface AnalyticsEvent {
@@ -70,8 +70,8 @@ class GoogleAnalyticsProvider implements AnalyticsProvider {
   }
 
   async track(event: AnalyticsEvent): Promise<void> {
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', event.type, {
+    if (typeof window !== 'undefined' && (window as unknown as { gtag?: Function }).gtag) {
+      (window as unknown as { gtag: Function }).gtag('event', event.type, {
         event_category: 'engagement',
         event_label: event.properties.label,
         value: event.properties.value,
@@ -82,8 +82,8 @@ class GoogleAnalyticsProvider implements AnalyticsProvider {
   }
 
   async identify(user: UserIdentity): Promise<void> {
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('config', this.measurementId, {
+    if (typeof window !== 'undefined' && (window as unknown as { gtag?: Function }).gtag) {
+      (window as unknown as { gtag: Function }).gtag('config', this.measurementId, {
         user_id: user.userId,
         custom_map: user.traits,
       });
@@ -91,8 +91,8 @@ class GoogleAnalyticsProvider implements AnalyticsProvider {
   }
 
   async page(properties: EventProperties): Promise<void> {
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('config', this.measurementId, {
+    if (typeof window !== 'undefined' && (window as unknown as { gtag?: Function }).gtag) {
+      (window as unknown as { gtag: Function }).gtag('config', this.measurementId, {
         page_title: properties.title,
         page_location: properties.url,
       });
@@ -108,8 +108,8 @@ class MixpanelProvider implements AnalyticsProvider {
   }
 
   async track(event: AnalyticsEvent): Promise<void> {
-    if (typeof window !== 'undefined' && (window as any).mixpanel) {
-      (window as any).mixpanel.track(event.type, {
+    if (typeof window !== 'undefined' && (window as unknown as { mixpanel?: any }).mixpanel) {
+      (window as unknown as { mixpanel: any }).mixpanel.track(event.type, {
         ...event.properties,
         distinct_id: event.user.userId || event.user.anonymousId,
         time: event.timestamp.getTime(),
@@ -118,12 +118,13 @@ class MixpanelProvider implements AnalyticsProvider {
   }
 
   async identify(user: UserIdentity): Promise<void> {
-    if (typeof window !== 'undefined' && (window as any).mixpanel) {
+    if (typeof window !== 'undefined' && (window as unknown as { mixpanel?: any }).mixpanel) {
+      const mixpanel = (window as unknown as { mixpanel: any }).mixpanel;
       if (user.userId) {
-        (window as any).mixpanel.identify(user.userId);
+        mixpanel.identify(user.userId);
       }
       if (user.traits) {
-        (window as any).mixpanel.people.set(user.traits);
+        mixpanel.people.set(user.traits);
       }
     }
   }

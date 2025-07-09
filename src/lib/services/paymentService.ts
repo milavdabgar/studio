@@ -187,7 +187,7 @@ export class PaymentService {
     try {
       const customer = await this.stripe.customers.retrieve(customerId);
       
-      if (customer.deleted) {
+      if ((customer as any).deleted) {
         throw new PaymentError('Customer has been deleted', 'customer_deleted');
       }
 
@@ -229,8 +229,8 @@ export class PaymentService {
         customerId: subscription.customer as string,
         planId: priceId,
         status: subscription.status as Subscription['status'],
-        currentPeriodStart: new Date((subscription as any).current_period_start * 1000),
-        currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
+        currentPeriodStart: new Date(subscription.current_period_start * 1000),
+        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
         trialStart: subscription.trial_start 
           ? new Date(subscription.trial_start * 1000) 
           : undefined,
@@ -266,8 +266,8 @@ export class PaymentService {
         customerId: subscription.customer as string,
         planId: subscription.items.data[0].price.id,
         status: subscription.status as Subscription['status'],
-        currentPeriodStart: new Date((subscription as any).current_period_start * 1000),
-        currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
+        currentPeriodStart: new Date(subscription.current_period_start * 1000),
+        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
         trialStart: subscription.trial_start 
           ? new Date(subscription.trial_start * 1000) 
           : undefined,

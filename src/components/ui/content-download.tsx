@@ -23,7 +23,7 @@ interface ContentDownloadProps {
   className?: string;
 }
 
-const formatIcons: Record<string, React.ComponentType<any>> = {
+const formatIcons: Record<string, React.ComponentType<{ className?: string }>> = {
   md: FileText,
   html: Globe,
   pdf: FileIcon,

@@ -62,7 +62,8 @@ export default function StudentAttendancePage() {
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setUser(parsedUser);
-      } catch {
+      } catch (error) {
+        console.error('Error parsing auth cookie:', error);
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
       }
     } else {
@@ -97,7 +98,8 @@ export default function StudentAttendancePage() {
           setAttendanceRecords([]);
           toast({ variant: "warning", title: "No Profile", description: "Student profile not found." });
         }
-      } catch {
+      } catch (error) {
+        console.error('Error loading attendance:', error);
         toast({ variant: "destructive", title: "Error", description: "Could not load attendance data." });
       }
       setIsLoading(false);
@@ -164,7 +166,7 @@ export default function StudentAttendancePage() {
                     <CardHeader><CardTitle className="text-lg">Attendance Summary</CardTitle></CardHeader>
                     <CardContent>
                         {Object.entries(attendanceSummary).map(([course, summary]) => {
-                            const percentage = summary.total > 0 ? ((summary.present + summary.late * 0.5 + summary.excused) / summary.total * 100).toFixed(1) : 0;
+                            const percentage = summary.total > 0 ? ((summary.present + summary.late * 0.5 + summary.excused) / summary.total * 100).toFixed(1) : '0';
                             return (
                             <div key={course} className="mb-3 pb-3 border-b last:border-b-0 dark:border-gray-700">
                                 <h4 className="font-semibold">{course}</h4>
@@ -175,7 +177,7 @@ export default function StudentAttendancePage() {
                                     <p>Late: <span className="font-medium text-yellow-600">{summary.late}</span></p>
                                     <p>Excused: <span className="font-medium text-blue-600">{summary.excused}</span></p>
                                 </div>
-                                <p className="text-md font-semibold mt-1">Effective Attendance: <span className={parseFloat(percentage as string) >= 75 ? "text-success" : "text-destructive"}>{percentage}%</span></p>
+                                <p className="text-md font-semibold mt-1">Effective Attendance: <span className={parseFloat(percentage) >= 75 ? "text-success" : "text-destructive"}>{percentage}%</span></p>
                             </div>
                             );
                         })}

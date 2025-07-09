@@ -56,7 +56,8 @@ export default function EnrollCoursesPage() {
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setCurrentUser(parsedUser);
-      } catch {
+      } catch (error) {
+        console.error('Error parsing auth cookie:', error);
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
       }
     } else {
@@ -120,7 +121,8 @@ export default function EnrollCoursesPage() {
           setAvailableOfferings([]);
           toast({ variant: "warning", title: "Profile Error", description: "Student profile not found." });
         }
-      } catch {
+      } catch (error) {
+        console.error('Error loading course enrollment data:', error);
         toast({ variant: "destructive", title: "Error", description: "Could not load course enrollment data." });
       }
       setIsLoading(false);
@@ -198,7 +200,7 @@ export default function EnrollCoursesPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    {/* Placeholder for more details like faculty, credits, etc. */}
+                    {/* More details like faculty, credits, etc. could be added here */}
                     <p className="text-xs text-muted-foreground">Status: <span className="font-medium capitalize">{offering.status}</span></p>
                   </CardContent>
                   <CardFooter>

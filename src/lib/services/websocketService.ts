@@ -1,13 +1,13 @@
 // WebSocket Service
 export class WebSocketService {
-  private server: any;
-  private clients: Set<any> = new Set();
+  private server: unknown;
+  private clients: Set<unknown> = new Set();
 
-  constructor(httpServer?: any) {
+  constructor(_httpServer?: unknown) {
     // Mock implementation
   }
 
-  start(port?: number): Promise<void> {
+  start(_port?: number): Promise<void> {
     return Promise.resolve();
   }
 
@@ -15,11 +15,11 @@ export class WebSocketService {
     return Promise.resolve();
   }
 
-  broadcast(message: any): void {
+  broadcast(_message: unknown): void {
     // Mock implementation
   }
 
-  sendToClient(clientId: string, message: any): void {
+  sendToClient(_clientId: string, _message: unknown): void {
     // Mock implementation
   }
 

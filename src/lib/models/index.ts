@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import type { 
   User, Role, Permission, Department, Course, Batch, Program, 
-  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, ProjectEventScheduleItem, Project, ProjectRequirements, ProjectGuide, ProjectEvaluation, Assessment, Result, ResultSubject, Enrollment, EnrollmentStatus, CourseOffering, Notification, NotificationType, StudentAssessmentScore, CourseMaterial, AttendanceRecord, Timetable, TimetableEntry, ProjectLocation, Curriculum, RoomAllocation, Examination, ExaminationTimeTableEntry
+  Room, Building, Committee, Institute, Student, Faculty, ProjectTeam, ProjectEvent, Project, Assessment, Result, Enrollment, CourseOffering, Notification, StudentAssessmentScore, CourseMaterial, AttendanceRecord, Timetable, ProjectLocation, Curriculum, RoomAllocation, Examination
 } from '@/types/entities';
 
 // Institute Schema

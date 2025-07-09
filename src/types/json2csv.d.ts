@@ -1,16 +1,16 @@
 declare module 'json2csv' {
   export interface Json2CsvOptions {
-    fields?: string[] | Array<{ label: string; value: string | ((row: any) => any) }>;
+    fields?: string[] | Array<{ label: string; value: string | ((row: Record<string, unknown>) => unknown) }>;
     delimiter?: string;
     quote?: string;
     header?: boolean;
-    transforms?: any[];
+    transforms?: unknown[];
   }
 
   export class Parser {
     constructor(options?: Json2CsvOptions);
-    parse(data: any[]): string;
+    parse(data: Record<string, unknown>[]): string;
   }
 
-  export function parse(data: any[], options?: Json2CsvOptions): string;
+  export function parse(data: Record<string, unknown>[], options?: Json2CsvOptions): string;
 }

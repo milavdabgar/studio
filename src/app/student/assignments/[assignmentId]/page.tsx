@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
+import React, { useEffect, useState, FormEvent } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,8 +51,6 @@ export default function AssignmentDetailPage() {
   const [submissionComments, setSubmissionComments] = useState("");
   const [user, setUser] = useState<UserCookie | null>(null);
   const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
-
-
   const { toast } = useToast();
 
   useEffect(() => {
@@ -112,7 +110,7 @@ export default function AssignmentDetailPage() {
 
   const handleSubmitAssignment = async (event: FormEvent) => {
     event.preventDefault();
-    if (!selectedFile && !submission?.files?.length && !submissionComments.trim() && !editingWithNewFile) {
+    if (!selectedFile && !submission?.files?.length && !submissionComments.trim()) {
       toast({ variant: "destructive", title: "Submission Error", description: "Please select a file or add comments to submit." });
       return;
     }
@@ -134,7 +132,8 @@ export default function AssignmentDetailPage() {
       toast({ title: "Submission Successful", description: "Your assignment has been submitted." });
       setSelectedFile(null); 
     } catch (error) {
-      toast({ variant: "destructive", title: "Submission Failed", description: (error as Error).message || "Could not submit assignment." });
+      const errorMessage = error instanceof Error ? error.message : "Could not submit assignment.";
+      toast({ variant: "destructive", title: "Submission Failed", description: errorMessage });
     } finally {
       setIsSubmitting(false);
     }
@@ -229,7 +228,7 @@ export default function AssignmentDetailPage() {
             <CardContent className="space-y-4">
               <div>
                 <Label htmlFor="submissionFileFaculty">Upload File {submission?.files?.length ? "(Optional: to replace existing)" : "*"}</Label>
-                <Input id="submissionFileFaculty" type="file" onChange={(e) => {setSelectedFile(e.target.files?.[0] || null); if (submission?.files?.length) setEditingWithNewFile(!!e.target.files?.[0]);}} disabled={isSubmitting} className="mt-1" />
+                <Input id="submissionFileFaculty" type="file" onChange={(e) => setSelectedFile(e.target.files?.[0] || null)} disabled={isSubmitting} className="mt-1" />
                 {selectedFile && <p className="text-xs text-muted-foreground mt-1">Selected: {selectedFile.name}</p>}
               </div>
               <div>
@@ -246,7 +245,7 @@ export default function AssignmentDetailPage() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button type="submit" disabled={isSubmitting || (!selectedFile && !submissionComments.trim() && !submission?.files?.length )}>
+              <Button type="submit" disabled={isSubmitting || (!selectedFile && !submissionComments.trim() && !submission?.files?.length)}>
                 {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UploadCloud className="mr-2 h-4 w-4" />}
                 {submission?.submissionDate ? 'Re-submit Assignment' : 'Submit Assignment'}
               </Button>

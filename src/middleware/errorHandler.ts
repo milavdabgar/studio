@@ -58,8 +58,8 @@ export class CustomError extends Error {
 
 export const errorHandler = async (
   error: Error | unknown,
-  req: NextRequest,
-  res: any,
+  _req: NextRequest,
+  _res: any,
   next: Function
 ) => {
   // If no error, call next

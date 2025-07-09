@@ -5,7 +5,10 @@ export interface UploadResult {
   size?: number;
 }
 
-export const uploadFile = async (file: any, options?: any): Promise<UploadResult> => {
+export const uploadFile = async (file: File, options?: Record<string, unknown>): Promise<UploadResult> => {
+  // Mock implementation - in real app, file would be uploaded to storage
+  const _ = file; // Acknowledge file parameter
+  const __ = options; // Acknowledge options parameter
   return {
     url: 'https://storage.example.com/files/test.jpg',
     key: 'files/test.jpg',
@@ -15,9 +18,11 @@ export const uploadFile = async (file: any, options?: any): Promise<UploadResult
 
 export const deleteFile = async (key: string): Promise<void> => {
   // Mock implementation
+  console.log(`Mock delete file: ${key}`);
 };
 
 export const getSignedUrl = async (key: string, expires?: number): Promise<string> => {
+  console.log(`Mock get signed URL for key: ${key}, expires: ${expires}`);
   return 'https://storage.example.com/signed-url';
 };
 

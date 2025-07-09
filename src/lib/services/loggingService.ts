@@ -236,7 +236,7 @@ export class LoggingService {
   }
 
   async getLogs(
-    filter: {
+    _filter: {
       level?: LogLevel;
       startDate?: Date;
       endDate?: Date;

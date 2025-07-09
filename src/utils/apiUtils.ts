@@ -2,9 +2,9 @@
 
 export class ApiError extends Error {
   public statusCode: number;
-  public details?: any;
+  public details?: unknown;
 
-  constructor(statusCode: number, message: string, details?: any) {
+  constructor(statusCode: number, message: string, details?: unknown) {
     super(message);
     this.name = 'ApiError';
     this.statusCode = statusCode;
@@ -32,7 +32,7 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}): Pro
   return response;
 };
 
-export const handleApiError = (error: any): { status: number; message: string; isNetworkError: boolean } => {
+export const handleApiError = (error: unknown): { status: number; message: string; isNetworkError: boolean } => {
   if (error instanceof ApiError) {
     return {
       status: error.statusCode,
@@ -41,10 +41,11 @@ export const handleApiError = (error: any): { status: number; message: string; i
     };
   }
   
-  if (error.response) {
+  if (error && typeof error === 'object' && 'response' in error) {
+    const errorWithResponse = error as { response: { status?: number; data?: { message?: string } } };
     return {
-      status: error.response.status || 0,
-      message: error.response.data?.message || 'API Error',
+      status: errorWithResponse.response.status || 0,
+      message: errorWithResponse.response.data?.message || 'API Error',
       isNetworkError: false,
     };
   }
@@ -65,23 +66,24 @@ export const handleApiError = (error: any): { status: number; message: string; i
 };
 
 export const transformResponse = <T>(
-  data: any, 
-  transformer?: (data: any) => T,
+  data: unknown, 
+  transformer?: (data: unknown) => T,
   isPaginated = false
 ): T => {
   if (transformer) {
     return transformer(data);
   }
   
-  if (isPaginated) {
+  if (isPaginated && data && typeof data === 'object') {
     // Handle paginated response transformation
+    const paginatedData = data as { items?: unknown[]; data?: unknown[]; total?: number; page?: number; limit?: number };
     return {
-      data: data.items || data.data || [],
+      data: paginatedData.items || paginatedData.data || [],
       meta: {
-        total: data.total,
-        page: data.page,
-        limit: data.limit,
-        totalPages: Math.ceil(data.total / data.limit),
+        total: paginatedData.total || 0,
+        page: paginatedData.page || 1,
+        limit: paginatedData.limit || 10,
+        totalPages: Math.ceil((paginatedData.total || 0) / (paginatedData.limit || 10)),
       },
     } as T;
   }
@@ -89,7 +91,7 @@ export const transformResponse = <T>(
   return data as T;
 };
 
-export const buildQueryString = (params: Record<string, any>): string => {
+export const buildQueryString = (params: Record<string, unknown>): string => {
   const searchParams = new URLSearchParams();
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== null) {
@@ -101,7 +103,7 @@ export const buildQueryString = (params: Record<string, any>): string => {
 
 export const createApiUrl = (
   endpoint: string, 
-  params?: Record<string, any>, 
+  params?: Record<string, unknown>, 
   baseUrl: string = process.env.NEXT_PUBLIC_API_BASE_URL || ''
 ): string => {
   const url = new URL(endpoint, baseUrl);
@@ -116,10 +118,10 @@ export const createApiUrl = (
   return url.toString();
 };
 
-export const createQueryString = (params: Record<string, any>): string => {
+export const createQueryString = (params: Record<string, unknown>): string => {
   const parts: string[] = [];
   
-  const addParam = (key: string, value: any, prefix = '') => {
+  const addParam = (key: string, value: unknown, prefix = '') => {
     const paramKey = prefix ? `${prefix}[${key}]` : key;
     
     if (Array.isArray(value)) {

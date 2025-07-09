@@ -147,6 +147,7 @@ export async function deleteLeaveRequest(id: string): Promise<boolean> {
 // Additional service functions
 export async function getLeaveRequestsForManagement(params: { facultyId?: string; status?: string; department?: string } = {}): Promise<LeaveRequest[]> {
   // Get all leave requests, could filter by params in real implementation
+  console.log('Mock get leave requests for management with params:', params);
   return getLeaveRequests();
 }
 
@@ -156,6 +157,7 @@ export async function getFacultyLeaveRequests(facultyId: string): Promise<LeaveR
 
 export async function cancelLeaveRequestByFaculty(leaveId: string, facultyId: string): Promise<LeaveRequest | null> {
   // Could add faculty validation logic here
+  console.log(`Faculty ${facultyId} cancelling leave ${leaveId}`);
   return cancelLeaveRequest(leaveId);
 }
 

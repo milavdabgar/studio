@@ -14,24 +14,30 @@ import { codeToHtml, BundledLanguage } from 'shiki';
 const execAsync = promisify(exec);
 
 // Import Puppeteer for PDF generation
-let puppeteer: {
-  launch: (options?: Record<string, unknown>) => Promise<{
-    newPage: () => Promise<{
-      setViewport: (options: { width: number; height: number; deviceScaleFactor: number }) => Promise<void>;
-      evaluateOnNewDocument: (fn: () => void) => Promise<void>;
-      setContent: (html: string, options?: { waitUntil?: string; timeout?: number }) => Promise<void>;
-      evaluateHandle: (script: string) => Promise<unknown>;
-      evaluate: (fn: () => Promise<void>) => Promise<void>;
-      pdf: (options: Record<string, unknown>) => Promise<Buffer>;
-    }>;
-    close: () => Promise<void>;
+interface PuppeteerBrowser {
+  newPage: () => Promise<{
+    setViewport: (options: { width: number; height: number; deviceScaleFactor: number }) => Promise<void>;
+    evaluateOnNewDocument: (fn: () => void) => Promise<void>;
+    setContent: (html: string, options?: { waitUntil?: string; timeout?: number }) => Promise<void>;
+    evaluateHandle: (script: string) => Promise<unknown>;
+    evaluate: (fn: () => Promise<void>) => Promise<void>;
+    pdf: (options: Record<string, unknown>) => Promise<Buffer>;
   }>;
-} | null = null;
-let chromium: {
+  close: () => Promise<void>;
+}
+
+interface PuppeteerInstance {
+  launch: (options?: Record<string, unknown>) => Promise<PuppeteerBrowser>;
+}
+
+let puppeteer: PuppeteerInstance | null = null;
+interface ChromiumInstance {
   executablePath: (path: string) => Promise<string>;
   args: string[];
   defaultViewport: Record<string, unknown>;
-} | null = null;
+}
+
+let chromium: ChromiumInstance | null = null;
 try {
     puppeteer = require('puppeteer');
     // For production environments, also try chromium
@@ -45,13 +51,15 @@ try {
 }
 
 // Import KaTeX for math rendering
-let katex: {
+interface KatexInstance {
   renderToString: (math: string, options?: {
     displayMode?: boolean;
     throwOnError?: boolean;
     strict?: boolean;
   }) => string;
-} | null = null;
+}
+
+let katex: KatexInstance | null = null;
 try {
     katex = require('katex');
 } catch {
@@ -310,7 +318,7 @@ export class ContentConverterV2 {
             const isProduction = process.env.NODE_ENV === 'production';
             
             // Configure browser launch options
-            const launchOptions: any = {
+            const launchOptions: Record<string, unknown> = {
                 headless: true,
                 args: [
                     '--no-sandbox',

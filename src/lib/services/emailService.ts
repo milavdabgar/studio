@@ -1,13 +1,13 @@
 // Email Service
 // Mock nodemailer since it's not available in this environment
 const nodemailer = {
-  createTransport: (config: any) => ({
-    sendMail: (options: any) => Promise.resolve({ messageId: 'mock-id' }),
+  createTransport: (_config: any) => ({
+    sendMail: (_options: any) => Promise.resolve({ messageId: 'mock-id' }),
     verify: () => Promise.resolve(true),
     close: () => {}
   }),
   Transporter: class {
-    sendMail = (options: any) => Promise.resolve({ messageId: 'mock-id' });
+    sendMail = (_options: any) => Promise.resolve({ messageId: 'mock-id' });
     verify = () => Promise.resolve(true);
   }
 };

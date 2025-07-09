@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, BookOpen, UserCircle, Paperclip, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Course, Faculty, Assessment } from '@/types/entities'; // Assuming Assessment might be relevant later
+import type { Course, Faculty, Assessment } from '@/types/entities';
 import { courseService } from '@/lib/api/courses';
 import { facultyService } from '@/lib/api/faculty'; // To show assigned faculty
 import { assessmentService } from '@/lib/api/assessments'; // To list assessments
@@ -46,7 +46,8 @@ export default function StudentCourseDetailPage() {
         setRelatedAssessments(allAssessments.filter(a => a.courseId === courseId && (a.type === 'Assignment' || a.type === 'Project' || a.type === 'Quiz')));
 
 
-      } catch (_error) {
+      } catch (error) {
+        console.error('Error loading course details:', error);
         toast({ variant: "destructive", title: "Error", description: "Could not load course details." });
         setCourse(null); // Ensure course is null on error
       }
@@ -98,13 +99,6 @@ export default function StudentCourseDetailPage() {
               Detailed syllabus content will be available here. (Placeholder)
             </p>
             {/* In future, could list topics or link to a syllabus document */}
-            {/*
-            <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground pl-4">
-              <li>Unit 1: Introduction to Topic A</li>
-              <li>Unit 2: Deep Dive into Topic B</li>
-              <li>Unit 3: Advanced Concepts in C</li>
-            </ul>
-            */}
           </div>
 
           <div>

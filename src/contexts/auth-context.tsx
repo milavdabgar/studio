@@ -35,6 +35,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     // Mock login
+    console.log(`Mock login attempt for ${email} with password ${password}`);
     setUser({ id: '1', name: 'Test User', email });
   };
 

@@ -6,6 +6,7 @@ export interface NormalizedResponse {
 
 export interface NormalizationOptions {
   [key: string]: string;
+  entityType?: string;
 }
 
 export class DataTransformService {
@@ -207,15 +208,15 @@ export class DataTransformService {
   }
 
   // Legacy methods for backward compatibility
-  static transformToApiFormat(data: any): any {
+  static transformToApiFormat(data: unknown): unknown {
     return data;
   }
 
-  static transformFromApiFormat(data: any): any {
+  static transformFromApiFormat(data: unknown): unknown {
     return data;
   }
 
-  static sanitizeData(data: any): any {
+  static sanitizeData(data: unknown): unknown {
     return data;
   }
 }

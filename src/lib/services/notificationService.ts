@@ -106,7 +106,7 @@ export class NotificationService {
   }
 
   async sendNotification(request: NotificationRequest): Promise<NotificationResult> {
-    const { userId, email, phone, type, title, message, data, channels, template, priority, metadata } = request;
+    const { userId, email, phone, type, title, message, data, channels, template } = request;
 
     // Check rate limits
     if (userId && this.config.rateLimits) {
@@ -195,7 +195,7 @@ export class NotificationService {
               title,
               message,
               data,
-              metadata,
+              metadata: request.metadata,
             });
             break;
         }
@@ -386,8 +386,8 @@ export class NotificationService {
     type: string;
     title: string;
     message: string;
-    data?: any;
-    metadata?: any;
+    data?: Record<string, unknown>;
+    metadata?: Record<string, unknown>;
   }): Promise<boolean> {
     if (!this.config.webhookService) {
       throw new NotificationError('Webhook service not configured', 'WEBHOOK_SERVICE_NOT_CONFIGURED');

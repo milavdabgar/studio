@@ -65,7 +65,7 @@ export class AuthService {
     }) as User;
 
     // Return user without password
-    const { password, ...userWithoutPassword } = user;
+    const { password: _, ...userWithoutPassword } = user;
     return userWithoutPassword as Omit<User, 'password'>;
   }
 
@@ -93,7 +93,7 @@ export class AuthService {
     );
 
     // Return user without password
-    const { password, ...userWithoutPassword } = user;
+    const { password: _, ...userWithoutPassword } = user;
     return { user: userWithoutPassword as User, token };
   }
 
@@ -119,7 +119,7 @@ export class AuthService {
 
       // Since we're using select, the password field should not be included
       // But if the mock returns it anyway, we need to filter it out
-      const { password, ...userWithoutPassword } = user as any;
+      const { password: _, ...userWithoutPassword } = user as any;
       return userWithoutPassword as User;
     } catch (error) {
       if (error instanceof Error && error.message === 'User not found') {
@@ -140,7 +140,7 @@ export class AuthService {
     }
 
     // Verify current password
-    const isCurrentPasswordValid = await compare(data.currentPassword, user.password);
+    const isCurrentPasswordValid = await compare(data.currentPassword, (user as any).password);
     if (!isCurrentPasswordValid) {
       throw new Error('Current password is incorrect');
     }

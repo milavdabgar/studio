@@ -13,12 +13,12 @@ declare global {
       toHaveDisplayValue(value: string | string[]): R;
       toBeVisible(): R;
       toBeEmptyDOMElement(): R;
-      toHaveAttribute(attr: string, value?: any): R;
+      toHaveAttribute(attr: string, value?: unknown): R;
       toHaveTextContent(text: string | RegExp): R;
       toHaveClass(...classNames: string[]): R;
-      toHaveStyle(css: string | Record<string, any>): R;
+      toHaveStyle(css: string | Record<string, unknown>): R;
       toHaveFocus(): R;
-      toHaveFormValues(expectedValues: Record<string, any>): R;
+      toHaveFormValues(expectedValues: Record<string, unknown>): R;
       toHaveAccessibleName(name?: string | RegExp): R;
       toHaveAccessibleDescription(description?: string | RegExp): R;
       toBeInvalid(): R;

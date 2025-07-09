@@ -19,7 +19,7 @@ export interface UserIdentity {
   userId?: string;
   email?: string;
   anonymousId?: string;
-  traits?: Record<string, any>;
+  traits?: Record<string, unknown>;
 }
 
 export interface AnalyticsEvent {

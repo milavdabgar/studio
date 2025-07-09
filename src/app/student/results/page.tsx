@@ -3,9 +3,9 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Award, Loader2, XCircle} from "lucide-react";
+import { Award, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Result, Student, Program, Course, ResultSubject } from '@/types/entities';
+import type { Result, Student, Program, Course } from '@/types/entities';
 import { resultService } from '@/lib/api/results';
 import { studentService } from '@/lib/api/students';
 import { programService } from '@/lib/api/programs';
@@ -69,6 +69,7 @@ export default function StudentResultsPage() {
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setUser(parsedUser);
       } catch (error) {
+        console.error('Error parsing auth cookie:', error);
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
       }
     } else {
@@ -106,7 +107,7 @@ export default function StudentResultsPage() {
           toast({ variant: "warning", title: "No Profile", description: "Student profile not found." });
         }
       } catch (error) {
-        console.error("Error fetching student results data:", error);
+        console.error('Error fetching student results data:', error);
         toast({ variant: "destructive", title: "Error", description: "Could not load results data." });
       }
       setIsLoading(false);

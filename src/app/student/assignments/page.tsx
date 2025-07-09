@@ -66,7 +66,8 @@ export default function StudentAssignmentsPage() {
         const decodedCookie = decodeURIComponent(authUserCookie);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setUser(parsedUser);
-      } catch {
+      } catch (error) {
+        console.error('Error parsing auth cookie:', error);
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
       }
     } else {
@@ -106,7 +107,7 @@ export default function StudentAssignmentsPage() {
             } catch (e: unknown) {
               // If 404, it means no submission, which is fine. Other errors will be caught by main try-catch
               if (!(e instanceof Error && e.message.includes('404'))) {
-                 console.warn(`Could not fetch submission for assessment ${asmnt.id}:`, e)
+                 console.warn(`Could not fetch submission for assessment ${asmnt.id}:`, e);
               }
             }
             
@@ -145,7 +146,8 @@ export default function StudentAssignmentsPage() {
           setAssignments([]);
           toast({ variant: "warning", title: "No Profile", description: "Student profile not found." });
         }
-      } catch {
+      } catch (error) {
+        console.error('Error loading assignments:', error);
         toast({ variant: "destructive", title: "Error", description: "Could not load assignments data." });
       }
       setIsLoading(false);
@@ -202,8 +204,8 @@ export default function StudentAssignmentsPage() {
                         <SelectTrigger id="statusFilterStudentAssignments"><SelectValue placeholder="All Statuses" /></SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">All Statuses</SelectItem>
-                            {(['Pending', 'Submitted', 'Late Submission', 'Graded'] as EnrichedAssignment['submissionStatus'][]).map(status => (
-                                <SelectItem key={status} value={status!}>{status}</SelectItem>
+                            {(['Pending', 'Submitted', 'Late Submission', 'Graded'] as const).map(status => (
+                                <SelectItem key={status} value={status}>{status}</SelectItem>
                             ))}
                         </SelectContent>
                     </Select>

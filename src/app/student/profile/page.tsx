@@ -10,9 +10,8 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogClose, DialogTrigger } from "@/components/ui/dialog";
 import { UserCircle, Mail, Phone, CalendarDays, Landmark, GraduationCap, Loader2, Edit, BookOpen, AlertCircle, TrendingUp} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Student, User, Program, Batch, Result, Course, ResultSubject } from '@/types/entities';
+import type { Student, Program, Batch, Result, Course } from '@/types/entities';
 import { studentService } from '@/lib/api/students';
-import { userService } from '@/lib/api/users';
 import { programService } from '@/lib/api/programs';
 import { batchService } from '@/lib/api/batches';
 import { resultService } from '@/lib/api/results';
@@ -89,7 +88,7 @@ export default function StudentProfilePage() {
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setUser(parsedUser);
       } catch (error) {
-        console.error("Failed to parse auth_user cookie:", error);
+        console.error('Failed to parse auth_user cookie:', error);
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
       }
     } else {
@@ -126,7 +125,7 @@ export default function StudentProfilePage() {
         toast({ variant: "destructive", title: "Profile Not Found", description: "Could not find your student profile." });
       }
     } catch (error) {
-      console.error("Error fetching student profile:", error);
+      console.error('Error fetching student profile:', error);
       toast({ variant: "destructive", title: "Error", description: "Failed to load profile data." });
     }
     setIsLoading(false);
@@ -165,7 +164,8 @@ export default function StudentProfilePage() {
       setIsEditDialogOpen(false);
       await fetchProfileData(); 
     } catch (error) {
-      toast({ variant: "destructive", title: "Update Failed", description: (error as Error).message || "Could not update profile." });
+      const errorMessage = error instanceof Error ? error.message : "Could not update profile.";
+      toast({ variant: "destructive", title: "Update Failed", description: errorMessage });
     } finally {
       setIsSubmittingEdit(false);
     }

@@ -105,6 +105,7 @@ export async function getExaminationResults(examId: string): Promise<Examination
 
 export async function getExaminationTimetable(examId: string): Promise<TimetableEntry[]> {
   // Mock timetable data
+  const _ = examId; // Acknowledge parameter
   const timetable: TimetableEntry[] = [
     {
       id: '1',
@@ -143,6 +144,7 @@ export async function updateExamination(id: string, updates: Partial<Examination
 }
 
 export async function deleteExamination(id: string): Promise<boolean> {
+  console.log(`Mock delete examination: ${id}`);
   return Promise.resolve(true);
 }
 

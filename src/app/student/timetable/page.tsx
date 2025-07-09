@@ -52,7 +52,6 @@ export default function StudentTimetablePage() {
   const [studentTimetable, setStudentTimetable] = useState<Timetable | null>(null);
   const [enrichedEntries, setEnrichedEntries] = useState<EnrichedTimetableEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  // Student data is used indirectly through the batch ID
   const [user, setUser] = useState<UserCookie | null>(null);
 
   const { toast } = useToast();
@@ -65,7 +64,7 @@ export default function StudentTimetablePage() {
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
         setUser(parsedUser);
       } catch (error) {
-        console.error("Failed to parse auth_user cookie:", error);
+        console.error('Failed to parse auth_user cookie:', error);
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
       }
     } else {
@@ -121,7 +120,7 @@ export default function StudentTimetablePage() {
         }
 
       } catch (error) {
-        console.error("Error fetching student timetable data:", error);
+        console.error('Error fetching student timetable data:', error);
         toast({ variant: "destructive", title: "Error", description: "Could not load timetable data." });
       }
       setIsLoading(false);
