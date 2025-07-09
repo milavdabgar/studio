@@ -6,6 +6,8 @@ export const sendPasswordResetEmail = async (email: string, resetToken: string):
   return true;
 };
 
-export default {
+const emailService = {
   sendPasswordResetEmail,
 };
+
+export default emailService;

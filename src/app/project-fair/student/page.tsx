@@ -40,7 +40,7 @@ const ProjectFairStudent: React.FC<{ event?: ProjectEvent }> = ({ event }) => {
   const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
   const [editingTeam, setEditingTeam] = useState<Team | null>(null);
   const [teamMemberSearch, setTeamMemberSearch] = useState('');
-  const [searchedUsers, setSearchedUsers] = useState<any[]>([]);
+  const [searchedUsers, setSearchedUsers] = useState<{ id: string; displayName: string; email: string }[]>([]);
   const [newMemberFormData, setNewMemberFormData] = useState<TeamMemberFormData>({ userId: '', name: '', enrollmentNo: '', role: 'Member' });
 
 

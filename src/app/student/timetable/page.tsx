@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Clock, Loader2 } from "lucide-react";
 import { format } from 'date-fns';
 import { useToast } from "@/hooks/use-toast";
-import type { Timetable, TimetableEntry, Student } from '@/types/entities';
+import type { Timetable, TimetableEntry } from '@/types/entities';
 import { timetableService } from '@/lib/api/timetables';
 import { studentService } from '@/lib/api/students';
 import { courseService } from '@/lib/api/courses';

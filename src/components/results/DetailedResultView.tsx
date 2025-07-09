@@ -21,7 +21,6 @@ export default function DetailedResultView({ resultId }: DetailedResultViewProps
   const [result, setResult] = useState<Result | null>(null);
   const [student, setStudent] = useState<Student | null>(null);
   const [program, setProgram] = useState<Program | null>(null);
-  const [coursesDetails, setCoursesDetails] = useState<Record<string, Course>>({});
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 

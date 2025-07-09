@@ -35,21 +35,6 @@ function getCookie(name: string): string | undefined {
   return undefined;
 }
 
-// Helper for grade points (can be moved to a utils file)
-const getGradePoint = (grade?: string): number => {
-    if (!grade) return 0;
-    switch (grade.toUpperCase()) {
-        case 'AA': return 10;
-        case 'AB': return 9;
-        case 'BB': return 8;
-        case 'BC': return 7;
-        case 'CC': return 6;
-        case 'CD': return 5;
-        case 'DD': return 4;
-        case 'FF': return 0;
-        default: return 0;
-    }
-};
 
 export default function StudentResultsPage() {
   const [results, setResults] = useState<Result[]>([]);

@@ -134,7 +134,7 @@ export default function ManageCourseOfferingAssessmentsPage() {
             setAssessments([]);
             if (!facultyProfile) toast({variant: "warning", title: "Faculty Profile Error", description: "Could not identify current faculty."});
         }
-      } catch (error) {
+      } catch {
         toast({ variant: "destructive", title: "Error", description: "Could not load data for assessments." });
       }
       setIsLoading(false);

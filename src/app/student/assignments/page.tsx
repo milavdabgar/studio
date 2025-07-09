@@ -52,7 +52,6 @@ export default function StudentAssignmentsPage() {
   const [assignments, setAssignments] = useState<EnrichedAssignment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserCookie | null>(null);
-  const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
   
   const [filterCourse, setFilterCourse] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
@@ -83,7 +82,6 @@ export default function StudentAssignmentsPage() {
       try {
         const allStudents = await studentService.getAllStudents();
         const studentProfile = allStudents.find(s => s.userId === user.id);
-        setCurrentStudent(studentProfile || null);
 
         if (studentProfile) {
           const allAssessments = await assessmentService.getAllAssessments();

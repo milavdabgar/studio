@@ -45,7 +45,6 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
     notFound();
   }
   
-  const _pageTitle = `${lang === 'gu' ? 'ટેગ' : 'Tag'}: ${decodedTag}`;
   const backText = lang === 'gu' ? 'બધા ટેગ્સ પર પાછા જાઓ' : 'Back to all tags';
 
   return (

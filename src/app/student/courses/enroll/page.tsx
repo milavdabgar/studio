@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Loader2, BookOpenCheck, AlertTriangle, PlusCircle, CheckCircle, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Student, CourseOffering, Course, Program, Batch, Enrollment } from '@/types/entities';
+import type { Student, CourseOffering } from '@/types/entities';
 import { studentService } from '@/lib/api/students';
 import { courseOfferingService } from '@/lib/api/courseOfferings';
 import { courseService } from '@/lib/api/courses';

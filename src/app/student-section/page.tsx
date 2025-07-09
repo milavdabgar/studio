@@ -7,7 +7,6 @@ import { PublicNav } from "@/components/public-nav";
 import Link from "next/link";
 import Image from "next/image";
 import { 
-  GraduationCap, 
   ExternalLink,
   Users,
   BookOpen,

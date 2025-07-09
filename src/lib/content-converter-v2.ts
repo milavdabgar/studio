@@ -46,7 +46,7 @@ try {
     } catch {
         console.log('Chromium package not available, using default Puppeteer');
     }
-} catch (error) {
+} catch {
     console.log('Puppeteer not available, PDF generation will use Chrome headless fallback');
 }
 
@@ -432,7 +432,7 @@ export class ContentConverterV2 {
                                                 setTimeout(() => resolve(), 500);
                                             }
                                         });
-                                    } catch (error) {
+                                    } catch {
                                         rendered++;
                                         if (rendered === total) {
                                             setTimeout(() => resolve(), 500);

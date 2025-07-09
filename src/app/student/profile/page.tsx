@@ -189,7 +189,6 @@ export default function StudentProfilePage() {
 
     studentResults.forEach(res => {
         let currentSemTotalCredits = 0;
-        let currentSemEarnedCredits = 0; // For SGPA calculation of that specific result entry
         let currentSemCreditPoints = 0;
 
         res.subjects.forEach(sub => {
@@ -199,7 +198,6 @@ export default function StudentProfilePage() {
 
             if (sub.grade && sub.grade.toUpperCase() !== 'FF' && !sub.isBacklog) {
                 earnedCredits += credits; // Accumulates total earned credits for the student across all results
-                currentSemEarnedCredits += credits; // For this specific result's SGPA
                 currentSemCreditPoints += getGradePoint(sub.grade) * credits;
             } else {
                 if (!backlogs.some(b => b.code === sub.code)) { // Add to backlog list only if not already there (avoids duplicates from re-attempts)

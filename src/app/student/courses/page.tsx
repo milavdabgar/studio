@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BookOpen, Loader2, AlertTriangle, ExternalLink} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Student, CourseOffering, Course, Program, Batch, Enrollment } from '@/types/entities';
+import type { Student, Enrollment } from '@/types/entities';
 import { studentService } from '@/lib/api/students';
 import { courseOfferingService } from '@/lib/api/courseOfferings';
 import { courseService } from '@/lib/api/courses';

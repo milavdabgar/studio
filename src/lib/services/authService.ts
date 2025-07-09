@@ -50,7 +50,12 @@ export class AuthService {
     const hashedPassword = await hash(userData.password, 10);
 
     // Create user
-    const createData: any = {
+    const createData: {
+      email: string;
+      password: string;
+      name: string;
+      role?: string;
+    } = {
       email: userData.email,
       password: hashedPassword,
       name: userData.name,
@@ -65,7 +70,7 @@ export class AuthService {
     }) as User;
 
     // Return user without password
-    const { password: _, ...userWithoutPassword } = user;
+    const { password: _password, ...userWithoutPassword } = user;
     return userWithoutPassword as Omit<User, 'password'>;
   }
 
@@ -80,7 +85,7 @@ export class AuthService {
     }
 
     // Verify password
-    const isValid = await compare(credentials.password, (user as any).password);
+    const isValid = await compare(credentials.password, (user as { password: string }).password);
     if (!isValid) {
       throw new Error('Invalid credentials');
     }
@@ -93,7 +98,7 @@ export class AuthService {
     );
 
     // Return user without password
-    const { password: _, ...userWithoutPassword } = user;
+    const { password: _password, ...userWithoutPassword } = user;
     return { user: userWithoutPassword as User, token };
   }
 
@@ -119,7 +124,7 @@ export class AuthService {
 
       // Since we're using select, the password field should not be included
       // But if the mock returns it anyway, we need to filter it out
-      const { password: _, ...userWithoutPassword } = user as any;
+      const { password: _password, ...userWithoutPassword } = user as User & { password?: string };
       return userWithoutPassword as User;
     } catch (error) {
       if (error instanceof Error && error.message === 'User not found') {
@@ -140,7 +145,7 @@ export class AuthService {
     }
 
     // Verify current password
-    const isCurrentPasswordValid = await compare(data.currentPassword, (user as any).password);
+    const isCurrentPasswordValid = await compare(data.currentPassword, (user as { password: string }).password);
     if (!isCurrentPasswordValid) {
       throw new Error('Current password is incorrect');
     }

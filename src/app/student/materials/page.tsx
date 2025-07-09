@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Download, Loader2, FileText, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Student, CourseOffering, CourseMaterial } from '@/types/entities';
+import type { CourseOffering, CourseMaterial } from '@/types/entities';
 import { studentService } from '@/lib/api/students';
 import { courseService } from '@/lib/api/courses';
 import { courseOfferingService } from '@/lib/api/courseOfferings';
