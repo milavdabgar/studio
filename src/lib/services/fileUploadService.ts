@@ -18,26 +18,26 @@ declare namespace Express {
 
 // Mock for missing dependencies - these would normally be actual imports
 const mockStorage = {
-  uploadFile: (params?: any) => Promise.resolve({
+  uploadFile: (_options?: any) => Promise.resolve({
     url: 'https://storage.example.com/files/test.jpg',
     key: 'files/test.jpg',
   }),
-  deleteFile: (key?: string) => Promise.resolve(true),
-  getSignedUrl: (key?: string, expires?: number) => Promise.resolve('https://signed-url.example.com/test.jpg'),
+  deleteFile: (_key?: string) => Promise.resolve(true),
+  getSignedUrl: (_key?: string, _expiresIn?: number) => Promise.resolve('https://signed-url.example.com/test.jpg'),
 };
 
-const mockSharp = () => ({
+const mockSharp = (_input?: any) => ({
   metadata: () => Promise.resolve({
     width: 1200,
     height: 800,
     format: 'jpeg',
   }),
-  resize: (width?: number, height?: number) => mockSharp(),
-  toFormat: (format?: string) => mockSharp(),
+  resize: (_width?: number, _height?: number) => mockSharp(),
+  toFormat: (_format?: string) => mockSharp(),
   toBuffer: () => Promise.resolve(Buffer.from('processed-image')),
-  jpeg: (options?: any) => mockSharp(),
-  png: (options?: any) => mockSharp(),
-  webp: (options?: any) => mockSharp(),
+  jpeg: (_options?: any) => mockSharp(),
+  png: (_options?: any) => mockSharp(),
+  webp: (_options?: any) => mockSharp(),
 });
 
 export interface UploadOptions {

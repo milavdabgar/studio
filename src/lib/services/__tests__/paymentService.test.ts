@@ -1,4 +1,4 @@
-import { PaymentService, PaymentError, PaymentIntent, SubscriptionPlan } from '../paymentService';
+import { PaymentService, PaymentError } from '../paymentService';
 import Stripe from 'stripe';
 
 // Mock Stripe

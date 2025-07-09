@@ -1,13 +1,13 @@
 // Email Service
 // Mock nodemailer since it's not available in this environment
 const nodemailer = {
-  createTransport: (_config: any) => ({
-    sendMail: (_options: any) => Promise.resolve({ messageId: 'mock-id' }),
+  createTransport: (_config?: any) => ({
+    sendMail: (_options?: any) => Promise.resolve({ messageId: 'mock-id' }),
     verify: () => Promise.resolve(true),
     close: () => {}
   }),
   Transporter: class {
-    sendMail = (_options: any) => Promise.resolve({ messageId: 'mock-id' });
+    sendMail = (_options?: any) => Promise.resolve({ messageId: 'mock-id' });
     verify = () => Promise.resolve(true);
   }
 };
@@ -73,7 +73,7 @@ export class EmailService {
     await this.verifyConnection();
   }
 
-  async verifyConnection(): Promise<boolean> {
+  async verifyConnection(_config?: any): Promise<boolean> {
     if (!this.transporter) {
       throw new Error('Email service not initialized');
     }

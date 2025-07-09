@@ -37,7 +37,7 @@ describe('ContentConverterV2 - SVG Image Processing', () => {
 
     beforeEach(() => {
       // Mock file reading for SVG content
-      mockedFs.readFileSync.mockImplementation((path: fs.PathOrFileDescriptor, options?: any) => {
+      mockedFs.readFileSync.mockImplementation((path: fs.PathOrFileDescriptor) => {
         if (path.toString().endsWith('.svg')) {
           return mockSvgContent;
         }
@@ -242,7 +242,7 @@ More content here.
         // This will fail due to missing Puppeteer in test environment,
         // but we can verify SVG processing is called
         await converter.convert(markdownWithSvg, 'html');
-      } catch (error) {
+      } catch {
         // Expected to fail in test environment
       }
 

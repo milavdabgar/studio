@@ -144,7 +144,6 @@ describe('Department API', () => {
     });
 
     it('should throw an error if update fails', async () => {
-        const updatedDepartment = { id: 1, name: 'Updated Department' };
       mockFetch.mockResolvedValueOnce(createMockResponse({
         ok: false,
         status: 400,

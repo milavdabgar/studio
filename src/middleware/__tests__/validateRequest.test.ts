@@ -158,7 +158,7 @@ describe('validateRequest middleware', () => {
       });
 
       const middleware = validateRequest(mockSchema);
-      const response = await middleware(request);
+      await middleware(request);
 
       expect(mockSchema.validate).toHaveBeenCalledWith(null);
     });

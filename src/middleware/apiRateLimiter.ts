@@ -1,8 +1,8 @@
 // API Rate Limiter middleware
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export const apiRateLimiter = (_options: { requests: number; window: number }) => {
-  return async (_req: NextRequest) => {
+export const apiRateLimiter = (_options?: any) => {
+  return async (_req?: any, _res?: any, _next?: any) => {
     // Mock implementation - in real app would use Redis/IORedis
     return NextResponse.next();
   };

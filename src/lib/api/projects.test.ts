@@ -1,5 +1,5 @@
 import { projectService } from './projects';
-import type { Project, EvaluationData, ProjectStatistics, ProjectStatus, User, Department, ProjectTeam, ProjectEvent, ProjectLocation } from '@/types/entities';
+import type { Project, EvaluationData, ProjectStatistics, ProjectStatus, User, Department, ProjectTeam, ProjectEvent } from '@/types/entities';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
 // Helper to create mock responses

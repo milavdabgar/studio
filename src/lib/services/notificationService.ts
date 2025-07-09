@@ -422,7 +422,6 @@ export class NotificationService {
 
     const key = `user:${userId}`;
     const now = Date.now();
-    const windowMs = rateLimits.windowMs || 60000; // 1 minute default
     const maxRequests = rateLimits.perUser || 10; // 10 requests per window default
 
     const record = this.rateLimitTracker.get(key);
@@ -459,7 +458,7 @@ export class NotificationService {
 
   async shutdown(): Promise<void> {
     // Cancel all scheduled notifications
-    for (const [scheduleId, timer] of this.scheduledNotifications) {
+    for (const [, timer] of this.scheduledNotifications) {
       clearTimeout(timer);
     }
     this.scheduledNotifications.clear();

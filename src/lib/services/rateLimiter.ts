@@ -42,7 +42,6 @@ export class RateLimiter {
 
   async consume(key: string): Promise<RateLimitResult> {
     const now = Date.now();
-    const windowStart = now - this.config.windowMs;
     
     let record = this.store.get(key);
     

@@ -14,7 +14,7 @@ try {
   DeleteObjectCommand = awsClient.DeleteObjectCommand;
   HeadObjectCommand = awsClient.HeadObjectCommand;
   getSignedUrl = awsPresigner.getSignedUrl;
-} catch (error) {
+} catch {
   // Mock implementations for testing
   S3Client = class {
     constructor() {}
@@ -27,7 +27,7 @@ try {
   getSignedUrl = () => Promise.resolve('mock-signed-url');
 }
 import { createReadStream, createWriteStream, unlinkSync, existsSync, mkdirSync, statSync } from 'fs';
-import { rm, readdir } from 'fs/promises';
+import { rm } from 'fs/promises';
 import { join, dirname, extname } from 'path';
 import { Readable } from 'stream';
 import { createHash } from 'crypto';

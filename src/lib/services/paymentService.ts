@@ -355,7 +355,7 @@ export class PaymentService {
   ): Promise<Stripe.Event> {
     try {
       return this.stripe.webhooks.constructEvent(payload, signature, secret);
-    } catch (error) {
+    } catch {
       throw new PaymentError('Invalid webhook signature', 'webhook_error');
     }
   }

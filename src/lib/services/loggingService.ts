@@ -235,15 +235,7 @@ export class LoggingService {
     }
   }
 
-  async getLogs(
-    _filter: {
-      level?: LogLevel;
-      startDate?: Date;
-      endDate?: Date;
-      userId?: string;
-      limit?: number;
-    } = {}
-  ): Promise<LogEntry[]> {
+  async getLogs(): Promise<LogEntry[]> {
     // This would typically query a database
     // For now, return empty array as this is a placeholder
     return [];

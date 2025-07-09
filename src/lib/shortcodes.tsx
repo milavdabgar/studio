@@ -231,10 +231,7 @@ export function parseShortcodes(content: string): string {
   // Use a more flexible regex to handle whitespace and newlines better
   const pairedShortcodeRegex = /\{\{<\s*(\w+(?:-\w+)*)\s*([^>]*?)\s*>\}\}([\s\S]*?)\{\{<\s*\/\1\s*>\}\}/g;
   
-  let foundPaired = false;
-  
   result = result.replace(pairedShortcodeRegex, (match, shortcodeName, paramString, innerContent) => {
-    foundPaired = true;
     
     // Find the corresponding React component
     const Component = shortcodeRegistry[shortcodeName];

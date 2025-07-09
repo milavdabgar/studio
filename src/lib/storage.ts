@@ -5,10 +5,8 @@ export interface UploadResult {
   size?: number;
 }
 
-export const uploadFile = async (file: File, options?: Record<string, unknown>): Promise<UploadResult> => {
+export const uploadFile = async (): Promise<UploadResult> => {
   // Mock implementation - in real app, file would be uploaded to storage
-  const _ = file; // Acknowledge file parameter
-  const __ = options; // Acknowledge options parameter
   return {
     url: 'https://storage.example.com/files/test.jpg',
     key: 'files/test.jpg',
@@ -62,8 +60,10 @@ export class MemoryStorage implements StorageInterface {
   }
 }
 
-export default {
+const StorageService = {
   uploadFile,
   deleteFile,
   getSignedUrl,
 };
+
+export default StorageService;

@@ -42,8 +42,7 @@ export class DatabaseService {
 
   async query<T extends Record<string, any> = any>(
     text: string, 
-    params?: any[], 
-    _options?: QueryOptions
+    params?: any[]
   ): Promise<QueryResult<T>> {
     const start = Date.now();
     

@@ -70,7 +70,8 @@ export class AuthService {
     }) as User;
 
     // Return user without password
-    const { password: _password, ...userWithoutPassword } = user;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...userWithoutPassword } = user;
     return userWithoutPassword as Omit<User, 'password'>;
   }
 
@@ -98,7 +99,8 @@ export class AuthService {
     );
 
     // Return user without password
-    const { password: _password, ...userWithoutPassword } = user;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...userWithoutPassword } = user;
     return { user: userWithoutPassword as User, token };
   }
 
@@ -124,7 +126,8 @@ export class AuthService {
 
       // Since we're using select, the password field should not be included
       // But if the mock returns it anyway, we need to filter it out
-      const { password: _password, ...userWithoutPassword } = user as User & { password?: string };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...userWithoutPassword } = user as User & { password?: string };
       return userWithoutPassword as User;
     } catch (error) {
       if (error instanceof Error && error.message === 'User not found') {

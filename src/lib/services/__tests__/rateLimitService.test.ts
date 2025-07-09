@@ -25,7 +25,7 @@ describe('RateLimitService', () => {
     jest.clearAllMocks();
     
     // Setup mock Redis methods
-    const mockEval = jest.fn().mockImplementation(async (script: any, numkeys?: any, ...args: any[]): Promise<any> => {
+    const mockEval = jest.fn().mockImplementation(async (): Promise<any> => {
       // Default behavior: allow requests (count within limit)
       return [1, Date.now() + testWindowMs]; // [count, resetTime]
     });
@@ -73,7 +73,7 @@ describe('RateLimitService', () => {
     });
     
     it('should initialize with custom options', () => {
-      const customService = new RateLimitService({
+      new RateLimitService({
         redis: {
           host: 'custom-redis',
           port: 6380,
@@ -400,7 +400,7 @@ describe('RateLimitService', () => {
       const now = Date.now();
       
       // Mock the Lua script to simulate requests aging out
-      (mockRedis.eval as jest.Mock).mockImplementation(async (script: any, numkeys?: any, ...args: any[]): Promise<any> => {
+      (mockRedis.eval as jest.Mock).mockImplementation(async (script: any): Promise<any> => {
         if (script.includes('zremrangebyscore')) {
           // Simulate that some old requests were removed
           return [5, now + testWindowMs]; // 5 requests in the current window
