@@ -202,7 +202,7 @@ test.describe('Public Routes Access', () => {
     // Test direct navigation to departments via URL
     await page.goto('/departments');
     expect(page.url()).toContain('/departments');
-    await expect(page.locator('h1')).toContainText('Engineering Departments');
+    await expect(page.locator('h1').filter({ hasText: 'Engineering Departments' })).toBeVisible();
     
     // Test direct navigation to other pages
     await page.goto('/admissions');
