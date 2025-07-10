@@ -63,7 +63,7 @@ export async function GET() {
     return NextResponse.json(assessmentsWithId);
   } catch (error) {
     console.error('Error in GET /api/assessments:', error);
-    return NextResponse.json({ message: 'Internal server error processing assessments request.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error processing assessments request.' }, { status: 500 });
   }
 }
 
@@ -134,6 +134,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newAssessment.toJSON(), { status: 201 });
   } catch (error) {
     console.error('Error creating assessment:', error);
-    return NextResponse.json({ message: 'Error creating assessment', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error creating assessment' }, { status: 500 });
   }
 }

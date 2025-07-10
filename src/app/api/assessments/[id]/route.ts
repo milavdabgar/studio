@@ -30,7 +30,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(assessment.toJSON());
   } catch (error) {
     console.error(`Error fetching assessment ${id}:`, error);
-    return NextResponse.json({ message: `Error fetching assessment ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error fetching assessment ${id}` }, { status: 500 });
   }
 }
 
@@ -108,7 +108,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(updatedAssessment.toJSON());
   } catch (error) {
     console.error(`Error updating assessment ${id}:`, error);
-    return NextResponse.json({ message: `Error updating assessment ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error updating assessment ${id}` }, { status: 500 });
   }
 }
 
@@ -136,6 +136,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Assessment deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error(`Error deleting assessment ${id}:`, error);
-    return NextResponse.json({ message: `Error deleting assessment ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error deleting assessment ${id}` }, { status: 500 });
   }
 }
