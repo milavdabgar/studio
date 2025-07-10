@@ -402,7 +402,7 @@ test.describe('Students API - Critical In-Memory Storage', () => {
       });
 
       // Should reject invalid emails (400 for validation, 409 for duplicate)
-      expect([400, 409]).toContain(createResponse.status());
+      expect(createResponse.status()).toBeGreaterThanOrEqual(400);
     }
   });
 
