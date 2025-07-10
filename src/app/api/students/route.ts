@@ -17,7 +17,11 @@ export async function GET() {
       ...student,
       id: student.id || (student as { _id: unknown })._id?.toString(),
       fullName: student.fullNameGtuFormat || `${student.firstName || ''} ${student.middleName || ''} ${student.lastName || ''}`.replace(/\s+/g, ' ').trim(),
-      email: student.instituteEmail || student.personalEmail || ''
+      // Keep both email field and personalEmail for backward compatibility
+      email: student.instituteEmail || student.personalEmail || '',
+      personalEmail: student.personalEmail || student.instituteEmail || '',
+      // Ensure status field is returned according to Student interface
+      status: student.status || (student.isActive ? 'active' : 'inactive')
     }));
     
     return NextResponse.json(studentsWithId);

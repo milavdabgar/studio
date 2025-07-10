@@ -8,14 +8,14 @@ test('Landing Page Navigation Test', async ({ page }) => {
   await page.waitForTimeout(3000);
   
   // Check for main heading or title
-  await expect(page.getByRole('heading', { name: 'GP Palanpur' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Streamline Your College' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Premier Government Polytechnic/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Discover GP Palanpur/i })).toBeVisible();
   
-  // Check for login link/button
-  const loginElement = page.getByRole('link', { name: 'Login' });
+  // Check for portal link/button
+  const loginElement = page.getByRole('link', { name: 'Portal', exact: true });
   await expect(loginElement).toBeVisible();
   
-  // Click login button/link
+  // Click portal button/link
   await loginElement.click();
   
   // Verify we're on login page

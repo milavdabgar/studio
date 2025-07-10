@@ -67,10 +67,25 @@ export async function GET(request: NextRequest) {
     
     // Sort events
     eventsWithId.sort((a, b) => {
-      const eventA = a as { eventDate?: string; isActive?: boolean };
-      const eventB = b as { eventDate?: string; isActive?: boolean };
-      const dateA = eventA.eventDate ? parseISO(eventA.eventDate).getTime() : 0;
-      const dateB = eventB.eventDate ? parseISO(eventB.eventDate).getTime() : 0;
+      const eventA = a as { eventDate?: string | Date; isActive?: boolean };
+      const eventB = b as { eventDate?: string | Date; isActive?: boolean };
+      
+      // Handle both string and Date types for eventDate
+      const getTimestamp = (date: string | Date | undefined): number => {
+        if (!date) return 0;
+        if (typeof date === 'string') {
+          try {
+            return parseISO(date).getTime();
+          } catch {
+            return new Date(date).getTime() || 0;
+          }
+        }
+        return date instanceof Date ? date.getTime() : 0;
+      };
+      
+      const dateA = getTimestamp(eventA.eventDate);
+      const dateB = getTimestamp(eventB.eventDate);
+      
       if (eventA.isActive && !eventB.isActive) return -1;
       if (!eventA.isActive && eventB.isActive) return 1;
       if (eventA.isActive) return dateA - dateB; 

@@ -22,15 +22,15 @@ const expectSuccessfulDeleteOrError = (response: APIResponse) => {
 };
 
 const entities = [
-  { name: 'assessments', createData: { name: 'Test Assessment', description: 'Test Desc', courseId: 'course_cs101_dce_gpp', programId: 'prog_dce_gpp', type: 'Quiz', maxMarks: 100, status: 'Draft' } },
+  { name: 'assessments', createData: { name: `Test Assessment ${Date.now()}`, description: 'Test Desc', courseId: 'course_cs101_dce_gpp', programId: 'prog_dce_gpp', type: 'Quiz', maxMarks: 100, status: 'Draft', dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), semester: 1 } },
   { name: 'attendance', skipGetById: true, skipPost: true, skipPut: true, skipDelete: true }, // GET /attendance/[id] returns 405
-  { name: 'batches', createData: { name: 'Test Batch', programId: 'prog_dce_gpp', startAcademicYear: 2024, status: 'upcoming' } },
-  { name: 'buildings', createData: { name: 'Test Building', instituteId: 'inst1', status: 'active' } },
-  { name: 'committees', createData: { name: 'Test Committee', code: 'TC', purpose: 'Testing', instituteId: 'inst1', formationDate: new Date().toISOString().split('T')[0], status: 'active' } },
-  { name: 'courses', createData: { subcode: 'TC101', subjectName: 'Test Course', departmentId: 'dept_ce_gpp', programId: 'prog_dce_gpp', semester: 1, lectureHours: 3, tutorialHours: 1, practicalHours: 0, credits: 4, theoryEseMarks: 70, theoryPaMarks: 30, practicalEseMarks: 0, practicalPaMarks: 0, totalMarks: 100, isElective: false, isTheory: true, isPractical: false, isFunctional: true } },
+  { name: 'batches', createData: { name: `Test Batch ${Date.now()}`, programId: 'prog_dce_gpp', startAcademicYear: 2024, endAcademicYear: 2027, currentSemester: 1, totalSemesters: 6, maxIntake: 60, status: 'upcoming' } },
+  { name: 'buildings', createData: { name: `Test Building ${Date.now()}`, code: `TB${Date.now().toString().slice(-4)}`, instituteId: 'inst1', status: 'active', location: 'Test Campus', address: 'Test Address' } },
+  { name: 'committees', createData: { name: `Test Committee ${Date.now()}`, code: `TC${Date.now().toString().slice(-4)}`, purpose: 'Testing', instituteId: 'inst1', formationDate: new Date().toISOString().split('T')[0], status: 'active' } },
+  { name: 'courses', createData: { subcode: `TC${Date.now().toString().slice(-6)}`, subjectName: `Test Course ${Date.now()}`, departmentId: 'dept_ce_gpp', programId: 'prog_dce_gpp', semester: 1, lectureHours: 3, tutorialHours: 1, practicalHours: 0, credits: 4, theoryEseMarks: 70, theoryPaMarks: 30, practicalEseMarks: 0, practicalPaMarks: 0, totalMarks: 100, isElective: false, isTheory: true, isPractical: false, isFunctional: true, category: 'Core' } },
   { name: 'curriculum', createData: { programId: "prog_dce_gpp", version: "1.0-test", effectiveDate: new Date().toISOString().split('T')[0], courses: [{ courseId: "course_cs101_dce_gpp", semester: 1, isElective: false }], status: "draft" } },
-  { name: 'departments', createData: { name: 'Test Department', code: 'TD', instituteId: 'inst1', status: 'active' } },
-  { name: 'faculty', createData: { staffCode: 'FAC00_TEST', firstName: 'Test', lastName: 'Faculty', instituteEmail: `testfaculty_${Date.now()}@example.com`, department: 'Computer Engineering', status: 'active', instituteId: 'inst1' } },
+  { name: 'departments', createData: { name: `Test Department ${Date.now()}`, code: `TD${Date.now().toString().slice(-4)}`, instituteId: 'inst1', status: 'active' } },
+  { name: 'faculty', createData: { staffCode: 'FAC00_TEST', firstName: 'Test', lastName: 'Faculty', fullNameGtuFormat: 'FACULTY TEST MIDDLE', instituteEmail: `testfaculty_${Date.now()}@example.com`, department: 'Computer Engineering', status: 'active', instituteId: 'inst1' } },
   { name: 'institutes', createData: { name: 'Test Institute', code: `TI${Date.now().toString().slice(-4)}`, status: 'active' } },
   { name: 'permissions', skipPost: true, skipPut: true, skipDelete: true, skipGetById: true },
   { name: 'programs', createData: { name: 'Test Program', code: `TP${Date.now().toString().slice(-4)}`, departmentId: 'dept_ce_gpp', instituteId: 'inst1', status: 'active', degreeType: 'Diploma' } },
@@ -39,12 +39,12 @@ const entities = [
   { name: 'project-teams', createData: { name: `Test Team ${Date.now()}`, department: "dept_ce_gpp", eventId: "event_techfest_2024_gpp", members: [{ userId: "user_student_ce001_gpp", name: "Student CE001", enrollmentNo: "220010107001", role: "Team Leader", isLeader: true }] } },
   { name: 'projects', createData: { title: `Test Project ${Date.now()}`, category: "Test Category", abstract: "Test abstract", department: "dept_ce_gpp", teamId: "team_innovate_gpp", eventId: "event_techfest_2024_gpp", requirements: { power: false, internet: false, specialSpace: false }, guide: { userId: "user_faculty_cs01_gpp", name: "Faculty CS01", department: "dept_ce_gpp", contactNumber: "123" } } },
   { name: 'results', skipGetById: true, skipPost: true, skipPut: true, skipDelete: true }, // Requires specific data
-  { name: 'roles', createData: { name: `Test Role ${Date.now().toString().slice(-4)}`, code: `test_role_${Date.now().toString().slice(-4)}`, description: 'Test Role Description', permissions: [] } },
-  { name: 'room-allocations', createData: { roomId: "room_a101_gpp", purpose: "lecture", title: "Test Allocation", startTime: new Date().toISOString(), endTime: new Date(Date.now() + 3600000).toISOString(), status: "scheduled" } },
+  { name: 'roles', createData: { name: `Test Role ${Date.now()}`, code: `test_role_${Date.now().toString().slice(-4)}`, description: 'Test Role Description', permissions: [] } },
+  { name: 'room-allocations', createData: { roomId: "room_a101_gpp", purpose: "lecture", title: "Test Allocation", startTime: new Date().toISOString(), endTime: new Date(Date.now() + 3600000).toISOString(), status: "scheduled", allocatedBy: "user_admin_placeholder", requestedBy: "user_faculty_placeholder" } },
   { name: 'rooms', createData: { roomNumber: `TR${Date.now().toString().slice(-3)}`, buildingId: 'bldg_main_gpp', type: 'Lecture Hall', status: 'available' } },
-  { name: 'students', createData: { enrollmentNumber: `TEST${Date.now().toString().slice(-5)}`, programId: 'prog_dce_gpp', department: 'dept_ce_gpp', currentSemester: 1, status: 'active', instituteEmail: `teststudent_${Date.now()}@example.com`, firstName: 'Test', lastName: 'Student', instituteId: 'inst1' } },
+  { name: 'students', createData: { enrollmentNumber: `TEST${Date.now().toString().slice(-5)}`, programId: 'prog_dce_gpp', department: 'dept_ce_gpp', currentSemester: 1, status: 'active', instituteEmail: `teststudent_${Date.now()}@example.com`, firstName: 'Test', lastName: 'Student', fullNameGtuFormat: 'STUDENT TEST MIDDLE', instituteId: 'inst1' } },
   { name: 'timetables', createData: { name: `Test Timetable ${Date.now()}`, academicYear: "2024-25", semester: 1, programId: "prog_dce_gpp", batchId: "batch_dce_2022_gpp", version: "1.0-test", status: "draft", effectiveDate: new Date().toISOString().split('T')[0], entries: [] } },
-  { name: 'users', createData: { displayName: 'Test User', email: `testuser_${Date.now()}@example.com`, password: 'password123', roles: ['student'], isActive: true } },
+  { name: 'users', createData: { displayName: 'Test User', fullName: 'Test User Smith', firstName: 'Test', lastName: 'Smith', email: `testuser_${Date.now()}@example.com`, password: 'password123', roles: ['student'], isActive: true } },
 ];
 
 test.describe('API Endpoints E2E Tests', () => {
@@ -120,16 +120,29 @@ test.describe('API Endpoints E2E Tests', () => {
         test(`PUT /${entity.name}/[id] - Should update an existing item or return error`, async ({ request }) => {
           // Create an item first to get an ID
           const postResponse = await request.post(`${API_BASE_URL}/${entity.name}`, { data: entity.createData });
-          if (postResponse.status() !== 201) {
-            console.warn(`Skipping PUT test for ${entity.name} as POST failed or didn't create.`);
+          if (![201, 409].includes(postResponse.status())) {
+            console.warn(`Skipping PUT test for ${entity.name} as POST failed (status: ${postResponse.status()}).`);
             test.skip();
             return;
           }
-          const createdItem = await postResponse.json();
-          const itemId = createdItem.id || createdItem.data?.event?.id || createdItem.data?.team?.id || createdItem.data?.location?.id || createdItem.data?.project?.id || createdItem.data?.role?.id || createdItem.data?.user?.id || createdItem._id;
+          let itemId: string | undefined;
+          
+          if (postResponse.status() === 201) {
+            // Item was created, use the new item ID
+            const createdItem = await postResponse.json();
+            itemId = createdItem.id || createdItem.data?.event?.id || createdItem.data?.team?.id || createdItem.data?.location?.id || createdItem.data?.project?.id || createdItem.data?.role?.id || createdItem.data?.user?.id || createdItem._id;
+          } else if (postResponse.status() === 409) {
+            // Item already exists, get an existing item for testing
+            const listResponse = await request.get(`${API_BASE_URL}/${entity.name}`);
+            const listBody = await listResponse.json();
+            const items = Array.isArray(listBody) ? listBody : listBody.data?.[entity.name] || listBody.data?.events || listBody.data?.teams || listBody.data?.locations || listBody.data?.projects || listBody.data?.roles || listBody.data?.users || [];
+            if (items && items.length > 0) {
+              itemId = items[0].id || items[0]._id;
+            }
+          }
 
           if (!itemId) {
-            console.warn(`Skipping PUT test for ${entity.name} as ID was not found in POST response.`);
+            console.warn(`Skipping PUT test for ${entity.name} as ID was not found.`);
             test.skip();
             return;
           }

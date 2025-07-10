@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
         uploadBatch: result.uploadBatch,
       };
 
-      result.subjects.forEach((subject: ResultSubject, index: number) => {
+      (result.subjects || []).forEach((subject: ResultSubject, index: number) => {
         const i = index + 1;
         flatResult[`SUB${i}`] = subject.code;
         flatResult[`SUB${i}NA`] = subject.name;

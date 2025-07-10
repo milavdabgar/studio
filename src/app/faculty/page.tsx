@@ -8,10 +8,9 @@ export default function FacultyRootPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Redirect to a more specific faculty page
-    router.replace('/faculty/profile'); 
-    // Or, if you have a faculty-specific dashboard:
-    // router.replace('/dashboard'); // Assuming /dashboard handles role-specific views
+    // Redirect to dashboard which handles role-specific views
+    router.replace('/dashboard'); 
+    // Note: Faculty profile can be accessed via /faculty/profile directly
   }, [router]);
 
   return (

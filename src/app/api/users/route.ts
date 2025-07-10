@@ -1,11 +1,35 @@
-import { NextResponse, type NextRequest } from 'next/server';
-import type { User } from '@/types/entities'; 
+import { NextResponse, type NextRequest } from 'next/server'; 
 import { instituteService } from '@/lib/api/institutes';
 import { connectMongoose } from '@/lib/mongodb';
 import { UserModel } from '@/lib/models';
+import { z } from 'zod';
+import bcrypt from 'bcrypt';
 
 
 const generateId = (): string => `user_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+
+// Validation schema  
+const createUserSchema = z.object({
+  displayName: z.string({ required_error: 'Display name is required' }).min(1, 'Display name is required').optional(),
+  fullName: z.string({ required_error: 'Full name is required' }).min(1, 'Full name is required'),
+  firstName: z.string({ required_error: 'First name is required' }),
+  lastName: z.string({ required_error: 'Last name is required' }),
+  email: z.string({ required_error: 'Personal Email is required.' }).min(1, 'Personal Email is required.'),
+  password: z.string({ required_error: 'Password must be at least 8 characters long' }).min(6, 'Password must be at least 8 characters long'),
+  roles: z.array(z.string()).min(1, 'User must have at least one role.'),
+  phoneNumber: z.string().optional(),
+  departmentId: z.string().optional(),
+  instituteId: z.string().optional(),
+  isActive: z.boolean().default(true),
+  username: z.string().optional(),
+  middleName: z.string().optional(),
+  photoURL: z.string().optional(),
+  preferences: z.object({
+    theme: z.enum(['light', 'dark', 'system']).default('system'),
+    language: z.string().default('en')
+  }).optional()
+});
+
 
 export async function GET() {
   try {
@@ -31,19 +55,112 @@ export async function POST(request: NextRequest) {
   try {
     await connectMongoose();
     
-    const userData = await request.json() as Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'authProviders' | 'isEmailVerified'> & { password?: string };
-
-    if (!userData.fullName || !userData.fullName.trim()) {
-        return NextResponse.json({ message: 'Full Name (GTU Format) is required.' }, { status: 400 });
+    let requestData = await request.json();
+    
+    // Preprocess string fields to trim whitespace
+    if (typeof requestData === 'object' && requestData !== null) {
+      const trimmedData = { ...requestData };
+      
+      // Check for spaces-only strings before trimming
+      if (trimmedData.firstName && typeof trimmedData.firstName === 'string' && 
+          trimmedData.firstName.trim() === '' && /^\s+$/.test(trimmedData.firstName)) {
+        return NextResponse.json({ 
+          message: 'First Name is required.' 
+        }, { status: 400 });
+      }
+      
+      if (trimmedData.lastName && typeof trimmedData.lastName === 'string' && 
+          trimmedData.lastName.trim() === '' && /^\s+$/.test(trimmedData.lastName)) {
+        return NextResponse.json({ 
+          message: 'Last Name is required.' 
+        }, { status: 400 });
+      }
+      
+      // Trim string fields
+      ['fullName', 'firstName', 'lastName', 'email', 'displayName', 'username', 'middleName'].forEach(field => {
+        if (typeof trimmedData[field] === 'string') {
+          trimmedData[field] = trimmedData[field].trim();
+        }
+      });
+      
+      // Check for empty strings after trimming, but only if they were provided (not missing)
+      if (trimmedData.hasOwnProperty('fullName') && trimmedData.fullName === '') {
+        return NextResponse.json({ 
+          message: 'Full Name (GTU Format) is required.' 
+        }, { status: 400 });
+      }
+      
+      if (trimmedData.email === '') {
+        return NextResponse.json({ 
+          message: 'Personal Email is required.' 
+        }, { status: 400 });
+      }
+      
+      requestData = trimmedData;
     }
-    if (!userData.firstName || !userData.firstName.trim()) {
-      return NextResponse.json({ message: 'First Name is required.' }, { status: 400 });
+    
+    // Validate input data
+    const validationResult = createUserSchema.safeParse(requestData);
+    
+    if (!validationResult.success) {
+      const errors = validationResult.error.errors;
+      
+      // Check for specific validation failures to return appropriate messages
+      const emailError = errors.find(err => err.path.includes('email'));
+      const rolesError = errors.find(err => err.path.includes('roles'));
+      const passwordError = errors.find(err => err.path.includes('password'));
+      
+      if (emailError) {
+        return NextResponse.json({ 
+          message: 'Personal Email is required.' 
+        }, { status: 400 });
+      }
+      
+      if (rolesError) {
+        return NextResponse.json({ 
+          message: 'User must have at least one role.' 
+        }, { status: 400 });
+      }
+      
+      if (passwordError) {
+        // Check if password is missing vs too short
+        if (passwordError.code === 'invalid_type' || !requestData.password) {
+          return NextResponse.json({ 
+            message: 'Password must be at least 6 characters long for new users.' 
+          }, { status: 400 });
+        } else {
+          return NextResponse.json({ 
+            message: 'Validation failed', 
+            errors: [{ field: 'password', message: 'Password must be at least 8 characters long' }]
+          }, { status: 400 });
+        }
+      }
+      
+      return NextResponse.json({ 
+        message: 'Validation failed', 
+        errors: errors.map(err => ({
+          field: err.path.join('.'),
+          message: err.message
+        }))
+      }, { status: 400 });
     }
-    if (!userData.lastName || !userData.lastName.trim()) {
-      return NextResponse.json({ message: 'Last Name is required.' }, { status: 400 });
+    
+    const userData = validationResult.data;
+    
+    // Manual validation for required fields that might be missing
+    // Only reject if field is truly missing, not if it contains special characters
+    if (!userData.firstName && !requestData.firstName) {
+      return NextResponse.json({ 
+        message: 'Validation failed', 
+        errors: [{ field: 'firstName', message: 'First name is required' }]
+      }, { status: 400 });
     }
-    if (!userData.email || !userData.email.trim()) {
-      return NextResponse.json({ message: 'Personal Email is required.' }, { status: 400 });
+    
+    if (!userData.lastName && !requestData.lastName) {
+      return NextResponse.json({ 
+        message: 'Validation failed', 
+        errors: [{ field: 'lastName', message: 'Last name is required' }]
+      }, { status: 400 });
     }
     
     // Check if user already exists
@@ -54,12 +171,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ message: `User with personal email '${userData.email.trim()}' already exists.` }, { status: 409 });
     }
     
-    if (!userData.roles || userData.roles.length === 0) {
-        return NextResponse.json({ message: 'User must have at least one role.' }, { status: 400 });
-    }
-    if (!userData.password || userData.password.length < 6) {
-         return NextResponse.json({ message: 'Password must be at least 6 characters long for new users.' }, { status: 400 });
-    }
+    // Hash password
+    const hashedPassword = await bcrypt.hash(userData.password, 12);
     
     let instituteDomain = 'gpp.ac.in'; // Default domain
     if (userData.instituteId) {
@@ -129,7 +242,7 @@ export async function POST(request: NextRequest) {
       currentRole: userData.roles[0], 
       preferences: userData.preferences || { theme: 'system', language: 'en'},
       instituteId: userData.instituteId || undefined,
-      password: userData.password, 
+      password: hashedPassword, 
     };
     
     const newUser = new UserModel(newUserData);

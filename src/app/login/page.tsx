@@ -29,6 +29,7 @@ const getMockUsers = (): MockUser[] => {
     { id: "u1", email: "admin@gppalanpur.in", password: "Admin@123", roles: ["admin", "super_admin"], name: "Super Admin", status: "active", instituteId: "inst1" },
     { id: "u2", email: "student@example.com", password: "password", roles: ["student"], name: "Alice Student", status: "active", instituteId: "inst1" },
     { id: "u3", email: "faculty@example.com", password: "password", roles: ["faculty"], name: "Bob Faculty", status: "active", instituteId: "inst1" },
+    { id: "u3b", email: "faculty@gppalanpur.in", password: "Faculty@123", roles: ["faculty"], name: "Dr. Faculty User", status: "active", instituteId: "inst1" },
     { id: "u4", email: "hod@example.com", password: "password", roles: ["hod", "faculty"], name: "Charlie HOD", status: "active", instituteId: "inst1" },
     { id: "u5", email: "jury@example.com", password: "password", roles: ["jury", "faculty"], name: "Diana Jury", status: "inactive", instituteId: "inst1" },
     { id: "u6", email: "multi@example.com", password: "password", roles: ["student", "jury"], name: "Multi Role User", status: "active", instituteId: "inst1" },
@@ -179,6 +180,7 @@ export default function LoginPage() {
         });
 
         const userPayload = {
+          id: foundUser.id,
           email: foundUser.email,
           name: foundUser.name || foundUser.email,
           availableRoles: foundUser.roles, // Array of role codes

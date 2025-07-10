@@ -91,6 +91,7 @@ export async function POST(request: NextRequest) {
     
     const newFacultyData = {
       id: generateId(),
+      userId: facultyData.userId,
       staffCode: facultyData.staffCode,
       employeeId: facultyData.employeeId,
       title: facultyData.title,

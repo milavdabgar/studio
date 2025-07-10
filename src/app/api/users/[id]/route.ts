@@ -1,10 +1,11 @@
 
 import { NextResponse, type NextRequest } from 'next/server';
-import type { User } from '@/types/entities';
 import { instituteService } from '@/lib/api/institutes';
 import { connectMongoose } from '@/lib/mongodb';
 import { UserModel } from '@/lib/models';
 import mongoose from 'mongoose';
+import { z } from 'zod';
+import bcrypt from 'bcrypt';
 
 
 interface RouteParams {
@@ -12,6 +13,29 @@ interface RouteParams {
     id: string;
   }>;
 }
+
+// Validation schema for updates
+const updateUserSchema = z.object({
+  displayName: z.string().min(1).optional(),
+  fullName: z.string().min(1).optional(),
+  firstName: z.string().min(1).optional(),
+  lastName: z.string().min(1).optional(),
+  email: z.string().email().optional(),
+  instituteEmail: z.string().optional(),
+  password: z.string().min(8).optional(),
+  roles: z.array(z.string()).min(1).optional(),
+  phoneNumber: z.string().optional(),
+  departmentId: z.string().optional(),
+  instituteId: z.string().optional(),
+  isActive: z.boolean().optional(),
+  username: z.string().optional(),
+  middleName: z.string().optional(),
+  photoURL: z.string().optional(),
+  preferences: z.object({
+    theme: z.enum(['light', 'dark', 'system']),
+    language: z.string()
+  }).optional()
+}).partial();
 
 const parseFullName = (fullName: string | undefined): { firstName?: string, middleName?: string, lastName?: string } => {
     if (!fullName) return {};
@@ -53,7 +77,22 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 });
     }
     
-    const userDataToUpdate = await request.json() as Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>> & { password?: string, fullName?: string };
+    const requestData = await request.json();
+    
+    // Validate input data
+    const validationResult = updateUserSchema.safeParse(requestData);
+    
+    if (!validationResult.success) {
+      return NextResponse.json({ 
+        message: 'Validation failed', 
+        errors: validationResult.error.errors.map(err => ({
+          field: err.path.join('.'),
+          message: err.message
+        }))
+      }, { status: 400 });
+    }
+    
+    const userDataToUpdate = validationResult.data;
 
     const existingUser = await UserModel.findById(id);
     if (!existingUser) {
@@ -81,8 +120,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
        }
     }
     
-     if (userDataToUpdate.password && userDataToUpdate.password.length < 6) {
-        return NextResponse.json({ message: 'New password must be at least 6 characters long.' }, { status: 400 });
+    // Hash password if provided
+    if (userDataToUpdate.password) {
+      userDataToUpdate.password = await bcrypt.hash(userDataToUpdate.password, 12);
     }
     
     let newInstituteEmail = existingUser.instituteEmail;

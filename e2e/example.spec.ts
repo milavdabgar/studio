@@ -13,24 +13,24 @@ test.describe('Landing Page', () => {
 
   test('should display the main heading', async ({ page }) => {
     // Check for the main heading text
-    const heading = page.getByRole('heading', { name: /Streamline Your College Management/i });
+    const heading = page.getByRole('heading', { name: /Premier Government Polytechnic/i });
     await expect(heading).toBeVisible();
   });
 
-  test('should have a login button', async ({ page }) => {
-    const loginButton = page.getByRole('link', { name: /Login/i });
-    await expect(loginButton).toBeVisible();
-    await expect(loginButton).toBeEnabled();
+  test('should have a portal button', async ({ page }) => {
+    const portalButton = page.getByRole('link', { name: 'Portal', exact: true });
+    await expect(portalButton).toBeVisible();
+    await expect(portalButton).toBeEnabled();
   });
 
-  test('should have a sign up button', async ({ page }) => {
-    const signupButton = page.getByRole('link', { name: /Sign Up/i });
-    await expect(signupButton).toBeVisible();
-    await expect(signupButton).toBeEnabled();
+  test('should have apply now button', async ({ page }) => {
+    const applyButton = page.getByRole('link', { name: /Apply Now/i });
+    await expect(applyButton).toBeVisible();
+    await expect(applyButton).toBeEnabled();
   });
 
-  test('login button should navigate to /login', async ({ page }) => {
-    await page.getByRole('link', { name: /Login/i }).click();
+  test('portal button should navigate to /login', async ({ page }) => {
+    await page.getByRole('link', { name: 'Portal', exact: true }).click();
     await expect(page).toHaveURL(/.*\/login/);
     
     // Look for any heading on the login page with flexible matchers
@@ -46,12 +46,20 @@ test.describe('Landing Page', () => {
     }
   });
 
-  test('signup button should navigate to /signup', async ({ page }) => {
-    await page.getByRole('link', { name: /Sign Up/i }).click();
-    await expect(page).toHaveURL(/.*\/signup/);
+  test('should navigate to signup from login page', async ({ page }) => {
+    // Go to login page first
+    await page.getByRole('link', { name: 'Portal', exact: true }).click();
+    await expect(page).toHaveURL(/.*\/login/);
     
-    // Wait for page to load and then check for signup content
+    // Wait for page to load
     await page.waitForLoadState('networkidle');
+    
+    // Find and click the signup link
+    const signupLink = page.getByRole('link', { name: /Sign Up/i });
+    await expect(signupLink).toBeVisible();
+    await signupLink.click();
+    
+    await expect(page).toHaveURL(/.*\/signup/);
     
     // Look for the signup heading or form
     const signupHeading = page.getByRole('heading', { name: /Create an Account/i });

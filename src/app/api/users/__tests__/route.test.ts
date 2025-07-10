@@ -146,6 +146,7 @@ describe('/api/users', () => {
 
   describe('POST /api/users', () => {
     const validUserData = {
+      displayName: 'Alice Wilson',
       fullName: 'WILSON ALICE KUMAR',
       firstName: 'Alice',
       lastName: 'Wilson',
@@ -198,7 +199,7 @@ describe('/api/users', () => {
           email: 'alice.wilson@gmail.com',
           instituteEmail: 'alice.wilson@gpp.edu.in',
           roles: ['student'],
-          password: 'password123'
+          password: expect.stringMatching(/^\$2b\$12\$/) // Check for bcrypt hash
         })
       );
     });
@@ -216,7 +217,11 @@ describe('/api/users', () => {
       const data = await response.json();
       
       expect(response.status).toBe(400);
-      expect(data.message).toBe('Full Name (GTU Format) is required.');
+      expect(data.message).toBe('Validation failed');
+      expect(data.errors).toEqual(expect.arrayContaining([{
+        field: 'fullName',
+        message: 'Full name is required'
+      }]));
     });
 
     it('should return 400 for empty full name', async () => {
@@ -247,7 +252,11 @@ describe('/api/users', () => {
       const data = await response.json();
       
       expect(response.status).toBe(400);
-      expect(data.message).toBe('First Name is required.');
+      expect(data.message).toBe('Validation failed');
+      expect(data.errors).toEqual(expect.arrayContaining([{
+        field: 'firstName',
+        message: 'First name is required'
+      }]));
     });
 
     it('should return 400 for missing last name', async () => {
@@ -263,7 +272,11 @@ describe('/api/users', () => {
       const data = await response.json();
       
       expect(response.status).toBe(400);
-      expect(data.message).toBe('Last Name is required.');
+      expect(data.message).toBe('Validation failed');
+      expect(data.errors).toEqual(expect.arrayContaining([{
+        field: 'lastName',
+        message: 'Last name is required'
+      }]));
     });
 
     it('should return 400 for missing email', async () => {
@@ -341,7 +354,11 @@ describe('/api/users', () => {
       const data = await response.json();
       
       expect(response.status).toBe(400);
-      expect(data.message).toBe('Password must be at least 6 characters long for new users.');
+      expect(data.message).toBe('Validation failed');
+      expect(data.errors).toEqual(expect.arrayContaining([{
+        field: 'password',
+        message: 'Password must be at least 8 characters long'
+      }]));
     });
 
     it('should return 409 for duplicate email', async () => {
