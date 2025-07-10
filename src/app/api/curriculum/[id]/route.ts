@@ -34,7 +34,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Curriculum not found' }, { status: 404 });
   } catch (error) {
     console.error(`Error fetching curriculum ${id}:`, error);
-    return NextResponse.json({ message: 'Internal server error fetching curriculum.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error fetching curriculum.' }, { status: 500 });
   }
 }
 
@@ -102,7 +102,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(curriculumWithId);
   } catch (error) {
     console.error(`Error updating curriculum ${id}:`, error);
-    return NextResponse.json({ message: `Error updating curriculum ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error updating curriculum ${id}` }, { status: 500 });
   }
 }
 
@@ -121,6 +121,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Curriculum deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error(`Error deleting curriculum ${id}:`, error);
-    return NextResponse.json({ message: `Error deleting curriculum ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error deleting curriculum ${id}` }, { status: 500 });
   }
 }

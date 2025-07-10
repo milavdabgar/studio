@@ -99,6 +99,6 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Error exporting project teams:', error);
-    return NextResponse.json({ message: 'Error exporting project teams', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error exporting project teams' }, { status: 500 });
   }
 }

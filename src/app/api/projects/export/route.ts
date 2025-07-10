@@ -87,6 +87,6 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Error exporting projects:', error);
-    return NextResponse.json({ message: 'Error exporting projects', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error exporting projects' }, { status: 500 });
   }
 }

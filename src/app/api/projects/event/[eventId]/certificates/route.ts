@@ -116,6 +116,6 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ certificates });
   } catch (error) {
     console.error('Error fetching certificates:', error);
-    return NextResponse.json({ message: 'Error fetching certificates', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error fetching certificates' }, { status: 500 });
   }
 }

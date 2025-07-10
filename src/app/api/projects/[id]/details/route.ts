@@ -88,6 +88,6 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ status: 'success', data: { project: projectWithDetails } });
   } catch (error) {
     console.error('Error fetching project details:', error);
-    return NextResponse.json({ message: 'Error fetching project details.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error fetching project details.' }, { status: 500 });
   }
 }

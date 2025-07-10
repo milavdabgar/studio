@@ -35,7 +35,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(event.toJSON());
   } catch (error) {
     console.error(`Error fetching event ${id}:`, error);
-    return NextResponse.json({ message: `Error fetching event ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error fetching event ${id}` }, { status: 500 });
   }
 }
 
@@ -123,7 +123,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(updatedEvent.toJSON());
   } catch (error) {
     console.error(`Error updating event ${id}:`, error);
-    return NextResponse.json({ message: `Error updating event ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error updating event ${id}` }, { status: 500 });
   }
 }
 
@@ -151,6 +151,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Event deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error(`Error deleting event ${id}:`, error);
-    return NextResponse.json({ message: `Error deleting event ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error deleting event ${id}` }, { status: 500 });
   }
 }

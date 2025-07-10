@@ -60,6 +60,6 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ status: 'success', data: { project: updatedProject } });
   } catch (error) {
     console.error(`Error submitting central evaluation:`, error);
-    return NextResponse.json({ message: 'Error submitting central evaluation', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error submitting central evaluation' }, { status: 500 });
   }
 }

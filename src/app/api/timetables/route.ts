@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(timetablesWithId);
   } catch (error) {
     console.error('Error in GET /api/timetables:', error);
-    return NextResponse.json({ message: 'Internal server error processing timetables request.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error processing timetables request.' }, { status: 500 });
   }
 }
 
@@ -135,6 +135,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newTimetable.toJSON(), { status: 201 });
   } catch (error) {
     console.error('Error creating timetable:', error);
-    return NextResponse.json({ message: 'Error creating timetable', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error creating timetable' }, { status: 500 });
   }
 }

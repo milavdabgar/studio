@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(enrollmentsWithId);
   } catch (error) {
     console.error('Error in GET /api/enrollments:', error);
-    return NextResponse.json({ message: 'Internal server error processing enrollments request.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error processing enrollments request.' }, { status: 500 });
   }
 }
 
@@ -124,6 +124,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newEnrollment.toJSON(), { status: 201 });
   } catch (error) {
     console.error('Error creating enrollment:', error);
-    return NextResponse.json({ message: 'Error creating enrollment', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error creating enrollment' }, { status: 500 });
   }
 }

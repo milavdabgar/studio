@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ status: 'success', data: { projects: projectsWithId } });
   } catch (error) {
     console.error("Error in GET /api/projects:", error);
-    return NextResponse.json({ message: 'Internal server error processing projects request.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error processing projects request.' }, { status: 500 });
   }
 }
 
@@ -126,6 +126,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ status: 'success', data: { project: newProject.toJSON() } }, { status: 201 });
   } catch (error) {
     console.error('Error creating project:', error);
-    return NextResponse.json({ message: 'Error creating project', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error creating project' }, { status: 500 });
   }
 }

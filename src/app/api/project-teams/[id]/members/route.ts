@@ -64,7 +64,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     });
   } catch (error) {
     console.error('Error getting team members:', error);
-    return NextResponse.json({ message: 'Error getting team members', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error getting team members' }, { status: 500 });
   }
 }
 
@@ -135,6 +135,6 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ status: 'success', data: { team: team.toJSON() } }, { status: 200 });
   } catch (error) {
     console.error(`Error adding member to team ${teamId}:`, error);
-    return NextResponse.json({ message: 'Error adding member to team', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error adding member to team' }, { status: 500 });
   }
 }

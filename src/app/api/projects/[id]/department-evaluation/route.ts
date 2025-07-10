@@ -53,6 +53,6 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ status: 'success', data: { project: updatedProject } });
   } catch (error) {
     console.error(`Error submitting department evaluation:`, error);
-    return NextResponse.json({ message: 'Error submitting department evaluation', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error submitting department evaluation' }, { status: 500 });
   }
 }

@@ -32,7 +32,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ status: 'success', data: { project: project.toJSON() } });
   } catch (error) {
     console.error(`Error fetching project ${id}:`, error);
-    return NextResponse.json({ message: `Error fetching project ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error fetching project ${id}` }, { status: 500 });
   }
 }
 
@@ -93,7 +93,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ status: 'success', data: { project: updatedProject.toJSON() } });
   } catch (error) {
     console.error(`Error updating project ${id}:`, error);
-    return NextResponse.json({ message: `Error updating project ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error updating project ${id}` }, { status: 500 });
   }
 }
 
@@ -141,6 +141,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ status: 'success', data: null });
   } catch (error) {
     console.error(`Error deleting project ${id}:`, error);
-    return NextResponse.json({ message: `Error deleting project ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error deleting project ${id}` }, { status: 500 });
   }
 }

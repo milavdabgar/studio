@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(eventsWithId);
   } catch (error) {
     console.error('Error in GET /api/project-events:', error);
-    return NextResponse.json({ message: 'Internal server error processing project events request.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error processing project events request.' }, { status: 500 });
   }
 }
 
@@ -153,6 +153,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newEvent.toJSON(), { status: 201 });
   } catch (error) {
     console.error('Error creating project event:', error);
-    return NextResponse.json({ message: 'Error creating project event', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error creating project event' }, { status: 500 });
   }
 }

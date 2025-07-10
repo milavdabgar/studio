@@ -67,7 +67,7 @@ export async function GET() {
     return NextResponse.json(committeesWithId);
   } catch (error) {
     console.error('Error in GET /api/committees:', error);
-    return NextResponse.json({ message: 'Internal server error processing committees request.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error processing committees request.' }, { status: 500 });
   }
 }
 
@@ -142,6 +142,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newCommittee.toJSON(), { status: 201 });
   } catch (error) {
     console.error('Error creating committee:', error);
-    return NextResponse.json({ message: 'Error creating committee', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error creating committee' }, { status: 500 });
   }
 }

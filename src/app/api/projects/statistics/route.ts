@@ -120,6 +120,6 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error("Error fetching project statistics:", error);
-    return NextResponse.json({ message: "Error fetching project statistics", error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: "Error fetching project statistics" }, { status: 500 });
   }
 }

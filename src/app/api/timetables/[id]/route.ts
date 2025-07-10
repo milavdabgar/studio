@@ -29,7 +29,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(timetableWithId);
   } catch (error) {
     console.error(`Error fetching timetable ${(await params).id}:`, error);
-    return NextResponse.json({ message: 'Internal server error', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -81,7 +81,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(timetableWithId);
   } catch (error) {
     console.error(`Error updating timetable ${(await params).id}:`, error);
-    return NextResponse.json({ message: `Error updating timetable ${(await params).id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error updating timetable ${(await params).id}` }, { status: 500 });
   }
 }
 
@@ -99,6 +99,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Timetable deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error(`Error deleting timetable ${(await params).id}:`, error);
-    return NextResponse.json({ message: `Error deleting timetable ${(await params).id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error deleting timetable ${(await params).id}` }, { status: 500 });
   }
 }

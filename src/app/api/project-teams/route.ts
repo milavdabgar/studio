@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error in GET /api/project-teams:", error);
-    return NextResponse.json({ message: 'Internal server error processing project teams request.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error processing project teams request.' }, { status: 500 });
   }
 }
 
@@ -116,6 +116,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ status: 'success', data: { team: teamToReturn } }, { status: 201 });
   } catch (error) {
     console.error('Error creating project team:', error);
-    return NextResponse.json({ message: 'Error creating project team', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error creating project team' }, { status: 500 });
   }
 }

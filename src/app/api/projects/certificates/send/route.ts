@@ -28,6 +28,6 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error sending certificate emails (simulation):', error);
-    return NextResponse.json({ message: 'Error sending certificate emails', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error sending certificate emails' }, { status: 500 });
   }
 }

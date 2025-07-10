@@ -73,6 +73,6 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(eventToUpdate);
   } catch (error) {
     console.error(`Error updating schedule for event ${eventId}:`, error);
-    return NextResponse.json({ message: `Error updating schedule for event ${eventId}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error updating schedule for event ${eventId}` }, { status: 500 });
   }
 }

@@ -50,6 +50,6 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ status: 'success', data: { team: team.toJSON() } }, { status: 200 });
   } catch (error) {
     console.error('Error changing team leader:', error);
-    return NextResponse.json({ message: 'Error changing team leader', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error changing team leader' }, { status: 500 });
   }
 }
