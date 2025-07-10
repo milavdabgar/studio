@@ -2,7 +2,7 @@ import { resultService } from './results';
 import type { Result, UploadBatch, BranchAnalysis, ResultFilterParams, ResultsResponse, ResultDetailResponse, BatchesResponse, ResultImportResponse, ResultDeleteBatchResponse, AnalysisResponse, Program } from '@/types/entities';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
-const createMockResponse = (options: { ok: boolean; status?: number; json?: () => Promise<any>; text?: () => Promise<string>, blob?: () => Promise<Blob> }): Response => {
+const createMockResponse = (options: { ok: boolean; status?: number; json?: () => Promise<unknown>; text?: () => Promise<string>, blob?: () => Promise<Blob> }): Response => {
   return {
     ok: options.ok,
     status: options.status || (options.ok ? 200 : 500),
@@ -257,7 +257,7 @@ describe('ResultService API Tests', () => {
       try {
         await resultService.importResults(mockFile);
         fail('Should have thrown an error');
-      } catch (error: any) {
+      } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         expect(error.message).toBe('Invalid format');
         expect(error.data).toEqual(errorResponse);
       }
@@ -270,7 +270,7 @@ describe('ResultService API Tests', () => {
       try {
         await resultService.importResults(mockFile);
         fail('Should have thrown an error');
-      } catch (error: any) {
+      } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         expect(error.message).toBe('Import failed');
         expect(error.data).toEqual(errorResponse);
       }
@@ -283,7 +283,7 @@ describe('ResultService API Tests', () => {
       try {
         await resultService.importResults(mockFile);
         fail('Should have thrown an error');
-      } catch (error: any) {
+      } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         expect(error.message).toBe('Some error'); // responseData.error overwrites the default message
         expect(error.data).toEqual(errorResponse);
       }
@@ -317,7 +317,7 @@ describe('ResultService API Tests', () => {
       try {
         await resultService.importGtuResults(mockFile, mockPrograms);
         fail('Should have thrown an error');
-      } catch (error: any) {
+      } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         expect(error.message).toBe('Invalid format Specific issues: Row 1: Missing enrollment; Row 2: Invalid grade; Row 3: Missing program...');
         expect(error.data).toEqual(errorResponse);
       }
@@ -337,7 +337,7 @@ describe('ResultService API Tests', () => {
       try {
         await resultService.importGtuResults(mockFile, mockPrograms);
         fail('Should have thrown an error');
-      } catch (error: any) {
+      } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         expect(error.message).toBe('Invalid format Specific issues: Row 1: Missing enrollment; Row 2: Invalid grade');
         expect(error.data).toEqual(errorResponse);
       }
@@ -353,7 +353,7 @@ describe('ResultService API Tests', () => {
       try {
         await resultService.importGtuResults(mockFile, mockPrograms);
         fail('Should have thrown an error');
-      } catch (error: any) {
+      } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         expect(error.message).toBe('GTU Import failed Specific issues: Some error');
         expect(error.data).toEqual(errorResponse);
       }
@@ -373,7 +373,7 @@ describe('ResultService API Tests', () => {
       try {
         await resultService.importGtuResults(mockFile, mockPrograms);
         fail('Should have thrown an error');
-      } catch (error: any) {
+      } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         expect(error.message).toBe('Invalid format Specific issues: {"row":1,"issue":"missing field"}; Row 2: Valid error');
         expect(error.data).toEqual(errorResponse);
       }
@@ -386,7 +386,7 @@ describe('ResultService API Tests', () => {
       try {
         await resultService.importGtuResults(mockFile, mockPrograms);
         fail('Should have thrown an error');
-      } catch (error: any) {
+      } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         expect(error.message).toBe('Some error'); // responseData.error overwrites the default message
         expect(error.data).toEqual(errorResponse);
       }

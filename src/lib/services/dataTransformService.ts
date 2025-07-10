@@ -10,7 +10,7 @@ export interface NormalizationOptions {
 }
 
 export class DataTransformService {
-  static normalizeResponse(response: any, options?: NormalizationOptions): NormalizedResponse {
+  static normalizeResponse(response: { data?: any; meta?: any }, options?: NormalizationOptions): NormalizedResponse { // eslint-disable-line @typescript-eslint/no-explicit-any
     if (!response || !response.data) {
       return {
         entities: {},
@@ -19,7 +19,7 @@ export class DataTransformService {
       };
     }
 
-    const entities: Record<string, Record<string | number, any>> = {};
+    const entities: Record<string, Record<string | number, unknown>> = {};
     const result: (string | number)[] = [];
     const data = Array.isArray(response.data) ? response.data : [response.data];
 
@@ -27,7 +27,7 @@ export class DataTransformService {
     const entityType = options?.entityType || 'items';
     entities[entityType] = {};
 
-    data.forEach((item: any) => {
+    data.forEach((item: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
       if (item && typeof item === 'object' && 'id' in item) {
         const normalizedItem = { ...item };
         
@@ -38,7 +38,7 @@ export class DataTransformService {
               if (Array.isArray(normalizedItem[key])) {
                 // Handle arrays of nested objects
                 if (!entities[entityName]) entities[entityName] = {};
-                normalizedItem[key] = normalizedItem[key].map((nestedItem: any) => {
+                normalizedItem[key] = normalizedItem[key].map((nestedItem: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
                   if (nestedItem && typeof nestedItem === 'object' && 'id' in nestedItem) {
                     entities[entityName][nestedItem.id] = nestedItem;
                     return nestedItem.id;
@@ -62,7 +62,7 @@ export class DataTransformService {
     });
 
     const meta = response.meta ? { ...response.meta } : undefined;
-    if (meta && meta.total && meta.limit && !meta.totalPages) {
+    if (meta && typeof meta.total === 'number' && typeof meta.limit === 'number' && !meta.totalPages) {
       meta.totalPages = Math.ceil(meta.total / meta.limit);
     }
 
@@ -73,7 +73,7 @@ export class DataTransformService {
     };
   }
 
-  static denormalize(normalizedData: any, entityType: string, relations?: string[]): any {
+  static denormalize(normalizedData: { entities?: any; result?: any }, entityType: string, relations?: string[]): any[] { // eslint-disable-line @typescript-eslint/no-explicit-any
     if (!normalizedData.entities || !normalizedData.entities[entityType]) {
       return [];
     }
@@ -170,9 +170,9 @@ export class DataTransformService {
       .trim();
   }
 
-  static parseQueryString(queryString: string): Record<string, any> {
+  static parseQueryString(queryString: string): Record<string, unknown> {
     const params = new URLSearchParams(queryString.startsWith('?') ? queryString.slice(1) : queryString);
-    const result: Record<string, any> = {};
+    const result: Record<string, unknown> = {};
     
     for (const [key, value] of params.entries()) {
       if (key.includes('[]')) {
@@ -189,7 +189,7 @@ export class DataTransformService {
     return result;
   }
 
-  static stringifyQuery(params: Record<string, any>): string {
+  static stringifyQuery(params: Record<string, unknown>): string {
     if (Object.keys(params).length === 0) {
       return '';
     }
@@ -208,15 +208,15 @@ export class DataTransformService {
   }
 
   // Legacy methods for backward compatibility
-  static transformToApiFormat(data: any): any {
+  static transformToApiFormat(data: any): any { // eslint-disable-line @typescript-eslint/no-explicit-any
     return data;
   }
 
-  static transformFromApiFormat(data: any): any {
+  static transformFromApiFormat(data: any): any { // eslint-disable-line @typescript-eslint/no-explicit-any
     return data;
   }
 
-  static sanitizeData(data: any): any {
+  static sanitizeData(data: any): any { // eslint-disable-line @typescript-eslint/no-explicit-any
     return data;
   }
 }

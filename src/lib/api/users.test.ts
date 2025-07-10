@@ -149,7 +149,7 @@ describe('User API Functions', () => {
     
     const mockFile = new File([""], "users.csv", { type: 'text/csv' });
     const mockInstitutes: Institute[] = [{ id: 'inst1', name: 'Test Institute', code: 'TI', status: 'active' }];
-    const mockSystemRoles: Role[] = [{ id: 'role1', name: 'User', code: 'student' as any, description: 'User role', permissions: [] }];
+    const mockSystemRoles: Role[] = [{ id: 'role1', name: 'User', code: 'student' as any, description: 'User role', permissions: [] }]; // eslint-disable-line @typescript-eslint/no-explicit-any
     
     const result = await userService.importUsers(mockFile, mockInstitutes, mockSystemRoles);
     expect(fetch).toHaveBeenCalledWith('/api/users/import', expect.anything());

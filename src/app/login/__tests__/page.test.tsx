@@ -78,7 +78,7 @@ describe('Login Page', () => {
     } catch (error) {
       // If we can't redefine it, just set it directly
       void error; // Acknowledge unused variable
-      (document as any).cookie = '';
+      (document as any).cookie = ''; // eslint-disable-line @typescript-eslint/no-explicit-any
     }
   });
 

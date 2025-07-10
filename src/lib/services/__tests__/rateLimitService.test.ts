@@ -25,7 +25,7 @@ describe('RateLimitService', () => {
     jest.clearAllMocks();
     
     // Setup mock Redis methods
-    const mockEval = jest.fn().mockImplementation(async (): Promise<any> => {
+    const mockEval = jest.fn().mockImplementation(async (): Promise<unknown> => {
       // Default behavior: allow requests (count within limit)
       return [1, Date.now() + testWindowMs]; // [count, resetTime]
     });
@@ -42,7 +42,7 @@ describe('RateLimitService', () => {
       del: mockDel,
       zremrangebyscore: mockZremrangebyscore,
       zcard: mockZcard,
-    } as unknown as jest.Mocked<IORedis>;
+    } as any as jest.Mocked<IORedis>; // eslint-disable-line @typescript-eslint/no-explicit-any
     
     MockIORedis.mockImplementation(() => mockRedis);
     
@@ -51,7 +51,7 @@ describe('RateLimitService', () => {
       redis: mockRedis,
       defaultWindowMs: testWindowMs,
       defaultMaxRequests: testMaxRequests,
-      logger: mockLogger as any,
+      logger: mockLogger as any, // eslint-disable-line @typescript-eslint/no-explicit-any
     });
   });
   
@@ -94,7 +94,7 @@ describe('RateLimitService', () => {
         redis: existingClient,
       });
       
-      expect((service as any).redis).toBe(existingClient);
+      expect((service as any).redis).toBe(existingClient); // eslint-disable-line @typescript-eslint/no-explicit-any
     });
   });
   
@@ -189,7 +189,7 @@ describe('RateLimitService', () => {
         redis: testMockRedis,
         defaultWindowMs: testWindowMs,
         defaultMaxRequests: testMaxRequests,
-        logger: mockLogger as any,
+        logger: mockLogger as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       });
       
       await expect(
@@ -214,7 +214,7 @@ describe('RateLimitService', () => {
         redis: testMockRedis,
         defaultWindowMs: testWindowMs,
         defaultMaxRequests: testMaxRequests,
-        logger: mockLogger as any,
+        logger: mockLogger as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       });
       
       try {
@@ -270,8 +270,8 @@ describe('RateLimitService', () => {
   describe('middleware', () => {
     it('should create rate limiting middleware', async () => {
       const middleware = rateLimitService.middleware({
-        keyGenerator: (req) => (req as any).ip,
-        skip: (req) => (req as any).user?.isAdmin,
+        keyGenerator: (req) => (req as any).ip, // eslint-disable-line @typescript-eslint/no-explicit-any
+        skip: (req) => (req as any).user?.isAdmin, // eslint-disable-line @typescript-eslint/no-explicit-any
       });
       
       const req = { ip: '127.0.0.1', user: { isAdmin: false } };
@@ -282,7 +282,7 @@ describe('RateLimitService', () => {
       };
       const next = jest.fn();
       
-      await middleware(req as any, res as any, next);
+      await middleware(req as any, res as any, next); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       // Should call next() when under limit
       expect(next).toHaveBeenCalled();
@@ -296,8 +296,8 @@ describe('RateLimitService', () => {
     
     it('should skip rate limiting for admin users', async () => {
       const middleware = rateLimitService.middleware({
-        keyGenerator: (req) => (req as any).ip,
-        skip: (req) => (req as any).user?.isAdmin,
+        keyGenerator: (req) => (req as any).ip, // eslint-disable-line @typescript-eslint/no-explicit-any
+        skip: (req) => (req as any).user?.isAdmin, // eslint-disable-line @typescript-eslint/no-explicit-any
       });
       
       const req = { ip: '127.0.0.1', user: { isAdmin: true } };
@@ -308,7 +308,7 @@ describe('RateLimitService', () => {
       };
       const next = jest.fn();
       
-      await middleware(req as any, res as any, next);
+      await middleware(req as any, res as any, next); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       // Should skip rate limiting and call next()
       expect(next).toHaveBeenCalled();
@@ -321,7 +321,7 @@ describe('RateLimitService', () => {
       mockEval.mockResolvedValueOnce([testMaxRequests + 1, Date.now() + 5000]);
       
       const middleware = rateLimitService.middleware({
-        keyGenerator: (req) => (req as any).ip,
+        keyGenerator: (req) => (req as any).ip, // eslint-disable-line @typescript-eslint/no-explicit-any
       });
       
       const req = { ip: '127.0.0.1' };
@@ -332,7 +332,7 @@ describe('RateLimitService', () => {
       };
       const next = jest.fn();
       
-      await middleware(req as any, res as any, next);
+      await middleware(req as any, res as any, next); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       // Should not call next() and should send 429 response
       expect(next).not.toHaveBeenCalled();
@@ -400,7 +400,7 @@ describe('RateLimitService', () => {
       const now = Date.now();
       
       // Mock the Lua script to simulate requests aging out
-      (mockRedis.eval as jest.Mock).mockImplementation(async (script: any): Promise<any> => {
+      (mockRedis.eval as jest.Mock).mockImplementation(async (script: any): Promise<unknown> => { // eslint-disable-line @typescript-eslint/no-explicit-any
         if (script.includes('zremrangebyscore')) {
           // Simulate that some old requests were removed
           return [5, now + testWindowMs]; // 5 requests in the current window

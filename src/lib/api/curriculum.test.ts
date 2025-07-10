@@ -2,7 +2,7 @@ import { curriculumService } from './curriculum';
 import type { Curriculum, Program, Course } from '@/types/entities';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
-const createMockResponse = (options: { ok: boolean; status?: number; statusText?: string; json?: () => Promise<any> }): Response => {
+const createMockResponse = (options: { ok: boolean; status?: number; statusText?: string; json?: () => Promise<unknown> }): Response => {
   const { ok, status = 200, statusText = '', json = async () => ({}) } = options;
   return {
     ok,

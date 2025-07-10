@@ -3,7 +3,7 @@ import type { Committee, CommitteeStatus } from '@/types/entities';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
 // Create a proper mock for the Response object
-const createMockResponse = (options: { ok: boolean; status?: number; statusText?: string; json?: () => Promise<any> }): Response => {
+const createMockResponse = (options: { ok: boolean; status?: number; statusText?: string; json?: () => Promise<unknown> }): Response => {
   const { ok, status = 200, statusText = '', json = async () => ({}) } = options;
   return {
     ok,
@@ -254,8 +254,8 @@ describe('Committee API', () => {
   describe('importCommittees', () => {
     it('should import committees from a file', async () => {
       const mockFile = new File(['test data'], 'committees.csv', { type: 'text/csv' });
-      const mockInstitutes = [{ id: 'inst-1', name: 'Institute 1' }] as any[];
-      const mockFacultyUsers = [{ id: 'user-1', name: 'Faculty User 1' }] as any[];
+      const mockInstitutes = [{ id: 'inst-1', name: 'Institute 1' }] as any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
+      const mockFacultyUsers = [{ id: 'user-1', name: 'Faculty User 1' }] as any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
       const mockResponse = { newCount: 3, updatedCount: 1, skippedCount: 0 };
 
       mockFetch.mockResolvedValueOnce(createMockResponse({
@@ -275,8 +275,8 @@ describe('Committee API', () => {
 
     it('should throw an error if import fails', async () => {
       const mockFile = new File(['test data'], 'committees.csv', { type: 'text/csv' });
-      const mockInstitutes = [{ id: 'inst-1', name: 'Institute 1' }] as any[];
-      const mockFacultyUsers = [{ id: 'user-1', name: 'Faculty User 1' }] as any[];
+      const mockInstitutes = [{ id: 'inst-1', name: 'Institute 1' }] as any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
+      const mockFacultyUsers = [{ id: 'user-1', name: 'Faculty User 1' }] as any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
       
       mockFetch.mockResolvedValueOnce(createMockResponse({
         ok: false,

@@ -141,6 +141,7 @@ export async function cancelLeaveRequest(id: string): Promise<LeaveRequest | nul
 }
 
 export async function deleteLeaveRequest(_id: string): Promise<boolean> {
+  void _id; // Unused in mock implementation
   return Promise.resolve(true);
 }
 

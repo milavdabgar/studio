@@ -18,12 +18,22 @@ declare namespace Express {
 
 // Mock for missing dependencies - these would normally be actual imports
 const mockStorage = {
-  uploadFile: (_params: any) => Promise.resolve({
-    url: 'https://storage.example.com/files/test.jpg',
-    key: 'files/test.jpg',
-  }),
-  deleteFile: (_key: string) => Promise.resolve(true),
-  getSignedUrl: (_key: string, _expiresIn?: number) => Promise.resolve('https://signed-url.example.com/test.jpg'),
+  uploadFile: (_params: unknown) => {
+    void _params; // Unused in mock implementation
+    return Promise.resolve({
+      url: 'https://storage.example.com/files/test.jpg',
+      key: 'files/test.jpg',
+    });
+  },
+  deleteFile: (_key: string) => {
+    void _key; // Unused in mock implementation
+    return Promise.resolve(true);
+  },
+  getSignedUrl: (_key: string, _expiresIn?: number) => {
+    void _key; // Unused in mock implementation
+    void _expiresIn; // Unused in mock implementation
+    return Promise.resolve('https://signed-url.example.com/test.jpg');
+  },
 };
 
 const mockSharp = () => ({
@@ -32,12 +42,28 @@ const mockSharp = () => ({
     height: 800,
     format: 'jpeg',
   }),
-  resize: (_width?: number, _height?: number) => mockSharp(),
-  toFormat: (_format: string) => mockSharp(),
+  resize: (_width?: number, _height?: number) => {
+    void _width; // Unused in mock implementation
+    void _height; // Unused in mock implementation
+    return mockSharp();
+  },
+  toFormat: (_format: string) => {
+    void _format; // Unused in mock implementation
+    return mockSharp();
+  },
   toBuffer: () => Promise.resolve(Buffer.from('processed-image')),
-  jpeg: (_options?: any) => mockSharp(),
-  png: (_options?: any) => mockSharp(),
-  webp: (_options?: any) => mockSharp(),
+  jpeg: (_options?: unknown) => {
+    void _options; // Unused in mock implementation
+    return mockSharp();
+  },
+  png: (_options?: unknown) => {
+    void _options; // Unused in mock implementation
+    return mockSharp();
+  },
+  webp: (_options?: unknown) => {
+    void _options; // Unused in mock implementation
+    return mockSharp();
+  },
 });
 
 export interface UploadOptions {

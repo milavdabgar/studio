@@ -2,7 +2,7 @@ import { buildingService } from './buildingService';
 import type { Building, Institute } from '@/types/entities';
 
 // Helper to create mock responses
-const createMockResponse = (options: { ok: boolean; status?: number; json?: () => Promise<any>; statusText?: string }): Response => {
+const createMockResponse = (options: { ok: boolean; status?: number; json?: () => Promise<unknown>; statusText?: string }): Response => {
   return {
     ok: options.ok,
     status: options.status || (options.ok ? 200 : 500),

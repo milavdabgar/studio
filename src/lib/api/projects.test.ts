@@ -3,7 +3,7 @@ import type { Project, EvaluationData, ProjectStatistics, ProjectStatus, User, D
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
 // Helper to create mock responses
-const createMockResponse = (options: { ok: boolean; status?: number; json?: () => Promise<any>; statusText?: string; text?: () => Promise<string> }): Response => {
+const createMockResponse = (options: { ok: boolean; status?: number; json?: () => Promise<unknown>; statusText?: string; text?: () => Promise<string> }): Response => {
   return {
     ok: options.ok,
     status: options.status || (options.ok ? 200 : 500),
@@ -63,7 +63,7 @@ describe('ProjectService API Tests', () => {
 
     it('should filter out undefined, null, and empty string values', async () => {
       mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, json: async () => mockProjectsResponse }));
-      await projectService.getAllProjects({ category: 'Web', status: undefined as unknown as string, active: null as any, priority: '' as any, empty: '   ' as any });
+      await projectService.getAllProjects({ category: 'Web', status: undefined as any as string, active: null as any, priority: '' as any, empty: '   ' as any }); // eslint-disable-line @typescript-eslint/no-explicit-any
       expect(fetch).toHaveBeenCalledWith('/api/projects?category=Web');
     });
 
@@ -446,7 +446,7 @@ describe('ProjectService API Tests', () => {
      it('should filter out undefined, null, and empty string values for export', async () => {
         const csvText = "id,title,category\nproj1,Test Project,Test";
         mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, text: async () => csvText }));
-        await projectService.exportProjects({ category: 'Web', status: undefined as unknown as string, active: null as any, priority: '' as any });
+        await projectService.exportProjects({ category: 'Web', status: undefined as any as string, active: null as any, priority: '' as any }); // eslint-disable-line @typescript-eslint/no-explicit-any
         expect(fetch).toHaveBeenCalledWith('/api/projects/export?category=Web');
      });
 

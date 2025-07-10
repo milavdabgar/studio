@@ -231,8 +231,8 @@ export class PaymentService {
         customerId: sub.customer as string,
         planId: priceId,
         status: sub.status as Subscription['status'],
-        currentPeriodStart: new Date((sub as any).current_period_start * 1000),
-        currentPeriodEnd: new Date((sub as any).current_period_end * 1000),
+        currentPeriodStart: new Date((sub as Stripe.Subscription & { current_period_start: number }).current_period_start * 1000),
+        currentPeriodEnd: new Date((sub as Stripe.Subscription & { current_period_end: number }).current_period_end * 1000),
         trialStart: sub.trial_start 
           ? new Date(sub.trial_start * 1000) 
           : undefined,
@@ -269,8 +269,8 @@ export class PaymentService {
         customerId: sub.customer as string,
         planId: sub.items.data[0].price.id,
         status: sub.status as Subscription['status'],
-        currentPeriodStart: new Date((sub as any).current_period_start * 1000),
-        currentPeriodEnd: new Date((sub as any).current_period_end * 1000),
+        currentPeriodStart: new Date((sub as Stripe.Subscription & { current_period_start: number }).current_period_start * 1000),
+        currentPeriodEnd: new Date((sub as Stripe.Subscription & { current_period_end: number }).current_period_end * 1000),
         trialStart: sub.trial_start 
           ? new Date(sub.trial_start * 1000) 
           : undefined,

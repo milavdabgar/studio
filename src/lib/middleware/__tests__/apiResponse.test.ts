@@ -19,7 +19,7 @@ describe('ApiResponse', () => {
     it('should return success response with default status 200', () => {
       const testData = { id: 1, name: 'test' };
       const mockResponse = { json: jest.fn() };
-      mockNextResponse.json.mockReturnValue(mockResponse as any);
+      mockNextResponse.json.mockReturnValue(mockResponse as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const result = ApiResponse.success(testData);
 
@@ -34,7 +34,7 @@ describe('ApiResponse', () => {
       const testData = { id: 1, name: 'test' };
       const customStatus = 201;
       const mockResponse = { json: jest.fn() };
-      mockNextResponse.json.mockReturnValue(mockResponse as any);
+      mockNextResponse.json.mockReturnValue(mockResponse as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const result = ApiResponse.success(testData, customStatus);
 
@@ -47,7 +47,7 @@ describe('ApiResponse', () => {
 
     it('should handle null data', () => {
       const mockResponse = { json: jest.fn() };
-      mockNextResponse.json.mockReturnValue(mockResponse as any);
+      mockNextResponse.json.mockReturnValue(mockResponse as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const result = ApiResponse.success(null);
 
@@ -61,7 +61,7 @@ describe('ApiResponse', () => {
     it('should handle array data', () => {
       const testData = [{ id: 1 }, { id: 2 }];
       const mockResponse = { json: jest.fn() };
-      mockNextResponse.json.mockReturnValue(mockResponse as any);
+      mockNextResponse.json.mockReturnValue(mockResponse as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const result = ApiResponse.success(testData);
 
@@ -77,7 +77,7 @@ describe('ApiResponse', () => {
     it('should return error response with default status 400', () => {
       const errorMessage = 'Something went wrong';
       const mockResponse = { json: jest.fn() };
-      mockNextResponse.json.mockReturnValue(mockResponse as any);
+      mockNextResponse.json.mockReturnValue(mockResponse as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const result = ApiResponse.error(errorMessage);
 
@@ -92,7 +92,7 @@ describe('ApiResponse', () => {
       const errorMessage = 'Server error';
       const customStatus = 500;
       const mockResponse = { json: jest.fn() };
-      mockNextResponse.json.mockReturnValue(mockResponse as any);
+      mockNextResponse.json.mockReturnValue(mockResponse as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const result = ApiResponse.error(errorMessage, customStatus);
 
@@ -106,7 +106,7 @@ describe('ApiResponse', () => {
     it('should handle empty error message', () => {
       const errorMessage = '';
       const mockResponse = { json: jest.fn() };
-      mockNextResponse.json.mockReturnValue(mockResponse as any);
+      mockNextResponse.json.mockReturnValue(mockResponse as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const result = ApiResponse.error(errorMessage);
 
@@ -121,7 +121,7 @@ describe('ApiResponse', () => {
   describe('notFound', () => {
     it('should return not found response with default message', () => {
       const mockResponse = { json: jest.fn() };
-      mockNextResponse.json.mockReturnValue(mockResponse as any);
+      mockNextResponse.json.mockReturnValue(mockResponse as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const result = ApiResponse.notFound();
 
@@ -135,7 +135,7 @@ describe('ApiResponse', () => {
     it('should return not found response with custom message', () => {
       const customMessage = 'User not found';
       const mockResponse = { json: jest.fn() };
-      mockNextResponse.json.mockReturnValue(mockResponse as any);
+      mockNextResponse.json.mockReturnValue(mockResponse as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const result = ApiResponse.notFound(customMessage);
 
@@ -150,7 +150,7 @@ describe('ApiResponse', () => {
   describe('unauthorized', () => {
     it('should return unauthorized response with default message', () => {
       const mockResponse = { json: jest.fn() };
-      mockNextResponse.json.mockReturnValue(mockResponse as any);
+      mockNextResponse.json.mockReturnValue(mockResponse as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const result = ApiResponse.unauthorized();
 
@@ -164,7 +164,7 @@ describe('ApiResponse', () => {
     it('should return unauthorized response with custom message', () => {
       const customMessage = 'Invalid token';
       const mockResponse = { json: jest.fn() };
-      mockNextResponse.json.mockReturnValue(mockResponse as any);
+      mockNextResponse.json.mockReturnValue(mockResponse as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const result = ApiResponse.unauthorized(customMessage);
 
@@ -179,7 +179,7 @@ describe('ApiResponse', () => {
   describe('forbidden', () => {
     it('should return forbidden response with default message', () => {
       const mockResponse = { json: jest.fn() };
-      mockNextResponse.json.mockReturnValue(mockResponse as any);
+      mockNextResponse.json.mockReturnValue(mockResponse as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const result = ApiResponse.forbidden();
 
@@ -193,7 +193,7 @@ describe('ApiResponse', () => {
     it('should return forbidden response with custom message', () => {
       const customMessage = 'Access denied';
       const mockResponse = { json: jest.fn() };
-      mockNextResponse.json.mockReturnValue(mockResponse as any);
+      mockNextResponse.json.mockReturnValue(mockResponse as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const result = ApiResponse.forbidden(customMessage);
 

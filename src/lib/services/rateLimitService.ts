@@ -168,7 +168,7 @@ export class RateLimitService {
   }
 
   middleware(options: RateLimitOptions = {}) {
-    return async (req: any, res: any, next: any) => {
+    return async (req: unknown, res: unknown, next: (...args: unknown[]) => void) => {
       try {
         // Check if request should be skipped
         if (options.skip && options.skip(req)) {
@@ -178,7 +178,7 @@ export class RateLimitService {
         // Generate key for this request
         const key = options.keyGenerator 
           ? options.keyGenerator(req)
-          : req.ip || 'unknown';
+          : (req as { ip?: string }).ip || 'unknown';
 
         // Check rate limit
         const result = await this.checkRateLimit(key, options);
@@ -186,11 +186,11 @@ export class RateLimitService {
         // Set rate limit headers
         const headers = this.getRateLimitHeaders(result);
         Object.entries(headers).forEach(([header, value]) => {
-          res.setHeader(header, value);
+          (res as { setHeader: (header: string, value: string) => void }).setHeader(header, value);
         });
 
         if (!result.allowed) {
-          return res.status(429).json({
+          return (res as { status: (code: number) => { json: (body: unknown) => void } }).status(429).json({
             error: 'Too Many Requests',
             message: 'Rate limit exceeded',
             retryAfter: result.retryAfter,

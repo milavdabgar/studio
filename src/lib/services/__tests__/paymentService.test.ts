@@ -52,12 +52,12 @@ jest.mock('stripe', () => {
 
 describe('PaymentService', () => {
   let paymentService: PaymentService;
-  let mockStripe: any;
+  let mockStripe: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
   beforeEach(() => {
     jest.clearAllMocks();
     paymentService = new PaymentService('sk_test_123');
-    mockStripe = (paymentService as any).stripe;
+    mockStripe = (paymentService as any).stripe; // eslint-disable-line @typescript-eslint/no-explicit-any
   });
 
   describe('createPaymentIntent', () => {
@@ -101,7 +101,7 @@ describe('PaymentService', () => {
     });
 
     it('should handle Stripe errors and throw PaymentError', async () => {
-      const MockedStripe = Stripe as any;
+      const MockedStripe = Stripe as any; // eslint-disable-line @typescript-eslint/no-explicit-any
       const stripeError = new MockedStripe.errors.StripeError('Your card was declined.', 'card_declined', 402);
       mockStripe.paymentIntents.create.mockRejectedValue(stripeError);
 
@@ -480,7 +480,7 @@ describe('PaymentService', () => {
 
   describe('error handling', () => {
     it('should handle and transform Stripe errors correctly', async () => {
-      const MockedStripe = Stripe as any;
+      const MockedStripe = Stripe as any; // eslint-disable-line @typescript-eslint/no-explicit-any
       const stripeError = new MockedStripe.errors.StripeError(
         'Your card was declined.',
         'card_declined',

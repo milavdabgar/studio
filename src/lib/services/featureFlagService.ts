@@ -40,7 +40,7 @@ export interface FeatureFlagRule {
 export interface FeatureFlagConfig {
   description?: string;
   enabled?: boolean;
-  defaultValue?: any;
+  defaultValue?: boolean;
   rolloutPercentage?: number;
   userGroups?: string[];
   userIds?: string[];
@@ -277,7 +277,7 @@ export class FeatureFlagService {
         
         // If no rules matched, return default value
         if (flag.config.defaultValue !== undefined) {
-          return flag.config.defaultValue;
+          return Boolean(flag.config.defaultValue);
         } else {
           throw new Error('No matching rules and no default value specified');
         }
@@ -294,7 +294,7 @@ export class FeatureFlagService {
         }
       }
 
-      return flag.config.defaultValue !== undefined ? flag.config.defaultValue : true;
+      return flag.config.defaultValue !== undefined ? Boolean(flag.config.defaultValue) : true;
     } catch (error) {
       this.logger.error('Invalid flag configuration', error);
       return false;
@@ -602,7 +602,7 @@ export class FeatureFlagService {
       
       for (const part of parts) {
         if (value && typeof value === 'object') {
-          value = (value as any)[part];
+          value = (value as Record<string, unknown>)[part];
         } else {
           return undefined;
         }

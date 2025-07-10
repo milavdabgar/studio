@@ -54,7 +54,7 @@ describe('ContentConverterV2 - SVG Image Processing', () => {
         </div>
       `;
 
-      const result = await (converter as any).processSvgImages(htmlWithSvg);
+      const result = await (converter as any).processSvgImages(htmlWithSvg); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       // Check that the SVG was converted to base64
       expect(result).toContain('src="data:image/svg+xml;base64,');
@@ -79,7 +79,7 @@ describe('ContentConverterV2 - SVG Image Processing', () => {
         </div>
       `;
 
-      const result = await (converter as any).processSvgImages(htmlWithMultipleSvgs);
+      const result = await (converter as any).processSvgImages(htmlWithMultipleSvgs); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       // All three SVGs should be converted
       const base64Matches = result.match(/data:image\/svg\+xml;base64,/g);
@@ -109,7 +109,7 @@ describe('ContentConverterV2 - SVG Image Processing', () => {
         />
       `;
 
-      const result = await (converter as any).processSvgImages(htmlWithAttributes);
+      const result = await (converter as any).processSvgImages(htmlWithAttributes); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       // SVG should be converted
       expect(result).toContain('src="data:image/svg+xml;base64,');
@@ -133,7 +133,7 @@ describe('ContentConverterV2 - SVG Image Processing', () => {
         </div>
       `;
 
-      const result = await (converter as any).processSvgImages(htmlWithMixedImages);
+      const result = await (converter as any).processSvgImages(htmlWithMixedImages); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       // Only SVG should be converted
       expect(result).toContain('src="photo.jpg"');
@@ -150,7 +150,7 @@ describe('ContentConverterV2 - SVG Image Processing', () => {
         <img src="missing-diagram.svg" alt="Missing Diagram" />
       `;
 
-      const result = await (converter as any).processSvgImages(htmlWithMissingSvg);
+      const result = await (converter as any).processSvgImages(htmlWithMissingSvg); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       // Should contain error handling
       expect(result).toContain('[SVG Image Not Found: missing-diagram.svg]');
@@ -167,7 +167,7 @@ describe('ContentConverterV2 - SVG Image Processing', () => {
         <img src="error-diagram.svg" alt="Error Diagram" />
       `;
 
-      const result = await (converter as any).processSvgImages(htmlWithErrorSvg);
+      const result = await (converter as any).processSvgImages(htmlWithErrorSvg); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       // Should contain error handling
       expect(result).toContain('[SVG Processing Error: error-diagram.svg]');
@@ -186,14 +186,14 @@ describe('ContentConverterV2 - SVG Image Processing', () => {
 
     it('should resolve absolute paths correctly', () => {
       const absolutePath = '/absolute/path/to/diagram.svg';
-      const result = (converter as any).resolveSvgPath(absolutePath);
+      const result = (converter as any).resolveSvgPath(absolutePath); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       expect(result).toBe(absolutePath);
     });
 
     it('should resolve relative paths in content directory', () => {
       const relativePath = 'diagrams/test.svg';
-      const result = (converter as any).resolveSvgPath(relativePath);
+      const result = (converter as any).resolveSvgPath(relativePath); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       // Should try multiple locations and find the content/resources path
       expect(result).toContain('content');
@@ -203,7 +203,7 @@ describe('ContentConverterV2 - SVG Image Processing', () => {
       mockedFs.existsSync.mockReturnValue(false);
       
       const nonExistentPath = 'non-existent.svg';
-      const result = (converter as any).resolveSvgPath(nonExistentPath);
+      const result = (converter as any).resolveSvgPath(nonExistentPath); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       // Should return a default path even if file doesn't exist
       expect(result).toContain('non-existent.svg');
@@ -236,7 +236,7 @@ More content here.
       });
 
       // Spy on processSvgImages to ensure it's called
-      const processSvgImagesSpy = jest.spyOn(converter as any, 'processSvgImages');
+      const processSvgImagesSpy = jest.spyOn(converter as any, 'processSvgImages'); // eslint-disable-line @typescript-eslint/no-explicit-any
 
       try {
         // This will fail due to missing Puppeteer in test environment,
@@ -333,7 +333,7 @@ describe('SVG Processing Performance', () => {
     htmlWithManySvgs += '</div>';
 
     const startTime = Date.now();
-    const result = await (converter as any).processSvgImages(htmlWithManySvgs);
+    const result = await (converter as any).processSvgImages(htmlWithManySvgs); // eslint-disable-line @typescript-eslint/no-explicit-any
     const endTime = Date.now();
 
     // Should complete in reasonable time (less than 1 second for 100 images)

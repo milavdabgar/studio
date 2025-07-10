@@ -253,9 +253,9 @@ describe('RateLimiter', () => {
   });
 
   describe('middleware() method', () => {
-    let req: any;
-    let res: any;
-    let next: jest.MockedFunction<any>;
+    let req: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+    let res: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+    let next: jest.MockedFunction<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     beforeEach(() => {
       req = { ip: '127.0.0.1' };
@@ -304,7 +304,7 @@ describe('RateLimiter', () => {
     it('should use custom key generator', async () => {
       const customLimiter = new RateLimiter({
         ...defaultConfig,
-        keyGenerator: (req: any) => req.userId || 'anonymous',
+        keyGenerator: (req: any) => (req as { userId?: string }).userId || 'anonymous', // eslint-disable-line @typescript-eslint/no-explicit-any
       });
 
       const middleware = customLimiter.middleware();

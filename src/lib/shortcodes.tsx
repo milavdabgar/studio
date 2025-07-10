@@ -47,7 +47,7 @@ import MDImporter from '@/components/shortcodes/MDImporter';
 import Ref from '@/components/shortcodes/Ref';
 
 // Type for shortcode components
-type ShortcodeComponent = React.ComponentType<any>;
+type ShortcodeComponent = React.ComponentType<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 
 // Shortcode registry mapping with exact Blowfish API compatibility
 const shortcodeRegistry: Record<string, ShortcodeComponent> = {

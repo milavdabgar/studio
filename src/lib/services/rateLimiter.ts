@@ -118,26 +118,26 @@ export class RateLimiter {
 
   // Express middleware factory
   middleware() {
-    return async (req: any, res: any, next: any) => {
+    return async (req: unknown, res: unknown, next: (...args: unknown[]) => void) => {
       try {
-        const key = this.config.keyGenerator ? this.config.keyGenerator(req) : req.ip || 'anonymous';
+        const key = this.config.keyGenerator ? this.config.keyGenerator(req) : (req as { ip?: string }).ip || 'anonymous';
         const result = await this.consume(key);
 
         // Set rate limit headers
-        res.set({
+        (res as { set: (headers: Record<string, unknown>) => void }).set({
           'X-RateLimit-Limit': this.config.maxRequests,
           'X-RateLimit-Remaining': result.remaining,
           'X-RateLimit-Reset': Math.ceil(result.resetTime.getTime() / 1000),
         });
 
         if (!result.isAllowed) {
-          res.set('Retry-After', result.retryAfter);
+          (res as { set: (header: string, value: unknown) => void }).set('Retry-After', result.retryAfter);
           
           if (this.config.onLimitReached) {
             this.config.onLimitReached(req, res);
           }
 
-          return res.status(429).json({
+          return (res as { status: (code: number) => { json: (body: unknown) => void } }).status(429).json({
             error: this.config.message,
             retryAfter: result.retryAfter,
           });

@@ -3,7 +3,7 @@ import type { ProjectTeam, Department, ProjectEvent, User, ProjectTeamMember } f
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
 // Helper to create mock responses
-const createMockResponse = (options: { ok: boolean; status?: number; json?: () => Promise<any>; statusText?: string; text?: () => Promise<string> }): Response => {
+const createMockResponse = (options: { ok: boolean; status?: number; json?: () => Promise<unknown>; statusText?: string; text?: () => Promise<string> }): Response => {
   return {
     ok: options.ok,
     status: options.status || (options.ok ? 200 : 500),
@@ -447,7 +447,7 @@ describe('ProjectTeamService API Tests', () => {
       try {
         await projectTeamService.importTeams(mockFile, mockDepartments, mockEvents, mockUsers);
         fail('Should have thrown an error');
-      } catch (error: any) {
+      } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         expect(error.message).toBe('Import failed Specific issues: Row 1: Invalid team name; Row 2: Missing department; Row 3: Invalid event...');
       }
     });
@@ -465,7 +465,7 @@ describe('ProjectTeamService API Tests', () => {
       try {
         await projectTeamService.importTeams(mockFile, mockDepartments, mockEvents, mockUsers);
         fail('Should have thrown an error');
-      } catch (error: any) {
+      } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         expect(error.message).toBe('Import failed Specific issues: Row 1: Invalid team name; Row 2: Missing department');
       }
     });
@@ -483,7 +483,7 @@ describe('ProjectTeamService API Tests', () => {
       try {
         await projectTeamService.importTeams(mockFile, mockDepartments, mockEvents, mockUsers);
         fail('Should have thrown an error');
-      } catch (error: any) {
+      } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         expect(error.message).toBe('Import failed Specific issues: {"row":1,"issue":"missing field"}; Row 2: Valid error');
       }
     });

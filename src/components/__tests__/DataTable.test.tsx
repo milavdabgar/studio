@@ -116,8 +116,8 @@ describe('DataTable Component', () => {
   });
 
   it('applies custom row class names', () => {
-    const getRowClassName = (row: any) => 
-      row.age > 30 ? 'highlight-row' : '';
+    const getRowClassName = (row: unknown) => 
+      (row as { age: number }).age > 30 ? 'highlight-row' : '';
     
     renderTable({ getRowClassName });
     

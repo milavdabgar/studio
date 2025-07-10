@@ -1,8 +1,8 @@
 // Mock AWS SDK imports to prevent test issues
-type S3ClientType = any;
+type S3ClientType = { send: (command: unknown) => Promise<unknown> };
 
-let S3Client: any, PutObjectCommand: any, GetObjectCommand: any, DeleteObjectCommand: any, HeadObjectCommand: any;
-let getSignedUrl: any;
+let S3Client: new (config: unknown) => S3ClientType, PutObjectCommand: new (params: unknown) => unknown, GetObjectCommand: new (params: unknown) => unknown, DeleteObjectCommand: new (params: unknown) => unknown, HeadObjectCommand: new (params: unknown) => unknown;
+let getSignedUrl: (client: S3ClientType, command: unknown, options?: unknown) => Promise<string>;
 
 try {
   const awsClient = require('@aws-sdk/client-s3');
@@ -17,14 +17,40 @@ try {
 } catch {
   // Mock implementations for testing
   S3Client = class {
-    constructor(_config?: any) {}
-    send(_command: any) { return Promise.resolve({}); }
+    constructor(_config?: unknown) {
+      void _config; // Unused in mock implementation
+    }
+    send(_command: unknown) {
+      void _command; // Unused in mock implementation
+      return Promise.resolve({});
+    }
   };
-  PutObjectCommand = class { constructor(_params?: any) {} };
-  GetObjectCommand = class { constructor(_params?: any) {} };
-  DeleteObjectCommand = class { constructor(_params?: any) {} };
-  HeadObjectCommand = class { constructor(_params?: any) {} };
-  getSignedUrl = (_client: any, _command: any, _options?: any) => Promise.resolve('mock-signed-url');
+  PutObjectCommand = class {
+    constructor(_params?: unknown) {
+      void _params; // Unused in mock implementation
+    }
+  };
+  GetObjectCommand = class {
+    constructor(_params?: unknown) {
+      void _params; // Unused in mock implementation
+    }
+  };
+  DeleteObjectCommand = class {
+    constructor(_params?: unknown) {
+      void _params; // Unused in mock implementation
+    }
+  };
+  HeadObjectCommand = class {
+    constructor(_params?: unknown) {
+      void _params; // Unused in mock implementation
+    }
+  };
+  getSignedUrl = (_client: unknown, _command: unknown, _options?: unknown) => {
+    void _client; // Unused in mock implementation
+    void _command; // Unused in mock implementation
+    void _options; // Unused in mock implementation
+    return Promise.resolve('mock-signed-url');
+  };
 }
 import { createReadStream, createWriteStream, unlinkSync, existsSync, mkdirSync, statSync } from 'fs';
 import { rm } from 'fs/promises';
@@ -85,7 +111,7 @@ export class StorageService {
     this.config = config;
     
     if (config.s3) {
-      this.s3Client = new (S3Client as any)({
+      this.s3Client = new S3Client({
         region: config.s3.region,
         credentials: config.s3.accessKeyId && config.s3.secretAccessKey ? {
           accessKeyId: config.s3.accessKeyId,
@@ -166,7 +192,7 @@ export class StorageService {
       Metadata: options?.metadata,
     });
 
-    const result = await this.s3Client.send(command);
+    const result = await this.s3Client.send(command) as { ETag?: string };
 
     return {
       key,
@@ -187,7 +213,7 @@ export class StorageService {
       Key: key,
     });
 
-    const result = await this.s3Client.send(command);
+    const result = await this.s3Client.send(command) as { Body?: unknown };
     
     if (!result.Body) {
       throw new Error(`File not found: ${key}`);
@@ -220,7 +246,7 @@ export class StorageService {
         Key: key,
       });
 
-      const result = await this.s3Client.send(command);
+      const result = await this.s3Client.send(command) as { ContentLength?: number; ContentType?: string; LastModified?: Date; ETag?: string };
 
       return {
         key,

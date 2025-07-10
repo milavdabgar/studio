@@ -30,7 +30,7 @@ const mockStudentInstance = {
 };
 
 jest.mock('@/lib/models', () => {
-  const MockStudentModelConstructor = jest.fn().mockImplementation(() => mockStudentInstance) as any;
+  const MockStudentModelConstructor = jest.fn().mockImplementation(() => mockStudentInstance) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
   MockStudentModelConstructor.find = jest.fn();
   MockStudentModelConstructor.findOne = jest.fn();
   return {
@@ -58,7 +58,7 @@ jest.mock('@/lib/api/programs', () => ({
 }));
 
 const mockConnectMongoose = connectMongoose as jest.MockedFunction<typeof connectMongoose>;
-const mockStudentModel = StudentModel as any;
+const mockStudentModel = StudentModel as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 const mockUserService = userService as jest.Mocked<typeof userService>;
 const mockInstituteService = instituteService as jest.Mocked<typeof instituteService>;
 const mockProgramService = programService as jest.Mocked<typeof programService>;
@@ -529,7 +529,7 @@ describe('/api/students', () => {
       // Mock program without instituteId
       const programWithoutInstitute = [{
         ...mockPrograms[0],
-        instituteId: undefined as any
+        instituteId: undefined as any // eslint-disable-line @typescript-eslint/no-explicit-any
       }];
       mockProgramService.getAllPrograms.mockResolvedValue(programWithoutInstitute);
       

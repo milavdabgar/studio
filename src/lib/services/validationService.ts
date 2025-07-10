@@ -96,21 +96,21 @@ export class ValidationService {
   }
 
   middleware<T>(schema: z.ZodSchema<T>) {
-    return async (req: any, res: any, next: any) => {
+    return async (req: unknown, res: unknown, next: (...args: unknown[]) => void) => {
       try {
         const toValidate = {
-          body: req.body || {},
-          query: req.query || {},
-          params: req.params || {},
+          body: (req as { body?: unknown }).body || {},
+          query: (req as { query?: unknown }).query || {},
+          params: (req as { params?: unknown }).params || {},
         };
 
         const result = await this.validateAsync(schema, toValidate);
 
         if (result.success) {
-          req.validated = result.data;
+          (req as { validated: unknown }).validated = result.data;
           next();
         } else {
-          res.status(400).json({
+          (res as { status: (code: number) => { json: (body: unknown) => void } }).status(400).json({
             success: false,
             error: 'Validation failed',
             details: result.errors,
@@ -118,7 +118,7 @@ export class ValidationService {
         }
       } catch (error) {
         this.config.logger?.error('Middleware validation error:', error);
-        res.status(500).json({
+        (res as { status: (code: number) => { json: (body: unknown) => void } }).status(500).json({
           success: false,
           error: 'Internal validation error',
         });

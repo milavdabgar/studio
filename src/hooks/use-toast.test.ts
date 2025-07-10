@@ -88,7 +88,7 @@ describe('useToast', () => {
 
     it('should update existing toast', () => {
       const { result } = renderHook(() => useToast());
-      let toastControls: any;
+      let toastControls: any; // eslint-disable-line @typescript-eslint/no-explicit-any
       
       act(() => {
         toastControls = result.current.toast({ title: 'Original Title' });
@@ -104,7 +104,7 @@ describe('useToast', () => {
 
     it('should dismiss specific toast', () => {
       const { result } = renderHook(() => useToast());
-      let toastControls: any;
+      let toastControls: any; // eslint-disable-line @typescript-eslint/no-explicit-any
       
       act(() => {
         toastControls = result.current.toast({ title: 'Test Toast' });
@@ -193,7 +193,7 @@ describe('useToast', () => {
 
     it('should prevent duplicate timeouts for same toast', () => {
       const { result } = renderHook(() => useToast());
-      let toastControls: any;
+      let toastControls: any; // eslint-disable-line @typescript-eslint/no-explicit-any
       
       act(() => {
         toastControls = result.current.toast({ title: 'Test Toast' });

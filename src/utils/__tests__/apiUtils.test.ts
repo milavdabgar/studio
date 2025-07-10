@@ -10,7 +10,7 @@ import {
 // Mock the global fetch
 global.fetch = jest.fn();
 
-const mockResponse = (status: number, data: any, ok: boolean) => ({
+const mockResponse = (status: number, data: unknown, ok: boolean) => ({
   ok,
   status,
   json: async () => data,
@@ -144,7 +144,7 @@ describe('API Utilities', () => {
         createdAt: '2023-01-01T00:00:00Z',
       };
       
-      const transformer = (data: any) => ({
+      const transformer = (data: any) => ({ // eslint-disable-line @typescript-eslint/no-explicit-any
         ...data,
         createdAt: new Date(data.createdAt),
       });

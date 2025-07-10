@@ -3,7 +3,7 @@ import type { ProjectLocation, Department } from '@/types/entities';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
 // Helper to create mock responses
-const createMockResponse = (options: { ok: boolean; status?: number; json?: () => Promise<any>; statusText?: string; text?: () => Promise<string> }): Response => {
+const createMockResponse = (options: { ok: boolean; status?: number; json?: () => Promise<unknown>; statusText?: string; text?: () => Promise<string> }): Response => {
   return {
     ok: options.ok,
     status: options.status || (options.ok ? 200 : 500),
@@ -344,7 +344,7 @@ describe('ProjectLocationService API Tests', () => {
       try {
         await projectLocationService.importLocations(mockFile, 'event1', mockDepartments);
         fail('Should have thrown an error');
-      } catch (error: any) {
+      } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         expect(error.message).toBe('Import failed Specific issues: Row 1: Invalid location ID; Row 2: Missing section; Row 3: Invalid department...');
       }
     });
@@ -362,7 +362,7 @@ describe('ProjectLocationService API Tests', () => {
       try {
         await projectLocationService.importLocations(mockFile, 'event1', mockDepartments);
         fail('Should have thrown an error');
-      } catch (error: any) {
+      } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         expect(error.message).toBe('Import failed Specific issues: Row 1: Invalid location ID; Row 2: Missing section');
       }
     });
@@ -380,7 +380,7 @@ describe('ProjectLocationService API Tests', () => {
       try {
         await projectLocationService.importLocations(mockFile, 'event1', mockDepartments);
         fail('Should have thrown an error');
-      } catch (error: any) {
+      } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
         expect(error.message).toBe('Import failed Specific issues: {"row":1,"issue":"missing field"}; Row 2: Valid error');
       }
     });

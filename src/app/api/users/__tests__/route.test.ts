@@ -28,7 +28,7 @@ const mockUserInstance = {
 };
 
 jest.mock('@/lib/models', () => {
-  const MockUserModelConstructor = jest.fn().mockImplementation(() => mockUserInstance) as any;
+  const MockUserModelConstructor = jest.fn().mockImplementation(() => mockUserInstance) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
   MockUserModelConstructor.find = jest.fn();
   MockUserModelConstructor.findOne = jest.fn();
   return {
@@ -43,7 +43,7 @@ jest.mock('@/lib/api/institutes', () => ({
 }));
 
 const mockConnectMongoose = connectMongoose as jest.MockedFunction<typeof connectMongoose>;
-const mockUserModel = UserModel as any;
+const mockUserModel = UserModel as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 const mockInstituteService = instituteService as jest.Mocked<typeof instituteService>;
 
 describe('/api/users', () => {
@@ -553,8 +553,8 @@ describe('/api/users', () => {
     });
 
     it('should handle case-insensitive email conflict checking', async () => {
-      mockUserModel.findOne.mockImplementation((query: any) => {
-        if (query?.email && (query.email as any).$regex) {
+      mockUserModel.findOne.mockImplementation((query: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+        if (query?.email && (query.email as any).$regex) { // eslint-disable-line @typescript-eslint/no-explicit-any
           return Promise.resolve({
             email: 'ALICE.WILSON@GMAIL.COM'
           });

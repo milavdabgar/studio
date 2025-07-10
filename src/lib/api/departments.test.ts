@@ -4,7 +4,7 @@ import { describe, it, expect, jest } from '@jest/globals';
 
 // Mock the fetch function
 // Create a proper mock for the Response object
-const createMockResponse = (options: { ok: boolean; status?: number; statusText?: string; json?: () => Promise<any> }): Response => {
+const createMockResponse = (options: { ok: boolean; status?: number; statusText?: string; json?: () => Promise<unknown> }): Response => {
   const { ok, status = 200, statusText = '', json = async () => ({}) } = options;
   return {
     ok,

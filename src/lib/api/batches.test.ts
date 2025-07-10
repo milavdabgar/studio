@@ -3,7 +3,7 @@ import type { Batch, Program } from '@/types/entities';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
 // Create a proper mock for the Response object
-const createMockResponse = (options: { ok: boolean; status?: number; statusText?: string; json?: () => Promise<any> }): Response => {
+const createMockResponse = (options: { ok: boolean; status?: number; statusText?: string; json?: () => Promise<unknown> }): Response => {
   const { ok, status = 200, statusText = '', json = async () => ({}) } = options;
   return {
     ok,
@@ -301,8 +301,8 @@ describe('Batch API', () => {
       fail('Should have thrown an error');
     } catch (error: unknown) {
       expect((error as Error).message).toContain('Validation errors');
-      expect((error as any).data).toBeDefined();
-      expect((error as any).data.errors.length).toBe(4);
+      expect((error as any).data).toBeDefined(); // eslint-disable-line @typescript-eslint/no-explicit-any
+      expect((error as any).data.errors.length).toBe(4); // eslint-disable-line @typescript-eslint/no-explicit-any
     }
   });
 

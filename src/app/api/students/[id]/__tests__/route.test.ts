@@ -118,7 +118,7 @@ describe('/api/students/[id]', () => {
   describe('GET /api/students/[id]', () => {
     it('should return student by custom ID', async () => {
       const leanResult = Promise.resolve(mockStudent);
-      mockStudentModel.findOne.mockReturnValue({ lean: () => leanResult } as any);
+      mockStudentModel.findOne.mockReturnValue({ lean: () => leanResult } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       const params = Promise.resolve({ id: 'student_123' });
       const response = await GET({} as NextRequest, { params });
@@ -134,8 +134,8 @@ describe('/api/students/[id]', () => {
       const objectId = '507f1f77bcf86cd799439011'; // Valid ObjectId format
       const studentWithObjectId = { ...mockStudent, _id: objectId, id: undefined };
       
-      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(null) } as any);
-      mockStudentModel.findById.mockReturnValue({ lean: () => Promise.resolve(studentWithObjectId) } as any);
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(null) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+      mockStudentModel.findById.mockReturnValue({ lean: () => Promise.resolve(studentWithObjectId) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       const params = Promise.resolve({ id: objectId });
       const response = await GET({} as NextRequest, { params });
@@ -148,8 +148,8 @@ describe('/api/students/[id]', () => {
     });
 
     it('should return 404 when student not found', async () => {
-      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(null) } as any);
-      mockStudentModel.findById.mockReturnValue({ lean: () => Promise.resolve(null) } as any);
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(null) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+      mockStudentModel.findById.mockReturnValue({ lean: () => Promise.resolve(null) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       const params = Promise.resolve({ id: 'non_existent_id' });
       const response = await GET({} as NextRequest, { params });
@@ -161,7 +161,7 @@ describe('/api/students/[id]', () => {
 
     it('should handle database errors', async () => {
       const errorMessage = 'Database connection failed';
-      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.reject(new Error(errorMessage)) } as any);
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.reject(new Error(errorMessage)) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       const params = Promise.resolve({ id: 'student_123' });
       const response = await GET({} as NextRequest, { params });
@@ -184,7 +184,7 @@ describe('/api/students/[id]', () => {
 
     it('should update student with valid data', async () => {
       const updatedStudent = { ...mockStudent, ...updateData };
-      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       mockStudentModel.findOneAndUpdate.mockResolvedValue(updatedStudent);
       mockUserService.getUserById.mockResolvedValue(mockUser);
       
@@ -203,8 +203,8 @@ describe('/api/students/[id]', () => {
     });
 
     it('should return 404 when student not found', async () => {
-      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(null) } as any);
-      mockStudentModel.findById.mockReturnValue({ lean: () => Promise.resolve(null) } as any);
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(null) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+      mockStudentModel.findById.mockReturnValue({ lean: () => Promise.resolve(null) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       const params = Promise.resolve({ id: 'non_existent_id' });
       const request = new NextRequest('http://localhost/api/students/123', {
@@ -224,8 +224,8 @@ describe('/api/students/[id]', () => {
       const studentWithObjectId = { ...mockStudent, _id: objectId, id: undefined };
       const updatedStudent = { ...studentWithObjectId, ...updateData };
       
-      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(null) } as any);
-      mockStudentModel.findById.mockReturnValue({ lean: () => Promise.resolve(studentWithObjectId) } as any);
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(null) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+      mockStudentModel.findById.mockReturnValue({ lean: () => Promise.resolve(studentWithObjectId) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       mockStudentModel.findOneAndUpdate.mockResolvedValue(updatedStudent);
       mockUserService.getUserById.mockResolvedValue(mockUser);
       
@@ -242,9 +242,9 @@ describe('/api/students/[id]', () => {
     it('should return 409 for duplicate enrollment number', async () => {
       const duplicateData = { enrollmentNumber: 'GP23CE002' };
       mockStudentModel.findOne
-        .mockReturnValueOnce({ lean: () => Promise.resolve(mockStudent) } as any) // First call: find existing student
-        .mockReturnValueOnce({ lean: () => Promise.resolve(null) } as any) // Check for duplicate enrollment
-        .mockReturnValueOnce({ lean: () => Promise.resolve({ _id: 'other_student_id' }) } as any); // Found duplicate
+        .mockReturnValueOnce({ lean: () => Promise.resolve(mockStudent) } as any) // eslint-disable-line @typescript-eslint/no-explicit-any
+        .mockReturnValueOnce({ lean: () => Promise.resolve(null) } as any) // eslint-disable-line @typescript-eslint/no-explicit-any
+        .mockReturnValueOnce({ lean: () => Promise.resolve({ _id: 'other_student_id' }) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       const params = Promise.resolve({ id: 'student_123' });
       const request = new NextRequest('http://localhost/api/students/123', {
@@ -262,8 +262,8 @@ describe('/api/students/[id]', () => {
     it('should return 409 for duplicate institute email', async () => {
       const duplicateData = { instituteEmail: 'duplicate@gpp.edu.in' };
       mockStudentModel.findOne
-        .mockReturnValueOnce({ lean: () => Promise.resolve(mockStudent) } as any) // Find existing student
-        .mockReturnValueOnce({ lean: () => Promise.resolve({ _id: 'other_student_id' }) } as any); // Found duplicate email
+        .mockReturnValueOnce({ lean: () => Promise.resolve(mockStudent) } as any) // eslint-disable-line @typescript-eslint/no-explicit-any
+        .mockReturnValueOnce({ lean: () => Promise.resolve({ _id: 'other_student_id' }) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       const params = Promise.resolve({ id: 'student_123' });
       const request = new NextRequest('http://localhost/api/students/123', {
@@ -279,7 +279,7 @@ describe('/api/students/[id]', () => {
     });
 
     it('should return 404 if student not found after update', async () => {
-      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       mockStudentModel.findOneAndUpdate.mockResolvedValue(null);
       
       const params = Promise.resolve({ id: 'student_123' });
@@ -296,7 +296,7 @@ describe('/api/students/[id]', () => {
 
     it('should update linked user when student data changes', async () => {
       const updatedStudent = { ...mockStudent, firstName: 'Jonathan', personalEmail: 'jonathan@example.com' };
-      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       mockStudentModel.findOneAndUpdate.mockResolvedValue(updatedStudent);
       mockUserService.getUserById.mockResolvedValue(mockUser);
       mockUserService.updateUser.mockResolvedValue({
@@ -327,7 +327,7 @@ describe('/api/students/[id]', () => {
 
     it('should handle user update errors gracefully', async () => {
       const updatedStudent = { ...mockStudent, firstName: 'Jonathan' };
-      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       mockStudentModel.findOneAndUpdate.mockResolvedValue(updatedStudent);
       mockUserService.getUserById.mockResolvedValue(mockUser);
       mockUserService.updateUser.mockRejectedValue(new Error('User update failed'));
@@ -344,7 +344,7 @@ describe('/api/students/[id]', () => {
 
     it('should handle database errors during update', async () => {
       const errorMessage = 'Database update failed';
-      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       mockStudentModel.findOneAndUpdate.mockRejectedValue(new Error(errorMessage));
       
       const params = Promise.resolve({ id: 'student_123' });
@@ -363,7 +363,7 @@ describe('/api/students/[id]', () => {
 
     it('should remove undefined fields from update data', async () => {
       const updatedStudent = { ...mockStudent, firstName: 'Jonathan', lastName: undefined };
-      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       mockStudentModel.findOneAndUpdate.mockResolvedValue(updatedStudent);
       mockUserService.getUserById.mockResolvedValue(mockUser);
       
@@ -381,7 +381,7 @@ describe('/api/students/[id]', () => {
 
     it('should update user display name when fullNameGtuFormat changes', async () => {
       const updatedStudent = { ...mockStudent, fullNameGtuFormat: 'SMITH JONATHAN KUMAR' };
-      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       mockStudentModel.findOneAndUpdate.mockResolvedValue(updatedStudent);
       mockUserService.getUserById.mockResolvedValue(mockUser);
       mockUserService.updateUser.mockResolvedValue({
@@ -405,7 +405,7 @@ describe('/api/students/[id]', () => {
 
     it('should update user isActive status when student status changes', async () => {
       const updatedStudent = { ...mockStudent, status: 'inactive' as const };
-      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       mockStudentModel.findOneAndUpdate.mockResolvedValue(updatedStudent);
       mockUserService.getUserById.mockResolvedValue(mockUser);
       mockUserService.updateUser.mockResolvedValue({
@@ -430,7 +430,7 @@ describe('/api/students/[id]', () => {
     it('should update user photo URL when student photo URL changes', async () => {
       const newPhotoURL = 'https://example.com/new-photo.jpg';
       const updatedStudent = { ...mockStudent, photoURL: newPhotoURL };
-      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOne.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       mockStudentModel.findOneAndUpdate.mockResolvedValue(updatedStudent);
       mockUserService.getUserById.mockResolvedValue(mockUser);
       mockUserService.updateUser.mockResolvedValue({
@@ -455,7 +455,7 @@ describe('/api/students/[id]', () => {
 
   describe('DELETE /api/students/[id]', () => {
     it('should delete an existing student by custom ID', async () => {
-      mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       mockUserService.deleteUser.mockResolvedValue(undefined);
       
       const params = Promise.resolve({ id: 'student_123' });
@@ -472,8 +472,8 @@ describe('/api/students/[id]', () => {
       const objectId = '507f1f77bcf86cd799439012'; // Valid ObjectId format
       const studentWithObjectId = { ...mockStudent, _id: objectId };
       
-      mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(null) } as any);
-      mockStudentModel.findByIdAndDelete.mockReturnValue({ lean: () => Promise.resolve(studentWithObjectId) } as any);
+      mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(null) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+      mockStudentModel.findByIdAndDelete.mockReturnValue({ lean: () => Promise.resolve(studentWithObjectId) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       mockUserService.deleteUser.mockResolvedValue(undefined);
       
       const params = Promise.resolve({ id: objectId });
@@ -485,8 +485,8 @@ describe('/api/students/[id]', () => {
     });
 
     it('should return 404 when student not found', async () => {
-      mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(null) } as any);
-      mockStudentModel.findByIdAndDelete.mockReturnValue({ lean: () => Promise.resolve(null) } as any);
+      mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(null) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+      mockStudentModel.findByIdAndDelete.mockReturnValue({ lean: () => Promise.resolve(null) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       const params = Promise.resolve({ id: 'non_existent_id' });
       const response = await DELETE({} as NextRequest, { params });
@@ -498,7 +498,7 @@ describe('/api/students/[id]', () => {
 
     it('should handle database errors during deletion', async () => {
       const errorMessage = 'Database deletion failed';
-      mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.reject(new Error(errorMessage)) } as any);
+      mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.reject(new Error(errorMessage)) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       const params = Promise.resolve({ id: 'student_123' });
       const response = await DELETE({} as NextRequest, { params });
@@ -511,7 +511,7 @@ describe('/api/students/[id]', () => {
 
     it('should delete student without linked user', async () => {
       const studentWithoutUser = { ...mockStudent, userId: undefined };
-      mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(studentWithoutUser) } as any);
+      mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(studentWithoutUser) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       const params = Promise.resolve({ id: 'student_123' });
       const response = await DELETE({} as NextRequest, { params });
@@ -521,7 +521,7 @@ describe('/api/students/[id]', () => {
     });
 
     it('should handle administrative user deletion warning', async () => {
-      mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       const adminError = new Error('Cannot delete this administrative user');
       adminError.message = 'Cannot delete this administrative user';
       mockUserService.deleteUser.mockRejectedValue(adminError);
@@ -534,7 +534,7 @@ describe('/api/students/[id]', () => {
     });
 
     it('should handle user deletion with data.message administrative error', async () => {
-      mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       const adminError: { data: { message: string } } = { data: { message: 'Cannot delete administrative user' } };
       mockUserService.deleteUser.mockRejectedValue(adminError);
       
@@ -546,7 +546,7 @@ describe('/api/students/[id]', () => {
     });
 
     it('should handle other user deletion errors', async () => {
-      mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any);
+      mockStudentModel.findOneAndDelete.mockReturnValue({ lean: () => Promise.resolve(mockStudent) } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       const otherError = new Error('Other user deletion error');
       mockUserService.deleteUser.mockRejectedValue(otherError);
       

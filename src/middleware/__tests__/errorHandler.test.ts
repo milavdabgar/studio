@@ -12,7 +12,7 @@ import { describe, it, expect, beforeEach, jest, afterEach } from '@jest/globals
 
 describe('errorHandler middleware', () => {
   let mockRequest: NextRequest;
-  let mockNext: jest.MockedFunction<any>;
+  let mockNext: jest.MockedFunction<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
   let consoleSpy: ReturnType<typeof jest.spyOn>;
 
   beforeEach(() => {
@@ -172,7 +172,7 @@ describe('errorHandler middleware', () => {
     describe('Yup ValidationError handling', () => {
       it('should handle ValidationError with inner errors', async () => {
         const validationError = new ValidationError('Validation failed');
-        (validationError as any).inner = [
+        (validationError as any).inner = [ // eslint-disable-line @typescript-eslint/no-explicit-any
           { path: 'email', message: 'Email is required' },
           { path: 'password', message: 'Password must be at least 6 characters' }
         ];
@@ -385,9 +385,9 @@ describe('errorHandler middleware', () => {
           configurable: true
         });
         const circularError = new Error('Circular reference error');
-        const circular: any = { error: circularError };
+        const circular: any = { error: circularError }; // eslint-disable-line @typescript-eslint/no-explicit-any
         circular.self = circular;
-        (circularError as any).circular = circular;
+        (circularError as any).circular = circular; // eslint-disable-line @typescript-eslint/no-explicit-any
 
         const response = await errorHandler(circularError, mockRequest, null, mockNext);
         const data = await response.json();

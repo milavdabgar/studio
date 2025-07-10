@@ -59,14 +59,14 @@ describe('i18n utilities', () => {
     });
 
     it('should fallback to English for unsupported language', () => {
-      const result = getTranslation('fr' as any, 'home');
+      const result = getTranslation('fr' as any, 'home'); // eslint-disable-line @typescript-eslint/no-explicit-any
       expect(result).toBe('Home');
     });
 
     it('should fallback to English when key missing in target language', () => {
       // Mock missing key in Gujarati
       const originalTranslations = { ...translations };
-      delete (translations.gu as any).home;
+      delete (translations.gu as any).home; // eslint-disable-line @typescript-eslint/no-explicit-any
       
       const result = getTranslation('gu', 'home');
       expect(result).toBe('Home');
@@ -76,12 +76,12 @@ describe('i18n utilities', () => {
     });
 
     it('should return the key itself when key not found in any language', () => {
-      const result = getTranslation('en', 'nonexistent_key' as any);
+      const result = getTranslation('en', 'nonexistent_key' as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       expect(result).toBe('nonexistent_key');
     });
 
     it('should handle empty key gracefully', () => {
-      const result = getTranslation('en', '' as any);
+      const result = getTranslation('en', '' as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       expect(result).toBe('');
     });
 
@@ -140,7 +140,7 @@ describe('i18n utilities', () => {
       
       // Mock missing key in Gujarati
       const originalTranslations = { ...translations };
-      delete (translations.gu as any).home;
+      delete (translations.gu as any).home; // eslint-disable-line @typescript-eslint/no-explicit-any
       
       expect(t('home')).toBe('Home'); // Should fallback to English
       
@@ -165,7 +165,7 @@ describe('i18n utilities', () => {
     });
 
     it('should handle invalid language gracefully', () => {
-      const { t, lang } = useTranslation('invalid' as any);
+      const { t, lang } = useTranslation('invalid' as any); // eslint-disable-line @typescript-eslint/no-explicit-any
       
       expect(lang).toBe('invalid');
       expect(t('home')).toBe('Home'); // Should fallback to English

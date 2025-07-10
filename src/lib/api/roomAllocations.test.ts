@@ -5,7 +5,7 @@ import type { RoomAllocation } from '@/types/entities';
 process.env.NEXT_PUBLIC_API_BASE_URL = 'http://localhost';
 
 // Create a proper mock for the Response object
-const createMockResponse = (options: { ok: boolean; status?: number; statusText?: string; json?: () => Promise<any> }): Response => {
+const createMockResponse = (options: { ok: boolean; status?: number; statusText?: string; json?: () => Promise<unknown> }): Response => {
   const { ok, status = 200, statusText = '', json = async () => ({}) } = options;
   return {
     ok,

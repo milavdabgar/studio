@@ -3,7 +3,7 @@ import { validateRequest } from '../validateRequest';
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 
 interface MockValidationSchema {
-  validate: jest.MockedFunction<(data: any) => Promise<any>>;
+  validate: jest.MockedFunction<(data: unknown) => Promise<unknown>>;
 }
 
 describe('validateRequest middleware', () => {
@@ -11,7 +11,7 @@ describe('validateRequest middleware', () => {
 
   beforeEach(() => {
     mockSchema = {
-      validate: jest.fn<(data: any) => Promise<any>>().mockResolvedValue(undefined)
+      validate: jest.fn<(data: unknown) => Promise<unknown>>().mockResolvedValue(undefined)
     };
   });
 
@@ -286,7 +286,7 @@ describe('validateRequest middleware', () => {
   describe('Schema interface compliance', () => {
     it('should work with async validation schema', async () => {
       const asyncSchema: MockValidationSchema = {
-        validate: jest.fn<(data: any) => Promise<any>>().mockImplementation(async (data) => {
+        validate: jest.fn<(data: any) => Promise<any>>().mockImplementation(async (data: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
           // Simulate async validation (e.g., database check)
           await new Promise(resolve => setTimeout(resolve, 10));
           if (!data.id) {
@@ -312,7 +312,7 @@ describe('validateRequest middleware', () => {
 
     it('should work with sync validation schema', async () => {
       const syncSchema: MockValidationSchema = {
-        validate: jest.fn<(data: any) => Promise<any>>().mockImplementation(async (data) => {
+        validate: jest.fn<(data: any) => Promise<any>>().mockImplementation(async (data: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
           if (!data.name) {
             throw new Error('Name is required');
           }
@@ -336,7 +336,7 @@ describe('validateRequest middleware', () => {
 
     it('should handle schema that returns transformed data', async () => {
       const transformSchema: MockValidationSchema = {
-        validate: jest.fn<(data: any) => Promise<any>>().mockImplementation(async (data) => {
+        validate: jest.fn<(data: any) => Promise<any>>().mockImplementation(async (data: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
           // Transform the data during validation
           return {
             ...data,
@@ -385,7 +385,7 @@ describe('validateRequest middleware', () => {
 
     it('should handle schema validation timeout', async () => {
       const timeoutSchema: MockValidationSchema = {
-        validate: jest.fn<(data: any) => Promise<any>>().mockImplementation(async () => {
+        validate: jest.fn<(data: unknown) => Promise<unknown>>().mockImplementation(async () => {
           // Simulate a timeout scenario
           await new Promise(resolve => setTimeout(resolve, 100));
           throw new Error('Validation timeout');
@@ -409,7 +409,7 @@ describe('validateRequest middleware', () => {
 
     it('should handle schema that throws non-Error objects', async () => {
       const nonErrorSchema: MockValidationSchema = {
-        validate: jest.fn<(data: any) => Promise<any>>().mockImplementation(async () => {
+        validate: jest.fn<(data: unknown) => Promise<unknown>>().mockImplementation(async () => {
           throw 'String error message';
         })
       };
@@ -482,8 +482,8 @@ describe('validateRequest middleware', () => {
     it('should work with Yup-like schema', async () => {
       // Simulate a Yup-like validation schema
       const yupLikeSchema: MockValidationSchema = {
-        validate: jest.fn<(data: any) => Promise<any>>().mockImplementation(async (data) => {
-          const errors: any[] = [];
+        validate: jest.fn<(data: any) => Promise<any>>().mockImplementation(async (data: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+          const errors: any[] = []; // eslint-disable-line @typescript-eslint/no-explicit-any
           
           if (!data.name || data.name.length < 2) {
             errors.push({ path: 'name', message: 'Name must be at least 2 characters' });
@@ -494,7 +494,7 @@ describe('validateRequest middleware', () => {
           }
           
           if (errors.length > 0) {
-            const error: any = new Error('Validation failed');
+            const error: any = new Error('Validation failed'); // eslint-disable-line @typescript-eslint/no-explicit-any
             error.inner = errors;
             throw error;
           }
@@ -522,7 +522,7 @@ describe('validateRequest middleware', () => {
     it('should work with custom validation library', async () => {
       // Simulate a custom validation library
       const customSchema: MockValidationSchema = {
-        validate: jest.fn<(data: any) => Promise<any>>().mockImplementation(async (data) => {
+        validate: jest.fn<(data: any) => Promise<any>>().mockImplementation(async (data: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
           // Custom validation logic
           const validatedData = { ...data };
           

@@ -3,7 +3,7 @@ import type { Program } from '@/types/entities';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
 // Create a proper mock for the Response object
-const createMockResponse = (options: { ok: boolean; status?: number; statusText?: string; json?: () => Promise<any> }): Response => {
+const createMockResponse = (options: { ok: boolean; status?: number; statusText?: string; json?: () => Promise<unknown> }): Response => {
   const { ok, status = 200, statusText = '', json = async () => ({}) } = options;
   return {
     ok,
@@ -214,7 +214,7 @@ describe('Program API Functions', () => {
   describe('importPrograms', () => {
     it('should import programs from a file', async () => {
       const mockFile = new File(['test data'], 'programs.csv', { type: 'text/csv' });
-      const mockDepartments = [{ id: 'dept-1', name: 'Department 1' }] as any[];
+      const mockDepartments = [{ id: 'dept-1', name: 'Department 1' }] as any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
       const mockResponse = { newCount: 5, updatedCount: 2, skippedCount: 1 };
 
       mockFetch.mockResolvedValueOnce(createMockResponse({
@@ -234,7 +234,7 @@ describe('Program API Functions', () => {
 
     it('should throw an error if import fails', async () => {
       const mockFile = new File(['test data'], 'programs.csv', { type: 'text/csv' });
-      const mockDepartments = [{ id: 'dept-1', name: 'Department 1' }] as any[];
+      const mockDepartments = [{ id: 'dept-1', name: 'Department 1' }] as any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       mockFetch.mockResolvedValueOnce(createMockResponse({
         ok: false,

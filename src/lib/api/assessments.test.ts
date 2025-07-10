@@ -3,7 +3,7 @@ import type { Assessment, Course, Program, Batch } from '@/types/entities';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
 
 // Create a proper mock for the Response object
-const createMockResponse = (options: { ok: boolean; status?: number; statusText?: string; json?: () => Promise<any> }): Response => {
+const createMockResponse = (options: { ok: boolean; status?: number; statusText?: string; json?: () => Promise<unknown> }): Response => {
   const { ok, status = 200, statusText = '', json = async () => ({}) } = options;
   return {
     ok,
@@ -235,9 +235,9 @@ describe('Assessment API Tests', () => {
   describe('importAssessments', () => {
     it('should import assessments from a file', async () => {
       const mockFile = new File(['test data'], 'assessments.csv', { type: 'text/csv' });
-      const mockCourses = [{ id: 'course-1', title: 'Course 1', code: 'C1' }] as unknown as Course[];
-      const mockPrograms = [{ id: 'program-1', name: 'Program 1', code: 'P1' }] as unknown as Program[];
-      const mockBatches = [{ id: 'batch-1', name: 'Batch 1' }] as unknown as Batch[];
+      const mockCourses = [{ id: 'course-1', title: 'Course 1', code: 'C1' }] as any as Course[]; // eslint-disable-line @typescript-eslint/no-explicit-any
+      const mockPrograms = [{ id: 'program-1', name: 'Program 1', code: 'P1' }] as any as Program[]; // eslint-disable-line @typescript-eslint/no-explicit-any
+      const mockBatches = [{ id: 'batch-1', name: 'Batch 1' }] as any as Batch[]; // eslint-disable-line @typescript-eslint/no-explicit-any
       const mockResponse = { newCount: 3, updatedCount: 1, skippedCount: 0 };
 
       mockFetch.mockResolvedValueOnce(createMockResponse({
@@ -257,9 +257,9 @@ describe('Assessment API Tests', () => {
 
     it('should throw an error if import fails', async () => {
       const mockFile = new File(['test data'], 'assessments.csv', { type: 'text/csv' });
-      const mockCourses = [{ id: 'course-1', title: 'Course 1', code: 'C1' }] as unknown as Course[];
-      const mockPrograms = [{ id: 'program-1', name: 'Program 1', code: 'P1' }] as unknown as Program[];
-      const mockBatches = [{ id: 'batch-1', name: 'Batch 1' }] as unknown as Batch[];
+      const mockCourses = [{ id: 'course-1', title: 'Course 1', code: 'C1' }] as any as Course[]; // eslint-disable-line @typescript-eslint/no-explicit-any
+      const mockPrograms = [{ id: 'program-1', name: 'Program 1', code: 'P1' }] as any as Program[]; // eslint-disable-line @typescript-eslint/no-explicit-any
+      const mockBatches = [{ id: 'batch-1', name: 'Batch 1' }] as any as Batch[]; // eslint-disable-line @typescript-eslint/no-explicit-any
       
       mockFetch.mockResolvedValueOnce(createMockResponse({
         ok: false,
@@ -280,9 +280,9 @@ describe('Assessment API Tests', () => {
 
     it('should handle server error during import', async () => {
       const mockFile = new File(['test data'], 'assessments.csv', { type: 'text/csv' });
-      const mockCourses = [{ id: 'course-1', title: 'Course 1', code: 'C1' }] as unknown as Course[];
-      const mockPrograms = [{ id: 'program-1', name: 'Program 1', code: 'P1' }] as unknown as Program[];
-      const mockBatches = [{ id: 'batch-1', name: 'Batch 1' }] as unknown as Batch[];
+      const mockCourses = [{ id: 'course-1', title: 'Course 1', code: 'C1' }] as any as Course[]; // eslint-disable-line @typescript-eslint/no-explicit-any
+      const mockPrograms = [{ id: 'program-1', name: 'Program 1', code: 'P1' }] as any as Program[]; // eslint-disable-line @typescript-eslint/no-explicit-any
+      const mockBatches = [{ id: 'batch-1', name: 'Batch 1' }] as any as Batch[]; // eslint-disable-line @typescript-eslint/no-explicit-any
       
       mockFetch.mockResolvedValueOnce(createMockResponse({
         ok: false,
