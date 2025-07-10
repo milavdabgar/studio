@@ -30,7 +30,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(program);
   } catch (error) {
     console.error('Error fetching program:', error);
-    return NextResponse.json({ message: 'Error fetching program', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error fetching program' }, { status: 500 });
   }
 }
 

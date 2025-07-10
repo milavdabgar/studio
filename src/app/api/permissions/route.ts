@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
     }
   } catch (error) {
     console.error("Error in GET /api/permissions:", error);
-    return NextResponse.json({ message: 'Internal server error processing permissions request.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error processing permissions request.' }, { status: 500 });
   }
 }
 
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     return createPermission(validationResult.data);
   } catch (error) {
     console.error("Error in POST /api/permissions:", error);
-    return NextResponse.json({ message: 'Internal server error creating permission.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error creating permission.' }, { status: 500 });
   }
 }
 
@@ -111,7 +111,7 @@ export async function PUT(request: NextRequest) {
     return updatePermission(id, validationResult.data);
   } catch (error) {
     console.error("Error in PUT /api/permissions:", error);
-    return NextResponse.json({ message: 'Internal server error updating permission.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error updating permission.' }, { status: 500 });
   }
 }
 
@@ -134,7 +134,7 @@ export async function DELETE(request: NextRequest) {
     return deletePermission(id);
   } catch (error) {
     console.error("Error in DELETE /api/permissions:", error);
-    return NextResponse.json({ message: 'Internal server error deleting permission.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error deleting permission.' }, { status: 500 });
   }
 }
 

@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(examinationsWithId);
   } catch (error) {
     console.error('Error in GET /api/examinations:', error);
-    return NextResponse.json({ message: 'Internal server error processing examinations request.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error processing examinations request.' }, { status: 500 });
   }
 }
 
@@ -142,6 +142,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newExamination.toJSON(), { status: 201 });
   } catch (error) {
     console.error('Error creating examination:', error);
-    return NextResponse.json({ message: 'Error creating examination', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error creating examination' }, { status: 500 });
   }
 }

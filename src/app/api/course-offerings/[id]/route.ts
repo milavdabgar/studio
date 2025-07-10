@@ -29,7 +29,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Course offering not found' }, { status: 404 });
   } catch (error) {
     console.error('Error in GET /api/course-offerings/[id]:', error);
-    return NextResponse.json({ message: 'Internal server error fetching course offering.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error fetching course offering.' }, { status: 500 });
   }
 }
 
@@ -99,7 +99,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(offeringWithId);
   } catch (error) {
     console.error(`Error updating course offering ${id}:`, error);
-    return NextResponse.json({ message: `Error updating course offering ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error updating course offering ${id}` }, { status: 500 });
   }
 }
 
@@ -118,6 +118,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Course offering deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error(`Error deleting course offering ${id}:`, error);
-    return NextResponse.json({ message: `Error deleting course offering ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error deleting course offering ${id}` }, { status: 500 });
   }
 }

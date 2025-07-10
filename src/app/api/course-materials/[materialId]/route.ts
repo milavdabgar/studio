@@ -28,7 +28,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Course material not found' }, { status: 404 });
   } catch (error) {
     console.error(`Error fetching course material ${materialId}:`, error);
-    return NextResponse.json({ message: `Error fetching course material ${materialId}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error fetching course material ${materialId}` }, { status: 500 });
   }
 }
 
@@ -77,7 +77,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(materialWithId);
   } catch (error) {
     console.error(`Error updating course material ${materialId}:`, error);
-    return NextResponse.json({ message: `Error updating course material ${materialId}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error updating course material ${materialId}` }, { status: 500 });
   }
 }
 
@@ -97,6 +97,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Course material deleted successfully' });
   } catch (error) {
     console.error(`Error deleting course material ${materialId}:`, error);
-    return NextResponse.json({ message: `Error deleting course material ${materialId}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error deleting course material ${materialId}` }, { status: 500 });
   }
 }

@@ -31,7 +31,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(course);
   } catch (error) {
     console.error('Error fetching course:', error);
-    return NextResponse.json({ message: 'Error fetching course', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error fetching course' }, { status: 500 });
   }
 }
 
@@ -138,6 +138,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Course deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error('Error deleting course:', error);
-    return NextResponse.json({ message: 'Error deleting course', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error deleting course' }, { status: 500 });
   }
 }

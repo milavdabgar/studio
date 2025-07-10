@@ -29,7 +29,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(role);
   } catch (error) {
     console.error('Error fetching role:', error);
-    return NextResponse.json({ message: 'Error fetching role', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error fetching role' }, { status: 500 });
   }
 }
 
@@ -93,7 +93,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(updatedRole);
   } catch (error) {
     console.error(`Error updating role:`, error);
-    return NextResponse.json({ message: `Error updating role`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error updating role` }, { status: 500 });
   }
 }
 
@@ -126,7 +126,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Role deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error(`Error deleting role:`, error);
-    return NextResponse.json({ message: 'Error deleting role', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error deleting role' }, { status: 500 });
   }
 }
     

@@ -11,7 +11,7 @@ export async function GET() {
     return NextResponse.json(courses);
   } catch (error) {
     console.error('Error fetching courses:', error);
-    return NextResponse.json({ message: 'Error fetching courses', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error fetching courses' }, { status: 500 });
   }
 }
 
@@ -88,6 +88,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(savedCourse, { status: 201 });
   } catch (error) {
     console.error('Error creating course:', error);
-    return NextResponse.json({ message: 'Error creating course', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error creating course' }, { status: 500 });
   }
 }

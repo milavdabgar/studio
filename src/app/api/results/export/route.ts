@@ -98,6 +98,6 @@ export async function GET(request: NextRequest) {
     }
   } catch (error) {
     console.error('Error exporting results:', error);
-    return NextResponse.json({ message: 'Error exporting results.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error exporting results.' }, { status: 500 });
   }
 }

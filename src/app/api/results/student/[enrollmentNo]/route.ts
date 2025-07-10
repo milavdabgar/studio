@@ -29,6 +29,6 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ status: 'success', data: { results: [] }, message: 'No results found for this student.' });
   } catch (error) {
     console.error('Error fetching student results:', error);
-    return NextResponse.json({ message: 'Error fetching student results.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error fetching student results.' }, { status: 500 });
   }
 }

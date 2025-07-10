@@ -30,7 +30,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(department);
   } catch (error) {
     console.error('Error fetching department:', error);
-    return NextResponse.json({ message: 'Error fetching department', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error fetching department' }, { status: 500 });
   }
 }
 
@@ -93,7 +93,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(updatedDepartment);
   } catch (error) {
     console.error(`Error updating department:`, error);
-    return NextResponse.json({ message: `Error updating department`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error updating department` }, { status: 500 });
   }
 }
 
@@ -120,6 +120,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Department deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error(`Error deleting department:`, error);
-    return NextResponse.json({ message: 'Error deleting department', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error deleting department' }, { status: 500 });
   }
 }

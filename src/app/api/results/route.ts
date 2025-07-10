@@ -88,7 +88,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error in GET /api/results:', error);
-    return NextResponse.json({ message: 'Internal server error processing results request.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error processing results request.' }, { status: 500 });
   }
 }
 
@@ -164,6 +164,6 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Critical error during result entry or update:', error);
-    return NextResponse.json({ message: 'Critical error processing result data. Please check server logs.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Critical error processing result data. Please check server logs.' }, { status: 500 });
   }
 }

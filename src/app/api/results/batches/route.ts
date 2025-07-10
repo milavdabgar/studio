@@ -41,6 +41,6 @@ export async function GET() {
     return NextResponse.json({ status: 'success', data: { batches } });
   } catch (error) {
     console.error('Error fetching result batches:', error);
-    return NextResponse.json({ message: 'Error fetching result batches.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error fetching result batches.' }, { status: 500 });
   }
 }

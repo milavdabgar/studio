@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(materialsWithId);
   } catch (error) {
     console.error('Error in GET /api/course-materials:', error);
-    return NextResponse.json({ message: 'Internal server error processing course materials request.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error processing course materials request.' }, { status: 500 });
   }
 }
 
@@ -90,6 +90,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newMaterial.toJSON(), { status: 201 });
   } catch (error) {
     console.error('Error creating course material:', error);
-    return NextResponse.json({ message: 'Error creating course material', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error creating course material' }, { status: 500 });
   }
 }

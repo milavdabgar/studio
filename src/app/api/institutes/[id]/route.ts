@@ -100,7 +100,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(updatedInstitute);
   } catch (error) {
     console.error('Error updating institute:', error);
-    return NextResponse.json({ message: 'Error updating institute', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error updating institute' }, { status: 500 });
   }
 }
 
