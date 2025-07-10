@@ -90,6 +90,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(response, { status: 201 });
   } catch (error) {
     console.error('Error creating building:', error);
-    return NextResponse.json({ message: 'Error creating building', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error creating building' }, { status: 500 });
   }
 }

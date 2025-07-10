@@ -29,8 +29,7 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching faculty:', error);
     return NextResponse.json({ 
-      message: 'Internal server error during faculty fetch.', 
-      error: (error as Error).message 
+      message: 'Internal server error during faculty fetch.' 
     }, { status: 500 });
   }
 }
@@ -147,7 +146,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(facultyToReturn, { status: 201 });
   } catch (error) {
     console.error('Error creating faculty:', error);
-    return NextResponse.json({ message: 'Error creating faculty', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error creating faculty' }, { status: 500 });
   }
 }
 

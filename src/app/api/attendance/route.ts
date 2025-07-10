@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(recordsWithId);
   } catch (error) {
     console.error('Error in GET /api/attendance:', error);
-    return NextResponse.json({ message: 'Internal server error processing attendance request.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error processing attendance request.' }, { status: 500 });
   }
 }
 
@@ -159,6 +159,6 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error creating attendance record(s):', error);
-    return NextResponse.json({ message: 'Error creating attendance record(s)', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error creating attendance record(s)' }, { status: 500 });
   }
 }

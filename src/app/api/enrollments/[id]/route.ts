@@ -28,7 +28,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Enrollment not found' }, { status: 404 });
   } catch (error) {
     console.error(`Error fetching enrollment ${id}:`, error);
-    return NextResponse.json({ message: 'Internal server error fetching enrollment.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error fetching enrollment.' }, { status: 500 });
   }
 }
 
@@ -78,7 +78,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(enrollmentWithId);
   } catch (error) {
     console.error(`Error updating enrollment ${id}:`, error);
-    return NextResponse.json({ message: `Error updating enrollment ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error updating enrollment ${id}` }, { status: 500 });
   }
 }
 
@@ -98,6 +98,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Enrollment deleted successfully' });
   } catch (error) {
     console.error(`Error deleting enrollment ${id}:`, error);
-    return NextResponse.json({ message: `Error deleting enrollment ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error deleting enrollment ${id}` }, { status: 500 });
   }
 }

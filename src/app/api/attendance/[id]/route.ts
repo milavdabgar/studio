@@ -51,7 +51,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(recordWithId);
   } catch (error) {
     console.error(`Error updating attendance record ${id}:`, error);
-    return NextResponse.json({ message: `Error updating attendance record ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error updating attendance record ${id}` }, { status: 500 });
   }
 }
 
@@ -70,7 +70,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Attendance record deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error(`Error deleting attendance record ${id}:`, error);
-    return NextResponse.json({ message: `Error deleting attendance record ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error deleting attendance record ${id}` }, { status: 500 });
   }
 }
     
