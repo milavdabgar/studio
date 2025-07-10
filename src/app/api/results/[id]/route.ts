@@ -28,7 +28,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Result not found' }, { status: 404 });
   } catch (error) {
     console.error('Error fetching result:', error);
-    return NextResponse.json({ message: 'Error fetching result', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error fetching result' }, { status: 500 });
   }
 }
 
@@ -78,7 +78,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     } catch (error) {
         console.error('Error updating result:', error);
-        return NextResponse.json({ message: `Error updating result`, error: (error as Error).message }, { status: 500 });
+        return NextResponse.json({ message: `Error updating result` }, { status: 500 });
     }
 }
 
@@ -103,6 +103,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Result deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error('Error deleting result:', error);
-    return NextResponse.json({ message: 'Error deleting result', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error deleting result' }, { status: 500 });
   }
 }

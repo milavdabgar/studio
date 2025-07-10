@@ -129,8 +129,8 @@ test.describe('Data Consistency and Validation - Migration Safety', () => {
       courseCode: `CS${generateUniqueId().substr(-4)}`,
       courseName: 'Data Consistency Test Course',
       credits: 3,
-      startDate: '2024-09-01',
-      endDate: '2024-12-31',
+      startDate: '2024-09-01T00:00:00.000Z',
+      endDate: '2024-12-31T23:59:59.999Z',
       status: 'active',
       maxEnrollments: 50
     };

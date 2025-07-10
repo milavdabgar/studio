@@ -40,8 +40,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   } catch (error) {
     console.error('Error fetching faculty:', error);
     return NextResponse.json({ 
-      message: 'Internal server error during faculty fetch.', 
-      error: (error as Error).message 
+      message: 'Internal server error during faculty fetch.' 
     }, { status: 500 });
   }
 }
@@ -207,7 +206,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(facultyToReturn);
   } catch (error) {
     console.error(`Error updating faculty:`, error);
-    return NextResponse.json({ message: `Error updating faculty`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error updating faculty` }, { status: 500 });
   }
 }
 
@@ -244,7 +243,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Faculty deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error(`Error deleting faculty:`, error);
-    return NextResponse.json({ message: `Error deleting faculty`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error deleting faculty` }, { status: 500 });
   }
 }
 

@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(courseOfferingsWithId);
   } catch (error) {
     console.error('Error in GET /api/course-offerings:', error);
-    return NextResponse.json({ message: 'Internal server error processing course offerings request.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error processing course offerings request.' }, { status: 500 });
   }
 }
 
@@ -143,6 +143,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newOffering.toJSON(), { status: 201 });
   } catch (error) {
     console.error('Error creating course offering:', error);
-    return NextResponse.json({ message: 'Error creating course offering', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error creating course offering' }, { status: 500 });
   }
 }
