@@ -5,9 +5,14 @@ test.describe('Content & Blog System Complete Coverage E2E Tests', () => {
   // Test all content, blog, posts, categories, tags, authors, and search functionality
   
   test.beforeEach(async ({ page }) => {
-    // Navigate to home page first
+    // Navigate to home page first  
     await page.goto('http://localhost:3000/');
-    await page.waitForLoadState('networkidle');
+    try {
+      await page.waitForLoadState('networkidle', { timeout: 15000 });
+    } catch (error) {
+      // If networkidle times out, wait for domcontentloaded instead
+      await page.waitForLoadState('domcontentloaded');
+    }
   });
 
   test('should test posts main page', async ({ page }) => {
