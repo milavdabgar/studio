@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error in GET /api/project-locations:", error);
-    return NextResponse.json({ message: 'Internal server error processing project locations request.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error processing project locations request.' }, { status: 500 });
   }
 }
 
@@ -151,6 +151,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ status: 'success', data: { location: newLocation.toJSON() } }, { status: 201 });
   } catch (error) {
     console.error('Error creating project location:', error);
-    return NextResponse.json({ message: 'Error creating project location', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error creating project location' }, { status: 500 });
   }
 }

@@ -121,7 +121,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(updatedRoom);
   } catch (error) {
     console.error('Error updating room:', error);
-    return NextResponse.json({ message: 'Error updating room', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error updating room' }, { status: 500 });
   }
 }
 

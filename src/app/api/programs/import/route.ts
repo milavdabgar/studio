@@ -123,6 +123,6 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error importing programs:', error);
-    return NextResponse.json({ message: 'Error importing programs.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error importing programs.' }, { status: 500 });
   }
 }

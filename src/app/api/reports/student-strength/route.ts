@@ -129,6 +129,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(reportData);
   } catch (error) {
     console.error("Error generating student strength report:", error);
-    return NextResponse.json({ message: "Error generating student strength report", error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: "Error generating student strength report" }, { status: 500 });
   }
 }

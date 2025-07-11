@@ -169,6 +169,6 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Critical error during project event import process:', error);
-    return NextResponse.json({ message: 'Critical error during project event import process.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Critical error during project event import process.' }, { status: 500 });
   }
 }

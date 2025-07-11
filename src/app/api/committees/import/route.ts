@@ -335,6 +335,6 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Critical error during committee import process:', error);
-    return NextResponse.json({ message: 'Critical error during committee import process. Please check server logs.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Critical error during committee import process. Please check server logs.' }, { status: 500 });
   }
 }

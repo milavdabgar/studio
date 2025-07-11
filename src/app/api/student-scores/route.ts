@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(scoresWithId);
   } catch (error) {
     console.error('Error in GET /api/student-scores:', error);
-    return NextResponse.json({ message: 'Internal server error processing student scores request.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error processing student scores request.' }, { status: 500 });
   }
 }
 
@@ -214,6 +214,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(scoreWithId, { status: existingRecord ? 200 : 201 });
   } catch (error) {
     console.error('Error processing student submission/score:', error);
-    return NextResponse.json({ message: 'Error processing student submission/score', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error processing student submission/score' }, { status: 500 });
   }
 }

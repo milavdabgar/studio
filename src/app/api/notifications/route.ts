@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(notificationsWithId);
   } catch (error) {
     console.error('Error in GET /api/notifications:', error);
-    return NextResponse.json({ message: 'Internal server error processing notifications request.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error processing notifications request.' }, { status: 500 });
   }
 }
 
@@ -110,6 +110,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newNotification.toJSON(), { status: 201 });
   } catch (error) {
     console.error('Error creating notification:', error);
-    return NextResponse.json({ message: 'Error creating notification', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error creating notification' }, { status: 500 });
   }
 }

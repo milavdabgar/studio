@@ -39,6 +39,6 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(updatedNotification.toJSON());
   } catch (error) {
     console.error(`Error marking notification ${notificationId} as read:`, error);
-    return NextResponse.json({ message: `Error marking notification ${notificationId} as read`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error marking notification ${notificationId} as read` }, { status: 500 });
   }
 }

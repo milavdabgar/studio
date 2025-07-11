@@ -30,7 +30,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Room allocation not found' }, { status: 404 });
   } catch (error) {
     console.error(`Error fetching room allocation ${id}:`, error);
-    return NextResponse.json({ message: 'Internal server error fetching room allocation.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error fetching room allocation.' }, { status: 500 });
   }
 }
 
@@ -110,7 +110,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(allocationWithId);
   } catch (error) {
     console.error(`Error updating room allocation ${id}:`, error);
-    return NextResponse.json({ message: `Error updating room allocation ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error updating room allocation ${id}` }, { status: 500 });
   }
 }
 
@@ -129,6 +129,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Room allocation deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error(`Error deleting room allocation ${id}:`, error);
-    return NextResponse.json({ message: `Error deleting room allocation ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error deleting room allocation ${id}` }, { status: 500 });
   }
 }

@@ -153,6 +153,6 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error during auto-assignment of project locations:', error);
-    return NextResponse.json({ message: 'Error during auto-assignment', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error during auto-assignment' }, { status: 500 });
   }
 }

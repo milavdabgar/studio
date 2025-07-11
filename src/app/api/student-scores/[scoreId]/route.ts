@@ -31,7 +31,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Student score record not found' }, { status: 404 });
   } catch (error) {
     console.error(`Error fetching student score ${scoreId}:`, error);
-    return NextResponse.json({ message: `Error fetching student score ${scoreId}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error fetching student score ${scoreId}` }, { status: 500 });
   }
 }
 
@@ -102,7 +102,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(scoreWithId);
   } catch (error) {
     console.error(`Error updating student score record ${scoreId}:`, error);
-    return NextResponse.json({ message: `Error updating student score record ${scoreId}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error updating student score record ${scoreId}` }, { status: 500 });
   }
 }
 
@@ -122,6 +122,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Student score record deleted successfully' });
   } catch (error) {
     console.error(`Error deleting student score record ${scoreId}:`, error);
-    return NextResponse.json({ message: `Error deleting student score record ${scoreId}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error deleting student score record ${scoreId}` }, { status: 500 });
   }
 }

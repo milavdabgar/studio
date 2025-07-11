@@ -141,6 +141,6 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error importing departments:', error);
-    return NextResponse.json({ message: 'Error importing departments.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error importing departments.' }, { status: 500 });
   }
 }

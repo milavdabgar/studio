@@ -83,7 +83,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(roomAllocationsWithId);
   } catch (error) {
     console.error('Error in GET /api/room-allocations:', error);
-    return NextResponse.json({ message: 'Internal server error processing room allocations request.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error processing room allocations request.' }, { status: 500 });
   }
 }
 
@@ -136,6 +136,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newAllocation.toJSON(), { status: 201 });
   } catch (error) {
     console.error('Error creating room allocation:', error);
-    return NextResponse.json({ message: 'Error creating room allocation', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error creating room allocation' }, { status: 500 });
   }
 }

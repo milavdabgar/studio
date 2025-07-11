@@ -171,6 +171,6 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error importing courses:', error);
-    return NextResponse.json({ message: 'Error importing courses.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error importing courses.' }, { status: 500 });
   }
 }

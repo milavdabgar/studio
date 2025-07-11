@@ -62,6 +62,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ status: 'success', data: { count: createdLocations.length, locations: createdLocations } }, { status: 201 });
   } catch (error) {
     console.error('Error creating project location batch:', error);
-    return NextResponse.json({ message: 'Error creating project location batch', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error creating project location batch' }, { status: 500 });
   }
 }

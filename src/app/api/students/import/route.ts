@@ -232,6 +232,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Students imported successfully.', newCount, updatedCount, skippedCount }, { status: 200 });
   } catch (error) {
     console.error('Error importing students:', error);
-    return NextResponse.json({ message: 'Error importing students.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error importing students.' }, { status: 500 });
   }
 }

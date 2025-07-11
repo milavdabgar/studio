@@ -70,6 +70,6 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ status: 'success', data: { location: locationToUpdate } });
   } catch (error) {
     console.error(`Error unassigning project from location ${locationIdString}:`, error);
-    return NextResponse.json({ message: 'Error unassigning project from location', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error unassigning project from location' }, { status: 500 });
   }
 }

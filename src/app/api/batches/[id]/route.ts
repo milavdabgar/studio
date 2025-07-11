@@ -30,7 +30,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(batch);
   } catch (error) {
     console.error('Error fetching batch:', error);
-    return NextResponse.json({ message: 'Error fetching batch', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error fetching batch' }, { status: 500 });
   }
 }
 

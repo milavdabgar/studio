@@ -116,6 +116,6 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error importing roles:', error);
-    return NextResponse.json({ message: 'Error importing roles.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error importing roles.' }, { status: 500 });
   }
 }

@@ -172,6 +172,6 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error importing buildings:', error);
-    return NextResponse.json({ message: 'Error importing buildings.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error importing buildings.' }, { status: 500 });
   }
 }

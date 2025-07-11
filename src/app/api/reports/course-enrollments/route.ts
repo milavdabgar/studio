@@ -67,6 +67,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ data: reportData });
   } catch (error) {
     console.error("Error generating course enrollment report:", error);
-    return NextResponse.json({ message: "Error generating course enrollment report", error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: "Error generating course enrollment report" }, { status: 500 });
   }
 }

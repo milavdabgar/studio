@@ -81,6 +81,6 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ status: 'success', data: { location: locationToUpdate } });
   } catch (error) {
     console.error(`Error assigning project to location ${locationIdString}:`, error);
-    return NextResponse.json({ message: 'Error assigning project to location', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error assigning project to location' }, { status: 500 });
   }
 }

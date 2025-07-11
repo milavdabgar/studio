@@ -42,7 +42,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ status: 'success', data: { location: locationWithId }});
   } catch (error) {
     console.error(`Error in GET /api/project-locations/${id}:`, error);
-    return NextResponse.json({ message: 'Internal server error.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Internal server error.' }, { status: 500 });
   }
 }
 
@@ -120,7 +120,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ status: 'success', data: { location: locationWithId }});
   } catch (error) {
     console.error(`Error updating project location ${id}:`, error);
-    return NextResponse.json({ message: `Error updating project location ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error updating project location ${id}` }, { status: 500 });
   }
 }
 
@@ -145,6 +145,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ status: 'success', message: 'Project location deleted successfully' });
   } catch (error) {
     console.error(`Error deleting project location ${id}:`, error);
-    return NextResponse.json({ message: `Error deleting project location ${id}`, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: `Error deleting project location ${id}` }, { status: 500 });
   }
 }

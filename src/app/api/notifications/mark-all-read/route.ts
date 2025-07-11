@@ -28,6 +28,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error marking all notifications as read:', error);
-    return NextResponse.json({ message: 'Error marking all notifications as read', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error marking all notifications as read' }, { status: 500 });
   }
 }

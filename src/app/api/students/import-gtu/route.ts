@@ -226,6 +226,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'GTU Students imported successfully.', newCount, updatedCount, skippedCount }, { status: 200 });
   } catch (error) {
     console.error('Error importing GTU students:', error);
-    return NextResponse.json({ message: 'Error importing GTU students.', error: (error as Error).message }, { status: 500 });
+    return NextResponse.json({ message: 'Error importing GTU students.' }, { status: 500 });
   }
 }
