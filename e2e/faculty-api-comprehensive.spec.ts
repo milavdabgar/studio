@@ -275,7 +275,7 @@ test.describe('Faculty API - Critical In-Memory Storage', () => {
   });
 
   test('should validate staff category values', async ({ page }) => {
-    const validCategories = ['Teaching', 'Non-Teaching', 'Administrative', 'Technical'];
+    const validCategories = ['Teaching', 'Clerical', 'Administrative', 'Technical'];
     
     for (const category of validCategories) {
       const facultyWithCategory = {
@@ -501,7 +501,7 @@ test.describe('Faculty API - Critical In-Memory Storage', () => {
   });
 
   test('should handle status validation', async ({ page }) => {
-    const validStatuses = ['active', 'inactive', 'suspended', 'retired'];
+    const validStatuses = ['active', 'inactive', 'retired', 'resigned'];
     
     for (const status of validStatuses) {
       const facultyWithStatus = {

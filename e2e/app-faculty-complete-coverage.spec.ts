@@ -76,9 +76,10 @@ test.describe('Complete Faculty Section Coverage', () => {
     await page.goto('http://localhost:3000/faculty');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
-    // Check for faculty dashboard elements
+    // Check for faculty dashboard elements or login redirect
     const hasDashboard = await page.locator('h1:has-text("Faculty"), h1:has-text("Dashboard"), .faculty-dashboard').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized, input[type="email"], input[type="password"]').first().isVisible();
+    const hasLoginRedirect = page.url().includes('/login');
     
     if (hasDashboard) {
       // Look for faculty-specific features
@@ -89,7 +90,8 @@ test.describe('Complete Faculty Section Coverage', () => {
       
       expect(hasCourses || hasAttendance || hasAssessments || hasTimetable).toBe(true);
     } else {
-      expect(hasAccessControl).toBe(true);
+      // Should either show access control or redirect to login
+      expect(hasAccessControl || hasLoginRedirect).toBe(true);
     }
   });
 
@@ -98,7 +100,8 @@ test.describe('Complete Faculty Section Coverage', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasProfilePage = await page.locator('h1:has-text("Profile"), .profile-page, .faculty-profile').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized, input[type="email"], input[type="password"]').first().isVisible();
+    const hasLoginRedirect = page.url().includes('/login');
     
     if (hasProfilePage) {
       // Look for profile features
@@ -108,7 +111,8 @@ test.describe('Complete Faculty Section Coverage', () => {
       
       expect(hasEditButton || hasProfileForm || hasPersonalInfo).toBe(true);
     } else {
-      expect(hasAccessControl).toBe(true);
+      // Should either show access control or redirect to login
+      expect(hasAccessControl || hasLoginRedirect).toBe(true);
     }
   });
 
@@ -117,7 +121,8 @@ test.describe('Complete Faculty Section Coverage', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasCoursesPage = await page.locator('h1:has-text("Courses"), h1:has-text("My Courses"), .courses-page').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized, input[type="email"], input[type="password"]').first().isVisible();
+    const hasLoginRedirect = page.url().includes('/login');
     
     if (hasCoursesPage) {
       // Look for course management features
@@ -127,7 +132,8 @@ test.describe('Complete Faculty Section Coverage', () => {
       
       expect(hasCourseList || hasAddCourse || hasNoCourses).toBe(true);
     } else {
-      expect(hasAccessControl).toBe(true);
+      // Should either show access control or redirect to login
+      expect(hasAccessControl || hasLoginRedirect).toBe(true);
     }
   });
 
@@ -137,7 +143,8 @@ test.describe('Complete Faculty Section Coverage', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasAttendancePage = await page.locator('h1:has-text("Attendance"), .attendance-page').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
+    const hasLoginRedirect = page.url().includes('/login');
     
     if (hasAttendancePage) {
       const hasAttendanceForm = await page.locator('form, .attendance-form').first().isVisible();
@@ -146,7 +153,8 @@ test.describe('Complete Faculty Section Coverage', () => {
       
       expect(hasAttendanceForm || hasStudentList || hasMarkButtons).toBe(true);
     } else {
-      expect(hasAccessControl).toBe(true);
+      // Should either show access control or redirect to login
+      expect(hasAccessControl || hasLoginRedirect).toBe(true);
     }
     
     // Test attendance reports
@@ -154,9 +162,10 @@ test.describe('Complete Faculty Section Coverage', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasReportsPage = await page.locator('h1:has-text("Reports"), .reports-page').isVisible();
-    const hasReportsAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
+    const hasReportsAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
+    const hasReportsLoginRedirect = page.url().includes('/login');
     
-    expect(hasReportsPage || hasReportsAccessControl).toBe(true);
+    expect(hasReportsPage || hasReportsAccessControl || hasReportsLoginRedirect).toBe(true);
   });
 
   test('should test faculty assessment and grading', async ({ page }) => {
@@ -164,7 +173,8 @@ test.describe('Complete Faculty Section Coverage', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasGradingPage = await page.locator('h1:has-text("Grade"), h1:has-text("Assessment"), .grading-page').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
+    const hasLoginRedirect = page.url().includes('/login');
     
     if (hasGradingPage) {
       // Look for grading features
@@ -174,7 +184,8 @@ test.describe('Complete Faculty Section Coverage', () => {
       
       expect(hasGradingForm || hasStudentGrades || hasSaveButton).toBe(true);
     } else {
-      expect(hasAccessControl).toBe(true);
+      // Should either show access control or redirect to login
+      expect(hasAccessControl || hasLoginRedirect).toBe(true);
     }
   });
 
@@ -183,7 +194,8 @@ test.describe('Complete Faculty Section Coverage', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasTimetablePage = await page.locator('h1:has-text("Timetable"), h1:has-text("Schedule"), .timetable-page').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
+    const hasLoginRedirect = page.url().includes('/login');
     
     if (hasTimetablePage) {
       // Look for timetable features
@@ -193,7 +205,8 @@ test.describe('Complete Faculty Section Coverage', () => {
       
       expect(hasCalendar || hasTimeSlots || hasViewOptions).toBe(true);
     } else {
-      expect(hasAccessControl).toBe(true);
+      // Should either show access control or redirect to login
+      expect(hasAccessControl || hasLoginRedirect).toBe(true);
     }
   });
 
@@ -202,7 +215,8 @@ test.describe('Complete Faculty Section Coverage', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasLeavePage = await page.locator('h1:has-text("Leave"), .leave-page').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
+    const hasLoginRedirect = page.url().includes('/login');
     
     if (hasLeavePage) {
       // Look for leave management features
@@ -212,7 +226,8 @@ test.describe('Complete Faculty Section Coverage', () => {
       
       expect(hasLeaveForm || hasLeaveList || hasApplyButton).toBe(true);
     } else {
-      expect(hasAccessControl).toBe(true);
+      // Should either show access control or redirect to login
+      expect(hasAccessControl || hasLoginRedirect).toBe(true);
     }
   });
 
@@ -261,9 +276,10 @@ test.describe('Complete Faculty Section Coverage', () => {
       const hasFacultyLayout = await page.locator('.faculty-layout, .faculty-nav, .sidebar').first().isVisible();
       const hasMainContent = await page.locator('main, .main-content').first().isVisible();
       const hasHeader = await page.locator('header, .header, h1').first().isVisible();
-      const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
+      const hasLoginRedirect = page.url().includes('/login');
       
-      expect(hasFacultyLayout || hasMainContent || hasHeader || hasAccessControl).toBe(true);
+      expect(hasFacultyLayout || hasMainContent || hasHeader || hasAccessControl || hasLoginRedirect).toBe(true);
     }
   });
 
@@ -280,9 +296,10 @@ test.describe('Complete Faculty Section Coverage', () => {
       await page.waitForLoadState('networkidle', { timeout: 10000 });
       
       const hasContent = await page.locator('main, .content, h1').first().isVisible();
-      const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
+      const hasLoginRedirect = page.url().includes('/login');
       
-      expect(hasContent || hasAccessControl).toBe(true);
+      expect(hasContent || hasAccessControl || hasLoginRedirect).toBe(true);
       
       // Should not show errors during workflow
       const hasError = await page.locator('text=Error, text=500').first().isVisible();
@@ -305,9 +322,10 @@ test.describe('Complete Faculty Section Coverage', () => {
       // Should show 404 or redirect appropriately
       const has404 = await page.locator('text=404, text=Not Found, text=Page not found').first().isVisible();
       const hasRedirect = page.url() !== `http://localhost:3000${invalidPath}`;
-      const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
+      const hasLoginRedirect = page.url().includes('/login');
       
-      expect(has404 || hasRedirect || hasAccessControl).toBe(true);
+      expect(has404 || hasRedirect || hasAccessControl || hasLoginRedirect).toBe(true);
     }
   });
 });

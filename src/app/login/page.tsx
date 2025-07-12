@@ -226,7 +226,7 @@ export default function LoginPage() {
           <div className="flex justify-center mb-4">
             <AppLogo className="h-12 w-auto text-primary" />
           </div>
-          <CardTitle className="text-3xl font-bold text-primary">Welcome Back!</CardTitle>
+          <CardTitle as="h1" className="text-3xl font-bold text-primary">Welcome Back!</CardTitle>
           <CardDescription>Enter your credentials and select your role to access GP Palanpur.</CardDescription>
         </CardHeader>
         <CardContent>

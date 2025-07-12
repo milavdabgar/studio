@@ -3,16 +3,21 @@ import { test, expect } from '@playwright/test';
 test.describe('Course Offerings API - Comprehensive E2E Tests', () => {
   const baseURL = 'http://localhost:3000';
   let testOfferingId: string;
+  
+  // Generate unique timestamp for test data
+  const generateUniqueId = () => `test_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+  const timestamp = Date.now();
 
   test.describe('Course Offerings CRUD Operations', () => {
     test('should create a new course offering', async ({ request }) => {
+      const uniqueId = generateUniqueId();
       const offeringData = {
-        courseId: 'course_cs101_test',
-        batchId: 'batch_dce_2024_test',
+        courseId: `course_cs101_${uniqueId}`,
+        batchId: `batch_dce_2024_${uniqueId}`,
         academicYear: '2024-25',
         semester: 1,
-        facultyIds: ['faculty_cs01_test', 'faculty_cs02_test'],
-        roomIds: ['room_a101_test'],
+        facultyIds: [`faculty_cs01_${uniqueId}`, `faculty_cs02_${uniqueId}`],
+        roomIds: [`room_a101_${uniqueId}`],
         startDate: '2024-07-15T00:00:00.000Z',
         endDate: '2024-11-15T00:00:00.000Z',
         status: 'scheduled'
@@ -64,12 +69,13 @@ test.describe('Course Offerings API - Comprehensive E2E Tests', () => {
 
     test('should get a specific course offering by ID', async ({ request }) => {
       // First create a test offering
+      const uniqueId = generateUniqueId();
       const offeringData = {
-        courseId: 'course_test_single',
-        batchId: 'batch_test_single',
+        courseId: `course_test_single_${uniqueId}`,
+        batchId: `batch_test_single_${uniqueId}`,
         academicYear: '2024-25',
         semester: 2,
-        facultyIds: ['faculty_test_single']
+        facultyIds: [`faculty_test_single_${uniqueId}`]
       };
 
       const createResponse = await request.post(`${baseURL}/api/course-offerings`, {
@@ -94,12 +100,13 @@ test.describe('Course Offerings API - Comprehensive E2E Tests', () => {
 
     test('should update a course offering', async ({ request }) => {
       // First create a test offering
+      const uniqueId = generateUniqueId();
       const offeringData = {
-        courseId: 'course_test_update',
-        batchId: 'batch_test_update',
+        courseId: `course_test_update_${uniqueId}`,
+        batchId: `batch_test_update_${uniqueId}`,
         academicYear: '2024-25',
         semester: 1,
-        facultyIds: ['faculty_original']
+        facultyIds: [`faculty_original_${uniqueId}`]
       };
 
       const createResponse = await request.post(`${baseURL}/api/course-offerings`, {
@@ -112,7 +119,7 @@ test.describe('Course Offerings API - Comprehensive E2E Tests', () => {
 
       // Update the course offering
       const updateData = {
-        facultyIds: ['faculty_updated1', 'faculty_updated2'],
+        facultyIds: [`faculty_updated1_${uniqueId}`, `faculty_updated2_${uniqueId}`],
         status: 'ongoing'
       };
 
@@ -131,12 +138,13 @@ test.describe('Course Offerings API - Comprehensive E2E Tests', () => {
 
     test('should delete a course offering', async ({ request }) => {
       // First create a test offering
+      const uniqueId = generateUniqueId();
       const offeringData = {
-        courseId: 'course_test_delete',
-        batchId: 'batch_test_delete',
+        courseId: `course_test_delete_${uniqueId}`,
+        batchId: `batch_test_delete_${uniqueId}`,
         academicYear: '2024-25',
         semester: 1,
-        facultyIds: ['faculty_delete_test']
+        facultyIds: [`faculty_delete_test_${uniqueId}`]
       };
 
       const createResponse = await request.post(`${baseURL}/api/course-offerings`, {
@@ -236,12 +244,13 @@ test.describe('Course Offerings API - Comprehensive E2E Tests', () => {
   test.describe('Course Offerings Data Integrity', () => {
     test('should maintain data consistency during updates', async ({ request }) => {
       // Create offering
+      const uniqueId = generateUniqueId();
       const originalData = {
-        courseId: 'course_consistency_test',
-        batchId: 'batch_consistency_test',
+        courseId: `course_consistency_test_${uniqueId}`,
+        batchId: `batch_consistency_test_${uniqueId}`,
         academicYear: '2024-25',
         semester: 1,
-        facultyIds: ['faculty_original'],
+        facultyIds: [`faculty_original_${uniqueId}`],
         status: 'scheduled'
       };
 
@@ -255,7 +264,7 @@ test.describe('Course Offerings API - Comprehensive E2E Tests', () => {
 
       // Update offering
       const updateData = {
-        facultyIds: ['faculty_updated'],
+        facultyIds: [`faculty_updated_${uniqueId}`],
         status: 'ongoing'
       };
 
@@ -279,12 +288,13 @@ test.describe('Course Offerings API - Comprehensive E2E Tests', () => {
       const statuses = ['scheduled', 'ongoing', 'completed', 'cancelled'];
 
       for (const status of statuses) {
+        const uniqueId = generateUniqueId();
         const offeringData = {
-          courseId: `course_status_${status}`,
-          batchId: `batch_status_${status}`,
+          courseId: `course_status_${status}_${uniqueId}`,
+          batchId: `batch_status_${status}_${uniqueId}`,
           academicYear: '2024-25',
           semester: 1,
-          facultyIds: ['faculty_status_test'],
+          facultyIds: [`faculty_status_test_${uniqueId}`],
           status: status
         };
 

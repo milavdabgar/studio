@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     
     const studentData = await request.json() as Omit<Student, 'id' | 'userId'> & { userId?: string, instituteId?: string };
 
-    if (!studentData.enrollmentNumber || !studentData.enrollmentNumber.trim()) {
+    if (!studentData.enrollmentNumber || (typeof studentData.enrollmentNumber === 'string' && !studentData.enrollmentNumber.trim())) {
       return NextResponse.json({ message: 'Enrollment Number is required.' }, { status: 400 });
     }
     if ((!studentData.fullNameGtuFormat || !studentData.fullNameGtuFormat.trim()) && (!studentData.firstName || !studentData.firstName.trim() || !studentData.lastName || !studentData.lastName.trim())) {
@@ -160,6 +160,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(studentToReturn, { status: 201 });
   } catch (error) {
     console.error('Error creating student:', error);
+    
+    // SECURITY FIX: Handle validation errors properly
+    if (error instanceof Error && error.message.includes('validation failed')) {
+      return NextResponse.json({ 
+        message: 'Validation failed. Please check your input data.', 
+        details: error.message 
+      }, { status: 400 });
+    }
+    
     return NextResponse.json({ message: 'Error creating student' }, { status: 500 });
   }
 }

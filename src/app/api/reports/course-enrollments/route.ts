@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
       const batch = batchesStore.find(b => b.id === co.batchId);
       const program = programsStore.find(p => p.id === (batch?.programId || co.programId)); // Fallback to co.programId
       const enrolledStudents = enrollmentsStore.filter(e => e.courseOfferingId === co.id && e.status === 'enrolled').length;
-      const facultyNames = co.facultyIds.map(fid => {
+      const facultyNames = (co.facultyIds || []).map(fid => {
         const faculty = facultyStore.find(f => f.id === fid);
         return faculty ? (faculty as Faculty & { name?: string; displayName?: string }).name || (faculty as Faculty & { name?: string; displayName?: string }).displayName || 'Unknown Faculty' : 'Unknown Faculty';
       }).filter(Boolean);

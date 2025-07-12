@@ -90,6 +90,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newMaterial.toJSON(), { status: 201 });
   } catch (error) {
     console.error('Error creating course material:', error);
+    
+    // SECURITY FIX: Handle validation errors properly
+    if (error instanceof Error && error.message.includes('validation failed')) {
+      return NextResponse.json({ 
+        message: 'Validation failed. Please check your input data.', 
+        details: error.message 
+      }, { status: 400 });
+    }
+    
     return NextResponse.json({ message: 'Error creating course material' }, { status: 500 });
   }
 }

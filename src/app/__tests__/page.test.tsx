@@ -241,7 +241,7 @@ describe('HomePage', () => {
     render(<HomePage />);
     const campusImage = screen.getByAltText('Government Polytechnic Palanpur Campus');
     expect(campusImage).toBeInTheDocument();
-    expect(campusImage).toHaveAttribute('src', '/newsletters/imgs/IMG_20241014_072640_109.jpg');
+    expect(campusImage).toHaveAttribute('src', '/newsletters/2024-25/IMG_20241014_072640_109.jpg');
   });
 
   it('should display detailed statistics', () => {

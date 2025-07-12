@@ -40,6 +40,11 @@ export async function POST(request: NextRequest) {
     
     const facultyData = await request.json() as Omit<FacultyProfile, 'id' | 'userId'> & { userId?: string, instituteId: string };
 
+    // SECURITY FIX: Handle null/undefined facultyData properly
+    if (!facultyData || typeof facultyData !== 'object') {
+      return NextResponse.json({ message: 'Invalid request data.' }, { status: 400 });
+    }
+
     if (!facultyData.staffCode || !facultyData.staffCode.trim()) {
       return NextResponse.json({ message: 'Staff Code is required.' }, { status: 400 });
     }

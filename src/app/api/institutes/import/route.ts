@@ -25,6 +25,14 @@ export async function POST(request: NextRequest) {
   try {
     await connectMongoose();
     
+    // SECURITY FIX: Validate Content-Type for file uploads
+    const contentType = request.headers.get('content-type');
+    if (!contentType || !contentType.includes('multipart/form-data')) {
+      return NextResponse.json({ 
+        message: 'Invalid Content-Type. Expected multipart/form-data for file upload.' 
+      }, { status: 400 });
+    }
+    
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
 

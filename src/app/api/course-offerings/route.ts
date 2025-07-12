@@ -143,6 +143,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newOffering.toJSON(), { status: 201 });
   } catch (error) {
     console.error('Error creating course offering:', error);
+    
+    // SECURITY FIX: Handle validation errors properly
+    if (error instanceof Error && error.message.includes('validation failed')) {
+      return NextResponse.json({ 
+        message: 'Validation failed. Please check your input data.', 
+        details: error.message 
+      }, { status: 400 });
+    }
+    
     return NextResponse.json({ message: 'Error creating course offering' }, { status: 500 });
   }
 }

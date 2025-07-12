@@ -15,10 +15,13 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
     
     const { id } = await params;
+    // Check if the id is a valid ObjectId before querying _id field
+    const isValidObjectId = mongoose.Types.ObjectId.isValid(id);
+    
     const result = await ResultModel.findOne({
       $or: [
         { id: id },
-        { _id: id }
+        ...(isValidObjectId ? [{ _id: id }] : [])
       ]
     });
     

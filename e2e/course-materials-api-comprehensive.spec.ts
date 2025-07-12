@@ -18,7 +18,7 @@ const testCourseMaterial = {
   title: 'E2E Test Course Material',
   courseOfferingId: 'test_course_offering_123',
   description: 'A test course material for E2E testing purposes',
-  fileType: 'document' as const,
+  fileType: 'pdf' as const,
   linkUrl: 'https://example.com/test-document.pdf'
 };
 
@@ -26,7 +26,7 @@ const testCourseMaterialFile = {
   title: 'E2E Test File Material',
   courseOfferingId: 'test_course_offering_456',
   description: 'A test course material with file upload',
-  fileType: 'document' as const
+  fileType: 'pdf' as const
 };
 
 const testCourseMaterialLink = {
@@ -40,7 +40,7 @@ const testCourseMaterialLink = {
 const testMaterialUpdate = {
   title: 'Updated E2E Test Course Material',
   description: 'Updated description for E2E testing',
-  fileType: 'presentation' as const
+  fileType: 'ppt' as const
 };
 
 test.describe('Course Materials API - Critical In-Memory Storage', () => {
@@ -152,7 +152,7 @@ test.describe('Course Materials API - Critical In-Memory Storage', () => {
         title: materialData.title,
         courseOfferingId: materialData.courseOfferingId,
         description: materialData.description,
-        fileType: 'document',
+        fileType: 'pdf',
         file: {
           name: 'test-document.pdf',
           mimeType: 'application/pdf',
@@ -168,7 +168,7 @@ test.describe('Course Materials API - Critical In-Memory Storage', () => {
       expect(createdMaterial).toHaveProperty('id');
       expect(createdMaterial.title).toBe(materialData.title);
       expect(createdMaterial.courseOfferingId).toBe(materialData.courseOfferingId);
-      expect(createdMaterial.fileType).toBe('document');
+      expect(createdMaterial.fileType).toBe('pdf');
       expect(createdMaterial.fileName).toBe('test-document.pdf');
       expect(createdMaterial.fileSize).toBe(fileContent.length);
       expect(createdMaterial.filePathOrUrl).toContain('uploads/course_materials/');
@@ -260,7 +260,7 @@ test.describe('Course Materials API - Critical In-Memory Storage', () => {
       multipart: {
         title: `Document Material ${uniqueId}`,
         courseOfferingId: `test_course_${uniqueId}`,
-        fileType: 'document'
+        fileType: 'pdf'
       }
     });
 
@@ -302,7 +302,7 @@ test.describe('Course Materials API - Critical In-Memory Storage', () => {
         const updateData = {
           title: `Updated CRUD Material ${uniqueId}`,
           description: 'Updated description',
-          fileType: 'presentation'
+          fileType: 'ppt'
         };
 
         const updateResponse = await page.request.put(`${API_BASE}/course-materials/${createdMaterialId}`, {
@@ -429,7 +429,7 @@ test.describe('Course Materials API - Critical In-Memory Storage', () => {
 
   test('should handle file type validation', async ({ page }) => {
     const uniqueId = Date.now();
-    const validFileTypes = ['document', 'presentation', 'video', 'audio', 'image', 'link'];
+    const validFileTypes = ['pdf', 'ppt', 'video', 'other', 'image', 'link'];
     
     for (const fileType of validFileTypes) {
       const testData: any = {

@@ -63,6 +63,24 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: 'userId is required to fetch notifications.' }, { status: 400 });
     }
 
+    // SECURITY FIX: Get authenticated user from headers
+    const authenticatedUserId = request.headers.get('X-User-ID');
+    
+    // SECURITY: Only allow users to access their own notifications
+    if (authenticatedUserId && authenticatedUserId !== userId) {
+      return NextResponse.json({ message: 'Access denied. You can only access your own notifications.' }, { status: 403 });
+    }
+    
+    // If no authenticated user context, check for admin access or return empty results for security
+    if (!authenticatedUserId) {
+      // For admin access, check for admin role header
+      const userRole = request.headers.get('X-User-Role');
+      if (userRole !== 'admin') {
+        // Return empty results instead of error to prevent information disclosure
+        return NextResponse.json([]);
+      }
+    }
+
     // Build filter query
     const filter: Record<string, unknown> = { userId };
     if (isRead !== null) filter.isRead = isRead === 'true';

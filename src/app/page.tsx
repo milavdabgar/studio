@@ -56,7 +56,7 @@ export default function HomePage() {
             <div className="relative">
               <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl border dark:border-gray-700 dark:bg-gray-900 dark:border-gray-700">
                 <Image
-                  src="/newsletters/imgs/IMG_20241014_072640_109.jpg"
+                  src="/newsletters/2024-25/IMG_20241014_072640_109.jpg"
                   alt="Government Polytechnic Palanpur Campus"
                   width={600}
                   height={400}

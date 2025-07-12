@@ -601,7 +601,11 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
       }
 
       // Step 2: Get all notifications for the user
-      const getUserNotificationsResponse = await page.request.get(`${API_BASE}/notifications?userId=${testUserId}`);
+      const getUserNotificationsResponse = await page.request.get(`${API_BASE}/notifications?userId=${testUserId}`, {
+        headers: {
+          'X-User-ID': testUserId // Add authentication header for security compliance
+        }
+      });
       expect(getUserNotificationsResponse.status()).toBe(200);
       const userNotifications = await getUserNotificationsResponse.json();
       
@@ -614,7 +618,11 @@ test.describe('API Integration Workflows - Critical Migration Safety', () => {
       expect(markReadResponse.status()).toBe(200);
 
       // Validate read status
-      const getUpdatedNotificationsResponse = await page.request.get(`${API_BASE}/notifications?userId=${testUserId}`);
+      const getUpdatedNotificationsResponse = await page.request.get(`${API_BASE}/notifications?userId=${testUserId}`, {
+        headers: {
+          'X-User-ID': testUserId // Add authentication header for security compliance
+        }
+      });
       expect(getUpdatedNotificationsResponse.status()).toBe(200);
       const updatedNotifications = await getUpdatedNotificationsResponse.json();
       

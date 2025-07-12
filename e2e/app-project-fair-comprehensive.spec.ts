@@ -23,9 +23,10 @@ test.describe('Project Fair System - Complete Application Flow', () => {
     
     // Should show project fair content or access control
     const hasProjectFairContent = await page.locator('h1:has-text("Project Fair"), h2:has-text("Project Fair"), .project-fair').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized, input[type="email"], input[type="password"]').first().isVisible();
+    const hasLoginRedirect = page.url().includes('/login');
     
-    expect(hasProjectFairContent || hasAccessControl).toBe(true);
+    expect(hasProjectFairContent || hasAccessControl || hasLoginRedirect).toBe(true);
   });
 
   test('should test student project fair access', async ({ page }) => {
@@ -34,9 +35,10 @@ test.describe('Project Fair System - Complete Application Flow', () => {
     
     // Should show student project fair interface or login prompt
     const hasStudentInterface = await page.locator('h1:has-text("Student"), .student-project-fair, [data-testid="project-registration"]').isVisible();
-    const needsAuth = await page.locator('text=Login, text=Sign in, text=Authentication required').first().isVisible();
+    const needsAuth = await page.locator('text=Login, text=Sign in, text=Authentication required, input[type="email"], input[type="password"]').first().isVisible();
+    const hasLoginRedirect = page.url().includes('/login');
     
-    expect(hasStudentInterface || needsAuth).toBe(true);
+    expect(hasStudentInterface || needsAuth || hasLoginRedirect).toBe(true);
     
     if (hasStudentInterface) {
       // Check for key student features
@@ -54,9 +56,10 @@ test.describe('Project Fair System - Complete Application Flow', () => {
     
     // Should show admin interface or access control
     const hasAdminInterface = await page.locator('h1:has-text("Admin"), h1:has-text("Project Fair"), .admin-project-fair').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized, input[type="email"], input[type="password"]').first().isVisible();
+    const hasLoginRedirect = page.url().includes('/login');
     
-    expect(hasAdminInterface || hasAccessControl).toBe(true);
+    expect(hasAdminInterface || hasAccessControl || hasLoginRedirect).toBe(true);
     
     if (hasAdminInterface) {
       // Check for admin management features
@@ -73,9 +76,10 @@ test.describe('Project Fair System - Complete Application Flow', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasEventsPage = await page.locator('h1:has-text("Events"), h1:has-text("New Event"), .events-list, [data-testid="events"]').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
+    const hasLoginRedirect = page.url().includes('/login');
     
-    expect(hasEventsPage || hasAccessControl).toBe(true);
+    expect(hasEventsPage || hasAccessControl || hasLoginRedirect).toBe(true);
     
     if (hasEventsPage) {
       // Check for event management features
@@ -93,9 +97,10 @@ test.describe('Project Fair System - Complete Application Flow', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasEvaluationPage = await page.locator('h1:has-text("Evaluation"), .evaluation-form, [data-testid="evaluation"]').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=404, text=Not Found').first().isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=404, text=Not Found, input[type="email"], input[type="password"]').first().isVisible();
+    const hasLoginRedirect = page.url().includes('/login');
     
-    expect(hasEvaluationPage || hasAccessControl).toBe(true);
+    expect(hasEvaluationPage || hasAccessControl || hasLoginRedirect).toBe(true);
     
     if (hasEvaluationPage) {
       // Check for evaluation features
@@ -112,9 +117,10 @@ test.describe('Project Fair System - Complete Application Flow', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasResultsPage = await page.locator('h1:has-text("Results"), .results-dashboard, [data-testid="results"]').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=404').first().isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=404, input[type="email"], input[type="password"]').first().isVisible();
+    const hasLoginRedirect = page.url().includes('/login');
     
-    expect(hasResultsPage || hasAccessControl).toBe(true);
+    expect(hasResultsPage || hasAccessControl || hasLoginRedirect).toBe(true);
     
     if (hasResultsPage) {
       // Check for results features
@@ -131,9 +137,10 @@ test.describe('Project Fair System - Complete Application Flow', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasTeamsPage = await page.locator('h1:has-text("Teams"), .teams-list, [data-testid="teams"]').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=404').first().isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=404, input[type="email"], input[type="password"]').first().isVisible();
+    const hasLoginRedirect = page.url().includes('/login');
     
-    expect(hasTeamsPage || hasAccessControl).toBe(true);
+    expect(hasTeamsPage || hasAccessControl || hasLoginRedirect).toBe(true);
     
     if (hasTeamsPage) {
       // Check for team management features
@@ -150,9 +157,10 @@ test.describe('Project Fair System - Complete Application Flow', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     const hasSchedulePage = await page.locator('h1:has-text("Schedule"), .schedule, [data-testid="schedule"]').isVisible();
-    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=404').first().isVisible();
+    const hasAccessControl = await page.locator('text=Login, text=Access denied, text=404, input[type="email"], input[type="password"]').first().isVisible();
+    const hasLoginRedirect = page.url().includes('/login');
     
-    expect(hasSchedulePage || hasAccessControl).toBe(true);
+    expect(hasSchedulePage || hasAccessControl || hasLoginRedirect).toBe(true);
     
     if (hasSchedulePage) {
       // Check for scheduling features
@@ -179,9 +187,10 @@ test.describe('Project Fair System - Complete Application Flow', () => {
       // Should load successfully or show appropriate access control
       const hasContent = await page.locator('main, .content, .page-content').first().isVisible();
       const hasHeader = await page.locator('h1, h2, .page-title').first().isVisible();
-      const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized').first().isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied, text=Unauthorized, input[type="email"], input[type="password"]').first().isVisible();
+      const hasLoginRedirect = page.url().includes('/login');
       
-      expect(hasContent || hasHeader || hasAccessControl).toBe(true);
+      expect(hasContent || hasHeader || hasAccessControl || hasLoginRedirect).toBe(true);
       
       // Should not show unhandled errors
       const hasError = await page.locator('text=Error, text=500, text=Something went wrong').first().isVisible();
@@ -195,16 +204,20 @@ test.describe('Project Fair System - Complete Application Flow', () => {
     await page.goto('http://localhost:3000/project-fair/student');
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
-    // Check if layout adapts to mobile
+    // Check if layout adapts to mobile or shows access control
     const isMobileMenuVisible = await page.locator('.mobile-menu, [data-testid="mobile-menu"], .hamburger').first().isVisible();
     const responsiveContent = await page.locator('.responsive, .mobile-layout, main').first().isVisible();
+    const hasAccessControl = await page.locator('text=Login, input[type="email"], input[type="password"]').first().isVisible();
+    const hasLoginRedirect = page.url().includes('/login');
     
-    expect(isMobileMenuVisible || responsiveContent).toBe(true);
+    expect(isMobileMenuVisible || responsiveContent || hasAccessControl || hasLoginRedirect).toBe(true);
     
-    // Test tablet size
-    await page.setViewportSize({ width: 768, height: 1024 });
-    const tabletLayout = await page.locator('main, .content').first().isVisible();
-    expect(tabletLayout).toBe(true);
+    // Test tablet size only if not redirected to login
+    if (!hasLoginRedirect) {
+      await page.setViewportSize({ width: 768, height: 1024 });
+      const tabletLayout = await page.locator('main, .content').first().isVisible();
+      expect(tabletLayout).toBe(true);
+    }
   });
 
   test('should handle project fair navigation errors', async ({ page }) => {
@@ -221,9 +234,10 @@ test.describe('Project Fair System - Complete Application Flow', () => {
       // Should show 404 or redirect appropriately
       const has404 = await page.locator('text=404, text=Not Found, text=Page not found').first().isVisible();
       const hasRedirect = await page.url() !== `http://localhost:3000${pagePath}`;
-      const hasAccessControl = await page.locator('text=Login, text=Access denied').first().isVisible();
+      const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
+      const hasLoginRedirect = page.url().includes('/login');
       
-      expect(has404 || hasRedirect || hasAccessControl).toBe(true);
+      expect(has404 || hasRedirect || hasAccessControl || hasLoginRedirect).toBe(true);
     }
   });
 

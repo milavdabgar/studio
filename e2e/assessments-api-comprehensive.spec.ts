@@ -271,7 +271,7 @@ test.describe('Assessments API - Comprehensive E2E Tests', () => {
 
   test.describe('Assessments Business Logic', () => {
     test('should handle different assessment types', async ({ request }) => {
-      const types = ['Quiz', 'Assignment', 'Midterm', 'Final', 'Project'];
+      const types = ['Quiz', 'Assignment', 'Midterm', 'Final Exam', 'Project'];
 
       for (const type of types) {
         const uniqueId = generateUniqueId();
@@ -294,7 +294,7 @@ test.describe('Assessments API - Comprehensive E2E Tests', () => {
     });
 
     test('should handle different assessment statuses', async ({ request }) => {
-      const statuses = ['Draft', 'Published', 'Completed', 'Archived'];
+      const statuses = ['Draft', 'Published', 'Completed', 'Cancelled'];
 
       for (const status of statuses) {
         const uniqueId = generateUniqueId();
