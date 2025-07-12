@@ -82,7 +82,7 @@
 - **File 69/86**: `e2e/room-allocations-api-comprehensive.spec.ts` - ✅ 15/15 tests passed
 - **File 70/86**: `e2e/security-authorization-comprehensive.spec.ts` - ✅ 8/8 tests passed
 - **File 71/86**: `e2e/student-portal.spec.ts` - ✅ 0/2 tests passed, 2 skipped (conditions not met)
-- **File 72/86**: `e2e/results-api-comprehensive.spec.ts` - ✅ 16/17 tests passed (1 timestamp update issue)
+- **File 72/86**: `e2e/results-api-comprehensive.spec.ts` - ✅ 17/17 tests passed
 - **File 73/86**: `e2e/reports-api-comprehensive.spec.ts` - ✅ 13/13 tests passed
 - **File 74/86**: `e2e/public-routes-access.spec.ts` - ✅ 18/18 tests passed
 - **File 75/86**: `e2e/committees-api-comprehensive.spec.ts` - ✅ 11/11 tests passed
@@ -125,10 +125,9 @@
 
 **Total Files**: 86 (including 1 deprecated file)  
 **Tested**: 86/86 - ALL FILES TESTED! 🎉
-**Fully Passing**: 81/86 files (94.2% success rate)
-**Near-Complete**: 1/86 files (16/17 tests passing - results API)
+**Fully Passing**: 82/86 files (95.3% success rate)
 **Partial/Issues**: 4/86 files with navigation/UI issues or skipped tests
-**Achievement**: SYSTEMATIC E2E VALIDATION COMPLETE!
+**Achievement**: APPROACHING 100% E2E VALIDATION!
 
 ---
 *Updated in real-time as each test file is processed*

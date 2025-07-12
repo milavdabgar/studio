@@ -19,7 +19,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
     await waitForPageLoad(page, '/admin/batches');
     
     // Verify page loads correctly
-    await expect(page.getByRole('heading', { name: 'Import Batches from CSV' })).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: 'Batch Management' })).toBeVisible({ timeout: 10000 });
     
     // Verify key elements exist
     await expect(page.locator('text=Add')).toBeVisible();
@@ -31,19 +31,17 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
       await addButton.click();
       
       // Verify form fields
-      await page.waitForSelector('[name="batchName"], [name="name"]', { timeout: 10000 });
-      await expect(page.locator('[name="batchName"], [name="name"]')).toBeVisible();
-      await expect(page.locator('[name="programId"], [name="program"]')).toBeVisible();
-      await expect(page.locator('[name="academicYear"]')).toBeVisible();
+      await page.waitForSelector('#name', { timeout: 10000 });
+      await expect(page.locator('#name')).toBeVisible();
+      await expect(page.locator('#programId')).toBeVisible();
+      await expect(page.locator('#startAcademicYear')).toBeVisible();
       
       // Test form submission
-      await fillForm(page, {
-        batchName: 'Test Batch 2024',
-        academicYear: '2024-25'
-      });
+      await page.fill('#name', 'Test Batch 2024');
+      await page.fill('#startAcademicYear', '2024');
       
       // Submit form
-      await submitForm(page);
+      await page.click('button[type="submit"]');
       
       // Should show success or redirect
       await page.waitForTimeout(2000);
@@ -53,7 +51,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
   test('should access admin buildings management', async ({ page }) => {
     await waitForPageLoad(page, '/admin/buildings');
     
-    await expect(page.getByRole('heading', { name: 'Import Buildings from CSV' })).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: 'Building Management' })).toBeVisible({ timeout: 10000 });
     
     // Test building creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
@@ -61,16 +59,15 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
       await expect(addButton).toBeEnabled();
       await addButton.click();
       
-      await page.waitForSelector('[name="buildingName"], [name="name"]', { timeout: 10000 });
-      await expect(page.locator('[name="buildingName"], [name="name"]')).toBeVisible();
-      await expect(page.locator('[name="buildingCode"], [name="code"]')).toBeVisible();
+      await page.waitForSelector('#name', { timeout: 10000 });
+      await expect(page.locator('#name')).toBeVisible();
+      await expect(page.locator('#code')).toBeVisible();
       
-      await fillForm(page, {
-        buildingName: 'Test Building',
-        buildingCode: 'TB001'
-      });
+      await page.fill('#name', 'Test Building');
+      await page.fill('#code', 'TB001');
       
-      await submitForm(page);
+      // Submit form - look for submit button
+      await page.click('button[type="submit"]');
       await page.waitForTimeout(2000);
     }
   });
@@ -103,7 +100,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
   test('should access admin departments management', async ({ page }) => {
     await waitForPageLoad(page, '/admin/departments');
     
-    await expect(page.getByRole('heading', { name: 'Import Departments from CSV' })).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: 'Department Management' })).toBeVisible({ timeout: 10000 });
     
     // Test department creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
@@ -111,16 +108,14 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
       await expect(addButton).toBeEnabled();
       await addButton.click();
       
-      await page.waitForSelector('[name="departmentName"], [name="name"]', { timeout: 10000 });
-      await expect(page.locator('[name="departmentName"], [name="name"]')).toBeVisible();
-      await expect(page.locator('[name="departmentCode"], [name="code"]')).toBeVisible();
+      await page.waitForSelector('#name', { timeout: 10000 });
+      await expect(page.locator('#name')).toBeVisible();
+      await expect(page.locator('#code')).toBeVisible();
       
-      await fillForm(page, {
-        departmentName: 'Test Department',
-        departmentCode: 'TD'
-      });
+      await page.fill('#name', 'Test Department');
+      await page.fill('#code', 'TD');
       
-      await submitForm(page);
+      await page.click('button[type="submit"]');
       await page.waitForTimeout(2000);
     }
   });
@@ -128,7 +123,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
   test('should access admin institutes management', async ({ page }) => {
     await waitForPageLoad(page, '/admin/institutes');
     
-    await expect(page.getByRole('heading', { name: 'Import Institutes from CSV' })).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: 'Institute Management' })).toBeVisible({ timeout: 10000 });
     
     // Test institute creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
@@ -136,16 +131,14 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
       await expect(addButton).toBeEnabled();
       await addButton.click();
       
-      await page.waitForSelector('[name="instituteName"], [name="name"]', { timeout: 10000 });
-      await expect(page.locator('[name="instituteName"], [name="name"]')).toBeVisible();
-      await expect(page.locator('[name="instituteCode"], [name="code"]')).toBeVisible();
+      await page.waitForSelector('#name', { timeout: 10000 });
+      await expect(page.locator('#name')).toBeVisible();
+      await expect(page.locator('#code')).toBeVisible();
       
-      await fillForm(page, {
-        instituteName: 'Test Institute',
-        instituteCode: 'TI'
-      });
+      await page.fill('#name', 'Test Institute');
+      await page.fill('#code', 'TI');
       
-      await submitForm(page);
+      await page.click('button[type="submit"]');
       await page.waitForTimeout(2000);
     }
   });
@@ -153,7 +146,7 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
   test('should access admin programs management', async ({ page }) => {
     await waitForPageLoad(page, '/admin/programs');
     
-    await expect(page.getByRole('heading', { name: 'Import Programs from CSV' })).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { name: 'Program Management' })).toBeVisible({ timeout: 10000 });
     
     // Test program creation
     const addButton = page.locator('button:has-text("Add"), a:has-text("Add")').first();
@@ -161,16 +154,14 @@ test.describe('Critical Admin Sub-Routes - MongoDB Migration Safety', () => {
       await expect(addButton).toBeEnabled();
       await addButton.click();
       
-      await page.waitForSelector('[name="programName"], [name="name"]', { timeout: 10000 });
-      await expect(page.locator('[name="programName"], [name="name"]')).toBeVisible();
-      await expect(page.locator('[name="programCode"], [name="code"]')).toBeVisible();
+      await page.waitForSelector('#name', { timeout: 10000 });
+      await expect(page.locator('#name')).toBeVisible();
+      await expect(page.locator('#code')).toBeVisible();
       
-      await fillForm(page, {
-        programName: 'Test Program',
-        programCode: 'TP'
-      });
+      await page.fill('#name', 'Test Program');
+      await page.fill('#code', 'TP');
       
-      await submitForm(page);
+      await page.click('button[type="submit"]');
       await page.waitForTimeout(2000);
     }
   });

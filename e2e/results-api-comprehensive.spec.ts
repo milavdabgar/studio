@@ -555,7 +555,9 @@ test.describe('Results API - Comprehensive E2E Tests', () => {
         ],
         spi: 8.0,
         cpi: 8.2,
-        result: 'PASS'
+        result: 'PASS',
+        totalCredits: 4,
+        earnedCredits: 4
       };
 
       const createResponse = await request.post(`${baseURL}/api/results`, {
@@ -582,7 +584,9 @@ test.describe('Results API - Comprehensive E2E Tests', () => {
           }
         ],
         spi: 8.5,
-        cpi: 8.4
+        cpi: 8.4,
+        totalCredits: 3,
+        earnedCredits: 3
       };
 
       const updateResponse = await request.post(`${baseURL}/api/results`, {
