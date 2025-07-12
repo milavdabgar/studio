@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
     
     const teamData = await request.json() as Omit<ProjectTeam, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>;
 
-    if (!teamData.name || !teamData.name.trim() || !teamData.department || !teamData.eventId) {
+    if (!teamData || !teamData.name || !teamData.name.trim() || !teamData.department || !teamData.eventId) {
       return NextResponse.json({ message: 'Missing required fields: name, department, eventId.' }, { status: 400 });
     }
     if (!teamData.members || teamData.members.length === 0 || !teamData.members.some(m => m.isLeader)) {

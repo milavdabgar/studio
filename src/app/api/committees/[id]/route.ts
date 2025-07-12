@@ -100,6 +100,10 @@ async function createOrUpdateCommitteeRoles(committee: Committee, isUpdate: bool
         isCommitteeRole: true,
         committeeId: committee.id,
         committeeCode: committee.code,
+        scope: {
+          level: 'committee',
+          committeeId: committee.id
+        },
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -155,9 +159,13 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     
     const committeeData = await request.json() as Partial<Omit<Committee, 'id' | 'createdAt' | 'updatedAt'>>;
     
-    const existingCommittee = await CommitteeModel.findOne({
-      $or: [{ id }, { _id: id }]
-    });
+    // First try to find by custom id field
+    let existingCommittee = await CommitteeModel.findOne({ id });
+    
+    // Only try to find by MongoDB _id if id looks like a valid ObjectId
+    if (!existingCommittee && id.match(/^[0-9a-fA-F]{24}$/)) {
+      existingCommittee = await CommitteeModel.findById(id);
+    }
 
     if (!existingCommittee) {
       return NextResponse.json({ message: 'Committee not found' }, { status: 404 });
@@ -190,7 +198,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       const existingWithCode = await CommitteeModel.findOne({
         code: { $regex: new RegExp(`^${newCode}$`, 'i') },
         instituteId: committeeData.instituteId || existingCommittee.instituteId,
-        $nor: [{ id }, { _id: id }]
+        $nor: id.match(/^[0-9a-fA-F]{24}$/) ? [{ id }, { _id: id }] : [{ id }]
       });
       if (existingWithCode) {
         return NextResponse.json({ message: `Committee with code '${newCode}' already exists for this institute.` }, { status: 409 });
@@ -202,7 +210,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       const existingWithName = await CommitteeModel.findOne({
         name: { $regex: new RegExp(`^${newName}$`, 'i') },
         instituteId: committeeData.instituteId || existingCommittee.instituteId,
-        $nor: [{ id }, { _id: id }]
+        $nor: id.match(/^[0-9a-fA-F]{24}$/) ? [{ id }, { _id: id }] : [{ id }]
       });
       if (existingWithName) {
         return NextResponse.json({ message: `Committee with name '${newName}' already exists for this institute.` }, { status: 409 });
@@ -223,8 +231,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       updatedAt: new Date().toISOString(),
     };
 
+    // Update using proper filter based on id type
+    const filter = id.match(/^[0-9a-fA-F]{24}$/) ? { $or: [{ id }, { _id: id }] } : { id };
     const updatedCommittee = await CommitteeModel.findOneAndUpdate(
-      { $or: [{ id }, { _id: id }] },
+      filter,
       updateData,
       { new: true, lean: true }
     );
@@ -272,9 +282,13 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     const { id } = await params;
     const { RoleModel, UserModel } = await import('@/lib/models');
     
-    const existingCommittee = await CommitteeModel.findOne({
-      $or: [{ id }, { _id: id }]
-    });
+    // First try to find by custom id field
+    let existingCommittee = await CommitteeModel.findOne({ id });
+    
+    // Only try to find by MongoDB _id if id looks like a valid ObjectId
+    if (!existingCommittee && id.match(/^[0-9a-fA-F]{24}$/)) {
+      existingCommittee = await CommitteeModel.findById(id);
+    }
 
     if (!existingCommittee) {
       return NextResponse.json({ message: 'Committee not found' }, { status: 404 });
@@ -295,8 +309,12 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     // Delete the roles
     await RoleModel.deleteMany({ committeeId: id });
 
-    // Delete the committee
-    await CommitteeModel.deleteOne({ $or: [{ id }, { _id: id }] });
+    // Delete the committee using the correct filter
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      await CommitteeModel.deleteOne({ $or: [{ id }, { _id: id }] });
+    } else {
+      await CommitteeModel.deleteOne({ id });
+    }
 
     // Update convener role if needed
     if (existingCommittee.convenerId) {

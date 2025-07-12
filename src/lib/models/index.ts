@@ -122,19 +122,33 @@ const committeeSchema = new Schema<ICommittee>({
   code: { type: String, required: true, unique: true },
   description: { type: String },
   purpose: { type: String, required: true },
+  type: { type: String, default: 'Academic' },
+  department: { type: String },
+  chairperson: {
+    userId: { type: String },
+    name: { type: String },
+    email: { type: String },
+    contactNumber: { type: String }
+  },
+  establishedDate: { type: String },
+  meetingSchedule: { type: String },
+  responsibilities: [{ type: String }],
   instituteId: { type: String, required: true },
   formationDate: { type: String, required: true },
   dissolutionDate: { type: String },
   status: { 
     type: String, 
-    enum: ['active', 'inactive', 'dissolved'], 
+    enum: ['active', 'inactive', 'dissolved', 'suspended'], 
     required: true, 
     default: 'active' 
   },
   convenerId: { type: String },
   members: [{
     userId: { type: String, required: true },
+    name: { type: String },
+    email: { type: String },
     role: { type: String, required: true }, // CommitteeMemberRole
+    contactNumber: { type: String },
     assignmentDate: { type: String, required: true },
     endDate: { type: String }
   }],

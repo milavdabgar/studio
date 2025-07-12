@@ -20,7 +20,7 @@ test.describe('Critical Student Workflows - MongoDB Migration Safety', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Should show courses page or access control
-    const hasCoursesPage = await page.locator('h1:has-text("Courses"), text="Courses"').isVisible();
+    const hasCoursesPage = await page.locator('h1:has-text("Courses")').isVisible() || await page.locator('text=Courses').first().isVisible();
     const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
     const hasLoginRedirect = page.url().includes('/login');
     
@@ -56,7 +56,7 @@ test.describe('Critical Student Workflows - MongoDB Migration Safety', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Should show enrollment page or access control
-    const hasEnrollPage = await page.locator('h1:has-text("Enroll"), text="Enroll"').isVisible();
+    const hasEnrollPage = await page.locator('h1:has-text("Enroll")').isVisible() || await page.locator('text=Enroll').first().isVisible();
     const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
     const hasLoginRedirect = page.url().includes('/login');
     
@@ -92,7 +92,7 @@ test.describe('Critical Student Workflows - MongoDB Migration Safety', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Should show assignments page or access control
-    const hasAssignmentsPage = await page.locator('h1:has-text("Assignments"), text="Assignments"').isVisible();
+    const hasAssignmentsPage = await page.locator('h1:has-text("Assignments")').isVisible() || await page.locator('text=Assignments').first().isVisible();
     const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
     const hasLoginRedirect = page.url().includes('/login');
     
@@ -129,7 +129,7 @@ test.describe('Critical Student Workflows - MongoDB Migration Safety', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Should show results page or access control
-    const hasResultsPage = await page.locator('h1:has-text("Results"), text="Results"').isVisible();
+    const hasResultsPage = await page.locator('h1:has-text("Results")').isVisible() || await page.locator('text=Results').first().isVisible();
     const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
     const hasLoginRedirect = page.url().includes('/login');
     
@@ -166,7 +166,7 @@ test.describe('Critical Student Workflows - MongoDB Migration Safety', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Should show timetable page or access control
-    const hasTimetablePage = await page.locator('h1:has-text("Timetable"), text="Timetable"').isVisible();
+    const hasTimetablePage = await page.locator('h1:has-text("Timetable")').isVisible() || await page.locator('text=Timetable').first().isVisible();
     const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
     const hasLoginRedirect = page.url().includes('/login');
     
@@ -204,7 +204,7 @@ test.describe('Critical Student Workflows - MongoDB Migration Safety', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Should show materials page or access control
-    const hasMaterialsPage = await page.locator('h1:has-text("Materials"), text="Materials"').isVisible();
+    const hasMaterialsPage = await page.locator('h1:has-text("Materials")').isVisible() || await page.locator('text=Materials').first().isVisible();
     const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
     const hasLoginRedirect = page.url().includes('/login');
     
@@ -241,7 +241,7 @@ test.describe('Critical Student Workflows - MongoDB Migration Safety', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Should show attendance page or access control
-    const hasAttendancePage = await page.locator('h1:has-text("Attendance"), text="Attendance"').isVisible();
+    const hasAttendancePage = await page.locator('h1:has-text("Attendance")').isVisible() || await page.locator('text=Attendance').first().isVisible();
     const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
     const hasLoginRedirect = page.url().includes('/login');
     
@@ -278,7 +278,7 @@ test.describe('Critical Student Workflows - MongoDB Migration Safety', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Should show profile page or access control
-    const hasProfilePage = await page.locator('h1:has-text("Profile"), text="Profile"').isVisible();
+    const hasProfilePage = await page.locator('h1:has-text("Profile")').isVisible() || await page.locator('text=Profile').first().isVisible();
     const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
     const hasLoginRedirect = page.url().includes('/login');
     
@@ -315,7 +315,7 @@ test.describe('Critical Student Workflows - MongoDB Migration Safety', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Should show assignments page or access control
-    const hasAssignmentsPage = await page.locator('h1:has-text("Assignments"), text="Assignments"').isVisible();
+    const hasAssignmentsPage = await page.locator('h1:has-text("Assignments")').isVisible() || await page.locator('text=Assignments').first().isVisible();
     const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
     const hasLoginRedirect = page.url().includes('/login');
     
@@ -360,7 +360,7 @@ test.describe('Critical Student Workflows - MongoDB Migration Safety', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Should show enrollment page or access control
-    const hasEnrollPage = await page.locator('h1:has-text("Enroll"), text="Enroll"').isVisible();
+    const hasEnrollPage = await page.locator('h1:has-text("Enroll")').isVisible() || await page.locator('text=Enroll').first().isVisible();
     const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
     const hasLoginRedirect = page.url().includes('/login');
     
@@ -411,7 +411,7 @@ test.describe('Critical Student Workflows - MongoDB Migration Safety', () => {
     await page.waitForLoadState('networkidle', { timeout: 10000 });
     
     // Should show profile page or access control
-    const hasProfilePage = await page.locator('h1:has-text("Profile"), text="Profile"').isVisible();
+    const hasProfilePage = await page.locator('h1:has-text("Profile")').isVisible() || await page.locator('text=Profile').first().isVisible();
     const hasAccessControl = await page.locator('text=Login, text=Access denied, input[type="email"], input[type="password"]').first().isVisible();
     const hasLoginRedirect = page.url().includes('/login');
     

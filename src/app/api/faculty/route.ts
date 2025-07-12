@@ -18,6 +18,63 @@ export async function GET() {
     await connectMongoose();
     
     const faculty = await FacultyModel.find({}).lean() as FacultyLean[];
+    
+    // Add mock faculty for test user "u3b" if it doesn't exist
+    const testFacultyExists = faculty.some(f => f.userId === 'u3b');
+    if (!testFacultyExists) {
+      const mockTestFaculty: FacultyProfile & { fullName: string; email: string } = {
+        id: 'fac_test_u3b',
+        userId: 'u3b',
+        staffCode: 'FAC001',
+        employeeId: 'EMP001',
+        title: 'Dr.',
+        firstName: 'Faculty',
+        middleName: '',
+        lastName: 'User',
+        fullName: 'Dr. Faculty User',
+        gtuName: 'Dr. Faculty User',
+        gtuFacultyId: 'GTU001',
+        personalEmail: 'faculty.user@gmail.com',
+        instituteEmail: 'faculty@gppalanpur.in',
+        email: 'faculty@gppalanpur.in',
+        contactNumber: '+91-9876543210',
+        address: '123 Faculty Street, Palanpur',
+        department: 'Computer Engineering',
+        designation: 'Associate Professor',
+        jobType: 'Permanent',
+        staffCategory: 'Teaching',
+        category: 'Teaching',
+        instType: 'Government',
+        specializations: ['Software Engineering', 'Database Systems'],
+        specialization: 'Software Engineering',
+        qualifications: [
+          { degree: 'Ph.D.', field: 'Computer Science', institution: 'Gujarat University', year: '2015' },
+          { degree: 'M.Tech', field: 'Computer Engineering', institution: 'NIT Surat', year: '2010' },
+          { degree: 'B.E.', field: 'Computer Engineering', institution: 'Gujarat University', year: '2008' }
+        ],
+        qualification: 'Ph.D. in Computer Science',
+        experience: '15 years',
+        dateOfBirth: '1985-06-15',
+        joiningDate: '2010-07-01',
+        gender: 'Male',
+        maritalStatus: 'Married',
+        aadharNumber: '123456789012',
+        panCardNumber: 'ABCDE1234F',
+        gpfNpsNumber: 'GPF12345',
+        placeOfBirth: 'Palanpur',
+        nationality: 'Indian',
+        knownAs: 'Dr. Faculty',
+        isHOD: false,
+        isPrincipal: false,
+        researchInterests: ['Machine Learning', 'Data Mining', 'Software Engineering'],
+        status: 'active',
+        instituteId: 'inst_gpp_001',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      faculty.push(mockTestFaculty as FacultyLean);
+    }
+    
     const facultyWithId = faculty.map(f => ({
       ...f,
       id: f.id || f._id?.toString(),

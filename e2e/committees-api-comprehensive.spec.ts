@@ -12,13 +12,20 @@ import { test, expect } from '@playwright/test';
 // Base URL for API endpoints
 const API_BASE = '/api';
 
-// Test data for committees
-const testCommittee = {
-  name: 'E2E Test Committee',
-  description: 'A test committee for E2E testing purposes',
-  type: 'Academic',
-  department: 'dept_ce_gpp',
-  chairperson: {
+// Generate unique test data for committees to avoid conflicts
+const generateUniqueTestCommittee = () => {
+  const timestamp = Date.now();
+  const randomId = Math.random().toString(36).substring(2, 8);
+  return {
+    name: `E2E Test Committee ${timestamp}`,
+    code: `E2E_TEST_${randomId}`,
+    description: 'A test committee for E2E testing purposes',
+    purpose: 'Testing committee functionality for E2E validation',
+    instituteId: 'inst_gpp_main',
+    formationDate: '2024-01-15',
+    type: 'Academic',
+    department: 'dept_ce_gpp',
+    chairperson: {
     userId: 'user_faculty_cs01_gpp',
     name: 'Test Faculty Chair',
     email: 'chair@test.edu',
@@ -30,14 +37,16 @@ const testCommittee = {
       name: 'Test Faculty Member 1',
       role: 'Secretary',
       email: 'member1@test.edu',
-      contactNumber: '9876543211'
+      contactNumber: '9876543211',
+      assignmentDate: '2024-01-15'
     },
     {
       userId: 'user_faculty_ee01_gpp',
       name: 'Test Faculty Member 2',
       role: 'Member',
       email: 'member2@test.edu',
-      contactNumber: '9876543212'
+      contactNumber: '9876543212',
+      assignmentDate: '2024-01-15'
     }
   ],
   establishedDate: '2024-01-15',
@@ -48,14 +57,21 @@ const testCommittee = {
     'Student affairs oversight',
     'Policy recommendations'
   ]
+  };
 };
 
-const testCommitteeUpdate = {
-  name: 'Updated E2E Test Committee',
-  description: 'Updated description for E2E testing',
-  type: 'Administrative',
-  status: 'inactive',
-  meetingSchedule: 'Quarterly'
+const generateUniqueUpdateCommittee = () => {
+  const timestamp = Date.now();
+  const randomId = Math.random().toString(36).substring(2, 8);
+  return {
+    name: `Updated E2E Test Committee ${timestamp}`,
+    code: `E2E_TEST_UPD_${randomId}`,
+    description: 'Updated description for E2E testing',
+    purpose: 'Updated testing committee functionality for E2E validation',
+    type: 'Administrative',
+    status: 'inactive',
+    meetingSchedule: 'Quarterly'
+  };
 };
 
 test.describe('Committees API - Critical In-Memory Storage', () => {
@@ -68,6 +84,7 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
 
   test('should create, read, update, and delete committees (CRUD)', async ({ page }) => {
     let createdCommitteeId: string;
+    const testCommittee = generateUniqueTestCommittee();
 
     // Test CREATE - POST /api/committees
     const createResponse = await page.request.post(`${API_BASE}/committees`, {
@@ -109,6 +126,7 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
     expect(committeeData.name).toBe(testCommittee.name);
 
     // Test UPDATE - PUT /api/committees/:id
+    const testCommitteeUpdate = generateUniqueUpdateCommittee();
     const updateResponse = await page.request.put(`${API_BASE}/committees/${createdCommitteeId}`, {
       data: {
         ...testCommittee,
@@ -143,6 +161,8 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
   });
 
   test('should validate required fields', async ({ page }) => {
+    const testCommittee = generateUniqueTestCommittee();
+    
     // Test missing committee name
     const missingName = { ...testCommittee } as any;
     delete missingName.name;
@@ -184,12 +204,16 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
   });
 
   test('should validate committee types', async ({ page }) => {
+    const testCommittee = generateUniqueTestCommittee();
     const validTypes = ['Academic', 'Administrative', 'Research', 'Student Affairs', 'Infrastructure'];
     
     for (const type of validTypes) {
+      const timestamp = Date.now();
+      const randomId = Math.random().toString(36).substring(2, 6);
       const committeeWithType = {
         ...testCommittee,
-        name: `Test Committee ${type}`,
+        name: `Test Committee ${type} ${timestamp}_${randomId}`,
+        code: `${testCommittee.code}_${type}_${randomId}`,
         type: type
       };
 
@@ -209,12 +233,16 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
   });
 
   test('should validate committee status', async ({ page }) => {
+    const testCommittee = generateUniqueTestCommittee();
     const validStatuses = ['active', 'inactive', 'dissolved', 'suspended'];
     
     for (const status of validStatuses) {
+      const timestamp = Date.now();
+      const randomId = Math.random().toString(36).substring(2, 6);
       const committeeWithStatus = {
         ...testCommittee,
-        name: `Test Committee ${status}`,
+        name: `Test Committee ${status} ${timestamp}_${randomId}`,
+        code: `${testCommittee.code}_${status}_${randomId}`,
         status: status
       };
 
@@ -234,6 +262,8 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
   });
 
   test('should handle committee member management', async ({ page }) => {
+    const testCommittee = generateUniqueTestCommittee();
+    
     // Create a committee first
     const createResponse = await page.request.post(`${API_BASE}/committees`, {
       data: testCommittee
@@ -270,6 +300,7 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
   });
 
   test('should validate email formats in member data', async ({ page }) => {
+    const testCommittee = generateUniqueTestCommittee();
     // Test valid email format
     const validEmailCommittee = {
       ...testCommittee,
@@ -319,6 +350,7 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
   });
 
   test('should handle date validation', async ({ page }) => {
+    const testCommittee = generateUniqueTestCommittee();
     // Test valid date formats
     const validDates = [
       '2024-01-15',
@@ -350,6 +382,7 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
   });
 
   test('should handle responsibilities array', async ({ page }) => {
+    const testCommittee = generateUniqueTestCommittee();
     const committeeWithResponsibilities = {
       ...testCommittee,
       name: 'Responsibilities Test Committee',
@@ -379,6 +412,7 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
   });
 
   test('should prevent duplicate committee names', async ({ page }) => {
+    const testCommittee = generateUniqueTestCommittee();
     const duplicateCommittee = { 
       ...testCommittee, 
       name: 'Duplicate Test Committee' 
@@ -411,6 +445,7 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
   });
 
   test('should handle error scenarios gracefully', async ({ page }) => {
+    const testCommittee = generateUniqueTestCommittee();
     // Test invalid committee ID for GET
     const invalidGetResponse = await page.request.get(`${API_BASE}/committees/invalid-id`);
     expect(invalidGetResponse.status()).toBe(404);
@@ -433,6 +468,7 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
   });
 
   test('should handle contact number validation', async ({ page }) => {
+    const testCommittee = generateUniqueTestCommittee();
     // Test valid contact numbers
     const validNumbers = [
       '9876543210',

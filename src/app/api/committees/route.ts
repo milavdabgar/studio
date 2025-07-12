@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
     
     const committeeData = await request.json() as Omit<Committee, 'id' | 'createdAt' | 'updatedAt'>;
 
-    if (!committeeData.name || !committeeData.name.trim()) {
+    if (!committeeData || !committeeData.name || !committeeData.name.trim()) {
       return NextResponse.json({ message: 'Committee Name is required.' }, { status: 400 });
     }
     if (!committeeData.code || !committeeData.code.trim()) {
@@ -85,6 +85,12 @@ export async function POST(request: NextRequest) {
     }
     if (!committeeData.purpose || !committeeData.purpose.trim()) {
       return NextResponse.json({ message: 'Committee Purpose is required.' }, { status: 400 });
+    }
+    if (!committeeData.type || !committeeData.type.trim()) {
+      return NextResponse.json({ message: 'Committee Type is required.' }, { status: 400 });
+    }
+    if (!committeeData.chairperson) {
+      return NextResponse.json({ message: 'Committee Chairperson is required.' }, { status: 400 });
     }
     if (!committeeData.instituteId) {
       return NextResponse.json({ message: 'Institute ID is required.' }, { status: 400 });
@@ -94,6 +100,30 @@ export async function POST(request: NextRequest) {
     }
     if (committeeData.dissolutionDate && !isValid(parseISO(committeeData.dissolutionDate))) {
         return NextResponse.json({ message: 'Valid Dissolution Date is required (YYYY-MM-DD) if provided.' }, { status: 400 });
+    }
+    
+    // Validate email formats in chairperson and members
+    if (committeeData.chairperson?.email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(committeeData.chairperson.email)) {
+        return NextResponse.json({ message: 'Invalid chairperson email format.' }, { status: 400 });
+      }
+    }
+    
+    if (committeeData.members) {
+      for (const member of committeeData.members) {
+        if (member.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(member.email)) {
+          return NextResponse.json({ message: 'Invalid member email format.' }, { status: 400 });
+        }
+        if (member.contactNumber && !/^[0-9]{10}$/.test(member.contactNumber)) {
+          return NextResponse.json({ message: 'Contact number must be exactly 10 digits.' }, { status: 400 });
+        }
+      }
+    }
+    
+    // Validate chairperson contact number
+    if (committeeData.chairperson?.contactNumber && !/^[0-9]{10}$/.test(committeeData.chairperson.contactNumber)) {
+      return NextResponse.json({ message: 'Chairperson contact number must be exactly 10 digits.' }, { status: 400 });
     }
     
     // Check for duplicates
@@ -123,6 +153,12 @@ export async function POST(request: NextRequest) {
       instituteId: committeeData.instituteId,
       formationDate: committeeData.formationDate, 
       dissolutionDate: committeeData.dissolutionDate || undefined,
+      type: committeeData.type || 'Academic',
+      department: committeeData.department || undefined,
+      chairperson: committeeData.chairperson || undefined,
+      establishedDate: committeeData.establishedDate || committeeData.formationDate,
+      meetingSchedule: committeeData.meetingSchedule || undefined,
+      responsibilities: committeeData.responsibilities || [],
       status: committeeData.status || 'active',
       convenerId: committeeData.convenerId || undefined,
       members: committeeData.members || [],

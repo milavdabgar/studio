@@ -9,6 +9,75 @@ const facultyUserCredentials = {
   name: 'Charlie HOD' 
 };
 
+// Helper function to create test data
+async function createTestData(page: Page) {
+  const API_BASE = 'http://localhost:3000/api';
+  
+  // Create faculty member if not exists
+  const facultyData = {
+    id: 'fac_test_001',
+    firstName: 'Charlie',
+    lastName: 'HOD',
+    email: 'hod@example.com',
+    employeeId: 'EMP001',
+    department: 'Computer Engineering',
+    position: 'Head of Department',
+    qualification: 'PhD',
+    experience: 10,
+    contactNumber: '9876543210',
+    specialization: 'Software Engineering'
+  };
+
+  try {
+    await page.request.post(`${API_BASE}/faculty`, { data: facultyData });
+  } catch (error) {
+    // Faculty might already exist, continue
+  }
+
+  // Create course offering assigned to this faculty
+  const courseOfferingData = {
+    id: 'co_test_001',
+    courseId: 'CS101',
+    courseName: 'Introduction to Programming',
+    courseCode: 'CS101',
+    credits: 4,
+    facultyId: 'fac_test_001',
+    batchId: 'batch_2024',
+    programId: 'prog_btech_ce_gpp',
+    semester: 1,
+    academicYear: '2024-25',
+    startDate: '2024-08-01',
+    endDate: '2024-12-31',
+    status: 'scheduled'
+  };
+
+  try {
+    await page.request.post(`${API_BASE}/course-offerings`, { data: courseOfferingData });
+  } catch (error) {
+    // Course offering might already exist, continue
+  }
+
+  // Create assessment for grading
+  const assessmentData = {
+    id: 'asmnt_test_001',
+    name: 'Mid Term Test',
+    courseId: 'CS101',
+    programId: 'prog_btech_ce_gpp',
+    batchId: 'batch_2024',
+    type: 'Midterm',
+    maxMarks: 100,
+    weightage: 0.4,
+    assessmentDate: '2024-10-15',
+    status: 'Published'
+  };
+
+  try {
+    await page.request.post(`${API_BASE}/assessments`, { data: assessmentData });
+  } catch (error) {
+    // Assessment might already exist, continue
+  }
+}
+
 async function loginAsFaculty(page: Page) {
   await page.goto(`${APP_BASE_URL}/login`);
   await page.getByLabel(/Email/i).fill(facultyUserCredentials.email);
@@ -32,6 +101,8 @@ async function loginAsFaculty(page: Page) {
 
 test.describe('Faculty Portal Detailed Functionality', () => {
   test('should mark attendance for a course', async ({ page }) => {
+    // Create test data first
+    await createTestData(page);
     await loginAsFaculty(page);
     await page.goto(`${APP_BASE_URL}/faculty/attendance/mark`, { waitUntil: 'domcontentloaded' });
     
@@ -58,7 +129,7 @@ test.describe('Faculty Portal Detailed Functionality', () => {
     console.log('Mark Attendance elements:', markAttendanceElements);
     
     // Try to find the heading by text content rather than role
-    await expect(page.locator('text=Mark Attendance')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=Mark Attendance').first()).toBeVisible({ timeout: 10000 });
 
     // Check that the course offering selector is present
     const courseOfferingSelect = page.getByLabel(/course offering/i);
@@ -75,6 +146,8 @@ test.describe('Faculty Portal Detailed Functionality', () => {
   });
   
   test('should grade an assessment', async ({ page }) => {
+    // Create test data first
+    await createTestData(page);
     await loginAsFaculty(page);
     
     try {
@@ -94,32 +167,20 @@ test.describe('Faculty Portal Detailed Functionality', () => {
       
       if (hasGradeText && hasAssessmentText) {
         console.log('Faculty grading page loaded successfully with assessment content');
-        // Page has the right content, even if heading structure is different
-        // This is acceptable for testing core functionality
       } else {
-        console.log('Faculty grading page missing expected content');
-        test.skip(true, 'Faculty grading page content not found');
-        return;
+        console.log('Faculty grading page missing expected content, but continuing test');
+        // Continue the test to verify if the functionality works even without exact text
       }
 
       // Select Course Offering
       const courseOfferingSelect = page.locator('form').getByLabel('Course Offering');
       
-      // Check if the dropdown is enabled first
-      const isEnabled = await courseOfferingSelect.isEnabled({ timeout: 2000 });
-      if (!isEnabled) {
-          console.warn("Course Offering dropdown is disabled. Skipping test.");
-          test.skip(true, "Course Offering dropdown is disabled.");
-          return;
-      }
+      // Wait for dropdown to be enabled with test data
+      await expect(courseOfferingSelect).toBeEnabled({ timeout: 10000 });
       
       await courseOfferingSelect.click();
       const firstCOOption = page.getByRole('option').first();
-      if (!(await firstCOOption.isVisible({timeout:5000}))) {
-          console.warn("No course offerings available for grading. Skipping test.");
-          test.skip(true, "No course offerings available for grading.");
-        return;
-    }
+      await expect(firstCOOption).toBeVisible({ timeout: 10000 });
     await firstCOOption.click();
     
     // Select Assessment (options should filter based on course offering)
@@ -150,13 +211,13 @@ test.describe('Faculty Portal Detailed Functionality', () => {
     }
     } catch (error) {
       console.error('Failed to load faculty grading page:', error);
-      test.skip(true, 'Faculty grading page failed to load');
+      throw error; // Let the test fail properly so we can debug the issue
     }
   });
   
   test('should evaluate a project (as Jury)', async ({ page }) => {
-    test.skip(true, 'Project jury evaluation functionality requires proper permissions setup');
-    
+    // Create test data first
+    await createTestData(page);
     await loginAsFaculty(page);
     await page.goto(`${APP_BASE_URL}/project-fair/jury`); 
     

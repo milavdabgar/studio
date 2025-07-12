@@ -218,7 +218,7 @@ test.describe('Content Management Improved Coverage', () => {
       // Check for category elements - grid of category cards with post counts
       const hasCategoryGrid = await page.locator('.grid').first().isVisible();
       const hasCategoryCards = await page.locator('[class*="Card"], .card').first().isVisible();
-      const hasPostCount = await page.locator('text=/\\d+ posts?/i, text=post, text=posts').first().isVisible();
+      const hasPostCount = await page.locator('text=/\\d+ posts?/i').first().isVisible() || await page.locator('text=post, text=posts').first().isVisible();
       const hasNoCategories = await page.locator('text=No categories found, text=કોઈ શ્રેણીઓ મળી નથી').first().isVisible();
       
       expect(hasCategoryGrid || hasCategoryCards || hasPostCount || hasNoCategories).toBe(true);

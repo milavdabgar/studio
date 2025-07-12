@@ -22,5 +22,7 @@ test('Landing Page Navigation Test', async ({ page }) => {
   await expect(page).toHaveURL(/.*\/login/);
   
   // Check for login form elements
-  await expect(page.locator('h1, h2, form')).toBeVisible();
+  const hasLoginHeading = await page.locator('h1').isVisible() || await page.locator('h2').isVisible();
+  const hasLoginForm = await page.locator('form').isVisible();
+  expect(hasLoginHeading || hasLoginForm).toBe(true);
 });

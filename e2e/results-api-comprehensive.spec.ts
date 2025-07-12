@@ -116,7 +116,9 @@ test.describe('Results API - Comprehensive E2E Tests', () => {
         ],
         spi: 9.5,
         cpi: 9.2,
-        result: 'PASS'
+        result: 'PASS',
+        totalCredits: 4,
+        earnedCredits: 4
       };
 
       const createResponse = await request.post(`${baseURL}/api/results`, {
@@ -166,7 +168,9 @@ test.describe('Results API - Comprehensive E2E Tests', () => {
         ],
         spi: 8.5,
         cpi: 8.8,
-        result: 'PASS'
+        result: 'PASS',
+        totalCredits: 4,
+        earnedCredits: 4
       };
 
       const createResponse = await request.post(`${baseURL}/api/results`, {
@@ -232,7 +236,9 @@ test.describe('Results API - Comprehensive E2E Tests', () => {
         ],
         spi: 9.5,
         cpi: 9.3,
-        result: 'PASS'
+        result: 'PASS',
+        totalCredits: 8,
+        earnedCredits: 8
       };
 
       const createResponse = await request.post(`${baseURL}/api/results`, {
@@ -404,7 +410,9 @@ test.describe('Results API - Comprehensive E2E Tests', () => {
           ],
           spi: status === 'PASS' ? 9.0 : 0.0,
           cpi: status === 'PASS' ? 9.0 : 0.0,
-          result: status
+          result: status,
+          totalCredits: 4,
+          earnedCredits: status === 'PASS' ? 4 : 0
         };
 
         const response = await request.post(`${baseURL}/api/results`, {
@@ -503,7 +511,9 @@ test.describe('Results API - Comprehensive E2E Tests', () => {
         ],
         spi: 9.5,
         cpi: 9.2,
-        result: 'PASS'
+        result: 'PASS',
+        totalCredits: 4,
+        earnedCredits: 4
       };
 
       const response = await request.post(`${baseURL}/api/results`, {
