@@ -27,8 +27,8 @@ interface UserCookie {
 
 // MOCK DATA & SERVICES - Replace with actual API calls
 const MOCK_COURSE_OFFERINGS: (CourseOffering & { courseName?: string, batchName?: string, programName?: string })[] = [
-  { id: "co1", courseId: "course_cs101_dce_gpp", batchId: "batch_dce_2022_gpp", academicYear: "2023-24", semester: 1, facultyIds: ["user_faculty_cs01_gpp"], status: "ongoing", courseName: "Intro to Programming", batchName: "CS Batch A" },
-  { id: "co2", courseId: "course_me101_dme_gpp", batchId: "batch_dme_2023_gpp", academicYear: "2023-24", semester: 3, facultyIds: ["user_faculty_me01_gpp"], status: "ongoing", courseName: "Data Structures", batchName: "CS Batch B" },
+  { id: "co1", courseId: "course_cs101_dce_gpp", batchId: "batch_dce_2022_gpp", academicYear: "2023-24", semester: 1, facultyIds: ["user_faculty_cs01_gpp", "u3b"], status: "ongoing", courseName: "Intro to Programming", batchName: "CS Batch A" },
+  { id: "co2", courseId: "course_me101_dme_gpp", batchId: "batch_dme_2023_gpp", academicYear: "2023-24", semester: 3, facultyIds: ["user_faculty_me01_gpp", "u3b"], status: "ongoing", courseName: "Data Structures", batchName: "CS Batch B" },
 ];
 
 const mockStudentAssessmentScoreService = {

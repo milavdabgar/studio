@@ -24,8 +24,8 @@ import { attendanceService } from '@/lib/api/attendance';
 
 // MOCK DATA - Replace with API calls
 const MOCK_COURSE_OFFERINGS: (CourseOffering & { courseName?: string, batchName?: string })[] = [
-  { id: "co1", courseId: "crs1", batchId: "batch1", academicYear: "2023-24", semester: 1, facultyIds: ["fac1"], status: "ongoing", courseName: "Intro to Programming", batchName: "CS Batch A" },
-  { id: "co2", courseId: "crs2", batchId: "batch2", academicYear: "2023-24", semester: 3, facultyIds: ["fac1"], status: "ongoing", courseName: "Data Structures", batchName: "CS Batch B" },
+  { id: "co1", courseId: "crs1", batchId: "batch1", academicYear: "2023-24", semester: 1, facultyIds: ["fac1", "u3b"], status: "ongoing", courseName: "Intro to Programming", batchName: "CS Batch A" },
+  { id: "co2", courseId: "crs2", batchId: "batch2", academicYear: "2023-24", semester: 3, facultyIds: ["fac1", "u3b"], status: "ongoing", courseName: "Data Structures", batchName: "CS Batch B" },
 ];
 
 export default function MarkAttendancePage() {
