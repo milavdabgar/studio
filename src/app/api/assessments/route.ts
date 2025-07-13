@@ -63,7 +63,10 @@ export async function GET() {
     return NextResponse.json(assessmentsWithId);
   } catch (error) {
     console.error('Error in GET /api/assessments:', error);
-    return NextResponse.json({ message: 'Internal server error processing assessments request.' }, { status: 500 });
+    return NextResponse.json({ 
+      message: 'Internal server error processing assessments request.',
+      error: error instanceof Error ? error.message : 'Database connection failed'
+    }, { status: 500 });
   }
 }
 
@@ -143,6 +146,9 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
     
-    return NextResponse.json({ message: 'Error creating assessment' }, { status: 500 });
+    return NextResponse.json({ 
+      message: 'Error creating assessment',
+      error: error instanceof Error ? error.message : 'Database save failed'
+    }, { status: 500 });
   }
 }

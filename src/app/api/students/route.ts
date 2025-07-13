@@ -169,6 +169,9 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
     
-    return NextResponse.json({ message: 'Error creating student' }, { status: 500 });
+    return NextResponse.json({ 
+      message: 'Error creating student',
+      error: error instanceof Error ? error.message : 'Database save failed'
+    }, { status: 500 });
   }
 }

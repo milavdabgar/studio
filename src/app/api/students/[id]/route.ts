@@ -34,7 +34,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   } catch (error) {
     console.error('Error fetching student:', error);
     return NextResponse.json({ 
-      message: 'Internal server error during student fetch.' 
+      message: 'Internal server error during student fetch.',
+      error: error instanceof Error ? error.message : 'Database connection failed'
     }, { status: 500 });
   }
 }
@@ -159,7 +160,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json(studentToReturn);
   } catch (error) {
     console.error(`Error updating student:`, error);
-    return NextResponse.json({ message: `Error updating student` }, { status: 500 });
+    return NextResponse.json({ 
+      message: `Error updating student`,
+      error: error instanceof Error ? error.message : 'Database update failed'
+    }, { status: 500 });
   }
 }
 
@@ -196,6 +200,9 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ message: 'Student deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error(`Error deleting student:`, error);
-    return NextResponse.json({ message: `Error deleting student` }, { status: 500 });
+    return NextResponse.json({ 
+      message: `Error deleting student`,
+      error: error instanceof Error ? error.message : 'Database deletion failed'
+    }, { status: 500 });
   }
 }
