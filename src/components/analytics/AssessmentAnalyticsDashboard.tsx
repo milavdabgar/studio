@@ -361,7 +361,7 @@ const AssessmentAnalyticsDashboard: React.FC<AssessmentAnalyticsProps> = ({
             <div className="flex gap-2">
               <Select value={selectedTimeRange} onValueChange={setSelectedTimeRange}>
                 <SelectTrigger className="w-32">
-                  <SelectValue />
+                  <SelectValue placeholder="Last 30 days" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="7d">Last 7 days</SelectItem>
@@ -373,7 +373,7 @@ const AssessmentAnalyticsDashboard: React.FC<AssessmentAnalyticsProps> = ({
               </Select>
               <Select value={selectedAssessmentType} onValueChange={setSelectedAssessmentType}>
                 <SelectTrigger className="w-40">
-                  <SelectValue />
+                  <SelectValue placeholder="All Types" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Types</SelectItem>
