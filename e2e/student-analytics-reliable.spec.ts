@@ -159,7 +159,7 @@ test.describe('Student Analytics Dashboard - Reliable Tests', () => {
     
     // Test export functionality (should show toast)
     await exportBtn.click();
-    await expect(page.getByText(/export started/i)).toBeVisible({ timeout: 5000 });
+    await expect(page.getByText(/export started/i).first()).toBeVisible({ timeout: 5000 });
   });
 
   test('should navigate back to dashboard', async ({ page }) => {
@@ -192,10 +192,10 @@ test.describe('Student Analytics Dashboard - Reliable Tests', () => {
     // Check resources section
     await expect(page.getByText('Improve Your Performance')).toBeVisible({ timeout: 10000 });
     
-    // Check for resource links
-    const studyMaterialsLink = page.getByRole('link', { name: /study materials/i });
-    const assessmentsLink = page.getByRole('link', { name: /upcoming assessments/i });
-    const resultsLink = page.getByRole('link', { name: /detailed results/i });
+    // Check for resource links using more specific selectors to avoid sidebar conflicts
+    const studyMaterialsLink = page.locator('[href="/student/resources"]').getByText(/study materials/i);
+    const assessmentsLink = page.locator('[href*="assessments"]').getByText(/upcoming assessments/i);
+    const resultsLink = page.locator('[href*="results"]').getByText(/detailed results/i);
     
     await expect(studyMaterialsLink).toBeVisible();
     await expect(assessmentsLink).toBeVisible();
