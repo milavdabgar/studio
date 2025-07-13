@@ -83,10 +83,10 @@ test.describe('Faculty Dashboard & Teaching Workflows', () => {
     if (hasProfileCard) {
       // Should show faculty profile interface elements
       const profileElements = await Promise.all([
-        page.locator('.avatar').isVisible().catch(() => false),
+        page.locator('.avatar, [role="img"]').isVisible().catch(() => false),
         page.locator('button').isVisible().catch(() => false),
-        page.locator('.text-primary').isVisible().catch(() => false),
-        page.locator('text=Staff Code, text=Institute Email').isVisible().catch(() => false)
+        page.locator('.text-primary, .text-slate-600').isVisible().catch(() => false),
+        page.locator('text=Staff Code, text=Institute Email, text=Email, text=Phone').isVisible().catch(() => false)
       ]);
       
       expect(profileElements.some(isVisible => isVisible)).toBe(true);

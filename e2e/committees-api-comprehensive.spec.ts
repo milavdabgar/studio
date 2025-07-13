@@ -23,7 +23,7 @@ const generateUniqueTestCommittee = () => {
     purpose: 'Testing committee functionality for E2E validation',
     instituteId: 'inst_gpp_main',
     formationDate: '2024-01-15',
-    type: 'Academic',
+    committeeType: 'Academic',
     department: 'dept_ce_gpp',
     chairperson: {
     userId: 'user_faculty_cs01_gpp',
@@ -68,7 +68,7 @@ const generateUniqueUpdateCommittee = () => {
     code: `E2E_TEST_UPD_${randomId}`,
     description: 'Updated description for E2E testing',
     purpose: 'Updated testing committee functionality for E2E validation',
-    type: 'Administrative',
+    committeeType: 'Administrative',
     status: 'inactive',
     meetingSchedule: 'Quarterly'
   };
@@ -99,7 +99,7 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
     expect(createdCommittee).toHaveProperty('id');
     expect(createdCommittee.name).toBe(testCommittee.name);
     expect(createdCommittee.description).toBe(testCommittee.description);
-    expect(createdCommittee.type).toBe(testCommittee.type);
+    expect(createdCommittee.committeeType).toBe(testCommittee.committeeType);
     expect(createdCommittee.department).toBe(testCommittee.department);
     expect(createdCommittee.status).toBe(testCommittee.status);
     
@@ -140,7 +140,7 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
     expect(updatedCommittee.id).toBe(createdCommitteeId);
     expect(updatedCommittee.name).toBe(testCommitteeUpdate.name);
     expect(updatedCommittee.description).toBe(testCommitteeUpdate.description);
-    expect(updatedCommittee.type).toBe(testCommitteeUpdate.type);
+    expect(updatedCommittee.committeeType).toBe(testCommitteeUpdate.committeeType);
     expect(updatedCommittee.status).toBe(testCommitteeUpdate.status);
 
     // Verify update persisted
@@ -149,7 +149,7 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
     const getUpdatedResponseData = await getUpdatedResponse.json();
     const updatedCommitteeVerify = getUpdatedResponseData.data?.committee || getUpdatedResponseData;
     expect(updatedCommitteeVerify.name).toBe(testCommitteeUpdate.name);
-    expect(updatedCommitteeVerify.type).toBe(testCommitteeUpdate.type);
+    expect(updatedCommitteeVerify.committeeType).toBe(testCommitteeUpdate.committeeType);
 
     // Test DELETE - DELETE /api/committees/:id
     const deleteResponse = await page.request.delete(`${API_BASE}/committees/${createdCommitteeId}`);
@@ -178,7 +178,7 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
 
     // Test missing committee type
     const missingType = { ...testCommittee } as any;
-    delete missingType.type;
+    delete missingType.committeeType;
 
     const missingTypeResponse = await page.request.post(`${API_BASE}/committees`, {
       data: missingType
@@ -214,7 +214,7 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
         ...testCommittee,
         name: `Test Committee ${type} ${timestamp}_${randomId}`,
         code: `${testCommittee.code}_${type}_${randomId}`,
-        type: type
+        committeeType: type
       };
 
       const createResponse = await page.request.post(`${API_BASE}/committees`, {
@@ -224,7 +224,7 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
       if (createResponse.status() === 201) {
         const createResponseData = await createResponse.json();
         const createdCommittee = createResponseData.data?.committee || createResponseData;
-        expect(createdCommittee.type).toBe(type);
+        expect(createdCommittee.committeeType).toBe(type);
         
         // Cleanup
         await page.request.delete(`${API_BASE}/committees/${createdCommittee.id}`);

@@ -4,6 +4,7 @@ import {
   transformResponse,
   createApiUrl,
   createQueryString,
+  buildQueryString,
   ApiError,
 } from '../apiUtils';
 
@@ -87,6 +88,48 @@ describe('API Utilities', () => {
         new ApiError(404, errorMessage)
       );
     });
+
+    it('throws ApiError with status text when no error message in response', async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error',
+        json: jest.fn().mockRejectedValue(new Error('Invalid JSON')),
+      });
+
+      await expect(fetchWithAuth(testUrl)).rejects.toThrow(
+        new ApiError(500, 'Internal Server Error')
+      );
+    });
+
+    it('works without auth token', async () => {
+      localStorage.removeItem('authToken');
+      
+      (global.fetch as jest.Mock).mockResolvedValueOnce(
+        mockResponse(200, testData, true)
+      );
+
+      const response = await fetchWithAuth(testUrl);
+      const data = await response.json();
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        testUrl,
+        expect.objectContaining({
+          headers: expect.objectContaining({
+            'Content-Type': 'application/json',
+          }),
+        })
+      );
+      expect(global.fetch).toHaveBeenCalledWith(
+        testUrl,
+        expect.not.objectContaining({
+          headers: expect.objectContaining({
+            'Authorization': expect.anything(),
+          }),
+        })
+      );
+      expect(data).toEqual(testData);
+    });
   });
 
   describe('handleApiError', () => {
@@ -118,6 +161,56 @@ describe('API Utilities', () => {
       expect(result).toEqual({
         status: 0,
         message: 'An unknown error occurred',
+        isNetworkError: false,
+      });
+    });
+
+    it('handles errors with response property', () => {
+      const errorWithResponse = {
+        response: {
+          status: 500,
+          data: { message: 'Internal Server Error' }
+        }
+      };
+      
+      const result = handleApiError(errorWithResponse);
+      
+      expect(result).toEqual({
+        status: 500,
+        message: 'Internal Server Error',
+        isNetworkError: false,
+      });
+    });
+
+    it('handles errors with response property but no status', () => {
+      const errorWithResponse = {
+        response: {
+          data: { message: 'Server Error' }
+        }
+      };
+      
+      const result = handleApiError(errorWithResponse);
+      
+      expect(result).toEqual({
+        status: 0,
+        message: 'Server Error',
+        isNetworkError: false,
+      });
+    });
+
+    it('handles errors with response property but no message', () => {
+      const errorWithResponse = {
+        response: {
+          status: 503,
+          data: {}
+        }
+      };
+      
+      const result = handleApiError(errorWithResponse);
+      
+      expect(result).toEqual({
+        status: 503,
+        message: 'API Error',
         isNetworkError: false,
       });
     });
@@ -178,6 +271,53 @@ describe('API Utilities', () => {
         },
       });
     });
+
+    it('handles paginated responses with data property instead of items', () => {
+      const paginatedResponse = {
+        data: [{ id: 3 }, { id: 4 }],
+        total: 25,
+        page: 2,
+        limit: 10,
+      };
+      
+      const transformed = transformResponse(paginatedResponse, undefined, true);
+      
+      expect(transformed).toEqual({
+        data: [{ id: 3 }, { id: 4 }],
+        meta: {
+          total: 25,
+          page: 2,
+          limit: 10,
+          totalPages: 3,
+        },
+      });
+    });
+
+    it('handles paginated responses with missing properties', () => {
+      const paginatedResponse = {
+        items: [{ id: 5 }],
+      };
+      
+      const transformed = transformResponse(paginatedResponse, undefined, true);
+      
+      expect(transformed).toEqual({
+        data: [{ id: 5 }],
+        meta: {
+          total: 0,
+          page: 1,
+          limit: 10,
+          totalPages: 0,
+        },
+      });
+    });
+
+    it('handles paginated response when data is not an object', () => {
+      const nonObjectData = 'not an object';
+      
+      const transformed = transformResponse(nonObjectData, undefined, true);
+      
+      expect(transformed).toBe('not an object');
+    });
   });
 
   describe('createApiUrl', () => {
@@ -185,6 +325,11 @@ describe('API Utilities', () => {
     
     it('creates URL with path', () => {
       const url = createApiUrl('/users', {}, baseUrl);
+      expect(url).toBe('https://api.example.com/users');
+    });
+
+    it('creates URL without parameters', () => {
+      const url = createApiUrl('/users', undefined, baseUrl);
       expect(url).toBe('https://api.example.com/users');
     });
     
@@ -231,6 +376,49 @@ describe('API Utilities', () => {
     
     it('handles empty object', () => {
       expect(createQueryString({})).toBe('');
+    });
+  });
+
+  describe('buildQueryString', () => {
+    it('builds query string from simple parameters', () => {
+      const params = { page: 1, search: 'test', active: true };
+      const result = buildQueryString(params);
+      expect(result).toBe('page=1&search=test&active=true');
+    });
+
+    it('handles undefined and null values', () => {
+      const params = { page: 1, search: undefined, filter: null, active: true };
+      const result = buildQueryString(params);
+      expect(result).toBe('page=1&active=true');
+    });
+
+    it('handles boolean values', () => {
+      const params = { active: true, disabled: false };
+      const result = buildQueryString(params);
+      expect(result).toBe('active=true&disabled=false');
+    });
+
+    it('handles number values', () => {
+      const params = { page: 1, limit: 10, rating: 4.5 };
+      const result = buildQueryString(params);
+      expect(result).toBe('page=1&limit=10&rating=4.5');
+    });
+
+    it('handles empty object', () => {
+      const result = buildQueryString({});
+      expect(result).toBe('');
+    });
+
+    it('handles object with all undefined values', () => {
+      const params = { search: undefined, filter: null };
+      const result = buildQueryString(params);
+      expect(result).toBe('');
+    });
+
+    it('handles string values with special characters', () => {
+      const params = { search: 'hello world', filter: 'a&b=c' };
+      const result = buildQueryString(params);
+      expect(result).toBe('search=hello+world&filter=a%26b%3Dc');
     });
   });
 });

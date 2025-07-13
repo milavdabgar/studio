@@ -42,6 +42,10 @@ describe('Date Utilities', () => {
       const date = new Date('2025-01-15T22:30:00Z');
       expect(formatDateTime(date, { hour12: false })).toBe('Jan 15, 2025, 22:30');
     });
+
+    it('returns empty string for invalid date', () => {
+      expect(formatDateTime('invalid-date')).toBe('');
+    });
   });
 
   describe('getRelativeTime', () => {
