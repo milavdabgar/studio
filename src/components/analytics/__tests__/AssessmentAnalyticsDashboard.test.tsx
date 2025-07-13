@@ -33,14 +33,14 @@ jest.mock('date-fns', () => ({
     if (formatStr === 'MMM yyyy') return 'Jan 2024';
     return '2024-01-15';
   }),
-  parseISO: jest.fn((dateString) => new Date(dateString)),
-  subDays: jest.fn((date, days) => new Date(date.getTime() - days * 24 * 60 * 60 * 1000)),
-  startOfMonth: jest.fn((date) => new Date(date.getFullYear(), date.getMonth(), 1)),
-  endOfMonth: jest.fn((date) => new Date(date.getFullYear(), date.getMonth() + 1, 0)),
+  parseISO: jest.fn((dateString: string) => new Date(dateString)),
+  subDays: jest.fn((date: Date, days: number) => new Date(date.getTime() - days * 24 * 60 * 60 * 1000)),
+  startOfMonth: jest.fn((date: Date) => new Date(date.getFullYear(), date.getMonth(), 1)),
+  endOfMonth: jest.fn((date: Date) => new Date(date.getFullYear(), date.getMonth() + 1, 0)),
 }));
 
 // Mock fetch
-const mockFetch = jest.fn();
+const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
 global.fetch = mockFetch;
 
 describe('AssessmentAnalyticsDashboard', () => {
@@ -115,11 +115,11 @@ describe('AssessmentAnalyticsDashboard', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockAssessments),
-      })
+      } as Response)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockScores),
-      });
+      } as Response);
 
     render(<AssessmentAnalyticsDashboard studentId={mockStudentId} />);
 
@@ -137,11 +137,11 @@ describe('AssessmentAnalyticsDashboard', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockAssessments),
-      })
+      } as Response)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockScores),
-      });
+      } as Response);
 
     render(<AssessmentAnalyticsDashboard studentId={mockStudentId} />);
 
@@ -164,11 +164,11 @@ describe('AssessmentAnalyticsDashboard', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockAssessments),
-      })
+      } as Response)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockScores),
-      });
+      } as Response);
 
     render(<AssessmentAnalyticsDashboard studentId={mockStudentId} />);
 
@@ -185,11 +185,11 @@ describe('AssessmentAnalyticsDashboard', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockAssessments),
-      })
+      } as Response)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockScores),
-      });
+      } as Response);
 
     render(<AssessmentAnalyticsDashboard studentId={mockStudentId} />);
 
@@ -217,11 +217,11 @@ describe('AssessmentAnalyticsDashboard', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockAssessments),
-      })
+      } as Response)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockScores),
-      });
+      } as Response);
 
     render(<AssessmentAnalyticsDashboard studentId={mockStudentId} />);
 
@@ -246,11 +246,11 @@ describe('AssessmentAnalyticsDashboard', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockAssessments),
-      })
+      } as Response)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockScores),
-      });
+      } as Response);
 
     render(<AssessmentAnalyticsDashboard studentId={mockStudentId} />);
 
@@ -274,11 +274,11 @@ describe('AssessmentAnalyticsDashboard', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockAssessments),
-      })
+      } as Response)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockScores),
-      });
+      } as Response);
 
     render(<AssessmentAnalyticsDashboard studentId={mockStudentId} />);
 
@@ -300,11 +300,11 @@ describe('AssessmentAnalyticsDashboard', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockAssessments),
-      })
+      } as Response)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockScores),
-      });
+      } as Response);
 
     render(<AssessmentAnalyticsDashboard studentId={mockStudentId} />);
 
@@ -320,11 +320,11 @@ describe('AssessmentAnalyticsDashboard', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([]),
-      })
+      } as Response)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([]),
-      });
+      } as Response);
 
     render(<AssessmentAnalyticsDashboard studentId={mockStudentId} />);
 
@@ -363,11 +363,11 @@ describe('AssessmentAnalyticsDashboard', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockAssessments),
-      })
+      } as Response)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockScores),
-      });
+      } as Response);
 
     render(<AssessmentAnalyticsDashboard studentId={mockStudentId} />);
 
@@ -384,11 +384,11 @@ describe('AssessmentAnalyticsDashboard', () => {
       .mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(mockAssessments),
-      })
+      } as Response)
       .mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(mockScores),
-      });
+      } as Response);
 
     render(<AssessmentAnalyticsDashboard studentId={mockStudentId} />);
 
@@ -414,11 +414,11 @@ describe('AssessmentAnalyticsDashboard', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockAssessments),
-      })
+      } as Response)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockScores),
-      });
+      } as Response);
 
     render(<AssessmentAnalyticsDashboard studentId={mockStudentId} />);
 
@@ -438,11 +438,11 @@ describe('AssessmentAnalyticsDashboard', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([]),
-      })
+      } as Response)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([]),
-      });
+      } as Response);
 
     const { container } = render(
       <AssessmentAnalyticsDashboard 

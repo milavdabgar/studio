@@ -185,7 +185,7 @@ const AssessmentAnalyticsDashboard: React.FC<AssessmentAnalyticsProps> = ({
       const assessment = assessments.find(a => a.id === score.assessmentId);
       if (assessment && score.marks !== null) {
         const type = assessment.type;
-        const percentage = (score.marks / assessment.maxMarks) * 100;
+        const percentage = ((score.marks || 0) / assessment.maxMarks) * 100;
         
         if (!typePerformance.has(type)) {
           typePerformance.set(type, { total: 0, count: 0 });
@@ -359,7 +359,7 @@ const AssessmentAnalyticsDashboard: React.FC<AssessmentAnalyticsProps> = ({
               </CardDescription>
             </div>
             <div className="flex gap-2">
-              <Select value={selectedTimeRange} onValueChange={setSelectedTimeRange}>
+              <Select value={selectedTimeRange} onValueChange={(value) => setSelectedTimeRange(value as typeof selectedTimeRange)}>
                 <SelectTrigger className="w-32">
                   <SelectValue placeholder="Last 30 days" />
                 </SelectTrigger>

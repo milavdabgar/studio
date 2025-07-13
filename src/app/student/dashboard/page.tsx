@@ -260,7 +260,7 @@ export default function StudentDashboard() {
               id: material.id,
               title: material.title,
               courseName: course?.subjectName || 'Unknown Course',
-              type: material.type,
+              type: material.type || 'unknown',
               uploadDate: material.uploadDate!
             };
           });

@@ -174,6 +174,14 @@ export interface Student {
     convocationYear?: number;
     academicRemarks?: string; // Added for admin notes on academic progress
     
+    // Additional fields for dashboard and academic tracking
+    creditsEarned?: number;
+    totalCredits?: number;
+    cpi?: number; // Cumulative Performance Index
+    studentId?: string; // Display ID
+    programName?: string; // Program display name
+    batchName?: string; // Batch display name
+    
     instituteId?: string; 
     photoURL?: string;
     createdAt?: Timestamp;
@@ -429,6 +437,7 @@ export interface Course {
   id: string;
   subcode: string; 
   subjectName: string;
+  subjectCode?: string; // Subject code for display
   branchCode?: string; 
   effFrom?: string; 
   
@@ -590,10 +599,12 @@ export interface StudentAssessmentScore {
   studentId: string;
   assessmentId: string;
   score?: number;
+  marks?: number; // Alternative field name for score
   grade?: string;
   remarks?: string; 
   comments?: string; // Additional comments
   submissionDate?: Timestamp; 
+  submittedAt?: Timestamp; // Alternative field name for submissionDate
   files?: Array<{ 
     name: string; 
     url: string; 
@@ -1013,6 +1024,13 @@ export interface CourseMaterial {
   uploadedBy: string; 
   uploadedAt: Timestamp;
   updatedAt?: Timestamp;
+  
+  // Additional fields for dashboard and resources
+  isVisible?: boolean;
+  type?: string; // Material type for categorization
+  uploadDate?: Timestamp; // Alias for uploadedAt
+  fileUrl?: string; // Direct file URL
+  externalUrl?: string; // External link URL
 }
 
 // Notification System

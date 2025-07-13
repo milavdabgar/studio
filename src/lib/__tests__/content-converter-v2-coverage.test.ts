@@ -652,7 +652,7 @@ console.log('code');
     it('should handle production chromium executable path setup', async () => {
       // Test production chromium setup at lines 349-360
       const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'production';
+      (process.env as any).NODE_ENV = 'production';
       
       const mockChromium = {
         executablePath: jest.fn().mockResolvedValue('/opt/chrome'),
@@ -717,7 +717,7 @@ console.log('code');
           })
         );
       } finally {
-        process.env.NODE_ENV = originalEnv;
+        (process.env as any).NODE_ENV = originalEnv;
         (converter as unknown as ContentConverterInternal).convertToPdfPuppeteer = originalMethod;
       }
     });
@@ -725,7 +725,7 @@ console.log('code');
     it('should handle chromium executable path error gracefully', async () => {
       // Test chromium error handling at lines 357-359
       const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'production';
+      (process.env as any).NODE_ENV = 'production';
       
       const mockChromium = {
         executablePath: jest.fn().mockRejectedValue(new Error('Chromium not found')),
@@ -785,7 +785,7 @@ console.log('code');
         expect(consoleWarnSpy).toHaveBeenCalledWith('Failed to get chromium executable path:', expect.any(Error));
         expect(mockChromium.executablePath).toHaveBeenCalled();
       } finally {
-        process.env.NODE_ENV = originalEnv;
+        (process.env as any).NODE_ENV = originalEnv;
         (converter as unknown as ContentConverterInternal).convertToPdfPuppeteer = originalMethod;
         consoleWarnSpy.mockRestore();
       }

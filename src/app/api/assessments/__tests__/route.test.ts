@@ -98,7 +98,8 @@ describe('/api/assessments', () => {
       const leanResult = Promise.resolve(mockAssessments);
       mockAssessmentModel.find.mockReturnValue({ lean: () => leanResult } as unknown as ReturnType<typeof AssessmentModel.find>);
       
-      const response = await GET();
+      const request = new Request('http://localhost/api/assessments');
+      const response = await GET(request as any);
       const data = await response.json();
       
       expect(response.status).toBe(200);
@@ -117,7 +118,8 @@ describe('/api/assessments', () => {
       const leanResult = Promise.resolve([]);
       mockAssessmentModel.find.mockReturnValue({ lean: () => leanResult } as unknown as ReturnType<typeof AssessmentModel.find>);
       
-      const response = await GET();
+      const request = new Request('http://localhost/api/assessments');
+      const response = await GET(request as any);
       const data = await response.json();
       
       expect(response.status).toBe(200);
@@ -150,7 +152,8 @@ describe('/api/assessments', () => {
       const leanResult = Promise.resolve(assessmentsWithoutId);
       mockAssessmentModel.find.mockReturnValue({ lean: () => leanResult } as unknown as ReturnType<typeof AssessmentModel.find>);
       
-      const response = await GET();
+      const request = new Request('http://localhost/api/assessments');
+      const response = await GET(request as any);
       const data = await response.json();
       
       expect(response.status).toBe(200);
@@ -162,7 +165,8 @@ describe('/api/assessments', () => {
       const errorMessage = 'Database connection failed';
       mockAssessmentModel.countDocuments.mockRejectedValue(new Error(errorMessage));
       
-      const response = await GET();
+      const request = new Request('http://localhost/api/assessments');
+      const response = await GET(request as any);
       const data = await response.json();
       
       expect(response.status).toBe(500);

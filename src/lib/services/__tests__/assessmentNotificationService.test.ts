@@ -11,7 +11,7 @@ jest.mock('@/lib/api/notifications', () => ({
 }));
 
 // Mock fetch for scheduled tasks
-const mockFetch = jest.fn();
+const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
 global.fetch = mockFetch;
 
 // Import the mocked module
@@ -37,7 +37,15 @@ describe('AssessmentNotificationService', () => {
 
   describe('notifyNewAssessment', () => {
     it('creates notification for new assessment', async () => {
-      mockCreateNotification.mockResolvedValueOnce({ success: true });
+      mockCreateNotification.mockResolvedValueOnce({
+        id: 'notification-1',
+        userId: mockStudentId,
+        message: 'Test notification',
+        type: 'assignment_new',
+        isRead: false,
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z'
+      });
 
       await assessmentNotificationService.notifyNewAssessment(
         mockStudentId,
@@ -71,7 +79,15 @@ describe('AssessmentNotificationService', () => {
 
   describe('notifyDeadlineReminder', () => {
     it('creates deadline reminder notification', async () => {
-      mockCreateNotification.mockResolvedValueOnce({ success: true });
+      mockCreateNotification.mockResolvedValueOnce({
+        id: 'notification-1',
+        userId: mockStudentId,
+        message: 'Test notification',
+        type: 'assignment_new',
+        isRead: false,
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z'
+      });
 
       await assessmentNotificationService.notifyDeadlineReminder(
         mockStudentId,
@@ -94,7 +110,15 @@ describe('AssessmentNotificationService', () => {
 
   describe('notifyGradePublished', () => {
     it('creates grade published notification with score', async () => {
-      mockCreateNotification.mockResolvedValueOnce({ success: true });
+      mockCreateNotification.mockResolvedValueOnce({
+        id: 'notification-1',
+        userId: mockStudentId,
+        message: 'Test notification',
+        type: 'assignment_new',
+        isRead: false,
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z'
+      });
 
       await assessmentNotificationService.notifyGradePublished(
         mockStudentId,
@@ -114,7 +138,15 @@ describe('AssessmentNotificationService', () => {
     });
 
     it('handles missing score data', async () => {
-      mockCreateNotification.mockResolvedValueOnce({ success: true });
+      mockCreateNotification.mockResolvedValueOnce({
+        id: 'notification-1',
+        userId: mockStudentId,
+        message: 'Test notification',
+        type: 'assignment_new',
+        isRead: false,
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z'
+      });
 
       const dataWithoutScore = { ...mockAssessmentData, score: undefined, maxScore: undefined };
 
@@ -138,7 +170,15 @@ describe('AssessmentNotificationService', () => {
 
   describe('notifySubmissionConfirmed', () => {
     it('creates submission confirmation notification', async () => {
-      mockCreateNotification.mockResolvedValueOnce({ success: true });
+      mockCreateNotification.mockResolvedValueOnce({
+        id: 'notification-1',
+        userId: mockStudentId,
+        message: 'Test notification',
+        type: 'assignment_new',
+        isRead: false,
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z'
+      });
 
       const dataWithSubmission = {
         ...mockAssessmentData,
@@ -165,7 +205,15 @@ describe('AssessmentNotificationService', () => {
 
   describe('notifyLateSubmission', () => {
     it('creates late submission warning notification', async () => {
-      mockCreateNotification.mockResolvedValueOnce({ success: true });
+      mockCreateNotification.mockResolvedValueOnce({
+        id: 'notification-1',
+        userId: mockStudentId,
+        message: 'Test notification',
+        type: 'assignment_new',
+        isRead: false,
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z'
+      });
 
       await assessmentNotificationService.notifyLateSubmission(
         mockStudentId,
@@ -188,7 +236,15 @@ describe('AssessmentNotificationService', () => {
 
   describe('batchNotifyNewAssessment', () => {
     it('sends notifications to multiple students', async () => {
-      mockCreateNotification.mockResolvedValue({ success: true });
+      mockCreateNotification.mockResolvedValue({
+        id: 'notification-1',
+        userId: 'student1',
+        message: 'Test notification',
+        type: 'reminder',
+        isRead: false,
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z'
+      });
 
       const students = [
         { id: 'student1', name: 'John Doe' },
@@ -277,9 +333,17 @@ describe('AssessmentNotificationService', () => {
         .mockResolvedValue({
           ok: true,
           json: () => Promise.resolve(mockStudents),
-        });
+        } as Response);
 
-      mockCreateNotification.mockResolvedValue({ success: true });
+      mockCreateNotification.mockResolvedValue({
+        id: 'notification-1',
+        userId: 'student1',
+        message: 'Test notification',
+        type: 'reminder',
+        isRead: false,
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z'
+      });
 
       await assessmentNotificationService.checkAndSendDeadlineReminders();
 
@@ -312,7 +376,7 @@ describe('AssessmentNotificationService', () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockAssessments),
-      });
+      } as Response);
 
       await assessmentNotificationService.checkAndSendDeadlineReminders();
 
@@ -324,7 +388,15 @@ describe('AssessmentNotificationService', () => {
 
   describe('template formatting', () => {
     it('formats template strings correctly', async () => {
-      mockCreateNotification.mockResolvedValueOnce({ success: true });
+      mockCreateNotification.mockResolvedValueOnce({
+        id: 'notification-1',
+        userId: mockStudentId,
+        message: 'Test notification',
+        type: 'assignment_new',
+        isRead: false,
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z'
+      });
 
       const customData = {
         ...mockAssessmentData,

@@ -20,12 +20,12 @@ jest.mock('next/link', () => {
 // Mock date-fns functions
 jest.mock('date-fns', () => ({
   formatDistanceToNow: jest.fn(() => '2 hours ago'),
-  parseISO: jest.fn((dateString) => new Date(dateString)),
-  addDays: jest.fn((date, days) => new Date(date.getTime() + days * 24 * 60 * 60 * 1000)),
+  parseISO: jest.fn((dateString: string) => new Date(dateString)),
+  addDays: jest.fn((date: Date, days: number) => new Date(date.getTime() + days * 24 * 60 * 60 * 1000)),
 }));
 
 // Mock fetch
-const mockFetch = jest.fn();
+const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>;
 global.fetch = mockFetch;
 
 describe('RealTimeAssessmentNotifications', () => {
@@ -96,11 +96,11 @@ describe('RealTimeAssessmentNotifications', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockUpcomingAssessments),
-      })
+      } as Partial<Response>)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockRecentNotifications),
-      });
+      } as Partial<Response>);
 
     render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
 
@@ -118,11 +118,11 @@ describe('RealTimeAssessmentNotifications', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([]),
-      })
+      } as Partial<Response>)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockRecentNotifications),
-      });
+      } as Partial<Response>);
 
     render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
 
@@ -185,11 +185,11 @@ describe('RealTimeAssessmentNotifications', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([]),
-      })
+      } as Partial<Response>)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockRecentNotifications),
-      });
+      } as Partial<Response>);
 
     render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
 
@@ -207,11 +207,11 @@ describe('RealTimeAssessmentNotifications', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([]),
-      })
+      } as Partial<Response>)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([]),
-      });
+      } as Partial<Response>);
 
     render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
 
@@ -272,11 +272,11 @@ describe('RealTimeAssessmentNotifications', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([]),
-      })
+      } as Partial<Response>)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([]),
-      });
+      } as Partial<Response>);
 
     render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
 
@@ -295,11 +295,11 @@ describe('RealTimeAssessmentNotifications', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([]),
-      })
+      } as Partial<Response>)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([]),
-      });
+      } as Partial<Response>);
 
     render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
 
@@ -314,11 +314,11 @@ describe('RealTimeAssessmentNotifications', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([]),
-      })
+      } as Partial<Response>)
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([]),
-      });
+      } as Partial<Response>);
 
     render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
 
