@@ -1,13 +1,12 @@
 // e2e/student-notifications-realtime.spec.ts
 import { test, expect } from '@playwright/test';
-import { loginAsStudent, createTestUser, cleanupTestUser } from './helpers/auth-helpers';
+import { loginAsStudent, cleanupTestUser, type TestUser } from './helpers/auth-helpers';
 
 test.describe('Student Real-Time Assessment Notifications', () => {
-  let testUser: any;
+  let testUser: TestUser;
 
   test.beforeEach(async ({ page }) => {
-    testUser = await createTestUser('student');
-    await loginAsStudent(page, testUser);
+    testUser = await loginAsStudent(page);
   });
 
   test.afterEach(async () => {
@@ -19,11 +18,15 @@ test.describe('Student Real-Time Assessment Notifications', () => {
   test('should display real-time notifications component on dashboard', async ({ page }) => {
     await page.goto('/student/dashboard');
     
-    // Wait for the page to load and user data to be available
+    // Wait for page to fully load
     await page.waitForLoadState('networkidle');
     
-    // Check if the real-time notifications component is visible
-    await expect(page.locator('[data-testid="assessment-notifications"]')).toBeVisible({ timeout: 15000 });
+    // Wait for dashboard welcome message to ensure user data is loaded
+    await expect(page.getByText(/welcome back/i)).toBeVisible({ timeout: 20000 });
+    
+    // Now check if the real-time notifications component is visible
+    // The component is conditionally rendered based on user.id
+    await expect(page.locator('[data-testid="assessment-notifications"]')).toBeVisible({ timeout: 10000 });
     await expect(page.getByText('Assessment Notifications')).toBeVisible();
     await expect(page.getByText('Live')).toBeVisible();
   });

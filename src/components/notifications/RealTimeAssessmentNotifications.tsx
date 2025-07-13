@@ -149,7 +149,7 @@ const RealTimeAssessmentNotifications: React.FC<AssessmentNotificationProps> = (
   }
 
   return (
-    <Card className="w-full">
+    <Card className="w-full" data-testid="assessment-notifications">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-2">
