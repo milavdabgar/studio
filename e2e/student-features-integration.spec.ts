@@ -49,10 +49,10 @@ test.describe('Student Dashboard New Features Integration', () => {
     // Check main analytics dashboard
     await expect(page.getByText('Assessment Analytics Dashboard')).toBeVisible({ timeout: 10000 });
     
-    // Check key metrics
+    // Check key metrics - be more specific with selectors
     await expect(page.getByText('Average Score')).toBeVisible();
     await expect(page.getByText('Completion Rate')).toBeVisible();
-    await expect(page.getByText('Assessments')).toBeVisible();
+    await expect(page.getByText('Assessments').first()).toBeVisible();
     await expect(page.getByText('Best Score')).toBeVisible();
   });
 
@@ -104,13 +104,13 @@ test.describe('Student Dashboard New Features Integration', () => {
     await page.goto('/student/analytics');
     await page.waitForLoadState('networkidle');
     
-    // Check for action buttons
-    await expect(page.getByRole('button', { name: /export data/i })).toBeVisible({ timeout: 10000 });
-    await expect(page.getByRole('button', { name: /share/i })).toBeVisible();
+    // Check for action buttons - use first() to avoid strict mode violations
+    await expect(page.getByRole('button', { name: /export data/i }).first()).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('button', { name: /share/i }).first()).toBeVisible();
     
     // Test export functionality
-    await page.getByRole('button', { name: /export data/i }).click();
-    await expect(page.getByText(/export started/i)).toBeVisible();
+    await page.getByRole('button', { name: /export data/i }).first().click();
+    await expect(page.getByText(/export started/i).first()).toBeVisible();
   });
 
   test('should navigate back to dashboard from analytics', async ({ page }) => {
@@ -145,11 +145,11 @@ test.describe('Student Dashboard New Features Integration', () => {
     // Scroll to resources section
     await page.locator('text=Improve Your Performance').scrollIntoViewIfNeeded();
     
-    // Check resources section
+    // Check resources section - use first() to avoid strict mode violations
     await expect(page.getByText('Improve Your Performance')).toBeVisible();
-    await expect(page.getByRole('link', { name: /study materials/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /upcoming assessments/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /detailed results/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /study materials/i }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: /upcoming assessments/i }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: /detailed results/i }).first()).toBeVisible();
   });
 
   test('should be responsive on mobile', async ({ page }) => {
