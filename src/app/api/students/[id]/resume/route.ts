@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { resumeGenerator, type ResumeData } from '@/lib/services/resumeGenerator';
 import { connectMongoose } from '@/lib/mongodb';
 import { StudentModel, ProgramModel, BatchModel, CourseModel } from '@/lib/models';
+import type { Student, Program, Batch, Course } from '@/types/entities';
 
 interface RouteParams {
   params: Promise<{
@@ -32,7 +33,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     await connectMongoose();
 
     // Fetch student data directly from database
-    const student = await StudentModel.findOne({ id: studentId }).lean();
+    const student = await StudentModel.findOne({ id: studentId }).lean() as Student | null;
 
     if (!student) {
       return NextResponse.json({ error: 'Student not found' }, { status: 404 });
@@ -40,9 +41,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     // Fetch related data directly from database
     const [program, batch, courses] = await Promise.all([
-      student.programId ? ProgramModel.findOne({ id: student.programId }).lean() : null,
-      student.batchId ? BatchModel.findOne({ id: student.batchId }).lean() : null,
-      CourseModel.find({}).lean()
+      student.programId ? ProgramModel.findOne({ id: student.programId }).lean().exec() as unknown as Promise<Program | null> : Promise.resolve(null),
+      student.batchId ? BatchModel.findOne({ id: student.batchId }).lean().exec() as unknown as Promise<Batch | null> : Promise.resolve(null),
+      CourseModel.find({}).lean().exec() as unknown as Promise<Course[]>
     ]);
 
     // Fetch student results (skip for now to avoid complexity)
@@ -133,7 +134,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     await connectMongoose();
 
     // Get current student data directly from database
-    const student = await StudentModel.findOne({ id: studentId }).lean();
+    const student = await StudentModel.findOne({ id: studentId }).lean() as Student | null;
 
     if (!student) {
       return NextResponse.json({ error: 'Student not found' }, { status: 404 });
@@ -141,9 +142,9 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     // Fetch related data directly from database
     const [program, batch, courses] = await Promise.all([
-      student.programId ? ProgramModel.findOne({ id: student.programId }).lean() : null,
-      student.batchId ? BatchModel.findOne({ id: student.batchId }).lean() : null,
-      CourseModel.find({}).lean()
+      student.programId ? ProgramModel.findOne({ id: student.programId }).lean().exec() as unknown as Promise<Program | null> : Promise.resolve(null),
+      student.batchId ? BatchModel.findOne({ id: student.batchId }).lean().exec() as unknown as Promise<Batch | null> : Promise.resolve(null),
+      CourseModel.find({}).lean().exec() as unknown as Promise<Course[]>
     ]);
 
     // Fetch student results (skip for now to avoid complexity)
