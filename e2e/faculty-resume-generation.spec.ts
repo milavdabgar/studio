@@ -305,31 +305,17 @@ test.describe('Faculty Resume Generation', () => {
     await page.locator('text=Download as PDF').click();
     
     // Should still show success message even if download fails
-    await expect(page.locator('text=/Resume Generated/i')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Resume Generated', { exact: true })).toBeVisible({ timeout: 10000 });
   });
 
   test('should properly format filename based on faculty name', async ({ page }) => {
     let responseHeaders: Record<string, string> = {};
     
-    // Mock faculty data with specific name
-    await page.route('/api/faculty', async (route) => {
-      await route.fulfill({
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify([{
-          id: 'faculty-1',
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'john.doe@example.com'
-        }])
-      });
-    });
-
     // Mock API response with specific filename
     await page.route('/api/faculty/*/resume*', async (route) => {
       responseHeaders = {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename="John_Doe_Faculty_Resume.pdf"'
+        'Content-Disposition': 'attachment; filename="Dr_Faculty_User_Resume.pdf"'
       };
       
       await route.fulfill({
@@ -339,10 +325,6 @@ test.describe('Faculty Resume Generation', () => {
       });
     });
 
-    // Navigate to the page
-    await page.goto('/faculty/profile');
-    await page.waitForLoadState('networkidle');
-
     // Click the Generate Resume button
     const resumeButton = page.locator('button:has-text("Generate Resume")');
     await resumeButton.click();
@@ -351,10 +333,10 @@ test.describe('Faculty Resume Generation', () => {
     await page.locator('text=Download as PDF').click();
     
     // Wait for completion
-    await expect(page.locator('text=/Resume Generated/i')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Resume Generated', { exact: true })).toBeVisible({ timeout: 10000 });
     
     // The filename should be properly formatted in the response headers
-    expect(responseHeaders['Content-Disposition']).toContain('John_Doe_Faculty_Resume.pdf');
+    expect(responseHeaders['Content-Disposition']).toContain('Dr_Faculty_User_Resume.pdf');
   });
 
   test('should maintain proper HTTP headers for security', async ({ page }) => {
@@ -385,7 +367,7 @@ test.describe('Faculty Resume Generation', () => {
     await page.locator('text=Download as PDF').click();
     
     // Wait for completion
-    await expect(page.locator('text=/Resume Generated/i')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Resume Generated', { exact: true })).toBeVisible({ timeout: 10000 });
     
     // Validate security headers are present
     expect(responseHeaders['Cache-Control']).toBe('no-cache, no-store, must-revalidate');
