@@ -1,7 +1,5 @@
 import { NextRequest } from 'next/server';
 import { GET, POST } from '../route';
-import { AssessmentModel } from '@/lib/models';
-import { connectMongoose } from '@/lib/mongodb';
 
 // Mock console methods to suppress expected error/warning messages during tests
 const originalConsoleError = console.error;
@@ -22,11 +20,12 @@ jest.mock('@/lib/mongodb', () => ({
   connectMongoose: jest.fn(),
 }));
 
-// Mock the AssessmentModel
+// Create shared mock functions
+const mockSave = jest.fn();
+const mockToJSON = jest.fn();
+
+// Mock the modules first
 jest.mock('@/lib/models', () => {
-  const mockSave = jest.fn();
-  const mockToJSON = jest.fn();
-  
   const MockAssessmentModel = jest.fn().mockImplementation(() => ({
     save: mockSave,
     toJSON: mockToJSON,
@@ -42,9 +41,17 @@ jest.mock('@/lib/models', () => {
   };
 });
 
+const { connectMongoose } = require('@/lib/mongodb');
+
 // Get references to the mocked functions
 const { AssessmentModel } = require('@/lib/models');
-const { connectMongoose } = require('@/lib/mongodb');
+const mockFind = AssessmentModel.find as jest.MockedFunction<any>;
+const mockFindOne = AssessmentModel.findOne as jest.MockedFunction<any>;
+const mockCountDocuments = AssessmentModel.countDocuments as jest.MockedFunction<any>;
+const mockInsertMany = AssessmentModel.insertMany as jest.MockedFunction<any>;
+const mockAssessmentModel = AssessmentModel;
+
+// Instance mocks are already defined above and shared
 
 describe('/api/assessments', () => {
   const mockAssessments = [
@@ -86,16 +93,21 @@ describe('/api/assessments', () => {
 
   describe('GET /api/assessments', () => {
     it('should return all assessments with proper id mapping', async () => {
-      (AssessmentModel.countDocuments as jest.MockedFunction<any>).mockResolvedValue(2);
+      mockCountDocuments.mockResolvedValue(2);
       const leanResult = Promise.resolve(mockAssessments);
-      (AssessmentModel.find as jest.MockedFunction<any>).mockReturnValue({ lean: () => leanResult });
+      const mockQueryBuilder = {
+        lean: () => mockQueryBuilder,
+        limit: () => mockQueryBuilder,
+        sort: () => leanResult
+      };
+      mockFind.mockReturnValue(mockQueryBuilder);
       
       const request = new Request('http://localhost/api/assessments');
       const response = await GET(request as any);
       const data = await response.json();
       
       expect(response.status).toBe(200);
-      expect(AssessmentModel.find).toHaveBeenCalledWith({});
+      expect(mockFind).toHaveBeenCalledWith({});
       expect(Array.isArray(data)).toBe(true);
       expect(data).toHaveLength(2);
       expect(data[0].id).toBe('asmnt_quiz1_cs101_gpp');
@@ -108,7 +120,12 @@ describe('/api/assessments', () => {
       mockCountDocuments.mockResolvedValue(0);
       mockInsertMany.mockResolvedValue([]);
       const leanResult = Promise.resolve([]);
-      mockFind.mockReturnValue({ lean: () => leanResult });
+      const mockQueryBuilder = {
+        lean: () => mockQueryBuilder,
+        limit: () => mockQueryBuilder,
+        sort: () => leanResult
+      };
+      mockFind.mockReturnValue(mockQueryBuilder);
       
       const request = new Request('http://localhost/api/assessments');
       const response = await GET(request as any);
@@ -142,7 +159,12 @@ describe('/api/assessments', () => {
       
       mockCountDocuments.mockResolvedValue(2);
       const leanResult = Promise.resolve(assessmentsWithoutId);
-      mockFind.mockReturnValue({ lean: () => leanResult });
+      const mockQueryBuilder = {
+        lean: () => mockQueryBuilder,
+        limit: () => mockQueryBuilder,
+        sort: () => leanResult
+      };
+      mockFind.mockReturnValue(mockQueryBuilder);
       
       const request = new Request('http://localhost/api/assessments');
       const response = await GET(request as any);
