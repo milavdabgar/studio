@@ -4,11 +4,12 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { UserCircle, Mail, Phone, CalendarDays, Briefcase, Edit, Loader2, Building, Star } from "lucide-react";
+import { UserCircle, Mail, Phone, CalendarDays, Briefcase, Edit, Loader2, Building, Star, Download, FileText, FileCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Faculty } from '@/types/entities';
 import { facultyService } from '@/lib/api/faculty';
 import { format } from 'date-fns';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 interface UserCookie {
   email: string;
   name: string;
@@ -34,6 +35,7 @@ export default function FacultyProfilePage() {
   const [faculty, setFaculty] = useState<Faculty | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserCookie | null>(null);
+  const [isGeneratingResume, setIsGeneratingResume] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -72,6 +74,65 @@ export default function FacultyProfilePage() {
     };
     fetchProfileData();
   }, [user, toast]);
+
+  const handleGenerateResume = async (format: 'pdf' | 'docx' | 'html' | 'txt') => {
+    if (!faculty || !user) {
+      toast({ variant: "destructive", title: "Error", description: "Faculty data not available." });
+      return;
+    }
+
+    setIsGeneratingResume(true);
+    
+    try {
+      const response = await fetch(`/api/faculty/${faculty.id}/resume?format=${format}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to generate resume');
+      }
+
+      // Get the filename from response headers
+      const contentDisposition = response.headers.get('Content-Disposition');
+      let filename = `${faculty.firstName || 'Faculty'}_Resume.${format}`;
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename="([^"]*)"/);
+        if (filenameMatch) {
+          filename = filenameMatch[1];
+        }
+      }
+
+      // Download the file
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({ 
+        title: "Resume Generated", 
+        description: `Your resume has been generated and downloaded as ${format.toUpperCase()}.` 
+      });
+
+    } catch (error) {
+      console.error('Error generating resume:', error);
+      toast({ 
+        variant: "destructive", 
+        title: "Generation Failed", 
+        description: error instanceof Error ? error.message : "Could not generate resume." 
+      });
+    } finally {
+      setIsGeneratingResume(false);
+    }
+  };
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
@@ -133,10 +194,41 @@ export default function FacultyProfilePage() {
             </div>
           )}
         </CardContent>
-         <CardFooter className="justify-center pt-6">
+         <CardFooter className="justify-center pt-6 gap-4">
            <Button variant="outline" disabled>
             <Edit className="mr-2 h-4 w-4" /> Edit Profile (Coming Soon)
           </Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button disabled={isGeneratingResume}>
+                {isGeneratingResume ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Download className="mr-2 h-4 w-4" />
+                )}
+                Generate Resume
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => handleGenerateResume('pdf')}>
+                <FileText className="mr-2 h-4 w-4" />
+                Download as PDF
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleGenerateResume('docx')}>
+                <FileCheck className="mr-2 h-4 w-4" />
+                Download as DOCX
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleGenerateResume('html')}>
+                <FileText className="mr-2 h-4 w-4" />
+                Download as HTML
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleGenerateResume('txt')}>
+                <FileText className="mr-2 h-4 w-4" />
+                Download as TXT
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </CardFooter>
       </Card>
     </div>
