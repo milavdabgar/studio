@@ -376,7 +376,7 @@ const AssessmentAnalyticsDashboard: React.FC<AssessmentAnalyticsProps> = ({
                   <SelectValue placeholder="All Types" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem key="all" value="all">All Types</SelectItem>
                   {assessmentTypes.map(type => (
                     <SelectItem key={type} value={type}>{type}</SelectItem>
                   ))}
