@@ -432,6 +432,95 @@ describe('/api/faculty/[id]/resume', () => {
     });
   });
 
+  describe('POST format coverage tests', () => {
+    it('should handle unsupported format error', async () => {
+      const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume', {
+        method: 'POST',
+        body: JSON.stringify({ format: 'unsupported' }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const response = await POST(request, { params: Promise.resolve({ id: 'faculty-123' }) });
+
+      expect(response.status).toBe(400);
+      const errorData = await response.json();
+      expect(errorData.error).toBe('Unsupported format');
+    });
+
+    it('should handle TXT format generation', async () => {
+      const customData = { format: 'txt', experience: [] };
+      const mockTxtContent = 'John Doe\nFaculty\nExperience: ...';
+      mockFacultyResumeGenerator.generatePlainText.mockReturnValue(mockTxtContent);
+
+      const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume', {
+        method: 'POST',
+        body: JSON.stringify(customData),
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const response = await POST(request, { params: Promise.resolve({ id: 'faculty-123' }) });
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get('Content-Type')).toBe('text/plain');
+      expect(mockFacultyResumeGenerator.generatePlainText).toHaveBeenCalledWith(expect.objectContaining({
+        fullName: 'Dr. John Michael Doe',
+        staffCode: 'FAC001'
+      }));
+    });
+
+    it('should handle HTML format generation', async () => {
+      const customData = { format: 'html', experience: [] };
+      const mockHtmlContent = '<html><body><h1>John Doe</h1></body></html>';
+      mockFacultyResumeGenerator.generateHTML.mockReturnValue(mockHtmlContent);
+
+      const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume', {
+        method: 'POST',
+        body: JSON.stringify(customData),
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const response = await POST(request, { params: Promise.resolve({ id: 'faculty-123' }) });
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get('Content-Type')).toBe('text/html');
+      expect(mockFacultyResumeGenerator.generateHTML).toHaveBeenCalledWith(expect.objectContaining({
+        fullName: 'Dr. John Michael Doe',
+        staffCode: 'FAC001'
+      }));
+    });
+
+    it('should handle general error during faculty profile fetch', async () => {
+      // Mock faculty service to throw a general error
+      mockFacultyService.getAllFaculty.mockRejectedValueOnce(new Error('Database connection failed'));
+
+      const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume');
+      const response = await GET(request, { params: Promise.resolve({ id: 'faculty-123' }) });
+
+      expect(response.status).toBe(500);
+      const errorData = await response.json();
+      expect(errorData.error).toBe('Failed to generate resume');
+      expect(errorData.details).toBe('Database connection failed');
+    });
+
+    it('should handle outer catch block for POST custom resume generation', async () => {
+      // Mock an error that occurs before the inner try-catch
+      mockFacultyService.getAllFaculty.mockRejectedValueOnce(new Error('Database connection failed'));
+
+      const request = new NextRequest('http://localhost:3000/api/faculty/faculty-123/resume', {
+        method: 'POST',
+        body: JSON.stringify({ format: 'pdf' }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const response = await POST(request, { params: Promise.resolve({ id: 'faculty-123' }) });
+
+      expect(response.status).toBe(500);
+      const errorData = await response.json();
+      expect(errorData.error).toBe('Failed to generate custom resume');
+      expect(errorData.details).toBe('Database connection failed');
+    });
+  });
+
   describe('caching and headers', () => {
     it('should set appropriate cache control headers', async () => {
       const mockPdfBuffer = Buffer.from('mock-pdf-content');
