@@ -29,7 +29,7 @@ jest.mock('@/lib/models', () => {
   const MockAssessmentModel = jest.fn().mockImplementation(() => ({
     save: mockSave,
     toJSON: mockToJSON,
-  }));
+  })) as any;
   
   MockAssessmentModel.find = jest.fn();
   MockAssessmentModel.findOne = jest.fn();
