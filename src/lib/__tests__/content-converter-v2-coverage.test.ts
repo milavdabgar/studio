@@ -95,9 +95,9 @@ describe('ContentConverterV2 - Coverage Tests', () => {
 
       // Override the convertToPdfPuppeteer method to simulate Puppeteer not being available
       const originalMethod = (converter as unknown as ContentConverterInternal).convertToPdfPuppeteer;
-      (converter as unknown as ContentConverterInternal).convertToPdfPuppeteer = async function() {
-        // Simulate the fallback logic
-        return await (mockChrome as jest.MockedFunction<typeof mockChrome>)('<p>test</p>', {}, {});
+      (converter as unknown as ContentConverterInternal).convertToPdfPuppeteer = async function(content: string, frontmatter: Record<string, unknown>, options: Record<string, unknown>) {
+        // Simulate the fallback logic - call the Chrome method
+        return await (converter as unknown as ContentConverterInternal).convertToPdfChrome(content, frontmatter, options);
       };
 
       const result = await (converter as unknown as ContentConverterInternal).convertToPdfPuppeteer('<p>test</p>', {}, {});
@@ -181,7 +181,7 @@ describe('ContentConverterV2 - Coverage Tests', () => {
     it('should handle DOCX conversion errors', async () => {
       (mockedExec as jest.MockedFunction<typeof exec>).mockImplementation((command: string, options?: unknown, callback?: unknown) => {
         const cb = typeof options === 'function' ? options : callback;
-        if (cb) {
+        if (cb && typeof cb === 'function') {
           cb(new Error('Pandoc not found'), '', 'Command not found');
         }
         return {} as ReturnType<typeof exec>;
@@ -195,7 +195,7 @@ describe('ContentConverterV2 - Coverage Tests', () => {
     it('should handle EPUB conversion errors', async () => {
       (mockedExec as jest.MockedFunction<typeof exec>).mockImplementation((command: string, options?: unknown, callback?: unknown) => {
         const cb = typeof options === 'function' ? options : callback;
-        if (cb) {
+        if (cb && typeof cb === 'function') {
           cb(new Error('EPUB generation failed'), '', '');
         }
         return {} as ReturnType<typeof exec>;
@@ -209,7 +209,7 @@ describe('ContentConverterV2 - Coverage Tests', () => {
     it('should handle LaTeX conversion errors', async () => {
       (mockedExec as jest.MockedFunction<typeof exec>).mockImplementation((command: string, options?: unknown, callback?: unknown) => {
         const cb = typeof options === 'function' ? options : callback;
-        if (cb) {
+        if (cb && typeof cb === 'function') {
           cb(new Error('LaTeX conversion failed'), '', '');
         }
         return {} as ReturnType<typeof exec>;
@@ -223,7 +223,7 @@ describe('ContentConverterV2 - Coverage Tests', () => {
     it('should handle ODT conversion errors', async () => {
       (mockedExec as jest.MockedFunction<typeof exec>).mockImplementation((command: string, options?: unknown, callback?: unknown) => {
         const cb = typeof options === 'function' ? options : callback;
-        if (cb) {
+        if (cb && typeof cb === 'function') {
           cb(new Error('ODT conversion failed'), '', '');
         }
         return {} as ReturnType<typeof exec>;
@@ -237,7 +237,7 @@ describe('ContentConverterV2 - Coverage Tests', () => {
     it('should handle PPTX conversion errors', async () => {
       (mockedExec as jest.MockedFunction<typeof exec>).mockImplementation((command: string, options?: unknown, callback?: unknown) => {
         const cb = typeof options === 'function' ? options : callback;
-        if (cb) {
+        if (cb && typeof cb === 'function') {
           cb(new Error('PPTX conversion failed'), '', '');
         }
         return {} as ReturnType<typeof exec>;

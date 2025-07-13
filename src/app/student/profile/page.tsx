@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogClose, DialogTrigger } from "@/components/ui/dialog";
-import { UserCircle, Mail, Phone, CalendarDays, Landmark, GraduationCap, Loader2, Edit, BookOpen, AlertCircle, TrendingUp} from "lucide-react";
+import { UserCircle, Mail, Phone, CalendarDays, Landmark, GraduationCap, Loader2, Edit, BookOpen, AlertCircle, TrendingUp, Download, FileText, FileCheck} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Student, Program, Batch, Result, Course } from '@/types/entities';
 import { studentService } from '@/lib/api/students';
@@ -19,6 +19,7 @@ import { courseService } from '@/lib/api/courses';
 import { format, parseISO, isValid } from 'date-fns';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
 
 
@@ -72,6 +73,7 @@ export default function StudentProfilePage() {
 
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isSubmittingEdit, setIsSubmittingEdit] = useState(false);
+  const [isGeneratingResume, setIsGeneratingResume] = useState(false);
 
   // Form state for editing
   const [formPersonalEmail, setFormPersonalEmail] = useState('');
@@ -168,6 +170,65 @@ export default function StudentProfilePage() {
       toast({ variant: "destructive", title: "Update Failed", description: errorMessage });
     } finally {
       setIsSubmittingEdit(false);
+    }
+  };
+
+  const handleGenerateResume = async (format: 'pdf' | 'docx' | 'html' | 'txt') => {
+    if (!student || !user) {
+      toast({ variant: "destructive", title: "Error", description: "Student data not available." });
+      return;
+    }
+
+    setIsGeneratingResume(true);
+    
+    try {
+      const response = await fetch(`/api/students/${student.id}/resume?format=${format}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to generate resume');
+      }
+
+      // Get the filename from response headers
+      const contentDisposition = response.headers.get('Content-Disposition');
+      let filename = `${student.firstName || 'Student'}_Resume.${format}`;
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename="([^"]*)"/);
+        if (filenameMatch) {
+          filename = filenameMatch[1];
+        }
+      }
+
+      // Download the file
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({ 
+        title: "Resume Generated", 
+        description: `Your resume has been generated and downloaded as ${format.toUpperCase()}.` 
+      });
+
+    } catch (error) {
+      console.error('Error generating resume:', error);
+      toast({ 
+        variant: "destructive", 
+        title: "Generation Failed", 
+        description: error instanceof Error ? error.message : "Could not generate resume." 
+      });
+    } finally {
+      setIsGeneratingResume(false);
     }
   };
 
@@ -286,7 +347,7 @@ export default function StudentProfilePage() {
             </div>
           ))}
         </CardContent>
-        <CardFooter className="justify-center pt-6">
+        <CardFooter className="justify-center pt-6 gap-4">
            <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="outline" onClick={handleEditProfile}>
@@ -326,6 +387,37 @@ export default function StudentProfilePage() {
               </form>
             </DialogContent>
            </Dialog>
+
+           <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button disabled={isGeneratingResume}>
+                {isGeneratingResume ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Download className="mr-2 h-4 w-4" />
+                )}
+                Generate Resume
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => handleGenerateResume('pdf')}>
+                <FileText className="mr-2 h-4 w-4" />
+                Download as PDF
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleGenerateResume('docx')}>
+                <FileCheck className="mr-2 h-4 w-4" />
+                Download as DOCX
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleGenerateResume('html')}>
+                <FileText className="mr-2 h-4 w-4" />
+                Download as HTML
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleGenerateResume('txt')}>
+                <FileText className="mr-2 h-4 w-4" />
+                Download as TXT
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </CardFooter>
       </Card>
       <Card className="shadow-xl">
@@ -382,12 +474,43 @@ export default function StudentProfilePage() {
                     </ul>
                 </div>
             )}
-             <div className="mt-4">
+             <div className="mt-4 flex flex-wrap gap-3">
                 <Button variant="outline" asChild>
               <Link href="/student/results">
                 <BookOpen className="mr-2 h-4 w-4" /> View Detailed Marksheets
               </Link>
             </Button>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="default" disabled={isGeneratingResume}>
+                  {isGeneratingResume ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Download className="mr-2 h-4 w-4" />
+                  )}
+                  Export Resume
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => handleGenerateResume('pdf')}>
+                  <FileText className="mr-2 h-4 w-4" />
+                  PDF Format (Recommended)
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleGenerateResume('docx')}>
+                  <FileCheck className="mr-2 h-4 w-4" />
+                  Microsoft Word
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleGenerateResume('html')}>
+                  <FileText className="mr-2 h-4 w-4" />
+                  Web Page
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleGenerateResume('txt')}>
+                  <FileText className="mr-2 h-4 w-4" />
+                  Plain Text
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             </div>
         </CardContent>
       </Card>

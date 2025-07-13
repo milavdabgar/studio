@@ -123,9 +123,9 @@ describe('ContentConverterV2 - Format Conversions', () => {
         await page.evaluateHandle('document.fonts.ready');
         await page.evaluate(() => Promise.resolve());
         const pdfBuffer = await page.pdf({
-          format: options.pdfOptions?.format || 'A4',
+          format: (options as any).pdfOptions?.format || 'A4',
           printBackground: true,
-          margin: options.pdfOptions?.margin || { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' }
+          margin: (options as any).pdfOptions?.margin || { top: '20mm', right: '20mm', bottom: '20mm', left: '20mm' }
         });
         await browser.close();
         return Buffer.from(pdfBuffer);
