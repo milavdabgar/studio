@@ -18,38 +18,33 @@ afterAll(() => {
 });
 
 // Mock the dependencies
-jest.mock('@/lib/mongodb');
+jest.mock('@/lib/mongodb', () => ({
+  connectMongoose: jest.fn(),
+}));
 
-// Create mock constructor and instance
-const mockAssessmentInstance = {
-  save: jest.fn(),
-  toJSON: jest.fn(),
-};
-
+// Mock the AssessmentModel
 jest.mock('@/lib/models', () => {
-  const MockAssessmentModelConstructor = jest.fn().mockImplementation(() => mockAssessmentInstance) as unknown as typeof AssessmentModel & {
-    find: jest.MockedFunction<typeof AssessmentModel.find>;
-    findOne: jest.MockedFunction<typeof AssessmentModel.findOne>;
-    countDocuments: jest.MockedFunction<typeof AssessmentModel.countDocuments>;
-    insertMany: jest.MockedFunction<typeof AssessmentModel.insertMany>;
-  };
-  MockAssessmentModelConstructor.find = jest.fn();
-  MockAssessmentModelConstructor.findOne = jest.fn();
-  MockAssessmentModelConstructor.countDocuments = jest.fn();
-  MockAssessmentModelConstructor.insertMany = jest.fn();
+  const mockSave = jest.fn();
+  const mockToJSON = jest.fn();
+  
+  const MockAssessmentModel = jest.fn().mockImplementation(() => ({
+    save: mockSave,
+    toJSON: mockToJSON,
+  }));
+  
+  MockAssessmentModel.find = jest.fn();
+  MockAssessmentModel.findOne = jest.fn();
+  MockAssessmentModel.countDocuments = jest.fn();
+  MockAssessmentModel.insertMany = jest.fn();
+  
   return {
-    AssessmentModel: MockAssessmentModelConstructor
+    AssessmentModel: MockAssessmentModel,
   };
 });
 
-const mockConnectMongoose = connectMongoose as jest.MockedFunction<typeof connectMongoose>;
-const mockAssessmentModel = AssessmentModel as unknown as typeof AssessmentModel & {
-  find: jest.MockedFunction<typeof AssessmentModel.find>;
-  findOne: jest.MockedFunction<typeof AssessmentModel.findOne>;
-  countDocuments: jest.MockedFunction<typeof AssessmentModel.countDocuments>;
-  insertMany: jest.MockedFunction<typeof AssessmentModel.insertMany>;
-  mockClear: jest.MockedFunction<() => void>;
-};
+// Get references to the mocked functions
+const { AssessmentModel } = require('@/lib/models');
+const { connectMongoose } = require('@/lib/mongodb');
 
 describe('/api/assessments', () => {
   const mockAssessments = [
@@ -86,24 +81,21 @@ describe('/api/assessments', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockConnectMongoose.mockResolvedValue(undefined);
-    mockAssessmentModel.mockClear();
-    mockAssessmentInstance.save.mockClear();
-    mockAssessmentInstance.toJSON.mockClear();
+    (connectMongoose as jest.MockedFunction<any>).mockResolvedValue(undefined);
   });
 
   describe('GET /api/assessments', () => {
     it('should return all assessments with proper id mapping', async () => {
-      mockAssessmentModel.countDocuments.mockResolvedValue(2);
+      (AssessmentModel.countDocuments as jest.MockedFunction<any>).mockResolvedValue(2);
       const leanResult = Promise.resolve(mockAssessments);
-      mockAssessmentModel.find.mockReturnValue({ lean: () => leanResult } as unknown as ReturnType<typeof AssessmentModel.find>);
+      (AssessmentModel.find as jest.MockedFunction<any>).mockReturnValue({ lean: () => leanResult });
       
       const request = new Request('http://localhost/api/assessments');
       const response = await GET(request as any);
       const data = await response.json();
       
       expect(response.status).toBe(200);
-      expect(mockAssessmentModel.find).toHaveBeenCalledWith({});
+      expect(AssessmentModel.find).toHaveBeenCalledWith({});
       expect(Array.isArray(data)).toBe(true);
       expect(data).toHaveLength(2);
       expect(data[0].id).toBe('asmnt_quiz1_cs101_gpp');
@@ -113,18 +105,18 @@ describe('/api/assessments', () => {
     });
 
     it('should initialize default assessments when none exist', async () => {
-      mockAssessmentModel.countDocuments.mockResolvedValue(0);
-      mockAssessmentModel.insertMany.mockResolvedValue([]);
+      mockCountDocuments.mockResolvedValue(0);
+      mockInsertMany.mockResolvedValue([]);
       const leanResult = Promise.resolve([]);
-      mockAssessmentModel.find.mockReturnValue({ lean: () => leanResult } as unknown as ReturnType<typeof AssessmentModel.find>);
+      mockFind.mockReturnValue({ lean: () => leanResult });
       
       const request = new Request('http://localhost/api/assessments');
       const response = await GET(request as any);
       const data = await response.json();
       
       expect(response.status).toBe(200);
-      expect(mockAssessmentModel.countDocuments).toHaveBeenCalled();
-      expect(mockAssessmentModel.insertMany).toHaveBeenCalledWith(
+      expect(mockCountDocuments).toHaveBeenCalled();
+      expect(mockInsertMany).toHaveBeenCalledWith(
         expect.arrayContaining([
           expect.objectContaining({
             id: 'asmnt_quiz1_cs101_gpp',
@@ -148,9 +140,9 @@ describe('/api/assessments', () => {
         return assessmentWithoutId;
       });
       
-      mockAssessmentModel.countDocuments.mockResolvedValue(2);
+      mockCountDocuments.mockResolvedValue(2);
       const leanResult = Promise.resolve(assessmentsWithoutId);
-      mockAssessmentModel.find.mockReturnValue({ lean: () => leanResult } as unknown as ReturnType<typeof AssessmentModel.find>);
+      mockFind.mockReturnValue({ lean: () => leanResult });
       
       const request = new Request('http://localhost/api/assessments');
       const response = await GET(request as any);
@@ -163,7 +155,7 @@ describe('/api/assessments', () => {
 
     it('should handle database errors', async () => {
       const errorMessage = 'Database connection failed';
-      mockAssessmentModel.countDocuments.mockRejectedValue(new Error(errorMessage));
+      mockCountDocuments.mockRejectedValue(new Error(errorMessage));
       
       const request = new Request('http://localhost/api/assessments');
       const response = await GET(request as any);
@@ -191,9 +183,9 @@ describe('/api/assessments', () => {
     };
 
     beforeEach(() => {
-      mockAssessmentModel.findOne.mockResolvedValue(null);
-      mockAssessmentInstance.save.mockResolvedValue(undefined);
-      mockAssessmentInstance.toJSON.mockReturnValue({
+      mockFindOne.mockResolvedValue(null);
+      mockSave.mockResolvedValue(undefined);
+      mockToJSON.mockReturnValue({
         ...validAssessmentData,
         id: 'asmnt_12345_abcdef',
         createdAt: expect.any(String),
@@ -413,7 +405,7 @@ describe('/api/assessments', () => {
     });
 
     it('should return 409 for duplicate assessment name in same course/program/batch', async () => {
-      mockAssessmentModel.findOne.mockResolvedValue({
+      mockFindOne.mockResolvedValue({
         name: 'Final Exam - Computer Networks',
         courseId: 'course_cs201_dce_gpp'
       });
@@ -439,7 +431,7 @@ describe('/api/assessments', () => {
         maxMarks: 25
       };
       
-      mockAssessmentInstance.toJSON.mockReturnValue({
+      mockToJSON.mockReturnValue({
         ...minimalData,
         id: 'asmnt_12345_simple',
         status: 'Draft',
@@ -468,7 +460,7 @@ describe('/api/assessments', () => {
     });
 
     it('should handle database errors during assessment creation', async () => {
-      mockAssessmentInstance.save.mockRejectedValue(new Error('Database save failed'));
+      mockSave.mockRejectedValue(new Error('Database save failed'));
       
       const request = new NextRequest('http://localhost/api/assessments', {
         method: 'POST',
@@ -507,7 +499,7 @@ describe('/api/assessments', () => {
     });
 
     it('should handle case-insensitive duplicate name checking', async () => {
-      mockAssessmentModel.findOne.mockReturnValue({
+      mockFindOne.mockReturnValue({
         exec: () => Promise.resolve({
           name: 'FINAL EXAM - COMPUTER NETWORKS',
           courseId: 'course_cs201_dce_gpp'

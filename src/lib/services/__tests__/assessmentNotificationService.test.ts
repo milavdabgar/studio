@@ -275,9 +275,25 @@ describe('AssessmentNotificationService', () => {
 
     it('handles partial failures in batch notification', async () => {
       mockCreateNotification
-        .mockResolvedValueOnce({ success: true })
+        .mockResolvedValueOnce({
+          id: 'notification-1',
+          userId: 'student1',
+          message: 'Test notification',
+          type: 'assignment_new',
+          isRead: false,
+          createdAt: '2024-07-13T10:00:00Z',
+          updatedAt: '2024-07-13T10:00:00Z'
+        })
         .mockRejectedValueOnce(new Error('API Error'))
-        .mockResolvedValueOnce({ success: true });
+        .mockResolvedValueOnce({
+          id: 'notification-3',
+          userId: 'student3',
+          message: 'Test notification',
+          type: 'assignment_new',
+          isRead: false,
+          createdAt: '2024-07-13T10:00:00Z',
+          updatedAt: '2024-07-13T10:00:00Z'
+        });
 
       const students = [
         { id: 'student1', name: 'John Doe' },
@@ -326,14 +342,14 @@ describe('AssessmentNotificationService', () => {
       ];
 
       mockFetch
-        .mockResolvedValueOnce({
-          ok: true,
-          json: () => Promise.resolve(mockAssessments),
-        })
-        .mockResolvedValue({
-          ok: true,
-          json: () => Promise.resolve(mockStudents),
-        } as Response);
+        .mockResolvedValueOnce(new Response(JSON.stringify(mockAssessments), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        }))
+        .mockResolvedValue(new Response(JSON.stringify(mockStudents), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        }));
 
       mockCreateNotification.mockResolvedValue({
         id: 'notification-1',

@@ -313,7 +313,7 @@ const AssessmentAnalyticsDashboard: React.FC<AssessmentAnalyticsProps> = ({
     return {
       averageScore: Math.round(averageScore),
       trend,
-      completionRate: filteredScores.length > 0 ? Math.round((gradedScores.length / filteredScores.length) * 100) : 0,
+      completionRate: filteredData.assessments.length > 0 ? Math.round((gradedScores.length / filteredData.assessments.length) * 100) : 0,
       totalAssessments: filteredData.assessments.length,
       completedAssessments: gradedScores.length,
       pendingAssessments: filteredData.assessments.length - gradedScores.length,

@@ -1,6 +1,6 @@
 // src/components/notifications/__tests__/RealTimeAssessmentNotifications.test.tsx
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import { jest } from '@jest/globals';
 import RealTimeAssessmentNotifications from '../RealTimeAssessmentNotifications';
 
@@ -30,6 +30,14 @@ global.fetch = mockFetch;
 
 describe('RealTimeAssessmentNotifications', () => {
   const mockStudentId = 'student123';
+  
+  // Helper function to create a mock response
+  const createMockResponse = (data: any): Response => ({
+    ok: true,
+    status: 200,
+    json: () => Promise.resolve(data),
+    headers: new Headers({ 'Content-Type': 'application/json' })
+  } as Response);
   
   const mockUpcomingAssessments = [
     {
@@ -93,21 +101,27 @@ describe('RealTimeAssessmentNotifications', () => {
 
   it('fetches and displays upcoming assessments', async () => {
     mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(mockUpcomingAssessments),
-      } as Partial<Response>)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(mockRecentNotifications),
-      } as Partial<Response>);
+      .mockResolvedValueOnce(createMockResponse(mockUpcomingAssessments))
+      .mockResolvedValueOnce(createMockResponse(mockRecentNotifications));
 
-    render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
+    await act(async () => {
+      render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
+    });
+
+    // Wait for the fetch calls to be made
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledWith(
+        `/api/assessments?studentId=${mockStudentId}&status=pending&upcoming=true`
+      );
+      expect(mockFetch).toHaveBeenCalledWith(
+        `/api/notifications?userId=${mockStudentId}&type=assessment&recent=true&limit=5`
+      );
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Midterm Exam')).toBeInTheDocument();
       expect(screen.getByText('Programming Assignment')).toBeInTheDocument();
-    });
+    }, { timeout: 3000 });
 
     expect(screen.getByText('Computer Science 101 • Due 2 hours ago')).toBeInTheDocument();
     expect(screen.getByText('Data Structures • Due 2 hours ago')).toBeInTheDocument();
@@ -115,16 +129,12 @@ describe('RealTimeAssessmentNotifications', () => {
 
   it('fetches and displays recent notifications', async () => {
     mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve([]),
-      } as Partial<Response>)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(mockRecentNotifications),
-      } as Partial<Response>);
+      .mockResolvedValueOnce(createMockResponse([]))
+      .mockResolvedValueOnce(createMockResponse(mockRecentNotifications));
 
-    render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
+    await act(async () => {
+      render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Your assignment "Programming Assignment" has been graded.')).toBeInTheDocument();
@@ -139,16 +149,12 @@ describe('RealTimeAssessmentNotifications', () => {
     };
 
     mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve([urgentAssessment]),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve([]),
-      });
+      .mockResolvedValueOnce(createMockResponse([urgentAssessment]))
+      .mockResolvedValueOnce(createMockResponse([]));
 
-    render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
+    await act(async () => {
+      render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Midterm Exam')).toBeInTheDocument();
@@ -160,16 +166,12 @@ describe('RealTimeAssessmentNotifications', () => {
 
   it('shows progress bars for assessments', async () => {
     mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(mockUpcomingAssessments),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve([]),
-      });
+      .mockResolvedValueOnce(createMockResponse(mockUpcomingAssessments))
+      .mockResolvedValueOnce(createMockResponse([]));
 
-    render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
+    await act(async () => {
+      render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Midterm Exam')).toBeInTheDocument();
@@ -182,16 +184,12 @@ describe('RealTimeAssessmentNotifications', () => {
 
   it('displays appropriate notification icons', async () => {
     mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve([]),
-      } as Partial<Response>)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(mockRecentNotifications),
-      } as Partial<Response>);
+      .mockResolvedValueOnce(createMockResponse([]))
+      .mockResolvedValueOnce(createMockResponse(mockRecentNotifications));
 
-    render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
+    await act(async () => {
+      render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Your assignment "Programming Assignment" has been graded.')).toBeInTheDocument();
@@ -204,16 +202,12 @@ describe('RealTimeAssessmentNotifications', () => {
 
   it('handles empty states correctly', async () => {
     mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve([]),
-      } as Partial<Response>)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve([]),
-      } as Partial<Response>);
+      .mockResolvedValueOnce(createMockResponse([]))
+      .mockResolvedValueOnce(createMockResponse([]));
 
-    render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
+    await act(async () => {
+      render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
+    });
 
     await waitFor(() => {
       expect(screen.getByText('No upcoming assessments')).toBeInTheDocument();
@@ -246,12 +240,11 @@ describe('RealTimeAssessmentNotifications', () => {
     jest.useFakeTimers();
     
     mockFetch
-      .mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve([]),
-      });
+      .mockResolvedValue(createMockResponse([]));
 
-    render(<RealTimeAssessmentNotifications studentId={mockStudentId} refreshInterval={1000} />);
+    await act(async () => {
+      render(<RealTimeAssessmentNotifications studentId={mockStudentId} refreshInterval={1000} />);
+    });
 
     // Initial fetch calls (2 calls: assessments + notifications)
     expect(mockFetch).toHaveBeenCalledTimes(2);
@@ -269,14 +262,14 @@ describe('RealTimeAssessmentNotifications', () => {
 
   it('makes correct API calls with proper parameters', async () => {
     mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve([]),
-      } as Partial<Response>)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve([]),
-      } as Partial<Response>);
+      .mockResolvedValueOnce(new Response(JSON.stringify([]), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      }))
+      .mockResolvedValueOnce(new Response(JSON.stringify([]), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      }));
 
     render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
 
@@ -292,14 +285,14 @@ describe('RealTimeAssessmentNotifications', () => {
 
   it('shows live indicator and last refresh time', async () => {
     mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve([]),
-      } as Partial<Response>)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve([]),
-      } as Partial<Response>);
+      .mockResolvedValueOnce(new Response(JSON.stringify([]), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      }))
+      .mockResolvedValueOnce(new Response(JSON.stringify([]), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      }));
 
     render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
 
@@ -311,14 +304,14 @@ describe('RealTimeAssessmentNotifications', () => {
 
   it('renders action buttons correctly', async () => {
     mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve([]),
-      } as Partial<Response>)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve([]),
-      } as Partial<Response>);
+      .mockResolvedValueOnce(new Response(JSON.stringify([]), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      }))
+      .mockResolvedValueOnce(new Response(JSON.stringify([]), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      }));
 
     render(<RealTimeAssessmentNotifications studentId={mockStudentId} />);
 
