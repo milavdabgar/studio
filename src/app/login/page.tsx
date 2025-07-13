@@ -24,7 +24,7 @@ interface MockUser {
   instituteId?: string;
 }
 
-const getMockUsers = (): MockUser[] => {
+const getMockUsers = async (): Promise<MockUser[]> => {
   const baseUsers: MockUser[] = [
     { id: "u1", email: "admin@gppalanpur.in", password: "Admin@123", roles: ["admin", "super_admin"], name: "Super Admin", status: "active", instituteId: "inst1" },
     { id: "u2", email: "student@example.com", password: "password", roles: ["student"], name: "Alice Student", status: "active", instituteId: "inst1" },
@@ -38,7 +38,22 @@ const getMockUsers = (): MockUser[] => {
 
   if (typeof window !== 'undefined') {
     try {
-      const storedUsersRaw = localStorage.getItem('__API_USERS_STORE__');
+      let storedUsersRaw = localStorage.getItem('__API_USERS_STORE__');
+      
+      // If localStorage is empty, fetch users from API
+      if (!storedUsersRaw) {
+        try {
+          const response = await fetch('/api/users');
+          if (response.ok) {
+            const apiUsers = await response.json();
+            localStorage.setItem('__API_USERS_STORE__', JSON.stringify(apiUsers));
+            storedUsersRaw = JSON.stringify(apiUsers);
+          }
+        } catch (error) {
+          console.error("Error fetching users from API:", error);
+        }
+      }
+      
       if (storedUsersRaw) {
         const storedUsersFromApi: User[] = JSON.parse(storedUsersRaw); // Using User type now
         const combinedUsers = new Map<string, MockUser>();
@@ -49,7 +64,7 @@ const getMockUsers = (): MockUser[] => {
           const userToStore: MockUser = {
             id: apiUser.id,
             email: apiUser.email,
-            password: apiUser.password, 
+            password: (apiUser as any).password, // Cast to access password in development
             roles: apiUser.roles, // Assuming apiUser.roles are codes
             name: apiUser.displayName, // Use displayName from User
             status: apiUser.isActive ? 'active' : 'inactive',
@@ -84,7 +99,12 @@ export default function LoginPage() {
     if (typeof document !== 'undefined') {
         document.cookie = 'auth_user=;path=/;max-age=0';
     }
-    setMockUsersState(getMockUsers());
+    
+    const loadUsers = async () => {
+      const users = await getMockUsers();
+      setMockUsersState(users);
+    };
+    loadUsers();
 
     const fetchAllRoles = async () => {
       try {
@@ -292,7 +312,7 @@ export default function LoginPage() {
             <Button
               variant="outline"
               className="w-full text-sm py-3 mt-4"
-              onClick={() => {
+              onClick={async () => {
                 localStorage.removeItem('__API_USERS_STORE__'); 
                 localStorage.removeItem('__API_STUDENTS_STORE__'); 
                 localStorage.removeItem('__API_FACULTY_STORE__');
@@ -303,7 +323,8 @@ export default function LoginPage() {
                 localStorage.removeItem('__API_PROGRAMS_STORE__');
                 localStorage.removeItem('__API_COURSES_STORE__');
                 localStorage.removeItem('__API_ROLES_STORE__');
-                setMockUsersState(getMockUsers()); 
+                const users = await getMockUsers(); 
+                setMockUsersState(users);
                 toast({ title: "Dev Info", description: "Local storage for API stores cleared." });
               }}>Clear API Stores (Dev)</Button>
           )}

@@ -35,7 +35,9 @@ export async function GET() {
   try {
     await connectMongoose();
     
-    const users = await UserModel.find({}, '-password').lean();
+    // Include passwords in development for mock login system
+    const excludePassword = process.env.NODE_ENV === 'production' ? '-password' : '';
+    const users = await UserModel.find({}, excludePassword).lean();
     
     // Add mock users for E2E testing if they don't exist (only in test/dev environments)
     if (process.env.NODE_ENV !== 'production' && process.env.JEST_WORKER_ID === undefined) {

@@ -1,7 +1,7 @@
 import { connectMongoose, disconnectMongoDB } from '@/lib/mongodb';
 import { 
   UserModel, RoleModel, DepartmentModel, CourseModel, 
-  BatchModel, ProgramModel, InstituteModel, BuildingModel, RoomModel, CommitteeModel
+  BatchModel, ProgramModel, InstituteModel, BuildingModel, RoomModel, CommitteeModel, StudentModel
 } from '@/lib/models';
 
 // Initial user data (from current in-memory store)
@@ -41,6 +41,127 @@ const initialUsers = [
     firstName: "COMPUTER",
     lastName: "ENGINEERING",
     currentRole: "hod"
+  },
+  {
+    id: "user_student_ce001_gpp",
+    displayName: "John Smith",
+    username: "john_smith_ce001",
+    email: "john.smith@student.gppalanpur.in",
+    instituteEmail: "john.smith@gppalanpur.ac.in",
+    password: "Student@123",
+    roles: ["student"],
+    isActive: true,
+    instituteId: "inst1",
+    authProviders: ['password'],
+    isEmailVerified: true,
+    preferences: { theme: 'system', language: 'en' },
+    fullName: "JOHN SMITH",
+    firstName: "JOHN",
+    lastName: "SMITH",
+    currentRole: "student"
+  },
+  {
+    id: "user_student_ce002_gpp",
+    displayName: "Bob Wilson",
+    username: "bob_wilson_ce002",
+    email: "bob.wilson@student.gppalanpur.in",
+    instituteEmail: "bob.wilson@gppalanpur.ac.in",
+    password: "Student@123",
+    roles: ["student"],
+    isActive: true,
+    instituteId: "inst1",
+    authProviders: ['password'],
+    isEmailVerified: true,
+    preferences: { theme: 'system', language: 'en' },
+    fullName: "BOB WILSON",
+    firstName: "BOB",
+    lastName: "WILSON",
+    currentRole: "student"
+  },
+  {
+    id: "user_student_me001_gpp",
+    displayName: "Alice Johnson",
+    username: "alice_johnson_me001",
+    email: "alice.johnson@student.gppalanpur.in",
+    instituteEmail: "alice.johnson@gppalanpur.ac.in",
+    password: "Student@123",
+    roles: ["student"],
+    isActive: true,
+    instituteId: "inst1",
+    authProviders: ['password'],
+    isEmailVerified: true,
+    preferences: { theme: 'system', language: 'en' },
+    fullName: "ALICE JOHNSON",
+    firstName: "ALICE",
+    lastName: "JOHNSON",
+    currentRole: "student"
+  }
+];
+
+// Initial student profiles data
+const initialStudents = [
+  {
+    id: "student_ce001_gpp",
+    userId: "user_student_ce001_gpp",
+    enrollmentNumber: "220010107001",
+    firstName: "JOHN",
+    lastName: "SMITH",
+    fullNameGtuFormat: "JOHN SMITH",
+    personalEmail: "john.smith@student.gppalanpur.in",
+    instituteEmail: "john.smith@gppalanpur.ac.in",
+    programId: "prog_dce_gpp",
+    department: "dept_ce_gpp",
+    batchId: "batch_dce_2022_gpp",
+    status: "active",
+    currentSemester: 5,
+    creditsEarned: 120,
+    totalCredits: 180,
+    cpi: 8.5,
+    admissionYear: 2022,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: "student_ce002_gpp",
+    userId: "user_student_ce002_gpp",
+    enrollmentNumber: "220010107002",
+    firstName: "BOB",
+    lastName: "WILSON",
+    fullNameGtuFormat: "BOB WILSON",
+    personalEmail: "bob.wilson@student.gppalanpur.in",
+    instituteEmail: "bob.wilson@gppalanpur.ac.in",
+    programId: "prog_dce_gpp",
+    department: "dept_ce_gpp",
+    batchId: "batch_dce_2022_gpp",
+    status: "active",
+    currentSemester: 5,
+    creditsEarned: 115,
+    totalCredits: 180,
+    cpi: 7.8,
+    admissionYear: 2022,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: "student_me001_gpp",
+    userId: "user_student_me001_gpp",
+    enrollmentNumber: "230010108001",
+    firstName: "ALICE",
+    lastName: "JOHNSON",
+    fullNameGtuFormat: "ALICE JOHNSON",
+    personalEmail: "alice.johnson@student.gppalanpur.in",
+    instituteEmail: "alice.johnson@gppalanpur.ac.in",
+    programId: "prog_dme_gpp",
+    department: "dept_me_gpp",
+    batchId: "batch_dme_2023_gpp",
+    status: "active",
+    currentSemester: 3,
+    creditsEarned: 60,
+    totalCredits: 180,
+    cpi: 9.2,
+    admissionYear: 2023,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   }
 ];
 
@@ -438,6 +559,8 @@ async function seedDatabase() {
     await InstituteModel.deleteMany({});
     await BuildingModel.deleteMany({});
     await RoomModel.deleteMany({});
+    await StudentModel.deleteMany({});
+    await CommitteeModel.deleteMany({});
     console.log('🧹 Cleared existing data');
 
     // Seed institutes first (as they're referenced by other entities)
@@ -524,6 +647,18 @@ async function seedDatabase() {
     await UserModel.insertMany(userDocuments);
     console.log(`✅ Seeded ${initialUsers.length} users`);
 
+    // Seed students (depends on users, programs, and batches)
+    const studentDocuments = initialStudents.map(student => {
+      return {
+        ...student, // Keep all fields including custom id
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+    });
+    
+    await StudentModel.insertMany(studentDocuments);
+    console.log(`✅ Seeded ${initialStudents.length} students`);
+
     console.log('🎉 Database seeding completed successfully!');
 
     // Verify seeded data
@@ -537,7 +672,8 @@ async function seedDatabase() {
     const instituteCount = await InstituteModel.countDocuments();
     const buildingCount = await BuildingModel.countDocuments();
     const roomCount = await RoomModel.countDocuments();
-    console.log(`📊 Final counts: ${userCount} users, ${roleCount} roles, ${departmentCount} departments, ${committeeCount} committees, ${programCount} programs, ${batchCount} batches, ${courseCount} courses, ${instituteCount} institutes, ${buildingCount} buildings, ${roomCount} rooms`);
+    const studentCount = await StudentModel.countDocuments();
+    console.log(`📊 Final counts: ${userCount} users, ${roleCount} roles, ${departmentCount} departments, ${committeeCount} committees, ${programCount} programs, ${batchCount} batches, ${courseCount} courses, ${instituteCount} institutes, ${buildingCount} buildings, ${roomCount} rooms, ${studentCount} students`);
 
   } catch (error) {
     console.error('❌ Error seeding database:', error);

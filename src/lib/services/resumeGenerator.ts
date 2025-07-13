@@ -597,24 +597,203 @@ export class ResumeGenerator {
   }
 
   /**
-   * Generate resume in PDF format
+   * Generate only the content portion of the resume (without HTML wrapper)
+   */
+  generateResumeContentOnly(resumeData: ResumeData): string {
+    return `
+<div style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: 'Segoe UI', Arial, sans-serif;">
+    <div style="text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #2563eb;">
+        <h1 style="font-size: 2.5em; color: #1e40af; margin-bottom: 10px; font-weight: 700;">${resumeData.fullName}</h1>
+        <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; margin-top: 15px; font-size: 0.95em;">
+            <span style="color: #4b5563;">📧 ${resumeData.email}</span>
+            ${resumeData.contactNumber ? `<span style="color: #4b5563;">📞 ${resumeData.contactNumber}</span>` : ''}
+            <span style="color: #4b5563;">🆔 ${resumeData.enrollmentNumber}</span>
+            ${resumeData.address ? `<span style="color: #4b5563;">📍 ${resumeData.address}</span>` : ''}
+        </div>
+    </div>
+
+    <div style="margin-bottom: 25px;">
+        <h2 style="font-size: 1.4em; color: #1e40af; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Academic Information</h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid #2563eb;">
+                <strong style="color: #1e40af; display: block; margin-bottom: 5px;">Program</strong>
+                ${resumeData.program}${resumeData.programCode ? ` (${resumeData.programCode})` : ''}
+            </div>
+            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid #2563eb;">
+                <strong style="color: #1e40af; display: block; margin-bottom: 5px;">Current Semester</strong>
+                Semester ${resumeData.currentSemester}
+            </div>
+            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid #2563eb;">
+                <strong style="color: #1e40af; display: block; margin-bottom: 5px;">Enrollment Number</strong>
+                ${resumeData.enrollmentNumber}
+            </div>
+            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid #2563eb;">
+                <strong style="color: #1e40af; display: block; margin-bottom: 5px;">Institute Email</strong>
+                ${resumeData.instituteEmail}
+            </div>
+        </div>
+    </div>
+
+    ${resumeData.overallCPI ? `
+    <div style="margin-bottom: 25px;">
+        <h2 style="font-size: 1.4em; color: #1e40af; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Academic Performance</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+            <div style="background: #f0f9ff; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #bae6fd;">
+                <span style="font-size: 1.8em; font-weight: bold; color: #1e40af; display: block;">${resumeData.overallCPI.toFixed(2)}</span>
+                <div style="color: #4b5563; font-size: 0.9em; margin-top: 5px;">Overall CPI</div>
+            </div>
+            ${resumeData.earnedCredits && resumeData.totalCredits ? `
+            <div style="background: #f0f9ff; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #bae6fd;">
+                <span style="font-size: 1.8em; font-weight: bold; color: #1e40af; display: block;">${resumeData.earnedCredits}/${resumeData.totalCredits}</span>
+                <div style="color: #4b5563; font-size: 0.9em; margin-top: 5px;">Credits Earned</div>
+            </div>
+            ` : ''}
+            <div style="background: #f0f9ff; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #bae6fd;">
+                <span style="font-size: 1.8em; font-weight: bold; color: #1e40af; display: block;">${resumeData.academicStatus || 'N/A'}</span>
+                <div style="color: #4b5563; font-size: 0.9em; margin-top: 5px;">Academic Status</div>
+            </div>
+        </div>
+    </div>
+    ` : ''}
+
+    ${resumeData.semesterResults && resumeData.semesterResults.length > 0 ? `
+    <div style="margin-bottom: 25px;">
+        <h2 style="font-size: 1.4em; color: #1e40af; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Semester-wise Performance</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;">
+            ${resumeData.semesterResults.map(semester => `
+                <div style="background: #fefefe; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #f3f4f6;">
+                        <span style="font-weight: 600; color: #1e40af;">Semester ${semester.semester}</span>
+                        <span style="font-weight: bold; color: #059669;">SGPA: ${semester.sgpa}</span>
+                    </div>
+                    <div style="font-size: 0.85em; color: #4b5563;">
+                        ${semester.subjects.slice(0, 5).map(subject => `
+                            <div style="display: flex; justify-content: space-between; padding: 2px 0;">
+                                <span>${subject.name} (${subject.code})</span>
+                                <span style="font-weight: 600; color: #1e40af;">${subject.grade}</span>
+                            </div>
+                        `).join('')}
+                        ${semester.subjects.length > 5 ? `<div style="text-align: center; color: #6b7280; font-style: italic;">... and ${semester.subjects.length - 5} more subjects</div>` : ''}
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    </div>
+    ` : ''}
+
+    ${resumeData.skills && resumeData.skills.length > 0 ? `
+    <div style="margin-bottom: 25px;">
+        <h2 style="font-size: 1.4em; color: #1e40af; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Technical Skills</h2>
+        <ul style="list-style: none; padding-left: 0;">
+            ${resumeData.skills.map(skill => `<li style="background: #f8fafc; margin-bottom: 8px; padding: 10px 15px; border-radius: 6px; border-left: 3px solid #2563eb;">${skill}</li>`).join('')}
+        </ul>
+    </div>
+    ` : ''}
+
+    ${resumeData.projects && resumeData.projects.length > 0 ? `
+    <div style="margin-bottom: 25px;">
+        <h2 style="font-size: 1.4em; color: #1e40af; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Projects</h2>
+        ${resumeData.projects.map(project => `
+            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border-left: 4px solid #2563eb; margin-bottom: 15px;">
+                <strong style="color: #1e40af; display: block; margin-bottom: 5px;">${project.title}</strong>
+                <div style="margin-top: 5px; color: #4b5563;">${project.description}</div>
+                ${project.technologies ? `<div style="margin-top: 8px; font-size: 0.9em; color: #059669;"><strong>Technologies:</strong> ${project.technologies.join(', ')}</div>` : ''}
+                ${project.duration ? `<div style="margin-top: 5px; font-size: 0.9em; color: #6b7280;"><strong>Duration:</strong> ${project.duration}</div>` : ''}
+            </div>
+        `).join('')}
+    </div>
+    ` : ''}
+
+    ${resumeData.achievements && resumeData.achievements.length > 0 ? `
+    <div style="margin-bottom: 25px;">
+        <h2 style="font-size: 1.4em; color: #1e40af; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Achievements</h2>
+        <ul style="list-style: none; padding-left: 0;">
+            ${resumeData.achievements.map(achievement => `
+                <li style="background: #f8fafc; margin-bottom: 8px; padding: 10px 15px; border-radius: 6px; border-left: 3px solid #2563eb;">
+                    <strong>${achievement.title}</strong>
+                    ${achievement.description ? `<div style="margin-top: 5px; font-size: 0.9em; color: #4b5563;">${achievement.description}</div>` : ''}
+                    ${achievement.date ? `<div style="margin-top: 5px; font-size: 0.85em; color: #6b7280;">${achievement.date}</div>` : ''}
+                </li>
+            `).join('')}
+        </ul>
+    </div>
+    ` : ''}
+
+    ${resumeData.certifications && resumeData.certifications.length > 0 ? `
+    <div style="margin-bottom: 25px;">
+        <h2 style="font-size: 1.4em; color: #1e40af; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Certifications</h2>
+        <ul style="list-style: none; padding-left: 0;">
+            ${resumeData.certifications.map(cert => `
+                <li style="background: #f8fafc; margin-bottom: 8px; padding: 10px 15px; border-radius: 6px; border-left: 3px solid #2563eb;">
+                    <strong>${cert.name}</strong> - ${cert.issuer}
+                    ${cert.date ? `<div style="margin-top: 5px; font-size: 0.85em; color: #6b7280;">${cert.date}</div>` : ''}
+                </li>
+            `).join('')}
+        </ul>
+    </div>
+    ` : ''}
+
+    <div style="margin-top: 40px; text-align: center; font-size: 0.8em; color: #6b7280; border-top: 1px solid #e5e7eb; padding-top: 20px;">
+        <p>Generated on ${format(new Date(), 'PPP')} | Academic Resume</p>
+    </div>
+</div>
+    `.trim();
+  }
+
+  /**
+   * Generate resume in PDF format using Puppeteer directly
    */
   async generatePDF(resumeData: ResumeData): Promise<Buffer> {
+    // Use the complete HTML template that's designed for PDFs
     const htmlContent = this.generateResumeHTML(resumeData);
     
     try {
-      const result = await this.contentConverter.convert(htmlContent, 'pdf', {
-        pdfOptions: {
+      // Use Puppeteer directly to avoid double-wrapping
+      let puppeteer: any;
+      try {
+        puppeteer = require('puppeteer');
+      } catch {
+        throw new Error('Puppeteer not available for PDF generation');
+      }
+
+      let browser;
+      try {
+        browser = await puppeteer.launch({
+          headless: true,
+          args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-web-security'
+          ]
+        });
+
+        const page = await browser.newPage();
+        
+        await page.setContent(htmlContent, { 
+          waitUntil: 'networkidle0',
+          timeout: 30000
+        });
+
+        // Generate PDF with proper options
+        const pdfBuffer = await page.pdf({
           format: 'A4',
+          printBackground: true,
           margin: {
             top: '20mm',
             right: '15mm',
             bottom: '20mm',
             left: '15mm'
           }
+        });
+
+        return Buffer.from(pdfBuffer);
+
+      } finally {
+        if (browser) {
+          await browser.close();
         }
-      });
-      return result as Buffer;
+      }
     } catch (error) {
       console.error('Error generating PDF resume:', error);
       throw new Error(`Failed to generate PDF resume: ${error instanceof Error ? error.message : 'Unknown error'}`);
