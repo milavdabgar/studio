@@ -83,6 +83,7 @@
     "mcp:build": "cd mcp-server && npm run build",
     "mcp:test": "cd mcp-server && node test-server.js",
     "seed:database": "npx tsx scripts/seed-database.ts",
+    "seed:dev": "MONGODB_URI=mongodb://localhost:27017/gpp-studio-dev npx tsx scripts/seed-database.ts",
     "download-newsletter-images": "node scripts/download-newsletter-images.js",
     "verify-newsletter-images": "node scripts/verify-newsletter-images.js",
     "organize-newsletter-images": "node scripts/organize-newsletter-images-by-year.js"
