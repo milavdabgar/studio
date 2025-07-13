@@ -123,7 +123,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         departmentId: 'dept_ce',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
-      } as unknown;
+      } as IUser;
     }
     
     if (!userExists) {

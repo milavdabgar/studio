@@ -60,7 +60,7 @@ export async function GET() {
             updatedAt: new Date().toISOString(),
             __v: 0
           };
-          users.push(mockUser as unknown);
+          users.push(mockUser as typeof users[0]);
         }
       }
     }

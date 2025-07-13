@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -31,13 +32,18 @@ const MOCK_PROJECTS = [
 export default function ProjectJuryPage() {
   const [projects] = useState(MOCK_PROJECTS);
   const { toast } = useToast();
+  const router = useRouter();
 
   const handleStartEvaluation = () => {
+    // Navigate to the faculty project evaluation page
+    router.push('/faculty/projects/evaluate');
+  };
+
+  const handleViewDetails = (projectId: string) => {
     toast({
-      title: "Evaluation Started",
-      description: "You can now evaluate this project.",
+      title: "Project Details",
+      description: `Viewing details for project ${projectId}`,
     });
-    // In a real app, this would navigate to the evaluation form
   };
 
   return (
@@ -88,7 +94,7 @@ export default function ProjectJuryPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleStartEvaluation()}
+                        onClick={() => handleViewDetails(project.id)}
                       >
                         <Eye className="h-4 w-4 mr-2" />
                         View Details

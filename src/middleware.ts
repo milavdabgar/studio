@@ -116,6 +116,7 @@ const ROLE_ACCESS_CONTROL: Record<string, UserRoleCode[]> = {
   '/faculty/timetable': ['faculty', 'hod', 'admin', 'super_admin'],
   '/faculty/course-offerings': ['faculty', 'hod', 'admin', 'super_admin'],
   '/faculty/exam-timetable': ['faculty', 'hod', 'admin', 'super_admin'],
+  '/faculty/projects/evaluate': ['faculty', 'hod', 'admin', 'super_admin', 'jury'],
   '/committee/meetings': ['committee_convener', 'committee_co_convener', 'admin', 'super_admin'], 
 };
 
