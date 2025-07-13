@@ -353,6 +353,17 @@ export interface Committee {
   code: string; 
   description?: string;
   purpose: string;
+  committeeType?: string;
+  department?: string;
+  chairperson?: {
+    userId?: string;
+    name?: string;
+    email?: string;
+    contactNumber?: string;
+  };
+  establishedDate?: string;
+  meetingSchedule?: string;
+  responsibilities?: string[];
   instituteId: string; 
   formationDate: Timestamp; 
   dissolutionDate?: Timestamp; 
@@ -360,6 +371,9 @@ export interface Committee {
   convenerId?: string; 
   members?: Array<{
     userId: string;
+    name?: string;
+    email?: string;
+    contactNumber?: string;
     role: CommitteeMemberRole; 
     assignmentDate: Timestamp;
     endDate?: Timestamp;

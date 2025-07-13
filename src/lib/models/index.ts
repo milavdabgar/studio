@@ -122,7 +122,7 @@ const committeeSchema = new Schema<ICommittee>({
   code: { type: String, required: true, unique: true },
   description: { type: String },
   purpose: { type: String, required: true },
-  type: { type: String, default: 'Academic' },
+  committeeType: { type: String, default: 'Academic' },
   department: { type: String },
   chairperson: {
     userId: { type: String },
@@ -480,7 +480,7 @@ roomSchema.pre('save', function(next) {
 });
 
 committeeSchema.pre('save', function(next) {
-  (this as ICommittee).updatedAt = new Date().toISOString();
+  (this as { updatedAt?: string }).updatedAt = new Date().toISOString();
   next();
 });
 

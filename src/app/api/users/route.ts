@@ -56,9 +56,10 @@ export async function GET() {
           instituteId: 'inst_gpp_001',
           departmentId: 'dept_ce',
           createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
+          __v: 0
         };
-        users.push(mockUser);
+        users.push(mockUser as unknown);
       }
     }
     

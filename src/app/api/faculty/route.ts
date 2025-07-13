@@ -41,16 +41,16 @@ export async function GET() {
         address: '123 Faculty Street, Palanpur',
         department: 'Computer Engineering',
         designation: 'Associate Professor',
-        jobType: 'Permanent',
+        jobType: 'Regular',
         staffCategory: 'Teaching',
         category: 'Teaching',
         instType: 'Government',
         specializations: ['Software Engineering', 'Database Systems'],
         specialization: 'Software Engineering',
         qualifications: [
-          { degree: 'Ph.D.', field: 'Computer Science', institution: 'Gujarat University', year: '2015' },
-          { degree: 'M.Tech', field: 'Computer Engineering', institution: 'NIT Surat', year: '2010' },
-          { degree: 'B.E.', field: 'Computer Engineering', institution: 'Gujarat University', year: '2008' }
+          { degree: 'Ph.D.', field: 'Computer Science', institution: 'Gujarat University', year: 2015 },
+          { degree: 'M.Tech', field: 'Computer Engineering', institution: 'NIT Surat', year: 2010 },
+          { degree: 'B.E.', field: 'Computer Engineering', institution: 'Gujarat University', year: 2008 }
         ],
         qualification: 'Ph.D. in Computer Science',
         experience: '15 years',

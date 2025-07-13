@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -29,11 +29,10 @@ const MOCK_PROJECTS = [
 ];
 
 export default function ProjectJuryPage() {
-  const [projects, setProjects] = useState(MOCK_PROJECTS);
-  const [loading, setLoading] = useState(false);
+  const [projects] = useState(MOCK_PROJECTS);
   const { toast } = useToast();
 
-  const handleStartEvaluation = (projectId: string) => {
+  const handleStartEvaluation = () => {
     toast({
       title: "Evaluation Started",
       description: "You can now evaluate this project.",
@@ -89,14 +88,14 @@ export default function ProjectJuryPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleStartEvaluation(project.id)}
+                        onClick={() => handleStartEvaluation()}
                       >
                         <Eye className="h-4 w-4 mr-2" />
                         View Details
                       </Button>
                       <Button
                         size="sm"
-                        onClick={() => handleStartEvaluation(project.id)}
+                        onClick={() => handleStartEvaluation()}
                       >
                         Start Evaluation
                       </Button>

@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
     if (!committeeData.purpose || !committeeData.purpose.trim()) {
       return NextResponse.json({ message: 'Committee Purpose is required.' }, { status: 400 });
     }
-    if (!committeeData.type || !committeeData.type.trim()) {
+    if (!committeeData.committeeType || !committeeData.committeeType.trim()) {
       return NextResponse.json({ message: 'Committee Type is required.' }, { status: 400 });
     }
     if (!committeeData.chairperson) {
@@ -153,7 +153,7 @@ export async function POST(request: NextRequest) {
       instituteId: committeeData.instituteId,
       formationDate: committeeData.formationDate, 
       dissolutionDate: committeeData.dissolutionDate || undefined,
-      type: committeeData.type || 'Academic',
+      committeeType: committeeData.committeeType || 'Academic',
       department: committeeData.department || undefined,
       chairperson: committeeData.chairperson || undefined,
       establishedDate: committeeData.establishedDate || committeeData.formationDate,
