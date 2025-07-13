@@ -137,7 +137,9 @@ export class ContentConverterV2 {
                 
                 return html;
             } catch (error) {
-                console.error('Error highlighting code for language:', language, error);
+                if (process.env.NODE_ENV !== 'test') {
+                    console.error('Error highlighting code for language:', language, error);
+                }
                 // Fallback to plain text with basic HTML escaping
                 const escapedCode = code
                     .replace(/&/g, '&amp;')
@@ -305,9 +307,14 @@ export class ContentConverterV2 {
     }
 
     private async convertToPdfPuppeteer(content: string, frontmatter: Record<string, unknown>, options: ConversionOptions): Promise<Buffer> {
-        if (!puppeteer) {
-            console.log('Puppeteer not available, falling back to Chrome headless');
-            return this.convertToPdfChrome(content, frontmatter, options);
+        let puppeteerInstance = puppeteer;
+        if (!puppeteerInstance) {
+            try {
+                puppeteerInstance = require('puppeteer');
+            } catch {
+                console.log('Puppeteer not available, falling back to Chrome headless');
+                return this.convertToPdfChrome(content, frontmatter, options);
+            }
         }
 
         // First convert to HTML
@@ -353,7 +360,7 @@ export class ContentConverterV2 {
                 }
             }
 
-            browser = await puppeteer.launch(launchOptions);
+            browser = await puppeteerInstance.launch(launchOptions);
             const page = await browser.newPage();
 
             // Set viewport for consistent rendering
@@ -1020,8 +1027,8 @@ ${presentationContent}`;
      * Converts SVG file references to base64 data URLs in markdown syntax
      */
     private async processSvgForPandoc(content: string, options: ConversionOptions = {}): Promise<string> {
-        // Find all markdown image references with SVG sources
-        const imgRegex = /!\[([^\]]*)\]\(([^)]*\.svg)\)/g;
+        // Find all markdown image references with SVG sources, including title
+        const imgRegex = /!\[([^\]]*)\]\(([^)]*\.svg)(?:\s+"([^"]*)")?\)/g;
         const matches = Array.from(content.matchAll(imgRegex));
         
         if (matches.length === 0) {
@@ -1032,7 +1039,7 @@ ${presentationContent}`;
         
         // Process each SVG image
         for (const match of matches) {
-            const [fullMatch, altText, svgPath] = match;
+            const [fullMatch, altText, svgPath, title] = match;
             
             try {
                 let svgContent: string | null = null;
@@ -1066,20 +1073,25 @@ ${presentationContent}`;
                 }
                 
                 if (svgContent) {
-                    // Convert to base64 data URL
-                    const base64Data = Buffer.from(svgContent).toString('base64');
-                    const dataUrl = `data:image/svg+xml;base64,${base64Data}`;
-                    
-                    // Replace the markdown image with data URL
-                    const newImageRef = `![${altText}](${dataUrl})`;
-                    processedContent = processedContent.replace(fullMatch, newImageRef);
+                    // For Pandoc processing, we want to embed the SVG directly in HTML
+                    const titleAttr = title ? ` title="${title}"` : '';
+                    const htmlReplacement = `<div class="svg-container"><svg>${svgContent}</svg></div>`;
+                    processedContent = processedContent.replace(fullMatch, htmlReplacement);
                     
                     console.log(`Converted SVG to base64 for Pandoc: ${svgPath}`);
                 } else {
+                    // Replace with error message
+                    const errorReplacement = `[SVG Not Found: ${svgPath}]`;
+                    processedContent = processedContent.replace(fullMatch, errorReplacement);
                     console.warn(`SVG file not found for Pandoc: ${svgPath}`);
                 }
             } catch (error) {
-                console.error(`Error processing SVG for Pandoc ${svgPath}:`, error);
+                // Replace with error message
+                const errorReplacement = `[SVG Error: ${svgPath}]`;
+                processedContent = processedContent.replace(fullMatch, errorReplacement);
+                if (process.env.NODE_ENV !== 'test') {
+                    console.error(`Error processing SVG for Pandoc ${svgPath}:`, error);
+                }
             }
         }
         
@@ -1090,19 +1102,57 @@ ${presentationContent}`;
      * Resolve relative SVG paths to API endpoints using content path context
      */
     private resolveRelativeSvgPath(svgPath: string, contentPath?: string): string | null {
+        // Handle absolute paths - return them as is
+        if (path.isAbsolute(svgPath)) {
+            return svgPath;
+        }
+
         if (!contentPath) {
+            // Try to resolve without content path
+            const possiblePaths = [
+                path.resolve(process.cwd(), svgPath),
+                path.resolve(process.cwd(), 'content', svgPath),
+                path.resolve(process.cwd(), 'public', svgPath)
+            ];
+            
+            for (const possiblePath of possiblePaths) {
+                try {
+                    if (fs.existsSync(possiblePath)) {
+                        return possiblePath;
+                    }
+                } catch {
+                    // Continue to next path
+                }
+            }
             return null;
         }
         
         // Extract the directory part of the content path
         const contentDir = path.dirname(contentPath);
         
-        // Construct the API path
-        const apiPath = `/api/content-images/${contentDir}/${svgPath}`;
+        // Try multiple resolution strategies
+        const possiblePaths = [
+            path.resolve(contentDir, svgPath),
+            path.resolve(process.cwd(), 'content', svgPath),
+            path.resolve(process.cwd(), 'public', svgPath)
+        ];
         
-        console.log(`Resolving relative SVG path: ${svgPath} -> ${apiPath}`);
+        for (const possiblePath of possiblePaths) {
+            try {
+                if (fs.existsSync(possiblePath)) {
+                    // Construct the API path
+                    const apiPath = `/api/content-images/${contentDir}/${svgPath}`;
+                    if (process.env.NODE_ENV !== 'test') {
+                console.log(`Resolving relative SVG path: ${svgPath} -> ${apiPath}`);
+            }
+                    return apiPath;
+                }
+            } catch {
+                // Continue to next path
+            }
+        }
         
-        return apiPath;
+        return null;
     }
 
     /**
@@ -1114,18 +1164,40 @@ ${presentationContent}`;
             const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
             const fullUrl = `${baseUrl}${apiPath}`;
             
-            console.log(`Fetching SVG from API: ${fullUrl}`);
+            if (process.env.NODE_ENV !== 'test') {
+                console.log(`Fetching SVG from API: ${fullUrl}`);
+            }
             
-            const response = await fetch(fullUrl);
+            // Try to use fetch - handle both browser and Node.js environments
+            let fetchFunction: any;
+            try {
+                // In Node.js 18+ or when node-fetch is available
+                fetchFunction = typeof fetch !== 'undefined' ? fetch : require('node-fetch');
+            } catch {
+                // Fallback for environments without fetch
+                console.warn('fetch not available, skipping API call');
+                return null;
+            }
+            
+            const response = await fetchFunction(fullUrl, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'image/svg+xml,text/plain,*/*'
+                }
+            });
             if (response.ok) {
                 const svgContent = await response.text();
                 return svgContent;
             } else {
-                console.error(`Failed to fetch SVG from API: ${response.status} ${response.statusText}`);
+                if (process.env.NODE_ENV !== 'test') {
+                    console.error(`Failed to fetch SVG from API: ${response.status} ${response.statusText}`);
+                }
                 return null;
             }
         } catch (error) {
-            console.error(`Error fetching SVG from API ${apiPath}:`, error);
+            if (process.env.NODE_ENV !== 'test') {
+                console.error(`Error fetching SVG from API ${apiPath}:`, error);
+            }
             return null;
         }
     }
@@ -1134,6 +1206,11 @@ ${presentationContent}`;
      * Resolve SVG file path relative to content directory
      */
     private resolveSvgPath(svgPath: string): string {
+        // Handle null/undefined input
+        if (!svgPath) {
+            return svgPath;
+        }
+        
         // If it's already an absolute path, use it
         if (path.isAbsolute(svgPath)) {
             return svgPath;
@@ -1143,18 +1220,23 @@ ${presentationContent}`;
         const possiblePaths = [
             // Relative to current working directory
             path.resolve(process.cwd(), svgPath),
-            // Relative to content directory
-            path.resolve(process.cwd(), 'content', svgPath),
             // Relative to public directory
             path.resolve(process.cwd(), 'public', svgPath),
             // Check if it's in the content directory structure
             path.resolve(process.cwd(), 'content', 'resources', svgPath),
+            // Relative to content directory
+            path.resolve(process.cwd(), 'content', svgPath),
         ];
         
         // Find the first path that exists
         for (const possiblePath of possiblePaths) {
-            if (fs.existsSync(possiblePath)) {
-                return possiblePath;
+            try {
+                if (fs.existsSync(possiblePath)) {
+                    return possiblePath;
+                }
+            } catch (error) {
+                // Continue to next path on filesystem errors
+                continue;
             }
         }
         
@@ -1162,15 +1244,27 @@ ${presentationContent}`;
         return path.resolve(process.cwd(), svgPath);
     }
 
+    private escapeHtml(text: string): string {
+        return text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#x27;');
+    }
+
     private generateHtmlTemplate(content: string, title: string, author: string, options: ConversionOptions): string {
         const currentDate = new Date().toLocaleDateString('en-GB');
+        const escapedTitle = this.escapeHtml(title);
+        const escapedAuthor = this.escapeHtml(author);
         
         return `<!DOCTYPE html>
 <html lang="${options.language || 'en'}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${title}</title>
+    <meta name="author" content="${escapedAuthor}">
+    <title>${escapedTitle}</title>
     
     <!-- KaTeX CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
@@ -1547,8 +1641,8 @@ ${presentationContent}`;
 <body>
     <div class="container">
         <div class="header-info">
-            <strong>${title}</strong><br>
-            By: ${author}<br>
+            <strong>${escapedTitle}</strong><br>
+            By: ${escapedAuthor}<br>
             Generated on ${currentDate} | Content Converter System
         </div>
         

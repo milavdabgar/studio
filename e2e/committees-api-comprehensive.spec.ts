@@ -174,7 +174,7 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
     expect(missingNameResponse.status()).toBe(400);
     const errorData1 = await missingNameResponse.json();
     expect(errorData1).toHaveProperty('message');
-    expect(errorData1.message.toLowerCase()).toContain('name');
+    expect(errorData1.message.toLowerCase()).toMatch(/name.*required/);
 
     // Test missing committee type
     const missingType = { ...testCommittee } as any;
@@ -187,7 +187,7 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
     expect(missingTypeResponse.status()).toBe(400);
     const errorData2 = await missingTypeResponse.json();
     expect(errorData2).toHaveProperty('message');
-    expect(errorData2.message.toLowerCase()).toMatch(/type|code/);
+    expect(errorData2.message.toLowerCase()).toMatch(/type.*required/);
 
     // Test missing chairperson
     const missingChairperson = { ...testCommittee } as any;
@@ -200,12 +200,14 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
     expect(missingChairResponse.status()).toBe(400);
     const errorData3 = await missingChairResponse.json();
     expect(errorData3).toHaveProperty('message');
-    expect(errorData3.message.toLowerCase()).toMatch(/chairperson|chair|code|required/);
+    expect(errorData3.message.toLowerCase()).toMatch(/chairperson.*required/);
   });
 
   test('should validate committee types', async ({ page }) => {
     const testCommittee = generateUniqueTestCommittee();
     const validTypes = ['Academic', 'Administrative', 'Research', 'Student Affairs', 'Infrastructure'];
+    
+    let successCount = 0;
     
     for (const type of validTypes) {
       const timestamp = Date.now();
@@ -225,11 +227,19 @@ test.describe('Committees API - Critical In-Memory Storage', () => {
         const createResponseData = await createResponse.json();
         const createdCommittee = createResponseData.data?.committee || createResponseData;
         expect(createdCommittee.committeeType).toBe(type);
+        successCount++;
         
         // Cleanup
         await page.request.delete(`${API_BASE}/committees/${createdCommittee.id}`);
+      } else {
+        // Log the error for debugging
+        const errorData = await createResponse.json();
+        console.log(`Failed to create committee with type ${type}:`, errorData);
       }
     }
+    
+    // Expect at least one committee type to be successfully created
+    expect(successCount).toBeGreaterThan(0);
   });
 
   test('should validate committee status', async ({ page }) => {

@@ -375,12 +375,22 @@ graph TD
         throw new Error('Marked parsing error');
       });
       
-      await expect(converter.convert('# Test', 'html')).rejects.toThrow();
+      await expect(converter.convert('# Test', 'html')).rejects.toThrow('Marked parsing error');
     });
   });
 
   describe('Integration tests', () => {
     it('should handle complex markdown with all features', async () => {
+      // Reset mocks for this test to ensure clean state
+      jest.clearAllMocks();
+      mockMarked.marked.mockImplementation((content: string) => `<p>${content}</p>`);
+      
+      // Mock gray-matter to return the actual frontmatter data
+      mockMatter.mockImplementationOnce((content: string) => ({
+        data: { title: 'Complex Document', author: 'Test Author' },
+        content: content.replace(/^---[\\s\\S]*?---\\n/, '')
+      }));
+      
       const complexMarkdown = `---
 title: Complex Document
 author: Test Author
