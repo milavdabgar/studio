@@ -1,7 +1,11 @@
 import { test, expect } from '@playwright/test';
+import { loginAsFaculty } from './test-helpers';
 
 test.describe('Faculty Resume Generation', () => {
   test.beforeEach(async ({ page }) => {
+    // Login as faculty first
+    await loginAsFaculty(page);
+    
     // Navigate to the faculty profile page
     await page.goto('/faculty/profile');
     
