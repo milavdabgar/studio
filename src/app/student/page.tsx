@@ -10,7 +10,7 @@ export default function StudentRootPage() {
   useEffect(() => {
     // Redirect to a more specific student page, e.g., dashboard or profile
     // Check if user is authenticated as student can be added here from cookie if needed.
-    router.replace('/student/profile'); 
+    router.replace('/student/dashboard'); 
     // Or, if you have a student-specific dashboard:
     // router.replace('/dashboard'); // Assuming /dashboard handles role-specific views
   }, [router]);

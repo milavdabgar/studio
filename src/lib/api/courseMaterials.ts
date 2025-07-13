@@ -4,6 +4,15 @@ import type { CourseMaterial } from '@/types/entities';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 
 export const courseMaterialService = {
+  async getAllCourseMaterials(): Promise<CourseMaterial[]> {
+    const response = await fetch(`${API_BASE_URL}/course-materials`);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to fetch all course materials' }));
+      throw new Error(errorData.message || 'Failed to fetch all course materials');
+    }
+    return response.json();
+  },
+
   async getMaterialsByCourseOffering(courseOfferingId: string): Promise<CourseMaterial[]> {
     const response = await fetch(`${API_BASE_URL}/course-materials?courseOfferingId=${courseOfferingId}`);
     if (!response.ok) {
