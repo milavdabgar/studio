@@ -128,10 +128,10 @@ export default function StudentDashboard() {
       variant: 'secondary'
     },
     {
-      title: "Class Timetable",
-      description: "View your weekly schedule",
-      href: "/student/timetable",
-      icon: <Calendar className="h-5 w-5" />,
+      title: "Analytics Dashboard",
+      description: "View performance insights",
+      href: "/student/analytics",
+      icon: <TrendingUp className="h-5 w-5" />,
       variant: 'outline'
     },
     {
