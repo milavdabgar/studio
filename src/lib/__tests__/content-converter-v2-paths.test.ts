@@ -5,7 +5,7 @@
 
 import { ContentConverterV2 } from '../content-converter-v2';
 import fs from 'fs';
-import fetch from 'node-fetch';
+// @ts-ignore - node-fetch types\nimport fetch from 'node-fetch';
 
 // Mock external dependencies
 jest.mock('fs');
@@ -407,9 +407,9 @@ Some text.
       const spy = jest.spyOn(converter as any, 'processSvgForPandoc');
       
       // Mock the entire PDF conversion chain
-      const mockConvertToPdf = jest.spyOn(converter as any, 'convertToPdfPuppeteer').mockImplementation(async (content: string, frontmatter: any, options: any) => {
+      const mockConvertToPdf = jest.spyOn(converter as any, 'convertToPdfPuppeteer').mockImplementation(async (...args: any[]) => {
         // Explicitly call the method we're testing
-        await spy(content, options);
+        await (spy as any)(args[0], args[2]);
         return Buffer.from('mock pdf');
       });
       

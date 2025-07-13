@@ -7,6 +7,17 @@ import { ContentConverterV2 } from '../content-converter-v2';
 import fs from 'fs';
 import { exec } from 'child_process';
 
+// Type definitions for testing internal methods
+interface ContentConverterInternal {
+  processCodeBlocks: (content: string) => Promise<string>;
+  convertToPlainText: (content: string, frontmatter: Record<string, unknown>, options: Record<string, unknown>) => string;
+  convertToRtf: (content: string, frontmatter: Record<string, unknown>, options: Record<string, unknown>) => string;
+  markdownToRtf: (content: string) => string;
+  processMathExpressions: (content: string) => string;
+  processMermaidDiagrams: (content: string) => string;
+  ensureDirectoryExists: (path: string) => void;
+}
+
 // Mock external dependencies
 jest.mock('fs');
 jest.mock('child_process');
@@ -15,7 +26,7 @@ jest.mock('gray-matter');
 jest.mock('shiki');
 
 const mockedFs = fs as jest.Mocked<typeof fs>;
-const mockedExec = exec as jest.Mocked<typeof exec>;
+// mockedExec removed as it's not used in this test file
 
 // Mock fs methods that might not exist
 mockedFs.existsSync = jest.fn();
@@ -142,7 +153,7 @@ console.log(test);
 More content.
 `;
       
-      const result = await (converter as any).processCodeBlocks(contentWithCode);
+      const result = await (converter as unknown as ContentConverterInternal).processCodeBlocks(contentWithCode);
       
       expect(mockShiki.codeToHtml).toHaveBeenCalledWith(
         expect.stringContaining('const test'),
@@ -160,7 +171,7 @@ plain code block
 \`\`\`
 `;
       
-      const result = await (converter as any).processCodeBlocks(contentWithCode);
+      const result = await (converter as unknown as ContentConverterInternal).processCodeBlocks(contentWithCode);
       
       expect(result).toContain('plain code block');
       expect(result).toContain('<pre');
@@ -177,7 +188,7 @@ print("hello")
 \`\`\`
 `;
       
-      await (converter as any).processCodeBlocks(contentWithMultipleCode);
+      await (converter as unknown as ContentConverterInternal).processCodeBlocks(contentWithMultipleCode);
       
       expect(mockShiki.codeToHtml).toHaveBeenCalledTimes(2);
     });
@@ -191,7 +202,7 @@ const test = 'hello';
 \`\`\`
 `;
       
-      const result = await (converter as any).processCodeBlocks(contentWithCode);
+      const result = await (converter as unknown as ContentConverterInternal).processCodeBlocks(contentWithCode);
       
       // Should fall back to basic highlighting
       expect(result).toContain('const test');
@@ -204,7 +215,7 @@ const test = 'hello';
       const htmlContent = '<h1>Title</h1><p>Paragraph with <strong>bold</strong> text.</p>';
       const frontmatter = { title: 'Test' };
       
-      const result = (converter as any).convertToPlainText(htmlContent, frontmatter, {});
+      const result = (converter as unknown as ContentConverterInternal).convertToPlainText(htmlContent, frontmatter, {});
       
       expect(result).toContain('Title');
       expect(result).toContain('Paragraph with');
@@ -216,14 +227,14 @@ const test = 'hello';
       const content = '<p>Content</p>';
       const frontmatter = { title: 'Test Title', author: 'Test Author' };
       
-      const result = (converter as any).convertToPlainText(content, frontmatter, {});
+      const result = (converter as unknown as ContentConverterInternal).convertToPlainText(content, frontmatter, {});
       
       expect(result).toContain('Test Title');
       expect(result).toContain('Test Author');
     });
 
     it('should handle empty content', () => {
-      const result = (converter as any).convertToPlainText('', {}, {});
+      const result = (converter as unknown as ContentConverterInternal).convertToPlainText('', {}, {});
       
       expect(typeof result).toBe('string');
       expect(result).toBeDefined();
@@ -235,7 +246,7 @@ const test = 'hello';
       const content = '<h1>Title</h1><p>Content</p>';
       const frontmatter = { title: 'Test' };
       
-      const result = (converter as any).convertToRtf(content, frontmatter, {});
+      const result = (converter as unknown as ContentConverterInternal).convertToRtf(content, frontmatter, {});
       
       expect(result).toMatch(/^{\\rtf1/);
       expect(result).toContain('Title');
@@ -247,7 +258,7 @@ const test = 'hello';
       const content = '<p>Text with { } \\ special chars</p>';
       const frontmatter = {};
       
-      const result = (converter as any).convertToRtf(content, frontmatter, {});
+      const result = (converter as unknown as ContentConverterInternal).convertToRtf(content, frontmatter, {});
       
       expect(result).toContain('Text with');
       expect(result).toContain('special chars');
@@ -259,7 +270,7 @@ const test = 'hello';
     it('should convert markdown headers to RTF', () => {
       const markdown = '# Header 1\n## Header 2\nParagraph';
       
-      const result = (converter as any).markdownToRtf(markdown);
+      const result = (converter as unknown as ContentConverterInternal).markdownToRtf(markdown);
       
       expect(result).toContain('\\b\\fs28 Header 1');
       expect(result).toContain('\\b\\fs24 Header 2');
@@ -269,14 +280,14 @@ const test = 'hello';
     it('should convert markdown formatting', () => {
       const markdown = '**bold** and *italic* text';
       
-      const result = (converter as any).markdownToRtf(markdown);
+      const result = (converter as unknown as ContentConverterInternal).markdownToRtf(markdown);
       
       expect(result).toContain('\\b bold');
       expect(result).toContain('\\i italic');
     });
 
     it('should handle empty markdown', () => {
-      const result = (converter as any).markdownToRtf('');
+      const result = (converter as unknown as ContentConverterInternal).markdownToRtf('');
       
       expect(typeof result).toBe('string');
       expect(result).toBeDefined();
@@ -287,7 +298,7 @@ const test = 'hello';
     it('should process inline math expressions', () => {
       const content = 'This is $x^2 + y^2 = z^2$ inline math.';
       
-      const result = (converter as any).processMathExpressions(content);
+      const result = (converter as unknown as ContentConverterInternal).processMathExpressions(content);
       
       expect(result).toContain('x^2 + y^2 = z^2');
       // Should wrap in math spans or convert to MathML
@@ -297,14 +308,14 @@ const test = 'hello';
     it('should process block math expressions', () => {
       const content = 'Here is block math:\n$$\\frac{a}{b} = c$$\nEnd.';
       
-      const result = (converter as any).processMathExpressions(content);
+      const result = (converter as unknown as ContentConverterInternal).processMathExpressions(content);
       
       expect(result).toContain('\\frac{a}{b} = c');
     });
 
     it('should handle KaTeX unavailable gracefully', () => {
       const content = 'Math: $x^2$';
-      const result = (converter as any).processMathExpressions(content);
+      const result = (converter as unknown as ContentConverterInternal).processMathExpressions(content);
       
       // Should process math expressions even if KaTeX is available
       expect(result).toContain('x^2');
@@ -321,7 +332,7 @@ graph TD
 </div>
 `;
       
-      const result = (converter as any).processMermaidDiagrams(htmlWithMermaid);
+      const result = (converter as unknown as ContentConverterInternal).processMermaidDiagrams(htmlWithMermaid);
       
       expect(result).toContain('graph TD');
       expect(result).toContain('A --> B');
@@ -334,7 +345,7 @@ graph TD
 <div class="mermaid">sequenceDiagram; A->>B: Hello</div>
 `;
       
-      const result = (converter as any).processMermaidDiagrams(htmlWithMultipleMermaid);
+      const result = (converter as unknown as ContentConverterInternal).processMermaidDiagrams(htmlWithMultipleMermaid);
       
       expect(result).toContain('graph TD');
       expect(result).toContain('sequenceDiagram');
@@ -343,7 +354,7 @@ graph TD
     it('should preserve non-mermaid content', () => {
       const html = '<p>Regular content</p><div>Not mermaid</div>';
       
-      const result = (converter as any).processMermaidDiagrams(html);
+      const result = (converter as unknown as ContentConverterInternal).processMermaidDiagrams(html);
       
       expect(result).toContain('Regular content');
       expect(result).toContain('Not mermaid');
@@ -355,7 +366,7 @@ graph TD
       mockedFs.existsSync.mockReturnValue(false);
       mockedFs.mkdirSync.mockImplementation(() => undefined);
       
-      (converter as any).ensureDirectoryExists('/test/path');
+      (converter as unknown as ContentConverterInternal).ensureDirectoryExists('/test/path');
       
       expect(mockedFs.mkdirSync).toHaveBeenCalledWith('/test/path', { recursive: true });
     });
@@ -363,7 +374,7 @@ graph TD
     it('should not create directory if it exists', () => {
       mockedFs.existsSync.mockReturnValue(true);
       
-      (converter as any).ensureDirectoryExists('/existing/path');
+      (converter as unknown as ContentConverterInternal).ensureDirectoryExists('/existing/path');
       
       expect(mockedFs.mkdirSync).not.toHaveBeenCalled();
     });

@@ -360,7 +360,7 @@ export class ContentConverterV2 {
                 }
             }
 
-            browser = await puppeteerInstance.launch(launchOptions);
+            browser = await puppeteerInstance!.launch(launchOptions);
             const page = await browser.newPage();
 
             // Set viewport for consistent rendering
@@ -1039,7 +1039,7 @@ ${presentationContent}`;
         
         // Process each SVG image
         for (const match of matches) {
-            const [fullMatch, altText, svgPath, title] = match;
+            const [fullMatch, , svgPath, title] = match;
             
             try {
                 let svgContent: string | null = null;
@@ -1074,7 +1074,7 @@ ${presentationContent}`;
                 
                 if (svgContent) {
                     // For Pandoc processing, we want to embed the SVG directly in HTML
-                    const titleAttr = title ? ` title="${title}"` : '';
+                    // Note: title attribute preserved in match for potential future use
                     const htmlReplacement = `<div class="svg-container"><svg>${svgContent}</svg></div>`;
                     processedContent = processedContent.replace(fullMatch, htmlReplacement);
                     
@@ -1169,7 +1169,7 @@ ${presentationContent}`;
             }
             
             // Try to use fetch - handle both browser and Node.js environments
-            let fetchFunction: any;
+            let fetchFunction: typeof fetch;
             try {
                 // In Node.js 18+ or when node-fetch is available
                 fetchFunction = typeof fetch !== 'undefined' ? fetch : require('node-fetch');
@@ -1234,7 +1234,7 @@ ${presentationContent}`;
                 if (fs.existsSync(possiblePath)) {
                     return possiblePath;
                 }
-            } catch (error) {
+            } catch {
                 // Continue to next path on filesystem errors
                 continue;
             }

@@ -7,13 +7,29 @@ import { ContentConverterV2 } from '../content-converter-v2';
 import fs from 'fs';
 import { exec } from 'child_process';
 
+// Type definitions for testing internal methods
+interface ContentConverterInternal {
+  convertToPdfPuppeteer: (content: string, frontmatter: Record<string, unknown>, options: Record<string, unknown>) => Promise<Buffer>;
+  convertToPdfChrome: (content: string, frontmatter: Record<string, unknown>, options: Record<string, unknown>) => Promise<Buffer>;
+  convertToDocx: (content: string, frontmatter: Record<string, unknown>, options: Record<string, unknown>) => Promise<Buffer>;
+  convertToEpub: (content: string, frontmatter: Record<string, unknown>, options: Record<string, unknown>) => Promise<Buffer>;
+  convertToLatex: (content: string, frontmatter: Record<string, unknown>, options: Record<string, unknown>) => Promise<string>;
+  convertToOdt: (content: string, frontmatter: Record<string, unknown>, options: Record<string, unknown>) => Promise<Buffer>;
+  convertToPptx: (content: string, frontmatter: Record<string, unknown>, options: Record<string, unknown>) => Promise<Buffer>;
+  convertMermaidToImages: (content: string) => Promise<string>;
+  generateHtmlTemplate: (content: string, title: string, author: string, options: Record<string, unknown>) => string;
+}
+
+// Type for exec callback function
+type ExecCallback = (error: Error | null, stdout: string, stderr: string) => void;
+
 // Mock external dependencies
 jest.mock('fs');
 jest.mock('child_process');
 jest.mock('gray-matter');
 
 const mockedFs = fs as jest.Mocked<typeof fs>;
-const mockedExec = exec as jest.Mocked<typeof exec>;
+const mockedExec = exec as jest.MockedFunction<typeof exec>;
 
 // Mock fs methods that might not exist
 mockedFs.unlinkSync = jest.fn();
@@ -79,7 +95,7 @@ describe('ContentConverterV2 - Format Conversions', () => {
     mockedFs.unlinkSync.mockImplementation(() => undefined);
     
     // Mock exec for external tools
-    mockedExec.mockImplementation((command, callback) => {
+    (mockedExec as any).mockImplementation((command: string, callback?: (error: Error | null, stdout: string, stderr: string) => void) => {
       if (callback) {
         // Simulate successful execution
         callback(null, 'mock output', '');
@@ -97,8 +113,8 @@ describe('ContentConverterV2 - Format Conversions', () => {
   describe('convertToPdfPuppeteer() method', () => {
     beforeEach(() => {
       // Mock the convertToPdfPuppeteer method to use our mocked Puppeteer directly
-      const originalMethod = (converter as any).convertToPdfPuppeteer;
-      (converter as any).convertToPdfPuppeteer = async function(content: string, frontmatter: Record<string, unknown>, options: any) {
+      const originalMethod = (converter as unknown as ContentConverterInternal).convertToPdfPuppeteer;
+      (converter as unknown as ContentConverterInternal).convertToPdfPuppeteer = async function(content: string, frontmatter: Record<string, unknown>, options: any) {
         // Simulate the Puppeteer workflow with our mocks
         const browser = await mockPuppeteer.launch({});
         const page = await browser.newPage();
@@ -122,7 +138,7 @@ describe('ContentConverterV2 - Format Conversions', () => {
       const frontmatter = { title: 'Test PDF' };
       const options = { title: 'PDF Test' };
       
-      const result = await (converter as any).convertToPdfPuppeteer(content, frontmatter, options);
+      const result = await (converter as unknown as ContentConverterInternal).convertToPdfPuppeteer(content, frontmatter, options);
       
       expect(result).toBeInstanceOf(Buffer);
       expect(mockPuppeteer.launch).toHaveBeenCalled();
@@ -142,7 +158,7 @@ describe('ContentConverterV2 - Format Conversions', () => {
         }
       };
       
-      await (converter as any).convertToPdfPuppeteer('<p>Test</p>', {}, options);
+      await (converter as unknown as ContentConverterInternal).convertToPdfPuppeteer('<p>Test</p>', {}, options);
       
       expect(mockPage.pdf).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -159,7 +175,7 @@ describe('ContentConverterV2 - Format Conversions', () => {
       mockPuppeteer.launch.mockRejectedValueOnce(new Error('Puppeteer launch failed'));
       
       await expect(
-        (converter as any).convertToPdfPuppeteer('<p>Test</p>', {}, {})
+        (converter as unknown as ContentConverterInternal).convertToPdfPuppeteer('<p>Test</p>', {}, {})
       ).rejects.toThrow('Puppeteer launch failed');
     });
 
@@ -167,7 +183,7 @@ describe('ContentConverterV2 - Format Conversions', () => {
       mockBrowser.newPage.mockRejectedValueOnce(new Error('Page creation failed'));
       
       await expect(
-        (converter as any).convertToPdfPuppeteer('<p>Test</p>', {}, {})
+        (converter as unknown as ContentConverterInternal).convertToPdfPuppeteer('<p>Test</p>', {}, {})
       ).rejects.toThrow('Page creation failed');
     });
   });
@@ -177,7 +193,7 @@ describe('ContentConverterV2 - Format Conversions', () => {
       const content = '<h1>Test Document</h1>';
       const frontmatter = { title: 'Chrome PDF' };
       
-      const result = await (converter as any).convertToPdfChrome(content, frontmatter, {});
+      const result = await (converter as unknown as ContentConverterInternal).convertToPdfChrome(content, frontmatter, {});
       
       expect(result).toBeInstanceOf(Buffer);
       expect(mockedFs.writeFileSync).toHaveBeenCalled();
@@ -187,7 +203,7 @@ describe('ContentConverterV2 - Format Conversions', () => {
     });
 
     it('should handle Chrome execution errors', async () => {
-      mockedExec.mockImplementation((command, callback) => {
+      (mockedExec as any).mockImplementation((command: string, callback?: (error: Error | null, stdout: string, stderr: string) => void) => {
         if (callback) {
           callback(new Error('Chrome execution failed'), '', 'Chrome error');
         }
@@ -195,7 +211,7 @@ describe('ContentConverterV2 - Format Conversions', () => {
       });
       
       await expect(
-        (converter as any).convertToPdfChrome('<p>Test</p>', {}, {})
+        (converter as unknown as ContentConverterInternal).convertToPdfChrome('<p>Test</p>', {}, {})
       ).rejects.toThrow('Chrome execution failed');
     });
 
@@ -205,7 +221,7 @@ describe('ContentConverterV2 - Format Conversions', () => {
       });
       
       await expect(
-        (converter as any).convertToPdfChrome('<p>Test</p>', {}, {})
+        (converter as unknown as ContentConverterInternal).convertToPdfChrome('<p>Test</p>', {}, {})
       ).rejects.toThrow();
       
       expect(mockedFs.unlinkSync).toHaveBeenCalled();
@@ -217,7 +233,7 @@ describe('ContentConverterV2 - Format Conversions', () => {
       const content = '# Document\n\nContent here.';
       const frontmatter = { title: 'DOCX Test' };
       
-      const result = await (converter as any).convertToDocx(content, frontmatter, {});
+      const result = await (converter as unknown as ContentConverterInternal).convertToDocx(content, frontmatter, {});
       
       expect(result).toBeInstanceOf(Buffer);
       expect(mockedExec).toHaveBeenCalledWith(
@@ -227,7 +243,7 @@ describe('ContentConverterV2 - Format Conversions', () => {
     });
 
     it('should handle Pandoc errors', async () => {
-      mockedExec.mockImplementation((command, callback) => {
+      (mockedExec as any).mockImplementation((command: string, callback?: (error: Error | null, stdout: string, stderr: string) => void) => {
         if (callback) {
           callback(new Error('Pandoc failed'), '', 'Pandoc error');
         }
@@ -235,14 +251,14 @@ describe('ContentConverterV2 - Format Conversions', () => {
       });
       
       await expect(
-        (converter as any).convertToDocx('# Test', {}, {})
+        (converter as unknown as ContentConverterInternal).convertToDocx('# Test', {}, {})
       ).rejects.toThrow('Pandoc failed');
     });
 
     it('should include author and title metadata', async () => {
       const frontmatter = { title: 'My Document', author: 'John Doe' };
       
-      await (converter as any).convertToDocx('# Test', frontmatter, {});
+      await (converter as unknown as ContentConverterInternal).convertToDocx('# Test', frontmatter, {});
       
       expect(mockedExec).toHaveBeenCalledWith(
         expect.stringContaining('pandoc'),
@@ -260,7 +276,7 @@ describe('ContentConverterV2 - Format Conversions', () => {
       const content = '# Chapter 1\n\nContent here.';
       const frontmatter = { title: 'EPUB Test' };
       
-      const result = await (converter as any).convertToEpub(content, frontmatter, {});
+      const result = await (converter as unknown as ContentConverterInternal).convertToEpub(content, frontmatter, {});
       
       expect(result).toBeInstanceOf(Buffer);
       expect(mockedExec).toHaveBeenCalledWith(
@@ -272,7 +288,7 @@ describe('ContentConverterV2 - Format Conversions', () => {
     it('should handle language option', async () => {
       const options = { language: 'es' };
       
-      await (converter as any).convertToEpub('# Test', {}, options);
+      await (converter as unknown as ContentConverterInternal).convertToEpub('# Test', {}, options);
       
       expect(mockedExec).toHaveBeenCalledWith(
         expect.stringContaining('pandoc'),
@@ -286,7 +302,7 @@ describe('ContentConverterV2 - Format Conversions', () => {
       const content = '# Document\n\nWith **bold** text.';
       const frontmatter = { title: 'LaTeX Test' };
       
-      const result = await (converter as any).convertToLatex(content, frontmatter, {});
+      const result = await (converter as unknown as ContentConverterInternal).convertToLatex(content, frontmatter, {});
       
       expect(typeof result).toBe('string');
       expect(result).toContain('\\documentclass');
@@ -297,7 +313,7 @@ describe('ContentConverterV2 - Format Conversions', () => {
     it('should include title and author', async () => {
       const frontmatter = { title: 'My Paper', author: 'Jane Smith' };
       
-      const result = await (converter as any).convertToLatex('Content', frontmatter, {});
+      const result = await (converter as unknown as ContentConverterInternal).convertToLatex('Content', frontmatter, {});
       
       expect(result).toContain('\\title{My Paper}');
       expect(result).toContain('\\author{Jane Smith}');
@@ -307,7 +323,7 @@ describe('ContentConverterV2 - Format Conversions', () => {
     it('should handle math expressions in LaTeX', async () => {
       const content = 'Math: $x^2 + y^2 = z^2$';
       
-      const result = await (converter as any).convertToLatex(content, {}, {});
+      const result = await (converter as unknown as ContentConverterInternal).convertToLatex(content, {}, {});
       
       expect(result).toContain('x^2 + y^2 = z^2');
     });
@@ -318,7 +334,7 @@ describe('ContentConverterV2 - Format Conversions', () => {
       const content = '# Document\n\nContent.';
       const frontmatter = { title: 'ODT Test' };
       
-      const result = await (converter as any).convertToOdt(content, frontmatter, {});
+      const result = await (converter as unknown as ContentConverterInternal).convertToOdt(content, frontmatter, {});
       
       expect(result).toBeInstanceOf(Buffer);
       expect(mockedExec).toHaveBeenCalledWith(
@@ -333,7 +349,7 @@ describe('ContentConverterV2 - Format Conversions', () => {
       const content = '# Slide 1\n\nContent\n\n# Slide 2\n\nMore content';
       const frontmatter = { title: 'Presentation' };
       
-      const result = await (converter as any).convertToPptx(content, frontmatter, {});
+      const result = await (converter as unknown as ContentConverterInternal).convertToPptx(content, frontmatter, {});
       
       expect(result).toBeInstanceOf(Buffer);
       expect(mockedExec).toHaveBeenCalledWith(
@@ -356,7 +372,7 @@ graph TD
 More content.
 `;
       
-      const result = await (converter as any).convertMermaidToImages(contentWithMermaid);
+      const result = await (converter as unknown as ContentConverterInternal).convertMermaidToImages(contentWithMermaid);
       
       expect(result).toContain('More content');
       // Should replace mermaid blocks with image references
@@ -374,14 +390,14 @@ sequenceDiagram; A->>B: Hello
 \`\`\`
 `;
       
-      const result = await (converter as any).convertMermaidToImages(contentWithMultiple);
+      const result = await (converter as unknown as ContentConverterInternal).convertMermaidToImages(contentWithMultiple);
       
       expect(result).toBeDefined();
       expect(typeof result).toBe('string');
     });
 
     it('should handle Mermaid CLI errors', async () => {
-      mockedExec.mockImplementation((command, callback) => {
+      (mockedExec as any).mockImplementation((command: string, callback?: (error: Error | null, stdout: string, stderr: string) => void) => {
         if (command.includes('mmdc')) {
           if (callback) callback(new Error('Mermaid CLI error'), '', '');
         } else {
@@ -393,7 +409,7 @@ sequenceDiagram; A->>B: Hello
       
       const contentWithMermaid = '```mermaid\ngraph TD\n  A --> B\n```';
       
-      const result = await (converter as any).convertMermaidToImages(contentWithMermaid);
+      const result = await (converter as unknown as ContentConverterInternal).convertMermaidToImages(contentWithMermaid);
       
       // Should handle error gracefully
       expect(result).toBeDefined();
@@ -407,7 +423,7 @@ sequenceDiagram; A->>B: Hello
       const author = 'Test Author';
       const options = { includeStyles: true };
       
-      const result = (converter as any).generateHtmlTemplate(content, title, author, options);
+      const result = (converter as unknown as ContentConverterInternal).generateHtmlTemplate(content, title, author, options);
       
       expect(result).toContain('<!DOCTYPE html>');
       expect(result).toContain('<html lang="en">');
@@ -420,7 +436,7 @@ sequenceDiagram; A->>B: Hello
     it('should include styles when requested', () => {
       const options = { includeStyles: true };
       
-      const result = (converter as any).generateHtmlTemplate('<p>Test</p>', 'Title', 'Author', options);
+      const result = (converter as unknown as ContentConverterInternal).generateHtmlTemplate('<p>Test</p>', 'Title', 'Author', options);
       
       expect(result).toContain('<style>');
       expect(result).toContain('body {');
@@ -429,7 +445,7 @@ sequenceDiagram; A->>B: Hello
     it('should handle custom language', () => {
       const options = { language: 'fr' };
       
-      const result = (converter as any).generateHtmlTemplate('<p>Test</p>', 'Title', 'Author', options);
+      const result = (converter as unknown as ContentConverterInternal).generateHtmlTemplate('<p>Test</p>', 'Title', 'Author', options);
       
       expect(result).toContain('<html lang="fr">');
     });
@@ -438,7 +454,7 @@ sequenceDiagram; A->>B: Hello
       const title = 'Title with <script>alert("xss")</script>';
       const author = 'Author & Co.';
       
-      const result = (converter as any).generateHtmlTemplate('<p>Test</p>', title, author, {});
+      const result = (converter as unknown as ContentConverterInternal).generateHtmlTemplate('<p>Test</p>', title, author, {});
       
       expect(result).toContain('&lt;script&gt;');
       expect(result).toContain('Author &amp; Co.');
@@ -452,12 +468,12 @@ sequenceDiagram; A->>B: Hello
       });
       
       await expect(
-        (converter as any).convertToPdfChrome('<p>Test</p>', {}, {})
+        (converter as unknown as ContentConverterInternal).convertToPdfChrome('<p>Test</p>', {}, {})
       ).rejects.toThrow('Permission denied');
     });
 
     it('should handle missing external tools gracefully', async () => {
-      mockedExec.mockImplementation((command, callback) => {
+      (mockedExec as any).mockImplementation((command: string, callback?: (error: Error | null, stdout: string, stderr: string) => void) => {
         if (callback) {
           callback(new Error('Command not found'), '', 'pandoc: command not found');
         }
@@ -465,7 +481,7 @@ sequenceDiagram; A->>B: Hello
       });
       
       await expect(
-        (converter as any).convertToDocx('# Test', {}, {})
+        (converter as unknown as ContentConverterInternal).convertToDocx('# Test', {}, {})
       ).rejects.toThrow('Command not found');
     });
 
@@ -477,7 +493,7 @@ sequenceDiagram; A->>B: Hello
       });
       
       try {
-        await (converter as any).convertToPdfChrome('<p>Test</p>', {}, {});
+        await (converter as unknown as ContentConverterInternal).convertToPdfChrome('<p>Test</p>', {}, {});
       } catch {
         // Expected to throw
       }

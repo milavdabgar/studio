@@ -19,9 +19,10 @@ test.describe('Forms and Data Management Complete Coverage', () => {
       await page.goto('http://localhost:3000/login', { timeout: 15000 });
       
       try {
-        await page.waitForLoadState('networkidle', { timeout: 8000 });
+        await page.waitForSelector('main, .content, body, h1, input[type="email"], input[type="password"], form', { timeout: 8000 });
       } catch (error) {
         console.log('Timeout on login page, continuing with form test...');
+        await page.waitForLoadState('domcontentloaded', { timeout: 3000 });
       }
       
       const hasForm = await page.locator('form').first().isVisible();
