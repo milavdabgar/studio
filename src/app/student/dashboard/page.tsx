@@ -33,6 +33,7 @@ import { studentAssessmentScoreService } from '@/lib/api/studentAssessmentScores
 import { courseMaterialService } from '@/lib/api/courseMaterials';
 
 import type { Assessment, Student, Course, StudentAssessmentScore, CourseMaterial } from '@/types/entities';
+import RealTimeAssessmentNotifications from '@/components/notifications/RealTimeAssessmentNotifications';
 
 interface UserCookie {
   email: string;
@@ -385,6 +386,14 @@ export default function StudentDashboard() {
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Real-Time Assessment Notifications */}
+        {user?.id && (
+          <RealTimeAssessmentNotifications 
+            studentId={user.id} 
+            refreshInterval={30000}
+          />
+        )}
+
         {/* Upcoming Deadlines */}
         <Card>
           <CardHeader>

@@ -58,6 +58,8 @@ export async function GET(request: NextRequest) {
     const userId = searchParams.get('userId');
     const isRead = searchParams.get('isRead');
     const type = searchParams.get('type');
+    const recent = searchParams.get('recent');
+    const limit = searchParams.get('limit');
 
     if (!userId) {
       return NextResponse.json({ message: 'userId is required to fetch notifications.' }, { status: 400 });
@@ -86,11 +88,31 @@ export async function GET(request: NextRequest) {
     // Build filter query
     const filter: Record<string, unknown> = { userId };
     if (isRead !== null) filter.isRead = isRead === 'true';
-    if (type) filter.type = type;
+    
+    // Handle type filtering - support multiple assessment types
+    if (type) {
+      if (type === 'assessment') {
+        filter.type = { $in: ['assignment_new', 'assignment_graded', 'reminder'] };
+      } else {
+        filter.type = type;
+      }
+    }
+    
+    // If recent filter is enabled, only get notifications from last 7 days
+    if (recent === 'true') {
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      filter.createdAt = { $gte: sevenDaysAgo.toISOString() };
+    }
 
-    const notifications = await NotificationModel.find(filter)
-      .sort({ createdAt: -1 }) // Newest first
-      .lean();
+    let queryBuilder = NotificationModel.find(filter)
+      .sort({ createdAt: -1 }); // Newest first
+    
+    // Apply limit if provided
+    if (limit) {
+      queryBuilder = queryBuilder.limit(parseInt(limit));
+    }
+    
+    const notifications = await queryBuilder.lean();
     
     // Format notifications to ensure proper id field
     const notificationsWithId = notifications.map(notification => ({

@@ -47,12 +47,48 @@ async function initializeDefaultAssessments() {
 
 const generateId = (): string => `asmnt_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     await connectMongoose();
     await initializeDefaultAssessments();
     
-    const assessments = await AssessmentModel.find({}).lean();
+    const { searchParams } = new URL(request.url);
+    const status = searchParams.get('status');
+    const upcoming = searchParams.get('upcoming');
+    const limit = searchParams.get('limit');
+    
+    const query: Record<string, unknown> = {};
+    
+    // Filter by status if provided
+    if (status) {
+      query.status = status;
+    }
+    
+    // If filtering for upcoming assessments
+    if (upcoming === 'true') {
+      const now = new Date();
+      const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+      query.dueDate = { 
+        $gte: now.toISOString(),
+        $lte: nextWeek.toISOString()
+      };
+    }
+    
+    let queryBuilder = AssessmentModel.find(query).lean();
+    
+    // Apply limit if provided
+    if (limit) {
+      queryBuilder = queryBuilder.limit(parseInt(limit));
+    }
+    
+    // Sort by due date for upcoming assessments
+    if (upcoming === 'true') {
+      queryBuilder = queryBuilder.sort({ dueDate: 1 });
+    } else {
+      queryBuilder = queryBuilder.sort({ createdAt: -1 });
+    }
+    
+    const assessments = await queryBuilder;
     
     // Format assessments to ensure proper id field
     const assessmentsWithId = assessments.map(assessment => ({
