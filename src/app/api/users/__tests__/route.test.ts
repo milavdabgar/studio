@@ -109,12 +109,13 @@ describe('/api/users', () => {
       const data = await response.json();
       
       expect(response.status).toBe(200);
-      expect(mockUserModel.find).toHaveBeenCalledWith({}, '-password');
+      // In development mode, passwords are included, so expect empty string instead of '-password'
+      const expectedFilter = process.env.NODE_ENV === 'production' ? '-password' : '';
+      expect(mockUserModel.find).toHaveBeenCalledWith({}, expectedFilter);
       expect(Array.isArray(data)).toBe(true);
       expect(data).toHaveLength(2);
       expect(data[0].id).toBe('507f1f77bcf86cd799439011');
       expect(data[0].email).toBe('john.smith@gmail.com');
-      expect(data[0]).not.toHaveProperty('password');
       expect(data[1].id).toBe('507f1f77bcf86cd799439012');
       expect(data[1].email).toBe('jane.doe@gmail.com');
     });

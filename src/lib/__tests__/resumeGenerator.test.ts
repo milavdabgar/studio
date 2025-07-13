@@ -1,14 +1,27 @@
 import { ResumeGenerator, type ResumeData } from '../services/resumeGenerator';
 import type { Student, Program, Batch, Result, Course } from '@/types/entities';
 
-// Mock the ContentConverterV2
+// Mock Puppeteer for PDF generation
+jest.mock('puppeteer', () => {
+  const mockPage = {
+    setContent: jest.fn().mockResolvedValue(undefined),
+    pdf: jest.fn().mockResolvedValue(Buffer.from('mocked-pdf-content'))
+  };
+  const mockBrowser = {
+    newPage: jest.fn().mockResolvedValue(mockPage),
+    close: jest.fn().mockResolvedValue(undefined)
+  };
+  return {
+    launch: jest.fn().mockResolvedValue(mockBrowser)
+  };
+});
+
+// Mock the ContentConverterV2 for DOCX generation
 jest.mock('../content-converter-v2', () => {
   return {
     ContentConverterV2: jest.fn().mockImplementation(() => ({
       convert: jest.fn().mockImplementation((content: string, format: string) => {
-        if (format === 'pdf') {
-          return Promise.resolve(Buffer.from('mocked-pdf-content'));
-        } else if (format === 'docx') {
+        if (format === 'docx') {
           return Promise.resolve(Buffer.from('mocked-docx-content'));
         } else {
           return Promise.resolve(content);
@@ -479,9 +492,9 @@ describe('ResumeGenerator', () => {
     });
 
     it('should handle PDF generation errors', async () => {
-      // Mock the content converter to throw an error
-      const mockConverter = (resumeGenerator as any).contentConverter;
-      mockConverter.convert.mockRejectedValueOnce(new Error('PDF generation failed'));
+      // Mock puppeteer to throw an error
+      const puppeteer = require('puppeteer');
+      puppeteer.launch.mockRejectedValueOnce(new Error('Puppeteer launch failed'));
 
       const resumeData: ResumeData = {
         fullName: 'Test Student',
@@ -498,7 +511,7 @@ describe('ResumeGenerator', () => {
         certifications: []
       };
 
-      await expect(resumeGenerator.generatePDF(resumeData)).rejects.toThrow('Failed to generate PDF resume');
+      await expect(resumeGenerator.generatePDF(resumeData)).rejects.toThrow('Puppeteer launch failed');
     });
 
     it('should handle DOCX generation errors', async () => {
@@ -521,7 +534,7 @@ describe('ResumeGenerator', () => {
         certifications: []
       };
 
-      await expect(resumeGenerator.generateDOCX(resumeData)).rejects.toThrow('Failed to generate DOCX resume');
+      await expect(resumeGenerator.generateDOCX(resumeData)).rejects.toThrow('DOCX generation failed');
     });
   });
 
