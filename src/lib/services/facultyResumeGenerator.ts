@@ -421,10 +421,9 @@ export class FacultyResumeGenerator {
                     <h4>${qual.degree || 'Qualification'}</h4>
                     <div class="details">
                         ${qual.institution ? `<strong>Institution:</strong> ${qual.institution}<br>` : ''}
-                        ${qual.university ? `<strong>University:</strong> ${qual.university}<br>` : ''}
+                        ${qual.field ? `<strong>Field:</strong> ${qual.field}<br>` : ''}
                         ${qual.year ? `<strong>Year:</strong> ${qual.year}<br>` : ''}
                         ${qual.grade ? `<strong>Grade:</strong> ${qual.grade}<br>` : ''}
-                        ${qual.specialization ? `<strong>Specialization:</strong> ${qual.specialization}` : ''}
                     </div>
                 </div>
             `).join('')}
@@ -622,7 +621,7 @@ export class FacultyResumeGenerator {
       resumeData.qualifications.forEach(qual => {
         sections.push(`• ${qual.degree || 'Qualification'}`);
         if (qual.institution) sections.push(`  Institution: ${qual.institution}`);
-        if (qual.university) sections.push(`  University: ${qual.university}`);
+        if (qual.field) sections.push(`  Field: ${qual.field}`);
         if (qual.year) sections.push(`  Year: ${qual.year}`);
         if (qual.grade) sections.push(`  Grade: ${qual.grade}`);
       });

@@ -42,7 +42,7 @@ describe('/api/faculty/[id]/resume', () => {
     address: '123 Faculty Colony, Palanpur, Gujarat',
     department: 'Computer Engineering',
     designation: 'Assistant Professor',
-    jobType: 'Teaching',
+    jobType: 'Regular' as const,
     staffCategory: 'Academic',
     specializations: ['Machine Learning', 'Data Science'],
     qualifications: [
@@ -50,9 +50,10 @@ describe('/api/faculty/[id]/resume', () => {
         degree: 'Ph.D.',
         field: 'Computer Science',
         institution: 'IIT Bombay',
-        year: '2020'
+        year: 2020
       }
     ],
+    status: 'active' as const,
     createdAt: '2021-07-01T00:00:00.000Z',
     updatedAt: '2024-07-01T00:00:00.000Z'
   };
@@ -217,7 +218,8 @@ describe('/api/faculty/[id]/resume', () => {
         ...mockFaculty,
         fullName: undefined,
         firstName: undefined,
-        lastName: undefined
+        lastName: undefined,
+        status: 'active' as const
       };
       
       mockFacultyService.getAllFaculty.mockResolvedValue([facultyWithoutName]);

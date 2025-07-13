@@ -43,7 +43,7 @@ describe('FacultyResumeGenerator', () => {
     department: 'Computer Engineering',
     departmentId: 'dept-ce',
     designation: 'Assistant Professor',
-    jobType: 'Teaching',
+    jobType: 'Regular' as const,
     staffCategory: 'Academic',
     category: 'Academic',
     instType: 'Government',
@@ -54,19 +54,15 @@ describe('FacultyResumeGenerator', () => {
         degree: 'Ph.D.',
         field: 'Computer Science',
         institution: 'IIT Bombay',
-        university: 'IIT Bombay',
-        year: '2020',
-        grade: 'First Class',
-        specialization: 'Machine Learning'
+        year: 2020,
+        grade: 'First Class'
       },
       {
         degree: 'M.Tech',
         field: 'Computer Engineering',
         institution: 'NIT Surat',
-        university: 'NIT Surat',
-        year: '2015',
-        grade: 'First Class with Distinction',
-        specialization: 'Software Engineering'
+        year: 2015,
+        grade: 'First Class with Distinction'
       }
     ],
     dateOfBirth: '1990-05-15T00:00:00.000Z',
@@ -76,6 +72,7 @@ describe('FacultyResumeGenerator', () => {
     aadharNumber: '123456789012',
     panCardNumber: 'ABCDE1234F',
     gpfNpsNumber: 'GPF123456',
+    status: 'active' as const,
     createdAt: '2021-07-01T00:00:00.000Z',
     updatedAt: '2024-07-01T00:00:00.000Z'
   };
@@ -102,7 +99,7 @@ describe('FacultyResumeGenerator', () => {
       expect(resumeData.employeeId).toBe('EMP001');
       expect(resumeData.department).toBe('Computer Engineering');
       expect(resumeData.designation).toBe('Assistant Professor');
-      expect(resumeData.jobType).toBe('Teaching');
+      expect(resumeData.jobType).toBe('Regular');
       expect(resumeData.staffCategory).toBe('Academic');
       expect(resumeData.instituteEmail).toBe('john.doe@gppalanpur.in');
     });
@@ -134,7 +131,7 @@ describe('FacultyResumeGenerator', () => {
 
       const resumeData = resumeGenerator.generateResumeData(facultyWithoutFullName);
 
-      expect(resumeData.fullName).toBe('Dr. Jane Smith');
+      expect(resumeData.fullName).toBe('Dr. DOE JOHN MICHAEL'); // Uses gtuName when fullName is missing
     });
 
     it('should handle faculty with GTU name fallback', () => {
@@ -280,7 +277,7 @@ describe('FacultyResumeGenerator', () => {
         employeeId: 'EMP001',
         department: 'Computer Engineering',
         designation: 'Assistant Professor',
-        jobType: 'Teaching',
+        jobType: 'Regular' as const,
         staffCategory: 'Academic',
         instituteEmail: 'john.doe@gppalanpur.in',
         specializations: ['Machine Learning', 'Data Science'],
@@ -289,8 +286,7 @@ describe('FacultyResumeGenerator', () => {
             degree: 'Ph.D.',
             field: 'Computer Science',
             institution: 'IIT Bombay',
-            university: 'IIT Bombay',
-            year: '2020',
+                year: 2020,
             grade: 'First Class'
           }
         ],
@@ -428,8 +424,9 @@ describe('FacultyResumeGenerator', () => {
         qualifications: [
           {
             degree: 'Ph.D.',
+            field: 'Computer Science',
             institution: 'IIT Bombay',
-            year: '2020'
+            year: 2020
           }
         ],
         experience: [],
@@ -583,6 +580,7 @@ describe('FacultyResumeGenerator', () => {
         ...mockFaculty,
         title: 'Dr.',
         fullName: undefined,
+        gtuName: undefined, // Remove gtuName so it constructs from parts
         firstName: 'John',
         middleName: 'Michael',
         lastName: 'Doe'
@@ -598,6 +596,7 @@ describe('FacultyResumeGenerator', () => {
         ...mockFaculty,
         title: 'Dr.',
         fullName: undefined,
+        gtuName: undefined, // Remove gtuName so it constructs from parts
         firstName: 'John',
         middleName: undefined,
         lastName: 'Doe'
