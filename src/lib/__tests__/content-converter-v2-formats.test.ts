@@ -20,8 +20,8 @@ interface ContentConverterInternal {
   generateHtmlTemplate: (content: string, title: string, author: string, options: Record<string, unknown>) => string;
 }
 
-// Type for exec callback function
-type ExecCallback = (error: Error | null, stdout: string, stderr: string) => void;
+// Type for exec callback function (unused but needed for reference)
+// type ExecCallback = (error: Error | null, stdout: string, stderr: string) => void;
 
 // Mock external dependencies
 jest.mock('fs');
@@ -68,7 +68,6 @@ const mockBrowser = {
 mockPuppeteer.launch.mockResolvedValue(mockBrowser);
 
 // Mock require for Puppeteer
-const originalRequire = require;
 jest.doMock('puppeteer', () => mockPuppeteer);
 
 describe('ContentConverterV2 - Format Conversions', () => {
@@ -113,8 +112,8 @@ describe('ContentConverterV2 - Format Conversions', () => {
   describe('convertToPdfPuppeteer() method', () => {
     beforeEach(() => {
       // Mock the convertToPdfPuppeteer method to use our mocked Puppeteer directly
-      const originalMethod = (converter as unknown as ContentConverterInternal).convertToPdfPuppeteer;
-      (converter as unknown as ContentConverterInternal).convertToPdfPuppeteer = async function(content: string, frontmatter: Record<string, unknown>, options: any) {
+      // Override the method for testing
+      (converter as unknown as ContentConverterInternal).convertToPdfPuppeteer = async function(content: string, frontmatter: Record<string, unknown>, options: Record<string, unknown>) {
         // Simulate the Puppeteer workflow with our mocks
         const browser = await mockPuppeteer.launch({});
         const page = await browser.newPage();

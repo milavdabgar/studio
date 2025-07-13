@@ -1039,7 +1039,7 @@ ${presentationContent}`;
         
         // Process each SVG image
         for (const match of matches) {
-            const [fullMatch, , svgPath, title] = match;
+            const [fullMatch, , svgPath] = match;
             
             try {
                 let svgContent: string | null = null;

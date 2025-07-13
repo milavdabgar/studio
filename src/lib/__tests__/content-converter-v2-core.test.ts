@@ -5,7 +5,6 @@
 
 import { ContentConverterV2 } from '../content-converter-v2';
 import fs from 'fs';
-import { exec } from 'child_process';
 
 // Type definitions for testing internal methods
 interface ContentConverterInternal {
