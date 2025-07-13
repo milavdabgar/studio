@@ -164,7 +164,11 @@ export default function FacultyProfilePage() {
 
   return (
     <div className="space-y-6">
-      <Card className="shadow-xl">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold">Faculty Profile</h1>
+        <p className="text-muted-foreground">View and manage your faculty profile information</p>
+      </div>
+      <Card className="shadow-xl" data-testid="faculty-profile-card">
         <CardHeader className="items-center text-center">
           <Avatar className="w-24 h-24 mb-4 ring-2 ring-primary ring-offset-2">
             <AvatarImage src={`https://picsum.photos/seed/${faculty.id}/100/100`} alt={fullName} data-ai-hint="faculty avatar" />

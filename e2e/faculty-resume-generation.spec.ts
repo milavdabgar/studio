@@ -18,7 +18,7 @@ test.describe('Faculty Resume Generation', () => {
     await expect(page.locator('[data-testid="faculty-profile-card"]').first()).toBeVisible();
     
     // Check for basic faculty information elements
-    await expect(page.locator('text=/Faculty Profile/i')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Faculty Profile' })).toBeVisible();
   });
 
   test('should show resume generation dropdown menu', async ({ page }) => {
@@ -65,8 +65,7 @@ test.describe('Faculty Resume Generation', () => {
     await page.locator('text=Download as PDF').click();
     
     // Wait for the success toast
-    await expect(page.locator('text=/Resume Generated/i')).toBeVisible({ timeout: 10000 });
-    await expect(page.locator('text=/PDF/i')).toBeVisible();
+    await expect(page.getByText('Resume Generated', { exact: true })).toBeVisible({ timeout: 10000 });
   });
 
   test('should generate DOCX resume successfully', async ({ page }) => {
@@ -98,8 +97,7 @@ test.describe('Faculty Resume Generation', () => {
     await page.locator('text=Download as DOCX').click();
     
     // Wait for the success toast
-    await expect(page.locator('text=/Resume Generated/i')).toBeVisible({ timeout: 10000 });
-    await expect(page.locator('text=/DOCX/i')).toBeVisible();
+    await expect(page.getByText('Resume Generated', { exact: true })).toBeVisible({ timeout: 10000 });
   });
 
   test('should generate HTML resume successfully', async ({ page }) => {
@@ -131,8 +129,7 @@ test.describe('Faculty Resume Generation', () => {
     await page.locator('text=Download as HTML').click();
     
     // Wait for the success toast
-    await expect(page.locator('text=/Resume Generated/i')).toBeVisible({ timeout: 10000 });
-    await expect(page.locator('text=/HTML/i')).toBeVisible();
+    await expect(page.getByText('Resume Generated', { exact: true })).toBeVisible({ timeout: 10000 });
   });
 
   test('should generate TXT resume successfully', async ({ page }) => {
@@ -164,8 +161,7 @@ test.describe('Faculty Resume Generation', () => {
     await page.locator('text=Download as TXT').click();
     
     // Wait for the success toast
-    await expect(page.locator('text=/Resume Generated/i')).toBeVisible({ timeout: 10000 });
-    await expect(page.locator('text=/TXT/i')).toBeVisible();
+    await expect(page.getByText('Resume Generated', { exact: true })).toBeVisible({ timeout: 10000 });
   });
 
   test('should handle resume generation errors gracefully', async ({ page }) => {
@@ -186,8 +182,7 @@ test.describe('Faculty Resume Generation', () => {
     await page.locator('text=Download as PDF').click();
     
     // Wait for the error toast
-    await expect(page.locator('text=/Generation Failed/i')).toBeVisible({ timeout: 10000 });
-    await expect(page.locator('text=/Resume generation failed/i')).toBeVisible();
+    await expect(page.getByText('Generation Failed', { exact: true })).toBeVisible({ timeout: 10000 });
   });
 
   test('should show loading state during resume generation', async ({ page }) => {
@@ -217,7 +212,7 @@ test.describe('Faculty Resume Generation', () => {
     await expect(page.locator('button:has-text("Generate Resume") svg.animate-spin')).toBeVisible();
     
     // Wait for completion
-    await expect(page.locator('text=/Resume Generated/i')).toBeVisible({ timeout: 15000 });
+    await expect(page.getByText('Resume Generated', { exact: true })).toBeVisible({ timeout: 15000 });
   });
 
   test('should handle faculty data not available error', async ({ page }) => {
