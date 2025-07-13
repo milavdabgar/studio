@@ -102,6 +102,7 @@ const ROLE_ACCESS_CONTROL: Record<string, UserRoleCode[]> = {
   '/admin/courses': ['admin', 'super_admin', 'hod', 'faculty', 'institute_admin', 'department_admin'],
   '/admin/committees': ['admin', 'super_admin', 'institute_admin', 'committee_admin'],
   '/admin': ['admin', 'super_admin', 'hod', 'institute_admin', 'department_admin', 'committee_admin'], 
+  '/notifications': ['admin', 'super_admin', 'hod', 'faculty', 'student', 'institute_admin', 'department_admin'],
   '/project-fair/admin': ['admin', 'super_admin', 'hod', 'faculty'],
   '/project-fair/jury': ['jury', 'faculty', 'admin', 'super_admin'],
   '/faculty/courses': ['faculty', 'hod', 'admin', 'super_admin'],

@@ -56,9 +56,9 @@ test.describe('Student Real-Time Assessment Notifications - Reliable Tests', () 
     // Wait for notifications component
     await expect(page.locator('[data-testid="assessment-notifications"]')).toBeVisible({ timeout: 15000 });
     
-    // Check for sections (these should always be present even if empty)
-    await expect(page.getByText('Upcoming Assessments')).toBeVisible();
-    await expect(page.getByText('Recent Updates')).toBeVisible();
+    // Check for sections by using more specific selectors to avoid strict mode violations
+    await expect(page.getByRole('heading', { name: /upcoming assessments/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /recent updates/i })).toBeVisible();
   });
 
   test('should have working action buttons', async ({ page }) => {
