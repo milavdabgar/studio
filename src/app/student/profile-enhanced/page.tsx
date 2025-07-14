@@ -1190,7 +1190,7 @@ export default function EnhancedProfilePage() {
 
   const getPublicProfileUrl = () => {
     if (!student) return '';
-    return `${window.location.origin}/people/${student.enrollmentNumber}`;
+    return `${window.location.origin}/students/${student.enrollmentNumber}`;
   };
 
   if (isLoading) {

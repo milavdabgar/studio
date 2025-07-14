@@ -51,33 +51,32 @@ import { programService } from '@/lib/api/programs';
 import { batchService } from '@/lib/api/batches';
 import { format, parseISO, isValid } from 'date-fns';
 
-interface PublicProfilePageProps {
+interface StudentProfilePageProps {
   // Add props if needed
 }
 
-export default function PublicProfilePage({}: PublicProfilePageProps) {
+export default function StudentProfilePage({}: StudentProfilePageProps) {
   const params = useParams();
   const identifier = params.identifier as string;
-  const [profile, setProfile] = useState<Student | FacultyProfile | null>(null);
+  const [profile, setProfile] = useState<Student | null>(null);
   const [program, setProgram] = useState<Program | null>(null);
   const [batch, setBatch] = useState<Batch | null>(null);
-  const [profileType, setProfileType] = useState<'student' | 'faculty' | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
-    fetchPublicProfile();
+    fetchStudentProfile();
   }, [identifier]);
 
-  const fetchPublicProfile = async () => {
+  const fetchStudentProfile = async () => {
     if (!identifier) return;
     
     setIsLoading(true);
     setNotFound(false);
     
     try {
-      // Try to find as student first (by enrollment number)
+      // Find student by enrollment number or custom URL
       const allStudents = await studentService.getAllStudents();
       const student = allStudents.find(s => 
         s.enrollmentNumber === identifier || 
@@ -92,7 +91,6 @@ export default function PublicProfilePage({}: PublicProfilePageProps) {
         }
         
         setProfile(student);
-        setProfileType('student');
         
         // Fetch related data
         if (student.programId) {
@@ -104,12 +102,10 @@ export default function PublicProfilePage({}: PublicProfilePageProps) {
           setBatch(batchData);
         }
       } else {
-        // Try to find as faculty (by staff code)
-        // TODO: Implement faculty search when faculty API is ready
         setNotFound(true);
       }
     } catch (error) {
-      console.error('Error fetching public profile:', error);
+      console.error('Error fetching student profile:', error);
       setNotFound(true);
     } finally {
       setIsLoading(false);
@@ -120,9 +116,7 @@ export default function PublicProfilePage({}: PublicProfilePageProps) {
     if (!profile) return;
     
     try {
-      const endpoint = profileType === 'student' 
-        ? `/api/students/${profile.id}/resume?format=${format}&v=${Date.now()}`
-        : `/api/faculty/${profile.id}/resume?format=${format}&v=${Date.now()}`;
+      const endpoint = `/api/students/${profile.id}/resume?format=${format}&v=${Date.now()}`;
       
       const response = await fetch(endpoint, {
         method: 'GET',
@@ -143,7 +137,7 @@ export default function PublicProfilePage({}: PublicProfilePageProps) {
       // Set proper file extension based on format - all formats are now PDF
       let fileExtension = 'pdf';
       
-      link.download = `${profile.firstName || 'Profile'}_${format}.${fileExtension}`;
+      link.download = `${profile.firstName || 'Student'}_${format}.${fileExtension}`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -185,9 +179,7 @@ export default function PublicProfilePage({}: PublicProfilePageProps) {
     );
   }
 
-  const isStudent = profileType === 'student';
-  const student = isStudent ? profile as Student : null;
-  const faculty = !isStudent ? profile as FacultyProfile : null;
+  const student = profile as Student;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -211,18 +203,9 @@ export default function PublicProfilePage({}: PublicProfilePageProps) {
                   {profile.firstName} {profile.middleName} {profile.lastName}
                 </CardTitle>
                 <CardDescription className="text-lg mt-2">
-                  {isStudent ? (
-                    <>
-                      <span className="font-semibold">{student?.enrollmentNumber}</span>
-                      {program && <span className="ml-2">• {program.name}</span>}
-                      {student?.currentSemester && <span className="ml-2">• Semester {student.currentSemester}</span>}
-                    </>
-                  ) : (
-                    <>
-                      <span className="font-semibold">{faculty?.designation}</span>
-                      {faculty?.department && <span className="ml-2">• {faculty.department}</span>}
-                    </>
-                  )}
+                  <span className="font-semibold">{student?.enrollmentNumber}</span>
+                  {program && <span className="ml-2">• {program.name}</span>}
+                  {student?.currentSemester && <span className="ml-2">• Semester {student.currentSemester}</span>}
                 </CardDescription>
               </div>
             </div>
@@ -238,10 +221,10 @@ export default function PublicProfilePage({}: PublicProfilePageProps) {
             
             {/* Contact Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              {(isStudent ? student?.personalEmail : faculty?.personalEmail) && (
+              {student?.personalEmail && (
                 <div className="flex items-center space-x-2">
                   <Mail className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm">{isStudent ? student?.personalEmail : faculty?.personalEmail}</span>
+                  <span className="text-sm">{student.personalEmail}</span>
                 </div>
               )}
               {profile.contactNumber && (

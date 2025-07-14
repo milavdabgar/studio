@@ -307,7 +307,7 @@ export default function RootLayout({
       });
     } else {
       setCurrentUser(DEFAULT_USER);
-       if (!['/login', '/signup', '/', '/about', '/departments', '/admissions', '/library', '/facilities', '/contact', '/ssip', '/establishment', '/student-section', '/tpo', '/people'].includes(pathname) && !pathname.startsWith('/posts') && !pathname.startsWith('/newsletters') && !pathname.startsWith('/departments/') && !pathname.startsWith('/people/') && !pathname.startsWith('/tags') && !pathname.startsWith('/categories') && !pathname.startsWith('/search')) { // Allow /posts, /newsletters, /tags, /categories, /search, /people and other public routes
+       if (!['/login', '/signup', '/', '/about', '/departments', '/admissions', '/library', '/facilities', '/contact', '/ssip', '/establishment', '/student-section', '/tpo', '/students', '/faculty'].includes(pathname) && !pathname.startsWith('/posts') && !pathname.startsWith('/newsletters') && !pathname.startsWith('/departments/') && !pathname.startsWith('/students/') && !pathname.startsWith('/faculty/') && !pathname.startsWith('/tags') && !pathname.startsWith('/categories') && !pathname.startsWith('/search')) { // Allow /posts, /newsletters, /tags, /categories, /search, /students, /faculty and other public routes
          router.push('/login');
        }
     }
@@ -371,7 +371,7 @@ export default function RootLayout({
   
   const activeRoleObject = allSystemRoles.find(r => r.code === currentUser.activeRole);
   const currentNavItems = getNavItemsForRoleCode(currentUser.activeRole);
-  const hideSidebar = ['/login', '/signup', '/', '/about', '/departments', '/admissions', '/library', '/facilities', '/contact', '/ssip', '/establishment', '/student-section', '/tpo', '/people'].includes(pathname) || pathname.startsWith('/posts') || pathname.startsWith('/newsletters') || pathname.startsWith('/departments/') || pathname.startsWith('/people/') || pathname.startsWith('/tags') || pathname.startsWith('/categories') || pathname.startsWith('/search');
+  const hideSidebar = ['/login', '/signup', '/', '/about', '/departments', '/admissions', '/library', '/facilities', '/contact', '/ssip', '/establishment', '/student-section', '/tpo', '/students', '/faculty'].includes(pathname) || pathname.startsWith('/posts') || pathname.startsWith('/newsletters') || pathname.startsWith('/departments/') || pathname.startsWith('/students/') || pathname.startsWith('/faculty/') || pathname.startsWith('/tags') || pathname.startsWith('/categories') || pathname.startsWith('/search');
 
 
   if (!isMounted) { 

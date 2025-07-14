@@ -86,7 +86,8 @@ const PUBLIC_ROUTES = [
   '/establishment', // Add establishment page to public routes
   '/student-section', // Add student section page to public routes
   '/tpo', // Add TPO page to public routes
-  '/people', // Add people profiles to public routes
+  '/students', // Add student profiles to public routes
+  '/faculty', // Add faculty profiles to public routes
 ];
 
 // Role access control: Key is route prefix, Value is array of ALLOWED role CODES
@@ -148,7 +149,8 @@ export async function middleware(request: NextRequest) {
       pathname.startsWith('/posts') || 
       pathname.startsWith('/newsletters') ||
       pathname.startsWith('/departments/') ||
-      pathname.startsWith('/people/')) {
+      pathname.startsWith('/students/') ||
+      pathname.startsWith('/faculty/')) {
     // If accessing login or signup while already authenticated, redirect to dashboard
     if ((pathname === '/login' || pathname === '/signup') && authenticatedUser) {
       return NextResponse.redirect(new URL('/dashboard', request.url));
