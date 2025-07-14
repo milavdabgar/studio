@@ -20,7 +20,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     // Validate format
-    const validFormats = ['pdf', 'docx', 'html', 'txt'];
+    const validFormats = ['pdf', 'docx', 'html', 'txt', 'biodata', 'resume', 'cv'];
     if (!validFormats.includes(format)) {
       return NextResponse.json({ 
         error: `Invalid format. Supported formats: ${validFormats.join(', ')}` 
@@ -65,6 +65,21 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       case 'txt':
         content = facultyResumeGenerator.generatePlainText(resumeData);
         contentType = 'text/plain';
+        break;
+      case 'biodata':
+        // For faculty, biodata format uses PDF
+        content = await facultyResumeGenerator.generatePDF(resumeData);
+        contentType = 'application/pdf';
+        break;
+      case 'resume':
+        // For faculty, resume format uses PDF
+        content = await facultyResumeGenerator.generatePDF(resumeData);
+        contentType = 'application/pdf';
+        break;
+      case 'cv':
+        // For faculty, CV format uses PDF
+        content = await facultyResumeGenerator.generatePDF(resumeData);
+        contentType = 'application/pdf';
         break;
       default:
         return NextResponse.json({ error: 'Unsupported format' }, { status: 400 });

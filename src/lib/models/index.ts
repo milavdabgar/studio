@@ -424,7 +424,11 @@ const programSchema = new Schema<IProgram>({
   toJSON: {
     transform: function(doc, ret) {
       // Use custom id if available, otherwise use _id
-      ret.id = ret.id || ret._id;
+      if (ret.id && typeof ret.id === 'string' && ret.id !== ret._id.toString()) {
+        // Keep the custom id
+      } else {
+        ret.id = ret._id.toString();
+      }
       delete ret._id;
       delete ret.__v;
       return ret;

@@ -121,8 +121,8 @@ export default function PublicProfilePage({}: PublicProfilePageProps) {
     
     try {
       const endpoint = profileType === 'student' 
-        ? `/api/students/${profile.id}/resume?format=${format === 'resume' ? 'pdf' : format}`
-        : `/api/faculty/${profile.id}/resume?format=${format === 'resume' ? 'pdf' : format}`;
+        ? `/api/students/${profile.id}/resume?format=${format}&v=${Date.now()}`
+        : `/api/faculty/${profile.id}/resume?format=${format}&v=${Date.now()}`;
       
       const response = await fetch(endpoint, {
         method: 'GET',
@@ -139,7 +139,11 @@ export default function PublicProfilePage({}: PublicProfilePageProps) {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `${profile.firstName || 'Profile'}_${format}.${format === 'resume' ? 'pdf' : format}`;
+      
+      // Set proper file extension based on format - all formats are now PDF
+      let fileExtension = 'pdf';
+      
+      link.download = `${profile.firstName || 'Profile'}_${format}.${fileExtension}`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

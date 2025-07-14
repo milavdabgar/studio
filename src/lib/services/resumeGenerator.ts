@@ -631,7 +631,7 @@ export class ResumeGenerator {
     <div class="section list-section">
         <h2 class="section-title">Technical Skills</h2>
         <ul>
-            ${resumeData.skills.map(skill => `<li>${skill}</li>`).join('')}
+            ${resumeData.skills.map(skill => `<li>${skill.name} (${skill.proficiency})</li>`).join('')}
         </ul>
     </div>
     ` : ''}
@@ -892,6 +892,130 @@ export class ResumeGenerator {
   }
 
   /**
+   * Generate PDF from plain text content
+   */
+  async generatePDFFromText(textContent: string): Promise<Buffer> {
+    // Create a simple HTML wrapper for the text content
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Document</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              font-size: 12px;
+              line-height: 1.4;
+              margin: 20px;
+              color: #333;
+            }
+            pre {
+              white-space: pre-wrap;
+              font-family: 'Courier New', monospace;
+              font-size: 11px;
+            }
+          </style>
+        </head>
+        <body>
+          <pre>${textContent.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+        </body>
+      </html>
+    `;
+
+    const puppeteer = await import('puppeteer');
+    let browser;
+
+    try {
+      browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+      });
+
+      const page = await browser.newPage();
+      await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+
+      const pdfBuffer = await page.pdf({
+        format: 'A4',
+        margin: {
+          top: '20mm',
+          right: '15mm',
+          bottom: '20mm',
+          left: '15mm'
+        },
+        printBackground: true
+      });
+
+      return Buffer.from(pdfBuffer);
+
+    } finally {
+      if (browser) {
+        await browser.close();
+      }
+    }
+  }
+
+  /**
+   * Generate biodata as professional PDF
+   */
+  async generateBiodataPDF(resumeData: ResumeData): Promise<Buffer> {
+    const htmlContent = this.generateBiodataHTML(resumeData);
+    return this.generatePDFFromHTML(htmlContent);
+  }
+
+  /**
+   * Generate resume as professional PDF
+   */
+  async generateResumePDF(resumeData: ResumeData): Promise<Buffer> {
+    const htmlContent = this.generateResumeHTML(resumeData);
+    return this.generatePDFFromHTML(htmlContent);
+  }
+
+  /**
+   * Generate CV as professional PDF
+   */
+  async generateCVPDF(resumeData: ResumeData): Promise<Buffer> {
+    const htmlContent = this.generateCVHTML(resumeData);
+    return this.generatePDFFromHTML(htmlContent);
+  }
+
+  /**
+   * Generate PDF from HTML content with professional styling
+   */
+  private async generatePDFFromHTML(htmlContent: string): Promise<Buffer> {
+    const puppeteer = await import('puppeteer');
+    let browser;
+
+    try {
+      browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+      });
+
+      const page = await browser.newPage();
+      await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+
+      const pdfBuffer = await page.pdf({
+        format: 'A4',
+        margin: {
+          top: '20mm',
+          right: '15mm',
+          bottom: '20mm',
+          left: '15mm'
+        },
+        printBackground: true
+      });
+
+      return Buffer.from(pdfBuffer);
+
+    } finally {
+      if (browser) {
+        await browser.close();
+      }
+    }
+  }
+
+  /**
    * Generate resume in DOCX format
    */
   async generateDOCX(resumeData: ResumeData): Promise<Buffer> {
@@ -911,6 +1035,598 @@ export class ResumeGenerator {
    */
   generateHTML(resumeData: ResumeData): string {
     return this.generateResumeHTML(resumeData);
+  }
+
+  /**
+   * Generate biodata HTML with professional styling
+   */
+  generateBiodataHTML(resumeData: ResumeData): string {
+    return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${resumeData.fullName} - Biodata</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Times New Roman', serif;
+            line-height: 1.5;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #1a365d;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            color: #1a365d;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            color: #4a5568;
+            margin-bottom: 15px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+        }
+        
+        .section-title {
+            font-size: 1.3em;
+            color: #1a365d;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 5px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .info-value {
+            color: #4a5568;
+        }
+        
+        .contact-info {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .education-item, .experience-item, .project-item, .achievement-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-left: 4px solid #1a365d;
+            background: #f8f9fa;
+        }
+        
+        .item-title {
+            font-weight: bold;
+            color: #1a365d;
+            margin-bottom: 5px;
+        }
+        
+        .item-subtitle {
+            color: #4a5568;
+            font-style: italic;
+            margin-bottom: 8px;
+        }
+        
+        .item-dates {
+            color: #718096;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+        
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .skill-badge {
+            background: #1a365d;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            color: #718096;
+            font-size: 0.9em;
+        }
+        
+        @media print {
+            body { font-size: 12px; }
+            .header h1 { font-size: 2em; }
+            .section { margin-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>${resumeData.fullName}</h1>
+        <div class="subtitle">BIODATA</div>
+        <div class="subtitle">${resumeData.program} Student - ${resumeData.enrollmentNumber}</div>
+    </div>
+
+    <div class="contact-info">
+        <div class="info-grid">
+            <div class="info-label">Personal Email:</div>
+            <div class="info-value">${resumeData.personalEmail || 'N/A'}</div>
+            <div class="info-label">Institute Email:</div>
+            <div class="info-value">${resumeData.instituteEmail}</div>
+            <div class="info-label">Contact Number:</div>
+            <div class="info-value">${resumeData.contactNumber || 'N/A'}</div>
+            <div class="info-label">Address:</div>
+            <div class="info-value">${resumeData.address || 'N/A'}</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">Personal Information</h2>
+        <div class="info-grid">
+            <div class="info-label">Date of Birth:</div>
+            <div class="info-value">${resumeData.dateOfBirth || 'N/A'}</div>
+            <div class="info-label">Gender:</div>
+            <div class="info-value">${resumeData.gender || 'N/A'}</div>
+            <div class="info-label">Blood Group:</div>
+            <div class="info-value">${resumeData.bloodGroup || 'N/A'}</div>
+            ${resumeData.aadharNumber ? `
+            <div class="info-label">Aadhar Number:</div>
+            <div class="info-value">${resumeData.aadharNumber}</div>
+            ` : ''}
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">Academic Information</h2>
+        <div class="info-grid">
+            <div class="info-label">Program:</div>
+            <div class="info-value">${resumeData.program}</div>
+            <div class="info-label">Current Semester:</div>
+            <div class="info-value">${resumeData.currentSemester}</div>
+            ${resumeData.batch ? `
+            <div class="info-label">Batch:</div>
+            <div class="info-value">${resumeData.batch}</div>
+            ` : ''}
+            ${resumeData.overallCPI ? `
+            <div class="info-label">Overall CPI:</div>
+            <div class="info-value">${resumeData.overallCPI.toFixed(2)}</div>
+            ` : ''}
+        </div>
+    </div>
+
+    ${resumeData.guardianName ? `
+    <div class="section">
+        <h2 class="section-title">Family Information</h2>
+        <div class="info-grid">
+            <div class="info-label">Guardian Name:</div>
+            <div class="info-value">${resumeData.guardianName}</div>
+            ${resumeData.guardianRelation ? `
+            <div class="info-label">Relation:</div>
+            <div class="info-value">${resumeData.guardianRelation}</div>
+            ` : ''}
+            ${resumeData.guardianContact ? `
+            <div class="info-label">Guardian Contact:</div>
+            <div class="info-value">${resumeData.guardianContact}</div>
+            ` : ''}
+            ${resumeData.guardianOccupation ? `
+            <div class="info-label">Guardian Occupation:</div>
+            <div class="info-value">${resumeData.guardianOccupation}</div>
+            ` : ''}
+        </div>
+    </div>
+    ` : ''}
+
+    ${resumeData.profileSummary ? `
+    <div class="section">
+        <h2 class="section-title">About Me</h2>
+        <p style="text-align: justify; line-height: 1.6;">${resumeData.profileSummary}</p>
+    </div>
+    ` : ''}
+
+    ${resumeData.education && resumeData.education.length > 0 ? `
+    <div class="section">
+        <h2 class="section-title">Educational Background</h2>
+        ${resumeData.education.map(edu => `
+            <div class="education-item">
+                <div class="item-title">${edu.degree} in ${edu.fieldOfStudy}</div>
+                <div class="item-subtitle">${edu.institution}</div>
+                <div class="item-dates">${edu.startDate} - ${edu.endDate || 'Present'}</div>
+                ${edu.grade ? `<div class="info-value">Grade: ${edu.grade}</div>` : ''}
+                ${edu.description ? `<div class="info-value">${edu.description}</div>` : ''}
+            </div>
+        `).join('')}
+    </div>
+    ` : ''}
+
+    ${resumeData.skills && resumeData.skills.length > 0 ? `
+    <div class="section">
+        <h2 class="section-title">Skills</h2>
+        <div class="skills-list">
+            ${resumeData.skills.map(skill => `
+                <span class="skill-badge">${skill.name}</span>
+            `).join('')}
+        </div>
+    </div>
+    ` : ''}
+
+    ${resumeData.achievements && resumeData.achievements.length > 0 ? `
+    <div class="section">
+        <h2 class="section-title">Achievements</h2>
+        ${resumeData.achievements.map(achievement => `
+            <div class="achievement-item">
+                <div class="item-title">${achievement.title}</div>
+                <div class="info-value">${achievement.description}</div>
+                ${achievement.date ? `<div class="item-dates">${achievement.date}</div>` : ''}
+            </div>
+        `).join('')}
+    </div>
+    ` : ''}
+
+    <div class="footer">
+        <p>Generated on ${format(new Date(), 'PPP')} | Biodata Document</p>
+    </div>
+</body>
+</html>
+    `.trim();
+  }
+
+  /**
+   * Generate CV HTML with professional styling
+   */
+  generateCVHTML(resumeData: ResumeData): string {
+    return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${resumeData.fullName} - Curriculum Vitae</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background: white;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px double #34495e;
+        }
+        
+        .header h1 {
+            font-size: 2.8em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+        
+        .header .title {
+            font-size: 1.5em;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        
+        .contact-line {
+            font-size: 1em;
+            color: #34495e;
+            margin: 5px 0;
+        }
+        
+        .section {
+            margin-bottom: 35px;
+            page-break-inside: avoid;
+        }
+        
+        .section-title {
+            font-size: 1.4em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 500;
+            text-transform: uppercase;
+            border-bottom: 2px solid #bdc3c7;
+            padding-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        
+        .cv-item {
+            margin-bottom: 25px;
+            padding-left: 20px;
+            border-left: 3px solid #3498db;
+            position: relative;
+        }
+        
+        .cv-item::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 8px;
+            width: 9px;
+            height: 9px;
+            background: #3498db;
+            border-radius: 50%;
+        }
+        
+        .cv-item-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .cv-item-subtitle {
+            font-size: 1.1em;
+            color: #e74c3c;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .cv-item-dates {
+            color: #7f8c8d;
+            font-size: 0.95em;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+        
+        .cv-item-description {
+            color: #34495e;
+            text-align: justify;
+            line-height: 1.7;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .skill-category {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .skill-category-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+        
+        .skill-list {
+            color: #34495e;
+        }
+        
+        .academic-performance {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .performance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .performance-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #bdc3c7;
+        }
+        
+        .performance-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #27ae60;
+        }
+        
+        .performance-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #bdc3c7;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+        
+        @media print {
+            body { font-size: 11px; }
+            .header h1 { font-size: 2.2em; }
+            .section { margin-bottom: 25px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>${resumeData.fullName}</h1>
+        <div class="title">CURRICULUM VITAE</div>
+        <div class="contact-line">${resumeData.program} Student</div>
+        <div class="contact-line">Enrollment: ${resumeData.enrollmentNumber}</div>
+        <div class="contact-line">${resumeData.personalEmail || resumeData.email} | ${resumeData.contactNumber || 'N/A'}</div>
+        ${resumeData.address ? `<div class="contact-line">${resumeData.address}</div>` : ''}
+    </div>
+
+    ${resumeData.profileSummary ? `
+    <div class="section">
+        <h2 class="section-title">Objective</h2>
+        <p style="text-align: justify; line-height: 1.7; font-size: 1.1em; color: #34495e;">${resumeData.profileSummary}</p>
+    </div>
+    ` : ''}
+
+    <div class="section">
+        <h2 class="section-title">Educational Qualifications</h2>
+        
+        <div class="cv-item">
+            <div class="cv-item-title">Current Education</div>
+            <div class="cv-item-subtitle">${resumeData.program}</div>
+            <div class="cv-item-subtitle">Government Polytechnic Palanpur</div>
+            <div class="cv-item-dates">Enrollment: ${resumeData.enrollmentNumber} | Current Semester: ${resumeData.currentSemester}</div>
+            ${resumeData.overallCPI ? `<div class="cv-item-description">Overall CPI: ${resumeData.overallCPI.toFixed(2)}</div>` : ''}
+        </div>
+
+        ${resumeData.education && resumeData.education.length > 0 ? resumeData.education.map(edu => `
+            <div class="cv-item">
+                <div class="cv-item-title">${edu.degree}</div>
+                <div class="cv-item-subtitle">${edu.institution}</div>
+                <div class="cv-item-dates">${edu.startDate} - ${edu.endDate || 'Present'}</div>
+                ${edu.grade ? `<div class="cv-item-description">Grade: ${edu.grade}</div>` : ''}
+                ${edu.description ? `<div class="cv-item-description">${edu.description}</div>` : ''}
+            </div>
+        `).join('') : ''}
+    </div>
+
+    ${resumeData.overallCPI && resumeData.semesterResults && resumeData.semesterResults.length > 0 ? `
+    <div class="section">
+        <h2 class="section-title">Academic Performance</h2>
+        <div class="academic-performance">
+            <div class="performance-grid">
+                <div class="performance-item">
+                    <div class="performance-value">${resumeData.overallCPI.toFixed(2)}</div>
+                    <div class="performance-label">Overall CPI</div>
+                </div>
+                ${resumeData.earnedCredits && resumeData.totalCredits ? `
+                <div class="performance-item">
+                    <div class="performance-value">${resumeData.earnedCredits}/${resumeData.totalCredits}</div>
+                    <div class="performance-label">Credits Earned</div>
+                </div>
+                ` : ''}
+            </div>
+        </div>
+    </div>
+    ` : ''}
+
+    ${resumeData.experience && resumeData.experience.length > 0 ? `
+    <div class="section">
+        <h2 class="section-title">Professional Experience</h2>
+        ${resumeData.experience.map(exp => `
+            <div class="cv-item">
+                <div class="cv-item-title">${exp.position}</div>
+                <div class="cv-item-subtitle">${exp.company}</div>
+                <div class="cv-item-dates">${exp.startDate} - ${exp.endDate || 'Present'}</div>
+                ${exp.description ? `<div class="cv-item-description">${exp.description}</div>` : ''}
+            </div>
+        `).join('')}
+    </div>
+    ` : ''}
+
+    ${resumeData.projects && resumeData.projects.length > 0 ? `
+    <div class="section">
+        <h2 class="section-title">Projects</h2>
+        ${resumeData.projects.map(project => `
+            <div class="cv-item">
+                <div class="cv-item-title">${project.title}</div>
+                ${project.role ? `<div class="cv-item-subtitle">Role: ${project.role}</div>` : ''}
+                ${project.duration ? `<div class="cv-item-dates">${project.duration}</div>` : ''}
+                <div class="cv-item-description">${project.description}</div>
+                ${project.technologies ? `<div class="cv-item-description"><strong>Technologies:</strong> ${project.technologies.join(', ')}</div>` : ''}
+            </div>
+        `).join('')}
+    </div>
+    ` : ''}
+
+    ${resumeData.skills && resumeData.skills.length > 0 ? `
+    <div class="section">
+        <h2 class="section-title">Technical Skills</h2>
+        <div class="skills-grid">
+            ${Object.entries(resumeData.skills.reduce((acc, skill) => {
+                if (!acc[skill.category]) acc[skill.category] = [];
+                acc[skill.category].push(`${skill.name} (${skill.proficiency})`);
+                return acc;
+            }, {} as Record<string, string[]>)).map(([category, skills]) => `
+                <div class="skill-category">
+                    <div class="skill-category-title">${category}</div>
+                    <div class="skill-list">${skills.join(', ')}</div>
+                </div>
+            `).join('')}
+        </div>
+    </div>
+    ` : ''}
+
+    ${resumeData.achievements && resumeData.achievements.length > 0 ? `
+    <div class="section">
+        <h2 class="section-title">Achievements & Awards</h2>
+        ${resumeData.achievements.map(achievement => `
+            <div class="cv-item">
+                <div class="cv-item-title">${achievement.title}</div>
+                ${achievement.date ? `<div class="cv-item-dates">${achievement.date}</div>` : ''}
+                <div class="cv-item-description">${achievement.description}</div>
+            </div>
+        `).join('')}
+    </div>
+    ` : ''}
+
+    <div class="footer">
+        <p>Generated on ${format(new Date(), 'PPP')} | Curriculum Vitae</p>
+    </div>
+</body>
+</html>
+    `.trim();
   }
 
   /**
@@ -962,7 +1678,7 @@ export class ResumeGenerator {
     if (resumeData.skills && resumeData.skills.length > 0) {
       sections.push('\nTECHNICAL SKILLS');
       sections.push('-'.repeat(20));
-      sections.push(resumeData.skills.join(', '));
+      sections.push(resumeData.skills.map(skill => skill.name).join(', '));
     }
 
     if (resumeData.projects && resumeData.projects.length > 0) {
@@ -1042,6 +1758,82 @@ export class ResumeGenerator {
         sections.push(`Credits: ${resumeData.earnedCredits}/${resumeData.totalCredits}`);
       }
       sections.push('');
+    }
+    
+    // Professional Summary
+    if (resumeData.profileSummary) {
+      sections.push('ABOUT ME');
+      sections.push('-'.repeat(15));
+      sections.push(resumeData.profileSummary);
+      sections.push('');
+    }
+    
+    // Additional Education
+    if (resumeData.education && resumeData.education.length > 0) {
+      sections.push('ADDITIONAL EDUCATION');
+      sections.push('-'.repeat(25));
+      resumeData.education.forEach(edu => {
+        sections.push(`${edu.degree} in ${edu.fieldOfStudy}`);
+        sections.push(`${edu.institution} (${edu.startDate} - ${edu.endDate || 'Present'})`);
+        if (edu.grade) sections.push(`Grade: ${edu.grade}`);
+        if (edu.description) sections.push(edu.description);
+        sections.push('');
+      });
+    }
+    
+    // Experience
+    if (resumeData.experience && resumeData.experience.length > 0) {
+      sections.push('WORK EXPERIENCE');
+      sections.push('-'.repeat(20));
+      resumeData.experience.forEach(exp => {
+        sections.push(`${exp.position} at ${exp.company}`);
+        sections.push(`${exp.startDate} - ${exp.endDate || 'Present'}`);
+        if (exp.description) sections.push(exp.description);
+        sections.push('');
+      });
+    }
+    
+    // Skills
+    if (resumeData.skills && resumeData.skills.length > 0) {
+      sections.push('SKILLS');
+      sections.push('-'.repeat(10));
+      const skillsByCategory = resumeData.skills.reduce((acc, skill) => {
+        if (!acc[skill.category]) acc[skill.category] = [];
+        acc[skill.category].push(`${skill.name} (${skill.proficiency})`);
+        return acc;
+      }, {} as Record<string, string[]>);
+      
+      Object.entries(skillsByCategory).forEach(([category, skills]) => {
+        sections.push(`${category.toUpperCase()}: ${skills.join(', ')}`);
+      });
+      sections.push('');
+    }
+    
+    // Projects
+    if (resumeData.projects && resumeData.projects.length > 0) {
+      sections.push('PROJECTS');
+      sections.push('-'.repeat(15));
+      resumeData.projects.forEach(project => {
+        sections.push(`• ${project.title}`);
+        sections.push(`  ${project.description}`);
+        if (project.technologies) {
+          sections.push(`  Technologies: ${project.technologies.join(', ')}`);
+        }
+        if (project.role) sections.push(`  Role: ${project.role}`);
+        sections.push('');
+      });
+    }
+    
+    // Achievements
+    if (resumeData.achievements && resumeData.achievements.length > 0) {
+      sections.push('ACHIEVEMENTS');
+      sections.push('-'.repeat(15));
+      resumeData.achievements.forEach(achievement => {
+        sections.push(`• ${achievement.title}`);
+        sections.push(`  ${achievement.description}`);
+        if (achievement.date) sections.push(`  Date: ${achievement.date}`);
+        sections.push('');
+      });
     }
     
     sections.push(`Generated on ${format(new Date(), 'PPP')}`);

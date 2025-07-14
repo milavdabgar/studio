@@ -313,6 +313,633 @@ const EducationSection = ({
   );
 };
 
+const ExperienceSection = ({ 
+  experience, 
+  onUpdate 
+}: { 
+  experience: ExperienceEntry[], 
+  onUpdate: (experience: ExperienceEntry[]) => void 
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [formData, setFormData] = useState<ExperienceEntry>({
+    id: '',
+    company: '',
+    position: '',
+    location: '',
+    startDate: '',
+    endDate: '',
+    isCurrently: false,
+    description: '',
+    responsibilities: [],
+    achievements: [],
+    skills: [],
+    order: 0
+  });
+
+  const handleAdd = () => {
+    setFormData({
+      id: Date.now().toString(),
+      company: '',
+      position: '',
+      location: '',
+      startDate: '',
+      endDate: '',
+      isCurrently: false,
+      description: '',
+      responsibilities: [],
+      achievements: [],
+      skills: [],
+      order: experience.length
+    });
+    setEditingIndex(null);
+    setIsEditing(true);
+  };
+
+  const handleEdit = (index: number) => {
+    setFormData(experience[index]);
+    setEditingIndex(index);
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    const updatedExperience = [...experience];
+    if (editingIndex !== null) {
+      updatedExperience[editingIndex] = formData;
+    } else {
+      updatedExperience.push(formData);
+    }
+    onUpdate(updatedExperience);
+    setIsEditing(false);
+    setEditingIndex(null);
+  };
+
+  const handleDelete = (index: number) => {
+    const updatedExperience = experience.filter((_, i) => i !== index);
+    onUpdate(updatedExperience);
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex justify-between items-center">
+          <CardTitle className="flex items-center gap-2">
+            <Briefcase className="h-5 w-5" />
+            Work Experience
+          </CardTitle>
+          <Button onClick={handleAdd} size="sm">
+            <Plus className="h-4 w-4 mr-2" />
+            Add Experience
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {experience.map((exp, index) => (
+            <div key={index} className="border rounded-lg p-4">
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <h4 className="font-semibold">{exp.position}</h4>
+                  <p className="text-sm text-gray-600">{exp.company}</p>
+                  <p className="text-sm text-gray-500">
+                    {exp.startDate} - {exp.isCurrently ? 'Present' : exp.endDate}
+                    {exp.location && <span className="ml-2">• {exp.location}</span>}
+                  </p>
+                  {exp.description && (
+                    <p className="text-sm text-gray-600 mt-1">{exp.description}</p>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={() => handleEdit(index)} size="sm" variant="outline">
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button onClick={() => handleDelete(index)} size="sm" variant="outline">
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Edit Dialog */}
+        <Dialog open={isEditing} onOpenChange={setIsEditing}>
+          <DialogContent className="sm:max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>
+                {editingIndex !== null ? 'Edit Experience' : 'Add Experience'}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="company">Company</Label>
+                  <Input
+                    id="company"
+                    value={formData.company}
+                    onChange={(e) => setFormData({...formData, company: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="position">Position</Label>
+                  <Input
+                    id="position"
+                    value={formData.position}
+                    onChange={(e) => setFormData({...formData, position: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="location">Location</Label>
+                  <Input
+                    id="location"
+                    value={formData.location}
+                    onChange={(e) => setFormData({...formData, location: e.target.value})}
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="isCurrently"
+                    checked={formData.isCurrently}
+                    onChange={(e) => setFormData({...formData, isCurrently: e.target.checked})}
+                  />
+                  <Label htmlFor="isCurrently">Currently working here</Label>
+                </div>
+                <div>
+                  <Label htmlFor="startDate">Start Date</Label>
+                  <Input
+                    id="startDate"
+                    type="date"
+                    value={formData.startDate}
+                    onChange={(e) => setFormData({...formData, startDate: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="endDate">End Date</Label>
+                  <Input
+                    id="endDate"
+                    type="date"
+                    value={formData.endDate}
+                    onChange={(e) => setFormData({...formData, endDate: e.target.value})}
+                    disabled={formData.isCurrently}
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  rows={3}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button onClick={() => setIsEditing(false)} variant="outline">
+                Cancel
+              </Button>
+              <Button onClick={handleSave}>
+                Save
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </CardContent>
+    </Card>
+  );
+};
+
+const ProjectsSection = ({ 
+  projects, 
+  onUpdate 
+}: { 
+  projects: ProjectEntry[], 
+  onUpdate: (projects: ProjectEntry[]) => void 
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [formData, setFormData] = useState<ProjectEntry>({
+    id: '',
+    title: '',
+    description: '',
+    startDate: '',
+    endDate: '',
+    isOngoing: false,
+    technologies: [],
+    role: '',
+    teamSize: 1,
+    projectUrl: '',
+    githubUrl: '',
+    images: [],
+    achievements: [],
+    order: 0
+  });
+
+  const handleAdd = () => {
+    setFormData({
+      id: Date.now().toString(),
+      title: '',
+      description: '',
+      startDate: '',
+      endDate: '',
+      isOngoing: false,
+      technologies: [],
+      role: '',
+      teamSize: 1,
+      projectUrl: '',
+      githubUrl: '',
+      images: [],
+      achievements: [],
+      order: projects.length
+    });
+    setEditingIndex(null);
+    setIsEditing(true);
+  };
+
+  const handleEdit = (index: number) => {
+    setFormData(projects[index]);
+    setEditingIndex(index);
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    const updatedProjects = [...projects];
+    if (editingIndex !== null) {
+      updatedProjects[editingIndex] = formData;
+    } else {
+      updatedProjects.push(formData);
+    }
+    onUpdate(updatedProjects);
+    setIsEditing(false);
+    setEditingIndex(null);
+  };
+
+  const handleDelete = (index: number) => {
+    const updatedProjects = projects.filter((_, i) => i !== index);
+    onUpdate(updatedProjects);
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex justify-between items-center">
+          <CardTitle className="flex items-center gap-2">
+            <Code className="h-5 w-5" />
+            Projects
+          </CardTitle>
+          <Button onClick={handleAdd} size="sm">
+            <Plus className="h-4 w-4 mr-2" />
+            Add Project
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {projects.map((project, index) => (
+            <div key={index} className="border rounded-lg p-4">
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <h4 className="font-semibold">{project.title}</h4>
+                  <p className="text-sm text-gray-600">{project.description}</p>
+                  <p className="text-sm text-gray-500">
+                    {project.startDate} - {project.isOngoing ? 'Present' : project.endDate}
+                    {project.role && <span className="ml-2">• {project.role}</span>}
+                  </p>
+                  {project.technologies && project.technologies.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {project.technologies.map((tech, techIndex) => (
+                        <Badge key={techIndex} variant="outline" className="text-xs">
+                          {tech}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={() => handleEdit(index)} size="sm" variant="outline">
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button onClick={() => handleDelete(index)} size="sm" variant="outline">
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Edit Dialog */}
+        <Dialog open={isEditing} onOpenChange={setIsEditing}>
+          <DialogContent className="sm:max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>
+                {editingIndex !== null ? 'Edit Project' : 'Add Project'}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="title">Project Title</Label>
+                  <Input
+                    id="title"
+                    value={formData.title}
+                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="role">Your Role</Label>
+                  <Input
+                    id="role"
+                    value={formData.role}
+                    onChange={(e) => setFormData({...formData, role: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="startDate">Start Date</Label>
+                  <Input
+                    id="startDate"
+                    type="date"
+                    value={formData.startDate}
+                    onChange={(e) => setFormData({...formData, startDate: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="endDate">End Date</Label>
+                  <Input
+                    id="endDate"
+                    type="date"
+                    value={formData.endDate}
+                    onChange={(e) => setFormData({...formData, endDate: e.target.value})}
+                    disabled={formData.isOngoing}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="teamSize">Team Size</Label>
+                  <Input
+                    id="teamSize"
+                    type="number"
+                    value={formData.teamSize}
+                    onChange={(e) => setFormData({...formData, teamSize: parseInt(e.target.value)})}
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="isOngoing"
+                    checked={formData.isOngoing}
+                    onChange={(e) => setFormData({...formData, isOngoing: e.target.checked})}
+                  />
+                  <Label htmlFor="isOngoing">Currently working on this</Label>
+                </div>
+                <div>
+                  <Label htmlFor="projectUrl">Project URL</Label>
+                  <Input
+                    id="projectUrl"
+                    type="url"
+                    value={formData.projectUrl}
+                    onChange={(e) => setFormData({...formData, projectUrl: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="githubUrl">GitHub URL</Label>
+                  <Input
+                    id="githubUrl"
+                    type="url"
+                    value={formData.githubUrl}
+                    onChange={(e) => setFormData({...formData, githubUrl: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  rows={3}
+                />
+              </div>
+              <div>
+                <Label htmlFor="technologies">Technologies (comma-separated)</Label>
+                <Input
+                  id="technologies"
+                  value={formData.technologies?.join(', ') || ''}
+                  onChange={(e) => setFormData({...formData, technologies: e.target.value.split(',').map(t => t.trim()).filter(t => t)})}
+                  placeholder="React, Node.js, MongoDB"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button onClick={() => setIsEditing(false)} variant="outline">
+                Cancel
+              </Button>
+              <Button onClick={handleSave}>
+                Save
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </CardContent>
+    </Card>
+  );
+};
+
+const AchievementsSection = ({ 
+  achievements, 
+  onUpdate 
+}: { 
+  achievements: AchievementEntry[], 
+  onUpdate: (achievements: AchievementEntry[]) => void 
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [formData, setFormData] = useState<AchievementEntry>({
+    id: '',
+    title: '',
+    description: '',
+    date: '',
+    issuer: '',
+    category: 'academic',
+    certificateUrl: '',
+    order: 0
+  });
+
+  const handleAdd = () => {
+    setFormData({
+      id: Date.now().toString(),
+      title: '',
+      description: '',
+      date: '',
+      issuer: '',
+      category: 'academic',
+      certificateUrl: '',
+      order: achievements.length
+    });
+    setEditingIndex(null);
+    setIsEditing(true);
+  };
+
+  const handleEdit = (index: number) => {
+    setFormData(achievements[index]);
+    setEditingIndex(index);
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    const updatedAchievements = [...achievements];
+    if (editingIndex !== null) {
+      updatedAchievements[editingIndex] = formData;
+    } else {
+      updatedAchievements.push(formData);
+    }
+    onUpdate(updatedAchievements);
+    setIsEditing(false);
+    setEditingIndex(null);
+  };
+
+  const handleDelete = (index: number) => {
+    const updatedAchievements = achievements.filter((_, i) => i !== index);
+    onUpdate(updatedAchievements);
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex justify-between items-center">
+          <CardTitle className="flex items-center gap-2">
+            <Trophy className="h-5 w-5" />
+            Achievements & Awards
+          </CardTitle>
+          <Button onClick={handleAdd} size="sm">
+            <Plus className="h-4 w-4 mr-2" />
+            Add Achievement
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {achievements.map((achievement, index) => (
+            <div key={index} className="border rounded-lg p-4">
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <h4 className="font-semibold">{achievement.title}</h4>
+                  <p className="text-sm text-gray-600">{achievement.description}</p>
+                  <p className="text-sm text-gray-500">
+                    {achievement.date}
+                    {achievement.issuer && <span className="ml-2">• {achievement.issuer}</span>}
+                  </p>
+                  {achievement.category && (
+                    <Badge variant="outline" className="mt-2 text-xs">
+                      {achievement.category}
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={() => handleEdit(index)} size="sm" variant="outline">
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button onClick={() => handleDelete(index)} size="sm" variant="outline">
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Edit Dialog */}
+        <Dialog open={isEditing} onOpenChange={setIsEditing}>
+          <DialogContent className="sm:max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>
+                {editingIndex !== null ? 'Edit Achievement' : 'Add Achievement'}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="title">Achievement Title</Label>
+                  <Input
+                    id="title"
+                    value={formData.title}
+                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="issuer">Issuer/Organization</Label>
+                  <Input
+                    id="issuer"
+                    value={formData.issuer}
+                    onChange={(e) => setFormData({...formData, issuer: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="date">Date</Label>
+                  <Input
+                    id="date"
+                    type="date"
+                    value={formData.date}
+                    onChange={(e) => setFormData({...formData, date: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="category">Category</Label>
+                  <Select 
+                    value={formData.category} 
+                    onValueChange={(value) => setFormData({...formData, category: value as any})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="academic">Academic</SelectItem>
+                      <SelectItem value="sports">Sports</SelectItem>
+                      <SelectItem value="cultural">Cultural</SelectItem>
+                      <SelectItem value="competition">Competition</SelectItem>
+                      <SelectItem value="volunteer">Volunteer</SelectItem>
+                      <SelectItem value="leadership">Leadership</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="certificateUrl">Certificate URL (optional)</Label>
+                  <Input
+                    id="certificateUrl"
+                    type="url"
+                    value={formData.certificateUrl}
+                    onChange={(e) => setFormData({...formData, certificateUrl: e.target.value})}
+                    placeholder="https://..."
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  rows={3}
+                  placeholder="Describe your achievement and its significance..."
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button onClick={() => setIsEditing(false)} variant="outline">
+                Cancel
+              </Button>
+              <Button onClick={handleSave}>
+                Save
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </CardContent>
+    </Card>
+  );
+};
+
 const SkillsSection = ({ 
   skills, 
   onUpdate 
@@ -545,6 +1172,18 @@ export default function EnhancedProfilePage() {
     handleUpdateProfile({ skills });
   };
 
+  const handleUpdateExperience = (experience: ExperienceEntry[]) => {
+    handleUpdateProfile({ experience });
+  };
+
+  const handleUpdateProjects = (projects: ProjectEntry[]) => {
+    handleUpdateProfile({ projects });
+  };
+
+  const handleUpdateAchievements = (achievements: AchievementEntry[]) => {
+    handleUpdateProfile({ achievements });
+  };
+
   const handleUpdateProfileSummary = () => {
     handleUpdateProfile({ profileSummary, profileVisibility });
   };
@@ -664,60 +1303,24 @@ export default function EnhancedProfilePage() {
         </TabsContent>
 
         <TabsContent value="experience" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Briefcase className="h-5 w-5" />
-                Work Experience
-              </CardTitle>
-              <CardDescription>
-                Add your work experience, internships, and professional roles
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8 text-gray-500">
-                Experience section coming soon...
-              </div>
-            </CardContent>
-          </Card>
+          <ExperienceSection 
+            experience={student.experience || []} 
+            onUpdate={handleUpdateExperience}
+          />
         </TabsContent>
 
         <TabsContent value="projects" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Code className="h-5 w-5" />
-                Projects
-              </CardTitle>
-              <CardDescription>
-                Showcase your academic and personal projects
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8 text-gray-500">
-                Projects section coming soon...
-              </div>
-            </CardContent>
-          </Card>
+          <ProjectsSection 
+            projects={student.projects || []} 
+            onUpdate={handleUpdateProjects}
+          />
         </TabsContent>
 
         <TabsContent value="achievements" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Trophy className="h-5 w-5" />
-                Achievements & Awards
-              </CardTitle>
-              <CardDescription>
-                Add your achievements, awards, and recognitions
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8 text-gray-500">
-                Achievements section coming soon...
-              </div>
-            </CardContent>
-          </Card>
+          <AchievementsSection 
+            achievements={student.achievements || []} 
+            onUpdate={handleUpdateAchievements}
+          />
         </TabsContent>
       </Tabs>
     </div>

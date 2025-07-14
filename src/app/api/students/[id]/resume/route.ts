@@ -3,11 +3,73 @@ import { resumeGenerator, type ResumeData } from '@/lib/services/resumeGenerator
 import { connectMongoose } from '@/lib/mongodb';
 import { StudentModel, ProgramModel, BatchModel, CourseModel } from '@/lib/models';
 import type { Student, Program, Batch, Course } from '@/types/entities';
+import mongoose from 'mongoose';
 
 interface RouteParams {
   params: Promise<{
     id: string;
   }>;
+}
+
+// Helper function to fetch program with multiple fallback strategies
+async function fetchProgramWithFallbacks(programId: string): Promise<Program | null> {
+  try {
+    // Strategy 1: Try custom id field
+    let program = await ProgramModel.findOne({ id: programId }).lean().exec() as unknown as Program | null;
+    if (program) {
+      console.log('Program found using custom id field:', program.name);
+      return program;
+    }
+
+    // Strategy 2: Try MongoDB ObjectId if programId looks like one
+    if (mongoose.Types.ObjectId.isValid(programId)) {
+      program = await ProgramModel.findById(programId).lean().exec() as unknown as Program | null;
+      if (program) {
+        console.log('Program found using _id field:', program.name);
+        return program;
+      }
+    }
+
+    // Strategy 3: Try searching by program code
+    program = await ProgramModel.findOne({ code: programId }).lean().exec() as unknown as Program | null;
+    if (program) {
+      console.log('Program found using code field:', program.name);
+      return program;
+    }
+
+    console.log('Program not found with any strategy for programId:', programId);
+    return null;
+  } catch (error) {
+    console.error('Error fetching program:', error);
+    return null;
+  }
+}
+
+// Helper function to fetch batch with multiple fallback strategies
+async function fetchBatchWithFallbacks(batchId: string): Promise<Batch | null> {
+  try {
+    // Strategy 1: Try custom id field
+    let batch = await BatchModel.findOne({ id: batchId }).lean().exec() as unknown as Batch | null;
+    if (batch) {
+      console.log('Batch found using custom id field:', batch.name);
+      return batch;
+    }
+
+    // Strategy 2: Try MongoDB ObjectId if batchId looks like one
+    if (mongoose.Types.ObjectId.isValid(batchId)) {
+      batch = await BatchModel.findById(batchId).lean().exec() as unknown as Batch | null;
+      if (batch) {
+        console.log('Batch found using _id field:', batch.name);
+        return batch;
+      }
+    }
+
+    console.log('Batch not found with any strategy for batchId:', batchId);
+    return null;
+  } catch (error) {
+    console.error('Error fetching batch:', error);
+    return null;
+  }
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
@@ -40,11 +102,25 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     // Fetch related data directly from database
+    console.log('Fetching program for student:', { 
+      studentId: student.id, 
+      programId: student.programId,
+      batchId: student.batchId 
+    });
+    
     const [program, batch, courses] = await Promise.all([
-      student.programId ? ProgramModel.findOne({ id: student.programId }).lean().exec() as unknown as Promise<Program | null> : Promise.resolve(null),
-      student.batchId ? BatchModel.findOne({ id: student.batchId }).lean().exec() as unknown as Promise<Batch | null> : Promise.resolve(null),
+      student.programId ? fetchProgramWithFallbacks(student.programId) : Promise.resolve(null),
+      student.batchId ? fetchBatchWithFallbacks(student.batchId) : Promise.resolve(null),
       CourseModel.find({}).lean().exec() as unknown as Promise<Course[]>
     ]);
+    
+    console.log('Database query results:', {
+      programFound: !!program,
+      programName: program?.name || 'Not found',
+      batchFound: !!batch,
+      batchName: batch?.name || 'Not found',
+      coursesCount: courses.length
+    });
 
     // Fetch student results (skip for now to avoid complexity)
     let results: any[] = [];
@@ -92,21 +168,24 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         break;
 
       case 'biodata':
-        content = resumeGenerator.generateBiodata(resumeData);
-        contentType = 'text/plain';
-        filename = `${baseFilename}_biodata.txt`;
+        // Generate biodata as professional PDF
+        content = await resumeGenerator.generateBiodataPDF(resumeData);
+        contentType = 'application/pdf';
+        filename = `${baseFilename}_biodata.pdf`;
         break;
 
       case 'resume':
-        content = resumeGenerator.generateResume(resumeData);
-        contentType = 'text/plain';
-        filename = `${baseFilename}_resume.txt`;
+        // Generate resume as professional PDF
+        content = await resumeGenerator.generateResumePDF(resumeData);
+        contentType = 'application/pdf';
+        filename = `${baseFilename}_resume.pdf`;
         break;
 
       case 'cv':
-        content = resumeGenerator.generateCV(resumeData);
-        contentType = 'text/plain';
-        filename = `${baseFilename}_cv.txt`;
+        // Generate CV as professional PDF
+        content = await resumeGenerator.generateCVPDF(resumeData);
+        contentType = 'application/pdf';
+        filename = `${baseFilename}_cv.pdf`;
         break;
 
       default:
@@ -159,11 +238,25 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     }
 
     // Fetch related data directly from database
+    console.log('Fetching program for student:', { 
+      studentId: student.id, 
+      programId: student.programId,
+      batchId: student.batchId 
+    });
+    
     const [program, batch, courses] = await Promise.all([
-      student.programId ? ProgramModel.findOne({ id: student.programId }).lean().exec() as unknown as Promise<Program | null> : Promise.resolve(null),
-      student.batchId ? BatchModel.findOne({ id: student.batchId }).lean().exec() as unknown as Promise<Batch | null> : Promise.resolve(null),
+      student.programId ? fetchProgramWithFallbacks(student.programId) : Promise.resolve(null),
+      student.batchId ? fetchBatchWithFallbacks(student.batchId) : Promise.resolve(null),
       CourseModel.find({}).lean().exec() as unknown as Promise<Course[]>
     ]);
+    
+    console.log('Database query results:', {
+      programFound: !!program,
+      programName: program?.name || 'Not found',
+      batchFound: !!batch,
+      batchName: batch?.name || 'Not found',
+      coursesCount: courses.length
+    });
 
     // Fetch student results (skip for now to avoid complexity)
     let results: any[] = [];
