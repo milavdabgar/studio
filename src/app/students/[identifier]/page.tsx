@@ -32,7 +32,7 @@ import {
   Heart,
   MessageCircle,
   ExternalLink,
-  GitHub,
+  Github,
   Linkedin,
   Twitter,
   Instagram,
@@ -649,7 +649,7 @@ export default function StudentProfilePage({}: StudentProfilePageProps) {
                           {project.githubUrl && (
                             <Button size="sm" variant="outline" asChild>
                               <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                                <GitHub className="h-3 w-3 mr-1" />
+                                <Github className="h-3 w-3 mr-1" />
                                 Code
                               </a>
                             </Button>
