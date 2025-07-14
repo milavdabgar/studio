@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { FacultyProfile } from '@/types/entities';
+import { facultyService } from '@/lib/api/faculty';
 
 interface FacultyProfilePageProps {
   // Add props if needed
@@ -45,9 +46,21 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
     setNotFound(false);
     
     try {
-      // TODO: Implement faculty service when API is ready
-      // For now, just show not found
-      setNotFound(true);
+      // Try to find faculty by staffCode, id, or email
+      const allFaculty = await facultyService.getAllFaculty();
+      const faculty = allFaculty.find(f => 
+        f.staffCode === identifier || 
+        f.id === identifier ||
+        f.instituteEmail === identifier ||
+        f.personalEmail === identifier
+      );
+      
+      if (faculty) {
+        // Check if profile is public (assuming all faculty profiles are public for now)
+        setProfile(faculty);
+      } else {
+        setNotFound(true);
+      }
     } catch (error) {
       console.error('Error fetching faculty profile:', error);
       setNotFound(true);
@@ -97,11 +110,12 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
               </Avatar>
               <div>
                 <CardTitle className="text-3xl font-bold text-primary">
-                  {profile.firstName} {profile.middleName} {profile.lastName}
+                  {profile.title} {profile.firstName} {profile.middleName} {profile.lastName}
                 </CardTitle>
                 <CardDescription className="text-lg mt-2">
                   <span className="font-semibold">{profile.designation}</span>
                   {profile.department && <span className="ml-2">• {profile.department}</span>}
+                  {profile.staffCode && <span className="ml-2">• Staff Code: {profile.staffCode}</span>}
                 </CardDescription>
               </div>
             </div>
@@ -117,6 +131,12 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
             
             {/* Contact Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              {profile.instituteEmail && (
+                <div className="flex items-center space-x-2">
+                  <Mail className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm">{profile.instituteEmail}</span>
+                </div>
+              )}
               {profile.personalEmail && (
                 <div className="flex items-center space-x-2">
                   <Mail className="h-4 w-4 text-gray-500" />
