@@ -95,11 +95,17 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     });
 
     // Update the student
+    console.log('🔄 API: Updating student with data:', updateData);
+    console.log('🛠️ API: Skills in update data:', updateData.skills);
+    
     const updatedStudent = await StudentModel.findOneAndUpdate(
       { _id: (existingStudent as unknown as Record<string, unknown>)._id },
       updateData,
       { new: true, lean: true }
     ) as Student | null;
+    
+    console.log('✅ API: Updated student:', updatedStudent);
+    console.log('🛠️ API: Skills in updated student:', updatedStudent?.skills);
 
     if (!updatedStudent) {
       return NextResponse.json({ message: 'Student not found' }, { status: 404 });

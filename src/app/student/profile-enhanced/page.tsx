@@ -1129,6 +1129,9 @@ export default function EnhancedProfilePage() {
       const studentProfile = allStudents.find(s => s.userId === user.id);
 
       if (studentProfile) {
+        console.log('📊 Retrieved student profile:', studentProfile);
+        console.log('🛠️ Skills in profile:', studentProfile.skills);
+        
         setStudent(studentProfile);
         setProfileSummary(studentProfile.profileSummary || '');
         setProfileVisibility(studentProfile.profileVisibility || 'public');
@@ -1155,11 +1158,16 @@ export default function EnhancedProfilePage() {
     if (!student) return;
     
     try {
-      await studentService.updateStudent(student.id, updates);
+      console.log('🔄 Updating profile with:', updates);
+      console.log('📝 Student ID:', student.id);
+      
+      const updatedStudent = await studentService.updateStudent(student.id, updates);
+      console.log('✅ Server response:', updatedStudent);
+      
       setStudent(prev => prev ? { ...prev, ...updates } : null);
       toast({ title: "Profile Updated", description: "Your profile has been updated successfully." });
     } catch (error) {
-      console.error('Error updating profile:', error);
+      console.error('❌ Error updating profile:', error);
       toast({ variant: "destructive", title: "Update Failed", description: "Failed to update profile." });
     }
   };
