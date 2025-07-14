@@ -105,7 +105,7 @@ describe('/api/users', () => {
       const leanResult = Promise.resolve(mockUsers);
       mockUserModel.find.mockReturnValue({ lean: () => leanResult } as { lean: () => Promise<typeof mockUsers> });
       
-      const response = await GET();
+      const response = await GET(new NextRequest('http://localhost/api/users'));
       const data = await response.json();
       
       expect(response.status).toBe(200);
@@ -124,7 +124,7 @@ describe('/api/users', () => {
       const leanResult = Promise.resolve([]);
       mockUserModel.find.mockReturnValue({ lean: () => leanResult } as { lean: () => Promise<never[]> });
       
-      const response = await GET();
+      const response = await GET(new NextRequest('http://localhost/api/users'));
       const data = await response.json();
       
       expect(response.status).toBe(200);
@@ -136,7 +136,7 @@ describe('/api/users', () => {
       const errorMessage = 'Database connection failed';
       mockUserModel.find.mockReturnValue({ lean: () => Promise.reject(new Error(errorMessage)) } as { lean: () => Promise<never> });
       
-      const response = await GET();
+      const response = await GET(new NextRequest('http://localhost/api/users'));
       const data = await response.json();
       
       expect(response.status).toBe(500);

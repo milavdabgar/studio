@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
       const rawUsers = await usersCollection.find({}).toArray();
       
       // Transform to match expected format
-      users = rawUsers.map(user => ({
+      users = rawUsers.map((user: any) => ({
         ...user,
         id: user.id || user._id?.toString(),
         _id: user._id?.toString()
@@ -62,10 +62,10 @@ export async function GET(request: NextRequest) {
     // Add mock users for E2E testing if they don't exist (only in test/dev environments)
     if (process.env.NODE_ENV !== 'production' && process.env.JEST_WORKER_ID === undefined) {
       const testUserIds = ['686171e4df30c00c8e476ea6'];
-      const existingUserIds = users.map(user => user._id?.toString());
+      const existingUserIds = users.map((user: any) => user._id?.toString());
       
       for (const testUserId of testUserIds) {
-        if (!existingUserIds.includes(testUserId) && !users.some(u => u.id === testUserId)) {
+        if (!existingUserIds.includes(testUserId) && !users.some((u: any) => u.id === testUserId)) {
           const mockUser = {
             _id: testUserId,
             id: testUserId,
