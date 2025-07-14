@@ -1,0 +1,7 @@
+id,name,code,description,departmentId,departmentName,departmentCode,durationYears,totalSemesters,status
+68747338ab4b7c1441f1969a,"Diploma in Civil Engineering","06","Diploma in Civil Engineering",687470005bfc6d94c649d9bc,"CIVIL ENGINEERING","CE",3,6,active
+68747365ab4b7c1441f196a1,"Diploma in Electrical Engineering","09","Diploma in Electrical Engineering",68747149ab4b7c1441f19663,"ELECTRICAL ENGINEERING","EE",3,6,active
+687473ccab4b7c1441f196b5,"Diploma in Electronics & Communication Engineering","11","Diploma in Electronics & Communication Engineering",68747174ab4b7c1441f19669,"ELECTRONICS AND COMMUNICATION ENGINEERING","EC",3,6,active
+687473f6ab4b7c1441f196bf,"Diploma in Information & Communication Technology","32","Diploma in Information & Communication Technology",68747174ab4b7c1441f19669,"ELECTRONICS AND COMMUNICATION ENGINEERING","EC",3,6,active
+68747419ab4b7c1441f196c8,"Diploma in Information Technology","16","Diploma in Information Technology",68747214ab4b7c1441f1967b,"INSTRUMENTATION AND CONTROL ENGINEERING","IC",3,6,active
+6874739bab4b7c1441f196ab,"Diploma in Mechanical Engineering","19","Diploma in Mechanical Engineering",6874704bab4b7c1441f19603,"MECHANICAL ENGINEERING","ME",3,6,active

@@ -122,11 +122,9 @@ export interface Student {
     id: string; 
     userId?: string; 
     
-    enrollmentNumber: string;
-    gtuEnrollmentNumber?: string; 
+    enrollmentNumber: string; 
     
     programId: string; 
-    department: string; 
     batchId?: string; 
     currentSemester: number;
     admissionDate?: Timestamp;

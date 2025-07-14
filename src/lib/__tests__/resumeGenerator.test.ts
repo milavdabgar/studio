@@ -50,7 +50,6 @@ describe('ResumeGenerator', () => {
     dateOfBirth: '2002-05-15T00:00:00.000Z',
     gender: 'Male',
     programId: 'prog-123',
-    department: 'dept-ce',
     currentSemester: 6,
     status: 'active',
     createdAt: '2023-08-01T00:00:00.000Z',

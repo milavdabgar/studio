@@ -619,10 +619,8 @@ const studentSchema = new Schema<IStudent>({
   userId: { type: String }, // Reference to User model
   
   enrollmentNumber: { type: String, required: true, unique: true },
-  gtuEnrollmentNumber: { type: String },
   
   programId: { type: String, required: true }, // Reference to Program
-  department: { type: String, required: true }, // Department ID
   batchId: { type: String }, // Reference to Batch
   currentSemester: { type: Number, required: true, default: 1 },
   admissionDate: { type: String },

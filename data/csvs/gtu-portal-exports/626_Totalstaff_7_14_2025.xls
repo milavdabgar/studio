@@ -1,0 +1,137 @@
+<div>
+	<table cellspacing="0" rules="all" border="1" id="ContentPlaceHolder1_grdtotalstaff" style="border-collapse:collapse;">
+		<tr>
+			<th scope="col">staffcode</th><th scope="col">Name</th><th scope="col">InstType</th><th scope="col">Department</th><th scope="col">Designation</th><th scope="col">JobType</th><th scope="col">Mobile No</th><th scope="col">Email Address</th>
+		</tr><tr>
+			<td>71396</td><td>Mr. RAJGOR NARENDRAKUMAR NATVARLAL</td><td>DI</td><td>CIVIL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9909253651</td><td>narendrarajgor@yahoo.com</td>
+		</tr><tr>
+			<td>5595</td><td>Dr. TANK MAHESHKUMAR FULCHANDBHAI</td><td>DI</td><td>GENERAL DEPARTMENT</td><td>Lecturer</td><td>Regular</td><td>9328951125</td><td>maheshftank@gmail.com</td>
+		</tr><tr>
+			<td>12725</td><td>Dr. PANDYA CHIRAGKUMAR SHANTILAL</td><td>DI</td><td>GENERAL DEPARTMENT</td><td>Lecturer</td><td>Regular</td><td>9998089654</td><td>chiragpandya23@gmail.com</td>
+		</tr><tr>
+			<td>8712</td><td>Mr. JOSHIARA SNEHILKUMAR PRABHUDAS</td><td>DI</td><td>ELECTRONICS AND COMMUNICATION ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9825838570</td><td>snehil.ssec2006@gmail.com</td>
+		</tr><tr>
+			<td>9648</td><td>Mrs. PATEL FALGUNIBAHEN MAULIKKUMAR</td><td>DI</td><td>CIVIL ENGINEERING</td><td>Lecturer</td><td>Adhoc</td><td>9638415131</td><td>falgunipatel_civil@yahoo.com</td>
+		</tr><tr>
+			<td>53256</td><td>Mr. RANA YAGNIKKUMAR TULSIBHAI</td><td>DI</td><td>CIVIL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9624201434</td><td>ranayagnik@gmail.com</td>
+		</tr><tr>
+			<td>62580</td><td>Mr. BHAVSAR PRASHANT KANAIYALAL</td><td>DI</td><td>ELECTRICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9879966293</td><td>bhavsarprashant139@gmail.com</td>
+		</tr><tr>
+			<td>55641</td><td>Mrs. CHAUHAN PAYAL GOVABHAI</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9925208029</td><td>payal_chauhan001@yahoo.com</td>
+		</tr><tr>
+			<td>100251</td><td>Mr. CHAUDHARY  NANJIBHAI  NILABHAI</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9662488303</td><td>nnc2805@gmail.com</td>
+		</tr><tr>
+			<td>13290</td><td>Mr. PATEL JITENDRAKUMAR BECHARBHAI</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9913025242</td><td>shrey2152006@gmail.com</td>
+		</tr><tr>
+			<td>27955</td><td>Mr. SUTHAR VISHAL HARESHKUMAR</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9429055798</td><td>gppmech2012@gmail.com</td>
+		</tr><tr>
+			<td>10749</td><td>Mr. PATEL VIPULKUMAR PRAHALADBHAI</td><td>DI</td><td>CIVIL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9824303674</td><td>rvp_1679@rediffmail.com</td>
+		</tr><tr>
+			<td>61571</td><td>Mr. JUDAL DHANRAJBHAI PREMAJIBHAI</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>8140034930</td><td>dpjudal1988@gmail.com</td>
+		</tr><tr>
+			<td>62490</td><td>Mr. OZA NITINKUMAR HARGOVANBHAI</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9998936847</td><td>nitinme1981@gmail.com</td>
+		</tr><tr>
+			<td>47866</td><td>Mr. VADHAVANIYA MAHESH JERAMBHAI</td><td>DI</td><td>INSTRUMENTATION AND CONTROL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9426221460</td><td>profmjv@yahoo.com</td>
+		</tr><tr>
+			<td>46621</td><td>Mr. DABHI SURESHKUMAR DALABHAI</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>HOD</td><td>Regular</td><td>9825697278</td><td>sdd1968@rediffmail.com</td>
+		</tr><tr>
+			<td>54466</td><td>Miss. PEDHADIYA MITTAL KALABHAI</td><td>DI</td><td>ELECTRONICS AND COMMUNICATION ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>7600438523</td><td>mittaldec@yahoo.com</td>
+		</tr><tr>
+			<td>8331</td><td>Mr. PATEL ARVINDBHAI NARANBHAI</td><td>DI</td><td>CIVIL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9998732095</td><td>arvindpatel3110@gmail.com</td>
+		</tr><tr>
+			<td>50131</td><td>Mr. Gelot Chetanbhai Prahladji</td><td>DI</td><td>GENERAL DEPARTMENT</td><td>Lecturer</td><td>Regular</td><td>9033378716</td><td>chetangelot@yahoo.com</td>
+		</tr><tr>
+			<td>62569</td><td>Mr. PATEL BRIJESHKUMAR MUKUNDBHAI</td><td>DI</td><td>ELECTRICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9726246059</td><td>bmpgp1412@gmail.com</td>
+		</tr><tr>
+			<td>10005</td><td>Mr. MAHANT SANDIPKUMAR PURANKUMAR</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9428827841</td><td>sandipmahant86@gmail.com</td>
+		</tr><tr>
+			<td>19612</td><td>Dr. MOR BHUPENDRAKUMAR BHAVANBHAI</td><td>DI</td><td>GENERAL DEPARTMENT</td><td>Lecturer</td><td>Regular</td><td>9427043230</td><td>bhupendra_mor@yahoo.com</td>
+		</tr><tr>
+			<td>76309</td><td>Mr. PRAJAPATI NIHARKUMAR VISHNUPRASAD</td><td>DI</td><td>CIVIL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>8460616245</td><td>niharprajapati1992@gmail.com</td>
+		</tr><tr>
+			<td>12335</td><td>Mr. PATEL LAUKIKKUMAR KANTIBHAI</td><td>DI</td><td>INFORMATION AND COMMUNICATION TECHNOLOGY</td><td>Lecturer</td><td>Regular</td><td>9428662932</td><td>laukiksky@gmail.com</td>
+		</tr><tr>
+			<td>27178</td><td>Mr. CHAUHAN SOMESHVAR NARSINHBHAI</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9712130005</td><td>someshvar.chauhan@gmail.com</td>
+		</tr><tr>
+			<td>49954</td><td>Mrs. SHETH POONAM DEVENDRAKUMAR</td><td>DI</td><td>CIVIL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9909805882</td><td>poonam.civil.er@gmail.com</td>
+		</tr><tr>
+			<td>54107</td><td>Mr. KURESHI JABBARBHAI VALIBHAI</td><td>DI</td><td>INSTRUMENTATION AND CONTROL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9979222102</td><td>jvkureshi@gmail.com</td>
+		</tr><tr>
+			<td>27177</td><td>Mr. MODI TARUN KUMAR DINESHCHANDRA</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>8905122630</td><td>tarunmodi1989@gmail.com</td>
+		</tr><tr>
+			<td>58367</td><td>Mr. MUKHI FANAN AKBARBHAI</td><td>DI</td><td>CIVIL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9510461462</td><td>fananmukhi@gmail.com</td>
+		</tr><tr>
+			<td>54078</td><td>Mr. MODI DEVARSH JITENDRAKUMAR</td><td>DI</td><td>INSTRUMENTATION AND CONTROL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>8866464719</td><td>modidevarsh@gmail.com</td>
+		</tr><tr>
+			<td>62642</td><td>Mr. ZALA MUKESHBHAI RAMESHBHAI</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9638061089</td><td>zalamukesh006@gmail.com</td>
+		</tr><tr>
+			<td>47018</td><td>Mrs. SHAH MEGHANA MAYANK</td><td>DI</td><td>INSTRUMENTATION AND CONTROL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9824349392</td><td>meghanahathi@gmail.com</td>
+		</tr><tr>
+			<td>7986</td><td>Mrs. PATEL KINJAL ASHOKKUMAR</td><td>DI</td><td>INSTRUMENTATION AND CONTROL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9428505262</td><td>kinjalashokpatel@gmail.com</td>
+		</tr><tr>
+			<td>12729</td><td>Mr. PATEL RAJESHKUMAR JIVRAMDAS</td><td>DI</td><td>APPLIED MECHANICS</td><td>Lecturer</td><td>Regular</td><td>9998616519</td><td>rjp26180@gmail.com</td>
+		</tr><tr>
+			<td>6811</td><td>Mr. SHETH DEVENDRAKUMAR NARAYANBHAI</td><td>DI</td><td>CIVIL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>8511152511</td><td>devendra_civil@yahoo.com</td>
+		</tr><tr>
+			<td>6997</td><td>Mr. PATEL ASHOKKUMAR RAMJIBHAI</td><td>DI</td><td>ELECTRICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9904148358</td><td>ashok07_patel@yahoo.in</td>
+		</tr><tr>
+			<td>62577</td><td>Mr. QURESHI ASHFAQ MUSTAFA</td><td>DI</td><td>ELECTRICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9979530239</td><td>amqelectrical@gmail.com</td>
+		</tr><tr>
+			<td>70497</td><td>Mr. PUROHIT TEJPAL PUNMARAM</td><td>DI</td><td>ELECTRICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9662190806</td><td>tejpal0688@gmail.com</td>
+		</tr><tr>
+			<td>62530</td><td>Mr. PARMAR RAHUL CHANDRAKANT</td><td>DI</td><td>INFORMATION AND COMMUNICATION TECHNOLOGY</td><td>Lecturer</td><td>Regular</td><td>9974338709</td><td>rhl.gp2016@gmail.com</td>
+		</tr><tr>
+			<td>61883</td><td>Mrs. Patel Viral Ganpatbhai</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9408587170</td><td>viralkdp@gmail.com</td>
+		</tr><tr>
+			<td>54114</td><td>Mr. CHAUHAN VISMAY ARVINDBHAI</td><td>DI</td><td>INSTRUMENTATION AND CONTROL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>7405196169</td><td>gpp.vismay@gmail.com</td>
+		</tr><tr>
+			<td>84338</td><td>Mr. OZA NIGAM VITTHALDAS</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9067737576</td><td>ozanigam91@gmail.com</td>
+		</tr><tr>
+			<td>45174</td><td>Dr. MODI JIGNABEN DAHYALAL</td><td>DI</td><td>GENERAL DEPARTMENT</td><td>Lecturer</td><td>Regular</td><td>9426397353</td><td>modyjigna@gmail.com</td>
+		</tr><tr>
+			<td>58265</td><td>Mr. PATEL ARVINDKUMAR RAMESHBHAI</td><td>DI</td><td>CIVIL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9998515817</td><td>arvindpatel19@gmail.com</td>
+		</tr><tr>
+			<td>73737</td><td>Mr. PRAJAPATI BHARATBHAI NATVARBHAI</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9824745445</td><td>bharat_bvm@yahoo.co.in</td>
+		</tr><tr>
+			<td>55524</td><td>Mr. PRAJAPATI DINESHKUMAR DAHYALAL</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9429890717</td><td>ddprajapati68@yahoo.com</td>
+		</tr><tr>
+			<td>56129</td><td>Mr. CHAUDHARY JIGNESHKUMAR NARASANGBHAI</td><td>DI</td><td>APPLIED MECHANICS</td><td>Lecturer</td><td>Regular</td><td>9409270317</td><td>jigneshcivil52@gmail.com</td>
+		</tr><tr>
+			<td>59271</td><td>Mr. PATEL HARDIKKUMAR PRABHUDAS</td><td>DI</td><td>CIVIL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9429762152</td><td>phardik5192@gmail.com</td>
+		</tr><tr>
+			<td>61510</td><td>Mr. PRAJAPATI ROHITKUMAR MANUBHAI</td><td>DI</td><td>ELECTRICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>7698734984</td><td>rohit24292@gmail.com</td>
+		</tr><tr>
+			<td>62493</td><td>Mr. PRAJAPATI VIPULKUMAR MANUBHAI</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9904426970</td><td>vipul154@gmail.com</td>
+		</tr><tr>
+			<td>62489</td><td>Mr. DESAI DHARAKKUMAR HIMANSHUBHAI</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9714626509</td><td>dhruvindesai27@gmail.com</td>
+		</tr><tr>
+			<td>62474</td><td>Mr. CHAUDHARI RAJESH LAVJIBHAI</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9099072871</td><td>rajuldmech@gmail.com</td>
+		</tr><tr>
+			<td>62466</td><td>Mr. PRAJAPATI MANOJKUMAR KHODABHAI</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9624828130</td><td>er.mp1161992@gmail.com</td>
+		</tr><tr>
+			<td>62494</td><td>Mr. AMIN CHIRAGKUMAR MAHENDRABHAI</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9725015176</td><td>mr.chiragamin@gmail.com</td>
+		</tr><tr>
+			<td>62629</td><td>Mr. GAJJAR ANKITKUMAR VINODCHANDRA</td><td>DI</td><td>ELECTRICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9974941789</td><td>erankit28@gmail.com</td>
+		</tr><tr>
+			<td>63080</td><td>Mr. CHAUDHARY ISHVARBHAI DAHYALAL</td><td>DI</td><td>ELECTRICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9426588882</td><td>ish0007@gmail.com</td>
+		</tr><tr>
+			<td>70390</td><td>Mr. Chavda Ravindrakumar Pravinsinh</td><td>DI</td><td>ELECTRICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9924363986</td><td>chavda.ravindra@gmail.com</td>
+		</tr><tr>
+			<td>68608</td><td>Dr. PATEL RATANSING  NANJIBHAI</td><td>DI</td><td>INFORMATION AND COMMUNICATION TECHNOLOGY</td><td>Lecturer</td><td>Regular</td><td>9909468966</td><td>RATANSING.PATEL@GMAIL.COM</td>
+		</tr><tr>
+			<td>66898</td><td>Mr. CHAUHAN NIRAV JASHVANTKUMAR</td><td>DI</td><td>ELECTRONICS AND COMMUNICATION ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9974308107</td><td>niravjchauhan.ec@gmail.com</td>
+		</tr><tr>
+			<td>69764</td><td>Mr. CHAUHAN SUNILKUMAR JETHALAL</td><td>DI</td><td>ELECTRONICS AND COMMUNICATION ENGINEERING</td><td>HOD</td><td>Regular</td><td>9427026618</td><td>sjcssc@yahoo.co.in</td>
+		</tr><tr>
+			<td>64652</td><td>Mr. SHAH ALKESH DHIRAJLAL</td><td>DI</td><td>ELECTRICAL ENGINEERING</td><td>HOD</td><td>Regular</td><td>9664983258</td><td>shah_alkesh@gtu.edu.in</td>
+		</tr><tr>
+			<td>100253</td><td>Mr. MODI NILESHKUMAR ASHOKKUMAR</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>8511106791</td><td>namodi87@gmail.com</td>
+		</tr><tr>
+			<td>62283</td><td>Mr. DABGAR MILAV JAYESHKUMAR</td><td>DI</td><td>INFORMATION AND COMMUNICATION TECHNOLOGY</td><td>Lecturer</td><td>Regular</td><td>8128576285</td><td>milav.dabgar@gmail.com</td>
+		</tr><tr>
+			<td>62482</td><td>Mr. CHAUDHARI VIKRAMBHAI BABUBHAI</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>7600024264</td><td>vikram.chaudhari16@gmail.com</td>
+		</tr><tr>
+			<td>82282</td><td>Mr. CHAUDHARI YOGENDRAKUMAR DALSANGBHAI</td><td>DI</td><td>MECHANICAL ENGINEERING</td><td>Lecturer</td><td>Regular</td><td>9909665392</td><td>yogendra2789@gmail.com</td>
+		</tr>
+	</table>
+</div>

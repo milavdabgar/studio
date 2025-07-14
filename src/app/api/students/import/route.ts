@@ -25,10 +25,16 @@ const normalizeGenderFromString = (gender: string | undefined): Student['gender'
 };
 const normalizeShiftFromString = (shift: string | undefined): Student['shift'] | undefined => {
     if (!shift) return undefined;
-    const lowerShift = shift.toLowerCase();
+    const lowerShift = String(shift).toLowerCase().trim();
     if (lowerShift.startsWith('m')) return 'Morning';
     if (lowerShift.startsWith('a')) return 'Afternoon';
-    return shift as Student['shift']; 
+    if (lowerShift.startsWith('e')) return 'Evening';
+    // Handle numeric codes: 1 = Morning, 2 = Afternoon, 3 = Evening
+    if (lowerShift === '1') return 'Morning';
+    if (lowerShift === '2') return 'Afternoon';
+    if (lowerShift === '3') return 'Evening';
+    // Return undefined for invalid values instead of forcing cast
+    return undefined;
 };
 const SEMESTER_STATUS_OPTIONS: SemesterStatus[] = ["Passed", "Pending", "Not Appeared", "N/A"];
 const STUDENT_STATUS_OPTIONS: StudentStatus[] = ["active", "inactive", "graduated", "dropped"];
@@ -112,8 +118,6 @@ export async function POST(request: NextRequest) {
         skippedCount++; continue;
       }
       programId = studentProgram.id;
-      const studentDepartmentId = studentProgram.departmentId; // For User model, if needed, or department can be derived.
-      // The Student model now has programId, department is derived via program.
 
       const gtuName = row.gtuname?.toString().trim();
       const parsedFromName = parseGtuNameFromString(gtuName);
@@ -127,7 +131,6 @@ export async function POST(request: NextRequest) {
         personalEmail: row.personalemail?.toString().trim() || undefined,
         instituteEmail: row.instituteemail?.toString().trim() || `${enrollmentNumber}@gppalanpur.in`, // Default, should be derived based on institute
         programId: programId!, // studentProgram is checked
-        department: studentDepartmentId, // Derived from program
         currentSemester, status,
         contactNumber: row.contactnumber?.toString().trim() || undefined,
         address: row.address?.toString().trim() || undefined,

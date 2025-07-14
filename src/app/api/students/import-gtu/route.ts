@@ -39,7 +39,13 @@ const normalizeShiftFromString = (shift: string | undefined): Student['shift'] |
     const lowerShift = String(shift).toLowerCase().trim();
     if (lowerShift.startsWith('m')) return 'Morning';
     if (lowerShift.startsWith('a')) return 'Afternoon';
-    return shift as Student['shift'];
+    if (lowerShift.startsWith('e')) return 'Evening';
+    // Handle numeric codes: 1 = Morning, 2 = Afternoon, 3 = Evening
+    if (lowerShift === '1') return 'Morning';
+    if (lowerShift === '2') return 'Afternoon';
+    if (lowerShift === '3') return 'Evening';
+    // Return undefined for invalid values instead of forcing cast
+    return undefined;
 };
 
 
@@ -83,7 +89,7 @@ export async function POST(request: NextRequest) {
       const row = parsedData[i];
       const rowIndex = i + 2;
 
-      const enrollmentNumber = row.mapnumber?.toString().trim();
+      const enrollmentNumber = (row.mapnumber || row.map_number)?.toString().trim();
       const gtuName = row.name?.toString().trim();
       
       if (!enrollmentNumber || !gtuName) {
@@ -92,7 +98,7 @@ export async function POST(request: NextRequest) {
       }
 
       const { firstName, middleName, lastName } = parseGtuNameFromString(gtuName);
-      const branchCode = row.brcode?.toString().trim().toUpperCase();
+      const branchCode = (row.brcode || row.br_code)?.toString().trim().toUpperCase();
       // Infer programId and instituteId from branchCode
       const studentProgram = clientPrograms.find(p => p.code === branchCode); // Assuming program code is same as branch code for simplicity
       if (!studentProgram) {
@@ -101,7 +107,6 @@ export async function POST(request: NextRequest) {
       }
       const programId = studentProgram.id;
       const studentInstituteId = studentProgram.instituteId; // Get instituteId from the found program
-      const studentDepartment = studentProgram.departmentId; // Department ID from program
 
 
       let currentSemester = 1;
@@ -141,7 +146,6 @@ export async function POST(request: NextRequest) {
         personalEmail: row.email?.toString().trim() || undefined,
         instituteEmail,
         programId, 
-        department: studentDepartment, // This is departmentId
         currentSemester,
         status: String(row.iscancel).toLowerCase() === 'true' ? 'dropped' : (isCompleteStr === 'true' || isPassAllStr === 'true' ? 'graduated' : 'active'),
         contactNumber: row.mobile?.toString().trim() || undefined,

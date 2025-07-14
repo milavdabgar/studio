@@ -232,7 +232,20 @@ export default function FacultyManagementPage() {
       toast({ title: "Faculty Deleted", description: "The faculty record has been successfully deleted." });
     } catch (_error: unknown) {
         console.error("Failed to delete faculty member:", _error);
-        toast({ variant: "destructive", title: "Delete Failed", description: _error instanceof Error ? _error.message : "Failed to delete faculty member" });
+        const errorMessage = _error instanceof Error ? _error.message : "Failed to delete faculty member";
+        
+        // Handle the case where faculty was already deleted
+        if (errorMessage.includes("Faculty not found")) {
+          await fetchInitialData();
+          setSelectedFacultyIds(prev => prev.filter(id => id !== facultyId));
+          toast({ 
+            title: "Faculty Record Not Found", 
+            description: "This faculty record has already been deleted or does not exist. The list has been refreshed.",
+            variant: "default"
+          });
+        } else {
+          toast({ variant: "destructive", title: "Delete Failed", description: errorMessage });
+        }
     }
     setIsSubmitting(false);
   };
@@ -530,14 +543,55 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
       return;
     }
     setIsSubmitting(true);
+    let deletedCount = 0;
+    let notFoundCount = 0;
+    let errorCount = 0;
+    
     try {
         for (const id of selectedFacultyIds) {
-            await facultyService.deleteFaculty(id);
+            try {
+                await facultyService.deleteFaculty(id);
+                deletedCount++;
+            } catch (error) {
+                const errorMessage = error instanceof Error ? error.message : "Unknown error";
+                if (errorMessage.includes("Faculty not found")) {
+                    notFoundCount++;
+                } else {
+                    errorCount++;
+                    console.error(`Failed to delete faculty ${id}:`, error);
+                }
+            }
         }
+        
         await fetchInitialData();
-        toast({ title: "Faculty Deleted", description: `${selectedFacultyIds.length} faculty member(s) have been successfully deleted.` });
         setSelectedFacultyIds([]);
+        
+        // Build appropriate success/warning message
+        let title = "Deletion Complete";
+        let description = "";
+        let variant: "default" | "destructive" = "default";
+        
+        if (deletedCount > 0 && errorCount === 0) {
+            description = `${deletedCount} faculty member(s) deleted successfully.`;
+            if (notFoundCount > 0) {
+                description += ` ${notFoundCount} were already deleted.`;
+            }
+        } else if (errorCount > 0) {
+            title = "Partial Deletion";
+            description = `${deletedCount} deleted, ${errorCount} failed.`;
+            if (notFoundCount > 0) {
+                description += ` ${notFoundCount} were already deleted.`;
+            }
+            variant = "destructive";
+        } else if (notFoundCount > 0) {
+            title = "Records Not Found";
+            description = "The selected faculty records were already deleted.";
+        }
+        
+        toast({ title, description, variant });
     } catch (error) {
+        await fetchInitialData();
+        setSelectedFacultyIds([]);
         toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message || "Could not delete selected faculty." });
     }
     setIsSubmitting(false);

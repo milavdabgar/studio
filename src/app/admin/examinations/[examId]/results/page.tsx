@@ -158,7 +158,7 @@ export default function ExamResultEntryPage() {
           semester: selectedCourseDetails.semester, // Assuming exam is for current semester of course
           academicYear: examination.academicYear,
           programId: studentEntry.programId, // From student profile
-          branchName: studentEntry.department, // Or derive from program
+          branchName: 'Unknown', // Will be derived from program relationship
           subjects: [subjectResultPayload], // For now, saving one subject at a time per 'course' selection
           // SPI/CPI/Overall Result would ideally be calculated on backend or after all subjects for an exam are entered
           spi: 0, // Placeholder
