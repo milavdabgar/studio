@@ -118,6 +118,124 @@ export interface RoleAssignment {
 export type StudentStatus = 'active' | 'inactive' | 'graduated' | 'dropped';
 export type SemesterStatus = 'N/A' | 'Passed' | 'Pending' | 'Not Appeared';
 
+// LinkedIn-like Profile Interfaces
+export interface EducationEntry {
+    id: string;
+    institution: string;
+    degree: string;
+    fieldOfStudy: string;
+    startDate: string;
+    endDate?: string;
+    isCurrently: boolean;
+    grade?: string;
+    description?: string;
+    activities?: string;
+    location?: string;
+    order?: number;
+}
+
+export interface ExperienceEntry {
+    id: string;
+    company: string;
+    position: string;
+    location?: string;
+    startDate: string;
+    endDate?: string;
+    isCurrently: boolean;
+    description?: string;
+    responsibilities?: string[];
+    achievements?: string[];
+    skills?: string[];
+    order?: number;
+}
+
+export interface ProjectEntry {
+    id: string;
+    title: string;
+    description: string;
+    startDate: string;
+    endDate?: string;
+    isOngoing: boolean;
+    technologies?: string[];
+    role?: string;
+    teamSize?: number;
+    projectUrl?: string;
+    githubUrl?: string;
+    images?: string[];
+    achievements?: string[];
+    order?: number;
+}
+
+export interface SkillEntry {
+    id: string;
+    name: string;
+    category: 'technical' | 'soft' | 'language' | 'tool' | 'other';
+    proficiency: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+    endorsements?: number;
+    verified?: boolean;
+    order?: number;
+}
+
+export interface AchievementEntry {
+    id: string;
+    title: string;
+    description: string;
+    date: string;
+    category: 'academic' | 'professional' | 'competition' | 'award' | 'recognition' | 'other';
+    issuer?: string;
+    certificateUrl?: string;
+    order?: number;
+}
+
+export interface CertificationEntry {
+    id: string;
+    name: string;
+    issuer: string;
+    issueDate: string;
+    expiryDate?: string;
+    credentialId?: string;
+    credentialUrl?: string;
+    description?: string;
+    skills?: string[];
+    order?: number;
+}
+
+export interface PublicationEntry {
+    id: string;
+    title: string;
+    type: 'journal' | 'conference' | 'book' | 'chapter' | 'article' | 'thesis' | 'other';
+    authors: string[];
+    publicationDate: string;
+    venue?: string;
+    description?: string;
+    doi?: string;
+    url?: string;
+    order?: number;
+}
+
+export interface LanguageEntry {
+    id: string;
+    language: string;
+    proficiency: 'native' | 'fluent' | 'conversational' | 'basic';
+    order?: number;
+}
+
+export interface ProfileSettings {
+    showPersonalInfo?: boolean;
+    showContactInfo?: boolean;
+    showEducation?: boolean;
+    showExperience?: boolean;
+    showProjects?: boolean;
+    showSkills?: boolean;
+    showAchievements?: boolean;
+    showCertifications?: boolean;
+    showPublications?: boolean;
+    showLanguages?: boolean;
+    allowDownload?: boolean;
+    allowPrint?: boolean;
+    customUrl?: string;
+}
+
 export interface Student {
     id: string; 
     userId?: string; 
@@ -185,6 +303,21 @@ export interface Student {
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
     isActive?: boolean; 
+    
+    // LinkedIn-like Profile Sections
+    profileSummary?: string;
+    education?: EducationEntry[];
+    experience?: ExperienceEntry[];
+    projects?: ProjectEntry[];
+    skills?: SkillEntry[];
+    achievements?: AchievementEntry[];
+    certifications?: CertificationEntry[];
+    publications?: PublicationEntry[];
+    languages?: LanguageEntry[];
+    
+    // Profile Settings
+    profileVisibility?: 'public' | 'private' | 'institute_only';
+    profileSettings?: ProfileSettings;
 }
 
 
@@ -228,7 +361,7 @@ export interface FacultyProfile {
     specialization?: string; // Singular form for backward compatibility
     qualifications?: Qualification[];
     qualification?: string; // String form for backward compatibility
-    experience?: string;
+    experienceYears?: string; // Renamed to avoid conflict
     
     dateOfBirth?: Timestamp; 
     joiningDate?: Timestamp; 
@@ -248,6 +381,21 @@ export interface FacultyProfile {
     researchInterests?: string[];
     
     status: FacultyStatus;
+    
+    // LinkedIn-like Profile Sections
+    profileSummary?: string;
+    education?: EducationEntry[];
+    experience?: ExperienceEntry[];
+    projects?: ProjectEntry[];
+    skills?: SkillEntry[];
+    achievements?: AchievementEntry[];
+    certifications?: CertificationEntry[];
+    publications?: PublicationEntry[];
+    languages?: LanguageEntry[];
+    
+    // Profile Settings
+    profileVisibility?: 'public' | 'private' | 'institute_only';
+    profileSettings?: ProfileSettings;
     
     instituteId?: string; 
     createdAt?: Timestamp;

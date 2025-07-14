@@ -342,7 +342,12 @@ describe('ResumeGenerator', () => {
         currentSemester: 6,
         instituteEmail: '220123456789@gppalanpur.in',
         semesterResults: [],
-        skills: ['JavaScript', 'Python', 'React', 'Node.js'],
+        skills: [
+          { name: 'JavaScript', category: 'technical', proficiency: 'advanced' },
+          { name: 'Python', category: 'technical', proficiency: 'intermediate' },
+          { name: 'React', category: 'technical', proficiency: 'advanced' },
+          { name: 'Node.js', category: 'technical', proficiency: 'intermediate' }
+        ],
         projects: [
           {
             title: 'E-Commerce Website',
@@ -422,7 +427,10 @@ describe('ResumeGenerator', () => {
         earnedCredits: 25,
         totalCredits: 180,
         semesterResults: [],
-        skills: ['JavaScript', 'Python'],
+        skills: [
+          { name: 'JavaScript', category: 'technical', proficiency: 'advanced' },
+          { name: 'Python', category: 'technical', proficiency: 'intermediate' }
+        ],
         projects: [],
         achievements: [],
         internships: [],

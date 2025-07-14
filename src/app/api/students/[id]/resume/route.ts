@@ -22,7 +22,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     // Validate format
-    const validFormats = ['pdf', 'docx', 'html', 'txt'];
+    const validFormats = ['pdf', 'docx', 'html', 'txt', 'biodata', 'resume', 'cv'];
     if (!validFormats.includes(format)) {
       return NextResponse.json({ 
         error: `Invalid format. Supported formats: ${validFormats.join(', ')}` 
@@ -89,6 +89,24 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         content = resumeGenerator.generatePlainText(resumeData);
         contentType = 'text/plain';
         filename = `${baseFilename}.txt`;
+        break;
+
+      case 'biodata':
+        content = resumeGenerator.generateBiodata(resumeData);
+        contentType = 'text/plain';
+        filename = `${baseFilename}_biodata.txt`;
+        break;
+
+      case 'resume':
+        content = resumeGenerator.generateResume(resumeData);
+        contentType = 'text/plain';
+        filename = `${baseFilename}_resume.txt`;
+        break;
+
+      case 'cv':
+        content = resumeGenerator.generateCV(resumeData);
+        contentType = 'text/plain';
+        filename = `${baseFilename}_cv.txt`;
         break;
 
       default:

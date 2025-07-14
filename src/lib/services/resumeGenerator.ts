@@ -10,6 +10,9 @@ export interface ResumeData {
   contactNumber?: string;
   address?: string;
   dateOfBirth?: string;
+  gender?: string;
+  bloodGroup?: string;
+  aadharNumber?: string;
   
   // Academic Information
   enrollmentNumber: string;
@@ -38,14 +41,49 @@ export interface ResumeData {
     }>;
   }>;
   
-  // Additional Fields for Enhancement
-  skills?: string[];
+  // Guardian Information
+  guardianName?: string;
+  guardianRelation?: string;
+  guardianContact?: string;
+  guardianOccupation?: string;
+  guardianIncome?: number;
+  
+  // Profile Summary
+  profileSummary?: string;
+  
+  // LinkedIn-like sections
+  education?: Array<{
+    institution: string;
+    degree: string;
+    fieldOfStudy: string;
+    startDate: string;
+    endDate?: string;
+    grade?: string;
+    description?: string;
+  }>;
+  
+  experience?: Array<{
+    company: string;
+    position: string;
+    startDate: string;
+    endDate?: string;
+    description?: string;
+  }>;
+  
+  skills?: Array<{
+    name: string;
+    category: string;
+    proficiency: string;
+  }>;
+  
   projects?: Array<{
     title: string;
     description: string;
     technologies?: string[];
     duration?: string;
+    role?: string;
   }>;
+  
   achievements?: Array<{
     title: string;
     description: string;
@@ -90,12 +128,18 @@ export class ResumeGenerator {
     const academicPerformance = this.calculateAcademicPerformance(student, results || [], courses || []);
 
     return {
+      // Personal Information
       fullName,
       email: student.personalEmail || student.instituteEmail,
       personalEmail: student.personalEmail,
       contactNumber: student.contactNumber,
       address: student.address,
       dateOfBirth: student.dateOfBirth,
+      gender: student.gender,
+      bloodGroup: student.bloodGroup,
+      aadharNumber: student.aadharNumber,
+      
+      // Academic Information
       enrollmentNumber: student.enrollmentNumber,
       program: program?.name || 'Unknown Program',
       programCode: program?.code,
@@ -107,10 +151,57 @@ export class ResumeGenerator {
       totalCredits: program?.totalCredits,
       academicStatus: academicPerformance.status,
       semesterResults: academicPerformance.semesterResults,
-      // Default empty arrays for additional fields
-      skills: [],
-      projects: [],
-      achievements: [],
+      
+      // Guardian Information
+      guardianName: student.guardianDetails?.name,
+      guardianRelation: student.guardianDetails?.relation,
+      guardianContact: student.guardianDetails?.contactNumber,
+      guardianOccupation: student.guardianDetails?.occupation,
+      guardianIncome: student.guardianDetails?.annualIncome,
+      
+      // Profile Summary
+      profileSummary: student.profileSummary,
+      
+      // LinkedIn-like sections
+      education: student.education?.map(edu => ({
+        institution: edu.institution,
+        degree: edu.degree,
+        fieldOfStudy: edu.fieldOfStudy,
+        startDate: edu.startDate,
+        endDate: edu.endDate,
+        grade: edu.grade,
+        description: edu.description
+      })) || [],
+      
+      experience: student.experience?.map(exp => ({
+        company: exp.company,
+        position: exp.position,
+        startDate: exp.startDate,
+        endDate: exp.endDate,
+        description: exp.description
+      })) || [],
+      
+      skills: student.skills?.map(skill => ({
+        name: skill.name,
+        category: skill.category,
+        proficiency: skill.proficiency
+      })) || [],
+      
+      projects: student.projects?.map(project => ({
+        title: project.title,
+        description: project.description,
+        technologies: project.technologies,
+        duration: project.startDate + (project.endDate ? ' - ' + project.endDate : ' - Present'),
+        role: project.role
+      })) || [],
+      
+      achievements: student.achievements?.map(achievement => ({
+        title: achievement.title,
+        description: achievement.description,
+        date: achievement.date
+      })) || [],
+      
+      // Legacy fields for backward compatibility
       internships: [],
       certifications: []
     };
@@ -888,6 +979,304 @@ export class ResumeGenerator {
 
     sections.push(`\nGenerated on ${format(new Date(), 'PPP')}`);
 
+    return sections.join('\n');
+  }
+
+  // Template functions for different document types
+  generateBiodata(resumeData: ResumeData): string {
+    const sections = [];
+    
+    // Header
+    sections.push('BIODATA');
+    sections.push('=' .repeat(50));
+    sections.push('');
+    
+    // Personal Information
+    sections.push('PERSONAL INFORMATION');
+    sections.push('-'.repeat(25));
+    sections.push(`Full Name: ${resumeData.fullName}`);
+    sections.push(`Date of Birth: ${resumeData.dateOfBirth || 'N/A'}`);
+    sections.push(`Gender: ${resumeData.gender || 'N/A'}`);
+    sections.push(`Blood Group: ${resumeData.bloodGroup || 'N/A'}`);
+    sections.push(`Aadhar Number: ${resumeData.aadharNumber || 'N/A'}`);
+    sections.push('');
+    
+    // Contact Information
+    sections.push('CONTACT INFORMATION');
+    sections.push('-'.repeat(25));
+    sections.push(`Personal Email: ${resumeData.personalEmail || 'N/A'}`);
+    sections.push(`Institute Email: ${resumeData.instituteEmail}`);
+    sections.push(`Contact Number: ${resumeData.contactNumber || 'N/A'}`);
+    sections.push(`Address: ${resumeData.address || 'N/A'}`);
+    sections.push('');
+    
+    // Family Information
+    sections.push('FAMILY INFORMATION');
+    sections.push('-'.repeat(25));
+    sections.push(`Guardian Name: ${resumeData.guardianName || 'N/A'}`);
+    sections.push(`Relation: ${resumeData.guardianRelation || 'N/A'}`);
+    sections.push(`Guardian Contact: ${resumeData.guardianContact || 'N/A'}`);
+    sections.push(`Guardian Occupation: ${resumeData.guardianOccupation || 'N/A'}`);
+    if (resumeData.guardianIncome) {
+      sections.push(`Annual Income: ₹${resumeData.guardianIncome.toLocaleString()}`);
+    }
+    sections.push('');
+    
+    // Academic Information
+    sections.push('ACADEMIC INFORMATION');
+    sections.push('-'.repeat(25));
+    sections.push(`Enrollment Number: ${resumeData.enrollmentNumber}`);
+    sections.push(`Program: ${resumeData.program}`);
+    sections.push(`Current Semester: ${resumeData.currentSemester}`);
+    if (resumeData.batch) {
+      sections.push(`Batch: ${resumeData.batch}`);
+    }
+    sections.push('');
+    
+    // Academic Performance
+    if (resumeData.overallCPI) {
+      sections.push('ACADEMIC PERFORMANCE');
+      sections.push('-'.repeat(25));
+      sections.push(`Overall CPI: ${resumeData.overallCPI.toFixed(2)}`);
+      if (resumeData.earnedCredits && resumeData.totalCredits) {
+        sections.push(`Credits: ${resumeData.earnedCredits}/${resumeData.totalCredits}`);
+      }
+      sections.push('');
+    }
+    
+    sections.push(`Generated on ${format(new Date(), 'PPP')}`);
+    return sections.join('\n');
+  }
+
+  generateResume(resumeData: ResumeData): string {
+    const sections = [];
+    
+    // Header
+    sections.push(`${resumeData.fullName.toUpperCase()}`);
+    sections.push('='.repeat(resumeData.fullName.length));
+    sections.push('');
+    
+    // Contact Information
+    const contactInfo = [];
+    if (resumeData.personalEmail) contactInfo.push(`Email: ${resumeData.personalEmail}`);
+    if (resumeData.contactNumber) contactInfo.push(`Phone: ${resumeData.contactNumber}`);
+    if (resumeData.address) contactInfo.push(`Address: ${resumeData.address}`);
+    sections.push(contactInfo.join(' | '));
+    sections.push('');
+    
+    // Professional Summary
+    if (resumeData.profileSummary) {
+      sections.push('PROFESSIONAL SUMMARY');
+      sections.push('-'.repeat(25));
+      sections.push(resumeData.profileSummary);
+      sections.push('');
+    }
+    
+    // Education
+    sections.push('EDUCATION');
+    sections.push('-'.repeat(15));
+    sections.push(`${resumeData.program} - ${resumeData.enrollmentNumber}`);
+    sections.push(`Government Polytechnic Palanpur`);
+    sections.push(`Current Semester: ${resumeData.currentSemester}`);
+    if (resumeData.overallCPI) {
+      sections.push(`CPI: ${resumeData.overallCPI.toFixed(2)}`);
+    }
+    sections.push('');
+    
+    // Additional Education
+    if (resumeData.education && resumeData.education.length > 0) {
+      resumeData.education.forEach(edu => {
+        sections.push(`${edu.degree} in ${edu.fieldOfStudy}`);
+        sections.push(`${edu.institution} (${edu.startDate} - ${edu.endDate || 'Present'})`);
+        if (edu.grade) sections.push(`Grade: ${edu.grade}`);
+        sections.push('');
+      });
+    }
+    
+    // Experience
+    if (resumeData.experience && resumeData.experience.length > 0) {
+      sections.push('EXPERIENCE');
+      sections.push('-'.repeat(15));
+      resumeData.experience.forEach(exp => {
+        sections.push(`${exp.position} at ${exp.company}`);
+        sections.push(`${exp.startDate} - ${exp.endDate || 'Present'}`);
+        if (exp.description) sections.push(exp.description);
+        sections.push('');
+      });
+    }
+    
+    // Skills
+    if (resumeData.skills && resumeData.skills.length > 0) {
+      sections.push('TECHNICAL SKILLS');
+      sections.push('-'.repeat(20));
+      const skillsByCategory = resumeData.skills.reduce((acc, skill) => {
+        if (!acc[skill.category]) acc[skill.category] = [];
+        acc[skill.category].push(`${skill.name} (${skill.proficiency})`);
+        return acc;
+      }, {} as Record<string, string[]>);
+      
+      Object.entries(skillsByCategory).forEach(([category, skills]) => {
+        sections.push(`${category.toUpperCase()}: ${skills.join(', ')}`);
+      });
+      sections.push('');
+    }
+    
+    // Projects
+    if (resumeData.projects && resumeData.projects.length > 0) {
+      sections.push('PROJECTS');
+      sections.push('-'.repeat(15));
+      resumeData.projects.forEach(project => {
+        sections.push(`• ${project.title}`);
+        sections.push(`  ${project.description}`);
+        if (project.technologies) {
+          sections.push(`  Technologies: ${project.technologies.join(', ')}`);
+        }
+        if (project.role) sections.push(`  Role: ${project.role}`);
+        sections.push('');
+      });
+    }
+    
+    // Achievements
+    if (resumeData.achievements && resumeData.achievements.length > 0) {
+      sections.push('ACHIEVEMENTS');
+      sections.push('-'.repeat(15));
+      resumeData.achievements.forEach(achievement => {
+        sections.push(`• ${achievement.title}`);
+        sections.push(`  ${achievement.description}`);
+        if (achievement.date) sections.push(`  Date: ${achievement.date}`);
+        sections.push('');
+      });
+    }
+    
+    sections.push(`Generated on ${format(new Date(), 'PPP')}`);
+    return sections.join('\n');
+  }
+
+  generateCV(resumeData: ResumeData): string {
+    const sections = [];
+    
+    // Header
+    sections.push('CURRICULUM VITAE');
+    sections.push('='.repeat(30));
+    sections.push('');
+    sections.push(`${resumeData.fullName.toUpperCase()}`);
+    sections.push(`${resumeData.program} Student`);
+    sections.push(`Enrollment Number: ${resumeData.enrollmentNumber}`);
+    sections.push('');
+    
+    // Personal Information
+    sections.push('PERSONAL INFORMATION');
+    sections.push('-'.repeat(25));
+    sections.push(`Full Name: ${resumeData.fullName}`);
+    sections.push(`Date of Birth: ${resumeData.dateOfBirth || 'N/A'}`);
+    sections.push(`Gender: ${resumeData.gender || 'N/A'}`);
+    sections.push(`Email: ${resumeData.personalEmail || resumeData.email}`);
+    sections.push(`Contact: ${resumeData.contactNumber || 'N/A'}`);
+    sections.push(`Address: ${resumeData.address || 'N/A'}`);
+    sections.push('');
+    
+    // Objective/Summary
+    if (resumeData.profileSummary) {
+      sections.push('OBJECTIVE');
+      sections.push('-'.repeat(15));
+      sections.push(resumeData.profileSummary);
+      sections.push('');
+    }
+    
+    // Education
+    sections.push('EDUCATIONAL QUALIFICATIONS');
+    sections.push('-'.repeat(30));
+    sections.push(`Current Education:`);
+    sections.push(`• ${resumeData.program}`);
+    sections.push(`  Government Polytechnic Palanpur`);
+    sections.push(`  Enrollment: ${resumeData.enrollmentNumber}`);
+    sections.push(`  Current Semester: ${resumeData.currentSemester}`);
+    if (resumeData.overallCPI) {
+      sections.push(`  CPI: ${resumeData.overallCPI.toFixed(2)}`);
+    }
+    sections.push('');
+    
+    // Additional Education
+    if (resumeData.education && resumeData.education.length > 0) {
+      sections.push('Previous Education:');
+      resumeData.education.forEach(edu => {
+        sections.push(`• ${edu.degree} in ${edu.fieldOfStudy}`);
+        sections.push(`  ${edu.institution}`);
+        sections.push(`  Duration: ${edu.startDate} - ${edu.endDate || 'Present'}`);
+        if (edu.grade) sections.push(`  Grade: ${edu.grade}`);
+        if (edu.description) sections.push(`  ${edu.description}`);
+        sections.push('');
+      });
+    }
+    
+    // Academic Performance
+    if (resumeData.semesterResults && resumeData.semesterResults.length > 0) {
+      sections.push('ACADEMIC PERFORMANCE');
+      sections.push('-'.repeat(25));
+      resumeData.semesterResults.forEach(semester => {
+        sections.push(`Semester ${semester.semester}: SGPA ${semester.sgpa} (${semester.credits} credits)`);
+      });
+      sections.push('');
+    }
+    
+    // Experience
+    if (resumeData.experience && resumeData.experience.length > 0) {
+      sections.push('PROFESSIONAL EXPERIENCE');
+      sections.push('-'.repeat(25));
+      resumeData.experience.forEach(exp => {
+        sections.push(`${exp.position}`);
+        sections.push(`${exp.company} | ${exp.startDate} - ${exp.endDate || 'Present'}`);
+        if (exp.description) sections.push(exp.description);
+        sections.push('');
+      });
+    }
+    
+    // Projects
+    if (resumeData.projects && resumeData.projects.length > 0) {
+      sections.push('PROJECTS');
+      sections.push('-'.repeat(15));
+      resumeData.projects.forEach(project => {
+        sections.push(`${project.title}`);
+        sections.push(`${project.description}`);
+        if (project.technologies) {
+          sections.push(`Technologies: ${project.technologies.join(', ')}`);
+        }
+        if (project.role) sections.push(`Role: ${project.role}`);
+        if (project.duration) sections.push(`Duration: ${project.duration}`);
+        sections.push('');
+      });
+    }
+    
+    // Skills
+    if (resumeData.skills && resumeData.skills.length > 0) {
+      sections.push('TECHNICAL SKILLS');
+      sections.push('-'.repeat(20));
+      const skillsByCategory = resumeData.skills.reduce((acc, skill) => {
+        if (!acc[skill.category]) acc[skill.category] = [];
+        acc[skill.category].push(`${skill.name} (${skill.proficiency})`);
+        return acc;
+      }, {} as Record<string, string[]>);
+      
+      Object.entries(skillsByCategory).forEach(([category, skills]) => {
+        sections.push(`${category.charAt(0).toUpperCase() + category.slice(1)}:`);
+        skills.forEach(skill => sections.push(`  • ${skill}`));
+        sections.push('');
+      });
+    }
+    
+    // Achievements
+    if (resumeData.achievements && resumeData.achievements.length > 0) {
+      sections.push('ACHIEVEMENTS & AWARDS');
+      sections.push('-'.repeat(25));
+      resumeData.achievements.forEach(achievement => {
+        sections.push(`• ${achievement.title}`);
+        sections.push(`  ${achievement.description}`);
+        if (achievement.date) sections.push(`  Date: ${achievement.date}`);
+        sections.push('');
+      });
+    }
+    
+    sections.push(`Generated on ${format(new Date(), 'PPP')}`);
     return sections.join('\n');
   }
 }

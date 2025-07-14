@@ -53,7 +53,7 @@ export async function GET() {
           { degree: 'B.E.', field: 'Computer Engineering', institution: 'Gujarat University', year: 2008 }
         ],
         qualification: 'Ph.D. in Computer Science',
-        experience: '15 years',
+        experienceYears: '15 years',
         dateOfBirth: '1985-06-15',
         joiningDate: '2010-07-01',
         gender: 'Male',
