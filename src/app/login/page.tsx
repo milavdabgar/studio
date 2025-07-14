@@ -43,7 +43,7 @@ const getMockUsers = async (): Promise<MockUser[]> => {
       // If localStorage is empty, fetch users from API
       if (!storedUsersRaw) {
         try {
-          const response = await fetch('/api/users');
+          const response = await fetch('/api/users?for_auth=true');
           if (response.ok) {
             const apiUsers = await response.json();
             localStorage.setItem('__API_USERS_STORE__', JSON.stringify(apiUsers));

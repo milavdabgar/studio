@@ -31,13 +31,33 @@ const createUserSchema = z.object({
 });
 
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     await connectMongoose();
     
-    // Include passwords in development for mock login system
-    const excludePassword = process.env.NODE_ENV === 'production' ? '-password' : '';
-    const users = await UserModel.find({}, excludePassword).lean();
+    // Simple check for authentication request
+    const url = request.url || '';
+    const isAuthRequest = url.includes('for_auth=true');
+    
+    let users;
+    if (isAuthRequest) {
+      // For authentication requests, use raw MongoDB query to bypass schema transforms
+      const { connectToMongoDB } = require('@/lib/mongodb');
+      const { db } = await connectToMongoDB();
+      const usersCollection = db.collection('users');
+      const rawUsers = await usersCollection.find({}).toArray();
+      
+      // Transform to match expected format
+      users = rawUsers.map(user => ({
+        ...user,
+        id: user.id || user._id?.toString(),
+        _id: user._id?.toString()
+      }));
+    } else {
+      // For regular requests, use Mongoose with password exclusion
+      const excludePassword = process.env.NODE_ENV === 'production' ? '-password' : '';
+      users = await UserModel.find({}, excludePassword).lean();
+    }
     
     // Add mock users for E2E testing if they don't exist (only in test/dev environments)
     if (process.env.NODE_ENV !== 'production' && process.env.JEST_WORKER_ID === undefined) {
