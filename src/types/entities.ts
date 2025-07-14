@@ -337,6 +337,8 @@ export interface FacultyProfile {
     employeeId?: string; 
     gtuFacultyId?: string;
     
+    photoURL?: string;
+    
     title?: string;
     firstName?: string;
     middleName?: string;
@@ -439,6 +441,7 @@ export interface Qualification {
     institution: string;
     year: number;
     grade?: string;
+    description?: string;
 }
 
 
@@ -556,6 +559,7 @@ export interface Program {
   departmentId: string; 
   instituteId: string; 
   degreeType?: 'Diploma' | 'Bachelor' | 'Master' | 'PhD' | 'Certificate' | string;
+  duration?: number; // For backward compatibility 
   durationYears?: number;
   totalSemesters?: number;
   totalCredits?: number;

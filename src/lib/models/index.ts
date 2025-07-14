@@ -899,6 +899,7 @@ const facultySchema = new Schema<IFaculty>({
   },
   
   instituteId: { type: String },
+  photoURL: { type: String },
   
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() }

@@ -196,14 +196,14 @@ export default function StudentProfilePage({}: StudentProfilePageProps) {
 
   const getAcademicProgress = () => {
     if (!student?.currentSemester) return 0;
-    const totalSemesters = program?.duration || 8;
+    const totalSemesters = program?.totalSemesters || program?.duration || 8;
     return (student.currentSemester / totalSemesters) * 100;
   };
 
   const getGraduationYear = () => {
     if (!student?.admissionDate) return 'N/A';
     const admissionYear = new Date(student.admissionDate).getFullYear();
-    const programDuration = program?.duration || 4;
+    const programDuration = program?.durationYears || program?.duration || 4;
     return admissionYear + programDuration;
   };
 
@@ -309,7 +309,7 @@ export default function StudentProfilePage({}: StudentProfilePageProps) {
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-gray-700">Academic Progress</span>
                     <span className="text-sm text-gray-500">
-                      {student?.currentSemester} / {program?.duration || 8} semesters
+                      {student?.currentSemester} / {program?.totalSemesters || program?.duration || 8} semesters
                     </span>
                   </div>
                   <Progress value={getAcademicProgress()} className="h-2" />
