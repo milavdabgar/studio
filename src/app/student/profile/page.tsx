@@ -80,6 +80,13 @@ export default function StudentProfilePage() {
   const [formContactNumber, setFormContactNumber] = useState('');
   const [formAddress, setFormAddress] = useState('');
   const [formPhotoURL, setFormPhotoURL] = useState('');
+  const [formDateOfBirth, setFormDateOfBirth] = useState('');
+  const [formBloodGroup, setFormBloodGroup] = useState('');
+  const [formGuardianName, setFormGuardianName] = useState('');
+  const [formGuardianRelation, setFormGuardianRelation] = useState('');
+  const [formGuardianContact, setFormGuardianContact] = useState('');
+  const [formGuardianOccupation, setFormGuardianOccupation] = useState('');
+  const [formGuardianIncome, setFormGuardianIncome] = useState('');
 
 
   useEffect(() => {
@@ -111,6 +118,13 @@ export default function StudentProfilePage() {
         setFormContactNumber(studentProfile.contactNumber || '');
         setFormAddress(studentProfile.address || '');
         setFormPhotoURL(studentProfile.photoURL || '');
+        setFormDateOfBirth(studentProfile.dateOfBirth || '');
+        setFormBloodGroup(studentProfile.bloodGroup || '');
+        setFormGuardianName(studentProfile.guardianDetails?.name || '');
+        setFormGuardianRelation(studentProfile.guardianDetails?.relation || '');
+        setFormGuardianContact(studentProfile.guardianDetails?.contactNumber || '');
+        setFormGuardianOccupation(studentProfile.guardianDetails?.occupation || '');
+        setFormGuardianIncome(studentProfile.guardianDetails?.annualIncome?.toString() || '');
 
         const [progData, batchData, resultsData, coursesData] = await Promise.all([
             studentProfile.programId ? programService.getProgramById(studentProfile.programId) : Promise.resolve(null),
@@ -143,6 +157,13 @@ export default function StudentProfilePage() {
       setFormContactNumber(student.contactNumber || '');
       setFormAddress(student.address || '');
       setFormPhotoURL(student.photoURL || '');
+      setFormDateOfBirth(student.dateOfBirth || '');
+      setFormBloodGroup(student.bloodGroup || '');
+      setFormGuardianName(student.guardianDetails?.name || '');
+      setFormGuardianRelation(student.guardianDetails?.relation || '');
+      setFormGuardianContact(student.guardianDetails?.contactNumber || '');
+      setFormGuardianOccupation(student.guardianDetails?.occupation || '');
+      setFormGuardianIncome(student.guardianDetails?.annualIncome?.toString() || '');
       setIsEditDialogOpen(true);
     }
   };
@@ -158,6 +179,15 @@ export default function StudentProfilePage() {
       contactNumber: formContactNumber.trim() || undefined,
       address: formAddress.trim() || undefined,
       photoURL: formPhotoURL.trim() || undefined,
+      dateOfBirth: formDateOfBirth.trim() || undefined,
+      bloodGroup: formBloodGroup.trim() || undefined,
+      guardianDetails: {
+        name: formGuardianName.trim() || '',
+        relation: formGuardianRelation.trim() || '',
+        contactNumber: formGuardianContact.trim() || '',
+        occupation: formGuardianOccupation.trim() || undefined,
+        annualIncome: formGuardianIncome.trim() ? parseInt(formGuardianIncome.trim()) : undefined,
+      },
     };
 
     try {
@@ -317,10 +347,17 @@ export default function StudentProfilePage() {
     { icon: Mail, label: "Personal Email", value: student.personalEmail || "N/A" },
     { icon: Phone, label: "Contact", value: student.contactNumber || "N/A" },
     { icon: CalendarDays, label: "Date of Birth", value: student.dateOfBirth && isValid(parseISO(student.dateOfBirth)) ? format(parseISO(student.dateOfBirth), "PPP") : "N/A" },
+    { icon: UserCircle, label: "Gender", value: student.gender || "N/A" },
+    { icon: UserCircle, label: "Blood Group", value: student.bloodGroup || "N/A" },
+    { icon: UserCircle, label: "Aadhar Number", value: student.aadharNumber || "N/A" },
     { icon: GraduationCap, label: "Program", value: program?.name || "N/A" },
     { icon: UsersIcon, label: "Batch", value: batch?.name || "N/A" },
     { icon: Landmark, label: "Current Semester", value: student.currentSemester.toString() },
-    { icon: UserCircle, label: "Address", value: student.address || "N/A"}
+    { icon: UserCircle, label: "Address", value: student.address || "N/A"},
+    { icon: UserCircle, label: "Guardian Name", value: student.guardianDetails?.name || "N/A" },
+    { icon: UserCircle, label: "Guardian Relation", value: student.guardianDetails?.relation || "N/A" },
+    { icon: Phone, label: "Guardian Contact", value: student.guardianDetails?.contactNumber || "N/A" },
+    { icon: UserCircle, label: "Guardian Occupation", value: student.guardianDetails?.occupation || "N/A" }
   ];
 
   return (
@@ -354,7 +391,7 @@ export default function StudentProfilePage() {
                 <Edit className="mr-2 h-4 w-4" /> Edit Profile
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Edit Your Profile</DialogTitle>
                 <DialogDescription>
@@ -362,22 +399,59 @@ export default function StudentProfilePage() {
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleProfileUpdateSubmit} className="space-y-4 py-4">
-                <div>
-                  <Label htmlFor="editPersonalEmail">Personal Email</Label>
-                  <Input id="editPersonalEmail" type="email" value={formPersonalEmail} onChange={e => setFormPersonalEmail(e.target.value)} disabled={isSubmittingEdit}/>
-                </div>
-                <div>
-                  <Label htmlFor="editContactNumber">Contact Number</Label>
-                  <Input id="editContactNumber" type="tel" value={formContactNumber} onChange={e => setFormContactNumber(e.target.value)} disabled={isSubmittingEdit}/>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="editPersonalEmail">Personal Email</Label>
+                    <Input id="editPersonalEmail" type="email" value={formPersonalEmail} onChange={e => setFormPersonalEmail(e.target.value)} disabled={isSubmittingEdit}/>
+                  </div>
+                  <div>
+                    <Label htmlFor="editContactNumber">Contact Number</Label>
+                    <Input id="editContactNumber" type="tel" value={formContactNumber} onChange={e => setFormContactNumber(e.target.value)} disabled={isSubmittingEdit}/>
+                  </div>
+                  <div>
+                    <Label htmlFor="editDateOfBirth">Date of Birth</Label>
+                    <Input id="editDateOfBirth" type="date" value={formDateOfBirth} onChange={e => setFormDateOfBirth(e.target.value)} disabled={isSubmittingEdit}/>
+                  </div>
+                  <div>
+                    <Label htmlFor="editBloodGroup">Blood Group</Label>
+                    <Input id="editBloodGroup" type="text" value={formBloodGroup} onChange={e => setFormBloodGroup(e.target.value)} placeholder="e.g., A+, B-, O+" disabled={isSubmittingEdit}/>
+                  </div>
                 </div>
                 <div>
                   <Label htmlFor="editAddress">Address</Label>
                   <Textarea id="editAddress" value={formAddress} onChange={e => setFormAddress(e.target.value)} disabled={isSubmittingEdit} rows={3}/>
                 </div>
-                 <div>
+                <div>
                   <Label htmlFor="editPhotoURL">Photo URL</Label>
                   <Input id="editPhotoURL" type="url" value={formPhotoURL} onChange={e => setFormPhotoURL(e.target.value)} placeholder="https://example.com/photo.jpg" disabled={isSubmittingEdit}/>
                 </div>
+                
+                <div className="border-t pt-4">
+                  <h4 className="text-lg font-semibold mb-3">Guardian Information</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="editGuardianName">Guardian Name</Label>
+                      <Input id="editGuardianName" type="text" value={formGuardianName} onChange={e => setFormGuardianName(e.target.value)} disabled={isSubmittingEdit}/>
+                    </div>
+                    <div>
+                      <Label htmlFor="editGuardianRelation">Relation</Label>
+                      <Input id="editGuardianRelation" type="text" value={formGuardianRelation} onChange={e => setFormGuardianRelation(e.target.value)} placeholder="e.g., Father, Mother, Uncle" disabled={isSubmittingEdit}/>
+                    </div>
+                    <div>
+                      <Label htmlFor="editGuardianContact">Guardian Contact</Label>
+                      <Input id="editGuardianContact" type="tel" value={formGuardianContact} onChange={e => setFormGuardianContact(e.target.value)} disabled={isSubmittingEdit}/>
+                    </div>
+                    <div>
+                      <Label htmlFor="editGuardianOccupation">Guardian Occupation</Label>
+                      <Input id="editGuardianOccupation" type="text" value={formGuardianOccupation} onChange={e => setFormGuardianOccupation(e.target.value)} disabled={isSubmittingEdit}/>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor="editGuardianIncome">Annual Income (₹)</Label>
+                      <Input id="editGuardianIncome" type="number" value={formGuardianIncome} onChange={e => setFormGuardianIncome(e.target.value)} placeholder="e.g., 500000" disabled={isSubmittingEdit}/>
+                    </div>
+                  </div>
+                </div>
+                
                 <DialogFooter>
                   <DialogClose asChild><Button type="button" variant="outline" disabled={isSubmittingEdit}>Cancel</Button></DialogClose>
                   <Button type="submit" disabled={isSubmittingEdit}>
