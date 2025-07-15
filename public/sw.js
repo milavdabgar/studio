@@ -39,7 +39,18 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// Helper function to check if a request can be cached
+function canCache(request) {
+  // Only cache http/https requests
+  return request.url.startsWith('http://') || request.url.startsWith('https://');
+}
+
 self.addEventListener('fetch', (event) => {
+  // Skip caching for unsupported request schemes
+  if (!canCache(event.request)) {
+    return;
+  }
+  
   if (event.request.mode === 'navigate') {
     event.respondWith(
       (async () => {
