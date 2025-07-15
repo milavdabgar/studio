@@ -1,0 +1,206 @@
+%-------------------------
+% Professional Biodata
+% Author: Milav Jayeshkumar Dabgar
+% Compiled with XeLaTeX for best results
+%-------------------------
+
+\documentclass[11pt,a4paper]{article}
+
+% Packages for XeLaTeX
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+
+% Modern fonts
+\setmainfont{Liberation Serif}[Scale=1.0]
+\setsansfont{Liberation Sans}[Scale=1.0]
+
+% Packages
+\usepackage[top=0.8in, bottom=0.8in, left=0.8in, right=0.8in]{geometry}
+\usepackage{xcolor}
+\usepackage{fontawesome5}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{colortbl}
+
+% Colors
+\definecolor{primary}{RGB}{0, 79, 144}
+\definecolor{secondary}{RGB}{45, 45, 45}
+\definecolor{lightgray}{RGB}{240, 240, 240}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=primary,
+    pdfauthor={Milav Jayeshkumar Dabgar},
+    pdftitle={Biodata - Milav Jayeshkumar Dabgar},
+    pdfsubject={Professional Biodata}
+}
+
+% Remove page numbers
+\pagestyle{empty}
+
+%-------------------------------------------
+%%%%%%  BIODATA STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-------------------------------------------
+
+\begin{document}
+
+% Header with photo
+\begin{center}
+    \begin{tabular}{c}
+        % Profile photo placeholder
+        \begin{tikzpicture}
+            \clip (0,0) circle (1.5cm);
+            \node at (0,0) {\includegraphics[width=3cm, height=3cm, keepaspectratio]{profile-picture.jpg}};
+            \draw[primary, line width=2pt] (0,0) circle (1.5cm);
+        \end{tikzpicture} \\[10pt]
+        
+        {\Large\sffamily\bfseries\color{primary} BIODATA} \\[5pt]
+        {\huge\sffamily\bfseries\color{secondary} Milav Jayeshkumar Dabgar}
+    \end{tabular}
+\end{center}
+
+\vspace{15pt}
+
+% Personal Information Table
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{|>{\bfseries}p{4cm}|X|}
+\hline
+\rowcolor{lightgray}
+\multicolumn{2}{|c|}{\large\bfseries PERSONAL INFORMATION} \\
+\hline
+Full Name & Milav Jayeshkumar Dabgar \\
+\hline
+Father's Name & Jayeshkumar Dabgar \\
+\hline
+Date of Birth & [To be filled] \\
+\hline
+Age & [To be calculated] \\
+\hline
+Gender & Male \\
+\hline
+Marital Status & [To be filled] \\
+\hline
+Nationality & Indian \\
+\hline
+Religion & [To be filled] \\
+\hline
+Caste & [To be filled] \\
+\hline
+Blood Group & [To be filled] \\
+\hline
+Height & [To be filled] \\
+\hline
+Languages Known & English, Hindi, Gujarati \\
+\hline
+\end{tabularx}
+
+\vspace{10pt}
+
+% Contact Information
+\begin{tabularx}{\textwidth}{|>{\bfseries}p{4cm}|X|}
+\hline
+\rowcolor{lightgray}
+\multicolumn{2}{|c|}{\large\bfseries CONTACT INFORMATION} \\
+\hline
+Mobile Number & +91 8128576285 \\
+\hline
+Email Address & \href{mailto:milav.dabgar@gmail.com}{milav.dabgar@gmail.com} \\
+\hline
+Website & \href{https://milav.in}{https://milav.in} \\
+\hline
+LinkedIn & \href{https://linkedin.com/in/milavdabgar}{linkedin.com/in/milavdabgar} \\
+\hline
+GitHub & \href{https://github.com/milavdabgar}{github.com/milavdabgar} \\
+\hline
+Current Address & Gujarat, India \\
+\hline
+Permanent Address & Gujarat, India \\
+\hline
+\end{tabularx}
+
+\vspace{10pt}
+
+% Educational Qualifications
+\begin{tabularx}{\textwidth}{|>{\bfseries}p{4cm}|X|}
+\hline
+\rowcolor{lightgray}
+\multicolumn{2}{|c|}{\large\bfseries EDUCATIONAL QUALIFICATIONS} \\
+\hline
+Current Studies & BS in Data Science and Applications, IIT Madras (2021-Present) \\
+ & Overall CGPA: 7.07/10 \\
+\hline
+Post Graduation & ME Communication Systems, L.D College of Engineering (2013-2015) \\
+ & CGPA: 8.04/10 \\
+\hline
+Graduation & BE Electronics \& Communication, Sal Institute of Technology (2009-2013) \\
+ & CGPA: 7.28/10 \\
+\hline
+\end{tabularx}
+
+\vspace{10pt}
+
+% Professional Information
+\begin{tabularx}{\textwidth}{|>{\bfseries}p{4cm}|X|}
+\hline
+\rowcolor{lightgray}
+\multicolumn{2}{|c|}{\large\bfseries PROFESSIONAL INFORMATION} \\
+\hline
+Current Position & Lecturer (Class-II) \& Innovation Leader \\
+\hline
+Organization & Government Polytechnic, Education Department - Government of Gujarat \\
+\hline
+Work Location & Palanpur, Gujarat \\
+\hline
+Experience & 9+ Years (Nov 2016 - Present) \\
+\hline
+AICTE Faculty ID & 1-3241967546 \\
+\hline
+Specialization & Engineering Education, R\&D, AI/Data Science, Full-Stack Development \\
+\hline
+Key Achievements & Student teams secured Rs. 45+ lakhs funding, 2 patents filed \\
+\hline
+\end{tabularx}
+
+\vspace{10pt}
+
+% Additional Information
+\begin{tabularx}{\textwidth}{|>{\bfseries}p{4cm}|X|}
+\hline
+\rowcolor{lightgray}
+\multicolumn{2}{|c|}{\large\bfseries ADDITIONAL INFORMATION} \\
+\hline
+Technical Skills & Programming, Web Development, AI/ML, Embedded Systems \\
+\hline
+Certifications & NPTEL Evangelist, 24+ Course Completions, Multiple Specializations \\
+\hline
+Publications & FPGA Image Steganography (International Journal of Computer Applications) \\
+\hline
+Projects & Smart Academic Portal, Personal Blog, System Threat Forecaster \\
+\hline
+Hobbies & [To be filled] \\
+\hline
+References & Available upon request \\
+\hline
+\end{tabularx}
+
+\vspace{20pt}
+
+% Declaration
+\begin{center}
+\begin{tabular}{c}
+\textbf{DECLARATION} \\[10pt]
+\begin{minipage}{0.8\textwidth}
+\centering
+I hereby declare that the information furnished above is true and correct to the best of my knowledge and belief.
+\end{minipage} \\[20pt]
+\textbf{Date:} \underline{\hspace{3cm}} \hfill \textbf{Signature:} \underline{\hspace{4cm}} \\[10pt]
+\textbf{Place:} \underline{\hspace{3cm}} \hfill \textbf{(Milav Jayeshkumar Dabgar)}
+\end{tabular}
+\end{center}
+
+\end{document}

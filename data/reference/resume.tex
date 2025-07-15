@@ -1,0 +1,228 @@
+%-------------------------
+% One-Page Professional Resume
+% Author: Milav Jayeshkumar Dabgar
+% Compiled with XeLaTeX for best results
+%-------------------------
+
+\documentclass[11pt,a4paper]{article}
+
+% Packages for XeLaTeX
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+
+% Modern fonts
+\setmainfont{Liberation Serif}[Scale=1.0]
+\setsansfont{Liberation Sans}[Scale=1.0]
+\setmonofont{Liberation Mono}[Scale=1.0]
+
+% Packages
+\usepackage[top=0.5in, bottom=0.5in, left=0.6in, right=0.6in]{geometry}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{fontawesome5}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{array}
+
+% Colors
+\definecolor{primary}{RGB}{0, 79, 144}
+\definecolor{secondary}{RGB}{45, 45, 45}
+\definecolor{lightgray}{RGB}{248, 248, 248}
+\definecolor{mediumgray}{RGB}{128, 128, 128}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=primary,
+    pdfauthor={Milav Jayeshkumar Dabgar},
+    pdftitle={Resume - Milav Jayeshkumar Dabgar - One Page},
+    pdfsubject={AICTE Industry Fellowship Application Resume},
+    pdfkeywords={AICTE Fellowship, AI, Data Science, Engineering Education, Innovation, R&D}
+}
+
+% Remove page numbers
+\pagestyle{empty}
+
+% Custom section formatting
+\titleformat{\section}
+    {\color{primary}\large\sffamily\bfseries}
+    {}
+    {0em}
+    {}[{\color{primary}\titlerule[1pt]\vspace{-2pt}}]
+
+% Improved spacing
+\titlespacing*{\section}{0pt}{8pt}{4pt}
+
+% Custom commands
+\newcommand{\resumeItem}[1]{
+    \item\footnotesize{#1 \vspace{-1pt}}
+}
+
+\newcommand{\resumeSubheading}[4]{
+    \vspace{-1pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+        \textbf{\footnotesize\color{secondary}#1} & \textbf{\color{mediumgray}\footnotesize #2} \\
+        \textit{\footnotesize\color{primary}#3} & \textit{\footnotesize\color{mediumgray} #4} \\
+    \end{tabular*}\vspace{-2pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \vspace{-1pt}\item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+        \footnotesize\textbf{\color{secondary}#1} & \textbf{\color{mediumgray}\footnotesize #2} \\
+    \end{tabular*}\vspace{-2pt}
+}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=0.25in]}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-3pt}}
+
+%-------------------------------------------
+%%%%%%  RESUME STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-------------------------------------------
+
+\begin{document}
+
+% Header
+\begin{center}
+    {\Large\sffamily\bfseries\color{primary} Milav Jayeshkumar Dabgar}
+    
+    \vspace{3pt}
+    {\normalsize\sffamily\color{secondary} Engineering Educator \& R\&D Professional}
+    
+    \vspace{3pt}
+    \footnotesize
+    \faIcon{envelope}\,\href{mailto:milav.dabgar@gmail.com}{\color{primary}milav.dabgar@gmail.com} $\bullet$
+    \faIcon{phone}\,+91 8128576285 $\bullet$
+    \faIcon{linkedin}\,\href{https://linkedin.com/in/milavdabgar}{\color{primary}linkedin.com/in/milavdabgar} $\bullet$
+    \faIcon{github}\,\href{https://github.com/milavdabgar}{\color{primary}github.com/milavdabgar} $\bullet$
+    \faIcon{globe}\,\href{https://milav.in}{\color{primary}milav.in}
+    
+    \vspace{2pt}
+    \footnotesize\color{mediumgray}
+    Gujarat, India $\bullet$ AICTE ID: 1-3241967546
+\end{center}
+
+\vspace{-8pt}
+
+%----------- EXECUTIVE SUMMARY -----------
+\section{Executive Summary}
+\footnotesize
+Engineering educator and R\&D professional with \textbf{9+ years} experience spanning electronics hardware development, embedded systems, AI/ML, and full-stack software engineering. Currently pursuing \textbf{BS in Data Science from IIT Madras}. Distinguished by exceptional student mentorship enabling teams to secure \textbf{Rs. 45+ lakhs in innovation funding} (Shark Tank India, iHub Gujarat), resulting in \textbf{2 student patents}. Seeking AICTE Industry Fellowship to gain advanced industrial research experience and enhance diploma-level innovation ecosystem in Gujarat.
+
+\vspace{-2pt}
+
+%----------- PROFESSIONAL EXPERIENCE -----------
+\section{Professional Experience}
+\resumeSubHeadingListStart
+
+\resumeSubheading
+{Lecturer \& Innovation Leader}{Nov 2016 -- Present}
+{Government Polytechnic, Education Department - Government of Gujarat}{Palanpur, Gujarat}
+\resumeItemListStart
+\resumeItem{Lead technical education across Programming, Embedded Systems, Circuit Design, and Entrepreneurship}
+\resumeItem{Hold key positions: \textbf{IT Convener}, \textbf{SSIP Co-Convener}, \textbf{Training \& Placement Member}}
+\resumeItem{Mentored teams securing \textbf{Rs. 25 lakhs from Shark Tank India} and \textbf{Rs. 20 lakhs government funding}, resulting in \textbf{2 patents}}
+\resumeItem{Deployed production \textbf{Next.js Academic Management System} at \href{https://gppalanpur.in/}{gppalanpur.in} with enterprise-grade CI/CD}
+\resumeItemListEnd
+
+\resumeSubheading
+{Electronics \& Communication Engineer (R\&D)}{Jul 2015 -- Oct 2016}
+{TEXEG India Private Limited (Japan-based Technology Firm)}{Gandhinagar, Gujarat}
+\resumeItemListStart
+\resumeItem{Led end-to-end product development for commercial embedded systems in international R\&D environment}
+\resumeItem{Executed circuit simulation, PCB design, firmware development, and control algorithms (PID, PI, Fuzzy Logic)}
+\resumeItemListEnd
+
+\resumeSubHeadingListEnd
+
+\vspace{-2pt}
+
+%----------- EDUCATION -----------
+\section{Education}
+\resumeSubHeadingListStart
+
+\resumeSubheading
+{Bachelor of Science in Data Science and Applications}{2021 -- Present}
+{Indian Institute of Technology Madras (IIT Madras)}{Overall CGPA: 7.07/10}
+\resumeItemListStart
+\resumeItem{\textbf{Foundation:} Completed (CGPA: 7.50) | \textbf{Programming Track:} Completed (CGPA: 7.19) | \textbf{Data Science Track:} In Progress (80/142 credits)}
+\resumeItemListEnd
+
+\resumeSubheading
+{Master of Engineering, Communication Systems}{2013 -- 2015}
+{L.D College of Engineering, Gujarat Technological University}{CGPA: 8.04/10}
+
+\resumeSubheading
+{Bachelor of Engineering, Electronics \& Communication}{2009 -- 2013}
+{Sal Institute of Technology, Gujarat Technological University}{CGPA: 7.28/10}
+
+\resumeSubHeadingListEnd
+
+\vspace{-2pt}
+
+%----------- TECHNICAL EXPERTISE -----------
+\section{Technical Expertise}
+\begin{multicols}{2}
+\footnotesize
+
+\textbf{Programming:} Java, Python, JavaScript, C/C++, R, SQL \\
+\textbf{Web Development:} Next.js, React.js, Vue.js, Node.js, Flask \\
+\textbf{Data Science \& ML:} TensorFlow, PyTorch, Scikit-learn, Pandas \\
+\textbf{Infrastructure:} Linux, Docker, CI/CD, Git, Self-hosted Solutions \\
+\textbf{Embedded Systems:} Microcontrollers, FPGA, PCB Design \\
+\textbf{Tools:} MATLAB, Simulink, EagleCAD, Proteus, Modbus
+
+\end{multicols}
+
+\vspace{-4pt}
+
+%----------- KEY PROJECTS -----------
+\section{Key Projects \& Achievements}
+\resumeSubHeadingListStart
+
+\resumeProjectHeading
+{\textbf{\href{https://github.com/milavdabgar/studio}{Smart Academic Portal}} \textit{| Next.js, Docker}}{2025}
+\resumeItemListStart
+\resumeItem{Production system at \href{https://gppalanpur.in/}{gppalanpur.in} with complete institutional management, student portfolios, and multilingual content}
+\resumeItemListEnd
+
+\resumeProjectHeading
+{\textbf{\href{https://github.com/milavdabgar/milav-blowfish}{Personal Blog \& Portfolio}} \textit{| Hugo}}{2024}
+\resumeItemListStart
+\resumeItem{Self-hosted website at \href{https://milav.in/}{milav.in} with comprehensive educational resources in English/Gujarati}
+\resumeItemListEnd
+
+\resumeProjectHeading
+{\textbf{\href{https://github.com/milavdabgar/MLP-Project}{System Threat Forecaster}} \textit{| Python, ML}}{2024}
+\resumeItemListStart
+\resumeItem{Machine learning pipeline for cybersecurity threat prediction using advanced algorithms and pattern recognition}
+\resumeItemListEnd
+
+\resumeProjectHeading
+{\textbf{FPGA Image Steganography} \textit{| FPGA, Verilog}}{2015}
+\resumeItemListStart
+\resumeItem{Hardware implementation published in \href{https://www.ijcaonline.org/archives/volume120/number9/21259-4125}{\color{primary}International Journal of Computer Applications}}
+\resumeItemListEnd
+
+\resumeSubHeadingListEnd
+
+\vspace{-2pt}
+
+%----------- CERTIFICATIONS & ACHIEVEMENTS -----------
+\section{Certifications \& Recognition}
+\footnotesize
+\begin{itemize}[leftmargin=0.15in, label={}, itemsep=1pt]
+    \item \textbf{NPTEL EVANGELIST} (2020) - Top recognition for exceptional contribution to online learning ecosystem
+    \item \textbf{NPTEL DISCIPLINE STAR - Computer Science} (2019, 2020) - Top 1\% performer nationally  
+    \item \textbf{Coursera Specializations:} Advanced Machine Learning, Deep Learning, Recommender Systems, Big Data, Data Mining
+    \item \textbf{24+ NPTEL Course Completions} with 15 Elite Performances across AI, Data Science, and Programming domains
+    \item \textbf{Student Innovation Excellence:} Mentored 50+ projects, Rs. 45+ lakhs funding secured, 2 patents filed
+\end{itemize}
+
+\end{document}
