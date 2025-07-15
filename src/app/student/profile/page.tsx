@@ -91,26 +91,39 @@ export default function StudentProfilePage() {
 
   useEffect(() => {
     const authUserCookie = getCookie('auth_user');
+    console.log('🍪 Raw auth_user cookie:', authUserCookie);
     if (authUserCookie) {
       try {
         const decodedCookie = decodeURIComponent(authUserCookie);
+        console.log('🔓 Decoded cookie:', decodedCookie);
         const parsedUser = JSON.parse(decodedCookie) as UserCookie;
+        console.log('👤 Parsed user from cookie:', parsedUser);
         setUser(parsedUser);
       } catch (error) {
         console.error('Failed to parse auth_user cookie:', error);
         toast({ variant: "destructive", title: "Authentication Error", description: "Could not load user data." });
       }
     } else {
+        console.warn('❌ No auth_user cookie found');
         toast({ variant: "destructive", title: "Authentication Error", description: "User not logged in." });
     }
   }, [toast]);
 
   const fetchProfileData = useCallback(async () => {
-    if (!user || !user.id) return;
+    console.log('🔍 fetchProfileData called with user:', user);
+    console.log('📋 user.id:', user?.id);
+    if (!user || !user.id) {
+      console.warn('❌ Early return: user or user.id is missing');
+      return;
+    }
     setIsLoading(true);
     try {
+      console.log('📡 Fetching all students...');
       const allStudents = await studentService.getAllStudents(); 
+      console.log('👥 All students count:', allStudents.length);
+      console.log('🔍 Looking for student with userId:', user.id);
       const studentProfile = allStudents.find(s => s.userId === user.id);
+      console.log('👤 Found student profile:', studentProfile);
 
       if (studentProfile) {
         setStudent(studentProfile);
