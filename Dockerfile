@@ -32,7 +32,7 @@ ENV NODE_ENV=production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Install Chromium and dependencies for Puppeteer, plus pandoc and essential LaTeX packages
+# Install Chromium and dependencies for Puppeteer, plus pandoc and full TeXLive for document conversion
 RUN apk add --no-cache \
     chromium \
     nss \
@@ -42,28 +42,19 @@ RUN apk add --no-cache \
     ca-certificates \
     ttf-freefont \
     pandoc \
-    # Essential LaTeX packages (~800MB instead of 2.6GB)
-    texlive-xetex \
-    texlive-latex-recommended \
-    texlive-fonts-recommended \
-    texlive-latex-extra \
-    texlive-science \
-    texlive-pictures \
+    texlive-full \
     # Additional fonts for better LaTeX typography
     ttf-liberation \
     ttf-dejavu \
     font-noto \
     && rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
 
-# Verify LaTeX installation works and cleanup build cache
-RUN echo '\documentclass{article}\usepackage{xcolor}\begin{document}\textcolor{blue}{LaTeX Works!}\end{document}' > /tmp/test.tex && \
+# Verify LaTeX installation works
+RUN echo '\documentclass{article}\usepackage{xcolor}\usepackage{amsmath}\begin{document}\textcolor{blue}{LaTeX Works!} $E=mc^2$\end{document}' > /tmp/test.tex && \
     xelatex -output-directory=/tmp /tmp/test.tex && \
     pdflatex -output-directory=/tmp /tmp/test.tex && \
-    rm -rf /tmp/* && \
-    # Additional cleanup to free space
-    rm -rf /var/cache/apk/* /var/lib/apk/* /usr/share/doc/* /usr/share/man/* && \
-    # Keep only essential TeX formats
-    find /usr/share/texmf-dist -name "*.tfm" -size +100k -delete 2>/dev/null || true
+    lualatex -output-directory=/tmp /tmp/test.tex && \
+    rm -rf /tmp/*
 
 # Set Puppeteer to use the installed Chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \

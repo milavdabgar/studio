@@ -41,36 +41,6 @@ jobs:
         env:
           CI: true
 
-      - name: Free up disk space
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /opt/ghc
-          sudo rm -rf /usr/local/share/boost
-          sudo rm -rf /opt/hostedtoolcache/CodeQL
-          sudo docker image prune --all --force
-          df -h
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker image with LaTeX (GitHub Actions cache only)
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: false
-          tags: studio:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          load: true
-
-      - name: Save Docker image as tar
-        run: docker save studio:latest | gzip > studio-image.tar.gz
-
-      - name: Upload image to server
-        env:
-          REMOTE_HOST: milav@server.gppalanpur.in
-        run: |
-          scp studio-image.tar.gz $REMOTE_HOST:~/studio-image.tar.gz
 
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2
@@ -109,20 +79,9 @@ jobs:
             docker compose down 2>/dev/null || true
             git pull origin master
             
-            # Load the pre-built Docker image from GitHub Actions
-            if [ -f ~/studio-image.tar.gz ]; then
-              echo "Loading pre-built Docker image..."
-              docker load < ~/studio-image.tar.gz
-              rm ~/studio-image.tar.gz
-              echo "Image loaded successfully"
-            else
-              echo "No pre-built image found, building locally..."
-              docker compose up -d --build
-              exit 0
-            fi
-            
-            # Start with pre-built image (no rebuild needed)
-            docker compose up -d
+            # Build directly on server with texlive-full (server has plenty of space)
+            echo "Building Docker image with texlive-full on server..."
+            docker compose up -d --build
             
             # Quick verification
             sleep 10
