@@ -2,6 +2,7 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs/promises';
 import path from 'path';
+import { MockLaTeXService } from './latex-mock';
 
 const execAsync = promisify(exec);
 
@@ -21,8 +22,16 @@ export interface LaTeXResult {
 export class LaTeXService {
   private tmpDir: string;
 
-  constructor(tmpDir: string = '/app/tmp') {
-    this.tmpDir = tmpDir;
+  constructor(tmpDir?: string) {
+    // Auto-detect environment and set appropriate tmp directory
+    if (tmpDir) {
+      this.tmpDir = tmpDir;
+    } else if (process.env.NODE_ENV === 'production' || process.env.DOCKER_ENV) {
+      this.tmpDir = '/app/tmp';
+    } else {
+      // Local development - use OS temp directory
+      this.tmpDir = path.join(process.cwd(), 'tmp');
+    }
   }
 
   async compileLaTeX(
@@ -40,6 +49,23 @@ export class LaTeXService {
     const pdfFile = path.join(outputDir, `${filename}.pdf`);
 
     try {
+      // Check if LaTeX engine is available
+      try {
+        await execAsync(`which ${engine}`, { timeout: 5000 });
+      } catch (error) {
+        // If in development and LaTeX not available, use mock service
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`⚠️  LaTeX not installed locally, using mock service for development`);
+          const mockService = new MockLaTeXService();
+          return await mockService.compileLaTeX(texContent, filename, options);
+        }
+        
+        return {
+          success: false,
+          error: `LaTeX engine '${engine}' is not installed or not in PATH. Please install LaTeX (e.g., MacTeX, TeX Live, or MiKTeX) to use this feature locally.`
+        };
+      }
+
       // Ensure output directory exists
       await fs.mkdir(outputDir, { recursive: true });
 
