@@ -95,11 +95,9 @@ export class LaTeXService {
   static templates = {
     report: (title: string, content: string) => `
 \\documentclass[12pt]{article}
-\\usepackage[utf8]{inputenc}
 \\usepackage{xcolor}
 \\usepackage{geometry}
 \\usepackage{fancyhdr}
-\\usepackage{graphicx}
 
 \\geometry{margin=1in}
 \\pagestyle{fancy}
