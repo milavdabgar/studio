@@ -73,8 +73,10 @@ self.addEventListener('fetch', (event) => {
         }
         return fetch(event.request).then((networkResponse) => {
           if (networkResponse && networkResponse.ok) {
-            const cache = caches.open(CACHE_NAME);
-            cache.then(c => c.put(event.request, networkResponse.clone()));
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, responseClone);
+            });
           }
           return networkResponse;
         }).catch(async (error) => {
