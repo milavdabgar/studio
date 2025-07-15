@@ -32,7 +32,7 @@ ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 ENV NEXT_TELEMETRY_DISABLED 1
 
-# Install Chromium and dependencies for Puppeteer, plus pandoc for document conversion
+# Install Chromium and dependencies for Puppeteer, plus pandoc and full TeXLive for document conversion
 RUN apk add --no-cache \
     chromium \
     nss \
@@ -42,7 +42,18 @@ RUN apk add --no-cache \
     ca-certificates \
     ttf-freefont \
     pandoc \
-    && rm -rf /var/cache/apk/*
+    texlive-full \
+    # Additional fonts for better LaTeX typography
+    ttf-liberation \
+    ttf-dejavu \
+    font-noto \
+    && rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
+
+# Verify LaTeX installation works
+RUN echo '\documentclass{article}\usepackage{xcolor}\begin{document}\textcolor{blue}{LaTeX Works!}\end{document}' > /tmp/test.tex && \
+    xelatex -output-directory=/tmp /tmp/test.tex && \
+    pdflatex -output-directory=/tmp /tmp/test.tex && \
+    rm -rf /tmp/*
 
 # Set Puppeteer to use the installed Chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
