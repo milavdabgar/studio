@@ -1,0 +1,38 @@
+# Minimal LaTeX version - just XeLaTeX essentials
+FROM node:24-alpine AS runner-base
+WORKDIR /app
+
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
+
+# Install only essential LaTeX packages for XeLaTeX
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    freetype-dev \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont \
+    pandoc \
+    texlive-xetex \
+    texlive-latex-recommended \
+    texlive-fonts-recommended \
+    && rm -rf /var/cache/apk/*
+
+# Test if XeLaTeX works
+RUN echo '\documentclass{article}\begin{document}Hello World\end{document}' > test.tex && \
+    xelatex test.tex && \
+    rm -f test.*
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+USER nextjs
+EXPOSE 3000
+ENV PORT 3000
+ENV HOSTNAME "0.0.0.0"
+CMD ["node", "server.js"]

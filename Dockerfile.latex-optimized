@@ -1,0 +1,75 @@
+# Optimized LaTeX Dockerfile with caching strategy
+FROM node:24-alpine AS deps
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --omit=dev --legacy-peer-deps --no-fund --quiet --no-audit
+
+FROM node:24-alpine AS builder
+WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --legacy-peer-deps --no-fund --quiet --no-audit
+COPY . .
+ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_PUBLIC_BASE_URL https://gppalanpur.in
+RUN npm run build
+
+# LaTeX-enabled production image
+FROM node:24-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
+
+# Install system dependencies in single layer with cleanup
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    freetype-dev \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont \
+    pandoc \
+    # Essential LaTeX packages only
+    texlive-xetex \
+    texlive-latex-recommended \
+    texlive-fonts-recommended \
+    texlive-latex-extra \
+    # Additional fonts for better typography
+    ttf-liberation \
+    ttf-dejavu \
+    && rm -rf /var/cache/apk/* /tmp/* /var/tmp/*
+
+# Verify LaTeX installation
+RUN echo '\documentclass{article}\begin{document}Test\end{document}' > /tmp/test.tex && \
+    xelatex -output-directory=/tmp /tmp/test.tex && \
+    rm -rf /tmp/*
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+RUN mkdir .next && chown nextjs:nodejs .next
+
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/content ./content
+COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
+COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json ./tsconfig.json
+COPY --from=builder --chown=nextjs:nodejs /app/src ./src
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+
+RUN mkdir -p /app/tmp && chown nextjs:nodejs /app/tmp
+
+USER nextjs
+EXPOSE 3000
+ENV PORT 3000
+ENV HOSTNAME "0.0.0.0"
+
+CMD ["node", "server.js"]

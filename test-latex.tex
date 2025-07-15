@@ -1,0 +1,41 @@
+\documentclass[12pt]{article}
+\usepackage{fontspec}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{tikz}
+
+\geometry{margin=1in}
+\setmainfont{Liberation Serif}
+
+\title{XeLaTeX Test Document}
+\author{Studio App}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Typography Test}
+This is a test of XeLaTeX's typography capabilities. It supports Unicode: αβγδε, 你好世界, العربية.
+
+\section{Mathematical Expressions}
+LaTeX excels at mathematical typesetting:
+\[
+E = mc^2
+\]
+
+\[
+\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}
+\]
+
+\section{Color and Graphics}
+\textcolor{blue}{Blue text} and \textcolor{red}{red text}.
+
+\begin{center}
+\begin{tikz picture}
+\draw[->] (0,0) -- (2,0) node[right] {$x$};
+\draw[->] (0,0) -- (0,2) node[above] {$y$};
+\draw[domain=0:1.8,smooth,variable=\x,blue] plot ({\x},{0.5*\x*\x});
+\end{tikz picture}
+\end{center}
+
+\end{document}
