@@ -425,9 +425,9 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
   const { previousPost, nextPost } = await getAdjacentPosts(postData, langForLinks);
 
   // Generate structured data
-  const currentUrl = `https://polymanager.app/posts/${langForLinks}/${slugPartsForLinks.join('/')}`;
+  const currentUrl = `https://gppalanpur.in/posts/${langForLinks}/${slugPartsForLinks.join('/')}`;
   const articleJsonLD = generateArticleJsonLD(postData, langForLinks, currentUrl);
-  const breadcrumbJsonLD = generateBreadcrumbJsonLD(breadcrumbItems, 'https://polymanager.app');
+  const breadcrumbJsonLD = generateBreadcrumbJsonLD(breadcrumbItems, 'https://gppalanpur.in');
 
   return (
     <BlogLayout currentLang={langForLinks}>

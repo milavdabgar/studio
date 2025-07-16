@@ -9,7 +9,7 @@ This directory contains scripts for seeding the database with test and developme
 #### `seed-database.ts` - **Main Development Seeding**
 ```bash
 # Seed development database with complete data
-MONGODB_URI=mongodb://localhost:27017/gpp-studio-dev npx tsx scripts/seed-database.ts
+MONGODB_URI=mongodb://localhost:27017/gpp-next-dev npx tsx scripts/seed-database.ts
 ```
 - **Purpose**: Complete development environment setup
 - **Data**: Users, roles, departments, programs, batches, courses, buildings, rooms, committees
@@ -40,7 +40,7 @@ MONGODB_URI=mongodb://localhost:27017/gpp-studio-dev npx tsx scripts/seed-databa
 sudo systemctl start mongod
 
 # 2. Seed development database
-MONGODB_URI=mongodb://localhost:27017/gpp-studio-dev npx tsx scripts/seed-database.ts
+MONGODB_URI=mongodb://localhost:27017/gpp-next-dev npx tsx scripts/seed-database.ts
 
 # 3. Start development server
 npm run dev

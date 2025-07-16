@@ -12,7 +12,7 @@ interface RouteParams {
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/gpp-next');
 
     const { id  } = await params;
     const result = await FeedbackAnalysisModel.findOne({ id });

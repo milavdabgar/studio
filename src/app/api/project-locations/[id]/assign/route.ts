@@ -14,7 +14,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
   const { id: locationIdString  } = await params; // The user-friendly locationId
   try {
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/gpp-next');
 
     const { projectId } = await request.json();
 

@@ -2,7 +2,7 @@ import { MongoClient, Db } from 'mongodb';
 import mongoose from 'mongoose';
 
 // MongoDB connection URI - using localhost by default
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/gpp-next';
 
 // Global MongoDB client for native MongoDB operations
 let client: MongoClient | null = null;

@@ -12,7 +12,7 @@ interface RouteParams {
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/gpp-next');
     
     const { id } = await params;
     // Check if the id is a valid ObjectId before querying _id field
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 export async function PUT(request: NextRequest, { params }: RouteParams) {
     try {
         // Connect to MongoDB
-        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/gpp-next');
         
         const { id } = await params;
         const resultDataToUpdate = await request.json() as Partial<Omit<Result, '_id' | 'createdAt' | 'updatedAt'>>;
@@ -89,7 +89,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/gpp-next');
     
     const { id } = await params;
     const deletedResult = await ResultModel.findOneAndDelete({

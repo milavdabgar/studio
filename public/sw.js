@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'polymanager-cache-v1';
+const CACHE_NAME = 'gpp-next-cache-v1';
 const OFFLINE_URL = '/offline.html';
 // Add more assets to cache as your app grows
 const CORE_ASSETS = [

@@ -26,7 +26,7 @@ interface RouteParams {
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   const { id: eventId } = await params;
   try {
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/gpp-next');
     
     const { schedule } = await request.json() as { schedule: ProjectEventScheduleItem[] };
     

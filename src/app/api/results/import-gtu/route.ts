@@ -120,7 +120,7 @@ const processGtuResultCsvForApi = (rows: Record<string, unknown>[], clientProgra
 export async function POST(request: NextRequest) {
   try {
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/gpp-next');
     
     // SECURITY FIX: Validate Content-Type for file uploads
     const contentType = request.headers.get('content-type');
@@ -171,7 +171,7 @@ export async function POST(request: NextRequest) {
     const currentUploadBatchId = uuidv4(); // Single batch ID for this upload
 
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/gpp-next');
 
     for (const resultData of processedResults) {
       const existingResult = await ResultModel.findOne({

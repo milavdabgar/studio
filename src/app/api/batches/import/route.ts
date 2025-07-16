@@ -9,7 +9,7 @@ const BATCH_STATUS_OPTIONS: BatchStatus[] = ['upcoming', 'active', 'completed', 
 
 export async function POST(request: NextRequest) {
   try {
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/gpp-next');
     
     // SECURITY FIX: Validate Content-Type for file uploads
     const contentType = request.headers.get('content-type');

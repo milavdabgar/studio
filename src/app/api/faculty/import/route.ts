@@ -44,7 +44,7 @@ const STAFF_CATEGORY_OPTIONS_LOWER: string[] = ['teaching', 'clerical', 'technic
 export async function POST(request: NextRequest) {
   try {
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/gpp-next');
 
     // SECURITY FIX: Validate Content-Type for file uploads
     const contentType = request.headers.get('content-type');

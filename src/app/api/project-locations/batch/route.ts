@@ -9,7 +9,7 @@ const generateLocationIdInternal = (): string => `loc_batch_${Date.now()}_${Math
 export async function POST(request: NextRequest) {
   try {
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/gpp-next');
 
     const body = await request.json();
     const locationsToCreateData = body.locations as Array<Omit<ProjectLocation, 'id' | 'createdAt' | 'updatedAt' | 'createdBy' | 'updatedBy'>>;

@@ -8,7 +8,7 @@ import type { Project, Department } from '@/types/entities';
 export async function GET(request: NextRequest) {
   try {
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/gpp-next');
 
     const { searchParams } = new URL(request.url);
     const eventId = searchParams.get('eventId');

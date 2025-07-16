@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 
 export async function GET(request: NextRequest) {
   try {
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/gpp-next');
     
     const { searchParams } = new URL(request.url);
     const filterInstituteId = searchParams.get('instituteId');

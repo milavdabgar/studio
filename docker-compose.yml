@@ -11,7 +11,7 @@ services:
       - NODE_ENV=production
       - PORT=3000
       - HOSTNAME=0.0.0.0
-      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/gpp-studio}
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/gpp-next}
     networks:
       - npm-network
     depends_on:

@@ -315,7 +315,7 @@ const generateMarkdownReport = (result: Omit<AnalysisResult, 'id'|'markdownRepor
 export async function POST(request: NextRequest) {
   try {
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/gpp-next');
 
     const formData = await request.formData();
     const file = formData.get('file') as File | null;

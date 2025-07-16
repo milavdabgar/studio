@@ -159,7 +159,7 @@ async function generatePuppeteerPDFBuffer(markdownContent: string): Promise<Buff
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/polymanager');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/gpp-next');
 
     const { type, id  } = await params;
     const analysisResult = await FeedbackAnalysisModel.findOne({ id });
