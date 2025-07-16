@@ -49,7 +49,7 @@ const FACULTY_STATUS_OPTIONS: { value: FacultyStatus; label: string }[] = [
   { value: "resigned", label: "Resigned" },
 ];
 const GENDER_OPTIONS: Gender[] = ["Male", "Female", "Other"];
-const TITLE_OPTIONS = ["Mr.", "Ms.", "Mrs.", "Dr.", "Prof."];
+const TITLE_OPTIONS = ["Mr.", "Ms.", "Mrs.", "Dr.", "Prof.", "Miss"];
 const MARITAL_STATUS_OPTIONS = ["Single", "Married", "Divorced", "Widowed", "Other"];
 
 type SortField = keyof Faculty | 'none';
@@ -61,7 +61,7 @@ const parseGtuFacultyName = (gtuNameInput: string | undefined): { title?: string
     if (!gtuNameInput) return {};
     let gtuName = gtuNameInput.trim();
     let title: string | undefined;
-    const titles = ["Dr. Prof.", "Dr.", "Prof.", "Mr.", "Ms.", "Mrs."];
+    const titles = ["Dr. Prof.", "Dr.", "Prof.", "Mr.", "Ms.", "Mrs.", "Miss."];
     
     for (const t of titles) {
       const tLower = t.toLowerCase();

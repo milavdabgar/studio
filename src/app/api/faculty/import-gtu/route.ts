@@ -11,7 +11,7 @@ const parseGtuFacultyNameFromString = (gtuNameInput: string | undefined): { titl
     if (!gtuNameInput) return {};
     let gtuName = gtuNameInput.trim();
     let title: string | undefined;
-    const titles = ["Dr. Prof.", "Dr.", "Prof.", "Mr.", "Ms.", "Mrs."];
+    const titles = ["Dr. Prof.", "Dr.", "Prof.", "Mr.", "Ms.", "Mrs.", "Miss."];
     for (const t of titles) {
       const tLower = t.toLowerCase();
       if (gtuName.toLowerCase().startsWith(tLower + " ") || (t.endsWith(".") && gtuName.toLowerCase().startsWith(tLower))) {
