@@ -194,6 +194,10 @@ export async function POST(request: NextRequest) {
         
         const userDataPayload = {
             displayName: userDisplayName,
+            fullName: studentToProcess.fullNameGtuFormat,
+            firstName: studentToProcess.firstName,
+            middleName: studentToProcess.middleName,
+            lastName: studentToProcess.lastName,
             email: studentToProcess.personalEmail || studentToProcess.instituteEmail,
             instituteEmail: studentToProcess.instituteEmail,
             isActive: studentToProcess.status === 'active',
@@ -204,23 +208,35 @@ export async function POST(request: NextRequest) {
         let userId: string;
         
         if (existingUserByEmail) {
-            userId = existingUserByEmail.id;
+            userId = existingUserByEmail._id.toString(); // Use _id and convert to string
             const rolesToSet = existingUserByEmail.roles.includes('student') ? existingUserByEmail.roles : [...existingUserByEmail.roles, 'student' as UserRole];
             Object.assign(existingUserByEmail, {...userDataPayload, roles: rolesToSet});
             await existingUserByEmail.save();
+            console.log(`Updated existing user ${userId} for student ${enrollmentNumber}`);
         } else {
             const newUser = new UserModel({...userDataPayload, password: studentToProcess.enrollmentNumber, roles: ['student']});
             const createdUser = await newUser.save();
-            userId = createdUser.id;
+            userId = createdUser._id.toString(); // Use _id and convert to string
+            console.log(`Created new user ${userId} for student ${enrollmentNumber}`);
         }
         
         // Update student with userId in database using the saved document reference
         if (savedStudentDoc && savedStudentDoc._id) {
-            await StudentModel.findByIdAndUpdate(savedStudentDoc._id, { userId });
-            studentToProcess.userId = userId;
-            console.log(`Successfully linked student ${enrollmentNumber} with userId ${userId}`);
+            const updateResult = await StudentModel.findByIdAndUpdate(
+                savedStudentDoc._id, 
+                { userId }, 
+                { new: true }
+            );
+            if (updateResult) {
+                studentToProcess.userId = userId;
+                console.log(`Successfully linked student ${enrollmentNumber} with userId ${userId}`);
+            } else {
+                console.error(`Failed to update student ${enrollmentNumber} with userId ${userId}`);
+                throw new Error(`Failed to link student ${enrollmentNumber} to user account`);
+            }
         } else {
-            console.warn(`Could not find MongoDB _id for student ${enrollmentNumber}`);
+            console.error(`Could not find MongoDB _id for student ${enrollmentNumber}`);
+            throw new Error(`Could not find student document for ${enrollmentNumber}`);
         }
 
       } catch(userError: unknown) {
@@ -229,6 +245,45 @@ export async function POST(request: NextRequest) {
       }
     }
     
+    // Post-import repair: Fix any missing userId links
+    console.log('Running post-import repair for userId links...');
+    try {
+        const studentsWithoutUserId = await StudentModel.find({
+            $or: [
+                { userId: null },
+                { userId: undefined },
+                { userId: { $exists: false } }
+            ]
+        });
+
+        console.log(`Found ${studentsWithoutUserId.length} students without userId after import`);
+
+        let repairCount = 0;
+        for (const student of studentsWithoutUserId) {
+            try {
+                const user = await UserModel.findOne({
+                    instituteEmail: student.instituteEmail
+                });
+
+                if (user) {
+                    await StudentModel.findByIdAndUpdate(
+                        student._id,
+                        { userId: user._id.toString() },
+                        { new: true }
+                    );
+                    console.log(`Repaired link for student ${student.enrollmentNumber} -> user ${user._id}`);
+                    repairCount++;
+                }
+            } catch (error) {
+                console.error(`Error repairing student ${student.enrollmentNumber}:`, error);
+            }
+        }
+
+        console.log(`Post-import repair completed: ${repairCount} links fixed`);
+    } catch (error) {
+        console.error('Error in post-import repair:', error);
+    }
+
     if (importErrors.length > 0) {
         return NextResponse.json({ 
             message: `GTU Students import partially completed with ${importErrors.length} issues.`, 
