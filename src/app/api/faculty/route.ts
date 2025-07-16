@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'Institute ID is required for creating staff.' }, { status: 400 });
     }
     
-    const instituteDomain = 'gpp.ac.in'; // Default domain
+    const instituteDomain = 'gppalanpur.in'; // Default domain
     // Skip institute service call temporarily as it causes timeouts
     // TODO: Fix institute service timeout issue
     // try {

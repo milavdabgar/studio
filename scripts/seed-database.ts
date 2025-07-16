@@ -450,6 +450,7 @@ const initialInstitutes = [
     id: "inst1",
     name: "Government Polytechnic Palanpur",
     code: "GPP",
+    domain: "gppalanpur.in",
     address: "Jagana, Palanpur, Gujarat 385011",
     contactEmail: "gp-palanpur-dte@gujarat.gov.in",
     contactPhone: "02742-280126",

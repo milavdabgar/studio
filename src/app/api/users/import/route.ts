@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
       middleName = row.middlename?.toString().trim() || middleName;
       const displayName = displayNameFromCSV || `${firstName || ''} ${lastName || ''}`.trim() || personalEmail;
 
-      let instituteDomain = 'gpp.ac.in'; 
+      let instituteDomain = 'gppalanpur.in'; 
       if (currentInstitute && currentInstitute.domain) {
           instituteDomain = currentInstitute.domain;
       } else if (currentInstitute) {

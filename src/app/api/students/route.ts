@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
         }
     }
 
-    let instituteDomain = 'gpp.ac.in'; // Default domain
+    let instituteDomain = 'gppalanpur.in'; // Default domain
     if (studentInstituteId) {
         try {
             const institute = await instituteService.getInstituteById(studentInstituteId);

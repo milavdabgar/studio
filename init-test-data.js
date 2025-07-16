@@ -286,7 +286,7 @@ async function initializeTestData() {
           lastName: 'Faculty',
           staffCode: 'TF001',
           department: 'Computer Engineering',
-          instituteEmail: 'test.faculty@gpp.ac.in',
+          instituteEmail: 'test.faculty@gppalanpur.in',
           staffCategory: 'Teaching',
           status: 'active',
           instituteId: instituteId
@@ -319,7 +319,7 @@ async function initializeTestData() {
           lastName: 'Student',
           fullName: 'Test Student', // Ensure fullName is set
           personalEmail: 'test.student@example.com',
-          instituteEmail: 'test.student@gpp.ac.in',
+          instituteEmail: 'test.student@gppalanpur.in',
           programId: programId,
           department: departmentId,
           currentSemester: 1,
@@ -509,7 +509,7 @@ async function initializeTestData() {
             lastName: lastName,
             fullName: `${firstName} ${lastName}`, // Ensure fullName is set
             personalEmail: `student${i + 1}.test@example.com`,
-            instituteEmail: `student${i + 1}.test@gpp.ac.in`,
+            instituteEmail: `student${i + 1}.test@gppalanpur.in`,
             programId: programId,
             department: departmentId,
             currentSemester: Math.floor(Math.random() * 8) + 1,

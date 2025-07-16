@@ -225,7 +225,7 @@ export async function POST(request: NextRequest) {
     // Hash password
     const hashedPassword = await bcrypt.hash(userData.password, 12);
     
-    let instituteDomain = 'gpp.ac.in'; // Default domain
+    let instituteDomain = 'gppalanpur.in'; // Default domain
     if (userData.instituteId) {
         try {
             const institute = await instituteService.getInstituteById(userData.instituteId);
