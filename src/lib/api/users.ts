@@ -72,6 +72,31 @@ const userService = {
     }
   },
 
+  async removeUserRole(userId: string, roleToRemove: string): Promise<{ userDeleted: boolean; message: string }> {
+    const response = await fetch(`${API_BASE_URL}/users/${userId}/remove-role`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ roleToRemove }),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: `Failed to remove role ${roleToRemove} from user ${userId}` }));
+      throw new Error(errorData.message || `Failed to remove role ${roleToRemove} from user ${userId}`);
+    }
+    return response.json();
+  },
+
+  async deleteUserCompletely(userId: string): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/users/${userId}/complete-delete`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: `Failed to completely delete user ${userId}` }));
+      throw new Error(errorData.message || `Failed to completely delete user ${userId}`);
+    }
+  },
+
   async importUsers(file: File, institutes: Institute[], allSystemRoles: Role[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: Array<{ message?: string; data?: unknown; row?: number }> }> {
     const formData = new FormData();
     formData.append('file', file);

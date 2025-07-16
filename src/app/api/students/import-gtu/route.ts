@@ -171,17 +171,20 @@ export async function POST(request: NextRequest) {
       // Find existing student in MongoDB
       const existingStudent = await StudentModel.findOne({ enrollmentNumber });
       let studentToProcess: Student;
+      let savedStudentDoc: any; // Keep reference to the actual Mongoose document
 
       if (existingStudent) {
         // Update existing student
         Object.assign(existingStudent, studentData);
-        studentToProcess = (await existingStudent.save()).toJSON() as Student;
+        savedStudentDoc = await existingStudent.save();
+        studentToProcess = savedStudentDoc.toJSON() as Student;
         updatedCount++;
       } else {
         // Create new student
         const newStudentData = { id: generateIdForImport(), ...studentData };
         const newStudent = new StudentModel(newStudentData);
-        studentToProcess = (await newStudent.save()).toJSON() as Student;
+        savedStudentDoc = await newStudent.save();
+        studentToProcess = savedStudentDoc.toJSON() as Student;
         newCount++;
       }
 
@@ -211,11 +214,11 @@ export async function POST(request: NextRequest) {
             userId = createdUser.id;
         }
         
-        // Update student with userId in database
-        const mongoId = (studentToProcess as any)._id || existingStudent?._id;
-        if (mongoId) {
-            await StudentModel.findByIdAndUpdate(mongoId, { userId });
+        // Update student with userId in database using the saved document reference
+        if (savedStudentDoc && savedStudentDoc._id) {
+            await StudentModel.findByIdAndUpdate(savedStudentDoc._id, { userId });
             studentToProcess.userId = userId;
+            console.log(`Successfully linked student ${enrollmentNumber} with userId ${userId}`);
         } else {
             console.warn(`Could not find MongoDB _id for student ${enrollmentNumber}`);
         }

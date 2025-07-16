@@ -198,13 +198,25 @@ export default function AdminStudentsPage() {
   const handleDelete = async (studentId: string) => {
     setIsSubmitting(true);
     try {
-      await studentService.deleteStudent(studentId);
+      // Use role-specific deletion (removes student role, deletes user if it's the last role)
+      const result = await studentService.removeStudentRole(studentId);
       await fetchInitialData();
       setSelectedStudentIds(prev => prev.filter(id => id !== studentId));
-      toast({ title: "Student Deleted", description: "The student record has been successfully deleted." });
+      
+      if (result.userDeleted) {
+        toast({ 
+          title: "Student and User Deleted", 
+          description: "Student role removed. User account was also deleted as it was their only role." 
+        });
+      } else {
+        toast({ 
+          title: "Student Role Removed", 
+          description: "Student role removed. User account retained with other roles." 
+        });
+      }
     } catch (_error: unknown) {
-      console.error("Failed to delete student:", _error);
-      const errorMessage = _error instanceof Error ? _error.message : "Failed to delete student";
+      console.error("Failed to remove student role:", _error);
+      const errorMessage = _error instanceof Error ? _error.message : "Failed to remove student role";
       
       // Handle the case where student was already deleted
       if (errorMessage.includes("Student not found")) {

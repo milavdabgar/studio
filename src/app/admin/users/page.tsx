@@ -181,10 +181,14 @@ export default function UserManagementPage() {
     }
     setIsSubmitting(true);
     try {
-      await userService.deleteUser(userId);
+      // Use complete user deletion (removes user and all associated role-specific data)
+      await userService.deleteUserCompletely(userId);
       await fetchInitialData();
       setSelectedUserIds(prev => prev.filter(id => id !== userId));
-      toast({ title: "User Deleted", description: "The user has been successfully deleted." });
+      toast({ 
+        title: "User Completely Deleted", 
+        description: "The user and all associated role-specific data have been successfully deleted." 
+      });
     } catch (error) {
       toast({ variant: "destructive", title: "Delete Failed", description: (error as Error).message || "Could not delete user." });
     }
@@ -483,7 +487,7 @@ export default function UserManagementPage() {
             continue;
         }
         try {
-            await userService.deleteUser(id);
+            await userService.deleteUserCompletely(id);
             deletedCount++;
         } catch {
             toast({ variant: "destructive", title: "Delete Failed", description: `Could not delete user ${user?.displayName || id}.`});

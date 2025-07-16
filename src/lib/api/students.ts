@@ -62,6 +62,17 @@ export const studentService = {
     }
   },
 
+  async removeStudentRole(studentId: string): Promise<{ userDeleted: boolean; message: string }> {
+    const response = await fetch(`${API_BASE_URL}/students/${studentId}/remove-role`, {
+      method: 'POST',
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: `Failed to remove student role for student ${studentId}` }));
+      throw new Error(errorData.message || `Failed to remove student role for student ${studentId}`);
+    }
+    return response.json();
+  },
+
   async importStudents(file: File, programs: Program[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number; errors?: Array<{ message?: string; data?: unknown; row?: number }> }> {
     const formData = new FormData();
     formData.append('file', file);
