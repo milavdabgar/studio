@@ -78,7 +78,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     }
     
     // Remove the role from user's roles array
-    const updatedRoles = user.roles.filter(role => role !== roleToRemove);
+    const updatedRoles = user.roles.filter((role: string) => role !== roleToRemove);
     
     if (updatedRoles.length === 0) {
       // If no roles left, delete the user completely

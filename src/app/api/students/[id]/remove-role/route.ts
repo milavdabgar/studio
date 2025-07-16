@@ -16,9 +16,9 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const { id } = await params;
     
     // Find the student first
-    let student = await StudentModel.findOne({ id }).lean();
+    let student = await StudentModel.findOne({ id }).lean() as any;
     if (!student && id.match(/^[0-9a-fA-F]{24}$/)) {
-      student = await StudentModel.findById(id).lean();
+      student = await StudentModel.findById(id).lean() as any;
     }
     
     if (!student) {

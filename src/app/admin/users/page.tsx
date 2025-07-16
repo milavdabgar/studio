@@ -248,7 +248,7 @@ export default function UserManagementPage() {
         await userService.updateUser(currentUser.id, userData);
         
         // If this is a student user, also update the linked student record
-        if (currentUser.roles.includes('student')) {
+        if (currentUser.roles && currentUser.roles.includes('student')) {
           try {
             const allStudents = await studentService.getAllStudents();
             const linkedStudent = allStudents.find(s => s.userId === currentUser.id);
