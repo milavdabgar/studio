@@ -208,7 +208,7 @@ export default function UserManagementPage() {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!formFullName.trim() || !formFirstName.trim() || !formLastName.trim() || !formUserEmail.trim()) {
-      toast({ variant: "destructive", title: "Validation Error", description: "Full Name, First Name, Last Name, and Personal Email are required."});
+      toast({ variant: "destructive", title: "Validation Error", description: "Full Name, First Name, Last Name, and Login Email are required."});
       return;
     }
     if (formUserRoles.length === 0) {
@@ -571,7 +571,7 @@ export default function UserManagementPage() {
                   </div>
 
                   <div>
-                    <Label htmlFor="userEmail">Personal Email *</Label>
+                    <Label htmlFor="userEmail">Login Email *</Label>
                     <Input id="userEmail" type="email" value={formUserEmail} onChange={(e) => setFormUserEmail(e.target.value)} placeholder="e.g., john.doe@example.com" disabled={isSubmitting} required />
                   </div>
 

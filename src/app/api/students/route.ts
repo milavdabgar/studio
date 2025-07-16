@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
     try {
         const userToCreate: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'authProviders' | 'isEmailVerified' | 'preferences'> & { password?: string } = {
             displayName,
-            email: studentData.personalEmail || instituteEmail,
+            email: instituteEmail, // Use institute email as primary login email
             instituteEmail: instituteEmail,
             password: studentData.enrollmentNumber, // Default password as enrollment number
             roles: ['student'], 

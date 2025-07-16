@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
             fullName: 'Student CE003',
             firstName: 'Student',
             lastName: 'CE003',
-            email: 'student.ce003@gppalanpur.ac.in',
+            email: 'student.ce003@gppalanpur.in',
             roles: ['student'],
             isActive: true,
             instituteId: 'inst_gpp_001',

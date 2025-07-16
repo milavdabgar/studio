@@ -28,7 +28,7 @@ const parseGtuFacultyNameFromString = (gtuNameInput: string | undefined): { titl
     return { title, lastName: parts[0], firstName: parts[1], middleName: parts.slice(2).join(' ') };
 };
 
-const generateInstituteEmailForFaculty = (firstName?: string, lastName?: string, instituteDomain: string = "gppalanpur.ac.in"): string => {
+const generateInstituteEmailForFaculty = (firstName?: string, lastName?: string, instituteDomain: string = "gppalanpur.in"): string => {
   const fn = (firstName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
   const ln = (lastName || "").toLowerCase().replace(/[^a-z0-9]/g, '');
   if (fn && ln) return `${fn}.${ln}@${instituteDomain}`;
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
         skippedCount++; continue;
       }
       
-      let instituteDomain = "gppalanpur.ac.in"; // Default
+      let instituteDomain = "gppalanpur.in"; // Default
       try {
         const inst = await instituteService.getInstituteById(facultyInstituteId);
         if(inst.domain) instituteDomain = inst.domain;
@@ -185,7 +185,7 @@ export async function POST(request: NextRequest) {
         
         const userDataPayload = {
             displayName: userDisplayName,
-            email: facultyToProcess.personalEmail || facultyToProcess.instituteEmail,
+            email: facultyToProcess.instituteEmail, // Use institute email as primary login email
             instituteEmail: facultyToProcess.instituteEmail,
             isActive: facultyToProcess.status === 'active',
             instituteId: facultyInstituteId,

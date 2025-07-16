@@ -198,7 +198,7 @@ export async function POST(request: NextRequest) {
         
         const userDataPayload = {
             displayName: userDisplayName,
-            email: studentToProcess.personalEmail || studentToProcess.instituteEmail, // Primary email for User
+            email: studentToProcess.instituteEmail, // Use institute email as primary login email
             instituteEmail: studentToProcess.instituteEmail,
             isActive: studentToProcess.status === 'active',
             instituteId: studentProgram.instituteId, // From program -> department -> institute

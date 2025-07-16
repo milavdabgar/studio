@@ -21,7 +21,7 @@ const createUniqueFaculty = (baseName: string = 'Test') => ({
   lastName: 'Faculty',
   fullName: `${baseName} E2E Faculty`,
   personalEmail: `${baseName.toLowerCase()}.faculty${Date.now()}@example.com`,
-  instituteEmail: `${baseName.toLowerCase()}.faculty${Date.now()}@gppalanpur.ac.in`,
+  instituteEmail: `${baseName.toLowerCase()}.faculty${Date.now()}@gppalanpur.in`,
   contactNumber: '9876543210',
   department: 'dept_ce_gpp',
   instituteId: 'inst_gpp',

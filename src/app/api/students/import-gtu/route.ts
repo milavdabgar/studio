@@ -198,7 +198,7 @@ export async function POST(request: NextRequest) {
             firstName: studentToProcess.firstName,
             middleName: studentToProcess.middleName,
             lastName: studentToProcess.lastName,
-            email: studentToProcess.personalEmail || studentToProcess.instituteEmail,
+            email: studentToProcess.instituteEmail, // Use institute email as primary login email
             instituteEmail: studentToProcess.instituteEmail,
             isActive: studentToProcess.status === 'active',
             instituteId: studentInstituteId, // Pass student's institute ID
