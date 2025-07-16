@@ -15,7 +15,8 @@ import { useToast } from "@/hooks/use-toast";
 import type { SystemUser, UserRole as UserRoleCode, Institute, Role } from '@/types/entities'; 
 import { userService } from '@/lib/api/users';
 import { instituteService } from '@/lib/api/institutes';
-import { roleService } from '@/lib/api/roles'; 
+import { roleService } from '@/lib/api/roles';
+import { studentService } from '@/lib/api/students'; 
 
 const STATUS_OPTIONS: { value: 'active' | 'inactive'; label: string }[] = [
   { value: "active", label: "Active" },
@@ -120,18 +121,50 @@ export default function UserManagementPage() {
     setCurrentUser(null);
   };
 
-  const handleEdit = (user: SystemUser) => {
+  const handleEdit = async (user: SystemUser) => {
     setCurrentUser(user);
-    setFormFullName(user.fullName || '');
-    setFormFirstName(user.firstName || '');
-    setFormMiddleName(user.middleName || '');
-    setFormLastName(user.lastName || '');
     setFormUserEmail(user.email);
     setFormUserRoles(user.roles || []); // User roles are stored by code
     setFormUserStatus(user.isActive ? 'active' : 'inactive');
     setFormInstituteId(user.instituteId || undefined);
     setFormUserPassword('');
     setFormUserConfirmPassword('');
+
+    // If user has student role, try to fetch student data for name fields
+    if (user.roles.includes('student')) {
+      try {
+        const allStudents = await studentService.getAllStudents();
+        const linkedStudent = allStudents.find(s => s.userId === user.id);
+        
+        if (linkedStudent) {
+          // Use student data for name fields
+          setFormFullName(linkedStudent.fullNameGtuFormat || '');
+          setFormFirstName(linkedStudent.firstName || '');
+          setFormMiddleName(linkedStudent.middleName || '');
+          setFormLastName(linkedStudent.lastName || '');
+        } else {
+          // Fallback to user data if no linked student found
+          setFormFullName(user.fullName || '');
+          setFormFirstName(user.firstName || '');
+          setFormMiddleName(user.middleName || '');
+          setFormLastName(user.lastName || '');
+        }
+      } catch (error) {
+        console.error('Error fetching student data for user edit:', error);
+        // Fallback to user data if error occurs
+        setFormFullName(user.fullName || '');
+        setFormFirstName(user.firstName || '');
+        setFormMiddleName(user.middleName || '');
+        setFormLastName(user.lastName || '');
+      }
+    } else {
+      // For non-student users, use user data directly
+      setFormFullName(user.fullName || '');
+      setFormFirstName(user.firstName || '');
+      setFormMiddleName(user.middleName || '');
+      setFormLastName(user.lastName || '');
+    }
+
     setIsDialogOpen(true);
   };
 
@@ -209,6 +242,29 @@ export default function UserManagementPage() {
     try {
       if (currentUser && currentUser.id) {
         await userService.updateUser(currentUser.id, userData);
+        
+        // If this is a student user, also update the linked student record
+        if (currentUser.roles.includes('student')) {
+          try {
+            const allStudents = await studentService.getAllStudents();
+            const linkedStudent = allStudents.find(s => s.userId === currentUser.id);
+            
+            if (linkedStudent) {
+              const studentUpdateData = {
+                fullNameGtuFormat: formFullName.trim(),
+                firstName: formFirstName.trim(),
+                middleName: formMiddleName.trim() || undefined,
+                lastName: formLastName.trim(),
+              };
+              await studentService.updateStudent(linkedStudent.id, studentUpdateData);
+            }
+          } catch (studentError) {
+            console.error('Error updating linked student record:', studentError);
+            // Don't fail the entire operation, just log the error
+            toast({ variant: "warning", title: "Partial Update", description: "User updated but student record sync failed." });
+          }
+        }
+        
         toast({ title: "User Updated", description: "The user has been successfully updated." });
       } else {
         await userService.createUser(userData as Parameters<typeof userService.createUser>[0]); 
