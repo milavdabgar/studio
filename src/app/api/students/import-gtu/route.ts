@@ -198,19 +198,27 @@ export async function POST(request: NextRequest) {
             currentRole: 'student' as UserRole,
         };
 
+        let userId: string;
+        
         if (existingUserByEmail) {
-            studentToProcess.userId = existingUserByEmail.id;
+            userId = existingUserByEmail.id;
             const rolesToSet = existingUserByEmail.roles.includes('student') ? existingUserByEmail.roles : [...existingUserByEmail.roles, 'student' as UserRole];
             Object.assign(existingUserByEmail, {...userDataPayload, roles: rolesToSet});
             await existingUserByEmail.save();
         } else {
             const newUser = new UserModel({...userDataPayload, password: studentToProcess.enrollmentNumber, roles: ['student']});
             const createdUser = await newUser.save();
-            studentToProcess.userId = createdUser.id;
+            userId = createdUser.id;
         }
         
-        // Update student with userId
-        await StudentModel.findByIdAndUpdate(studentToProcess.id, { userId: studentToProcess.userId });
+        // Update student with userId in database
+        const mongoId = (studentToProcess as any)._id || existingStudent?._id;
+        if (mongoId) {
+            await StudentModel.findByIdAndUpdate(mongoId, { userId });
+            studentToProcess.userId = userId;
+        } else {
+            console.warn(`Could not find MongoDB _id for student ${enrollmentNumber}`);
+        }
 
       } catch(userError: unknown) {
         const error = userError as Error;
