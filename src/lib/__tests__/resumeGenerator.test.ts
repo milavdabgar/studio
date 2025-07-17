@@ -4,7 +4,9 @@ import type { Student, Program, Batch, Result, Course } from '@/types/entities';
 // Mock Puppeteer for PDF generation
 jest.mock('puppeteer', () => {
   const mockPage = {
+    setViewport: jest.fn().mockResolvedValue(undefined),
     setContent: jest.fn().mockResolvedValue(undefined),
+    evaluateHandle: jest.fn().mockResolvedValue({}),
     pdf: jest.fn().mockResolvedValue(Buffer.from('mocked-pdf-content'))
   };
   const mockBrowser = {
