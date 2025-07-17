@@ -12,6 +12,15 @@ type FacultyLean = Omit<FacultyProfile, 'id'> & {
 
 const generateId = (): string => `fac_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
+// Track deleted mock data (in-memory for this session)
+// Use globalThis to share between route modules
+let deletedMockData: Set<string>;
+try {
+  deletedMockData = (globalThis as any).deletedMockData || new Set<string>();
+  (globalThis as any).deletedMockData = deletedMockData;
+} catch {
+  deletedMockData = new Set<string>();
+}
 
 export async function GET() {
   try {
@@ -19,9 +28,9 @@ export async function GET() {
     
     const faculty = await FacultyModel.find({}).lean() as FacultyLean[];
     
-    // Add mock faculty for test user "u3b" if it doesn't exist
+    // Add mock faculty for test user "u3b" if it doesn't exist and hasn't been deleted
     const testFacultyExists = faculty.some(f => f.userId === 'u3b');
-    if (!testFacultyExists) {
+    if (!testFacultyExists && !deletedMockData.has('fac_test_u3b')) {
       const mockTestFaculty: FacultyProfile & { fullName: string; email: string } = {
         id: 'fac_test_u3b',
         userId: 'u3b',

@@ -8,6 +8,16 @@ import bcrypt from 'bcrypt';
 
 const generateId = (): string => `user_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
+// Track deleted mock data (in-memory for this session)
+// Use globalThis to share between route modules
+let deletedMockUsers: Set<string>;
+try {
+  deletedMockUsers = (globalThis as any).deletedMockUsers || new Set<string>();
+  (globalThis as any).deletedMockUsers = deletedMockUsers;
+} catch {
+  deletedMockUsers = new Set<string>();
+}
+
 // Validation schema  
 const createUserSchema = z.object({
   displayName: z.string({ required_error: 'Display name is required' }).min(1, 'Display name is required').optional(),
@@ -65,7 +75,7 @@ export async function GET(request: NextRequest) {
       const existingUserIds = users.map((user: any) => user._id?.toString());
       
       for (const testUserId of testUserIds) {
-        if (!existingUserIds.includes(testUserId) && !users.some((u: any) => u.id === testUserId)) {
+        if (!existingUserIds.includes(testUserId) && !users.some((u: any) => u.id === testUserId) && !deletedMockUsers.has(testUserId)) {
           const mockUser = {
             _id: testUserId,
             id: testUserId,

@@ -4,6 +4,17 @@ import { userService } from '@/lib/api/users';
 import { connectMongoose } from '@/lib/mongodb';
 import { FacultyModel } from '@/lib/models';
 
+// Import the deleted mock data tracker from the main route
+// Note: This is a simple in-memory solution. For production, consider using Redis or database
+let deletedMockData: Set<string>;
+try {
+  // Try to access the deletedMockData from the main route module
+  deletedMockData = (globalThis as any).deletedMockData || new Set<string>();
+  (globalThis as any).deletedMockData = deletedMockData;
+} catch {
+  deletedMockData = new Set<string>();
+}
+
 interface RouteParams {
   params: Promise<{
     id: string;
@@ -215,6 +226,13 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     await connectMongoose();
     
     const { id } = await params;
+    
+    // Handle mock faculty deletion for testing
+    if (id === 'fac_test_u3b') {
+      // Mark mock faculty as deleted so it won't reappear in GET requests
+      deletedMockData.add('fac_test_u3b');
+      return NextResponse.json({ message: 'Mock faculty deleted successfully' }, { status: 200 });
+    }
     
     // Find and delete the faculty
     let deletedFaculty = await FacultyModel.findOneAndDelete({ id }).lean() as FacultyLean | null;

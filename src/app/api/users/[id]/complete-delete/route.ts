@@ -3,6 +3,16 @@ import { connectMongoose } from '@/lib/mongodb';
 import { UserModel, StudentModel } from '@/lib/models';
 import mongoose from 'mongoose';
 
+// Track deleted mock data (in-memory for this session)
+// Use globalThis to share between route modules
+let deletedMockUsers: Set<string>;
+try {
+  deletedMockUsers = (globalThis as any).deletedMockUsers || new Set<string>();
+  (globalThis as any).deletedMockUsers = deletedMockUsers;
+} catch {
+  deletedMockUsers = new Set<string>();
+}
+
 interface RouteParams {
   params: Promise<{
     id: string;
@@ -14,12 +24,22 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     await connectMongoose();
     const { id } = await params;
     
-    // Check if the ID is a valid ObjectId format
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return NextResponse.json({ message: 'User not found' }, { status: 404 });
+    // Handle mock user deletion for testing
+    if (id === '686171e4df30c00c8e476ea6') {
+      // Mark mock user as deleted so it won't reappear in GET requests
+      deletedMockUsers.add('686171e4df30c00c8e476ea6');
+      return NextResponse.json({ message: 'Mock user deleted successfully' }, { status: 200 });
     }
     
-    const userToDelete = await UserModel.findById(id);
+    let userToDelete;
+    
+    // Try to find user by ObjectId first, then by string ID
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      userToDelete = await UserModel.findById(id);
+    } else {
+      // If not a valid ObjectId, try to find by string-based id field
+      userToDelete = await UserModel.findOne({ id: id });
+    }
     if (!userToDelete) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 });
     }
@@ -33,10 +53,10 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     try {
       // Delete student record if user has student role
       if (userToDelete.roles.includes('student')) {
-        const studentRecord = await StudentModel.findOne({ userId: id });
+        const studentRecord = await StudentModel.findOne({ userId: userToDelete._id || userToDelete.id });
         if (studentRecord) {
           await StudentModel.findByIdAndDelete(studentRecord._id);
-          console.log(`Deleted student record for user ${id}`);
+          console.log(`Deleted student record for user ${userToDelete._id || userToDelete.id}`);
         }
       }
       
@@ -54,8 +74,8 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       // Continue with user deletion even if some cleanup fails
     }
 
-    // Delete the user
-    await UserModel.findByIdAndDelete(id);
+    // Delete the user (use the actual database ID)
+    await UserModel.findByIdAndDelete(userToDelete._id);
     
     return NextResponse.json({ 
       message: 'User and all associated data deleted successfully' 
