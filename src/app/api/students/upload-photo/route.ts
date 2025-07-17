@@ -27,8 +27,13 @@ export async function POST(request: NextRequest) {
     // Connect to database
     await connectMongoose();
 
-    // Check if student exists
-    const student = await StudentModel.findById(studentId);
+    // Check if student exists using custom id field
+    let student = await StudentModel.findOne({ id: studentId });
+    if (!student && studentId.match(/^[0-9a-fA-F]{24}$/)) {
+      // Fallback to MongoDB _id if it's a valid ObjectId
+      student = await StudentModel.findById(studentId);
+    }
+    
     if (!student) {
       return NextResponse.json({ error: 'Student not found' }, { status: 404 });
     }
@@ -55,7 +60,7 @@ export async function POST(request: NextRequest) {
     const photoURL = `/uploads/photos/${fileName}`;
 
     // Update student record with photo URL
-    await StudentModel.findByIdAndUpdate(studentId, { photoURL });
+    await StudentModel.findOneAndUpdate({ id: studentId }, { photoURL });
 
     return NextResponse.json({ 
       message: 'Photo uploaded successfully',
