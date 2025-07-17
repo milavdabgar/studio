@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { GET, POST } from '@/app/api/students/[id]/resume/route';
 import * as resumeGeneratorModule from '@/lib/services/resumeGenerator';
-import { mockStudent, mockProgram, mockBatch, mockCourses } from '../../../../../mocks/resumeTestData.mock';
+import { mockStudent, mockProgram, mockBatch, mockCourses } from '../../../../../../src/__tests__/mocks/resumeTestData.mock';
 
 // Mock the database connection and models
 jest.mock('@/lib/mongodb', () => ({

@@ -193,7 +193,8 @@ const config: Config = {
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: [
     "/node_modules/",
-    "/e2e/" // Keep e2e tests ignored for unit test runs
+    "/e2e/", // Keep e2e tests ignored for unit test runs
+    ".*\\.mock\\.(ts|js)$" // Ignore mock files
   ],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files

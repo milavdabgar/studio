@@ -4,7 +4,7 @@
  */
 
 import { ResumeGenerator } from '@/lib/services/resumeGenerator';
-import { mockResumeData, mockEmptyResumeData } from '../mocks/resumeTestData.mock';
+import { mockResumeData, mockEmptyResumeData } from '../../src/__tests__/mocks/resumeTestData.mock';
 
 // Mock Puppeteer with more realistic behavior for integration testing
 const mockPDFBuffer = Buffer.from('%PDF-1.4\n1 0 obj\n<<\n/Type /Catalog\n/Pages 2 0 R\n>>\nendobj\n');
