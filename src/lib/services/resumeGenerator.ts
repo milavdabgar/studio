@@ -13,6 +13,7 @@ export interface ResumeData {
   gender?: string;
   bloodGroup?: string;
   aadharNumber?: string;
+  photoURL?: string;
   
   // Academic Information
   enrollmentNumber: string;
@@ -138,6 +139,7 @@ export class ResumeGenerator {
       gender: student.gender,
       bloodGroup: student.bloodGroup,
       aadharNumber: student.aadharNumber,
+      photoURL: student.photoURL,
       
       // Academic Information
       enrollmentNumber: student.enrollmentNumber,

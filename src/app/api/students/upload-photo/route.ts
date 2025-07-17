@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/db';
-import { Student } from '@/models/Student';
+import { connectMongoose } from '@/lib/mongodb';
+import { StudentModel } from '@/lib/models';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 
@@ -25,10 +25,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Connect to database
-    await connectToDatabase();
+    await connectMongoose();
 
     // Check if student exists
-    const student = await Student.findById(studentId);
+    const student = await StudentModel.findById(studentId);
     if (!student) {
       return NextResponse.json({ error: 'Student not found' }, { status: 404 });
     }
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     const photoURL = `/uploads/photos/${fileName}`;
 
     // Update student record with photo URL
-    await Student.findByIdAndUpdate(studentId, { photoURL });
+    await StudentModel.findByIdAndUpdate(studentId, { photoURL });
 
     return NextResponse.json({ 
       message: 'Photo uploaded successfully',
