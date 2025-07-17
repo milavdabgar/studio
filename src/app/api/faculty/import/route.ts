@@ -105,7 +105,13 @@ export async function POST(request: NextRequest) {
       let instituteDomain = "gppalanpur.in"; // Default
       try {
         const inst = await instituteService.getInstituteById(facultyInstituteId);
-        if(inst.domain) instituteDomain = inst.domain;
+        if(inst.domain && inst.domain !== "626.ac.in") {
+          instituteDomain = inst.domain;
+        }
+        // Force gppalanpur.in domain for GPP institute
+        if(facultyInstituteId === "inst1" || inst.code === "GPP") {
+          instituteDomain = "gppalanpur.in";
+        }
       } catch { /* use default */ }
 
       const instituteEmail = instituteEmailFromCSV || generateInstituteEmailForFaculty(firstName, lastName, instituteDomain);
