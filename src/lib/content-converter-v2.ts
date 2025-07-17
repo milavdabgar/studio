@@ -1915,7 +1915,7 @@ ${presentationContent}`;
 
 % Modern fonts - use system default fonts for better compatibility
 % On macOS, use system fonts that are guaranteed to exist
-\\setmainfont{Times}[Scale=1.0]
+\\setmainfont{Times New Roman}[Scale=1.0]
 \\setsansfont{Helvetica}[Scale=1.0]
 \\setmonofont{Courier}[Scale=1.0]
 
