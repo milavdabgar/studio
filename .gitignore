@@ -80,3 +80,6 @@ Thumbs.db
 *.backup
 *.bak
 *.orig
+
+# Python virtual environments
+gtu_scraper_env/
