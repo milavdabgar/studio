@@ -1,6 +1,7 @@
 import type { Student, Program, Batch, Result, Course } from '@/types/entities';
 import { ContentConverterV2 } from '@/lib/content-converter-v2';
 import { format, parseISO, isValid } from 'date-fns';
+import path from 'path';
 
 export interface ResumeData {
   // Personal Information
@@ -101,6 +102,50 @@ export interface ResumeData {
     issuer: string;
     date?: string;
     url?: string;
+  }>;
+  
+  // Extended professional fields
+  linkedinUrl?: string;
+  portfolioWebsite?: string;
+  careerObjective?: string;
+  
+  awards?: Array<{
+    title: string;
+    description: string;
+    date?: string;
+  }>;
+  
+  professionalMemberships?: Array<{
+    organization: string;
+    membershipType?: string;
+    startDate: string;
+    endDate?: string;
+    description?: string;
+  }>;
+  
+  volunteerWork?: Array<{
+    organization: string;
+    role: string;
+    startDate: string;
+    endDate?: string;
+    description: string;
+  }>;
+  
+  publications?: Array<{
+    title: string;
+    journal?: string;
+    conference?: string;
+    authors: string;
+    date?: string;
+    doi?: string;
+  }>;
+  
+  professionalDevelopment?: Array<{
+    title: string;
+    provider: string;
+    date?: string;
+    description: string;
+    skills?: string[];
   }>;
 }
 
@@ -549,10 +594,11 @@ export class ResumeGenerator {
         }
         
         .stat-value {
-            font-size: 16pt;
-            font-weight: 600;
+            font-size: 20pt;
+            font-weight: 700;
             display: block;
-            margin-bottom: 2pt;
+            margin-bottom: 4pt;
+            font-family: 'Playfair Display', serif;
         }
         
         .stat-label {
@@ -1502,6 +1548,20 @@ export class ResumeGenerator {
   }
 
   /**
+   * Convert relative photo URLs to absolute file paths for PDF generation
+   */
+  private convertPhotoURLsForPDF(htmlContent: string): string {
+    // Convert relative photo URLs to absolute file paths
+    return htmlContent.replace(
+      /src="\/uploads\/photos\/([^"]+)"/g,
+      (match, filename) => {
+        const absolutePath = path.join(process.cwd(), 'public', 'uploads', 'photos', filename);
+        return `src="file://${absolutePath}"`;
+      }
+    );
+  }
+
+  /**
    * Generate PDF from HTML content with professional styling
    */
   private async generatePDFFromHTML(htmlContent: string): Promise<Buffer> {
@@ -1538,8 +1598,11 @@ export class ResumeGenerator {
         deviceScaleFactor: 2
       });
       
+      // Convert photo URLs to absolute paths for PDF generation
+      const processedHTML = this.convertPhotoURLsForPDF(htmlContent);
+      
       // Enhanced content loading with better timeout handling
-      await page.setContent(htmlContent, { 
+      await page.setContent(processedHTML, { 
         waitUntil: ['networkidle0', 'domcontentloaded'],
         timeout: 30000
       });
@@ -2640,7 +2703,6 @@ export class ResumeGenerator {
         <tr>
             <td class="value-col" style="padding: 15px;">
                 <strong style="color: #1565c0;">${award.title}</strong><br>
-                Awarded by: ${award.issuer}<br>
                 ${award.description}
                 ${award.date ? `<br><em style="color: #666; font-size: 0.9em;">Date: ${award.date}</em>` : ''}
             </td>
@@ -2803,19 +2865,20 @@ export class ResumeGenerator {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${resumeData.fullName} - Curriculum Vitae</title>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Source+Sans+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         @page {
             size: A4;
-            margin: 0.5in 0.75in;
-            @top-right {
+            margin: 0.7in 0.8in;
+            @top-center {
                 content: "${resumeData.fullName} - Curriculum Vitae";
                 font-size: 8pt;
                 color: #666;
                 font-family: 'Source Sans Pro', sans-serif;
+                font-weight: 400;
             }
             @bottom-center {
-                content: counter(page) " of " counter(pages);
+                content: "Page " counter(page) " of " counter(pages);
                 font-size: 8pt;
                 color: #666;
                 font-family: 'Source Sans Pro', sans-serif;
@@ -2829,101 +2892,116 @@ export class ResumeGenerator {
         }
         
         body {
-            font-family: 'Crimson Text', 'Times New Roman', serif;
-            line-height: 1.5;
+            font-family: 'Source Sans Pro', Arial, sans-serif;
+            line-height: 1.6;
             color: #2c3e50;
-            font-size: 11pt;
+            font-size: 10pt;
             background: white;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
         
         .container {
-            max-width: 8.5in;
+            max-width: 8.0in;
             margin: 0 auto;
             padding: 0;
         }
         
         .header {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 20pt;
-            padding-bottom: 16pt;
-            border-bottom: 2pt solid #1a252f;
+            margin-bottom: 35pt;
+            padding-bottom: 28pt;
+            border-bottom: 3pt solid #0f172a;
+            text-align: center;
             page-break-inside: avoid;
             page-break-after: avoid;
+            position: relative;
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            padding: 28pt 20pt;
+            margin: -20pt -20pt 35pt -20pt;
+            border-radius: 0 0 15pt 15pt;
         }
         
         .photo-section {
-            flex-shrink: 0;
-            margin-right: 24pt;
+            margin-bottom: 15pt;
         }
         
         .photo {
-            width: 80pt;
-            height: 100pt;
-            border-radius: 8pt;
+            width: 100pt;
+            height: 120pt;
+            border-radius: 12pt;
             object-fit: cover;
-            border: 2pt solid #1a252f;
-            box-shadow: 0 4pt 8pt rgba(0,0,0,0.1);
+            border: 3pt solid #ffffff;
+            box-shadow: 0 8pt 24pt rgba(0,0,0,0.2), 0 4pt 8pt rgba(0,0,0,0.1);
+            margin: 0 auto;
+            display: block;
+            transition: transform 0.3s ease;
         }
         
         .photo-placeholder {
-            width: 80pt;
-            height: 100pt;
-            border: 2pt solid #1a252f;
-            border-radius: 8pt;
+            width: 100pt;
+            height: 120pt;
+            border: 3pt solid #ffffff;
+            border-radius: 12pt;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 8pt;
-            color: #666;
-            background: #f8f9fa;
+            font-size: 9pt;
+            color: #64748b;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
             text-align: center;
             line-height: 1.2;
-        }
-        
-        .header-content {
-            flex: 1;
+            margin: 0 auto;
+            box-shadow: 0 8pt 24pt rgba(0,0,0,0.2), 0 4pt 8pt rgba(0,0,0,0.1);
+            font-weight: 500;
         }
         
         .header h1 {
-            font-family: 'Source Sans Pro', 'Arial', sans-serif;
-            font-size: 28pt;
+            font-family: 'Playfair Display', 'Times New Roman', serif;
+            font-size: 36pt;
             font-weight: 700;
-            margin-bottom: 4pt;
-            letter-spacing: 0.5pt;
-            color: #1a252f;
-            text-transform: uppercase;
+            margin-bottom: 10pt;
+            letter-spacing: 0.8pt;
+            color: #0f172a;
+            text-transform: none;
+            line-height: 1.1;
+            text-shadow: 0 1pt 2pt rgba(0,0,0,0.1);
         }
         
         .header-subtitle {
-            font-size: 14pt;
-            color: #34495e;
-            margin-bottom: 12pt;
+            font-size: 15pt;
+            color: #475569;
+            margin-bottom: 18pt;
             font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 1pt;
+            letter-spacing: 2pt;
+            font-family: 'Source Sans Pro', Arial, sans-serif;
         }
         
         .contact-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200pt, 1fr));
-            gap: 8pt;
-            margin-top: 12pt;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 24pt;
+            margin-top: 20pt;
+            padding: 16pt;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8pt;
+            border: 1pt solid rgba(226, 232, 240, 0.8);
         }
         
         .contact-item {
             font-size: 10pt;
-            color: #2c3e50;
+            color: #475569;
             display: flex;
             align-items: center;
+            font-weight: 500;
+            font-family: 'Source Sans Pro', Arial, sans-serif;
         }
         
         .contact-item strong {
-            font-weight: 600;
-            margin-right: 4pt;
-            min-width: 50pt;
+            font-weight: 700;
+            margin-right: 6pt;
+            color: #0f172a;
         }
         
         .contact-grid {
@@ -2947,40 +3025,48 @@ export class ResumeGenerator {
         }
         
         .section {
-            margin-bottom: 20pt;
+            margin-bottom: 25pt;
             page-break-inside: avoid;
-            background: white;
         }
         
         .section-title {
-            font-family: 'Source Sans Pro', 'Arial', sans-serif;
-            color: #1a252f;
-            padding: 0;
-            font-size: 14pt;
+            font-family: 'Playfair Display', 'Times New Roman', serif;
+            color: #0f172a;
+            font-size: 18pt;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1pt;
-            margin: 0 0 12pt 0;
+            text-transform: none;
+            letter-spacing: 0.5pt;
+            margin: 0 0 20pt 0;
             page-break-after: avoid;
-            border-bottom: 2pt solid #1a252f;
-            padding-bottom: 4pt;
+            border-bottom: 2pt solid #e2e8f0;
+            padding-bottom: 8pt;
             position: relative;
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            padding: 12pt 16pt 8pt 16pt;
+            margin: 0 -16pt 20pt -16pt;
+            border-radius: 8pt 8pt 0 0;
         }
         
         .section-title::after {
             content: '';
             position: absolute;
             bottom: -2pt;
-            left: 0;
-            width: 40pt;
+            left: 16pt;
+            width: 60pt;
             height: 2pt;
-            background: #e74c3c;
+            background: #0f172a;
             border-radius: 1pt;
         }
         
         .section-content {
             padding: 0;
-            margin-top: 12pt;
+            margin-top: 0;
+            background: #fefefe;
+            border-radius: 0 0 8pt 8pt;
+            border: 1pt solid #e2e8f0;
+            border-top: none;
+            padding: 16pt;
+            margin: 0 -16pt 0 -16pt;
         }
         
         .two-column {
@@ -3001,63 +3087,80 @@ export class ResumeGenerator {
         .professional-summary {
             font-style: italic;
             text-align: justify;
-            margin-bottom: 16pt;
-            padding: 12pt;
-            background: #f8f9fa;
-            border-left: 4pt solid #e74c3c;
-            font-size: 10pt;
-            line-height: 1.6;
+            margin-bottom: 24pt;
+            padding: 20pt;
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            border: 1pt solid #e2e8f0;
+            border-left: 4pt solid #3b82f6;
+            font-size: 11pt;
+            line-height: 1.7;
+            border-radius: 8pt;
+            box-shadow: 0 2pt 4pt rgba(0,0,0,0.05);
+            position: relative;
         }
         
         .entry-item {
-            margin-bottom: 16pt;
+            margin-bottom: 22pt;
             page-break-inside: avoid;
-            padding-bottom: 12pt;
-            border-bottom: 1pt solid #e8e8e8;
+            padding: 16pt;
+            background: #ffffff;
+            border: 1pt solid #e2e8f0;
+            border-radius: 8pt;
+            box-shadow: 0 2pt 4pt rgba(0,0,0,0.05);
+            position: relative;
         }
         
         .entry-item:last-child {
-            border-bottom: none;
+            margin-bottom: 0;
         }
         
         .entry-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 6pt;
+            margin-bottom: 8pt;
         }
         
         .entry-title {
-            font-family: 'Source Sans Pro', 'Arial', sans-serif;
-            font-size: 12pt;
-            font-weight: 600;
-            color: #1a252f;
-            margin-bottom: 2pt;
+            font-family: 'Source Sans Pro', Arial, sans-serif;
+            font-size: 13pt;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4pt;
+            letter-spacing: 0.2pt;
         }
         
         .entry-subtitle {
-            font-size: 10pt;
-            color: #e74c3c;
-            font-weight: 500;
+            font-size: 11pt;
+            color: #475569;
+            font-weight: 600;
             margin-bottom: 4pt;
+            font-style: normal;
+            letter-spacing: 0.1pt;
         }
         
         .entry-date {
-            color: #7f8c8d;
-            font-size: 9pt;
-            font-style: italic;
-            font-weight: 500;
+            font-size: 10pt;
+            color: #64748b;
+            font-weight: 600;
             text-align: right;
             flex-shrink: 0;
-            margin-left: 16pt;
+            margin-left: 15pt;
+            background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);
+            padding: 4pt 12pt;
+            border-radius: 6pt;
+            border: 1pt solid #cbd5e1;
+            font-family: 'Source Sans Pro', Arial, sans-serif;
+            letter-spacing: 0.1pt;
         }
         
         .entry-description {
-            color: #34495e;
-            text-align: justify;
-            line-height: 1.5;
             font-size: 10pt;
-            margin-top: 6pt;
+            color: #475569;
+            line-height: 1.7;
+            text-align: justify;
+            margin-top: 8pt;
+            font-family: 'Source Sans Pro', Arial, sans-serif;
         }
         
         .entry-list {
@@ -3273,31 +3376,33 @@ export class ResumeGenerator {
         
         .skills-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160pt, 1fr));
-            gap: 12pt;
-            margin-top: 8pt;
+            grid-template-columns: repeat(auto-fit, minmax(180pt, 1fr));
+            gap: 16pt;
+            margin-top: 0;
         }
         
         .skill-category {
-            background: #f8f9fa;
-            padding: 12pt;
-            border-radius: 6pt;
-            border-left: 3pt solid #3498db;
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            padding: 16pt;
+            border-radius: 8pt;
+            border: 1pt solid #e2e8f0;
+            border-left: 4pt solid #3b82f6;
             page-break-inside: avoid;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
+            box-shadow: 0 2pt 4pt rgba(0,0,0,0.05);
         }
         
         .skill-category-title {
             font-family: 'Source Sans Pro', 'Arial', sans-serif;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 8pt;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 10pt;
             text-transform: uppercase;
-            font-size: 10pt;
-            letter-spacing: 0.5pt;
-            border-bottom: 1pt solid #3498db;
-            padding-bottom: 4pt;
+            font-size: 11pt;
+            letter-spacing: 0.8pt;
+            border-bottom: 2pt solid #3b82f6;
+            padding-bottom: 6pt;
         }
         
         .skill-items {
@@ -3307,31 +3412,36 @@ export class ResumeGenerator {
         }
         
         .skill-item {
-            background: #3498db;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
-            padding: 3pt 8pt;
-            border-radius: 12pt;
+            padding: 4pt 10pt;
+            border-radius: 16pt;
             font-size: 9pt;
-            font-weight: 500;
+            font-weight: 600;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
+            box-shadow: 0 2pt 4pt rgba(59, 130, 246, 0.3);
+            font-family: 'Source Sans Pro', Arial, sans-serif;
+            letter-spacing: 0.1pt;
         }
         
         .academic-stats {
-            background: #27ae60;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
-            padding: 16pt;
-            margin: 12pt 0;
+            padding: 24pt;
+            margin: 20pt 0;
             text-align: center;
             page-break-inside: avoid;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
+            border-radius: 12pt;
+            box-shadow: 0 4pt 8pt rgba(16, 185, 129, 0.3);
         }
         
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(80pt, 1fr));
-            gap: 12pt;
+            grid-template-columns: repeat(auto-fit, minmax(100pt, 1fr));
+            gap: 20pt;
         }
         
         .stat-item {
@@ -3339,10 +3449,11 @@ export class ResumeGenerator {
         }
         
         .stat-value {
-            font-size: 16pt;
-            font-weight: 600;
+            font-size: 20pt;
+            font-weight: 700;
             display: block;
-            margin-bottom: 2pt;
+            margin-bottom: 4pt;
+            font-family: 'Playfair Display', serif;
         }
         
         .stat-label {
@@ -3512,38 +3623,36 @@ export class ResumeGenerator {
                 </div>
                 `}
             </div>
-            <div class="header-content">
-                <h1>${resumeData.fullName}</h1>
-                <div class="header-subtitle">Curriculum Vitae</div>
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <strong>Program:</strong> ${resumeData.program}
-                    </div>
-                    <div class="contact-item">
-                        <strong>Enrollment:</strong> ${resumeData.enrollmentNumber}
-                    </div>
-                    <div class="contact-item">
-                        <strong>Email:</strong> ${resumeData.personalEmail || resumeData.email}
-                    </div>
-                    <div class="contact-item">
-                        <strong>Phone:</strong> ${resumeData.contactNumber || 'Available upon request'}
-                    </div>
-                    ${resumeData.address ? `
-                    <div class="contact-item">
-                        <strong>Address:</strong> ${resumeData.address}
-                    </div>
-                    ` : ''}
-                    ${resumeData.linkedinUrl ? `
-                    <div class="contact-item">
-                        <strong>LinkedIn:</strong> ${resumeData.linkedinUrl}
-                    </div>
-                    ` : ''}
-                    ${resumeData.portfolioWebsite ? `
-                    <div class="contact-item">
-                        <strong>Portfolio:</strong> ${resumeData.portfolioWebsite}
-                    </div>
-                    ` : ''}
+            <h1>${resumeData.fullName}</h1>
+            <div class="header-subtitle">Curriculum Vitae</div>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <strong>Program:</strong> ${resumeData.program}
                 </div>
+                <div class="contact-item">
+                    <strong>Enrollment:</strong> ${resumeData.enrollmentNumber}
+                </div>
+                <div class="contact-item">
+                    <strong>Email:</strong> ${resumeData.personalEmail || resumeData.email}
+                </div>
+                <div class="contact-item">
+                    <strong>Phone:</strong> ${resumeData.contactNumber || 'Available upon request'}
+                </div>
+                ${resumeData.address ? `
+                <div class="contact-item">
+                    <strong>Address:</strong> ${resumeData.address}
+                </div>
+                ` : ''}
+                ${resumeData.linkedinUrl ? `
+                <div class="contact-item">
+                    <strong>LinkedIn:</strong> ${resumeData.linkedinUrl}
+                </div>
+                ` : ''}
+                ${resumeData.portfolioWebsite ? `
+                <div class="contact-item">
+                    <strong>Portfolio:</strong> ${resumeData.portfolioWebsite}
+                </div>
+                ` : ''}
             </div>
         </div>
 
@@ -3743,7 +3852,7 @@ export class ResumeGenerator {
                         <div class="entry-header">
                             <div>
                                 <div class="entry-title">${award.title}</div>
-                                <div class="entry-subtitle">Awarded by ${award.issuer}</div>
+                                <div class="entry-subtitle">Award / Recognition</div>
                             </div>
                             ${award.date ? `<div class="entry-date">${award.date}</div>` : ''}
                         </div>
