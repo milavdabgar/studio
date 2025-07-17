@@ -1551,12 +1551,23 @@ export class ResumeGenerator {
    * Convert relative photo URLs to absolute file paths for PDF generation
    */
   private convertPhotoURLsForPDF(htmlContent: string): string {
+    const fs = require('fs');
+    
     // Convert relative photo URLs to absolute file paths
     return htmlContent.replace(
       /src="\/uploads\/photos\/([^"]+)"/g,
       (match, filename) => {
         const absolutePath = path.join(process.cwd(), 'public', 'uploads', 'photos', filename);
-        return `src="file://${absolutePath}"`;
+        
+        // Check if file exists
+        if (fs.existsSync(absolutePath)) {
+          console.log(`Converting photo URL: ${match} -> file://${absolutePath}`);
+          return `src="file://${absolutePath}"`;
+        } else {
+          console.log(`Photo file not found: ${absolutePath}`);
+          // Return a placeholder or the original URL
+          return match;
+        }
       }
     );
   }
@@ -1600,6 +1611,7 @@ export class ResumeGenerator {
       
       // Convert photo URLs to absolute paths for PDF generation
       const processedHTML = this.convertPhotoURLsForPDF(htmlContent);
+      console.log('Processed HTML for PDF (first 1000 chars):', processedHTML.substring(0, 1000));
       
       // Enhanced content loading with better timeout handling
       await page.setContent(processedHTML, { 
@@ -1609,6 +1621,18 @@ export class ResumeGenerator {
 
       // Wait for fonts and images to load
       await page.evaluateHandle('document.fonts.ready');
+      
+      // Wait for images to load
+      await page.evaluate(() => {
+        const images = Array.from(document.images);
+        return Promise.all(images.map(img => {
+          if (img.complete) return Promise.resolve();
+          return new Promise(resolve => {
+            img.onload = resolve;
+            img.onerror = resolve;
+          });
+        }));
+      });
       
       // Generate PDF with enhanced options
       const pdfBuffer = await page.pdf({
@@ -2915,7 +2939,7 @@ export class ResumeGenerator {
             page-break-inside: avoid;
             page-break-after: avoid;
             position: relative;
-            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            background: #ffffff;
             padding: 28pt 20pt;
             margin: -20pt -20pt 35pt -20pt;
             border-radius: 0 0 15pt 15pt;
@@ -2984,9 +3008,9 @@ export class ResumeGenerator {
             gap: 24pt;
             margin-top: 20pt;
             padding: 16pt;
-            background: rgba(255, 255, 255, 0.8);
+            background: #f8fafc;
             border-radius: 8pt;
-            border: 1pt solid rgba(226, 232, 240, 0.8);
+            border: 1pt solid #e2e8f0;
         }
         
         .contact-item {
@@ -3031,17 +3055,17 @@ export class ResumeGenerator {
         
         .section-title {
             font-family: 'Playfair Display', 'Times New Roman', serif;
-            color: #0f172a;
+            color: #ffffff;
             font-size: 18pt;
             font-weight: 700;
             text-transform: none;
             letter-spacing: 0.5pt;
             margin: 0 0 20pt 0;
             page-break-after: avoid;
-            border-bottom: 2pt solid #e2e8f0;
+            border-bottom: 2pt solid #0f172a;
             padding-bottom: 8pt;
             position: relative;
-            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            background: #475569;
             padding: 12pt 16pt 8pt 16pt;
             margin: 0 -16pt 20pt -16pt;
             border-radius: 8pt 8pt 0 0;
@@ -3054,7 +3078,7 @@ export class ResumeGenerator {
             left: 16pt;
             width: 60pt;
             height: 2pt;
-            background: #0f172a;
+            background: #ffffff;
             border-radius: 1pt;
         }
         
