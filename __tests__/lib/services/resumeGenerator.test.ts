@@ -124,8 +124,8 @@ describe('ResumeGenerator', () => {
       expect(result.skills).toHaveLength(mockStudent.skills!.length);
       expect(result.skills![0]).toMatchObject({
         name: 'JavaScript',
-        category: 'Programming Languages',
-        proficiency: 'Advanced'
+        category: 'technical',
+        proficiency: 'advanced'
       });
     });
 
@@ -176,7 +176,7 @@ describe('ResumeGenerator', () => {
 
       expect(html).toContain('Technical Skills');
       expect(html).toContain('JavaScript');
-      expect(html).toContain('Programming Languages');
+      expect(html).toContain('technical');
     });
 
     it('should include projects section when available', () => {

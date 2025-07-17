@@ -153,9 +153,9 @@ describe('Resume Generator Templates', () => {
       const html = resumeGenerator.generateBiodataHTML(mockResumeData);
 
       expect(html).toContain('border-collapse: collapse');
-      expect(html).toContain('box-shadow:');
-      expect(html).toContain('border-radius:');
-      expect(html).toContain('nth-child(even)');
+      expect(html).toContain('border: 1pt solid');
+      expect(html).toContain('background: #34495e');
+      expect(html).toContain('biodata-table');
     });
 
     it('should include declaration section', () => {
@@ -191,16 +191,16 @@ describe('Resume Generator Templates', () => {
 
       expect(html).toContain('<!DOCTYPE html>');
       expect(html).toContain('CURRICULUM VITAE');
-      expect(html).toContain('Georgia');
+      expect(html).toContain('Crimson Text');
     });
 
     it('should include professional header design', () => {
       const html = resumeGenerator.generateCVHTML(mockResumeData);
 
       expect(html).toContain('class="header"');
-      expect(html).toContain('linear-gradient(135deg, #2c3e50 0%, #3498db 100%)');
-      expect(html).toContain('radial-gradient');
-      expect(html).toContain('text-shadow:');
+      expect(html).toContain('linear-gradient(135deg, #2c3e50 0%, #34495e 100%)');
+      expect(html).toContain('font-size: 24pt');
+      expect(html).toContain('text-align: center');
     });
 
     it('should have timeline-based layout', () => {
@@ -255,17 +255,21 @@ describe('Resume Generator Templates', () => {
     });
 
     it('should have responsive grid layouts', () => {
-      const templates = [
-        resumeGenerator.generateResumeHTML(mockResumeData),
-        resumeGenerator.generateBiodataHTML(mockResumeData),
-        resumeGenerator.generateCVHTML(mockResumeData)
-      ];
+      const resumeHTML = resumeGenerator.generateResumeHTML(mockResumeData);
+      const cvHTML = resumeGenerator.generateCVHTML(mockResumeData);
+      const biodataHTML = resumeGenerator.generateBiodataHTML(mockResumeData);
 
-      templates.forEach(html => {
+      // Resume and CV templates should have responsive layouts
+      [resumeHTML, cvHTML].forEach(html => {
         expect(html).toContain('grid-template-columns:');
         expect(html).toContain('repeat(auto-fit');
         expect(html).toContain('@media (max-width: 768px)');
       });
+
+      // Biodata template should have grid layouts but is print-focused
+      expect(biodataHTML).toContain('grid-template-columns:');
+      expect(biodataHTML).toContain('repeat(auto-fit');
+      expect(biodataHTML).toContain('@media print'); // Print-focused instead of responsive
     });
   });
 

@@ -94,9 +94,7 @@ describe('/api/students/[id]/resume', () => {
 
     // Set up default mock implementations
     mockStudentModel.findOne.mockReturnValue({
-      lean: jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue(mockStudent),
-      }),
+      lean: jest.fn().mockResolvedValue(mockStudent),
     });
     mockProgramModel.findOne.mockReturnValue({
       lean: jest.fn().mockReturnValue({
@@ -272,9 +270,7 @@ describe('/api/students/[id]/resume', () => {
 
     it('should return 404 when student not found', async () => {
       mockStudentModel.findOne.mockReturnValue({
-        lean: jest.fn().mockReturnValue({
-          exec: jest.fn().mockResolvedValue(null),
-        }),
+        lean: jest.fn().mockResolvedValue(null),
       });
 
       const request = createMockRequest('http://localhost:3000/api/students/nonexistent/resume');
@@ -313,10 +309,19 @@ describe('/api/students/[id]/resume', () => {
     });
 
     it('should handle program lookup with multiple strategies', async () => {
-      // First call fails, second succeeds
-      mockProgramModel.findOne
-        .mockResolvedValueOnce(null) // First strategy (custom id) fails
-        .mockResolvedValueOnce(mockProgram); // Second strategy (MongoDB ObjectId) succeeds
+      // First strategy (custom id) fails
+      mockProgramModel.findOne.mockReturnValueOnce({
+        lean: jest.fn().mockReturnValue({
+          exec: jest.fn().mockResolvedValue(null),
+        }),
+      });
+      
+      // Second strategy (MongoDB ObjectId) succeeds
+      mockProgramModel.findById.mockReturnValueOnce({
+        lean: jest.fn().mockReturnValue({
+          exec: jest.fn().mockResolvedValue(mockProgram),
+        }),
+      });
 
       const request = createMockRequest('http://localhost:3000/api/students/student-123/resume');
       const params = createMockParams('student-123');
@@ -324,7 +329,8 @@ describe('/api/students/[id]/resume', () => {
       const response = await GET(request, params);
 
       expect(response.status).toBe(200);
-      expect(mockProgramModel.findOne).toHaveBeenCalledTimes(2);
+      expect(mockProgramModel.findOne).toHaveBeenCalledTimes(1);
+      expect(mockProgramModel.findById).toHaveBeenCalledTimes(1);
     });
 
     it('should handle missing program gracefully', async () => {
@@ -447,9 +453,7 @@ describe('/api/students/[id]/resume', () => {
 
     it('should return 404 when student not found', async () => {
       mockStudentModel.findOne.mockReturnValue({
-        lean: jest.fn().mockReturnValue({
-          exec: jest.fn().mockResolvedValue(null),
-        }),
+        lean: jest.fn().mockResolvedValue(null),
       });
 
       const request = createMockPostRequest('http://localhost:3000/api/students/nonexistent/resume', {});

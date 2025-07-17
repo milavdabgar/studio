@@ -800,6 +800,38 @@ export class ResumeGenerator {
             font-style: italic;
         }
         
+        .certification-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .certification-item {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e6f3ff 100%);
+            border: 1px solid #93c5fd;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 5px solid #3b82f6;
+        }
+        
+        .certification-title {
+            font-weight: 700;
+            color: #2d3748;
+            font-size: 1.1em;
+            margin-bottom: 6px;
+        }
+        
+        .certification-issuer {
+            color: #4a5568;
+            font-size: 0.95em;
+            margin-bottom: 6px;
+        }
+        
+        .certification-date {
+            color: #718096;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+        
         .footer {
             background: #2d3748;
             color: white;
@@ -1004,6 +1036,21 @@ export class ResumeGenerator {
                             <div class="achievement-title">${achievement.title}</div>
                             <div class="achievement-description">${achievement.description}</div>
                             ${achievement.date ? `<div class="achievement-date">${achievement.date}</div>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            ` : ''}
+
+            ${resumeData.certifications && resumeData.certifications.length > 0 ? `
+            <div class="section">
+                <h2 class="section-title">Certifications</h2>
+                <div class="certification-list">
+                    ${resumeData.certifications.map(cert => `
+                        <div class="certification-item">
+                            <div class="certification-title">${cert.name}</div>
+                            <div class="certification-issuer">${cert.issuer}</div>
+                            ${cert.date ? `<div class="certification-date">${cert.date}</div>` : ''}
                         </div>
                     `).join('')}
                 </div>
