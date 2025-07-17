@@ -740,6 +740,7 @@ ${processedContent}`;
         // Generate temporary markdown file
         const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
         const tempPdfPath = path.join(this.tempDir, `output-${Date.now()}.pdf`);
+        const tempTexPath = path.join(this.tempDir, `template-${Date.now()}.tex`);
         
         try {
             // Convert Mermaid diagrams to images first
@@ -766,18 +767,28 @@ ${processedContent}`;
             
             fs.writeFileSync(tempMdPath, fullMarkdown);
             
-            // Use pandoc with XeLaTeX engine to convert to PDF
+            // Create enhanced LaTeX template based on reference templates
+            const latexTemplate = this.generateProfessionalLatexTemplate(title, author, date);
+            fs.writeFileSync(tempTexPath, latexTemplate);
+            
+            // Use pandoc with XeLaTeX engine and custom template
             const pandocCommand = [
                 'pandoc',
                 `"${tempMdPath}"`,
                 '-o', `"${tempPdfPath}"`,
                 '--pdf-engine=xelatex',
+                '--template', `"${tempTexPath}"`,
                 '--standalone',
                 '--toc',
                 '--variable=colorlinks:true',
                 '--variable=linkcolor:blue',
                 '--variable=urlcolor:blue',
-                '--variable=toccolor:blue'
+                '--variable=toccolor:blue',
+                '--variable=fontsize:11pt',
+                '--variable=geometry:margin=1in',
+                '--variable=mainfont:Liberation Serif',
+                '--variable=sansfont:Liberation Sans',
+                '--variable=monofont:Liberation Mono'
             ].join(' ');
             
             await execAsync(pandocCommand);
@@ -791,6 +802,7 @@ ${processedContent}`;
             
             // Clean up temporary files
             fs.unlinkSync(tempMdPath);
+            fs.unlinkSync(tempTexPath);
             fs.unlinkSync(tempPdfPath);
             
             return pdfBuffer;
@@ -798,6 +810,9 @@ ${processedContent}`;
             // Clean up temporary files in case of error
             if (fs.existsSync(tempMdPath)) {
                 fs.unlinkSync(tempMdPath);
+            }
+            if (fs.existsSync(tempTexPath)) {
+                fs.unlinkSync(tempTexPath);
             }
             if (fs.existsSync(tempPdfPath)) {
                 fs.unlinkSync(tempPdfPath);
@@ -1885,6 +1900,162 @@ ${presentationContent}`;
         }
         
         return processedContent;
+    }
+
+    private generateProfessionalLatexTemplate(title: string, author: string, date: string): string {
+        return `%-------------------------
+% Professional Document Template
+% Based on reference templates with enhanced styling
+% Compiled with XeLaTeX for best results
+%-------------------------
+
+\\documentclass[11pt,a4paper]{article}
+
+% Packages for XeLaTeX
+\\usepackage{fontspec}
+\\usepackage{xunicode}
+\\usepackage{xltxtra}
+
+% Modern fonts
+\\setmainfont{Liberation Serif}[Scale=1.0]
+\\setsansfont{Liberation Sans}[Scale=1.0]
+\\setmonofont{Liberation Mono}[Scale=1.0]
+
+% Packages
+\\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\\usepackage{xcolor}
+\\usepackage{titlesec}
+\\usepackage{enumitem}
+\\usepackage{multicol}
+\\usepackage{fontawesome5}
+\\usepackage{hyperref}
+\\usepackage{tikz}
+\\usepackage{array}
+\\usepackage{tabularx}
+\\usepackage{ragged2e}
+\\usepackage{setspace}
+\\usepackage{fancyhdr}
+
+% Colors - Professional palette
+\\definecolor{primary}{RGB}{0, 79, 144}
+\\definecolor{secondary}{RGB}{45, 45, 45}
+\\definecolor{accent}{RGB}{0, 122, 204}
+\\definecolor{lightgray}{RGB}{248, 248, 248}
+\\definecolor{mediumgray}{RGB}{128, 128, 128}
+\\definecolor{success}{RGB}{40, 167, 69}
+
+% Hyperref setup
+\\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=primary,
+    pdfauthor={${author}},
+    pdftitle={${title}},
+    pdfsubject={Professional Document}
+}
+
+% Header and footer
+\\pagestyle{fancy}
+\\fancyhf{}
+\\renewcommand{\\headrulewidth}{0pt}
+\\renewcommand{\\footrulewidth}{0.5pt}
+\\cfoot{\\color{mediumgray}\\small\\thepage}
+
+% Custom section formatting with enhanced styling
+\\titleformat{\\section}
+    {\\color{primary}\\Large\\sffamily\\bfseries}
+    {}
+    {0em}
+    {}[{\\color{primary}\\titlerule[1pt]\\vspace{-3pt}}]
+
+\\titleformat{\\subsection}
+    {\\color{secondary}\\large\\sffamily\\bfseries}
+    {}
+    {0em}
+    {}
+
+\\titleformat{\\subsubsection}
+    {\\color{secondary}\\normalsize\\sffamily\\bfseries}
+    {}
+    {0em}
+    {}
+
+% Improved spacing
+\\titlespacing*{\\section}{0pt}{12pt}{8pt}
+\\titlespacing*{\\subsection}{0pt}{8pt}{4pt}
+\\titlespacing*{\\subsubsection}{0pt}{6pt}{3pt}
+
+% Custom list formatting
+\\setlist[itemize]{leftmargin=15pt, itemsep=2pt, parsep=1pt, topsep=5pt}
+\\setlist[enumerate]{leftmargin=15pt, itemsep=2pt, parsep=1pt, topsep=5pt}
+
+% Table formatting
+\\renewcommand{\\arraystretch}{1.2}
+
+% Code block formatting
+\\usepackage{listings}
+\\lstset{
+    basicstyle=\\small\\ttfamily,
+    backgroundcolor=\\color{lightgray},
+    frame=single,
+    rulecolor=\\color{primary},
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=2,
+    showstringspaces=false,
+    numbers=left,
+    numberstyle=\\tiny\\color{mediumgray},
+    xleftmargin=2em,
+    framexleftmargin=1.5em
+}
+
+% Quote formatting
+\\usepackage{csquotes}
+\\renewenvironment{quote}
+    {\\begin{adjustwidth}{2em}{2em}\\color{secondary}\\itshape}
+    {\\end{adjustwidth}}
+
+% Enhanced document header
+\\newcommand{\\makeheader}{
+    \\begin{center}
+        \\begin{tikzpicture}[remember picture, overlay]
+            \\fill[lightgray] (current page.north west) rectangle ([yshift=-2cm]current page.north east);
+        \\end{tikzpicture}
+        
+        \\vspace{0.5cm}
+        {\\Huge\\sffamily\\bfseries\\color{primary} $title$}
+        
+        \\vspace{0.3cm}
+        {\\Large\\sffamily\\color{secondary} $author$}
+        
+        \\vspace{0.2cm}
+        {\\normalsize\\color{mediumgray} $date$}
+        
+        \\vspace{0.5cm}
+    \\end{center}
+}
+
+% Begin document
+\\begin{document}
+
+% Make professional header
+\\makeheader
+
+% Table of contents with professional styling
+$if(toc)$
+\\begin{center}
+\\color{primary}\\Large\\sffamily\\bfseries Contents
+\\end{center}
+\\vspace{0.3cm}
+$toc$
+\\newpage
+$endif$
+
+% Document body
+$body$
+
+\\end{document}
+`;
     }
 
     private ensureDirectoryExists(dirPath: string): void {
