@@ -785,10 +785,7 @@ ${processedContent}`;
                 '--variable=urlcolor:blue',
                 '--variable=toccolor:blue',
                 '--variable=fontsize:11pt',
-                '--variable=geometry:margin=1in',
-                '--variable=mainfont:Liberation Serif',
-                '--variable=sansfont:Liberation Sans',
-                '--variable=monofont:Liberation Mono'
+                '--variable=geometry:margin=1in'
             ].join(' ');
             
             await execAsync(pandocCommand);
@@ -1916,10 +1913,11 @@ ${presentationContent}`;
 \\usepackage{xunicode}
 \\usepackage{xltxtra}
 
-% Modern fonts
-\\setmainfont{Liberation Serif}[Scale=1.0]
-\\setsansfont{Liberation Sans}[Scale=1.0]
-\\setmonofont{Liberation Mono}[Scale=1.0]
+% Modern fonts - use system default fonts for better compatibility
+% On macOS, use system fonts that are guaranteed to exist
+\\setmainfont{Times}[Scale=1.0]
+\\setsansfont{Helvetica}[Scale=1.0]
+\\setmonofont{Courier}[Scale=1.0]
 
 % Packages
 \\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
@@ -1927,7 +1925,6 @@ ${presentationContent}`;
 \\usepackage{titlesec}
 \\usepackage{enumitem}
 \\usepackage{multicol}
-\\usepackage{fontawesome5}
 \\usepackage{hyperref}
 \\usepackage{tikz}
 \\usepackage{array}
@@ -1935,6 +1932,7 @@ ${presentationContent}`;
 \\usepackage{ragged2e}
 \\usepackage{setspace}
 \\usepackage{fancyhdr}
+\\usepackage{changepage}
 
 % Colors - Professional palette
 \\definecolor{primary}{RGB}{0, 79, 144}
