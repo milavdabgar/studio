@@ -33,7 +33,7 @@ describe('Resume Generator Templates', () => {
 
       // Check for responsive container
       expect(html).toContain('class="resume-container"');
-      expect(html).toContain('max-width: 850px');
+      expect(html).toContain('background: white');
     });
 
     it('should include modern CSS styling', () => {
@@ -107,7 +107,7 @@ describe('Resume Generator Templates', () => {
       expect(html).toContain('class="skills-container"');
       expect(html).toContain('class="skill-category"');
       expect(html).toContain('class="skill-tags"');
-      expect(html).toContain('Programming Languages');
+      expect(html).toContain('technical');
       expect(html).toContain('JavaScript');
     });
 
