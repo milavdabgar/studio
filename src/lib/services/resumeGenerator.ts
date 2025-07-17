@@ -1112,6 +1112,60 @@ export class ResumeGenerator {
   }
 
   /**
+   * Generate resume in PDF format using pandoc with XeLaTeX engine
+   */
+  async generatePDFPandoc(resumeData: ResumeData): Promise<Buffer> {
+    const markdownContent = this.generateResumeMarkdown(resumeData);
+    
+    try {
+      const result = await this.contentConverter.convert(markdownContent, 'pdf-pandoc', {
+        title: `${resumeData.fullName} - Resume`,
+        author: resumeData.fullName
+      });
+      return result as Buffer;
+    } catch (error) {
+      console.error('Error generating PDF resume with pandoc:', error);
+      throw new Error(`Failed to generate PDF resume: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  /**
+   * Generate biodata in PDF format using pandoc with XeLaTeX engine
+   */
+  async generateBiodataPDFPandoc(resumeData: ResumeData): Promise<Buffer> {
+    const markdownContent = this.generateBiodataMarkdown(resumeData);
+    
+    try {
+      const result = await this.contentConverter.convert(markdownContent, 'pdf-pandoc', {
+        title: `${resumeData.fullName} - Biodata`,
+        author: resumeData.fullName
+      });
+      return result as Buffer;
+    } catch (error) {
+      console.error('Error generating PDF biodata with pandoc:', error);
+      throw new Error(`Failed to generate PDF biodata: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  /**
+   * Generate CV in PDF format using pandoc with XeLaTeX engine
+   */
+  async generateCVPDFPandoc(resumeData: ResumeData): Promise<Buffer> {
+    const markdownContent = this.generateCVMarkdown(resumeData);
+    
+    try {
+      const result = await this.contentConverter.convert(markdownContent, 'pdf-pandoc', {
+        title: `${resumeData.fullName} - CV`,
+        author: resumeData.fullName
+      });
+      return result as Buffer;
+    } catch (error) {
+      console.error('Error generating PDF CV with pandoc:', error);
+      throw new Error(`Failed to generate PDF CV: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  /**
    * Generate PDF from plain text content
    */
   async generatePDFFromText(textContent: string): Promise<Buffer> {
@@ -1471,6 +1525,291 @@ export class ResumeGenerator {
       if (resumeData.guardianOccupation) {
         sections.push(`**Occupation:** ${resumeData.guardianOccupation}`);
       }
+    }
+    
+    return sections.join('\n');
+  }
+
+  /**
+   * Generate biodata in Markdown format for DOCX conversion
+   */
+  private generateBiodataMarkdown(resumeData: ResumeData): string {
+    const sections: string[] = [];
+    
+    // Header
+    sections.push(`# ${resumeData.fullName}\n`);
+    sections.push('**BIODATA**\n');
+    
+    // Personal Information
+    sections.push('## Personal Information\n');
+    
+    const personalInfo = [
+      `**Full Name:** ${resumeData.fullName}`,
+      `**Email:** ${resumeData.email}`,
+      resumeData.contactNumber ? `**Phone:** ${resumeData.contactNumber}` : null,
+      resumeData.address ? `**Address:** ${resumeData.address}` : null,
+      resumeData.dateOfBirth ? `**Date of Birth:** ${this.formatDate(resumeData.dateOfBirth)}` : null,
+      resumeData.gender ? `**Gender:** ${resumeData.gender}` : null,
+      resumeData.bloodGroup ? `**Blood Group:** ${resumeData.bloodGroup}` : null,
+      resumeData.aadharNumber ? `**Aadhar Number:** ${resumeData.aadharNumber}` : null
+    ].filter(Boolean);
+    
+    personalInfo.forEach(info => sections.push(info));
+    sections.push('');
+    
+    // Academic Information
+    sections.push('## Academic Information\n');
+    sections.push(`**Program:** ${resumeData.program}`);
+    sections.push(`**Enrollment Number:** ${resumeData.enrollmentNumber}`);
+    sections.push(`**Current Semester:** ${resumeData.currentSemester}`);
+    sections.push(`**Institute Email:** ${resumeData.instituteEmail}`);
+    
+    if (resumeData.overallCPI) {
+      sections.push(`**Overall CPI:** ${resumeData.overallCPI}`);
+    }
+    
+    if (resumeData.earnedCredits && resumeData.totalCredits) {
+      sections.push(`**Credits:** ${resumeData.earnedCredits}/${resumeData.totalCredits}`);
+    }
+    
+    sections.push('');
+    
+    // Guardian Information
+    if (resumeData.guardianName) {
+      sections.push('## Guardian Information\n');
+      sections.push(`**Name:** ${resumeData.guardianName}`);
+      if (resumeData.guardianRelation) {
+        sections.push(`**Relation:** ${resumeData.guardianRelation}`);
+      }
+      if (resumeData.guardianContact) {
+        sections.push(`**Contact:** ${resumeData.guardianContact}`);
+      }
+      if (resumeData.guardianOccupation) {
+        sections.push(`**Occupation:** ${resumeData.guardianOccupation}`);
+      }
+      if (resumeData.guardianIncome) {
+        sections.push(`**Income:** ₹${resumeData.guardianIncome.toLocaleString()}`);
+      }
+      sections.push('');
+    }
+    
+    // Academic Performance
+    if (resumeData.semesterResults && resumeData.semesterResults.length > 0) {
+      sections.push('## Academic Performance\n');
+      
+      resumeData.semesterResults.forEach(result => {
+        sections.push(`### Semester ${result.semester}`);
+        sections.push(`**SGPA:** ${result.sgpa}`);
+        sections.push(`**Credits:** ${result.credits}`);
+        sections.push('');
+      });
+    }
+    
+    // Skills
+    if (resumeData.skills && resumeData.skills.length > 0) {
+      sections.push('## Skills\n');
+      
+      // Group skills by category
+      const skillsByCategory = resumeData.skills.reduce((acc, skill) => {
+        const category = skill.category || 'Other';
+        if (!acc[category]) acc[category] = [];
+        acc[category].push(skill);
+        return acc;
+      }, {} as Record<string, typeof resumeData.skills>);
+      
+      Object.entries(skillsByCategory).forEach(([category, skills]) => {
+        sections.push(`### ${category}`);
+        skills.forEach(skill => {
+          const proficiency = this.getSkillProficiencyIndicator(skill.proficiency);
+          sections.push(`- **${skill.name}** ${proficiency}`);
+        });
+        sections.push('');
+      });
+    }
+    
+    // Achievements
+    if (resumeData.achievements && resumeData.achievements.length > 0) {
+      sections.push('## Achievements\n');
+      
+      resumeData.achievements.forEach(achievement => {
+        sections.push(`### ${achievement.title}`);
+        if (achievement.description) {
+          sections.push(`**Description:** ${achievement.description}`);
+        }
+        sections.push(`**Date:** ${this.formatDate(achievement.date)}`);
+        sections.push('');
+      });
+    }
+    
+    return sections.join('\n');
+  }
+
+  /**
+   * Generate CV in Markdown format for DOCX conversion
+   */
+  private generateCVMarkdown(resumeData: ResumeData): string {
+    const sections: string[] = [];
+    
+    // Header
+    sections.push(`# ${resumeData.fullName}\n`);
+    sections.push('**CURRICULUM VITAE**\n');
+    
+    // Contact Information
+    const contactInfo = [
+      `**Email:** ${resumeData.email}`,
+      resumeData.contactNumber ? `**Phone:** ${resumeData.contactNumber}` : null,
+      resumeData.address ? `**Address:** ${resumeData.address}` : null
+    ].filter(Boolean);
+    
+    sections.push(contactInfo.join(' | ') + '\n');
+    
+    // Profile Summary
+    if (resumeData.profileSummary) {
+      sections.push('## Profile Summary\n');
+      sections.push(resumeData.profileSummary + '\n');
+    }
+    
+    // Education
+    if (resumeData.education && resumeData.education.length > 0) {
+      sections.push('## Education\n');
+      
+      resumeData.education.forEach(edu => {
+        sections.push(`### ${edu.degree} in ${edu.fieldOfStudy}`);
+        sections.push(`**Institution:** ${edu.institution}`);
+        const duration = `${this.formatDate(edu.startDate)} - ${this.formatDate(edu.endDate)}`;
+        sections.push(`**Duration:** ${duration}`);
+        if (edu.grade) {
+          sections.push(`**Grade:** ${edu.grade}`);
+        }
+        if (edu.description) {
+          sections.push(`**Description:** ${edu.description}`);
+        }
+        sections.push('');
+      });
+    }
+    
+    // Current Academic Information
+    sections.push('## Current Academic Information\n');
+    sections.push(`**Program:** ${resumeData.program}`);
+    sections.push(`**Enrollment Number:** ${resumeData.enrollmentNumber}`);
+    sections.push(`**Current Semester:** ${resumeData.currentSemester}`);
+    sections.push(`**Institute Email:** ${resumeData.instituteEmail}`);
+    
+    if (resumeData.overallCPI) {
+      sections.push(`**Overall CPI:** ${resumeData.overallCPI}`);
+    }
+    
+    sections.push('');
+    
+    // Experience
+    if (resumeData.experience && resumeData.experience.length > 0) {
+      sections.push('## Professional Experience\n');
+      
+      resumeData.experience.forEach(exp => {
+        sections.push(`### ${exp.position} at ${exp.company}`);
+        const duration = exp.endDate ? 
+          `${this.formatDate(exp.startDate)} - ${this.formatDate(exp.endDate)}` : 
+          `${this.formatDate(exp.startDate)} - Present`;
+        sections.push(`**Duration:** ${duration}`);
+        if (exp.description) {
+          sections.push(`**Description:** ${exp.description}`);
+        }
+        sections.push('');
+      });
+    }
+    
+    // Projects
+    if (resumeData.projects && resumeData.projects.length > 0) {
+      sections.push('## Projects\n');
+      
+      resumeData.projects.forEach(project => {
+        sections.push(`### ${project.title}`);
+        if (project.description) {
+          sections.push(`**Description:** ${project.description}`);
+        }
+        if (project.technologies && project.technologies.length > 0) {
+          sections.push(`**Technologies:** ${project.technologies.join(', ')}`);
+        }
+        if (project.duration) {
+          sections.push(`**Duration:** ${project.duration}`);
+        }
+        if (project.role) {
+          sections.push(`**Role:** ${project.role}`);
+        }
+        sections.push('');
+      });
+    }
+    
+    // Skills
+    if (resumeData.skills && resumeData.skills.length > 0) {
+      sections.push('## Skills\n');
+      
+      // Group skills by category
+      const skillsByCategory = resumeData.skills.reduce((acc, skill) => {
+        const category = skill.category || 'Other';
+        if (!acc[category]) acc[category] = [];
+        acc[category].push(skill);
+        return acc;
+      }, {} as Record<string, typeof resumeData.skills>);
+      
+      Object.entries(skillsByCategory).forEach(([category, skills]) => {
+        sections.push(`### ${category}`);
+        skills.forEach(skill => {
+          const proficiency = this.getSkillProficiencyIndicator(skill.proficiency);
+          sections.push(`- **${skill.name}** ${proficiency}`);
+        });
+        sections.push('');
+      });
+    }
+    
+    // Achievements
+    if (resumeData.achievements && resumeData.achievements.length > 0) {
+      sections.push('## Achievements\n');
+      
+      resumeData.achievements.forEach(achievement => {
+        sections.push(`### ${achievement.title}`);
+        if (achievement.description) {
+          sections.push(`**Description:** ${achievement.description}`);
+        }
+        sections.push(`**Date:** ${this.formatDate(achievement.date)}`);
+        sections.push('');
+      });
+    }
+    
+    // Certifications
+    if (resumeData.certifications && resumeData.certifications.length > 0) {
+      sections.push('## Certifications\n');
+      
+      resumeData.certifications.forEach(cert => {
+        sections.push(`### ${cert.name}`);
+        sections.push(`**Issuer:** ${cert.issuer}`);
+        if (cert.date) {
+          sections.push(`**Date:** ${this.formatDate(cert.date)}`);
+        }
+        if (cert.expiryDate) {
+          sections.push(`**Expiry:** ${this.formatDate(cert.expiryDate)}`);
+        }
+        sections.push('');
+      });
+    }
+    
+    // Semester Results (detailed)
+    if (resumeData.semesterResults && resumeData.semesterResults.length > 0) {
+      sections.push('## Academic Performance\n');
+      
+      resumeData.semesterResults.forEach(result => {
+        sections.push(`### Semester ${result.semester}`);
+        sections.push(`**SGPA:** ${result.sgpa}`);
+        sections.push(`**Credits:** ${result.credits}`);
+        
+        if (result.subjects && result.subjects.length > 0) {
+          sections.push('**Subjects:**');
+          result.subjects.forEach(subject => {
+            sections.push(`- ${subject.name} (${subject.code}): ${subject.grade} (${subject.credits} credits)`);
+          });
+        }
+        sections.push('');
+      });
     }
     
     return sections.join('\n');

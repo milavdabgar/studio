@@ -556,6 +556,60 @@ export class FacultyResumeGenerator {
   }
 
   /**
+   * Generate resume in PDF format using pandoc with XeLaTeX engine
+   */
+  async generatePDFPandoc(resumeData: FacultyResumeData): Promise<Buffer> {
+    const markdownContent = this.generateResumeMarkdown(resumeData);
+    
+    try {
+      const result = await this.contentConverter.convert(markdownContent, 'pdf-pandoc', {
+        title: `${resumeData.fullName} - Resume`,
+        author: resumeData.fullName
+      });
+      return result as Buffer;
+    } catch (error) {
+      console.error('Error generating faculty PDF resume with pandoc:', error);
+      throw new Error(`Failed to generate PDF resume: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  /**
+   * Generate biodata in PDF format using pandoc with XeLaTeX engine
+   */
+  async generateBiodataPDFPandoc(resumeData: FacultyResumeData): Promise<Buffer> {
+    const markdownContent = this.generateBiodataMarkdown(resumeData);
+    
+    try {
+      const result = await this.contentConverter.convert(markdownContent, 'pdf-pandoc', {
+        title: `${resumeData.fullName} - Biodata`,
+        author: resumeData.fullName
+      });
+      return result as Buffer;
+    } catch (error) {
+      console.error('Error generating faculty PDF biodata with pandoc:', error);
+      throw new Error(`Failed to generate PDF biodata: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  /**
+   * Generate CV in PDF format using pandoc with XeLaTeX engine
+   */
+  async generateCVPDFPandoc(resumeData: FacultyResumeData): Promise<Buffer> {
+    const markdownContent = this.generateCVMarkdown(resumeData);
+    
+    try {
+      const result = await this.contentConverter.convert(markdownContent, 'pdf-pandoc', {
+        title: `${resumeData.fullName} - CV`,
+        author: resumeData.fullName
+      });
+      return result as Buffer;
+    } catch (error) {
+      console.error('Error generating faculty PDF CV with pandoc:', error);
+      throw new Error(`Failed to generate PDF CV: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  /**
    * Generate resume in DOCX format
    */
   async generateDOCX(resumeData: FacultyResumeData): Promise<Buffer> {
@@ -783,6 +837,249 @@ export class FacultyResumeGenerator {
 
     sections.push(`\nGenerated on ${format(new Date(), 'PPP')}`);
 
+    return sections.join('\n');
+  }
+
+  /**
+   * Generate biodata in Markdown format for DOCX conversion
+   */
+  private generateBiodataMarkdown(resumeData: FacultyResumeData): string {
+    const sections: string[] = [];
+    
+    // Header
+    sections.push(`# ${resumeData.fullName}\n`);
+    sections.push('**BIODATA**\n');
+    
+    if (resumeData.designation) {
+      sections.push(`**${resumeData.designation}**\n`);
+    }
+    
+    // Personal Information
+    sections.push('## Personal Information\n');
+    
+    const personalInfo = [
+      `**Full Name:** ${resumeData.fullName}`,
+      `**Email:** ${resumeData.email}`,
+      resumeData.contactNumber ? `**Phone:** ${resumeData.contactNumber}` : null,
+      resumeData.address ? `**Address:** ${resumeData.address}` : null,
+      `**Staff Code:** ${resumeData.staffCode}`,
+      `**Department:** ${resumeData.department}`,
+      `**Institute Email:** ${resumeData.instituteEmail}`
+    ].filter(Boolean);
+    
+    personalInfo.forEach(info => sections.push(info));
+    sections.push('');
+    
+    // Professional Information
+    sections.push('## Professional Information\n');
+    if (resumeData.employeeId) sections.push(`**Employee ID:** ${resumeData.employeeId}`);
+    if (resumeData.designation) sections.push(`**Designation:** ${resumeData.designation}`);
+    if (resumeData.jobType) sections.push(`**Job Type:** ${resumeData.jobType}`);
+    if (resumeData.staffCategory) sections.push(`**Staff Category:** ${resumeData.staffCategory}`);
+    sections.push('');
+    
+    // Specializations
+    if (resumeData.specializations && resumeData.specializations.length > 0) {
+      sections.push('## Specializations\n');
+      resumeData.specializations.forEach(spec => {
+        sections.push(`- ${spec}`);
+      });
+      sections.push('');
+    }
+    
+    // Qualifications
+    if (resumeData.qualifications && resumeData.qualifications.length > 0) {
+      sections.push('## Qualifications\n');
+      
+      resumeData.qualifications.forEach(qual => {
+        sections.push(`### ${qual.degree}`);
+        sections.push(`**Institution:** ${qual.institution}`);
+        if (qual.field) sections.push(`**Field:** ${qual.field}`);
+        if (qual.year) sections.push(`**Year:** ${qual.year}`);
+        if (qual.grade) sections.push(`**Grade:** ${qual.grade}`);
+        if (qual.description) sections.push(`**Description:** ${qual.description}`);
+        sections.push('');
+      });
+    }
+    
+    // Experience
+    if (resumeData.experience && resumeData.experience.length > 0) {
+      sections.push('## Experience\n');
+      
+      resumeData.experience.forEach(exp => {
+        sections.push(`### ${exp.position} at ${exp.organization}`);
+        sections.push(`**Duration:** ${exp.duration}`);
+        if (exp.description) sections.push(`**Description:** ${exp.description}`);
+        sections.push('');
+      });
+    }
+    
+    // Courses
+    if (resumeData.courses && resumeData.courses.length > 0) {
+      sections.push('## Courses Taught\n');
+      
+      resumeData.courses.forEach(course => {
+        sections.push(`### ${course.name} (${course.code})`);
+        if (course.credits) sections.push(`**Credits:** ${course.credits}`);
+        if (course.semester) sections.push(`**Semester:** ${course.semester}`);
+        sections.push('');
+      });
+    }
+    
+    // Achievements
+    if (resumeData.achievements && resumeData.achievements.length > 0) {
+      sections.push('## Achievements\n');
+      
+      resumeData.achievements.forEach(achievement => {
+        sections.push(`### ${achievement.title}`);
+        if (achievement.description) sections.push(`**Description:** ${achievement.description}`);
+        sections.push(`**Category:** ${achievement.category}`);
+        if (achievement.date) sections.push(`**Date:** ${achievement.date}`);
+        sections.push('');
+      });
+    }
+    
+    return sections.join('\n');
+  }
+
+  /**
+   * Generate CV in Markdown format for DOCX conversion
+   */
+  private generateCVMarkdown(resumeData: FacultyResumeData): string {
+    const sections: string[] = [];
+    
+    // Header
+    sections.push(`# ${resumeData.fullName}\n`);
+    sections.push('**CURRICULUM VITAE**\n');
+    
+    if (resumeData.designation) {
+      sections.push(`**${resumeData.designation}**\n`);
+    }
+    
+    // Contact Information
+    const contactInfo = [
+      `**Email:** ${resumeData.email}`,
+      resumeData.contactNumber ? `**Phone:** ${resumeData.contactNumber}` : null,
+      `**Department:** ${resumeData.department}`,
+      resumeData.address ? `**Address:** ${resumeData.address}` : null
+    ].filter(Boolean);
+    
+    sections.push(contactInfo.join(' | ') + '\n');
+    
+    // Professional Information
+    sections.push('## Professional Information\n');
+    sections.push(`**Staff Code:** ${resumeData.staffCode}`);
+    if (resumeData.employeeId) sections.push(`**Employee ID:** ${resumeData.employeeId}`);
+    if (resumeData.designation) sections.push(`**Designation:** ${resumeData.designation}`);
+    if (resumeData.jobType) sections.push(`**Job Type:** ${resumeData.jobType}`);
+    if (resumeData.staffCategory) sections.push(`**Staff Category:** ${resumeData.staffCategory}`);
+    sections.push(`**Institute Email:** ${resumeData.instituteEmail}`);
+    sections.push('');
+    
+    // Specializations
+    if (resumeData.specializations && resumeData.specializations.length > 0) {
+      sections.push('## Specializations\n');
+      resumeData.specializations.forEach(spec => {
+        sections.push(`- ${spec}`);
+      });
+      sections.push('');
+    }
+    
+    // Qualifications
+    if (resumeData.qualifications && resumeData.qualifications.length > 0) {
+      sections.push('## Educational Qualifications\n');
+      
+      resumeData.qualifications.forEach(qual => {
+        sections.push(`### ${qual.degree}`);
+        sections.push(`**Institution:** ${qual.institution}`);
+        if (qual.field) sections.push(`**Field:** ${qual.field}`);
+        if (qual.year) sections.push(`**Year:** ${qual.year}`);
+        if (qual.grade) sections.push(`**Grade:** ${qual.grade}`);
+        if (qual.description) sections.push(`**Description:** ${qual.description}`);
+        sections.push('');
+      });
+    }
+    
+    // Experience
+    if (resumeData.experience && resumeData.experience.length > 0) {
+      sections.push('## Professional Experience\n');
+      
+      resumeData.experience.forEach(exp => {
+        sections.push(`### ${exp.position} at ${exp.organization}`);
+        sections.push(`**Duration:** ${exp.duration}`);
+        if (exp.description) sections.push(`**Description:** ${exp.description}`);
+        sections.push('');
+      });
+    }
+    
+    // Research
+    if (resumeData.research && resumeData.research.length > 0) {
+      sections.push('## Research Activities\n');
+      
+      resumeData.research.forEach(research => {
+        sections.push(`### ${research.title}`);
+        sections.push(`**Description:** ${research.description}`);
+        sections.push(`**Status:** ${research.status}`);
+        if (research.duration) sections.push(`**Duration:** ${research.duration}`);
+        if (research.funding) sections.push(`**Funding:** ${research.funding}`);
+        sections.push('');
+      });
+    }
+    
+    // Publications
+    if (resumeData.publications && resumeData.publications.length > 0) {
+      sections.push('## Publications\n');
+      
+      resumeData.publications.forEach(pub => {
+        sections.push(`### ${pub.title}`);
+        sections.push(`**Type:** ${pub.type}`);
+        if (pub.journal) sections.push(`**Journal:** ${pub.journal}`);
+        if (pub.year) sections.push(`**Year:** ${pub.year}`);
+        if (pub.authors && pub.authors.length > 0) {
+          sections.push(`**Authors:** ${pub.authors.join(', ')}`);
+        }
+        sections.push('');
+      });
+    }
+    
+    // Courses
+    if (resumeData.courses && resumeData.courses.length > 0) {
+      sections.push('## Courses Taught\n');
+      
+      resumeData.courses.forEach(course => {
+        sections.push(`### ${course.name} (${course.code})`);
+        if (course.credits) sections.push(`**Credits:** ${course.credits}`);
+        if (course.semester) sections.push(`**Semester:** ${course.semester}`);
+        sections.push('');
+      });
+    }
+    
+    // Achievements
+    if (resumeData.achievements && resumeData.achievements.length > 0) {
+      sections.push('## Achievements\n');
+      
+      resumeData.achievements.forEach(achievement => {
+        sections.push(`### ${achievement.title}`);
+        if (achievement.description) sections.push(`**Description:** ${achievement.description}`);
+        sections.push(`**Category:** ${achievement.category}`);
+        if (achievement.date) sections.push(`**Date:** ${achievement.date}`);
+        sections.push('');
+      });
+    }
+    
+    // Certifications
+    if (resumeData.certifications && resumeData.certifications.length > 0) {
+      sections.push('## Certifications\n');
+      
+      resumeData.certifications.forEach(cert => {
+        sections.push(`### ${cert.name}`);
+        sections.push(`**Issuer:** ${cert.issuer}`);
+        if (cert.date) sections.push(`**Date:** ${cert.date}`);
+        if (cert.url) sections.push(`**URL:** ${cert.url}`);
+        sections.push('');
+      });
+    }
+    
     return sections.join('\n');
   }
 }

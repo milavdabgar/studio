@@ -192,6 +192,10 @@ export class ContentConverterV2 {
                 // Explicitly use Puppeteer
                 return await this.convertToPdfPuppeteer(content, frontmatter, options);
             
+            case 'pdf-pandoc':
+                // Use pandoc with XeLaTeX for PDF generation
+                return await this.convertToPdfPandoc(content, frontmatter, options);
+            
             case 'txt':
                 return this.convertToPlainText(content, frontmatter, options);
             
@@ -729,6 +733,76 @@ ${processedContent}`;
                 fs.unlinkSync(tempTexPath);
             }
             throw error;
+        }
+    }
+
+    private async convertToPdfPandoc(content: string, frontmatter: Record<string, unknown>, options: ConversionOptions): Promise<Buffer> {
+        // Generate temporary markdown file
+        const tempMdPath = path.join(this.tempDir, `temp-${Date.now()}.md`);
+        const tempPdfPath = path.join(this.tempDir, `output-${Date.now()}.pdf`);
+        
+        try {
+            // Convert Mermaid diagrams to images first
+            let processedContent = await this.convertMermaidToImages(content);
+            
+            // Process SVG images for Pandoc compatibility
+            processedContent = await this.processSvgForPandoc(processedContent, options);
+            
+            // Create complete markdown with frontmatter
+            const title = options.title || frontmatter.title || 'Document';
+            const author = options.author || frontmatter.author || 'Unknown Author';
+            const date = frontmatter.date || new Date().toISOString().split('T')[0];
+            
+            const fullMarkdown = `---
+title: "${title}"
+author: "${author}"
+date: ${date}
+geometry: margin=1in
+fontsize: 11pt
+documentclass: article
+---
+
+${processedContent}`;
+            
+            fs.writeFileSync(tempMdPath, fullMarkdown);
+            
+            // Use pandoc with XeLaTeX engine to convert to PDF
+            const pandocCommand = [
+                'pandoc',
+                `"${tempMdPath}"`,
+                '-o', `"${tempPdfPath}"`,
+                '--pdf-engine=xelatex',
+                '--standalone',
+                '--toc',
+                '--variable=colorlinks:true',
+                '--variable=linkcolor:blue',
+                '--variable=urlcolor:blue',
+                '--variable=toccolor:blue'
+            ].join(' ');
+            
+            await execAsync(pandocCommand);
+            
+            if (!fs.existsSync(tempPdfPath)) {
+                throw new Error('PDF generation failed - output file not created');
+            }
+            
+            // Read the generated PDF file
+            const pdfBuffer = fs.readFileSync(tempPdfPath);
+            
+            // Clean up temporary files
+            fs.unlinkSync(tempMdPath);
+            fs.unlinkSync(tempPdfPath);
+            
+            return pdfBuffer;
+        } catch (error) {
+            // Clean up temporary files in case of error
+            if (fs.existsSync(tempMdPath)) {
+                fs.unlinkSync(tempMdPath);
+            }
+            if (fs.existsSync(tempPdfPath)) {
+                fs.unlinkSync(tempPdfPath);
+            }
+            throw new Error(`PDF conversion failed: ${error instanceof Error ? error.message : String(error)}`);
         }
     }
 
