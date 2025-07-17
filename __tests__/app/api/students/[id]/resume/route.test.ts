@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { GET, POST } from '@/app/api/students/[id]/resume/route';
 import * as resumeGeneratorModule from '@/lib/services/resumeGenerator';
-import { mockStudent, mockProgram, mockBatch, mockCourses } from '../../../../../mocks/resumeTestData';
+import { mockStudent, mockProgram, mockBatch, mockCourses } from '../../../../../mocks/resumeTestData.mock';
 
 // Mock the database connection and models
 jest.mock('@/lib/mongodb', () => ({
@@ -11,28 +11,40 @@ jest.mock('@/lib/mongodb', () => ({
 jest.mock('@/lib/models', () => ({
   StudentModel: {
     findOne: jest.fn().mockReturnValue({
-      lean: jest.fn(),
+      lean: jest.fn().mockReturnValue({
+        exec: jest.fn(),
+      }),
     }),
   },
   ProgramModel: {
     findOne: jest.fn().mockReturnValue({
-      lean: jest.fn(),
+      lean: jest.fn().mockReturnValue({
+        exec: jest.fn(),
+      }),
     }),
     findById: jest.fn().mockReturnValue({
-      lean: jest.fn(),
+      lean: jest.fn().mockReturnValue({
+        exec: jest.fn(),
+      }),
     }),
   },
   BatchModel: {
     findOne: jest.fn().mockReturnValue({
-      lean: jest.fn(),
+      lean: jest.fn().mockReturnValue({
+        exec: jest.fn(),
+      }),
     }),
     findById: jest.fn().mockReturnValue({
-      lean: jest.fn(),
+      lean: jest.fn().mockReturnValue({
+        exec: jest.fn(),
+      }),
     }),
   },
   CourseModel: {
     find: jest.fn().mockReturnValue({
-      lean: jest.fn(),
+      lean: jest.fn().mockReturnValue({
+        exec: jest.fn(),
+      }),
     }),
   },
 }));
@@ -82,22 +94,34 @@ describe('/api/students/[id]/resume', () => {
 
     // Set up default mock implementations
     mockStudentModel.findOne.mockReturnValue({
-      lean: jest.fn().mockResolvedValue(mockStudent),
+      lean: jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(mockStudent),
+      }),
     });
     mockProgramModel.findOne.mockReturnValue({
-      lean: jest.fn().mockResolvedValue(mockProgram),
+      lean: jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(mockProgram),
+      }),
     });
     mockProgramModel.findById.mockReturnValue({
-      lean: jest.fn().mockResolvedValue(mockProgram),
+      lean: jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(mockProgram),
+      }),
     });
     mockBatchModel.findOne.mockReturnValue({
-      lean: jest.fn().mockResolvedValue(mockBatch),
+      lean: jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(mockBatch),
+      }),
     });
     mockBatchModel.findById.mockReturnValue({
-      lean: jest.fn().mockResolvedValue(mockBatch),
+      lean: jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(mockBatch),
+      }),
     });
     mockCourseModel.find.mockReturnValue({
-      lean: jest.fn().mockResolvedValue(mockCourses),
+      lean: jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(mockCourses),
+      }),
     });
 
     mockResumeGenerator.generateResumeData.mockReturnValue({

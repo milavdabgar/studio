@@ -6,7 +6,7 @@ import {
   mockCourses, 
   mockResumeData, 
   mockEmptyResumeData 
-} from '../../__mocks__/resumeTestData';
+} from '../../mocks/resumeTestData.mock';
 
 // Mock Puppeteer
 jest.mock('puppeteer', () => ({

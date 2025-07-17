@@ -4,7 +4,7 @@
  */
 
 import { ResumeGenerator, type ResumeData } from '@/lib/services/resumeGenerator';
-import { mockResumeData, mockEmptyResumeData } from '../../__mocks__/resumeTestData';
+import { mockResumeData, mockEmptyResumeData } from '../../mocks/resumeTestData.mock';
 
 // Mock date-fns
 jest.mock('date-fns', () => ({
