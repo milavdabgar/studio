@@ -1,27 +1,84 @@
-
 "use client";
 
-import React, { useEffect, useState, FormEvent, useCallback, useMemo } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import React, { useEffect, useState, FormEvent, useCallback } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogClose, DialogTrigger } from "@/components/ui/dialog";
-import { UserCircle, Mail, Phone, CalendarDays, Landmark, GraduationCap, Loader2, Edit, BookOpen, AlertCircle, TrendingUp, Download, FileText, FileCheck} from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger 
+} from "@/components/ui/dialog";
+import { 
+  Tabs, 
+  TabsContent, 
+  TabsList, 
+  TabsTrigger 
+} from "@/components/ui/tabs";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
+import { 
+  UserCircle, 
+  Mail, 
+  Phone, 
+  CalendarDays, 
+  Landmark, 
+  GraduationCap, 
+  Loader2, 
+  Edit, 
+  Plus, 
+  Trash2, 
+  Save, 
+  Eye, 
+  EyeOff, 
+  Download, 
+  FileText, 
+  BookOpen,
+  Briefcase,
+  Code,
+  Award,
+  Globe,
+  Star,
+  Link as LinkIcon,
+  Building,
+  Users,
+  Calendar,
+  Trophy,
+  FileCheck
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Student, Program, Batch, Result, Course } from '@/types/entities';
+import type { 
+  Student, 
+  Program, 
+  Batch, 
+  EducationEntry, 
+  ExperienceEntry, 
+  ProjectEntry, 
+  SkillEntry, 
+  AchievementEntry, 
+  CertificationEntry, 
+  PublicationEntry, 
+  LanguageEntry 
+} from '@/types/entities';
 import { studentService } from '@/lib/api/students';
 import { programService } from '@/lib/api/programs';
 import { batchService } from '@/lib/api/batches';
-import { resultService } from '@/lib/api/results';
-import { courseService } from '@/lib/api/courses';
 import { format, parseISO, isValid } from 'date-fns';
-import { Textarea } from '@/components/ui/textarea';
-import { Progress } from '@/components/ui/progress';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
-
 
 interface UserCookie {
   email: string;
@@ -30,23 +87,6 @@ interface UserCookie {
   availableRoles: string[];
   id?: string; 
 }
-
-// Helper for grade points (can be moved to a utils file)
-const getGradePoint = (grade?: string): number => {
-    if (!grade) return 0;
-    switch (grade.toUpperCase()) {
-        case 'AA': return 10;
-        case 'AB': return 9;
-        case 'BB': return 8;
-        case 'BC': return 7;
-        case 'CC': return 6;
-        case 'CD': return 5;
-        case 'DD': return 4;
-        case 'FF': return 0;
-        default: return 0;
-    }
-};
-
 
 function getCookie(name: string): string | undefined {
   if (typeof document === 'undefined') return undefined;
@@ -61,33 +101,1011 @@ function getCookie(name: string): string | undefined {
   return undefined;
 }
 
+// Section Components
+const EducationSection = ({ 
+  education, 
+  onUpdate 
+}: { 
+  education: EducationEntry[], 
+  onUpdate: (education: EducationEntry[]) => void 
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [formData, setFormData] = useState<EducationEntry>({
+    id: '',
+    institution: '',
+    degree: '',
+    fieldOfStudy: '',
+    startDate: '',
+    endDate: '',
+    isCurrently: false,
+    grade: '',
+    description: '',
+    location: '',
+    order: 0
+  });
+
+  const handleAdd = () => {
+    setFormData({
+      id: Date.now().toString(),
+      institution: '',
+      degree: '',
+      fieldOfStudy: '',
+      startDate: '',
+      endDate: '',
+      isCurrently: false,
+      grade: '',
+      description: '',
+      location: '',
+      order: education.length
+    });
+    setEditingIndex(null);
+    setIsEditing(true);
+  };
+
+  const handleEdit = (index: number) => {
+    setFormData(education[index]);
+    setEditingIndex(index);
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    const updatedEducation = [...education];
+    if (editingIndex !== null) {
+      updatedEducation[editingIndex] = formData;
+    } else {
+      updatedEducation.push(formData);
+    }
+    onUpdate(updatedEducation);
+    setIsEditing(false);
+    setEditingIndex(null);
+  };
+
+  const handleDelete = (index: number) => {
+    const updatedEducation = education.filter((_, i) => i !== index);
+    onUpdate(updatedEducation);
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex justify-between items-center">
+          <CardTitle className="flex items-center gap-2">
+            <GraduationCap className="h-5 w-5" />
+            Education
+          </CardTitle>
+          <Button onClick={handleAdd} size="sm">
+            <Plus className="h-4 w-4 mr-2" />
+            Add Education
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {education.map((edu, index) => (
+            <div key={index} className="border rounded-lg p-4">
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <h4 className="font-semibold">{edu.degree}</h4>
+                  <p className="text-sm text-gray-600">{edu.institution}</p>
+                  <p className="text-sm text-gray-500">
+                    {edu.startDate} - {edu.isCurrently ? 'Present' : edu.endDate}
+                    {edu.grade && <span className="ml-2">• {edu.grade}</span>}
+                  </p>
+                  {edu.description && (
+                    <p className="text-sm text-gray-600 mt-1">{edu.description}</p>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={() => handleEdit(index)} size="sm" variant="outline">
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button onClick={() => handleDelete(index)} size="sm" variant="outline">
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Edit Dialog */}
+        <Dialog open={isEditing} onOpenChange={setIsEditing}>
+          <DialogContent className="sm:max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>
+                {editingIndex !== null ? 'Edit Education' : 'Add Education'}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="institution">Institution</Label>
+                  <Input
+                    id="institution"
+                    value={formData.institution}
+                    onChange={(e) => setFormData({...formData, institution: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="degree">Degree</Label>
+                  <Input
+                    id="degree"
+                    value={formData.degree}
+                    onChange={(e) => setFormData({...formData, degree: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="fieldOfStudy">Field of Study</Label>
+                  <Input
+                    id="fieldOfStudy"
+                    value={formData.fieldOfStudy}
+                    onChange={(e) => setFormData({...formData, fieldOfStudy: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="location">Location</Label>
+                  <Input
+                    id="location"
+                    value={formData.location}
+                    onChange={(e) => setFormData({...formData, location: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="startDate">Start Date</Label>
+                  <Input
+                    id="startDate"
+                    type="date"
+                    value={formData.startDate}
+                    onChange={(e) => setFormData({...formData, startDate: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="endDate">End Date</Label>
+                  <Input
+                    id="endDate"
+                    type="date"
+                    value={formData.endDate}
+                    onChange={(e) => setFormData({...formData, endDate: e.target.value})}
+                    disabled={formData.isCurrently}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="grade">Grade/Score</Label>
+                  <Input
+                    id="grade"
+                    value={formData.grade}
+                    onChange={(e) => setFormData({...formData, grade: e.target.value})}
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="isCurrently"
+                    checked={formData.isCurrently}
+                    onChange={(e) => setFormData({...formData, isCurrently: e.target.checked})}
+                  />
+                  <Label htmlFor="isCurrently">Currently studying</Label>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  rows={3}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button onClick={() => setIsEditing(false)} variant="outline">
+                Cancel
+              </Button>
+              <Button onClick={handleSave}>
+                Save
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </CardContent>
+    </Card>
+  );
+};
+
+const ExperienceSection = ({ 
+  experience, 
+  onUpdate 
+}: { 
+  experience: ExperienceEntry[], 
+  onUpdate: (experience: ExperienceEntry[]) => void 
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [formData, setFormData] = useState<ExperienceEntry>({
+    id: '',
+    company: '',
+    position: '',
+    location: '',
+    startDate: '',
+    endDate: '',
+    isCurrently: false,
+    description: '',
+    responsibilities: [],
+    achievements: [],
+    skills: [],
+    order: 0
+  });
+
+  const handleAdd = () => {
+    setFormData({
+      id: Date.now().toString(),
+      company: '',
+      position: '',
+      location: '',
+      startDate: '',
+      endDate: '',
+      isCurrently: false,
+      description: '',
+      responsibilities: [],
+      achievements: [],
+      skills: [],
+      order: experience.length
+    });
+    setEditingIndex(null);
+    setIsEditing(true);
+  };
+
+  const handleEdit = (index: number) => {
+    setFormData(experience[index]);
+    setEditingIndex(index);
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    const updatedExperience = [...experience];
+    if (editingIndex !== null) {
+      updatedExperience[editingIndex] = formData;
+    } else {
+      updatedExperience.push(formData);
+    }
+    onUpdate(updatedExperience);
+    setIsEditing(false);
+    setEditingIndex(null);
+  };
+
+  const handleDelete = (index: number) => {
+    const updatedExperience = experience.filter((_, i) => i !== index);
+    onUpdate(updatedExperience);
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex justify-between items-center">
+          <CardTitle className="flex items-center gap-2">
+            <Briefcase className="h-5 w-5" />
+            Work Experience
+          </CardTitle>
+          <Button onClick={handleAdd} size="sm">
+            <Plus className="h-4 w-4 mr-2" />
+            Add Experience
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {experience.map((exp, index) => (
+            <div key={index} className="border rounded-lg p-4">
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <h4 className="font-semibold">{exp.position}</h4>
+                  <p className="text-sm text-gray-600">{exp.company}</p>
+                  <p className="text-sm text-gray-500">
+                    {exp.startDate} - {exp.isCurrently ? 'Present' : exp.endDate}
+                    {exp.location && <span className="ml-2">• {exp.location}</span>}
+                  </p>
+                  {exp.description && (
+                    <p className="text-sm text-gray-600 mt-1">{exp.description}</p>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={() => handleEdit(index)} size="sm" variant="outline">
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button onClick={() => handleDelete(index)} size="sm" variant="outline">
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Edit Dialog */}
+        <Dialog open={isEditing} onOpenChange={setIsEditing}>
+          <DialogContent className="sm:max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>
+                {editingIndex !== null ? 'Edit Experience' : 'Add Experience'}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="company">Company</Label>
+                  <Input
+                    id="company"
+                    value={formData.company}
+                    onChange={(e) => setFormData({...formData, company: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="position">Position</Label>
+                  <Input
+                    id="position"
+                    value={formData.position}
+                    onChange={(e) => setFormData({...formData, position: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="location">Location</Label>
+                  <Input
+                    id="location"
+                    value={formData.location}
+                    onChange={(e) => setFormData({...formData, location: e.target.value})}
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="isCurrently"
+                    checked={formData.isCurrently}
+                    onChange={(e) => setFormData({...formData, isCurrently: e.target.checked})}
+                  />
+                  <Label htmlFor="isCurrently">Currently working here</Label>
+                </div>
+                <div>
+                  <Label htmlFor="startDate">Start Date</Label>
+                  <Input
+                    id="startDate"
+                    type="date"
+                    value={formData.startDate}
+                    onChange={(e) => setFormData({...formData, startDate: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="endDate">End Date</Label>
+                  <Input
+                    id="endDate"
+                    type="date"
+                    value={formData.endDate}
+                    onChange={(e) => setFormData({...formData, endDate: e.target.value})}
+                    disabled={formData.isCurrently}
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  rows={3}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button onClick={() => setIsEditing(false)} variant="outline">
+                Cancel
+              </Button>
+              <Button onClick={handleSave}>
+                Save
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </CardContent>
+    </Card>
+  );
+};
+
+const ProjectsSection = ({ 
+  projects, 
+  onUpdate 
+}: { 
+  projects: ProjectEntry[], 
+  onUpdate: (projects: ProjectEntry[]) => void 
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [formData, setFormData] = useState<ProjectEntry>({
+    id: '',
+    title: '',
+    description: '',
+    startDate: '',
+    endDate: '',
+    isOngoing: false,
+    technologies: [],
+    role: '',
+    teamSize: 1,
+    projectUrl: '',
+    githubUrl: '',
+    images: [],
+    achievements: [],
+    order: 0
+  });
+
+  const handleAdd = () => {
+    setFormData({
+      id: Date.now().toString(),
+      title: '',
+      description: '',
+      startDate: '',
+      endDate: '',
+      isOngoing: false,
+      technologies: [],
+      role: '',
+      teamSize: 1,
+      projectUrl: '',
+      githubUrl: '',
+      images: [],
+      achievements: [],
+      order: projects.length
+    });
+    setEditingIndex(null);
+    setIsEditing(true);
+  };
+
+  const handleEdit = (index: number) => {
+    setFormData(projects[index]);
+    setEditingIndex(index);
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    const updatedProjects = [...projects];
+    if (editingIndex !== null) {
+      updatedProjects[editingIndex] = formData;
+    } else {
+      updatedProjects.push(formData);
+    }
+    onUpdate(updatedProjects);
+    setIsEditing(false);
+    setEditingIndex(null);
+  };
+
+  const handleDelete = (index: number) => {
+    const updatedProjects = projects.filter((_, i) => i !== index);
+    onUpdate(updatedProjects);
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex justify-between items-center">
+          <CardTitle className="flex items-center gap-2">
+            <Code className="h-5 w-5" />
+            Projects
+          </CardTitle>
+          <Button onClick={handleAdd} size="sm">
+            <Plus className="h-4 w-4 mr-2" />
+            Add Project
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {projects.map((project, index) => (
+            <div key={index} className="border rounded-lg p-4">
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <h4 className="font-semibold">{project.title}</h4>
+                  <p className="text-sm text-gray-600">{project.description}</p>
+                  <p className="text-sm text-gray-500">
+                    {project.startDate} - {project.isOngoing ? 'Present' : project.endDate}
+                    {project.role && <span className="ml-2">• {project.role}</span>}
+                  </p>
+                  {project.technologies && project.technologies.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {project.technologies.map((tech, techIndex) => (
+                        <Badge key={techIndex} variant="outline" className="text-xs">
+                          {tech}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={() => handleEdit(index)} size="sm" variant="outline">
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button onClick={() => handleDelete(index)} size="sm" variant="outline">
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Edit Dialog */}
+        <Dialog open={isEditing} onOpenChange={setIsEditing}>
+          <DialogContent className="sm:max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>
+                {editingIndex !== null ? 'Edit Project' : 'Add Project'}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="title">Project Title</Label>
+                  <Input
+                    id="title"
+                    value={formData.title}
+                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="role">Your Role</Label>
+                  <Input
+                    id="role"
+                    value={formData.role}
+                    onChange={(e) => setFormData({...formData, role: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="startDate">Start Date</Label>
+                  <Input
+                    id="startDate"
+                    type="date"
+                    value={formData.startDate}
+                    onChange={(e) => setFormData({...formData, startDate: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="endDate">End Date</Label>
+                  <Input
+                    id="endDate"
+                    type="date"
+                    value={formData.endDate}
+                    onChange={(e) => setFormData({...formData, endDate: e.target.value})}
+                    disabled={formData.isOngoing}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="teamSize">Team Size</Label>
+                  <Input
+                    id="teamSize"
+                    type="number"
+                    value={formData.teamSize}
+                    onChange={(e) => setFormData({...formData, teamSize: parseInt(e.target.value)})}
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="isOngoing"
+                    checked={formData.isOngoing}
+                    onChange={(e) => setFormData({...formData, isOngoing: e.target.checked})}
+                  />
+                  <Label htmlFor="isOngoing">Currently working on this</Label>
+                </div>
+                <div>
+                  <Label htmlFor="projectUrl">Project URL</Label>
+                  <Input
+                    id="projectUrl"
+                    type="url"
+                    value={formData.projectUrl}
+                    onChange={(e) => setFormData({...formData, projectUrl: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="githubUrl">GitHub URL</Label>
+                  <Input
+                    id="githubUrl"
+                    type="url"
+                    value={formData.githubUrl}
+                    onChange={(e) => setFormData({...formData, githubUrl: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  rows={3}
+                />
+              </div>
+              <div>
+                <Label htmlFor="technologies">Technologies (comma-separated)</Label>
+                <Input
+                  id="technologies"
+                  value={formData.technologies?.join(', ') || ''}
+                  onChange={(e) => setFormData({...formData, technologies: e.target.value.split(',').map(t => t.trim()).filter(t => t)})}
+                  placeholder="React, Node.js, MongoDB"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button onClick={() => setIsEditing(false)} variant="outline">
+                Cancel
+              </Button>
+              <Button onClick={handleSave}>
+                Save
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </CardContent>
+    </Card>
+  );
+};
+
+const AchievementsSection = ({ 
+  achievements, 
+  onUpdate 
+}: { 
+  achievements: AchievementEntry[], 
+  onUpdate: (achievements: AchievementEntry[]) => void 
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [formData, setFormData] = useState<AchievementEntry>({
+    id: '',
+    title: '',
+    description: '',
+    date: '',
+    issuer: '',
+    category: 'academic',
+    certificateUrl: '',
+    order: 0
+  });
+
+  const handleAdd = () => {
+    setFormData({
+      id: Date.now().toString(),
+      title: '',
+      description: '',
+      date: '',
+      issuer: '',
+      category: 'academic',
+      certificateUrl: '',
+      order: achievements.length
+    });
+    setEditingIndex(null);
+    setIsEditing(true);
+  };
+
+  const handleEdit = (index: number) => {
+    setFormData(achievements[index]);
+    setEditingIndex(index);
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    const updatedAchievements = [...achievements];
+    if (editingIndex !== null) {
+      updatedAchievements[editingIndex] = formData;
+    } else {
+      updatedAchievements.push(formData);
+    }
+    onUpdate(updatedAchievements);
+    setIsEditing(false);
+    setEditingIndex(null);
+  };
+
+  const handleDelete = (index: number) => {
+    const updatedAchievements = achievements.filter((_, i) => i !== index);
+    onUpdate(updatedAchievements);
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex justify-between items-center">
+          <CardTitle className="flex items-center gap-2">
+            <Trophy className="h-5 w-5" />
+            Achievements & Awards
+          </CardTitle>
+          <Button onClick={handleAdd} size="sm">
+            <Plus className="h-4 w-4 mr-2" />
+            Add Achievement
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {achievements.map((achievement, index) => (
+            <div key={index} className="border rounded-lg p-4">
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <h4 className="font-semibold">{achievement.title}</h4>
+                  <p className="text-sm text-gray-600">{achievement.description}</p>
+                  <p className="text-sm text-gray-500">
+                    {achievement.date}
+                    {achievement.issuer && <span className="ml-2">• {achievement.issuer}</span>}
+                  </p>
+                  {achievement.category && (
+                    <Badge variant="outline" className="mt-2 text-xs">
+                      {achievement.category}
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={() => handleEdit(index)} size="sm" variant="outline">
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button onClick={() => handleDelete(index)} size="sm" variant="outline">
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Edit Dialog */}
+        <Dialog open={isEditing} onOpenChange={setIsEditing}>
+          <DialogContent className="sm:max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>
+                {editingIndex !== null ? 'Edit Achievement' : 'Add Achievement'}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="title">Achievement Title</Label>
+                  <Input
+                    id="title"
+                    value={formData.title}
+                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="issuer">Issuer/Organization</Label>
+                  <Input
+                    id="issuer"
+                    value={formData.issuer}
+                    onChange={(e) => setFormData({...formData, issuer: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="date">Date</Label>
+                  <Input
+                    id="date"
+                    type="date"
+                    value={formData.date}
+                    onChange={(e) => setFormData({...formData, date: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="category">Category</Label>
+                  <Select 
+                    value={formData.category} 
+                    onValueChange={(value) => setFormData({...formData, category: value as any})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="academic">Academic</SelectItem>
+                      <SelectItem value="sports">Sports</SelectItem>
+                      <SelectItem value="cultural">Cultural</SelectItem>
+                      <SelectItem value="competition">Competition</SelectItem>
+                      <SelectItem value="volunteer">Volunteer</SelectItem>
+                      <SelectItem value="leadership">Leadership</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="certificateUrl">Certificate URL (optional)</Label>
+                  <Input
+                    id="certificateUrl"
+                    type="url"
+                    value={formData.certificateUrl}
+                    onChange={(e) => setFormData({...formData, certificateUrl: e.target.value})}
+                    placeholder="https://..."
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  rows={3}
+                  placeholder="Describe your achievement and its significance..."
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button onClick={() => setIsEditing(false)} variant="outline">
+                Cancel
+              </Button>
+              <Button onClick={handleSave}>
+                Save
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </CardContent>
+    </Card>
+  );
+};
+
+const SkillsSection = ({ 
+  skills, 
+  onUpdate 
+}: { 
+  skills: SkillEntry[], 
+  onUpdate: (skills: SkillEntry[]) => void 
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [formData, setFormData] = useState<SkillEntry>({
+    id: '',
+    name: '',
+    category: 'technical',
+    proficiency: 'beginner',
+    order: 0
+  });
+
+  const handleAdd = () => {
+    setFormData({
+      id: Date.now().toString(),
+      name: '',
+      category: 'technical',
+      proficiency: 'beginner',
+      order: skills.length
+    });
+    setEditingIndex(null);
+    setIsEditing(true);
+  };
+
+  const handleEdit = (index: number) => {
+    setFormData(skills[index]);
+    setEditingIndex(index);
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    const updatedSkills = [...skills];
+    if (editingIndex !== null) {
+      updatedSkills[editingIndex] = formData;
+    } else {
+      updatedSkills.push(formData);
+    }
+    onUpdate(updatedSkills);
+    setIsEditing(false);
+    setEditingIndex(null);
+  };
+
+  const handleDelete = (index: number) => {
+    const updatedSkills = skills.filter((_, i) => i !== index);
+    onUpdate(updatedSkills);
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex justify-between items-center">
+          <CardTitle className="flex items-center gap-2">
+            <Code className="h-5 w-5" />
+            Skills
+          </CardTitle>
+          <Button onClick={handleAdd} size="sm">
+            <Plus className="h-4 w-4 mr-2" />
+            Add Skill
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-wrap gap-2 mb-4">
+          {skills.map((skill, index) => (
+            <div key={index} className="group relative">
+              <Badge 
+                variant={skill.category === 'technical' ? 'default' : 'secondary'}
+                className="cursor-pointer"
+              >
+                {skill.name} ({skill.proficiency})
+                <button 
+                  onClick={() => handleDelete(index)}
+                  className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <Trash2 className="h-3 w-3" />
+                </button>
+              </Badge>
+            </div>
+          ))}
+        </div>
+
+        {/* Edit Dialog */}
+        <Dialog open={isEditing} onOpenChange={setIsEditing}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {editingIndex !== null ? 'Edit Skill' : 'Add Skill'}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="skillName">Skill Name</Label>
+                <Input
+                  id="skillName"
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label htmlFor="category">Category</Label>
+                <Select 
+                  value={formData.category} 
+                  onValueChange={(value) => setFormData({...formData, category: value as any})}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="technical">Technical</SelectItem>
+                    <SelectItem value="soft">Soft Skills</SelectItem>
+                    <SelectItem value="language">Language</SelectItem>
+                    <SelectItem value="tool">Tool</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="proficiency">Proficiency</Label>
+                <Select 
+                  value={formData.proficiency} 
+                  onValueChange={(value) => setFormData({...formData, proficiency: value as any})}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select proficiency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="beginner">Beginner</SelectItem>
+                    <SelectItem value="intermediate">Intermediate</SelectItem>
+                    <SelectItem value="advanced">Advanced</SelectItem>
+                    <SelectItem value="expert">Expert</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button onClick={() => setIsEditing(false)} variant="outline">
+                Cancel
+              </Button>
+              <Button onClick={handleSave}>
+                Save
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </CardContent>
+    </Card>
+  );
+};
+
 export default function StudentProfilePage() {
   const [student, setStudent] = useState<Student | null>(null);
   const [program, setProgram] = useState<Program | null>(null);
   const [batch, setBatch] = useState<Batch | null>(null);
-  const [studentResults, setStudentResults] = useState<Result[]>([]);
-  const [allCourses, setAllCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserCookie | null>(null);
+  const [activeTab, setActiveTab] = useState('basic');
   const { toast } = useToast();
 
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [isSubmittingEdit, setIsSubmittingEdit] = useState(false);
-  const [isGeneratingResume, setIsGeneratingResume] = useState(false);
-
-  // Form state for editing
-  const [formPersonalEmail, setFormPersonalEmail] = useState('');
-  const [formContactNumber, setFormContactNumber] = useState('');
-  const [formAddress, setFormAddress] = useState('');
-  const [formPhotoURL, setFormPhotoURL] = useState('');
-  const [formDateOfBirth, setFormDateOfBirth] = useState('');
-  const [formBloodGroup, setFormBloodGroup] = useState('');
-  const [formGuardianName, setFormGuardianName] = useState('');
-  const [formGuardianRelation, setFormGuardianRelation] = useState('');
-  const [formGuardianContact, setFormGuardianContact] = useState('');
-  const [formGuardianOccupation, setFormGuardianOccupation] = useState('');
-  const [formGuardianIncome, setFormGuardianIncome] = useState('');
-
+  // Profile Summary State
+  const [profileSummary, setProfileSummary] = useState('');
+  const [profileVisibility, setProfileVisibility] = useState<'public' | 'private' | 'institute_only'>('public');
 
   useEffect(() => {
     const authUserCookie = getCookie('auth_user');
@@ -105,14 +1123,13 @@ export default function StudentProfilePage() {
       }
     } else {
         console.warn('❌ No auth_user cookie found');
-        toast({ variant: "destructive", title: "Authentication Error", description: "User not logged in." });
     }
   }, [toast]);
 
   const fetchProfileData = useCallback(async () => {
     console.log('🔍 fetchProfileData called with user:', user);
     console.log('📋 user.id:', user?.id);
-    if (!user || !user.id) {
+    if (!user?.id) {
       console.warn('❌ Early return: user or user.id is missing');
       return;
     }
@@ -126,32 +1143,19 @@ export default function StudentProfilePage() {
       console.log('👤 Found student profile:', studentProfile);
 
       if (studentProfile) {
+        console.log('📊 Retrieved student profile:', studentProfile);
+        console.log('🛠️ Skills in profile:', studentProfile.skills);
+        
         setStudent(studentProfile);
-        setFormPersonalEmail(studentProfile.personalEmail || '');
-        setFormContactNumber(studentProfile.contactNumber || '');
-        setFormAddress(studentProfile.address || '');
-        setFormPhotoURL(studentProfile.photoURL || '');
-        setFormDateOfBirth(studentProfile.dateOfBirth || '');
-        setFormBloodGroup(studentProfile.bloodGroup || '');
-        setFormGuardianName(studentProfile.guardianDetails?.name || '');
-        setFormGuardianRelation(studentProfile.guardianDetails?.relation || '');
-        setFormGuardianContact(studentProfile.guardianDetails?.contactNumber || '');
-        setFormGuardianOccupation(studentProfile.guardianDetails?.occupation || '');
-        setFormGuardianIncome(studentProfile.guardianDetails?.annualIncome?.toString() || '');
+        setProfileSummary(studentProfile.profileSummary || '');
+        setProfileVisibility(studentProfile.profileVisibility || 'public');
 
-        const [progData, batchData, resultsData, coursesData] = await Promise.all([
-            studentProfile.programId ? programService.getProgramById(studentProfile.programId) : Promise.resolve(null),
-            studentProfile.batchId ? batchService.getBatchById(studentProfile.batchId) : Promise.resolve(null),
-            resultService.getStudentResults(studentProfile.enrollmentNumber).then(res => res.data.results || []),
-            courseService.getAllCourses()
+        const [progData, batchData] = await Promise.all([
+          studentProfile.programId ? programService.getProgramById(studentProfile.programId) : Promise.resolve(null),
+          studentProfile.batchId ? batchService.getBatchById(studentProfile.batchId) : Promise.resolve(null)
         ]);
         setProgram(progData);
         setBatch(batchData);
-        setStudentResults(resultsData);
-        setAllCourses(coursesData);
-
-      } else {
-        toast({ variant: "destructive", title: "Profile Not Found", description: "Could not find your student profile." });
       }
     } catch (error) {
       console.error('Error fetching student profile:', error);
@@ -164,66 +1168,59 @@ export default function StudentProfilePage() {
     fetchProfileData();
   }, [fetchProfileData]);
 
-  const handleEditProfile = () => {
-    if (student) {
-      setFormPersonalEmail(student.personalEmail || '');
-      setFormContactNumber(student.contactNumber || '');
-      setFormAddress(student.address || '');
-      setFormPhotoURL(student.photoURL || '');
-      setFormDateOfBirth(student.dateOfBirth || '');
-      setFormBloodGroup(student.bloodGroup || '');
-      setFormGuardianName(student.guardianDetails?.name || '');
-      setFormGuardianRelation(student.guardianDetails?.relation || '');
-      setFormGuardianContact(student.guardianDetails?.contactNumber || '');
-      setFormGuardianOccupation(student.guardianDetails?.occupation || '');
-      setFormGuardianIncome(student.guardianDetails?.annualIncome?.toString() || '');
-      setIsEditDialogOpen(true);
-    }
-  };
-
-  const handleProfileUpdateSubmit = async (event: FormEvent) => {
-    event.preventDefault();
-    if (!student || !user || !user.id) return;
-
-    setIsSubmittingEdit(true);
+  const handleUpdateProfile = async (updates: Partial<Student>) => {
+    if (!student) return;
     
-    const updatedStudentData: Partial<Student> = {
-      personalEmail: formPersonalEmail.trim() || undefined,
-      contactNumber: formContactNumber.trim() || undefined,
-      address: formAddress.trim() || undefined,
-      photoURL: formPhotoURL.trim() || undefined,
-      dateOfBirth: formDateOfBirth.trim() || undefined,
-      bloodGroup: formBloodGroup.trim() || undefined,
-      guardianDetails: {
-        name: formGuardianName.trim() || '',
-        relation: formGuardianRelation.trim() || '',
-        contactNumber: formGuardianContact.trim() || '',
-        occupation: formGuardianOccupation.trim() || undefined,
-        annualIncome: formGuardianIncome.trim() ? parseInt(formGuardianIncome.trim()) : undefined,
-      },
-    };
-
     try {
-      await studentService.updateStudent(student.id, updatedStudentData);
-      toast({ title: "Profile Updated", description: "Your profile details have been updated." });
-      setIsEditDialogOpen(false);
-      await fetchProfileData(); 
+      console.log('🔄 Updating profile with:', updates);
+      console.log('📝 Student ID:', student.id);
+      
+      const updatedStudent = await studentService.updateStudent(student.id, updates);
+      console.log('✅ Server response:', updatedStudent);
+      
+      setStudent(prev => prev ? { ...prev, ...updates } : null);
+      toast({ title: "Profile Updated", description: "Your profile has been updated successfully." });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Could not update profile.";
-      toast({ variant: "destructive", title: "Update Failed", description: errorMessage });
-    } finally {
-      setIsSubmittingEdit(false);
+      console.error('❌ Error updating profile:', error);
+      toast({ variant: "destructive", title: "Update Failed", description: "Failed to update profile." });
     }
   };
 
-  const handleGenerateResume = async (format: 'pdf' | 'docx' | 'html' | 'txt') => {
+  const handleUpdateEducation = (education: EducationEntry[]) => {
+    handleUpdateProfile({ education });
+  };
+
+  const handleUpdateSkills = (skills: SkillEntry[]) => {
+    handleUpdateProfile({ skills });
+  };
+
+  const handleUpdateExperience = (experience: ExperienceEntry[]) => {
+    handleUpdateProfile({ experience });
+  };
+
+  const handleUpdateProjects = (projects: ProjectEntry[]) => {
+    handleUpdateProfile({ projects });
+  };
+
+  const handleUpdateAchievements = (achievements: AchievementEntry[]) => {
+    handleUpdateProfile({ achievements });
+  };
+
+  const handleUpdateProfileSummary = () => {
+    handleUpdateProfile({ profileSummary, profileVisibility });
+  };
+
+  const getPublicProfileUrl = () => {
+    if (!student) return '';
+    return `${window.location.origin}/students/${student.enrollmentNumber}`;
+  };
+
+  const handleGenerateResume = async (format: 'pdf' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv') => {
     if (!student || !user) {
       toast({ variant: "destructive", title: "Error", description: "Student data not available." });
       return;
     }
 
-    setIsGeneratingResume(true);
-    
     try {
       const response = await fetch(`/api/students/${student.id}/resume?format=${format}`, {
         method: 'GET',
@@ -239,7 +1236,7 @@ export default function StudentProfilePage() {
 
       // Get the filename from response headers
       const contentDisposition = response.headers.get('Content-Disposition');
-      let filename = `${student.firstName || 'Student'}_Resume.${format}`;
+      let filename = `${student.firstName || 'Student'}_${format.toUpperCase()}.${format === 'docx' ? 'docx' : format === 'html' ? 'html' : format === 'txt' ? 'txt' : 'pdf'}`;
       if (contentDisposition) {
         const filenameMatch = contentDisposition.match(/filename="([^"]*)"/);
         if (filenameMatch) {
@@ -259,92 +1256,19 @@ export default function StudentProfilePage() {
       window.URL.revokeObjectURL(url);
 
       toast({ 
-        title: "Resume Generated", 
-        description: `Your resume has been generated and downloaded as ${format.toUpperCase()}.` 
+        title: "Document Generated", 
+        description: `Your ${format.toUpperCase()} has been generated and downloaded.` 
       });
 
     } catch (error) {
-      console.error('Error generating resume:', error);
+      console.error('Error generating document:', error);
       toast({ 
         variant: "destructive", 
         title: "Generation Failed", 
-        description: error instanceof Error ? error.message : "Could not generate resume." 
+        description: error instanceof Error ? error.message : "Could not generate document." 
       });
-    } finally {
-      setIsGeneratingResume(false);
     }
   };
-
-  const academicProgress = useMemo(() => {
-    if (!student || !program || studentResults.length === 0 || allCourses.length === 0) {
-      return {
-        earnedCredits: 0,
-        totalProgramCredits: program?.totalCredits || 0,
-        latestCpi: 0,
-        backlogs: [],
-        progressPercentage: 0,
-        statusMessage: "Data insufficient for progress calculation.",
-      };
-    }
-
-    let earnedCredits = 0;
-    const backlogs: { name: string; code: string; semester: number }[] = [];
-    const semesterSgpa: Record<number, { totalCreditPoints: number, totalCreditsAttempted: number, sgpa: number }> = {};
-
-    studentResults.forEach(res => {
-        let currentSemTotalCredits = 0;
-        let currentSemCreditPoints = 0;
-
-        res.subjects.forEach(sub => {
-            const courseDetail = allCourses.find(c => c.subcode === sub.code && c.programId === student.programId && c.semester === res.semester);
-            const credits = courseDetail?.credits || sub.credits || 0;
-            currentSemTotalCredits += credits;
-
-            if (sub.grade && sub.grade.toUpperCase() !== 'FF' && !sub.isBacklog) {
-                earnedCredits += credits; // Accumulates total earned credits for the student across all results
-                currentSemCreditPoints += getGradePoint(sub.grade) * credits;
-            } else {
-                if (!backlogs.some(b => b.code === sub.code)) { // Add to backlog list only if not already there (avoids duplicates from re-attempts)
-                    backlogs.push({ name: sub.name, code: sub.code, semester: res.semester });
-                }
-            }
-        });
-        if (currentSemTotalCredits > 0) {
-             semesterSgpa[res.semester] = {
-                totalCreditPoints: currentSemCreditPoints,
-                totalCreditsAttempted: currentSemTotalCredits,
-                sgpa: parseFloat((currentSemCreditPoints / currentSemTotalCredits).toFixed(2)) || 0,
-            };
-        }
-    });
-    
-    // Remove a backlog if a later result shows it passed
-    const finalBacklogs = backlogs.filter(backlogSub => {
-        return !studentResults.some(res => 
-            res.semester > backlogSub.semester && 
-            res.subjects.some(sub => sub.code === backlogSub.code && sub.grade !== 'FF' && !sub.isBacklog)
-        );
-    });
-
-
-    const latestResult = [...studentResults].sort((a, b) => (b.semester - a.semester) || (new Date(b.declarationDate || 0).getTime() - new Date(a.declarationDate || 0).getTime()))[0];
-    const latestCpi = latestResult?.cpi || 0;
-    const totalProgramCredits = program.totalCredits || 150; // Default to 150 if not set
-    const progressPercentage = totalProgramCredits > 0 ? (earnedCredits / totalProgramCredits) * 100 : 0;
-
-    let statusMessage = "On Track";
-    if (finalBacklogs.length > 0) {
-      statusMessage = `Attention Needed: ${finalBacklogs.length} Backlog(s)`;
-    } else if (progressPercentage >= 100 && (student.isPassAll || Object.values(student.semesterStatuses || {}).every(s => s === 'Passed'))) {
-      statusMessage = "Eligible for Graduation / Graduated";
-    } else if (progressPercentage >= 100) {
-        statusMessage = "Credits Complete, Awaiting Final Status";
-    }
-
-
-    return { earnedCredits, totalProgramCredits, latestCpi, backlogs: finalBacklogs, progressPercentage, statusMessage, semesterSgpa };
-  }, [student, program, studentResults, allCourses]);
-
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
@@ -354,264 +1278,211 @@ export default function StudentProfilePage() {
     return <div className="text-center py-10">Student profile not found. Please contact administration.</div>;
   }
 
-  const profileItems = [
-    { icon: UserCircle, label: "Enrollment No.", value: student.enrollmentNumber },
-    { icon: Mail, label: "Institute Email", value: student.instituteEmail },
-    { icon: Mail, label: "Personal Email", value: student.personalEmail || "N/A" },
-    { icon: Phone, label: "Contact", value: student.contactNumber || "N/A" },
-    { icon: CalendarDays, label: "Date of Birth", value: student.dateOfBirth && isValid(parseISO(student.dateOfBirth)) ? format(parseISO(student.dateOfBirth), "PPP") : "N/A" },
-    { icon: UserCircle, label: "Gender", value: student.gender || "N/A" },
-    { icon: UserCircle, label: "Blood Group", value: student.bloodGroup || "N/A" },
-    { icon: UserCircle, label: "Aadhar Number", value: student.aadharNumber || "N/A" },
-    { icon: GraduationCap, label: "Program", value: program?.name || "N/A" },
-    { icon: UsersIcon, label: "Batch", value: batch?.name || "N/A" },
-    { icon: Landmark, label: "Current Semester", value: student.currentSemester.toString() },
-    { icon: UserCircle, label: "Address", value: student.address || "N/A"},
-    { icon: UserCircle, label: "Guardian Name", value: student.guardianDetails?.name || "N/A" },
-    { icon: UserCircle, label: "Guardian Relation", value: student.guardianDetails?.relation || "N/A" },
-    { icon: Phone, label: "Guardian Contact", value: student.guardianDetails?.contactNumber || "N/A" },
-    { icon: UserCircle, label: "Guardian Occupation", value: student.guardianDetails?.occupation || "N/A" }
-  ];
-
   return (
     <div className="space-y-6">
-      <Card className="shadow-xl">
-        <CardHeader className="items-center text-center">
-          <Avatar className="w-24 h-24 mb-4 ring-2 ring-primary ring-offset-2">
-            <AvatarImage src={student.photoURL || `https://picsum.photos/seed/${student.id}/100/100`} alt={student.firstName || student.enrollmentNumber} data-ai-hint="student avatar" />
-            <AvatarFallback>{(student.firstName?.[0] || 'S').toUpperCase()}{(student.lastName?.[0] || 'P').toUpperCase()}</AvatarFallback>
-          </Avatar>
-          <CardTitle className="text-3xl font-bold text-primary">
-            {student.firstName} {student.middleName} {student.lastName}
-          </CardTitle>
-          <CardDescription className="text-lg">{student.enrollmentNumber}</CardDescription>
-        </CardHeader>
-        <CardContent className="grid md:grid-cols-2 gap-x-8 gap-y-4 px-6 md:px-10">
-          {profileItems.map((item, index) => (
-            <div key={index} className="flex items-start space-x-3 py-2 border-b border-muted last:border-b-0 md:last:border-b dark:border-gray-700">
-              <item.icon className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">{item.label}</p>
-                <p className="text-md text-foreground">{item.value}</p>
-              </div>
-            </div>
-          ))}
-        </CardContent>
-        <CardFooter className="justify-center pt-6 gap-4">
-           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-            <DialogTrigger asChild>
-              <Button variant="outline" onClick={handleEditProfile}>
-                <Edit className="mr-2 h-4 w-4" /> Edit Profile
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Edit Your Profile</DialogTitle>
-                <DialogDescription>
-                  Update your personal information. Some fields may be locked by administration.
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={handleProfileUpdateSubmit} className="space-y-4 py-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="editPersonalEmail">Personal Email</Label>
-                    <Input id="editPersonalEmail" type="email" value={formPersonalEmail} onChange={e => setFormPersonalEmail(e.target.value)} disabled={isSubmittingEdit}/>
-                  </div>
-                  <div>
-                    <Label htmlFor="editContactNumber">Contact Number</Label>
-                    <Input id="editContactNumber" type="tel" value={formContactNumber} onChange={e => setFormContactNumber(e.target.value)} disabled={isSubmittingEdit}/>
-                  </div>
-                  <div>
-                    <Label htmlFor="editDateOfBirth">Date of Birth</Label>
-                    <Input id="editDateOfBirth" type="date" value={formDateOfBirth} onChange={e => setFormDateOfBirth(e.target.value)} disabled={isSubmittingEdit}/>
-                  </div>
-                  <div>
-                    <Label htmlFor="editBloodGroup">Blood Group</Label>
-                    <Input id="editBloodGroup" type="text" value={formBloodGroup} onChange={e => setFormBloodGroup(e.target.value)} placeholder="e.g., A+, B-, O+" disabled={isSubmittingEdit}/>
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="editAddress">Address</Label>
-                  <Textarea id="editAddress" value={formAddress} onChange={e => setFormAddress(e.target.value)} disabled={isSubmittingEdit} rows={3}/>
-                </div>
-                <div>
-                  <Label htmlFor="editPhotoURL">Photo URL</Label>
-                  <Input id="editPhotoURL" type="url" value={formPhotoURL} onChange={e => setFormPhotoURL(e.target.value)} placeholder="https://example.com/photo.jpg" disabled={isSubmittingEdit}/>
-                </div>
-                
-                <div className="border-t pt-4">
-                  <h4 className="text-lg font-semibold mb-3">Guardian Information</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="editGuardianName">Guardian Name</Label>
-                      <Input id="editGuardianName" type="text" value={formGuardianName} onChange={e => setFormGuardianName(e.target.value)} disabled={isSubmittingEdit}/>
-                    </div>
-                    <div>
-                      <Label htmlFor="editGuardianRelation">Relation</Label>
-                      <Input id="editGuardianRelation" type="text" value={formGuardianRelation} onChange={e => setFormGuardianRelation(e.target.value)} placeholder="e.g., Father, Mother, Uncle" disabled={isSubmittingEdit}/>
-                    </div>
-                    <div>
-                      <Label htmlFor="editGuardianContact">Guardian Contact</Label>
-                      <Input id="editGuardianContact" type="tel" value={formGuardianContact} onChange={e => setFormGuardianContact(e.target.value)} disabled={isSubmittingEdit}/>
-                    </div>
-                    <div>
-                      <Label htmlFor="editGuardianOccupation">Guardian Occupation</Label>
-                      <Input id="editGuardianOccupation" type="text" value={formGuardianOccupation} onChange={e => setFormGuardianOccupation(e.target.value)} disabled={isSubmittingEdit}/>
-                    </div>
-                    <div className="md:col-span-2">
-                      <Label htmlFor="editGuardianIncome">Annual Income (₹)</Label>
-                      <Input id="editGuardianIncome" type="number" value={formGuardianIncome} onChange={e => setFormGuardianIncome(e.target.value)} placeholder="e.g., 500000" disabled={isSubmittingEdit}/>
-                    </div>
-                  </div>
-                </div>
-                
-                <DialogFooter>
-                  <DialogClose asChild><Button type="button" variant="outline" disabled={isSubmittingEdit}>Cancel</Button></DialogClose>
-                  <Button type="submit" disabled={isSubmittingEdit}>
-                    {isSubmittingEdit && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Save Changes
-                  </Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-           </Dialog>
-
-           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button disabled={isGeneratingResume}>
-                {isGeneratingResume ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <Download className="mr-2 h-4 w-4" />
-                )}
-                Generate Resume
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => handleGenerateResume('pdf')}>
-                <FileText className="mr-2 h-4 w-4" />
-                Download as PDF
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleGenerateResume('docx')}>
-                <FileCheck className="mr-2 h-4 w-4" />
-                Download as DOCX
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleGenerateResume('html')}>
-                <FileText className="mr-2 h-4 w-4" />
-                Download as HTML
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleGenerateResume('txt')}>
-                <FileText className="mr-2 h-4 w-4" />
-                Download as TXT
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </CardFooter>
-      </Card>
-      <Card className="shadow-xl">
+      {/* Header */}
+      <Card>
         <CardHeader>
-            <CardTitle className="text-xl font-bold text-primary flex items-center gap-2">
-                <TrendingUp className="h-6 w-6" /> Academic Progress Overview
-            </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-3 rounded-md bg-muted/50 border dark:border-gray-700">
-                    <Label className="text-xs text-muted-foreground">Overall CPI</Label>
-                    <p className="text-2xl font-semibold">{academicProgress.latestCpi.toFixed(2)}</p>
-                </div>
-                <div className="p-3 rounded-md bg-muted/50 border dark:border-gray-700">
-                    <Label className="text-xs text-muted-foreground">Credits Earned</Label>
-                    <p className="text-2xl font-semibold">{academicProgress.earnedCredits} / {academicProgress.totalProgramCredits}</p>
-                </div>
-                <div className="p-3 rounded-md bg-muted/50 border dark:border-gray-700">
-                    <Label className="text-xs text-muted-foreground">Status</Label>
-                    <p className={`text-lg font-semibold ${academicProgress.backlogs.length > 0 ? 'text-destructive' : 'text-success'}`}>{academicProgress.statusMessage}</p>
-                </div>
-            </div>
+          <div className="flex justify-between items-center">
             <div>
-                <Label className="text-sm font-medium">Credit Completion</Label>
-                <Progress value={academicProgress.progressPercentage} className="w-full mt-1 h-3" />
-                <p className="text-xs text-muted-foreground text-right">{academicProgress.progressPercentage.toFixed(1)}% Complete</p>
+              <CardTitle className="text-2xl">Student Profile</CardTitle>
+              <CardDescription>
+                Manage your comprehensive profile with academic information, skills, projects, and more
+              </CardDescription>
             </div>
-
-            {academicProgress.semesterSgpa && Object.keys(academicProgress.semesterSgpa).length > 0 && (
-                <div>
-                    <h4 className="text-md font-semibold mb-1 text-secondary">Semester Performance (SGPA)</h4>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                        {Object.entries(academicProgress.semesterSgpa)
-                            .sort(([semA], [semB]) => parseInt(semA) - parseInt(semB))
-                            .map(([semester, data]) => (
-                            <div key={semester} className="p-2 border rounded-md text-xs bg-background dark:border-gray-700">
-                                <span className="font-medium">Sem {semester}:</span> {data.sgpa.toFixed(2)}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
-
-            {academicProgress.backlogs.length > 0 && (
-                <div>
-                    <h4 className="text-md font-semibold mb-1 text-destructive flex items-center gap-1">
-                        <AlertCircle className="h-4 w-4"/> Current Backlogs
-                    </h4>
-                    <ul className="list-disc list-inside pl-4 text-sm text-muted-foreground">
-                        {academicProgress.backlogs.map((backlog, index) => (
-                            <li key={index}>{backlog.name} ({backlog.code}) - Sem {backlog.semester}</li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-             <div className="mt-4 flex flex-wrap gap-3">
-                <Button variant="outline" asChild>
-              <Link href="/student/results">
-                <BookOpen className="mr-2 h-4 w-4" /> View Detailed Marksheets
-              </Link>
-            </Button>
-            
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="default" disabled={isGeneratingResume}>
-                  {isGeneratingResume ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <Download className="mr-2 h-4 w-4" />
-                  )}
-                  Export Resume
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => handleGenerateResume('pdf')}>
-                  <FileText className="mr-2 h-4 w-4" />
-                  PDF Format (Recommended)
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleGenerateResume('docx')}>
-                  <FileCheck className="mr-2 h-4 w-4" />
-                  Microsoft Word
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleGenerateResume('html')}>
-                  <FileText className="mr-2 h-4 w-4" />
-                  Web Page
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleGenerateResume('txt')}>
-                  <FileText className="mr-2 h-4 w-4" />
-                  Plain Text
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="flex gap-2">
+              <Button asChild variant="outline">
+                <Link href={getPublicProfileUrl()} target="_blank">
+                  <Globe className="h-4 w-4 mr-2" />
+                  Public View
+                </Link>
+              </Button>
+              <Button onClick={() => handleGenerateResume('pdf')} variant="default">
+                <Download className="h-4 w-4 mr-2" />
+                Download Resume
+              </Button>
             </div>
-        </CardContent>
+          </div>
+        </CardHeader>
       </Card>
+
+      {/* Profile Management Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-6">
+          <TabsTrigger value="basic">Basic Info</TabsTrigger>
+          <TabsTrigger value="education">Education</TabsTrigger>
+          <TabsTrigger value="skills">Skills</TabsTrigger>
+          <TabsTrigger value="experience">Experience</TabsTrigger>
+          <TabsTrigger value="projects">Projects</TabsTrigger>
+          <TabsTrigger value="achievements">Achievements</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="basic" className="space-y-6">
+          {/* Profile Header */}
+          <Card className="shadow-xl">
+            <CardHeader className="items-center text-center">
+              <Avatar className="w-24 h-24 mb-4 ring-2 ring-primary ring-offset-2">
+                <AvatarImage src={student.photoURL || `https://picsum.photos/seed/${student.id}/100/100`} alt={student.firstName || student.enrollmentNumber} />
+                <AvatarFallback>{(student.firstName?.[0] || 'S').toUpperCase()}{(student.lastName?.[0] || 'P').toUpperCase()}</AvatarFallback>
+              </Avatar>
+              <CardTitle className="text-3xl font-bold text-primary">
+                {student.firstName} {student.middleName} {student.lastName}
+              </CardTitle>
+              <CardDescription className="text-lg">{student.enrollmentNumber}</CardDescription>
+            </CardHeader>
+            <CardContent className="grid md:grid-cols-2 gap-x-8 gap-y-4 px-6 md:px-10">
+              <div className="flex items-start space-x-3 py-2 border-b border-muted last:border-b-0">
+                <Mail className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Institute Email</p>
+                  <p className="text-md text-foreground">{student.instituteEmail}</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3 py-2 border-b border-muted last:border-b-0">
+                <UserCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Enrollment No.</p>
+                  <p className="text-md text-foreground">{student.enrollmentNumber}</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3 py-2 border-b border-muted last:border-b-0">
+                <GraduationCap className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Program</p>
+                  <p className="text-md text-foreground">{program?.name || "N/A"}</p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3 py-2 border-b border-muted last:border-b-0">
+                <Landmark className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Current Semester</p>
+                  <p className="text-md text-foreground">{student.currentSemester}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Profile Summary */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Profile Summary</CardTitle>
+              <CardDescription>
+                Write a brief summary about yourself that will appear at the top of your profile
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="profileSummary">About Me</Label>
+                <Textarea
+                  id="profileSummary"
+                  value={profileSummary}
+                  onChange={(e) => setProfileSummary(e.target.value)}
+                  placeholder="Tell us about yourself, your goals, interests, and what makes you unique..."
+                  rows={4}
+                />
+              </div>
+              <div>
+                <Label htmlFor="visibility">Profile Visibility</Label>
+                <Select value={profileVisibility} onValueChange={(value) => setProfileVisibility(value as any)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select visibility" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="public">Public - Anyone can view</SelectItem>
+                    <SelectItem value="institute_only">Institute Only - Only institute members</SelectItem>
+                    <SelectItem value="private">Private - Only you can view</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex justify-between items-center">
+                <div className="text-sm text-gray-600">
+                  Public URL: <code className="bg-gray-100 px-2 py-1 rounded">{getPublicProfileUrl()}</code>
+                </div>
+                <Button onClick={handleUpdateProfileSummary}>
+                  <Save className="h-4 w-4 mr-2" />
+                  Save Changes
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Resume Generation */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Download className="h-5 w-5" />
+                Resume & Documents
+              </CardTitle>
+              <CardDescription>
+                Generate professional documents in various formats
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <Button onClick={() => handleGenerateResume('pdf')} variant="outline" className="h-20 flex flex-col">
+                  <FileText className="h-6 w-6 mb-2" />
+                  <span>Resume PDF</span>
+                </Button>
+                <Button onClick={() => handleGenerateResume('cv')} variant="outline" className="h-20 flex flex-col">
+                  <FileText className="h-6 w-6 mb-2" />
+                  <span>Curriculum Vitae</span>
+                </Button>
+                <Button onClick={() => handleGenerateResume('biodata')} variant="outline" className="h-20 flex flex-col">
+                  <FileText className="h-6 w-6 mb-2" />
+                  <span>Biodata</span>
+                </Button>
+                <Button onClick={() => handleGenerateResume('docx')} variant="outline" className="h-20 flex flex-col">
+                  <FileCheck className="h-6 w-6 mb-2" />
+                  <span>Word Document</span>
+                </Button>
+                <Button onClick={() => handleGenerateResume('html')} variant="outline" className="h-20 flex flex-col">
+                  <Globe className="h-6 w-6 mb-2" />
+                  <span>Web Page</span>
+                </Button>
+                <Button onClick={() => handleGenerateResume('txt')} variant="outline" className="h-20 flex flex-col">
+                  <FileText className="h-6 w-6 mb-2" />
+                  <span>Plain Text</span>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="education" className="space-y-6">
+          <EducationSection 
+            education={student.education || []} 
+            onUpdate={handleUpdateEducation}
+          />
+        </TabsContent>
+
+        <TabsContent value="skills" className="space-y-6">
+          <SkillsSection 
+            skills={student.skills || []} 
+            onUpdate={handleUpdateSkills}
+          />
+        </TabsContent>
+
+        <TabsContent value="experience" className="space-y-6">
+          <ExperienceSection 
+            experience={student.experience || []} 
+            onUpdate={handleUpdateExperience}
+          />
+        </TabsContent>
+
+        <TabsContent value="projects" className="space-y-6">
+          <ProjectsSection 
+            projects={student.projects || []} 
+            onUpdate={handleUpdateProjects}
+          />
+        </TabsContent>
+
+        <TabsContent value="achievements" className="space-y-6">
+          <AchievementsSection 
+            achievements={student.achievements || []} 
+            onUpdate={handleUpdateAchievements}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
-
-// Placeholder for UsersIcon if it's used from a different import
-const UsersIcon = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-    <circle cx="9" cy="7" r="4"/>
-    <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-  </svg>
-);
-

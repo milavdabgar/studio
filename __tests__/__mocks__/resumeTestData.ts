@@ -19,6 +19,7 @@ export const mockStudent: Student = {
   programId: 'program-cs',
   batchId: 'batch-2021',
   currentSemester: 6,
+  status: 'active',
   profileSummary: 'Passionate computer science student with strong programming skills and experience in full-stack web development.',
   
   // Guardian details
@@ -33,43 +34,51 @@ export const mockStudent: Student = {
   // Skills
   skills: [
     {
+      id: 'skill-1',
       name: 'JavaScript',
-      category: 'Programming Languages',
-      proficiency: 'Advanced'
+      category: 'technical',
+      proficiency: 'advanced'
     },
     {
+      id: 'skill-2',
       name: 'React',
-      category: 'Frontend Frameworks',
-      proficiency: 'Intermediate'
+      category: 'technical',
+      proficiency: 'intermediate'
     },
     {
+      id: 'skill-3',
       name: 'Node.js',
-      category: 'Backend Technologies',
-      proficiency: 'Intermediate'
+      category: 'technical',
+      proficiency: 'intermediate'
     },
     {
+      id: 'skill-4',
       name: 'MongoDB',
-      category: 'Databases',
-      proficiency: 'Beginner'
+      category: 'technical',
+      proficiency: 'beginner'
     }
   ],
   
   // Projects
   projects: [
     {
+      id: 'project-1',
       title: 'E-commerce Website',
       description: 'A full-stack e-commerce application built with React and Node.js featuring user authentication, product catalog, and payment integration.',
       technologies: ['React', 'Node.js', 'MongoDB', 'Express.js'],
       startDate: '2023-01-01',
       endDate: '2023-06-01',
+      isOngoing: false,
       role: 'Full Stack Developer'
     },
     {
+      id: 'project-2',
       title: 'Task Management App',
       description: 'A mobile-responsive task management application with real-time collaboration features.',
       technologies: ['Vue.js', 'Firebase', 'CSS3'],
       startDate: '2023-06-01',
-      endDate: null,
+      endDate: undefined,
+      isOngoing: true,
       role: 'Frontend Developer'
     }
   ],
@@ -77,10 +86,12 @@ export const mockStudent: Student = {
   // Experience
   experience: [
     {
+      id: 'exp-1',
       company: 'Tech Innovations Ltd.',
       position: 'Software Development Intern',
       startDate: '2023-06-01',
       endDate: '2023-08-31',
+      isCurrently: false,
       description: 'Worked on developing REST APIs and frontend components for a customer management system.'
     }
   ],
@@ -88,11 +99,13 @@ export const mockStudent: Student = {
   // Education
   education: [
     {
+      id: 'edu-1',
       institution: 'ABC Higher Secondary School',
       degree: 'Higher Secondary Certificate',
       fieldOfStudy: 'Science',
       startDate: '2018-06-01',
       endDate: '2020-05-31',
+      isCurrently: false,
       grade: '85%',
       description: 'Completed with distinction in Mathematics and Physics'
     }
@@ -101,14 +114,18 @@ export const mockStudent: Student = {
   // Achievements
   achievements: [
     {
+      id: 'ach-1',
       title: 'First Prize in Coding Competition',
       description: 'Won first place in the inter-college programming contest organized by the university.',
-      date: '2023-03-15'
+      date: '2023-03-15',
+      category: 'competition'
     },
     {
+      id: 'ach-2',
       title: 'Dean\'s List',
       description: 'Recognized for academic excellence with a CGPA above 8.5',
-      date: '2022-12-01'
+      date: '2022-12-01',
+      category: 'academic'
     }
   ]
 };
@@ -118,42 +135,76 @@ export const mockProgram: Program = {
   name: 'Diploma in Computer Science and Engineering',
   code: 'DCS',
   duration: 3,
-  totalCredits: 180,
+  totalSemesters: 6,
+  departmentId: 'dept-cs',
+  instituteId: 'inst-1',
+  status: 'active',
   description: 'A comprehensive diploma program in computer science covering programming, algorithms, and software development.'
 };
 
 export const mockBatch: Batch = {
   id: 'batch-2021',
   name: '2021-2024',
-  startYear: 2021,
-  endYear: 2024,
-  programId: 'program-cs'
+  programId: 'program-cs',
+  startAcademicYear: 2021,
+  endAcademicYear: 2024,
+  status: 'active'
 };
 
 export const mockCourses: Course[] = [
   {
     id: 'course-1',
     subcode: 'CS101',
-    subname: 'Programming in C',
+    subjectName: 'Programming in C',
     credits: 4,
     semester: 1,
-    programId: 'program-cs'
+    programId: 'program-cs',
+    lectureHours: 3,
+    tutorialHours: 0,
+    practicalHours: 2,
+    theoryEseMarks: 70,
+    theoryPaMarks: 30,
+    practicalEseMarks: 50,
+    practicalPaMarks: 25,
+    oralPaMarks: 25,
+    totalMarks: 200,
+    status: 'active'
   },
   {
     id: 'course-2',
     subcode: 'CS102',
-    subname: 'Data Structures',
+    subjectName: 'Data Structures',
     credits: 4,
     semester: 2,
-    programId: 'program-cs'
+    programId: 'program-cs',
+    lectureHours: 3,
+    tutorialHours: 0,
+    practicalHours: 2,
+    theoryEseMarks: 70,
+    theoryPaMarks: 30,
+    practicalEseMarks: 50,
+    practicalPaMarks: 25,
+    oralPaMarks: 25,
+    totalMarks: 200,
+    status: 'active'
   },
   {
     id: 'course-3',
     subcode: 'CS201',
-    subname: 'Database Management Systems',
+    subjectName: 'Database Management Systems',
     credits: 4,
     semester: 3,
-    programId: 'program-cs'
+    programId: 'program-cs',
+    lectureHours: 3,
+    tutorialHours: 0,
+    practicalHours: 2,
+    theoryEseMarks: 70,
+    theoryPaMarks: 30,
+    practicalEseMarks: 50,
+    practicalPaMarks: 25,
+    oralPaMarks: 25,
+    totalMarks: 200,
+    status: 'active'
   }
 ];
 
@@ -277,23 +328,23 @@ export const mockResumeData: ResumeData = {
   skills: [
     {
       name: 'JavaScript',
-      category: 'Programming Languages',
-      proficiency: 'Advanced'
+      category: 'technical',
+      proficiency: 'advanced'
     },
     {
       name: 'React',
-      category: 'Frontend Frameworks',
-      proficiency: 'Intermediate'
+      category: 'technical',
+      proficiency: 'intermediate'
     },
     {
       name: 'Node.js',
-      category: 'Backend Technologies',
-      proficiency: 'Intermediate'
+      category: 'technical',
+      proficiency: 'intermediate'
     },
     {
       name: 'MongoDB',
-      category: 'Databases',
-      proficiency: 'Beginner'
+      category: 'technical',
+      proficiency: 'beginner'
     }
   ],
   
