@@ -1,0 +1,12 @@
+branch_code,branch_name,semester,academic_year,subject_code,subject_name,credits,hours,type,scraped_at
+06,Computer Engineering,1,2024-25,110001,Mathematics-I,4,4,Theory,2025-07-17 11:25:00
+06,Computer Engineering,1,2024-25,110002,Physics-I,4,4,Theory,2025-07-17 11:25:00
+06,Computer Engineering,1,2024-25,110003,Chemistry,4,4,Theory,2025-07-17 11:25:00
+06,Computer Engineering,1,2024-25,110004,Basic Electronics,4,4,Theory,2025-07-17 11:25:00
+06,Computer Engineering,1,2024-25,110005,Programming Fundamentals,4,4,Theory,2025-07-17 11:25:00
+09,Electrical Engineering,1,2024-25,110001,Mathematics-I,4,4,Theory,2025-07-17 11:25:00
+09,Electrical Engineering,1,2024-25,110002,Physics-I,4,4,Theory,2025-07-17 11:25:00
+11,Electronics & Communication,1,2024-25,110001,Mathematics-I,4,4,Theory,2025-07-17 11:25:00
+16,Information Technology,1,2024-25,110001,Mathematics-I,4,4,Theory,2025-07-17 11:25:00
+19,Mechanical Engineering,1,2024-25,110001,Mathematics-I,4,4,Theory,2025-07-17 11:25:00
+32,Civil Engineering,1,2024-25,110001,Mathematics-I,4,4,Theory,2025-07-17 11:25:00

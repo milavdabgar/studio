@@ -1,0 +1,252 @@
+[
+  {
+    "id": "ContentPlaceHolder1_ddcourse",
+    "name": "ctl00$ContentPlaceHolder1$ddcourse",
+    "class": [
+      "form-control"
+    ],
+    "options_count": 46,
+    "options": [
+      {
+        "value": "Select course",
+        "text": "Select course"
+      },
+      {
+        "value": "IB",
+        "text": "Applied Science- IB"
+      },
+      {
+        "value": "CS",
+        "text": "Applied Science-CS"
+      },
+      {
+        "value": "DB",
+        "text": "Applied Science-DB"
+      },
+      {
+        "value": "IM",
+        "text": "Applied Science-IM"
+      },
+      {
+        "value": "EP",
+        "text": "Bachelor of Engineering (Part Time)"
+      },
+      {
+        "value": "BI",
+        "text": "BACHELOR OF INTERIOR DESIGN"
+      },
+      {
+        "value": "BL",
+        "text": "Bachelor of Planning"
+      },
+      {
+        "value": "BS",
+        "text": "BACHELOR OF SCIENCE"
+      },
+      {
+        "value": "BA",
+        "text": "BARCH"
+      },
+      {
+        "value": "BB",
+        "text": "BBA"
+      },
+      {
+        "value": "BC",
+        "text": "BCA"
+      },
+      {
+        "value": "BC",
+        "text": "BCA"
+      },
+      {
+        "value": "BN",
+        "text": "Bdesign"
+      },
+      {
+        "value": "BE",
+        "text": "BE"
+      },
+      {
+        "value": "BH",
+        "text": "BHMCT"
+      },
+      {
+        "value": "BP",
+        "text": "BPHARM"
+      },
+      {
+        "value": "PP",
+        "text": "BPP"
+      },
+      {
+        "value": "BV",
+        "text": "BVoc"
+      },
+      {
+        "value": "DI",
+        "text": "DIPLOMA"
+      },
+      {
+        "value": "DA",
+        "text": "Diploma arc"
+      },
+      {
+        "value": "DP",
+        "text": "DPHARM"
+      },
+      {
+        "value": "DV",
+        "text": "DVoc"
+      },
+      {
+        "value": "MA",
+        "text": "IMBA"
+      },
+      {
+        "value": "MR",
+        "text": "M. Arch."
+      },
+      {
+        "value": "MH",
+        "text": "MAHS"
+      },
+      {
+        "value": "MN",
+        "text": "Master of Planning"
+      },
+      {
+        "value": "MB",
+        "text": "MBA"
+      },
+      {
+        "value": "MV",
+        "text": "MBA (part time)"
+      },
+      {
+        "value": "MA",
+        "text": "MBA Integrated"
+      },
+      {
+        "value": "MB",
+        "text": "MBA(ODL/OL)"
+      },
+      {
+        "value": "MC",
+        "text": "MCA"
+      },
+      {
+        "value": "IC",
+        "text": "MCA Integrated"
+      },
+      {
+        "value": "MC",
+        "text": "MCA(ODL/OL)"
+      },
+      {
+        "value": "ME",
+        "text": "ME"
+      },
+      {
+        "value": "MP",
+        "text": "MPHARM"
+      },
+      {
+        "value": "ML",
+        "text": "MPHIL"
+      },
+      {
+        "value": "PD",
+        "text": "PDDC"
+      },
+      {
+        "value": "DM",
+        "text": "PGDDM"
+      },
+      {
+        "value": "DM",
+        "text": "PGDDM"
+      },
+      {
+        "value": "DS",
+        "text": "PGDDS"
+      },
+      {
+        "value": "DH",
+        "text": "PGDHM"
+      },
+      {
+        "value": "PR",
+        "text": "PGDIPR"
+      },
+      {
+        "value": "FD",
+        "text": "PharmD"
+      },
+      {
+        "value": "PB",
+        "text": "PharmD(PB)"
+      },
+      {
+        "value": "PH",
+        "text": "PHD"
+      }
+    ]
+  },
+  {
+    "id": "ContentPlaceHolder1_ddlbrcode",
+    "name": "ctl00$ContentPlaceHolder1$ddlbrcode",
+    "class": [
+      "form-control"
+    ],
+    "options_count": 1,
+    "options": [
+      {
+        "value": "Select Branch",
+        "text": "Select Branch"
+      }
+    ]
+  },
+  {
+    "id": "ContentPlaceHolder1_ddsem",
+    "name": "ctl00$ContentPlaceHolder1$ddsem",
+    "class": [
+      "form-control"
+    ],
+    "options_count": 1,
+    "options": [
+      {
+        "value": "Sem",
+        "text": "Sem"
+      }
+    ]
+  },
+  {
+    "id": "ContentPlaceHolder1_ddl_effFrom",
+    "name": "ctl00$ContentPlaceHolder1$ddl_effFrom",
+    "class": [
+      "form-control"
+    ],
+    "options_count": 1,
+    "options": [
+      {
+        "value": "Academic Year",
+        "text": "Academic Year"
+      }
+    ]
+  },
+  {
+    "id": "ContentPlaceHolder1_ddl_iselective",
+    "name": "ctl00$ContentPlaceHolder1$ddl_iselective",
+    "class": [
+      "form-control"
+    ],
+    "options_count": 1,
+    "options": [
+      {
+        "value": "Elective / Non-Elective",
+        "text": "Elective / Non-Elective"
+      }
+    ]
+  }
+]
