@@ -767,28 +767,60 @@ ${processedContent}`;
             
             fs.writeFileSync(tempMdPath, fullMarkdown);
             
-            // Create enhanced LaTeX template based on reference templates
-            const latexTemplate = this.generateProfessionalLatexTemplate(title, author, date);
-            fs.writeFileSync(tempTexPath, latexTemplate);
-            
-            // Use pandoc with XeLaTeX engine and custom template
-            const pandocCommand = [
-                'pandoc',
-                `"${tempMdPath}"`,
-                '-o', `"${tempPdfPath}"`,
-                '--pdf-engine=xelatex',
-                '--template', `"${tempTexPath}"`,
-                '--standalone',
-                '--toc',
-                '--variable=colorlinks:true',
-                '--variable=linkcolor:blue',
-                '--variable=urlcolor:blue',
-                '--variable=toccolor:blue',
-                '--variable=fontsize:11pt',
-                '--variable=geometry:margin=1in'
-            ].join(' ');
-            
-            await execAsync(pandocCommand);
+            // Try enhanced LaTeX template first, fallback to basic if it fails
+            try {
+                // Create enhanced LaTeX template based on reference templates
+                const latexTemplate = this.generateProfessionalLatexTemplate(title, author, date);
+                fs.writeFileSync(tempTexPath, latexTemplate);
+                
+                // Use pandoc with XeLaTeX engine and custom template
+                const pandocCommand = [
+                    'pandoc',
+                    `"${tempMdPath}"`,
+                    '-o', `"${tempPdfPath}"`,
+                    '--pdf-engine=xelatex',
+                    '--template', `"${tempTexPath}"`,
+                    '--standalone',
+                    '--toc',
+                    '--variable=colorlinks:true',
+                    '--variable=linkcolor:blue',
+                    '--variable=urlcolor:blue',
+                    '--variable=toccolor:blue',
+                    '--variable=fontsize:11pt',
+                    '--variable=geometry:margin=1in'
+                ].join(' ');
+                
+                await execAsync(pandocCommand);
+                
+                if (!fs.existsSync(tempPdfPath)) {
+                    throw new Error('Custom template PDF generation failed');
+                }
+            } catch (templateError) {
+                console.warn('Custom template failed, falling back to basic pandoc:', templateError);
+                
+                // Clean up failed attempt
+                if (fs.existsSync(tempPdfPath)) {
+                    fs.unlinkSync(tempPdfPath);
+                }
+                
+                // Fallback to basic pandoc without custom template
+                const basicPandocCommand = [
+                    'pandoc',
+                    `"${tempMdPath}"`,
+                    '-o', `"${tempPdfPath}"`,
+                    '--pdf-engine=xelatex',
+                    '--standalone',
+                    '--toc',
+                    '--variable=colorlinks:true',
+                    '--variable=linkcolor:blue',
+                    '--variable=urlcolor:blue',
+                    '--variable=toccolor:blue',
+                    '--variable=fontsize:11pt',
+                    '--variable=geometry:margin=1in'
+                ].join(' ');
+                
+                await execAsync(basicPandocCommand);
+            }
             
             if (!fs.existsSync(tempPdfPath)) {
                 throw new Error('PDF generation failed - output file not created');
@@ -799,7 +831,9 @@ ${processedContent}`;
             
             // Clean up temporary files
             fs.unlinkSync(tempMdPath);
-            fs.unlinkSync(tempTexPath);
+            if (fs.existsSync(tempTexPath)) {
+                fs.unlinkSync(tempTexPath);
+            }
             fs.unlinkSync(tempPdfPath);
             
             return pdfBuffer;
