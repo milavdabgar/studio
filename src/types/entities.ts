@@ -220,6 +220,71 @@ export interface LanguageEntry {
     order?: number;
 }
 
+export interface VolunteerEntry {
+    id: string;
+    organization: string;
+    position: string;
+    startDate: string;
+    endDate?: string;
+    isCurrently: boolean;
+    description?: string;
+    skills?: string[];
+    achievements?: string[];
+    location?: string;
+    order?: number;
+}
+
+export interface ProfessionalMembershipEntry {
+    id: string;
+    organization: string;
+    membershipType: string;
+    startDate: string;
+    endDate?: string;
+    isCurrently: boolean;
+    membershipId?: string;
+    description?: string;
+    benefits?: string[];
+    order?: number;
+}
+
+export interface AwardEntry {
+    id: string;
+    title: string;
+    issuer: string;
+    date: string;
+    category: 'academic' | 'professional' | 'competition' | 'recognition' | 'scholarship' | 'other';
+    description?: string;
+    prize?: string;
+    certificateUrl?: string;
+    order?: number;
+}
+
+export interface ReferenceEntry {
+    id: string;
+    name: string;
+    position: string;
+    company: string;
+    email: string;
+    phone?: string;
+    relationship: 'supervisor' | 'colleague' | 'professor' | 'mentor' | 'other';
+    description?: string;
+    order?: number;
+}
+
+export interface ProfessionalDevelopmentEntry {
+    id: string;
+    title: string;
+    provider: string;
+    type: 'workshop' | 'seminar' | 'conference' | 'course' | 'bootcamp' | 'other';
+    startDate: string;
+    endDate?: string;
+    duration?: string;
+    description?: string;
+    skills?: string[];
+    certificateUrl?: string;
+    order?: number;
+}
+
 export interface ProfileSettings {
     showPersonalInfo?: boolean;
     showContactInfo?: boolean;
@@ -231,6 +296,11 @@ export interface ProfileSettings {
     showCertifications?: boolean;
     showPublications?: boolean;
     showLanguages?: boolean;
+    showVolunteerWork?: boolean;
+    showProfessionalMemberships?: boolean;
+    showAwards?: boolean;
+    showReferences?: boolean;
+    showProfessionalDevelopment?: boolean;
     allowDownload?: boolean;
     allowPrint?: boolean;
     customUrl?: string;
@@ -306,6 +376,7 @@ export interface Student {
     
     // LinkedIn-like Profile Sections
     profileSummary?: string;
+    careerObjective?: string;
     education?: EducationEntry[];
     experience?: ExperienceEntry[];
     projects?: ProjectEntry[];
@@ -314,6 +385,29 @@ export interface Student {
     certifications?: CertificationEntry[];
     publications?: PublicationEntry[];
     languages?: LanguageEntry[];
+    
+    // Additional Professional Sections
+    volunteerWork?: VolunteerEntry[];
+    professionalMemberships?: ProfessionalMembershipEntry[];
+    awards?: AwardEntry[];
+    references?: ReferenceEntry[];
+    professionalDevelopment?: ProfessionalDevelopmentEntry[];
+    
+    // Online Presence & Portfolio
+    portfolioWebsite?: string;
+    linkedinUrl?: string;
+    githubUrl?: string;
+    twitterUrl?: string;
+    personalWebsite?: string;
+    
+    // Additional Contact Information
+    alternateEmail?: string;
+    whatsappNumber?: string;
+    linkedinProfile?: string;
+    
+    // Professional Interests
+    careerInterests?: string[];
+    industryInterests?: string[];
     
     // Profile Settings
     profileVisibility?: 'public' | 'private' | 'institute_only';

@@ -383,12 +383,47 @@ export class ResumeGenerator {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 24pt;
-            text-align: center;
             margin-bottom: 16pt;
             page-break-inside: avoid;
             page-break-after: avoid;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
+            display: flex;
+            align-items: center;
+            gap: 20pt;
+        }
+        
+        .header-photo {
+            flex-shrink: 0;
+        }
+        
+        .header-photo img {
+            width: 80pt;
+            height: 100pt;
+            border-radius: 8pt;
+            object-fit: cover;
+            border: 2pt solid white;
+            box-shadow: 0 4pt 8pt rgba(0,0,0,0.2);
+        }
+        
+        .header-photo-placeholder {
+            width: 80pt;
+            height: 100pt;
+            border: 2pt solid white;
+            border-radius: 8pt;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8pt;
+            color: white;
+            background: rgba(255,255,255,0.1);
+            text-align: center;
+            line-height: 1.2;
+        }
+        
+        .header-content {
+            flex: 1;
+            text-align: left;
         }
         
         .header h1 {
@@ -864,25 +899,36 @@ export class ResumeGenerator {
 <body>
     <div class="resume-container">
         <div class="header">
-            <h1>${resumeData.fullName}</h1>
-            <div class="tagline">${resumeData.program} Student</div>
-            <div class="contact-grid">
-                <div class="contact-item">
-                    <span class="contact-icon">📧</span> ${resumeData.email}
+            <div class="header-photo">
+                ${resumeData.photoURL ? `
+                <img src="${resumeData.photoURL}" alt="${resumeData.fullName}">
+                ` : `
+                <div class="header-photo-placeholder">
+                    PROFESSIONAL<br>PHOTO
                 </div>
-                ${resumeData.contactNumber ? `
-                <div class="contact-item">
-                    <span class="contact-icon">📞</span> ${resumeData.contactNumber}
+                `}
+            </div>
+            <div class="header-content">
+                <h1>${resumeData.fullName}</h1>
+                <div class="tagline">${resumeData.program} Student</div>
+                <div class="contact-grid">
+                    <div class="contact-item">
+                        <span class="contact-icon">📧</span> ${resumeData.email}
+                    </div>
+                    ${resumeData.contactNumber ? `
+                    <div class="contact-item">
+                        <span class="contact-icon">📞</span> ${resumeData.contactNumber}
+                    </div>
+                    ` : ''}
+                    <div class="contact-item">
+                        <span class="contact-icon">🆔</span> ${resumeData.enrollmentNumber}
+                    </div>
+                    ${resumeData.address ? `
+                    <div class="contact-item">
+                        <span class="contact-icon">📍</span> ${resumeData.address}
+                    </div>
+                    ` : ''}
                 </div>
-                ` : ''}
-                <div class="contact-item">
-                    <span class="contact-icon">🆔</span> ${resumeData.enrollmentNumber}
-                </div>
-                ${resumeData.address ? `
-                <div class="contact-item">
-                    <span class="contact-icon">📍</span> ${resumeData.address}
-                </div>
-                ` : ''}
             </div>
         </div>
 
@@ -1037,6 +1083,103 @@ export class ResumeGenerator {
                             <div class="certification-title">${cert.name}</div>
                             <div class="certification-issuer">${cert.issuer}</div>
                             ${cert.date ? `<div class="certification-date">${cert.date}</div>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            ` : ''}
+
+            ${resumeData.awards && resumeData.awards.length > 0 ? `
+            <div class="section">
+                <h2 class="section-title">Awards & Honors</h2>
+                <div class="achievement-list">
+                    ${resumeData.awards.map(award => `
+                        <div class="achievement-item">
+                            <div class="achievement-title">${award.title}</div>
+                            <div class="achievement-description">${award.description}</div>
+                            ${award.date ? `<div class="achievement-date">${award.date}</div>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            ` : ''}
+
+            ${resumeData.experience && resumeData.experience.length > 0 ? `
+            <div class="section">
+                <h2 class="section-title">Professional Experience</h2>
+                <div class="achievement-list">
+                    ${resumeData.experience.map(exp => `
+                        <div class="achievement-item">
+                            <div class="achievement-title">${exp.position}</div>
+                            <div class="achievement-description">${exp.company}</div>
+                            <div class="achievement-date">${exp.startDate} - ${exp.endDate || 'Present'}</div>
+                            ${exp.description ? `<div class="achievement-description">${exp.description}</div>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            ` : ''}
+
+            ${resumeData.professionalMemberships && resumeData.professionalMemberships.length > 0 ? `
+            <div class="section">
+                <h2 class="section-title">Professional Memberships</h2>
+                <div class="achievement-list">
+                    ${resumeData.professionalMemberships.map(membership => `
+                        <div class="achievement-item">
+                            <div class="achievement-title">${membership.organization}</div>
+                            <div class="achievement-description">${membership.membershipType || 'Member'}</div>
+                            <div class="achievement-date">Since ${membership.startDate}</div>
+                            ${membership.description ? `<div class="achievement-description">${membership.description}</div>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            ` : ''}
+
+            ${resumeData.volunteerWork && resumeData.volunteerWork.length > 0 ? `
+            <div class="section">
+                <h2 class="section-title">Volunteer Experience</h2>
+                <div class="achievement-list">
+                    ${resumeData.volunteerWork.map(volunteer => `
+                        <div class="achievement-item">
+                            <div class="achievement-title">${volunteer.role}</div>
+                            <div class="achievement-description">${volunteer.organization}</div>
+                            <div class="achievement-date">${volunteer.startDate}${volunteer.endDate ? ` - ${volunteer.endDate}` : ' - Present'}</div>
+                            <div class="achievement-description">${volunteer.description}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            ` : ''}
+
+            ${resumeData.publications && resumeData.publications.length > 0 ? `
+            <div class="section">
+                <h2 class="section-title">Publications</h2>
+                <div class="achievement-list">
+                    ${resumeData.publications.map(pub => `
+                        <div class="achievement-item">
+                            <div class="achievement-title">${pub.title}</div>
+                            <div class="achievement-description">${pub.journal || pub.conference}</div>
+                            <div class="achievement-date">${pub.date}</div>
+                            <div class="achievement-description">${pub.authors}</div>
+                            ${pub.doi ? `<div class="achievement-description"><strong>DOI:</strong> ${pub.doi}</div>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            ` : ''}
+
+            ${resumeData.professionalDevelopment && resumeData.professionalDevelopment.length > 0 ? `
+            <div class="section">
+                <h2 class="section-title">Professional Development</h2>
+                <div class="achievement-list">
+                    ${resumeData.professionalDevelopment.map(dev => `
+                        <div class="achievement-item">
+                            <div class="achievement-title">${dev.title}</div>
+                            <div class="achievement-description">${dev.provider}</div>
+                            ${dev.date ? `<div class="achievement-date">${dev.date}</div>` : ''}
+                            <div class="achievement-description">${dev.description}</div>
+                            ${dev.skills ? `<div class="achievement-description"><strong>Skills:</strong> ${dev.skills.join(', ')}</div>` : ''}
                         </div>
                     `).join('')}
                 </div>
@@ -1973,6 +2116,22 @@ export class ResumeGenerator {
             text-align: center;
         }
         
+        .photo-section {
+            width: 80pt;
+            height: 100pt;
+            margin-right: 20pt;
+            flex-shrink: 0;
+        }
+        
+        .photo-section img {
+            width: 80pt;
+            height: 100pt;
+            border: 2pt solid white;
+            border-radius: 8pt;
+            object-fit: cover;
+            box-shadow: 0 4pt 8pt rgba(0,0,0,0.2);
+        }
+        
         .photo-placeholder {
             width: 80pt;
             height: 100pt;
@@ -1982,9 +2141,10 @@ export class ResumeGenerator {
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 20pt;
             font-size: 8pt;
             color: rgba(255,255,255,0.7);
+            text-align: center;
+            line-height: 1.2;
         }
         
         .header h1 {
@@ -2252,8 +2412,14 @@ export class ResumeGenerator {
 </head>
 <body>
     <div class="header">
-        <div class="photo-placeholder">
-            PHOTO<br>PLACEHOLDER
+        <div class="photo-section">
+            ${resumeData.photoURL ? `
+            <img src="${resumeData.photoURL}" alt="${resumeData.fullName}">
+            ` : `
+            <div class="photo-placeholder">
+                PROFESSIONAL<br>PHOTO
+            </div>
+            `}
         </div>
         <div class="header-content">
             <h1>${resumeData.fullName}</h1>
@@ -2443,6 +2609,160 @@ export class ResumeGenerator {
     </table>
     ` : ''}
 
+    ${resumeData.certifications && resumeData.certifications.length > 0 ? `
+    <!-- Certifications -->
+    <table class="biodata-table">
+        <tr>
+            <th class="section-header">Certifications</th>
+        </tr>
+        ${resumeData.certifications.map(cert => `
+        <tr>
+            <td class="value-col" style="padding: 15px;">
+                <strong style="color: #1565c0;">${cert.name}</strong><br>
+                Issued by: ${cert.issuer}
+                ${cert.date ? `<br><em style="color: #666; font-size: 0.9em;">Date: ${cert.date}</em>` : ''}
+                ${cert.url ? `<br><a href="${cert.url}" style="color: #1565c0; text-decoration: none;">View Certificate</a>` : ''}
+            </td>
+        </tr>
+        `).join('')}
+    </table>
+    ` : ''}
+
+    ${resumeData.awards && resumeData.awards.length > 0 ? `
+    <!-- Awards & Honors -->
+    <table class="biodata-table">
+        <tr>
+            <th class="section-header">Awards & Honors</th>
+        </tr>
+        ${resumeData.awards.map(award => `
+        <tr>
+            <td class="value-col" style="padding: 15px;">
+                <strong style="color: #1565c0;">${award.title}</strong><br>
+                Awarded by: ${award.issuer}<br>
+                ${award.description}
+                ${award.date ? `<br><em style="color: #666; font-size: 0.9em;">Date: ${award.date}</em>` : ''}
+            </td>
+        </tr>
+        `).join('')}
+    </table>
+    ` : ''}
+
+    ${resumeData.experience && resumeData.experience.length > 0 ? `
+    <!-- Professional Experience -->
+    <table class="biodata-table">
+        <tr>
+            <th class="section-header">Professional Experience</th>
+        </tr>
+        ${resumeData.experience.map(exp => `
+        <tr>
+            <td class="value-col" style="padding: 15px;">
+                <strong style="color: #1565c0;">${exp.position}</strong><br>
+                ${exp.company}<br>
+                Duration: ${exp.startDate} - ${exp.endDate || 'Present'}
+                ${exp.description ? `<br><br>${exp.description}` : ''}
+            </td>
+        </tr>
+        `).join('')}
+    </table>
+    ` : ''}
+
+    ${resumeData.projects && resumeData.projects.length > 0 ? `
+    <!-- Projects -->
+    <table class="biodata-table">
+        <tr>
+            <th class="section-header">Projects</th>
+        </tr>
+        ${resumeData.projects.map(project => `
+        <tr>
+            <td class="value-col" style="padding: 15px;">
+                <strong style="color: #1565c0;">${project.title}</strong><br>
+                ${project.role ? `Role: ${project.role}<br>` : ''}
+                ${project.duration ? `Duration: ${project.duration}<br>` : ''}
+                ${project.description}<br>
+                ${project.technologies ? `<br><strong>Technologies:</strong> ${project.technologies.join(', ')}` : ''}
+            </td>
+        </tr>
+        `).join('')}
+    </table>
+    ` : ''}
+
+    ${resumeData.professionalMemberships && resumeData.professionalMemberships.length > 0 ? `
+    <!-- Professional Memberships -->
+    <table class="biodata-table">
+        <tr>
+            <th class="section-header">Professional Memberships</th>
+        </tr>
+        ${resumeData.professionalMemberships.map(membership => `
+        <tr>
+            <td class="value-col" style="padding: 15px;">
+                <strong style="color: #1565c0;">${membership.organization}</strong><br>
+                ${membership.membershipType || 'Member'} since ${membership.startDate}
+                ${membership.description ? `<br><br>${membership.description}` : ''}
+            </td>
+        </tr>
+        `).join('')}
+    </table>
+    ` : ''}
+
+    ${resumeData.volunteerWork && resumeData.volunteerWork.length > 0 ? `
+    <!-- Volunteer Experience -->
+    <table class="biodata-table">
+        <tr>
+            <th class="section-header">Volunteer Experience</th>
+        </tr>
+        ${resumeData.volunteerWork.map(volunteer => `
+        <tr>
+            <td class="value-col" style="padding: 15px;">
+                <strong style="color: #1565c0;">${volunteer.role}</strong><br>
+                ${volunteer.organization}<br>
+                Duration: ${volunteer.startDate}${volunteer.endDate ? ` - ${volunteer.endDate}` : ' - Present'}<br>
+                ${volunteer.description}
+            </td>
+        </tr>
+        `).join('')}
+    </table>
+    ` : ''}
+
+    ${resumeData.publications && resumeData.publications.length > 0 ? `
+    <!-- Publications -->
+    <table class="biodata-table">
+        <tr>
+            <th class="section-header">Publications</th>
+        </tr>
+        ${resumeData.publications.map(pub => `
+        <tr>
+            <td class="value-col" style="padding: 15px;">
+                <strong style="color: #1565c0;">${pub.title}</strong><br>
+                ${pub.journal || pub.conference}<br>
+                Authors: ${pub.authors}
+                ${pub.date ? `<br>Date: ${pub.date}` : ''}
+                ${pub.doi ? `<br><strong>DOI:</strong> ${pub.doi}` : ''}
+            </td>
+        </tr>
+        `).join('')}
+    </table>
+    ` : ''}
+
+    ${resumeData.professionalDevelopment && resumeData.professionalDevelopment.length > 0 ? `
+    <!-- Professional Development -->
+    <table class="biodata-table">
+        <tr>
+            <th class="section-header">Professional Development</th>
+        </tr>
+        ${resumeData.professionalDevelopment.map(dev => `
+        <tr>
+            <td class="value-col" style="padding: 15px;">
+                <strong style="color: #1565c0;">${dev.title}</strong><br>
+                Provider: ${dev.provider}
+                ${dev.date ? `<br>Date: ${dev.date}` : ''}
+                <br><br>${dev.description}
+                ${dev.skills ? `<br><br><strong>Skills Developed:</strong> ${dev.skills.join(', ')}` : ''}
+            </td>
+        </tr>
+        `).join('')}
+    </table>
+    ` : ''}
+
     <!-- Declaration -->
     <div class="declaration">
         <h3>Declaration</h3>
@@ -2481,15 +2801,22 @@ export class ResumeGenerator {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${resumeData.fullName} - Curriculum Vitae</title>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Source+Sans+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         @page {
             size: A4;
-            margin: 0.75in;
+            margin: 0.5in 0.75in;
+            @top-right {
+                content: "${resumeData.fullName} - Curriculum Vitae";
+                font-size: 8pt;
+                color: #666;
+                font-family: 'Source Sans Pro', sans-serif;
+            }
             @bottom-center {
                 content: counter(page) " of " counter(pages);
-                font-size: 9pt;
+                font-size: 8pt;
                 color: #666;
+                font-family: 'Source Sans Pro', sans-serif;
             }
         }
         
@@ -2509,33 +2836,92 @@ export class ResumeGenerator {
             print-color-adjust: exact;
         }
         
+        .container {
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0;
+        }
+        
         .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            color: white;
-            padding: 24pt 20pt;
-            margin-bottom: 18pt;
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20pt;
+            padding-bottom: 16pt;
+            border-bottom: 2pt solid #1a252f;
             page-break-inside: avoid;
             page-break-after: avoid;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+        }
+        
+        .photo-section {
+            flex-shrink: 0;
+            margin-right: 24pt;
+        }
+        
+        .photo {
+            width: 80pt;
+            height: 100pt;
+            border-radius: 8pt;
+            object-fit: cover;
+            border: 2pt solid #1a252f;
+            box-shadow: 0 4pt 8pt rgba(0,0,0,0.1);
+        }
+        
+        .photo-placeholder {
+            width: 80pt;
+            height: 100pt;
+            border: 2pt solid #1a252f;
+            border-radius: 8pt;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8pt;
+            color: #666;
+            background: #f8f9fa;
+            text-align: center;
+            line-height: 1.2;
+        }
+        
+        .header-content {
+            flex: 1;
         }
         
         .header h1 {
             font-family: 'Source Sans Pro', 'Arial', sans-serif;
-            font-size: 24pt;
-            font-weight: 600;
+            font-size: 28pt;
+            font-weight: 700;
             margin-bottom: 4pt;
             letter-spacing: 0.5pt;
-            text-align: center;
+            color: #1a252f;
+            text-transform: uppercase;
         }
         
-        .header .title {
-            font-size: 12pt;
+        .header-subtitle {
+            font-size: 14pt;
+            color: #34495e;
             margin-bottom: 12pt;
-            font-style: italic;
-            font-weight: 400;
-            text-align: center;
-            opacity: 0.95;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1pt;
+        }
+        
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200pt, 1fr));
+            gap: 8pt;
+            margin-top: 12pt;
+        }
+        
+        .contact-item {
+            font-size: 10pt;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+        }
+        
+        .contact-item strong {
+            font-weight: 600;
+            margin-right: 4pt;
+            min-width: 50pt;
         }
         
         .contact-grid {
@@ -2559,103 +2945,328 @@ export class ResumeGenerator {
         }
         
         .section {
-            margin-bottom: 18pt;
+            margin-bottom: 20pt;
             page-break-inside: avoid;
             background: white;
         }
         
         .section-title {
             font-family: 'Source Sans Pro', 'Arial', sans-serif;
-            background: #34495e;
-            color: white;
-            padding: 8pt 12pt;
-            font-size: 12pt;
-            font-weight: 600;
+            color: #1a252f;
+            padding: 0;
+            font-size: 14pt;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5pt;
+            letter-spacing: 1pt;
             margin: 0 0 12pt 0;
             page-break-after: avoid;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+            border-bottom: 2pt solid #1a252f;
+            padding-bottom: 4pt;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2pt;
+            left: 0;
+            width: 40pt;
+            height: 2pt;
+            background: #e74c3c;
+            border-radius: 1pt;
         }
         
         .section-content {
-            padding: 12pt;
+            padding: 0;
+            margin-top: 12pt;
         }
         
-        .timeline {
-            position: relative;
-            margin-left: 15pt;
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24pt;
+            margin-top: 20pt;
         }
         
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: -8pt;
-            top: 0;
-            bottom: 0;
-            width: 2pt;
-            background: #34495e;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+        .left-column {
+            padding-right: 12pt;
         }
         
-        .timeline-item {
-            position: relative;
+        .right-column {
+            padding-left: 12pt;
+        }
+        
+        .professional-summary {
+            font-style: italic;
+            text-align: justify;
             margin-bottom: 16pt;
+            padding: 12pt;
+            background: #f8f9fa;
+            border-left: 4pt solid #e74c3c;
+            font-size: 10pt;
+            line-height: 1.6;
+        }
+        
+        .entry-item {
+            margin-bottom: 16pt;
+            page-break-inside: avoid;
+            padding-bottom: 12pt;
+            border-bottom: 1pt solid #e8e8e8;
+        }
+        
+        .entry-item:last-child {
+            border-bottom: none;
+        }
+        
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6pt;
+        }
+        
+        .entry-title {
+            font-family: 'Source Sans Pro', 'Arial', sans-serif;
+            font-size: 12pt;
+            font-weight: 600;
+            color: #1a252f;
+            margin-bottom: 2pt;
+        }
+        
+        .entry-subtitle {
+            font-size: 10pt;
+            color: #e74c3c;
+            font-weight: 500;
+            margin-bottom: 4pt;
+        }
+        
+        .entry-date {
+            color: #7f8c8d;
+            font-size: 9pt;
+            font-style: italic;
+            font-weight: 500;
+            text-align: right;
+            flex-shrink: 0;
+            margin-left: 16pt;
+        }
+        
+        .entry-description {
+            color: #34495e;
+            text-align: justify;
+            line-height: 1.5;
+            font-size: 10pt;
+            margin-top: 6pt;
+        }
+        
+        .entry-list {
+            margin-top: 8pt;
+        }
+        
+        .entry-list ul {
+            margin: 0;
             padding-left: 16pt;
+        }
+        
+        .entry-list li {
+            margin-bottom: 4pt;
+            font-size: 10pt;
+            line-height: 1.4;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120pt, 1fr));
+            gap: 12pt;
+            margin-top: 8pt;
+        }
+        
+        .skill-category {
+            background: #f8f9fa;
+            padding: 10pt;
+            border-radius: 4pt;
+            border-left: 3pt solid #e74c3c;
             page-break-inside: avoid;
         }
         
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -12pt;
-            top: 4pt;
-            width: 8pt;
-            height: 8pt;
-            background: #34495e;
-            border-radius: 50%;
-            border: 2pt solid white;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-        
-        .timeline-title {
+        .skill-category-title {
             font-family: 'Source Sans Pro', 'Arial', sans-serif;
-            font-size: 11pt;
             font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 2pt;
-            page-break-after: avoid;
-        }
-        
-        .timeline-subtitle {
-            font-size: 10pt;
-            color: #e74c3c;
-            margin-bottom: 4pt;
-            font-weight: 500;
-            font-style: italic;
-        }
-        
-        .timeline-date {
-            color: #7f8c8d;
-            font-size: 9pt;
+            color: #1a252f;
             margin-bottom: 6pt;
-            font-style: italic;
-            background: #f8f9fa;
-            display: inline-block;
+            font-size: 10pt;
+            text-transform: uppercase;
+            letter-spacing: 0.5pt;
+        }
+        
+        .skill-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4pt;
+        }
+        
+        .skill-item {
+            background: #1a252f;
+            color: white;
             padding: 2pt 6pt;
             border-radius: 8pt;
+            font-size: 8pt;
+            font-weight: 500;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
         
-        .timeline-description {
-            color: #34495e;
-            text-align: justify;
-            line-height: 1.4;
+        .publication-item {
+            margin-bottom: 12pt;
+            page-break-inside: avoid;
+        }
+        
+        .publication-title {
+            font-weight: 600;
+            color: #1a252f;
+            margin-bottom: 4pt;
+        }
+        
+        .publication-details {
             font-size: 10pt;
+            color: #34495e;
+            font-style: italic;
+            margin-bottom: 4pt;
+        }
+        
+        .award-item {
+            margin-bottom: 12pt;
+            padding: 8pt;
+            background: #fff9f0;
+            border-left: 3pt solid #f39c12;
+            page-break-inside: avoid;
+        }
+        
+        .award-title {
+            font-weight: 600;
+            color: #1a252f;
+            margin-bottom: 2pt;
+        }
+        
+        .award-issuer {
+            font-size: 10pt;
+            color: #e74c3c;
+            font-weight: 500;
+        }
+        
+        .award-date {
+            font-size: 9pt;
+            color: #7f8c8d;
+            font-style: italic;
+            float: right;
+        }
+        
+        /* Print-specific styles for CV */
+        @media print {
+            body {
+                font-size: 10pt;
+                line-height: 1.4;
+            }
+            
+            .header {
+                margin-bottom: 16pt;
+                padding-bottom: 12pt;
+            }
+            
+            .header h1 {
+                font-size: 24pt;
+            }
+            
+            .header-subtitle {
+                font-size: 12pt;
+            }
+            
+            .contact-info {
+                grid-template-columns: repeat(auto-fit, minmax(180pt, 1fr));
+                gap: 6pt;
+            }
+            
+            .contact-item {
+                font-size: 9pt;
+            }
+            
+            .section {
+                margin-bottom: 16pt;
+            }
+            
+            .section-title {
+                font-size: 12pt;
+                margin-bottom: 10pt;
+            }
+            
+            .two-column {
+                gap: 20pt;
+            }
+            
+            .entry-item {
+                margin-bottom: 12pt;
+                padding-bottom: 10pt;
+            }
+            
+            .entry-title {
+                font-size: 11pt;
+            }
+            
+            .entry-subtitle {
+                font-size: 9pt;
+            }
+            
+            .entry-date {
+                font-size: 8pt;
+            }
+            
+            .entry-description {
+                font-size: 9pt;
+                line-height: 1.4;
+            }
+            
+            .skills-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100pt, 1fr));
+                gap: 10pt;
+            }
+            
+            .skill-category {
+                padding: 8pt;
+            }
+            
+            .skill-category-title {
+                font-size: 9pt;
+            }
+            
+            .skill-item {
+                font-size: 7pt;
+            }
+            
+            .professional-summary {
+                font-size: 9pt;
+                padding: 10pt;
+                margin-bottom: 12pt;
+            }
+            
+            .photo {
+                width: 70pt;
+                height: 90pt;
+            }
+            
+            .photo-placeholder {
+                width: 70pt;
+                height: 90pt;
+                font-size: 7pt;
+            }
+            
+            .photo-section {
+                margin-right: 20pt;
+            }
+            
+            /* Ensure all colored elements print properly */
+            .photo, .photo-placeholder, .skill-item, .award-item, .skill-category, .professional-summary {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
         }
         
         .skills-container {
@@ -2888,51 +3499,94 @@ export class ResumeGenerator {
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>${resumeData.fullName}</h1>
-        <div class="title">CURRICULUM VITAE</div>
-        <div class="contact-grid">
-            <div class="contact-item">${resumeData.program} Student</div>
-            <div class="contact-item">Enrollment: ${resumeData.enrollmentNumber}</div>
-            <div class="contact-item">${resumeData.personalEmail || resumeData.email}</div>
-            <div class="contact-item">${resumeData.contactNumber || 'Contact Available'}</div>
-            ${resumeData.address ? `<div class="contact-item">${resumeData.address}</div>` : ''}
+    <div class="container">
+        <div class="header">
+            <div class="photo-section">
+                ${resumeData.photoURL ? `
+                <img src="${resumeData.photoURL}" alt="${resumeData.fullName}" class="photo">
+                ` : `
+                <div class="photo-placeholder">
+                    PROFESSIONAL<br>PHOTO
+                </div>
+                `}
+            </div>
+            <div class="header-content">
+                <h1>${resumeData.fullName}</h1>
+                <div class="header-subtitle">Curriculum Vitae</div>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <strong>Program:</strong> ${resumeData.program}
+                    </div>
+                    <div class="contact-item">
+                        <strong>Enrollment:</strong> ${resumeData.enrollmentNumber}
+                    </div>
+                    <div class="contact-item">
+                        <strong>Email:</strong> ${resumeData.personalEmail || resumeData.email}
+                    </div>
+                    <div class="contact-item">
+                        <strong>Phone:</strong> ${resumeData.contactNumber || 'Available upon request'}
+                    </div>
+                    ${resumeData.address ? `
+                    <div class="contact-item">
+                        <strong>Address:</strong> ${resumeData.address}
+                    </div>
+                    ` : ''}
+                    ${resumeData.linkedinUrl ? `
+                    <div class="contact-item">
+                        <strong>LinkedIn:</strong> ${resumeData.linkedinUrl}
+                    </div>
+                    ` : ''}
+                    ${resumeData.portfolioWebsite ? `
+                    <div class="contact-item">
+                        <strong>Portfolio:</strong> ${resumeData.portfolioWebsite}
+                    </div>
+                    ` : ''}
+                </div>
+            </div>
         </div>
-    </div>
 
-    ${resumeData.profileSummary ? `
-    <div class="section">
-        <h2 class="section-title">Professional Objective</h2>
-        <div class="section-content">
-            <p style="text-align: justify; line-height: 1.8; font-size: 1.1em; color: #2c3e50;">${resumeData.profileSummary}</p>
+        ${resumeData.profileSummary ? `
+        <div class="professional-summary">
+            <strong>Professional Summary:</strong> ${resumeData.profileSummary}
         </div>
-    </div>
-    ` : ''}
+        ` : ''}
 
-    <div class="section">
-        <h2 class="section-title">Educational Qualifications</h2>
-        <div class="section-content">
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-title">Current Education</div>
-                    <div class="timeline-subtitle">${resumeData.program}</div>
-                    <div class="timeline-subtitle">Government Polytechnic Palanpur</div>
-                    <div class="timeline-date">Current Semester: ${resumeData.currentSemester}</div>
-                    ${resumeData.overallCPI ? `<div class="timeline-description"><strong>Overall CPI:</strong> ${resumeData.overallCPI.toFixed(2)}</div>` : ''}
+        ${resumeData.careerObjective ? `
+        <div class="professional-summary">
+            <strong>Career Objective:</strong> ${resumeData.careerObjective}
+        </div>
+        ` : ''}
+
+        <div class="section">
+            <h2 class="section-title">Educational Qualifications</h2>
+            <div class="section-content">
+                <div class="entry-item">
+                    <div class="entry-header">
+                        <div>
+                            <div class="entry-title">Current Education</div>
+                            <div class="entry-subtitle">${resumeData.program}</div>
+                            <div class="entry-subtitle">Government Polytechnic Palanpur</div>
+                        </div>
+                        <div class="entry-date">Current Semester: ${resumeData.currentSemester}</div>
+                    </div>
+                    ${resumeData.overallCPI ? `<div class="entry-description"><strong>Overall CPI:</strong> ${resumeData.overallCPI.toFixed(2)}</div>` : ''}
                 </div>
 
                 ${resumeData.education && resumeData.education.length > 0 ? resumeData.education.map(edu => `
-                    <div class="timeline-item">
-                        <div class="timeline-title">${edu.degree}</div>
-                        <div class="timeline-subtitle">${edu.institution}</div>
-                        <div class="timeline-date">${edu.startDate} - ${edu.endDate || 'Present'}</div>
-                        ${edu.grade ? `<div class="timeline-description"><strong>Grade:</strong> ${edu.grade}</div>` : ''}
-                        ${edu.description ? `<div class="timeline-description">${edu.description}</div>` : ''}
+                    <div class="entry-item">
+                        <div class="entry-header">
+                            <div>
+                                <div class="entry-title">${edu.degree}</div>
+                                <div class="entry-subtitle">${edu.institution}</div>
+                            </div>
+                            <div class="entry-date">${edu.startDate} - ${edu.endDate || 'Present'}</div>
+                        </div>
+                        ${edu.grade ? `<div class="entry-description"><strong>Grade:</strong> ${edu.grade}</div>` : ''}
+                        ${edu.description ? `<div class="entry-description">${edu.description}</div>` : ''}
                     </div>
                 `).join('') : ''}
             </div>
         </div>
-    </div>
 
     ${resumeData.overallCPI ? `
     <div class="academic-stats">
@@ -2976,42 +3630,46 @@ export class ResumeGenerator {
     </div>
     ` : ''}
 
-    ${resumeData.experience && resumeData.experience.length > 0 ? `
-    <div class="section">
-        <h2 class="section-title">Professional Experience</h2>
-        <div class="section-content">
-            <div class="timeline">
+        ${resumeData.experience && resumeData.experience.length > 0 ? `
+        <div class="section">
+            <h2 class="section-title">Professional Experience</h2>
+            <div class="section-content">
                 ${resumeData.experience.map(exp => `
-                    <div class="timeline-item">
-                        <div class="timeline-title">${exp.position}</div>
-                        <div class="timeline-subtitle">${exp.company}</div>
-                        <div class="timeline-date">${exp.startDate} - ${exp.endDate || 'Present'}</div>
-                        ${exp.description ? `<div class="timeline-description">${exp.description}</div>` : ''}
+                    <div class="entry-item">
+                        <div class="entry-header">
+                            <div>
+                                <div class="entry-title">${exp.position}</div>
+                                <div class="entry-subtitle">${exp.company}</div>
+                            </div>
+                            <div class="entry-date">${exp.startDate} - ${exp.endDate || 'Present'}</div>
+                        </div>
+                        ${exp.description ? `<div class="entry-description">${exp.description}</div>` : ''}
                     </div>
                 `).join('')}
             </div>
         </div>
-    </div>
-    ` : ''}
+        ` : ''}
 
-    ${resumeData.projects && resumeData.projects.length > 0 ? `
-    <div class="section">
-        <h2 class="section-title">Projects & Research</h2>
-        <div class="section-content">
-            <div class="timeline">
+        ${resumeData.projects && resumeData.projects.length > 0 ? `
+        <div class="section">
+            <h2 class="section-title">Projects & Research</h2>
+            <div class="section-content">
                 ${resumeData.projects.map(project => `
-                    <div class="timeline-item">
-                        <div class="timeline-title">${project.title}</div>
-                        ${project.role ? `<div class="timeline-subtitle">Role: ${project.role}</div>` : ''}
-                        ${project.duration ? `<div class="timeline-date">${project.duration}</div>` : ''}
-                        <div class="timeline-description">${project.description}</div>
-                        ${project.technologies ? `<div class="timeline-description"><strong>Technologies:</strong> ${project.technologies.join(', ')}</div>` : ''}
+                    <div class="entry-item">
+                        <div class="entry-header">
+                            <div>
+                                <div class="entry-title">${project.title}</div>
+                                ${project.role ? `<div class="entry-subtitle">Role: ${project.role}</div>` : ''}
+                            </div>
+                            ${project.duration ? `<div class="entry-date">${project.duration}</div>` : ''}
+                        </div>
+                        <div class="entry-description">${project.description}</div>
+                        ${project.technologies ? `<div class="entry-description"><strong>Technologies:</strong> ${project.technologies.join(', ')}</div>` : ''}
                     </div>
                 `).join('')}
             </div>
         </div>
-    </div>
-    ` : ''}
+        ` : ''}
 
     ${resumeData.skills && resumeData.skills.length > 0 ? `
     <div class="section">
@@ -3035,26 +3693,150 @@ export class ResumeGenerator {
     </div>
     ` : ''}
 
-    ${resumeData.achievements && resumeData.achievements.length > 0 ? `
-    <div class="section">
-        <h2 class="section-title">Achievements & Recognition</h2>
-        <div class="section-content">
-            <div class="timeline">
+        ${resumeData.achievements && resumeData.achievements.length > 0 ? `
+        <div class="section">
+            <h2 class="section-title">Achievements & Recognition</h2>
+            <div class="section-content">
                 ${resumeData.achievements.map(achievement => `
-                    <div class="timeline-item">
-                        <div class="timeline-title">${achievement.title}</div>
-                        ${achievement.date ? `<div class="timeline-date">${achievement.date}</div>` : ''}
-                        <div class="timeline-description">${achievement.description}</div>
+                    <div class="entry-item">
+                        <div class="entry-header">
+                            <div>
+                                <div class="entry-title">${achievement.title}</div>
+                            </div>
+                            ${achievement.date ? `<div class="entry-date">${achievement.date}</div>` : ''}
+                        </div>
+                        <div class="entry-description">${achievement.description}</div>
                     </div>
                 `).join('')}
             </div>
         </div>
-    </div>
-    ` : ''}
+        ` : ''}
 
-    <div class="footer">
-        <p>Generated on ${format(new Date(), 'PPP')} | Comprehensive Curriculum Vitae</p>
-    </div>
+        ${resumeData.certifications && resumeData.certifications.length > 0 ? `
+        <div class="section">
+            <h2 class="section-title">Certifications</h2>
+            <div class="section-content">
+                ${resumeData.certifications.map(cert => `
+                    <div class="entry-item">
+                        <div class="entry-header">
+                            <div>
+                                <div class="entry-title">${cert.name}</div>
+                                <div class="entry-subtitle">Issued by ${cert.issuer}</div>
+                            </div>
+                            ${cert.date ? `<div class="entry-date">${cert.date}</div>` : ''}
+                        </div>
+                        ${cert.url ? `<div class="entry-description"><strong>Credential URL:</strong> ${cert.url}</div>` : ''}
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        ` : ''}
+
+        ${resumeData.awards && resumeData.awards.length > 0 ? `
+        <div class="section">
+            <h2 class="section-title">Awards & Honors</h2>
+            <div class="section-content">
+                ${resumeData.awards.map(award => `
+                    <div class="entry-item">
+                        <div class="entry-header">
+                            <div>
+                                <div class="entry-title">${award.title}</div>
+                                <div class="entry-subtitle">Awarded by ${award.issuer}</div>
+                            </div>
+                            ${award.date ? `<div class="entry-date">${award.date}</div>` : ''}
+                        </div>
+                        <div class="entry-description">${award.description}</div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        ` : ''}
+
+        ${resumeData.professionalMemberships && resumeData.professionalMemberships.length > 0 ? `
+        <div class="section">
+            <h2 class="section-title">Professional Memberships</h2>
+            <div class="section-content">
+                ${resumeData.professionalMemberships.map(membership => `
+                    <div class="entry-item">
+                        <div class="entry-header">
+                            <div>
+                                <div class="entry-title">${membership.organization}</div>
+                                <div class="entry-subtitle">Member since ${membership.startDate}</div>
+                            </div>
+                            ${membership.membershipType ? `<div class="entry-date">${membership.membershipType}</div>` : ''}
+                        </div>
+                        ${membership.description ? `<div class="entry-description">${membership.description}</div>` : ''}
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        ` : ''}
+
+        ${resumeData.volunteerWork && resumeData.volunteerWork.length > 0 ? `
+        <div class="section">
+            <h2 class="section-title">Volunteer Experience</h2>
+            <div class="section-content">
+                ${resumeData.volunteerWork.map(volunteer => `
+                    <div class="entry-item">
+                        <div class="entry-header">
+                            <div>
+                                <div class="entry-title">${volunteer.role}</div>
+                                <div class="entry-subtitle">${volunteer.organization}</div>
+                            </div>
+                            <div class="entry-date">${volunteer.startDate}${volunteer.endDate ? ` - ${volunteer.endDate}` : ' - Present'}</div>
+                        </div>
+                        <div class="entry-description">${volunteer.description}</div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        ` : ''}
+
+        ${resumeData.publications && resumeData.publications.length > 0 ? `
+        <div class="section">
+            <h2 class="section-title">Publications</h2>
+            <div class="section-content">
+                ${resumeData.publications.map(pub => `
+                    <div class="entry-item">
+                        <div class="entry-header">
+                            <div>
+                                <div class="entry-title">${pub.title}</div>
+                                <div class="entry-subtitle">${pub.journal || pub.conference}</div>
+                            </div>
+                            ${pub.date ? `<div class="entry-date">${pub.date}</div>` : ''}
+                        </div>
+                        <div class="entry-description">${pub.authors}</div>
+                        ${pub.doi ? `<div class="entry-description"><strong>DOI:</strong> ${pub.doi}</div>` : ''}
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        ` : ''}
+
+        ${resumeData.professionalDevelopment && resumeData.professionalDevelopment.length > 0 ? `
+        <div class="section">
+            <h2 class="section-title">Professional Development</h2>
+            <div class="section-content">
+                ${resumeData.professionalDevelopment.map(dev => `
+                    <div class="entry-item">
+                        <div class="entry-header">
+                            <div>
+                                <div class="entry-title">${dev.title}</div>
+                                <div class="entry-subtitle">${dev.provider}</div>
+                            </div>
+                            ${dev.date ? `<div class="entry-date">${dev.date}</div>` : ''}
+                        </div>
+                        <div class="entry-description">${dev.description}</div>
+                        ${dev.skills ? `<div class="entry-description"><strong>Skills Developed:</strong> ${dev.skills.join(', ')}</div>` : ''}
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        ` : ''}
+
+        <div class="footer">
+            <p>Generated on ${format(new Date(), 'PPP')} | Comprehensive Curriculum Vitae</p>
+        </div>
 </body>
 </html>
     `.trim();

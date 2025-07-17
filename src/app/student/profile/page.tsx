@@ -48,6 +48,8 @@ import {
   Download, 
   FileText, 
   BookOpen,
+  Camera,
+  Upload,
   Briefcase,
   Code,
   Award,
@@ -1108,6 +1110,7 @@ export default function StudentProfilePage() {
   // Profile Summary State
   const [profileSummary, setProfileSummary] = useState('');
   const [profileVisibility, setProfileVisibility] = useState<'public' | 'private' | 'institute_only'>('public');
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
 
   useEffect(() => {
     const authUserCookie = getCookie('auth_user');
@@ -1210,6 +1213,54 @@ export default function StudentProfilePage() {
 
   const handleUpdateProfileSummary = () => {
     handleUpdateProfile({ profileSummary, profileVisibility });
+  };
+
+  const handlePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !student) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({ variant: "destructive", title: "Error", description: "Please select an image file." });
+      return;
+    }
+
+    // Validate file size (2MB limit)
+    if (file.size > 2 * 1024 * 1024) {
+      toast({ variant: "destructive", title: "Error", description: "Image must be less than 2MB." });
+      return;
+    }
+
+    setIsUploadingPhoto(true);
+    
+    try {
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('photo', file);
+      formData.append('studentId', student.id);
+
+      // Upload to server
+      const response = await fetch('/api/students/upload-photo', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload photo');
+      }
+
+      const { photoURL } = await response.json();
+      
+      // Update student profile with new photo URL
+      await handleUpdateProfile({ photoURL });
+      
+      toast({ title: "Success", description: "Profile photo updated successfully!" });
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+      toast({ variant: "destructive", title: "Error", description: "Failed to upload photo. Please try again." });
+    } finally {
+      setIsUploadingPhoto(false);
+    }
   };
 
   const getPublicProfileUrl = () => {
@@ -1328,10 +1379,31 @@ export default function StudentProfilePage() {
           {/* Profile Header */}
           <Card className="shadow-xl">
             <CardHeader className="items-center text-center">
-              <Avatar className="w-24 h-24 mb-4 ring-2 ring-primary ring-offset-2">
-                <AvatarImage src={student.photoURL || `https://picsum.photos/seed/${student.id}/100/100`} alt={student.firstName || student.enrollmentNumber} />
-                <AvatarFallback>{(student.firstName?.[0] || 'S').toUpperCase()}{(student.lastName?.[0] || 'P').toUpperCase()}</AvatarFallback>
-              </Avatar>
+              <div className="relative">
+                <Avatar className="w-24 h-24 mb-4 ring-2 ring-primary ring-offset-2">
+                  <AvatarImage src={student.photoURL || `https://picsum.photos/seed/${student.id}/100/100`} alt={student.firstName || student.enrollmentNumber} />
+                  <AvatarFallback>{(student.firstName?.[0] || 'S').toUpperCase()}{(student.lastName?.[0] || 'P').toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <div className="absolute -bottom-2 -right-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
+                    className="hidden"
+                    id="photo-upload"
+                  />
+                  <label
+                    htmlFor="photo-upload"
+                    className="cursor-pointer inline-flex items-center justify-center w-8 h-8 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors"
+                  >
+                    {isUploadingPhoto ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Camera className="h-4 w-4" />
+                    )}
+                  </label>
+                </div>
+              </div>
               <CardTitle className="text-3xl font-bold text-primary">
                 {student.firstName} {student.middleName} {student.lastName}
               </CardTitle>
