@@ -1,0 +1,283 @@
+%-------------------------
+% Enhanced Professional Resume Template
+% Optimized for Academic Institution Students
+% Compiled with XeLaTeX for best results
+%-------------------------
+
+\documentclass[11pt,a4paper]{article}
+
+% Packages for XeLaTeX
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+
+% Modern font selection with fallbacks
+\IfFontExistsTF{Inter}{
+    \setmainfont{Inter}[Scale=1.0]
+}{
+    \IfFontExistsTF{Liberation Serif}{
+        \setmainfont{Liberation Serif}[Scale=1.0]
+    }{
+        \setmainfont{DejaVu Serif}[Scale=1.0]
+    }
+}
+
+\IfFontExistsTF{Inter}{
+    \setsansfont{Inter}[Scale=1.0]
+}{
+    \IfFontExistsTF{Liberation Sans}{
+        \setsansfont{Liberation Sans}[Scale=1.0]
+    }{
+        \setsansfont{DejaVu Sans}[Scale=1.0]
+    }
+}
+
+% Packages
+\usepackage[top=0.5in, bottom=0.5in, left=0.6in, right=0.6in]{geometry}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{fontawesome5}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{ragged2e}
+\usepackage{setspace}
+
+% Enhanced color palette
+\definecolor{primary}{RGB}{99, 102, 241}
+\definecolor{secondary}{RGB}{55, 65, 81}
+\definecolor{accent}{RGB}{16, 185, 129}
+\definecolor{background}{RGB}{249, 250, 251}
+\definecolor{surface}{RGB}{255, 255, 255}
+\definecolor{muted}{RGB}{107, 114, 128}
+\definecolor{danger}{RGB}{239, 68, 68}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=primary,
+    pdfauthor={Student Name},
+    pdftitle={Professional Resume},
+    pdfsubject={Academic Resume},
+    pdfkeywords={Resume, Academic, Student, Professional}
+}
+
+% Remove page numbers
+\pagestyle{empty}
+
+% Custom section formatting
+\titleformat{\section}
+    {\color{primary}\Large\sffamily\bfseries}
+    {}
+    {0em}
+    {}[{\color{primary}\titlerule[1.5pt]\vspace{-2pt}}]
+
+\titleformat{\subsection}
+    {\color{secondary}\large\sffamily\bfseries}
+    {}
+    {0em}
+    {}
+
+% Enhanced spacing
+\titlespacing*{\section}{0pt}{16pt}{10pt}
+\titlespacing*{\subsection}{0pt}{10pt}{6pt}
+
+% Custom commands with enhanced formatting
+\newcommand{\resumeItem}[1]{
+    \item\small{#1 \vspace{-1pt}}
+}
+
+\newcommand{\resumeSubheading}[4]{
+    \vspace{-1pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+        \textbf{\color{secondary}#1} & \textbf{\color{muted}\small #2} \\
+        \textit{\small\color{primary}#3} & \textit{\small\color{muted} #4} \\
+    \end{tabular*}\vspace{-3pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \vspace{-1pt}\item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+        \small\textbf{\color{secondary}#1} & \textbf{\color{muted}\small #2} \\
+    \end{tabular*}\vspace{-3pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-3pt}}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=0.3in]}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-4pt}}
+
+% Enhanced header design
+\newcommand{\makeheader}[7]{
+    \begin{center}
+        % Modern header with gradient-like effect
+        \begin{tikzpicture}[remember picture, overlay]
+            \fill[background] (current page.north west) rectangle ([yshift=-2.5cm]current page.north east);
+        \end{tikzpicture}
+        
+        \vspace{0.2cm}
+        \begin{minipage}[t]{\textwidth}
+            \centering
+            {\Huge\sffamily\bfseries\color{primary} #1}
+            
+            \vspace{8pt}
+            {\Large\sffamily\color{secondary} #2}
+            
+            \vspace{12pt}
+            \begin{tabular}{@{}c@{\hspace{25pt}}c@{\hspace{25pt}}c@{}}
+                \faIcon{envelope}\,\href{mailto:#3}{\color{primary}#3} &
+                \faIcon{phone}\,\color{secondary}#4 &
+                \faIcon{id-card}\,\color{secondary}#5 \\[3pt]
+                \IfValueT{#6}{\faIcon{map-marker-alt}\,\color{secondary}#6} &
+                \IfValueT{#7}{\faIcon{graduation-cap}\,\color{secondary}#7} &
+            \end{tabular}
+        \end{minipage}
+    \end{center}
+    \vspace{0.3cm}
+}
+
+% Enhanced info box
+\newcommand{\infobox}[2]{
+    \begin{tikzpicture}
+        \node[rectangle, fill=background, rounded corners=5pt, inner sep=10pt, text width=0.45\textwidth] {
+            \textbf{\color{primary}#1} \\
+            \color{secondary}#2
+        };
+    \end{tikzpicture}
+}
+
+% Performance metrics box
+\newcommand{\performancebox}[3]{
+    \begin{tikzpicture}
+        \node[rectangle, fill=accent!10, draw=accent, rounded corners=8pt, inner sep=12pt, text width=0.3\textwidth, align=center] {
+            {\huge\bfseries\color{accent}#1} \\[2pt]
+            {\small\color{secondary}#2} \\[1pt]
+            {\footnotesize\color{muted}#3}
+        };
+    \end{tikzpicture}
+}
+
+% Skill bar command enhanced
+\newcommand{\skillbar}[3]{
+    \textbf{\color{secondary}#1} \hfill \textcolor{muted}{\small #3} \\
+    \begin{tikzpicture}
+        \fill[background] (0,0) rectangle (5,0.15);
+        \fill[primary] (0,0) rectangle (#2*5/5,0.15);
+    \end{tikzpicture}
+    \vspace{3pt}
+}
+
+% Section with icon
+\newcommand{\sectionwithicon}[2]{
+    \section{\faIcon{#1} #2}
+}
+
+%-------------------------------------------
+%%%%%%  RESUME TEMPLATE STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-------------------------------------------
+
+\begin{document}
+
+% Header - Will be filled dynamically
+\makeheader{[FULL_NAME]}{[PROGRAM] Student}{[EMAIL]}{[CONTACT]}{[ENROLLMENT]}{[ADDRESS]}{[INSTITUTION]}
+
+% Executive Summary / Objective
+\IfValueT{[PROFILE_SUMMARY]}{
+\sectionwithicon{user}{Professional Summary}
+\justifying
+\small [PROFILE_SUMMARY]
+\vspace{10pt}
+}
+
+% Academic Information
+\sectionwithicon{graduation-cap}{Academic Information}
+\begin{center}
+\begin{tabular}{@{}p{0.45\textwidth}@{\hspace{0.05\textwidth}}p{0.45\textwidth}@{}}
+\infobox{Program}{[PROGRAM] \IfValueT{[PROGRAM_CODE]}{([PROGRAM_CODE])}} &
+\infobox{Current Semester}{Semester [CURRENT_SEMESTER]} \\[10pt]
+\infobox{Enrollment Number}{[ENROLLMENT_NUMBER]} &
+\infobox{Institute Email}{[INSTITUTE_EMAIL]}
+\end{tabular}
+\end{center}
+
+% Academic Performance
+\IfValueT{[OVERALL_CPI]}{
+\sectionwithicon{chart-line}{Academic Performance}
+\begin{center}
+\begin{tabular}{@{}c@{\hspace{15pt}}c@{\hspace{15pt}}c@{}}
+\performancebox{[OVERALL_CPI]}{Overall CPI}{Academic Excellence} &
+\IfValueT{[EARNED_CREDITS]}{\performancebox{[EARNED_CREDITS]/[TOTAL_CREDITS]}{Credits}{Progress}} &
+\performancebox{[CURRENT_SEMESTER]}{Current}{Semester}
+\end{tabular}
+\end{center}
+\vspace{10pt}
+}
+
+% Technical Skills
+\IfValueT{[SKILLS]}{
+\sectionwithicon{cogs}{Technical Skills}
+\begin{multicols}{2}
+\small
+[SKILLS_CONTENT]
+\end{multicols}
+\vspace{5pt}
+}
+
+% Projects
+\IfValueT{[PROJECTS]}{
+\sectionwithicon{project-diagram}{Projects}
+\resumeSubHeadingListStart
+[PROJECTS_CONTENT]
+\resumeSubHeadingListEnd
+}
+
+% Experience
+\IfValueT{[EXPERIENCE]}{
+\sectionwithicon{briefcase}{Professional Experience}
+\resumeSubHeadingListStart
+[EXPERIENCE_CONTENT]
+\resumeSubHeadingListEnd
+}
+
+% Education
+\IfValueT{[ADDITIONAL_EDUCATION]}{
+\sectionwithicon{university}{Additional Education}
+\resumeSubHeadingListStart
+[EDUCATION_CONTENT]
+\resumeSubHeadingListEnd
+}
+
+% Achievements
+\IfValueT{[ACHIEVEMENTS]}{
+\sectionwithicon{trophy}{Achievements \& Recognition}
+\resumeSubHeadingListStart
+[ACHIEVEMENTS_CONTENT]
+\resumeSubHeadingListEnd
+}
+
+% Certifications
+\IfValueT{[CERTIFICATIONS]}{
+\sectionwithicon{certificate}{Certifications}
+\resumeSubHeadingListStart
+[CERTIFICATIONS_CONTENT]
+\resumeSubHeadingListEnd
+}
+
+% Footer
+\vfill
+\begin{center}
+\color{muted}\small
+Generated on \today{} | Professional Resume \\
+\textit{This document represents academic and professional accomplishments accurately}
+\end{center}
+
+\end{document}
