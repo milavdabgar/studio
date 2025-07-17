@@ -752,8 +752,8 @@ ${processedContent}`;
             processedContent = await this.processSvgForPandoc(processedContent, options);
             
             // Create complete markdown with frontmatter
-            const title = options.title || frontmatter.title || 'Document';
-            const author = options.author || frontmatter.author || 'Unknown Author';
+            const title = String(options.title || frontmatter.title || 'Document');
+            const author = String(options.author || frontmatter.author || 'Unknown Author');
             const date = frontmatter.date && typeof frontmatter.date === 'string' ? frontmatter.date : new Date().toISOString().split('T')[0];
             
             const fullMarkdown = `---
