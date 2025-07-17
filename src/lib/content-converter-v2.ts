@@ -773,8 +773,8 @@ ${processedContent}`;
                 const latexTemplate = this.generateProfessionalLatexTemplate(title, author, date);
                 fs.writeFileSync(tempTexPath, latexTemplate);
                 
-                // Use pandoc with XeLaTeX engine and custom template
-                const pandocCommand = [
+                // Try XeLaTeX first, fallback to pdfLaTeX if XeLaTeX fails
+                let pandocCommand = [
                     'pandoc',
                     `"${tempMdPath}"`,
                     '-o', `"${tempPdfPath}"`,
@@ -790,7 +790,35 @@ ${processedContent}`;
                     '--variable=geometry:margin=1in'
                 ].join(' ');
                 
-                await execAsync(pandocCommand);
+                try {
+                    await execAsync(pandocCommand);
+                } catch (xelatexError) {
+                    console.warn('XeLaTeX failed, trying pdfLaTeX:', xelatexError);
+                    
+                    // Clean up failed attempt
+                    if (fs.existsSync(tempPdfPath)) {
+                        fs.unlinkSync(tempPdfPath);
+                    }
+                    
+                    // Try with pdfLaTeX instead
+                    pandocCommand = [
+                        'pandoc',
+                        `"${tempMdPath}"`,
+                        '-o', `"${tempPdfPath}"`,
+                        '--pdf-engine=pdflatex',
+                        '--template', `"${tempTexPath}"`,
+                        '--standalone',
+                        '--toc',
+                        '--variable=colorlinks:true',
+                        '--variable=linkcolor:blue',
+                        '--variable=urlcolor:blue',
+                        '--variable=toccolor:blue',
+                        '--variable=fontsize:11pt',
+                        '--variable=geometry:margin=1in'
+                    ].join(' ');
+                    
+                    await execAsync(pandocCommand);
+                }
                 
                 if (!fs.existsSync(tempPdfPath)) {
                     throw new Error('Custom template PDF generation failed');
@@ -803,12 +831,12 @@ ${processedContent}`;
                     fs.unlinkSync(tempPdfPath);
                 }
                 
-                // Fallback to basic pandoc without custom template
+                // Fallback to basic pandoc without custom template - try pdfLaTeX for better compatibility
                 const basicPandocCommand = [
                     'pandoc',
                     `"${tempMdPath}"`,
                     '-o', `"${tempPdfPath}"`,
-                    '--pdf-engine=xelatex',
+                    '--pdf-engine=pdflatex',
                     '--standalone',
                     '--toc',
                     '--variable=colorlinks:true',

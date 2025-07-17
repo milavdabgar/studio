@@ -6,16 +6,24 @@
 
 \documentclass[11pt,a4paper]{article}
 
-% Packages for XeLaTeX
-\usepackage{fontspec}
-\usepackage{xunicode}
-\usepackage{xltxtra}
+% Packages for both XeLaTeX and pdfLaTeX compatibility
+\usepackage{iftex}
 
-% Modern fonts - use system default fonts for better compatibility
-% On macOS, use system fonts that are guaranteed to exist
-\setmainfont{Times New Roman}[Scale=1.0]
-\setsansfont{Helvetica}[Scale=1.0]
-\setmonofont{Courier}[Scale=1.0]
+\ifxetex
+  % XeLaTeX-specific packages
+  \usepackage{fontspec}
+  \usepackage{xunicode}
+  \usepackage{xltxtra}
+  % Modern fonts - use system default fonts for better compatibility
+  \setmainfont{Times New Roman}[Scale=1.0]
+  \setsansfont{Helvetica}[Scale=1.0]
+  \setmonofont{Courier}[Scale=1.0]
+\else
+  % pdfLaTeX-specific packages
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1]{fontenc}
+  \usepackage{lmodern}
+\fi
 
 % Packages
 \usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
