@@ -1289,15 +1289,191 @@ export class ResumeGenerator {
    * Generate resume in DOCX format
    */
   async generateDOCX(resumeData: ResumeData): Promise<Buffer> {
-    const htmlContent = this.generateResumeHTML(resumeData);
+    const markdownContent = this.generateResumeMarkdown(resumeData);
     
     try {
-      const result = await this.contentConverter.convert(htmlContent, 'docx', {});
+      const result = await this.contentConverter.convert(markdownContent, 'docx', {
+        title: `${resumeData.fullName} - Resume`,
+        author: resumeData.fullName
+      });
       return result as Buffer;
     } catch (error) {
       console.error('Error generating DOCX resume:', error);
       throw new Error(`Failed to generate DOCX resume: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
+  }
+
+  /**
+   * Generate resume in Markdown format for DOCX conversion
+   */
+  private generateResumeMarkdown(resumeData: ResumeData): string {
+    const sections: string[] = [];
+    
+    // Header
+    sections.push(`# ${resumeData.fullName}\n`);
+    
+    // Contact Information
+    const contactInfo = [
+      `**Email:** ${resumeData.email}`,
+      resumeData.contactNumber ? `**Phone:** ${resumeData.contactNumber}` : null,
+      `**Enrollment:** ${resumeData.enrollmentNumber}`,
+      resumeData.address ? `**Address:** ${resumeData.address}` : null
+    ].filter(Boolean);
+    
+    sections.push(contactInfo.join(' | ') + '\n');
+    
+    // Academic Information
+    sections.push('## Academic Information\n');
+    sections.push(`**Program:** ${resumeData.program}`);
+    sections.push(`**Current Semester:** ${resumeData.currentSemester}`);
+    sections.push(`**Institute Email:** ${resumeData.instituteEmail}`);
+    
+    // Academic Performance
+    if (resumeData.overallCPI) {
+      sections.push(`**Overall CPI:** ${resumeData.overallCPI}`);
+    }
+    
+    if (resumeData.earnedCredits && resumeData.totalCredits) {
+      sections.push(`**Credits:** ${resumeData.earnedCredits}/${resumeData.totalCredits}`);
+    }
+    
+    sections.push('');
+    
+    // Profile Summary
+    if (resumeData.profileSummary) {
+      sections.push('## Profile Summary\n');
+      sections.push(resumeData.profileSummary + '\n');
+    }
+    
+    // Skills
+    if (resumeData.skills && resumeData.skills.length > 0) {
+      sections.push('## Skills\n');
+      
+      // Group skills by category
+      const skillsByCategory = resumeData.skills.reduce((acc, skill) => {
+        const category = skill.category || 'Other';
+        if (!acc[category]) acc[category] = [];
+        acc[category].push(skill);
+        return acc;
+      }, {} as Record<string, typeof resumeData.skills>);
+      
+      Object.entries(skillsByCategory).forEach(([category, skills]) => {
+        sections.push(`### ${category}`);
+        skills.forEach(skill => {
+          const proficiency = this.getSkillProficiencyIndicator(skill.proficiency);
+          sections.push(`- **${skill.name}** ${proficiency}`);
+        });
+        sections.push('');
+      });
+    }
+    
+    // Experience
+    if (resumeData.experience && resumeData.experience.length > 0) {
+      sections.push('## Experience\n');
+      
+      resumeData.experience.forEach(exp => {
+        sections.push(`### ${exp.position} at ${exp.company}`);
+        const duration = exp.endDate ? 
+          `${this.formatDate(exp.startDate)} - ${this.formatDate(exp.endDate)}` : 
+          `${this.formatDate(exp.startDate)} - Present`;
+        sections.push(`**Duration:** ${duration}`);
+        if (exp.description) {
+          sections.push(`**Description:** ${exp.description}`);
+        }
+        sections.push('');
+      });
+    }
+    
+    // Education
+    if (resumeData.education && resumeData.education.length > 0) {
+      sections.push('## Education\n');
+      
+      resumeData.education.forEach(edu => {
+        sections.push(`### ${edu.degree} in ${edu.fieldOfStudy}`);
+        sections.push(`**Institution:** ${edu.institution}`);
+        const duration = `${this.formatDate(edu.startDate)} - ${this.formatDate(edu.endDate)}`;
+        sections.push(`**Duration:** ${duration}`);
+        if (edu.grade) {
+          sections.push(`**Grade:** ${edu.grade}`);
+        }
+        if (edu.description) {
+          sections.push(`**Description:** ${edu.description}`);
+        }
+        sections.push('');
+      });
+    }
+    
+    // Projects
+    if (resumeData.projects && resumeData.projects.length > 0) {
+      sections.push('## Projects\n');
+      
+      resumeData.projects.forEach(project => {
+        sections.push(`### ${project.title}`);
+        if (project.description) {
+          sections.push(`**Description:** ${project.description}`);
+        }
+        if (project.technologies && project.technologies.length > 0) {
+          sections.push(`**Technologies:** ${project.technologies.join(', ')}`);
+        }
+        if (project.duration) {
+          sections.push(`**Duration:** ${project.duration}`);
+        }
+        if (project.role) {
+          sections.push(`**Role:** ${project.role}`);
+        }
+        sections.push('');
+      });
+    }
+    
+    // Achievements
+    if (resumeData.achievements && resumeData.achievements.length > 0) {
+      sections.push('## Achievements\n');
+      
+      resumeData.achievements.forEach(achievement => {
+        sections.push(`### ${achievement.title}`);
+        if (achievement.description) {
+          sections.push(`**Description:** ${achievement.description}`);
+        }
+        sections.push(`**Date:** ${this.formatDate(achievement.date)}`);
+        sections.push('');
+      });
+    }
+    
+    // Semester Results
+    if (resumeData.semesterResults && resumeData.semesterResults.length > 0) {
+      sections.push('## Academic Performance\n');
+      
+      resumeData.semesterResults.forEach(result => {
+        sections.push(`### Semester ${result.semester}`);
+        sections.push(`**SGPA:** ${result.sgpa}`);
+        sections.push(`**Credits:** ${result.credits}`);
+        
+        if (result.subjects && result.subjects.length > 0) {
+          sections.push('**Subjects:**');
+          result.subjects.forEach(subject => {
+            sections.push(`- ${subject.name} (${subject.code}): ${subject.grade}`);
+          });
+        }
+        sections.push('');
+      });
+    }
+    
+    // Guardian Information
+    if (resumeData.guardianName) {
+      sections.push('## Guardian Information\n');
+      sections.push(`**Name:** ${resumeData.guardianName}`);
+      if (resumeData.guardianRelation) {
+        sections.push(`**Relation:** ${resumeData.guardianRelation}`);
+      }
+      if (resumeData.guardianContact) {
+        sections.push(`**Contact:** ${resumeData.guardianContact}`);
+      }
+      if (resumeData.guardianOccupation) {
+        sections.push(`**Occupation:** ${resumeData.guardianOccupation}`);
+      }
+    }
+    
+    return sections.join('\n');
   }
 
   /**

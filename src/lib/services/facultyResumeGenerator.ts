@@ -559,15 +559,148 @@ export class FacultyResumeGenerator {
    * Generate resume in DOCX format
    */
   async generateDOCX(resumeData: FacultyResumeData): Promise<Buffer> {
-    const htmlContent = this.generateResumeHTML(resumeData);
+    const markdownContent = this.generateResumeMarkdown(resumeData);
     
     try {
-      const result = await this.contentConverter.convert(htmlContent, 'docx', {});
+      const result = await this.contentConverter.convert(markdownContent, 'docx', {
+        title: `${resumeData.fullName} - Resume`,
+        author: resumeData.fullName
+      });
       return result as Buffer;
     } catch (error) {
       console.error('Error generating faculty DOCX resume:', error);
       throw new Error(`Failed to generate DOCX resume: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
+  }
+
+  /**
+   * Generate resume in Markdown format for DOCX conversion
+   */
+  private generateResumeMarkdown(resumeData: FacultyResumeData): string {
+    const sections: string[] = [];
+    
+    // Header
+    sections.push(`# ${resumeData.fullName}\n`);
+    
+    if (resumeData.designation) {
+      sections.push(`**${resumeData.designation}**\n`);
+    }
+    
+    // Contact Information
+    const contactInfo = [
+      `**Email:** ${resumeData.email}`,
+      resumeData.contactNumber ? `**Phone:** ${resumeData.contactNumber}` : null,
+      `**Staff Code:** ${resumeData.staffCode}`,
+      `**Department:** ${resumeData.department}`,
+      resumeData.address ? `**Address:** ${resumeData.address}` : null
+    ].filter(Boolean);
+    
+    sections.push(contactInfo.join(' | ') + '\n');
+    
+    // Specializations
+    if (resumeData.specializations && resumeData.specializations.length > 0) {
+      sections.push('## Specializations\n');
+      resumeData.specializations.forEach(spec => {
+        sections.push(`- ${spec}`);
+      });
+      sections.push('');
+    }
+    
+    // Qualifications
+    if (resumeData.qualifications && resumeData.qualifications.length > 0) {
+      sections.push('## Qualifications\n');
+      
+      resumeData.qualifications.forEach(qual => {
+        sections.push(`### ${qual.degree}`);
+        sections.push(`**Institution:** ${qual.institution}`);
+        if (qual.year) {
+          sections.push(`**Year:** ${qual.year}`);
+        }
+        if (qual.grade) {
+          sections.push(`**Grade:** ${qual.grade}`);
+        }
+        if (qual.description) {
+          sections.push(`**Description:** ${qual.description}`);
+        }
+        sections.push('');
+      });
+    }
+    
+    // Experience
+    if (resumeData.experience && resumeData.experience.length > 0) {
+      sections.push('## Experience\n');
+      
+      resumeData.experience.forEach(exp => {
+        sections.push(`### ${exp.position} at ${exp.organization}`);
+        if (exp.startDate) {
+          const duration = exp.endDate ? 
+            `${exp.startDate} - ${exp.endDate}` : 
+            `${exp.startDate} - Present`;
+          sections.push(`**Duration:** ${duration}`);
+        }
+        if (exp.description) {
+          sections.push(`**Description:** ${exp.description}`);
+        }
+        sections.push('');
+      });
+    }
+    
+    // Publications
+    if (resumeData.publications && resumeData.publications.length > 0) {
+      sections.push('## Publications\n');
+      
+      resumeData.publications.forEach(pub => {
+        sections.push(`### ${pub.title}`);
+        if (pub.journal) {
+          sections.push(`**Journal:** ${pub.journal}`);
+        }
+        if (pub.year) {
+          sections.push(`**Year:** ${pub.year}`);
+        }
+        if (pub.authors && pub.authors.length > 0) {
+          sections.push(`**Authors:** ${pub.authors.join(', ')}`);
+        }
+        if (pub.doi) {
+          sections.push(`**DOI:** ${pub.doi}`);
+        }
+        sections.push('');
+      });
+    }
+    
+    // Research Interests
+    if (resumeData.researchInterests && resumeData.researchInterests.length > 0) {
+      sections.push('## Research Interests\n');
+      resumeData.researchInterests.forEach(interest => {
+        sections.push(`- ${interest}`);
+      });
+      sections.push('');
+    }
+    
+    // Professional Memberships
+    if (resumeData.professionalMemberships && resumeData.professionalMemberships.length > 0) {
+      sections.push('## Professional Memberships\n');
+      resumeData.professionalMemberships.forEach(membership => {
+        sections.push(`- ${membership}`);
+      });
+      sections.push('');
+    }
+    
+    // Awards and Honors
+    if (resumeData.awards && resumeData.awards.length > 0) {
+      sections.push('## Awards and Honors\n');
+      resumeData.awards.forEach(award => {
+        sections.push(`### ${award.title}`);
+        if (award.year) {
+          sections.push(`**Year:** ${award.year}`);
+        }
+        if (award.description) {
+          sections.push(`**Description:** ${award.description}`);
+        }
+        sections.push('');
+      });
+    }
+    
+    return sections.join('\n');
   }
 
   /**
