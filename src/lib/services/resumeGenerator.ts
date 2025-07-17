@@ -595,49 +595,35 @@ export class ResumeGenerator {
         
         .semester-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200pt, 1fr));
+            gap: 12pt;
+            margin-top: 12pt;
         }
         
         .semester-card {
             background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1pt solid #e2e8f0;
+            padding: 12pt;
+            page-break-inside: avoid;
             position: relative;
-            overflow: hidden;
-        }
-        
-        .semester-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        
-        .semester-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-left: 3pt solid #667eea;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .semester-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 8pt;
+            padding-bottom: 6pt;
+            border-bottom: 1pt solid #e2e8f0;
         }
         
         .semester-title {
-            font-weight: 700;
+            font-weight: 600;
             color: #2d3748;
-            font-size: 1.1em;
+            font-size: 10pt;
         }
         
         .semester-sgpa {
@@ -1970,7 +1956,8 @@ export class ResumeGenerator {
         }
         
         .header {
-            text-align: center;
+            display: flex;
+            align-items: center;
             margin-bottom: 18pt;
             padding: 16pt;
             background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
@@ -1979,6 +1966,25 @@ export class ResumeGenerator {
             page-break-after: avoid;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
+        }
+        
+        .header-content {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .photo-placeholder {
+            width: 80pt;
+            height: 100pt;
+            border: 2pt solid white;
+            border-radius: 8pt;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20pt;
+            font-size: 8pt;
+            color: rgba(255,255,255,0.7);
         }
         
         .header h1 {
@@ -2246,9 +2252,14 @@ export class ResumeGenerator {
 </head>
 <body>
     <div class="header">
-        <h1>${resumeData.fullName}</h1>
-        <div class="subtitle">BIODATA</div>
-        <div class="subtitle">${resumeData.program} • ${resumeData.enrollmentNumber}</div>
+        <div class="photo-placeholder">
+            PHOTO<br>PLACEHOLDER
+        </div>
+        <div class="header-content">
+            <h1>${resumeData.fullName}</h1>
+            <div class="subtitle">BIODATA</div>
+            <div class="subtitle">${resumeData.program} • ${resumeData.enrollmentNumber}</div>
+        </div>
     </div>
 
     <!-- Personal Information -->

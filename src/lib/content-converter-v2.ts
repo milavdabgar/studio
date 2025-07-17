@@ -395,8 +395,22 @@ export class ContentConverterV2 {
                 timeout: options.pdfOptions?.timeout || 30000
             });
 
-            // Wait for fonts to load
+            // Wait for fonts to load with extended timeout
             await page.evaluateHandle('document.fonts.ready');
+            
+            // Additional wait for Google Fonts and custom fonts
+            await page.evaluate(() => {
+                return new Promise<void>((resolve) => {
+                    const checkFonts = () => {
+                        if (document.fonts.status === 'loaded' || document.fonts.size > 0) {
+                            resolve();
+                        } else {
+                            setTimeout(checkFonts, 100);
+                        }
+                    };
+                    checkFonts();
+                });
+            });
 
             // Wait for Mermaid diagrams to render
             try {
@@ -488,7 +502,12 @@ export class ContentConverterV2 {
                 omitBackground: false,
                 tagged: false,
                 scale: 1.0,
-                landscape: false
+                landscape: false,
+                // Additional quality settings for better PDF output
+                quality: 100,
+                timeout: 60000,
+                // Ensure fonts are embedded properly
+                generateTaggedPDF: false
             };
 
             // Generate PDF
