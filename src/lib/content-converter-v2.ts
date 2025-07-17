@@ -473,20 +473,22 @@ export class ContentConverterV2 {
             // Additional wait for any remaining rendering
             await new Promise(resolve => setTimeout(resolve, 1000));
 
-            // Configure PDF options
+            // Configure PDF options with optimized settings for CV/Resume
             const pdfOptions: Record<string, unknown> = {
                 format: options.pdfOptions?.format || 'A4',
                 printBackground: true,
                 margin: options.pdfOptions?.margin || {
-                    top: '20mm',
-                    right: '20mm',
-                    bottom: '20mm',
-                    left: '20mm'
+                    top: '0.75in',
+                    right: '0.75in',
+                    bottom: '0.75in',
+                    left: '0.75in'
                 },
                 preferCSSPageSize: true,
                 // Ensure embedded images and SVGs are properly rendered
                 omitBackground: false,
-                tagged: false
+                tagged: false,
+                scale: 1.0,
+                landscape: false
             };
 
             // Generate PDF
@@ -770,7 +772,7 @@ ${processedContent}`;
             // Try enhanced LaTeX template first, fallback to basic if it fails
             try {
                 // Create enhanced LaTeX template based on reference templates
-                const latexTemplate = this.generateProfessionalLatexTemplate(title, author, date);
+                const latexTemplate = this.generateProfessionalLatexTemplate(title, author, date || '');
                 fs.writeFileSync(tempTexPath, latexTemplate);
                 
                 // Try XeLaTeX first, fallback to pdfLaTeX if XeLaTeX fails

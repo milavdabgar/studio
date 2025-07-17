@@ -347,7 +347,18 @@ export class ResumeGenerator {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${resumeData.fullName} - Resume</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
+        @page {
+            size: A4;
+            margin: 0.75in;
+            @bottom-center {
+                content: counter(page) " of " counter(pages);
+                font-size: 9pt;
+                color: #666;
+            }
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -355,98 +366,84 @@ export class ResumeGenerator {
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
-            line-height: 1.6;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.5;
             color: #2d3748;
-            max-width: 850px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #f8fafc;
+            font-size: 11pt;
+            background: white;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .resume-container {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
         }
         
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 40px;
+            padding: 24pt;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 100%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            transform: rotate(15deg);
+            margin-bottom: 16pt;
+            page-break-inside: avoid;
+            page-break-after: avoid;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .header h1 {
-            font-size: 2.8em;
-            font-weight: 700;
-            margin-bottom: 8px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            position: relative;
-            z-index: 1;
+            font-size: 22pt;
+            font-weight: 600;
+            margin-bottom: 4pt;
+            letter-spacing: 0.5pt;
         }
         
         .header .tagline {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-            opacity: 0.9;
-            font-weight: 300;
-            position: relative;
-            z-index: 1;
+            font-size: 12pt;
+            margin-bottom: 12pt;
+            opacity: 0.95;
+            font-weight: 400;
         }
         
         .contact-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            position: relative;
-            z-index: 1;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16pt;
+            font-size: 10pt;
         }
         
         .contact-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 0.95em;
+            font-weight: 400;
             opacity: 0.95;
         }
         
         .contact-icon {
-            margin-right: 8px;
-            font-weight: bold;
+            margin-right: 4pt;
+            font-weight: 600;
         }
         
         .content {
-            padding: 30px;
+            padding: 0;
         }
         
         .section {
-            margin-bottom: 35px;
+            margin-bottom: 18pt;
+            page-break-inside: avoid;
         }
         
         .section-title {
-            font-size: 1.5em;
+            font-size: 13pt;
             color: #667eea;
-            margin-bottom: 20px;
-            font-weight: 700;
+            margin-bottom: 10pt;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5pt;
             position: relative;
-            padding-bottom: 10px;
+            padding-bottom: 4pt;
+            page-break-after: avoid;
         }
         
         .section-title::after {
@@ -454,63 +451,60 @@ export class ResumeGenerator {
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 60px;
-            height: 3px;
+            width: 40pt;
+            height: 2pt;
             background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 2px;
+            border-radius: 1pt;
         }
         
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(180pt, 1fr));
+            gap: 12pt;
+            margin-bottom: 16pt;
         }
         
         .info-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            padding: 20px;
-            border-radius: 12px;
-            border-left: 5px solid #667eea;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .info-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            background: #f8fafc;
+            padding: 12pt;
+            border-radius: 6pt;
+            border-left: 3pt solid #667eea;
+            page-break-inside: avoid;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .info-card strong {
             color: #4a5568;
             display: block;
-            margin-bottom: 8px;
-            font-size: 0.9em;
+            margin-bottom: 4pt;
+            font-size: 9pt;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.5pt;
             font-weight: 600;
         }
         
         .info-card .value {
             color: #2d3748;
-            font-size: 1.1em;
+            font-size: 11pt;
             font-weight: 500;
         }
         
         .performance-stats {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 30px;
-            border-radius: 15px;
-            margin: 25px 0;
+            padding: 16pt;
+            margin: 16pt 0;
             color: white;
             text-align: center;
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            page-break-inside: avoid;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(80pt, 1fr));
+            gap: 16pt;
         }
         
         .stat-item {
@@ -518,18 +512,85 @@ export class ResumeGenerator {
         }
         
         .stat-value {
-            font-size: 2.5em;
-            font-weight: bold;
+            font-size: 16pt;
+            font-weight: 600;
             display: block;
-            margin-bottom: 5px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 2pt;
         }
         
         .stat-label {
-            font-size: 0.9em;
+            font-size: 8pt;
             opacity: 0.9;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5pt;
+            font-weight: 400;
+        }
+        
+        /* Print-specific styles */
+        @media print {
+            body {
+                font-size: 11pt;
+                line-height: 1.4;
+                background: white;
+            }
+            
+            .resume-container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+            
+            .header {
+                margin-bottom: 12pt;
+                padding: 20pt;
+            }
+            
+            .header h1 {
+                font-size: 20pt;
+            }
+            
+            .header .tagline {
+                font-size: 11pt;
+            }
+            
+            .section {
+                margin-bottom: 14pt;
+            }
+            
+            .section-title {
+                font-size: 12pt;
+                margin-bottom: 8pt;
+            }
+            
+            .info-grid {
+                grid-template-columns: repeat(auto-fit, minmax(160pt, 1fr));
+                gap: 10pt;
+            }
+            
+            .info-card {
+                padding: 10pt;
+            }
+            
+            .performance-stats {
+                padding: 12pt;
+                margin: 12pt 0;
+            }
+            
+            .stats-grid {
+                gap: 12pt;
+            }
+            
+            /* Remove hover effects in print */
+            .info-card:hover,
+            .semester-card:hover {
+                transform: none;
+                box-shadow: none;
+            }
+            
+            /* Ensure good contrast for colored backgrounds */
+            .header, .performance-stats, .section-title::after {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
         }
         
         .semester-grid {
@@ -1554,7 +1615,7 @@ export class ResumeGenerator {
       resumeData.aadharNumber ? `**Aadhar Number:** ${resumeData.aadharNumber}` : null
     ].filter(Boolean);
     
-    personalInfo.forEach(info => sections.push(info));
+    personalInfo.forEach(info => info && sections.push(info));
     sections.push('');
     
     // Academic Information
@@ -1786,8 +1847,8 @@ export class ResumeGenerator {
         if (cert.date) {
           sections.push(`**Date:** ${this.formatDate(cert.date)}`);
         }
-        if (cert.expiryDate) {
-          sections.push(`**Expiry:** ${this.formatDate(cert.expiryDate)}`);
+        if (cert.url) {
+          sections.push(`**URL:** ${cert.url}`);
         }
         sections.push('');
       });
@@ -1833,7 +1894,18 @@ export class ResumeGenerator {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${resumeData.fullName} - Biodata</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
     <style>
+        @page {
+            size: A4;
+            margin: 0.75in;
+            @bottom-center {
+                content: counter(page) " of " counter(pages);
+                font-size: 9pt;
+                color: #666;
+            }
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -1841,184 +1913,213 @@ export class ResumeGenerator {
         }
         
         body {
-            font-family: 'Times New Roman', serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+            font-family: 'Crimson Text', 'Times New Roman', serif;
+            line-height: 1.5;
+            color: #2c3e50;
+            font-size: 11pt;
             background: white;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin-bottom: 18pt;
+            padding: 16pt;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             color: white;
-            border-radius: 15px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            page-break-inside: avoid;
+            page-break-after: avoid;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 8px;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-family: 'Inter', sans-serif;
+            font-size: 20pt;
+            margin-bottom: 4pt;
+            font-weight: 600;
+            letter-spacing: 0.5pt;
         }
         
         .header .subtitle {
-            font-size: 1.2em;
-            opacity: 0.9;
-            font-weight: 300;
+            font-size: 11pt;
+            opacity: 0.95;
+            font-weight: 400;
+            margin-bottom: 2pt;
         }
         
         .biodata-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border-radius: 10px;
-            overflow: hidden;
+            margin-bottom: 16pt;
+            page-break-inside: avoid;
+            border: 1pt solid #bdc3c7;
         }
         
         .biodata-table th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #34495e;
             color: white;
-            padding: 15px;
-            font-size: 1.2em;
+            padding: 8pt 12pt;
+            font-family: 'Inter', sans-serif;
+            font-size: 10pt;
             text-align: center;
-            font-weight: bold;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5pt;
+            border: 1pt solid #2c3e50;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .biodata-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e0e0e0;
+            padding: 8pt 12pt;
+            border: 1pt solid #bdc3c7;
             vertical-align: top;
+            font-size: 10pt;
         }
         
         .biodata-table tr:nth-child(even) {
             background-color: #f8f9fa;
-        }
-        
-        .biodata-table tr:hover {
-            background-color: #e3f2fd;
-            transition: background-color 0.3s ease;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .label-col {
-            font-weight: bold;
-            color: #1565c0;
+            font-weight: 600;
+            color: #2c3e50;
             width: 35%;
-            background-color: #f5f5f5 !important;
+            background-color: #ecf0f1 !important;
+            font-family: 'Inter', sans-serif;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .value-col {
-            color: #424242;
+            color: #34495e;
+            font-weight: 400;
         }
         
         .section-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #34495e !important;
             color: white;
-            padding: 12px;
-            font-size: 1.1em;
-            font-weight: bold;
+            padding: 8pt 12pt;
+            font-family: 'Inter', sans-serif;
+            font-size: 10pt;
+            font-weight: 600;
             text-align: center;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5pt;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .academic-performance {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            background: #27ae60;
             color: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
+            padding: 12pt;
+            margin: 12pt 0;
             text-align: center;
+            page-break-inside: avoid;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .performance-item {
             display: inline-block;
-            margin: 0 20px;
+            margin: 0 12pt;
         }
         
         .performance-value {
-            font-size: 2em;
-            font-weight: bold;
+            font-size: 14pt;
+            font-weight: 600;
             display: block;
+            margin-bottom: 2pt;
         }
         
         .performance-label {
-            font-size: 0.9em;
+            font-size: 9pt;
             opacity: 0.9;
+            font-weight: 400;
         }
         
         .skills-section {
             background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
+            padding: 12pt;
+            margin: 12pt 0;
+            page-break-inside: avoid;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .skills-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(120pt, 1fr));
+            gap: 10pt;
         }
         
         .skill-category {
             background: white;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 10pt;
+            border-left: 3pt solid #34495e;
+            page-break-inside: avoid;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .skill-category h4 {
-            color: #1565c0;
-            margin-bottom: 10px;
-            font-size: 1.1em;
+            font-family: 'Inter', sans-serif;
+            color: #2c3e50;
+            margin-bottom: 6pt;
+            font-size: 10pt;
+            font-weight: 600;
         }
         
         .skill-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 4pt;
         }
         
         .skill-tag {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #34495e;
             color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85em;
+            padding: 3pt 8pt;
+            border-radius: 12pt;
+            font-size: 8pt;
             font-weight: 500;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .declaration {
             background: #fff3cd;
-            border: 2px solid #ffeaa7;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 30px;
+            border: 2pt solid #f39c12;
+            padding: 12pt;
+            margin-top: 16pt;
             text-align: center;
+            page-break-inside: avoid;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .declaration h3 {
+            font-family: 'Inter', sans-serif;
             color: #856404;
-            margin-bottom: 15px;
+            margin-bottom: 8pt;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5pt;
+            font-size: 11pt;
+            font-weight: 600;
         }
         
         .signature-section {
             display: flex;
             justify-content: space-between;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
+            margin-top: 20pt;
+            padding-top: 12pt;
+            border-top: 1pt solid #bdc3c7;
+            page-break-inside: avoid;
         }
         
         .signature-item {
@@ -2026,35 +2127,72 @@ export class ResumeGenerator {
         }
         
         .signature-line {
-            border-bottom: 2px solid #333;
-            width: 200px;
-            margin: 10px 0;
+            border-bottom: 1pt solid #2c3e50;
+            width: 120pt;
+            margin: 8pt 0;
         }
         
         @media print {
             body { 
-                font-size: 12px;
-                padding: 10px;
+                font-size: 10pt;
+                line-height: 1.4;
             }
+            
             .header {
-                background: #667eea !important;
-                -webkit-print-color-adjust: exact;
+                margin-bottom: 14pt;
+                padding: 12pt;
             }
-            .biodata-table th {
-                background: #667eea !important;
-                -webkit-print-color-adjust: exact;
+            
+            .header h1 {
+                font-size: 18pt;
             }
-        }
-        
-        @media (max-width: 768px) {
+            
             .biodata-table {
-                font-size: 0.9em;
+                margin-bottom: 12pt;
             }
-            .label-col {
-                width: 40%;
+            
+            .biodata-table th {
+                padding: 6pt 10pt;
+                font-size: 9pt;
             }
+            
+            .biodata-table td {
+                padding: 6pt 10pt;
+                font-size: 9pt;
+            }
+            
+            .academic-performance {
+                padding: 10pt;
+                margin: 10pt 0;
+            }
+            
+            .skills-section {
+                padding: 10pt;
+                margin: 10pt 0;
+            }
+            
             .skills-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(auto-fit, minmax(100pt, 1fr));
+                gap: 8pt;
+            }
+            
+            .skill-category {
+                padding: 8pt;
+            }
+            
+            .declaration {
+                padding: 10pt;
+                margin-top: 12pt;
+            }
+            
+            .signature-section {
+                margin-top: 16pt;
+                padding-top: 10pt;
+            }
+            
+            .signature-line {
+                width: 100pt;
+                margin: 6pt 0;
             }
         }
     </style>
@@ -2285,7 +2423,18 @@ export class ResumeGenerator {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${resumeData.fullName} - Curriculum Vitae</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
+        @page {
+            size: A4;
+            margin: 0.75in;
+            @bottom-center {
+                content: counter(page) " of " counter(pages);
+                font-size: 9pt;
+                color: #666;
+            }
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -2293,229 +2442,225 @@ export class ResumeGenerator {
         }
         
         body {
-            font-family: 'Georgia', serif;
-            line-height: 1.6;
+            font-family: 'Crimson Text', 'Times New Roman', serif;
+            line-height: 1.5;
             color: #2c3e50;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
+            font-size: 11pt;
             background: white;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             color: white;
-            padding: 40px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            pointer-events: none;
+            padding: 24pt 20pt;
+            margin-bottom: 18pt;
+            page-break-inside: avoid;
+            page-break-after: avoid;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .header h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
-            font-weight: 300;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            position: relative;
-            z-index: 1;
+            font-family: 'Source Sans Pro', 'Arial', sans-serif;
+            font-size: 24pt;
+            font-weight: 600;
+            margin-bottom: 4pt;
+            letter-spacing: 0.5pt;
+            text-align: center;
         }
         
         .header .title {
-            font-size: 1.3em;
-            margin-bottom: 20px;
+            font-size: 12pt;
+            margin-bottom: 12pt;
             font-style: italic;
-            opacity: 0.9;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .contact-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 10px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .contact-item {
-            font-size: 0.95em;
+            font-weight: 400;
+            text-align: center;
             opacity: 0.95;
         }
         
+        .contact-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16pt;
+            font-size: 10pt;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            font-weight: 400;
+            opacity: 0.95;
+        }
+        
+        .contact-icon {
+            margin-right: 4pt;
+            font-weight: 600;
+        }
+        
         .section {
-            margin-bottom: 35px;
+            margin-bottom: 18pt;
             page-break-inside: avoid;
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            overflow: hidden;
         }
         
         .section-title {
-            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            font-family: 'Source Sans Pro', 'Arial', sans-serif;
+            background: #34495e;
             color: white;
-            padding: 15px 25px;
-            font-size: 1.3em;
+            padding: 8pt 12pt;
+            font-size: 12pt;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 0;
-            position: relative;
-        }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, #3498db, #e74c3c, #f39c12);
+            letter-spacing: 0.5pt;
+            margin: 0 0 12pt 0;
+            page-break-after: avoid;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .section-content {
-            padding: 25px;
+            padding: 12pt;
         }
         
         .timeline {
             position: relative;
-            margin-left: 30px;
+            margin-left: 15pt;
         }
         
         .timeline::before {
             content: '';
             position: absolute;
-            left: -15px;
+            left: -8pt;
             top: 0;
             bottom: 0;
-            width: 3px;
-            background: linear-gradient(to bottom, #3498db, #e74c3c);
+            width: 2pt;
+            background: #34495e;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .timeline-item {
             position: relative;
-            margin-bottom: 30px;
-            padding-left: 25px;
+            margin-bottom: 16pt;
+            padding-left: 16pt;
+            page-break-inside: avoid;
         }
         
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -27px;
-            top: 8px;
-            width: 12px;
-            height: 12px;
-            background: #3498db;
+            left: -12pt;
+            top: 4pt;
+            width: 8pt;
+            height: 8pt;
+            background: #34495e;
             border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 0 0 3px #3498db;
+            border: 2pt solid white;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .timeline-title {
-            font-size: 1.3em;
-            font-weight: bold;
+            font-family: 'Source Sans Pro', 'Arial', sans-serif;
+            font-size: 11pt;
+            font-weight: 600;
             color: #2c3e50;
-            margin-bottom: 5px;
+            margin-bottom: 2pt;
+            page-break-after: avoid;
         }
         
         .timeline-subtitle {
-            font-size: 1.1em;
+            font-size: 10pt;
             color: #e74c3c;
-            margin-bottom: 8px;
-            font-weight: 600;
+            margin-bottom: 4pt;
+            font-weight: 500;
+            font-style: italic;
         }
         
         .timeline-date {
             color: #7f8c8d;
-            font-size: 0.95em;
-            margin-bottom: 10px;
+            font-size: 9pt;
+            margin-bottom: 6pt;
             font-style: italic;
-            background: #ecf0f1;
+            background: #f8f9fa;
             display: inline-block;
-            padding: 3px 10px;
-            border-radius: 15px;
+            padding: 2pt 6pt;
+            border-radius: 8pt;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .timeline-description {
             color: #34495e;
             text-align: justify;
-            line-height: 1.7;
+            line-height: 1.4;
+            font-size: 10pt;
         }
         
         .skills-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(160pt, 1fr));
+            gap: 12pt;
+            margin-top: 8pt;
         }
         
         .skill-category {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 5px solid #3498db;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
-        
-        .skill-category:hover {
-            transform: translateY(-5px);
+            background: #f8f9fa;
+            padding: 12pt;
+            border-radius: 6pt;
+            border-left: 3pt solid #3498db;
+            page-break-inside: avoid;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .skill-category-title {
-            font-weight: bold;
+            font-family: 'Source Sans Pro', 'Arial', sans-serif;
+            font-weight: 600;
             color: #2c3e50;
-            margin-bottom: 15px;
+            margin-bottom: 8pt;
             text-transform: uppercase;
-            font-size: 1em;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 8px;
+            font-size: 10pt;
+            letter-spacing: 0.5pt;
+            border-bottom: 1pt solid #3498db;
+            padding-bottom: 4pt;
         }
         
         .skill-items {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 4pt;
         }
         
         .skill-item {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            background: #3498db;
             color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.85em;
+            padding: 3pt 8pt;
+            border-radius: 12pt;
+            font-size: 9pt;
             font-weight: 500;
-            box-shadow: 0 2px 5px rgba(52, 152, 219, 0.3);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .academic-stats {
-            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            background: #27ae60;
             color: white;
-            padding: 25px;
-            border-radius: 15px;
-            margin: 20px 0;
+            padding: 16pt;
+            margin: 12pt 0;
             text-align: center;
-            box-shadow: 0 8px 16px rgba(39, 174, 96, 0.3);
+            page-break-inside: avoid;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(80pt, 1fr));
+            gap: 12pt;
         }
         
         .stat-item {
@@ -2523,17 +2668,78 @@ export class ResumeGenerator {
         }
         
         .stat-value {
-            font-size: 2.5em;
-            font-weight: bold;
+            font-size: 16pt;
+            font-weight: 600;
             display: block;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 2pt;
         }
         
         .stat-label {
-            font-size: 0.9em;
+            font-size: 8pt;
             opacity: 0.9;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5pt;
+            font-weight: 400;
+        }
+        
+        /* Print-specific styles */
+        @media print {
+            body {
+                font-size: 11pt;
+                line-height: 1.4;
+            }
+            
+            .header {
+                margin-bottom: 14pt;
+                padding: 20pt 16pt;
+            }
+            
+            .section {
+                margin-bottom: 14pt;
+            }
+            
+            .section-title {
+                padding: 6pt 10pt;
+                font-size: 11pt;
+            }
+            
+            .section-content {
+                padding: 10pt;
+            }
+            
+            .timeline-item {
+                margin-bottom: 12pt;
+            }
+            
+            .skills-container {
+                grid-template-columns: repeat(auto-fit, minmax(140pt, 1fr));
+                gap: 10pt;
+            }
+            
+            .skill-category {
+                padding: 10pt;
+            }
+            
+            .academic-stats {
+                padding: 12pt;
+                margin: 10pt 0;
+            }
+            
+            .stats-grid {
+                gap: 10pt;
+            }
+            
+            /* Remove hover effects in print */
+            .skill-category:hover,
+            .semester-card:hover {
+                transform: none;
+            }
+            
+            /* Ensure good contrast */
+            .header, .section-title, .academic-stats {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
         }
         
         .semester-grid {
