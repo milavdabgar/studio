@@ -5,7 +5,8 @@ import {
 } from '@/lib/models';
 import * as fs from 'fs';
 import * as path from 'path';
-import csv from 'csv-parser';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const csv = require('csv-parser');
 
 // CSV file paths
 const CSV_BASE_PATH = path.join(process.cwd(), 'data', 'csvs', 'portal-exports');
@@ -29,7 +30,7 @@ function parseCSV<T>(filePath: string): Promise<T[]> {
     
     fs.createReadStream(filePath)
       .pipe(csv())
-      .on('data', (data) => results.push(data))
+      .on('data', (data: T) => results.push(data))
       .on('end', () => resolve(results))
       .on('error', reject);
   });

@@ -168,7 +168,11 @@ export const mockCourses: Course[] = [
     practicalPaMarks: 25,
     oralPaMarks: 25,
     totalMarks: 200,
-    status: 'active'
+    isElective: false,
+    isTheory: true,
+    isPractical: true,
+    isFunctional: true,
+    departmentId: 'dept-cs'
   },
   {
     id: 'course-2',
@@ -186,7 +190,11 @@ export const mockCourses: Course[] = [
     practicalPaMarks: 25,
     oralPaMarks: 25,
     totalMarks: 200,
-    status: 'active'
+    isElective: false,
+    isTheory: true,
+    isPractical: true,
+    isFunctional: true,
+    departmentId: 'dept-cs'
   },
   {
     id: 'course-3',
@@ -204,7 +212,11 @@ export const mockCourses: Course[] = [
     practicalPaMarks: 25,
     oralPaMarks: 25,
     totalMarks: 200,
-    status: 'active'
+    isElective: false,
+    isTheory: true,
+    isPractical: true,
+    isFunctional: true,
+    departmentId: 'dept-cs'
   }
 ];
 

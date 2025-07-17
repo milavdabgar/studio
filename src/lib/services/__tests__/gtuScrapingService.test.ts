@@ -182,7 +182,8 @@ describe('GTUScrapingService', () => {
         semester: '1',
         academic_year: '2024-25',
         scraped_at: '2024-01-01',
-        subjects: [{ subcode: 'DI01000011' }]
+        subjects: [{ subcode: 'DI01000011' }],
+        pdf_links: [{ url: 'https://example.com/DI01000011.pdf', text: 'DI01000011', filename: 'DI01000011.pdf' }]
       };
       
       const pdfData = {
@@ -198,7 +199,13 @@ describe('GTUScrapingService', () => {
     it('should handle missing data appropriately', () => {
       const entryData = {
         program: 'Diploma',
-        branch_code: '09'
+        branch_code: '09',
+        branch_name: 'Test Branch',
+        semester: '1',
+        academic_year: '2024-25',
+        scraped_at: '2024-01-01',
+        subjects: [],
+        pdf_links: []
       };
       
       const pdfData = {
@@ -284,7 +291,8 @@ describe('GTUComprehensiveCSVGenerator', () => {
         semester: '1',
         academic_year: '2024-25',
         scraped_at: '2024-01-01',
-        subjects: [{ subcode: 'DI01000011' }]
+        subjects: [{ subcode: 'DI01000011' }],
+        pdf_links: [{ url: 'https://example.com/DI01000011.pdf', text: 'DI01000011', filename: 'DI01000011.pdf' }]
       };
       
       const pdfData = {
@@ -307,7 +315,8 @@ describe('GTUComprehensiveCSVGenerator', () => {
         semester: '1',
         academic_year: '2024-25',
         scraped_at: '2024-01-01',
-        subjects: []
+        subjects: [],
+        pdf_links: [{ url: 'https://example.com/DI01000011.pdf', text: 'DI01000011', filename: 'DI01000011.pdf' }]
       };
       
       const pdfData = {

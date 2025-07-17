@@ -686,11 +686,8 @@ export class FacultyResumeGenerator {
       
       resumeData.experience.forEach(exp => {
         sections.push(`### ${exp.position} at ${exp.organization}`);
-        if (exp.startDate) {
-          const duration = exp.endDate ? 
-            `${exp.startDate} - ${exp.endDate}` : 
-            `${exp.startDate} - Present`;
-          sections.push(`**Duration:** ${duration}`);
+        if (exp.duration) {
+          sections.push(`**Duration:** ${exp.duration}`);
         }
         if (exp.description) {
           sections.push(`**Description:** ${exp.description}`);
@@ -714,45 +711,12 @@ export class FacultyResumeGenerator {
         if (pub.authors && pub.authors.length > 0) {
           sections.push(`**Authors:** ${pub.authors.join(', ')}`);
         }
-        if (pub.doi) {
-          sections.push(`**DOI:** ${pub.doi}`);
-        }
         sections.push('');
       });
     }
     
-    // Research Interests
-    if (resumeData.researchInterests && resumeData.researchInterests.length > 0) {
-      sections.push('## Research Interests\n');
-      resumeData.researchInterests.forEach(interest => {
-        sections.push(`- ${interest}`);
-      });
-      sections.push('');
-    }
     
-    // Professional Memberships
-    if (resumeData.professionalMemberships && resumeData.professionalMemberships.length > 0) {
-      sections.push('## Professional Memberships\n');
-      resumeData.professionalMemberships.forEach(membership => {
-        sections.push(`- ${membership}`);
-      });
-      sections.push('');
-    }
     
-    // Awards and Honors
-    if (resumeData.awards && resumeData.awards.length > 0) {
-      sections.push('## Awards and Honors\n');
-      resumeData.awards.forEach(award => {
-        sections.push(`### ${award.title}`);
-        if (award.year) {
-          sections.push(`**Year:** ${award.year}`);
-        }
-        if (award.description) {
-          sections.push(`**Description:** ${award.description}`);
-        }
-        sections.push('');
-      });
-    }
     
     return sections.join('\n');
   }
@@ -865,7 +829,7 @@ export class FacultyResumeGenerator {
       `**Staff Code:** ${resumeData.staffCode}`,
       `**Department:** ${resumeData.department}`,
       `**Institute Email:** ${resumeData.instituteEmail}`
-    ].filter(Boolean);
+    ].filter(Boolean) as string[];
     
     personalInfo.forEach(info => sections.push(info));
     sections.push('');

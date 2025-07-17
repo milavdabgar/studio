@@ -754,7 +754,7 @@ ${processedContent}`;
             // Create complete markdown with frontmatter
             const title = options.title || frontmatter.title || 'Document';
             const author = options.author || frontmatter.author || 'Unknown Author';
-            const date = frontmatter.date || new Date().toISOString().split('T')[0];
+            const date = frontmatter.date && typeof frontmatter.date === 'string' ? frontmatter.date : new Date().toISOString().split('T')[0];
             
             const fullMarkdown = `---
 title: "${title}"
@@ -772,7 +772,8 @@ ${processedContent}`;
             // Try enhanced LaTeX template first, fallback to basic if it fails
             try {
                 // Create enhanced LaTeX template based on reference templates
-                const latexTemplate = this.generateProfessionalLatexTemplate(title, author, date || '');
+                const dateString: string = typeof date === 'string' ? date : String(date);
+                const latexTemplate = this.generateProfessionalLatexTemplate(title, author, dateString);
                 fs.writeFileSync(tempTexPath, latexTemplate);
                 
                 // Try XeLaTeX first, fallback to pdfLaTeX if XeLaTeX fails
@@ -897,7 +898,7 @@ ${processedContent}`;
             // Create complete markdown with frontmatter
             const title = options.title || frontmatter.title || 'Document';
             const author = options.author || frontmatter.author || 'Unknown Author';
-            const date = frontmatter.date || new Date().toISOString().split('T')[0];
+            const date = frontmatter.date && typeof frontmatter.date === 'string' ? frontmatter.date : new Date().toISOString().split('T')[0];
             
             const fullMarkdown = `---
 title: "${title}"
@@ -961,7 +962,7 @@ ${processedContent}`;
             // Create complete markdown with frontmatter optimized for presentation
             const title = options.title || frontmatter.title || 'Presentation';
             const author = options.author || frontmatter.author || 'Unknown Author';
-            const date = frontmatter.date || new Date().toISOString().split('T')[0];
+            const date = frontmatter.date && typeof frontmatter.date === 'string' ? frontmatter.date : new Date().toISOString().split('T')[0];
             
             // Process content to be more presentation-friendly
             let presentationContent = processedContent;

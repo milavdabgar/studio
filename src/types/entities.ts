@@ -603,6 +603,7 @@ export interface Course {
   theoryPaMarks: number; 
   practicalEseMarks: number; 
   practicalPaMarks: number; 
+  oralPaMarks?: number;
   totalMarks: number; 
   
   isElective: boolean;
