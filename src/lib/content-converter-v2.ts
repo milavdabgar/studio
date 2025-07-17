@@ -1990,6 +1990,9 @@ ${presentationContent}`;
 % Table formatting
 \\renewcommand{\\arraystretch}{1.2}
 
+% Pandoc compatibility
+\\providecommand{\\tightlist}{\\setlength{\\itemsep}{0pt}\\setlength{\\parskip}{0pt}}
+
 % Code block formatting
 \\usepackage{listings}
 \\lstset{
