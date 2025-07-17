@@ -77,6 +77,7 @@ import type {
 import { studentService } from '@/lib/api/students';
 import { programService } from '@/lib/api/programs';
 import { batchService } from '@/lib/api/batches';
+import StudentDownloadButtons from '@/components/student-download-buttons';
 import { format, parseISO, isValid } from 'date-fns';
 import Link from 'next/link';
 
@@ -1099,6 +1100,7 @@ export default function StudentProfilePage() {
   const [program, setProgram] = useState<Program | null>(null);
   const [batch, setBatch] = useState<Batch | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isGeneratingResume, setIsGeneratingResume] = useState(false);
   const [user, setUser] = useState<UserCookie | null>(null);
   const [activeTab, setActiveTab] = useState('basic');
   const { toast } = useToast();
@@ -1221,6 +1223,7 @@ export default function StudentProfilePage() {
       return;
     }
 
+    setIsGeneratingResume(true);
     try {
       const response = await fetch(`/api/students/${student.id}/resume?format=${format}`, {
         method: 'GET',
@@ -1267,6 +1270,8 @@ export default function StudentProfilePage() {
         title: "Generation Failed", 
         description: error instanceof Error ? error.message : "Could not generate document." 
       });
+    } finally {
+      setIsGeneratingResume(false);
     }
   };
 
@@ -1297,10 +1302,12 @@ export default function StudentProfilePage() {
                   Public View
                 </Link>
               </Button>
-              <Button onClick={() => handleGenerateResume('pdf')} variant="default">
-                <Download className="h-4 w-4 mr-2" />
-                Download Resume
-              </Button>
+              <StudentDownloadButtons 
+                onDownload={handleGenerateResume}
+                isLoading={isGeneratingResume}
+                variant="default"
+                size="default"
+              />
             </div>
           </div>
         </CardHeader>
@@ -1406,50 +1413,6 @@ export default function StudentProfilePage() {
             </CardContent>
           </Card>
 
-          {/* Resume Generation */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Download className="h-5 w-5" />
-                Resume & Documents
-              </CardTitle>
-              <CardDescription>
-                Generate professional documents in various formats
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <Button onClick={() => handleGenerateResume('pdf')} variant="outline" className="h-20 flex flex-col">
-                  <FileText className="h-6 w-6 mb-2" />
-                  <span>Resume PDF</span>
-                </Button>
-                <Button onClick={() => handleGenerateResume('pdf-latex')} variant="outline" className="h-20 flex flex-col">
-                  <FileText className="h-6 w-6 mb-2" />
-                  <span>PDF LaTeX</span>
-                </Button>
-                <Button onClick={() => handleGenerateResume('cv')} variant="outline" className="h-20 flex flex-col">
-                  <FileText className="h-6 w-6 mb-2" />
-                  <span>Curriculum Vitae</span>
-                </Button>
-                <Button onClick={() => handleGenerateResume('biodata')} variant="outline" className="h-20 flex flex-col">
-                  <FileText className="h-6 w-6 mb-2" />
-                  <span>Biodata</span>
-                </Button>
-                <Button onClick={() => handleGenerateResume('docx')} variant="outline" className="h-20 flex flex-col">
-                  <FileCheck className="h-6 w-6 mb-2" />
-                  <span>Word Document</span>
-                </Button>
-                <Button onClick={() => handleGenerateResume('html')} variant="outline" className="h-20 flex flex-col">
-                  <Globe className="h-6 w-6 mb-2" />
-                  <span>Web Page</span>
-                </Button>
-                <Button onClick={() => handleGenerateResume('txt')} variant="outline" className="h-20 flex flex-col">
-                  <FileText className="h-6 w-6 mb-2" />
-                  <span>Plain Text</span>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
         </TabsContent>
 
         <TabsContent value="education" className="space-y-6">
