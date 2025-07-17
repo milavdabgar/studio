@@ -9,9 +9,10 @@ const originalConsoleWarn = console.warn;
 const originalConsoleLog = console.log;
 
 beforeAll(() => {
-  console.error = jest.fn();
-  console.warn = jest.fn();
-  console.log = jest.fn();
+  // Don't suppress console during test failures - we need debugging info
+  // console.error = jest.fn();
+  // console.warn = jest.fn();
+  // console.log = jest.fn();
 });
 
 afterAll(() => {
@@ -23,7 +24,12 @@ afterAll(() => {
 // Mock the MongoDB models and utilities
 jest.mock('@/lib/mongodb');
 jest.mock('@/lib/models');
-jest.mock('mongoose');
+jest.mock('mongoose', () => ({
+  connect: jest.fn().mockResolvedValue(undefined),
+  default: {
+    connect: jest.fn().mockResolvedValue(undefined)
+  }
+}));
 
 const mockConnectMongoose = connectMongoose as jest.MockedFunction<typeof connectMongoose>;
 const mockCourseModel = CourseModel as jest.Mocked<typeof CourseModel>;
@@ -78,8 +84,8 @@ describe('/api/courses/import', () => {
     it('should import GTU course data successfully', async () => {
       const csvData = [
         Object.keys(validGTUCourseData).join(','),
-        Object.values(validGTUCourseData).join(',')
-      ].join('\\n');
+        Object.values(validGTUCourseData).map(val => `"${val}"`).join(',')
+      ].join('\n');
 
       // Mock departments and programs for mapping
       const departments = [{
@@ -108,25 +114,45 @@ describe('/api/courses/import', () => {
         save: mockSave
       }));
 
-      // Create FormData
-      const formData = new FormData();
-      formData.append('file', new Blob([csvData], { type: 'text/csv' }), 'courses.csv');
-      formData.append('departments', JSON.stringify(departments));
-      formData.append('programs', JSON.stringify(programs));
+      // Create mock file with text method
+      const file = {
+        name: 'courses.csv',
+        type: 'text/csv',
+        text: jest.fn().mockResolvedValue(csvData)
+      } as any;
+      
+      // Create mock FormData
+      const mockFormData = {
+        get: jest.fn().mockImplementation((key: string) => {
+          if (key === 'file') return file;
+          if (key === 'departments') return JSON.stringify(departments);
+          if (key === 'programs') return JSON.stringify(programs);
+          return null;
+        })
+      } as any;
 
       const request = new NextRequest('http://localhost/api/courses/import', {
         method: 'POST',
-        body: formData,
+        body: 'mock-body',
         headers: {
           'Content-Type': 'multipart/form-data; boundary=----formdata-test-boundary'
         }
       });
+      
+      // Mock the formData method to return our mock FormData
+      (request as any).formData = jest.fn().mockResolvedValue(mockFormData);
 
       const response = await POST(request);
       const data = await response.json();
+      
+      // Debug: Log response details if test fails
+      if (response.status !== 200) {
+        console.log('Response status:', response.status);
+        console.log('Response data:', data);
+      }
 
       expect(response.status).toBe(200);
-      expect(data.message).toContain('successfully imported');
+      expect(data.message).toContain('Courses imported successfully');
       expect(data.newCount).toBe(1);
       expect(data.updatedCount).toBe(0);
       expect(data.skippedCount).toBe(0);
@@ -136,25 +162,39 @@ describe('/api/courses/import', () => {
       const csvData = [
         'subcode,subjectname',
         'DI01000011,Mathematics I'
-      ].join('\\n');
+      ].join('\n');
 
       // Mock departments and programs
       const departments = [{ id: 'dept_ee', name: 'Electrical Engineering', code: 'EE' }];
       const programs = [{ id: 'prog_dee', name: 'Diploma in Electrical Engineering', code: 'DEE', departmentId: 'dept_ee' }];
 
-      // Create FormData
-      const formData = new FormData();
-      formData.append('file', new Blob([csvData], { type: 'text/csv' }), 'courses.csv');
-      formData.append('departments', JSON.stringify(departments));
-      formData.append('programs', JSON.stringify(programs));
+      // Create mock file with text method
+      const file = {
+        name: 'courses.csv',
+        type: 'text/csv',
+        text: jest.fn().mockResolvedValue(csvData)
+      } as any;
+      
+      // Create mock FormData
+      const mockFormData = {
+        get: jest.fn().mockImplementation((key: string) => {
+          if (key === 'file') return file;
+          if (key === 'departments') return JSON.stringify(departments);
+          if (key === 'programs') return JSON.stringify(programs);
+          return null;
+        })
+      } as any;
 
       const request = new NextRequest('http://localhost/api/courses/import', {
         method: 'POST',
-        body: formData,
+        body: 'mock-body',
         headers: {
           'Content-Type': 'multipart/form-data; boundary=----formdata-test-boundary'
         }
       });
+      
+      // Mock the formData method to return our mock FormData
+      (request as any).formData = jest.fn().mockResolvedValue(mockFormData);
 
       const response = await POST(request);
       const data = await response.json();
