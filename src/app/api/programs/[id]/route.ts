@@ -15,12 +15,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     await connectMongoose();
     const { id } = await params;
     
-    // Try to find by MongoDB ObjectId first, then by custom id field
-    let program;
-    if (Types.ObjectId.isValid(id)) {
+    // Try to find by custom id field first, then by MongoDB ObjectId
+    let program = await ProgramModel.findOne({ id });
+    if (!program && Types.ObjectId.isValid(id)) {
       program = await ProgramModel.findById(id);
-    } else {
-      program = await ProgramModel.findOne({ id });
     }
     
     if (!program) {
@@ -90,8 +88,18 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Update timestamp
     updateData.updatedAt = new Date().toISOString();
     
+    // Find the program first to get the correct MongoDB _id
+    let program = await ProgramModel.findOne({ id });
+    if (!program && Types.ObjectId.isValid(id)) {
+      program = await ProgramModel.findById(id);
+    }
+    
+    if (!program) {
+      return NextResponse.json({ message: 'Program not found' }, { status: 404 });
+    }
+    
     const updatedProgram = await ProgramModel.findByIdAndUpdate(
-      id,
+      program._id,
       updateData,
       { new: true, runValidators: true }
     );
@@ -112,12 +120,10 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     await connectMongoose();
     const { id } = await params;
     
-    // Try to find by MongoDB ObjectId first, then by custom id field
-    let programToDelete;
-    if (Types.ObjectId.isValid(id)) {
+    // Try to find by custom id field first, then by MongoDB ObjectId
+    let programToDelete = await ProgramModel.findOne({ id });
+    if (!programToDelete && Types.ObjectId.isValid(id)) {
       programToDelete = await ProgramModel.findById(id);
-    } else {
-      programToDelete = await ProgramModel.findOne({ id });
     }
     
     if (!programToDelete) {

@@ -3,6 +3,111 @@ import {
   UserModel, RoleModel, DepartmentModel, CourseModel, 
   BatchModel, ProgramModel, InstituteModel, BuildingModel, RoomModel, CommitteeModel, StudentModel
 } from '@/lib/models';
+import * as fs from 'fs';
+import * as path from 'path';
+import csv from 'csv-parser';
+
+// CSV file paths
+const CSV_BASE_PATH = path.join(process.cwd(), 'data', 'csvs', 'portal-exports');
+const CSV_FILES = {
+  institutes: path.join(CSV_BASE_PATH, 'institutes_export.csv'),
+  departments: path.join(CSV_BASE_PATH, 'departments_export.csv'),
+  programs: path.join(CSV_BASE_PATH, 'programs_export.csv'),
+  roles: path.join(CSV_BASE_PATH, 'roles_export.csv'),
+};
+
+// CSV parsing utility function
+function parseCSV<T>(filePath: string): Promise<T[]> {
+  return new Promise((resolve, reject) => {
+    const results: T[] = [];
+    
+    if (!fs.existsSync(filePath)) {
+      console.warn(`CSV file not found: ${filePath}`);
+      resolve([]);
+      return;
+    }
+    
+    fs.createReadStream(filePath)
+      .pipe(csv())
+      .on('data', (data) => results.push(data))
+      .on('end', () => resolve(results))
+      .on('error', reject);
+  });
+}
+
+// CSV data transformation functions
+function transformInstituteData(csvData: any[]): any[] {
+  return csvData.map(row => ({
+    id: row.id || 'inst1',
+    name: row.name || 'Government Polytechnic Palanpur',
+    code: row.code || 'GPP',
+    domain: 'gppalanpur.in',
+    address: row.address || 'Jagana, Palanpur, Gujarat 385011',
+    contactEmail: row.contactEmail || 'gp-palanpur-dte@gujarat.gov.in',
+    contactPhone: row.contactPhone || '02742-280126',
+    website: row.website || 'http://www.gppalanpur.in',
+    status: row.status || 'active',
+    establishmentYear: parseInt(row.establishmentYear) || 1964,
+    administrators: ['user_admin_gpp'],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }));
+}
+
+function transformDepartmentData(csvData: any[]): any[] {
+  return csvData.map(row => ({
+    id: row.id,
+    name: row.name,
+    code: row.code,
+    description: row.description || '',
+    instituteId: row.instituteId || 'inst1',
+    status: row.status || 'active',
+    establishmentYear: parseInt(row.establishmentYear) || 1984,
+    hodId: row.hodId || null,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }));
+}
+
+function transformProgramData(csvData: any[]): any[] {
+  return csvData.map(row => ({
+    id: row.id,
+    name: row.name,
+    code: row.code,
+    description: row.description || '',
+    departmentId: row.departmentId,
+    instituteId: 'inst1',
+    degreeType: 'Diploma',
+    durationYears: parseInt(row.durationYears) || 3,
+    totalSemesters: parseInt(row.totalSemesters) || 6,
+    totalCredits: 180,
+    curriculumVersion: '2022-23',
+    status: row.status || 'active',
+    admissionCapacity: 60,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }));
+}
+
+function transformRoleData(csvData: any[]): any[] {
+  return csvData.map(row => ({
+    id: row.id,
+    name: row.name,
+    code: row.code,
+    description: row.description || '',
+    permissions: row.permissions ? row.permissions.split(';') : [],
+    isSystemRole: row.isSystemRole === 'true',
+    isCommitteeRole: row.isCommitteeRole === 'true',
+    committeeId: row.committeeId || null,
+    scope: {
+      level: row.code === 'super_admin' ? 'system' : 
+             row.code === 'admin' ? 'institute' : 
+             row.code === 'hod' ? 'department' : 'institute'
+    },
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }));
+}
 
 // Initial user data (from current in-memory store)
 const initialUsers = [
@@ -98,72 +203,83 @@ const initialUsers = [
   }
 ];
 
-// Initial student profiles data
-const initialStudents = [
-  {
-    id: "student_ce001_gpp",
-    userId: "user_student_ce001_gpp",
-    enrollmentNumber: "220010107001",
-    firstName: "JOHN",
-    lastName: "SMITH",
-    fullNameGtuFormat: "JOHN SMITH",
-    personalEmail: "john.smith@student.gppalanpur.in",
-    instituteEmail: "john.smith@gppalanpur.in",
-    programId: "prog_dce_gpp",
-    department: "dept_ce_gpp",
-    batchId: "batch_dce_2022_gpp",
-    status: "active",
-    currentSemester: 5,
-    creditsEarned: 120,
-    totalCredits: 180,
-    cpi: 8.5,
-    admissionYear: 2022,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: "student_ce002_gpp",
-    userId: "user_student_ce002_gpp",
-    enrollmentNumber: "220010107002",
-    firstName: "BOB",
-    lastName: "WILSON",
-    fullNameGtuFormat: "BOB WILSON",
-    personalEmail: "bob.wilson@student.gppalanpur.in",
-    instituteEmail: "bob.wilson@gppalanpur.in",
-    programId: "prog_dce_gpp",
-    department: "dept_ce_gpp",
-    batchId: "batch_dce_2022_gpp",
-    status: "active",
-    currentSemester: 5,
-    creditsEarned: 115,
-    totalCredits: 180,
-    cpi: 7.8,
-    admissionYear: 2022,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: "student_me001_gpp",
-    userId: "user_student_me001_gpp",
-    enrollmentNumber: "230010108001",
-    firstName: "ALICE",
-    lastName: "JOHNSON",
-    fullNameGtuFormat: "ALICE JOHNSON",
-    personalEmail: "alice.johnson@student.gppalanpur.in",
-    instituteEmail: "alice.johnson@gppalanpur.in",
-    programId: "prog_dme_gpp",
-    department: "dept_me_gpp",
-    batchId: "batch_dme_2023_gpp",
-    status: "active",
-    currentSemester: 3,
-    creditsEarned: 60,
-    totalCredits: 180,
-    cpi: 9.2,
-    admissionYear: 2023,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  }
-];
+// Function to create student data with correct program IDs
+function createStudentData(programsData: any[], departmentsData: any[]): any[] {
+  // Find the correct program IDs from CSV data
+  const ceProgram = programsData.find(p => p.code === "11" || p.name.includes("Electronics & Communication"));
+  const meProgram = programsData.find(p => p.code === "19" || p.name.includes("Mechanical"));
+  const ceDepartment = departmentsData.find(d => d.code === "EC");
+  const meDepartment = departmentsData.find(d => d.code === "ME");
+  
+  return [
+    {
+      id: "student_ce001_gpp",
+      userId: "user_student_ce001_gpp",
+      enrollmentNumber: "220010107001",
+      firstName: "JOHN",
+      lastName: "SMITH",
+      fullNameGtuFormat: "JOHN SMITH",
+      personalEmail: "john.smith@student.gppalanpur.in",
+      instituteEmail: "john.smith@gppalanpur.in",
+      programId: ceProgram?.id || "prog_dce_gpp",
+      department: ceDepartment?.id || "dept_ce_gpp",
+      batchId: "batch_dce_2022_gpp",
+      status: "active",
+      currentSemester: 5,
+      creditsEarned: 120,
+      totalCredits: 180,
+      cpi: 8.5,
+      admissionYear: 2022,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    },
+    {
+      id: "student_ce002_gpp",
+      userId: "user_student_ce002_gpp",
+      enrollmentNumber: "220010107002",
+      firstName: "BOB",
+      lastName: "WILSON",
+      fullNameGtuFormat: "BOB WILSON",
+      personalEmail: "bob.wilson@student.gppalanpur.in",
+      instituteEmail: "bob.wilson@gppalanpur.in",
+      programId: ceProgram?.id || "prog_dce_gpp",
+      department: ceDepartment?.id || "dept_ce_gpp",
+      batchId: "batch_dce_2022_gpp",
+      status: "active",
+      currentSemester: 5,
+      creditsEarned: 115,
+      totalCredits: 180,
+      cpi: 7.8,
+      admissionYear: 2022,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    },
+    {
+      id: "student_me001_gpp",
+      userId: "user_student_me001_gpp",
+      enrollmentNumber: "230010108001",
+      firstName: "ALICE",
+      lastName: "JOHNSON",
+      fullNameGtuFormat: "ALICE JOHNSON",
+      personalEmail: "alice.johnson@student.gppalanpur.in",
+      instituteEmail: "alice.johnson@gppalanpur.in",
+      programId: meProgram?.id || "prog_dme_gpp",
+      department: meDepartment?.id || "dept_me_gpp",
+      batchId: "batch_dme_2023_gpp",
+      status: "active",
+      currentSemester: 3,
+      creditsEarned: 60,
+      totalCredits: 180,
+      cpi: 9.2,
+      admissionYear: 2023,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+  ];
+}
+
+// Initial student profiles data (will be replaced with dynamic data)
+const initialStudents = [];
 
 // Initial roles data (basic roles to start with)
 const initialRoles = [
@@ -363,31 +479,40 @@ const initialPrograms = [
   }
 ];
 
-// Initial batches data
-const initialBatches = [
-  {
-    id: "batch_dce_2022_gpp",
-    name: "DCE 2022-2025",
-    programId: "prog_dce_gpp",
-    startAcademicYear: 2022,
-    endAcademicYear: 2025,
-    status: "active",
-    maxIntake: 60,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    id: "batch_dme_2023_gpp",
-    name: "DME 2023-2026",
-    programId: "prog_dme_gpp", 
-    startAcademicYear: 2023,
-    endAcademicYear: 2026,
-    status: "active",
-    maxIntake: 60,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  }
-];
+// Function to create batch data with correct program IDs
+function createBatchData(programsData: any[]): any[] {
+  // Find the correct program IDs from CSV data
+  const ceProgram = programsData.find(p => p.code === "11" || p.name.includes("Electronics & Communication"));
+  const meProgram = programsData.find(p => p.code === "19" || p.name.includes("Mechanical"));
+  
+  return [
+    {
+      id: "batch_dce_2022_gpp",
+      name: "DCE 2022-2025",
+      programId: ceProgram?.id || "prog_dce_gpp",
+      startAcademicYear: 2022,
+      endAcademicYear: 2025,
+      status: "active",
+      maxIntake: 60,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    },
+    {
+      id: "batch_dme_2023_gpp",
+      name: "DME 2023-2026",
+      programId: meProgram?.id || "prog_dme_gpp", 
+      startAcademicYear: 2023,
+      endAcademicYear: 2026,
+      status: "active",
+      maxIntake: 60,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+  ];
+}
+
+// Initial batches data (will be replaced with dynamic data)
+const initialBatches = [];
 
 // Initial courses data
 const initialCourses = [
@@ -564,21 +689,28 @@ async function seedDatabase() {
     await CommitteeModel.deleteMany({});
     console.log('🧹 Cleared existing data');
 
+    // Load CSV data
+    console.log('📊 Loading CSV data...');
+    const [institutesCSV, departmentsCSV, programsCSV, rolesCSV] = await Promise.all([
+      parseCSV(CSV_FILES.institutes),
+      parseCSV(CSV_FILES.departments),
+      parseCSV(CSV_FILES.programs),
+      parseCSV(CSV_FILES.roles)
+    ]);
+
+    // Transform CSV data
+    const institutesData = institutesCSV.length > 0 ? transformInstituteData(institutesCSV) : initialInstitutes;
+    const departmentsData = departmentsCSV.length > 0 ? transformDepartmentData(departmentsCSV) : initialDepartments;
+    const programsData = programsCSV.length > 0 ? transformProgramData(programsCSV) : initialPrograms;
+    const rolesData = rolesCSV.length > 0 ? transformRoleData(rolesCSV) : initialRoles;
+
     // Seed institutes first (as they're referenced by other entities)
-    const instituteDocuments = initialInstitutes.map(inst => {
-      return inst; // Keep all fields including custom id
-    });
-    
-    await InstituteModel.insertMany(instituteDocuments);
-    console.log(`✅ Seeded ${instituteDocuments.length} institutes`);
+    await InstituteModel.insertMany(institutesData);
+    console.log(`✅ Seeded ${institutesData.length} institutes`);
 
     // Seed departments (as they're referenced by other entities)
-    const departmentDocuments = initialDepartments.map(dept => {
-      return dept; // Keep all fields including custom id
-    });
-    
-    await DepartmentModel.insertMany(departmentDocuments);
-    console.log(`✅ Seeded ${initialDepartments.length} departments`);
+    await DepartmentModel.insertMany(departmentsData);
+    console.log(`✅ Seeded ${departmentsData.length} departments`);
 
     // Seed committees (depends on users and institutes)
     const committeeDocuments = initialCommittees.map(committee => {
@@ -589,20 +721,13 @@ async function seedDatabase() {
     console.log(`✅ Seeded ${initialCommittees.length} committees`);
 
     // Seed programs (depends on departments)
-    const programDocuments = initialPrograms.map(program => {
-      return program; // Keep all fields including custom id
-    });
-    
-    await ProgramModel.insertMany(programDocuments);
-    console.log(`✅ Seeded ${initialPrograms.length} programs`);
+    await ProgramModel.insertMany(programsData);
+    console.log(`✅ Seeded ${programsData.length} programs`);
 
     // Seed batches (depends on programs)
-    const batchDocuments = initialBatches.map(batch => {
-      return batch; // Keep all fields including custom id
-    });
-    
-    await BatchModel.insertMany(batchDocuments);
-    console.log(`✅ Seeded ${initialBatches.length} batches`);
+    const batchData = createBatchData(programsData);
+    await BatchModel.insertMany(batchData);
+    console.log(`✅ Seeded ${batchData.length} batches`);
 
     // Seed courses (depends on departments and programs)
     const courseDocuments = initialCourses.map(course => {
@@ -629,12 +754,8 @@ async function seedDatabase() {
     console.log(`✅ Seeded ${roomDocuments.length} rooms`);
 
     // Seed roles first
-    const roleDocuments = initialRoles.map(role => {
-      return role; // Keep all fields including custom id
-    });
-    
-    await RoleModel.insertMany(roleDocuments);
-    console.log(`✅ Seeded ${initialRoles.length} roles`);
+    await RoleModel.insertMany(rolesData);
+    console.log(`✅ Seeded ${rolesData.length} roles`);
 
     // Seed users
     const userDocuments = initialUsers.map(user => {
@@ -649,16 +770,9 @@ async function seedDatabase() {
     console.log(`✅ Seeded ${initialUsers.length} users`);
 
     // Seed students (depends on users, programs, and batches)
-    const studentDocuments = initialStudents.map(student => {
-      return {
-        ...student, // Keep all fields including custom id
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-    });
-    
-    await StudentModel.insertMany(studentDocuments);
-    console.log(`✅ Seeded ${initialStudents.length} students`);
+    const studentData = createStudentData(programsData, departmentsData);
+    await StudentModel.insertMany(studentData);
+    console.log(`✅ Seeded ${studentData.length} students`);
 
     console.log('🎉 Database seeding completed successfully!');
 
@@ -674,7 +788,19 @@ async function seedDatabase() {
     const buildingCount = await BuildingModel.countDocuments();
     const roomCount = await RoomModel.countDocuments();
     const studentCount = await StudentModel.countDocuments();
-    console.log(`📊 Final counts: ${userCount} users, ${roleCount} roles, ${departmentCount} departments, ${committeeCount} committees, ${programCount} programs, ${batchCount} batches, ${courseCount} courses, ${instituteCount} institutes, ${buildingCount} buildings, ${roomCount} rooms, ${studentCount} students`);
+    
+    console.log(`📊 Final counts:`);
+    console.log(`  - ${userCount} users`);
+    console.log(`  - ${roleCount} roles (${rolesCSV.length > 0 ? 'from CSV' : 'from default data'})`);
+    console.log(`  - ${departmentCount} departments (${departmentsCSV.length > 0 ? 'from CSV' : 'from default data'})`);
+    console.log(`  - ${committeeCount} committees`);
+    console.log(`  - ${programCount} programs (${programsCSV.length > 0 ? 'from CSV' : 'from default data'})`);
+    console.log(`  - ${batchCount} batches`);
+    console.log(`  - ${courseCount} courses`);
+    console.log(`  - ${instituteCount} institutes (${institutesCSV.length > 0 ? 'from CSV' : 'from default data'})`);
+    console.log(`  - ${buildingCount} buildings`);
+    console.log(`  - ${roomCount} rooms`);
+    console.log(`  - ${studentCount} students`);
 
   } catch (error) {
     console.error('❌ Error seeding database:', error);
