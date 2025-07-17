@@ -75,7 +75,7 @@ export default function FacultyProfilePage() {
     fetchProfileData();
   }, [user, toast]);
 
-  const handleGenerateResume = async (format: 'pdf' | 'docx' | 'html' | 'txt') => {
+  const handleGenerateResume = async (format: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt') => {
     if (!faculty || !user) {
       toast({ variant: "destructive", title: "Error", description: "Faculty data not available." });
       return;
@@ -218,6 +218,10 @@ export default function FacultyProfilePage() {
               <DropdownMenuItem onClick={() => handleGenerateResume('pdf')}>
                 <FileText className="mr-2 h-4 w-4" />
                 Download as PDF
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleGenerateResume('pdf-latex')}>
+                <FileText className="mr-2 h-4 w-4" />
+                Download as PDF LaTeX
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleGenerateResume('docx')}>
                 <FileCheck className="mr-2 h-4 w-4" />

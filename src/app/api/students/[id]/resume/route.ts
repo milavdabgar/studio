@@ -84,7 +84,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     // Validate format
-    const validFormats = ['pdf', 'docx', 'html', 'txt', 'biodata', 'resume', 'cv'];
+    const validFormats = ['pdf', 'pdf-latex', 'docx', 'html', 'txt', 'biodata', 'resume', 'cv'];
     if (!validFormats.includes(format)) {
       return NextResponse.json({ 
         error: `Invalid format. Supported formats: ${validFormats.join(', ')}` 
@@ -147,6 +147,12 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         content = await resumeGenerator.generatePDF(resumeData);
         contentType = 'application/pdf';
         filename = `${baseFilename}.pdf`;
+        break;
+
+      case 'pdf-latex':
+        content = await resumeGenerator.generatePDFPandoc(resumeData);
+        contentType = 'application/pdf';
+        filename = `${baseFilename}_latex.pdf`;
         break;
 
       case 'docx':
@@ -295,6 +301,12 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
         content = await resumeGenerator.generatePDF(enhancedResumeData);
         contentType = 'application/pdf';
         filename = `${baseFilename}.pdf`;
+        break;
+
+      case 'pdf-latex':
+        content = await resumeGenerator.generatePDFPandoc(enhancedResumeData);
+        contentType = 'application/pdf';
+        filename = `${baseFilename}_latex.pdf`;
         break;
 
       case 'docx':

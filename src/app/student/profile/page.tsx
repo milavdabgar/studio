@@ -1215,7 +1215,7 @@ export default function StudentProfilePage() {
     return `${window.location.origin}/students/${student.enrollmentNumber}`;
   };
 
-  const handleGenerateResume = async (format: 'pdf' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv') => {
+  const handleGenerateResume = async (format: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv') => {
     if (!student || !user) {
       toast({ variant: "destructive", title: "Error", description: "Student data not available." });
       return;
@@ -1422,6 +1422,10 @@ export default function StudentProfilePage() {
                 <Button onClick={() => handleGenerateResume('pdf')} variant="outline" className="h-20 flex flex-col">
                   <FileText className="h-6 w-6 mb-2" />
                   <span>Resume PDF</span>
+                </Button>
+                <Button onClick={() => handleGenerateResume('pdf-latex')} variant="outline" className="h-20 flex flex-col">
+                  <FileText className="h-6 w-6 mb-2" />
+                  <span>PDF LaTeX</span>
                 </Button>
                 <Button onClick={() => handleGenerateResume('cv')} variant="outline" className="h-20 flex flex-col">
                   <FileText className="h-6 w-6 mb-2" />
