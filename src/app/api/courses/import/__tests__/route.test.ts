@@ -116,7 +116,10 @@ describe('/api/courses/import', () => {
 
       const request = new NextRequest('http://localhost/api/courses/import', {
         method: 'POST',
-        body: formData
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data; boundary=----formdata-test-boundary'
+        }
       });
 
       const response = await POST(request);
@@ -147,14 +150,17 @@ describe('/api/courses/import', () => {
 
       const request = new NextRequest('http://localhost/api/courses/import', {
         method: 'POST',
-        body: formData
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data; boundary=----formdata-test-boundary'
+        }
       });
 
       const response = await POST(request);
       const data = await response.json();
 
       expect(response.status).toBe(400);
-      expect(data.message).toContain('missing required columns');
+      expect(data.message).toContain('CSV header is missing required columns');
     });
 
     it('should handle invalid Content-Type', async () => {
