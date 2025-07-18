@@ -111,6 +111,19 @@ export const mockStudent: Student = {
     }
   ],
   
+  // Education History for CV
+  educationHistory: [
+    {
+      institution: 'ABC Higher Secondary School',
+      degree: 'Higher Secondary Certificate',
+      fieldOfStudy: 'Science',
+      startDate: '2018-06-01',
+      endDate: '2020-05-31',
+      grade: '85%',
+      description: 'Completed with distinction in Mathematics and Physics'
+    }
+  ],
+  
   // Achievements
   achievements: [
     {
@@ -413,6 +426,19 @@ export const mockResumeData: ResumeData = {
       title: 'Dean\'s List',
       description: 'Recognized for academic excellence with a CGPA above 8.5',
       date: '2022-12-01'
+    }
+  ],
+  
+  // Education History for CV
+  educationHistory: [
+    {
+      institution: 'ABC Higher Secondary School',
+      degree: 'Higher Secondary Certificate',
+      fieldOfStudy: 'Science',
+      startDate: '2018-06-01',
+      endDate: '2020-05-31',
+      grade: '85%',
+      description: 'Completed with distinction in Mathematics and Physics'
     }
   ],
   

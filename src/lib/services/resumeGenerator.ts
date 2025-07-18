@@ -9,12 +9,20 @@ export interface ResumeData {
   email: string;
   personalEmail?: string;
   contactNumber?: string;
+  phone?: string; // Alias for contactNumber
   address?: string;
+  city?: string;
+  state?: string;
+  nationality?: string;
+  religion?: string;
+  caste?: string;
   dateOfBirth?: string;
   gender?: string;
   bloodGroup?: string;
   aadharNumber?: string;
   photoURL?: string;
+  languagesKnown?: string;
+  hobbies?: string;
   
   // Academic Information
   enrollmentNumber: string;
@@ -63,6 +71,15 @@ export interface ResumeData {
     grade?: string;
     description?: string;
   }>;
+  educationHistory?: Array<{
+    institution: string;
+    degree: string;
+    fieldOfStudy: string;
+    startDate: string;
+    endDate?: string;
+    grade?: string;
+    description?: string;
+  }>;
   
   experience?: Array<{
     company: string;
@@ -70,6 +87,7 @@ export interface ResumeData {
     startDate: string;
     endDate?: string;
     description?: string;
+    location?: string;
   }>;
   
   skills?: Array<{
@@ -99,6 +117,7 @@ export interface ResumeData {
   }>;
   certifications?: Array<{
     name: string;
+    title?: string; // Alias for name
     issuer: string;
     date?: string;
     url?: string;
@@ -3572,7 +3591,7 @@ export class ResumeGenerator {
                     <strong>Email:</strong> ${resumeData.email}
                 </div>
                 <div class="contact-item">
-                    <strong>Phone:</strong> ${resumeData.phone}
+                    <strong>Phone:</strong> ${resumeData.phone || resumeData.contactNumber}
                 </div>
                 ${resumeData.linkedinUrl ? `<div class="contact-item"><strong>LinkedIn:</strong> ${resumeData.linkedinUrl}</div>` : ''}
                 ${resumeData.portfolioWebsite ? `<div class="contact-item"><strong>Portfolio:</strong> ${resumeData.portfolioWebsite}</div>` : ''}
@@ -3651,6 +3670,31 @@ export class ResumeGenerator {
             </table>
         </div>
         ` : ''}
+
+        <!-- Academic Information -->
+        <div class="section">
+            <h2 class="section-title">Academic Information</h2>
+            <table class="info-table">
+                <tr>
+                    <td class="label-col">Program</td>
+                    <td class="value-col">${resumeData.program}${resumeData.programCode ? ` (${resumeData.programCode})` : ''}</td>
+                </tr>
+                <tr>
+                    <td class="label-col">Current Semester</td>
+                    <td class="value-col">${resumeData.currentSemester}</td>
+                </tr>
+                <tr>
+                    <td class="label-col">Institute Email</td>
+                    <td class="value-col">${resumeData.instituteEmail}</td>
+                </tr>
+                ${resumeData.batch ? `
+                <tr>
+                    <td class="label-col">Batch</td>
+                    <td class="value-col">${resumeData.batch}</td>
+                </tr>
+                ` : ''}
+            </table>
+        </div>
 
         <!-- Academic Performance -->
         ${resumeData.overallCPI || resumeData.earnedCredits || resumeData.totalCredits ? `
@@ -3777,7 +3821,7 @@ export class ResumeGenerator {
             <div class="achievement-item">
                 <div class="achievement-title">${achievement.title}</div>
                 ${achievement.description ? `<div class="achievement-description">${achievement.description}</div>` : ''}
-                <div class="achievement-date">${format(new Date(achievement.date), 'PPP')}</div>
+                <div class="achievement-date">${achievement.date ? format(new Date(achievement.date), 'PPP') : ''}</div>
             </div>
             `).join('')}
         </div>
@@ -3789,9 +3833,9 @@ export class ResumeGenerator {
             <h2 class="section-title">Certifications</h2>
             ${resumeData.certifications.map(cert => `
             <div class="achievement-item">
-                <div class="achievement-title">${cert.title}</div>
+                <div class="achievement-title">${cert.title || cert.name}</div>
                 <div class="achievement-description">Issuer: ${cert.issuer}</div>
-                <div class="achievement-date">${format(new Date(cert.date), 'PPP')}</div>
+                <div class="achievement-date">${cert.date ? format(new Date(cert.date), 'PPP') : ''}</div>
             </div>
             `).join('')}
         </div>

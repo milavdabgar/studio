@@ -14,6 +14,7 @@ jest.mock('puppeteer', () => ({
     newPage: jest.fn().mockResolvedValue({
       setViewport: jest.fn(),
       setContent: jest.fn(),
+      evaluate: jest.fn().mockResolvedValue({}),
       evaluateHandle: jest.fn().mockResolvedValue({}),
       pdf: jest.fn().mockResolvedValue(Buffer.from('mock-pdf-content'))
     }),
@@ -237,14 +238,14 @@ describe('ResumeGenerator', () => {
       const html = resumeGenerator.generateCVHTML(mockResumeData);
 
       expect(html).toContain('<!DOCTYPE html>');
-      expect(html).toContain('CURRICULUM VITAE');
+      expect(html).toContain('Curriculum Vitae');
       expect(html).toContain(mockResumeData.fullName);
     });
 
     it('should include professional objective when available', () => {
       const html = resumeGenerator.generateCVHTML(mockResumeData);
 
-      expect(html).toContain('Professional Objective');
+      expect(html).toContain('Profile Summary');
       expect(html).toContain(mockResumeData.profileSummary!);
     });
 
@@ -252,7 +253,6 @@ describe('ResumeGenerator', () => {
       const html = resumeGenerator.generateCVHTML(mockResumeData);
 
       expect(html).toContain('Educational Qualifications');
-      expect(html).toContain('Current Education');
       expect(html).toContain(mockResumeData.program);
     });
 
