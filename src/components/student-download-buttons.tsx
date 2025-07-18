@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 
 interface StudentDownloadButtonsProps {
-  onDownload: (format: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv') => void;
+  onDownload: (format: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv' | 'biodata-html' | 'resume-html' | 'cv-html') => void;
   isLoading: boolean;
   variant?: "default" | "outline" | "secondary" | "ghost" | "link" | "destructive";
   size?: "default" | "sm" | "lg" | "icon";
@@ -39,7 +39,7 @@ interface DownloadButtonProps {
   label: string;
   icon: React.ElementType;
   format: string;
-  onDownload: (format: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv') => void;
+  onDownload: (format: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv' | 'biodata-html' | 'resume-html' | 'cv-html') => void;
   isLoading: boolean;
   variant?: "default" | "outline" | "secondary" | "ghost" | "link" | "destructive";
   size?: "default" | "sm" | "lg" | "icon";
@@ -56,7 +56,7 @@ function DownloadButton({
 }: DownloadButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleDownload = (selectedFormat: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv') => {
+  const handleDownload = (selectedFormat: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv' | 'biodata-html' | 'resume-html' | 'cv-html') => {
     onDownload(selectedFormat);
     setIsOpen(false);
   };
@@ -82,15 +82,15 @@ function DownloadButton({
       <DropdownMenuContent align="end" className="w-48">
         {formatOptions.map((option) => {
           const OptionIcon = option.icon;
-          let finalFormat: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv' = option.id as 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt';
+          let finalFormat: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv' | 'biodata-html' | 'resume-html' | 'cv-html' = option.id as 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt';
           
           // Map formats based on button type
           if (format === 'biodata') {
-            finalFormat = 'biodata';
+            finalFormat = option.id === 'html' ? 'biodata-html' as any : 'biodata';
           } else if (format === 'resume') {
-            finalFormat = option.id === 'pdf' ? 'pdf' : option.id === 'pdf-latex' ? 'pdf-latex' : option.id as 'docx' | 'html' | 'txt';
+            finalFormat = option.id === 'html' ? 'resume-html' as any : option.id === 'pdf' ? 'pdf' : option.id === 'pdf-latex' ? 'pdf-latex' : option.id as 'docx' | 'html' | 'txt';
           } else if (format === 'cv') {
-            finalFormat = 'cv';
+            finalFormat = option.id === 'html' ? 'cv-html' as any : 'cv';
           }
           
           return (

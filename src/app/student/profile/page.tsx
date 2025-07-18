@@ -1268,7 +1268,7 @@ export default function StudentProfilePage() {
     return `${window.location.origin}/students/${student.enrollmentNumber}`;
   };
 
-  const handleGenerateResume = async (format: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv') => {
+  const handleGenerateResume = async (format: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv' | 'biodata-html' | 'resume-html' | 'cv-html') => {
     if (!student || !user) {
       toast({ variant: "destructive", title: "Error", description: "Student data not available." });
       return;

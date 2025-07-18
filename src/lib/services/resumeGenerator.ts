@@ -417,13 +417,20 @@ export class ResumeGenerator {
             line-height: 1.5;
             color: #2d3748;
             font-size: 11pt;
-            background: white;
+            background: #f5f5f5;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
+            margin: 0;
+            padding: 20px;
         }
         
         .resume-container {
             background: white;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
         }
         
         .header {
@@ -1527,7 +1534,7 @@ export class ResumeGenerator {
    * Generate biodata as professional PDF
    */
   async generateBiodataPDF(resumeData: ResumeData): Promise<Buffer> {
-    const htmlContent = this.generateBiodataHTML(resumeData);
+    const htmlContent = this.generateBiodataHTMLContent(resumeData);
     return this.generatePDFFromHTML(htmlContent);
   }
 
@@ -1543,8 +1550,21 @@ export class ResumeGenerator {
    * Generate CV as professional PDF
    */
   async generateCVPDF(resumeData: ResumeData): Promise<Buffer> {
-    const htmlContent = this.generateCVHTML(resumeData);
+    const htmlContent = this.generateCVHTMLContent(resumeData);
     return this.generatePDFFromHTML(htmlContent);
+  }
+
+  /**
+   * Convert relative photo URLs to absolute URLs for HTML export
+   */
+  private convertPhotoURLsForHTML(htmlContent: string): string {
+    // For HTML export, convert relative URLs to absolute URLs
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    
+    return htmlContent.replace(
+      /src="\/uploads\/photos\/([^"]+)"/g,
+      `src="${baseUrl}/uploads/photos/$1"`
+    );
   }
 
   /**
@@ -2162,13 +2182,30 @@ export class ResumeGenerator {
    * Generate resume in HTML format (for preview or direct download)
    */
   generateHTML(resumeData: ResumeData): string {
-    return this.generateResumeHTML(resumeData);
+    const htmlContent = this.generateResumeHTML(resumeData);
+    return this.convertPhotoURLsForHTML(htmlContent);
+  }
+
+  /**
+   * Generate biodata in HTML format
+   */
+  generateBiodataHTML(resumeData: ResumeData): string {
+    const htmlContent = this.generateBiodataHTMLContent(resumeData);
+    return this.convertPhotoURLsForHTML(htmlContent);
+  }
+
+  /**
+   * Generate CV in HTML format
+   */
+  generateCVHTML(resumeData: ResumeData): string {
+    const htmlContent = this.generateCVHTMLContent(resumeData);
+    return this.convertPhotoURLsForHTML(htmlContent);
   }
 
   /**
    * Generate biodata HTML with professional styling
    */
-  generateBiodataHTML(resumeData: ResumeData): string {
+  generateBiodataHTMLContent(resumeData: ResumeData): string {
     return `
 <!DOCTYPE html>
 <html lang="en">
@@ -2199,9 +2236,20 @@ export class ResumeGenerator {
             line-height: 1.5;
             color: #2c3e50;
             font-size: 11pt;
-            background: white;
+            background: #f5f5f5;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
         }
         
         .header {
@@ -2898,7 +2946,7 @@ export class ResumeGenerator {
   /**
    * Generate CV HTML with professional styling
    */
-  generateCVHTML(resumeData: ResumeData): string {
+  generateCVHTMLContent(resumeData: ResumeData): string {
     return `
 <!DOCTYPE html>
 <html lang="en">
@@ -2936,14 +2984,20 @@ export class ResumeGenerator {
             line-height: 1.6;
             color: #2c3e50;
             font-size: 11pt;
-            background: white;
+            background: #f5f5f5;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
+            margin: 0;
+            padding: 20px;
         }
         
         .container {
-            max-width: 100%;
+            max-width: 800px;
             margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
             padding: 0;
         }
         
