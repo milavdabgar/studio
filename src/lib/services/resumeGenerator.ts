@@ -433,6 +433,38 @@ export class ResumeGenerator {
             overflow: hidden;
         }
         
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .resume-container {
+                max-width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            
+            .header {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+            }
+            
+            .header-photo {
+                margin-bottom: 15px;
+            }
+            
+            .project-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .performance-stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+        
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -2252,6 +2284,37 @@ export class ResumeGenerator {
             overflow: hidden;
         }
         
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                max-width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            
+            .header {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+            }
+            
+            .photo-section {
+                margin-bottom: 15px;
+            }
+            
+            .biodata-table {
+                font-size: 10pt;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
         .header {
             display: flex;
             align-items: center;
@@ -2565,7 +2628,8 @@ export class ResumeGenerator {
     </style>
 </head>
 <body>
-    <div class="header">
+    <div class="container">
+        <div class="header">
         <div class="photo-section">
             ${resumeData.photoURL ? `
             <img src="${resumeData.photoURL}" alt="${resumeData.fullName}">
@@ -2935,8 +2999,9 @@ export class ResumeGenerator {
         </div>
     </div>
 
-    <div style="text-align: center; margin-top: 30px; color: #666; font-size: 0.9em;">
-        Generated on ${format(new Date(), 'PPP')} | Professional Biodata
+        <div style="text-align: center; margin-top: 30px; color: #666; font-size: 0.9em;">
+            Generated on ${format(new Date(), 'PPP')} | Professional Biodata
+        </div>
     </div>
 </body>
 </html>
@@ -2999,6 +3064,40 @@ export class ResumeGenerator {
             border-radius: 8px;
             overflow: hidden;
             padding: 0;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                max-width: 100%;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 20pt;
+            }
+            
+            .info-table {
+                font-size: 10pt;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .performance-stats {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
         
         /* Header Section */
