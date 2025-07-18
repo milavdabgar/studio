@@ -1553,7 +1553,7 @@ export class ResumeGenerator {
   private convertPhotoURLsForPDF(htmlContent: string): string {
     const fs = require('fs');
     
-    // Convert relative photo URLs to absolute file paths
+    // Convert relative photo URLs to base64 data URLs
     return htmlContent.replace(
       /src="\/uploads\/photos\/([^"]+)"/g,
       (match, filename) => {
@@ -1561,8 +1561,25 @@ export class ResumeGenerator {
         
         // Check if file exists
         if (fs.existsSync(absolutePath)) {
-          console.log(`Converting photo URL: ${match} -> file://${absolutePath}`);
-          return `src="file://${absolutePath}"`;
+          try {
+            // Read the file and convert to base64
+            const fileBuffer = fs.readFileSync(absolutePath);
+            const base64Data = fileBuffer.toString('base64');
+            
+            // Determine MIME type based on file extension
+            const extension = path.extname(filename).toLowerCase();
+            let mimeType = 'image/jpeg'; // default
+            if (extension === '.png') mimeType = 'image/png';
+            else if (extension === '.gif') mimeType = 'image/gif';
+            else if (extension === '.webp') mimeType = 'image/webp';
+            
+            const dataUrl = `data:${mimeType};base64,${base64Data}`;
+            console.log(`Converting photo URL: ${match} -> base64 data URL (${Math.round(base64Data.length/1024)}KB)`);
+            return `src="${dataUrl}"`;
+          } catch (error) {
+            console.error(`Error reading photo file ${absolutePath}:`, error);
+            return match;
+          }
         } else {
           console.log(`Photo file not found: ${absolutePath}`);
           // Return a placeholder or the original URL
