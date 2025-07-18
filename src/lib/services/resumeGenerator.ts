@@ -2306,9 +2306,9 @@ export class ResumeGenerator {
         
         .label-col {
             font-weight: 600;
-            color: #2c3e50;
+            color: #1e3a8a;
             width: 35%;
-            background-color: #ecf0f1 !important;
+            background-color: #eff6ff !important;
             font-family: 'Inter', sans-serif;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
@@ -2388,7 +2388,7 @@ export class ResumeGenerator {
         
         .skill-category h4 {
             font-family: 'Inter', sans-serif;
-            color: #2c3e50;
+            color: #1e3a8a;
             margin-bottom: 6pt;
             font-size: 10pt;
             font-weight: 600;
@@ -2952,7 +2952,7 @@ export class ResumeGenerator {
             text-align: center;
             margin-bottom: 20pt;
             padding: 20pt;
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
             color: white;
             page-break-inside: avoid;
             page-break-after: avoid;
@@ -3035,7 +3035,7 @@ export class ResumeGenerator {
         
         .section-title {
             font-family: 'Inter', sans-serif;
-            background: #2c3e50;
+            background: #1e40af;
             color: white;
             padding: 10pt 14pt;
             font-size: 12pt;
@@ -3058,7 +3058,7 @@ export class ResumeGenerator {
         }
         
         .info-table th {
-            background: #34495e;
+            background: #1e40af;
             color: white;
             padding: 8pt 12pt;
             font-family: 'Inter', sans-serif;
@@ -3067,7 +3067,7 @@ export class ResumeGenerator {
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5pt;
-            border: 1pt solid #2c3e50;
+            border: 1pt solid #1e3a8a;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
@@ -3087,9 +3087,9 @@ export class ResumeGenerator {
         
         .label-col {
             font-weight: 600;
-            color: #2c3e50;
+            color: #1e3a8a;
             width: 35%;
-            background-color: #ecf0f1 !important;
+            background-color: #eff6ff !important;
             font-family: 'Inter', sans-serif;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
@@ -3102,13 +3102,13 @@ export class ResumeGenerator {
         
         /* Academic Performance */
         .academic-performance {
-            background: #e8f5e8;
-            color: #2d5a2d;
+            background: #e0f2fe;
+            color: #0c4a6e;
             padding: 16pt;
             margin: 16pt 0;
             text-align: center;
             border-radius: 8pt;
-            border: 2pt solid #27ae60;
+            border: 2pt solid #0ea5e9;
             page-break-inside: avoid;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
@@ -3130,7 +3130,7 @@ export class ResumeGenerator {
             font-weight: 700;
             display: block;
             margin-bottom: 4pt;
-            color: #27ae60;
+            color: #0ea5e9;
         }
         
         .stat-label {
@@ -3144,8 +3144,8 @@ export class ResumeGenerator {
         .education-item, .experience-item, .project-item {
             margin-bottom: 16pt;
             padding: 12pt;
-            background: #f8f9fa;
-            border-left: 4pt solid #3498db;
+            background: #f8fafc;
+            border-left: 4pt solid #0ea5e9;
             border-radius: 0 6pt 6pt 0;
             page-break-inside: avoid;
             -webkit-print-color-adjust: exact;
@@ -3156,7 +3156,7 @@ export class ResumeGenerator {
             font-family: 'Inter', sans-serif;
             font-size: 12pt;
             font-weight: 600;
-            color: #2c3e50;
+            color: #1e3a8a;
             margin-bottom: 4pt;
         }
         
@@ -3174,7 +3174,7 @@ export class ResumeGenerator {
         }
         
         .grade-highlight {
-            color: #27ae60;
+            color: #0ea5e9;
             font-weight: 600;
         }
         
@@ -3198,7 +3198,7 @@ export class ResumeGenerator {
         .skill-category {
             background: white;
             padding: 10pt;
-            border-left: 3pt solid #34495e;
+            border-left: 3pt solid #1e40af;
             border-radius: 0 4pt 4pt 0;
             page-break-inside: avoid;
             -webkit-print-color-adjust: exact;
@@ -3207,7 +3207,7 @@ export class ResumeGenerator {
         
         .skill-category h4 {
             font-family: 'Inter', sans-serif;
-            color: #2c3e50;
+            color: #1e3a8a;
             margin-bottom: 6pt;
             font-size: 10pt;
             font-weight: 600;
@@ -3220,7 +3220,7 @@ export class ResumeGenerator {
         }
         
         .skill-tag {
-            background: #34495e;
+            background: #1e40af;
             color: white;
             padding: 2pt 6pt;
             border-radius: 10pt;
@@ -3234,8 +3234,8 @@ export class ResumeGenerator {
         .achievement-item {
             margin-bottom: 12pt;
             padding: 10pt;
-            background: #fff8e1;
-            border-left: 4pt solid #f39c12;
+            background: #ecfdf5;
+            border-left: 4pt solid #10b981;
             border-radius: 0 4pt 4pt 0;
             page-break-inside: avoid;
             -webkit-print-color-adjust: exact;
@@ -3246,7 +3246,7 @@ export class ResumeGenerator {
             font-family: 'Inter', sans-serif;
             font-size: 11pt;
             font-weight: 600;
-            color: #2c3e50;
+            color: #1e3a8a;
             margin-bottom: 4pt;
         }
         
@@ -3259,7 +3259,7 @@ export class ResumeGenerator {
         
         .achievement-date {
             font-size: 9pt;
-            color: #d68910;
+            color: #059669;
             font-weight: 500;
         }
         
@@ -3273,7 +3273,7 @@ export class ResumeGenerator {
         }
         
         .semester-header {
-            background: #34495e;
+            background: #1e40af;
             color: white;
             padding: 8pt 12pt;
             font-family: 'Inter', sans-serif;
@@ -3316,12 +3316,12 @@ export class ResumeGenerator {
         }
         
         .subject-name {
-            color: #2c3e50;
+            color: #1e3a8a;
             font-weight: 500;
         }
         
         .subject-grade {
-            color: #27ae60;
+            color: #0ea5e9;
             font-weight: 600;
         }
         
