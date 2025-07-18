@@ -4368,6 +4368,716 @@ export class ResumeGenerator {
     
     return url;
   }
+
+  /**
+   * Generate Resume LaTeX template
+   */
+  generateResumeLatex(resumeData: ResumeData): string {
+    const skillsText = resumeData.skills && resumeData.skills.length > 0 
+      ? resumeData.skills.map(skill => `${skill.name} (${skill.proficiency})`).join(', ')
+      : 'Not specified';
+
+    const experienceItems = resumeData.experience && resumeData.experience.length > 0
+      ? resumeData.experience.map(exp => `
+\\resumeSubheading
+{${this.escapeLatex(exp.position)}}{${this.escapeLatex(exp.startDate)} -- ${this.escapeLatex(exp.endDate || 'Present')}}
+{${this.escapeLatex(exp.company)}}{${this.escapeLatex(exp.location || '')}}
+\\resumeItemListStart
+\\resumeItem{${this.escapeLatex(exp.description || '')}}
+\\resumeItemListEnd`).join('')
+      : '';
+
+    const projectItems = resumeData.projects && resumeData.projects.length > 0
+      ? resumeData.projects.map(project => `
+\\resumeProjectHeading
+{\\textbf{${this.escapeLatex(project.title)}} \\textit{| ${project.technologies ? project.technologies.join(', ') : ''}}}{${this.escapeLatex(project.duration || '')}}
+\\resumeItemListStart
+\\resumeItem{${this.escapeLatex(project.description || '')}}
+\\resumeItemListEnd`).join('')
+      : '';
+
+    const educationItems = resumeData.education && resumeData.education.length > 0
+      ? resumeData.education.map(edu => `
+\\resumeSubheading
+{${this.escapeLatex(edu.degree)} in ${this.escapeLatex(edu.fieldOfStudy)}}{${this.escapeLatex(edu.startDate)} -- ${this.escapeLatex(edu.endDate || 'Present')}}
+{${this.escapeLatex(edu.institution)}}{${this.escapeLatex(edu.grade || '')}}
+${edu.description ? `\\resumeItemListStart\\resumeItem{${this.escapeLatex(edu.description)}}\\resumeItemListEnd` : ''}`).join('')
+      : '';
+
+    return `%-------------------------
+% Professional Resume
+% Generated with GPP Studio
+% Compiled with XeLaTeX for best results
+%-------------------------
+
+\\documentclass[11pt,a4paper]{article}
+
+% Packages for XeLaTeX
+\\usepackage{fontspec}
+\\usepackage{xunicode}
+\\usepackage{xltxtra}
+
+% Modern fonts
+\\setmainfont{Liberation Serif}[Scale=1.0]
+\\setsansfont{Liberation Sans}[Scale=1.0]
+\\setmonofont{Liberation Mono}[Scale=1.0]
+
+% Packages
+\\usepackage[top=0.5in, bottom=0.5in, left=0.6in, right=0.6in]{geometry}
+\\usepackage{xcolor}
+\\usepackage{titlesec}
+\\usepackage{enumitem}
+\\usepackage{multicol}
+\\usepackage{fontawesome5}
+\\usepackage{hyperref}
+\\usepackage{tikz}
+\\usepackage{array}
+
+% Colors
+\\definecolor{primary}{RGB}{0, 79, 144}
+\\definecolor{secondary}{RGB}{45, 45, 45}
+\\definecolor{lightgray}{RGB}{248, 248, 248}
+\\definecolor{mediumgray}{RGB}{128, 128, 128}
+
+% Hyperref setup
+\\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=primary,
+    pdfauthor={${this.escapeLatex(resumeData.fullName)}},
+    pdftitle={Resume - ${this.escapeLatex(resumeData.fullName)}},
+    pdfsubject={Professional Resume}
+}
+
+% Remove page numbers
+\\pagestyle{empty}
+
+% Custom section formatting
+\\titleformat{\\section}
+    {\\color{primary}\\large\\sffamily\\bfseries}
+    {}
+    {0em}
+    {}[{\\color{primary}\\titlerule[1pt]\\vspace{-2pt}}]
+
+% Improved spacing
+\\titlespacing*{\\section}{0pt}{8pt}{4pt}
+
+% Custom commands
+\\newcommand{\\resumeItem}[1]{
+    \\item\\footnotesize{#1 \\vspace{-1pt}}
+}
+
+\\newcommand{\\resumeSubheading}[4]{
+    \\vspace{-1pt}\\item
+    \\begin{tabular*}{0.97\\textwidth}[t]{l@{\\extracolsep{\\fill}}r}
+        \\textbf{\\footnotesize\\color{secondary}#1} & \\textbf{\\color{mediumgray}\\footnotesize #2} \\\\
+        \\textit{\\footnotesize\\color{primary}#3} & \\textit{\\footnotesize\\color{mediumgray} #4} \\\\
+    \\end{tabular*}\\vspace{-2pt}
+}
+
+\\newcommand{\\resumeProjectHeading}[2]{
+    \\vspace{-1pt}\\item
+    \\begin{tabular*}{0.97\\textwidth}{l@{\\extracolsep{\\fill}}r}
+        \\footnotesize\\textbf{\\color{secondary}#1} & \\textbf{\\color{mediumgray}\\footnotesize #2} \\\\
+    \\end{tabular*}\\vspace{-2pt}
+}
+
+\\newcommand{\\resumeSubHeadingListStart}{\\begin{itemize}[leftmargin=0.15in, label={}]}
+\\newcommand{\\resumeSubHeadingListEnd}{\\end{itemize}}
+\\newcommand{\\resumeItemListStart}{\\begin{itemize}[leftmargin=0.25in]}
+\\newcommand{\\resumeItemListEnd}{\\end{itemize}\\vspace{-3pt}}
+
+%-------------------------------------------
+%%%%%%  RESUME STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-------------------------------------------
+
+\\begin{document}
+
+% Header
+\\begin{center}
+    {\\Large\\sffamily\\bfseries\\color{primary} ${this.escapeLatex(resumeData.fullName)}}
+    
+    \\vspace{3pt}
+    {\\normalsize\\sffamily\\color{secondary} ${this.escapeLatex(resumeData.program || 'Student')}}
+    
+    \\vspace{3pt}
+    \\footnotesize
+    \\faIcon{envelope}\\,\\href{mailto:${resumeData.email}}{\\color{primary}${resumeData.email}} \\$\\bullet\\$
+    \\faIcon{phone}\\,${resumeData.contactNumber || 'N/A'} \\$\\bullet\\$
+    ${resumeData.linkedinUrl ? `\\faIcon{linkedin}\\,\\href{${resumeData.linkedinUrl}}{\\color{primary}LinkedIn} \\$\\bullet\\$` : ''}
+    ${resumeData.portfolioWebsite ? `\\faIcon{globe}\\,\\href{${resumeData.portfolioWebsite}}{\\color{primary}Portfolio}` : ''}
+    
+    \\vspace{2pt}
+    \\footnotesize\\color{mediumgray}
+    ${resumeData.city || 'Location'}, ${resumeData.state || 'State'} \\$\\bullet\\$ ${resumeData.enrollmentNumber || 'N/A'}
+\\end{center}
+
+\\vspace{-8pt}
+
+${resumeData.profileSummary ? `
+%----------- PROFESSIONAL SUMMARY -----------
+\\section{Professional Summary}
+\\footnotesize
+${this.escapeLatex(resumeData.profileSummary)}
+
+\\vspace{-2pt}
+` : ''}
+
+${resumeData.experience && resumeData.experience.length > 0 ? `
+%----------- PROFESSIONAL EXPERIENCE -----------
+\\section{Professional Experience}
+\\resumeSubHeadingListStart
+${experienceItems}
+\\resumeSubHeadingListEnd
+
+\\vspace{-2pt}
+` : ''}
+
+%----------- EDUCATION -----------
+\\section{Education}
+\\resumeSubHeadingListStart
+
+\\resumeSubheading
+{${this.escapeLatex(resumeData.program || 'Program')}}{${this.escapeLatex(resumeData.currentSemester ? `Semester ${resumeData.currentSemester}` : 'Current')}}
+{Government Polytechnic Palanpur}{${resumeData.overallCPI ? `CPI: ${resumeData.overallCPI}` : 'In Progress'}}
+${educationItems}
+
+\\resumeSubHeadingListEnd
+
+\\vspace{-2pt}
+
+%----------- TECHNICAL SKILLS -----------
+\\section{Technical Skills}
+\\footnotesize
+${skillsText}
+
+\\vspace{-2pt}
+
+${resumeData.projects && resumeData.projects.length > 0 ? `
+%----------- KEY PROJECTS -----------
+\\section{Key Projects}
+\\resumeSubHeadingListStart
+${projectItems}
+\\resumeSubHeadingListEnd
+
+\\vspace{-2pt}
+` : ''}
+
+${resumeData.achievements && resumeData.achievements.length > 0 ? `
+%----------- ACHIEVEMENTS -----------
+\\section{Achievements}
+\\footnotesize
+\\begin{itemize}[leftmargin=0.15in, label={}, itemsep=1pt]
+${resumeData.achievements.map(achievement => `    \\item ${this.escapeLatex(achievement.title)}: ${this.escapeLatex(achievement.description)}`).join('\n')}
+\\end{itemize}
+` : ''}
+
+\\end{document}`;
+  }
+
+  /**
+   * Generate Biodata LaTeX template
+   */
+  generateBiodataLatex(resumeData: ResumeData): string {
+    return `%-------------------------
+% Professional Biodata
+% Generated with GPP Studio
+% Compiled with XeLaTeX for best results
+%-------------------------
+
+\\documentclass[11pt,a4paper]{article}
+
+% Packages for XeLaTeX
+\\usepackage{fontspec}
+\\usepackage{xunicode}
+\\usepackage{xltxtra}
+
+% Modern fonts
+\\setmainfont{Liberation Serif}[Scale=1.0]
+\\setsansfont{Liberation Sans}[Scale=1.0]
+
+% Packages
+\\usepackage[top=0.8in, bottom=0.8in, left=0.8in, right=0.8in]{geometry}
+\\usepackage{xcolor}
+\\usepackage{fontawesome5}
+\\usepackage{hyperref}
+\\usepackage{tikz}
+\\usepackage{tabularx}
+\\usepackage{array}
+\\usepackage{colortbl}
+
+% Colors
+\\definecolor{primary}{RGB}{0, 79, 144}
+\\definecolor{secondary}{RGB}{45, 45, 45}
+\\definecolor{lightgray}{RGB}{240, 240, 240}
+
+% Hyperref setup
+\\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=primary,
+    pdfauthor={${this.escapeLatex(resumeData.fullName)}},
+    pdftitle={Biodata - ${this.escapeLatex(resumeData.fullName)}},
+    pdfsubject={Professional Biodata}
+}
+
+% Remove page numbers
+\\pagestyle{empty}
+
+%-------------------------------------------
+%%%%%%  BIODATA STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-------------------------------------------
+
+\\begin{document}
+
+% Header with photo
+\\begin{center}
+    \\begin{tabular}{c}
+        % Profile photo placeholder
+        ${resumeData.photoURL ? `
+        \\begin{tikzpicture}
+            \\clip (0,0) circle (1.5cm);
+            \\node at (0,0) {\\includegraphics[width=3cm, height=3cm, keepaspectratio]{${resumeData.photoURL}}};
+            \\draw[primary, line width=2pt] (0,0) circle (1.5cm);
+        \\end{tikzpicture} \\\\[10pt]
+        ` : `
+        \\begin{tikzpicture}
+            \\draw[primary, line width=2pt] (0,0) circle (1.5cm);
+            \\node at (0,0) {\\footnotesize Photo};
+        \\end{tikzpicture} \\\\[10pt]
+        `}
+        
+        {\\Large\\sffamily\\bfseries\\color{primary} BIODATA} \\\\[5pt]
+        {\\huge\\sffamily\\bfseries\\color{secondary} ${this.escapeLatex(resumeData.fullName)}}
+    \\end{tabular}
+\\end{center}
+
+\\vspace{15pt}
+
+% Personal Information Table
+\\renewcommand{\\arraystretch}{1.5}
+\\begin{tabularx}{\\textwidth}{|>{\\bfseries}p{4cm}|X|}
+\\hline
+\\rowcolor{lightgray}
+\\multicolumn{2}{|c|}{\\large\\bfseries PERSONAL INFORMATION} \\\\
+\\hline
+Full Name & ${this.escapeLatex(resumeData.fullName)} \\\\
+\\hline
+Date of Birth & ${resumeData.dateOfBirth ? this.escapeLatex(resumeData.dateOfBirth) : 'N/A'} \\\\
+\\hline
+Gender & ${this.escapeLatex(resumeData.gender || 'N/A')} \\\\
+\\hline
+Nationality & ${this.escapeLatex(resumeData.nationality || 'Indian')} \\\\
+\\hline
+Religion & ${this.escapeLatex(resumeData.religion || 'N/A')} \\\\
+\\hline
+Caste & ${this.escapeLatex(resumeData.caste || 'N/A')} \\\\
+\\hline
+Blood Group & ${this.escapeLatex(resumeData.bloodGroup || 'N/A')} \\\\
+\\hline
+Languages Known & ${this.escapeLatex(resumeData.languagesKnown || 'English, Hindi, Gujarati')} \\\\
+\\hline
+\\end{tabularx}
+
+\\vspace{10pt}
+
+% Contact Information
+\\begin{tabularx}{\\textwidth}{|>{\\bfseries}p{4cm}|X|}
+\\hline
+\\rowcolor{lightgray}
+\\multicolumn{2}{|c|}{\\large\\bfseries CONTACT INFORMATION} \\\\
+\\hline
+Mobile Number & ${resumeData.contactNumber || 'N/A'} \\\\
+\\hline
+Email Address & \\href{mailto:${resumeData.email}}{${resumeData.email}} \\\\
+\\hline
+${resumeData.portfolioWebsite ? `Website & \\href{${resumeData.portfolioWebsite}}{${resumeData.portfolioWebsite}} \\\\\\hline` : ''}
+${resumeData.linkedinUrl ? `LinkedIn & \\href{${resumeData.linkedinUrl}}{${resumeData.linkedinUrl}} \\\\\\hline` : ''}
+Current Address & ${this.escapeLatex(resumeData.address || 'N/A')} \\\\
+\\hline
+City & ${this.escapeLatex(resumeData.city || 'N/A')} \\\\
+\\hline
+State & ${this.escapeLatex(resumeData.state || 'N/A')} \\\\
+\\hline
+\\end{tabularx}
+
+\\vspace{10pt}
+
+% Educational Qualifications
+\\begin{tabularx}{\\textwidth}{|>{\\bfseries}p{4cm}|X|}
+\\hline
+\\rowcolor{lightgray}
+\\multicolumn{2}{|c|}{\\large\\bfseries EDUCATIONAL QUALIFICATIONS} \\\\
+\\hline
+Current Studies & ${this.escapeLatex(resumeData.program || 'N/A')} \\\\
+ & Enrollment: ${resumeData.enrollmentNumber || 'N/A'} \\\\
+ & Current Semester: ${resumeData.currentSemester || 'N/A'} \\\\
+ & Overall CPI: ${resumeData.overallCPI || 'N/A'} \\\\
+\\hline
+${resumeData.education && resumeData.education.length > 0 ? 
+  resumeData.education.map(edu => `
+${this.escapeLatex(edu.degree)} & ${this.escapeLatex(edu.institution)} (${this.escapeLatex(edu.startDate)} - ${this.escapeLatex(edu.endDate || 'Present')}) \\\\
+ & ${edu.grade ? `Grade: ${this.escapeLatex(edu.grade)}` : ''} \\\\
+\\hline`).join('') : ''}
+\\end{tabularx}
+
+\\vspace{10pt}
+
+${resumeData.guardianName ? `
+% Guardian Information
+\\begin{tabularx}{\\textwidth}{|>{\\bfseries}p{4cm}|X|}
+\\hline
+\\rowcolor{lightgray}
+\\multicolumn{2}{|c|}{\\large\\bfseries GUARDIAN INFORMATION} \\\\
+\\hline
+Guardian Name & ${this.escapeLatex(resumeData.guardianName)} \\\\
+\\hline
+Relation & ${this.escapeLatex(resumeData.guardianRelation || 'N/A')} \\\\
+\\hline
+Contact Number & ${resumeData.guardianContact || 'N/A'} \\\\
+\\hline
+Occupation & ${this.escapeLatex(resumeData.guardianOccupation || 'N/A')} \\\\
+\\hline
+\\end{tabularx}
+
+\\vspace{10pt}
+` : ''}
+
+% Additional Information
+\\begin{tabularx}{\\textwidth}{|>{\\bfseries}p{4cm}|X|}
+\\hline
+\\rowcolor{lightgray}
+\\multicolumn{2}{|c|}{\\large\\bfseries ADDITIONAL INFORMATION} \\\\
+\\hline
+${resumeData.skills && resumeData.skills.length > 0 ? `
+Technical Skills & ${resumeData.skills.map(skill => `${skill.name} (${skill.proficiency})`).join(', ')} \\\\
+\\hline` : ''}
+${resumeData.achievements && resumeData.achievements.length > 0 ? `
+Achievements & ${resumeData.achievements.map(achievement => achievement.title).join(', ')} \\\\
+\\hline` : ''}
+${resumeData.hobbies ? `
+Hobbies & ${this.escapeLatex(resumeData.hobbies)} \\\\
+\\hline` : ''}
+References & Available upon request \\\\
+\\hline
+\\end{tabularx}
+
+\\vspace{20pt}
+
+% Declaration
+\\begin{center}
+\\begin{tabular}{c}
+\\textbf{DECLARATION} \\\\[10pt]
+\\begin{minipage}{0.8\\textwidth}
+\\centering
+I hereby declare that the information furnished above is true and correct to the best of my knowledge and belief.
+\\end{minipage} \\\\[20pt]
+\\textbf{Date:} \\underline{\\hspace{3cm}} \\hfill \\textbf{Signature:} \\underline{\\hspace{4cm}} \\\\[10pt]
+\\textbf{Place:} \\underline{\\hspace{3cm}} \\hfill \\textbf{(${this.escapeLatex(resumeData.fullName)})}
+\\end{tabular}
+\\end{center}
+
+\\end{document}`;
+  }
+
+  /**
+   * Generate CV LaTeX template
+   */
+  generateCVLatex(resumeData: ResumeData): string {
+    const skillsSection = resumeData.skills && resumeData.skills.length > 0 
+      ? Object.entries(resumeData.skills.reduce((acc, skill) => {
+          if (!acc[skill.category]) acc[skill.category] = [];
+          acc[skill.category].push(`${skill.name} (${skill.proficiency})`);
+          return acc;
+        }, {} as Record<string, string[]>))
+        .map(([category, skills]) => `
+\\textbf{${this.escapeLatex(category)}:}
+\\begin{itemize}[leftmargin=15pt, noitemsep, topsep=1pt]
+${skills.map(skill => `    \\item ${this.escapeLatex(skill)}`).join('\n')}
+\\end{itemize}
+`).join('')
+      : '';
+
+    const experienceSection = resumeData.experience && resumeData.experience.length > 0
+      ? resumeData.experience.map(exp => `
+\\resumeSubheading
+{${this.escapeLatex(exp.position)}}{${this.escapeLatex(exp.startDate)} -- ${this.escapeLatex(exp.endDate || 'Present')}}
+{${this.escapeLatex(exp.company)}}{${this.escapeLatex(exp.location || '')}}
+\\resumeItemListStart
+\\resumeItem{${this.escapeLatex(exp.description || '')}}
+\\resumeItemListEnd`).join('')
+      : '';
+
+    const projectsSection = resumeData.projects && resumeData.projects.length > 0
+      ? resumeData.projects.map(project => `
+\\resumeProjectHeading
+{\\textbf{${this.escapeLatex(project.title)}} \\textit{| ${project.technologies ? project.technologies.join(', ') : ''}}}{${this.escapeLatex(project.duration || '')}}
+\\resumeItemListStart
+\\resumeItem{${this.escapeLatex(project.description || '')}}
+${project.role ? `\\resumeItem{\\textbf{Role:} ${this.escapeLatex(project.role)}}` : ''}
+\\resumeItemListEnd`).join('')
+      : '';
+
+    const educationSection = resumeData.education && resumeData.education.length > 0
+      ? resumeData.education.map(edu => `
+\\resumeSubheading
+{${this.escapeLatex(edu.degree)} in ${this.escapeLatex(edu.fieldOfStudy)}}{${this.escapeLatex(edu.startDate)} -- ${this.escapeLatex(edu.endDate || 'Present')}}
+{${this.escapeLatex(edu.institution)}}{${this.escapeLatex(edu.grade || '')}}
+${edu.description ? `\\resumeItemListStart\\resumeItem{${this.escapeLatex(edu.description)}}\\resumeItemListEnd` : ''}`).join('')
+      : '';
+
+    return `%-------------------------
+% Enhanced Modern Professional CV
+% Generated with GPP Studio
+% Compiled with XeLaTeX for best results
+%-------------------------
+
+\\documentclass[11pt,a4paper]{article}
+
+% Packages for XeLaTeX
+\\usepackage{fontspec}
+\\usepackage{xunicode}
+\\usepackage{xltxtra}
+
+% Modern fonts
+\\setmainfont{Liberation Serif}[Scale=1.0]
+\\setsansfont{Liberation Sans}[Scale=1.0]
+\\setmonofont{Liberation Mono}[Scale=1.0]
+
+% Packages
+\\usepackage[top=0.6in, bottom=0.6in, left=0.6in, right=0.6in]{geometry}
+\\usepackage{xcolor}
+\\usepackage{titlesec}
+\\usepackage{enumitem}
+\\usepackage{multicol}
+\\usepackage{graphicx}
+\\usepackage{fontawesome5}
+\\usepackage{hyperref}
+\\usepackage{tikz}
+\\usepackage{array}
+\\usepackage{tabularx}
+\\usepackage{ragged2e}
+\\usepackage{setspace}
+
+% Colors - Enhanced palette
+\\definecolor{primary}{RGB}{0, 79, 144}
+\\definecolor{secondary}{RGB}{45, 45, 45}
+\\definecolor{accent}{RGB}{0, 122, 204}
+\\definecolor{lightgray}{RGB}{248, 248, 248}
+\\definecolor{mediumgray}{RGB}{128, 128, 128}
+\\definecolor{success}{RGB}{40, 167, 69}
+
+% Hyperref setup
+\\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=primary,
+    pdfauthor={${this.escapeLatex(resumeData.fullName)}},
+    pdftitle={CV - ${this.escapeLatex(resumeData.fullName)}},
+    pdfsubject={Professional Curriculum Vitae}
+}
+
+% Remove page numbers
+\\pagestyle{empty}
+
+% Custom section formatting with enhanced styling
+\\titleformat{\\section}
+    {\\color{primary}\\Large\\sffamily\\bfseries}
+    {}
+    {0em}
+    {}[{\\color{primary}\\titlerule[1pt]\\vspace{-3pt}}]
+
+\\titleformat{\\subsection}
+    {\\color{secondary}\\large\\sffamily\\bfseries}
+    {}
+    {0em}
+    {}
+
+% Improved spacing
+\\titlespacing*{\\section}{0pt}{12pt}{8pt}
+\\titlespacing*{\\subsection}{0pt}{8pt}{4pt}
+
+% Custom commands with better formatting
+\\newcommand{\\resumeItem}[1]{
+    \\item\\small{#1 \\vspace{-1pt}}
+}
+
+\\newcommand{\\resumeSubheading}[4]{
+    \\vspace{-1pt}\\item
+    \\begin{tabular*}{0.97\\textwidth}[t]{l@{\\extracolsep{\\fill}}r}
+        \\textbf{\\color{secondary}#1} & \\textbf{\\color{mediumgray}\\small #2} \\\\
+        \\textit{\\small\\color{primary}#3} & \\textit{\\small\\color{mediumgray} #4} \\\\
+    \\end{tabular*}\\vspace{-3pt}
+}
+
+\\newcommand{\\resumeProjectHeading}[2]{
+    \\vspace{-1pt}\\item
+    \\begin{tabular*}{0.97\\textwidth}{l@{\\extracolsep{\\fill}}r}
+        \\small\\textbf{\\color{secondary}#1} & \\textbf{\\color{mediumgray}\\small #2} \\\\
+    \\end{tabular*}\\vspace{-3pt}
+}
+
+\\newcommand{\\resumeSubItem}[1]{\\resumeItem{#1}\\vspace{-3pt}}
+
+\\renewcommand\\labelitemii{\\$\\vcenter{\\hbox{\\tiny\\$\\bullet\\$}}\\$}
+
+\\newcommand{\\resumeSubHeadingListStart}{\\begin{itemize}[leftmargin=0.15in, label={}]}
+\\newcommand{\\resumeSubHeadingListEnd}{\\end{itemize}}
+\\newcommand{\\resumeItemListStart}{\\begin{itemize}[leftmargin=0.3in]}
+\\newcommand{\\resumeItemListEnd}{\\end{itemize}\\vspace{-4pt}}
+
+% Enhanced header design
+\\newcommand{\\makeheader}{
+    \\begin{center}
+        % Header background with subtle styling
+        \\begin{tikzpicture}[remember picture, overlay]
+            \\fill[lightgray] (current page.north west) rectangle ([yshift=-3cm]current page.north east);
+        \\end{tikzpicture}
+        
+        \\vspace{0.3cm}
+        \\begin{minipage}[t]{0.7\\textwidth}
+            \\raggedright
+            {\\Huge\\sffamily\\bfseries\\color{primary} ${this.escapeLatex(resumeData.fullName)}}
+            
+            \\vspace{6pt}
+            {\\Large\\sffamily\\color{secondary} ${this.escapeLatex(resumeData.program || 'Student')}}
+            
+            \\vspace{8pt}
+            {\\small\\color{secondary} ${this.escapeLatex(resumeData.profileSummary || 'Professional Summary')}}
+            
+            \\vspace{12pt}
+            \\begin{tabular}{@{}l@{\\hspace{20pt}}l@{}}
+                \\faIcon{envelope}\\,\\href{mailto:${resumeData.email}}{\\color{primary}${resumeData.email}} &
+                \\faIcon{phone}\\,\\color{secondary}${resumeData.contactNumber || 'N/A'} \\\\[2pt]
+                ${resumeData.linkedinUrl ? `\\faIcon{linkedin}\\,\\href{${resumeData.linkedinUrl}}{\\color{primary}LinkedIn} &` : ''}
+                ${resumeData.portfolioWebsite ? `\\faIcon{globe}\\,\\href{${resumeData.portfolioWebsite}}{\\color{primary}Portfolio} \\\\[2pt]` : ''}
+                \\faIcon{map-marker-alt}\\,\\color{secondary}${resumeData.city || 'Location'}, ${resumeData.state || 'State'} &
+                \\faIcon{id-card}\\,\\color{secondary}${resumeData.enrollmentNumber || 'N/A'}
+            \\end{tabular}
+        \\end{minipage}
+        \\hfill
+        \\begin{minipage}[t]{0.25\\textwidth}
+            \\raggedleft
+            \\vspace{0.2cm}
+            ${resumeData.photoURL ? `
+            \\begin{tikzpicture}
+                \\clip (0,0) circle (1.8cm);
+                \\node at (0,0) {\\includegraphics[width=3.6cm, height=3.6cm, keepaspectratio]{${resumeData.photoURL}}};
+                \\draw[primary, line width=3pt] (0,0) circle (1.8cm);
+            \\end{tikzpicture}
+            ` : `
+            \\begin{tikzpicture}
+                \\draw[primary, line width=3pt] (0,0) circle (1.8cm);
+                \\node at (0,0) {\\footnotesize Professional\\\\Photo};
+            \\end{tikzpicture}
+            `}
+        \\end{minipage}
+    \\end{center}
+    \\vspace{0.3cm}
+}
+
+%-------------------------------------------
+%%%%%%  CV STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-------------------------------------------
+
+\\begin{document}
+
+\\makeheader
+
+${resumeData.profileSummary ? `
+%----------- EXECUTIVE SUMMARY -----------
+\\section{Executive Summary}
+\\justifying
+\\small ${this.escapeLatex(resumeData.profileSummary)}
+` : ''}
+
+${resumeData.experience && resumeData.experience.length > 0 ? `
+%----------- PROFESSIONAL EXPERIENCE -----------
+\\section{Professional Experience}
+\\resumeSubHeadingListStart
+${experienceSection}
+\\resumeSubHeadingListEnd
+` : ''}
+
+%----------- EDUCATION -----------
+\\section{Education}
+\\resumeSubHeadingListStart
+
+\\resumeSubheading
+{${this.escapeLatex(resumeData.program || 'Current Program')}}{${this.escapeLatex(resumeData.currentSemester ? `Semester ${resumeData.currentSemester}` : 'Current')}}
+{Government Polytechnic Palanpur}{${resumeData.overallCPI ? `CPI: ${resumeData.overallCPI}` : 'In Progress'}}
+\\resumeItemListStart
+\\resumeItem{Enrollment Number: ${resumeData.enrollmentNumber || 'N/A'}}
+${resumeData.earnedCredits && resumeData.totalCredits ? `\\resumeItem{Credits: ${resumeData.earnedCredits}/${resumeData.totalCredits}}` : ''}
+\\resumeItemListEnd
+${educationSection}
+
+\\resumeSubHeadingListEnd
+
+${skillsSection ? `
+%----------- TECHNICAL EXPERTISE -----------
+\\section{Technical Expertise}
+\\begin{multicols}{2}
+\\small
+${skillsSection}
+\\end{multicols}
+` : ''}
+
+${resumeData.projects && resumeData.projects.length > 0 ? `
+%----------- KEY PROJECTS & INNOVATIONS -----------
+\\section{Key Projects \\& Innovations}
+\\resumeSubHeadingListStart
+${projectsSection}
+\\resumeSubHeadingListEnd
+` : ''}
+
+${resumeData.achievements && resumeData.achievements.length > 0 ? `
+%----------- ACHIEVEMENTS & RECOGNITION -----------
+\\section{Achievements \\& Recognition}
+\\resumeSubHeadingListStart
+${resumeData.achievements.map(achievement => `
+\\resumeProjectHeading
+{\\textbf{${this.escapeLatex(achievement.title)}}}{${achievement.date ? this.escapeLatex(achievement.date) : ''}}
+\\resumeItemListStart
+\\resumeItem{${this.escapeLatex(achievement.description || '')}}
+\\resumeItemListEnd`).join('')}
+\\resumeSubHeadingListEnd
+` : ''}
+
+${resumeData.certifications && resumeData.certifications.length > 0 ? `
+%----------- CERTIFICATIONS -----------
+\\section{Professional Certifications}
+\\resumeSubHeadingListStart
+${resumeData.certifications.map(cert => `
+\\resumeProjectHeading
+{\\textbf{${this.escapeLatex(cert.name)}}}{${cert.date ? this.escapeLatex(cert.date) : ''}}
+\\resumeItemListStart
+\\resumeItem{Issuer: ${this.escapeLatex(cert.issuer || '')}}
+\\resumeItemListEnd`).join('')}
+\\resumeSubHeadingListEnd
+` : ''}
+
+\\end{document}`;
+  }
+
+  /**
+   * Escape LaTeX special characters
+   */
+  private escapeLatex(text: string): string {
+    if (!text) return '';
+    
+    return text
+      .replace(/\\/g, '\\textbackslash{}')
+      .replace(/\{/g, '\\{')
+      .replace(/\}/g, '\\}')
+      .replace(/\$/g, '\\$')
+      .replace(/&/g, '\\&')
+      .replace(/%/g, '\\%')
+      .replace(/#/g, '\\#')
+      .replace(/\^/g, '\\textasciicircum{}')
+      .replace(/_/g, '\\_')
+      .replace(/~/g, '\\textasciitilde{}');
+  }
 }
 
 export const resumeGenerator = new ResumeGenerator();

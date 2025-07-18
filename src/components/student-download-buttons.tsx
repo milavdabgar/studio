@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 
 interface StudentDownloadButtonsProps {
-  onDownload: (format: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv' | 'biodata-html' | 'resume-html' | 'cv-html') => void;
+  onDownload: (format: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv' | 'biodata-html' | 'resume-html' | 'cv-html' | 'latex' | 'biodata-latex' | 'resume-latex' | 'cv-latex') => void;
   isLoading: boolean;
   variant?: "default" | "outline" | "secondary" | "ghost" | "link" | "destructive";
   size?: "default" | "sm" | "lg" | "icon";
@@ -31,6 +31,7 @@ const formatOptions = [
   { id: 'pdf', name: 'PDF (Puppeteer)', icon: FileText },
   { id: 'pdf-latex', name: 'PDF (XeLaTeX)', icon: FileText },
   { id: 'html', name: 'HTML', icon: Globe },
+  { id: 'latex', name: 'LaTeX Source', icon: File },
   { id: 'docx', name: 'Word Document', icon: FileCheck },
   { id: 'txt', name: 'Plain Text', icon: File },
 ];
@@ -39,7 +40,7 @@ interface DownloadButtonProps {
   label: string;
   icon: React.ElementType;
   format: string;
-  onDownload: (format: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv' | 'biodata-html' | 'resume-html' | 'cv-html') => void;
+  onDownload: (format: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv' | 'biodata-html' | 'resume-html' | 'cv-html' | 'latex' | 'biodata-latex' | 'resume-latex' | 'cv-latex') => void;
   isLoading: boolean;
   variant?: "default" | "outline" | "secondary" | "ghost" | "link" | "destructive";
   size?: "default" | "sm" | "lg" | "icon";
@@ -56,7 +57,7 @@ function DownloadButton({
 }: DownloadButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleDownload = (selectedFormat: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv' | 'biodata-html' | 'resume-html' | 'cv-html') => {
+  const handleDownload = (selectedFormat: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv' | 'biodata-html' | 'resume-html' | 'cv-html' | 'latex' | 'biodata-latex' | 'resume-latex' | 'cv-latex') => {
     onDownload(selectedFormat);
     setIsOpen(false);
   };
@@ -82,15 +83,19 @@ function DownloadButton({
       <DropdownMenuContent align="end" className="w-48">
         {formatOptions.map((option) => {
           const OptionIcon = option.icon;
-          let finalFormat: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv' | 'biodata-html' | 'resume-html' | 'cv-html' = option.id as 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt';
+          let finalFormat: 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'biodata' | 'resume' | 'cv' | 'biodata-html' | 'resume-html' | 'cv-html' | 'latex' | 'biodata-latex' | 'resume-latex' | 'cv-latex' = option.id as 'pdf' | 'pdf-latex' | 'docx' | 'html' | 'txt' | 'latex';
           
           // Map formats based on button type
           if (format === 'biodata') {
-            finalFormat = option.id === 'html' ? 'biodata-html' as any : 'biodata';
+            finalFormat = option.id === 'html' ? 'biodata-html' as any : 
+                         option.id === 'latex' ? 'biodata-latex' as any : 'biodata';
           } else if (format === 'resume') {
-            finalFormat = option.id === 'html' ? 'resume-html' as any : option.id === 'pdf' ? 'pdf' : option.id === 'pdf-latex' ? 'pdf-latex' : option.id as 'docx' | 'html' | 'txt';
+            finalFormat = option.id === 'html' ? 'resume-html' as any : 
+                         option.id === 'latex' ? 'resume-latex' as any :
+                         option.id === 'pdf' ? 'pdf' : option.id === 'pdf-latex' ? 'pdf-latex' : option.id as 'docx' | 'html' | 'txt';
           } else if (format === 'cv') {
-            finalFormat = option.id === 'html' ? 'cv-html' as any : 'cv';
+            finalFormat = option.id === 'html' ? 'cv-html' as any : 
+                         option.id === 'latex' ? 'cv-latex' as any : 'cv';
           }
           
           return (

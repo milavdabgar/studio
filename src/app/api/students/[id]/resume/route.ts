@@ -84,7 +84,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     // Validate format
-    const validFormats = ['pdf', 'pdf-latex', 'docx', 'html', 'txt', 'biodata', 'resume', 'cv', 'biodata-html', 'resume-html', 'cv-html'];
+    const validFormats = ['pdf', 'pdf-latex', 'docx', 'html', 'txt', 'biodata', 'resume', 'cv', 'biodata-html', 'resume-html', 'cv-html', 'latex', 'biodata-latex', 'resume-latex', 'cv-latex'];
     if (!validFormats.includes(format)) {
       return NextResponse.json({ 
         error: `Invalid format. Supported formats: ${validFormats.join(', ')}` 
@@ -213,6 +213,28 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         content = resumeGenerator.generateCVHTML(resumeData);
         contentType = 'text/html';
         filename = `${baseFilename}_cv.html`;
+        break;
+
+      case 'latex':
+      case 'resume-latex':
+        // Generate resume as LaTeX
+        content = resumeGenerator.generateResumeLatex(resumeData);
+        contentType = 'text/plain';
+        filename = `${baseFilename}_resume.tex`;
+        break;
+
+      case 'biodata-latex':
+        // Generate biodata as LaTeX
+        content = resumeGenerator.generateBiodataLatex(resumeData);
+        contentType = 'text/plain';
+        filename = `${baseFilename}_biodata.tex`;
+        break;
+
+      case 'cv-latex':
+        // Generate CV as LaTeX
+        content = resumeGenerator.generateCVLatex(resumeData);
+        contentType = 'text/plain';
+        filename = `${baseFilename}_cv.tex`;
         break;
 
       default:
