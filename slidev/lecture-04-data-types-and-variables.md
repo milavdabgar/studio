@@ -824,6 +824,882 @@ public class DataTypeDemo {
 layout: default
 ---
 
+# Wrapper Classes Deep Dive
+
+## 🔄 Primitive to Object Conversion
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## 📦 Wrapper Class Overview
+
+| Primitive | Wrapper Class | Example |
+|-----------|---------------|---------|
+| **byte** | Byte | `Byte b = 100;` |
+| **short** | Short | `Short s = 32000;` |
+| **int** | Integer | `Integer i = 42;` |
+| **long** | Long | `Long l = 123L;` |
+| **float** | Float | `Float f = 3.14f;` |
+| **double** | Double | `Double d = 2.718;` |
+| **char** | Character | `Character c = 'A';` |
+| **boolean** | Boolean | `Boolean flag = true;` |
+
+## 🎯 Why Use Wrapper Classes?
+
+<v-clicks>
+
+- **Collections**: ArrayList, HashMap require objects
+- **Null Values**: Primitives can't be null, wrappers can
+- **Utility Methods**: Built-in parsing, formatting methods
+- **Generics**: Type parameters need objects
+
+</v-clicks>
+
+</div>
+
+<div>
+
+## 🔧 Autoboxing and Unboxing
+
+```java
+// Autoboxing: primitive → wrapper (automatic)
+Integer num = 42;  // Compiler converts to Integer.valueOf(42)
+Double price = 99.99;  // Compiler wraps automatically
+
+// Unboxing: wrapper → primitive (automatic)
+int value = num;  // Compiler calls num.intValue()
+double cost = price;  // Compiler unwraps automatically
+
+// Manual boxing/unboxing (explicit)
+Integer manual = Integer.valueOf(100);  // Manual boxing
+int primitive = manual.intValue();      // Manual unboxing
+
+// Mixed operations (auto boxing/unboxing)
+Integer a = 10;
+Integer b = 20;
+Integer sum = a + b;  // Unbox, add, then box result
+```
+
+## ⚠️ Performance Considerations
+
+```java
+// Inefficient: Creates many wrapper objects
+Integer total = 0;
+for (int i = 0; i < 1000; i++) {
+    total += i;  // Autoboxing/unboxing in each iteration
+}
+
+// Efficient: Use primitive for calculations
+int total = 0;
+for (int i = 0; i < 1000; i++) {
+    total += i;  // Pure primitive operations
+}
+Integer result = total;  // Box only once at the end
+```
+
+</div>
+
+</div>
+
+---
+layout: default
+---
+
+# Advanced Wrapper Class Features
+
+## 🛠️ Utility Methods in Wrapper Classes
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## 🔢 Integer Class Methods
+
+```java
+// Parsing strings to numbers
+int num1 = Integer.parseInt("123");
+int num2 = Integer.parseInt("1010", 2);  // Binary
+int num3 = Integer.parseInt("FF", 16);   // Hexadecimal
+
+// Number system conversions
+String binary = Integer.toBinaryString(42);      // "101010"
+String octal = Integer.toOctalString(42);        // "52"
+String hex = Integer.toHexString(42);            // "2a"
+
+// Min/Max values
+System.out.println(Integer.MIN_VALUE);  // -2147483648
+System.out.println(Integer.MAX_VALUE);  // 2147483647
+
+// Comparison and utility
+Integer a = 10, b = 20;
+int comparison = Integer.compare(a, b);  // -1 (a < b)
+int maxVal = Integer.max(a, b);          // 20
+int minVal = Integer.min(a, b);          // 10
+
+// Bit manipulation
+int bitCount = Integer.bitCount(42);     // Count of 1s in binary
+int leadingZeros = Integer.numberOfLeadingZeros(42);
+```
+
+</div>
+
+<div>
+
+## 🔤 Character Class Methods
+
+```java
+// Character testing
+char ch = 'A';
+System.out.println(Character.isLetter(ch));      // true
+System.out.println(Character.isDigit('5'));      // true
+System.out.println(Character.isWhitespace(' ')); // true
+System.out.println(Character.isUpperCase(ch));   // true
+System.out.println(Character.isLowerCase(ch));   // false
+
+// Case conversion
+char lower = Character.toLowerCase('A');  // 'a'
+char upper = Character.toUpperCase('z');  // 'Z'
+
+// Unicode operations
+int unicodeValue = Character.getNumericValue('5');  // 5
+char fromUnicode = Character.toChars(65)[0];        // 'A'
+
+// Character categories
+System.out.println(Character.getType('A'));  // UPPERCASE_LETTER
+
+// Practical example: validating input
+public static boolean isValidIdentifierChar(char c, boolean isFirst) {
+    if (isFirst) {
+        return Character.isLetter(c) || c == '_' || c == '$';
+    } else {
+        return Character.isLetterOrDigit(c) || c == '_' || c == '$';
+    }
+}
+```
+
+</div>
+
+</div>
+
+## 💰 Real-World Example: Banking Application
+
+```java
+public class BankingDemo {
+    public static void main(String[] args) {
+        // Using wrapper classes for null-safe operations
+        Double accountBalance = null;  // Account not yet initialized
+        Integer transactionCount = 0;
+        
+        // Safe null checking
+        if (accountBalance == null) {
+            accountBalance = 0.0;  // Initialize account
+            System.out.println("New account created with balance: " + accountBalance);
+        }
+        
+        // Parse user input safely
+        String userInput = "1500.75";
+        try {
+            Double depositAmount = Double.parseDouble(userInput);
+            accountBalance += depositAmount;  // Auto-unboxing and boxing
+            transactionCount++;               // Auto-unboxing and boxing
+            
+            System.out.printf("Deposit successful. New balance: %.2f%n", accountBalance);
+            System.out.println("Transaction count: " + transactionCount);
+            
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid amount format: " + userInput);
+        }
+        
+        // Using utility methods
+        System.out.println("Max safe integer: " + Integer.MAX_VALUE);
+        System.out.println("Balance comparison with 1000: " + 
+                          Double.compare(accountBalance, 1000.0));
+    }
+}
+```
+
+---
+layout: default
+---
+
+# Type Conversion and Casting
+
+## 🔄 Implicit Type Conversion (Widening)
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## ⬆️ Automatic Widening
+
+```java
+// Widening conversions (automatic, no data loss)
+byte b = 100;
+short s = b;    // byte → short
+int i = s;      // short → int
+long l = i;     // int → long
+float f = l;    // long → float (may lose precision)
+double d = f;   // float → double
+
+// Chain conversion
+byte original = 50;
+double result = original;  // byte → short → int → long → float → double
+
+// Mixed arithmetic (automatic promotion)
+byte x = 10;
+short y = 20;
+int z = x + y;  // x and y promoted to int for calculation
+
+// Literal assignments
+long bigNumber = 123456789L;
+float decimal = 3.14f;
+double precise = 2.718281828;
+```
+
+## 📊 Widening Conversion Path
+
+```
+byte → short → int → long → float → double
+  ↘      ↗
+   char ↗
+```
+
+</div>
+
+<div>
+
+## ⬇️ Explicit Type Conversion (Narrowing)
+
+```java
+// Narrowing conversions (explicit, potential data loss)
+double d = 123.456;
+float f = (float) d;    // double → float
+long l = (long) f;      // float → long (fractional part lost)
+int i = (int) l;        // long → int
+short s = (short) i;    // int → short
+byte b = (byte) s;      // short → byte
+
+// Potential data loss examples
+int large = 300;
+byte small = (byte) large;  // Overflow: 300 becomes 44
+System.out.println("300 as byte: " + small);
+
+// Safe narrowing with bounds checking
+public static byte safeIntToByte(int value) {
+    if (value < Byte.MIN_VALUE || value > Byte.MAX_VALUE) {
+        throw new IllegalArgumentException("Value out of byte range: " + value);
+    }
+    return (byte) value;
+}
+
+// Truncation in floating point
+double pi = 3.14159;
+int piInt = (int) pi;  // 3 (decimal part truncated)
+```
+
+</div>
+
+</div>
+
+## 🎯 Practical Type Conversion Examples
+
+```java
+public class TypeConversionExamples {
+    
+    public static void demonstrateConversions() {
+        // Student grade calculation
+        int totalMarks = 485;
+        int subjects = 6;
+        double average = (double) totalMarks / subjects;  // int division to double
+        System.out.printf("Average: %.2f%n", average);
+        
+        // Percentage calculation
+        double percentage = (totalMarks / (double) (subjects * 100)) * 100;
+        int roundedPercentage = (int) Math.round(percentage);
+        
+        // Character to number conversion
+        char grade = 'A';
+        int gradeValue = grade;  // char → int (ASCII value)
+        System.out.println("ASCII value of '" + grade + "': " + gradeValue);
+        
+        // Number to character conversion
+        int asciiCode = 65;
+        char letter = (char) asciiCode;  // int → char
+        System.out.println("Character for ASCII " + asciiCode + ": " + letter);
+        
+        // Boolean conversion (manual)
+        int flag = 1;
+        boolean isActive = (flag != 0);  // int to boolean logic
+        System.out.println("Is active: " + isActive);
+    }
+    
+    // Method overloading with different parameter types
+    public static double calculateArea(int radius) {
+        return Math.PI * radius * radius;  // int promoted to double
+    }
+    
+    public static double calculateArea(double radius) {
+        return Math.PI * radius * radius;  // direct double calculation
+    }
+    
+    public static void main(String[] args) {
+        demonstrateConversions();
+        
+        // Demonstrate method overloading with type conversion
+        System.out.println("Area with int radius: " + calculateArea(5));
+        System.out.println("Area with double radius: " + calculateArea(5.5));
+    }
+}
+```
+
+---
+layout: default
+---
+
+# Memory Management and JVM Internals
+
+## 🧠 Memory Layout and Variable Storage
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## 📊 JVM Memory Structure
+
+```mermaid
+graph TD
+    A[JVM Memory] --> B[Stack Memory]
+    A --> C[Heap Memory]
+    A --> D[Method Area]
+    
+    B --> E[Local Variables<br/>Method Parameters<br/>Return Addresses]
+    C --> F[Objects<br/>Instance Variables<br/>Arrays]
+    D --> G[Class Information<br/>Static Variables<br/>Constants Pool]
+    
+    style B fill:#e3f2fd
+    style C fill:#e8f5e8
+    style D fill:#fff3e0
+```
+
+## 🏠 Variable Storage Locations
+
+```java
+public class MemoryExample {
+    
+    // Static variables: Method Area
+    private static int classCounter = 0;
+    private static final String COLLEGE_NAME = "GTU";
+    
+    // Instance variables: Heap Memory
+    private String studentName;
+    private int rollNumber;
+    private double[] marks;  // Array reference in heap, array data also in heap
+    
+    public void processStudent(String name) {
+        // Local variables: Stack Memory
+        int localCounter = 0;      // Stack
+        double average = 0.0;      // Stack
+        String tempName = name;    // Stack (reference), Heap (String object)
+        
+        // Array creation
+        int[] scores = new int[5]; // Reference in stack, array in heap
+    }
+}
+```
+
+</div>
+
+<div>
+
+## ⚡ Memory Allocation Examples
+
+```java
+public class MemoryAllocation {
+    
+    // Class-level demonstration
+    private static void demonstrateMemoryUsage() {
+        
+        // Stack allocation (local variables)
+        int studentAge = 20;           // 4 bytes on stack
+        long studentId = 12345L;       // 8 bytes on stack
+        boolean isActive = true;       // 1 byte on stack
+        
+        // Heap allocation (objects)
+        String name = "John Doe";      // Reference on stack, object on heap
+        int[] marks = new int[5];      // Reference on stack, array on heap
+        
+        // Wrapper objects (heap allocation)
+        Integer wrappedAge = studentAge;     // Boxing creates heap object
+        Double gpa = 3.75;                   // Object on heap
+        
+        // Large data structures
+        List<String> subjects = new ArrayList<>();  // Objects on heap
+        subjects.add("Java Programming");           // String on heap
+        subjects.add("Data Structures");            // String on heap
+        
+        // Memory efficiency consideration
+        StringBuilder builder = new StringBuilder(); // More efficient than String concatenation
+        for (int i = 0; i < 1000; i++) {
+            builder.append("Student").append(i);    // Reuses internal buffer
+        }
+        String result = builder.toString();         // Final string creation
+    }
+    
+    // Garbage collection demonstration
+    public static void demonstrateGarbageCollection() {
+        String[] largeArray = new String[1000];
+        
+        // Fill array with objects
+        for (int i = 0; i < largeArray.length; i++) {
+            largeArray[i] = "Student " + i;
+        }
+        
+        // Remove reference - objects become eligible for GC
+        largeArray = null;
+        
+        // Suggest garbage collection (not guaranteed)
+        System.gc();
+        
+        System.out.println("Objects may be garbage collected now");
+    }
+}
+```
+
+</div>
+
+</div>
+
+## 🎯 Memory Best Practices
+
+<div class="bg-blue-50 p-6 rounded-lg">
+
+```java
+public class MemoryBestPractices {
+    
+    // ✅ Good: Use primitives when possible
+    public void calculateGrades(int[] marks) {
+        long sum = 0;  // Primitive, no object creation
+        for (int mark : marks) {
+            sum += mark;  // Primitive operations
+        }
+        double average = sum / (double) marks.length;
+    }
+    
+    // ❌ Avoid: Unnecessary wrapper usage
+    public void inefficientCalculation(Integer[] marks) {
+        Long sum = 0L;  // Creates objects unnecessarily
+        for (Integer mark : marks) {
+            sum += mark;  // Multiple boxing/unboxing operations
+        }
+    }
+    
+    // ✅ Good: Reuse objects when possible
+    private StringBuilder stringBuilder = new StringBuilder();
+    
+    public String formatStudentInfo(String name, int age, double gpa) {
+        stringBuilder.setLength(0);  // Clear previous content
+        stringBuilder.append("Student: ").append(name)
+                    .append(", Age: ").append(age)
+                    .append(", GPA: ").append(String.format("%.2f", gpa));
+        return stringBuilder.toString();
+    }
+    
+    // ✅ Good: Use appropriate data structures
+    public void efficientStudentLookup() {
+        // Use HashMap for O(1) lookup instead of ArrayList O(n)
+        Map<String, Student> studentMap = new HashMap<>();
+        // Implementation details...
+    }
+}
+```
+
+</div>
+
+---
+layout: default
+---
+
+# Variable Naming Conventions and Best Practices
+
+## 📝 Professional Naming Standards
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## 🎯 Naming Convention Rules
+
+**Variables and Methods: camelCase**
+```java
+// ✅ Correct variable names
+int studentAge;
+double averageMarks;
+boolean isStudentActive;
+String firstName;
+List<String> enrolledCourses;
+
+// ✅ Correct method names
+public void calculateGPA() { }
+public boolean isEligibleForScholarship() { }
+public String getFormattedName() { }
+public void setStudentDetails() { }
+
+// ❌ Incorrect naming
+int student_age;        // Snake case (not Java style)
+double AvgMarks;        // PascalCase (wrong for variables)
+boolean flag;           // Non-descriptive
+String s;               // Single character (unclear)
+```
+
+**Constants: ALL_CAPS with underscores**
+```java
+// ✅ Correct constants
+public static final int MAX_STUDENTS_PER_CLASS = 60;
+public static final String DEFAULT_COLLEGE_NAME = "GTU";
+public static final double PASSING_PERCENTAGE = 40.0;
+private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/college";
+
+// ❌ Incorrect constants
+public static final int maxStudents = 60;    // Should be ALL_CAPS
+private static final String dbUrl = "...";   // Should be ALL_CAPS
+```
+
+</div>
+
+<div>
+
+## 🏗️ Meaningful Variable Names
+
+```java
+// ❌ Poor naming (unclear, abbreviated)
+public class Student {
+    private String n;           // What is 'n'?
+    private int a;              // What is 'a'?
+    private double m;           // What is 'm'?
+    private boolean f;          // What is 'f'?
+    
+    public void calc() {        // Calculate what?
+        double r = m * 0.9;     // What is 'r'?
+    }
+}
+
+// ✅ Good naming (clear, descriptive)
+public class Student {
+    private String fullName;
+    private int currentAge;
+    private double totalMarks;
+    private boolean isActiveStudent;
+    
+    public void calculateFinalGrade() {
+        double finalGrade = totalMarks * 0.9;
+        // Clear what we're calculating
+    }
+}
+
+// ✅ Context-appropriate naming
+public class BankAccount {
+    private double currentBalance;
+    private String accountHolderName;
+    private int transactionCount;
+    private LocalDate lastTransactionDate;
+    
+    public boolean withdrawAmount(double requestedAmount) {
+        if (requestedAmount > currentBalance) {
+            return false; // Insufficient funds
+        }
+        currentBalance -= requestedAmount;
+        transactionCount++;
+        lastTransactionDate = LocalDate.now();
+        return true;
+    }
+}
+```
+
+</div>
+
+</div>
+
+## 🔍 Advanced Naming Guidelines
+
+<div class="space-y-6">
+
+<div class="bg-green-50 p-6 rounded-lg">
+<h3 class="font-bold text-green-700 text-xl mb-4">✅ Excellent Naming Examples</h3>
+
+```java
+public class StudentManagementSystem {
+    
+    // Collection naming: use plural nouns
+    private List<Student> enrolledStudents;
+    private Map<String, Course> availableCourses;
+    private Set<String> completedSubjects;
+    
+    // Boolean naming: use 'is', 'has', 'can', 'should'
+    private boolean isStudentEligibleForGraduation;
+    private boolean hasSubmittedAssignment;
+    private boolean canEnrollInAdvancedCourses;
+    private boolean shouldSendNotification;
+    
+    // Method naming: use verbs that describe action
+    public void enrollStudentInCourse(Student student, Course course) { }
+    public Student findStudentByRollNumber(String rollNumber) { }
+    public boolean validateStudentCredentials(String username, String password) { }
+    public void generateProgressReport(Student student) { }
+    
+    // Counter variables: be specific
+    private int totalStudentsEnrolled;
+    private int failedAttemptsCount;
+    private int coursesCompletedThisSemester;
+    
+    // Temporary variables: still be descriptive
+    public void processStudentGrades() {
+        for (Student currentStudent : enrolledStudents) {
+            double calculatedAverage = calculateAverage(currentStudent.getMarks());
+            String assignedGrade = determineGrade(calculatedAverage);
+            currentStudent.setFinalGrade(assignedGrade);
+        }
+    }
+}
+```
+
+</div>
+
+<div class="bg-red-50 p-6 rounded-lg">
+<h3 class="font-bold text-red-700 text-xl mb-4">❌ Poor Naming Examples to Avoid</h3>
+
+```java
+public class BadExample {
+    
+    // ❌ Abbreviations and unclear names
+    private String stuName;     // Should be: studentName
+    private int totMrks;        // Should be: totalMarks  
+    private double avg;         // Should be: average
+    private List<String> lst;   // Should be: studentNames or courses
+    
+    // ❌ Misleading boolean names
+    private boolean student;    // Should be: isStudent
+    private boolean active;     // Should be: isActive
+    private boolean flag;       // Should be: isProcessingComplete
+    
+    // ❌ Non-descriptive method names
+    public void doIt() { }      // Do what?
+    public String get() { }     // Get what?
+    public void process() { }   // Process what?
+    public boolean check() { }  // Check what?
+    
+    // ❌ Hungarian notation (not Java style)
+    private int intAge;         // Should be: age
+    private String strName;     // Should be: name
+    private boolean boolFlag;   // Should be: isActive
+    
+    // ❌ Single letter variables (except loop counters)
+    private String n;           // Should be: name
+    private double s;           // Should be: salary
+    private int c;              // Should be: count
+}
+```
+
+</div>
+
+</div>
+
+---
+layout: default
+---
+
+# Industry Standards and Code Quality
+
+## 🏢 Enterprise-Level Variable Practices
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## 🎯 Domain-Driven Design Naming
+
+```java
+// ✅ Banking Domain Example
+public class BankingTransaction {
+    
+    // Domain-specific terminology
+    private UUID transactionId;
+    private AccountNumber sourceAccount;
+    private AccountNumber destinationAccount;
+    private MonetaryAmount transactionAmount;
+    private TransactionType operationType;
+    private LocalDateTime transactionTimestamp;
+    private TransactionStatus currentStatus;
+    
+    // Business rule methods with clear names
+    public boolean isTransactionWithinDailyLimit(MonetaryAmount dailyLimit) {
+        return transactionAmount.isLessThanOrEqualTo(dailyLimit);
+    }
+    
+    public boolean isSourceAccountSufficientForTransaction() {
+        return sourceAccount.getAvailableBalance()
+                          .isGreaterThanOrEqualTo(transactionAmount);
+    }
+    
+    public void executeTransfer() throws InsufficientFundsException {
+        validateTransactionPreconditions();
+        debitSourceAccount();
+        creditDestinationAccount();
+        updateTransactionStatus(TransactionStatus.COMPLETED);
+        recordTransactionInAuditLog();
+    }
+}
+
+// ✅ E-commerce Domain Example  
+public class ShoppingCart {
+    
+    private CustomerId customerId;
+    private List<CartItem> cartItems;
+    private MonetaryAmount subtotalAmount;
+    private TaxAmount applicableTax;
+    private DiscountAmount appliedDiscount;
+    private ShippingCost estimatedShippingCost;
+    
+    public MonetaryAmount calculateTotalAmount() {
+        return subtotalAmount
+                .plus(applicableTax)
+                .minus(appliedDiscount)  
+                .plus(estimatedShippingCost);
+    }
+}
+```
+
+</div>
+
+<div>
+
+## 📊 Configuration and Constants Management
+
+```java
+public class ApplicationConfiguration {
+    
+    // ✅ Grouped constants with clear hierarchy
+    public static final class DatabaseConfiguration {
+        public static final String DEFAULT_DRIVER_CLASS = "com.mysql.cj.jdbc.Driver";
+        public static final String CONNECTION_URL_TEMPLATE = "jdbc:mysql://%s:%d/%s";
+        public static final int DEFAULT_CONNECTION_TIMEOUT = 30000;
+        public static final int MAXIMUM_POOL_SIZE = 20;
+        public static final int MINIMUM_POOL_SIZE = 5;
+    }
+    
+    public static final class BusinessRules {
+        public static final int MINIMUM_STUDENT_AGE = 16;
+        public static final int MAXIMUM_STUDENT_AGE = 65;
+        public static final double MINIMUM_PASSING_GRADE = 40.0;
+        public static final int MAXIMUM_SUBJECTS_PER_SEMESTER = 8;
+        public static final Duration SESSION_TIMEOUT_DURATION = Duration.ofMinutes(30);
+    }
+    
+    public static final class ValidationPatterns {
+        public static final Pattern EMAIL_VALIDATION_PATTERN = 
+            Pattern.compile("^[A-Za-z0-9+_.-]+@([A-Za-z0-9.-]+\\.[A-Za-z]{2,})$");
+        public static final Pattern PHONE_NUMBER_PATTERN = 
+            Pattern.compile("^\\+?[1-9]\\d{1,14}$");
+        public static final Pattern STUDENT_ID_PATTERN = 
+            Pattern.compile("^[A-Z]{3}\\d{6}$");
+    }
+    
+    // ✅ Environment-specific configuration
+    public enum Environment {
+        DEVELOPMENT("dev", "localhost", 3306),
+        TESTING("test", "test-server", 3306),
+        PRODUCTION("prod", "prod-server", 3306);
+        
+        private final String environmentName;
+        private final String databaseHost;
+        private final int databasePort;
+        
+        Environment(String environmentName, String databaseHost, int databasePort) {
+            this.environmentName = environmentName;
+            this.databaseHost = databaseHost;
+            this.databasePort = databasePort;
+        }
+        
+        public String getDatabaseUrl(String databaseName) {
+            return String.format(DatabaseConfiguration.CONNECTION_URL_TEMPLATE,
+                               databaseHost, databasePort, databaseName);
+        }
+    }
+}
+```
+
+</div>
+
+</div>
+
+## 🔒 Thread-Safe Variable Practices
+
+```java
+public class ThreadSafeStudentCounter {
+    
+    // ✅ Thread-safe counter using AtomicInteger
+    private final AtomicInteger totalStudentsEnrolled = new AtomicInteger(0);
+    private final AtomicLong totalFeesCollected = new AtomicLong(0L);
+    
+    // ✅ Immutable configuration object
+    private final StudentEnrollmentConfiguration enrollmentConfig;
+    
+    // ✅ Thread-safe collections
+    private final ConcurrentMap<String, Student> activeStudentsByRollNumber = new ConcurrentHashMap<>();
+    private final BlockingQueue<EnrollmentRequest> pendingEnrollmentRequests = new LinkedBlockingQueue<>();
+    
+    public ThreadSafeStudentCounter(StudentEnrollmentConfiguration config) {
+        this.enrollmentConfig = Objects.requireNonNull(config, "Configuration cannot be null");
+    }
+    
+    public boolean enrollStudent(Student student) {
+        if (!canAcceptMoreStudents()) {
+            return false;
+        }
+        
+        // Thread-safe operations
+        if (activeStudentsByRollNumber.putIfAbsent(student.getRollNumber(), student) == null) {
+            totalStudentsEnrolled.incrementAndGet();
+            totalFeesCollected.addAndGet(student.getFeeAmount().longValue());
+            return true;
+        }
+        
+        return false; // Student already enrolled
+    }
+    
+    public int getCurrentEnrollmentCount() {
+        return totalStudentsEnrolled.get();
+    }
+    
+    private boolean canAcceptMoreStudents() {
+        return totalStudentsEnrolled.get() < enrollmentConfig.getMaximumStudentCapacity();
+    }
+    
+    // ✅ Immutable value object for configuration
+    public static class StudentEnrollmentConfiguration {
+        private final int maximumStudentCapacity;
+        private final Duration enrollmentPeriod;
+        private final Set<String> eligibleDepartments;
+        
+        public StudentEnrollmentConfiguration(int maximumStudentCapacity, 
+                                            Duration enrollmentPeriod,
+                                            Set<String> eligibleDepartments) {
+            this.maximumStudentCapacity = maximumStudentCapacity;
+            this.enrollmentPeriod = Objects.requireNonNull(enrollmentPeriod);
+            this.eligibleDepartments = Set.copyOf(eligibleDepartments); // Immutable copy
+        }
+        
+        public int getMaximumStudentCapacity() { return maximumStudentCapacity; }
+        public Duration getEnrollmentPeriod() { return enrollmentPeriod; }
+        public Set<String> getEligibleDepartments() { return eligibleDepartments; }
+    }
+}
+```
+
+---
+layout: default
+---
+
 # Memory Usage Comparison
 
 <div class="flex justify-center">
@@ -834,11 +1710,19 @@ graph LR
     A --> C[2 bytes<br/>short, char]
     A --> D[4 bytes<br/>int, float]
     A --> E[8 bytes<br/>long, double]
+    A --> F[Variable<br/>Objects/References]
+    
+    B --> B1[byte: -128 to 127<br/>boolean: true/false]
+    C --> C1[short: -32,768 to 32,767<br/>char: Unicode 0-65,535]
+    D --> D1[int: ±2.1 billion<br/>float: 6-7 digits precision]
+    E --> E1[long: ±9.2 quintillion<br/>double: 15-16 digits precision]
+    F --> F1[Reference: 4/8 bytes<br/>Object: varies by content]
     
     style B fill:#ffebee
     style C fill:#e3f2fd
     style D fill:#e8f5e8
     style E fill:#fff3e0
+    style F fill:#f3e5f5
 ```
 
 </div>
@@ -848,21 +1732,75 @@ graph LR
 <div class="bg-blue-50 p-4 rounded-lg">
 <h3 class="font-bold mb-3">💾 Memory Efficiency Tips</h3>
 <ul class="space-y-2">
-<li>• Use byte for small ranges</li>
-<li>• Prefer int over long when possible</li>
-<li>• Use float for graphics/games</li>
-<li>• Use double for precise calculations</li>
+<li>• Use byte for small ranges (-128 to 127)</li>
+<li>• Prefer int over long when range permits</li>
+<li>• Use float for graphics/games (less precision needed)</li>
+<li>• Use double for scientific/financial calculations</li>
+<li>• Consider primitive arrays over wrapper collections</li>
+<li>• Pool objects when creating many similar instances</li>
 </ul>
 </div>
 
 <div class="bg-green-50 p-4 rounded-lg">
 <h3 class="font-bold mb-3">📊 Performance Considerations</h3>
 <ul class="space-y-2">
-<li>• int operations are fastest</li>
-<li>• long operations are slower</li>
-<li>• float vs double: minimal difference</li>
-<li>• Choose based on precision needs</li>
+<li>• int operations are fastest on most platforms</li>
+<li>• long operations may be slower on 32-bit systems</li>
+<li>• float vs double: minimal performance difference</li>
+<li>• Choose based on precision requirements</li>
+<li>• Avoid unnecessary boxing/unboxing in loops</li>
+<li>• Use StringBuilder for string concatenation</li>
 </ul>
+</div>
+
+</div>
+
+## 📈 Memory Usage Examples
+
+<div class="grid grid-cols-2 gap-6 mt-6">
+
+<div class="bg-yellow-50 p-4 rounded-lg">
+<h4 class="font-bold mb-2">Memory Efficient Code</h4>
+```java
+// ✅ Efficient: Uses primitives
+public class EfficientStudentGrades {
+    private int studentCount;
+    private double[] grades;  // Primitive array
+    
+    public double calculateAverage() {
+        if (grades.length == 0) return 0.0;
+        
+        double sum = 0.0;  // Primitive variable
+        for (double grade : grades) {
+            sum += grade;  // No boxing/unboxing
+        }
+        return sum / grades.length;
+    }
+}
+```
+**Memory usage**: ~16 bytes per double + array overhead
+</div>
+
+<div class="bg-orange-50 p-4 rounded-lg">
+<h4 class="font-bold mb-2">Memory Inefficient Code</h4>
+```java
+// ❌ Inefficient: Uses wrapper objects
+public class InefficientStudentGrades {
+    private Integer studentCount;
+    private List<Double> grades;  // Wrapper objects
+    
+    public Double calculateAverage() {
+        if (grades.isEmpty()) return 0.0;
+        
+        Double sum = 0.0;  // Wrapper object
+        for (Double grade : grades) {
+            sum += grade;  // Boxing/unboxing overhead
+        }
+        return sum / grades.size();
+    }
+}
+```
+**Memory usage**: ~24-32 bytes per Double object + collection overhead
 </div>
 
 </div>

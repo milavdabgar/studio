@@ -847,41 +847,722 @@ public class AdvancedCalculator {
 layout: default
 ---
 
+# instanceof Operator Deep Dive
+
+## 🔍 Type Checking and Polymorphism
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## 📋 instanceof Operator Basics
+
+```java
+// Basic syntax: object instanceof Type
+String text = "Hello World";
+System.out.println(text instanceof String);  // true
+System.out.println(text instanceof Object);  // true
+
+// With null values
+String nullString = null;
+System.out.println(nullString instanceof String);  // false (always false for null)
+
+// Class hierarchy example
+class Animal { }
+class Dog extends Animal { }
+class Cat extends Animal { }
+
+Animal animal = new Dog();
+System.out.println(animal instanceof Animal);  // true
+System.out.println(animal instanceof Dog);     // true
+System.out.println(animal instanceof Cat);     // false
+```
+
+## 🎯 Practical Applications
+
+```java
+public void processAnimal(Animal animal) {
+    if (animal instanceof Dog) {
+        Dog dog = (Dog) animal;  // Safe casting
+        dog.bark();
+    } else if (animal instanceof Cat) {
+        Cat cat = (Cat) animal;  // Safe casting
+        cat.meow();
+    }
+    
+    // Universal animal behavior
+    animal.eat();
+}
+
+// Collection processing
+public void processObjects(List<Object> objects) {
+    for (Object obj : objects) {
+        if (obj instanceof String) {
+            String str = (String) obj;
+            System.out.println("String length: " + str.length());
+        } else if (obj instanceof Integer) {
+            Integer num = (Integer) obj;
+            System.out.println("Number squared: " + (num * num));
+        } else if (obj instanceof Double) {
+            Double dbl = (Double) obj;
+            System.out.println("Double value: " + String.format("%.2f", dbl));
+        }
+    }
+}
+```
+
+</div>
+
+<div>
+
+## 🔄 Pattern Matching (Java 14+)
+
+```java
+// Enhanced instanceof with pattern matching
+public String processValue(Object value) {
+    if (value instanceof String str) {
+        // 'str' is automatically cast and available
+        return "String: " + str.toUpperCase();
+    } else if (value instanceof Integer num) {
+        // 'num' is automatically cast and available
+        return "Integer: " + (num * 2);
+    } else if (value instanceof Double dbl) {
+        // 'dbl' is automatically cast and available
+        return "Double: " + String.format("%.2f", dbl);
+    }
+    return "Unknown type";
+}
+
+// Switch expressions with instanceof patterns (Java 17+)
+public String processValueWithSwitch(Object value) {
+    return switch (value) {
+        case String str -> "String: " + str.toUpperCase();
+        case Integer num -> "Integer: " + (num * 2);
+        case Double dbl -> "Double: " + String.format("%.2f", dbl);
+        case null -> "Null value";
+        default -> "Unknown type";
+    };
+}
+```
+
+## 🏗️ Real-World Example: Student System
+
+```java
+// Base class and interfaces
+interface Gradeable {
+    double getGrade();
+}
+
+abstract class Person {
+    protected String name;
+    protected int age;
+}
+
+class Student extends Person implements Gradeable {
+    private double gpa;
+    
+    public double getGrade() { return gpa; }
+    public void study() { System.out.println(name + " is studying"); }
+}
+
+class Teacher extends Person {
+    private String subject;
+    
+    public void teach() { System.out.println(name + " is teaching " + subject); }
+}
+
+// Processing different person types
+public void processPeople(List<Person> people) {
+    for (Person person : people) {
+        System.out.println("Processing: " + person.name);
+        
+        if (person instanceof Student student && student instanceof Gradeable) {
+            // Pattern matching with multiple conditions
+            System.out.println("Student GPA: " + student.getGrade());
+            student.study();
+        } else if (person instanceof Teacher teacher) {
+            teacher.teach();
+        }
+        
+        // Check for interfaces
+        if (person instanceof Gradeable gradeable) {
+            System.out.println("Grade: " + gradeable.getGrade());
+        }
+    }
+}
+```
+
+</div>
+
+</div>
+
+---
+layout: default
+---
+
+# Bitwise Assignment Operators
+
+## 🔧 Advanced Bitwise Operations
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## 📊 Bitwise Assignment Table
+
+| Operator | Description | Example | Binary Operation |
+|----------|-------------|---------|------------------|
+| **&=** | Bitwise AND assignment | `a &= b` | `a = a & b` |
+| **\|=** | Bitwise OR assignment | `a \|= b` | `a = a \| b` |
+| **^=** | Bitwise XOR assignment | `a ^= b` | `a = a ^ b` |
+| **<<=** | Left shift assignment | `a <<= 2` | `a = a << 2` |
+| **>>=** | Right shift assignment | `a >>= 2` | `a = a >> 2` |
+| **>>>=** | Unsigned right shift | `a >>>= 2` | `a = a >>> 2` |
+
+## 🎯 Practical Bitwise Examples
+
+```java
+// Flag management using bitwise operations
+public class PermissionManager {
+    // Permission constants (powers of 2)
+    public static final int READ = 1;      // 0001
+    public static final int WRITE = 2;     // 0010  
+    public static final int EXECUTE = 4;   // 0100
+    public static final int DELETE = 8;    // 1000
+    
+    private int permissions = 0;
+    
+    // Grant permission (set bit)
+    public void grantPermission(int permission) {
+        permissions |= permission;
+    }
+    
+    // Revoke permission (clear bit)
+    public void revokePermission(int permission) {
+        permissions &= ~permission;
+    }
+    
+    // Check permission (test bit)
+    public boolean hasPermission(int permission) {
+        return (permissions & permission) != 0;
+    }
+    
+    // Toggle permission (flip bit)
+    public void togglePermission(int permission) {
+        permissions ^= permission;
+    }
+}
+```
+
+</div>
+
+<div>
+
+## ⚡ Performance Optimization with Bitwise
+
+```java
+// Fast mathematical operations using bitwise
+public class BitwiseOptimizations {
+    
+    // Multiply by powers of 2 (left shift)
+    public static int multiplyBy4(int num) {
+        return num << 2;  // Faster than num * 4
+    }
+    
+    // Divide by powers of 2 (right shift)
+    public static int divideBy8(int num) {
+        return num >> 3;  // Faster than num / 8
+    }
+    
+    // Check if number is even (test least significant bit)
+    public static boolean isEven(int num) {
+        return (num & 1) == 0;  // Faster than num % 2 == 0
+    }
+    
+    // Swap two numbers without temporary variable
+    public static void swapNumbers(int[] array, int i, int j) {
+        array[i] ^= array[j];
+        array[j] ^= array[i];
+        array[i] ^= array[j];
+    }
+    
+    // Count number of set bits (Brian Kernighan's algorithm)
+    public static int countSetBits(int num) {
+        int count = 0;
+        while (num != 0) {
+            num &= (num - 1);  // Removes the rightmost set bit
+            count++;
+        }
+        return count;
+    }
+    
+    // Check if number is power of 2
+    public static boolean isPowerOfTwo(int num) {
+        return num > 0 && (num & (num - 1)) == 0;
+    }
+    
+    // Set nth bit
+    public static int setBit(int num, int n) {
+        return num |= (1 << n);
+    }
+    
+    // Clear nth bit
+    public static int clearBit(int num, int n) {
+        return num &= ~(1 << n);
+    }
+    
+    // Toggle nth bit
+    public static int toggleBit(int num, int n) {
+        return num ^= (1 << n);
+    }
+}
+```
+
+## 🔍 Bit Manipulation Example: Student Flags
+
+```java
+public class StudentFlags {
+    // Status flags as bit positions
+    private static final int ENROLLED = 1 << 0;      // 0001
+    private static final int GRADUATED = 1 << 1;     // 0010
+    private static final int SCHOLARSHIP = 1 << 2;   // 0100
+    private static final int HONOR_ROLL = 1 << 3;    // 1000
+    private static final int ATHLETE = 1 << 4;       // 10000
+    
+    private int studentStatus = 0;
+    
+    public void enrollStudent() {
+        studentStatus |= ENROLLED;
+    }
+    
+    public void graduateStudent() {
+        studentStatus |= GRADUATED;
+        studentStatus &= ~ENROLLED;  // Clear enrolled status
+    }
+    
+    public void awardScholarship() {
+        studentStatus |= SCHOLARSHIP;
+    }
+    
+    public boolean isEnrolled() {
+        return (studentStatus & ENROLLED) != 0;
+    }
+    
+    public boolean hasScholarship() {
+        return (studentStatus & SCHOLARSHIP) != 0;
+    }
+    
+    public String getStatusSummary() {
+        StringBuilder status = new StringBuilder("Student Status: ");
+        
+        if ((studentStatus & ENROLLED) != 0) status.append("Enrolled ");
+        if ((studentStatus & GRADUATED) != 0) status.append("Graduated ");
+        if ((studentStatus & SCHOLARSHIP) != 0) status.append("Scholarship ");
+        if ((studentStatus & HONOR_ROLL) != 0) status.append("Honor-Roll ");
+        if ((studentStatus & ATHLETE) != 0) status.append("Athlete ");
+        
+        return status.toString();
+    }
+}
+```
+
+</div>
+
+</div>
+
+---
+layout: default
+---
+
+# Advanced Ternary Operator Patterns
+
+## 🎯 Complex Conditional Logic
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## 🔄 Chained Ternary Operations
+
+```java
+// Grade calculation with multiple conditions
+public class GradeCalculator {
+    
+    public static char calculateGrade(int score, boolean hasBonus, 
+                                     boolean isPerfectAttendance) {
+        // Adjust score based on bonuses
+        int adjustedScore = score + 
+                          (hasBonus ? 5 : 0) + 
+                          (isPerfectAttendance ? 3 : 0);
+        
+        // Determine grade with chained ternary
+        return (adjustedScore >= 97) ? 'A' :
+               (adjustedScore >= 93) ? 'A' :
+               (adjustedScore >= 90) ? 'A' :
+               (adjustedScore >= 87) ? 'B' :
+               (adjustedScore >= 83) ? 'B' :
+               (adjustedScore >= 80) ? 'B' :
+               (adjustedScore >= 77) ? 'C' :
+               (adjustedScore >= 73) ? 'C' :
+               (adjustedScore >= 70) ? 'C' :
+               (adjustedScore >= 67) ? 'D' :
+               (adjustedScore >= 60) ? 'D' : 'F';
+    }
+    
+    // Simplified version with helper method
+    public static char calculateGradeSimplified(int score) {
+        return (score >= 90) ? 'A' :
+               (score >= 80) ? 'B' :
+               (score >= 70) ? 'C' :
+               (score >= 60) ? 'D' : 'F';
+    }
+}
+
+// Banking transaction validation
+public class TransactionValidator {
+    
+    public static String validateTransaction(double amount, 
+                                           double balance, 
+                                           boolean isVipCustomer,
+                                           boolean isBusinessDay) {
+        
+        // Complex validation with ternary
+        return (amount <= 0) ? "Invalid amount" :
+               (amount > balance && !isVipCustomer) ? "Insufficient funds" :
+               (amount > balance * 1.1 && isVipCustomer) ? "Exceeds VIP limit" :
+               (amount > 10000 && !isBusinessDay) ? "Large transaction on weekend" :
+               "Transaction approved";
+    }
+}
+```
+
+</div>
+
+<div>
+
+## 🏗️ Ternary in Object Creation and Method Calls
+
+```java
+// Factory pattern with ternary operator
+public class StudentFactory {
+    
+    public static Student createStudent(String type, String name, int age) {
+        return "undergraduate".equals(type) ? new UndergraduateStudent(name, age) :
+               "graduate".equals(type) ? new GraduateStudent(name, age) :
+               "phd".equals(type) ? new PhDStudent(name, age) :
+               new RegularStudent(name, age);
+    }
+}
+
+// Method chaining with conditional logic
+public class StringProcessor {
+    
+    public static String processString(String input, boolean toUpper, 
+                                     boolean trim, boolean reverse) {
+        String result = input;
+        
+        result = trim ? result.trim() : result;
+        result = toUpper ? result.toUpperCase() : result.toLowerCase();
+        result = reverse ? new StringBuilder(result).reverse().toString() : result;
+        
+        return result;
+    }
+    
+    // One-liner version (complex but demonstrates ternary power)
+    public static String processStringOneLiner(String input, boolean toUpper, 
+                                             boolean trim, boolean reverse) {
+        return reverse ? 
+            new StringBuilder(toUpper ? 
+                (trim ? input.trim() : input).toUpperCase() : 
+                (trim ? input.trim() : input).toLowerCase())
+                .reverse().toString() :
+            toUpper ? 
+                (trim ? input.trim() : input).toUpperCase() : 
+                (trim ? input.trim() : input).toLowerCase();
+    }
+}
+
+// Configuration and settings with ternary
+public class ApplicationConfig {
+    
+    private String environment;
+    private boolean debugMode;
+    
+    public String getDatabaseUrl() {
+        return "production".equals(environment) ? 
+            "jdbc:mysql://prod-server:3306/college_db" :
+            "development".equals(environment) ?
+            "jdbc:mysql://localhost:3306/college_dev" :
+            "jdbc:h2:mem:testdb";
+    }
+    
+    public int getLogLevel() {
+        return debugMode ? 
+            ("production".equals(environment) ? 2 : 0) :  // ERROR or ALL in debug
+            ("production".equals(environment) ? 4 : 3);    // WARN or INFO in normal
+    }
+    
+    public long getCacheTimeout() {
+        return "production".equals(environment) ? 3600000L :  // 1 hour
+               debugMode ? 60000L :                           // 1 minute  
+               300000L;                                       // 5 minutes
+    }
+}
+```
+
+## 🔍 Null-Safe Operations with Ternary
+
+```java
+public class NullSafeOperations {
+    
+    // Null-safe string operations
+    public static String safeStringOperation(String input) {
+        return (input != null) ? input.trim().toLowerCase() : "default";
+    }
+    
+    // Null-safe collection operations
+    public static int safeCollectionSize(List<?> list) {
+        return (list != null) ? list.size() : 0;
+    }
+    
+    // Null-safe nested object access
+    public static String getStudentEmail(Student student) {
+        return (student != null && student.getContact() != null) ?
+            student.getContact().getEmail() : "no-email@example.com";
+    }
+    
+    // Multiple null checks with ternary
+    public static String formatStudentInfo(Student student) {
+        if (student == null) return "No student data";
+        
+        String name = (student.getName() != null) ? student.getName() : "Unknown";
+        String email = (student.getContact() != null && student.getContact().getEmail() != null) ?
+            student.getContact().getEmail() : "No email";
+        int age = (student.getAge() > 0) ? student.getAge() : 0;
+        
+        return String.format("Student: %s, Email: %s, Age: %d", name, email, age);
+    }
+}
+```
+
+</div>
+
+</div>
+
+---
+layout: default
+---
+
 # Common Pitfalls and Solutions
 
 <div class="space-y-4">
 
 <div class="bg-red-50 p-4 rounded-lg">
 <h4 class="font-bold text-red-700">❌ Operator Precedence Confusion</h4>
+
+**Problem Example:**
 ```java
-int result = 10 + 5 * 2;  // 20, not 30!
+int result = 10 + 5 * 2;  // Result is 20, not 30!
+// Multiplication has higher precedence than addition
+
+boolean condition = age > 18 && score >= 80 || hasScholarship;
+// This is: ((age > 18) && (score >= 80)) || hasScholarship
+// Might not be intended logic
 ```
-<strong>Solution:</strong> Use parentheses: `(10 + 5) * 2` for clarity
+
+**Solutions:**
+```java
+// Use parentheses for clarity
+int result = (10 + 5) * 2;  // Now result is 30
+
+// Group logical operations clearly
+boolean condition = (age > 18 && score >= 80) || hasScholarship;
+// Or break into multiple conditions
+boolean meetsAgeAndScore = age > 18 && score >= 80;
+boolean isEligible = meetsAgeAndScore || hasScholarship;
+```
+
 </div>
 
 <div class="bg-orange-50 p-4 rounded-lg">
 <h4 class="font-bold text-orange-700">❌ Complex Increment Expressions</h4>
+
+**Problem Examples:**
 ```java
 int x = 5;
-int y = x++ + ++x + x--;  // Confusing!
+int y = x++ + ++x + x--;  // Very confusing! Final: y = 19, x = 6
+
+int[] arr = {1, 2, 3, 4, 5};
+int i = 2;
+arr[i++] = arr[++i];  // Undefined behavior in some cases
 ```
-<strong>Solution:</strong> Break into separate statements for clarity
+
+**Solutions:**
+```java
+// Break complex expressions into clear steps
+int x = 5;
+int temp1 = x++;      // x becomes 6, temp1 = 5
+int temp2 = ++x;      // x becomes 7, temp2 = 7  
+int temp3 = x--;      // temp3 = 7, x becomes 6
+int y = temp1 + temp2 + temp3;  // y = 19, clearly calculated
+
+// Array operations - be explicit
+int[] arr = {1, 2, 3, 4, 5};
+int i = 2;
+int sourceIndex = i + 2;  // Calculate target index
+arr[i] = arr[sourceIndex];  // Clear assignment
+i++;  // Increment separately
+```
+
 </div>
 
 <div class="bg-yellow-50 p-4 rounded-lg">
 <h4 class="font-bold text-yellow-700">❌ Nested Ternary Overuse</h4>
+
+**Problem Example:**
 ```java
-String grade = (score > 90) ? "A" : (score > 80) ? "B" : (score > 70) ? "C" : "F";
+String grade = (score > 90) ? "A" : 
+               (score > 80) ? "B" : 
+               (score > 70) ? ((attendance > 80) ? "C" : "C-") :
+               (score > 60) ? ((effort > 7) ? "D+" : "D") : "F";
+// Too complex to understand quickly!
 ```
-<strong>Solution:</strong> Use if-else chain for better readability
+
+**Solution Approaches:**
+```java
+// Approach 1: Use if-else for complex logic
+String grade;
+if (score > 90) {
+    grade = "A";
+} else if (score > 80) {
+    grade = "B";
+} else if (score > 70) {
+    grade = (attendance > 80) ? "C" : "C-";
+} else if (score > 60) {
+    grade = (effort > 7) ? "D+" : "D";
+} else {
+    grade = "F";
+}
+
+// Approach 2: Extract to separate methods
+public String calculateGrade(int score, int attendance, int effort) {
+    if (score > 90) return "A";
+    if (score > 80) return "B";
+    if (score > 70) return calculateCGrade(attendance);
+    if (score > 60) return calculateDGrade(effort);
+    return "F";
+}
+
+private String calculateCGrade(int attendance) {
+    return attendance > 80 ? "C" : "C-";
+}
+
+private String calculateDGrade(int effort) {
+    return effort > 7 ? "D+" : "D";
+}
+```
+
 </div>
 
 <div class="bg-blue-50 p-4 rounded-lg">
 <h4 class="font-bold text-blue-700">❌ Assignment vs Equality Confusion</h4>
+
+**Problem Examples:**
 ```java
-if (score = 90) { }  // Assignment, not comparison!
+int score = 85;
+if (score = 90) {  // Compilation error! Assignment instead of comparison
+    System.out.println("Perfect score");
+}
+
+// Subtle bug in C/C++ style (Java prevents this)
+boolean isActive = true;
+if (isActive = false) {  // Assignment instead of comparison!
+    System.out.println("This won't print");
+}
 ```
-<strong>Solution:</strong> Always use `==` for comparison, `=` for assignment
+
+**Solutions and Best Practices:**
+```java
+// Always use == for comparison
+if (score == 90) {
+    System.out.println("Perfect score");
+}
+
+// Use constants on left side (Yoda conditions) to prevent accidents
+if (90 == score) {  // If you accidentally use =, compilation fails
+    System.out.println("Perfect score");
+}
+
+// For boolean comparisons, be explicit or use the variable directly
+if (isActive == true) { }  // Explicit (but verbose)
+if (isActive) { }          // Preferred (clean)
+if (!isActive) { }         // Preferred for false check
+
+// Complex assignment conditions - use parentheses for clarity
+boolean result;
+if ((result = processStudent(student)) == true) {
+    // Assignment and comparison in one line - avoid when possible
+}
+
+// Better: Separate assignment and condition
+boolean result = processStudent(student);
+if (result) {
+    // Clear and readable
+}
+```
+
+</div>
+
+<div class="bg-purple-50 p-4 rounded-lg">
+<h4 class="font-bold text-purple-700">❌ Floating Point Precision Issues</h4>
+
+**Problem Examples:**
+```java
+double balance = 100.0;
+balance -= 99.99;
+if (balance == 0.01) {  // May fail due to floating point precision!
+    System.out.println("Expected behavior");
+}
+
+// Compound assignment with precision issues
+double total = 0.0;
+for (int i = 0; i < 10; i++) {
+    total += 0.1;  // May not equal exactly 1.0!
+}
+if (total == 1.0) {  // Likely to fail
+    System.out.println("Total is 1.0");
+}
+```
+
+**Solutions:**
+```java
+// Use BigDecimal for financial calculations
+BigDecimal balance = new BigDecimal("100.00");
+balance = balance.subtract(new BigDecimal("99.99"));
+if (balance.compareTo(new BigDecimal("0.01")) == 0) {
+    System.out.println("Expected behavior");
+}
+
+// Use epsilon comparison for floating point
+double total = 0.0;
+for (int i = 0; i < 10; i++) {
+    total += 0.1;
+}
+double epsilon = 1e-10;
+if (Math.abs(total - 1.0) < epsilon) {
+    System.out.println("Total is approximately 1.0");
+}
+
+// Helper method for floating point comparison
+public static boolean isEqual(double a, double b, double epsilon) {
+    return Math.abs(a - b) < epsilon;
+}
+
+public static boolean isEqual(double a, double b) {
+    return isEqual(a, b, 1e-10);  // Default epsilon
+}
+```
+
 </div>
 
 </div>

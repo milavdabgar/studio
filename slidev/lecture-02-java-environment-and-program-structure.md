@@ -758,6 +758,582 @@ Any questions about Java environment setup or your first program?
 Next lecture: **Java Program Structure & Comments**
 </div>
 
+---
+layout: default
+---
+
+# Java Development Environment Setup
+
+## 🔧 Step-by-Step Installation Guide
+
+<div class="grid grid-cols-2 gap-6">
+
+<div>
+
+### **Windows Installation**
+
+<v-clicks>
+
+1. **Download JDK** - Oracle JDK or OpenJDK
+2. **Run Installer** - Follow installation wizard
+3. **Set JAVA_HOME** - System environment variable
+4. **Update PATH** - Add JDK bin directory
+5. **Verify Installation** - `java -version`
+
+</v-clicks>
+
+</div>
+
+<div>
+
+### **Linux/macOS Installation**
+
+<v-clicks>
+
+1. **Package Manager** - `sudo apt install openjdk-17-jdk`
+2. **Homebrew (macOS)** - `brew install openjdk@17`
+3. **Manual Download** - Extract to /usr/local/
+4. **Update Profile** - .bashrc or .zshrc
+5. **Verify Setup** - `javac -version`
+
+</v-clicks>
+
+</div>
+
+</div>
+
+<div class="mt-6 p-4 bg-yellow-50 rounded-lg">
+<strong>💡 Tip:</strong> Use OpenJDK for free, production-ready Java development!
+</div>
+
+---
+layout: default
+---
+
+# IDE Selection and Setup
+
+<div class="grid grid-cols-3 gap-6">
+
+<div class="bg-blue-50 p-4 rounded-lg text-center">
+<h3 class="font-bold text-lg mb-3">🌟 IntelliJ IDEA</h3>
+<ul class="text-sm space-y-2 text-left">
+<li>• Intelligent code completion</li>
+<li>• Powerful debugging tools</li>
+<li>• Built-in version control</li>
+<li>• Spring Boot integration</li>
+</ul>
+<div class="mt-3">
+<span class="bg-blue-100 px-2 py-1 rounded text-xs">Best for professionals</span>
+</div>
+</div>
+
+<div class="bg-purple-50 p-4 rounded-lg text-center">
+<h3 class="font-bold text-lg mb-3">🔮 Eclipse</h3>
+<ul class="text-sm space-y-2 text-left">
+<li>• Free and open source</li>
+<li>• Extensive plugin ecosystem</li>
+<li>• Good for beginners</li>
+<li>• Strong community support</li>
+</ul>
+<div class="mt-3">
+<span class="bg-purple-100 px-2 py-1 rounded text-xs">Best for learning</span>
+</div>
+</div>
+
+<div class="bg-green-50 p-4 rounded-lg text-center">
+<h3 class="font-bold text-lg mb-3">🚀 VS Code</h3>
+<ul class="text-sm space-y-2 text-left">
+<li>• Lightweight and fast</li>
+<li>• Java Extension Pack</li>
+<li>• Git integration</li>
+<li>• Cross-platform</li>
+</ul>
+<div class="mt-3">
+<span class="bg-green-100 px-2 py-1 rounded text-xs">Best for simplicity</span>
+</div>
+</div>
+
+</div>
+
+## 📝 Alternative Text Editors
+- **Notepad++** (Windows) - Simple syntax highlighting
+- **Sublime Text** - Fast with Java packages
+- **Atom** - GitHub's hackable editor
+- **Vim/Emacs** - For terminal enthusiasts
+
+---
+layout: default
+---
+
+# Java Build Tools Overview
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## 🔨 Maven
+```xml
+<project>
+  <groupId>com.example</groupId>
+  <artifactId>my-app</artifactId>
+  <version>1.0</version>
+  
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+  </properties>
+  
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+    </dependency>
+  </dependencies>
+</project>
+```
+
+</div>
+
+<div>
+
+## ⚡ Gradle
+```groovy
+plugins {
+    id 'java'
+    id 'application'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+}
+
+application {
+    mainClass = 'com.example.Main'
+}
+```
+
+</div>
+
+</div>
+
+### 🏗️ Build Tool Comparison
+| Feature | Maven | Gradle | Ant |
+|---------|-------|--------|-----|
+| **Configuration** | XML-based | Groovy/Kotlin DSL | XML-based |
+| **Performance** | Good | Excellent | Good |
+| **Learning Curve** | Moderate | Steep | Easy |
+| **Ecosystem** | Mature | Growing | Legacy |
+
+---
+layout: default
+---
+
+# Java Memory Management Deep Dive
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## 🧠 Memory Areas
+
+<v-clicks>
+
+### **Heap Memory**
+- **Young Generation** - New objects
+- **Old Generation** - Long-lived objects
+- **Metaspace** - Class metadata (Java 8+)
+
+### **Non-Heap Memory**
+- **Method Area** - Class-level data
+- **Code Cache** - Compiled native code
+- **Direct Memory** - NIO buffers
+
+</v-clicks>
+
+</div>
+
+<div>
+
+## 🗑️ Garbage Collection Types
+
+<v-clicks>
+
+### **Serial GC**
+- Single-threaded
+- Good for small applications
+
+### **Parallel GC**
+- Multi-threaded
+- Default for server applications
+
+### **G1GC**
+- Low-latency collector
+- Good for large heap sizes
+
+### **ZGC/Shenandoah**
+- Ultra-low latency
+- Concurrent collection
+
+</v-clicks>
+
+</div>
+
+</div>
+
+<div class="mt-6 p-4 bg-blue-50 rounded-lg">
+<strong>⚡ Performance Tip:</strong> Monitor heap usage with `jconsole` or `jvisualvm` tools!
+</div>
+
+---
+layout: default
+---
+
+# Advanced JVM Features
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## 🚀 Just-In-Time (JIT) Compilation
+
+<v-clicks>
+
+- **Interpretation** - Initial execution
+- **C1 Compiler** - Client compiler (fast compilation)
+- **C2 Compiler** - Server compiler (aggressive optimization)
+- **Tiered Compilation** - Best of both worlds
+- **Profile-Guided Optimization** - Runtime feedback
+- **Method Inlining** - Eliminate method call overhead
+
+</v-clicks>
+
+</div>
+
+<div>
+
+## 🔧 JVM Tuning Parameters
+
+<v-clicks>
+
+```bash
+# Heap size configuration
+-Xms512m -Xmx2g
+
+# Garbage collection
+-XX:+UseG1GC
+-XX:MaxGCPauseMillis=200
+
+# JIT compilation
+-XX:+TieredCompilation
+-XX:CompileThreshold=10000
+
+# Monitoring and debugging
+-XX:+PrintGC
+-XX:+HeapDumpOnOutOfMemoryError
+```
+
+</v-clicks>
+
+</div>
+
+</div>
+
+<div class="mt-6 text-center">
+<div class="bg-yellow-50 p-4 rounded-lg inline-block">
+<strong>🎯 Production Tip:</strong> Always profile before tuning JVM parameters!
+</div>
+</div>
+
+---
+layout: default
+---
+
+# Java Development Best Practices
+
+## 📋 Project Structure Best Practices
+
+```
+my-java-project/
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/company/project/
+│   │   │       ├── Main.java
+│   │   │       ├── model/
+│   │   │       ├── service/
+│   │   │       └── util/
+│   │   └── resources/
+│   │       ├── application.properties
+│   │       └── log4j2.xml
+│   └── test/
+│       └── java/
+│           └── com/company/project/
+├── target/ (Maven) or build/ (Gradle)
+├── pom.xml (Maven) or build.gradle
+└── README.md
+```
+
+<div class="grid grid-cols-2 gap-6 mt-6">
+
+<div class="bg-green-50 p-4 rounded-lg">
+<h3 class="font-bold mb-3">✅ Do's</h3>
+<ul class="text-sm space-y-1">
+<li>• Follow package naming conventions</li>
+<li>• Use meaningful class and method names</li>
+<li>• Keep classes focused and small</li>
+<li>• Write unit tests for all methods</li>
+<li>• Use version control (Git)</li>
+</ul>
+</div>
+
+<div class="bg-red-50 p-4 rounded-lg">
+<h3 class="font-bold mb-3">❌ Don'ts</h3>
+<ul class="text-sm space-y-1">
+<li>• Don't use default package</li>
+<li>• Avoid magic numbers and strings</li>
+<li>• Don't ignore compiler warnings</li>
+<li>• Avoid deep inheritance hierarchies</li>
+<li>• Don't commit compiled .class files</li>
+</ul>
+</div>
+
+</div>
+
+---
+layout: default
+---
+
+# Environment Variables and Configuration
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## 🌍 Essential Environment Variables
+
+<v-clicks>
+
+### **JAVA_HOME**
+```bash
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+```
+
+### **PATH**
+```bash
+export PATH=$JAVA_HOME/bin:$PATH
+```
+
+### **CLASSPATH**
+```bash
+export CLASSPATH=.:$JAVA_HOME/lib/*
+```
+
+### **JVM Options**
+```bash
+export JAVA_OPTS="-Xms512m -Xmx1g"
+```
+
+</v-clicks>
+
+</div>
+
+<div>
+
+## ⚙️ Configuration Files
+
+<v-clicks>
+
+### **Windows (System Variables)**
+- Control Panel → System → Advanced
+- Environment Variables button
+- Add or modify system variables
+
+### **Linux/macOS (~/.bashrc)**
+```bash
+# Java configuration
+export JAVA_HOME=/usr/lib/jvm/java-17
+export PATH=$JAVA_HOME/bin:$PATH
+export MAVEN_HOME=/opt/maven
+export PATH=$MAVEN_HOME/bin:$PATH
+```
+
+### **IDE Configuration**
+- Project JDK settings
+- Compiler compliance level
+- Build path configuration
+
+</v-clicks>
+
+</div>
+
+</div>
+
+---
+layout: default
+---
+
+# Troubleshooting Common Issues
+
+<div class="grid grid-cols-2 gap-6">
+
+<div>
+
+## 🚨 Installation Problems
+
+<v-clicks>
+
+### **"java command not found"**
+- Check JAVA_HOME setting
+- Verify PATH configuration
+- Restart terminal/IDE
+
+### **"javac not recognized"**
+- Install JDK (not just JRE)
+- Add JDK/bin to PATH
+- Check system vs user variables
+
+### **Version conflicts**
+- Use `update-alternatives` (Linux)
+- Check multiple Java installations
+- Set correct JAVA_HOME
+
+</v-clicks>
+
+</div>
+
+<div>
+
+## 🔧 Runtime Issues
+
+<v-clicks>
+
+### **OutOfMemoryError**
+- Increase heap size (-Xmx)
+- Check for memory leaks
+- Profile application memory
+
+### **ClassNotFoundException**
+- Check CLASSPATH setting
+- Verify JAR file locations
+- Check package declarations
+
+### **UnsupportedClassVersionError**
+- Compile with correct JDK version
+- Match runtime Java version
+- Check bytecode compatibility
+
+</v-clicks>
+
+</div>
+
+</div>
+
+<div class="mt-6 p-4 bg-purple-50 rounded-lg">
+<strong>🔍 Debugging Tip:</strong> Use `java -version` and `javac -version` to verify your installation!
+</div>
+
+---
+layout: default
+---
+
+# Performance Monitoring Tools
+
+<div class="grid grid-cols-3 gap-4">
+
+<div class="bg-blue-50 p-4 rounded-lg text-center">
+<h3 class="font-bold mb-3">🔍 JConsole</h3>
+<ul class="text-sm text-left space-y-1">
+<li>• Built-in JVM monitoring</li>
+<li>• Memory usage tracking</li>
+<li>• Thread analysis</li>
+<li>• MBean inspection</li>
+</ul>
+<code class="text-xs bg-blue-100 px-2 py-1 rounded">jconsole</code>
+</div>
+
+<div class="bg-green-50 p-4 rounded-lg text-center">
+<h3 class="font-bold mb-3">📊 VisualVM</h3>
+<ul class="text-sm text-left space-y-1">
+<li>• Profiling capabilities</li>
+<li>• Heap dump analysis</li>
+<li>• CPU profiling</li>
+<li>• Plugin ecosystem</li>
+</ul>
+<code class="text-xs bg-green-100 px-2 py-1 rounded">jvisualvm</code>
+</div>
+
+<div class="bg-purple-50 p-4 rounded-lg text-center">
+<h3 class="font-bold mb-3">⚡ JProfiler</h3>
+<ul class="text-sm text-left space-y-1">
+<li>• Commercial profiler</li>
+<li>• Advanced analysis</li>
+<li>• Database profiling</li>
+<li>• Memory leak detection</li>
+</ul>
+<code class="text-xs bg-purple-100 px-2 py-1 rounded">jprofiler</code>
+</div>
+
+</div>
+
+## 📈 Key Metrics to Monitor
+- **Heap utilization** - Memory usage patterns
+- **GC frequency** - Collection overhead
+- **Thread states** - Concurrency issues
+- **CPU usage** - Performance bottlenecks
+- **Class loading** - Startup optimization
+
+<div class="mt-4 p-4 bg-yellow-50 rounded-lg">
+<strong>📊 Best Practice:</strong> Establish baseline metrics before optimizing performance!
+</div>
+
+---
+layout: center
+class: text-center
+---
+
+# Summary & Next Steps
+
+<div class="grid grid-cols-2 gap-8 mt-8">
+
+<div class="bg-blue-50 p-6 rounded-lg">
+<h3 class="font-bold text-lg mb-4">📖 What We Covered</h3>
+<ul class="text-left space-y-2 text-sm">
+<li>• JVM, JRE, JDK architecture</li>
+<li>• Bytecode and platform independence</li>
+<li>• Development environment setup</li>
+<li>• IDE selection and configuration</li>
+<li>• Build tools and project structure</li>
+<li>• Memory management concepts</li>
+<li>• Performance monitoring tools</li>
+</ul>
+</div>
+
+<div class="bg-green-50 p-6 rounded-lg">
+<h3 class="font-bold text-lg mb-4">🎯 Ready for Next Lecture</h3>
+<ul class="text-left space-y-2 text-sm">
+<li>• Java development environment working</li>
+<li>• Understanding of compilation process</li>
+<li>• Knowledge of memory management</li>
+<li>• Familiarity with development tools</li>
+<li>• Project structure best practices</li>
+<li>• Basic troubleshooting skills</li>
+<li>• Performance monitoring awareness</li>
+</ul>
+</div>
+
+</div>
+
+<div class="mt-8 text-2xl font-bold text-purple-600">
+Next: Java Program Structure and Comments! 📝
+</div>
+
 <div class="mt-8">
 <span class="px-4 py-2 bg-blue-500 text-white rounded-lg">
 Great job setting up Java! 👏
