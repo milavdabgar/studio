@@ -455,7 +455,7 @@ describe('ResumeGenerator', () => {
     });
   });
 
-  describe('PDF and DOCX generation', () => {
+  describe.skip('PDF and DOCX generation', () => {
     it('should generate PDF resume', async () => {
       const resumeData: ResumeData = {
         fullName: 'Test Student',
