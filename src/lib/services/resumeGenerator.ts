@@ -3120,19 +3120,17 @@ export class ResumeGenerator {
         }
         
         /* Header Section */
-        .header {
-            text-align: center;
-            margin-bottom: 20pt;
-            padding: 20pt;
-            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-            color: white;
-            page-break-inside: avoid;
-            page-break-after: avoid;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-        
-        .photo-section {
+            .header {
+                text-align: center;
+                margin-bottom: 20pt;
+                padding: 20pt;
+                background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+                color: white;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }        .photo-section {
             margin-bottom: 16pt;
         }
         
@@ -3324,6 +3322,38 @@ export class ResumeGenerator {
             print-color-adjust: exact;
         }
         
+        /* Timeline Layout */
+        .timeline {
+            position: relative;
+            padding-left: 20pt;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20pt;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -25pt;
+            top: 5pt;
+            width: 8pt;
+            height: 8pt;
+            background: #0ea5e9;
+            border-radius: 50%;
+            border: 2pt solid white;
+            box-shadow: 0 0 0 2pt #0ea5e9;
+        }
+        
+        .timeline-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 12pt;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 4pt;
+        }
+        
         .item-title {
             font-family: 'Inter', sans-serif;
             font-size: 12pt;
@@ -3436,12 +3466,28 @@ export class ResumeGenerator {
         }
         
         /* Semester Results */
-        .semester-item {
+        .semester-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300pt, 1fr));
+            gap: 16pt;
+            margin-bottom: 24pt;
+        }
+        
+        .semester-item, .semester-card {
             margin-bottom: 16pt;
             border: 1pt solid #bdc3c7;
             border-radius: 6pt;
             overflow: hidden;
             page-break-inside: avoid;
+            transition: transform 0.2s;
+        }
+        
+        .semester-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .semester-card .semester-item:hover {
+            transform: translateY(-2px);
         }
         
         .semester-header {
@@ -3585,7 +3631,7 @@ export class ResumeGenerator {
                 }
             </div>
             <h1>${resumeData.fullName}</h1>
-            <div class="header-subtitle">Curriculum Vitae</div>
+            <div class="header-subtitle">CURRICULUM VITAE</div>
             <div class="contact-info">
                 <div class="contact-item">
                     <strong>Email:</strong> ${resumeData.email}
@@ -3698,20 +3744,24 @@ export class ResumeGenerator {
 
         <!-- Academic Performance -->
         ${resumeData.overallCPI || resumeData.earnedCredits || resumeData.totalCredits ? `
-        <div class="academic-performance">
-            <div class="performance-stats">
-                ${resumeData.overallCPI ? `
-                <div class="stat-item">
-                    <span class="stat-value">${resumeData.overallCPI}</span>
-                    <span class="stat-label">Overall CPI</span>
+        <div class="academic-stats">
+            <div class="academic-performance">
+                <div class="stats-grid">
+                    <div class="performance-stats">
+                        ${resumeData.overallCPI ? `
+                        <div class="stat-item">
+                            <span class="stat-value">${resumeData.overallCPI}</span>
+                            <span class="stat-label">Overall CPI</span>
+                        </div>
+                        ` : ''}
+                        ${resumeData.earnedCredits && resumeData.totalCredits ? `
+                        <div class="stat-item">
+                            <span class="stat-value">${resumeData.earnedCredits}/${resumeData.totalCredits}</span>
+                            <span class="stat-label">Credits Earned</span>
+                        </div>
+                        ` : ''}
+                    </div>
                 </div>
-                ` : ''}
-                ${resumeData.earnedCredits && resumeData.totalCredits ? `
-                <div class="stat-item">
-                    <span class="stat-value">${resumeData.earnedCredits}/${resumeData.totalCredits}</span>
-                    <span class="stat-label">Credits Earned</span>
-                </div>
-                ` : ''}
             </div>
         </div>
         ` : ''}
@@ -3736,25 +3786,29 @@ export class ResumeGenerator {
         <!-- Semester Results -->
         ${resumeData.semesterResults && resumeData.semesterResults.length > 0 ? `
         <div class="section">
-            <h2 class="section-title">Semester Results</h2>
-            ${resumeData.semesterResults.map(semester => `
-            <div class="semester-item">
-                <div class="semester-header">
-                    <span class="semester-title">Semester ${semester.semester}</span>
-                    <span class="semester-sgpa">SGPA: ${semester.sgpa}</span>
-                </div>
-                ${semester.subjects && semester.subjects.length > 0 ? `
-                <div class="subjects-grid">
-                    ${semester.subjects.map(subject => `
-                    <div class="subject-item">
-                        <span class="subject-name">${subject.name}</span>
-                        <span class="subject-grade">${subject.grade}</span>
+            <h2 class="section-title">Academic Performance</h2>
+            <div class="semester-grid">
+                ${resumeData.semesterResults.map(semester => `
+                <div class="semester-card" style="transition: transform 0.2s;">
+                    <div class="semester-item">
+                        <div class="semester-header">
+                            <span class="semester-title">Semester ${semester.semester}</span>
+                            <span class="semester-sgpa">SGPA: ${semester.sgpa}</span>
+                        </div>
+                        ${semester.subjects && semester.subjects.length > 0 ? `
+                        <div class="subjects-grid">
+                            ${semester.subjects.map(subject => `
+                            <div class="subject-item">
+                                <span class="subject-name">${subject.name}</span>
+                                <span class="subject-grade">${subject.grade}</span>
+                            </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
                     </div>
-                    `).join('')}
                 </div>
-                ` : ''}
+                `).join('')}
             </div>
-            `).join('')}
         </div>
         ` : ''}
 
@@ -3762,15 +3816,19 @@ export class ResumeGenerator {
         ${resumeData.experience && resumeData.experience.length > 0 ? `
         <div class="section">
             <h2 class="section-title">Professional Experience</h2>
-            ${resumeData.experience.map(exp => `
-            <div class="experience-item">
-                <div class="item-title">${exp.position}</div>
-                <div class="item-details">
-                    <strong>${exp.company}</strong> | ${exp.startDate} - ${exp.endDate || 'Present'}
+            <div class="timeline">
+                ${resumeData.experience.map(exp => `
+                <div class="timeline-item">
+                    <div class="experience-item">
+                        <div class="timeline-title">${exp.position}</div>
+                        <div class="item-details">
+                            <strong>${exp.company}</strong> | ${exp.startDate} - ${exp.endDate || 'Present'}
+                        </div>
+                        ${exp.description ? `<div class="item-description">${exp.description}</div>` : ''}
+                    </div>
                 </div>
-                ${exp.description ? `<div class="item-description">${exp.description}</div>` : ''}
+                `).join('')}
             </div>
-            `).join('')}
         </div>
         ` : ''}
 
@@ -3795,16 +3853,20 @@ export class ResumeGenerator {
         ` : ''}
 
         <!-- Skills -->
-        ${resumeData.skills && Object.keys(resumeData.skills).length > 0 ? `
+        ${resumeData.skills && resumeData.skills.length > 0 ? `
         <div class="section">
-            <h2 class="section-title">Skills & Competencies</h2>
+            <h2 class="section-title">Technical Expertise</h2>
             <div class="skills-section">
-                <div class="skills-grid">
-                    ${Object.entries(resumeData.skills).map(([category, skills]) => `
+                <div class="skills-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150pt, 1fr)); gap: 12pt; flex-wrap: wrap;">
+                    ${Object.entries(resumeData.skills.reduce((acc, skill) => {
+                        if (!acc[skill.category]) acc[skill.category] = [];
+                        acc[skill.category].push(skill.name);
+                        return acc;
+                    }, {} as Record<string, string[]>)).map(([category, skills]) => `
                     <div class="skill-category">
                         <h4>${category}</h4>
                         <div class="skill-tags">
-                            ${Array.isArray(skills) ? skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('') : `<span class="skill-tag">${skills}</span>`}
+                            ${Array.isArray(skills) ? skills.map(skill => `<span class="skill-item"><span class="skill-tag">${skill}</span></span>`).join('') : `<span class="skill-item"><span class="skill-tag">${skills}</span></span>`}
                         </div>
                     </div>
                     `).join('')}

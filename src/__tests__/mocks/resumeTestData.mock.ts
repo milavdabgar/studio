@@ -402,6 +402,19 @@ export const mockResumeData: ResumeData = {
     }
   ],
   
+  // Education History (for CV template)
+  educationHistory: [
+    {
+      institution: 'ABC Higher Secondary School',
+      degree: 'Higher Secondary Certificate',
+      fieldOfStudy: 'Science',
+      startDate: '2018-06-01',
+      endDate: '2020-05-31',
+      grade: '85%',
+      description: 'Completed with distinction in Mathematics and Physics'
+    }
+  ],
+  
   // Achievements
   achievements: [
     {
