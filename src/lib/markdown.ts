@@ -11,6 +11,7 @@ import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
 import { PostData, PostPreview } from './types';
 import { processMarkdownWithShortcodes } from './shortcodes';
+import { detectContentType } from './content-types';
 
 const contentDirectory = path.join(process.cwd(), 'content');
 export const availableLanguages = ['en', 'gu'];
@@ -254,7 +255,11 @@ export async function getPostData({
     return null;
   }
 
-  const contentHtml = processedContent.toString();
+  let contentHtml = processedContent.toString();
+  
+  // Detect content type
+  const contentType = detectContentType(filePath);
+  console.log(`[getPostData DEBUG] Content type detected for ${filePath}: ${contentType}`);
   
   // Extract better excerpt
   const excerpt = matterResult.data.excerpt || extractExcerpt(contentToProcess);
@@ -280,6 +285,8 @@ export async function getPostData({
     slugParts: internalSlugParts,
     lang: resolvedLang, 
     contentHtml,
+    contentType, // Add content type
+    rawContent: matterResult.content, // Add raw content for Slidev processing
     title: matterResult.data.title || path.basename(filePath, path.extname(filePath)).replace(/\.(en|gu)$/, '').replace(/^_index$|^index$/, internalSlugParts[internalSlugParts.length -1] || 'Section Index') || 'Untitled Post',
     date: normalizedDate,
     excerpt,

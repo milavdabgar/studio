@@ -1,3 +1,6 @@
+/* Import Slidev styles */
+@import '../styles/slidev.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

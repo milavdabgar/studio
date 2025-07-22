@@ -1,5 +1,7 @@
 // src/lib/types.ts
 
+import type { ContentType } from './content-types';
+
 export interface PostData {
   id: string;
   slugParts: string[];
@@ -7,6 +9,8 @@ export interface PostData {
   title: string;
   date: string;
   contentHtml: string;
+  contentType?: ContentType; // Add content type
+  rawContent?: string; // Add raw content for Slidev processing
   excerpt?: string;
   tags?: string[];
   categories?: string[];

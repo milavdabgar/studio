@@ -476,7 +476,11 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
                   </CardHeader>
                   <CardContent className="p-4 sm:p-6 lg:p-8">
                     <div className="prose prose-sm sm:prose-base lg:prose-lg dark:prose-invert max-w-none">
-                      <PostRenderer contentHtml={postData.contentHtml} />
+                      <PostRenderer 
+                        contentHtml={postData.contentHtml} 
+                        contentType={postData.contentType}
+                        rawContent={postData.rawContent}
+                      />
                     </div>
                   </CardContent>
                 </Card>

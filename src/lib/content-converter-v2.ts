@@ -170,6 +170,162 @@ export class ContentConverterV2 {
         return processedContent;
     }
 
+    /**
+     * Convert Slidev content to various formats
+     */
+    async convertSlidev(slidevContent: string, format: string, options: ConversionOptions = {}): Promise<Buffer | string> {
+        const { parseSlidevContent } = await import('./slidev-parser');
+        const presentation = parseSlidevContent(slidevContent);
+        
+        switch (format) {
+            case 'md':
+                return slidevContent;
+            
+            case 'html':
+                return await this.convertSlidevToHtml(presentation, options);
+            
+            case 'pdf':
+                return await this.convertSlidevToPdf(presentation, options);
+            
+            case 'pptx':
+                return await this.convertSlidevToPptx(presentation, options);
+            
+            case 'txt':
+                return this.convertSlidevToPlainText(presentation, options);
+            
+            default:
+                // For other formats, convert to plain markdown first
+                const markdownContent = this.convertSlidevToMarkdown(presentation);
+                const { data: frontmatter, content } = matter(markdownContent);
+                return await this.convert(markdownContent, format, options);
+        }
+    }
+
+    /**
+     * Convert Slidev presentation to HTML
+     */
+    private async convertSlidevToHtml(presentation: any, options: ConversionOptions): Promise<string> {
+        const slides = presentation.slides.map((slide: any, index: number) => {
+            return `
+                <section class="slide slide-${index + 1}" data-layout="${slide.layout || 'default'}">
+                    <div class="slide-content">
+                        ${marked(slide.content)}
+                    </div>
+                    <div class="slide-footer">
+                        <span class="slide-number">${index + 1} / ${presentation.totalSlides}</span>
+                    </div>
+                </section>
+            `;
+        }).join('\n');
+
+        const title = presentation.title || options.title || 'Slidev Presentation';
+        const theme = presentation.theme || 'default';
+
+        return `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>${title}</title>
+                <style>
+                    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
+                    .slide { width: 100vw; height: 100vh; padding: 2rem; box-sizing: border-box; display: flex; flex-direction: column; page-break-after: always; }
+                    .slide-content { flex: 1; overflow-y: auto; }
+                    .slide-footer { padding: 1rem 0; text-align: right; font-size: 0.875rem; color: #666; }
+                    .slide[data-layout="center"] .slide-content { display: flex; align-items: center; justify-content: center; text-align: center; }
+                    .slide[data-layout="cover"] { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+                    .slide[data-layout="two-cols"] .slide-content { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+                    h1 { font-size: 2.5rem; margin: 0 0 1rem 0; }
+                    h2 { font-size: 2rem; margin: 0 0 1rem 0; }
+                    h3 { font-size: 1.5rem; margin: 0 0 0.75rem 0; }
+                    @media print {
+                        .slide { page-break-after: always; }
+                    }
+                </style>
+            </head>
+            <body>
+                ${slides}
+            </body>
+            </html>
+        `;
+    }
+
+    /**
+     * Convert Slidev presentation to PDF
+     */
+    private async convertSlidevToPdf(presentation: any, options: ConversionOptions): Promise<Buffer> {
+        const html = await this.convertSlidevToHtml(presentation, options);
+        
+        // Use Puppeteer to generate PDF with slide-friendly settings
+        if (puppeteer) {
+            const browser = await puppeteer.launch({
+                headless: true,
+                args: ['--no-sandbox', '--disable-setuid-sandbox']
+            });
+
+            try {
+                const page = await browser.newPage();
+                await page.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 1 });
+                await page.setContent(html, { waitUntil: 'networkidle0', timeout: 30000 });
+
+                return await page.pdf({
+                    format: 'A4',
+                    landscape: true,
+                    printBackground: true,
+                    margin: { top: '0', right: '0', bottom: '0', left: '0' }
+                });
+            } finally {
+                await browser.close();
+            }
+        } else {
+            throw new Error('PDF generation requires Puppeteer for Slidev presentations');
+        }
+    }
+
+    /**
+     * Convert Slidev presentation to PowerPoint (basic version)
+     */
+    private async convertSlidevToPptx(presentation: any, options: ConversionOptions): Promise<Buffer> {
+        // Convert to markdown first, then use existing PPTX conversion
+        const markdownContent = this.convertSlidevToMarkdown(presentation);
+        const { data: frontmatter, content } = matter(markdownContent);
+        return await this.convertToPptx(content, frontmatter, options);
+    }
+
+    /**
+     * Convert Slidev presentation to plain text
+     */
+    private convertSlidevToPlainText(presentation: any, options: ConversionOptions): string {
+        const title = presentation.title || 'Slidev Presentation';
+        const slides = presentation.slides.map((slide: any, index: number) => {
+            const content = slide.content
+                .replace(/#+\s/g, '') // Remove markdown headers
+                .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
+                .replace(/\*(.*?)\*/g, '$1') // Remove italic
+                .replace(/`(.*?)`/g, '$1') // Remove code
+                .replace(/\n+/g, '\n') // Normalize newlines
+                .trim();
+            
+            return `SLIDE ${index + 1}:\n${content}\n${'='.repeat(50)}`;
+        }).join('\n\n');
+
+        return `${title}\n${'='.repeat(title.length)}\n\n${slides}`;
+    }
+
+    /**
+     * Convert Slidev presentation to plain markdown
+     */
+    private convertSlidevToMarkdown(presentation: any): string {
+        const frontmatterString = Object.keys(presentation.frontmatter).length > 0 
+            ? `---\n${Object.entries(presentation.frontmatter).map(([key, value]) => `${key}: ${value}`).join('\n')}\n---\n\n`
+            : '';
+        
+        const slidesMarkdown = presentation.slides.map((slide: any) => slide.content).join('\n\n---\n\n');
+        
+        return frontmatterString + slidesMarkdown;
+    }
+
     async convert(markdownContent: string, format: string, options: ConversionOptions = {}): Promise<Buffer | string> {
         const { data: frontmatter, content } = matter(markdownContent);
         

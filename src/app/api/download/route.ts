@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ContentConverterV2 } from '@/lib/content-converter-v2';
+import { detectContentType } from '@/lib/content-types';
 import fs from 'fs';
 import path from 'path';
 
@@ -57,8 +58,16 @@ export async function POST(request: NextRequest) {
       contentPath: contentPath || (slug ? `blog/${slug}.md` : undefined)
     };
     
-    // Convert content based on format
-    const result = await converter.convert(markdownContent, format, enhancedOptions);
+    // Detect content type
+    const detectedContentType = detectContentType(filePath);
+    
+    // Convert content based on format and content type
+    let result: Buffer | string;
+    if (detectedContentType === 'slidev') {
+      result = await converter.convertSlidev(markdownContent, format, enhancedOptions);
+    } else {
+      result = await converter.convert(markdownContent, format, enhancedOptions);
+    }
     
     // Get the appropriate filename and content type
     const baseFilename = slug || path.basename(contentPath, '.md');

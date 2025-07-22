@@ -1,11 +1,11 @@
 ---
 theme: default
-background: https://source.unsplash.com/1920x1080/?antivirus,protection,shield,security
+background: https://source.unsplash.com/1920x1080/?antivirus,protection,security,shield
 title: Virus Protection Mechanisms
 info: |
   ## Cyber Security (4353204)
   Unit II: Account & Data Security
-  Lecture 13: Antivirus Systems and Protection Mechanisms
+  Lecture 13: Virus Protection Mechanisms
 class: text-center
 highlighter: shiki
 drawings:
@@ -15,8 +15,8 @@ mdc: true
 ---
 
 # Virus Protection Mechanisms
-## Unit II: Account & Data Security
-### Lecture 13: Building Effective Antivirus and Anti-malware Systems
+## Unit II: Account & Data Security  
+### Lecture 13: Building Robust Defense Systems
 
 <div class="absolute bottom-5 left-5 text-xs text-gray-500">
 Course: Cyber Security (4353204) | Semester V | Diploma ICT | Author: Milav Dabgar
@@ -26,7 +26,7 @@ Course: Cyber Security (4353204) | Semester V | Diploma ICT | Author: Milav Dabg
 layout: default
 ---
 
-# Introduction to Antivirus Systems
+# Antivirus Fundamentals
 
 <div class="grid grid-cols-2 gap-6">
 
@@ -37,57 +37,65 @@ layout: default
 **Antivirus software** is a program designed to detect, prevent, and remove malicious software from computer systems.
 
 ### 🎯 Core Functions
-- **Detection** - Identify malicious code
-- **Prevention** - Block malware execution
-- **Removal** - Clean infected systems
-- **Monitoring** - Real-time protection
-- **Recovery** - Restore damaged files
+- **Real-time scanning** - Continuous monitoring
+- **On-demand scanning** - Manual/scheduled scans
+- **Automatic updates** - Latest threat definitions
+- **Quarantine management** - Isolate suspicious files
+- **System restoration** - Repair infected systems
 
-### 📊 Market Overview (2024)
-- **Global market:** $4.5 billion
-- **Enterprise segment:** 65% of market
-- **Detection rate:** 99.7% (top products)
-- **False positive rate:** <0.1%
-- **Performance impact:** <5% system resources
+### 📊 Protection Layers
+```mermaid
+graph TB
+    A[File System Monitor] --> B[Email Protection]
+    B --> C[Web Protection]
+    C --> D[Network Shield]
+    D --> E[Behavioral Analysis]
+    E --> F[Cloud Intelligence]
+    
+    style A fill:#e3f2fd
+    style C fill:#f3e5f5
+    style E fill:#e8f5e8
+```
 
 </div>
 
 <div>
 
-## 🏗️ Antivirus Architecture
+## 🔍 Detection Methods Evolution
 
-### 📋 System Components
-```mermaid
-graph TB
-    A[Antivirus Engine] --> B[Signature Database]
-    A --> C[Heuristic Engine]
-    A --> D[Behavioral Monitor]
-    A --> E[Cloud Intelligence]
-    
-    F[File Scanner] --> A
-    G[Real-time Monitor] --> A
-    H[Email Scanner] --> A
-    I[Web Protection] --> A
-    
-    style A fill:#e3f2fd
-    style B fill:#f3e5f5
-    style C fill:#e8f5e8
+### 📈 Generation Timeline
+```yaml
+First Generation (1987-1995):
+  - Signature-based only
+  - Static pattern matching
+  - Simple string searches
+  - Limited effectiveness
+  
+Second Generation (1995-2005):
+  - Heuristic analysis added
+  - Behavioral monitoring
+  - Generic detection rules
+  - Better unknown threat handling
+  
+Third Generation (2005-2015):
+  - Cloud-based intelligence
+  - Real-time reputation
+  - Machine learning basics
+  - Proactive protection
+  
+Fourth Generation (2015-Present):
+  - AI/ML integration
+  - Advanced behavioral analysis
+  - Zero-day protection
+  - Threat hunting capabilities
 ```
 
-### 🔧 Protection Layers
-1. **File System Monitor** - Real-time scanning
-2. **Network Monitor** - Traffic inspection
-3. **Email Gateway** - Email protection
-4. **Web Filter** - URL filtering
-5. **Application Control** - Program execution
-6. **Device Control** - USB/external devices
-
-### 📈 Evolution Timeline
-- **1987:** First commercial antivirus
-- **1990s:** Signature-based detection
-- **2000s:** Heuristic analysis
-- **2010s:** Cloud-based protection
-- **2020s:** AI-powered detection
+### 🎯 Modern Requirements
+- **Zero-day protection**
+- **Minimal system impact**
+- **Cloud integration**
+- **Multi-platform support**
+- **Automated response**
 
 </div>
 
@@ -101,136 +109,264 @@ Course: Cyber Security (4353204) | Unit II | Lecture 13 | Author: Milav Dabgar
 layout: default
 ---
 
-# Detection Mechanisms
+# Signature-Based Detection
 
 <div class="grid grid-cols-2 gap-6">
 
 <div>
 
-## 🔍 Signature-Based Detection
+## 🔍 How Signature Detection Works
 
-### 🧬 How Signatures Work
-- **Unique patterns** identify malware
-- **Database matching** against known threats
-- **Fast and accurate** for known malware
-- **Regular updates** required
+### 📋 Process Overview
+1. **Malware analysis** - Extract unique patterns
+2. **Signature creation** - Define detection rules
+3. **Database update** - Distribute to clients
+4. **File scanning** - Compare against signatures
+5. **Threat identification** - Match found patterns
 
-### 📊 Signature Creation Process
-```mermaid
-graph LR
-    A[New Malware] --> B[Analysis Lab]
-    B --> C[Pattern Extraction]
-    C --> D[Signature Creation]
-    D --> E[Testing/Validation]
-    E --> F[Database Update]
-    F --> G[Distribution]
-    
-    style B fill:#e3f2fd
-    style D fill:#f3e5f5
+### 💻 Signature Types
+```yaml
+Hash-based Signatures:
+  - MD5, SHA-1, SHA-256 hashes
+  - Exact file matching
+  - Fast comparison
+  - Easily evaded by modification
+  
+String-based Signatures:
+  - Text patterns in malware
+  - Hexadecimal byte sequences
+  - Regular expressions
+  - More flexible than hashes
+  
+Structural Signatures:
+  - File structure patterns
+  - Import table analysis
+  - Section characteristics
+  - PE header anomalies
 ```
 
-### 💻 Signature Example
-```python
-# Simple signature matching
-class SignatureEngine:
-    def __init__(self):
-        self.signatures = {
-            'virus_a': {
-                'pattern': b'\x4d\x5a\x90\x00\x03\x00\x00\x00',
-                'offset': 0,
-                'name': 'Win32.Virus.A'
-            },
-            'trojan_b': {
-                'pattern': b'\x68\x00\x40\x00\x00\xff\xd0',
-                'offset': -1,  # anywhere in file
-                'name': 'Win32.Trojan.B'
-            }
-        }
-    
-    def scan_file(self, file_path):
-        with open(file_path, 'rb') as f:
-            data = f.read()
+### 🔧 YARA Rules Example
+```yara
+rule Trojan_Banker_Generic
+{
+    meta:
+        author = "Security Analyst"
+        date = "2024-01-01"
+        description = "Generic banking trojan"
         
-        detections = []
-        for sig_id, sig_info in self.signatures.items():
-            if self._match_signature(data, sig_info):
-                detections.append(sig_info['name'])
+    strings:
+        $a = "GetWindowText" ascii
+        $b = "keylog" ascii nocase
+        $c = { 48 89 5C 24 08 48 89 74 24 10 }
+        $d = /https:\/\/[a-z0-9]+\.onion\//
         
-        return detections
-    
-    def _match_signature(self, data, sig_info):
-        pattern = sig_info['pattern']
-        offset = sig_info['offset']
-        
-        if offset >= 0:
-            # Fixed offset
-            if len(data) > offset + len(pattern):
-                return data[offset:offset+len(pattern)] == pattern
-        else:
-            # Search anywhere
-            return pattern in data
-        
-        return False
+    condition:
+        2 of them and filesize < 5MB
+}
 ```
 
 </div>
+
+<div>
+
+## ⚡ Advantages and Limitations
+
+### ✅ Signature Detection Advantages
+- **High accuracy** for known threats
+- **Fast scanning** performance
+- **Low false positive** rate
+- **Minimal resource** usage
+- **Well-established** technology
+
+### ❌ Signature Detection Limitations
+- **Zero-day threats** undetected
+- **Polymorphic malware** evasion
+- **Packed/encrypted** malware bypass
+- **Large signature** database size
+- **Frequent updates** required
+
+### 🔄 Evasion Techniques
+```python
+# Example: Simple polymorphic technique
+import random
+import string
+
+def generate_variant(malware_code):
+    # Add random junk code
+    junk = ''.join(random.choices(string.ascii_letters, k=100))
+    
+    # Insert NOPs (No Operation instructions)
+    nops = 'NOP ' * random.randint(10, 50)
+    
+    # Change variable names
+    old_vars = ['temp', 'data', 'buffer']
+    new_vars = [''.join(random.choices(string.ascii_letters, k=8)) 
+                for _ in old_vars]
+    
+    # Return modified code
+    return modify_code(malware_code, junk, nops, old_vars, new_vars)
+```
+
+### 📊 Signature Update Frequency
+- **Critical threats** - Within hours
+- **High-priority** - Daily updates
+- **Regular threats** - Weekly updates
+- **Comprehensive** - Monthly releases
+
+</div>
+
+</div>
+
+<div class="absolute bottom-5 left-5 text-xs text-gray-500">
+Course: Cyber Security (4353204) | Unit II | Lecture 13 | Author: Milav Dabgar
+</div>
+
+---
+layout: default
+---
+
+# Heuristic and Behavioral Analysis
+
+<div class="grid grid-cols-2 gap-6">
 
 <div>
 
 ## 🧠 Heuristic Analysis
 
-### 🎯 Heuristic Principles
-- **Behavioral patterns** analysis
-- **Suspicious characteristics** detection
-- **Statistical analysis** of code
-- **Unknown threat** detection
+### 🔍 Static Heuristics
+**Analyze file** structure and code without execution.
 
-### 📋 Heuristic Rules
+### 📊 Static Analysis Techniques
 ```yaml
-Suspicious File Characteristics:
-  - High entropy (>7.5)
-  - Packed/compressed executable
-  - No digital signature
-  - Hidden file attributes
-  - Unusual file locations
-
-Suspicious Code Patterns:
-  - Self-modifying code
-  - API call sequences
-  - Encryption/decryption loops
+Code Analysis:
+  - Suspicious API imports
+  - Unusual file structure
+  - Encrypted/packed sections
   - Anti-debugging techniques
-  - Registry manipulation
-
-Behavioral Indicators:
-  - Mass file modifications
-  - Network connections to unknown IPs
-  - Process injection attempts
-  - System file modifications
-  - Privilege escalation attempts
+  
+Entropy Analysis:
+  - File randomness measurement
+  - Packed/encrypted detection
+  - Normal range: 1.0-7.0
+  - Suspicious: 7.5-8.0
+  
+Import Analysis:
+  - Dangerous API calls
+  - CreateProcess, WriteFile
+  - Registry modification
+  - Network communication
+  
+Pattern Recognition:
+  - Known malware families
+  - Compiler signatures
+  - Development patterns
+  - Obfuscation techniques
 ```
 
-### 🔬 Heuristic Scoring
+### 💻 Entropy Calculation
 ```python
-class HeuristicEngine:
-    def __init__(self):
-        self.rules = {
-            'high_entropy': {'weight': 30, 'threshold': 7.5},
-            'packed_executable': {'weight': 25, 'threshold': None},
-            'no_signature': {'weight': 20, 'threshold': None},
-            'suspicious_imports': {'weight': 35, 'threshold': 5},
-            'obfuscated_strings': {'weight': 40, 'threshold': 10}
-        }
-        self.malware_threshold = 70
+import math
+from collections import Counter
+
+def calculate_entropy(data):
+    if not data:
+        return 0
     
-    def analyze_file(self, file_analysis):
-        total_score = 0
+    # Count byte frequencies
+    byte_counts = Counter(data)
+    data_length = len(data)
+    
+    # Calculate entropy
+    entropy = 0
+    for count in byte_counts.values():
+        probability = count / data_length
+        entropy -= probability * math.log2(probability)
+    
+    return entropy
+
+# Example usage
+with open('suspicious.exe', 'rb') as f:
+    file_data = f.read()
+    entropy = calculate_entropy(file_data)
+    
+    if entropy > 7.5:
+        print("High entropy - possible packing/encryption")
+```
+
+</div>
+
+<div>
+
+## 🏃 Dynamic Behavioral Analysis
+
+### ⚡ Runtime Monitoring
+**Monitor system** during malware execution to detect malicious behavior.
+
+### 📋 Behavioral Indicators
+```yaml
+Process Behavior:
+  - Unusual process creation
+  - Code injection attempts
+  - Memory manipulation
+  - Privilege escalation
+  - DLL hijacking
+  
+File System Activity:
+  - Mass file encryption
+  - Hidden file creation
+  - System file modification
+  - Autostart registry entries
+  - Shadow copy deletion
+  
+Network Behavior:
+  - C2 server communication
+  - DNS tunneling
+  - Data exfiltration
+  - Port scanning
+  - Protocol anomalies
+  
+System Modifications:
+  - Security software disabling
+  - Firewall rule changes
+  - Service installations
+  - Boot sector modifications
+  - System file replacements
+```
+
+### 🔧 Behavioral Analysis Engine
+```python
+class BehaviorAnalyzer:
+    def __init__(self):
+        self.risk_score = 0
+        self.detected_behaviors = []
+    
+    def analyze_process_creation(self, parent, child):
+        suspicious_patterns = [
+            ('cmd.exe', 'powershell.exe'),
+            ('winword.exe', 'cmd.exe'),
+            ('excel.exe', 'wscript.exe')
+        ]
         
-        for rule, config in self.rules.items():
-            if self._evaluate_rule(rule, file_analysis, config):
-                total_score += config['weight']
+        if (parent, child) in suspicious_patterns:
+            self.risk_score += 30
+            self.detected_behaviors.append("Suspicious process chain")
+    
+    def analyze_file_activity(self, file_operations):
+        encryption_extensions = ['.locked', '.encrypted', '.crypto']
+        mass_file_changes = len([op for op in file_operations 
+                                if op.type == 'modify']) > 100
         
-        verdict = 'MALWARE' if total_score >= self.malware_threshold else 'CLEAN'
-        return {'verdict': verdict, 'score': total_score}
+        if mass_file_changes:
+            self.risk_score += 50
+            self.detected_behaviors.append("Mass file modification")
+    
+    def get_verdict(self):
+        if self.risk_score > 70:
+            return "MALWARE"
+        elif self.risk_score > 40:
+            return "SUSPICIOUS"
+        else:
+            return "CLEAN"
 ```
 
 </div>
@@ -245,144 +381,141 @@ Course: Cyber Security (4353204) | Unit II | Lecture 13 | Author: Milav Dabgar
 layout: default
 ---
 
-# Behavioral and Cloud-Based Protection
+# Cloud-Based Protection
 
 <div class="grid grid-cols-2 gap-6">
 
 <div>
 
-## 🎭 Behavioral Analysis
+## ☁️ Cloud Intelligence
 
-### 🔍 Real-Time Monitoring
-- **System API calls** monitoring
-- **File system activity** tracking
-- **Network communication** analysis
-- **Registry modifications** detection
-- **Process behavior** evaluation
-
-### 📊 Behavioral Patterns
-```python
-class BehavioralMonitor:
-    def __init__(self):
-        self.suspicious_patterns = {
-            'mass_encryption': {
-                'description': 'Rapid file encryption (ransomware)',
-                'indicators': [
-                    'high_file_write_rate',
-                    'file_extension_changes',
-                    'crypto_api_usage'
-                ],
-                'threshold': 100  # files per minute
-            },
-            'data_exfiltration': {
-                'description': 'Large data transmission',
-                'indicators': [
-                    'high_network_upload',
-                    'file_archive_creation',
-                    'encrypted_communication'
-                ],
-                'threshold': 50  # MB per hour
-            },
-            'privilege_escalation': {
-                'description': 'Attempt to gain admin rights',
-                'indicators': [
-                    'token_manipulation',
-                    'service_installation',
-                    'system_file_modification'
-                ],
-                'threshold': 1  # single attempt
-            }
-        }
-    
-    def evaluate_process(self, process_activity):
-        threats = []
-        
-        for pattern_name, pattern_config in self.suspicious_patterns.items():
-            if self._matches_pattern(process_activity, pattern_config):
-                threats.append({
-                    'type': pattern_name,
-                    'description': pattern_config['description'],
-                    'severity': self._calculate_severity(process_activity, pattern_config)
-                })
-        
-        return threats
-```
-
-</div>
-
-<div>
-
-## ☁️ Cloud-Based Protection
-
-### 🌐 Cloud Intelligence Benefits
-- **Real-time updates** - Instant protection
-- **Global threat** visibility
-- **Machine learning** models
-- **Reduced local** resources
-- **Collective intelligence** sharing
-
-### 🔧 Cloud Architecture
+### 🌐 Cloud AV Architecture
 ```mermaid
 graph TB
-    A[Client Endpoint] --> B[Cloud Gateway]
-    B --> C[Reputation Service]
-    B --> D[Sandbox Analysis]
-    B --> E[ML Classification]
-    B --> F[Threat Intelligence]
+    A[Client Endpoint] --> B[Local Agent]
+    B --> C[Cloud API]
+    C --> D[Threat Intelligence]
+    C --> E[Machine Learning]
+    C --> F[Reputation Database]
+    C --> G[Behavioral Analytics]
     
-    G[Global Sensors] --> C
-    H[Security Labs] --> F
-    I[Partner Feeds] --> F
+    H[Global Sensors] --> D
+    I[Research Labs] --> E
+    J[User Reports] --> F
     
-    style B fill:#e3f2fd
-    style C fill:#f3e5f5
+    style C fill:#e3f2fd
+    style D fill:#f3e5f5
     style E fill:#e8f5e8
 ```
 
-### 📡 Cloud Integration
-```python
-import requests
-import hashlib
+### 🔍 Cloud Benefits
+- **Real-time** threat intelligence
+- **Collective defense** - Global visibility
+- **Lightweight client** - Minimal local processing
+- **Instant updates** - No signature downloads
+- **Advanced analytics** - ML/AI processing power
 
-class CloudProtection:
-    def __init__(self, api_key, cloud_endpoint):
-        self.api_key = api_key
-        self.endpoint = cloud_endpoint
-    
-    def check_file_reputation(self, file_path):
-        # Calculate file hash
-        with open(file_path, 'rb') as f:
-            file_hash = hashlib.sha256(f.read()).hexdigest()
-        
-        # Query cloud reputation
-        response = self._query_reputation(file_hash)
-        return self._parse_reputation_response(response)
-    
-    def _query_reputation(self, file_hash):
-        headers = {'Authorization': f'Bearer {self.api_key}'}
-        params = {'hash': file_hash, 'hash_type': 'sha256'}
-        
-        response = requests.get(
-            f'{self.endpoint}/reputation',
-            headers=headers,
-            params=params
-        )
-        
-        return response.json()
-    
-    def _parse_reputation_response(self, response):
-        if response['status'] == 'success':
-            reputation = response['data']['reputation']
-            confidence = response['data']['confidence']
-            
-            return {
-                'verdict': 'MALWARE' if reputation < 30 else 'CLEAN',
-                'reputation_score': reputation,
-                'confidence': confidence
-            }
-        
-        return {'verdict': 'UNKNOWN', 'error': response.get('error')}
+### 📊 Reputation Systems
+```yaml
+File Reputation:
+  - Global file prevalence
+  - First seen timestamp
+  - Digital signatures
+  - Certification authority
+  - Download sources
+  
+URL Reputation:
+  - Website categorization
+  - Malware hosting history
+  - Phishing attempts
+  - Suspicious redirects
+  - Geographic anomalies
+  
+IP Reputation:
+  - Botnet participation
+  - C2 server hosting
+  - Spam source
+  - Attack participation
+  - Geographic location
 ```
+
+</div>
+
+<div>
+
+## 🤖 Machine Learning Integration
+
+### 🧠 ML-Powered Detection
+**Artificial intelligence** to identify unknown and evolving threats.
+
+### 📊 ML Model Types
+```yaml
+Supervised Learning:
+  - Known malware training
+  - Feature extraction
+  - Classification models
+  - High accuracy on known patterns
+  
+Unsupervised Learning:
+  - Anomaly detection
+  - Clustering similar samples
+  - Zero-day identification
+  - Behavioral pattern discovery
+  
+Deep Learning:
+  - Neural networks
+  - Image recognition (visualization)
+  - Natural language processing
+  - Advanced pattern recognition
+```
+
+### 🔧 Feature Engineering
+```python
+# ML feature extraction for PE files
+import pefile
+import numpy as np
+
+def extract_pe_features(filename):
+    try:
+        pe = pefile.PE(filename)
+        features = {}
+        
+        # Basic PE information
+        features['num_sections'] = len(pe.sections)
+        features['size_of_image'] = pe.OPTIONAL_HEADER.SizeOfImage
+        features['entry_point'] = pe.OPTIONAL_HEADER.AddressOfEntryPoint
+        
+        # Import table analysis
+        if hasattr(pe, 'DIRECTORY_ENTRY_IMPORT'):
+            features['num_imported_dlls'] = len(pe.DIRECTORY_ENTRY_IMPORT)
+            features['num_imported_functions'] = sum(
+                len(entry.imports) for entry in pe.DIRECTORY_ENTRY_IMPORT
+            )
+        else:
+            features['num_imported_dlls'] = 0
+            features['num_imported_functions'] = 0
+        
+        # Section analysis
+        section_entropies = []
+        for section in pe.sections:
+            data = section.get_data()
+            entropy = calculate_entropy(data)
+            section_entropies.append(entropy)
+        
+        features['max_section_entropy'] = max(section_entropies)
+        features['avg_section_entropy'] = np.mean(section_entropies)
+        
+        return features
+        
+    except Exception as e:
+        return None
+```
+
+### 🎯 Hybrid Approach
+- **Multiple detection** engines
+- **Signature + Heuristic** + ML
+- **Cloud + Local** processing
+- **Consensus-based** decisions
 
 </div>
 
@@ -396,166 +529,137 @@ Course: Cyber Security (4353204) | Unit II | Lecture 13 | Author: Milav Dabgar
 layout: default
 ---
 
-# Modern AI-Powered Protection
+# Real-Time Protection Systems
 
 <div class="grid grid-cols-2 gap-6">
 
 <div>
 
-## 🤖 Machine Learning in Antivirus
+## ⚡ Real-Time Scanning
 
-### 🧬 ML-Based Detection
-- **Feature extraction** from executables
-- **Training models** on malware datasets
-- **Classification algorithms** (RF, SVM, NN)
-- **Deep learning** for complex patterns
-- **Continuous learning** from new samples
+### 🔄 On-Access Scanning
+**Monitor file** operations in real-time to prevent malware execution.
 
-### 📊 Feature Engineering
-```python
-import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
+### 📊 Monitoring Points
+```yaml
+File System Events:
+  - File creation/modification
+  - File execution attempts
+  - Archive extractions
+  - Downloads completion
+  - USB/removable media
+  
+Process Events:
+  - Process creation
+  - DLL loading
+  - Memory allocation
+  - Code injection
+  - Privilege escalation
+  
+Network Events:
+  - HTTP/HTTPS requests
+  - Email attachments
+  - File transfers
+  - P2P connections
+  - DNS resolutions
+  
+Registry Events:
+  - Autorun modifications
+  - Security setting changes
+  - Service installations
+  - Policy modifications
+  - Browser settings
+```
 
-class MLMalwareDetector:
-    def __init__(self):
-        self.model = RandomForestClassifier(n_estimators=100)
-        self.features = [
-            'file_size', 'num_sections', 'num_imports',
-            'entropy', 'has_debug_info', 'is_packed',
-            'num_strings', 'suspicious_apis', 'has_signature'
-        ]
+### 💻 Windows File System Filter
+```c
+// Simplified file system filter driver
+NTSTATUS FileSystemFilter(
+    PDEVICE_OBJECT DeviceObject,
+    PIRP Irp
+) {
+    PIO_STACK_LOCATION stack = IoGetCurrentIrpStackLocation(Irp);
     
-    def extract_features(self, pe_file):
-        # Extract PE file features
-        features = {
-            'file_size': len(pe_file.get_memory_mapped_image()),
-            'num_sections': len(pe_file.sections),
-            'num_imports': self._count_imports(pe_file),
-            'entropy': self._calculate_entropy(pe_file),
-            'has_debug_info': hasattr(pe_file, 'DIRECTORY_ENTRY_DEBUG'),
-            'is_packed': self._detect_packing(pe_file),
-            'num_strings': len(self._extract_strings(pe_file)),
-            'suspicious_apis': self._count_suspicious_apis(pe_file),
-            'has_signature': hasattr(pe_file, 'DIRECTORY_ENTRY_SECURITY')
-        }
-        return features
+    switch (stack->MajorFunction) {
+        case IRP_MJ_CREATE:
+            // File open/create operation
+            return HandleFileOpen(Irp);
+            
+        case IRP_MJ_WRITE:
+            // File write operation
+            return HandleFileWrite(Irp);
+            
+        case IRP_MJ_SET_INFORMATION:
+            // File modification
+            return HandleFileModify(Irp);
+    }
     
-    def train_model(self, training_data, labels):
-        """Train the model on labeled malware/benign samples"""
-        df = pd.DataFrame(training_data)
-        X = df[self.features]
-        y = labels
-        
-        self.model.fit(X, y)
-        return self.model
-    
-    def predict_malware(self, pe_file):
-        features = self.extract_features(pe_file)
-        feature_vector = [features[f] for f in self.features]
-        
-        prediction = self.model.predict([feature_vector])[0]
-        confidence = self.model.predict_proba([feature_vector])[0].max()
-        
-        return {
-            'verdict': 'MALWARE' if prediction == 1 else 'CLEAN',
-            'confidence': confidence
-        }
+    // Pass through to next driver
+    return PassThroughIrp(DeviceObject, Irp);
+}
 ```
 
 </div>
 
 <div>
 
-## 🔮 Deep Learning Approaches
+## 🛡️ Proactive Defense
 
-### 🧠 Neural Network Architectures
+### 🔒 Application Control
+**Whitelist-based** approach allowing only trusted applications.
+
+### 📋 Application Control Methods
 ```yaml
-CNN for Binary Classification:
-  - Convolutional layers for pattern detection
-  - Binary representation of executables
-  - Local pattern recognition
-  - Translation invariant features
-
-RNN for Sequence Analysis:
-  - API call sequence analysis
-  - System call patterns
-  - Temporal behavior modeling
-  - LSTM for long-term dependencies
-
-Transformer Models:
-  - Attention mechanisms
-  - Code structure understanding
-  - Multi-scale feature extraction
-  - Transfer learning capabilities
+Digital Signatures:
+  - Certificate validation
+  - Publisher verification
+  - Code signing checks
+  - Revocation status
+  
+Path-based Rules:
+  - Trusted directories
+  - System locations
+  - Application folders
+  - User-defined paths
+  
+Hash-based Rules:
+  - File hash allowlists
+  - Known good binaries
+  - Approved versions
+  - Custom applications
+  
+Behavioral Rules:
+  - Application behavior patterns
+  - Normal operation profiles
+  - Resource usage limits
+  - Network communication rules
 ```
 
-### 🔬 Adversarial ML Defense
-```python
-import torch
-import torch.nn as nn
-import torch.optim as optim
+### 🔧 Windows Defender Application Control
+```powershell
+# Create WDAC policy
+New-CIPolicy -Level Publisher -FilePath "C:\Policy\BasePolicy.xml" `
+  -UserPEs -ScanPath "C:\Program Files\"
 
-class RobustMalwareClassifier(nn.Module):
-    def __init__(self, input_size, hidden_size=128):
-        super().__init__()
-        self.network = nn.Sequential(
-            nn.Linear(input_size, hidden_size),
-            nn.ReLU(),
-            nn.Dropout(0.5),
-            nn.Linear(hidden_size, hidden_size),
-            nn.ReLU(),
-            nn.Dropout(0.5),
-            nn.Linear(hidden_size, 2)  # Binary classification
-        )
-    
-    def forward(self, x):
-        return self.network(x)
-    
-    def adversarial_training(self, data_loader, epsilon=0.01):
-        """Train with adversarial examples"""
-        optimizer = optim.Adam(self.parameters())
-        criterion = nn.CrossEntropyLoss()
-        
-        for batch_idx, (data, target) in enumerate(data_loader):
-            # Generate adversarial examples
-            adv_data = self._generate_adversarial(data, target, epsilon)
-            
-            # Train on both clean and adversarial examples
-            optimizer.zero_grad()
-            
-            clean_output = self(data)
-            adv_output = self(adv_data)
-            
-            clean_loss = criterion(clean_output, target)
-            adv_loss = criterion(adv_output, target)
-            
-            total_loss = (clean_loss + adv_loss) / 2
-            total_loss.backward()
-            optimizer.step()
+# Convert to binary format
+ConvertFrom-CIPolicy -XmlFilePath "C:\Policy\BasePolicy.xml" `
+  -BinaryFilePath "C:\Policy\Policy.bin"
+
+# Deploy policy
+Copy-Item "C:\Policy\Policy.bin" `
+  "C:\Windows\System32\CodeIntegrity\SiPolicy.p7b"
+
+# Enable policy enforcement
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\CI\Config" `
+  -Name "VirtualizationBasedProtection" -Value 1
 ```
 
-### 🎯 Explainable AI
-```python
-import shap
-
-def explain_prediction(model, sample_features):
-    """Explain why a file was classified as malware"""
-    explainer = shap.TreeExplainer(model)
-    shap_values = explainer.shap_values(sample_features)
-    
-    # Get feature importance
-    feature_importance = dict(zip(
-        model.feature_names_,
-        shap_values[1]  # SHAP values for malware class
-    ))
-    
-    return sorted(
-        feature_importance.items(),
-        key=lambda x: abs(x[1]),
-        reverse=True
-    )
-```
+### 🎯 Zero Trust Execution
+- **Default deny** policy
+- **Explicit allow** rules
+- **Continuous monitoring**
+- **Adaptive policies**
+- **Machine learning** integration
 
 </div>
 
@@ -575,129 +679,122 @@ layout: default
 
 <div>
 
-## 🎯 EDR Capabilities
+## 🔍 EDR Overview
 
-### 🔍 Advanced Monitoring
-- **Continuous monitoring** of endpoints
-- **Detailed activity** logging
-- **Real-time alerting** on threats
-- **Incident investigation** tools
-- **Automated response** capabilities
+### 🎯 EDR Capabilities
+**Advanced endpoint** security platform providing continuous monitoring and response.
 
-### 📊 EDR Architecture
+### 📊 EDR Components
 ```mermaid
 graph TB
     A[Endpoint Agent] --> B[Data Collection]
-    B --> C[Cloud Platform]
-    C --> D[Analytics Engine]
-    D --> E[Threat Detection]
-    E --> F[Alert Generation]
-    F --> G[Response Actions]
+    B --> C[Behavioral Analysis]
+    C --> D[Threat Detection]
+    D --> E[Alert Generation]
+    E --> F[Response Actions]
+    F --> G[Forensic Analysis]
     
-    H[SOC Analyst] --> C
-    I[SIEM Integration] --> C
-    J[Threat Intel Feeds] --> D
+    H[Management Console] --> A
+    I[Threat Intelligence] --> D
+    J[SIEM Integration] --> E
     
-    style C fill:#e3f2fd
-    style D fill:#f3e5f5
-    style E fill:#e8f5e8
+    style D fill:#e3f2fd
+    style F fill:#f3e5f5
 ```
 
-### 🛠️ EDR vs Traditional AV
+### 🔧 EDR Features
+- **Continuous monitoring** - 24/7 endpoint visibility
+- **Threat hunting** - Proactive threat search
+- **Incident response** - Automated containment
+- **Forensic analysis** - Detailed investigation
+- **Threat intelligence** - Context-aware detection
+
+### 📋 EDR vs Traditional AV
 | Feature | Traditional AV | EDR |
 |---------|---------------|-----|
 | Detection | Signature-based | Behavioral + ML |
-| Response | Quarantine | Investigation + Remediation |
-| Visibility | File-level | Process-level |
-| Analytics | Local | Cloud-based |
-| Threat Hunting | Limited | Advanced |
+| Response | Block/Remove | Investigate + Contain |
+| Visibility | Limited | Complete endpoint |
+| Analysis | Basic | Advanced forensics |
+| Threat Hunting | No | Yes |
+| Timeline | No | Complete attack chain |
 
 </div>
 
 <div>
 
-## 🔧 EDR Implementation
+## 🎯 Advanced Response Capabilities
 
-### 📡 Data Collection
-```python
-class EDRAgent:
-    def __init__(self):
-        self.collectors = {
-            'process_monitor': ProcessCollector(),
-            'file_monitor': FileCollector(),
-            'network_monitor': NetworkCollector(),
-            'registry_monitor': RegistryCollector()
-        }
-        self.cloud_endpoint = "https://edr.company.com/api"
-    
-    def collect_telemetry(self):
-        """Collect endpoint telemetry data"""
-        telemetry = {}
-        
-        for collector_name, collector in self.collectors.items():
-            try:
-                data = collector.collect()
-                telemetry[collector_name] = data
-            except Exception as e:
-                logging.error(f"Collection error in {collector_name}: {e}")
-        
-        return telemetry
-    
-    def send_telemetry(self, telemetry_data):
-        """Send data to cloud platform"""
-        try:
-            response = requests.post(
-                f"{self.cloud_endpoint}/telemetry",
-                json=telemetry_data,
-                headers={'Content-Type': 'application/json'}
-            )
-            return response.status_code == 200
-        except Exception as e:
-            logging.error(f"Failed to send telemetry: {e}")
-            return False
-
-class ProcessCollector:
-    def collect(self):
-        """Collect process information"""
-        processes = []
-        for proc in psutil.process_iter(['pid', 'name', 'cmdline', 'create_time']):
-            try:
-                proc_info = proc.info
-                proc_info['connections'] = len(proc.connections())
-                proc_info['memory_percent'] = proc.memory_percent()
-                processes.append(proc_info)
-            except (psutil.NoSuchProcess, psutil.AccessDenied):
-                continue
-        
-        return processes
+### ⚡ Automated Response Actions
+```yaml
+Containment:
+  - Network isolation
+  - Process termination
+  - File quarantine
+  - User account suspension
+  
+Investigation:
+  - Process tree analysis
+  - Network connection mapping
+  - File system timeline
+  - Registry change tracking
+  
+Remediation:
+  - Malware removal
+  - System restoration
+  - Patch deployment
+  - Configuration hardening
 ```
 
-### 🚨 Threat Detection Rules
-```yaml
-EDR Detection Rules:
-  lateral_movement:
-    description: "Detect lateral movement attempts"
-    conditions:
-      - remote_process_creation: true
-      - network_share_access: true
-      - credential_theft_tools: true
-    severity: HIGH
+### 🔧 EDR Response Automation
+```python
+class EDRResponseEngine:
+    def __init__(self):
+        self.threat_threshold = 75
+        self.response_actions = []
     
-  data_exfiltration:
-    description: "Large data transfer to external IP"
-    conditions:
-      - network_upload_size: ">100MB"
-      - destination_reputation: "unknown"
-      - file_archive_creation: true
-    severity: HIGH
+    def analyze_alert(self, alert):
+        risk_score = self.calculate_risk(alert)
+        
+        if risk_score > self.threat_threshold:
+            # Immediate containment
+            self.isolate_endpoint(alert.endpoint_id)
+            
+            # Kill malicious processes
+            for process in alert.malicious_processes:
+                self.terminate_process(process.pid)
+            
+            # Quarantine files
+            for file in alert.malicious_files:
+                self.quarantine_file(file.path)
+            
+            # Notify analysts
+            self.create_incident(alert, risk_score)
     
-  persistence_mechanism:
-    description: "Malware persistence establishment"
-    conditions:
-      - registry_autorun_keys: true
-      - scheduled_task_creation: true
-      - service_installation: true
-    severity: MEDIUM
+    def calculate_risk(self, alert):
+        score = 0
+        
+        # Process-based indicators
+        if alert.has_code_injection():
+            score += 30
+        if alert.has_lateral_movement():
+            score += 25
+        if alert.has_privilege_escalation():
+            score += 20
+            
+        # Network indicators
+        if alert.has_c2_communication():
+            score += 40
+        if alert.has_data_exfiltration():
+            score += 35
+            
+        return score
+    
+    def isolate_endpoint(self, endpoint_id):
+        # Remove network access
+        self.firewall_block_all(endpoint_id)
+        # Maintain management connection only
+        self.allow_management_traffic(endpoint_id)
 ```
 
 </div>
@@ -712,7 +809,7 @@ Course: Cyber Security (4353204) | Unit II | Lecture 13 | Author: Milav Dabgar
 layout: default
 ---
 
-# Protection Deployment Strategies
+# Antivirus Deployment and Management
 
 <div class="grid grid-cols-2 gap-6">
 
@@ -720,167 +817,148 @@ layout: default
 
 ## 🏢 Enterprise Deployment
 
-### 📋 Deployment Planning
-```yaml
-Phase 1: Assessment (Week 1-2)
-  - Current security audit
-  - Infrastructure inventory
-  - Performance requirements
-  - Compliance mapping
-
-Phase 2: Pilot Deployment (Week 3-4)
-  - Test environment setup
-  - Pilot group selection (10% of users)
-  - Performance monitoring
-  - Policy configuration
-
-Phase 3: Phased Rollout (Week 5-12)
-  - Department-by-department deployment
-  - User training sessions
-  - Policy refinement
-  - Incident response testing
-
-Phase 4: Full Production (Week 13+)
-  - Complete deployment
-  - Monitoring and maintenance
-  - Regular updates
-  - Continuous improvement
+### 📊 Deployment Architecture
+```mermaid
+graph TB
+    A[Management Server] --> B[Update Server]
+    A --> C[Policy Server]
+    A --> D[Reporting Database]
+    
+    E[Branch Office 1] --> A
+    F[Branch Office 2] --> A
+    G[Remote Workers] --> A
+    
+    H[Endpoint Agents] --> E
+    I[Endpoint Agents] --> F
+    J[Endpoint Agents] --> G
+    
+    style A fill:#e3f2fd
+    style H fill:#f3e5f5
+    style I fill:#f3e5f5
+    style J fill:#f3e5f5
 ```
 
-### 🔧 Configuration Management
-```python
-class AntivirusConfigManager:
-    def __init__(self):
-        self.policies = {
-            'executives': {
-                'real_time_protection': True,
-                'scan_frequency': 'daily',
-                'quarantine_action': 'prompt',
-                'cloud_lookup': True,
-                'performance_mode': 'balanced'
-            },
-            'developers': {
-                'real_time_protection': True,
-                'scan_frequency': 'weekly',
-                'quarantine_action': 'automatic',
-                'cloud_lookup': True,
-                'performance_mode': 'gaming',  # Reduced overhead
-                'exclusions': ['/build/', '/node_modules/']
-            },
-            'general_users': {
-                'real_time_protection': True,
-                'scan_frequency': 'daily',
-                'quarantine_action': 'automatic',
-                'cloud_lookup': True,
-                'performance_mode': 'maximum_protection'
-            }
-        }
-    
-    def deploy_policy(self, computer_group, policy_name):
-        """Deploy antivirus policy to computer group"""
-        if policy_name not in self.policies:
-            raise ValueError(f"Policy {policy_name} not found")
-        
-        policy = self.policies[policy_name]
-        
-        # Generate configuration file
-        config = self._generate_config(policy)
-        
-        # Deploy to endpoints
-        return self._deploy_to_group(computer_group, config)
+### 🔧 Deployment Considerations
+```yaml
+Scalability:
+  - Number of endpoints
+  - Geographic distribution
+  - Network bandwidth
+  - Server capacity
+  
+Performance:
+  - System resource usage
+  - Scan scheduling
+  - Update distribution
+  - Real-time protection impact
+  
+Management:
+  - Centralized console
+  - Policy deployment
+  - Reporting and alerts
+  - Compliance monitoring
+```
+
+### 📋 Group Policy Deployment
+```powershell
+# Deploy antivirus via Group Policy
+$GPO = New-GPO -Name "Antivirus Deployment"
+$OU = "OU=Computers,DC=company,DC=com"
+
+# Link GPO to OU
+New-GPLink -Name "Antivirus Deployment" -Target $OU
+
+# Configure software installation
+Set-GPPrefRegistryValue -Name "Antivirus Deployment" `
+  -Context Computer `
+  -Key "HKLM\Software\Policies\Microsoft\Windows\Installer" `
+  -ValueName "AlwaysInstallElevated" -Value 1 -Type DWord
 ```
 
 </div>
 
 <div>
 
-## 🏠 Consumer Protection
+## 📊 Performance Optimization
 
-### 👥 Home User Considerations
+### ⚡ Optimization Strategies
 ```yaml
-Key Requirements:
-  - Easy installation and setup
-  - Minimal user interaction
-  - Automatic updates
-  - Performance optimization
-  - Multi-device protection
-
-Features for Home Users:
-  - Real-time web protection
-  - Email security
-  - USB device scanning
-  - Parental controls
-  - Identity theft protection
+Scan Optimization:
+  - Intelligent scheduling
+  - File type exclusions
+  - Path exclusions
+  - Priority-based scanning
+  
+Resource Management:
+  - CPU throttling
+  - Memory limits
+  - I/O throttling
+  - Background operations
+  
+Update Optimization:
+  - Delta updates
+  - Peer-to-peer distribution
+  - Local caching servers
+  - Bandwidth controls
+  
+False Positive Reduction:
+  - Whitelist management
+  - Application profiling
+  - Custom signatures
+  - Behavioral tuning
 ```
 
-### 📱 Multi-Platform Protection
+### 💻 Performance Monitoring
 ```python
-class UnifiedProtectionManager:
-    def __init__(self):
-        self.platforms = {
-            'windows': WindowsProtection(),
-            'macos': MacOSProtection(),
-            'android': AndroidProtection(),
-            'ios': IOSProtection()
-        }
-    
-    def deploy_protection(self, device_info):
-        """Deploy appropriate protection based on device"""
-        platform = device_info['platform'].lower()
-        
-        if platform in self.platforms:
-            protector = self.platforms[platform]
-            return protector.install_and_configure(device_info)
-        else:
-            raise UnsupportedPlatformError(f"Platform {platform} not supported")
+import psutil
+import time
 
-class WindowsProtection:
-    def install_and_configure(self, device_info):
-        config = {
-            'real_time_scanning': True,
-            'web_protection': True,
-            'email_scanning': True,
-            'usb_scanning': True,
-            'firewall_integration': True,
-            'automatic_updates': True
-        }
+class AVPerformanceMonitor:
+    def __init__(self, av_process_name="antivirus.exe"):
+        self.av_process_name = av_process_name
+        self.metrics = []
+    
+    def monitor_performance(self, duration=3600):  # 1 hour
+        start_time = time.time()
         
-        return self._deploy_windows_av(config)
+        while time.time() - start_time < duration:
+            try:
+                # Find AV process
+                for proc in psutil.process_iter(['pid', 'name']):
+                    if proc.info['name'] == self.av_process_name:
+                        # Collect metrics
+                        metrics = {
+                            'timestamp': time.time(),
+                            'cpu_percent': proc.cpu_percent(),
+                            'memory_mb': proc.memory_info().rss / 1024 / 1024,
+                            'disk_io': proc.io_counters()._asdict(),
+                            'num_handles': proc.num_handles()
+                        }
+                        
+                        self.metrics.append(metrics)
+                        break
+                
+                time.sleep(60)  # Collect every minute
+                
+            except psutil.NoSuchProcess:
+                continue
+    
+    def generate_report(self):
+        if not self.metrics:
+            return "No data collected"
+        
+        avg_cpu = sum(m['cpu_percent'] for m in self.metrics) / len(self.metrics)
+        avg_memory = sum(m['memory_mb'] for m in self.metrics) / len(self.metrics)
+        
+        return f"Average CPU: {avg_cpu:.2f}%, Average Memory: {avg_memory:.2f} MB"
 ```
 
-### 🔄 Update Management
-```python
-class UpdateManager:
-    def __init__(self):
-        self.update_channels = {
-            'critical': {'frequency': 'hourly', 'auto_apply': True},
-            'security': {'frequency': '4hours', 'auto_apply': True},
-            'definition': {'frequency': '15min', 'auto_apply': True},
-            'feature': {'frequency': 'weekly', 'auto_apply': False}
-        }
-    
-    def check_updates(self):
-        """Check for available updates"""
-        available_updates = []
-        
-        for channel, config in self.update_channels.items():
-            updates = self._check_channel_updates(channel)
-            if updates:
-                available_updates.extend(updates)
-        
-        return available_updates
-    
-    def apply_updates(self, update_list, force=False):
-        """Apply selected updates"""
-        success_count = 0
-        
-        for update in update_list:
-            if update['auto_apply'] or force:
-                if self._apply_update(update):
-                    success_count += 1
-        
-        return success_count
-```
+### 🎯 Best Practices
+- **Regular performance** reviews
+- **Baseline establishment**
+- **Tuning based** on workload
+- **Impact assessment**
+- **User feedback** integration
 
 </div>
 
@@ -894,195 +972,173 @@ Course: Cyber Security (4353204) | Unit II | Lecture 13 | Author: Milav Dabgar
 layout: default
 ---
 
-# Performance and Optimization
+# Modern Challenges and Solutions
 
 <div class="grid grid-cols-2 gap-6">
 
 <div>
 
-## ⚡ Performance Considerations
+## 🚨 Contemporary Threats
 
-### 📊 Resource Impact Metrics
+### 🔥 Evolving Threat Landscape
 ```yaml
-Performance Metrics:
-  CPU Usage:
-    - Idle: <2%
-    - Scanning: <25%
-    - Full scan: <50%
-    
-  Memory Usage:
-    - Base: <150MB
-    - Active scanning: <300MB
-    - Maximum: <500MB
-    
-  Disk I/O:
-    - Background: <1MB/s
-    - Scanning: <10MB/s
-    - Updates: <5MB/s
-    
-  Boot Impact:
-    - Additional time: <10 seconds
-    - Service startup: <30 seconds
+Fileless Malware:
+  - Memory-only execution
+  - Living-off-the-land techniques
+  - PowerShell/WMI abuse
+  - Registry-based persistence
+  
+AI-Powered Attacks:
+  - Machine learning evasion
+  - Adaptive malware
+  - Deepfake social engineering
+  - Automated exploit development
+  
+Supply Chain Attacks:
+  - Software build processes
+  - Third-party components
+  - Update mechanisms
+  - Hardware implants
+  
+Zero-Day Exploits:
+  - Unknown vulnerabilities
+  - Advanced exploitation
+  - Targeted campaigns
+  - Nation-state actors
 ```
 
-### 🔧 Optimization Techniques
+### 🔧 Evasion Techniques
 ```python
-class PerformanceOptimizer:
+# Example: Advanced evasion technique
+import time
+import random
+import ctypes
+
+class AdvancedEvasion:
     def __init__(self):
-        self.optimization_rules = {
-            'scan_scheduling': {
-                'avoid_peak_hours': True,
-                'cpu_threshold': 80,  # Pause if CPU > 80%
-                'battery_aware': True  # Reduce scanning on battery
-            },
-            'file_exclusions': {
-                'system_files': [
-                    'C:\\Windows\\System32\\',
-                    'C:\\Windows\\SysWOW64\\'
-                ],
-                'development_folders': [
-                    '/node_modules/',
-                    '/build/',
-                    '/.git/'
-                ]
-            },
-            'caching': {
-                'scan_results_ttl': 3600,  # 1 hour
-                'reputation_cache_ttl': 1800,  # 30 minutes
-                'max_cache_size': '256MB'
-            }
-        }
+        self.sandbox_checks = [
+            self.check_virtual_environment,
+            self.check_debugging,
+            self.check_analysis_tools,
+            self.check_execution_delay
+        ]
     
-    def optimize_for_system(self, system_profile):
-        """Optimize antivirus for specific system"""
-        if system_profile['ram'] < 4096:  # Less than 4GB RAM
-            self._apply_low_memory_optimizations()
+    def check_virtual_environment(self):
+        # Check for VM artifacts
+        vm_artifacts = [
+            "VirtualBox", "VMware", "QEMU", 
+            "Xen", "Parallels", "Hyper-V"
+        ]
         
-        if system_profile['cpu_cores'] <= 2:
-            self._apply_low_cpu_optimizations()
-        
-        if system_profile['disk_type'] == 'hdd':
-            self._apply_hdd_optimizations()
-        
-        return self._generate_optimized_config()
+        system_info = self.get_system_info()
+        return any(artifact in system_info for artifact in vm_artifacts)
     
-    def _apply_low_memory_optimizations(self):
-        """Optimize for systems with limited RAM"""
-        self.optimization_rules['caching']['max_cache_size'] = '64MB'
-        self.optimization_rules['scan_scheduling']['concurrent_scans'] = 1
+    def check_analysis_tools(self):
+        # Check for analysis tools
+        analysis_tools = [
+            "wireshark.exe", "procmon.exe", "regshot.exe",
+            "ida.exe", "ollydbg.exe", "x64dbg.exe"
+        ]
+        
+        running_processes = self.get_process_list()
+        return any(tool in running_processes for tool in analysis_tools)
     
-    def monitor_performance_impact(self):
-        """Monitor and adjust based on system performance"""
-        cpu_usage = psutil.cpu_percent(interval=1)
-        memory_usage = psutil.virtual_memory().percent
+    def evade_detection(self):
+        # Perform evasion checks
+        if any(check() for check in self.sandbox_checks):
+            # Exit quietly if analysis environment detected
+            return False
         
-        if cpu_usage > 80:
-            self._reduce_scan_intensity()
-        
-        if memory_usage > 90:
-            self._clear_caches()
+        # Proceed with malicious payload
+        return True
 ```
 
 </div>
 
 <div>
 
-## 📈 Effectiveness Measurement
+## 🛡️ Next-Generation Solutions
 
-### 🎯 Detection Rate Metrics
-```python
-class EffectivenessMonitor:
-    def __init__(self):
-        self.metrics = {
-            'detection_rate': 0.0,
-            'false_positive_rate': 0.0,
-            'false_negative_rate': 0.0,
-            'performance_impact': 0.0,
-            'user_satisfaction': 0.0
-        }
-    
-    def calculate_detection_rate(self, test_results):
-        """Calculate detection effectiveness"""
-        total_malware = test_results['malware_samples']
-        detected_malware = test_results['detected_samples']
-        false_positives = test_results['false_positives']
-        
-        detection_rate = detected_malware / total_malware
-        fp_rate = false_positives / test_results['clean_samples']
-        
-        return {
-            'detection_rate': detection_rate,
-            'false_positive_rate': fp_rate,
-            'effectiveness_score': detection_rate * (1 - fp_rate)
-        }
-    
-    def benchmark_performance(self, benchmark_suite):
-        """Run standardized performance tests"""
-        results = {}
-        
-        # File operation tests
-        results['file_operations'] = self._test_file_operations()
-        
-        # Application startup tests
-        results['app_startup'] = self._test_application_startup()
-        
-        # Network performance tests
-        results['network_impact'] = self._test_network_performance()
-        
-        return results
-```
-
-### 📊 Industry Benchmarks
+### 🤖 AI-Powered Defense
 ```yaml
-Industry Standards (2024):
-  Detection Rate:
-    - Excellent: >99.5%
-    - Good: >98.0%
-    - Acceptable: >95.0%
-    
-  False Positive Rate:
-    - Excellent: <0.1%
-    - Good: <0.5%
-    - Acceptable: <1.0%
-    
-  Performance Impact:
-    - Excellent: <3%
-    - Good: <5%
-    - Acceptable: <10%
-    
-  AV-TEST Certification:
-    - Protection: 6/6 points
-    - Performance: 6/6 points
-    - Usability: 6/6 points
+Machine Learning Integration:
+  - Deep neural networks
+  - Ensemble methods
+  - Anomaly detection
+  - Behavioral clustering
+  
+Automated Threat Hunting:
+  - Proactive threat search
+  - Hypothesis-driven investigation
+  - Pattern recognition
+  - IoC correlation
+  
+Predictive Analytics:
+  - Risk scoring
+  - Threat forecasting
+  - Attack path analysis
+  - Impact assessment
+  
+Adaptive Defenses:
+  - Dynamic policy adjustment
+  - Contextual security
+  - Risk-based responses
+  - Learning from attacks
 ```
 
-### 📈 Continuous Improvement
+### 🔒 Zero Trust Security
 ```python
-def generate_improvement_recommendations(metrics_history):
-    """Analyze metrics and suggest improvements"""
-    recommendations = []
+class ZeroTrustEngine:
+    def __init__(self):
+        self.trust_levels = {
+            'UNTRUSTED': 0,
+            'LIMITED': 25,
+            'STANDARD': 50,
+            'ELEVATED': 75,
+            'PRIVILEGED': 100
+        }
     
-    # Analyze trends
-    recent_metrics = metrics_history[-30:]  # Last 30 days
+    def calculate_trust_score(self, context):
+        score = 0
+        
+        # Device trust
+        if context.device.is_managed():
+            score += 20
+        if context.device.is_compliant():
+            score += 15
+        if context.device.has_certificate():
+            score += 10
+            
+        # User behavior
+        if context.user.normal_location():
+            score += 15
+        if context.user.normal_time():
+            score += 10
+        if context.user.mfa_authenticated():
+            score += 20
+            
+        # Network context
+        if context.network.is_corporate():
+            score += 10
+            
+        return min(score, 100)
     
-    if is_trending_down(recent_metrics, 'detection_rate'):
-        recommendations.append({
-            'category': 'Detection',
-            'priority': 'HIGH',
-            'recommendation': 'Update detection signatures and rules',
-            'expected_impact': 'Improve detection rate by 2-5%'
-        })
-    
-    if is_trending_up(recent_metrics, 'false_positive_rate'):
-        recommendations.append({
-            'category': 'Accuracy',
-            'priority': 'MEDIUM',
-            'recommendation': 'Refine heuristic rules',
-            'expected_impact': 'Reduce false positives by 20-30%'
-        })
-    
-    return recommendations
+    def make_access_decision(self, request):
+        trust_score = self.calculate_trust_score(request.context)
+        required_trust = self.get_required_trust(request.resource)
+        
+        if trust_score >= required_trust:
+            return self.grant_access(request, trust_score)
+        else:
+            return self.challenge_or_deny(request, trust_score)
 ```
+
+### 🌐 Cloud-Native Security
+- **Container security**
+- **Serverless protection**
+- **DevSecOps integration**
+- **API security**
+- **Multi-cloud visibility**
 
 </div>
 
@@ -1096,82 +1152,77 @@ Course: Cyber Security (4353204) | Unit II | Lecture 13 | Author: Milav Dabgar
 layout: default
 ---
 
-# Practical Exercise: Antivirus Evaluation Lab
+# Practical Exercise: Antivirus Strategy Design
 
 <div class="exercise-container">
 
-## 🎯 Group Activity (30 minutes)
+## 🎯 Group Activity (25 minutes)
 
-### Lab Scenario: Enterprise Antivirus Selection
+### Scenario: Multi-Site Organization Protection
 
-Your organization needs to select and deploy antivirus software for 1000+ endpoints across multiple departments with varying security requirements.
+Your organization requires comprehensive antivirus protection for:
 
-**Organization Profile:**
-- **Departments:** Finance, IT, Marketing, Sales, HR
-- **Platforms:** Windows (70%), macOS (20%), Mobile (10%)
-- **Compliance:** SOX, GDPR, HIPAA (healthcare data)
-- **Performance Requirements:** Minimal impact on productivity
-- **Budget:** $50,000 annually for endpoint protection
+**Environment Details:**
+- **3 office locations** (Mumbai, Delhi, Bangalore)
+- **500 Windows workstations**
+- **50 Linux servers**
+- **200 mobile devices** (BYOD policy)
+- **Cloud infrastructure** (AWS/Azure)
+- **Remote workers** (150 employees)
 
-### Phase 1: Requirements Analysis (10 minutes)
+**Business Requirements:**
+- **99.9% uptime** requirement
+- **Minimal performance** impact
+- **Compliance** needs (ISO 27001, SOC 2)
+- **Budget constraint** (₹50 per endpoint/month)
+- **Centralized management**
 
-**Task 1: Define Requirements Matrix**
-Create a requirements matrix for each department:
+### Task: Design Comprehensive Protection Strategy
 
-| Requirement | Finance | IT | Marketing | Sales | HR |
-|-------------|---------|----|-----------|---------|----|
-| Real-time Protection | | | | | |
-| Web Filtering | | | | | |
-| Email Security | | | | | |
-| USB Control | | | | | |
-| Performance Impact | | | | | |
+**Phase 1: Solution Architecture (8 minutes)**
 
-**Task 2: Technical Specifications**
-- Define minimum detection rate requirements
-- Set maximum performance impact limits
-- Identify integration requirements (SIEM, AD, etc.)
-- Specify update and management requirements
+**Technology Selection:**
+1. Which antivirus approach would you recommend? (Signature + Heuristic + ML?)
+2. Cloud-based vs. on-premises vs. hybrid deployment?
+3. How would you handle different operating systems?
+4. What about mobile device protection?
 
-### Phase 2: Solution Evaluation (15 minutes)
+**Deployment Strategy:**
+1. How would you roll out to 500+ endpoints?
+2. What's your update and management strategy?
+3. How would you handle remote workers?
 
-**Task 3: Vendor Comparison**
-Evaluate three antivirus solutions based on:
-1. **Detection Capabilities:**
-   - Signature-based detection
-   - Heuristic analysis
-   - Behavioral monitoring
-   - Machine learning features
+**Phase 2: Performance and Management (8 minutes)**
 
-2. **Management Features:**
-   - Central management console
-   - Policy deployment
-   - Reporting capabilities
-   - Remote configuration
+**Performance Optimization:**
+1. How would you minimize system impact?
+2. What exclusions and optimizations would you implement?
+3. How would you schedule scans across time zones?
 
-3. **Performance Impact:**
-   - Resource utilization
-   - Scan speed
-   - User experience impact
+**Centralized Management:**
+1. What management infrastructure is needed?
+2. How would you handle policy distribution?
+3. What monitoring and alerting would you implement?
 
-**Task 4: Cost-Benefit Analysis**
-- Calculate total cost of ownership (TCO)
-- Estimate potential cost savings from threat prevention
-- Consider deployment and training costs
+**Phase 3: Advanced Protection (9 minutes)**
 
-### Phase 3: Implementation Planning (5 minutes)
+**Modern Threat Protection:**
+1. How would you handle fileless malware?
+2. What behavioral analysis would you implement?
+3. How would you integrate threat intelligence?
+4. What about zero-day protection?
 
-**Task 5: Deployment Strategy**
-- Design phased rollout plan
-- Identify pilot group
-- Plan user training approach
-- Define success metrics
+**Incident Response:**
+1. How would you automate threat response?
+2. What containment strategies would you use?
+3. How would you handle false positives?
 
 **Deliverables:**
-- Requirements matrix by department
-- Vendor evaluation scorecard
-- Cost-benefit analysis
-- Implementation timeline
-- Risk assessment and mitigation plan
+- Protection architecture diagram
+- Technology selection justification
+- Deployment and management plan
+- Performance optimization strategy
+- Incident response procedures
 
 </div>
 
@@ -1194,11 +1245,11 @@ class: text-center
 
 ## 🤔 Discussion Points:
 - How do you balance security effectiveness with system performance?
-- What role should AI/ML play in modern antivirus solutions?
-- How important is cloud-based protection vs. on-premise solutions?
+- What role will AI play in future antivirus solutions?
+- How do you handle the false positive vs. false negative trade-off?
 
 ### 💡 Exercise Review
-Share your antivirus evaluation results and implementation strategies
+Share your antivirus strategies and discuss implementation approaches
 
 <div class="absolute bottom-5 left-5 text-xs text-gray-500">
 Course: Cyber Security (4353204) | Unit II | Lecture 13 | Author: Milav Dabgar
@@ -1212,11 +1263,11 @@ class: text-center
 # Thank You!
 
 ## Next Lecture: Attack Prevention Strategies
-### Proactive Security Measures and Defense in Depth
+### Proactive Security Measures and Defense
 
 <div class="pt-8 text-gray-500">
   <p>Cyber Security (4353204) - Lecture 13 Complete</p>
-  <p>Protection through detection and prevention! 🛡️🔍</p>
+  <p>Strong defenses: Building walls against digital threats! 🛡️⚔️</p>
 </div>
 
 <div class="absolute bottom-5 left-5 text-xs text-gray-500">

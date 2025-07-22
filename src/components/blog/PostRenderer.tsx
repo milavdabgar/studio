@@ -6,15 +6,32 @@ import { useTheme } from 'next-themes';
 import { createRoot } from 'react-dom/client';
 import CodeBlock from '../ui/code-block';
 import { useShortcodeProcessor } from '@/lib/shortcodes';
+import { SlidevRenderer } from '../slidev/SlidevRenderer';
+import type { ContentType } from '@/lib/content-types';
 
 interface PostRendererProps {
   contentHtml: string;
+  contentType?: ContentType;
+  rawContent?: string;
 }
 
-const PostRenderer: React.FC<PostRendererProps> = ({ contentHtml }) => {
+const PostRenderer: React.FC<PostRendererProps> = ({ 
+  contentHtml, 
+  contentType = 'markdown',
+  rawContent 
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { theme, resolvedTheme } = useTheme();
   const { processShortcodes: processShortcodeElements } = useShortcodeProcessor();
+
+  // If this is Slidev content, render the Slidev component
+  if (contentType === 'slidev' && rawContent) {
+    return (
+      <div className="slidev-wrapper">
+        <SlidevRenderer content={rawContent} />
+      </div>
+    );
+  }
 
   // Debug: Log the contentHtml to see if Gallery shortcodes are present
   console.log('PostRenderer: contentHtml includes gallery:', contentHtml.includes('gallery'));
