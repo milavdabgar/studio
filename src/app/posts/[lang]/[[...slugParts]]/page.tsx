@@ -480,6 +480,7 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
                         contentHtml={postData.contentHtml} 
                         contentType={postData.contentType}
                         rawContent={postData.rawContent}
+                        slugParts={slugPartsForLinks}
                       />
                     </div>
                   </CardContent>

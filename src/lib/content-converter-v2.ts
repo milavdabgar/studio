@@ -172,10 +172,12 @@ export class ContentConverterV2 {
 
     /**
      * Convert Slidev content to various formats
+     * Note: For full Slidev presentations, use the native Slidev build process
+     * This method provides basic conversion for export/download functionality
      */
     async convertSlidev(slidevContent: string, format: string, options: ConversionOptions = {}): Promise<Buffer | string> {
-        const { parseSlidevContent } = await import('./slidev-parser');
-        const presentation = parseSlidevContent(slidevContent);
+        // Parse Slidev content manually (simplified version)
+        const presentation = this.parseSlidevContentBasic(slidevContent);
         
         switch (format) {
             case 'md':
@@ -199,6 +201,35 @@ export class ContentConverterV2 {
                 const { data: frontmatter, content } = matter(markdownContent);
                 return await this.convert(markdownContent, format, options);
         }
+    }
+
+    /**
+     * Basic Slidev content parser (simplified version for export functionality)
+     */
+    private parseSlidevContentBasic(content: string) {
+        const { data: frontmatter, content: body } = matter(content);
+        
+        // Split slides by --- separator
+        const slides = body.split('\n---\n').map((slideContent, index) => {
+            // Extract layout from slide content if present
+            const layoutMatch = slideContent.match(/^layout:\s*(.+)$/m);
+            const layout = layoutMatch ? layoutMatch[1] : 'default';
+            
+            // Remove layout line from content
+            const cleanContent = slideContent.replace(/^layout:\s*.+$/m, '').trim();
+            
+            return {
+                content: cleanContent,
+                layout,
+                index
+            };
+        });
+
+        return {
+            frontmatter,
+            slides,
+            totalSlides: slides.length
+        };
     }
 
     /**

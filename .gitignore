@@ -83,3 +83,16 @@ Thumbs.db
 
 # Python virtual environments
 gtu_scraper_env/
+
+# Slidev build outputs (native presentations)
+/public/slidev-builds/
+slidev-builds/
+*.slidev-build
+
+# Development and testing files
+test-*.js
+test-*.ts
+debug-*.js
+debug-*.ts
+coverage-*.sh
+*-test-data.js

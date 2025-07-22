@@ -6,47 +6,31 @@ import { useTheme } from 'next-themes';
 import { createRoot } from 'react-dom/client';
 import CodeBlock from '../ui/code-block';
 import { useShortcodeProcessor } from '@/lib/shortcodes';
-import { SlidevRenderer } from '../slidev/SlidevRenderer';
+import { SlidevEmbedded } from '../slidev/SlidevEmbedded';
 import type { ContentType } from '@/lib/content-types';
 
 interface PostRendererProps {
   contentHtml: string;
   contentType?: ContentType;
   rawContent?: string;
+  slugParts?: string[];
 }
 
 const PostRenderer: React.FC<PostRendererProps> = ({ 
   contentHtml, 
   contentType = 'markdown',
-  rawContent 
+  rawContent,
+  slugParts
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { theme, resolvedTheme } = useTheme();
   const { processShortcodes: processShortcodeElements } = useShortcodeProcessor();
 
-  // If this is Slidev content, render the Slidev component
-  if (contentType === 'slidev' && rawContent) {
-    return (
-      <div className="slidev-wrapper">
-        <SlidevRenderer content={rawContent} />
-      </div>
-    );
-  }
-
-  // Debug: Log the contentHtml to see if Gallery shortcodes are present
-  console.log('PostRenderer: contentHtml includes gallery:', contentHtml.includes('gallery'));
-  console.log('PostRenderer: contentHtml includes data-shortcode:', contentHtml.includes('data-shortcode'));
-  
-  if (contentHtml.includes('gallery')) {
-    console.log('PostRenderer: Gallery-related content found in HTML');
-    // Extract gallery-related content for debugging
-    const galleryMatches = contentHtml.match(/data-shortcode="gallery"[^>]*>/g);
-    if (galleryMatches) {
-      console.log('PostRenderer: Gallery shortcode placeholders found:', galleryMatches);
-    }
-  }
-
+  // Call all hooks unconditionally
   useEffect(() => {
+    // Skip effect for Slidev content
+    if (contentType === 'slidev') return;
+    
     if (!containerRef.current) return;
 
     // Generate IDs for headings to enable TOC functionality
@@ -536,6 +520,31 @@ const PostRenderer: React.FC<PostRendererProps> = ({
     }).catch(e => console.error("Failed to load Mermaid library:", e));
 
   }, [contentHtml, theme, resolvedTheme, processShortcodeElements]);
+
+  // If this is Slidev content, render the embedded native Slidev
+  if (contentType === 'slidev' && slugParts) {
+    // Extract just the filename from the slug parts (last part is the markdown filename)
+    const filename = slugParts[slugParts.length - 1];
+    
+    return (
+      <div className="slidev-wrapper">
+        <SlidevEmbedded presentationPath={filename} title={`Slidev Presentation`} />
+      </div>
+    );
+  }
+
+  // Debug: Log the contentHtml to see if Gallery shortcodes are present
+  console.log('PostRenderer: contentHtml includes gallery:', contentHtml.includes('gallery'));
+  console.log('PostRenderer: contentHtml includes data-shortcode:', contentHtml.includes('data-shortcode'));
+  
+  if (contentHtml.includes('gallery')) {
+    console.log('PostRenderer: Gallery-related content found in HTML');
+    // Extract gallery-related content for debugging
+    const galleryMatches = contentHtml.match(/data-shortcode="gallery"[^>]*>/g);
+    if (galleryMatches) {
+      console.log('PostRenderer: Gallery shortcode placeholders found:', galleryMatches);
+    }
+  }
 
   return (
     <div 

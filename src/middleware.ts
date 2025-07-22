@@ -83,6 +83,7 @@ const PUBLIC_ROUTES = [
   '/facilities', // Add facilities page to public routes
   '/contact', // Add contact page to public routes
   '/ssip', // Add SSIP page to public routes
+  '/slidev-builds', // Add Slidev builds to public routes
   '/establishment', // Add establishment page to public routes
   '/student-section', // Add student section page to public routes
   '/tpo', // Add TPO page to public routes
@@ -137,10 +138,15 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const authenticatedUser = isAuthenticated(request);
   
+  // Debug logging
+  console.log(`[Middleware] Pathname: ${pathname}`);
+  
   // Allow static assets and API routes to pass through
   if (pathname.startsWith('/_next/') || 
       pathname.startsWith('/api/') || 
+      pathname.startsWith('/slidev-builds/') ||
       pathname.includes('.')) { // Common check for files like .ico, .png
+    console.log(`[Middleware] Allowing static asset: ${pathname}`);
     return NextResponse.next();
   }
 
@@ -150,7 +156,8 @@ export async function middleware(request: NextRequest) {
       pathname.startsWith('/newsletters') ||
       pathname.startsWith('/departments/') ||
       pathname.startsWith('/students/') ||
-      pathname.startsWith('/faculty/')) {
+      pathname.startsWith('/faculty/') ||
+      pathname.startsWith('/slidev-builds/')) {
     // If accessing login or signup while already authenticated, redirect to dashboard
     if ((pathname === '/login' || pathname === '/signup') && authenticatedUser) {
       return NextResponse.redirect(new URL('/dashboard', request.url));
@@ -231,9 +238,9 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
     
-// Matcher to apply middleware to all routes except static assets and API routes
+// Matcher to apply middleware to all routes except static assets, API routes, and Slidev builds
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|icons/).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|icons/|slidev-builds/).*)',
   ],
 }
