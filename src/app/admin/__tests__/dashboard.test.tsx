@@ -4,10 +4,10 @@ import '@testing-library/jest-dom';
 
 // Mock window.location.reload to prevent JSDOM navigation errors
 delete (window as unknown as Record<string, unknown>).location;
-window.location = { 
+(window as unknown as Record<string, unknown>).location = { 
   ...window.location, 
   reload: jest.fn() 
-};
+} as unknown as Location;
 
 // Suppress JSDOM navigation warnings
 const originalConsoleError = console.error;
