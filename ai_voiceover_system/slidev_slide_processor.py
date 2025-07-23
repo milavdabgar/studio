@@ -26,7 +26,7 @@ os.environ['COQUI_TOS_AGREED'] = '1'
 os.environ['COQUI_TTS_AGREED'] = '1'
 
 try:
-    from moviepy import ImageClip, AudioFileClip, concatenate_videoclips
+    from moviepy.editor import ImageClip, AudioFileClip, concatenate_videoclips
     MOVIEPY_AVAILABLE = True
 except ImportError:
     MOVIEPY_AVAILABLE = False
@@ -584,8 +584,8 @@ class SlidevSlideProcessor:
                         total_duration += duration
                         
                         # Use the actual exported slide image
-                        image_clip = ImageClip(str(slide_file)).with_duration(duration)
-                        video_clip = image_clip.with_audio(audio_clip)
+                        image_clip = ImageClip(str(slide_file)).set_duration(duration)
+                        video_clip = image_clip.set_audio(audio_clip)
                         video_clips.append(video_clip)
                         
                         print(f"   🎬 Video clip created ({duration:.1f}s) using {voice_used}")
