@@ -1,0 +1,17 @@
+{
+  "success": true,
+  "video_path": "video_production/videos/computer_security_fundamentals.mp4",
+  "statistics": {
+    "slides": 43,
+    "audio_files": 32,
+    "duration_minutes": 10.892333333333333,
+    "video_size_mb": 12.51337718963623,
+    "resolution": "1920x1080",
+    "fps": 30
+  },
+  "files_created": {
+    "slides_dir": "video_production/slides",
+    "video_file": "video_production/videos/computer_security_fundamentals.mp4",
+    "output_dir": "video_production"
+  }
+}
