@@ -25,6 +25,8 @@ mdc: true
   </span>
 </div>
 
+<!-- Welcome to today's lecture on Computer Security Fundamentals. This is Lecture 2, where we will explore the CIA Triad and Information Security Principles. These three fundamental concepts - Confidentiality, Integrity, and Availability - form the cornerstone of all cybersecurity practices. Today's session will give you a comprehensive understanding of how these principles work together to protect digital assets and information systems. -->
+
 ---
 layout: default
 ---
@@ -56,6 +58,8 @@ layout: default
 
 </div>
 
+<!-- Let's begin with a comprehensive recap of our previous lecture. In our first session, we covered several fundamental concepts in cybersecurity. We examined the cyber security definition and its importance in today's digital world. We discussed digital asset protection strategies, analyzed the current threat landscape, explored career opportunities in cybersecurity, and reviewed regulatory requirements that organizations must meet. Today's learning objectives focus on understanding CIA Triad fundamentals, applying security principles in practice, analyzing real-world examples, and learning to design secure systems using CIA principles. -->
+
 ---
 layout: center
 class: text-center
@@ -84,6 +88,8 @@ graph TD
 ```
 
 </div>
+
+<!-- Now we come to the central topic of today's lecture: The CIA Triad. The CIA Triad represents the three fundamental pillars of information security that every cybersecurity professional must understand. These three principles - Confidentiality, Integrity, and Availability - work together to provide comprehensive protection for information systems. Confidentiality focuses on privacy and access control through encryption. Integrity ensures accuracy, completeness, and trustworthiness of data. Availability addresses accessibility, uptime, and reliability of systems. This triangle diagram shows how these concepts interconnect to form the foundation of information security. -->
 
 ---
 layout: default
@@ -137,6 +143,8 @@ layout: default
 </div>
 
 </div>
+
+<!-- Let's dive deep into the first pillar: Confidentiality, which is about keeping secrets secret. Confidentiality ensures that sensitive information is accessible only to authorized individuals and remains hidden from unauthorized parties. The key principles include need-to-know basis, least privilege access, data classification, and privacy protection. Implementation methods involve encryption both at rest and in transit, access controls and permissions, authentication mechanisms, and data masking and anonymization. We can see real-world examples of good confidentiality practices in banking with encrypted account numbers, healthcare with protected patient records, government with secured classified documents, and corporate trade secrets protection. Unfortunately, we've also seen major confidentiality breaches like Equifax in 2017 affecting 147 million records, Facebook in 2018 with 87 million users affected, Yahoo from 2013-2014 compromising 3 billion accounts, and Marriott in 2018 with 500 million guests' data stolen. These breaches result in financial losses, identity theft, reputation damage, and legal consequences. -->
 
 ---
 layout: default

@@ -145,7 +145,7 @@ class SlidevExportProcessor:
         return png_files
     
     def parse_slidev_content(self, slidev_file):
-        """Parse slidev markdown content to extract slide data"""
+        """Parse slidev markdown content to extract slide data with speaker notes"""
         if not os.path.exists(slidev_file):
             print(f"❌ Slidev file not found: {slidev_file}")
             return []
@@ -157,15 +157,23 @@ class SlidevExportProcessor:
         sections = content.split('---')
         slide_data_list = []
         
+        slide_counter = 1  # Start slide numbering from 1
         for i, section in enumerate(sections):
-            if i == 0:  # Skip frontmatter
+            if i == 0:  # Skip main YAML frontmatter
+                continue
+            
+            # Skip additional config sections that don't contain slide content
+            if (section.strip().startswith('theme:') or 
+                section.strip().startswith('layout:') or
+                ('background:' in section and 'title:' in section and '# ' not in section)):
                 continue
                 
-            slide_data = self._parse_slide_section(section, i)
+            slide_data = self._parse_slide_section_with_notes(section, slide_counter)
             if slide_data:
                 slide_data_list.append(slide_data)
+                slide_counter += 1
         
-        print(f"✅ Parsed {len(slide_data_list)} content sections")
+        print(f"✅ Parsed {len(slide_data_list)} content sections with speaker notes")
         return slide_data_list
     
     def _parse_slide_section(self, section, slide_number):
@@ -226,6 +234,87 @@ class SlidevExportProcessor:
                     slide_data['content'].append(text)
         
         return slide_data if slide_data['title'] or slide_data['content'] or slide_data['bullet_points'] else None
+    
+    def _parse_slide_section_with_notes(self, section, slide_number):
+        """Parse individual slide section and extract speaker notes from HTML comments"""
+        lines = section.strip().split('\n')
+        
+        slide_data = {
+            'number': slide_number,
+            'title': '',
+            'content': [],
+            'bullet_points': [],
+            'layout': 'default',
+            'raw_content': section.strip(),
+            'speaker_notes': ''
+        }
+        
+        # Extract speaker notes from HTML comments (<!-- content -->)
+        import re
+        html_comment_pattern = r'<!--\s*(.*?)\s*-->'
+        comment_matches = re.findall(html_comment_pattern, section, re.DOTALL)
+        
+        if comment_matches:
+            # Use the last comment as speaker notes (as per slidev convention)
+            speaker_notes = comment_matches[-1].strip()
+            # Clean up extra whitespace and line breaks
+            speaker_notes = re.sub(r'\s+', ' ', speaker_notes)
+            slide_data['speaker_notes'] = speaker_notes
+            print(f"   🎤 Found speaker notes for slide {slide_number}: {len(speaker_notes)} characters")
+        
+        # Parse regular content (existing logic)
+        for line in lines:
+            line = line.strip()
+            
+            # Skip empty lines, layout directives, HTML/Vue components, comments, and YAML frontmatter
+            if (not line or line.startswith('layout:') or line.startswith('class:') or 
+                line.startswith('<') or line.startswith('```') or 
+                line.startswith('<!--') or line.endswith('-->') or 
+                line.startswith('theme:') or line.startswith('background:') or
+                line.startswith('title:') or line.startswith('info:') or
+                line.startswith('highlighter:') or line.startswith('drawings:') or
+                line.startswith('transition:') or line.startswith('mdc:') or
+                line.startswith('persist:')):
+                continue
+            
+            # Extract main title (# heading)
+            if line.startswith('# ') and not slide_data['title']:
+                slide_data['title'] = line[2:].strip()
+                continue
+            
+            # Extract subtitles (## heading)
+            if line.startswith('## '):
+                subtitle = line[3:].strip()
+                # Clean emoji and markdown
+                subtitle = re.sub(r'[🔄🎯🔒💡⚡🛡️📊🔍⚠️✅❌🎪🔧📱💻🌐]', '', subtitle)
+                subtitle = re.sub(r'\*\*([^*]+)\*\*', r'\1', subtitle)
+                slide_data['content'].append(subtitle)
+                continue
+            
+            # Extract bullet points
+            if line.startswith('- '):
+                bullet = line[2:].strip()
+                # Clean markdown formatting and emojis
+                bullet = re.sub(r'\*\*([^*]+)\*\*', r'\1', bullet)
+                bullet = re.sub(r'\*([^*]+)\*', r'\1', bullet)
+                bullet = re.sub(r'`([^`]+)`', r'\1', bullet)
+                bullet = re.sub(r'[🔄🎯🔒💡⚡🛡️📊🔍⚠️✅❌🎪🔧📱💻🌐]', '', bullet)
+                
+                if len(bullet) > 5 and len(bullet) < 200:
+                    slide_data['bullet_points'].append(bullet)
+                continue
+            
+            # Extract regular text content
+            if len(line) > 10 and not line.startswith('#') and not line.startswith('<'):
+                # Clean text content
+                text = re.sub(r'\*\*([^*]+)\*\*', r'\1', line)
+                text = re.sub(r'\*([^*]+)\*', r'\1', text)
+                text = re.sub(r'`([^`]+)`', r'\1', text)
+                
+                if len(text) > 10:
+                    slide_data['content'].append(text)
+        
+        return slide_data if slide_data['title'] or slide_data['content'] or slide_data['bullet_points'] or slide_data['speaker_notes'] else None
     
     def generate_audio_with_hierarchy(self, script, output_file):
         """Generate audio using confirmed 4-tier voice hierarchy"""
@@ -290,139 +379,94 @@ class SlidevExportProcessor:
         return "failed"
     
     def generate_comprehensive_narration(self, slide_data):
-        """Generate comprehensive narration for each slide"""
+        """Generate narration prioritizing speaker notes over content parsing"""
+        speaker_notes = slide_data.get('speaker_notes', '')
+        
+        # If speaker notes exist, use them as the primary narration
+        if speaker_notes and len(speaker_notes) > 20:
+            print(f"   🎤 Using speaker notes ({len(speaker_notes)} chars)")
+            return speaker_notes
+        
+        # Fallback to content parsing if no speaker notes
+        print(f"   📝 No speaker notes found, generating from content")
         script_parts = []
-        slide_num = slide_data['number']
+        slide_num = slide_data['number'] 
+        title = slide_data.get('title', '')
+        content = slide_data.get('content', [])
+        bullets = slide_data.get('bullet_points', [])
         
-        # Handle different slide types with comprehensive narration
-        if slide_num == 1:
-            # Title slide - comprehensive introduction
-            script_parts.append("Welcome to today's lecture on Computer Security Fundamentals.")
-            script_parts.append("In this session, we will explore the CIA Triad and Information Security Principles.")
-            script_parts.append("These concepts form the foundation of modern cybersecurity practices.")
-            
-        elif slide_data['title'] and 'recap' in slide_data['title'].lower():
-            # Recap slide - thorough review
-            script_parts.append("Let's begin with a comprehensive recap of our previous lecture.")
-            script_parts.append("We covered several fundamental concepts in cyber security.")
-            
-            if slide_data['bullet_points']:
-                script_parts.append("In the previous session, we discussed:")
-                for i, bullet in enumerate(slide_data['bullet_points'][:5]):
-                    if i == 0:
-                        script_parts.append(f"First, we examined {bullet.lower()}.")
-                    elif i == 1:
-                        script_parts.append(f"We also covered {bullet.lower()}.")
-                    elif i == 2:
-                        script_parts.append(f"Additionally, we explored {bullet.lower()}.")
-                    elif i == 3:
-                        script_parts.append(f"We discussed {bullet.lower()}.")
-                    else:
-                        script_parts.append(f"Finally, we reviewed {bullet.lower()}.")
-            
-            script_parts.append("Now let's move forward to today's key learning objectives.")
-            
-        elif slide_data['title'] and ('cia' in slide_data['title'].lower() or 'triad' in slide_data['title'].lower()):
-            # CIA Triad slides - detailed explanation
-            script_parts.append(f"Now we come to a crucial topic: {slide_data['title']}.")
-            script_parts.append("The CIA Triad represents the three fundamental pillars of information security.")
-            script_parts.append("These three principles guide all security decisions and implementations.")
-            
-            for content in slide_data['content'][:3]:
-                script_parts.append(content)
-            
-            if slide_data['bullet_points']:
-                script_parts.append("Let me explain each component in detail:")
-                for bullet in slide_data['bullet_points'][:4]:
-                    script_parts.append(bullet)
-                    
-        elif slide_data['title'] and ('confidentiality' in slide_data['title'].lower()):
-            # Confidentiality slides - detailed coverage
-            script_parts.append(f"Let's dive deep into {slide_data['title']}.")
-            script_parts.append("Confidentiality ensures that information is accessible only to authorized individuals.")
-            script_parts.append("This is perhaps the most commonly understood aspect of information security.")
-            
-            for content in slide_data['content'][:2]:
-                script_parts.append(content)
-                
-            if slide_data['bullet_points']:
-                script_parts.append("Key aspects of confidentiality include:")
-                for i, bullet in enumerate(slide_data['bullet_points'][:5]):
-                    script_parts.append(f"{bullet}.")
-                    
-        elif slide_data['title'] and ('integrity' in slide_data['title'].lower()):
-            # Integrity slides
-            script_parts.append(f"Moving on to {slide_data['title']}.")
-            script_parts.append("Integrity ensures that information remains accurate and unaltered.")
-            script_parts.append("This principle protects against unauthorized modification of data.")
-            
-            for content in slide_data['content'][:2]:
-                script_parts.append(content)
-                
-            if slide_data['bullet_points']:
-                script_parts.append("Important integrity concepts include:")
-                for bullet in slide_data['bullet_points'][:5]:
-                    script_parts.append(f"{bullet}.")
-                    
-        elif slide_data['title'] and ('availability' in slide_data['title'].lower()):
-            # Availability slides
-            script_parts.append(f"Finally, let's examine {slide_data['title']}.")
-            script_parts.append("Availability ensures that information and systems are accessible when needed.")
-            script_parts.append("This principle addresses the operational aspect of security.")
-            
-            for content in slide_data['content'][:2]:
-                script_parts.append(content)
-                
-            if slide_data['bullet_points']:
-                script_parts.append("Key availability considerations include:")
-                for bullet in slide_data['bullet_points'][:5]:
-                    script_parts.append(f"{bullet}.")
-                    
-        else:
-            # General content slides - comprehensive coverage
-            if slide_data['title']:
-                script_parts.append(f"Let's now examine {slide_data['title']}.")
-            
-            # Add detailed content explanation
-            for i, content in enumerate(slide_data['content'][:3]):
-                if i == 0:
-                    script_parts.append(content)
-                else:
-                    script_parts.append(f"Additionally, {content.lower()}")
-            
-            # Add comprehensive bullet point coverage
-            if slide_data['bullet_points']:
-                if len(slide_data['bullet_points']) <= 2:
-                    script_parts.append("The key points to remember are:")
-                else:
-                    script_parts.append("The main concepts we need to understand include:")
-                
-                for i, bullet in enumerate(slide_data['bullet_points'][:6]):
-                    if i == 0:
-                        script_parts.append(f"First, {bullet.lower()}.")
-                    elif i == 1:
-                        script_parts.append(f"Second, {bullet.lower()}.")
-                    elif i == 2:
-                        script_parts.append(f"Third, {bullet.lower()}.")
-                    elif i == 3:
-                        script_parts.append(f"Additionally, {bullet.lower()}.")
-                    elif i == 4:
-                        script_parts.append(f"Furthermore, {bullet.lower()}.")
-                    else:
-                        script_parts.append(f"Finally, {bullet.lower()}.")
+        # Add title if present
+        if title:
+            if slide_num == 1:
+                script_parts.append(f"Welcome to {title}.")
+            else:
+                script_parts.append(f"Let's now examine {title}.")
         
-        # Create comprehensive final script
+        # Add main content
+        for item in content:
+            if len(item) > 10:  # Skip very short items
+                script_parts.append(item)
+        
+        # Add bullet points with proper narration flow
+        if bullets:
+            if len(bullets) <= 3:
+                script_parts.append("The key points are:")
+            else:
+                script_parts.append("The main concepts include:")
+            
+            for i, bullet in enumerate(bullets[:8]):  # Limit to 8 bullets
+                if len(bullet) > 5:
+                    if i == 0:
+                        script_parts.append(f"First, {bullet}.")
+                    elif i == 1:
+                        script_parts.append(f"Second, {bullet}.")
+                    elif i == 2:
+                        script_parts.append(f"Third, {bullet}.")
+                    elif i < len(bullets) - 1:
+                        script_parts.append(f"Additionally, {bullet}.")
+                    else:
+                        script_parts.append(f"Finally, {bullet}.")
+        
+        # Create final script
         script = ' '.join(script_parts)
         
-        # Clean up the script
+        # Clean up
         script = re.sub(r'\s+', ' ', script)
         script = script.replace('..', '.').replace(' .', '.').strip()
         
-        # Ensure minimum length for educational value
-        if len(script) < 100:
-            script += " This concept is fundamental to understanding information security principles."
+        # Ensure minimum length
+        if len(script) < 50:
+            script = f"This slide presents important information about our topic. {script}"
         
         return script
+
+    def generate_slide_specific_narration(self, slide_number, total_slides):
+        """Generate narration based on slide position and cybersecurity content"""
+        
+        # Predefined narration for specific slide positions in cybersecurity lecture
+        narration_map = {
+            1: "Welcome to today's lecture on Computer Security Fundamentals. In this session, we will explore the CIA Triad and Information Security Principles. These concepts form the foundation of modern cybersecurity practices.",
+            
+            2: "Computer Security Fundamentals is the title of our lecture series. Today we focus on Lecture 2, which covers the CIA Triad and Information Security Principles. Let's begin our journey into the core concepts of cybersecurity.",
+            
+            3: "Let's begin with a comprehensive recap of our previous lecture. We covered several fundamental concepts in cyber security. In the previous session, we examined cyber security definitions, digital asset protection, the current threat landscape, career opportunities, and regulatory requirements. Today's learning objectives include understanding CIA Triad fundamentals, applying security principles in practice, analyzing real-world examples, and designing secure systems using CIA principles.",
+            
+            4: "Now we come to the central topic of today's lecture: The CIA Triad. The CIA Triad represents the three fundamental pillars of information security. These three principles - Confidentiality, Integrity, and Availability - guide all security decisions and implementations. This triangle diagram shows how these concepts interconnect to provide comprehensive information security.",
+            
+            5: "Let's dive deep into the first pillar: Confidentiality, which is about keeping secrets secret. Confidentiality ensures that sensitive information is accessible only to authorized individuals and remains hidden from unauthorized parties. This involves privacy protection, access control mechanisms, and encryption technologies. Key aspects include data classification, user authentication, authorization protocols, and information hiding techniques."
+        }
+        
+        # Get predefined narration or generate generic one
+        if slide_number in narration_map:
+            return narration_map[slide_number]
+        else:
+            # Generate appropriate narration for remaining slides
+            if slide_number <= 8:
+                return f"Continuing with our cybersecurity fundamentals, this slide presents important information about information security principles. We examine the key concepts that build upon the CIA Triad framework. Understanding these principles is essential for implementing effective security measures in any organization."
+            elif slide_number <= 15:
+                return f"As we progress through the lecture, we explore more advanced concepts in cybersecurity. This slide covers practical applications and real-world examples of security principles. These concepts help us understand how to apply theoretical knowledge in actual security implementations."
+            else:
+                return f"In this part of our lecture, we examine specialized topics in computer security. The information presented here builds upon our foundational understanding of the CIA Triad. These advanced concepts prepare us for more complex security challenges in modern computing environments."
     
     def create_professional_video_with_slidev_export(self, slidev_file, max_slides=None):
         """Create professional video using actual slidev exported slides"""
@@ -455,19 +499,35 @@ class SlidevExportProcessor:
         total_duration = 0
         voice_usage = {}
         
-        # Process each slide
+        # Process each slide with proper synchronization
         for i, slide_file in enumerate(slide_files):
             print(f"\n🎞️  Processing slide {i+1}/{len(slide_files)}: {slide_file.name}")
             
-            # Get corresponding slide data for narration
-            slide_data = slide_data_list[i] if i < len(slide_data_list) else {
-                'number': i+1,
-                'title': f'Slide {i+1}',
-                'content': [],
-                'bullet_points': []
-            }
+            # Extract slide number from filename (e.g., "1.png" -> 1)
+            try:
+                slide_number = int(re.search(r'(\d+)', slide_file.stem).group())
+            except:
+                slide_number = i + 1
             
-            # Generate comprehensive narration
+            # Find corresponding slide data by matching slide numbers
+            slide_data = None
+            for data in slide_data_list:
+                if data.get('number') == slide_number:
+                    slide_data = data
+                    print(f"   ✅ Synchronized: Slide {slide_number} image → Content '{data.get('title', 'No title')[:50]}...'")
+                    break
+            
+            # Fallback if no matching slide data found
+            if not slide_data:
+                slide_data = {
+                    'number': slide_number,
+                    'title': f'Slide {slide_number}',
+                    'content': [],
+                    'bullet_points': []
+                }
+                print(f"   ⚠️  No matching content found for slide {slide_number}, using fallback")
+            
+            # Generate narration from actual slide content
             try:
                 script = self.generate_comprehensive_narration(slide_data)
                 print(f"   📝 Script ({len(script)} chars): {script[:100]}...")
