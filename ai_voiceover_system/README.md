@@ -12,15 +12,35 @@ Generates professional educational videos with perfect synchronization between s
 
 ## 🚀 Quick Start
 
+### Option 1: Auto-Venv Runner (Recommended)
 ```bash
 # Process default file (5 slides)
-python slidev_export_processor.py
+python ai_voiceover_system/run.py
 
-# Process specific slidev file (5 slides)
-python slidev_export_processor.py /path/to/your/slides.md
+# Process specific slidev file (5 slides)  
+python ai_voiceover_system/run.py /path/to/your/slides.md
 
 # Process specific file with custom slide count
-python slidev_export_processor.py /path/to/your/slides.md 10
+python ai_voiceover_system/run.py /path/to/your/slides.md 10
+```
+
+### Option 2: Manual Virtual Environment
+```bash
+# Activate venv first
+source venv/bin/activate
+
+# Then run processor
+python ai_voiceover_system/slidev_export_processor.py
+python ai_voiceover_system/slidev_export_processor.py /path/to/your/slides.md 10
+```
+
+## 📋 Setup (One-time)
+
+```bash
+# From project root (studio folder)
+python3 -m venv venv
+source venv/bin/activate
+pip install gtts moviepy
 ```
 
 ## 📁 Files

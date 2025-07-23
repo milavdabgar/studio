@@ -17,6 +17,7 @@ import re
 import subprocess
 from pathlib import Path
 
+
 # Set TTS environment
 os.environ['COQUI_TOS_AGREED'] = '1'
 os.environ['COQUI_TTS_AGREED'] = '1'
@@ -44,7 +45,7 @@ class SlidevExportProcessor:
     
     def __init__(self, slidev_file=None):
         self.slides_dir = "temp_exported_slides"  # Temporary directory
-        self.slidev_md_file = slidev_file or "/Users/milav/Code/studio/content/resources/study-materials/32-ict/sem-5/4353204-cyber-security/slidev/02-computer-security-fundamentals.md"
+        self.slidev_md_file = slidev_file or "content/resources/study-materials/32-ict/sem-5/4353204-cyber-security/slidev/02-computer-security-fundamentals.md"
         self.temp_audio_files = []  # Track temporary audio files
         
         # Initialize neural models (for backup)
