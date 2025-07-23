@@ -43,9 +43,9 @@ except ImportError:
 class SlidevExportProcessor:
     """Processor using actual slidev exported slides with voice hierarchy"""
     
-    def __init__(self, slidev_file=None):
+    def __init__(self, slidev_file):
         self.slides_dir = "temp_exported_slides"  # Temporary directory
-        self.slidev_md_file = slidev_file or "content/resources/study-materials/32-ict/sem-5/4353204-cyber-security/slidev/02-computer-security-fundamentals.md"
+        self.slidev_md_file = slidev_file
         self.temp_audio_files = []  # Track temporary audio files
         
         # Initialize neural models (for backup)
@@ -671,35 +671,49 @@ def main():
     print("=" * 65)
     
     # Parse command line arguments
-    slidev_file = None
+    if len(sys.argv) < 2:
+        print("❌ Error: Slidev file path is required!")
+        print("💡 Usage: python slidev_export_processor.py <slidev_file.md> [max_slides]")
+        print("💡 Examples:")
+        print("   python slidev_export_processor.py content/slides/my-presentation.md")
+        print("   python slidev_export_processor.py content/slides/my-presentation.md 10")
+        print("   python slidev_export_processor.py ../path/to/slides.md")
+        return
+    
+    slidev_file = sys.argv[1]
     max_slides = 5  # Default to 5 slides for testing
     
-    if len(sys.argv) > 1:
-        slidev_file = sys.argv[1]
-        if len(sys.argv) > 2:
-            try:
-                max_slides = int(sys.argv[2])
-            except ValueError:
-                print("⚠️ Invalid max_slides argument, using default: 5")
+    if len(sys.argv) > 2:
+        try:
+            max_slides = int(sys.argv[2])
+            if max_slides <= 0:
+                print("⚠️ Invalid max_slides value, must be positive. Using default: 5")
+                max_slides = 5
+        except ValueError:
+            print("⚠️ Invalid max_slides argument, must be a number. Using default: 5")
+    
+    # Check if slidev file exists before creating processor
+    if not os.path.exists(slidev_file):
+        print(f"❌ Slidev file not found: {slidev_file}")
+        print("💡 Please check the file path and try again.")
+        print("💡 Make sure to use relative paths from the project root or absolute paths.")
+        return
+    
+    # Validate file extension
+    if not slidev_file.lower().endswith('.md'):
+        print(f"⚠️ Warning: File doesn't have .md extension: {slidev_file}")
+        print("💡 Proceeding anyway, but make sure it's a valid Slidev markdown file.")
     
     processor = SlidevExportProcessor(slidev_file)
     
-    # Check if slidev file exists
-    if not os.path.exists(processor.slidev_md_file):
-        print(f"❌ Slidev file not found: {processor.slidev_md_file}")
-        if not slidev_file:
-            print("💡 Usage: python slidev_export_processor.py <slidev_file.md> [max_slides]")
-            print("💡 Example: python slidev_export_processor.py /path/to/slides.md 10")
-        return
-    
-    print(f"📁 Input file: {processor.slidev_md_file}")
+    print(f"📁 Input file: {slidev_file}")
     print(f"🎬 Processing: {max_slides} slides")
     print()
     
     try:
         # Process slides
         processor.create_professional_video_with_slidev_export(
-            processor.slidev_md_file, 
+            slidev_file, 
             max_slides=max_slides
         )
     except KeyboardInterrupt:

@@ -14,14 +14,14 @@ Generates professional educational videos with perfect synchronization between s
 
 ### Option 1: Auto-Venv Runner (Recommended)
 ```bash
-# Process default file (5 slides)
-python ai_voiceover_system/run.py
+# Process any Slidev file (5 slides default)
+python ai_voiceover_system/run.py content/path/to/your/slides.md
 
-# Process specific slidev file (5 slides)  
-python ai_voiceover_system/run.py /path/to/your/slides.md
+# Process with custom slide count
+python ai_voiceover_system/run.py content/path/to/your/slides.md 10
 
-# Process specific file with custom slide count
-python ai_voiceover_system/run.py /path/to/your/slides.md 10
+# Process all slides in file
+python ai_voiceover_system/run.py content/path/to/your/slides.md 100
 ```
 
 ### Option 2: Manual Virtual Environment
@@ -29,9 +29,20 @@ python ai_voiceover_system/run.py /path/to/your/slides.md 10
 # Activate venv first
 source venv/bin/activate
 
-# Then run processor
-python ai_voiceover_system/slidev_export_processor.py
-python ai_voiceover_system/slidev_export_processor.py /path/to/your/slides.md 10
+# Then run processor with file argument (REQUIRED)
+python ai_voiceover_system/slidev_export_processor.py content/path/to/your/slides.md
+python ai_voiceover_system/slidev_export_processor.py content/path/to/your/slides.md 10
+```
+
+### ❌ Error Handling
+```bash
+# Missing file argument
+python ai_voiceover_system/run.py
+# Error: Slidev file path is required!
+
+# File not found
+python ai_voiceover_system/run.py nonexistent.md
+# Error: Slidev file not found
 ```
 
 ## 📋 Setup (One-time)
