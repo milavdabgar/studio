@@ -533,6 +533,33 @@ const PostRenderer: React.FC<PostRendererProps> = ({
     );
   }
 
+  // If this is PDF content, render the embedded PDF viewer
+  if (contentType === 'pdf' && slugParts) {
+    const pdfFilename = slugParts[slugParts.length - 1];
+    const pdfPath = `/api/content/pdfs/${slugParts.join('/')}`;
+    
+    return (
+      <div className="pdf-wrapper w-full">
+        <div className="pdf-viewer-container bg-gray-50 rounded-lg border">
+          <div className="pdf-header bg-gray-100 px-4 py-3 border-b">
+            <h3 className="text-lg font-semibold text-gray-800">PDF Document</h3>
+            <p className="text-sm text-gray-600">
+              {pdfFilename?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'PDF Document'}
+            </p>
+          </div>
+          <div className="pdf-content" style={{ height: '80vh' }}>
+            <iframe
+              src={pdfPath}
+              className="w-full h-full border-0"
+              title={`PDF: ${pdfFilename}`}
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Debug: Log the contentHtml to see if Gallery shortcodes are present
   console.log('PostRenderer: contentHtml includes gallery:', contentHtml.includes('gallery'));
   console.log('PostRenderer: contentHtml includes data-shortcode:', contentHtml.includes('data-shortcode'));

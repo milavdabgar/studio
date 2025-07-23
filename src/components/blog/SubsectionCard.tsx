@@ -27,17 +27,26 @@ export function SubsectionCard({ name, slug, postCount, lang, description }: Sub
     : `${postCount} item${postCount !== 1 ? 's' : ''}`;
 
   return (
-    <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-card to-card/80 hover:scale-[1.02] dark:border-gray-700">
+    <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-card to-card/80 hover:scale-[1.02] dark:border-gray-700 h-full flex flex-col">
       <CardHeader className="pb-3">
         <div className="flex items-start gap-4">
           <div className="p-3 rounded-xl bg-gradient-to-br from-primary/10 to-secondary/10 text-primary group-hover:from-primary group-hover:to-secondary group-hover:text-white transition-all duration-300 shadow-sm">
             <Folder className="h-6 w-6" />
           </div>
           <div className="flex-1 min-w-0">
-            <CardTitle className="text-xl font-semibold">
+            <CardTitle className="text-lg font-semibold leading-tight">
               <Link
                 href={`/posts/${lang}/${slug}`}
-                className="text-primary hover:text-secondary transition-colors block truncate group-hover:text-primary dark:hover:text-primary"
+                className="text-primary hover:text-secondary transition-colors block group-hover:text-primary dark:hover:text-primary"
+                title={displayName}
+                style={{
+                  display: '-webkit-box',
+                  WebkitLineClamp: 3,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                  wordBreak: 'break-word',
+                  hyphens: 'auto'
+                }}
               >
                 {displayName}
               </Link>
@@ -48,7 +57,7 @@ export function SubsectionCard({ name, slug, postCount, lang, description }: Sub
           </div>
         </div>
       </CardHeader>
-      <CardContent className="pt-0">
+      <CardContent className="pt-0 mt-auto">
         <div className="flex items-center justify-between">
           <Badge variant="secondary" className="text-xs font-medium bg-gradient-to-r from-secondary/10 to-accent/10 text-secondary-foreground border-0 dark:border-gray-700">
             <FileText className="h-3 w-3 mr-1.5" />

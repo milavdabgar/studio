@@ -4,7 +4,7 @@
 import { PostPreview } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, User, Tag as TagIcon } from 'lucide-react';
+import { Calendar, Clock, User, Tag as TagIcon, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { format, parseISO, isValid } from 'date-fns';
 import { useLanguage } from '@/lib/contexts/LanguageContext';
@@ -60,12 +60,21 @@ export function PostCard({
   };
 
   return (
-    <Card className="hover:shadow-lg transition-shadow">
-      <CardHeader>
-        <CardTitle className="text-xl">
+    <Card className="hover:shadow-lg transition-shadow h-full flex flex-col">
+      <CardHeader className="flex-shrink-0">
+        <CardTitle className="text-lg leading-tight mb-2">
           <Link
             href={post.href}
-            className="text-primary hover:text-primary dark:hover:text-primary/80 transition-colors"
+            className="text-primary hover:text-primary dark:hover:text-primary/80 transition-colors block"
+            title={post.title}
+            style={{
+              display: '-webkit-box',
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              wordBreak: 'break-word',
+              hyphens: 'auto'
+            }}
           >
             {post.title}
           </Link>
@@ -77,6 +86,14 @@ export function PostCard({
             <span>{formatDate(post.date)}</span>
           </div>
           
+          {/* Show PDF indicator for PDF content */}
+          {(post as any).contentType === 'pdf' && (
+            <div className="flex items-center gap-1">
+              <FileText className="h-4 w-4 text-red-600" />
+              <span className="text-red-600 font-medium">PDF</span>
+            </div>
+          )}
+          
           {showAuthor && post.author && (
             <div className="flex items-center gap-1">
               <User className="h-4 w-4" />
@@ -84,7 +101,7 @@ export function PostCard({
             </div>
           )}
           
-          {showReadingTime && post.readingTime && (
+          {showReadingTime && post.readingTime && (post as any).contentType !== 'pdf' && (
             <div className="flex items-center gap-1">
               <Clock className="h-4 w-4" />
               <span>{post.readingTime} {t('minutes')}</span>
@@ -92,9 +109,17 @@ export function PostCard({
           )}
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-grow flex flex-col">
         {showExcerpt && post.excerpt && (
-          <p className="text-muted-foreground mb-4 line-clamp-3">
+          <p 
+            className="text-muted-foreground mb-4"
+            style={{
+              display: '-webkit-box',
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden'
+            }}
+          >
             {post.excerpt}
           </p>
         )}
@@ -132,7 +157,7 @@ export function PostCard({
           )}
         </div>
 
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center mt-auto">
           <Link
             href={post.href}
             className="text-sm text-primary hover:text-primary dark:hover:text-primary/80 transition-colors"
