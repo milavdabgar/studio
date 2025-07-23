@@ -13,14 +13,20 @@ Generates professional educational videos with perfect synchronization between s
 ## 🚀 Quick Start
 
 ```bash
+# Process default file (5 slides)
 python slidev_export_processor.py
+
+# Process specific slidev file (5 slides)
+python slidev_export_processor.py /path/to/your/slides.md
+
+# Process specific file with custom slide count
+python slidev_export_processor.py /path/to/your/slides.md 10
 ```
 
 ## 📁 Files
 
 - **`slidev_export_processor.py`** - Main working script (✅ KEEP)
-- **`exported_slides/`** - Auto-generated slide images from slidev export
-- **`PROFESSIONAL_slidev_export_with_voice_hierarchy.mp4`** - Final working video output
+- **`PROFESSIONAL_[filename]_with_voice_hierarchy.mp4`** - Generated video output
 
 ## 🎤 How It Works
 
@@ -33,15 +39,17 @@ python slidev_export_processor.py
    <!-- Speaker notes for TTS go here -->
    ```
 
-2. **Exports slides** using `slidev export` command to generate PNG images
+2. **Exports slides** using `slidev export` command to generate PNG images (temporary)
 
 3. **Extracts speaker notes** from HTML comments in markdown
 
-4. **Generates TTS** using Google TTS UK English (user's preferred voice)
+4. **Generates TTS** using Google TTS UK English (temporary WAV files)
 
 5. **Synchronizes** each slide image with its corresponding speaker notes audio
 
 6. **Outputs** professional MP4 video with perfect timing
+
+7. **Cleans up** all temporary PNG and WAV files automatically
 
 ## ✅ Voice Hierarchy
 

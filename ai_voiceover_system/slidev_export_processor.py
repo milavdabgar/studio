@@ -42,9 +42,10 @@ except ImportError:
 class SlidevExportProcessor:
     """Processor using actual slidev exported slides with voice hierarchy"""
     
-    def __init__(self):
-        self.slides_dir = "exported_slides"
-        self.slidev_md_file = "/Users/milav/Code/studio/content/resources/study-materials/32-ict/sem-5/4353204-cyber-security/slidev/02-computer-security-fundamentals.md"
+    def __init__(self, slidev_file=None):
+        self.slides_dir = "temp_exported_slides"  # Temporary directory
+        self.slidev_md_file = slidev_file or "/Users/milav/Code/studio/content/resources/study-materials/32-ict/sem-5/4353204-cyber-security/slidev/02-computer-security-fundamentals.md"
+        self.temp_audio_files = []  # Track temporary audio files
         
         # Initialize neural models (for backup)
         self.vits_model = None
@@ -378,6 +379,30 @@ class SlidevExportProcessor:
         print(f"   ❌ ALL VOICE OPTIONS FAILED!")
         return "failed"
     
+    def cleanup_temp_files(self):
+        """Clean up temporary files and directories"""
+        print("\n🧹 Cleaning up temporary files...")
+        
+        # Remove temporary audio files
+        for audio_file in self.temp_audio_files:
+            try:
+                if os.path.exists(audio_file):
+                    os.remove(audio_file)
+                    print(f"   🗑️ Removed: {audio_file}")
+            except Exception as e:
+                print(f"   ⚠️ Could not remove {audio_file}: {e}")
+        
+        # Remove temporary slides directory
+        try:
+            if os.path.exists(self.slides_dir):
+                import shutil
+                shutil.rmtree(self.slides_dir)
+                print(f"   🗑️ Removed directory: {self.slides_dir}")
+        except Exception as e:
+            print(f"   ⚠️ Could not remove directory {self.slides_dir}: {e}")
+        
+        print("✅ Cleanup completed!")
+    
     def generate_comprehensive_narration(self, slide_data):
         """Generate narration prioritizing speaker notes over content parsing"""
         speaker_notes = slide_data.get('speaker_notes', '')
@@ -533,7 +558,8 @@ class SlidevExportProcessor:
                 print(f"   📝 Script ({len(script)} chars): {script[:100]}...")
                 
                 # Generate audio with voice hierarchy
-                audio_file = f"slidev_slide_{i+1:02d}_audio.wav"
+                audio_file = f"temp_slidev_slide_{i+1:02d}_audio.wav"
+                self.temp_audio_files.append(audio_file)  # Track for cleanup
                 voice_used = self.generate_audio_with_hierarchy(script, audio_file)
                 
                 # Track voice usage
@@ -577,7 +603,10 @@ class SlidevExportProcessor:
             
             try:
                 final_video = concatenate_videoclips(video_clips)
-                output_file = "PROFESSIONAL_slidev_export_with_voice_hierarchy.mp4"
+                
+                # Generate output filename based on input file
+                input_basename = os.path.splitext(os.path.basename(slidev_file))[0]
+                output_file = f"PROFESSIONAL_{input_basename}_with_voice_hierarchy.mp4"
                 
                 print("📤 Exporting professional video with actual slidev slides...")
                 final_video.write_videofile(
@@ -619,32 +648,65 @@ class SlidevExportProcessor:
                     
                     print(f"\n✅ Ready for professional educational distribution!")
                     
+                    # Clean up temporary files after successful video creation
+                    self.cleanup_temp_files()
+                    
                 else:
                     print("❌ Video file not created")
+                    self.cleanup_temp_files()  # Clean up even on failure
                 
             except Exception as e:
                 print(f"❌ Final video creation failed: {e}")
+                self.cleanup_temp_files()  # Clean up on error
         else:
             print("❌ No video clips to process")
+            self.cleanup_temp_files()  # Clean up even if no clips
 
 def main():
     """Main execution with slidev export"""
+    import sys
+    
     print("🎤 Slidev Export Processor with Voice Hierarchy") 
     print("=" * 65)
     
-    processor = SlidevExportProcessor()
+    # Parse command line arguments
+    slidev_file = None
+    max_slides = 5  # Default to 5 slides for testing
+    
+    if len(sys.argv) > 1:
+        slidev_file = sys.argv[1]
+        if len(sys.argv) > 2:
+            try:
+                max_slides = int(sys.argv[2])
+            except ValueError:
+                print("⚠️ Invalid max_slides argument, using default: 5")
+    
+    processor = SlidevExportProcessor(slidev_file)
     
     # Check if slidev file exists
     if not os.path.exists(processor.slidev_md_file):
         print(f"❌ Slidev file not found: {processor.slidev_md_file}")
-        print("Please update the slidev_md_file path in the script")
+        if not slidev_file:
+            print("💡 Usage: python slidev_export_processor.py <slidev_file.md> [max_slides]")
+            print("💡 Example: python slidev_export_processor.py /path/to/slides.md 10")
         return
     
-    # Process first 5 slides for testing
-    processor.create_professional_video_with_slidev_export(
-        processor.slidev_md_file, 
-        max_slides=5
-    )
+    print(f"📁 Input file: {processor.slidev_md_file}")
+    print(f"🎬 Processing: {max_slides} slides")
+    print()
+    
+    try:
+        # Process slides
+        processor.create_professional_video_with_slidev_export(
+            processor.slidev_md_file, 
+            max_slides=max_slides
+        )
+    except KeyboardInterrupt:
+        print("\n⚠️ Process interrupted by user")
+        processor.cleanup_temp_files()
+    except Exception as e:
+        print(f"\n❌ Unexpected error: {e}")
+        processor.cleanup_temp_files()
 
 if __name__ == "__main__":
     main()
