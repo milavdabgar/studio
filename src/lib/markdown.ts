@@ -442,7 +442,7 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
       
       // Generate title - remove file extension if using filename
       const fallbackTitle = fileDetail.slugParts[fileDetail.slugParts.length - 1] || 'Untitled Post';
-      const titleWithoutExtension = fallbackTitle.replace(/\.(md|MD)$/, '');
+      const titleWithoutExtension = fallbackTitle.replace(/\.(md|MD|html|HTML)$/, '');
       const title = matterResult.data.title || titleWithoutExtension;
       const date = matterResult.data.date || new Date().toISOString();
 
