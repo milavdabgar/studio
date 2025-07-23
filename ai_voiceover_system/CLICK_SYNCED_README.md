@@ -1,17 +1,17 @@
-# Click-Synced Video System for Slidev
+# Slidev Video Generation System
 
-🎯 **Advanced AI voiceover system with click-synchronized narration**
+🎯 **Comprehensive AI voiceover system for Slidev presentations**
 
-## 🚀 What's New
+## 🚀 Two Complementary Systems
 
-This system creates educational videos where narration is perfectly synchronized with Slidev click animations. Each slide click triggers its own narration segment, creating much more engaging and professional presentations.
+This system provides two different approaches for creating educational videos from Slidev presentations, each optimized for different use cases.
 
 ## 📋 Files Overview
 
 ### Working Systems
 
-1. **`slidev_export_processor.py`** - ✅ Original working system (slide-level narration)
-2. **`proper_click_processor.py`** - ✅ **NEW**: Click-synchronized system
+1. **`slidev_slide_processor.py`** - ✅ Slide-level narration (one segment per slide)
+2. **`slidev_click_processor.py`** - ✅ **ADVANCED**: Click-synchronized narration (perfect timing)
 
 ### Test Files
 
@@ -19,32 +19,51 @@ This system creates educational videos where narration is perfectly synchronized
 - **`02-computer-security-fundamentals-proper-clicks.md`** - Proper `[click]` markers only
 - **`02-computer-security-fundamentals-with-clicks.md`** - ❌ Incorrect format (kept for reference)
 
-## 🎯 Key Features
+## 🎯 System Comparison
 
-### Click-Synchronized Narration
+| Feature | Slide Processor | Click Processor |
+|---------|----------------|------------------|
+| **Narration Level** | Per slide | Per click |
+| **Export Method** | Standard PNG | PNG with --with-clicks |
+| **Timing Precision** | Basic | Perfect |
+| **Setup Complexity** | Simple | Moderate |
+| **Use Case** | Quick videos | Professional presentations |
+
+### Click-Synchronized Features (Advanced)
 - **Perfect timing**: Narration matches visual progression exactly
 - **Professional quality**: Each content element appears as it's mentioned
 - **Granular control**: Individual narration for each click
 - **UK English voice**: Consistent high-quality TTS
 
-### Proper Slidev Integration
-- **Real animations**: Uses `v-click`, `v-clicks`, `v-after` directives
-- **Standard export**: Works with regular PNG export (no special flags needed)
-- **Click markers**: Proper `[click]` syntax in presenter notes
-- **Progressive reveal**: Content appears click by click
+### Slide-Level Features (Standard)
+- **Simple setup**: Works with any Slidev file
+- **Voice hierarchy**: UK → Irish → VITS → Tacotron2
+- **Speaker notes**: Uses HTML comments for narration
+- **Quick generation**: Faster processing
 
 ## 📝 Usage
 
 ### Quick Start
+
+#### Standard Slide-Level Processing
 ```bash
 # Activate virtual environment
 source venv/bin/activate
 
+# Generate slide-level video (5 slides default)
+python ai_voiceover_system/slidev_slide_processor.py content/path/to/your/slides.md
+
+# Generate with custom slide count
+python ai_voiceover_system/slidev_slide_processor.py content/path/to/your/slides.md 10
+```
+
+#### Advanced Click-Synchronized Processing
+```bash
 # Generate click-synced video (3 slides for testing)
-python ai_voiceover_system/proper_click_processor.py content/path/to/your/slides.md 3
+python ai_voiceover_system/slidev_click_processor.py content/path/to/your/slides.md 3
 
 # Generate full presentation
-python ai_voiceover_system/proper_click_processor.py content/path/to/your/slides.md
+python ai_voiceover_system/slidev_click_processor.py content/path/to/your/slides.md
 ```
 
 ### Example Output
