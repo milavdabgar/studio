@@ -104,6 +104,10 @@ local_tts_output/
 video_output/
 voiceover_output/
 *_voiceover/
+voice_cloned_output/
+voice_cloned_proper/
+voice_cloned_authentic/
+video_production/
 *.mp3
 *.wav
 *.mp4
@@ -115,6 +119,20 @@ voiceover_output/
 *_audio/
 benchmark/
 audio_benchmark/
+
+# Voice Cloning and TTS Models
+.tts/
+tts_models/
+voice_samples/
+processed_voice/
+*_voice_cloned.wav
+*_authentic_voice.wav
+
+# AI/ML Large Files
+*.ckpt
+*.pth
+*.pt
+*.tar.gz
 
 # Python cache and temporary files
 __pycache__/

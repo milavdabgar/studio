@@ -96,6 +96,15 @@ class VideoProductionSystem:
         """Export Slidev slides as individual images"""
         print("📸 Exporting slides as images...")
         
+        # Check if clean slides already exist
+        clean_slides_dir = Path("/Users/milav/Code/gpp/studio/video_production/slides_clean")
+        if clean_slides_dir.exists():
+            print("✅ Using pre-exported clean Slidev slides...")
+            image_files = sorted(clean_slides_dir.glob("*.png"))
+            if image_files:
+                print(f"✅ Found {len(image_files)} clean slides")
+                return [str(f) for f in image_files]
+        
         # Try Slidev export first
         if self._check_slidev():
             return self._export_with_slidev()
@@ -226,27 +235,68 @@ class VideoProductionSystem:
         
         audio_files = []
         
-        # Scan for audio files
-        audio_patterns = ['*.mp3', '*.wav', '*.m4a']
+        # Check for authentic voice-cloned audio first (highest priority)
+        authentic_voice_dir = Path("/Users/milav/Code/gpp/studio/voice_cloned_authentic/audio")
+        if authentic_voice_dir.exists():
+            print("✅ Using AUTHENTIC voice-cloned audio files (YOUR VOICE)...")
+            audio_patterns = ['*.wav', '*.mp3', '*.m4a']
+            
+            for pattern in audio_patterns:
+                for audio_file in authentic_voice_dir.glob(pattern):
+                    slide_num = self._extract_slide_number(audio_file.name)
+                    if slide_num:
+                        file_info = {
+                            'slide_number': slide_num,
+                            'file_path': str(audio_file),
+                            'file_size': audio_file.stat().st_size,
+                            'format': audio_file.suffix.lower(),
+                            'voice_type': 'authentic_voice_cloned'
+                        }
+                        audio_files.append(file_info)
         
-        for pattern in audio_patterns:
-            for audio_file in self.audio_dir.glob(pattern):
-                # Extract slide number from filename
-                slide_num = self._extract_slide_number(audio_file.name)
+        # Fallback to regular voice-cloned audio
+        if not audio_files:
+            voice_cloned_dir = Path("/Users/milav/Code/gpp/studio/voice_cloned_proper/audio")
+            if voice_cloned_dir.exists():
+                print("✅ Using voice-cloned audio files...")
+                audio_patterns = ['*.wav', '*.mp3', '*.m4a']
                 
-                if slide_num:
-                    file_info = {
-                        'slide_number': slide_num,
-                        'file_path': str(audio_file),
-                        'file_size': audio_file.stat().st_size,
-                        'format': audio_file.suffix.lower()
-                    }
-                    audio_files.append(file_info)
+                for pattern in audio_patterns:
+                    for audio_file in voice_cloned_dir.glob(pattern):
+                        slide_num = self._extract_slide_number(audio_file.name)
+                        if slide_num:
+                            file_info = {
+                                'slide_number': slide_num,
+                                'file_path': str(audio_file),
+                                'file_size': audio_file.stat().st_size,
+                                'format': audio_file.suffix.lower(),
+                                'voice_type': 'voice_cloned'
+                            }
+                            audio_files.append(file_info)
+        
+        # Fallback to regular audio directory
+        if not audio_files:
+            audio_patterns = ['*.mp3', '*.wav', '*.m4a']
+            
+            for pattern in audio_patterns:
+                for audio_file in self.audio_dir.glob(pattern):
+                    slide_num = self._extract_slide_number(audio_file.name)
+                    
+                    if slide_num:
+                        file_info = {
+                            'slide_number': slide_num,
+                            'file_path': str(audio_file),
+                            'file_size': audio_file.stat().st_size,
+                            'format': audio_file.suffix.lower(),
+                            'voice_type': 'google_tts'
+                        }
+                        audio_files.append(file_info)
         
         # Sort by slide number
         audio_files.sort(key=lambda x: x['slide_number'])
         
-        print(f"✅ Found {len(audio_files)} audio files")
+        voice_type = audio_files[0]['voice_type'] if audio_files else 'none'
+        print(f"✅ Found {len(audio_files)} audio files (type: {voice_type})")
         return audio_files
     
     def _extract_slide_number(self, filename: str) -> int:

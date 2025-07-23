@@ -274,5 +274,22 @@
     "lodash.get": "latest",
     "lodash.isequal": "latest",
     "fstream": "latest"
-  }
+  },
+  "description": "A comprehensive Next.js application for Government Polytechnic Palanpur, featuring a modern blog system, educational resources, and multilingual support.",
+  "main": "babel.config.jest.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/milavdabgar/studio.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/milavdabgar/studio/issues"
+  },
+  "homepage": "https://github.com/milavdabgar/studio#readme"
 }
