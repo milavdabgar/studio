@@ -252,17 +252,17 @@ export async function getPostData({
       const fileStats = fs.statSync(filePath);
       const fullFileName = internalSlugParts[internalSlugParts.length - 1] || 'Untitled PDF';
       // Remove file extension from title for display
-      const title = fullFileName.replace(/\.(pdf|PDF)$/, '');
+      const titleWithoutExt = fullFileName.replace(/\.(pdf|PDF)$/, '');
       const date = fileStats.mtime.toISOString();
       
       return {
         id: normalizedSlug,
         slugParts: internalSlugParts,
         lang: resolvedLang,
-        title: title.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+        title: titleWithoutExt.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
         date,
         contentHtml: '', // No HTML content for PDFs
-        excerpt: `PDF document: ${title}`,
+        excerpt: `PDF document: ${titleWithoutExt}`,
         href: `/posts/${resolvedLang}/${normalizedSlug}`.replace(/\/$/, ''),
         contentType: 'pdf' as const,
         pdfPath: filePath, // Store the actual file path for serving
@@ -407,7 +407,7 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
         // For PDF files, generate basic metadata from filename and path
         const fullFileName = fileDetail.slugParts[fileDetail.slugParts.length - 1] || 'Untitled PDF';
         // Remove file extension from title for display
-        const title = fullFileName.replace(/\.(pdf|PDF)$/, '');
+        const titleWithoutExt = fullFileName.replace(/\.(pdf|PDF)$/, '');
         const fileStats = fs.statSync(filePath);
         const date = fileStats.mtime.toISOString(); // Use file modification time as date
         
@@ -415,9 +415,9 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
           id: fileDetail.id,
           slugParts: fileDetail.slugParts,
           lang: fileDetail.lang,
-          title: title.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), // Capitalize title without extension
+          title: titleWithoutExt.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), // Capitalize title without extension
           date,
-          excerpt: `PDF document: ${title}`,
+          excerpt: `PDF document: ${titleWithoutExt}`,
           href: `/posts/${fileDetail.lang}/${fileDetail.id || ''}`.replace(/\/$/, ''),
           contentType: 'pdf' as const,
           fileType: 'pdf' as const,
