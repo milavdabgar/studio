@@ -250,7 +250,9 @@ export async function getPostData({
     console.log(`[getPostData DEBUG] Processing PDF file: ${filePath}`);
     try {
       const fileStats = fs.statSync(filePath);
-      const title = internalSlugParts[internalSlugParts.length - 1] || 'Untitled PDF';
+      const fullFileName = internalSlugParts[internalSlugParts.length - 1] || 'Untitled PDF';
+      // Remove file extension from title for display
+      const title = fullFileName.replace(/\.(pdf|PDF)$/, '');
       const date = fileStats.mtime.toISOString();
       
       return {
@@ -403,7 +405,9 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
       // Handle PDF files differently than markdown files
       if (fileDetail.fileType === 'pdf') {
         // For PDF files, generate basic metadata from filename and path
-        const title = fileDetail.slugParts[fileDetail.slugParts.length - 1] || 'Untitled PDF';
+        const fullFileName = fileDetail.slugParts[fileDetail.slugParts.length - 1] || 'Untitled PDF';
+        // Remove file extension from title for display
+        const title = fullFileName.replace(/\.(pdf|PDF)$/, '');
         const fileStats = fs.statSync(filePath);
         const date = fileStats.mtime.toISOString(); // Use file modification time as date
         
@@ -411,7 +415,7 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
           id: fileDetail.id,
           slugParts: fileDetail.slugParts,
           lang: fileDetail.lang,
-          title: title.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), // Capitalize title
+          title: title.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()), // Capitalize title without extension
           date,
           excerpt: `PDF document: ${title}`,
           href: `/posts/${fileDetail.lang}/${fileDetail.id || ''}`.replace(/\/$/, ''),
@@ -436,7 +440,10 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
         .replace(/```[\s\S]*?```/g, "[Code Block]");
       const excerpt = plainContent.substring(0, 150) + (plainContent.length > 150 ? '...' : '');
       
-      const title = matterResult.data.title || fileDetail.slugParts[fileDetail.slugParts.length -1] || 'Untitled Post';
+      // Generate title - remove file extension if using filename
+      const fallbackTitle = fileDetail.slugParts[fileDetail.slugParts.length - 1] || 'Untitled Post';
+      const titleWithoutExtension = fallbackTitle.replace(/\.(md|MD)$/, '');
+      const title = matterResult.data.title || titleWithoutExtension;
       const date = matterResult.data.date || new Date().toISOString();
 
       // Detect content type for markdown files
