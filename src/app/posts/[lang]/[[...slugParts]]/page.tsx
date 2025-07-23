@@ -279,6 +279,8 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
                     postCount={subsection.posts.length}
                     lang={pageParams.lang}
                     description={subsection.description}
+                    contentType={subsection.contentType}
+                    typeDescription={subsection.typeDescription}
                   />
                 ))}
               </div>

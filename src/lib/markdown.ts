@@ -86,7 +86,9 @@ function getAllContentFilesRecursive(dir: string, baseDir: string = dir, current
         slugPartsForFile = [...currentPathParts];
         id = slugPartsForFile.join('/') || ''; 
       } else {
-        slugPartsForFile = [...currentPathParts, baseNameWithoutExtension];
+        // Include file extension in the slug and ID to distinguish between files with same name but different extensions
+        const fileNameWithExtension = baseNameWithoutExtension + fileExtension;
+        slugPartsForFile = [...currentPathParts, fileNameWithExtension];
         id = slugPartsForFile.join('/');
       }
       
@@ -143,26 +145,49 @@ export async function getPostData({
   }
   
   if (internalSlugParts.length > 0) { 
-      // Check for markdown files first
-      possibleFileChecks.push({
-        filePathToCheck: path.join(contentDirectory, `${baseSlugPathForFs}.${langParam}.md`),
-        resolvedLang: langParam,
-        description: `Exact lang file: ${baseSlugPathForFs}.${langParam}.md`
-      });
-      if (langParam === 'en') { 
+      // Check if the slug already includes a file extension (new format)
+      const lastSlugPart = internalSlugParts[internalSlugParts.length - 1];
+      const hasExtension = lastSlugPart.includes('.') && (lastSlugPart.endsWith('.md') || lastSlugPart.endsWith('.pdf'));
+      
+      if (hasExtension) {
+        // New format: slug includes extension (e.g., "4353204.pdf")
         possibleFileChecks.push({
-          filePathToCheck: path.join(contentDirectory, `${baseSlugPathForFs}.md`),
-          resolvedLang: 'en',
-          description: `Default English file (no lang suffix): ${baseSlugPathForFs}.md`
+          filePathToCheck: path.join(contentDirectory, baseSlugPathForFs),
+          resolvedLang: langParam,
+          description: `Direct file with extension: ${baseSlugPathForFs}`
+        });
+        
+        // Also check for language-specific version
+        if (lastSlugPart.endsWith('.md')) {
+          const pathWithoutExt = baseSlugPathForFs.substring(0, baseSlugPathForFs.length - 3);
+          possibleFileChecks.push({
+            filePathToCheck: path.join(contentDirectory, `${pathWithoutExt}.${langParam}.md`),
+            resolvedLang: langParam,
+            description: `Language-specific file: ${pathWithoutExt}.${langParam}.md`
+          });
+        }
+      } else {
+        // Old format: slug without extension (backward compatibility)
+        possibleFileChecks.push({
+          filePathToCheck: path.join(contentDirectory, `${baseSlugPathForFs}.${langParam}.md`),
+          resolvedLang: langParam,
+          description: `Exact lang file: ${baseSlugPathForFs}.${langParam}.md`
+        });
+        if (langParam === 'en') { 
+          possibleFileChecks.push({
+            filePathToCheck: path.join(contentDirectory, `${baseSlugPathForFs}.md`),
+            resolvedLang: 'en',
+            description: `Default English file (no lang suffix): ${baseSlugPathForFs}.md`
+          });
+        }
+        
+        // Check for PDF files
+        possibleFileChecks.push({
+          filePathToCheck: path.join(contentDirectory, `${baseSlugPathForFs}.pdf`),
+          resolvedLang: langParam,
+          description: `PDF file: ${baseSlugPathForFs}.pdf`
         });
       }
-      
-      // Check for PDF files
-      possibleFileChecks.push({
-        filePathToCheck: path.join(contentDirectory, `${baseSlugPathForFs}.pdf`),
-        resolvedLang: langParam,
-        description: `PDF file: ${baseSlugPathForFs}.pdf`
-      });
   }
   
   possibleFileChecks.push({
@@ -414,6 +439,9 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
       const title = matterResult.data.title || fileDetail.slugParts[fileDetail.slugParts.length -1] || 'Untitled Post';
       const date = matterResult.data.date || new Date().toISOString();
 
+      // Detect content type for markdown files
+      const detectedContentType = detectContentType(filePath);
+
       return {
         id: fileDetail.id,
         slugParts: fileDetail.slugParts,
@@ -423,6 +451,7 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
         excerpt,
         href: `/posts/${fileDetail.lang}/${fileDetail.id || ''}`.replace(/\/$/, ''), 
         fileType: 'markdown' as const,
+        contentType: detectedContentType,
         ...matterResult.data,
       };
     } catch (e: unknown) { 
@@ -448,7 +477,7 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
 export function getAllPostSlugsForStaticParams(): Array<{ lang: string; slugParts: string[] | undefined }> {
   try {
     console.log("[getAllPostSlugsForStaticParams] Starting. Content directory:", contentDirectory);
-    const allFileDetails = getAllMarkdownFilesRecursive(contentDirectory);
+    const allFileDetails = getAllContentFilesRecursive(contentDirectory);
     console.log(`[getAllPostSlugsForStaticParams] Found ${allFileDetails.length} raw file details.`);
 
     const validSlugs = allFileDetails.map(fileDetail => {
@@ -501,7 +530,7 @@ export async function getSubPostsForDirectory(dirPath: string[], lang: string = 
 }
 
 // Hugo-like section listing: only direct subsections, not deeply nested posts
-export async function getDirectSubsections(dirPath: string[], lang: string = 'en'): Promise<{ name: string; slug: string; posts: PostPreview[]; description?: string }[]> {
+export async function getDirectSubsections(dirPath: string[], lang: string = 'en'): Promise<{ name: string; slug: string; posts: PostPreview[]; description?: string; contentType?: 'markdown' | 'pdf' | 'slidev' | 'mixed'; typeDescription?: string }[]> {
   try {
     const directoryPath = path.join(contentDirectory, ...dirPath);
     
@@ -543,13 +572,51 @@ export async function getDirectSubsections(dirPath: string[], lang: string = 'en
       subsectionMap[subsectionName].push(post);
     });
 
-    // Convert to array and add metadata
-    const subsections = Object.entries(subsectionMap).map(([name, posts]) => ({
-      name,
-      slug: [...dirPath, name].join('/'),
-      posts,
-      description: `${posts.length} item${posts.length !== 1 ? 's' : ''}`
-    }));
+    // Convert to array and add metadata with content type detection
+    const subsections = Object.entries(subsectionMap).map(([name, posts]) => {
+      // Analyze content types in this subsection
+      const contentTypeCounts: Record<string, number> = {};
+      posts.forEach(post => {
+        const postContentType = (post as any).contentType || 'markdown';
+        contentTypeCounts[postContentType] = (contentTypeCounts[postContentType] || 0) + 1;
+      });
+
+      const contentTypes = Object.keys(contentTypeCounts);
+      
+      // Determine the subsection's primary content type and description
+      let subsectionContentType: 'markdown' | 'pdf' | 'slidev' | 'mixed' = 'markdown';
+      let typeDescription = '';
+      
+      if (contentTypes.length > 1) {
+        subsectionContentType = 'mixed';
+        // Create descriptive label for mixed content
+        const typeLabels: string[] = [];
+        if (contentTypeCounts.markdown > 0) typeLabels.push('Web Articles');
+        if (contentTypeCounts.pdf > 0) typeLabels.push('PDF Files');
+        if (contentTypeCounts.slidev > 0) typeLabels.push('Slide Decks');
+        if (contentTypeCounts.html > 0) typeLabels.push('HTML Files');
+        if (contentTypeCounts.reveal > 0) typeLabels.push('Reveal.js Slides');
+        
+        typeDescription = typeLabels.join(', ');
+      } else if (contentTypes.includes('pdf')) {
+        subsectionContentType = 'pdf';
+        typeDescription = 'PDF Collection';
+      } else if (contentTypes.includes('slidev')) {
+        subsectionContentType = 'slidev';
+        typeDescription = 'Slide Presentations';
+      } else {
+        typeDescription = 'Articles';
+      }
+
+      return {
+        name,
+        slug: [...dirPath, name].join('/'),
+        posts,
+        description: `${posts.length} item${posts.length !== 1 ? 's' : ''}`,
+        contentType: subsectionContentType,
+        typeDescription // Add detailed type description
+      };
+    });
 
     // Sort subsections by name
     subsections.sort((a, b) => a.name.localeCompare(b.name));

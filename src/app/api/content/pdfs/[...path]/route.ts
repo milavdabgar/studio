@@ -6,17 +6,18 @@ const contentDirectory = path.join(process.cwd(), 'content');
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
   try {
-    const pathParts = params.path;
+    const { path: pathParts } = await params;
     
     if (!pathParts || pathParts.length === 0) {
       return new NextResponse('Path required', { status: 400 });
     }
 
-    // Construct the file path
-    const pdfPath = path.join(contentDirectory, ...pathParts) + '.pdf';
+    // Construct the file path - don't add .pdf if it already ends with .pdf
+    const pathString = path.join(contentDirectory, ...pathParts);
+    const pdfPath = pathString.endsWith('.pdf') ? pathString : pathString + '.pdf';
     
     console.log(`[PDF API] Attempting to serve PDF: ${pdfPath}`);
     
