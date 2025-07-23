@@ -98,6 +98,12 @@ coverage-*.sh
 *-test-data.js
 
 # AI Voiceover System outputs
+ai_voiceover_system/venv/
+ai_voiceover_system/exported_slides/
+ai_voiceover_system/*.mp4
+ai_voiceover_system/*.wav
+ai_voiceover_system/*.png
+ai_voiceover_system/*.mp3
 final_voiceover/
 demo_output/
 local_tts_output/
