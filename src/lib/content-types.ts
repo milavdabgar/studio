@@ -25,41 +25,56 @@ export function detectContentType(filePath: string): ContentType {
     return 'html';
   }
   
-  // For markdown files, check content for Slidev indicators
+  // For markdown files, check if it's in a Slidev directory first
   if (extension === '.md') {
+    // Strong path-based check - if it's in a slidev directory, it's likely Slidev
+    if (isSlidevPath(filePath)) {
+      return 'slidev';
+    }
+    
     try {
       const content = fs.readFileSync(filePath, 'utf8');
       
-      // Check for Slidev frontmatter indicators
+      // More restrictive Slidev detection - require multiple strong indicators
       const frontmatterMatch = content.match(/^---\s*\n([\s\S]*?)\n---/);
       if (frontmatterMatch) {
         const frontmatter = frontmatterMatch[1];
+        let slidevIndicators = 0;
         
-        // Look for Slidev-specific frontmatter fields
-        if (frontmatter.includes('theme:') || 
-            frontmatter.includes('background:') ||
-            frontmatter.includes('highlighter:') ||
-            frontmatter.includes('transition:') ||
-            frontmatter.includes('slidev:') ||
-            frontmatter.includes('class: text-center') ||
-            frontmatter.includes('drawings:') ||
-            frontmatter.includes('mdc:')) {
-          return 'slidev';
+        // Look for very specific Slidev frontmatter combinations
+        if (frontmatter.includes('slidev:') || frontmatter.includes('# Slidev')) {
+          slidevIndicators += 3; // Strong indicator
         }
-      }
-      
-      // Also check for Slidev layout indicators in content
-      if (content.includes('layout:') && 
-          (content.includes('---\nlayout:') || content.includes('layout: default') || 
-           content.includes('layout: two-cols') || content.includes('layout: center'))) {
-        return 'slidev';
-      }
-      
-      // Check for slide separators
-      if (content.includes('\n---\n') && frontmatterMatch) {
-        // Count slide separators - if we have frontmatter and multiple --- separators, likely Slidev
+        if (frontmatter.includes('highlighter:') && frontmatter.includes('prism')) {
+          slidevIndicators += 2; // Slidev-specific syntax highlighting
+        }
+        if (frontmatter.includes('drawings:') && frontmatter.includes('persist')) {
+          slidevIndicators += 2; // Slidev-specific drawing feature
+        }
+        if (frontmatter.includes('transition:') && (frontmatter.includes('slide-left') || frontmatter.includes('slide-up'))) {
+          slidevIndicators += 2; // Slidev-specific transitions
+        }
+        if (frontmatter.includes('mdc:') && frontmatter.includes('true')) {
+          slidevIndicators += 2; // Slidev MDC feature
+        }
+        
+        // Check for Slidev-specific layouts in content
+        const slidevLayouts = ['two-cols', 'section', 'quote', 'fact', 'statement'];
+        const hasSpecificLayouts = slidevLayouts.some(layout => 
+          content.includes(`layout: ${layout}`) || content.includes(`layout: '${layout}'`)
+        );
+        if (hasSpecificLayouts) {
+          slidevIndicators += 2;
+        }
+        
+        // Check for slide separators with specific patterns
         const slideSeparators = (content.match(/\n---\n/g) || []).length;
-        if (slideSeparators > 1) {
+        if (slideSeparators > 2 && frontmatterMatch) {
+          slidevIndicators += 1;
+        }
+        
+        // Only classify as Slidev if we have strong evidence (3+ indicators)
+        if (slidevIndicators >= 3) {
           return 'slidev';
         }
       }
@@ -76,10 +91,15 @@ export function detectContentType(filePath: string): ContentType {
  * Check if a file is a Slidev presentation based on its path pattern
  */
 export function isSlidevPath(filePath: string): boolean {
-  const pathSegments = filePath.split(path.sep);
-  return pathSegments.some(segment => 
-    segment.toLowerCase().includes('slidev') || 
-    segment.toLowerCase().includes('slides')
+  const normalizedPath = filePath.toLowerCase().replace(/\\/g, '/');
+  
+  // Check for explicit slidev directories
+  return (
+    normalizedPath.includes('/slidev/') ||
+    normalizedPath.endsWith('/slidev') ||
+    normalizedPath.includes('/slides/') ||
+    // Match the specific cyber security slidev path pattern
+    normalizedPath.includes('/4353204-cyber-security/slidev/')
   );
 }
 
