@@ -96,3 +96,70 @@ debug-*.js
 debug-*.ts
 coverage-*.sh
 *-test-data.js
+
+# AI Voiceover System outputs
+final_voiceover/
+demo_output/
+local_tts_output/
+video_output/
+voiceover_output/
+*_voiceover/
+*.mp3
+*.wav
+*.mp4
+*.avi
+*.mov
+
+# TTS and AI generated content
+*_tts_output/
+*_audio/
+benchmark/
+audio_benchmark/
+
+# Python cache and temporary files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# AI/ML model files
+*.model
+*.pkl
+*.bin
+*.safetensors
+models/
+checkpoints/
+
+# LaTeX temporary files
+*.aux
+*.log
+*.out
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+texput.log
+
+# Additional temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
