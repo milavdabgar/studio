@@ -4,7 +4,7 @@
 import { PostPreview } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, User, Tag as TagIcon, FileText, BookOpen, Presentation } from 'lucide-react';
+import { Calendar, Clock, User, Tag as TagIcon } from 'lucide-react';
 import Link from 'next/link';
 import { format, parseISO, isValid } from 'date-fns';
 import { useLanguage } from '@/lib/contexts/LanguageContext';
@@ -27,40 +27,6 @@ export function PostCard({
   showAuthor = true 
 }: PostCardProps) {
   const { t } = useLanguage();
-  
-  // Content type styling configuration
-  const getContentTypeStyle = (contentType: string) => {
-    switch (contentType) {
-      case 'pdf':
-        return {
-          colors: 'border-red-200 dark:border-red-800 bg-gradient-to-br from-red-50 to-red-100 dark:from-red-950 dark:to-red-900',
-          icon: FileText,
-          iconColor: 'text-red-600 dark:text-red-400',
-          badgeColor: 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700',
-          label: 'PDF'
-        };
-      case 'slidev':
-        return {
-          colors: 'border-green-200 dark:border-green-800 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900',
-          icon: Presentation,
-          iconColor: 'text-green-600 dark:text-green-400',
-          badgeColor: 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700',
-          label: 'SLIDES'
-        };
-      default: // markdown
-        return {
-          colors: 'border-blue-200 dark:border-blue-800 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900',
-          icon: BookOpen,
-          iconColor: 'text-blue-600 dark:text-blue-400',
-          badgeColor: 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 border-blue-200 dark:border-blue-700',
-          label: 'ARTICLE'
-        };
-    }
-  };
-
-  const contentType = (post as any).contentType || 'markdown';
-  const typeStyle = getContentTypeStyle(contentType);
-  const TypeIcon = typeStyle.icon;
 
   const formatDate = (dateInput: string | Date | undefined) => {
     try {
@@ -94,29 +60,12 @@ export function PostCard({
   };
 
   return (
-    <Card className={`hover:shadow-lg transition-shadow h-full flex flex-col border ${typeStyle.colors}`}>
-      <CardHeader className="flex-shrink-0">
-        {/* Content Type Badge */}
-        <div className="mb-3">
-          <Badge className={`text-xs font-semibold px-2 py-1 ${typeStyle.badgeColor} border`}>
-            <TypeIcon className={`h-3 w-3 mr-1 ${typeStyle.iconColor}`} />
-            {typeStyle.label}
-          </Badge>
-        </div>
-        
-        <CardTitle className="text-lg leading-tight mb-2">
+    <Card className="hover:shadow-lg transition-shadow">
+      <CardHeader>
+        <CardTitle className="text-xl">
           <Link
             href={post.href}
-            className="text-primary hover:text-primary dark:hover:text-primary/80 transition-colors block"
-            title={post.title}
-            style={{
-              display: '-webkit-box',
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-              wordBreak: 'break-word',
-              hyphens: 'auto'
-            }}
+            className="text-primary hover:text-primary dark:hover:text-primary/80 transition-colors"
           >
             {post.title}
           </Link>
@@ -128,7 +77,6 @@ export function PostCard({
             <span>{formatDate(post.date)}</span>
           </div>
           
-          
           {showAuthor && post.author && (
             <div className="flex items-center gap-1">
               <User className="h-4 w-4" />
@@ -136,7 +84,7 @@ export function PostCard({
             </div>
           )}
           
-          {showReadingTime && post.readingTime && (post as any).contentType !== 'pdf' && (
+          {showReadingTime && post.readingTime && (
             <div className="flex items-center gap-1">
               <Clock className="h-4 w-4" />
               <span>{post.readingTime} {t('minutes')}</span>
@@ -144,17 +92,9 @@ export function PostCard({
           )}
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex-grow flex flex-col">
+      <CardContent>
         {showExcerpt && post.excerpt && (
-          <p 
-            className="text-muted-foreground mb-4"
-            style={{
-              display: '-webkit-box',
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden'
-            }}
-          >
+          <p className="text-muted-foreground mb-4 line-clamp-3">
             {post.excerpt}
           </p>
         )}
@@ -192,7 +132,7 @@ export function PostCard({
           )}
         </div>
 
-        <div className="flex justify-between items-center mt-auto">
+        <div className="flex justify-between items-center">
           <Link
             href={post.href}
             className="text-sm text-primary hover:text-primary dark:hover:text-primary/80 transition-colors"
