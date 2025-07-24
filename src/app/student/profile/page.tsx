@@ -80,6 +80,7 @@ import { studentService } from '@/lib/api/students';
 import { programService } from '@/lib/api/programs';
 import { batchService } from '@/lib/api/batches';
 import StudentDownloadButtons from '@/components/student-download-buttons';
+import PasswordChangeForm from '@/components/password-change-form';
 import { format, parseISO, isValid } from 'date-fns';
 import Link from 'next/link';
 
@@ -1366,13 +1367,14 @@ export default function StudentProfilePage() {
 
       {/* Profile Management Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="basic">Basic Info</TabsTrigger>
           <TabsTrigger value="education">Education</TabsTrigger>
           <TabsTrigger value="skills">Skills</TabsTrigger>
           <TabsTrigger value="experience">Experience</TabsTrigger>
           <TabsTrigger value="projects">Projects</TabsTrigger>
           <TabsTrigger value="achievements">Achievements</TabsTrigger>
+          <TabsTrigger value="security">Security</TabsTrigger>
         </TabsList>
         
         <TabsContent value="basic" className="space-y-6">
@@ -1519,6 +1521,13 @@ export default function StudentProfilePage() {
           <AchievementsSection 
             achievements={student.achievements || []} 
             onUpdate={handleUpdateAchievements}
+          />
+        </TabsContent>
+
+        <TabsContent value="security" className="space-y-6">
+          <PasswordChangeForm 
+            userEmail={user?.email || ''} 
+            variant="card"
           />
         </TabsContent>
       </Tabs>

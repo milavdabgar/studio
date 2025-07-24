@@ -18,6 +18,7 @@ import type { UserRole as UserRoleCode } from '@/types/entities';
 import { userService } from "@/lib/api/users";
 import { studentService } from "@/lib/api/students";
 import { facultyService } from "@/lib/api/faculty";
+import PasswordChangeForm from "@/components/password-change-form";
 
 interface User {
   name: string;
@@ -409,6 +410,22 @@ export default function DashboardPage() {
               ))}
             </CardContent>
           </Card>
+        </section>
+      )}
+
+      {/* Password Change Section - Available for all users */}
+      {currentUser.email && (
+        <section>
+          <PasswordChangeForm 
+            userEmail={currentUser.email} 
+            variant="dialog"
+            trigger={
+              <Button variant="outline" className="w-full sm:w-auto">
+                <Settings className="mr-2 h-4 w-4" />
+                Change Password
+              </Button>
+            }
+          />
         </section>
       )}
     </div>

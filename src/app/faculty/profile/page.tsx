@@ -8,6 +8,7 @@ import { UserCircle, Mail, Phone, CalendarDays, Briefcase, Edit, Loader2, Buildi
 import { useToast } from "@/hooks/use-toast";
 import type { Faculty } from '@/types/entities';
 import { facultyService } from '@/lib/api/faculty';
+import PasswordChangeForm from '@/components/password-change-form';
 import { format } from 'date-fns';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 interface UserCookie {
@@ -239,6 +240,12 @@ export default function FacultyProfilePage() {
           </DropdownMenu>
         </CardFooter>
       </Card>
+
+      {/* Password Change Section */}
+      <PasswordChangeForm 
+        userEmail={user?.email || ''} 
+        variant="card"
+      />
     </div>
   );
 }
