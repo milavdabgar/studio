@@ -83,8 +83,8 @@ const getMockUsers = async (): Promise<MockUser[]> => {
 
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("admin@gppalanpur.in");
-  const [password, setPassword] = useState("Admin@123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [selectedRoleCode, setSelectedRoleCode] = useState<UserRoleCode>("admin"); // Store role code
   const [availableRolesForUser, setAvailableRolesForUser] = useState<Role[]>([]); // Store Role objects
   const [allSystemRoles, setAllSystemRoles] = useState<Role[]>([]); 
@@ -256,7 +256,7 @@ export default function LoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@gppalanpur.in"
+                placeholder="Enter your email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required

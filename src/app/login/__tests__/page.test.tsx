@@ -104,11 +104,14 @@ describe('Login Page', () => {
     });
     
     await waitFor(() => {
-      expect(screen.getByDisplayValue('admin@gppalanpur.in')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('')).toBeInTheDocument();
     });
 
-    expect(screen.getByDisplayValue('admin@gppalanpur.in')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('Admin@123')).toBeInTheDocument();
+    // Check that email and password fields are empty by default (security fix)
+    const emailInput = screen.getByLabelText('Email');
+    const passwordInput = screen.getByLabelText('Password');
+    expect(emailInput).toHaveValue('');
+    expect(passwordInput).toHaveValue('');
   });
 
   it('should load and display roles in dropdown', async () => {
@@ -152,10 +155,16 @@ describe('Login Page', () => {
     });
     
     await waitFor(() => {
-      expect(screen.getByDisplayValue('admin@gppalanpur.in')).toBeInTheDocument();
+      expect(screen.getByLabelText('Email')).toBeInTheDocument();
     });
 
-    // Use default admin credentials
+    // Manually enter admin credentials for testing
+    const emailInput = screen.getByLabelText('Email');
+    const passwordInput = screen.getByLabelText('Password');
+    
+    await user.type(emailInput, 'admin@gppalanpur.in');
+    await user.type(passwordInput, 'Admin@123');
+    
     const submitButton = screen.getByRole('button', { name: /login/i });
     await user.click(submitButton);
 
@@ -291,11 +300,16 @@ describe('Login Page', () => {
     });
     
     await waitFor(() => {
-      expect(screen.getByDisplayValue('admin@gppalanpur.in')).toBeInTheDocument();
+      expect(screen.getByLabelText('Email')).toBeInTheDocument();
     });
 
-    const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByLabelText(/password/i);
+    // Manually enter credentials for testing
+    const emailInput = screen.getByLabelText('Email');
+    const passwordInput = screen.getByLabelText('Password');
+    
+    await user.type(emailInput, 'admin@gppalanpur.in');
+    await user.type(passwordInput, 'Admin@123');
+
     const roleSelect = screen.getByRole('combobox');
     const submitButton = screen.getByRole('button', { name: /login/i });
 
@@ -315,8 +329,15 @@ describe('Login Page', () => {
     });
     
     await waitFor(() => {
-      expect(screen.getByDisplayValue('admin@gppalanpur.in')).toBeInTheDocument();
+      expect(screen.getByLabelText('Email')).toBeInTheDocument();
     });
+
+    // Manually enter credentials for testing
+    const emailInput = screen.getByLabelText('Email');
+    const passwordInput = screen.getByLabelText('Password');
+    
+    await user.type(emailInput, 'admin@gppalanpur.in');
+    await user.type(passwordInput, 'Admin@123');
 
     const submitButton = screen.getByRole('button', { name: /login/i });
     
@@ -546,8 +567,15 @@ describe('Login Page', () => {
       render(<LoginPage />);
       
       await waitFor(() => {
-        expect(screen.getByDisplayValue('admin@gppalanpur.in')).toBeInTheDocument();
+        expect(screen.getByLabelText('Email')).toBeInTheDocument();
       });
+
+      // Manually enter credentials for testing
+      const emailInput = screen.getByLabelText('Email');
+      const passwordInput = screen.getByLabelText('Password');
+      
+      await user.type(emailInput, 'admin@gppalanpur.in');
+      await user.type(passwordInput, 'Admin@123');
 
       const submitButton = screen.getByRole('button', { name: /login/i });
       await user.click(submitButton);
