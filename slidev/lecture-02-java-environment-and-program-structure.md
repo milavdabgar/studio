@@ -1,22 +1,28 @@
 ---
 theme: default
 background: https://source.unsplash.com/1024x768/?software,development
-title: Java Environment and Program Structure
+title: Java Environment Setup & First Program - From Zero to Hero
 info: |
   ## Java Programming (4343203)
   
-  Lecture 2: Java Environment and Program Structure
+  Lecture 2: Java Environment Setup & First Program - From Zero to Hero
   
   Diploma in ICT - Semester IV
   Gujarat Technological University
 
-  Learn about JVM, JRE, JDK and write your first Java program.
+  Master JVM architecture, set up professional development environment,
+  and create your first Java application with confidence.
 class: text-center
 highlighter: shiki
 drawings:
   persist: false
 transition: slide-left
 mdc: true
+fonts:
+  sans: 'Inter'
+  serif: 'Georgia' 
+  mono: 'Fira Code'
+colorSchema: auto
 ---
 
 # Java Environment and Program Structure
@@ -437,35 +443,107 @@ javac -version
 layout: default
 ---
 
-# Your First Java Program
+# Your First Java Program - Professional Deep Dive
 
-## 📝 Hello World Example
+<div class="grid grid-cols-2 gap-8">
 
-```java {all|1-2|4|6-8|all}
-// HelloWorld.java
+<div>
+
+## 🎯 **The Professional Hello World**
+
+```java {all|1-2|4|6-8|10-12|14-16|all}
+// HelloWorld.java - Professional Version
 public class HelloWorld {
     
     public static void main(String[] args) {
         
         System.out.println("Hello, World!");
         System.out.println("Welcome to Java Programming!");
+        
+        // Professional additions
+        displayProgramInfo();
+        
+        // Command line arguments demo
+        if (args.length > 0) {
+            System.out.println("Arguments received: " + 
+                             String.join(", ", args));
+        }
+    }
+    
+    /**
+     * Displays program metadata - professional practice
+     */
+    private static void displayProgramInfo() {
+        System.out.println("\n=== Program Information ===");
+        System.out.println("Java Version: " + 
+                         System.getProperty("java.version"));
+        System.out.println("Operating System: " + 
+                         System.getProperty("os.name"));
+        System.out.println("User: " + 
+                         System.getProperty("user.name"));
     }
 }
 ```
 
-## 🔍 Code Explanation
+</div>
 
-<v-clicks>
+<div>
 
-- **Line 1:** Comment explaining the file
-- **Line 2:** Class declaration (must match filename)
-- **Line 4:** Main method - entry point of program
-- **Line 6-7:** Print statements to display output
+## 🔍 **Professional Code Analysis**
 
-</v-clicks>
+<div class="space-y-4">
 
-<div v-click="5" class="mt-4 p-4 bg-blue-50 rounded-lg">
-<strong>💡 Rule:</strong> Java filename must match the public class name!
+<div v-click class="bg-gradient-to-r from-blue-50 to-indigo-100 p-4 rounded-lg">
+<strong class="text-blue-700">🏗️ Structure Elements:</strong>
+<div class="text-sm mt-2">
+• **Package declaration** (implicit default)<br/>
+• **Class declaration** with public modifier<br/>
+• **Main method** - application entry point<br/>
+• **Helper methods** for code organization
+</div>
+</div>
+
+<div v-click class="bg-gradient-to-r from-green-50 to-emerald-100 p-4 rounded-lg">
+<strong class="text-green-700">💡 Best Practices Applied:</strong>
+<div class="text-sm mt-2">
+• **Javadoc comments** for documentation<br/>
+• **Method extraction** for reusability<br/>
+• **System properties** for environment info<br/>
+• **Command-line arguments** handling
+</div>
+</div>
+
+<div v-click class="bg-gradient-to-r from-purple-50 to-violet-100 p-4 rounded-lg">
+<strong class="text-purple-700">🎯 Learning Goals:</strong>
+<div class="text-sm mt-2">
+• Understanding method signatures<br/>
+• Exploring the Java runtime environment<br/>
+• Professional code organization<br/>
+• Real-world programming patterns
+</div>
+</div>
+
+<div v-click class="bg-gradient-to-r from-orange-50 to-red-100 p-4 rounded-lg">
+<strong class="text-orange-700">⚠️ Critical Rules:</strong>
+<div class="text-sm mt-2">
+• **Filename = Class name** (case sensitive)<br/>
+• **One public class per file**<br/>
+• **main method signature** must be exact<br/>
+• **Case sensitivity** throughout Java
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div v-click class="mt-8 p-6 bg-gradient-to-r from-yellow-50 via-orange-50 to-red-50 rounded-xl">
+<div class="text-center">
+<h3 class="text-xl font-bold text-orange-800 mb-4">🚀 From Beginner to Professional in One Program</h3>
+<p class="text-orange-700">This isn't just "Hello World" - it's your first step toward writing enterprise-grade Java applications that real companies deploy to serve millions of users!</p>
+</div>
 </div>
 
 ---
@@ -642,37 +720,155 @@ layout: default
 layout: default
 ---
 
-# Practical Exercise
+# Comprehensive Hands-On Lab - Professional Java Setup
 
-## 🛠️ Hands-On Activity
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## 🚀 **Lab Exercises - Progressive Complexity**
 
 <div class="space-y-4">
 
-<div class="bg-yellow-50 p-4 rounded-lg">
-<strong>Task 1:</strong> Install JDK on your computer and verify installation
+<div v-click class="bg-gradient-to-r from-yellow-50 to-orange-100 p-4 rounded-xl border-l-4 border-orange-400">
+<strong class="text-orange-700">🎯 **Level 1: Environment Mastery**</strong>
+<div class="text-sm mt-2 space-y-1">
+• Install JDK 21 LTS on your system<br/>
+• Configure JAVA_HOME and PATH variables<br/>
+• Verify installation: `java --version` & `javac --version`<br/>
+• Document any issues encountered
+</div>
+<div class="mt-2 text-xs bg-orange-100 p-2 rounded">
+<strong>Success Criteria:</strong> Both commands return version 21.x.x
+</div>
 </div>
 
-<div class="bg-blue-50 p-4 rounded-lg">
-<strong>Task 2:</strong> Write "Hello World" program and save as HelloWorld.java
+<div v-click class="bg-gradient-to-r from-blue-50 to-indigo-100 p-4 rounded-xl border-l-4 border-blue-400">
+<strong class="text-blue-700">🎯 **Level 2: First Professional Program**</strong>
+<div class="text-sm mt-2 space-y-1">
+• Create StudentInfo.java with proper structure<br/>
+• Include: name, enrollment, college, branch<br/>
+• Add system information display<br/>
+• Handle command-line arguments
+</div>
+<div class="mt-2 text-xs bg-blue-100 p-2 rounded">
+<strong>Challenge:</strong> Make it interactive with Scanner input
+</div>
 </div>
 
-<div class="bg-green-50 p-4 rounded-lg">
-<strong>Task 3:</strong> Compile and run the program using command line
+<div v-click class="bg-gradient-to-r from-green-50 to-emerald-100 p-4 rounded-xl border-l-4 border-green-400">
+<strong class="text-green-700">🎯 **Level 3: Development Workflow**</strong>
+<div class="text-sm mt-2 space-y-1">
+• Master compilation: `javac *.java`<br/>
+• Execute with arguments: `java StudentInfo arg1 arg2`<br/>
+• Debug common errors (syntax, runtime)<br/>
+• Organize files in proper directory structure
+</div>
+<div class="mt-2 text-xs bg-green-100 p-2 rounded">
+<strong>Pro Tip:</strong> Use package structure: com.gtu.ict.studentname
+</div>
 </div>
 
-<div class="bg-purple-50 p-4 rounded-lg">
-<strong>Task 4:</strong> Modify the program to print your name and college details
+<div v-click class="bg-gradient-to-r from-purple-50 to-violet-100 p-4 rounded-xl border-l-4 border-purple-400">
+<strong class="text-purple-700">🎯 **Level 4: IDE Integration**</strong>
+<div class="text-sm mt-2 space-y-1">
+• Install IntelliJ IDEA Community or VS Code<br/>
+• Create new Java project with proper structure<br/>
+• Configure JDK in IDE settings<br/>
+• Run and debug using IDE tools
+</div>
+<div class="mt-2 text-xs bg-purple-100 p-2 rounded">
+<strong>Bonus:</strong> Set up code formatting and style checking
+</div>
 </div>
 
 </div>
 
-## 🎯 Expected Output
+</div>
+
+<div>
+
+## 📋 **Expected Professional Output**
+
+```java
+// Expected when running: java StudentInfo "GTU" "ICT"
+=== Student Information System ===
+Name: Raj Patel
+Enrollment: 21ICT001
+College: Government Polytechnic
+Branch: Information & Communication Technology
+
+=== System Information ===
+Java Version: 21.0.1
+Operating System: Windows 11
+User: raj.patel
+Working Directory: C:\JavaProjects\GTU
+
+=== Command Line Arguments ===
+Arguments received: GTU, ICT
+Argument count: 2
+
+=== Professional Features ===
+✅ Proper error handling implemented
+✅ Input validation completed
+✅ Professional code structure
+✅ Documentation standards followed
+
+Thank you for using Student Info System!
+Program executed successfully in 0.045 seconds.
 ```
-Hello, World!
-Welcome to Java Programming!
-My name is [Your Name]
-I study at Government Polytechnic
-```
+
+## 🏆 **Mastery Checklist**
+
+<div class="space-y-2 text-sm">
+
+<div v-click class="flex items-center space-x-2">
+<input type="checkbox" class="form-checkbox" />
+<span>JDK installed and configured correctly</span>
+</div>
+
+<div v-click class="flex items-center space-x-2">
+<input type="checkbox" class="form-checkbox" />
+<span>Environment variables set properly</span>
+</div>
+
+<div v-click class="flex items-center space-x-2">
+<input type="checkbox" class="form-checkbox" />
+<span>Compilation and execution mastered</span>
+</div>
+
+<div v-click class="flex items-center space-x-2">
+<input type="checkbox" class="form-checkbox" />
+<span>Professional code structure implemented</span>
+</div>
+
+<div v-click class="flex items-center space-x-2">
+<input type="checkbox" class="form-checkbox" />
+<span>IDE setup and configuration completed</span>
+</div>
+
+<div v-click class="flex items-center space-x-2">
+<input type="checkbox" class="form-checkbox" />
+<span>Error handling and debugging practiced</span>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div v-click class="mt-8 p-6 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 rounded-xl">
+<div class="text-center">
+<h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-pink-600 mb-4">
+🎓 Congratulations! You're Now a Java Developer!
+</h3>
+<p class="text-lg text-gray-700">
+You've successfully set up a professional Java development environment and created your first application.<br/>
+You're ready to tackle more complex programming challenges and build real-world software solutions!
+</p>
+</div>
+</div>
 
 ---
 layout: default
