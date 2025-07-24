@@ -8,7 +8,7 @@ import { z } from 'zod';
 const createRoleSchema = z.object({
     name: z.string().min(1, "Role Name cannot be empty.").trim(),
     code: z.string().min(1, "Role Code cannot be empty.").trim(),
-    description: z.string().optional().nullable(),
+    description: z.string().min(1, "Role Description cannot be empty.").trim(),
     permissions: z.array(z.string()).optional(),
     isSystemRole: z.boolean().optional(),
     isCommitteeRole: z.boolean().optional(),
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
     const newRoleData = {
       name: validatedData.name,
       code: validatedData.code,
-      description: validatedData.description || "",
+      description: validatedData.description,
       permissions: validatedData.permissions || [],
       isSystemRole: validatedData.isSystemRole || false,
       isCommitteeRole: validatedData.isCommitteeRole || false,
