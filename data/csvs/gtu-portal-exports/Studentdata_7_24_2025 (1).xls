@@ -1,0 +1,703 @@
+<style> TD { mso-number-format:\@ } </style><div>
+	<table cellspacing="0" rules="all" border="1" id="ContentPlaceHolder1_grddata" style="width:100%;border-collapse:collapse;">
+		<tr>
+			<th scope="col">S.NO</th><th scope="col">map_number</th><th scope="col">BR_CODE</th><th scope="col">Name</th><th scope="col">Email</th><th scope="col">Mobile</th><th scope="col">Gender</th><th scope="col">convoyear</th><th scope="col">SEM1</th><th scope="col">SEM2</th><th scope="col">SEM3</th><th scope="col">SEM4</th><th scope="col">SEM5</th><th scope="col">SEM6</th><th scope="col">SEM7</th><th scope="col">SEM8</th><th scope="col">Category</th><th scope="col">isComplete</th><th scope="col">termClose</th><th scope="col">isCancel</th><th scope="col">ispassall</th><th scope="col">aadhar</th><th scope="col">shift</th>
+		</tr><tr>
+			<td>
+                                                1
+                                            </td><td style="width:5px;">236260309001</td><td>09</td><td>AJAYKUMAR CHAUDHARY</td><td>imajaychaudhary3002@gmail.com</td><td>8487902951</td><td>M</td><td style="width:5px;">&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                2
+                                            </td><td style="width:5px;">236260309002</td><td>09</td><td>BARAD SVARUPSINH PRAVINSINH</td><td>swaroopbarad224@gmail.com </td><td>8160070855</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>679907245877</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                3
+                                            </td><td style="width:5px;">236260309004</td><td>09</td><td>CHAUDHARY DURGESHBHAI BHURABHAI</td><td>DURGESHZADMAL7174@GMAIL.COM</td><td>9328528997</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>547531364008</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                4
+                                            </td><td style="width:5px;">236260309005</td><td>09</td><td>CHAUDHARY HITESHKUMAR CHHATRABHAI</td><td>hiteshchaudhary97144@gmail.com</td><td>8490093021</td><td>M</td><td style="width:5px;">&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                5
+                                            </td><td style="width:5px;">236260309007</td><td>09</td><td>CHAUDHARY MAYURBHAI HAMIRABHAI</td><td>mayurchaudhary149@gmail.com</td><td>6355156337</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>2</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>477517547164</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                6
+                                            </td><td style="width:5px;">236260309008</td><td>09</td><td>CHAUDHARY NILESHKUMAR RAMABHAI</td><td>nileshchaudhary7990@gmail.com</td><td>7990296734</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                7
+                                            </td><td style="width:5px;">236260309009</td><td>09</td><td>CHAUDHARY NISARGKUMAR GANESHBHAI</td><td>nisargboka@gmail.com</td><td>9510208450</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>783717987849</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                8
+                                            </td><td style="width:5px;">236260309010</td><td>09</td><td>CHAUDHARY SURESHBHAI BHIKHABHAI</td><td>sb635505@gmail.com</td><td>6355053363</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>250096641569</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                9
+                                            </td><td style="width:5px;">236260309011</td><td>09</td><td>CHAUDHARY VISHALBHAI MAVABHAI</td><td>vishalbhaichaudhary134@gmail.com</td><td>9016142536</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>572344449949</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                10
+                                            </td><td style="width:5px;">236260309014</td><td>09</td><td>CHAUHAN PIYUSHSINH RANJITSINH</td><td>Chauhanpiyushsinh2@gmail.com</td><td>8780503118</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>824858344584</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                11
+                                            </td><td style="width:5px;">236260309015</td><td>09</td><td>CHAUHAN REHANBHAI MAHEMUDBHAI</td><td>chauhnrehan812@gmail.com</td><td>7859957516</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>354117794953</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                12
+                                            </td><td style="width:5px;">236260309016</td><td>09</td><td>CHAUHAN SAURAV SANJAYSINH</td><td>c9328305516@gmail.com </td><td>9328305516</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>1</td><td>2</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>276321924990</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                13
+                                            </td><td style="width:5px;">236260309017</td><td>09</td><td>CHAUHAN VINODKUMAR KALAJI</td><td>kalabhai9798@gmail.com</td><td>8980547076</td><td>M</td><td style="width:5px;">&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                14
+                                            </td><td style="width:5px;">236260309018</td><td>09</td><td>GAUSVAMI DEVARAJPURI RAMESHPURI</td><td>devgosai010@gmail.com</td><td>6352666392</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>761613036262</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                15
+                                            </td><td style="width:5px;">236260309021</td><td>09</td><td>JUNAKIYA MOHAMMAD USMANBHAI</td><td>usmanjunakiya@gmail.com</td><td>8200105879</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>494775661230</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                16
+                                            </td><td style="width:5px;">236260309022</td><td>09</td><td>KHATIK DIPAK SHANTILAL</td><td>dipakkhatik2005@gmail.com</td><td>9016784268</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>2</td><td>2</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>968485067200</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                17
+                                            </td><td style="width:5px;">236260309023</td><td>09</td><td>KOTADIYA YASH DINESHBHAI</td><td>kotdiyayash1@gmail.com</td><td>9510730976</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>EWS</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>306781638516</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                18
+                                            </td><td style="width:5px;">236260309025</td><td>09</td><td>MAJIRANA DILIPBHAI RAMESHBHAI</td><td>dipurana022@gmail.com</td><td>8128584076</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>ST</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>876724083080</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                19
+                                            </td><td style="width:5px;">236260309026</td><td>09</td><td>MAKVANA DHRUV ANILBHAI</td><td>makvanadhruv70@gmail.com</td><td>6351860833</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>2</td><td>2</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>658581937874</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                20
+                                            </td><td style="width:5px;">236260309028</td><td>09</td><td>MALI  SHAILESHBHAI JETHAJI</td><td>sjmali0007@gmail.com</td><td>9725322836</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>446618064500</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                21
+                                            </td><td style="width:5px;">236260309029</td><td>09</td><td>MAMUDA MEETKUMAR PRAVINBHAI</td><td>meetnai448@gmail.com</td><td>7284957429</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>875146496918</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                22
+                                            </td><td style="width:5px;">236260309030</td><td>09</td><td>MANDORI MAHAMMAD ALTAFHUSEN</td><td>altafmandori.1978@gmail.com</td><td>9824623999</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                23
+                                            </td><td style="width:5px;">236260309031</td><td>09</td><td>MENU ASIF AADAMBHAI</td><td>asif635561@gmail.com</td><td>6355616887</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>660231703373</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                24
+                                            </td><td style="width:5px;">236260309032</td><td>09</td><td>MODI MANAN RILESHBHAI</td><td>modimanan877@gmail.com</td><td>7861917048</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>497799191702</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                25
+                                            </td><td style="width:5px;">236260309033</td><td>09</td><td>MODI VEER KALPESHKUMAR</td><td>modiveer4@gmail.com</td><td>9601297146</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>2</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>807196198367</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                26
+                                            </td><td style="width:5px;">236260309034</td><td>09</td><td>MR VIVEKKUMAR VIJAYSINGH</td><td>vivekkushwah976@gmail.com</td><td>6351914319</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>892470289176</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                27
+                                            </td><td style="width:5px;">236260309035</td><td>09</td><td>NAI SAMEER HARESHKUMAR</td><td>sameernai87@gmail.com</td><td>9879235522</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>2</td><td>2</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>820681990874</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                28
+                                            </td><td style="width:5px;">236260309036</td><td>09</td><td>PANCHAL  DHRUV SURESHBHAI</td><td>panchaldhruv799@email.com</td><td>9106104587</td><td>M</td><td style="width:5px;">&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                29
+                                            </td><td style="width:5px;">236260309037</td><td>09</td><td>PANCHAL ARYANKUMAR BHARATBHAI</td><td>aryanp652008@gmail.com</td><td>6355562868</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>882389959939</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                30
+                                            </td><td style="width:5px;">236260309038</td><td>09</td><td>PANCHAL PRASHANT ASHOKKUMAR</td><td>Prashantpanchal3142@gmail.com</td><td>7698553142</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>2</td><td>2</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>960691802291</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                31
+                                            </td><td style="width:5px;">236260309039</td><td>09</td><td>PARMAR HARDIK ISHVARBHAI</td><td>h47753142@gmail.com</td><td>9313790937</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>410386347488</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                32
+                                            </td><td style="width:5px;">236260309040</td><td>09</td><td>PARMAR JALPESHKUMAR JAGDISHBHAI</td><td>Jalpeshparmar156@gmail.com</td><td>9313528408</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>862911072536</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                33
+                                            </td><td style="width:5px;">226260309001</td><td>09</td><td>BAROT HARSH NISHANTBHAI</td><td>nmbarot007@gmail.com</td><td>9426536135</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>305229340739</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                34
+                                            </td><td style="width:5px;">226260309003</td><td>09</td><td>CHAUDHARI VIJAY KHUMABHAI</td><td>v4404598@gmail.com</td><td>9978266159</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                35
+                                            </td><td style="width:5px;">226260309007</td><td>09</td><td>CHAUDHARY NILESHBHAI DUDABHAI</td><td>nileshd63539@gmail.com</td><td>9408141920</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>790500171603</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                36
+                                            </td><td style="width:5px;">226260309011</td><td>09</td><td>GADHAVI PARTH</td><td>gadhviparth314@gmail.com</td><td>9558086665</td><td>M</td><td style="width:5px;">&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                37
+                                            </td><td style="width:5px;">226260309014</td><td>09</td><td>GAMI MANTHAN NARESHBHAI</td><td>kpeditings33@gmail.com</td><td>8320516426</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>642950833167</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                38
+                                            </td><td style="width:5px;">226260309016</td><td>09</td><td>KADIWAL ARSHAD AMIN</td><td>arshadkadival753@gmail.com</td><td>9316508985</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>2</td><td>2</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>True</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>516651035629</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                39
+                                            </td><td style="width:5px;">226260309019</td><td>09</td><td>KURESHI ADNANMAHAMMAD AABIDMAHAMMMAD</td><td>kureshiadnan737@gmail.com</td><td>9313199215</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>0</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                40
+                                            </td><td style="width:5px;">226260309020</td><td>09</td><td>LIMBACHIYA JAIMIN BHIKHABHAI</td><td>bhikhabhailimbachiya53020@gmail.com</td><td>9327685893</td><td>M</td><td style="width:5px;">&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                41
+                                            </td><td style="width:5px;">226260309022</td><td>09</td><td>MALI BHAVESHBHAI ANADABHAI</td><td>bhaveshmali5281@gmail.com</td><td>9426445512</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>540023794272</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                42
+                                            </td><td style="width:5px;">226260309025</td><td>09</td><td>MODI MILIN JITENDRABHAI</td><td>hitendragmodi1981@gmail.com</td><td>9727560434</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>True</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>993584429385</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                43
+                                            </td><td style="width:5px;">226260309027</td><td>09</td><td>PANCHAL RAJKUMAR RAMESHBHAI</td><td>pr435346@gmail.com</td><td>6352290446</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                44
+                                            </td><td style="width:5px;">226260309029</td><td>09</td><td>PARMAR ARYANKUMAR HARIBHAI</td><td>parmararyan816@gmail.com</td><td>9879584837</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>SC</td><td>True</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>942452594805</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                45
+                                            </td><td style="width:5px;">226260309032</td><td>09</td><td>PRAJAPATI CHIRAGKUMAR SHANKARBHAI</td><td>chiragprajapati1206@gmail.com</td><td>9510753083</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                46
+                                            </td><td style="width:5px;">226260309034</td><td>09</td><td>PRAJAPATI DIMPAL MAHADEVBHAI</td><td>dmprajapati2007@gmail.com</td><td>8780444366</td><td>F</td><td style="width:5px;">&nbsp;</td><td>2</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                47
+                                            </td><td style="width:5px;">226260309035</td><td>09</td><td>PRAJAPATI JAYMIN RAMESHBHAI</td><td>jayminprajapati7539@gmail.com</td><td>8511432284</td><td>M</td><td style="width:5px;">&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                48
+                                            </td><td style="width:5px;">226260309036</td><td>09</td><td>PRAJAPATI KARTIKBHAI RATANSIBHAI</td><td>ratanshiparjapati575@gmail.com</td><td>9726410465</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>2</td><td>1</td><td>2</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>True</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>341395210410</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                49
+                                            </td><td style="width:5px;">226260309037</td><td>09</td><td>PRAJAPATI KRISHKUMAR KANUBHAI</td><td>kanubhai7770@gmail.com</td><td>7016794363</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>535287804906</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                50
+                                            </td><td style="width:5px;">226260309041</td><td>09</td><td>RAJPUT PUNITSINH POONAMSINH</td><td>rajputvishu2005@gmail.com</td><td>9724339019</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>565088485194</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                51
+                                            </td><td style="width:5px;">226260309043</td><td>09</td><td>RATHOD PARTHKUMAR VIJAYBHAI</td><td>vijayrathodgetco@gmail.com</td><td>9737381367</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                52
+                                            </td><td style="width:5px;">226260309045</td><td>09</td><td>SHARMA VAIBHAVKUMAR SHYAMSUNDARJI</td><td>shyamsharma57426@gmail.com</td><td>9427935269</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                53
+                                            </td><td style="width:5px;">226260309047</td><td>09</td><td>SOLANKI MAHEPATSING TANAJI</td><td>solankimahepatsinh123@gmail.com</td><td>9023080493</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                54
+                                            </td><td style="width:5px;">226260309048</td><td>09</td><td>THAKOR HITESH TINAJI</td><td>kirandarabar2@gmail.com</td><td>9016024116</td><td>M</td><td style="width:5px;">&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                55
+                                            </td><td style="width:5px;">226268309002</td><td>09</td><td>CHAUDHARI GIRISHKUMAR PARATHIBHAI</td><td>girishchaudhari1715@gmail.com</td><td>8128864839</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>2</td><td>1</td><td>2</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>True</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>568350243121</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                56
+                                            </td><td style="width:5px;">226268309006</td><td>09</td><td>PADHIYAR DIPAK KANUBHAI</td><td>dpadhiyar2002@gmail.com</td><td>9426901900</td><td>M</td><td style="width:5px;">&nbsp;</td><td>&nbsp;</td><td>1</td><td>2</td><td>2</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>True</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>837713462967</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                57
+                                            </td><td style="width:5px;">226268309007</td><td>09</td><td>PATHAN MOHMMADKAIF MAHEBUBKHAN</td><td>mohmmadkaif077@gmail.com</td><td>6356275702</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>True</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>655495846085</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                58
+                                            </td><td style="width:5px;">226268309009</td><td>09</td><td>VYAS MAULIKKUMAR JAGDISHBHAI</td><td>vyasmaulik22@gmail.com</td><td>6354319900</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>2</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>227964160623</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                59
+                                            </td><td style="width:5px;">246268309001</td><td>09</td><td>BHATIYA MAYANK KUMAR SENDHABHAI</td><td>mayankbhatiya922@gmail.com</td><td>9664640065</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>GENERAL</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>494311380738</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                60
+                                            </td><td style="width:5px;">246268309002</td><td>09</td><td>CHAUDHARY BHOOMI NARANBHAI</td><td>bhoomin2003@gmail.com</td><td>8849396030</td><td>F</td><td style="width:5px;">&nbsp;</td><td>2</td><td>&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>536798327455</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                61
+                                            </td><td style="width:5px;">246268309004</td><td>09</td><td>CHAUDHARY KALPESHKUMAR UMABHAI</td><td>Chaudharykalpesh087@Gmail.com</td><td>7041205583</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>558265791704</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                62
+                                            </td><td style="width:5px;">246268309006</td><td>09</td><td>CHAUDHARY MAHIMA NARANBHAI</td><td>mahichaudhary14707@gmail.com</td><td>8160453670</td><td>F</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>2</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>591311382701</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                63
+                                            </td><td style="width:5px;">246268309007</td><td>09</td><td>CHAUHAN NIHARKUMAR KAMLESHBHAI</td><td>niharchauhan2007@gmail.com</td><td>8160404866</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>&nbsp;</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>361725111766</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                64
+                                            </td><td style="width:5px;">236260309041</td><td>09</td><td>PARMAR MAULIKBHAI NAGJIBHAI</td><td>maulikparmar852@gmail.com</td><td>6354498585</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>2</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>969667651069</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                65
+                                            </td><td style="width:5px;">236260309042</td><td>09</td><td>PARMAR MAYURSINH AMARSINH</td><td>vijaysinhp930@gmail.com</td><td>9313782483</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>2</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>EWS</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>867098533955</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                66
+                                            </td><td style="width:5px;">236260309044</td><td>09</td><td>PARMAR PRITKUMAR MAHESHBHAI</td><td>pritparmar2008@gmail.com</td><td>8733045911</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>496836552410</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                67
+                                            </td><td style="width:5px;">236260309045</td><td>09</td><td>PATEL KAMLESH BHAGVANBHAI</td><td>kamlesh28805@gmail.com</td><td>9624495713</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>835221745950</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                68
+                                            </td><td style="width:5px;">236260309047</td><td>09</td><td>PATEL MAAN VIJAYKUMAR</td><td>sonalpatel5138@gmail.com</td><td>7096020504</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>2</td><td>2</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>EWS</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>409102274306</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                69
+                                            </td><td style="width:5px;">236260309049</td><td>09</td><td>PRAJAPATI CHIRAG BABUBHAI</td><td>prajapati879908@gmail.com</td><td>8799088484</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>548260284605</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                70
+                                            </td><td style="width:5px;">236260309050</td><td>09</td><td>PRAJAPATI MIT SURESHBHAI</td><td>mitp70648@gmail.com</td><td>8780377734</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>593953810658</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                71
+                                            </td><td style="width:5px;">236260309051</td><td>09</td><td>PRAJAPATI PIYUSHKUMAR PUNABHAI</td><td>pp5973183@gmail.com</td><td>6355186684</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>457806134553</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                72
+                                            </td><td style="width:5px;">236260309052</td><td>09</td><td>PRAJAPATI PRINCEKUMAR VIJAYBHAI</td><td>prajapatiprince2561@gmail.com</td><td>9664736476</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>461097248728</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                73
+                                            </td><td style="width:5px;">236260309053</td><td>09</td><td>PRAJAPATI YASHDEEP RAMABHAI</td><td>rajalprajapati284@gmail.com</td><td>9725335681</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>1</td><td>2</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>286834633621</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                74
+                                            </td><td style="width:5px;">236260309055</td><td>09</td><td>RABARI SAVAJI MOTIJI</td><td>rabarishivam2000@gmail.com </td><td>7043381285</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>633226484900</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                75
+                                            </td><td style="width:5px;">236260309056</td><td>09</td><td>RATHOD YUG DIPAKKUMAR</td><td>rrathoddipak45@gmail.com</td><td>8320794413</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>303868689873</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                76
+                                            </td><td style="width:5px;">236260309059</td><td>09</td><td>SOLANKI ARSALAN IQBALBHAI</td><td>ARSALANSOLANKI09@GMAIL.COM</td><td>6359229953</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                77
+                                            </td><td style="width:5px;">236260309060</td><td>09</td><td>SOLANKI NISHANTBHAI AMRATBHAI</td><td>nishantasolanki123@gmail.com</td><td>9316841793</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                78
+                                            </td><td style="width:5px;">236260309061</td><td>09</td><td>THAKARDA BHARATJI KANTIJI</td><td>kantijit681@gmail.com</td><td>7863881280</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                79
+                                            </td><td style="width:5px;">236260309062</td><td>09</td><td>TRIVEDI SHIVAMKUMAR KAMLESHBHAI</td><td>trivedishivam7887@gmail.com</td><td>9924927743</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>336134463496</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                80
+                                            </td><td style="width:5px;">236260309063</td><td>09</td><td>VADVASIYA  SIDDHARAJ  JASVANTJI</td><td>sidharajthakor064@gmail.com</td><td>9313648137</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>2</td><td>2</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>599270172529</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                81
+                                            </td><td style="width:5px;">236260309064</td><td>09</td><td>VAGHELA RAJVIRSINH DIPAKSINH</td><td>rdvaghela2455@gmail.com</td><td>9998865914</td><td>M</td><td style="width:5px;">&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                82
+                                            </td><td style="width:5px;">236260309065</td><td>09</td><td>VALAND RAJ DIPAKBHAI</td><td>valandrajdipakbhai@gmail.com</td><td>8200298082</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>2</td><td>2</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>289225118498</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                83
+                                            </td><td style="width:5px;">236268309006</td><td>09</td><td>DIYOL SANJAYSINH JAGATSINH</td><td>SANJAYSINHRAJPUT954@GMAIL.COM</td><td>8799261868</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>2</td><td>2</td><td>2</td><td>2</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>EWS</td><td>True</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>413567348150</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                84
+                                            </td><td style="width:5px;">236268309009</td><td>09</td><td>MANASIYA HAIDARBHAI IKBALBHAI</td><td>manasiyahaidar143@gmail.com</td><td>7573812826</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>1</td><td>2</td><td>2</td><td>2</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>EWS</td><td>True</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>879686096296</td><td>&nbsp;</td>
+		</tr><tr>
+			<td>
+                                                85
+                                            </td><td style="width:5px;">246260309001</td><td>09</td><td>AGLODIYA MASTANBHAI AKBARBHAI</td><td>mastanaglodiya2007@gmail.com</td><td>9558397467</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>EWS</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>727165670220</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                86
+                                            </td><td style="width:5px;">246260309002</td><td>09</td><td>ALSINGA HARSHADKUMAR MANABHAI</td><td>manabhaialsinga93@gmail.com</td><td>9106389421</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>ST</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>228540216741</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                87
+                                            </td><td style="width:5px;">246260309003</td><td>09</td><td>ASAMADI SHAKIR ALI MAHER ALI</td><td>aliasamadi98@gmail.com</td><td>9913238708</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>GENERAL</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>840357913985</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                88
+                                            </td><td style="width:5px;">246260309004</td><td>09</td><td>BIHARI JAMILAHEMADKHAN AYUBKHAN</td><td>ayubkhanbihari1972@gmail.com</td><td>9327053857</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>EWS</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>803727379168</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                89
+                                            </td><td style="width:5px;">246260309005</td><td>09</td><td>CHAUDHARI PRAKASHBHAI NANJIBHAI</td><td>prakashchaudhary1668@gmail.com</td><td>9327575651</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>660439136138</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                90
+                                            </td><td style="width:5px;">246260309007</td><td>09</td><td>CHAUDHARY ANILKUMAR SENDHABHAI</td><td>aschaudhary110@gmail.com</td><td>9426188478</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>693449242568</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                91
+                                            </td><td style="width:5px;">246260309008</td><td>09</td><td>CHAUDHARY AYUSH RAMESHBHAI</td><td>Chaudharyayush1230@gmail.com</td><td>9825927215</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>557176057643</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                92
+                                            </td><td style="width:5px;">246260309010</td><td>09</td><td>CHAUDHARY MEET BABUBHAI</td><td>jaychaudhry50@gmail.com</td><td>8780309613</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>789597517205</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                93
+                                            </td><td style="width:5px;">246260309011</td><td>09</td><td>CHAUDHARY NILESHKUMAR RAMESHBHAI</td><td>rameshpatel0290@gmail.com</td><td>9428370286</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>403562241032</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                94
+                                            </td><td style="width:5px;">246260309013</td><td>09</td><td>CHAUDHARY VIJAYBHAI JETABHAI</td><td>chaudharyvj2024@gmail.com</td><td>9427374531</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>808174079830</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                95
+                                            </td><td style="width:5px;">246260309015</td><td>09</td><td>CHAUHAN DHANANJAYSINH DALPATSINH</td><td>singhdalpat22891@gmail.com</td><td>9427045639</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>EWS</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>419957596968</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                96
+                                            </td><td style="width:5px;">246260309016</td><td>09</td><td>CHAUHAN JIGNESH VINODKUMAR</td><td>vinodchauhan9591@gmail.com</td><td>9428651410</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>GENERAL</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>569554817433</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                97
+                                            </td><td style="width:5px;">246260309017</td><td>09</td><td>DARJI DHRUVILKUMAR KIRTIBHAI</td><td>Darjidhruvil241@gmail.com</td><td>6354643413</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>247798222379</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                98
+                                            </td><td style="width:5px;">246260309018</td><td>09</td><td>DIGARI MAHAVIRKUMAR PARSOTAMBHAI</td><td>mahavirbhudev3544@gmail.com</td><td>7383040212</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>GENERAL</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>872141556704</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                99
+                                            </td><td style="width:5px;">246260309019</td><td>09</td><td>HIMANSHU CHAUHAN</td><td>jt870032@gmail.com</td><td>9634009950</td><td>M</td><td style="width:5px;">&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>GENERAL</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                100
+                                            </td><td style="width:5px;">246260309022</td><td>09</td><td>LOH YASH SHANTUBHAI</td><td>yashloh1247@gmail.com</td><td>9727086506</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>780242888596</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                101
+                                            </td><td style="width:5px;">246260309023</td><td>09</td><td>LUHAR VISHALKUMAR BHAGABHAI</td><td>lvishal863@gmail.com</td><td>6353870910</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>720387663763</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                102
+                                            </td><td style="width:5px;">246260309024</td><td>09</td><td>MALANI KALPESH GAJABHAI</td><td>KALPESHMALANI14@GMAIL.COM</td><td>9824138852</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>560440900082</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                103
+                                            </td><td style="width:5px;">246260309026</td><td>09</td><td>MALI HITESH SAVDANBHAI</td><td>mitsmali24@gmail.com</td><td>8155929069</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>466186639703</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                104
+                                            </td><td style="width:5px;">246260309028</td><td>09</td><td>MALI SUMIT DASHARATHBHAI</td><td>padhiyardasarath49@gmail.com</td><td>9925509303</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>397525024983</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                105
+                                            </td><td style="width:5px;">246260309029</td><td>09</td><td>MALPARA SIKANDARBHAI NURMAHMAD</td><td>sikandarmalpara07@gmail.com</td><td>9712879648</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>EWS</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>617136413444</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                106
+                                            </td><td style="width:5px;">246260309030</td><td>09</td><td>MANSURI MANTASABANU MO.YUNUS</td><td>mantasamansuri160@gmail.com</td><td>9723287613</td><td>F</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>GENERAL</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>767525881460</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                107
+                                            </td><td style="width:5px;">246260309031</td><td>09</td><td>MANSURI REHAN NURMAHAMMAD</td><td>saniyamansuri1972@gmail.com</td><td>8469072323</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>GENERAL</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>836147749691</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                108
+                                            </td><td style="width:5px;">246260309032</td><td>09</td><td>MEVADA DIXIT MUKESHBHAI</td><td>parthmevada90@gmail.com</td><td>6351682841</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>792193741438</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                109
+                                            </td><td style="width:5px;">246260309033</td><td>09</td><td>MEVADA KRIS PARESHBHAI</td><td>pmevada042@gmail.com</td><td>9824220964</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>352856523614</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                110
+                                            </td><td style="width:5px;">246260309034</td><td>09</td><td>NAGORI MAHAMMADREHAN SADIKKHAN</td><td>mrehan2007.nagori@gmail.com</td><td>6353234198</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>GENERAL</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>682542873989</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                111
+                                            </td><td style="width:5px;">246260309037</td><td>09</td><td>PATEL CHETANKUMAR VISHNUBHAI</td><td>chetan4678@gmail.com</td><td>7600425525</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>GENERAL</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>384317992044</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                112
+                                            </td><td style="width:5px;">246260309038</td><td>09</td><td>PATEL FENILKUMAR JAYANTIBHAI</td><td>jkpatelindia1979@gmail.com</td><td>9313968216</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>EWS</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>391783586149</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                113
+                                            </td><td style="width:5px;">246260309039</td><td>09</td><td>PATEL SMIT DEVJIBHAI</td><td>harshsmeet10@gmail.com</td><td>9727086506</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>249275262590</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                114
+                                            </td><td style="width:5px;">246260309042</td><td>09</td><td>PATHAN ANAS KHAN YASEEN KHAN</td><td>pathananas604@gmail.com</td><td>9016243056</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>336451332140</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                115
+                                            </td><td style="width:5px;">246260309044</td><td>09</td><td>PATHAN MOHD. TAHIRKHAN MOHD. FIROZKHAN</td><td>jundkhank@gmail.com</td><td>8488970452</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>GENERAL</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>450475113696</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                116
+                                            </td><td style="width:5px;">246260309046</td><td>09</td><td>PRAJAPATI BHARGAV JITUBHAI</td><td>bhargavjprajapati556@gmail.com</td><td>9328121816</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>535559018585</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                117
+                                            </td><td style="width:5px;">246260309047</td><td>09</td><td>PRAJAPATI BHAVIK KAMLESHBHAI</td><td>prajapatibhavik723@gmail.com</td><td>6353095536</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>487653727841</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                118
+                                            </td><td style="width:5px;">246260309050</td><td>09</td><td>PRAJAPATI JIGNESHKUMAR GANESHBHAI</td><td>prajapatijigneshganeshbhai007@gmail.com</td><td>9157385358</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>897384016756</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                119
+                                            </td><td style="width:5px;">246260309051</td><td>09</td><td>PRAJAPATI KARTIK VINODBHAI</td><td>vprajapati4314@gmail.com</td><td>9737593965</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>752575258213</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                120
+                                            </td><td style="width:5px;">246260309052</td><td>09</td><td>PRAJAPATI KAVYKUMAR SEVANTIBHAI</td><td>sonaliprajapati358@gmail.com</td><td>8128175428</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>902347425081</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                121
+                                            </td><td style="width:5px;">246260309053</td><td>09</td><td>PRAJAPATI MEET DIPESHBHAI</td><td>khadaliya.07@gmail.com</td><td>8140231787</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>425430498118</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                122
+                                            </td><td style="width:5px;">246260309054</td><td>09</td><td>PRAJAPATI MOHITKUMAR HARESHBHAI</td><td>mohitprajapati2909@gmail.com</td><td>7016142684</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>786731166540</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                123
+                                            </td><td style="width:5px;">246260309055</td><td>09</td><td>PRAJAPATI NARESHKUMAR BHAMARAJI</td><td>nareshprajapati4060@gmail.com</td><td>6356388914</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>797309093450</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                124
+                                            </td><td style="width:5px;">246260309056</td><td>09</td><td>PRAJAPATI PARASKUMAR DINESHBHAI</td><td>parasprajapati9092@gmail.com</td><td>6353275153</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>GENERAL</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>290037644833</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                125
+                                            </td><td style="width:5px;">246260309057</td><td>09</td><td>PRAJAPATI SENDHABHAI KAJABHAI</td><td>sedhabhaiprajapati01@gmail.com</td><td>6351667046</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>786560275452</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                126
+                                            </td><td style="width:5px;">246260309058</td><td>09</td><td>PRAJAPATI SHUBHAM SHANKARBHAI</td><td>shubhamprajapati2053@gmail.com</td><td>7043688201</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>401010461712</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                127
+                                            </td><td style="width:5px;">246260309059</td><td>09</td><td>PRAJAPATI SMIT RAJESHBHAI</td><td>prajapatirajesh2831@gmail.com</td><td>9313100268</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>382702875317</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                128
+                                            </td><td style="width:5px;">246260309062</td><td>09</td><td>RATHOD JAYSINH BHARATSINH</td><td>jaysinh8888990@gmail.com</td><td>9427648592</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>GENERAL</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>789718431668</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                129
+                                            </td><td style="width:5px;">246260309063</td><td>09</td><td>RATHOD ROHANSINH BHEMJIJI</td><td>rohansinhr44@gmail.com</td><td>8320981997</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>734083437624</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                130
+                                            </td><td style="width:5px;">246260309064</td><td>09</td><td>SAIYED SAMIDMAHEDI SARFARAJBHAI</td><td>samidsaiyed462@gmail.com</td><td>8320488710</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>GENERAL</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>678636740497</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                131
+                                            </td><td style="width:5px;">246260309065</td><td>09</td><td>SALEH TAHERHUSEN SHABBIRHUSEN</td><td>shaletahir@gmail.com</td><td>9925470769</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>GENERAL</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>631620092697</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                132
+                                            </td><td style="width:5px;">246260309067</td><td>09</td><td>SIPAI MUJAHIDBHAI ARIFBHAI</td><td>moarifsipai@gmail.com</td><td>9737586014</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>EWS</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>518994659936</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                133
+                                            </td><td style="width:5px;">246260309068</td><td>09</td><td>SODHA AJAYRAJSINH RANUBHA</td><td>sodhaajayrajsinh1@gmail.com</td><td>8141089517</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>GENERAL</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>699392562887</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                134
+                                            </td><td style="width:5px;">246260309069</td><td>09</td><td>SOLANKI HIMANSHUBROTHER NARENDRABHAI</td><td>narendrams1978@gmail.com</td><td>9429849281</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>568658739403</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                135
+                                            </td><td style="width:5px;">246260309070</td><td>09</td><td>SONGARA JAY HARESHKUMAR</td><td>jjay89346@gmail.com</td><td>8469691394</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>249780106197</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                136
+                                            </td><td style="width:5px;">246260309071</td><td>09</td><td>TANK KIRANBHAI ASHOKBHAI</td><td>kirankumara2353@gmail.com</td><td>8347139185</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>611361848504</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                137
+                                            </td><td style="width:5px;">246260309072</td><td>09</td><td>TANK MAYURBHAI KAILASHBHAI</td><td>tankmayurk939@gmail.com</td><td>8238887440</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>877351947595</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                138
+                                            </td><td style="width:5px;">246260309074</td><td>09</td><td>THAKOR CHIRAGKUMAR DASHRATHJI</td><td>dbthakor2801@gmail.com</td><td>9408165951</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>659124903274</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                139
+                                            </td><td style="width:5px;">246260309075</td><td>09</td><td>THAKOR VISHVASHJI VIHAJI</td><td>thakorvishwas2002@gmail.com</td><td>9106725104</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>829373955578</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                140
+                                            </td><td style="width:5px;">246260309076</td><td>09</td><td>VAGHELA GANPATSING PITHUBHA</td><td>vaghelaganpatsinh780@gmail.com</td><td>9558922851</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>311526582230</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                141
+                                            </td><td style="width:5px;">246268309008</td><td>09</td><td>CHAVADA JIGNESH RANCHHODBHAI</td><td>jrchavada554@gmail.com</td><td>9898250024</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>268372808203</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                142
+                                            </td><td style="width:5px;">246268309009</td><td>09</td><td>KAUSHIK BHAGVANBHAI PATEL</td><td>kaushik28805@gmail.com</td><td>8200903225</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>&nbsp;</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>708707966735</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                143
+                                            </td><td style="width:5px;">246268309010</td><td>09</td><td>KHAIR PRAKASHBHAI DEVABHAI</td><td>prakashkhair147@gmail.com</td><td>9712376090</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>&nbsp;</td><td>2</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>ST</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>395521834108</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                144
+                                            </td><td style="width:5px;">246268309013</td><td>09</td><td>PARMAR HARSH VASANTBHAI</td><td>harshparmar0420@gmail.com</td><td>9104781830</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>&nbsp;</td><td>2</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>734771607882</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                145
+                                            </td><td style="width:5px;">246268309014</td><td>09</td><td>PARMAR MEHULKUMAR PRAVINBHAI</td><td>mehul22966@gmail.com</td><td>9714003241</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>892187677338</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                146
+                                            </td><td style="width:5px;">246268309015</td><td>09</td><td>SAINI VANSIKA PRAKASHKUMAR</td><td>vansikasaini1253@gmail.com</td><td>8980188494</td><td>F</td><td style="width:5px;">&nbsp;</td><td>2</td><td>&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>GENERAL</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>536191003566</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                147
+                                            </td><td style="width:5px;">246268309016</td><td>09</td><td>SHAIKH ZIHAN ZAKIRHUSEN</td><td>zihanshaikh148@gmail.com</td><td>9327309892</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>GENERAL</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>812813134626</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                148
+                                            </td><td style="width:5px;">246268309017</td><td>09</td><td>SHEKH VAHIDHUSEN SAJIDHUSEN</td><td>vahidshaikh804@gmail.com</td><td>8154976516</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>&nbsp;</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>GENERAL</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>311704563399</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                149
+                                            </td><td style="width:5px;">246268309018</td><td>09</td><td>SHRIRAJ ASHOKKUMAR TRIVEDI</td><td>shreerajtrivedi2003@gmail.com</td><td>9427153868</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>GENERAL</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>883823398444</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                150
+                                            </td><td style="width:5px;">246268309019</td><td>09</td><td>UMANG SATISHKUMAR CHELANI</td><td>barotumang971@gmail.com</td><td>9427955308</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>687698984950</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                151
+                                            </td><td style="width:5px;">206260309001</td><td>09</td><td>PATEL VRAJKUMAR ROHITKUMAR</td><td>vrajp291@gmail.com</td><td>7383975375</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>2</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>428737165668</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                152
+                                            </td><td style="width:5px;">206260309006</td><td>09</td><td>PANDYA CHIRAGBHAI BHANUPRASAD</td><td>pandyac063@gmail.com</td><td>9510120591</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>2</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>872903560789</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                153
+                                            </td><td style="width:5px;">206260309007</td><td>09</td><td>PRAJAPATI RUTVIBEN ASHOKKUMAR</td><td>prajapatirutvi2002@gmail.com</td><td>8128402110</td><td>F</td><td style="width:5px;">&nbsp;</td><td>2</td><td>2</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>712885637839</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                154
+                                            </td><td style="width:5px;">206260309009</td><td>09</td><td>SOLANKI VIKRAMBHAI NARANBHAI</td><td>vickysolanki1301@gmail.com</td><td>9316488074</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>2</td><td>1</td><td>2</td><td>2</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>True</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>801406277309</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                155
+                                            </td><td style="width:5px;">206260309013</td><td>09</td><td>PRAJAPATI MEET RAMESHKUMAR</td><td>prajapatimanjuben123@gmail.com</td><td>9106528885</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                156
+                                            </td><td style="width:5px;">206260309015</td><td>09</td><td>PANCHAL HARSH BHARATBHAI</td><td>hp588975@gmail.com</td><td>9328258096</td><td>M</td><td style="width:5px;">&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                157
+                                            </td><td style="width:5px;">206260309016</td><td>09</td><td>SUTHAR JAGDISHKUMAR SHIVRAMBHAI</td><td>jagdishs0831@gmail.com</td><td>9104394468</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>2</td><td>2</td><td>2</td><td>1</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>True</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>642684519946</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                158
+                                            </td><td style="width:5px;">206260309018</td><td>09</td><td>RAJGOR PAVANKUMAR HARIBHAI</td><td>haribhairajgor42@gmail.com</td><td>8758575805</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>2</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>482079016668</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                159
+                                            </td><td style="width:5px;">206260309020</td><td>09</td><td>PATHAN AFTABKHAN SEJADKHAN</td><td>pathanshehjadk@gmail.com</td><td>9978737823</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>244464554457</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                160
+                                            </td><td style="width:5px;">206260309021</td><td>09</td><td>Manvendra</td><td>manvendrasinhbarad4@gmail.com</td><td>8980523625</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>770578351115</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                161
+                                            </td><td style="width:5px;">206260309022</td><td>09</td><td>MANAT VIVEKKUMAR SHANKARBHAI</td><td>vsmanat143@gmail.com</td><td>9687183544</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>TFW</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>276207568027</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                162
+                                            </td><td style="width:5px;">216260309001</td><td>09</td><td>PRAJAPATI HARSHIT JAYANTIBHAI</td><td>prajapatijayantibhai2@gmail.com</td><td>8128321828</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                163
+                                            </td><td style="width:5px;">216260309004</td><td>09</td><td>PRAJAPATI VIPULBHAI BABUBHAI</td><td>vp2784778@gmail.com</td><td>9601061053</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>2</td><td>1</td><td>2</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>901919504898</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                164
+                                            </td><td style="width:5px;">216260309008</td><td>09</td><td>THAKOR ATULKUMAR DASHARATHBHAI</td><td>jigardabhi399@gmail.com</td><td>7046975279</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>966884451194</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                165
+                                            </td><td style="width:5px;">216260309017</td><td>09</td><td>CHAUHAN SIDDHKUMAR DINESHKUMAR</td><td>darjidinesh451@gmail.com</td><td>6355596983</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>409497867915</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                166
+                                            </td><td style="width:5px;">216260309019</td><td>09</td><td>CHAUHAN ASHVINKUMAR AMARABHAI</td><td>CHAUHANASVIN2004@GMAIL.COM</td><td>8320632374</td><td>M</td><td style="width:5px;">&nbsp;</td><td>2</td><td>1</td><td>2</td><td>2</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>SC</td><td>True</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>825881679647</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                167
+                                            </td><td style="width:5px;">216260309020</td><td>09</td><td>PRAJAPATI ADITYABHAI PRAVINBHAI</td><td>adityaprajapati3282@gmail.com</td><td>9427061356</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                168
+                                            </td><td style="width:5px;">216260309023</td><td>09</td><td>PATEL MAN VINODKUMAR</td><td>vinodpatel310.vp@gmail.com</td><td>9909925005</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>EWS</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>457711080035</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                169
+                                            </td><td style="width:5px;">216260309024</td><td>09</td><td>THAKKAR SHIV NILESHKUMAR</td><td>shivthakkarshiv@gmail.com</td><td>9328254308</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>926684990714</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                170
+                                            </td><td style="width:5px;">216260309025</td><td>09</td><td>PARMAR MAYURBHAI KANUBHAI</td><td>mayurparmar1147@gmail.com</td><td>7802878802</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>236563914320</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                171
+                                            </td><td style="width:5px;">216260309026</td><td>09</td><td>MODEE PRIYANSHU GIRISHKUMAR</td><td>nikhilmodi364@gmail.com</td><td>9574807145</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>597382792001</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                172
+                                            </td><td style="width:5px;">216260309027</td><td>09</td><td>BALOCH MOHAMMADRAZINKHAN AIYUBBHAI</td><td>rajinbaloch188@gmail.com</td><td>8.12845e+009</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>4.67574e+011</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                173
+                                            </td><td style="width:5px;">216260309028</td><td>09</td><td>KURESHI FARHAN AARIFKHAN</td><td>farankureshifarankureshi@gmail.com</td><td>9.31316e+009</td><td>M</td><td style="width:5px;">&nbsp;</td><td>1</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>OPEN</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>7.44852e+011</td><td>1</td>
+		</tr><tr>
+			<td>
+                                                174
+                                            </td><td style="width:5px;">216260309029</td><td>09</td><td>SANDHI ABDULMUNAF SIDIKBHAI</td><td>munafrajar0@gmail.com</td><td>9316695272</td><td>M</td><td style="width:5px;">&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>SEBC</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>934124574218</td><td>1</td>
+		</tr>
+	</table>
+</div>
