@@ -37,7 +37,7 @@ export function SubsectionCard({ name, slug, postCount, lang, description }: Sub
             <CardTitle className="text-xl font-semibold">
               <Link
                 href={`/posts/${lang}/${slug}`}
-                className="text-primary hover:text-secondary transition-colors block truncate group-hover:text-primary dark:hover:text-primary"
+                className="text-primary hover:text-secondary transition-colors block group-hover:text-primary dark:hover:text-primary"
               >
                 {displayName}
               </Link>
