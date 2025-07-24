@@ -4,7 +4,7 @@ AI Voiceover System Runner
 ==========================
 
 This script automatically activates the project's virtual environment 
-and runs the slidev export processor.
+and runs the unified slidev processor with multi-TTS support.
 """
 
 import os
@@ -17,7 +17,7 @@ def main():
     script_dir = Path(__file__).parent
     project_root = script_dir.parent
     venv_path = project_root / "venv"
-    processor_script = script_dir / "slidev_export_processor.py"
+    processor_script = script_dir / "slidev_unified_processor.py"
     
     print("🎤 AI Voiceover System Runner")
     print("=" * 50)
