@@ -105,8 +105,14 @@ function buildPresentation(presentationName, presentations = null) {
   console.log(`   Source: ${path.relative(process.cwd(), slidevDir)}`);
 
   try {
-    // Build with correct base path
+    // Build with correct base path and ensure clean build
     const buildCommand = `cd "${slidevDir}" && npx slidev build "${presentationName}.md" --base "${basePath}" --out "${tempBuildDir}"`;
+    
+    // Clean temp directory first if it exists
+    if (fs.existsSync(tempBuildDir)) {
+      fs.rmSync(tempBuildDir, { recursive: true, force: true });
+    }
+    
     execSync(buildCommand, { stdio: 'inherit' });
 
     // Remove existing build if it exists

@@ -228,7 +228,7 @@ public class FunctionalInterfaceDemo {
 
 Java 8 provides many built-in functional interfaces in `java.util.function` package.
 
-## Predicate<T>
+## Predicate&lt;T&gt;
 
 Tests a condition and returns boolean.
 
@@ -286,7 +286,7 @@ public class PredicateDemo {
 
 ---
 
-# Function<T, R>
+# Function&lt;T, R&gt;
 
 Represents a function that takes one argument and returns a result.
 
@@ -347,9 +347,9 @@ public class FunctionDemo {
 
 ---
 
-# Consumer<T> and Supplier<T>
+# Consumer&lt;T&gt; and Supplier&lt;T&gt;
 
-## Consumer<T> - Consumes input, returns nothing
+## Consumer&lt;T&gt; - Consumes input, returns nothing
 
 ```java
 import java.util.function.Consumer;
@@ -398,7 +398,7 @@ public class ConsumerDemo {
 
 ---
 
-# Supplier<T> - Supplies a value
+# Supplier&lt;T&gt; - Supplies a value
 
 ```java
 import java.util.function.Supplier;

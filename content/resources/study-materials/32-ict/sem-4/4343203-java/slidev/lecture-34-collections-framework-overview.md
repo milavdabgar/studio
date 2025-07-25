@@ -150,27 +150,27 @@ Map<K,V> (Interface) - Not part of Collection
 
 ## Core Collection Interfaces
 
-### Collection<E>
+### Collection&lt;E&gt;
 - Root interface of collection hierarchy
 - Basic operations: add, remove, contains, size
 - Iterable support
 
-### List<E>
+### List&lt;E&gt;
 - Ordered collection (sequence)
 - Allows duplicates
 - Index-based access
 
-### Set<E>
+### Set&lt;E&gt;
 - No duplicate elements
 - Mathematical set abstraction
 - Unique elements only
 
-### Queue<E>
+### Queue&lt;E&gt;
 - Elements processed in specific order
 - FIFO (First In, First Out) typically
 - Head and tail operations
 
-### Map<K,V>
+### Map&lt;K,V&gt;
 - Key-value pair associations
 - No duplicate keys
 - Dictionary/associative array
