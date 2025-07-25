@@ -26,6 +26,13 @@
     "types": ["jest", "@testing-library/jest-dom", "@playwright/test", "node", "next/image-types/global"]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "playwright.config.ts", "jest.config.js", "jest.setup.js", "src/types/jest-dom.d.ts", "src/test-setup.d.ts"],
-  "exclude": ["node_modules", "e2e/**/*.ts", "reference/**/*", ".next/types/app/project-fair/student/page.ts"]
+  "exclude": [
+    "node_modules", 
+    "e2e/**/*.ts", 
+    "reference/**/*", 
+    ".next/types/app/project-fair/student/page.ts",
+    "autonomous-dev-system/mcp-servers/**/*",
+    "mcp-server/**/*"
+  ]
 }
 
