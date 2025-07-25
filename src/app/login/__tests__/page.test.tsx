@@ -103,15 +103,13 @@ describe('Login Page', () => {
       render(<LoginPage />);
     });
     
-    await waitFor(() => {
-      expect(screen.getByDisplayValue('')).toBeInTheDocument();
-    });
-
     // Check that email and password fields are empty by default (security fix)
-    const emailInput = screen.getByLabelText('Email');
-    const passwordInput = screen.getByLabelText('Password');
-    expect(emailInput).toHaveValue('');
-    expect(passwordInput).toHaveValue('');
+    await waitFor(() => {
+      const emailInput = screen.getByLabelText('Email');
+      const passwordInput = screen.getByLabelText('Password');
+      expect(emailInput).toHaveValue('');
+      expect(passwordInput).toHaveValue('');
+    });
   });
 
   it('should load and display roles in dropdown', async () => {
