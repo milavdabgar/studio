@@ -41,3 +41,9 @@ E2E-*.md
 *.swp
 *.swo
 *~
+
+# Exclude problematic Slidev build artifacts
+content/**/slidev/slidev-builds
+content/**/slidev/public
+**/slidev-builds
+public/slidev-builds

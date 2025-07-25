@@ -153,6 +153,9 @@ jobs:
               # Clean any existing slidev builds
               rm -rf public/slidev-builds/*
               
+              # Clean any recursive slidev-builds directories that may have been created in content
+              find content/resources/study-materials -type d -name "slidev-builds" -exec rm -rf {} + 2>/dev/null || true
+              
               # Build all slidev presentations with absolute paths
               echo "📊 Building MPMC presentations..."
               find content/resources/study-materials/11-ec/sem-4/4341101-mpmc/slidev -name "*.md" -not -name "_index.md" | while read -r slidev_file; do
@@ -176,6 +179,11 @@ jobs:
               done
               
                 echo "✅ Slidev builds completed"
+                
+                # Final cleanup of any recursive directories created during builds
+                echo "🧹 Cleaning up any recursive build directories..."
+                find content/resources/study-materials -type d -name "slidev-builds" -exec rm -rf {} + 2>/dev/null || true
+                find content/resources/study-materials -name "public" -type d -exec rm -rf {} + 2>/dev/null || true
               fi
             else
               echo "⏭️  Skipping Slidev builds as requested"
