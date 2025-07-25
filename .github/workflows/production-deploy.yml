@@ -150,26 +150,30 @@ jobs:
                 # Create slidev builds directory
                 mkdir -p public/slidev-builds
               
-              # Build all slidev presentations
+              # Clean any existing slidev builds and problematic files
+              rm -rf public/slidev-builds/*
+              find content/resources/study-materials -name "index.html" -path "*/slidev/*" -delete
+              
+              # Build all slidev presentations with absolute paths
               echo "📊 Building MPMC presentations..."
               find content/resources/study-materials/11-ec/sem-4/4341101-mpmc/slidev -name "*.md" -not -name "_index.md" | while read -r slidev_file; do
                 filename=$(basename "$slidev_file" .md)
                 echo "Building: $filename"
-                timeout 300 npx slidev build "$slidev_file" --out "public/slidev-builds/mpmc-$filename" || echo "⚠️  Failed to build $filename"
+                timeout 300 npx slidev build "$slidev_file" --out "/home/milav/studio/public/slidev-builds/mpmc-$filename" || echo "⚠️  Failed to build $filename"
               done
               
               echo "☕ Building Java presentations..."
               find content/resources/study-materials/32-ict/sem-4/4343203-java/slidev -name "*.md" -not -name "_index.md" | head -10 | while read -r slidev_file; do
                 filename=$(basename "$slidev_file" .md)
                 echo "Building: $filename"
-                timeout 300 npx slidev build "$slidev_file" --out "public/slidev-builds/java-$filename" || echo "⚠️  Failed to build $filename"
+                timeout 300 npx slidev build "$slidev_file" --out "/home/milav/studio/public/slidev-builds/java-$filename" || echo "⚠️  Failed to build $filename"
               done
               
               echo "🔒 Building Cyber Security presentations..."
               find content/resources/study-materials/32-ict/sem-5/4353204-cyber-security/slidev -name "*.md" -not -name "_index.md" | head -10 | while read -r slidev_file; do
                 filename=$(basename "$slidev_file" .md)
                 echo "Building: $filename"
-                timeout 300 npx slidev build "$slidev_file" --out "public/slidev-builds/cybersec-$filename" || echo "⚠️  Failed to build $filename"
+                timeout 300 npx slidev build "$slidev_file" --out "/home/milav/studio/public/slidev-builds/cybersec-$filename" || echo "⚠️  Failed to build $filename"
               done
               
                 echo "✅ Slidev builds completed"
