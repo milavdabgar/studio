@@ -547,7 +547,7 @@ export async function getSubPostsForDirectory(dirPath: string[], lang: string = 
   }
 }
 
-// Get direct articles following Hugo conventions (single .md files and folders with index.md)
+// Get direct articles following Hugo conventions (single .md files and folders with index.md, excluding _index.md)
 export async function getDirectPostsForDirectory(dirPath: string[], lang: string = 'en'): Promise<PostPreview[]> {
   try {
     const directoryPath = path.join(contentDirectory, ...dirPath);
@@ -559,15 +559,16 @@ export async function getDirectPostsForDirectory(dirPath: string[], lang: string
     const allPostsData = await getSortedPostsData(lang);
     const directPosts: PostPreview[] = [];
     
-    // Get all posts that belong to this directory
+    // Get all posts that are direct children of this directory
     const candidatePosts = allPostsData.filter(post => {
       if (!post.id) return false;
       
       const postPathParts = post.id.split('/');
       
-      // Check if this post's path starts with the directory path
-      if (postPathParts.length <= dirPath.length) return false;
+      // Must be exactly one level deeper than current directory
+      if (postPathParts.length !== dirPath.length + 1) return false;
       
+      // Check if this post's path starts with the directory path
       for (let i = 0; i < dirPath.length; i++) {
         if (postPathParts[i] !== dirPath[i]) return false;
       }
@@ -575,56 +576,69 @@ export async function getDirectPostsForDirectory(dirPath: string[], lang: string
       return true;
     });
     
-    // Group posts by their immediate path structure
-    const postGroups: Record<string, PostPreview[]> = {};
-    
-    candidatePosts.forEach(post => {
+    // Filter out _index files (these are section pages, not articles)
+    const articlePosts = candidatePosts.filter(post => {
       const postPathParts = post.id!.split('/');
+      const filename = postPathParts[postPathParts.length - 1];
       
-      if (postPathParts.length === dirPath.length + 1) {
-        // Single .md file in directory (e.g., "article.md")
-        const key = `single:${postPathParts[dirPath.length]}`;
-        if (!postGroups[key]) postGroups[key] = [];
-        postGroups[key].push(post);
-      } else if (postPathParts.length >= dirPath.length + 2) {
-        // Post in subdirectory (could be index.md or other structure)
-        const subdir = postPathParts[dirPath.length];
-        const key = `folder:${subdir}`;
-        if (!postGroups[key]) postGroups[key] = [];
-        postGroups[key].push(post);
+      // Exclude _index files (section pages)
+      if (filename === '_index' || filename.startsWith('_index.')) {
+        return false;
       }
+      
+      return true;
     });
     
-    // Process each group according to Hugo conventions
-    for (const [key, posts] of Object.entries(postGroups)) {
-      if (key.startsWith('single:')) {
-        // Single .md files are always articles
-        directPosts.push(...posts);
-      } else if (key.startsWith('folder:')) {
-        const folderName = key.replace('folder:', '');
-        const folderPath = path.join(directoryPath, folderName);
-        
-        // Check if this folder has index.md (article) vs _index.md (section)
-        const hasArticleIndex = fs.existsSync(path.join(folderPath, `index.md`)) ||
-                               fs.existsSync(path.join(folderPath, `index.${lang}.md`));
-        const hasSectionIndex = fs.existsSync(path.join(folderPath, `_index.md`)) ||
-                               fs.existsSync(path.join(folderPath, `_index.${lang}.md`));
-        
-        if (hasArticleIndex && !hasSectionIndex) {
-          // This is an article folder (bundle) - find the index post
-          const indexPost = posts.find(post => {
-            const postPathParts = post.id!.split('/');
-            const filename = postPathParts[postPathParts.length - 1];
-            return filename === 'index' || filename.startsWith('index.');
-          });
-          if (indexPost) {
-            directPosts.push(indexPost);
+    // Now check for article bundles (folders with index.md)
+    const sectionDirPath = path.join(contentDirectory, ...dirPath);
+    
+    try {
+      const entries = fs.readdirSync(sectionDirPath, { withFileTypes: true });
+      
+      for (const entry of entries) {
+        if (entry.isDirectory()) {
+          const subdirPath = path.join(sectionDirPath, entry.name);
+          
+          // Check if this directory has index.md (article bundle) but NOT _index.md (section)
+          const hasArticleIndex = fs.existsSync(path.join(subdirPath, `index.md`)) ||
+                                 fs.existsSync(path.join(subdirPath, `index.${lang}.md`));
+          const hasSectionIndex = fs.existsSync(path.join(subdirPath, `_index.md`)) ||
+                                 fs.existsSync(path.join(subdirPath, `_index.${lang}.md`));
+          
+          if (hasArticleIndex && !hasSectionIndex) {
+            // This is an article bundle - find the index post
+            const bundlePosts = allPostsData.filter(post => {
+              if (!post.id) return false;
+              const postPathParts = post.id.split('/');
+              
+              // Check if post is in this bundle directory
+              if (postPathParts.length !== dirPath.length + 2) return false;
+              
+              // Check path match
+              for (let i = 0; i < dirPath.length; i++) {
+                if (postPathParts[i] !== dirPath[i]) return false;
+              }
+              
+              if (postPathParts[dirPath.length] !== entry.name) return false;
+              
+              const filename = postPathParts[postPathParts.length - 1];
+              return filename === 'index' || filename.startsWith('index.');
+            });
+            
+            if (bundlePosts.length > 0) {
+              directPosts.push(...bundlePosts);
+            }
           }
+          // If it has _index.md, it's a section and will be handled by subsections
+          // If it has neither, it's not a Hugo-style structure, so we skip it
         }
-        // If it has _index.md, it's a section and will be handled by subsections
-        // If it has neither, it's not a Hugo-style structure, so we skip it
       }
+    } catch (error) {
+      console.warn(`[getDirectPostsForDirectory] Error reading directory ${sectionDirPath}:`, error);
     }
+    
+    // Combine single file articles with bundle articles
+    directPosts.push(...articlePosts);
     
     console.log(`[getDirectPostsForDirectory] Found ${directPosts.length} direct articles for directory: ${dirPath.join('/')}`);
     return directPosts;
