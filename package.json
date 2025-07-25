@@ -48,6 +48,8 @@
     "test:all-comprehensive": "playwright test e2e/*-comprehensive.spec.ts --reporter=line",
     "test:critical-apis": "playwright test e2e/notifications-api-comprehensive.spec.ts e2e/results-api-comprehensive.spec.ts e2e/course-offerings-api-comprehensive.spec.ts e2e/assessments-api-comprehensive.spec.ts e2e/course-materials-api-comprehensive.spec.ts e2e/enrollments-api-comprehensive.spec.ts e2e/timetables-api-comprehensive.spec.ts --reporter=line",
     "test:app-auth": "playwright test e2e/app-authentication-core.spec.ts --reporter=line",
+    "slidev:build": "node scripts/build-slidev.js",
+    "slidev:build-all": "node scripts/build-slidev.js --all",
     "test:app-admin": "playwright test e2e/app-admin-dashboard.spec.ts --reporter=line",
     "test:app-faculty": "playwright test e2e/app-faculty-dashboard.spec.ts --reporter=line",
     "test:app-student": "playwright test e2e/app-student-dashboard.spec.ts --reporter=line",

@@ -380,6 +380,8 @@ decrypted_data = cipher_suite.decrypt(encrypted_data)
 
 </div>
 
+<div>
+
 <div v-click="7">
 
 ## 🚪 Access Control Systems
@@ -415,6 +417,8 @@ Data Classification Levels:
   - Confidential: Limited role-based access
   - Restricted: Highest security clearance required
 ```
+
+</div>
 
 </div>
 
@@ -981,6 +985,8 @@ graph TB
 </div>
 
 </div>
+
+<div>
 
 <div v-click="11">
 
