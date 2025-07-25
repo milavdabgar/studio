@@ -187,3 +187,4 @@ texput.log
 *.swp
 *.swo
 *~
+slidev-failed-builds.json
