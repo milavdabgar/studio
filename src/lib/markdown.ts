@@ -11,13 +11,14 @@ import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
 import { PostData, PostPreview } from './types';
 import { processMarkdownWithShortcodes } from './shortcodes';
-import { detectContentType } from './content-types';
+import { detectContentType, getContentTypeInfo } from './content-types';
 
 const contentDirectory = path.join(process.cwd(), 'content');
 export const availableLanguages = ['en', 'gu'];
 
 // Re-export types for backward compatibility
 export type { PostData, PostPreview } from './types';
+export type { ContentFileDetails };
 
 interface FileDetails {
   slugParts: string[];
@@ -25,6 +26,14 @@ interface FileDetails {
   id: string; 
   fullPath: string;
   relativePath: string; 
+}
+
+interface ContentFileDetails extends FileDetails {
+  contentType: string;
+  extension: string;
+  filename: string;
+  isBrowserViewable: boolean;
+  requiresDownload: boolean;
 }
 
 function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir, currentPathParts: string[] = []): FileDetails[] {
@@ -91,6 +100,93 @@ function getAllMarkdownFilesRecursive(dir: string, baseDir: string = dir, curren
         id,
         fullPath: fullEntryPath,
         relativePath: path.relative(baseDir, fullEntryPath).replace(/\\/g, '/'),
+      };
+      files.push(fileDetail);
+    }
+  }
+  return files;
+}
+
+function getAllContentFilesRecursive(dir: string, baseDir: string = dir, currentPathParts: string[] = []): ContentFileDetails[] {
+  let files: ContentFileDetails[] = [];
+  if (!fs.existsSync(dir)) {
+    console.warn(`[getAllContentFilesRecursive] Directory not found, cannot read: ${dir}`);
+    return files;
+  }
+  
+  // Skip heavy directories that contain mostly images/assets but no content
+  const skipDirectories = ['node_modules', '.git', '.next', 'dist', 'build'];
+  const currentDirName = currentPathParts[currentPathParts.length - 1];
+  if (skipDirectories.includes(currentDirName)) {
+    console.log(`[getAllContentFilesRecursive] Skipping directory: ${dir}`);
+    return files;
+  }
+  
+  console.log(`[getAllContentFilesRecursive] Scanning directory: ${dir}, currentPathParts: ${JSON.stringify(currentPathParts)}`);
+
+  let entries;
+  try {
+    entries = fs.readdirSync(dir, { withFileTypes: true });
+    console.log(`[getAllContentFilesRecursive] Directory ${dir} contains ${entries.length} entries:`, 
+      entries.map(e => `${e.name}${e.isDirectory() ? '/' : ''}`).slice(0, 10));
+  } catch (e: unknown) {
+    const errorMessage = e instanceof Error ? e.message : String(e);
+    console.warn(`[getAllContentFilesRecursive] Could not read directory ${dir}:`, errorMessage);
+    return files;
+  }
+
+  for (const entry of entries) {
+    const fullEntryPath = path.join(dir, entry.name);
+    
+    if (entry.isDirectory()) {
+      files = files.concat(getAllContentFilesRecursive(fullEntryPath, baseDir, [...currentPathParts, entry.name]));
+    } else if (entry.isFile()) {
+      // Skip hidden files and system files
+      if (entry.name.startsWith('.') || entry.name.startsWith('~')) {
+        continue;
+      }
+      
+      let lang = 'en'; 
+      let baseNameWithoutExt = path.parse(entry.name).name;
+      const extension = path.parse(entry.name).ext;
+
+      // Check for language suffix in filename (before extension)
+      const langMatch = baseNameWithoutExt.match(/\.([a-z]{2})$/);
+      if (langMatch && availableLanguages.includes(langMatch[1])) {
+        lang = langMatch[1];
+        baseNameWithoutExt = baseNameWithoutExt.substring(0, baseNameWithoutExt.length - 3); 
+      }
+
+      let slugPartsForFile: string[];
+      let id: string;
+
+      if (baseNameWithoutExt.toLowerCase() === '_index' || baseNameWithoutExt.toLowerCase() === 'index') {
+        slugPartsForFile = [...currentPathParts];
+        id = slugPartsForFile.join('/') || ''; 
+      } else {
+        slugPartsForFile = [...currentPathParts, baseNameWithoutExt];
+        id = slugPartsForFile.join('/');
+      }
+      
+      // Make ID unique by including extension for non-markdown files
+      if (extension !== '.md') {
+        id = `${id}${extension}`;
+      }
+      
+      // Get content type information
+      const contentTypeInfo = getContentTypeInfo(fullEntryPath);
+      
+      const fileDetail: ContentFileDetails = {
+        slugParts: slugPartsForFile,
+        lang,
+        id,
+        fullPath: fullEntryPath,
+        relativePath: path.relative(baseDir, fullEntryPath).replace(/\\/g, '/'),
+        contentType: contentTypeInfo.type,
+        extension,
+        filename: entry.name,
+        isBrowserViewable: contentTypeInfo.isBrowserViewable,
+        requiresDownload: contentTypeInfo.requiresDownload
       };
       files.push(fileDetail);
     }
@@ -401,6 +497,21 @@ export function getAllPostSlugsForStaticParams(): Array<{ lang: string; slugPart
   }
 }
 
+export async function getAllContentFiles(langToFilter?: string): Promise<ContentFileDetails[]> {
+  console.log(`[getAllContentFiles] Starting with langToFilter: ${langToFilter}, contentDirectory: ${contentDirectory}`);
+  const allFileDetails = getAllContentFilesRecursive(contentDirectory);
+  console.log(`[getAllContentFiles] Found ${allFileDetails.length} total content files`);
+  
+  // Filter by language if specified
+  if (langToFilter) {
+    const filteredFiles = allFileDetails.filter(file => file.lang === langToFilter);
+    console.log(`[getAllContentFiles] Filtered to ${filteredFiles.length} files for language: ${langToFilter}`);
+    return filteredFiles;
+  }
+  
+  return allFileDetails;
+}
+
 export async function getSubPostsForDirectory(dirPath: string[], lang: string = 'en'): Promise<PostPreview[]> {
   try {
     const directoryPath = path.join(contentDirectory, ...dirPath);
@@ -433,6 +544,93 @@ export async function getSubPostsForDirectory(dirPath: string[], lang: string = 
   } catch (error) {
     console.error(`[getSubPostsForDirectory] Error getting sub-posts for ${dirPath.join('/')}:`, error);
     return [];
+  }
+}
+
+// Updated function to get direct content (files + folders) in a section
+export async function getDirectSectionContent(dirPath: string[], lang: string = 'en'): Promise<{
+  files: ContentFileDetails[];
+  subsections: { name: string; slug: string; posts: PostPreview[]; description?: string }[];
+}> {
+  try {
+    const directoryPath = path.join(contentDirectory, ...dirPath);
+    
+    if (!fs.existsSync(directoryPath)) {
+      return { files: [], subsections: [] };
+    }
+
+    // Get all content files for this language
+    const allContentFiles = await getAllContentFiles(lang);
+    
+    // Filter files that are direct children of this directory (excluding markdown files)
+    const directFiles = allContentFiles.filter(file => {
+      if (!file.id) return false;
+      
+      // Exclude markdown files - they should appear as posts/subsections instead
+      if (file.contentType === 'markdown' || file.extension === '.md') return false;
+      
+      const filePathParts = file.id.split('/');
+      
+      // Check if file is a direct child of this directory
+      if (filePathParts.length !== dirPath.length + 1) return false;
+      
+      // Check if the directory path matches
+      for (let i = 0; i < dirPath.length; i++) {
+        if (filePathParts[i] !== dirPath[i]) return false;
+      }
+      
+      return true;
+    });
+
+    // Get subsections (existing logic)
+    const allPostsData = await getSortedPostsData(lang);
+    const subsectionMap: Record<string, PostPreview[]> = {};
+    
+    allPostsData.forEach(post => {
+      if (!post.id) return;
+      
+      const postPathParts = post.id.split('/');
+      
+      // Check if post is within this directory and has at least one more level
+      if (postPathParts.length <= dirPath.length) return;
+      
+      // Check if the directory path matches
+      let matches = true;
+      for (let i = 0; i < dirPath.length; i++) {
+        if (postPathParts[i] !== dirPath[i]) {
+          matches = false;
+          break;
+        }
+      }
+      
+      if (!matches) return;
+      
+      // Get the immediate next level (subsection name)
+      const subsectionName = postPathParts[dirPath.length];
+      
+      if (!subsectionMap[subsectionName]) {
+        subsectionMap[subsectionName] = [];
+      }
+      
+      subsectionMap[subsectionName].push(post);
+    });
+
+    // Convert to array and add metadata
+    const subsections = Object.entries(subsectionMap).map(([name, posts]) => ({
+      name,
+      slug: [...dirPath, name].join('/'),
+      posts,
+      description: `${posts.length} item${posts.length !== 1 ? 's' : ''}`
+    }));
+
+    // Sort subsections by name
+    subsections.sort((a, b) => a.name.localeCompare(b.name));
+
+    console.log(`[getDirectSectionContent] Found ${directFiles.length} direct files and ${subsections.length} subsections for directory: ${dirPath.join('/')}`);
+    return { files: directFiles, subsections };
+  } catch (error) {
+    console.error(`[getDirectSectionContent] Error getting content for ${dirPath.join('/')}:`, error);
+    return { files: [], subsections: [] };
   }
 }
 

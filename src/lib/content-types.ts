@@ -3,10 +3,15 @@
 import fs from 'fs';
 import path from 'path';
 
-export type ContentType = 'markdown' | 'slidev' | 'pdf' | 'html' | 'reveal';
+// Import and re-export types and client-safe functions
+import type { ContentType } from './content-types-client';
+import { isBrowserViewable, requiresDownload, getMimeType, detectContentTypeFromExtension } from './content-types-client';
+
+export type { ContentType };
+export { isBrowserViewable, requiresDownload, getMimeType, detectContentTypeFromExtension };
 
 /**
- * Detect the content type based on file extension and content analysis
+ * Detect the content type based on file extension and content analysis (server-side only)
  */
 export function detectContentType(filePath: string): ContentType {
   if (!fs.existsSync(filePath)) {
@@ -17,6 +22,11 @@ export function detectContentType(filePath: string): ContentType {
   
   // Handle obvious cases first
   if (extension === '.pdf') return 'pdf';
+  if (extension === '.docx') return 'docx';
+  if (extension === '.pptx') return 'pptx';
+  if (extension === '.xlsx') return 'xlsx';
+  if (['.jpg', '.jpeg', '.png', '.gif', '.svg', '.webp', '.bmp', '.ico'].includes(extension)) return 'image';
+  if (['.txt', '.csv', '.json', '.xml'].includes(extension)) return 'text';
   if (extension === '.html' || extension === '.htm') {
     const content = fs.readFileSync(filePath, 'utf8');
     if (content.includes('reveal.js') || content.includes('Reveal.initialize')) {
@@ -69,6 +79,11 @@ export function detectContentType(filePath: string): ContentType {
     }
   }
   
+  // Fallback for any other file type
+  if (extension && extension !== '.md') {
+    return 'other';
+  }
+  
   return 'markdown';
 }
 
@@ -84,7 +99,7 @@ export function isSlidevPath(filePath: string): boolean {
 }
 
 /**
- * Get content type with additional context information
+ * Get content type with additional context information (server-side only)
  */
 export function getContentTypeInfo(filePath: string) {
   const contentType = detectContentType(filePath);
@@ -95,6 +110,8 @@ export function getContentTypeInfo(filePath: string) {
     isSlidevByPath,
     extension: path.extname(filePath).toLowerCase(),
     filename: path.basename(filePath),
-    isSlidePresentation: contentType === 'slidev' || contentType === 'reveal'
+    isSlidePresentation: contentType === 'slidev' || contentType === 'reveal',
+    isBrowserViewable: isBrowserViewable(contentType),
+    requiresDownload: requiresDownload(contentType)
   };
 }

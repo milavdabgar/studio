@@ -3,10 +3,11 @@
 // Force dynamic rendering for this page due to searchParams usage
 export const dynamic = 'force-dynamic';
 
-import { getPostData, getPaginatedPosts, getSubPostsForDirectory, getDirectSubsections, getRelatedPosts, getAdjacentPosts } from '@/lib/markdown'; 
+import { getPostData, getPaginatedPosts, getSubPostsForDirectory, getDirectSubsections, getDirectSectionContent, getRelatedPosts, getAdjacentPosts } from '@/lib/markdown';
+import type { ContentFileDetails } from '@/lib/markdown'; 
 import { Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { FileText } from 'lucide-react';
+import { FileText, Download, ExternalLink, File, Image, FileSpreadsheet, Presentation } from 'lucide-react';
 import 'katex/dist/katex.min.css'; // Ensure KaTeX CSS is imported
 import PostRenderer from '@/components/blog/PostRenderer';
 import { BlogLayout } from '@/components/blog/BlogLayout';
@@ -34,6 +35,89 @@ interface PostPageParams {
 interface PostPageProps {
   params: Promise<PostPageParams>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+// File card component for displaying individual files
+function FileCard({ file, lang }: { file: ContentFileDetails; lang: string }) {
+  // Use the relative path from the content directory
+  const filePath = `/api/content/files/${file.relativePath}`;
+  const displayName = file.filename.replace(/\.(en|gu)\./, '.').replace(/-/g, ' ');
+  
+  const getFileIcon = (contentType: string) => {
+    switch (contentType) {
+      case 'pdf':
+        return <FileText className="h-8 w-8 text-red-500" />;
+      case 'docx':
+        return <FileText className="h-8 w-8 text-blue-500" />;
+      case 'pptx':
+        return <Presentation className="h-8 w-8 text-orange-500" />;
+      case 'xlsx':
+        return <FileSpreadsheet className="h-8 w-8 text-green-500" />;
+      case 'image':
+        return <Image className="h-8 w-8 text-purple-500" />;
+      default:
+        return <File className="h-8 w-8 text-gray-500" />;
+    }
+  };
+  
+  const getContentTypeLabel = (contentType: string) => {
+    switch (contentType) {
+      case 'pdf':
+        return 'PDF';
+      case 'docx':
+        return lang === 'gu' ? 'વર્ડ ડોક્યુમેન્ટ' : 'Word Document';
+      case 'pptx':
+        return lang === 'gu' ? 'પ્રેઝન્ટેશન' : 'Presentation';
+      case 'xlsx':
+        return lang === 'gu' ? 'સ્પ્રેડશીટ' : 'Spreadsheet';
+      case 'image':
+        return lang === 'gu' ? 'છબી' : 'Image';
+      default:
+        return lang === 'gu' ? 'ફાઇલ' : 'File';
+    }
+  };
+
+  return (
+    <Card className="group hover:shadow-lg transition-all duration-200 cursor-pointer border-2 hover:border-primary/20">
+      <CardHeader className="pb-2">
+        <div className="flex items-center space-x-3">
+          {getFileIcon(file.contentType)}
+          <div className="flex-1 min-w-0">
+            <CardTitle className="text-sm font-medium truncate">
+              {displayName}
+            </CardTitle>
+            <p className="text-xs text-muted-foreground">
+              {getContentTypeLabel(file.contentType)}
+            </p>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="pt-0">
+        <div className="flex gap-2">
+          {file.requiresDownload ? (
+            <a
+              href={filePath}
+              download
+              className="flex-1 inline-flex items-center justify-center px-3 py-2 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            >
+              <Download className="h-3 w-3 mr-1" />
+              {lang === 'gu' ? 'ડાઉનલોડ' : 'Download'}
+            </a>
+          ) : (
+            <a
+              href={filePath}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 inline-flex items-center justify-center px-3 py-2 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+            >
+              <ExternalLink className="h-3 w-3 mr-1" />
+              {lang === 'gu' ? 'જુઓ' : 'View'}
+            </a>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
 }
 
 export async function generateStaticParams() {
@@ -207,9 +291,10 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
 
   // Check if this is a directory with subsections that should show Hugo-like section listing
   if (decodedSlugParts && decodedSlugParts.length > 0) {
-    const subsections = await getDirectSubsections(decodedSlugParts, pageParams.lang);
+    const sectionContent = await getDirectSectionContent(decodedSlugParts, pageParams.lang);
+    const { files, subsections } = sectionContent;
     
-    if (subsections.length > 0) {
+    if (subsections.length > 0 || files.length > 0) {
       // Show subsection listing (Hugo-like behavior) instead of individual posts
       const sectionTitle = decodedSlugParts[decodedSlugParts.length - 1];
       const pageTitle = pageParams.lang === 'gu' ? `વિભાગ: ${sectionTitle}` : `Section: ${sectionTitle}`;
@@ -244,8 +329,8 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
                   </h1>
                   <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                     {pageParams.lang === 'gu' 
-                      ? 'આ વિભાગમાં ઉપલબ્ધ પેટા-વિભાગો' 
-                      : 'Available subsections in this section'
+                      ? `આ વિભાગમાં ${files.length} ફાઇલો અને ${subsections.length} પેટા-વિભાગો ઉપલબ્ધ છે` 
+                      : `${files.length} files and ${subsections.length} subsections available in this section`
                     }
                   </p>
                 </div>
@@ -269,19 +354,40 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
                 </div>
               )}
 
+              {/* Files section */}
+              {files.length > 0 && (
+                <div className="mb-8">
+                  <h2 className="text-2xl font-semibold mb-4 text-primary">
+                    {pageParams.lang === 'gu' ? 'ફાઇલો' : 'Files'}
+                  </h2>
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {files.map((file) => (
+                      <FileCard key={file.id} file={file} lang={pageParams.lang} />
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Subsections grid */}
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {subsections.map((subsection) => (
-                  <SubsectionCard
-                    key={subsection.slug}
-                    name={subsection.name}
-                    slug={subsection.slug}
-                    postCount={subsection.posts.length}
-                    lang={pageParams.lang}
-                    description={subsection.description}
-                  />
-                ))}
-              </div>
+              {subsections.length > 0 && (
+                <div>
+                  <h2 className="text-2xl font-semibold mb-4 text-primary">
+                    {pageParams.lang === 'gu' ? 'પેટા-વિભાગો' : 'Subsections'}
+                  </h2>
+                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {subsections.map((subsection) => (
+                      <SubsectionCard
+                        key={subsection.slug}
+                        name={subsection.name}
+                        slug={subsection.slug}
+                        postCount={subsection.posts.length}
+                        lang={pageParams.lang}
+                        description={subsection.description}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </BlogLayout>

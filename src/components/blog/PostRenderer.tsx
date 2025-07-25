@@ -7,7 +7,8 @@ import { createRoot } from 'react-dom/client';
 import CodeBlock from '../ui/code-block';
 import { useShortcodeProcessor } from '@/lib/shortcodes';
 import { SlidevEmbedded } from '../slidev/SlidevEmbedded';
-import type { ContentType } from '@/lib/content-types';
+import type { ContentType } from '@/lib/content-types-client';
+import { requiresDownload } from '@/lib/content-types-client';
 
 interface PostRendererProps {
   contentHtml: string;
@@ -554,6 +555,86 @@ const PostRenderer: React.FC<PostRendererProps> = ({
               title={`PDF: ${pdfFilename}`}
               loading="lazy"
             />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle other file types (images, documents, etc.)
+  if (contentType && contentType !== 'markdown' && contentType !== 'slidev' && contentType !== 'pdf' && slugParts) {
+    const filename = slugParts[slugParts.length - 1];
+    const filePath = `/api/content/files/${slugParts.join('/')}`;
+    const shouldDownload = requiresDownload(contentType);
+    
+    // Create display name from filename
+    const displayName = filename?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'File';
+    
+    // Get file icon based on content type
+    const getFileIcon = (type: ContentType) => {
+      switch (type) {
+        case 'docx':
+          return '📄';
+        case 'pptx':
+          return '📊';
+        case 'xlsx':
+          return '📈';
+        case 'image':
+          return '🖼️';
+        case 'text':
+          return '📝';
+        default:
+          return '📁';
+      }
+    };
+    
+    return (
+      <div className="file-wrapper w-full">
+        <div className="file-viewer-container bg-gray-50 rounded-lg border p-8 text-center">
+          <div className="file-icon text-6xl mb-4">
+            {getFileIcon(contentType)}
+          </div>
+          <div className="file-info mb-6">
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">{displayName}</h3>
+            <p className="text-sm text-gray-600 uppercase tracking-wide">
+              {contentType} File
+            </p>
+          </div>
+          <div className="file-actions space-x-4">
+            {shouldDownload ? (
+              <a
+                href={filePath}
+                download
+                className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Download {contentType.toUpperCase()}
+              </a>
+            ) : (
+              <a
+                href={filePath}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+                Open in New Tab
+              </a>
+            )}
+            <a
+              href={filePath}
+              download
+              className="inline-flex items-center px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Download
+            </a>
           </div>
         </div>
       </div>
