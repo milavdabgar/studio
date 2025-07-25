@@ -624,7 +624,7 @@ export default function AdminStudentsPage() {
                     <Label htmlFor="studentProgram">Program *</Label>
                     <Select value={formProgramId} onValueChange={(value) => {
                       setFormProgramId(value);
-                      const selectedProgram = programs.find(p => p.id === value);
+                      // Program selection handled by state update
                     }} disabled={isSubmitting || programs.length === 0} required>
                       <SelectTrigger id="studentProgram"><SelectValue placeholder="Select Program"/></SelectTrigger>
                       <SelectContent>

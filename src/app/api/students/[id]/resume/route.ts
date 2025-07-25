@@ -123,7 +123,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     });
 
     // Fetch student results (skip for now to avoid complexity)
-    let results: any[] = [];
+    const results: any[] = [];
     // Note: Results would need proper database model and querying
 
     // Generate resume data
@@ -308,7 +308,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     });
 
     // Fetch student results (skip for now to avoid complexity)
-    let results: any[] = [];
+    const results: any[] = [];
     // Note: Results would need proper database model and querying
 
     // Generate base resume data

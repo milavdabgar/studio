@@ -255,7 +255,7 @@ export async function getPostData({
     return null;
   }
 
-  let contentHtml = processedContent.toString();
+  const contentHtml = processedContent.toString();
   
   // Detect content type
   const contentType = detectContentType(filePath);
