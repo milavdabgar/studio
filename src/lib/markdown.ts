@@ -547,6 +547,41 @@ export async function getSubPostsForDirectory(dirPath: string[], lang: string = 
   }
 }
 
+// Get direct posts only (not from subdirectories)
+export async function getDirectPostsForDirectory(dirPath: string[], lang: string = 'en'): Promise<PostPreview[]> {
+  try {
+    const directoryPath = path.join(contentDirectory, ...dirPath);
+    
+    if (!fs.existsSync(directoryPath)) {
+      return [];
+    }
+    const allPostsData = await getSortedPostsData(lang);
+    
+    // Filter posts that are direct children of the directory (not in subdirectories)
+    const directPosts = allPostsData.filter(post => {
+      if (!post.id) return false;
+      
+      const postPathParts = post.id.split('/');
+      
+      // Check if post is exactly one level deeper than the directory
+      if (postPathParts.length !== dirPath.length + 1) return false;
+      
+      // Check if this post's path starts with the directory path
+      for (let i = 0; i < dirPath.length; i++) {
+        if (postPathParts[i] !== dirPath[i]) return false;
+      }
+      
+      return true;
+    });
+    
+    console.log(`[getDirectPostsForDirectory] Found ${directPosts.length} direct posts for directory: ${dirPath.join('/')}`);
+    return directPosts;
+  } catch (error) {
+    console.error(`[getDirectPostsForDirectory] Error getting direct posts for ${dirPath.join('/')}:`, error);
+    return [];
+  }
+}
+
 // Updated function to get direct content (files + folders) in a section
 export async function getDirectSectionContent(dirPath: string[], lang: string = 'en'): Promise<{
   files: ContentFileDetails[];
@@ -582,7 +617,7 @@ export async function getDirectSectionContent(dirPath: string[], lang: string = 
       return true;
     });
 
-    // Get subsections (existing logic)
+    // Get subsections (only actual directories with multiple posts, not individual files)
     const allPostsData = await getSortedPostsData(lang);
     const subsectionMap: Record<string, PostPreview[]> = {};
     
@@ -591,8 +626,8 @@ export async function getDirectSectionContent(dirPath: string[], lang: string = 
       
       const postPathParts = post.id.split('/');
       
-      // Check if post is within this directory and has at least one more level
-      if (postPathParts.length <= dirPath.length) return;
+      // Check if post is within this directory and has at least TWO more levels (directory + file)
+      if (postPathParts.length <= dirPath.length + 1) return;
       
       // Check if the directory path matches
       let matches = true;
@@ -605,7 +640,7 @@ export async function getDirectSectionContent(dirPath: string[], lang: string = 
       
       if (!matches) return;
       
-      // Get the immediate next level (subsection name)
+      // Get the immediate next level (subsection name) - this should be a directory
       const subsectionName = postPathParts[dirPath.length];
       
       if (!subsectionMap[subsectionName]) {
@@ -615,13 +650,22 @@ export async function getDirectSectionContent(dirPath: string[], lang: string = 
       subsectionMap[subsectionName].push(post);
     });
 
-    // Convert to array and add metadata
-    const subsections = Object.entries(subsectionMap).map(([name, posts]) => ({
-      name,
-      slug: [...dirPath, name].join('/'),
-      posts,
-      description: `${posts.length} item${posts.length !== 1 ? 's' : ''}`
-    }));
+    // Convert to array and add metadata - only include directories, not individual files
+    const subsections = Object.entries(subsectionMap)
+      .filter(([name, posts]) => {
+        // Only include as subsection if it represents an actual directory with posts inside it
+        // Check if there are posts that are deeper than the direct level
+        return posts.some(post => {
+          const postPathParts = post.id?.split('/') || [];
+          return postPathParts.length > dirPath.length + 2; // At least directory/subdirectory/file.md
+        }) || posts.length > 1; // Or multiple posts in the same subdirectory
+      })
+      .map(([name, posts]) => ({
+        name,
+        slug: [...dirPath, name].join('/'),
+        posts,
+        description: `${posts.length} item${posts.length !== 1 ? 's' : ''}`
+      }));
 
     // Sort subsections by name
     subsections.sort((a, b) => a.name.localeCompare(b.name));

@@ -3,7 +3,7 @@
 // Force dynamic rendering for this page due to searchParams usage
 export const dynamic = 'force-dynamic';
 
-import { getPostData, getPaginatedPosts, getSubPostsForDirectory, getDirectSubsections, getDirectSectionContent, getRelatedPosts, getAdjacentPosts } from '@/lib/markdown';
+import { getPostData, getPaginatedPosts, getSubPostsForDirectory, getDirectSubsections, getDirectSectionContent, getDirectPostsForDirectory, getRelatedPosts, getAdjacentPosts } from '@/lib/markdown';
 import type { ContentFileDetails } from '@/lib/markdown'; 
 import { Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -293,8 +293,9 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
   if (decodedSlugParts && decodedSlugParts.length > 0) {
     const sectionContent = await getDirectSectionContent(decodedSlugParts, pageParams.lang);
     const { files, subsections } = sectionContent;
+    const directPosts = await getDirectPostsForDirectory(decodedSlugParts, pageParams.lang);
     
-    if (subsections.length > 0 || files.length > 0) {
+    if (subsections.length > 0 || files.length > 0 || directPosts.length > 0) {
       // Show subsection listing (Hugo-like behavior) instead of individual posts
       const sectionTitle = decodedSlugParts[decodedSlugParts.length - 1];
       const pageTitle = pageParams.lang === 'gu' ? `વિભાગ: ${sectionTitle}` : `Section: ${sectionTitle}`;
@@ -329,8 +330,8 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
                   </h1>
                   <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                     {pageParams.lang === 'gu' 
-                      ? `આ વિભાગમાં ${files.length} ફાઇલો અને ${subsections.length} પેટા-વિભાગો ઉપલબ્ધ છે` 
-                      : `${files.length} files and ${subsections.length} subsections available in this section`
+                      ? `આ વિભાગમાં ${subsections.length} પેટા-વિભાગો, ${directPosts.length} લેખો અને ${files.length} ફાઇલો ઉપલબ્ધ છે` 
+                      : `${subsections.length} subsections, ${directPosts.length} articles, and ${files.length} files available in this section`
                     }
                   </p>
                 </div>
@@ -354,23 +355,9 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
                 </div>
               )}
 
-              {/* Files section */}
-              {files.length > 0 && (
-                <div className="mb-8">
-                  <h2 className="text-2xl font-semibold mb-4 text-primary">
-                    {pageParams.lang === 'gu' ? 'ફાઇલો' : 'Files'}
-                  </h2>
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {files.map((file) => (
-                      <FileCard key={file.id} file={file} lang={pageParams.lang} />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Subsections grid */}
+              {/* Subsections grid - First */}
               {subsections.length > 0 && (
-                <div>
+                <div className="mb-8">
                   <h2 className="text-2xl font-semibold mb-4 text-primary">
                     {pageParams.lang === 'gu' ? 'પેટા-વિભાગો' : 'Subsections'}
                   </h2>
@@ -384,6 +371,34 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
                         lang={pageParams.lang}
                         description={subsection.description}
                       />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Direct Posts/Articles section - Second */}
+              {directPosts.length > 0 && (
+                <div className="mb-8">
+                  <h2 className="text-2xl font-semibold mb-4 text-primary">
+                    {pageParams.lang === 'gu' ? 'લેખો' : 'Articles'}
+                  </h2>
+                  <div className="grid gap-6">
+                    {directPosts.map((post) => (
+                      <PostCard key={`${post.lang}-${post.id}`} post={post} />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Files section - Last */}
+              {files.length > 0 && (
+                <div>
+                  <h2 className="text-2xl font-semibold mb-4 text-primary">
+                    {pageParams.lang === 'gu' ? 'ફાઇલો' : 'Files'}
+                  </h2>
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {files.map((file) => (
+                      <FileCard key={file.id} file={file} lang={pageParams.lang} />
                     ))}
                   </div>
                 </div>
