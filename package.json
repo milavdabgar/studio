@@ -195,6 +195,8 @@
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
     "@edge-runtime/primitives": "^6.0.0",
+    "@iconify-json/logos": "^1.2.5",
+    "@iconify-json/mdi": "^1.2.3",
     "@mermaid-js/mermaid-cli": "^11.4.3",
     "@playwright/test": "^1.53.1",
     "@slidev/cli": "^52.0.0",

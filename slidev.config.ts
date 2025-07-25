@@ -1,6 +1,4 @@
-import { defineConfig } from '@slidev/cli'
-
-export default defineConfig({
+export default {
   // Presentation metadata
   title: 'Slidev Complete Feature Showcase',
   author: 'Demo Author',
@@ -62,4 +60,4 @@ export default defineConfig({
   plugins: [
     // Add any custom plugins here
   ]
-})
+}

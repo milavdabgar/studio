@@ -84,9 +84,6 @@ export default defineConfig({
     [/^grid-cols-auto-(\d+)$/, ([, d]) => ({ 'grid-template-columns': `repeat(${d}, auto)` })],
   ],
   
-  // Enable dark mode support
-  darkMode: 'class',
-  
   // Safelist important classes that might be used dynamically
   safelist: [
     'text-blue-500',
