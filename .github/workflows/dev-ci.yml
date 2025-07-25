@@ -9,8 +9,40 @@ on:
       - dev
 
 jobs:
-  test:
-    name: Run Tests & Quality Checks
+  quality-checks:
+    name: Code Quality & Security
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for security scanning
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript Type Check
+        run: npm run typecheck
+
+      - name: ESLint Check (Strict)
+        run: npm run lint
+
+      - name: Security Audit
+        run: npm audit --audit-level=moderate
+
+      - name: Check for outdated dependencies
+        run: npm outdated --depth=0 || true  # Don't fail on outdated deps, just warn
+
+  test-coverage:
+    name: Tests & Coverage
     runs-on: ubuntu-latest
     timeout-minutes: 15
     
@@ -27,14 +59,60 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run TypeScript check
-        run: npx tsc --noEmit
+      - name: Run tests with coverage
+        run: npm run test:coverage
 
-      - name: Run linting
-        run: npm run lint || echo "Linting completed with warnings"
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        if: always()
+        with:
+          file: ./coverage/coverage-final.json
+          fail_ci_if_error: false
 
-      - name: Run tests
-        run: npm test || echo "Tests completed"
+  build-test:
+    name: Build & Performance
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Build check
-        run: npm run build || echo "Build completed"
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Check bundle size
+        run: |
+          echo "📦 Build size analysis:"
+          du -sh .next/ || echo "Build output not found"
+          
+          # Check if build is reasonable size (under 100MB)
+          BUILD_SIZE=$(du -sm .next/ 2>/dev/null | cut -f1 || echo "0")
+          echo "Build size: ${BUILD_SIZE}MB"
+          if [ "$BUILD_SIZE" -gt 100 ]; then
+            echo "❌ Build size too large: ${BUILD_SIZE}MB (max: 100MB)"
+            exit 1
+          fi
+
+      - name: Test production start
+        run: |
+          timeout 30 npm start &
+          PID=$!
+          sleep 10
+          if curl -f http://localhost:3000 > /dev/null 2>&1; then
+            echo "✅ Production server started successfully"
+            kill $PID 2>/dev/null || true
+          else
+            echo "❌ Production server failed to start"
+            kill $PID 2>/dev/null || true
+            exit 1
+          fi
