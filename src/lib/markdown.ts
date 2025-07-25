@@ -986,6 +986,20 @@ export async function searchPosts(query: string, lang?: string): Promise<PostPre
   });
 }
 
+export async function searchContentFiles(query: string, lang?: string): Promise<ContentFileDetails[]> {
+  const allFiles = await getAllContentFiles(lang);
+  const searchTerm = query.toLowerCase();
+  
+  return allFiles.filter(file => {
+    const filenameMatch = file.filename.toLowerCase().includes(searchTerm);
+    const pathMatch = file.relativePath.toLowerCase().includes(searchTerm);
+    const extensionMatch = file.extension.toLowerCase().includes(searchTerm);
+    const contentTypeMatch = file.contentType.toLowerCase().includes(searchTerm);
+    
+    return filenameMatch || pathMatch || extensionMatch || contentTypeMatch;
+  });
+}
+
 // Related posts and navigation functions
 export async function getRelatedPosts(currentPost: PostData, lang?: string, limit: number = 3): Promise<PostPreview[]> {
   const allPosts = await getSortedPostsData(lang);
