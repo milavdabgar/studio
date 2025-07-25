@@ -102,9 +102,13 @@ jobs:
           echo "🔗 Debug: Checking for symlinks:"
           find .next -type l -ls 2>/dev/null || echo "No symlinks found"
           
-          # Get the actual size
+          # Clean up cache before measuring (cache shouldn't count toward deployment size)
+          echo "🧹 Cleaning webpack cache..."
+          rm -rf .next/cache
+          
+          # Get the actual deployment size (excluding cache)
           if [ -d ".next" ]; then
-            echo "📏 Measuring .next directory size..."
+            echo "📏 Measuring .next directory size (excluding cache)..."
             du -sh .next/
             BUILD_SIZE=$(du -sm .next/ 2>/dev/null | cut -f1 || echo "0")
             echo "Build size: ${BUILD_SIZE}MB"
@@ -113,9 +117,15 @@ jobs:
             echo "📊 Build breakdown:"
             du -sh .next/*/ 2>/dev/null | sort -hr || echo "No subdirectories found"
             
-            # Reasonable limit for Next.js build (adjusted to 1000MB to handle CI differences)
-            if [ "$BUILD_SIZE" -gt 1000 ]; then
-              echo "❌ Build size too large: ${BUILD_SIZE}MB (max: 1000MB)"
+            # Check for large content files that shouldn't be in build
+            if [ -d ".next/standalone/content" ]; then
+              echo "⚠️  Warning: Content files found in standalone build:"
+              du -sh .next/standalone/content/ 2>/dev/null || echo "No content directory"
+            fi
+            
+            # Reasonable limit for Next.js production build (500MB without cache)
+            if [ "$BUILD_SIZE" -gt 500 ]; then
+              echo "❌ Build size too large: ${BUILD_SIZE}MB (max: 500MB)"
               echo "🔍 Top 10 largest files in build:"
               find .next -type f -exec du -h {} \; | sort -hr | head -10
               exit 1
