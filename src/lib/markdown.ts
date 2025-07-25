@@ -499,6 +499,17 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
       const title = matterResult.data.title || fileDetail.slugParts[fileDetail.slugParts.length -1] || 'Untitled Post';
       const date = matterResult.data.date || new Date().toISOString();
 
+      // Check for featured image following Hugo conventions
+      let featuredImage = matterResult.data.featured;
+      if (!featuredImage && fileDetail.slugParts.length > 0) {
+        // For bundle-style posts (index.md in a directory), check the same directory
+        const postDir = path.join(contentDirectory, ...fileDetail.slugParts);
+        const autoFeaturedImage = findFeaturedImageInDirectory(postDir);
+        if (autoFeaturedImage) {
+          featuredImage = autoFeaturedImage;
+        }
+      }
+
       return {
         id: fileDetail.id,
         slugParts: fileDetail.slugParts,
@@ -508,6 +519,8 @@ export async function getSortedPostsData(langToFilter?: string): Promise<PostPre
         excerpt,
         href: `/posts/${fileDetail.lang}/${fileDetail.id || ''}`.replace(/\/$/, ''), 
         ...matterResult.data,
+        // Override featured field with our detected/processed value
+        featured: featuredImage || false,
       };
     } catch (e: unknown) { 
       console.error(`[getSortedPostsData] ERROR processing file ${filePath} for preview list:`, e);
