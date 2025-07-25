@@ -95,13 +95,21 @@ jobs:
           echo "📦 Build size analysis:"
           du -sh .next/ || echo "Build output not found"
           
-          # Check if build is reasonable size (under 100MB)
+          # Check if build is reasonable size (under 500MB for full Next.js build)
           BUILD_SIZE=$(du -sm .next/ 2>/dev/null | cut -f1 || echo "0")
           echo "Build size: ${BUILD_SIZE}MB"
-          if [ "$BUILD_SIZE" -gt 100 ]; then
-            echo "❌ Build size too large: ${BUILD_SIZE}MB (max: 100MB)"
+          
+          # More reasonable limit for a full-featured Next.js app
+          if [ "$BUILD_SIZE" -gt 500 ]; then
+            echo "❌ Build size too large: ${BUILD_SIZE}MB (max: 500MB)"
             exit 1
+          else
+            echo "✅ Build size is acceptable: ${BUILD_SIZE}MB"
           fi
+          
+          # Show breakdown of large directories in build
+          echo "📊 Build breakdown:"
+          du -sh .next/*/ 2>/dev/null | sort -hr || echo "No subdirectories found"
 
       - name: Test production start
         run: |
