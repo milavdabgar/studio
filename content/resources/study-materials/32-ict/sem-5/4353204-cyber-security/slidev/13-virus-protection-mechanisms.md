@@ -146,7 +146,7 @@ Structural Signatures:
 ```
 
 ### 🔧 YARA Rules Example
-```yara
+```c
 rule Trojan_Banker_Generic
 {
     meta:

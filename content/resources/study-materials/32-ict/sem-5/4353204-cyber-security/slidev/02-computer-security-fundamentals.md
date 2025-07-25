@@ -129,9 +129,9 @@ graph TD
     A --> C[Integrity] 
     A --> D[Availability]
     
-    B --> B1["🔒 Privacy<br/>Access Control<br/>Encryption"]
-    C --> C1["✅ Accuracy<br/>Completeness<br/>Trustworthiness"]
-    D --> D1["⚡ Accessibility<br/>Uptime<br/>Reliability"]
+    B --> B1["🔒 Privacy&lt;br/&gt;Access Control&lt;br/&gt;Encryption"]
+    C --> C1["✅ Accuracy&lt;br/&gt;Completeness&lt;br/&gt;Trustworthiness"]
+    D --> D1["⚡ Accessibility&lt;br/&gt;Uptime&lt;br/&gt;Reliability"]
     
     style A fill:#e1f5fe
     style B fill:#f3e5f5
@@ -1020,6 +1020,8 @@ graph TB
 
 </div>
 
+</div>
+
 <!--
 Understanding different high availability architectures helps organizations choose the right approach for their specific needs and constraints.
 
@@ -1142,10 +1144,10 @@ layout: default
 ### Risk-Based Prioritization Matrix
 ```mermaid
 graph LR
-    A[High Impact<br/>High Probability] --> A1[Priority 1<br/>Address Immediately<br/>Maximum Resources]
-    B[High Impact<br/>Low Probability] --> B1[Priority 2<br/>Plan and Prepare<br/>Contingency Planning]
-    C[Low Impact<br/>High Probability] --> C1[Priority 3<br/>Monitor and Mitigate<br/>Cost-Effective Solutions]
-    D[Low Impact<br/>Low Probability] --> D1[Priority 4<br/>Accept Risk<br/>Minimal Resources]
+    A[High Impact&lt;br/&gt;High Probability] --> A1[Priority 1&lt;br/&gt;Address Immediately&lt;br/&gt;Maximum Resources]
+    B[High Impact&lt;br/&gt;Low Probability] --> B1[Priority 2&lt;br/&gt;Plan and Prepare&lt;br/&gt;Contingency Planning]
+    C[Low Impact&lt;br/&gt;High Probability] --> C1[Priority 3&lt;br/&gt;Monitor and Mitigate&lt;br/&gt;Cost-Effective Solutions]
+    D[Low Impact&lt;br/&gt;Low Probability] --> D1[Priority 4&lt;br/&gt;Accept Risk&lt;br/&gt;Minimal Resources]
     
     style A1 fill:#ffebee
     style B1 fill:#fff3e0
@@ -2426,9 +2428,9 @@ layout: default
 ### Security Management Lifecycle
 ```mermaid
 graph LR
-    A[Monitor<br/>Continuous Surveillance] --> B[Measure<br/>Quantify Performance]
-    B --> C[Analyze<br/>Identify Patterns]
-    C --> D[Improve<br/>Implement Changes]
+    A[Monitor&lt;br/&gt;Continuous Surveillance] --> B[Measure&lt;br/&gt;Quantify Performance]
+    B --> C[Analyze&lt;br/&gt;Identify Patterns]
+    C --> D[Improve&lt;br/&gt;Implement Changes]
     D --> A
     
     style A fill:#e3f2fd
@@ -2468,6 +2470,8 @@ graph LR
 - **Risk assessments** communicating business impact and mitigation strategies
 
 </v-clicks>
+
+</div>
 
 </div>
 
