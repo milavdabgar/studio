@@ -2,18 +2,15 @@
 import { PostPreview, PostData } from './types';
 
 /**
- * Get hero image from post frontmatter
- * Supports Hugo-standard fields: image, hero, featured, cover
+ * Get hero image from post frontmatter following Hugo conventions
+ * Hugo uses 'featured' field in frontmatter or auto-detects 'featured.*' files
+ * The auto-detection is handled during post processing in markdown.ts
  */
 export function getHeroImage(post: PostPreview | PostData): string | null {
-  // Check common Hugo frontmatter fields in order of preference
-  const imageFields = ['image', 'hero', 'featured', 'cover'];
-  
-  for (const field of imageFields) {
-    const value = (post as any)[field];
-    if (value && typeof value === 'string') {
-      return value;
-    }
+  // Check if featured image is specified in frontmatter or auto-detected
+  const featured = (post as any).featured;
+  if (featured && typeof featured === 'string') {
+    return featured;
   }
   
   return null;

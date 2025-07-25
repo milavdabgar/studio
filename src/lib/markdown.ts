@@ -194,6 +194,35 @@ function getAllContentFilesRecursive(dir: string, baseDir: string = dir, current
   return files;
 }
 
+/**
+ * Check for featured image files in a directory following Hugo conventions
+ * Looks for files named 'featured.*' with common image extensions
+ */
+function findFeaturedImageInDirectory(dirPath: string): string | null {
+  if (!fs.existsSync(dirPath) || !fs.statSync(dirPath).isDirectory()) {
+    return null;
+  }
+  
+  const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+  
+  try {
+    const files = fs.readdirSync(dirPath);
+    for (const file of files) {
+      const lowerFile = file.toLowerCase();
+      if (lowerFile.startsWith('featured.')) {
+        const ext = path.extname(lowerFile);
+        if (imageExtensions.includes(ext)) {
+          return file; // Return relative filename
+        }
+      }
+    }
+  } catch (error) {
+    console.warn(`[findFeaturedImageInDirectory] Error reading directory ${dirPath}:`, error);
+  }
+  
+  return null;
+}
+
 export async function getPostData({
   lang: langParam,
   slugParts: receivedSlugParts,
@@ -376,6 +405,17 @@ export async function getPostData({
     normalizedDate = new Date().toISOString();
   }
 
+  // Check for featured image following Hugo conventions
+  let featuredImage = matterResult.data.featured;
+  if (!featuredImage && internalSlugParts.length > 0) {
+    // For bundle-style posts (index.md in a directory), check the same directory
+    const postDir = path.join(contentDirectory, ...internalSlugParts);
+    const autoFeaturedImage = findFeaturedImageInDirectory(postDir);
+    if (autoFeaturedImage) {
+      featuredImage = autoFeaturedImage;
+    }
+  }
+
   return {
     id: internalSlugParts.join('/') || '', 
     slugParts: internalSlugParts,
@@ -391,10 +431,11 @@ export async function getPostData({
     series: matterResult.data.series || '',
     author: matterResult.data.author || '',
     draft: matterResult.data.draft || false,
-    featured: matterResult.data.featured || false,
     readingTime: calculateReadingTime(contentToProcess),
     wordCount: calculateWordCount(contentToProcess),
     ...matterResult.data,
+    // Override featured field with our detected/processed value
+    featured: featuredImage || false,
   };
 }
 
