@@ -65,12 +65,22 @@ export function detectContentType(filePath: string): ContentType {
         return 'slidev';
       }
       
-      // Check for slide separators
+      // Check for Slidev-specific slide separators with layout or other Slidev indicators
       if (content.includes('\n---\n') && frontmatterMatch) {
-        // Count slide separators - if we have frontmatter and multiple --- separators, likely Slidev
+        // Only consider it Slidev if slide separators are combined with Slidev-specific patterns
         const slideSeparators = (content.match(/\n---\n/g) || []).length;
         if (slideSeparators > 1) {
-          return 'slidev';
+          // Look for Slidev-specific patterns after slide separators
+          const hasLayoutAfterSeparator = /\n---\n[^]*?^layout:\s*/m.test(content);
+          const hasSlidevDirectives = content.includes('v-click') || 
+                                     content.includes('::v-click') ||
+                                     content.includes('<v-') ||
+                                     content.includes('slidev');
+          
+          // Only classify as Slidev if we have clear Slidev indicators
+          if (hasLayoutAfterSeparator || hasSlidevDirectives) {
+            return 'slidev';
+          }
         }
       }
       
