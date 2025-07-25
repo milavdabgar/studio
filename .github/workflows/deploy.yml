@@ -1,12 +1,15 @@
-name: Deploy Studio to Production
+name: Quick Deploy (Maintenance)
 
-# Simple deployment workflow that matches local development process
-# git pull + docker compose up -d --build
+# Quick deployment for urgent fixes - uses cached Docker builds
+# For full deployments with slidev builds, use production-deploy.yml
 
 on:
-  push:
-    branches:
-      - master  # Only deploy from master (production-ready)
+  workflow_dispatch:  # Manual trigger only for maintenance
+    inputs:
+      reason:
+        description: 'Reason for quick deployment'
+        required: true
+        default: 'Urgent hotfix'
 
 jobs:
   deploy:
@@ -36,9 +39,10 @@ jobs:
           ssh-keyscan -H server.gppalanpur.in >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
-      - name: Simple Deploy
+      - name: Quick Deploy for Maintenance
         env:
           REMOTE_HOST: milav@server.gppalanpur.in
+          DEPLOY_REASON: ${{ github.event.inputs.reason }}
         run: |
           ssh $REMOTE_HOST '
             # Ensure studio directory exists and is a git repo
@@ -49,8 +53,9 @@ jobs:
             
             cd ~/studio
             
-            # Simple deployment process - same as local
-            echo "🚀 Starting simple deployment..."
+            # Quick maintenance deployment
+            echo "🚀 Starting quick deployment for maintenance..."
+            echo "Reason: $DEPLOY_REASON"
             
             # Clean up any manually created containers that might conflict
             echo "🧹 Cleaning up existing containers..."

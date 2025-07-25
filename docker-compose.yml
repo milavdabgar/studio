@@ -3,7 +3,11 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
+      # Enable BuildKit for better caching
+      args:
+        - BUILDKIT_INLINE_CACHE=1
     container_name: studio-app
+    image: studio:${GIT_COMMIT:-dev}
     expose:
       - "3000"
     restart: unless-stopped

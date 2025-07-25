@@ -1,0 +1,64 @@
+# Production Docker Compose with optimized caching and build control
+# Use this for weekly production deployments with fresh builds
+
+services:
+  studio:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      # Build args for cache control
+      args:
+        - BUILDKIT_INLINE_CACHE=1
+        - BUILD_DATE=${BUILD_DATE:-}
+        - GIT_COMMIT=${GIT_COMMIT:-}
+      # No cache for production builds to avoid stale deployments
+      no_cache: true
+      pull: true  # Always pull base images
+    container_name: studio-app
+    image: studio:${GIT_COMMIT:-latest}
+    expose:
+      - "3000"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongodb:27017/gpp-next}
+      - BUILD_DATE=${BUILD_DATE:-}
+      - GIT_COMMIT=${GIT_COMMIT:-}
+    networks:
+      - npm-network
+    depends_on:
+      - mongodb
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/health', (res) => process.exit(res.statusCode === 200 ? 0 : 1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  mongodb:
+    image: mongo:6.0
+    container_name: studio-mongodb
+    restart: unless-stopped
+    volumes:
+      - mongodb_data:/data/db
+      - ./scripts/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    expose:
+      - "27017"
+    networks:
+      - npm-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  npm-network:
+    external: true
+
+volumes:
+  mongodb_data:
+    driver: local
