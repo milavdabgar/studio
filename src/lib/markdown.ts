@@ -419,10 +419,21 @@ export function extractExcerpt(content: string, maxLength: number = 150): string
 export async function getSortedPostsData(langToFilter?: string): Promise<PostPreview[]> {
   console.log(`[getSortedPostsData] Starting with langToFilter: ${langToFilter}, contentDirectory: ${contentDirectory}`);
   const allFileDetails = getAllMarkdownFilesRecursive(contentDirectory);
-  console.log(`[getSortedPostsData] Found ${allFileDetails.length} total markdown files`);
-  console.log(`[getSortedPostsData] Sample files:`, allFileDetails.slice(0, 5).map(f => ({ id: f.id, lang: f.lang, fullPath: f.fullPath })));
   
-  const allPostsDataPromises = allFileDetails.map(async (fileDetail) => {
+  // Filter out _index files - these are section pages, not posts
+  const postFileDetails = allFileDetails.filter(fileDetail => {
+    const filename = path.basename(fileDetail.fullPath, path.extname(fileDetail.fullPath));
+    const isIndexFile = filename === '_index' || filename.startsWith('_index.');
+    if (isIndexFile) {
+      console.log(`[getSortedPostsData] Excluding _index file: ${fileDetail.fullPath}`);
+    }
+    return !isIndexFile;
+  });
+  
+  console.log(`[getSortedPostsData] Found ${allFileDetails.length} total markdown files, ${postFileDetails.length} posts (excluding _index files)`);
+  console.log(`[getSortedPostsData] Sample files:`, postFileDetails.slice(0, 5).map(f => ({ id: f.id, lang: f.lang, fullPath: f.fullPath })));
+  
+  const allPostsDataPromises = postFileDetails.map(async (fileDetail) => {
     const filePath = fileDetail.fullPath;
     try {
       if (langToFilter && fileDetail.lang !== langToFilter) {
@@ -576,13 +587,14 @@ export async function getDirectPostsForDirectory(dirPath: string[], lang: string
       return true;
     });
     
-    // Filter out _index files (these are section pages, not articles)
+    // Filter out _index files (these are section pages, not articles) - should be unnecessary now
     const articlePosts = candidatePosts.filter(post => {
       const postPathParts = post.id!.split('/');
       const filename = postPathParts[postPathParts.length - 1];
       
-      // Exclude _index files (section pages)
+      // Exclude _index files (section pages) - this should already be filtered out by getSortedPostsData
       if (filename === '_index' || filename.startsWith('_index.')) {
+        console.log(`[getDirectPostsForDirectory] EXCLUDING _index file: ${post.id}`);
         return false;
       }
       
