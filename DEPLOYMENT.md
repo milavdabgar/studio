@@ -172,7 +172,13 @@ Response includes:
 2. **Weekly Schedule**: Designed for late-night deployments to minimize disruption
 3. **Cache Management**: Production deployments always use fresh builds
 4. **Slidev Builds**: Can be skipped for faster deployment if needed
-5. **Rollback**: Use quick deployment with previous master commit if needed
+5. **Node.js Version**: Slidev requires Node.js 20+ (current server has v18.19.1)
+6. **Rollback**: Use quick deployment with previous master commit if needed
+
+### Server Requirements
+- **Node.js**: Version 20 or higher for Slidev builds
+- **Docker**: For containerized deployment
+- **Git**: For code updates
 
 ## 🆘 Troubleshooting
 
@@ -181,14 +187,19 @@ Response includes:
 1. **Stale Docker Cache**
    - Solution: Use `--force-rebuild` option or production deployment
 
-2. **Slidev Build Timeout**
+2. **Slidev Build Failures (Node.js Version)**
+   - Problem: Server has Node.js v18, Slidev requires v20+
+   - Solution: Update Node.js on server or use `--skip-slidev`
+   - Command: `curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt-get install -y nodejs`
+
+3. **Slidev Build Timeout**
    - Solution: Use `--skip-slidev` option for faster deployment
 
-3. **Database Connection Issues**
+4. **Database Connection Issues**
    - Check: Health endpoint shows database status
    - Solution: Restart MongoDB container
 
-4. **Build Size Issues**
+5. **Build Size Issues**
    - Monitor: CI checks bundle size automatically
    - Limit: 1GB maximum build size
 

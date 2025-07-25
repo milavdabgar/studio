@@ -139,8 +139,16 @@ jobs:
               echo "🎯 Building Slidev presentations..."
               echo "This may take 5-10 minutes for all presentations..."
               
-              # Create slidev builds directory
-              mkdir -p public/slidev-builds
+              # Check Node.js version for Slidev compatibility
+              NODE_VERSION=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)
+              if [ "$NODE_VERSION" -lt 20 ]; then
+                echo "⚠️  Node.js version $NODE_VERSION detected. Slidev requires Node.js 20+"
+                echo "Skipping Slidev builds - please update Node.js on server"
+              else
+                echo "✅ Node.js version $NODE_VERSION is compatible with Slidev"
+                
+                # Create slidev builds directory
+                mkdir -p public/slidev-builds
               
               # Build all slidev presentations
               echo "📊 Building MPMC presentations..."
@@ -164,7 +172,8 @@ jobs:
                 timeout 300 npx slidev build "$slidev_file" --out "public/slidev-builds/cybersec-$filename" || echo "⚠️  Failed to build $filename"
               done
               
-              echo "✅ Slidev builds completed"
+                echo "✅ Slidev builds completed"
+              fi
             else
               echo "⏭️  Skipping Slidev builds as requested"
             fi
