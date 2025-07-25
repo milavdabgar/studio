@@ -547,7 +547,7 @@ export async function getSubPostsForDirectory(dirPath: string[], lang: string = 
   }
 }
 
-// Get direct posts only (not from subdirectories)
+// Get direct articles following Hugo conventions (single .md files and folders with index.md)
 export async function getDirectPostsForDirectory(dirPath: string[], lang: string = 'en'): Promise<PostPreview[]> {
   try {
     const directoryPath = path.join(contentDirectory, ...dirPath);
@@ -555,18 +555,19 @@ export async function getDirectPostsForDirectory(dirPath: string[], lang: string
     if (!fs.existsSync(directoryPath)) {
       return [];
     }
-    const allPostsData = await getSortedPostsData(lang);
     
-    // Filter posts that are direct children of the directory (not in subdirectories)
-    const directPosts = allPostsData.filter(post => {
+    const allPostsData = await getSortedPostsData(lang);
+    const directPosts: PostPreview[] = [];
+    
+    // Get all posts that belong to this directory
+    const candidatePosts = allPostsData.filter(post => {
       if (!post.id) return false;
       
       const postPathParts = post.id.split('/');
       
-      // Check if post is exactly one level deeper than the directory
-      if (postPathParts.length !== dirPath.length + 1) return false;
-      
       // Check if this post's path starts with the directory path
+      if (postPathParts.length <= dirPath.length) return false;
+      
       for (let i = 0; i < dirPath.length; i++) {
         if (postPathParts[i] !== dirPath[i]) return false;
       }
@@ -574,7 +575,58 @@ export async function getDirectPostsForDirectory(dirPath: string[], lang: string
       return true;
     });
     
-    console.log(`[getDirectPostsForDirectory] Found ${directPosts.length} direct posts for directory: ${dirPath.join('/')}`);
+    // Group posts by their immediate path structure
+    const postGroups: Record<string, PostPreview[]> = {};
+    
+    candidatePosts.forEach(post => {
+      const postPathParts = post.id!.split('/');
+      
+      if (postPathParts.length === dirPath.length + 1) {
+        // Single .md file in directory (e.g., "article.md")
+        const key = `single:${postPathParts[dirPath.length]}`;
+        if (!postGroups[key]) postGroups[key] = [];
+        postGroups[key].push(post);
+      } else if (postPathParts.length >= dirPath.length + 2) {
+        // Post in subdirectory (could be index.md or other structure)
+        const subdir = postPathParts[dirPath.length];
+        const key = `folder:${subdir}`;
+        if (!postGroups[key]) postGroups[key] = [];
+        postGroups[key].push(post);
+      }
+    });
+    
+    // Process each group according to Hugo conventions
+    for (const [key, posts] of Object.entries(postGroups)) {
+      if (key.startsWith('single:')) {
+        // Single .md files are always articles
+        directPosts.push(...posts);
+      } else if (key.startsWith('folder:')) {
+        const folderName = key.replace('folder:', '');
+        const folderPath = path.join(directoryPath, folderName);
+        
+        // Check if this folder has index.md (article) vs _index.md (section)
+        const hasArticleIndex = fs.existsSync(path.join(folderPath, `index.md`)) ||
+                               fs.existsSync(path.join(folderPath, `index.${lang}.md`));
+        const hasSectionIndex = fs.existsSync(path.join(folderPath, `_index.md`)) ||
+                               fs.existsSync(path.join(folderPath, `_index.${lang}.md`));
+        
+        if (hasArticleIndex && !hasSectionIndex) {
+          // This is an article folder (bundle) - find the index post
+          const indexPost = posts.find(post => {
+            const postPathParts = post.id!.split('/');
+            const filename = postPathParts[postPathParts.length - 1];
+            return filename === 'index' || filename.startsWith('index.');
+          });
+          if (indexPost) {
+            directPosts.push(indexPost);
+          }
+        }
+        // If it has _index.md, it's a section and will be handled by subsections
+        // If it has neither, it's not a Hugo-style structure, so we skip it
+      }
+    }
+    
+    console.log(`[getDirectPostsForDirectory] Found ${directPosts.length} direct articles for directory: ${dirPath.join('/')}`);
     return directPosts;
   } catch (error) {
     console.error(`[getDirectPostsForDirectory] Error getting direct posts for ${dirPath.join('/')}:`, error);
@@ -617,55 +669,51 @@ export async function getDirectSectionContent(dirPath: string[], lang: string = 
       return true;
     });
 
-    // Get subsections (only actual directories with multiple posts, not individual files)
-    const allPostsData = await getSortedPostsData(lang);
-    const subsectionMap: Record<string, PostPreview[]> = {};
+    // Hugo-style subsections: only directories with _index.md files
+    const sectionDirPath = path.join(contentDirectory, ...dirPath);
+    const subsections: { name: string; slug: string; posts: PostPreview[]; description?: string }[] = [];
     
-    allPostsData.forEach(post => {
-      if (!post.id) return;
+    try {
+      const entries = fs.readdirSync(sectionDirPath, { withFileTypes: true });
       
-      const postPathParts = post.id.split('/');
-      
-      // Check if post is within this directory and has at least TWO more levels (directory + file)
-      if (postPathParts.length <= dirPath.length + 1) return;
-      
-      // Check if the directory path matches
-      let matches = true;
-      for (let i = 0; i < dirPath.length; i++) {
-        if (postPathParts[i] !== dirPath[i]) {
-          matches = false;
-          break;
+      for (const entry of entries) {
+        if (entry.isDirectory()) {
+          const subdirPath = path.join(sectionDirPath, entry.name);
+          
+          // Check if this directory has _index.md or _index.gu.md (Hugo section pages)
+          const hasIndexFile = fs.existsSync(path.join(subdirPath, `_index.md`)) ||
+                              fs.existsSync(path.join(subdirPath, `_index.${lang}.md`));
+          
+          if (hasIndexFile) {
+            // Get all posts in this subsection
+            const allPostsData = await getSortedPostsData(lang);
+            const subsectionPosts = allPostsData.filter(post => {
+              if (!post.id) return false;
+              const postPathParts = post.id.split('/');
+              
+              // Check if post is within this subsection
+              if (postPathParts.length <= dirPath.length + 1) return false;
+              
+              // Check if the path matches up to this subsection
+              for (let i = 0; i < dirPath.length; i++) {
+                if (postPathParts[i] !== dirPath[i]) return false;
+              }
+              
+              return postPathParts[dirPath.length] === entry.name;
+            });
+            
+            subsections.push({
+              name: entry.name,
+              slug: [...dirPath, entry.name].join('/'),
+              posts: subsectionPosts,
+              description: `${subsectionPosts.length} item${subsectionPosts.length !== 1 ? 's' : ''}`
+            });
+          }
         }
       }
-      
-      if (!matches) return;
-      
-      // Get the immediate next level (subsection name) - this should be a directory
-      const subsectionName = postPathParts[dirPath.length];
-      
-      if (!subsectionMap[subsectionName]) {
-        subsectionMap[subsectionName] = [];
-      }
-      
-      subsectionMap[subsectionName].push(post);
-    });
-
-    // Convert to array and add metadata - only include directories, not individual files
-    const subsections = Object.entries(subsectionMap)
-      .filter(([name, posts]) => {
-        // Only include as subsection if it represents an actual directory with posts inside it
-        // Check if there are posts that are deeper than the direct level
-        return posts.some(post => {
-          const postPathParts = post.id?.split('/') || [];
-          return postPathParts.length > dirPath.length + 2; // At least directory/subdirectory/file.md
-        }) || posts.length > 1; // Or multiple posts in the same subdirectory
-      })
-      .map(([name, posts]) => ({
-        name,
-        slug: [...dirPath, name].join('/'),
-        posts,
-        description: `${posts.length} item${posts.length !== 1 ? 's' : ''}`
-      }));
+    } catch (error) {
+      console.warn(`[getDirectSectionContent] Error reading directory ${sectionDirPath}:`, error);
+    }
 
     // Sort subsections by name
     subsections.sort((a, b) => a.name.localeCompare(b.name));
