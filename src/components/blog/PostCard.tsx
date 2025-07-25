@@ -8,6 +8,7 @@ import { Calendar, Clock, User, Tag as TagIcon } from 'lucide-react';
 import Link from 'next/link';
 import { format, parseISO, isValid } from 'date-fns';
 import { useLanguage } from '@/lib/contexts/LanguageContext';
+import { getHeroImageUrl, hasHeroImage } from '@/lib/hero-images';
 
 interface PostCardProps {
   post: PostPreview;
@@ -27,6 +28,8 @@ export function PostCard({
   showAuthor = true 
 }: PostCardProps) {
   const { t } = useLanguage();
+  const heroImageUrl = getHeroImageUrl(post);
+  const showHeroImage = hasHeroImage(post);
 
   const formatDate = (dateInput: string | Date | undefined) => {
     try {
@@ -60,7 +63,26 @@ export function PostCard({
   };
 
   return (
-    <Card className="hover:shadow-lg transition-shadow">
+    <Card className="hover:shadow-lg transition-shadow overflow-hidden">
+      {/* Hero Image */}
+      {showHeroImage && heroImageUrl && (
+        <div className="relative h-48 w-full">
+          <img
+            src={heroImageUrl}
+            alt={post.title}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              // Hide the image container if image fails to load
+              const container = e.currentTarget.parentElement;
+              if (container) {
+                container.style.display = 'none';
+              }
+            }}
+          />
+          <div className="absolute inset-0 bg-black/20" />
+        </div>
+      )}
+      
       <CardHeader>
         <CardTitle className="text-xl">
           <Link

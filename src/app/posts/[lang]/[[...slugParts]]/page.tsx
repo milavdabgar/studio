@@ -20,6 +20,7 @@ import { RelatedPosts } from '@/components/blog/RelatedPosts';
 import { PostNavigation } from '@/components/blog/PostNavigation';
 import { PostFooter } from '@/components/blog/PostFooter';
 import { PdfDownloadButton } from '@/components/pdf-download-button';
+import { getHeroImageUrl, hasHeroImage } from '@/lib/hero-images';
 import { Pagination, PaginationInfo } from '@/components/ui/pagination';
 import { StructuredData } from '@/components/seo/StructuredData';
 import { generateSEOMetadata, generateArticleJsonLD, generateBreadcrumbJsonLD } from '@/components/seo/SEOMetaTags';
@@ -545,6 +546,10 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
   const relatedPosts = await getRelatedPosts(postData, langForLinks);
   const { previousPost, nextPost } = await getAdjacentPosts(postData, langForLinks);
 
+  // Get hero image for the post
+  const heroImageUrl = getHeroImageUrl(postData);
+  const showHeroImage = hasHeroImage(postData);
+
   // Generate structured data
   const currentUrl = `https://gppalanpur.in/posts/${langForLinks}/${slugPartsForLinks.join('/')}`;
   const articleJsonLD = generateArticleJsonLD(postData, langForLinks, currentUrl);
@@ -561,29 +566,79 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
           {/* Breadcrumbs */}
           <Breadcrumbs items={breadcrumbItems} currentLang={langForLinks} />
           
+          {/* Hero Image */}
+          {showHeroImage && heroImageUrl && (
+            <div className="relative w-full h-64 sm:h-80 lg:h-96 mb-8 rounded-xl overflow-hidden">
+              <img
+                src={heroImageUrl}
+                alt={postData.title}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  // Hide the image container if image fails to load
+                  const container = e.currentTarget.parentElement;
+                  if (container) {
+                    container.style.display = 'none';
+                  }
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4">
+                <h1 className="text-white text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 drop-shadow-lg">
+                  {postData.title}
+                </h1>
+                <div className="text-white/90 text-sm">
+                  <PostMeta
+                    date={postData.date}
+                    author={postData.author}
+                    readingTime={readingTime}
+                    tags={postData.tags}
+                    categories={postData.categories}
+                    lang={langForLinks}
+                    className="text-white/90"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+          
           <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
             {/* Main content */}
             <div className="flex-1 min-w-0">
               <article>
                 <Card className="shadow-xl border-0 bg-gradient-to-br from-card to-card/90 overflow-hidden dark:border-gray-700">
-                  <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5 border-b border-border/50 dark:border-gray-700">
-                    <div className="space-y-4">
-                      <CardTitle className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-tight">
-                        {postData.title}
-                      </CardTitle>
-                      
-                      {/* Post Meta Information */}
-                      <PostMeta
-                        date={postData.date}
-                        author={postData.author}
-                        readingTime={readingTime}
-                        tags={postData.tags}
-                        categories={postData.categories}
-                        lang={langForLinks}
-                        className="justify-center sm:justify-start"
-                      />
-                      
-                      {/* PDF Download Button */}
+                  {!showHeroImage && (
+                    <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5 border-b border-border/50 dark:border-gray-700">
+                      <div className="space-y-4">
+                        <CardTitle className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-tight">
+                          {postData.title}
+                        </CardTitle>
+                        
+                        {/* Post Meta Information */}
+                        <PostMeta
+                          date={postData.date}
+                          author={postData.author}
+                          readingTime={readingTime}
+                          tags={postData.tags}
+                          categories={postData.categories}
+                          lang={langForLinks}
+                          className="justify-center sm:justify-start"
+                        />
+                        
+                        {/* PDF Download Button */}
+                        <div className="flex justify-center sm:justify-start">
+                          <PdfDownloadButton 
+                            slug={slugPartsForLinks.join('/')}
+                            lang={langForLinks}
+                            title={postData.title}
+                            variant="outline"
+                            size="default"
+                          />
+                        </div>
+                      </div>
+                    </CardHeader>
+                  )}
+                  {showHeroImage && (
+                    <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5 border-b border-border/50 dark:border-gray-700">
                       <div className="flex justify-center sm:justify-start">
                         <PdfDownloadButton 
                           slug={slugPartsForLinks.join('/')}
@@ -593,8 +648,8 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
                           size="default"
                         />
                       </div>
-                    </div>
-                  </CardHeader>
+                    </CardHeader>
+                  )}
                   <CardContent className="p-4 sm:p-6 lg:p-8">
                     <div className="prose prose-sm sm:prose-base lg:prose-lg dark:prose-invert max-w-none">
                       <PostRenderer 
