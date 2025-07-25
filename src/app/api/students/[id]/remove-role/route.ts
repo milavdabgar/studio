@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { connectMongoose } from '@/lib/mongodb';
 import { StudentModel } from '@/lib/models';
 import { userService } from '@/lib/api/users';
+import mongoose from 'mongoose';
 
 interface RouteParams {
   params: Promise<{
