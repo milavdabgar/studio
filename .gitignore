@@ -89,6 +89,10 @@ gtu_scraper_env/
 slidev-builds/
 *.slidev-build
 
+# Slidev generated files in source directories
+*/slidev/index.html
+content/**/slidev/index.html
+
 # Development and testing files
 test-*.js
 test-*.ts

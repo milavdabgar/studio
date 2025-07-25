@@ -150,9 +150,8 @@ jobs:
                 # Create slidev builds directory
                 mkdir -p public/slidev-builds
               
-              # Clean any existing slidev builds and problematic files
+              # Clean any existing slidev builds
               rm -rf public/slidev-builds/*
-              find content/resources/study-materials -name "index.html" -path "*/slidev/*" -delete
               
               # Build all slidev presentations with absolute paths
               echo "📊 Building MPMC presentations..."
