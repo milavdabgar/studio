@@ -25,14 +25,14 @@ export async function GET(request: NextRequest) {
       // Apply tag filters
       if (tags.length > 0) {
         posts = posts.filter(post => 
-          post.tags && tags.some(tag => post.tags.includes(tag))
+          post.tags && tags.some(tag => post.tags!.includes(tag))
         );
       }
 
       // Apply category filters
       if (categories.length > 0) {
         posts = posts.filter(post => 
-          post.categories && categories.some(category => post.categories.includes(category))
+          post.categories && categories.some(category => post.categories!.includes(category))
         );
       }
 

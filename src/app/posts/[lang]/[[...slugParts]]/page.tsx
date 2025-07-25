@@ -18,6 +18,7 @@ import { TableOfContents } from '@/components/blog/TableOfContents';
 import { PostMeta } from '@/components/blog/PostMeta';
 import { RelatedPosts } from '@/components/blog/RelatedPosts';
 import { PostNavigation } from '@/components/blog/PostNavigation';
+import { HeroImage } from '@/components/ui/hero-image';
 import { PostFooter } from '@/components/blog/PostFooter';
 import { PdfDownloadButton } from '@/components/pdf-download-button';
 import { getHeroImageUrl, hasHeroImage } from '@/lib/hero-images';
@@ -568,20 +569,11 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
           
           {/* Hero Image */}
           {showHeroImage && heroImageUrl && (
-            <div className="relative w-full h-64 sm:h-80 lg:h-96 mb-8 rounded-xl overflow-hidden">
-              <img
-                src={heroImageUrl}
-                alt={postData.title}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  // Hide the image container if image fails to load
-                  const container = e.currentTarget.parentElement;
-                  if (container) {
-                    container.style.display = 'none';
-                  }
-                }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
+            <HeroImage
+              src={heroImageUrl}
+              alt={postData.title}
+              showGradient={true}
+            >
               <div className="absolute bottom-4 left-4 right-4">
                 <h1 className="text-white text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 drop-shadow-lg">
                   {postData.title}
@@ -598,7 +590,7 @@ export default async function PostPage({ params, searchParams }: PostPageProps) 
                   />
                 </div>
               </div>
-            </div>
+            </HeroImage>
           )}
           
           <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
