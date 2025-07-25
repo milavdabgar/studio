@@ -5,25 +5,3 @@ summary: "ઇલેક્ટ્રિકલ એન્જિનિયરિંગ
 date: 2024-01-01
 tags: ["study-material", "electrical-engineering", "fundamentals", "semester-1", "ec", "4311101"]
 ---
-
-## કોર્સ સામગ્રી
-
-### અભ્યાસક્રમ
-
-- [ઇલેક્ટ્રિકલ એન્જિનિયરિંગના મૂળભૂત સિદ્ધાંતો અભ્યાસક્રમ (PDF)](/resources/study-materials/11-ec/sem-1/4311101-funda-electrical/4311101.pdf)
-
-## પ્રશ્નપત્રો
-
-### 2023-2024
-
-- [વિન્ટર 2023 પેપર (PDF)](/resources/study-materials/11-ec/sem-1/4311101-funda-electrical/4311101-Winter-2023.pdf)
-- [સમર 2023 પેપર (PDF)](/resources/study-materials/11-ec/sem-1/4311101-funda-electrical/4311101-Summer-2023.pdf)
-- [વિન્ટર 2024 પેપર (PDF)](/resources/study-materials/11-ec/sem-1/4311101-funda-electrical/4311101-Winter-2024.pdf)
-- [સમર 2024 પેપર (PDF)](/resources/study-materials/11-ec/sem-1/4311101-funda-electrical/4311101-Summer-2024.pdf)
-
-## પેપર સોલ્યુશન્સ
-
-- [વિન્ટર 2023 સોલ્યુશન્સ](./4311101-winter-2023-solution) | [PDF](4311101-winter-2023-solution.gu.pdf)
-- [સમર 2023 સોલ્યુશન્સ](./4311101-summer-2023-solution) | [PDF](4311101-summer-2023-solution.gu.pdf)
-- [વિન્ટર 2024 સોલ્યુશન્સ](./4311101-winter-2024-solution) | [PDF](4311101-winter-2024-solution.gu.pdf)
-- [સમર 2024 સોલ્યુશન્સ](./4311101-summer-2024-solution) | [PDF](4311101-summer-2024-solution.gu.pdf)

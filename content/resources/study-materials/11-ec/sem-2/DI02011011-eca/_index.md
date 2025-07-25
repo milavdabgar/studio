@@ -5,9 +5,3 @@ summary: "Supplementary study resources for Electronic Circuits & Applications -
 date: 2024-01-01
 tags: ["study-material", "electronic-circuits", "additional-materials", "semester-2", "ec", "DI02011011"]
 ---
-
-## Course Materials
-
-### Additional Syllabus
-
-- [Electronic Circuits & Applications Additional Syllabus (PDF)](/resources/study-materials/11-ec/sem-2/DI02011011-eca/DI02011011.pdf)
