@@ -6,8 +6,7 @@ name: Deploy Studio to Production
 on:
   push:
     branches:
-      - main
-      - master
+      - master  # Only deploy from master (production-ready)
 
 jobs:
   deploy:

@@ -124,7 +124,7 @@ class AutonomousDaemon {
         this.metrics.tasksCompleted++;
       } else {
         console.log(`❌ Task failed, switching back to main branch`);
-        execSync(`git checkout master`, { stdio: 'inherit' });
+        execSync(`git checkout dev`, { stdio: 'inherit' });
         execSync(`git branch -D ${branchName}`, { stdio: 'inherit' });
       }
       
@@ -132,7 +132,7 @@ class AutonomousDaemon {
       console.error(`❌ Error executing task:`, error);
       // Ensure we're back on main branch
       try {
-        execSync(`git checkout master`, { stdio: 'inherit' });
+        execSync(`git checkout dev`, { stdio: 'inherit' });
       } catch (e) {
         console.error('Error switching back to master:', e);
       }
@@ -146,7 +146,7 @@ class AutonomousDaemon {
     
     try {
       // Create branch from current master
-      execSync(`git checkout master`, { stdio: 'pipe' });
+      execSync(`git checkout dev`, { stdio: 'pipe' });
       execSync(`git checkout -b ${branchName}`, { stdio: 'inherit' });
       
       // Track this active task
@@ -159,7 +159,7 @@ class AutonomousDaemon {
             this.metrics.tasksCompleted++;
           } else {
             console.log(`❌ Parallel task failed: ${task.type} by ${provider}`);
-            execSync(`git checkout master`, { stdio: 'pipe' });
+            execSync(`git checkout dev`, { stdio: 'pipe' });
             execSync(`git branch -D ${branchName}`, { stdio: 'pipe' });
           }
           return result;
@@ -167,7 +167,7 @@ class AutonomousDaemon {
         .catch(async (error) => {
           console.error(`❌ Error in parallel task ${task.type}:`, error);
           try {
-            execSync(`git checkout master`, { stdio: 'pipe' });
+            execSync(`git checkout dev`, { stdio: 'pipe' });
             execSync(`git branch -D ${branchName}`, { stdio: 'pipe' });
           } catch (e) {
             console.error('Error cleaning up branch:', e);
@@ -1083,7 +1083,7 @@ Analyze, decide, and implement autonomously - choose the highest-impact work.`;
     try {
       const status = execSync('git status --porcelain', { encoding: 'utf8' });
       const uncommitted = status.trim().split('\n').length - 1;
-      const behind = execSync('git rev-list --count HEAD..origin/master', { encoding: 'utf8' });
+      const behind = execSync('git rev-list --count HEAD..origin/dev', { encoding: 'utf8' });
       
       return {
         uncommittedChanges: uncommitted,
@@ -1151,7 +1151,7 @@ Analyze, decide, and implement autonomously - choose the highest-impact work.`;
     try {
       // Check if changes were made
       const changes = execSync('git status --porcelain', { encoding: 'utf8' });
-      const commits = execSync('git log master..HEAD --oneline', { encoding: 'utf8' });
+      const commits = execSync('git log dev..HEAD --oneline', { encoding: 'utf8' });
       
       if (changes.trim() || commits.trim()) {
         console.log('📝 Changes detected, creating PR...');
@@ -1190,7 +1190,7 @@ ${commits}
         
       } else {
         console.log('📝 No changes made, cleaning up branch...');
-        execSync(`git checkout master`, { stdio: 'inherit' });
+        execSync(`git checkout dev`, { stdio: 'inherit' });
         execSync(`git branch -D ${branchName}`, { stdio: 'inherit' });
       }
       
@@ -1293,7 +1293,7 @@ ${commits}
   checkGitHealth() {
     try {
       const status = execSync('git status --porcelain', { encoding: 'utf8' });
-      const behind = execSync('git rev-list --count HEAD..origin/master', { encoding: 'utf8' });
+      const behind = execSync('git rev-list --count HEAD..origin/dev', { encoding: 'utf8' });
       
       return {
         uncommittedChanges: status.trim().split('\\n').length - 1,

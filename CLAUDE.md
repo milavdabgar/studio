@@ -50,6 +50,28 @@ Claude handles complex, creative development tasks:
 
 ---
 
+## 🌿 Git Branching Strategy
+
+### Branch Structure
+- **`master`** → Production-ready code, protected branch
+- **`dev`** → Main development branch for integration testing
+- **`feature/*`** → Individual feature development branches
+- **`bugfix/*`** → Bug fix branches 
+- **`hotfix/*`** → Critical production fixes
+
+### Workflow
+1. **Development**: Work on `dev` branch or create feature branches from `dev`
+2. **Integration**: Merge feature branches to `dev` for testing
+3. **Release**: Merge `dev` to `master` when features are stable and tested
+4. **Hotfixes**: Create from `master`, merge to both `master` and `dev`
+
+### Autonomous System
+- Autonomous development now works on `dev` branch by default
+- Creates feature branches automatically: `autonomous/[task-type]-[timestamp]`
+- PRs target `dev` branch for review before merging to `master`
+
+---
+
 ## 📋 Current Development Tasks
 
 ### 🔥 Active Tasks
