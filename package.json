@@ -219,7 +219,7 @@
     "@types/react-dom": "^18",
     "@types/supertest": "^6.0.3",
     "babel-jest": "^29.7.0",
-    "eslint": "9.26.0",
+    "eslint": "^9.31.0",
     "eslint-config-next": "15.3.2",
     "genkit-cli": "^1.6.1",
     "glob": "^10.4.5",
