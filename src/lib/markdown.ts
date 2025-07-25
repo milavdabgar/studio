@@ -711,6 +711,28 @@ export async function getDirectSectionContent(dirPath: string[], lang: string = 
                               fs.existsSync(path.join(subdirPath, `_index.${lang}.md`));
           
           if (hasIndexFile) {
+            // Read the _index.md file to get the title and description
+            let sectionTitle = entry.name; // fallback to folder name
+            let sectionDescription = '';
+            
+            try {
+              // Try language-specific _index file first, then fallback to default
+              const indexPath = fs.existsSync(path.join(subdirPath, `_index.${lang}.md`)) 
+                ? path.join(subdirPath, `_index.${lang}.md`)
+                : path.join(subdirPath, `_index.md`);
+              
+              if (fs.existsSync(indexPath)) {
+                const indexContent = fs.readFileSync(indexPath, 'utf8');
+                const indexMatter = matter(indexContent);
+                
+                // Use title from frontmatter, fallback to folder name
+                sectionTitle = indexMatter.data.title || entry.name;
+                sectionDescription = indexMatter.data.description || indexMatter.data.summary || '';
+              }
+            } catch (error) {
+              console.warn(`[getDirectSectionContent] Error reading _index file for ${entry.name}:`, error);
+            }
+            
             // Get all posts in this subsection
             const allPostsData = await getSortedPostsData(lang);
             const subsectionPosts = allPostsData.filter(post => {
@@ -729,10 +751,10 @@ export async function getDirectSectionContent(dirPath: string[], lang: string = 
             });
             
             subsections.push({
-              name: entry.name,
+              name: sectionTitle, // Now using title from _index.md frontmatter
               slug: [...dirPath, entry.name].join('/'),
               posts: subsectionPosts,
-              description: `${subsectionPosts.length} item${subsectionPosts.length !== 1 ? 's' : ''}`
+              description: sectionDescription || `${subsectionPosts.length} item${subsectionPosts.length !== 1 ? 's' : ''}`
             });
           }
         }
