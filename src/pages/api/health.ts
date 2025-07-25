@@ -40,8 +40,8 @@ export default async function handler(
   // Check database connection if available
   try {
     // Try to import and use database connection
-    const { connectToDatabase } = await import('@/lib/mongodb');
-    const { db } = await connectToDatabase();
+    const { connectToMongoDB } = await import('@/lib/mongodb');
+    const { db } = await connectToMongoDB();
     await db.admin().ping();
     healthData.services.database = 'up';
   } catch (error) {
