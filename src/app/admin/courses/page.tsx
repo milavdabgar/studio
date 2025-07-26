@@ -19,6 +19,32 @@ import { courseService } from '@/lib/api/courses';
 import { departmentService } from '@/lib/api/departments';
 import { programService } from '@/lib/api/programs';
 
+// Dropdown options for categorical fields
+const ACADEMIC_YEARS = [
+  '2025-26', '2024-25', '2023-24', '2022-23', '2021-22', 
+  '2020-21', '2019-20', '2018-19', '2017-18', '2016-17',
+  '2015-16', '2014-15', '2013-14', '2012-13', '2011-12'
+];
+
+const COURSE_CATEGORIES = [
+  'Basic Science Courses',
+  'Engineering Science Courses', 
+  'Professional Core Courses',
+  'Professional Elective Courses',
+  'Humanities and Social Science, including Management Courses',
+  'Mandatory Non-Credit Courses – Audit Course',
+  'Core',
+  'Elective',
+  'Compulsory'
+];
+
+const EXAM_DURATIONS = [
+  '2 Hrs', '2.5 Hrs', '3 Hrs', '3.5 Hrs', '4 Hrs'
+];
+
+const PRACTICAL_EXAM_DURATIONS = [
+  '2 Hrs', '3 Hrs', '4 Hrs', '6 Hrs', '8 Hrs'
+];
 
 type SortField = keyof Course | 'none';
 type SortDirection = 'asc' | 'desc';
@@ -38,7 +64,6 @@ export default function CourseManagementPage() {
 
   // Form state
   const [formSubcode, setFormSubcode] = useState('');
-  const [formBranchCode, setFormBranchCode] = useState('');
   const [formEffFrom, setFormEffFrom] = useState('');
   const [formSubjectName, setFormSubjectName] = useState('');
   const [formCategory, setFormCategory] = useState('');
@@ -62,13 +87,14 @@ export default function CourseManagementPage() {
   const [formProgramId, setFormProgramId] = useState<string>('');
   
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedGtuFile, setSelectedGtuFile] = useState<File | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterSemesterVal, setFilterSemesterVal] = useState<string>('all');
-  const [filterDepartmentVal, setFilterDepartmentVal] = useState<string>('all');
   const [filterProgramVal, setFilterProgramVal] = useState<string>('all');
+  const [filterEffFromVal, setFilterEffFromVal] = useState<string>('all');
 
-  const [sortField, setSortField] = useState<SortField>('subjectName');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [sortField, setSortField] = useState<SortField>('effFrom');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>([]);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -114,7 +140,7 @@ export default function CourseManagementPage() {
 
 
   const resetForm = () => {
-    setFormSubcode(''); setFormBranchCode(''); setFormEffFrom(''); setFormSubjectName('');
+    setFormSubcode(''); setFormEffFrom(''); setFormSubjectName('');
     setFormCategory(''); setFormSemester(1); setFormLectureHours(0); setFormTutorialHours(0);
     setFormPracticalHours(0); setFormTheoryEseMarks(0); setFormTheoryPaMarks(0);
     setFormPracticalEseMarks(0); setFormPracticalPaMarks(0); setFormIsElective(false);
@@ -128,7 +154,7 @@ export default function CourseManagementPage() {
 
   const handleEdit = (course: Course) => {
     setCurrentCourse(course);
-    setFormSubcode(course.subcode); setFormBranchCode(course.branchCode || '');
+    setFormSubcode(course.subcode);
     setFormEffFrom(course.effFrom || ''); setFormSubjectName(course.subjectName);
     setFormCategory(course.category || ''); setFormSemester(course.semester);
     setFormLectureHours(course.lectureHours); setFormTutorialHours(course.tutorialHours);
@@ -187,13 +213,13 @@ export default function CourseManagementPage() {
     const totalMarks = formTheoryEseMarks + formTheoryPaMarks + formPracticalEseMarks + formPracticalPaMarks;
 
     const courseData: Omit<Course, 'id'> = { 
-      subcode: formSubcode.trim().toUpperCase(), branchCode: formBranchCode.trim() || undefined,
+      subcode: formSubcode.trim().toUpperCase(),
       effFrom: formEffFrom.trim() || undefined, subjectName: formSubjectName.trim(),
       category: formCategory.trim() || undefined, semester: formSemester,
       lectureHours: formLectureHours, tutorialHours: formTutorialHours, practicalHours: formPracticalHours,
       credits, theoryEseMarks: formTheoryEseMarks, theoryPaMarks: formTheoryPaMarks,
       practicalEseMarks: formPracticalEseMarks, practicalPaMarks: formPracticalPaMarks, totalMarks,
-      isElective: formIsElective, isTheory: formIsTheory, theoryExamDuration: formTheoryExamDuration.trim() || undefined,
+      isElective: formIsElective, isTheory: formIsTheory, theoryExamDuration: formTheoryExamDuration.trim() || '2.5 Hrs',
       isPractical: formIsPractical, practicalExamDuration: formPracticalExamDuration.trim() || undefined,
       isFunctional: formIsFunctional, isSemiPractical: formIsSemiPractical || false,
       remarks: formRemarks.trim() || undefined,
@@ -220,6 +246,23 @@ export default function CourseManagementPage() {
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectedFile(event.target.files && event.target.files[0] ? event.target.files[0] : null);
+    const inputElement = event.target as HTMLInputElement;
+    if (!event.target.files || event.target.files.length === 0) {
+      inputElement.value = '';
+    }
+  };
+
+  const handleGtuFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedGtuFile(file);
+    } else {
+      setSelectedGtuFile(null);
+    }
+    const inputElement = event.target as HTMLInputElement;
+    if (!event.target.files || event.target.files.length === 0) {
+      inputElement.value = '';
+    }
   };
 
   const handleImportCourses = async () => {
@@ -236,7 +279,10 @@ export default function CourseManagementPage() {
     try {
       const result = await courseService.importCourses(selectedFile, departments, programs);
       await fetchInitialData();
-      toast({ title: "Import Successful", description: `${result.newCount} courses added, ${result.updatedCount} courses updated. Skipped: ${result.skippedCount}` });
+      const message = result.isGTUFormat 
+        ? `GTU Import Successful: ${result.newCount} courses added, ${result.updatedCount} updated. ${result.syllabusUrlsGenerated} syllabus URLs generated. Skipped: ${result.skippedCount}`
+        : `Standard Import Successful: ${result.newCount} courses added, ${result.updatedCount} updated. Skipped: ${result.skippedCount}`;
+      toast({ title: "Import Successful", description: message });
     } catch (error: unknown) {
       console.error("Error processing CSV file:", error);
       const errorMessage = error instanceof Error ? error.message : "Could not process the CSV file.";
@@ -248,19 +294,48 @@ export default function CourseManagementPage() {
     }
   };
 
+  const handleImportGtuCourses = async () => {
+    if (!selectedGtuFile) {
+      toast({ variant: "destructive", title: "GTU Import Error", description: "Please select a GTU CSV file to import." });
+      return;
+    }
+    if (departments.length === 0 || programs.length === 0) {
+        toast({ variant: "destructive", title: "GTU Import Error", description: "No departments or programs loaded. Cannot map branch codes." });
+        return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const result = await courseService.importCourses(selectedGtuFile, departments, programs);
+      await fetchInitialData();
+      toast({ 
+        title: "GTU Import Successful", 
+        description: `${result.newCount} courses added, ${result.updatedCount} updated. ${result.syllabusUrlsGenerated || 0} syllabus URLs generated. Skipped: ${result.skippedCount}` 
+      });
+    } catch (error: unknown) {
+      console.error("Error processing GTU CSV file:", error);
+      const errorMessage = error instanceof Error ? error.message : "Could not process the GTU CSV file.";
+      toast({ variant: "destructive", title: "GTU Import Failed", description: errorMessage });
+    } finally {
+      setIsSubmitting(false); setSelectedGtuFile(null); 
+      const fileInput = document.getElementById('gtuCsvImportCourses') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+    }
+  };
+
   const handleExportCourses = () => {
     if (filteredAndSortedCourses.length === 0) {
       toast({ title: "Export Canceled", description: "No courses to export (check filters)." });
       return;
     }
-    const header = ['id', 'subcode', 'branchCode', 'effFrom', 'subjectName', 'category', 'semester', 'lectureHours', 'tutorialHours', 'practicalHours', 'credits', 'theoryEseMarks', 'theoryPaMarks', 'practicalEseMarks', 'practicalPaMarks', 'totalMarks', 'isElective', 'isTheory', 'theoryExamDuration', 'isPractical', 'practicalExamDuration', 'isFunctional', 'isSemiPractical', 'remarks', 'departmentId', 'departmentName', 'departmentCode', 'programId', 'programName', 'programCode'];
+    const header = ['id', 'subcode', 'effFrom', 'subjectName', 'category', 'semester', 'lectureHours', 'tutorialHours', 'practicalHours', 'credits', 'theoryEseMarks', 'theoryPaMarks', 'practicalEseMarks', 'practicalPaMarks', 'totalMarks', 'isElective', 'isTheory', 'theoryExamDuration', 'isPractical', 'practicalExamDuration', 'isFunctional', 'isSemiPractical', 'remarks', 'departmentId', 'departmentName', 'departmentCode', 'programId', 'programName', 'programCode'];
     const csvRows = [
       header.join(','),
       ...filteredAndSortedCourses.map(c => {
         const dept = departments.find(d => d.id === c.departmentId);
         const prog = programs.find(p => p.id === c.programId);
         return [
-          c.id, c.subcode, c.branchCode || "", c.effFrom || "", `"${c.subjectName.replace(/"/g, '""')}"`,
+          c.id, c.subcode, c.effFrom || "", `"${c.subjectName.replace(/"/g, '""')}"`,
           `"${(c.category || "").replace(/"/g, '""')}"`, c.semester, c.lectureHours, c.tutorialHours, c.practicalHours,
           c.credits, c.theoryEseMarks, c.theoryPaMarks, c.practicalEseMarks, c.practicalPaMarks, c.totalMarks,
           c.isElective, c.isTheory, c.theoryExamDuration || "", c.isPractical, c.practicalExamDuration || "",
@@ -279,10 +354,51 @@ export default function CourseManagementPage() {
     toast({ title: "Export Successful", description: "Courses exported to courses_export.csv" });
   };
 
+  const handleExportGtuCourses = () => {
+    if (filteredAndSortedCourses.length === 0) {
+      toast({ title: "GTU Export Canceled", description: "No courses to export (check filters)." });
+      return;
+    }
+    
+    // GTU CSV format headers (removed Exp. column)
+    const header = ['Subcode', 'Branch code', 'Eff_from', 'SubjectName', 'Category', 'Sem /Year', 'L.', 'T.', 'P.', 'TW/SL', 'Total', 'E', 'M', 'I', 'V', 'Total.1', 'gtuSyllabusURL'];
+    const csvRows = [
+      header.join(','),
+      ...filteredAndSortedCourses.map(c => {
+        const syllabusUrl = c.syllabusUrl || `https://s3-ap-southeast-1.amazonaws.com/gtusitecirculars/Syallbus/${c.subcode}.pdf`;
+        return [
+          c.subcode,
+          c.effFrom || '2024-25',
+          `"${c.subjectName.replace(/"/g, '""')}"`,
+          `"${(c.category || "").replace(/"/g, '""')}"`,
+          c.semester,
+          c.lectureHours,
+          c.tutorialHours,
+          c.practicalHours,
+          '', // TW/SL column
+          c.credits,
+          c.theoryEseMarks,
+          c.theoryPaMarks,
+          c.practicalEseMarks,
+          c.practicalPaMarks,
+          c.totalMarks,
+          syllabusUrl
+        ].join(',');
+      })
+    ];
+    const csvString = csvRows.join('\r\n');
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "gtu_courses_export.csv";
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    toast({ title: "GTU Export Successful", description: "GTU courses exported to gtu_courses_export.csv" });
+  };
+
   const handleDownloadSampleCsv = () => {
-    const sampleCsvContent = `id,subcode,branchCode,effFrom,subjectName,category,semester,lectureHours,tutorialHours,practicalHours,credits,theoryEseMarks,theoryPaMarks,practicalEseMarks,practicalPaMarks,totalMarks,isElective,isTheory,theoryExamDuration,isPractical,practicalExamDuration,isFunctional,isSemiPractical,remarks,departmentId,departmentName,departmentCode,programId,programName,programCode
-crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,25,25,150,false,true,2.5 Hrs,true,2 Hrs,true,false,"Basic programming concepts",dept1,"Computer Engineering","CE",prog1,"Diploma in CE","DCE"
-,MA101,,2024-25,Calculus I,Basic Science,1,4,0,0,4,100,0,0,0,100,false,true,3 Hrs,false,,true,false,,dept_gen,"General Department","GEN",prog1,"Diploma in CE","DCE"
+    const sampleCsvContent = `id,subcode,effFrom,subjectName,category,semester,lectureHours,tutorialHours,practicalHours,credits,theoryEseMarks,theoryPaMarks,practicalEseMarks,practicalPaMarks,totalMarks,isElective,isTheory,theoryExamDuration,isPractical,practicalExamDuration,isFunctional,isSemiPractical,remarks,departmentId,departmentName,departmentCode,programId,programName,programCode
+crs_sample_1,CS101,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,25,25,150,false,true,2.5 Hrs,true,2 Hrs,true,false,"Basic programming concepts",dept1,"Computer Engineering","CE",prog1,"Diploma in CE","DCE"
+,MA101,2024-25,Calculus I,Basic Science,1,4,0,0,4,100,0,0,0,100,false,true,3 Hrs,false,,true,false,,dept_gen,"General Department","GEN",prog1,"Diploma in CE","DCE"
 `; 
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -290,6 +406,19 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
     link.download = "sample_courses_import.csv";
     document.body.appendChild(link); link.click(); document.body.removeChild(link);
     toast({ title: "Sample CSV Downloaded", description: "sample_courses_import.csv downloaded." });
+  };
+
+  const handleDownloadGtuSampleCsv = () => {
+    const sampleCsvContent = `Subcode,Branch code,Eff_from,SubjectName,Category,Sem /Year,L.,T.,P.,TW/SL,Total,E,M,I,V,Total.1,gtuSyllabusURL
+DI01000011,6,2024-25,Mathematics-I,Basic Science Courses,1,3,1,0,,4,70,30,0,0,100,https://s3-ap-southeast-1.amazonaws.com/gtusitecirculars/Syallbus/DI01000011.pdf
+DI01000021,6,2024-25,Applied Physics,Basic Science Courses,1,3,0,2,,4,70,30,20,30,150,https://s3-ap-southeast-1.amazonaws.com/gtusitecirculars/Syallbus/DI01000021.pdf
+DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70,30,20,30,150,https://s3-ap-southeast-1.amazonaws.com/gtusitecirculars/Syallbus/DI01006011.pdf`; 
+    const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "sample_gtu_courses_import.csv";
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    toast({ title: "GTU Sample CSV Downloaded", description: "sample_gtu_courses_import.csv downloaded." });
   };
 
   const handleSort = (field: SortField) => {
@@ -308,24 +437,31 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
       result = result.filter(c => 
         c.subjectName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         c.subcode.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (c.category && c.category.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (c.branchCode && c.branchCode.toLowerCase().includes(searchTerm.toLowerCase()))
+        (c.category && c.category.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
     if (filterSemesterVal !== 'all') {
       result = result.filter(c => c.semester === parseInt(filterSemesterVal));
     }
-    if (filterDepartmentVal !== 'all') {
-      result = result.filter(c => c.departmentId === filterDepartmentVal);
-    }
     if (filterProgramVal !== 'all') {
       result = result.filter(c => c.programId === filterProgramVal);
+    }
+    if (filterEffFromVal !== 'all') {
+      result = result.filter(c => c.effFrom === filterEffFromVal);
     }
 
     if (sortField !== 'none') {
       result.sort((a, b) => {
         let valA: unknown = a[sortField as keyof Course];
         let valB: unknown = b[sortField as keyof Course];
+        
+        // Special handling for programId - sort by program name instead of ID
+        if (sortField === 'programId') {
+          const programA = programs.find(p => p.id === a.programId);
+          const programB = programs.find(p => p.id === b.programId);
+          valA = programA?.name || programA?.code || '';
+          valB = programB?.name || programB?.code || '';
+        }
         
         const numericFields: (keyof Course)[] = ['semester', 'lectureHours', 'tutorialHours', 'practicalHours', 'credits', 'theoryEseMarks', 'theoryPaMarks', 'practicalEseMarks', 'practicalPaMarks', 'totalMarks'];
         if (numericFields.includes(sortField as keyof Course)) {
@@ -345,7 +481,7 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
       });
     }
     return result;
-  }, [courses, searchTerm, filterSemesterVal, filterDepartmentVal, filterProgramVal, sortField, sortDirection]);
+  }, [courses, programs, searchTerm, filterSemesterVal, filterProgramVal, filterEffFromVal, sortField, sortDirection]);
 
   const totalPages = Math.ceil(filteredAndSortedCourses.length / itemsPerPage);
   const paginatedCourses = useMemo(() => {
@@ -355,7 +491,7 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
 
   useEffect(() => {
     setCurrentPage(1); 
-  }, [searchTerm, filterSemesterVal, filterDepartmentVal, filterProgramVal, itemsPerPage]);
+  }, [searchTerm, filterSemesterVal, filterProgramVal, filterEffFromVal, itemsPerPage]);
 
 
   const handleSelectAll = (checked: boolean | 'indeterminate') => {
@@ -388,10 +524,14 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
   const isAllSelectedOnPage = paginatedCourses.length > 0 && paginatedCourses.every(c => selectedCourseIds.includes(c.id));
   const isSomeSelectedOnPage = paginatedCourses.some(c => selectedCourseIds.includes(c.id)) && !isAllSelectedOnPage;
 
-  const programsForFilter = useMemo(() => {
-    if(filterDepartmentVal === 'all') return programs;
-    return programs.filter(p => p.departmentId === filterDepartmentVal);
-  }, [filterDepartmentVal, programs]);
+  const uniqueEffFromValues = useMemo(() => {
+    const values = courses
+      .map(c => c.effFrom)
+      .filter((value): value is string => Boolean(value))
+      .sort();
+    return [...new Set(values)];
+  }, [courses]);
+
 
   if (isLoading) {
     return <div className="flex justify-center items-center h-screen"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
@@ -439,9 +579,32 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
                   {/* Basic Info */}
                   <div className="md:col-span-1"><Label htmlFor="subcode">Subject Code *</Label><Input id="subcode" value={formSubcode} onChange={e => setFormSubcode(e.target.value)} placeholder="e.g., CS101" disabled={isSubmitting} required /></div>
                   <div className="md:col-span-2"><Label htmlFor="subjectName">Subject Name *</Label><Input id="subjectName" value={formSubjectName} onChange={e => setFormSubjectName(e.target.value)} placeholder="e.g., Introduction to Programming" disabled={isSubmitting} required /></div>
-                  <div className="md:col-span-1"><Label htmlFor="branchCode">Branch Code</Label><Input id="branchCode" value={formBranchCode} onChange={e => setFormBranchCode(e.target.value)} placeholder="e.g., 005 (for CE)" disabled={isSubmitting} /></div>
-                  <div className="md:col-span-1"><Label htmlFor="effFrom">Effective From</Label><Input id="effFrom" value={formEffFrom} onChange={e => setFormEffFrom(e.target.value)} placeholder="e.g., 2024-25" disabled={isSubmitting} /></div>
-                  <div className="md:col-span-1"><Label htmlFor="category">Category</Label><Input id="category" value={formCategory} onChange={e => setFormCategory(e.target.value)} placeholder="e.g., Program Core" disabled={isSubmitting} /></div>
+                  <div className="md:col-span-1">
+                    <Label htmlFor="effFrom">Effective From</Label>
+                    <Select value={formEffFrom} onValueChange={setFormEffFrom} disabled={isSubmitting}>
+                      <SelectTrigger id="effFrom">
+                        <SelectValue placeholder="Select Academic Year" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ACADEMIC_YEARS.map(year => (
+                          <SelectItem key={year} value={year}>{year}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="md:col-span-1">
+                    <Label htmlFor="category">Category</Label>
+                    <Select value={formCategory} onValueChange={setFormCategory} disabled={isSubmitting}>
+                      <SelectTrigger id="category">
+                        <SelectValue placeholder="Select Category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {COURSE_CATEGORIES.map(category => (
+                          <SelectItem key={category} value={category}>{category}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <div className="md:col-span-1"><Label htmlFor="semester">Semester *</Label><Input id="semester" type="number" value={formSemester} onChange={e => setFormSemester(parseInt(e.target.value) || 1)} min="1" disabled={isSubmitting} required /></div>
                   
                   {/* Department & Program */}
@@ -483,9 +646,37 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
                   <div className="md:col-span-3 border p-3 rounded-md grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-4 items-start dark:border-gray-700">
                     <div className="flex items-center space-x-2"><Switch id="isElective" checked={formIsElective} onCheckedChange={setFormIsElective} disabled={isSubmitting} /><Label htmlFor="isElective">Is Elective</Label></div>
                     <div className="flex items-center space-x-2"><Switch id="isTheory" checked={formIsTheory} onCheckedChange={setFormIsTheory} disabled={isSubmitting} /><Label htmlFor="isTheory">Is Theory</Label></div>
-                    {formIsTheory && <div><Label htmlFor="theoryExamDuration">Theory Exam Duration</Label><Input id="theoryExamDuration" value={formTheoryExamDuration} onChange={e => setFormTheoryExamDuration(e.target.value)} placeholder="e.g., 2.5 Hrs" disabled={isSubmitting || !formIsTheory} /></div>}
+                    {formIsTheory && (
+                      <div>
+                        <Label htmlFor="theoryExamDuration">Theory Exam Duration</Label>
+                        <Select value={formTheoryExamDuration} onValueChange={setFormTheoryExamDuration} disabled={isSubmitting || !formIsTheory}>
+                          <SelectTrigger id="theoryExamDuration">
+                            <SelectValue placeholder="Select Duration" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {EXAM_DURATIONS.map(duration => (
+                              <SelectItem key={duration} value={duration}>{duration}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
                     <div className="flex items-center space-x-2"><Switch id="isPractical" checked={formIsPractical} onCheckedChange={setFormIsPractical} disabled={isSubmitting} /><Label htmlFor="isPractical">Is Practical</Label></div>
-                    {formIsPractical && <div><Label htmlFor="practicalExamDuration">Practical Exam Duration</Label><Input id="practicalExamDuration" value={formPracticalExamDuration} onChange={e => setFormPracticalExamDuration(e.target.value)} placeholder="e.g., 2 Hrs" disabled={isSubmitting || !formIsPractical} /></div>}
+                    {formIsPractical && (
+                      <div>
+                        <Label htmlFor="practicalExamDuration">Practical Exam Duration</Label>
+                        <Select value={formPracticalExamDuration} onValueChange={setFormPracticalExamDuration} disabled={isSubmitting || !formIsPractical}>
+                          <SelectTrigger id="practicalExamDuration">
+                            <SelectValue placeholder="Select Duration" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {PRACTICAL_EXAM_DURATIONS.map(duration => (
+                              <SelectItem key={duration} value={duration}>{duration}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
                     <div className="flex items-center space-x-2"><Switch id="isFunctional" checked={formIsFunctional} onCheckedChange={setFormIsFunctional} disabled={isSubmitting} /><Label htmlFor="isFunctional">Is Functional</Label></div>
                     <div className="flex items-center space-x-2"><Switch id="isSemiPractical" checked={formIsSemiPractical} onCheckedChange={setFormIsSemiPractical} disabled={isSubmitting} /><Label htmlFor="isSemiPractical">Is Semi-Practical</Label></div>
                   </div>
@@ -503,23 +694,45 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
             <Button onClick={handleExportCourses} variant="outline" className="w-full sm:w-auto">
               <Download className="mr-2 h-5 w-5" /> Export CSV
             </Button>
+            <Button onClick={handleExportGtuCourses} variant="outline" className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-accent-foreground">
+              <Download className="mr-2 h-5 w-5" /> Export GTU CSV
+            </Button>
           </div>
         </CardHeader>
         <CardContent>
           <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
-            <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Courses from CSV</h3>
+            <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Courses (Standard Format)</h3>
             <div className="flex flex-col sm:flex-row gap-2 items-center">
               <Input type="file" id="csvImportCourse" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
               <Button onClick={handleImportCourses} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto">
-                {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>} Import
+                {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>} Import Standard
               </Button>
             </div>
             <div className="flex items-center gap-2">
                  <Button onClick={handleDownloadSampleCsv} variant="link" size="sm" className="px-0 text-primary">
-                    <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
+                    <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample (Standard)
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  CSV fields: id (opt), subcode, subjectName, semester, departmentId/Name/Code, programId/Name/Code, and other fields.
+                  Use for general course data import/update. Requires subcode, subjectName, semester, departmentId/Name/Code, programId/Name/Code.
+                </p>
+            </div>
+          </div>
+
+          <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
+            <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-accent"/>Import GTU Course Data</h3>
+            <div className="flex flex-col sm:flex-row gap-2 items-center">
+              <Input type="file" id="gtuCsvImportCourses" accept=".csv" onChange={handleGtuFileChange} className="flex-grow" disabled={isSubmitting} />
+              <Button onClick={handleImportGtuCourses} disabled={isSubmitting || !selectedGtuFile || departments.length === 0 || programs.length === 0} className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-accent-foreground">
+                {isSubmitting && selectedGtuFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>} Import GTU Data
+              </Button>
+            </div>
+            {(departments.length === 0 || programs.length === 0) && <p className="text-xs text-destructive">GTU Import disabled: No departments/programs found. Please add them first.</p>}
+            <div className="flex items-center gap-2">
+                 <Button onClick={handleDownloadGtuSampleCsv} variant="link" size="sm" className="px-0 text-accent">
+                    <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample (GTU)
+                </Button>
+                <p className="text-xs text-muted-foreground">
+                  Import course data using GTU CSV format. Automatically generates syllabus URLs and maps branch codes to departments/programs.
                 </p>
             </div>
           </div>
@@ -543,22 +756,22 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
               </Select>
             </div>
             <div>
-              <Label htmlFor="filterDepartment">Filter by Department</Label>
-              <Select value={filterDepartmentVal} onValueChange={val => {setFilterDepartmentVal(val); setFilterProgramVal('all');}} disabled={departments.length === 0}>
-                <SelectTrigger id="filterDepartment"><SelectValue placeholder="All Departments" /></SelectTrigger>
+              <Label htmlFor="filterProgram">Filter by Program</Label>
+              <Select value={filterProgramVal} onValueChange={setFilterProgramVal} disabled={programs.length === 0}>
+                <SelectTrigger id="filterProgram"><SelectValue placeholder="All Programs" /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Departments</SelectItem>
-                  {departments.map(d => <SelectItem key={d.id} value={d.id}>{d.name} ({d.code})</SelectItem>)}
+                  <SelectItem value="all">All Programs</SelectItem>
+                  {programs.map(p => <SelectItem key={p.id} value={p.id}>{p.name} ({p.code})</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label htmlFor="filterProgram">Filter by Program</Label>
-              <Select value={filterProgramVal} onValueChange={setFilterProgramVal} disabled={programsForFilter.length === 0}>
-                <SelectTrigger id="filterProgram"><SelectValue placeholder="All Programs" /></SelectTrigger>
+              <Label htmlFor="filterEffFrom">Filter by Effective From</Label>
+              <Select value={filterEffFromVal} onValueChange={setFilterEffFromVal} disabled={uniqueEffFromValues.length === 0}>
+                <SelectTrigger id="filterEffFrom"><SelectValue placeholder="All Academic Years" /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Programs</SelectItem>
-                  {programsForFilter.map(p => <SelectItem key={p.id} value={p.id}>{p.name} ({p.code})</SelectItem>)}
+                  <SelectItem value="all">All Academic Years</SelectItem>
+                  {uniqueEffFromValues.map(year => <SelectItem key={year} value={year}>{year}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -579,13 +792,13 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
             <TableHeader>
               <TableRow>
                  <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedCourses.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all courses on this page"/></TableHead>
-                <SortableTableHeader field="subjectName" label="Subject Name" />
-                <SortableTableHeader field="subcode" label="Sub. Code" />
+                <SortableTableHeader field="effFrom" label="Eff From" />
+                <SortableTableHeader field="programId" label="Program" />
                 <SortableTableHeader field="semester" label="Sem" />
-                <TableHead>Dept.</TableHead>
-                <TableHead>Program</TableHead>
+                <SortableTableHeader field="subcode" label="Subcode" />
+                <SortableTableHeader field="subjectName" label="Subject Name" />
                 <SortableTableHeader field="credits" label="Credits" />
-                <SortableTableHeader field="totalMarks" label="Total Marks" />
+                <TableHead>Syllabus</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -593,13 +806,21 @@ crs_sample_1,CS101,CS,2024-25,Introduction to Programming,Core,1,3,1,2,6,70,30,2
               {paginatedCourses.map((course) => (
                 <TableRow key={course.id} data-state={selectedCourseIds.includes(course.id) ? "selected" : undefined}>
                   <TableCell><Checkbox checked={selectedCourseIds.includes(course.id)} onCheckedChange={(checked) => handleSelectCourse(course.id, !!checked)} aria-labelledby={`course-name-${course.id}`}/></TableCell>
-                  <TableCell id={`course-name-${course.id}`} className="font-medium">{course.subjectName}{course.branchCode ? ` (${course.branchCode})`: ''}</TableCell>
-                  <TableCell>{course.subcode}</TableCell>
-                  <TableCell>{course.semester}</TableCell>
-                  <TableCell>{departments.find(d => d.id === course.departmentId)?.code || 'N/A'}</TableCell>
+                  <TableCell>{course.effFrom || 'N/A'}</TableCell>
                   <TableCell>{programs.find(p => p.id === course.programId)?.code || 'N/A'}</TableCell>
+                  <TableCell>{course.semester}</TableCell>
+                  <TableCell>{course.subcode}</TableCell>
+                  <TableCell id={`course-name-${course.id}`} className="font-medium">{course.subjectName}</TableCell>
                   <TableCell>{course.credits}</TableCell>
-                  <TableCell>{course.totalMarks}</TableCell>
+                  <TableCell>
+                    {course.syllabusUrl ? (
+                      <a href={course.syllabusUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">
+                        View
+                      </a>
+                    ) : (
+                      'N/A'
+                    )}
+                  </TableCell>
                   <TableCell className="text-right space-x-2">
                     <Button variant="outline" size="icon" onClick={() => handleEdit(course)} disabled={isSubmitting}><Edit className="h-4 w-4" /><span className="sr-only">Edit Course</span></Button>
                     <Button variant="destructive" size="icon" onClick={() => handleDelete(course.id)} disabled={isSubmitting}><Trash2 className="h-4 w-4" /><span className="sr-only">Delete Course</span></Button>
