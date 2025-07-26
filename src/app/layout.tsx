@@ -371,7 +371,19 @@ export default function RootLayout({
   
   const activeRoleObject = allSystemRoles.find(r => r.code === currentUser.activeRole);
   const currentNavItems = getNavItemsForRoleCode(currentUser.activeRole);
-  const hideSidebar = pathname && (['/login', '/signup', '/forgot-password', '/', '/about', '/departments', '/admissions', '/library', '/facilities', '/contact', '/ssip', '/establishment', '/student-section', '/tpo', '/students', '/faculty'].includes(pathname) || pathname.startsWith('/posts') || pathname.startsWith('/newsletters') || pathname.startsWith('/departments/') || pathname.startsWith('/students/') || pathname.startsWith('/faculty/') || pathname.startsWith('/tags') || pathname.startsWith('/categories') || pathname.startsWith('/search'));
+  // Check if this is a public faculty profile page (like /faculty/staff-code)
+  const isPublicFacultyProfile = pathname?.startsWith('/faculty/') && 
+    !pathname.startsWith('/faculty/profile') && 
+    !pathname.startsWith('/faculty/attendance') && 
+    !pathname.startsWith('/faculty/timetable') && 
+    !pathname.startsWith('/faculty/my-courses') && 
+    !pathname.startsWith('/faculty/assessments') && 
+    !pathname.startsWith('/faculty/leaves') && 
+    !pathname.startsWith('/faculty/exam-timetable') && 
+    !pathname.startsWith('/faculty/projects') &&
+    pathname !== '/faculty';
+  
+  const hideSidebar = pathname && (['/login', '/signup', '/forgot-password', '/', '/about', '/departments', '/admissions', '/library', '/facilities', '/contact', '/ssip', '/establishment', '/student-section', '/tpo', '/students', '/faculty'].includes(pathname) || isPublicFacultyProfile || pathname.startsWith('/posts') || pathname.startsWith('/newsletters') || pathname.startsWith('/departments/') || pathname.startsWith('/students/') || pathname.startsWith('/tags') || pathname.startsWith('/categories') || pathname.startsWith('/search'));
 
 
   if (!isMounted) { 
