@@ -63,6 +63,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     const { id } = await params;
     const facultyDataToUpdate = await request.json() as Partial<Omit<FacultyProfile, 'id' | 'userId' | 'createdAt' | 'updatedAt'>>;
     
+    
     // Find the existing faculty
     let existingFaculty = await FacultyModel.findOne({ id }).lean() as FacultyLean | null;
     if (!existingFaculty && id.match(/^[0-9a-fA-F]{24}$/)) {
@@ -106,10 +107,13 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       'fullName', 'gtuName', 'gtuFacultyId', 'personalEmail', 'instituteEmail', 
       'contactNumber', 'address', 'department', 'designation', 'jobType', 
       'staffCategory', 'category', 'instType', 'specializations', 'specialization',
-      'qualifications', 'qualification', 'experience', 'dateOfBirth', 'joiningDate',
+      'qualifications', 'qualification', 'experience', 'experienceYears', 'dateOfBirth', 'joiningDate',
       'gender', 'maritalStatus', 'aadharNumber', 'panCardNumber', 'gpfNpsNumber',
       'placeOfBirth', 'nationality', 'knownAs', 'isHOD', 'isPrincipal', 
-      'researchInterests', 'status', 'instituteId'
+      'researchInterests', 'status', 'instituteId', 'photoURL',
+      // LinkedIn-like Profile Sections
+      'profileSummary', 'education', 'projects', 'skills', 'achievements',
+      'certifications', 'publications', 'languages', 'awards', 'profileVisibility'
     ];
 
     fieldsToUpdate.forEach(field => {
@@ -118,6 +122,22 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         if (value !== undefined) {
           if (typeof value === 'string') {
             updateData[field] = value.trim();
+          } else if (field === 'researchInterests') {
+            // Handle research interests - convert to array if needed
+            if (Array.isArray(value)) {
+              updateData[field] = value.filter(item => typeof item === 'string' && item.trim());
+            } else if (typeof value === 'string' && value.trim()) {
+              updateData[field] = [value.trim()]; // Convert single string to array
+            } else {
+              updateData[field] = []; // Default to empty array
+            }
+          } else if (['education', 'experience', 'projects', 'skills', 'achievements', 'certifications', 'publications', 'languages', 'awards'].includes(field)) {
+            // Handle profile section arrays - store as-is if they're arrays
+            if (Array.isArray(value)) {
+              updateData[field] = value;
+            } else {
+              updateData[field] = []; // Default to empty array if not an array
+            }
           } else {
             updateData[field] = value;
           }
@@ -143,7 +163,29 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       updateData.fullName = `${newTitle || ''} ${newFirstName || ''} ${newMiddleName || ''} ${newLastName || ''}`.replace(/\s+/g, ' ').trim();
     }
 
-    // Update the faculty
+    // Handle schema migration for researchInterests field if being updated
+    if (updateData.researchInterests !== undefined) {
+      // Force remove the old field and set the new one with proper type
+      await FacultyModel.updateOne(
+        { _id: existingFaculty._id },
+        { 
+          $unset: { researchInterests: "" }, // Remove old field
+        }
+      );
+      
+      // Now set the new field with array type
+      await FacultyModel.updateOne(
+        { _id: existingFaculty._id },
+        { 
+          $set: { researchInterests: updateData.researchInterests } 
+        }
+      );
+      
+      // Remove from updateData to avoid double update
+      delete updateData.researchInterests;
+    }
+
+    // Update the faculty (without researchInterests if it was already handled above)
     const updatedFaculty = await FacultyModel.findOneAndUpdate(
       { _id: existingFaculty._id },
       updateData,

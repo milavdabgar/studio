@@ -105,16 +105,31 @@ export default function FacultyProfilePage() {
     setIsLoading(true);
     try {
       const allFaculty = await facultyService.getAllFaculty();
-      const facultyProfile = allFaculty.find(f => f.userId === user.id); 
+      
+      // Try to find by userId first
+      let facultyProfile = allFaculty.find(f => f.userId === user.id); 
+      
+      // If not found by userId, try to find by email as fallback
+      if (!facultyProfile) {
+        facultyProfile = allFaculty.find(f => 
+          f.instituteEmail === user.email || 
+          f.personalEmail === user.email
+        );
+      }
 
       if (facultyProfile) {
         setFaculty(facultyProfile);
         setProfileSummary(facultyProfile.profileSummary || '');
         setProfileVisibility(facultyProfile.profileVisibility || 'public');
       } else {
-        toast({ variant: "destructive", title: "Profile Not Found", description: "Could not find your faculty profile." });
+        toast({ 
+          variant: "destructive", 
+          title: "Profile Not Found", 
+          description: "Could not find your faculty profile." 
+        });
       }
-    } catch {
+    } catch (error) {
+      console.error('Error loading faculty profile:', error);
       toast({ variant: "destructive", title: "Error", description: "Could not load profile data." });
     }
     setIsLoading(false);
@@ -163,8 +178,7 @@ export default function FacultyProfilePage() {
   };
 
   const handleUpdateAwards = (awards: any[]) => {
-    // Awards functionality removed - keeping handler for future implementation
-    console.log('Awards update requested:', awards);
+    handleUpdateProfile({ awards });
   };
 
   const handleUpdateCertifications = (certifications: any[]) => {
@@ -511,7 +525,7 @@ export default function FacultyProfilePage() {
             onUpdate={handleUpdateCertifications}
           />
           <AwardsSection 
-            awards={[]} 
+            awards={faculty.awards || []} 
             onUpdate={handleUpdateAwards}
           />
         </TabsContent>

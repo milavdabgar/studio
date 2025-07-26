@@ -1,34 +1,23 @@
 import { test, expect, Page } from '@playwright/test';
+import { loginAsStudent } from './test-helpers';
 
 // Mock student data for testing
 const mockStudent = {
   firstName: 'John',
   lastName: 'Doe', 
   enrollmentNumber: 'STU001',
-  instituteEmail: 'john.doe@institute.edu',
+  instituteEmail: 'student@example.com', // Use existing test user
   personalEmail: 'john@personal.com',
   contactNumber: '+1234567890',
   address: '123 Main St, City, State',
   currentSemester: 5
 };
 
-// Test authentication helper
-async function loginAsStudent(page: Page) {
-  // Navigate to login page
-  await page.goto('/login');
-  
-  // Fill login form (adjust selectors based on your actual login form)
-  await page.fill('[name="email"]', mockStudent.instituteEmail);
-  await page.fill('[name="password"]', 'testpassword');
-  await page.click('button[type="submit"]');
-  
-  // Wait for login to complete
-  await page.waitForURL('/student/**');
-}
+// Using shared authentication helper from test-helpers.ts
 
 test.describe('Student Profile System', () => {
   test.beforeEach(async ({ page }) => {
-    // Login as student before each test
+    // Login as student before each test using shared helper
     await loginAsStudent(page);
   });
 

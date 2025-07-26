@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { Edit, Save, Loader2 } from "lucide-react";
 import type { Faculty, Gender } from '@/types/entities';
+import { RequiredLabel } from "@/components/ui/required-label";
 
 interface FacultyBasicInfoFormProps {
   faculty: Faculty;
@@ -137,7 +138,7 @@ export const FacultyBasicInfoForm: React.FC<FacultyBasicInfoFormProps> = ({ facu
                       </Select>
                     </div>
                     <div>
-                      <Label htmlFor="firstName">First Name</Label>
+                      <RequiredLabel htmlFor="firstName" required>First Name</RequiredLabel>
                       <Input
                         id="firstName"
                         value={formData.firstName}
@@ -153,7 +154,7 @@ export const FacultyBasicInfoForm: React.FC<FacultyBasicInfoFormProps> = ({ facu
                       />
                     </div>
                     <div>
-                      <Label htmlFor="lastName">Last Name</Label>
+                      <RequiredLabel htmlFor="lastName" required>Last Name</RequiredLabel>
                       <Input
                         id="lastName"
                         value={formData.lastName}
@@ -269,7 +270,7 @@ export const FacultyBasicInfoForm: React.FC<FacultyBasicInfoFormProps> = ({ facu
                   <h3 className="text-lg font-semibold">Professional Information</h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="designation">Designation</Label>
+                      <RequiredLabel htmlFor="designation" required>Designation</RequiredLabel>
                       <Input
                         id="designation"
                         value={formData.designation}
@@ -277,7 +278,7 @@ export const FacultyBasicInfoForm: React.FC<FacultyBasicInfoFormProps> = ({ facu
                       />
                     </div>
                     <div>
-                      <Label htmlFor="department">Department</Label>
+                      <RequiredLabel htmlFor="department" required>Department</RequiredLabel>
                       <Input
                         id="department"
                         value={formData.department}

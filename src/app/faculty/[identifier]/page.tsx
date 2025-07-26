@@ -404,68 +404,343 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
             )}
 
             {/* Research Areas */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BookOpen className="h-5 w-5" />
-                  Research Areas
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500">Research areas information will be available soon.</p>
-                </div>
-              </CardContent>
-            </Card>
+            {profile.researchInterests && profile.researchInterests.length > 0 && (
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BookOpen className="h-5 w-5" />
+                    Research Interests
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.researchInterests.map((interest, index) => (
+                      <Badge key={index} variant="outline" className="px-3 py-1">
+                        {interest}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Skills */}
+            {profile.skills && profile.skills.length > 0 && (
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Star className="h-5 w-5" />
+                    Skills & Expertise
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.skills.map((skill, index) => (
+                      <Badge key={index} variant={skill.category === 'technical' ? 'default' : 'secondary'} className="px-3 py-1">
+                        {skill.name} ({skill.proficiency})
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Education */}
+            {profile.education && profile.education.length > 0 && (
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <GraduationCap className="h-5 w-5" />
+                    Education
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {profile.education.map((edu, index) => (
+                      <div key={index} className="border-l-4 border-blue-500 pl-4">
+                        <h4 className="font-semibold text-gray-900">{edu.degree}</h4>
+                        <p className="text-blue-600 font-medium">{edu.institution}</p>
+                        <p className="text-sm text-gray-500">
+                          {edu.startDate && edu.endDate ? `${edu.startDate} - ${edu.endDate}` : ''}
+                          {edu.fieldOfStudy && <span className="ml-2">• {edu.fieldOfStudy}</span>}
+                        </p>
+                        {edu.description && (
+                          <p className="text-gray-600 text-sm mt-2 leading-relaxed">
+                            {edu.description}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Professional Experience */}
+            {profile.experience && profile.experience.length > 0 && (
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Briefcase className="h-5 w-5" />
+                    Professional Experience
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {profile.experience.map((exp, index) => (
+                      <div key={index} className="border-l-4 border-green-500 pl-4">
+                        <h4 className="font-semibold text-gray-900">{exp.position}</h4>
+                        <p className="text-green-600 font-medium">{exp.company}</p>
+                        <p className="text-sm text-gray-500">
+                          {exp.startDate && exp.endDate ? `${exp.startDate} - ${exp.endDate}` : ''}
+                          {exp.location && <span className="ml-2">• {exp.location}</span>}
+                        </p>
+                        {exp.description && (
+                          <p className="text-gray-600 text-sm mt-2 leading-relaxed">
+                            {exp.description}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Research Projects */}
+            {profile.projects && profile.projects.length > 0 && (
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BookOpen className="h-5 w-5" />
+                    Research Projects
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {profile.projects.map((project, index) => (
+                      <div key={index} className="border-l-4 border-purple-500 pl-4">
+                        <h4 className="font-semibold text-gray-900">{project.title}</h4>
+                        <p className="text-sm text-gray-500">
+                          {project.startDate && project.endDate ? `${project.startDate} - ${project.endDate}` : ''}
+                        </p>
+                        {project.description && (
+                          <p className="text-gray-600 text-sm mt-2 leading-relaxed">
+                            {project.description}
+                          </p>
+                        )}
+                        {project.technologies && project.technologies.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {project.technologies.map((tech, techIndex) => (
+                              <Badge key={techIndex} variant="outline" className="text-xs">
+                                {tech}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Publications */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  Publications
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500">Publications information will be available soon.</p>
-                </div>
-              </CardContent>
-            </Card>
+            {profile.publications && profile.publications.length > 0 ? (
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <FileText className="h-5 w-5" />
+                    Publications
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {profile.publications.map((pub, index) => (
+                      <div key={index} className="border-l-4 border-orange-500 pl-4">
+                        <h4 className="font-semibold text-gray-900">{pub.title}</h4>
+                        <p className="text-orange-600 font-medium">{pub.journal || pub.conference}</p>
+                        <p className="text-sm text-gray-500">
+                          {pub.date}
+                          {pub.authors && <span className="ml-2">• Authors: {pub.authors.join(', ')}</span>}
+                        </p>
+                        {pub.abstract && (
+                          <p className="text-gray-600 text-sm mt-2 leading-relaxed">
+                            {pub.abstract}
+                          </p>
+                        )}
+                        {pub.url && (
+                          <a href={pub.url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline text-sm inline-flex items-center mt-2">
+                            <ExternalLink className="h-3 w-3 mr-1" />
+                            View Publication
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <FileText className="h-5 w-5" />
+                    Publications
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-8">
+                    <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-500">Publications information will be available soon.</p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
-            {/* Teaching Experience */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  Teaching Experience
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500">Teaching experience information will be available soon.</p>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Certifications */}
+            {profile.certifications && profile.certifications.length > 0 && (
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Award className="h-5 w-5" />
+                    Certifications
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {profile.certifications.map((cert, index) => (
+                      <div key={index} className="border-l-4 border-yellow-500 pl-4">
+                        <h4 className="font-semibold text-gray-900">{cert.name}</h4>
+                        <p className="text-yellow-600 font-medium">{cert.issuer}</p>
+                        <p className="text-sm text-gray-500">
+                          {cert.date}
+                          {cert.expiryDate && <span className="ml-2">• Expires: {cert.expiryDate}</span>}
+                        </p>
+                        {cert.description && (
+                          <p className="text-gray-600 text-sm mt-2 leading-relaxed">
+                            {cert.description}
+                          </p>
+                        )}
+                        {cert.certificateUrl && (
+                          <a href={cert.certificateUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline text-sm inline-flex items-center mt-2">
+                            <ExternalLink className="h-3 w-3 mr-1" />
+                            View Certificate
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Languages */}
+            {profile.languages && profile.languages.length > 0 && (
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Globe className="h-5 w-5" />
+                    Languages
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {profile.languages.map((lang, index) => (
+                      <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                        <span className="font-medium">{lang.name}</span>
+                        <Badge variant="outline" className="text-xs">
+                          {lang.proficiency}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Awards & Recognition */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Award className="h-5 w-5" />
-                  Awards & Recognition
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <Award className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500">Awards and recognition information will be available soon.</p>
-                </div>
-              </CardContent>
-            </Card>
+            {profile.awards && profile.awards.length > 0 ? (
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Award className="h-5 w-5" />
+                    Awards & Recognition
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {profile.awards.map((award, index) => (
+                      <div key={index} className="border-l-4 border-red-500 pl-4">
+                        <h4 className="font-semibold text-gray-900">{award.title}</h4>
+                        <p className="text-red-600 font-medium">{award.issuer}</p>
+                        <p className="text-sm text-gray-500">
+                          {award.date}
+                          {award.category && <span className="ml-2">• {award.category}</span>}
+                        </p>
+                        {award.description && (
+                          <p className="text-gray-600 text-sm mt-2 leading-relaxed">
+                            {award.description}
+                          </p>
+                        )}
+                        {award.prize && (
+                          <p className="text-sm text-gray-600 mt-1">
+                            <strong>Prize:</strong> {award.prize}
+                          </p>
+                        )}
+                        {award.certificateUrl && (
+                          <a href={award.certificateUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline text-sm inline-flex items-center mt-2">
+                            <ExternalLink className="h-3 w-3 mr-1" />
+                            View Certificate
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Award className="h-5 w-5" />
+                    Awards & Recognition
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-8">
+                    <Award className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-500">Awards and recognition information will be available soon.</p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Achievements */}
+            {profile.achievements && profile.achievements.length > 0 && (
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Star className="h-5 w-5" />
+                    Achievements
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {profile.achievements.map((achievement, index) => (
+                      <div key={index} className="border-l-4 border-indigo-500 pl-4">
+                        <h4 className="font-semibold text-gray-900">{achievement.title}</h4>
+                        <p className="text-sm text-gray-500">{achievement.date}</p>
+                        {achievement.description && (
+                          <p className="text-gray-600 text-sm mt-2 leading-relaxed">
+                            {achievement.description}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>

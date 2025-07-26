@@ -1,34 +1,23 @@
 import { test, expect, Page } from '@playwright/test';
+import { loginAsFaculty } from './test-helpers';
 
 // Mock faculty data for testing
 const mockFaculty = {
   firstName: 'Dr. Jane',
   lastName: 'Smith',
   staffCode: 'FAC001',
-  instituteEmail: 'jane.smith@institute.edu',
+  instituteEmail: 'faculty@example.com', // Use existing test user
   personalEmail: 'jane@personal.com',
   contactNumber: '+1234567890',
   department: 'Computer Science',
   designation: 'Associate Professor'
 };
 
-// Test authentication helper
-async function loginAsFaculty(page: Page) {
-  // Navigate to login page
-  await page.goto('/login');
-  
-  // Fill login form (adjust selectors based on your actual login form)
-  await page.fill('[name="email"]', mockFaculty.instituteEmail);
-  await page.fill('[name="password"]', 'testpassword');
-  await page.click('button[type="submit"]');
-  
-  // Wait for login to complete
-  await page.waitForURL('/faculty/**');
-}
+// Using shared authentication helper from test-helpers.ts
 
 test.describe('Faculty Profile System', () => {
   test.beforeEach(async ({ page }) => {
-    // Login as faculty before each test
+    // Login as faculty before each test using shared helper
     await loginAsFaculty(page);
   });
 

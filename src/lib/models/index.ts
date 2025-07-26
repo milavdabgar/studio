@@ -869,7 +869,114 @@ const facultySchema = new Schema<IFaculty>({
     percentage: { type: Number }
   }],
   qualification: { type: String }, // Single qualification field for compatibility
-  experience: { type: Number }, // Years of experience
+  experienceYears: { type: String }, // Years of experience as string for compatibility
+  
+  // LinkedIn-like Profile Sections
+  profileSummary: { type: String },
+  education: [{
+    id: { type: String },
+    institution: { type: String },
+    degree: { type: String },
+    fieldOfStudy: { type: String },
+    startDate: { type: String },
+    endDate: { type: String },
+    isCurrently: { type: Boolean, default: false },
+    grade: { type: String },
+    description: { type: String },
+    activities: { type: String },
+    location: { type: String },
+    order: { type: Number, default: 0 }
+  }],
+  experience: [{
+    id: { type: String },
+    company: { type: String },
+    position: { type: String },
+    location: { type: String },
+    startDate: { type: String },
+    endDate: { type: String },
+    isCurrently: { type: Boolean, default: false },
+    description: { type: String },
+    responsibilities: [{ type: String }],
+    achievements: [{ type: String }],
+    skills: [{ type: String }],
+    order: { type: Number, default: 0 }
+  }],
+  projects: [{
+    id: { type: String },
+    title: { type: String },
+    description: { type: String },
+    startDate: { type: String },
+    endDate: { type: String },
+    isOngoing: { type: Boolean, default: false },
+    technologies: [{ type: String }],
+    role: { type: String },
+    teamSize: { type: Number },
+    projectUrl: { type: String },
+    githubUrl: { type: String },
+    images: [{ type: String }],
+    achievements: [{ type: String }],
+    order: { type: Number, default: 0 }
+  }],
+  skills: [{
+    id: { type: String },
+    name: { type: String },
+    category: { type: String, enum: ['technical', 'soft', 'language', 'tool', 'other'], default: 'other' },
+    proficiency: { type: String, enum: ['beginner', 'intermediate', 'advanced', 'expert'], default: 'intermediate' },
+    endorsements: { type: Number, default: 0 },
+    verified: { type: Boolean, default: false },
+    order: { type: Number, default: 0 }
+  }],
+  achievements: [{
+    id: { type: String },
+    title: { type: String },
+    description: { type: String },
+    date: { type: String },
+    category: { type: String, enum: ['academic', 'professional', 'competition', 'award', 'recognition', 'other'], default: 'other' },
+    issuer: { type: String },
+    certificateUrl: { type: String },
+    order: { type: Number, default: 0 }
+  }],
+  certifications: [{
+    id: { type: String },
+    name: { type: String },
+    issuer: { type: String },
+    issueDate: { type: String },
+    expiryDate: { type: String },
+    credentialId: { type: String },
+    credentialUrl: { type: String },
+    description: { type: String },
+    skills: [{ type: String }],
+    order: { type: Number, default: 0 }
+  }],
+  awards: [{
+    id: { type: String },
+    title: { type: String },
+    description: { type: String },
+    date: { type: String },
+    category: { type: String, enum: ['academic', 'professional', 'competition', 'award', 'recognition', 'other'], default: 'other' },
+    issuer: { type: String },
+    prize: { type: String },
+    certificateUrl: { type: String },
+    order: { type: Number, default: 0 }
+  }],
+  publications: [{
+    id: { type: String },
+    title: { type: String },
+    type: { type: String, enum: ['journal', 'conference', 'book', 'chapter', 'article', 'thesis', 'other'], default: 'other' },
+    authors: [{ type: String }],
+    publicationDate: { type: String },
+    venue: { type: String },
+    description: { type: String },
+    doi: { type: String },
+    url: { type: String },
+    order: { type: Number, default: 0 }
+  }],
+  languages: [{
+    id: { type: String },
+    language: { type: String },
+    proficiency: { type: String, enum: ['native', 'fluent', 'conversational', 'basic'], default: 'basic' },
+    order: { type: Number, default: 0 }
+  }],
   
   dateOfBirth: { type: String },
   joiningDate: { type: String },
@@ -880,7 +987,7 @@ const facultySchema = new Schema<IFaculty>({
   address: { type: String },
   isHOD: { type: Boolean, default: false },
   isPrincipal: { type: Boolean, default: false },
-  researchInterests: { type: String },
+  researchInterests: [{ type: String }], // Array of strings to match TypeScript interface
   
   gender: { type: String, enum: ['Male', 'Female', 'Other'] },
   maritalStatus: { type: String },
@@ -890,6 +997,9 @@ const facultySchema = new Schema<IFaculty>({
   placeOfBirth: { type: String },
   nationality: { type: String },
   knownAs: { type: String },
+  
+  // Profile Settings
+  profileVisibility: { type: String, enum: ['public', 'private', 'institute_only'], default: 'institute_only' },
   
   status: { 
     type: String, 

@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
+import { loginAsStudent, loginAsFaculty } from './test-helpers';
 
 // Common viewport sizes for testing
 const VIEWPORTS = {
@@ -8,22 +9,7 @@ const VIEWPORTS = {
   largeDesktop: { width: 2560, height: 1440 }
 };
 
-// Test authentication helper
-async function loginAsStudent(page: Page) {
-  await page.goto('/login');
-  await page.fill('[name="email"]', 'student@test.com');
-  await page.fill('[name="password"]', 'password');
-  await page.click('button[type="submit"]');
-  await page.waitForURL('/student/**');
-}
-
-async function loginAsFaculty(page: Page) {
-  await page.goto('/login');
-  await page.fill('[name="email"]', 'faculty@test.com');
-  await page.fill('[name="password"]', 'password');
-  await page.click('button[type="submit"]');
-  await page.waitForURL('/faculty/**');
-}
+// Using shared authentication helpers from test-helpers.ts
 
 test.describe('Profile Responsive Design', () => {
   test.describe('Student Profile Responsive Layout', () => {
