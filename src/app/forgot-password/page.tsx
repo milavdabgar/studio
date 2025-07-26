@@ -11,28 +11,52 @@ import { Loader2, ArrowLeft, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("");
+  const [studentId, setStudentId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [instituteEmail, setInstituteEmail] = useState("");
   const { toast } = useToast();
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      const response = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ studentId }),
+      });
 
-    // Since this is a development environment with mock users, 
-    // we'll just show a success message
-    setIsSubmitted(true);
-    
-    toast({
-      title: "Password Reset Requested",
-      description: "If an account with this email exists, you will receive password reset instructions.",
-    });
+      const data = await response.json();
 
-    setIsLoading(false);
+      if (response.ok && data.success) {
+        setInstituteEmail(data.instituteEmail);
+        setIsSubmitted(true);
+        
+        toast({
+          title: "Password Reset Link Sent",
+          description: data.message,
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: data.error || "Failed to send reset instructions",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Forgot password error:', error);
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isSubmitted) {
@@ -50,7 +74,7 @@ export default function ForgotPasswordPage() {
             </div>
             <CardTitle className="text-2xl font-bold text-primary">Check Your Email</CardTitle>
             <CardDescription>
-              We've sent password reset instructions to <strong>{email}</strong>
+              Password reset instructions have been sent to your institute email: <strong>{instituteEmail}</strong>
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center">
@@ -61,11 +85,12 @@ export default function ForgotPasswordPage() {
               variant="outline"
               onClick={() => {
                 setIsSubmitted(false);
-                setEmail("");
+                setStudentId("");
+                setInstituteEmail("");
               }}
               className="w-full"
             >
-              Try Another Email
+              Try Another Student ID
             </Button>
           </CardContent>
           <CardFooter className="flex justify-center">
@@ -91,22 +116,25 @@ export default function ForgotPasswordPage() {
           </div>
           <CardTitle className="text-2xl font-bold text-primary">Forgot Password?</CardTitle>
           <CardDescription>
-            Enter your email address and we'll send you instructions to reset your password.
+            Enter your student ID and we'll send reset instructions to your institute email.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
+              <Label htmlFor="studentId">Student ID</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="studentId"
+                type="text"
+                placeholder="Enter your student ID (e.g., 24ICT001)"
+                value={studentId}
+                onChange={(e) => setStudentId(e.target.value.toUpperCase())}
                 required
                 disabled={isLoading}
               />
+              <p className="text-xs text-muted-foreground">
+                Reset link will be sent to your institute email ({studentId.toLowerCase()}@gppalanpur.in)
+              </p>
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
