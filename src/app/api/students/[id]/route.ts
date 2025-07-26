@@ -85,12 +85,44 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       updatedAt: new Date().toISOString()
     };
 
-    // Remove undefined fields and trim strings
+    // Define fields that should be handled for student profile updates
+    const fieldsToUpdate = [
+      'firstName', 'middleName', 'lastName', 'fullNameGtuFormat', 'personalEmail', 'instituteEmail',
+      'contactNumber', 'address', 'gender', 'dateOfBirth', 'bloodGroup', 'aadharNumber',
+      'currentSemester', 'status', 'photoURL', 'profileSummary', 'careerObjective',
+      // Profile sections
+      'education', 'experience', 'projects', 'skills', 'achievements', 'certifications',
+      'publications', 'languages', 'volunteerWork', 'professionalMemberships', 'awards',
+      'references', 'professionalDevelopment', 'profileVisibility'
+    ];
+
+    // Handle profile section arrays properly
+    fieldsToUpdate.forEach(field => {
+      if (field in updateData) {
+        const value = updateData[field];
+        if (value !== undefined) {
+          if (typeof value === 'string') {
+            updateData[field] = value.trim();
+          } else if (['education', 'experience', 'projects', 'skills', 'achievements', 'certifications', 'publications', 'languages', 'volunteerWork', 'professionalMemberships', 'awards', 'references', 'professionalDevelopment'].includes(field)) {
+            // Handle profile section arrays - store as-is if they're arrays
+            if (Array.isArray(value)) {
+              updateData[field] = value;
+            } else {
+              updateData[field] = []; // Default to empty array if not an array
+            }
+          } else {
+            updateData[field] = value;
+          }
+        }
+      }
+    });
+
+    // Remove undefined fields and trim strings for other fields
     Object.keys(updateData).forEach(key => {
       if (updateData[key] === undefined) {
         delete updateData[key];
-      } else if (typeof updateData[key] === 'string') {
-        updateData[key] = updateData[key].trim();
+      } else if (typeof updateData[key] === 'string' && !fieldsToUpdate.includes(key)) {
+        updateData[key] = (updateData[key] as string).trim();
       }
     });
 

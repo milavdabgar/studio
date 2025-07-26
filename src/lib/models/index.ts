@@ -784,6 +784,46 @@ const studentSchema = new Schema<IStudent>({
     order: { type: Number, default: 0 }
   }],
   
+  // Additional Professional Sections
+  volunteerWork: [{
+    id: { type: String },
+    organization: { type: String },
+    role: { type: String },
+    description: { type: String },
+    startDate: { type: String },
+    endDate: { type: String },
+    isCurrently: { type: Boolean, default: false },
+    location: { type: String },
+    skills: [{ type: String }],
+    achievements: [{ type: String }],
+    contactInfo: { type: String },
+    order: { type: Number, default: 0 }
+  }],
+  professionalMemberships: [{
+    id: { type: String },
+    organization: { type: String },
+    membershipType: { type: String },
+    role: { type: String },
+    startDate: { type: String },
+    endDate: { type: String },
+    isLifetime: { type: Boolean, default: false },
+    membershipId: { type: String },
+    description: { type: String },
+    benefits: [{ type: String }],
+    order: { type: Number, default: 0 }
+  }],
+  awards: [{
+    id: { type: String },
+    title: { type: String },
+    description: { type: String },
+    date: { type: String },
+    category: { type: String, enum: ['academic', 'professional', 'competition', 'award', 'recognition', 'other'], default: 'other' },
+    issuer: { type: String },
+    prize: { type: String },
+    certificateUrl: { type: String },
+    order: { type: Number, default: 0 }
+  }],
+  
   // Profile Settings
   profileVisibility: { type: String, enum: ['public', 'private', 'institute_only'], default: 'institute_only' },
   profileSettings: {
