@@ -98,7 +98,7 @@ jobs:
             
             # Clean shutdown of existing services
             echo "🛑 Stopping existing services..."
-            docker compose down --remove-orphans 2>/dev/null || true
+            docker compose -f docker-compose.production.yml down --remove-orphans 2>/dev/null || true
             docker rm -f studio-app studio-mongodb 2>/dev/null || true
             
             # Pull latest master branch
@@ -193,8 +193,13 @@ jobs:
             echo "🚀 Building fresh Docker image (no cache)..."
             echo "This includes texlive-full installation (~8-10 minutes)..."
             
-            # Build with no cache to ensure fresh deployment
-            docker compose build --no-cache --pull studio 2>&1 | while IFS= read -r line; do
+            # Set environment variables for production build
+            export GIT_COMMIT=$(git rev-parse --short HEAD)
+            export BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+            echo "📝 Building with GIT_COMMIT=$GIT_COMMIT, BUILD_DATE=$BUILD_DATE"
+            
+            # Use production docker-compose with proper tagging
+            docker compose -f docker-compose.production.yml build --no-cache --pull studio 2>&1 | while IFS= read -r line; do
               echo "$(date "+%H:%M:%S") - $line"
               if [[ "$line" == *"texlive-full"* ]]; then
                 echo "📦 Installing texlive-full... (~5-8 minutes)"
@@ -207,20 +212,20 @@ jobs:
               fi
             done || {
               echo "❌ Docker build failed, checking logs..."
-              docker compose logs studio
+              docker compose -f docker-compose.production.yml logs studio
               exit 1
             }
             
             # Start services
             echo "🚀 Starting production services..."
-            docker compose up -d
+            docker compose -f docker-compose.production.yml up -d
             
             # Verification
             echo "⏳ Waiting for services to start..."
             sleep 15
             
             # Check service health
-            if docker compose ps | grep -q "studio-app.*Up"; then
+            if docker compose -f docker-compose.production.yml ps | grep -q "studio-app.*Up"; then
               echo "✅ Studio application started successfully"
               
               # Additional health check via HTTP
@@ -232,23 +237,23 @@ jobs:
               fi
             else
               echo "❌ Studio application failed to start"
-              docker compose ps
-              docker compose logs studio
+              docker compose -f docker-compose.production.yml ps
+              docker compose -f docker-compose.production.yml logs studio
               exit 1
             fi
             
-            if docker compose ps | grep -q "Up.*studio-mongodb"; then
+            if docker compose -f docker-compose.production.yml ps | grep -q "Up.*studio-mongodb"; then
               echo "✅ MongoDB started successfully"
             else
               echo "❌ MongoDB failed to start"
-              docker compose ps
-              docker compose logs mongodb
+              docker compose -f docker-compose.production.yml ps
+              docker compose -f docker-compose.production.yml logs mongodb
               exit 1
             fi
             
             # Final health check
             echo "🏥 Final health check..."
-            docker compose ps
+            docker compose -f docker-compose.production.yml ps
             
             # Show deployment summary
             echo "=============================================="
