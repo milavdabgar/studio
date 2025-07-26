@@ -81,6 +81,14 @@ import { programService } from '@/lib/api/programs';
 import { batchService } from '@/lib/api/batches';
 import StudentDownloadButtons from '@/components/student-download-buttons';
 import PasswordChangeForm from '@/components/password-change-form';
+import { StudentBasicInfoForm } from '@/components/profile/student-basic-info-form';
+import { 
+  VolunteerSection, 
+  ProfessionalMembershipsSection, 
+  AwardsSection, 
+  CertificationsSection 
+} from '@/components/profile/additional-profile-sections';
+import { ProfileCompleteness } from '@/components/profile/profile-completeness';
 import { format, parseISO, isValid } from 'date-fns';
 import Link from 'next/link';
 
@@ -1212,6 +1220,22 @@ export default function StudentProfilePage() {
     handleUpdateProfile({ achievements });
   };
 
+  const handleUpdateVolunteerWork = (volunteerWork: any[]) => {
+    handleUpdateProfile({ volunteerWork });
+  };
+
+  const handleUpdateProfessionalMemberships = (professionalMemberships: any[]) => {
+    handleUpdateProfile({ professionalMemberships });
+  };
+
+  const handleUpdateAwards = (awards: any[]) => {
+    handleUpdateProfile({ awards });
+  };
+
+  const handleUpdateCertifications = (certifications: any[]) => {
+    handleUpdateProfile({ certifications });
+  };
+
   const handleUpdateProfileSummary = () => {
     handleUpdateProfile({ profileSummary, profileVisibility });
   };
@@ -1367,13 +1391,10 @@ export default function StudentProfilePage() {
 
       {/* Profile Management Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="basic">Basic Info</TabsTrigger>
-          <TabsTrigger value="education">Education</TabsTrigger>
-          <TabsTrigger value="skills">Skills</TabsTrigger>
-          <TabsTrigger value="experience">Experience</TabsTrigger>
-          <TabsTrigger value="projects">Projects</TabsTrigger>
-          <TabsTrigger value="achievements">Achievements</TabsTrigger>
+          <TabsTrigger value="academics">Academics</TabsTrigger>
+          <TabsTrigger value="professional">Professional</TabsTrigger>
           <TabsTrigger value="security">Security</TabsTrigger>
         </TabsList>
         
@@ -1443,6 +1464,18 @@ export default function StudentProfilePage() {
             </CardContent>
           </Card>
 
+          {/* Enhanced Basic Information Form */}
+          <StudentBasicInfoForm 
+            student={student}
+            onUpdate={handleUpdateProfile}
+          />
+
+          {/* Profile Completeness */}
+          <ProfileCompleteness 
+            profile={student}
+            userType="student"
+          />
+
           {/* Profile Summary */}
           <Card>
             <CardHeader>
@@ -1489,38 +1522,45 @@ export default function StudentProfilePage() {
 
         </TabsContent>
 
-        <TabsContent value="education" className="space-y-6">
+        <TabsContent value="academics" className="space-y-6">
           <EducationSection 
             education={student.education || []} 
             onUpdate={handleUpdateEducation}
           />
-        </TabsContent>
-
-        <TabsContent value="skills" className="space-y-6">
           <SkillsSection 
             skills={student.skills || []} 
             onUpdate={handleUpdateSkills}
           />
+          <AchievementsSection 
+            achievements={student.achievements || []} 
+            onUpdate={handleUpdateAchievements}
+          />
+          <CertificationsSection 
+            certifications={student.certifications || []} 
+            onUpdate={handleUpdateCertifications}
+          />
         </TabsContent>
 
-        <TabsContent value="experience" className="space-y-6">
+        <TabsContent value="professional" className="space-y-6">
           <ExperienceSection 
             experience={student.experience || []} 
             onUpdate={handleUpdateExperience}
           />
-        </TabsContent>
-
-        <TabsContent value="projects" className="space-y-6">
           <ProjectsSection 
             projects={student.projects || []} 
             onUpdate={handleUpdateProjects}
           />
-        </TabsContent>
-
-        <TabsContent value="achievements" className="space-y-6">
-          <AchievementsSection 
-            achievements={student.achievements || []} 
-            onUpdate={handleUpdateAchievements}
+          <VolunteerSection 
+            volunteerWork={student.volunteerWork || []} 
+            onUpdate={handleUpdateVolunteerWork}
+          />
+          <ProfessionalMembershipsSection 
+            memberships={student.professionalMemberships || []} 
+            onUpdate={handleUpdateProfessionalMemberships}
+          />
+          <AwardsSection 
+            awards={student.awards || []} 
+            onUpdate={handleUpdateAwards}
           />
         </TabsContent>
 
