@@ -242,7 +242,7 @@ jobs:
               exit 1
             fi
             
-            if docker compose -f docker-compose.production.yml ps | grep -q "Up.*studio-mongodb"; then
+            if docker compose -f docker-compose.production.yml ps | grep -q "studio-mongodb.*Up"; then
               echo "✅ MongoDB started successfully"
             else
               echo "❌ MongoDB failed to start"

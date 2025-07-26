@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from "next/link";
 import { AppLogo } from "@/components/app-logo";
-import { Loader2, LogIn } from "lucide-react";
+import { Loader2, LogIn, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import type { UserRole as UserRoleCode, SystemUser as User, Role } from '@/types/entities'; // UserRole is now UserRoleCode
@@ -85,6 +85,7 @@ const getMockUsers = async (): Promise<MockUser[]> => {
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [selectedRoleCode, setSelectedRoleCode] = useState<UserRoleCode>("admin"); // Store role code
   const [availableRolesForUser, setAvailableRolesForUser] = useState<Role[]>([]); // Store Role objects
   const [allSystemRoles, setAllSystemRoles] = useState<Role[]>([]); 
@@ -265,15 +266,30 @@ export default function LoginPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={isLoading}
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  onClick={() => setShowPassword(!showPassword)}
+                  disabled={isLoading}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                  )}
+                </button>
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="role">Login as</Label>
@@ -308,29 +324,9 @@ export default function LoginPage() {
               Login
             </Button>
           </form>
-          {process.env.NODE_ENV === 'development' && (
-            <Button
-              variant="outline"
-              className="w-full text-sm py-3 mt-4"
-              onClick={async () => {
-                localStorage.removeItem('__API_USERS_STORE__'); 
-                localStorage.removeItem('__API_STUDENTS_STORE__'); 
-                localStorage.removeItem('__API_FACULTY_STORE__');
-                localStorage.removeItem('__API_COMMITTEES_STORE__');
-                localStorage.removeItem('__API_BUILDINGS_STORE__');
-                localStorage.removeItem('__API_ROOMS_STORE__');
-                localStorage.removeItem('__API_DEPARTMENTS_STORE__');
-                localStorage.removeItem('__API_PROGRAMS_STORE__');
-                localStorage.removeItem('__API_COURSES_STORE__');
-                localStorage.removeItem('__API_ROLES_STORE__');
-                const users = await getMockUsers(); 
-                setMockUsersState(users);
-                toast({ title: "Dev Info", description: "Local storage for API stores cleared." });
-              }}>Clear API Stores (Dev)</Button>
-          )}
         </CardContent>
         <CardFooter className="flex flex-col items-center gap-4">
-           <Link href="#" className="text-sm text-primary hover:underline">
+           <Link href="/forgot-password" className="text-sm text-primary hover:underline">
             Forgot password?
           </Link>
           <p className="text-sm text-muted-foreground">

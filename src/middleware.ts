@@ -73,6 +73,7 @@ const PUBLIC_ROUTES = [
   '/', 
   '/login',
   '/signup',
+  '/forgot-password', // Add forgot password page to public routes
   '/api/auth/callback/credentials',
   '/posts', // Add /posts base route
   '/newsletters', // Add newsletters to public routes
