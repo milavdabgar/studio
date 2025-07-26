@@ -355,6 +355,7 @@ const courseSchema = new Schema<ICourse>({
   practicalExamDuration: { type: String },
   isFunctional: { type: Boolean, required: true, default: true },
   category: { type: String, required: true },
+  syllabusUrl: { type: String }, // GTU syllabus PDF URL
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() }
 }, {

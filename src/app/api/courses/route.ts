@@ -57,8 +57,8 @@ export async function POST(request: NextRequest) {
     if (courseData.lectureHours < 0 || courseData.tutorialHours < 0 || courseData.practicalHours < 0) {
       return NextResponse.json({ message: 'Hours cannot be negative.' }, { status: 400 });
     }
-    if (courseData.credits <= 0) {
-      return NextResponse.json({ message: 'Credits must be greater than 0.' }, { status: 400 });
+    if (courseData.credits < 0) {
+      return NextResponse.json({ message: 'Credits cannot be negative.' }, { status: 400 });
     }
     
     const newCourse = new CourseModel({

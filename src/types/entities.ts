@@ -696,6 +696,7 @@ export interface Course {
   subjectCode?: string; // Subject code for display
   branchCode?: string; 
   effFrom?: string; 
+  syllabusUrl?: string; // GTU syllabus PDF URL
   
   category?: string; 
   semester: number; 

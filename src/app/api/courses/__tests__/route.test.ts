@@ -248,8 +248,8 @@ describe('/api/courses', () => {
       expect(data.message).toBe('Hours cannot be negative.');
     });
 
-    it('should return 400 when credits are zero or negative', async () => {
-      const invalidData = { ...validCourseData, credits: 0 };
+    it('should return 400 when credits are negative', async () => {
+      const invalidData = { ...validCourseData, credits: -1 };
       
       const request = new NextRequest('http://localhost/api/courses', {
         method: 'POST',
@@ -260,7 +260,40 @@ describe('/api/courses', () => {
       const data = await response.json();
       
       expect(response.status).toBe(400);
-      expect(data.message).toBe('Credits must be greater than 0.');
+      expect(data.message).toBe('Credits cannot be negative.');
+    });
+
+    it('should allow creating course with zero credits', async () => {
+      const validDataWithZeroCredits = { ...validCourseData, credits: 0 };
+      
+      const mockSavedCourse = {
+        ...validDataWithZeroCredits,
+        _id: 'course_zero_credits_123',
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z',
+      };
+      
+      mockCourseModel.findOne.mockResolvedValue(null);
+      
+      // Mock the instance that will be created
+      const mockSave = jest.fn().mockResolvedValue(mockSavedCourse);
+      (mockCourseModel as unknown as jest.MockedFunction<(data: unknown) => unknown>).mockImplementation((data: unknown) => ({
+        ...(data as Record<string, unknown>),
+        _id: 'course_zero_credits_123',
+        save: mockSave
+      }));
+      
+      const request = new NextRequest('http://localhost/api/courses', {
+        method: 'POST',
+        body: JSON.stringify(validDataWithZeroCredits),
+      });
+      
+      const response = await POST(request);
+      const data = await response.json();
+      
+      expect(response.status).toBe(201);
+      expect(data.credits).toBe(0);
+      expect(mockSave).toHaveBeenCalledTimes(1);
     });
 
     it('should return 409 when course with same code exists in program', async () => {
