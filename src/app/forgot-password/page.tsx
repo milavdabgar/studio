@@ -19,18 +19,49 @@ export default function ForgotPasswordPage() {
   const [identifiedUser, setIdentifiedUser] = useState<UserType | null>(null);
   const { toast } = useToast();
 
-  // Real-time user identification
+  // Real-time user identification and email resolution
   useEffect(() => {
-    if (userCode.trim()) {
-      const identification = identifyUser(userCode.trim());
-      if (identification.isValid) {
-        setIdentifiedUser(identification.type);
+    const resolveUserEmail = async () => {
+      if (userCode.trim()) {
+        const identification = identifyUser(userCode.trim());
+        if (identification.isValid) {
+          setIdentifiedUser(identification.type);
+          
+          // For faculty, resolve staff code to actual email
+          if (identification.type === UserType.FACULTY) {
+            try {
+              const response = await fetch('/api/auth/resolve-user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ identifier: identification.identifier }),
+              });
+              
+              if (response.ok) {
+                const resolvedData = await response.json();
+                setInstituteEmail(resolvedData.instituteEmail);
+              } else {
+                // Fallback to pattern-based email
+                setInstituteEmail(identification.instituteEmail);
+              }
+            } catch (error) {
+              console.error('Error resolving faculty email:', error);
+              setInstituteEmail(identification.instituteEmail);
+            }
+          } else {
+            // For students, use pattern-based email directly
+            setInstituteEmail(identification.instituteEmail);
+          }
+        } else {
+          setIdentifiedUser(null);
+          setInstituteEmail('');
+        }
       } else {
         setIdentifiedUser(null);
+        setInstituteEmail('');
       }
-    } else {
-      setIdentifiedUser(null);
-    }
+    };
+    
+    resolveUserEmail();
   }, [userCode]);
 
   const handleSubmit = async (event: FormEvent) => {
@@ -159,9 +190,9 @@ export default function ForgotPasswordPage() {
               <p className="text-xs text-muted-foreground">
                 Students: 12-digit enrollment number • Faculty: 4-5 digit staff code
               </p>
-              {userCode && (
+              {userCode && instituteEmail && (
                 <p className="text-xs text-primary">
-                  Reset link will be sent to: {userCode.toLowerCase()}@gppalanpur.in
+                  Reset link will be sent to: {instituteEmail}
                 </p>
               )}
             </div>

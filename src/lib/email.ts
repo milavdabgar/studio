@@ -1,8 +1,7 @@
 import { EMAIL_CONFIG, generateInstituteEmail } from './config/email';
 
 // Email service for sending emails
-export const sendPasswordResetEmail = async (studentId: string, resetToken: string): Promise<boolean> => {
-  const instituteEmail = generateInstituteEmail(studentId);
+export const sendPasswordResetEmail = async (instituteEmail: string, resetToken: string): Promise<boolean> => {
   
   // In a real application, this would send an actual email using EmailService
   // For now, just log the email details

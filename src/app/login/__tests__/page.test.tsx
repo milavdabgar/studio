@@ -89,10 +89,10 @@ describe('Login Page', () => {
     
     // Wait for component to mount and load roles
     await waitFor(() => {
-      expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
     });
 
-    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/login as/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument();
@@ -103,11 +103,11 @@ describe('Login Page', () => {
       render(<LoginPage />);
     });
     
-    // Check that email and password fields are empty by default (security fix)
+    // Check that username and password fields are empty by default (security fix)
     await waitFor(() => {
-      const emailInput = screen.getByLabelText('Email');
+      const usernameInput = screen.getByLabelText('Username');
       const passwordInput = screen.getByLabelText('Password');
-      expect(emailInput).toHaveValue('');
+      expect(usernameInput).toHaveValue('');
       expect(passwordInput).toHaveValue('');
     });
   });
@@ -143,7 +143,7 @@ describe('Login Page', () => {
     
     // The component should render immediately with form elements
     // since isMounted state is managed internally
-    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
   });
 
   it('should handle successful login with valid credentials', async () => {
@@ -153,14 +153,14 @@ describe('Login Page', () => {
     });
     
     await waitFor(() => {
-      expect(screen.getByLabelText('Email')).toBeInTheDocument();
+      expect(screen.getByLabelText('Username')).toBeInTheDocument();
     });
 
     // Manually enter admin credentials for testing
-    const emailInput = screen.getByLabelText('Email');
+    const usernameInput = screen.getByLabelText('Username');
     const passwordInput = screen.getByLabelText('Password');
     
-    await user.type(emailInput, 'admin@gppalanpur.in');
+    await user.type(usernameInput, 'admin@gppalanpur.in');
     await user.type(passwordInput, 'Admin@123');
     
     const submitButton = screen.getByRole('button', { name: /login/i });
