@@ -162,11 +162,11 @@ export async function POST(request: NextRequest) {
         
         // GTU branch code mapping - find program by code, then get its department
         // Try both string and number comparison since DB might store codes differently
-        const foundProg = clientPrograms.find(p => 
+        const foundProg = branchCode ? clientPrograms.find(p => 
           p.code === branchCode || 
-          p.code === parseInt(branchCode) || 
+          (typeof p.code === 'number' && p.code === parseInt(branchCode)) || 
           p.code?.toString() === branchCode
-        );
+        ) : undefined;
         if (foundProg) {
           const foundDept = clientDepartments.find(d => d.id === foundProg.departmentId);
           if (foundDept) {

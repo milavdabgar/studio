@@ -82,7 +82,7 @@ export default function StudentCourseDetailPage() {
             <BookOpen className="h-8 w-8" /> {course.subjectName} ({course.subcode})
           </CardTitle>
           <CardDescription>
-            Semester {course.semester} | Credits: {course.credits} | Branch: {course.branchCode || 'N/A'}
+            Semester {course.semester} | Credits: {course.credits}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">

@@ -100,7 +100,6 @@ export async function POST(request: NextRequest) {
     const newCourse: Course = {
       id: generateId(),
       subcode: courseData.subcode.trim().toUpperCase(),
-      branchCode: courseData.branchCode?.trim() || undefined,
       effFrom: courseData.effFrom?.trim() || undefined,
       subjectName: courseData.subjectName.trim(),
       category: courseData.category?.trim() || undefined,
