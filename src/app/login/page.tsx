@@ -41,10 +41,13 @@ const getMockUsers = async (): Promise<MockUser[]> => {
     { id: "s2", email: "236260332003@gppalanpur.in", password: "password", roles: ["student"], name: "Anasulla Belim", status: "active", instituteId: "inst1" },
     { id: "s3", email: "236260332004@gppalanpur.in", password: "password", roles: ["student"], name: "Prachi Bhavsar", status: "active", instituteId: "inst1" },
     
-    // Test users with staff codes (4-5 digit format)
-    { id: "f1", email: "71396@gppalanpur.in", password: "password", roles: ["faculty"], name: "Mr. Rajgor Narendrakumar", status: "active", instituteId: "inst1" },
-    { id: "f2", email: "5595@gppalanpur.in", password: "password", roles: ["faculty"], name: "Dr. Tank Maheshkumar", status: "active", instituteId: "inst1" },
-    { id: "f3", email: "12725@gppalanpur.in", password: "password", roles: ["faculty", "hod"], name: "Dr. Pandya Chiragkumar", status: "active", instituteId: "inst1" },
+    // Test users with staff codes (4-5 digit format) - using actual name-based emails
+    { id: "f1", email: "narendrarajgor@yahoo.com", password: "71396", roles: ["faculty"], name: "Mr. Rajgor Narendrakumar", status: "active", instituteId: "inst1" },
+    { id: "f2", email: "maheshftank@gmail.com", password: "5595", roles: ["faculty"], name: "Dr. Tank Maheshkumar", status: "active", instituteId: "inst1" },
+    { id: "f3", email: "chiragpandya23@gmail.com", password: "12725", roles: ["faculty", "hod"], name: "Dr. Pandya Chiragkumar", status: "active", instituteId: "inst1" },
+    
+    // Test faculty with proper institute email format (firstname.lastname@gppalanpur.in)
+    { id: "f4", email: "jignaben.modi@gppalanpur.in", password: "45174", roles: ["faculty"], name: "Jignaben Modi", status: "active", instituteId: "inst1" },
   ];
 
   if (typeof window !== 'undefined') {
@@ -139,40 +142,67 @@ export default function LoginPage() {
   }, [selectedRoleCode, toast]);
 
   useEffect(() => {
-    // Determine the email to use for user lookup
-    const validation = validateLoginInputs(codeOrEmail, email);
-    const authEmail = validation.codeOrEmail?.instituteEmail || validation.email?.instituteEmail || email;
-    
-    const user = MOCK_USERS.find(u => u.email === authEmail);
-    if (user && user.roles && allSystemRoles.length > 0) {
-      const userRolesAsObjects = user.roles
-        .map(roleCode => allSystemRoles.find(sysRole => sysRole.code === roleCode))
-        .filter(role => role !== undefined) as Role[];
+    const checkUserRoles = async () => {
+      // Determine the email to use for user lookup
+      const validation = validateLoginInputs(codeOrEmail, email);
+      let authEmail = validation.email?.instituteEmail || email;
+
+      // For staff codes, try to resolve to actual email
+      if (validation.codeOrEmail?.isValid && validation.codeOrEmail.type === UserType.FACULTY) {
+        try {
+          const resolveResponse = await fetch('/api/auth/resolve-user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ identifier: validation.codeOrEmail.identifier }),
+          });
+          
+          if (resolveResponse.ok) {
+            const resolvedUserInfo = await resolveResponse.json();
+            authEmail = resolvedUserInfo.instituteEmail;
+          } else {
+            authEmail = validation.codeOrEmail.instituteEmail;
+          }
+        } catch (error) {
+          console.error('Error resolving user for roles:', error);
+          authEmail = validation.codeOrEmail.instituteEmail;
+        }
+      } else if (validation.codeOrEmail?.isValid) {
+        authEmail = validation.codeOrEmail.instituteEmail;
+      }
       
-      setAvailableRolesForUser(userRolesAsObjects);
-      
-      // Only update selectedRoleCode if current selection is invalid for this user
-      if (!userRolesAsObjects.find(r => r.code === selectedRoleCode)) {
-        if (userRolesAsObjects.length > 0) {
-          setSelectedRoleCode(userRolesAsObjects[0].code);
-        } else {
-          setSelectedRoleCode('unknown'); 
+      const user = MOCK_USERS.find(u => u.email === authEmail);
+      if (user && user.roles && allSystemRoles.length > 0) {
+        const userRolesAsObjects = user.roles
+          .map(roleCode => allSystemRoles.find(sysRole => sysRole.code === roleCode))
+          .filter(role => role !== undefined) as Role[];
+        
+        setAvailableRolesForUser(userRolesAsObjects);
+        
+        // Only update selectedRoleCode if current selection is invalid for this user
+        if (!userRolesAsObjects.find(r => r.code === selectedRoleCode)) {
+          if (userRolesAsObjects.length > 0) {
+            setSelectedRoleCode(userRolesAsObjects[0].code);
+          } else {
+            setSelectedRoleCode('unknown'); 
+          }
+        }
+      } else {
+        setAvailableRolesForUser([]);
+        // Only update selectedRoleCode if we don't have a valid system role selected
+        if (allSystemRoles.length > 0 && !allSystemRoles.find(r => r.code === selectedRoleCode)) {
+          const adminRole = allSystemRoles.find(r => r.code === 'admin');
+          if (adminRole) {
+            setSelectedRoleCode(adminRole.code);
+          } else if (allSystemRoles.length > 0) {
+            setSelectedRoleCode(allSystemRoles[0].code);
+          } else {
+            setSelectedRoleCode('unknown');
+          }
         }
       }
-    } else {
-      setAvailableRolesForUser([]);
-      // Only update selectedRoleCode if we don't have a valid system role selected
-      if (allSystemRoles.length > 0 && !allSystemRoles.find(r => r.code === selectedRoleCode)) {
-        const adminRole = allSystemRoles.find(r => r.code === 'admin');
-        if (adminRole) {
-          setSelectedRoleCode(adminRole.code);
-        } else if (allSystemRoles.length > 0) {
-          setSelectedRoleCode(allSystemRoles[0].code);
-        } else {
-          setSelectedRoleCode('unknown');
-        }
-      }
-    }
+    };
+
+    checkUserRoles();
   }, [codeOrEmail, email, MOCK_USERS, allSystemRoles, selectedRoleCode]); 
 
   // Real-time user identification
@@ -217,8 +247,33 @@ export default function LoginPage() {
 
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    // Determine the email to use for authentication
-    const authEmail = validation.codeOrEmail?.instituteEmail || validation.email?.instituteEmail || "";
+    // For faculty staff codes, we need to resolve to actual email
+    let authEmail = "";
+    let resolvedUserInfo = null;
+
+    if (validation.codeOrEmail?.isValid && validation.codeOrEmail.type === identifyUser(codeOrEmail).type) {
+      // Try to resolve staff code to actual email
+      try {
+        const resolveResponse = await fetch('/api/auth/resolve-user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ identifier: validation.codeOrEmail.identifier }),
+        });
+        
+        if (resolveResponse.ok) {
+          resolvedUserInfo = await resolveResponse.json();
+          authEmail = resolvedUserInfo.instituteEmail;
+        } else {
+          // Fallback to pattern-based email generation
+          authEmail = validation.codeOrEmail.instituteEmail;
+        }
+      } catch (error) {
+        console.error('Error resolving user:', error);
+        authEmail = validation.codeOrEmail.instituteEmail;
+      }
+    } else if (validation.email?.instituteEmail) {
+      authEmail = validation.email.instituteEmail;
+    }
     
     const foundUser = MOCK_USERS.find(user => {
         if (user.email !== authEmail) return false;
