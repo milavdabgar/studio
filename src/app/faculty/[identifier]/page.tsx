@@ -29,10 +29,13 @@ import {
   TrendingUp,
   Star,
   Clock,
-  Globe
+  Globe,
+  Heart,
+  Network,
+  Target
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { FacultyProfile } from '@/types/entities';
+import { FacultyProfile, VolunteerEntry, ProfessionalMembershipEntry, ProfessionalDevelopmentEntry, ReferenceEntry } from '@/types/entities';
 import { facultyService } from '@/lib/api/faculty';
 
 interface FacultyProfilePageProps {
@@ -339,6 +342,14 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Specializations</span>
                     <span className="font-medium">{profile.specializations?.length || 0}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Volunteer Work</span>
+                    <span className="font-medium">{profile.volunteerWork?.length || 0}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Memberships</span>
+                    <span className="font-medium">{profile.professionalMemberships?.length || 0}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Years Active</span>
@@ -710,6 +721,221 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
                   <div className="text-center py-8">
                     <Award className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-500">Awards and recognition information will be available soon.</p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Volunteer Work */}
+            {profile.volunteerWork && profile.volunteerWork.length > 0 && (
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Heart className="h-5 w-5" />
+                    Volunteer Work
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    {profile.volunteerWork.map((volunteer: VolunteerEntry, index: number) => (
+                      <div key={index} className="border-l-4 border-pink-500 pl-4">
+                        <h4 className="font-semibold text-gray-900">{volunteer.position || volunteer.role}</h4>
+                        <p className="text-pink-600 font-medium">{volunteer.organization}</p>
+                        <p className="text-sm text-gray-500">
+                          {volunteer.startDate && volunteer.endDate 
+                            ? `${volunteer.startDate} - ${volunteer.endDate}` 
+                            : volunteer.startDate && volunteer.isCurrently 
+                            ? `${volunteer.startDate} - Present` 
+                            : volunteer.startDate}
+                          {volunteer.location && <span className="ml-2">• {volunteer.location}</span>}
+                        </p>
+                        {volunteer.description && (
+                          <p className="text-gray-600 text-sm mt-2 leading-relaxed">
+                            {volunteer.description}
+                          </p>
+                        )}
+                        {volunteer.achievements && volunteer.achievements.length > 0 && (
+                          <div className="mt-3">
+                            <p className="text-sm font-medium text-gray-700 mb-2">Key Achievements:</p>
+                            <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
+                              {volunteer.achievements.map((achievement: string, achIndex: number) => (
+                                <li key={achIndex}>{achievement}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {volunteer.skills && volunteer.skills.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-3">
+                            {volunteer.skills.map((skill: string, skillIndex: number) => (
+                              <Badge key={skillIndex} variant="outline" className="text-xs">
+                                {skill}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Professional Memberships */}
+            {profile.professionalMemberships && profile.professionalMemberships.length > 0 && (
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Network className="h-5 w-5" />
+                    Professional Memberships
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {profile.professionalMemberships.map((membership: ProfessionalMembershipEntry, index: number) => (
+                      <div key={index} className="border-l-4 border-teal-500 pl-4">
+                        <h4 className="font-semibold text-gray-900">{membership.organization}</h4>
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          <Badge variant="secondary" className="text-xs">
+                            {membership.membershipType}
+                          </Badge>
+                          {membership.role && (
+                            <Badge variant="outline" className="text-xs">
+                              {membership.role}
+                            </Badge>
+                          )}
+                          {membership.isLifetime && (
+                            <Badge variant="default" className="text-xs bg-gold text-white">
+                              Lifetime Member
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-500 mt-1">
+                          {membership.startDate && membership.endDate 
+                            ? `${membership.startDate} - ${membership.endDate}` 
+                            : membership.startDate && membership.isCurrently 
+                            ? `${membership.startDate} - Present` 
+                            : membership.startDate}
+                          {membership.membershipId && <span className="ml-2">• ID: {membership.membershipId}</span>}
+                        </p>
+                        {membership.description && (
+                          <p className="text-gray-600 text-sm mt-2 leading-relaxed">
+                            {membership.description}
+                          </p>
+                        )}
+                        {membership.benefits && membership.benefits.length > 0 && (
+                          <div className="mt-3">
+                            <p className="text-sm font-medium text-gray-700 mb-2">Benefits:</p>
+                            <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
+                              {membership.benefits.map((benefit: string, benefitIndex: number) => (
+                                <li key={benefitIndex}>{benefit}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Professional Development */}
+            {profile.professionalDevelopment && profile.professionalDevelopment.length > 0 && (
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="h-5 w-5" />
+                    Professional Development
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {profile.professionalDevelopment.map((dev: ProfessionalDevelopmentEntry, index: number) => (
+                      <div key={index} className="border-l-4 border-cyan-500 pl-4">
+                        <h4 className="font-semibold text-gray-900">{dev.title}</h4>
+                        <p className="text-cyan-600 font-medium">{dev.provider}</p>
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          <Badge variant="outline" className="text-xs">
+                            {dev.type}
+                          </Badge>
+                          {dev.duration && (
+                            <Badge variant="secondary" className="text-xs">
+                              {dev.duration}
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-500 mt-1">
+                          {dev.startDate && dev.endDate 
+                            ? `${dev.startDate} - ${dev.endDate}` 
+                            : dev.startDate}
+                        </p>
+                        {dev.description && (
+                          <p className="text-gray-600 text-sm mt-2 leading-relaxed">
+                            {dev.description}
+                          </p>
+                        )}
+                        {dev.skills && dev.skills.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-3">
+                            {dev.skills.map((skill: string, skillIndex: number) => (
+                              <Badge key={skillIndex} variant="outline" className="text-xs">
+                                {skill}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                        {dev.certificateUrl && (
+                          <a href={dev.certificateUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline text-sm inline-flex items-center mt-2">
+                            <ExternalLink className="h-3 w-3 mr-1" />
+                            View Certificate
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* References */}
+            {profile.references && profile.references.length > 0 && (
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    Professional References
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {profile.references.map((reference: ReferenceEntry, index: number) => (
+                      <div key={index} className="border rounded-lg p-4 bg-gray-50">
+                        <h4 className="font-semibold text-gray-900">{reference.name}</h4>
+                        <p className="text-blue-600 font-medium">{reference.position}</p>
+                        <p className="text-gray-600 text-sm">{reference.company}</p>
+                        <div className="mt-2 space-y-1">
+                          {reference.email && (
+                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                              <Mail className="h-3 w-3" />
+                              <span>{reference.email}</span>
+                            </div>
+                          )}
+                          {reference.phone && (
+                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                              <Phone className="h-3 w-3" />
+                              <span>{reference.phone}</span>
+                            </div>
+                          )}
+                        </div>
+                        <Badge variant="outline" className="text-xs mt-2">
+                          {reference.relationship}
+                        </Badge>
+                        {reference.description && (
+                          <p className="text-gray-600 text-xs mt-2 leading-relaxed">
+                            {reference.description}
+                          </p>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>

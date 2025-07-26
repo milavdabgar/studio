@@ -501,6 +501,12 @@ export interface FacultyProfile {
     publications?: PublicationEntry[];
     languages?: LanguageEntry[];
     
+    // Additional Professional Sections
+    volunteerWork?: VolunteerEntry[];
+    professionalMemberships?: ProfessionalMembershipEntry[];
+    references?: ReferenceEntry[];
+    professionalDevelopment?: ProfessionalDevelopmentEntry[];
+    
     // Profile Settings
     profileVisibility?: 'public' | 'private' | 'institute_only';
     profileSettings?: ProfileSettings;
