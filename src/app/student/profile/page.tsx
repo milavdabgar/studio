@@ -1024,15 +1024,25 @@ const SkillsSection = ({
             <div key={index} className="group relative">
               <Badge 
                 variant={skill.category === 'technical' ? 'default' : 'secondary'}
-                className="cursor-pointer"
+                className="cursor-pointer pr-16"
               >
                 {skill.name} ({skill.proficiency})
-                <button 
-                  onClick={() => handleDelete(index)}
-                  className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <Trash2 className="h-3 w-3" />
-                </button>
+                <div className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity inline-flex gap-1">
+                  <button 
+                    onClick={() => handleEdit(index)}
+                    className="hover:bg-white/20 rounded p-0.5"
+                    title="Edit skill"
+                  >
+                    <Edit className="h-3 w-3" />
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(index)}
+                    className="hover:bg-white/20 rounded p-0.5"
+                    title="Delete skill"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </button>
+                </div>
               </Badge>
             </div>
           ))}
