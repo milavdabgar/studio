@@ -12,24 +12,17 @@
 - **Password**: Same as staff code - e.g., `71396`
 - **Institute Email**: `{staffcode}@gppalanpur.in`
 
-## 🎯 Login Methods
+## 🎯 Login Method
 
-### **Method 1: Code-Based Login**
-1. Enter **Enrollment Number** (students) or **Staff Code** (faculty)
-2. Leave email field empty (auto-generates)
-3. Enter **password** (same as code)
-4. System auto-detects user type and available roles
-
-### **Method 2: Email-Based Login**
-1. Enter **Institute Email** - e.g., `236260332001@gppalanpur.in`
-2. Leave code field empty 
-3. Enter **password** (enrollment number or staff code)
-4. System identifies user from email domain
-
-### **Method 3: Hybrid Verification**
-1. Fill both **code** and **email** fields
-2. System cross-validates they belong to same user
-3. Enhanced security with dual verification
+### **Single Field Login**
+1. Enter **any** of the following in the Username field:
+   - **Enrollment Number** (12-digit) - e.g., `236260332001`
+   - **Staff Code** (4-5 digit) - e.g., `62283`, `45174`
+   - **Institute Email** - e.g., `milav.dabgar@gppalanpur.in`
+   - **Personal Email** (if linked to institute account)
+2. Enter **password** (same as enrollment/staff code)
+3. System auto-detects user type and available roles
+4. Clean, simple login experience
 
 ## 📊 User Pattern Recognition
 
@@ -47,15 +40,12 @@
 
 ## 🔄 Password Reset Process
 
-### **For Students:**
-1. Enter **enrollment number** on forgot password page
-2. System sends reset link to `{enrollment}@gppalanpur.in`
-3. Email sent from `noreply@gppalanpur.in`
-
-### **For Faculty:**
-1. Enter **staff code** on forgot password page  
-2. System sends reset link to `{staffcode}@gppalanpur.in`
-3. Email sent from `noreply@gppalanpur.in`
+### **Single Field Reset:**
+1. Enter **enrollment number**, **staff code**, or **email** on forgot password page
+2. System auto-detects user type and sends reset link to appropriate institute email:
+   - Students: `{enrollment}@gppalanpur.in`
+   - Faculty: `{firstname.lastname}@gppalanpur.in` (resolved from staff code)
+3. All emails sent from `noreply@gppalanpur.in`
 
 ## 📈 Import Process Details
 

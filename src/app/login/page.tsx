@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import type { UserRole as UserRoleCode, SystemUser as User, Role } from '@/types/entities'; // UserRole is now UserRoleCode
 import { roleService } from "@/lib/api/roles";
-import { identifyUser, validateLoginInputs, getUserTypeDisplayName, getCodeFieldLabel, UserType } from "@/lib/utils/userIdentification"; 
+import { identifyUser, validateLoginInputs, getUserTypeDisplayName, getCodeFieldLabel, UserType, LoginInputValidation } from "@/lib/utils/userIdentification"; 
 
 interface MockUser {
   id?: string; 
@@ -48,6 +48,7 @@ const getMockUsers = async (): Promise<MockUser[]> => {
     
     // Test faculty with proper institute email format (firstname.lastname@gppalanpur.in)
     { id: "f4", email: "jignaben.modi@gppalanpur.in", password: "45174", roles: ["faculty"], name: "Jignaben Modi", status: "active", instituteId: "inst1" },
+    { id: "f5", email: "milav.dabgar@gppalanpur.in", password: "62283", roles: ["faculty"], name: "Milav Dabgar", status: "active", instituteId: "inst1" },
   ];
 
   if (typeof window !== 'undefined') {
@@ -97,8 +98,7 @@ const getMockUsers = async (): Promise<MockUser[]> => {
 
 
 export default function LoginPage() {
-  const [codeOrEmail, setCodeOrEmail] = useState("");
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [selectedRoleCode, setSelectedRoleCode] = useState<UserRoleCode>("admin"); // Store role code
@@ -111,6 +111,15 @@ export default function LoginPage() {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
   const [MOCK_USERS, setMockUsersState] = useState<MockUser[]>([]);
+  const [currentValidation, setCurrentValidation] = useState<LoginInputValidation>({
+    codeOrEmail: null,
+    email: null,
+    canLogin: false,
+    preferredMethod: 'either',
+    errors: []
+  });
+  const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null);
+  const [previousUserEmail, setPreviousUserEmail] = useState<string>('');
 
   useEffect(() => {
     setIsMounted(true);
@@ -139,13 +148,19 @@ export default function LoginPage() {
       }
     };
     fetchAllRoles();
-  }, [selectedRoleCode, toast]);
+  }, [toast]);
 
   useEffect(() => {
-    const checkUserRoles = async () => {
+    // Clear existing timer
+    if (debounceTimer) {
+      clearTimeout(debounceTimer);
+    }
+
+    // Set new timer for debounced role checking
+    const timer = setTimeout(async () => {
       // Determine the email to use for user lookup
-      const validation = validateLoginInputs(codeOrEmail, email);
-      let authEmail = validation.email?.instituteEmail || email;
+      const validation = await validateLoginInputs(identifier);
+      let authEmail = validation.codeOrEmail?.instituteEmail || '';
 
       // For staff codes, try to resolve to actual email
       if (validation.codeOrEmail?.isValid && validation.codeOrEmail.type === UserType.FACULTY) {
@@ -178,18 +193,27 @@ export default function LoginPage() {
         
         setAvailableRolesForUser(userRolesAsObjects);
         
-        // Only update selectedRoleCode if current selection is invalid for this user
-        if (!userRolesAsObjects.find(r => r.code === selectedRoleCode)) {
+        // Check if this is a new user (email changed) or current role is invalid
+        const isNewUser = authEmail !== previousUserEmail;
+        const isCurrentRoleValid = userRolesAsObjects.find(r => r.code === selectedRoleCode);
+        
+        if (isNewUser || !isCurrentRoleValid) {
           if (userRolesAsObjects.length > 0) {
             setSelectedRoleCode(userRolesAsObjects[0].code);
           } else {
             setSelectedRoleCode('unknown'); 
           }
         }
+        
+        // Update previous user email to track changes
+        setPreviousUserEmail(authEmail);
       } else {
         setAvailableRolesForUser([]);
+        setPreviousUserEmail(''); // Clear previous user when no user found
+        
         // Only update selectedRoleCode if we don't have a valid system role selected
-        if (allSystemRoles.length > 0 && !allSystemRoles.find(r => r.code === selectedRoleCode)) {
+        const isCurrentRoleInSystemRoles = allSystemRoles.find(r => r.code === selectedRoleCode);
+        if (allSystemRoles.length > 0 && !isCurrentRoleInSystemRoles) {
           const adminRole = allSystemRoles.find(r => r.code === 'admin');
           if (adminRole) {
             setSelectedRoleCode(adminRole.code);
@@ -200,31 +224,39 @@ export default function LoginPage() {
           }
         }
       }
+    }, 300); // 300ms debounce delay
+
+    setDebounceTimer(timer);
+
+    // Cleanup function to clear timer on unmount
+    return () => {
+      if (timer) clearTimeout(timer);
     };
+  }, [identifier, MOCK_USERS, allSystemRoles]); 
 
-    checkUserRoles();
-  }, [codeOrEmail, email, MOCK_USERS, allSystemRoles, selectedRoleCode]); 
-
-  // Real-time user identification
+  // Real-time user identification and validation (debounced)
   useEffect(() => {
-    const validation = validateLoginInputs(codeOrEmail, email);
-    setValidationErrors(validation.errors);
+    const validationTimer = setTimeout(async () => {
+      const validation = await validateLoginInputs(identifier);
+      setValidationErrors(validation.errors);
+      setCurrentValidation(validation);
+      
+      if (validation.codeOrEmail?.isValid) {
+        setIdentifiedUser(validation.codeOrEmail.type);
+      } else {
+        setIdentifiedUser(null);
+      }
+    }, 300); // 300ms debounce delay
     
-    if (validation.codeOrEmail?.isValid) {
-      setIdentifiedUser(validation.codeOrEmail.type);
-    } else if (validation.email?.isValid) {
-      setIdentifiedUser(validation.email.type);
-    } else {
-      setIdentifiedUser(null);
-    }
-  }, [codeOrEmail, email]);
+    return () => clearTimeout(validationTimer);
+  }, [identifier]);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
 
     // Validate inputs
-    const validation = validateLoginInputs(codeOrEmail, email);
+    const validation = await validateLoginInputs(identifier);
     if (!validation.canLogin) {
       toast({
         variant: "destructive",
@@ -251,7 +283,7 @@ export default function LoginPage() {
     let authEmail = "";
     let resolvedUserInfo = null;
 
-    if (validation.codeOrEmail?.isValid && validation.codeOrEmail.type === identifyUser(codeOrEmail).type) {
+    if (validation.codeOrEmail?.isValid && validation.codeOrEmail.type === identifyUser(identifier).type) {
       // Try to resolve staff code to actual email
       try {
         const resolveResponse = await fetch('/api/auth/resolve-user', {
@@ -271,8 +303,8 @@ export default function LoginPage() {
         console.error('Error resolving user:', error);
         authEmail = validation.codeOrEmail.instituteEmail;
       }
-    } else if (validation.email?.instituteEmail) {
-      authEmail = validation.email.instituteEmail;
+    } else if (validation.codeOrEmail?.instituteEmail) {
+      authEmail = validation.codeOrEmail.instituteEmail;
     }
     
     const foundUser = MOCK_USERS.find(user => {
@@ -337,9 +369,9 @@ export default function LoginPage() {
     return <div className="flex items-center justify-center min-h-screen"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
   }
 
+  
   // Show user-specific roles if we have identified a valid user from either field
-  const validation = validateLoginInputs(codeOrEmail, email);
-  const hasValidUser = validation.canLogin && availableRolesForUser.length > 0;
+  const hasValidUser = currentValidation.canLogin && availableRolesForUser.length > 0;
   
   const roleOptionsForDropdown = hasValidUser
     ? availableRolesForUser 
@@ -368,34 +400,20 @@ export default function LoginPage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6" role="form">
             <div className="space-y-2">
-              <Label htmlFor="codeOrEmail">
-                {identifiedUser ? getCodeFieldLabel(identifiedUser) : "Enrollment No. / Staff Code"}
+              <Label htmlFor="identifier">
+                {identifiedUser ? getCodeFieldLabel(identifiedUser) : "Username"}
               </Label>
               <Input
-                id="codeOrEmail"
+                id="identifier"
                 type="text"
-                placeholder="Enter enrollment number or staff code"
-                value={codeOrEmail}
-                onChange={(e) => setCodeOrEmail(e.target.value.trim())}
+                placeholder="Enter enrollment number, staff code, or email"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value.trim())}
                 disabled={isLoading}
+                required
               />
               <p className="text-xs text-muted-foreground">
-                Students: 12-digit enrollment number • Faculty: 4-5 digit staff code
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email">Institute Email (Optional)</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="user@gppalanpur.in"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={isLoading}
-              />
-              <p className="text-xs text-muted-foreground">
-                Leave empty to auto-generate from enrollment/staff code
+                Students: 12-digit enrollment • Faculty: 4-5 digit staff code • Or use your email
               </p>
             </div>
             <div className="space-y-2">
@@ -443,7 +461,7 @@ export default function LoginPage() {
                     ))
                   ) : (
                     <SelectItem value="unknown" disabled>
-                      {email && !MOCK_USERS.find(u=>u.email === email) ? "Enter valid email first" : "No roles available"}
+                      {identifier && !currentValidation.canLogin ? "Enter valid identifier first" : "No roles available"}
                     </SelectItem>
                   )}
                 </SelectContent>

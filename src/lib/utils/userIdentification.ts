@@ -115,15 +115,71 @@ export interface LoginInputValidation {
   errors: string[];
 }
 
-export function validateLoginInputs(
+/**
+ * Validates if staff code and email belong to the same faculty member
+ */
+async function validateFacultyCodeEmailMatch(staffCode: string, email: string): Promise<boolean> {
+  try {
+    const response = await fetch('/api/auth/resolve-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ identifier: staffCode }),
+    });
+    
+    if (response.ok) {
+      const resolvedData = await response.json();
+      return resolvedData.instituteEmail.toLowerCase() === email.toLowerCase();
+    }
+  } catch (error) {
+    console.error('Error validating faculty code-email match:', error);
+  }
+  
+  return false;
+}
+
+export async function validateSingleLoginInput(
+  identifierInput: string
+): Promise<LoginInputValidation> {
+  const errors: string[] = [];
+  let identifiedUser: UserIdentification | null = null;
+  
+  // Validate identifier field
+  if (identifierInput.trim()) {
+    identifiedUser = identifyUser(identifierInput);
+    if (!identifiedUser.isValid) {
+      errors.push('Invalid enrollment number, staff code, or email format');
+    }
+  } else {
+    errors.push('Please enter your enrollment number, staff code, or email address');
+  }
+  
+  const canLogin = identifiedUser?.isValid || false;
+  
+  return {
+    codeOrEmail: identifiedUser, // Using codeOrEmail for compatibility
+    email: null, // No separate email field
+    canLogin,
+    preferredMethod: identifiedUser?.type === UserType.STUDENT ? 'code' : 
+                    identifiedUser?.type === UserType.FACULTY ? 'code' : 'email',
+    errors,
+  };
+}
+
+// Keep the old function for backward compatibility if needed
+export async function validateLoginInputs(
   codeOrEmailInput: string, 
-  emailInput: string
-): LoginInputValidation {
+  emailInput: string = ''
+): Promise<LoginInputValidation> {
+  // If only first parameter is provided, treat as single field validation
+  if (!emailInput.trim()) {
+    return validateSingleLoginInput(codeOrEmailInput);
+  }
+  
+  // Legacy dual-field validation (keeping for any remaining usage)
   const errors: string[] = [];
   let codeOrEmail: UserIdentification | null = null;
   let email: UserIdentification | null = null;
   
-  // Validate code/email field
   if (codeOrEmailInput.trim()) {
     codeOrEmail = identifyUser(codeOrEmailInput);
     if (!codeOrEmail.isValid) {
@@ -131,7 +187,6 @@ export function validateLoginInputs(
     }
   }
   
-  // Validate email field
   if (emailInput.trim()) {
     email = identifyUserByEmail(emailInput);
     if (!email.isValid) {
@@ -139,13 +194,21 @@ export function validateLoginInputs(
     }
   }
   
-  // Determine login method
   let preferredMethod: 'code' | 'email' | 'either' = 'either';
   let canLogin = false;
   
   if (codeOrEmail?.isValid && email?.isValid) {
-    // Both provided - check if they match the same user
-    if (codeOrEmail.instituteEmail === email.instituteEmail) {
+    let isMatch = false;
+    
+    if (codeOrEmail.type === UserType.STUDENT) {
+      isMatch = codeOrEmail.instituteEmail === email.instituteEmail;
+    } else if (codeOrEmail.type === UserType.FACULTY) {
+      isMatch = await validateFacultyCodeEmailMatch(codeOrEmail.identifier, email.instituteEmail);
+    } else {
+      isMatch = codeOrEmail.instituteEmail === email.instituteEmail;
+    }
+    
+    if (isMatch) {
       preferredMethod = 'either';
       canLogin = true;
     } else {

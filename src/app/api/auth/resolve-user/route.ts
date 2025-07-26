@@ -1,13 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { connectMongoose } from '@/lib/mongodb';
+import { FacultyModel, StudentModel } from '@/lib/models';
 import { identifyUser, UserType } from '@/lib/utils/userIdentification';
-
-// Mock data for testing - in production this would query the database
-const mockFacultyMappings: { [staffCode: string]: string } = {
-  '45174': 'jignaben.modi@gppalanpur.in',
-  '71396': 'narendrarajgor@yahoo.com', 
-  '5595': 'maheshftank@gmail.com',
-  '12725': 'chiragpandya23@gmail.com',
-};
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,6 +24,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    await connectMongoose();
+
     if (identification.type === UserType.STUDENT) {
       // For students, email is simply enrollmentNo@gppalanpur.in
       return NextResponse.json({
@@ -40,12 +36,14 @@ export async function POST(request: NextRequest) {
       });
 
     } else if (identification.type === UserType.FACULTY) {
-      // For faculty, lookup the actual email mapping
-      const actualEmail = mockFacultyMappings[identification.identifier];
+      // For faculty, lookup the actual email from database
+      const faculty = await FacultyModel.findOne({ 
+        staffCode: identification.identifier 
+      }).select('staffCode instituteEmail firstName lastName name').lean() as any;
       
-      if (!actualEmail) {
+      if (!faculty) {
         return NextResponse.json(
-          { error: 'Faculty not found' },
+          { error: 'Faculty not found in database' },
           { status: 404 }
         );
       }
@@ -53,8 +51,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         success: true,
         userType: 'faculty',
-        identifier: identification.identifier,
-        instituteEmail: actualEmail,
+        identifier: faculty.staffCode,
+        instituteEmail: faculty.instituteEmail,
+        name: faculty.name || `${faculty.firstName || ''} ${faculty.lastName || ''}`.trim(),
       });
     }
 
