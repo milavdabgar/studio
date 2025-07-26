@@ -179,15 +179,15 @@ describe('Login Page', () => {
     });
     
     await waitFor(() => {
-      expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
     });
 
-    const emailInput = screen.getByLabelText(/email/i);
+    const identifierInput = screen.getByLabelText(/username/i);
     const passwordInput = screen.getByLabelText(/password/i);
     const submitButton = screen.getByRole('button', { name: /login/i });
 
-    await user.clear(emailInput);
-    await user.type(emailInput, 'invalid@example.com');
+    await user.clear(identifierInput);
+    await user.type(identifierInput, 'invalid@example.com');
     await user.clear(passwordInput);
     await user.type(passwordInput, 'wrongpassword');
     
@@ -197,7 +197,7 @@ describe('Login Page', () => {
       expect(mockToast).toHaveBeenCalledWith({
         variant: "destructive",
         title: "Login Failed",
-        description: "Invalid email or password. Please try again.",
+        description: "Invalid enrollment number, staff code, or email format",
       });
     });
   });
@@ -209,16 +209,16 @@ describe('Login Page', () => {
     });
     
     await waitFor(() => {
-      expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
     });
 
-    const emailInput = screen.getByLabelText(/email/i);
+    const identifierInput = screen.getByLabelText(/username/i);
     const passwordInput = screen.getByLabelText(/password/i);
     const submitButton = screen.getByRole('button', { name: /login/i });
 
-    // Use inactive user credentials (jury@example.com is inactive in mock data)
-    await user.clear(emailInput);
-    await user.type(emailInput, 'jury@example.com');
+    // Use inactive user credentials (inactive.user@gppalanpur.in is inactive in mock data)
+    await user.clear(identifierInput);
+    await user.type(identifierInput, 'inactive.user@gppalanpur.in');
     await user.clear(passwordInput);
     await user.type(passwordInput, 'password');
     
@@ -241,14 +241,14 @@ describe('Login Page', () => {
     });
     
     await waitFor(() => {
-      expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
     });
 
-    const emailInput = screen.getByLabelText(/email/i);
+    const identifierInput = screen.getByLabelText(/username/i);
     
-    // Change to student email
-    await user.clear(emailInput);
-    await user.type(emailInput, 'student@example.com');
+    // Change to student enrollment number
+    await user.clear(identifierInput);
+    await user.type(identifierInput, '236260332001');
 
     // Wait for the role to update to Student for the student user
     await waitFor(() => {
@@ -264,16 +264,16 @@ describe('Login Page', () => {
     });
     
     await waitFor(() => {
-      expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
     });
 
-    const emailInput = screen.getByLabelText(/email/i);
+    const identifierInput = screen.getByLabelText(/username/i);
     const passwordInput = screen.getByLabelText(/password/i);
     const submitButton = screen.getByRole('button', { name: /login/i });
 
-    // Change to student email and correct password
-    await user.clear(emailInput);
-    await user.type(emailInput, 'student@example.com');
+    // Change to student enrollment number and correct password
+    await user.clear(identifierInput);
+    await user.type(identifierInput, '236260332001');
     await user.clear(passwordInput);
     await user.type(passwordInput, 'password');
 
@@ -298,14 +298,14 @@ describe('Login Page', () => {
     });
     
     await waitFor(() => {
-      expect(screen.getByLabelText('Email')).toBeInTheDocument();
+      expect(screen.getByLabelText('Username')).toBeInTheDocument();
     });
 
     // Manually enter credentials for testing
-    const emailInput = screen.getByLabelText('Email');
+    const identifierInput = screen.getByLabelText('Username');
     const passwordInput = screen.getByLabelText('Password');
     
-    await user.type(emailInput, 'admin@gppalanpur.in');
+    await user.type(identifierInput, 'admin@gppalanpur.in');
     await user.type(passwordInput, 'Admin@123');
 
     const roleSelect = screen.getByRole('combobox');
@@ -314,7 +314,7 @@ describe('Login Page', () => {
     await user.click(submitButton);
 
     // Check that form elements are disabled during submission
-    expect(emailInput).toBeDisabled();
+    expect(identifierInput).toBeDisabled();
     expect(passwordInput).toBeDisabled();
     expect(roleSelect).toBeDisabled();
     expect(submitButton).toBeDisabled();
@@ -327,14 +327,14 @@ describe('Login Page', () => {
     });
     
     await waitFor(() => {
-      expect(screen.getByLabelText('Email')).toBeInTheDocument();
+      expect(screen.getByLabelText('Username')).toBeInTheDocument();
     });
 
     // Manually enter credentials for testing
-    const emailInput = screen.getByLabelText('Email');
+    const identifierInput = screen.getByLabelText('Username');
     const passwordInput = screen.getByLabelText('Password');
     
-    await user.type(emailInput, 'admin@gppalanpur.in');
+    await user.type(identifierInput, 'admin@gppalanpur.in');
     await user.type(passwordInput, 'Admin@123');
 
     const submitButton = screen.getByRole('button', { name: /login/i });
@@ -454,7 +454,7 @@ describe('Login Page', () => {
   });
 
   describe('Form Validation', () => {
-    it('should require email field', async () => {
+    it('should require username field', async () => {
       const user = userEvent.setup();
       void user; // Acknowledge unused variable
       await act(async () => {
@@ -462,12 +462,12 @@ describe('Login Page', () => {
       });
       
       await waitFor(() => {
-        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
       });
 
-      const emailInput = screen.getByLabelText(/email/i);
-      expect(emailInput).toHaveAttribute('required');
-      expect(emailInput).toHaveAttribute('type', 'email');
+      const usernameInput = screen.getByLabelText(/username/i);
+      expect(usernameInput).toHaveAttribute('required');
+      expect(usernameInput).toHaveAttribute('type', 'text');
     });
 
     it('should require password field', async () => {
@@ -512,7 +512,7 @@ describe('Login Page', () => {
       
       await waitFor(() => {
         expect(screen.getByText(/welcome back!/i)).toBeInTheDocument();
-        expect(screen.getByText(/enter your credentials and select your role/i)).toBeInTheDocument();
+        expect(screen.getByText(/enter your credentials to access gp palanpur portal/i)).toBeInTheDocument();
       });
     });
 
@@ -565,14 +565,14 @@ describe('Login Page', () => {
       render(<LoginPage />);
       
       await waitFor(() => {
-        expect(screen.getByLabelText('Email')).toBeInTheDocument();
+        expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
       });
 
       // Manually enter credentials for testing
-      const emailInput = screen.getByLabelText('Email');
+      const usernameInput = screen.getByLabelText(/username/i);
       const passwordInput = screen.getByLabelText('Password');
       
-      await user.type(emailInput, 'admin@gppalanpur.in');
+      await user.type(usernameInput, 'admin@gppalanpur.in');
       await user.type(passwordInput, 'Admin@123');
 
       const submitButton = screen.getByRole('button', { name: /login/i });
@@ -600,7 +600,7 @@ describe('Login Page', () => {
       });
       
       await waitFor(() => {
-        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/login as/i)).toBeInTheDocument();
       });
@@ -688,12 +688,12 @@ describe('Login Page', () => {
       // Change to the stored user email to verify it's loaded
       const user = userEvent.setup();
       await waitFor(() => {
-        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
       });
 
-      const emailInput = screen.getByLabelText(/email/i);
-      await user.clear(emailInput);
-      await user.type(emailInput, 'stored@example.com');
+      const usernameInput = screen.getByLabelText(/username/i);
+      await user.clear(usernameInput);
+      await user.type(usernameInput, 'stored@example.com');
 
       // Should find the stored user and show their role
       await waitFor(() => {
@@ -728,13 +728,13 @@ describe('Login Page', () => {
       });
       
       await waitFor(() => {
-        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
       });
 
-      const emailInput = screen.getByLabelText(/email/i);
+      const usernameInput = screen.getByLabelText(/username/i);
       // Use an email not in the mock users list
-      await user.clear(emailInput);
-      await user.type(emailInput, 'nonexistent@example.com');
+      await user.clear(usernameInput);
+      await user.type(usernameInput, 'nonexistent@example.com');
 
       // Should show admin role as fallback since no user found
       await waitFor(() => {
@@ -754,13 +754,13 @@ describe('Login Page', () => {
       });
       
       await waitFor(() => {
-        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
       });
 
-      // Change to student email and verify role auto-updates
-      const emailInput = screen.getByLabelText(/email/i);
-      await user.clear(emailInput);
-      await user.type(emailInput, 'student@example.com');
+      // Change to student enrollment number and verify role auto-updates
+      const usernameInput = screen.getByLabelText(/username/i);
+      await user.clear(usernameInput);
+      await user.type(usernameInput, '236260332001');
       
       const passwordInput = screen.getByLabelText(/password/i);
       await user.clear(passwordInput);
@@ -792,7 +792,7 @@ describe('Login Page', () => {
       });
       
       await waitFor(() => {
-        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
       });
 
       // Wait for the component to process the empty roles and disable role select
@@ -868,15 +868,15 @@ describe('Login Page', () => {
       });
       
       await waitFor(() => {
-        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
       });
 
-      const emailInput = screen.getByLabelText(/email/i);
+      const usernameInput = screen.getByLabelText(/username/i);
       const passwordInput = screen.getByLabelText(/password/i);
       
       // Fill in credentials 
-      await user.clear(emailInput);
-      await user.type(emailInput, 'student@example.com');
+      await user.clear(usernameInput);
+      await user.type(usernameInput, '236260332001');
       await user.clear(passwordInput);
       await user.type(passwordInput, 'password');
 
@@ -900,7 +900,7 @@ describe('Login Page', () => {
       });
       
       await waitFor(() => {
-        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
       }, { timeout: 5000 });
 
       // Wait for empty roles to be processed
@@ -943,12 +943,12 @@ describe('Login Page', () => {
       
       // Wait for component to render first
       await waitFor(() => {
-        expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
       }, { timeout: 5000 });
 
       // In development mode, there should be a clear button (simplified test)
       // Just verify the component renders in development mode
-      expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
       expect(mockLocalStorage.getItem).toHaveBeenCalled();
     });
   });

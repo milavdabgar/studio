@@ -33,6 +33,7 @@ const getMockUsers = async (): Promise<MockUser[]> => {
     { id: "u3b", email: "faculty@gppalanpur.in", password: "Faculty@123", roles: ["faculty"], name: "Dr. Faculty User", status: "active", instituteId: "inst1" },
     { id: "u4", email: "hod@example.com", password: "password", roles: ["hod", "faculty"], name: "Charlie HOD", status: "active", instituteId: "inst1" },
     { id: "u5", email: "jury@example.com", password: "password", roles: ["jury", "faculty"], name: "Diana Jury", status: "inactive", instituteId: "inst1" },
+    { id: "u5b", email: "inactive.user@gppalanpur.in", password: "password", roles: ["admin"], name: "Inactive User", status: "inactive", instituteId: "inst1" },
     { id: "u6", email: "multi@example.com", password: "password", roles: ["student", "jury"], name: "Multi Role User", status: "active", instituteId: "inst1" },
     { email: "086260306003@gppalanpur.in", roles: ["student"], name: "DOE JOHN MICHAEL (from import)", status: "active", password: "086260306003", instituteId: "inst1"},
     
@@ -487,6 +488,24 @@ export default function LoginPage() {
               Sign Up
             </Link>
           </p>
+          {process.env.NODE_ENV === 'development' && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                localStorage.removeItem('__API_USERS_STORE__');
+                localStorage.removeItem('__API_STUDENTS_STORE__');
+                localStorage.removeItem('__API_FACULTY_STORE__');
+                toast({
+                  title: "Dev Info",
+                  description: "Local storage for API stores cleared.",
+                });
+              }}
+              className="text-xs"
+            >
+              Clear API Stores
+            </Button>
+          )}
         </CardFooter>
       </Card>
     </div>
