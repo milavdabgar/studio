@@ -35,6 +35,16 @@ const getMockUsers = async (): Promise<MockUser[]> => {
     { id: "u5", email: "jury@example.com", password: "password", roles: ["jury", "faculty"], name: "Diana Jury", status: "inactive", instituteId: "inst1" },
     { id: "u6", email: "multi@example.com", password: "password", roles: ["student", "jury"], name: "Multi Role User", status: "active", instituteId: "inst1" },
     { email: "086260306003@gppalanpur.in", roles: ["student"], name: "DOE JOHN MICHAEL (from import)", status: "active", password: "086260306003", instituteId: "inst1"},
+    
+    // Test users with enrollment numbers (12-digit format)
+    { id: "s1", email: "236260332001@gppalanpur.in", password: "password", roles: ["student"], name: "Milap Acharya", status: "active", instituteId: "inst1" },
+    { id: "s2", email: "236260332003@gppalanpur.in", password: "password", roles: ["student"], name: "Anasulla Belim", status: "active", instituteId: "inst1" },
+    { id: "s3", email: "236260332004@gppalanpur.in", password: "password", roles: ["student"], name: "Prachi Bhavsar", status: "active", instituteId: "inst1" },
+    
+    // Test users with staff codes (4-5 digit format)
+    { id: "f1", email: "71396@gppalanpur.in", password: "password", roles: ["faculty"], name: "Mr. Rajgor Narendrakumar", status: "active", instituteId: "inst1" },
+    { id: "f2", email: "5595@gppalanpur.in", password: "password", roles: ["faculty"], name: "Dr. Tank Maheshkumar", status: "active", instituteId: "inst1" },
+    { id: "f3", email: "12725@gppalanpur.in", password: "password", roles: ["faculty", "hod"], name: "Dr. Pandya Chiragkumar", status: "active", instituteId: "inst1" },
   ];
 
   if (typeof window !== 'undefined') {
@@ -129,7 +139,11 @@ export default function LoginPage() {
   }, [selectedRoleCode, toast]);
 
   useEffect(() => {
-    const user = MOCK_USERS.find(u => u.email === email);
+    // Determine the email to use for user lookup
+    const validation = validateLoginInputs(codeOrEmail, email);
+    const authEmail = validation.codeOrEmail?.instituteEmail || validation.email?.instituteEmail || email;
+    
+    const user = MOCK_USERS.find(u => u.email === authEmail);
     if (user && user.roles && allSystemRoles.length > 0) {
       const userRolesAsObjects = user.roles
         .map(roleCode => allSystemRoles.find(sysRole => sysRole.code === roleCode))
@@ -159,7 +173,7 @@ export default function LoginPage() {
         }
       }
     }
-  }, [email, MOCK_USERS, allSystemRoles, selectedRoleCode]); 
+  }, [codeOrEmail, email, MOCK_USERS, allSystemRoles, selectedRoleCode]); 
 
   // Real-time user identification
   useEffect(() => {
@@ -268,7 +282,11 @@ export default function LoginPage() {
     return <div className="flex items-center justify-center min-h-screen"><Loader2 className="h-12 w-12 animate-spin text-primary" /></div>;
   }
 
-  const roleOptionsForDropdown = email && availableRolesForUser.length > 0 
+  // Show user-specific roles if we have identified a valid user from either field
+  const validation = validateLoginInputs(codeOrEmail, email);
+  const hasValidUser = validation.canLogin && availableRolesForUser.length > 0;
+  
+  const roleOptionsForDropdown = hasValidUser
     ? availableRolesForUser 
     : allSystemRoles.filter(r => r.code !== 'unknown');
 
