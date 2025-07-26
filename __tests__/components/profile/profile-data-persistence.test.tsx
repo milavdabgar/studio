@@ -50,10 +50,26 @@ Object.defineProperty(window, 'sessionStorage', {
 describe('Profile Data Persistence', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Reset all localStorage mock methods
     localStorageMock.getItem.mockClear();
     localStorageMock.setItem.mockClear();
+    localStorageMock.removeItem.mockClear();
+    localStorageMock.clear.mockClear();
+    
+    // Reset all sessionStorage mock methods
     sessionStorageMock.getItem.mockClear();
     sessionStorageMock.setItem.mockClear();
+    sessionStorageMock.removeItem.mockClear();
+    sessionStorageMock.clear.mockClear();
+    
+    // Reset mock implementations
+    localStorageMock.getItem.mockReturnValue(null);
+    localStorageMock.setItem.mockImplementation(() => {});
+    localStorageMock.removeItem.mockImplementation(() => {});
+    
+    sessionStorageMock.getItem.mockReturnValue(null);
+    sessionStorageMock.setItem.mockImplementation(() => {});
+    sessionStorageMock.removeItem.mockImplementation(() => {});
   });
 
   describe('Local Storage Persistence', () => {
@@ -88,7 +104,8 @@ describe('Profile Data Persistence', () => {
         lastUpdated: fixedTimestamp
       };
 
-      localStorageMock.getItem.mockReturnValue(JSON.stringify(cachedProfile));
+      // Override the default mock implementation for this specific test
+      localStorageMock.getItem.mockReturnValueOnce(JSON.stringify(cachedProfile));
 
       // Simulate retrieving cached data
       const cached = localStorage.getItem('profile_1');
@@ -107,8 +124,8 @@ describe('Profile Data Persistence', () => {
         largeField: 'x'.repeat(10000000)
       };
 
-      // Mock localStorage.setItem to throw quota exceeded error
-      localStorageMock.setItem.mockImplementation(() => {
+      // Mock localStorage.setItem to throw quota exceeded error for this specific test
+      localStorageMock.setItem.mockImplementationOnce(() => {
         const error = new DOMException('Quota exceeded', 'QuotaExceededError');
         throw error;
       });
@@ -149,7 +166,8 @@ describe('Profile Data Persistence', () => {
         lastUpdated: staleTimestamp
       };
 
-      localStorageMock.getItem.mockReturnValue(JSON.stringify(staleProfile));
+      // Setup mock to return stale profile data
+      localStorageMock.getItem.mockReturnValueOnce(JSON.stringify(staleProfile));
 
       // Mock Date.now to return our fixed time
       const originalDateNow = Date.now;
@@ -411,7 +429,7 @@ describe('Profile Data Persistence', () => {
   describe('Error Recovery', () => {
     test('should recover from corrupted localStorage data', () => {
       // Mock corrupted data
-      localStorageMock.getItem.mockReturnValue('corrupted-json{');
+      localStorageMock.getItem.mockReturnValueOnce('corrupted-json{');
 
       const safeGetFromStorage = (key: string) => {
         try {
