@@ -108,7 +108,8 @@ describe('Profile Data Persistence', () => {
 
       // Mock localStorage.setItem to throw quota exceeded error
       localStorageMock.setItem.mockImplementation(() => {
-        throw new DOMException('QuotaExceededError');
+        const error = new DOMException('Quota exceeded', 'QuotaExceededError');
+        throw error;
       });
 
       // Function to save profile with error handling
@@ -416,6 +417,12 @@ describe('Profile Data Persistence', () => {
     });
 
     test('should handle network errors gracefully', async () => {
+      // Reset localStorage mock to clean state
+      localStorageMock.getItem.mockReturnValue('[]');
+      localStorageMock.setItem.mockImplementation((key, value) => {
+        // Normal setItem behavior, don't throw
+      });
+      
       const updateData = { personalEmail: 'new@test.com' };
 
       // Mock network error

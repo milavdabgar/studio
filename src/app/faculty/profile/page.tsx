@@ -163,7 +163,8 @@ export default function FacultyProfilePage() {
   };
 
   const handleUpdateAwards = (awards: any[]) => {
-    handleUpdateProfile({ awards });
+    // Awards functionality removed - keeping handler for future implementation
+    console.log('Awards update requested:', awards);
   };
 
   const handleUpdateCertifications = (certifications: any[]) => {
@@ -510,7 +511,7 @@ export default function FacultyProfilePage() {
             onUpdate={handleUpdateCertifications}
           />
           <AwardsSection 
-            awards={faculty.awards || []} 
+            awards={[]} 
             onUpdate={handleUpdateAwards}
           />
         </TabsContent>

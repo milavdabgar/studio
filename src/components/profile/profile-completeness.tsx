@@ -28,7 +28,26 @@ interface CompletionItem {
 
 export const ProfileCompleteness: React.FC<ProfileCompletenessProps> = ({ profile, userType }) => {
   
-  const getStudentCompletionSections = (student: Student): CompletionSection[] => {
+  const getStudentCompletionSections = (student: Student | null): CompletionSection[] => {
+    if (!student) {
+      return [
+        {
+          id: 'basic',
+          name: 'Basic Information',
+          weight: 25,
+          completed: false,
+          items: [
+            { name: 'Full Name', completed: false, required: true },
+            { name: 'Personal Email', completed: false, required: true },
+            { name: 'Contact Number', completed: false, required: true },
+            { name: 'Address', completed: false, required: false },
+            { name: 'Date of Birth', completed: false, required: false },
+            { name: 'Blood Group', completed: false, required: false },
+            { name: 'Guardian Details', completed: false, required: false },
+          ]
+        }
+      ];
+    }
     return [
       {
         id: 'basic',
@@ -106,7 +125,25 @@ export const ProfileCompleteness: React.FC<ProfileCompletenessProps> = ({ profil
     ];
   };
 
-  const getFacultyCompletionSections = (faculty: Faculty): CompletionSection[] => {
+  const getFacultyCompletionSections = (faculty: Faculty | null): CompletionSection[] => {
+    if (!faculty) {
+      return [
+        {
+          id: 'basic',
+          name: 'Basic Information',
+          weight: 20,
+          completed: false,
+          items: [
+            { name: 'Full Name', completed: false, required: true },
+            { name: 'Personal Email', completed: false, required: true },
+            { name: 'Contact Number', completed: false, required: true },
+            { name: 'Department', completed: false, required: true },
+            { name: 'Position', completed: false, required: false },
+            { name: 'Office Location', completed: false, required: false },
+          ]
+        }
+      ];
+    }
     return [
       {
         id: 'basic',
@@ -154,7 +191,7 @@ export const ProfileCompleteness: React.FC<ProfileCompletenessProps> = ({ profil
         weight: 15,
         completed: false,
         items: [
-          { name: 'Awards & Honors', completed: !!(faculty.awards && faculty.awards.length > 0), required: false },
+          { name: 'Awards & Honors', completed: false, required: false },
           { name: 'Achievements', completed: !!(faculty.achievements && faculty.achievements.length > 0), required: false },
         ]
       },
@@ -174,8 +211,8 @@ export const ProfileCompleteness: React.FC<ProfileCompletenessProps> = ({ profil
   };
 
   const sections = userType === 'student' 
-    ? getStudentCompletionSections(profile as Student)
-    : getFacultyCompletionSections(profile as Faculty);
+    ? getStudentCompletionSections(profile as Student | null)
+    : getFacultyCompletionSections(profile as Faculty | null);
 
   // Calculate completion for each section
   const sectionsWithCompletion = sections.map(section => {

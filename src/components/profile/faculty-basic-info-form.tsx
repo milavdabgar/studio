@@ -23,7 +23,7 @@ import {
   DialogTrigger 
 } from "@/components/ui/dialog";
 import { Edit, Save, Loader2 } from "lucide-react";
-import type { Faculty } from '@/types/entities';
+import type { Faculty, Gender } from '@/types/entities';
 
 interface FacultyBasicInfoFormProps {
   faculty: Faculty;
@@ -41,7 +41,7 @@ export const FacultyBasicInfoForm: React.FC<FacultyBasicInfoFormProps> = ({ facu
     personalEmail: faculty.personalEmail || '',
     contactNumber: faculty.contactNumber || '',
     address: faculty.address || '',
-    gender: faculty.gender || '',
+    gender: faculty.gender || undefined,
     maritalStatus: faculty.maritalStatus || '',
     dateOfBirth: faculty.dateOfBirth || '',
     joiningDate: faculty.joiningDate || '',
@@ -76,7 +76,7 @@ export const FacultyBasicInfoForm: React.FC<FacultyBasicInfoFormProps> = ({ facu
       personalEmail: faculty.personalEmail || '',
       contactNumber: faculty.contactNumber || '',
       address: faculty.address || '',
-      gender: faculty.gender || '',
+      gender: faculty.gender || undefined,
       maritalStatus: faculty.maritalStatus || '',
       dateOfBirth: faculty.dateOfBirth || '',
       joiningDate: faculty.joiningDate || '',
@@ -211,7 +211,7 @@ export const FacultyBasicInfoForm: React.FC<FacultyBasicInfoFormProps> = ({ facu
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="gender">Gender</Label>
-                      <Select value={formData.gender} onValueChange={(value) => setFormData({...formData, gender: value})}>
+                      <Select value={formData.gender} onValueChange={(value) => setFormData({...formData, gender: value as Gender})}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select gender" />
                         </SelectTrigger>

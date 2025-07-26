@@ -40,8 +40,8 @@ const calculateStudentCompleteness = (profile: Partial<Student>): CompletenessRe
     profileSummary: 3,
     photoURL: 2,
     achievements: 2,
-    careerGoals: 2,
-    onlinePresence: 1
+    careerInterests: 2,
+    linkedinUrl: 1
   };
 
   let totalScore = 0;
@@ -204,19 +204,18 @@ const calculateStudentCompleteness = (profile: Partial<Student>): CompletenessRe
     missingFields.push('achievements');
   }
 
-  if (profile.careerGoals) {
-    totalScore += weights.careerGoals;
-    completedSections.push('careerGoals');
+  if (profile.careerInterests && profile.careerInterests.length > 0) {
+    totalScore += weights.careerInterests;
+    completedSections.push('careerInterests');
   } else {
-    missingFields.push('careerGoals');
+    missingFields.push('careerInterests');
   }
 
-  if (profile.onlinePresence && 
-      (profile.onlinePresence.github || profile.onlinePresence.linkedin || profile.onlinePresence.portfolio)) {
-    totalScore += weights.onlinePresence;
-    completedSections.push('onlinePresence');
+  if (profile.linkedinUrl || profile.githubUrl || profile.portfolioWebsite) {
+    totalScore += weights.linkedinUrl;
+    completedSections.push('linkedinUrl');
   } else {
-    missingFields.push('onlinePresence');
+    missingFields.push('linkedinUrl');
   }
 
   const percentage = Math.round((totalScore / maxScore) * 100);
@@ -254,11 +253,10 @@ const calculateFacultyCompleteness = (profile: Partial<Faculty>): CompletenessRe
     publications: 8,
     projects: 7,
 
-    // Professional Information (10% total)
+    // Professional Information (6% total)
     experience: 6,
-    awards: 4,
 
-    // Additional Information (5% total)
+    // Additional Information (9% total)
     profileSummary: 3,
     photoURL: 2
   };
@@ -410,12 +408,8 @@ const calculateFacultyCompleteness = (profile: Partial<Faculty>): CompletenessRe
     suggestions.push('Add your professional experience');
   }
 
-  if (profile.awards && profile.awards.length > 0) {
-    totalScore += weights.awards;
-    completedSections.push('awards');
-  } else {
-    missingFields.push('awards');
-  }
+  // Note: Awards field doesn't exist in Faculty interface
+  // This section has been removed
 
   // Check additional information
   if (profile.profileSummary) {
@@ -492,13 +486,12 @@ describe('Profile Completeness Calculations', () => {
           {
             id: '1',
             degree: 'High School',
-            field: 'Science',
+            fieldOfStudy: 'Science',
             institution: 'ABC School',
             startDate: '2018-06-01',
             endDate: '2020-05-31',
             isCurrently: false,
             grade: '95%',
-            gradeType: 'percentage',
             location: 'City',
             order: 0
           }
@@ -557,13 +550,12 @@ describe('Profile Completeness Calculations', () => {
           {
             id: '1',
             degree: 'High School',
-            field: 'Science',
+            fieldOfStudy: 'Science',
             institution: 'ABC School',
             startDate: '2018-06-01',
             endDate: '2020-05-31',
             isCurrently: false,
             grade: '95%',
-            gradeType: 'percentage',
             location: 'City',
             order: 0
           }
@@ -585,7 +577,7 @@ describe('Profile Completeness Calculations', () => {
             technologies: ['React', 'Node.js'],
             startDate: '2023-01-01',
             endDate: '2023-06-01',
-            isCurrently: false,
+            isOngoing: false,
             role: 'Developer',
             githubUrl: 'https://github.com/test/project',
             order: 0
@@ -601,17 +593,22 @@ describe('Profile Completeness Calculations', () => {
             isCurrently: false,
             description: 'Summer internship',
             location: 'City',
-            employmentType: 'internship',
             order: 0
           }
         ],
-        achievements: ['Dean\'s List 2023'],
-        careerGoals: 'Software Engineer',
-        onlinePresence: {
-          github: 'https://github.com/john',
-          linkedin: 'https://linkedin.com/in/john',
-          portfolio: 'https://john.dev'
-        }
+        achievements: [
+          {
+            id: '1',
+            title: 'Dean\'s List 2023',
+            description: 'Academic excellence award',
+            date: '2023-05-01',
+            category: 'academic'
+          }
+        ],
+        careerInterests: ['Software Engineering', 'Web Development'],
+        linkedinUrl: 'https://linkedin.com/in/john',
+        githubUrl: 'https://github.com/john',
+        portfolioWebsite: 'https://john.dev'
       };
 
       const result = calculateStudentCompleteness(comprehensiveProfile);
@@ -658,11 +655,11 @@ describe('Profile Completeness Calculations', () => {
             id: '1',
             title: 'Research Paper',
             authors: ['Dr. Jane Smith'],
-            publicationType: 'journal',
+            type: 'journal',
             venue: 'AI Journal',
-            date: '2023-01-01',
+            publicationDate: '2023-01-01',
             doi: '10.1234/ai.2023.001',
-            abstract: 'Research abstract',
+            description: 'Research abstract',
             order: 0
           }
         ]
@@ -718,13 +715,12 @@ describe('Profile Completeness Calculations', () => {
           {
             id: '1',
             degree: 'PhD',
-            field: 'Computer Science',
+            fieldOfStudy: 'Computer Science',
             institution: 'Top University',
             startDate: '2005-09-01',
             endDate: '2009-05-31',
             isCurrently: false,
             grade: '4.0',
-            gradeType: 'gpa',
             location: 'University City',
             order: 0
           }
@@ -751,11 +747,11 @@ describe('Profile Completeness Calculations', () => {
             id: '1',
             title: 'AI Research Paper',
             authors: ['Dr. Jane Smith'],
-            publicationType: 'journal',
+            type: 'journal',
             venue: 'AI Journal',
-            date: '2023-01-01',
+            publicationDate: '2023-01-01',
             doi: '10.1234/ai.2023.001',
-            abstract: 'AI research',
+            description: 'AI research',
             order: 0
           }
         ],
@@ -767,7 +763,7 @@ describe('Profile Completeness Calculations', () => {
             technologies: ['Python', 'TensorFlow'],
             startDate: '2020-01-01',
             endDate: '2023-12-31',
-            isCurrently: false,
+            isOngoing: false,
             role: 'Principal Investigator',
             order: 0
           }
@@ -782,21 +778,10 @@ describe('Profile Completeness Calculations', () => {
             isCurrently: false,
             description: 'Teaching and research',
             location: 'City',
-            employmentType: 'full-time',
             order: 0
           }
         ],
-        awards: [
-          {
-            id: '1',
-            title: 'Teaching Excellence',
-            issuer: 'University',
-            date: '2022-05-01',
-            category: 'academic',
-            description: 'Excellence in teaching',
-            order: 0
-          }
-        ],
+        // Note: awards field removed as it doesn't exist in Faculty interface
         certifications: [
           {
             id: '1',
@@ -916,11 +901,11 @@ describe('Profile Completeness Calculations', () => {
           id: i.toString(),
           title: `Publication ${i}`,
           authors: ['Dr. Jane Smith'],
-          publicationType: 'journal',
+          type: 'journal',
           venue: `Journal ${i}`,
-          date: '2023-01-01',
+          publicationDate: '2023-01-01',
           doi: `10.1234/journal.${i}`,
-          abstract: `Abstract for publication ${i}`,
+          description: `Abstract for publication ${i}`,
           order: i
         }))
       };
@@ -937,15 +922,9 @@ describe('Profile Completeness Calculations', () => {
     test('should handle deeply nested objects efficiently', () => {
       const profileWithDeepNesting: Partial<Student> = {
         firstName: 'John',
-        onlinePresence: {
-          github: 'https://github.com/john',
-          linkedin: 'https://linkedin.com/in/john',
-          portfolio: 'https://john.dev',
-          socialMedia: {
-            twitter: 'https://twitter.com/john',
-            instagram: 'https://instagram.com/john'
-          } as any
-        }
+        linkedinUrl: 'https://linkedin.com/in/john',
+        githubUrl: 'https://github.com/john',
+        portfolioWebsite: 'https://john.dev'
       };
 
       const startTime = performance.now();
@@ -953,7 +932,7 @@ describe('Profile Completeness Calculations', () => {
       const endTime = performance.now();
 
       expect(endTime - startTime).toBeLessThan(5);
-      expect(result.completedSections).toContain('onlinePresence');
+      expect(result.completedSections).toContain('linkedinUrl');
     });
   });
 });
