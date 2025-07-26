@@ -172,7 +172,9 @@ MANIFEST
 *.pkl
 *.bin
 *.safetensors
-models/
+ai_models/
+ml_models/
+tts_models/
 checkpoints/
 
 # LaTeX temporary files
