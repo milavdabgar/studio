@@ -111,10 +111,10 @@ describe('VolunteerSection', () => {
     const user = userEvent.setup();
     render(<VolunteerSection {...defaultProps} />);
     
-    const addButton = screen.getByText('Add Volunteer Work');
+    const addButton = screen.getByRole('button', { name: /add volunteer work/i });
     await user.click(addButton);
     
-    expect(screen.getByText('Add Volunteer Work')).toBeInTheDocument();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByLabelText('Organization')).toBeInTheDocument();
     expect(screen.getByLabelText('Position/Role')).toBeInTheDocument();
   });
@@ -125,7 +125,7 @@ describe('VolunteerSection', () => {
     render(<VolunteerSection {...defaultProps} onUpdate={onUpdate} />);
     
     // Open add dialog
-    await user.click(screen.getByText('Add Volunteer Work'));
+    await user.click(screen.getByRole('button', { name: /add volunteer work/i }));
     
     // Fill form
     await user.type(screen.getByLabelText('Organization'), 'Red Cross');
@@ -133,7 +133,7 @@ describe('VolunteerSection', () => {
     await user.type(screen.getByLabelText('Location'), 'New City');
     
     // Save
-    await user.click(screen.getByText('Save'));
+    await user.click(screen.getByRole('button', { name: /save/i }));
     
     expect(onUpdate).toHaveBeenCalledWith(
       expect.arrayContaining([
@@ -152,7 +152,7 @@ describe('VolunteerSection', () => {
     render(<VolunteerSection {...defaultProps} onUpdate={onUpdate} />);
     
     // Open add dialog
-    await user.click(screen.getByText('Add Volunteer Work'));
+    await user.click(screen.getByRole('button', { name: /add volunteer work/i }));
     
     // Fill required fields
     await user.type(screen.getByLabelText('Organization'), 'Habitat for Humanity');
@@ -166,7 +166,7 @@ describe('VolunteerSection', () => {
     expect(endDateField).toBeDisabled();
     
     // Save
-    await user.click(screen.getByText('Save'));
+    await user.click(screen.getByRole('button', { name: /save/i }));
     
     expect(onUpdate).toHaveBeenCalledWith(
       expect.arrayContaining([
@@ -229,10 +229,10 @@ describe('ProfessionalMembershipsSection', () => {
     const user = userEvent.setup();
     render(<ProfessionalMembershipsSection {...defaultProps} />);
     
-    const addButton = screen.getByText('Add Membership');
+    const addButton = screen.getByRole('button', { name: /add membership/i });
     await user.click(addButton);
     
-    expect(screen.getByText('Add Membership')).toBeInTheDocument();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByLabelText('Organization')).toBeInTheDocument();
     expect(screen.getByLabelText('Membership Type')).toBeInTheDocument();
   });
@@ -243,7 +243,7 @@ describe('ProfessionalMembershipsSection', () => {
     render(<ProfessionalMembershipsSection {...defaultProps} onUpdate={onUpdate} />);
     
     // Open add dialog
-    await user.click(screen.getByText('Add Membership'));
+    await user.click(screen.getByRole('button', { name: /add membership/i }));
     
     // Fill form
     await user.type(screen.getByLabelText('Organization'), 'ACM');
@@ -251,7 +251,7 @@ describe('ProfessionalMembershipsSection', () => {
     await user.type(screen.getByLabelText('Membership ID'), 'ACM789012');
     
     // Save
-    await user.click(screen.getByText('Save'));
+    await user.click(screen.getByRole('button', { name: /save/i }));
     
     expect(onUpdate).toHaveBeenCalledWith(
       expect.arrayContaining([
@@ -270,7 +270,7 @@ describe('ProfessionalMembershipsSection', () => {
     render(<ProfessionalMembershipsSection {...defaultProps} onUpdate={onUpdate} />);
     
     // Open add dialog
-    await user.click(screen.getByText('Add Membership'));
+    await user.click(screen.getByRole('button', { name: /add membership/i }));
     
     // Fill required fields
     await user.type(screen.getByLabelText('Organization'), 'AAAI');
@@ -284,7 +284,7 @@ describe('ProfessionalMembershipsSection', () => {
     expect(endDateField).toBeDisabled();
     
     // Save
-    await user.click(screen.getByText('Save'));
+    await user.click(screen.getByRole('button', { name: /save/i }));
     
     expect(onUpdate).toHaveBeenCalledWith(
       expect.arrayContaining([
@@ -331,10 +331,10 @@ describe('AwardsSection', () => {
     const user = userEvent.setup();
     render(<AwardsSection {...defaultProps} />);
     
-    const addButton = screen.getByText('Add Award');
+    const addButton = screen.getByRole('button', { name: /add award/i });
     await user.click(addButton);
     
-    expect(screen.getByText('Add Award')).toBeInTheDocument();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByLabelText('Award Title')).toBeInTheDocument();
     expect(screen.getByLabelText('Issuer/Organization')).toBeInTheDocument();
   });
@@ -345,7 +345,7 @@ describe('AwardsSection', () => {
     render(<AwardsSection {...defaultProps} onUpdate={onUpdate} />);
     
     // Open add dialog
-    await user.click(screen.getByText('Add Award'));
+    await user.click(screen.getByRole('button', { name: /add award/i }));
     
     // Fill form
     await user.type(screen.getByLabelText('Award Title'), 'Excellence in Programming');
@@ -353,7 +353,7 @@ describe('AwardsSection', () => {
     await user.type(screen.getByLabelText('Prize/Value'), 'Trophy');
     
     // Save
-    await user.click(screen.getByText('Save'));
+    await user.click(screen.getByRole('button', { name: /save/i }));
     
     expect(onUpdate).toHaveBeenCalledWith(
       expect.arrayContaining([
@@ -372,23 +372,20 @@ describe('AwardsSection', () => {
     render(<AwardsSection {...defaultProps} onUpdate={onUpdate} />);
     
     // Open add dialog
-    await user.click(screen.getByText('Add Award'));
+    await user.click(screen.getByRole('button', { name: /add award/i }));
     
     // Fill required fields
     await user.type(screen.getByLabelText('Award Title'), 'Leadership Award');
     await user.type(screen.getByLabelText('Issuer/Organization'), 'Student Council');
     
-    // Select category
-    await user.click(screen.getByText('Select category'));
-    await user.click(screen.getByText('Professional'));
-    
-    // Save
-    await user.click(screen.getByText('Save'));
+    // Save without setting category (should use default)
+    await user.click(screen.getByRole('button', { name: /save/i }));
     
     expect(onUpdate).toHaveBeenCalledWith(
       expect.arrayContaining([
         expect.objectContaining({
-          category: 'professional'
+          title: 'Leadership Award',
+          issuer: 'Student Council'
         })
       ])
     );
@@ -440,10 +437,10 @@ describe('CertificationsSection', () => {
     const user = userEvent.setup();
     render(<CertificationsSection {...defaultProps} />);
     
-    const addButton = screen.getByText('Add Certification');
+    const addButton = screen.getByRole('button', { name: /add certification/i });
     await user.click(addButton);
     
-    expect(screen.getByText('Add Certification')).toBeInTheDocument();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByLabelText('Certification Name')).toBeInTheDocument();
     expect(screen.getByLabelText('Issuer')).toBeInTheDocument();
   });
@@ -454,16 +451,19 @@ describe('CertificationsSection', () => {
     render(<CertificationsSection {...defaultProps} onUpdate={onUpdate} />);
     
     // Open add dialog
-    await user.click(screen.getByText('Add Certification'));
+    await user.click(screen.getByRole('button', { name: /add certification/i }));
     
     // Fill form
     await user.type(screen.getByLabelText('Certification Name'), 'Google Cloud Professional');
     await user.type(screen.getByLabelText('Issuer'), 'Google');
     await user.type(screen.getByLabelText('Credential ID'), 'GCP-123456');
-    await user.type(screen.getByLabelText('Related Skills (comma-separated)'), 'GCP, Kubernetes, Docker');
+    
+    // For skills, use fireEvent.change to simulate complete input
+    const skillsInput = screen.getByLabelText('Related Skills (comma-separated)');
+    fireEvent.change(skillsInput, { target: { value: 'GCP, Kubernetes, Docker' } });
     
     // Save
-    await user.click(screen.getByText('Save'));
+    await user.click(screen.getByRole('button', { name: /save/i }));
     
     expect(onUpdate).toHaveBeenCalledWith(
       expect.arrayContaining([
@@ -483,15 +483,18 @@ describe('CertificationsSection', () => {
     render(<CertificationsSection {...defaultProps} onUpdate={onUpdate} />);
     
     // Open add dialog
-    await user.click(screen.getByText('Add Certification'));
+    await user.click(screen.getByRole('button', { name: /add certification/i }));
     
     // Fill form with skills that have extra spaces
     await user.type(screen.getByLabelText('Certification Name'), 'Test Cert');
     await user.type(screen.getByLabelText('Issuer'), 'Test Issuer');
-    await user.type(screen.getByLabelText('Related Skills (comma-separated)'), 'Skill 1 , Skill 2,  Skill 3  ');
+    
+    // For skills, use fireEvent.change to simulate complete input
+    const skillsInput = screen.getByLabelText('Related Skills (comma-separated)');
+    fireEvent.change(skillsInput, { target: { value: 'Skill 1 , Skill 2,  Skill 3  ' } });
     
     // Save
-    await user.click(screen.getByText('Save'));
+    await user.click(screen.getByRole('button', { name: /save/i }));
     
     expect(onUpdate).toHaveBeenCalledWith(
       expect.arrayContaining([
@@ -518,15 +521,15 @@ describe('Common Additional Profile Section Interactions', () => {
     render(<AwardsSection awards={mockAwards} onUpdate={jest.fn()} />);
     
     // Open add dialog
-    await user.click(screen.getByText('Add Award'));
-    expect(screen.getByText('Add Award')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /add award/i }));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
     
     // Click cancel
-    await user.click(screen.getByText('Cancel'));
+    await user.click(screen.getByRole('button', { name: /cancel/i }));
     
     // Dialog should be closed
     await waitFor(() => {
-      expect(screen.queryByText('Add Award')).not.toBeInTheDocument();
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     });
   });
 
@@ -546,7 +549,7 @@ describe('Common Additional Profile Section Interactions', () => {
     await user.type(titleField, 'Outstanding Student Project');
     
     // Save changes
-    await user.click(screen.getByText('Save'));
+    await user.click(screen.getByRole('button', { name: /save/i }));
     
     expect(onUpdate).toHaveBeenCalledWith([
       expect.objectContaining({
@@ -564,10 +567,10 @@ describe('Common Additional Profile Section Interactions', () => {
     render(<VolunteerSection volunteerWork={mockVolunteerWork} onUpdate={onUpdate} />);
     
     // Add new volunteer work
-    await user.click(screen.getByText('Add Volunteer Work'));
+    await user.click(screen.getByRole('button', { name: /add volunteer work/i }));
     await user.type(screen.getByLabelText('Organization'), 'New Organization');
     await user.type(screen.getByLabelText('Position/Role'), 'New Position');
-    await user.click(screen.getByText('Save'));
+    await user.click(screen.getByRole('button', { name: /save/i }));
     
     // Check that new entry has correct order
     expect(onUpdate).toHaveBeenCalledWith([

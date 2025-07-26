@@ -141,10 +141,10 @@ export const VolunteerSection: React.FC<VolunteerSectionProps> = ({
                   )}
                 </div>
                 <div className="flex gap-2">
-                  <Button onClick={() => handleEdit(index)} size="sm" variant="outline">
+                  <Button onClick={() => handleEdit(index)} size="sm" variant="outline" aria-label="Edit">
                     <Edit className="h-4 w-4" />
                   </Button>
-                  <Button onClick={() => handleDelete(index)} size="sm" variant="outline">
+                  <Button onClick={() => handleDelete(index)} size="sm" variant="outline" aria-label="Delete">
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
@@ -160,6 +160,12 @@ export const VolunteerSection: React.FC<VolunteerSectionProps> = ({
               <DialogTitle>
                 {editingIndex !== null ? 'Edit Volunteer Work' : 'Add Volunteer Work'}
               </DialogTitle>
+              <DialogDescription>
+                {editingIndex !== null 
+                  ? 'Update your volunteer work information below.' 
+                  : 'Add your volunteer work experience and community service details.'
+                }
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -337,10 +343,10 @@ export const ProfessionalMembershipsSection: React.FC<ProfessionalMembershipsSec
                   )}
                 </div>
                 <div className="flex gap-2">
-                  <Button onClick={() => handleEdit(index)} size="sm" variant="outline">
+                  <Button onClick={() => handleEdit(index)} size="sm" variant="outline" aria-label="Edit">
                     <Edit className="h-4 w-4" />
                   </Button>
-                  <Button onClick={() => handleDelete(index)} size="sm" variant="outline">
+                  <Button onClick={() => handleDelete(index)} size="sm" variant="outline" aria-label="Delete">
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
@@ -356,6 +362,12 @@ export const ProfessionalMembershipsSection: React.FC<ProfessionalMembershipsSec
               <DialogTitle>
                 {editingIndex !== null ? 'Edit Membership' : 'Add Membership'}
               </DialogTitle>
+              <DialogDescription>
+                {editingIndex !== null 
+                  ? 'Update your professional membership information below.' 
+                  : 'Add your professional membership details and organizational affiliations.'
+                }
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -534,10 +546,10 @@ export const AwardsSection: React.FC<AwardsSectionProps> = ({
                   </Badge>
                 </div>
                 <div className="flex gap-2">
-                  <Button onClick={() => handleEdit(index)} size="sm" variant="outline">
+                  <Button onClick={() => handleEdit(index)} size="sm" variant="outline" aria-label="Edit">
                     <Edit className="h-4 w-4" />
                   </Button>
-                  <Button onClick={() => handleDelete(index)} size="sm" variant="outline">
+                  <Button onClick={() => handleDelete(index)} size="sm" variant="outline" aria-label="Delete">
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
@@ -553,6 +565,12 @@ export const AwardsSection: React.FC<AwardsSectionProps> = ({
               <DialogTitle>
                 {editingIndex !== null ? 'Edit Award' : 'Add Award'}
               </DialogTitle>
+              <DialogDescription>
+                {editingIndex !== null 
+                  ? 'Update your award and recognition information below.' 
+                  : 'Add your awards, honors, and recognitions to showcase your achievements.'
+                }
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -752,10 +770,10 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
                   )}
                 </div>
                 <div className="flex gap-2">
-                  <Button onClick={() => handleEdit(index)} size="sm" variant="outline">
+                  <Button onClick={() => handleEdit(index)} size="sm" variant="outline" aria-label="Edit">
                     <Edit className="h-4 w-4" />
                   </Button>
-                  <Button onClick={() => handleDelete(index)} size="sm" variant="outline">
+                  <Button onClick={() => handleDelete(index)} size="sm" variant="outline" aria-label="Delete">
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
@@ -771,6 +789,12 @@ export const CertificationsSection: React.FC<CertificationsSectionProps> = ({
               <DialogTitle>
                 {editingIndex !== null ? 'Edit Certification' : 'Add Certification'}
               </DialogTitle>
+              <DialogDescription>
+                {editingIndex !== null 
+                  ? 'Update your certification information below.' 
+                  : 'Add your professional certifications and credentials to highlight your expertise.'
+                }
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
