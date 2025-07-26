@@ -35,6 +35,12 @@ export const generateInstituteEmail = (identifier: string): string => {
   return `${identifier.toLowerCase()}@${EMAIL_CONFIG.instituteDomain}`;
 };
 
+// Helper function to get default password based on user type
+export const getDefaultPassword = (identifier: string): string => {
+  // Both students (enrollment numbers) and faculty (staff codes) use their identifier as default password
+  return identifier;
+};
+
 // Helper function to validate institute email
 export const isInstituteEmail = (email: string): boolean => {
   return email.endsWith(`@${EMAIL_CONFIG.instituteDomain}`);
