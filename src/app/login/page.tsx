@@ -12,7 +12,8 @@ import { Loader2, LogIn, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import type { UserRole as UserRoleCode, SystemUser as User, Role } from '@/types/entities'; // UserRole is now UserRoleCode
-import { roleService } from "@/lib/api/roles"; 
+import { roleService } from "@/lib/api/roles";
+import { identifyUser, validateLoginInputs, getUserTypeDisplayName, getCodeFieldLabel, UserType } from "@/lib/utils/userIdentification"; 
 
 interface MockUser {
   id?: string; 
@@ -83,6 +84,7 @@ const getMockUsers = async (): Promise<MockUser[]> => {
 
 
 export default function LoginPage() {
+  const [codeOrEmail, setCodeOrEmail] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -90,6 +92,8 @@ export default function LoginPage() {
   const [availableRolesForUser, setAvailableRolesForUser] = useState<Role[]>([]); // Store Role objects
   const [allSystemRoles, setAllSystemRoles] = useState<Role[]>([]); 
   const [isLoading, setIsLoading] = useState(false);
+  const [identifiedUser, setIdentifiedUser] = useState<UserType | null>(null);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const { toast } = useToast();
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
@@ -157,10 +161,35 @@ export default function LoginPage() {
     }
   }, [email, MOCK_USERS, allSystemRoles, selectedRoleCode]); 
 
+  // Real-time user identification
+  useEffect(() => {
+    const validation = validateLoginInputs(codeOrEmail, email);
+    setValidationErrors(validation.errors);
+    
+    if (validation.codeOrEmail?.isValid) {
+      setIdentifiedUser(validation.codeOrEmail.type);
+    } else if (validation.email?.isValid) {
+      setIdentifiedUser(validation.email.type);
+    } else {
+      setIdentifiedUser(null);
+    }
+  }, [codeOrEmail, email]);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
+
+    // Validate inputs
+    const validation = validateLoginInputs(codeOrEmail, email);
+    if (!validation.canLogin) {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: validation.errors.join('. '),
+      });
+      setIsLoading(false);
+      return;
+    }
 
     if (!selectedRoleCode || selectedRoleCode === 'unknown') {
         toast({
@@ -174,8 +203,11 @@ export default function LoginPage() {
 
     await new Promise(resolve => setTimeout(resolve, 1000));
 
+    // Determine the email to use for authentication
+    const authEmail = validation.codeOrEmail?.instituteEmail || validation.email?.instituteEmail || "";
+    
     const foundUser = MOCK_USERS.find(user => {
-        if (user.email !== email) return false;
+        if (user.email !== authEmail) return false;
         return user.password === password;
     });
 
@@ -248,21 +280,50 @@ export default function LoginPage() {
             <AppLogo className="h-12 w-auto text-primary" />
           </div>
           <CardTitle as="h1" className="text-3xl font-bold text-primary">Welcome Back!</CardTitle>
-          <CardDescription>Enter your credentials and select your role to access GP Palanpur.</CardDescription>
+          <CardDescription>Enter your credentials to access GP Palanpur portal.</CardDescription>
+          {identifiedUser && (
+            <div className="mt-2 text-sm text-primary font-medium">
+              Identified as: {getUserTypeDisplayName(identifiedUser)}
+            </div>
+          )}
+          {validationErrors.length > 0 && (
+            <div className="mt-2 text-sm text-destructive">
+              {validationErrors.join('. ')}
+            </div>
+          )}
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6" role="form">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="codeOrEmail">
+                {identifiedUser ? getCodeFieldLabel(identifiedUser) : "Enrollment No. / Staff Code"}
+              </Label>
+              <Input
+                id="codeOrEmail"
+                type="text"
+                placeholder="Enter enrollment number or staff code"
+                value={codeOrEmail}
+                onChange={(e) => setCodeOrEmail(e.target.value.trim())}
+                disabled={isLoading}
+              />
+              <p className="text-xs text-muted-foreground">
+                Students: 12-digit enrollment number • Faculty: 4-5 digit staff code
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email">Institute Email (Optional)</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="Enter your email address"
+                placeholder="user@gppalanpur.in"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
                 disabled={isLoading}
               />
+              <p className="text-xs text-muted-foreground">
+                Leave empty to auto-generate from enrollment/staff code
+              </p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>

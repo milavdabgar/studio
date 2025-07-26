@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,13 +9,29 @@ import Link from "next/link";
 import { AppLogo } from "@/components/app-logo";
 import { Loader2, ArrowLeft, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { identifyUser, getUserTypeDisplayName, getCodeFieldLabel, UserType } from "@/lib/utils/userIdentification";
 
 export default function ForgotPasswordPage() {
-  const [studentId, setStudentId] = useState("");
+  const [userCode, setUserCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [instituteEmail, setInstituteEmail] = useState("");
+  const [identifiedUser, setIdentifiedUser] = useState<UserType | null>(null);
   const { toast } = useToast();
+
+  // Real-time user identification
+  useEffect(() => {
+    if (userCode.trim()) {
+      const identification = identifyUser(userCode.trim());
+      if (identification.isValid) {
+        setIdentifiedUser(identification.type);
+      } else {
+        setIdentifiedUser(null);
+      }
+    } else {
+      setIdentifiedUser(null);
+    }
+  }, [userCode]);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -27,7 +43,7 @@ export default function ForgotPasswordPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ studentId }),
+        body: JSON.stringify({ userCode }),
       });
 
       const data = await response.json();
@@ -85,12 +101,13 @@ export default function ForgotPasswordPage() {
               variant="outline"
               onClick={() => {
                 setIsSubmitted(false);
-                setStudentId("");
+                setUserCode("");
                 setInstituteEmail("");
+                setIdentifiedUser(null);
               }}
               className="w-full"
             >
-              Try Another Student ID
+              Try Another Code
             </Button>
           </CardContent>
           <CardFooter className="flex justify-center">
@@ -116,25 +133,37 @@ export default function ForgotPasswordPage() {
           </div>
           <CardTitle className="text-2xl font-bold text-primary">Forgot Password?</CardTitle>
           <CardDescription>
-            Enter your student ID and we'll send reset instructions to your institute email.
+            Enter your enrollment number or staff code and we'll send reset instructions to your institute email.
           </CardDescription>
+          {identifiedUser && (
+            <div className="mt-2 text-sm text-primary font-medium">
+              Identified as: {getUserTypeDisplayName(identifiedUser)}
+            </div>
+          )}
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="studentId">Student ID</Label>
+              <Label htmlFor="userCode">
+                {identifiedUser ? getCodeFieldLabel(identifiedUser) : "Enrollment No. / Staff Code"}
+              </Label>
               <Input
-                id="studentId"
+                id="userCode"
                 type="text"
-                placeholder="Enter your student ID (e.g., 24ICT001)"
-                value={studentId}
-                onChange={(e) => setStudentId(e.target.value.toUpperCase())}
+                placeholder="Enter enrollment number or staff code"
+                value={userCode}
+                onChange={(e) => setUserCode(e.target.value.trim())}
                 required
                 disabled={isLoading}
               />
               <p className="text-xs text-muted-foreground">
-                Reset link will be sent to your institute email ({studentId.toLowerCase()}@gppalanpur.in)
+                Students: 12-digit enrollment number • Faculty: 4-5 digit staff code
               </p>
+              {userCode && (
+                <p className="text-xs text-primary">
+                  Reset link will be sent to: {userCode.toLowerCase()}@gppalanpur.in
+                </p>
+              )}
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (

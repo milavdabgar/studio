@@ -1,42 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateInstituteEmail } from '@/lib/config/email';
 import emailService from '@/lib/email';
+import { identifyUser, getUserTypeDisplayName } from '@/lib/utils/userIdentification';
 import crypto from 'crypto';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { studentId } = body;
+    const { userCode } = body;
 
     // Validate input
-    if (!studentId || typeof studentId !== 'string') {
+    if (!userCode || typeof userCode !== 'string') {
       return NextResponse.json(
-        { error: 'Student ID is required' },
+        { error: 'Enrollment number or staff code is required' },
         { status: 400 }
       );
     }
 
-    // Validate student ID format (basic validation)
-    const studentIdPattern = /^[0-9]{2}[A-Z]{2,4}[0-9]{3}$/;
-    if (!studentIdPattern.test(studentId.toUpperCase())) {
+    // Identify user type and validate format
+    const identification = identifyUser(userCode.trim());
+    if (!identification.isValid) {
       return NextResponse.json(
-        { error: 'Invalid student ID format' },
+        { error: 'Invalid enrollment number or staff code format' },
         { status: 400 }
       );
     }
 
-    // TODO: Check if student exists in database
-    // For now, we'll assume the student exists
+    // TODO: Check if user exists in database based on type
+    // For students: check enrollment number in student records
+    // For faculty: check staff code in faculty records
     
     // Generate reset token
     const resetToken = crypto.randomBytes(32).toString('hex');
     const resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
     // TODO: Store reset token in database with expiry
-    // await storePasswordResetToken(studentId, resetToken, resetTokenExpiry);
+    // await storePasswordResetToken(identification.identifier, resetToken, resetTokenExpiry);
 
     // Send email
-    const emailSent = await emailService.sendPasswordResetEmail(studentId, resetToken);
+    const emailSent = await emailService.sendPasswordResetEmail(identification.identifier, resetToken);
     
     if (!emailSent) {
       return NextResponse.json(
@@ -45,13 +47,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate institute email for response
-    const instituteEmail = generateInstituteEmail(studentId);
-
     return NextResponse.json({
       success: true,
-      message: 'Password reset instructions sent to your institute email',
-      instituteEmail,
+      message: `Password reset instructions sent to ${getUserTypeDisplayName(identification.type).toLowerCase()} institute email`,
+      instituteEmail: identification.instituteEmail,
+      userType: identification.type,
     });
 
   } catch (error) {
