@@ -79,12 +79,13 @@ describe('Profile Data Persistence', () => {
     });
 
     test('should retrieve cached profile data from localStorage', () => {
+      const fixedTimestamp = 1653555953437;
       const cachedProfile = {
         id: '1',
         firstName: 'John',
         lastName: 'Doe',
         email: 'john@test.com',
-        lastUpdated: Date.now()
+        lastUpdated: fixedTimestamp
       };
 
       localStorageMock.getItem.mockReturnValue(JSON.stringify(cachedProfile));
@@ -121,7 +122,11 @@ describe('Profile Data Persistence', () => {
           if (error instanceof DOMException && error.name === 'QuotaExceededError') {
             // Handle quota exceeded - could clear old data or use sessionStorage
             console.warn('LocalStorage quota exceeded, falling back to sessionStorage');
-            sessionStorage.setItem(`profile_${profile.id}`, JSON.stringify(profile));
+            try {
+              sessionStorage.setItem(`profile_${profile.id}`, JSON.stringify(profile));
+            } catch (sessionError) {
+              // Session storage also full
+            }
             return false;
           }
           throw error;
@@ -135,14 +140,20 @@ describe('Profile Data Persistence', () => {
     });
 
     test('should invalidate cache when data is stale', () => {
+      const fixedCurrentTime = 1653555953437;
+      const staleTimestamp = fixedCurrentTime - (25 * 60 * 60 * 1000); // 25 hours ago
       const staleProfile = {
         id: '1',
         firstName: 'John',
         lastName: 'Doe',
-        lastUpdated: Date.now() - (25 * 60 * 60 * 1000) // 25 hours ago
+        lastUpdated: staleTimestamp
       };
 
       localStorageMock.getItem.mockReturnValue(JSON.stringify(staleProfile));
+
+      // Mock Date.now to return our fixed time
+      const originalDateNow = Date.now;
+      Date.now = jest.fn(() => fixedCurrentTime);
 
       // Function to check if cached data is valid
       const getCachedProfile = (profileId: string, maxAge = 24 * 60 * 60 * 1000) => {
@@ -161,6 +172,9 @@ describe('Profile Data Persistence', () => {
       };
 
       const result = getCachedProfile('1');
+      
+      // Restore original Date.now
+      Date.now = originalDateNow;
       
       expect(result).toBeNull();
       expect(localStorageMock.removeItem).toHaveBeenCalledWith('profile_1');
