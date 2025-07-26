@@ -220,8 +220,16 @@ jobs:
             sleep 15
             
             # Check service health
-            if docker compose ps | grep -q "Up.*studio-app"; then
+            if docker compose ps | grep -q "studio-app.*Up"; then
               echo "✅ Studio application started successfully"
+              
+              # Additional health check via HTTP
+              echo "🔍 Testing application health endpoint..."
+              if curl -f http://localhost:3000/api/health > /dev/null 2>&1; then
+                echo "✅ Health endpoint responding correctly"
+              else
+                echo "⚠️  Health endpoint not responding, but container is running"
+              fi
             else
               echo "❌ Studio application failed to start"
               docker compose ps
