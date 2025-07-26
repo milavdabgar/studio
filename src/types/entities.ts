@@ -195,6 +195,8 @@ export interface CertificationEntry {
     expiryDate?: string;
     credentialId?: string;
     credentialUrl?: string;
+    certificateUrl?: string;
+    date?: string;
     description?: string;
     skills?: string[];
     order?: number;
@@ -206,7 +208,11 @@ export interface PublicationEntry {
     type: 'journal' | 'conference' | 'book' | 'chapter' | 'article' | 'thesis' | 'other';
     authors: string[];
     publicationDate: string;
+    date?: string;
     venue?: string;
+    journal?: string;
+    conference?: string;
+    abstract?: string;
     description?: string;
     doi?: string;
     url?: string;
@@ -215,6 +221,7 @@ export interface PublicationEntry {
 
 export interface LanguageEntry {
     id: string;
+    name?: string;
     language: string;
     proficiency: 'native' | 'fluent' | 'conversational' | 'basic';
     order?: number;
@@ -224,6 +231,7 @@ export interface VolunteerEntry {
     id: string;
     organization: string;
     position: string;
+    role?: string;
     startDate: string;
     endDate?: string;
     isCurrently: boolean;
@@ -231,6 +239,7 @@ export interface VolunteerEntry {
     skills?: string[];
     achievements?: string[];
     location?: string;
+    contactInfo?: string;
     order?: number;
 }
 
@@ -238,9 +247,11 @@ export interface ProfessionalMembershipEntry {
     id: string;
     organization: string;
     membershipType: string;
+    role?: string;
     startDate: string;
     endDate?: string;
     isCurrently: boolean;
+    isLifetime?: boolean;
     membershipId?: string;
     description?: string;
     benefits?: string[];
@@ -485,6 +496,7 @@ export interface FacultyProfile {
     projects?: ProjectEntry[];
     skills?: SkillEntry[];
     achievements?: AchievementEntry[];
+    awards?: AwardEntry[];
     certifications?: CertificationEntry[];
     publications?: PublicationEntry[];
     languages?: LanguageEntry[];

@@ -759,8 +759,10 @@ const studentSchema = new Schema<IStudent>({
     issuer: { type: String },
     issueDate: { type: String },
     expiryDate: { type: String },
+    date: { type: String },
     credentialId: { type: String },
     credentialUrl: { type: String },
+    certificateUrl: { type: String },
     description: { type: String },
     skills: [{ type: String }],
     order: { type: Number, default: 0 }
@@ -771,7 +773,11 @@ const studentSchema = new Schema<IStudent>({
     type: { type: String, enum: ['journal', 'conference', 'book', 'chapter', 'article', 'thesis', 'other'], default: 'other' },
     authors: [{ type: String }],
     publicationDate: { type: String },
+    date: { type: String },
     venue: { type: String },
+    journal: { type: String },
+    conference: { type: String },
+    abstract: { type: String },
     description: { type: String },
     doi: { type: String },
     url: { type: String },
@@ -779,6 +785,7 @@ const studentSchema = new Schema<IStudent>({
   }],
   languages: [{
     id: { type: String },
+    name: { type: String },
     language: { type: String },
     proficiency: { type: String, enum: ['native', 'fluent', 'conversational', 'basic'], default: 'basic' },
     order: { type: Number, default: 0 }
@@ -788,6 +795,7 @@ const studentSchema = new Schema<IStudent>({
   volunteerWork: [{
     id: { type: String },
     organization: { type: String },
+    position: { type: String },
     role: { type: String },
     description: { type: String },
     startDate: { type: String },
@@ -806,6 +814,7 @@ const studentSchema = new Schema<IStudent>({
     role: { type: String },
     startDate: { type: String },
     endDate: { type: String },
+    isCurrently: { type: Boolean, default: false },
     isLifetime: { type: Boolean, default: false },
     membershipId: { type: String },
     description: { type: String },
@@ -982,8 +991,10 @@ const facultySchema = new Schema<IFaculty>({
     issuer: { type: String },
     issueDate: { type: String },
     expiryDate: { type: String },
+    date: { type: String },
     credentialId: { type: String },
     credentialUrl: { type: String },
+    certificateUrl: { type: String },
     description: { type: String },
     skills: [{ type: String }],
     order: { type: Number, default: 0 }
@@ -1005,7 +1016,11 @@ const facultySchema = new Schema<IFaculty>({
     type: { type: String, enum: ['journal', 'conference', 'book', 'chapter', 'article', 'thesis', 'other'], default: 'other' },
     authors: [{ type: String }],
     publicationDate: { type: String },
+    date: { type: String },
     venue: { type: String },
+    journal: { type: String },
+    conference: { type: String },
+    abstract: { type: String },
     description: { type: String },
     doi: { type: String },
     url: { type: String },
@@ -1013,6 +1028,7 @@ const facultySchema = new Schema<IFaculty>({
   }],
   languages: [{
     id: { type: String },
+    name: { type: String },
     language: { type: String },
     proficiency: { type: String, enum: ['native', 'fluent', 'conversational', 'basic'], default: 'basic' },
     order: { type: Number, default: 0 }
@@ -1067,7 +1083,7 @@ const facultySchema = new Schema<IFaculty>({
 });
 
 facultySchema.pre('save', function(next) {
-  (this as IFaculty).updatedAt = new Date().toISOString();
+  (this as any).updatedAt = new Date().toISOString();
   next();
 });
 
