@@ -54,31 +54,21 @@ describe('/api/courses/import', () => {
     const validGTUCourseData = {
       subcode: 'DI01000011',
       subjectname: 'Mathematics I',
-      semester: '1',
-      departmentcode: 'EE',
-      departmentname: 'Electrical Engineering',
-      programcode: 'DEE',
-      programname: 'Diploma in Electrical Engineering',
-      branchcode: '09',
+      semyear: '1',
+      branchcode: '9',
       efffrom: '2024-25',
-      category: 'First Year Core',
-      lecturehours: '3',
-      tutorialhours: '1',
-      practicalhours: '2',
-      credits: '4',
-      theoryesemarks: '70',
-      theorypamarks: '30',
-      practicalesemarks: '0',
-      practicalpamarks: '0',
-      totalmarks: '100',
-      iselective: 'false',
-      istheory: 'true',
-      ispractical: 'false',
-      isfunctional: 'true',
-      issemipractical: 'false',
-      theoryexamduration: '3 Hours',
-      practicalexamduration: '',
-      remarks: 'GTU PDF: https://s3-ap-southeast-1.amazonaws.com/gtusitecirculars/Syallbus/DI01000011.pdf, Quality: 100'
+      category: 'Basic Science Courses',
+      l: '3',
+      t: '1',
+      p: '0',
+      twsl: '',
+      total: '4',
+      e: '70',
+      m: '30',
+      i: '0',
+      v: '0',
+      total1: '100',
+      gtusyllabusurl: 'https://s3-ap-southeast-1.amazonaws.com/gtusitecirculars/Syallbus/DI01000011.pdf'
     };
 
     it('should import GTU course data successfully', async () => {
@@ -87,7 +77,7 @@ describe('/api/courses/import', () => {
         Object.values(validGTUCourseData).map(val => `"${val}"`).join(',')
       ].join('\n');
 
-      // Mock departments and programs for mapping
+      // Mock departments and programs for GTU mapping
       const departments = [{
         id: 'dept_ee',
         name: 'Electrical Engineering',
@@ -96,7 +86,7 @@ describe('/api/courses/import', () => {
       const programs = [{
         id: 'prog_dee',
         name: 'Diploma in Electrical Engineering',
-        code: 'DEE',
+        code: '9', // Match the branchcode in test data
         departmentId: 'dept_ee'
       }];
 
@@ -152,10 +142,82 @@ describe('/api/courses/import', () => {
       }
 
       expect(response.status).toBe(200);
-      expect(data.message).toContain('Courses imported successfully');
+      expect(data.message).toContain('GTU courses imported successfully');
+      expect(data.isGTUFormat).toBe(true);
+      expect(data.syllabusUrlsGenerated).toBe(1);
       expect(data.newCount).toBe(1);
       expect(data.updatedCount).toBe(0);
       expect(data.skippedCount).toBe(0);
+    });
+
+    it('should auto-generate syllabus URLs for GTU format', async () => {
+      const gtuDataWithoutURL = {
+        subcode: 'DI02000021',
+        subjectname: 'Applied Physics',
+        semyear: '2',
+        branchcode: '16',
+        efffrom: '2024-25',
+        category: 'Basic Science Courses',
+        l: '3',
+        t: '0',
+        p: '2',
+        twsl: '',
+        total: '4',
+        e: '70',
+        m: '30',
+        i: '20',
+        v: '30',
+        total1: '150'
+      };
+
+      const csvData = [
+        Object.keys(gtuDataWithoutURL).join(','),
+        Object.values(gtuDataWithoutURL).map(val => `"${val}"`).join(',')
+      ].join('\n');
+
+      const departments = [{ id: 'dept_it', name: 'Information Technology', code: 'IT' }];
+      const programs = [{ id: 'prog_dit', name: 'Diploma in Information Technology', code: '16', departmentId: 'dept_it' }];
+
+      mockCourseModel.findOne.mockResolvedValue(null);
+      const mockSave = jest.fn().mockResolvedValue({
+        ...gtuDataWithoutURL,
+        syllabusUrl: 'https://s3-ap-southeast-1.amazonaws.com/gtusitecirculars/Syallbus/DI02000021.pdf',
+        _id: 'course_124',
+        id: 'crs_124'
+      });
+      
+      (mockCourseModel as any).mockImplementation(() => ({ save: mockSave }));
+
+      const file = {
+        name: 'gtu-courses.csv',
+        type: 'text/csv',
+        text: jest.fn().mockResolvedValue(csvData)
+      } as any;
+      
+      const mockFormData = {
+        get: jest.fn().mockImplementation((key: string) => {
+          if (key === 'file') return file;
+          if (key === 'departments') return JSON.stringify(departments);
+          if (key === 'programs') return JSON.stringify(programs);
+          return null;
+        })
+      } as any;
+
+      const request = new NextRequest('http://localhost/api/courses/import', {
+        method: 'POST',
+        body: 'mock-body',
+        headers: { 'Content-Type': 'multipart/form-data; boundary=----formdata-test-boundary' }
+      });
+      
+      (request as any).formData = jest.fn().mockResolvedValue(mockFormData);
+
+      const response = await POST(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(data.isGTUFormat).toBe(true);
+      expect(data.syllabusUrlsGenerated).toBe(1);
+      expect(mockSave).toHaveBeenCalledWith();
     });
 
     it('should handle missing required fields', async () => {

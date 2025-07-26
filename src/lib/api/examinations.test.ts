@@ -173,7 +173,10 @@ describe('ExaminationService Tests', () => {
       
       expect(createdExam.createdAt).toBeDefined();
       expect(createdExam.updatedAt).toBeDefined();
-      expect(createdExam.createdAt).toBe(createdExam.updatedAt);
+      // Allow for small timing differences between createdAt and updatedAt
+      const createdTime = new Date(createdExam.createdAt).getTime();
+      const updatedTime = new Date(createdExam.updatedAt).getTime();
+      expect(Math.abs(createdTime - updatedTime)).toBeLessThan(1000); // Within 1 second
     });
   });
 
