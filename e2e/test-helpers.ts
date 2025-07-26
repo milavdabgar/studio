@@ -51,17 +51,20 @@ export async function loginAs(page: Page, user: TestUser): Promise<void> {
     localStorage.clear();
   });
 
-  // Fill email
-  await page.getByLabel(/email/i).fill(user.email);
+  // Fill identifier field (single field for email/enrollment/staff code)
+  await page.fill('#identifier', user.email);
   
   // Fill password
-  await page.getByLabel(/password/i).fill(user.password);
+  await page.fill('#password', user.password);
 
-  // Wait for roles to load and select role
-  await page.getByLabel(/login as/i).click();
+  // Wait for role validation and options to load
+  await page.waitForTimeout(1000);
+
+  // Wait for roles dropdown and select role
+  await page.click('#role');
   
   // Wait for dropdown to open and options to be visible
-  await page.waitForSelector('[role="listbox"], [role="combobox"][aria-expanded="true"]', { timeout: 10000 });
+  await page.waitForSelector('[role="listbox"], .select-content', { timeout: 10000 });
   
   // Select the role option
   await page.getByRole('option', { name: user.role, exact: true }).click();
