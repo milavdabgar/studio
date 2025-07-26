@@ -16,7 +16,7 @@ import { format } from 'date-fns';
 export default function StudentCourseDetailPage() {
   const router = useRouter();
   const params = useParams();
-  const courseId = params.courseId as string;
+  const courseId = params?.courseId as string;
 
   const [course, setCourse] = useState<Course | null>(null);
   const [assignedFaculty, setAssignedFaculty] = useState<Faculty[]>([]); // Placeholder for now

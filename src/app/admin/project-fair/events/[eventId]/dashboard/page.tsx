@@ -16,7 +16,7 @@ import { format, isValid, parseISO } from 'date-fns';
 export default function ProjectEventDashboardPage() {
   const router = useRouter();
   const params = useParams();
-  const eventId = params.eventId as string;
+  const eventId = params?.eventId as string;
 
   const [event, setEvent] = useState<ProjectEvent | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);

@@ -25,7 +25,7 @@ interface StudentResultEntry extends Student {
 export default function ExamResultEntryPage() {
   const router = useRouter();
   const params = useParams();
-  const examId = params.examId as string;
+  const examId = params?.examId as string;
 
   const [examination, setExamination] = useState<Examination | null>(null);
   const [coursesInExam, setCoursesInExam] = useState<Course[]>([]);

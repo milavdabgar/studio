@@ -31,7 +31,7 @@ const PROJECT_CATEGORIES = ["IoT & Smart Systems", "Software Development", "Hard
 export default function EventProjectsPage() {
   const router = useRouter();
   const params = useParams();
-  const eventId = params.eventId as string;
+  const eventId = params?.eventId as string;
 
   const [event, setEvent] = useState<ProjectEvent | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);

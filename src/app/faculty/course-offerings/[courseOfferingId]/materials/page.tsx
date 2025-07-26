@@ -23,7 +23,7 @@ const FILE_TYPE_OPTIONS: CourseMaterialFileType[] = ['pdf', 'doc', 'docx', 'ppt'
 export default function ManageCourseMaterialsPage() {
   const router = useRouter();
   const params = useParams();
-  const courseOfferingId = params.courseOfferingId as string;
+  const courseOfferingId = params?.courseOfferingId as string;
 
   const [courseOffering, setCourseOffering] = useState<CourseOffering | null>(null);
   const [materials, setMaterials] = useState<CourseMaterial[]>([]);

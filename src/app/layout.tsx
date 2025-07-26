@@ -307,7 +307,7 @@ export default function RootLayout({
       });
     } else {
       setCurrentUser(DEFAULT_USER);
-       if (!['/login', '/signup', '/forgot-password', '/', '/about', '/departments', '/admissions', '/library', '/facilities', '/contact', '/ssip', '/establishment', '/student-section', '/tpo', '/students', '/faculty'].includes(pathname) && !pathname.startsWith('/posts') && !pathname.startsWith('/newsletters') && !pathname.startsWith('/departments/') && !pathname.startsWith('/students/') && !pathname.startsWith('/faculty/') && !pathname.startsWith('/tags') && !pathname.startsWith('/categories') && !pathname.startsWith('/search')) { // Allow /posts, /newsletters, /tags, /categories, /search, /students, /faculty and other public routes
+       if (pathname && !['/login', '/signup', '/forgot-password', '/', '/about', '/departments', '/admissions', '/library', '/facilities', '/contact', '/ssip', '/establishment', '/student-section', '/tpo', '/students', '/faculty'].includes(pathname) && !pathname.startsWith('/posts') && !pathname.startsWith('/newsletters') && !pathname.startsWith('/departments/') && !pathname.startsWith('/students/') && !pathname.startsWith('/faculty/') && !pathname.startsWith('/tags') && !pathname.startsWith('/categories') && !pathname.startsWith('/search')) { // Allow /posts, /newsletters, /tags, /categories, /search, /students, /faculty and other public routes
          router.push('/login');
        }
     }
@@ -371,7 +371,7 @@ export default function RootLayout({
   
   const activeRoleObject = allSystemRoles.find(r => r.code === currentUser.activeRole);
   const currentNavItems = getNavItemsForRoleCode(currentUser.activeRole);
-  const hideSidebar = ['/login', '/signup', '/forgot-password', '/', '/about', '/departments', '/admissions', '/library', '/facilities', '/contact', '/ssip', '/establishment', '/student-section', '/tpo', '/students', '/faculty'].includes(pathname) || pathname.startsWith('/posts') || pathname.startsWith('/newsletters') || pathname.startsWith('/departments/') || pathname.startsWith('/students/') || pathname.startsWith('/faculty/') || pathname.startsWith('/tags') || pathname.startsWith('/categories') || pathname.startsWith('/search');
+  const hideSidebar = pathname && (['/login', '/signup', '/forgot-password', '/', '/about', '/departments', '/admissions', '/library', '/facilities', '/contact', '/ssip', '/establishment', '/student-section', '/tpo', '/students', '/faculty'].includes(pathname) || pathname.startsWith('/posts') || pathname.startsWith('/newsletters') || pathname.startsWith('/departments/') || pathname.startsWith('/students/') || pathname.startsWith('/faculty/') || pathname.startsWith('/tags') || pathname.startsWith('/categories') || pathname.startsWith('/search'));
 
 
   if (!isMounted) { 
@@ -458,7 +458,7 @@ export default function RootLayout({
               <SidebarMenu>
                 {currentNavItems.map((item) => (
                   <SidebarMenuItem key={item.id}>
-                    <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href || (pathname.startsWith(item.href + '/') && item.href !== '/dashboard' && item.href !== '/dashboard/hod' && item.href !== '/dashboard/committee')} asChild>
+                    <SidebarMenuButton tooltip={item.label} isActive={pathname === item.href || (pathname?.startsWith(item.href + '/') && item.href !== '/dashboard' && item.href !== '/dashboard/hod' && item.href !== '/dashboard/committee')} asChild>
                       <Link href={item.href}>
                         <item.icon />
                         <span>{item.label}</span>

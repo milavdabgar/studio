@@ -15,7 +15,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 export default function FacultyCourseStudentsPage() {
   const router = useRouter();
   const params = useParams();
-  const courseId = params.courseId as string;
+  const courseId = params?.courseId as string;
 
   const [course, setCourse] = useState<Course | null>(null);
   const [program, setProgram] = useState<Program | null>(null);

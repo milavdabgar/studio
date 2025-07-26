@@ -9,7 +9,7 @@ export default function StudentGradeHistoryPage() {
   const params = useParams();
   const router = useRouter();
   // The parameter name is studentId, but it contains the enrollment number
-  const enrollmentNo = params.studentId as string; 
+  const enrollmentNo = params?.studentId as string; 
 
   return (
     <div className="space-y-6">

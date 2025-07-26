@@ -8,7 +8,7 @@ import { ArrowLeft } from 'lucide-react';
 export default function DetailedResultPage() {
   const params = useParams();
   const router = useRouter();
-  const resultId = params.resultId as string;
+  const resultId = params?.resultId as string;
 
   return (
     <div className="space-y-6">

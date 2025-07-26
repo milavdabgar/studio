@@ -26,7 +26,7 @@ import { userService } from '@/lib/api/users'; // For faculty/invigilators
 export default function ExamTimetablePage() {
   const router = useRouter();
   const params = useParams();
-  const examId = params.examId as string;
+  const examId = params?.examId as string;
 
   const [examination, setExamination] = useState<Examination | null>(null);
   const [timetableEntries, setTimetableEntries] = useState<ExaminationTimeTableEntry[]>([]);

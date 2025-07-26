@@ -30,7 +30,7 @@ type EvaluationStatusFilter = 'all' | 'pending' | 'completed' | 'assigned' | 'un
 export default function EventEvaluationsPage() {
   const router = useRouter();
   const params = useParams();
-  const eventId = params.eventId as string;
+  const eventId = params?.eventId as string;
 
   const [event, setEvent] = useState<ProjectEvent | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);

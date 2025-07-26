@@ -15,7 +15,7 @@ import { projectEventService } from '@/lib/api/projectEvents';
 export default function EventTeamsPage() {
   const router = useRouter();
   const params = useParams();
-  const eventId = params.eventId as string;
+  const eventId = params?.eventId as string;
 
   const [event, setEvent] = useState<ProjectEvent | null>(null);
   const [, setTeams] = useState<ProjectTeam[]>([]);

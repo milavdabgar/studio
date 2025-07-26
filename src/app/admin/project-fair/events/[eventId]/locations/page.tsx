@@ -27,7 +27,7 @@ const ITEMS_PER_PAGE_OPTIONS = [10, 20, 50, 100];
 export default function EventLocationsPage() {
   const router = useRouter();
   const params = useParams();
-  const eventId = params.eventId as string;
+  const eventId = params?.eventId as string;
 
   const [event, setEvent] = useState<ProjectEvent | null>(null);
   const [locations, setLocations] = useState<ProjectLocation[]>([]);

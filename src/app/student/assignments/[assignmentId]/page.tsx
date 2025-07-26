@@ -40,7 +40,7 @@ function getCookie(name: string): string | undefined {
 export default function AssignmentDetailPage() {
   const router = useRouter();
   const params = useParams();
-  const assignmentId = params.assignmentId as string;
+  const assignmentId = params?.assignmentId as string;
 
   const [assignment, setAssignment] = useState<Assessment | null>(null);
   const [course, setCourse] = useState<Course | null>(null);

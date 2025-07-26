@@ -41,7 +41,7 @@ interface FacultyProfilePageProps {
 
 export default function FacultyProfilePage({}: FacultyProfilePageProps) {
   const params = useParams();
-  const identifier = params.identifier as string;
+  const identifier = params?.identifier as string;
   const [profile, setProfile] = useState<FacultyProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);

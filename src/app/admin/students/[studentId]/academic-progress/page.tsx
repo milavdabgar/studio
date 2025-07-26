@@ -51,7 +51,7 @@ const STATUS_OPTIONS: { value: StudentStatus; label: string }[] = [
 export default function AdminStudentAcademicProgressPage() {
   const router = useRouter();
   const params = useParams();
-  const studentId = params.studentId as string;
+  const studentId = params?.studentId as string;
 
   const [student, setStudent] = useState<Student | null>(null);
   const [program, setProgram] = useState<Program | null>(null);

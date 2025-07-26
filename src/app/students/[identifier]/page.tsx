@@ -70,7 +70,7 @@ interface StudentProfilePageProps {
 
 export default function StudentProfilePage({}: StudentProfilePageProps) {
   const params = useParams();
-  const identifier = params.identifier as string;
+  const identifier = params?.identifier as string;
   const [profile, setProfile] = useState<Student | null>(null);
   const [program, setProgram] = useState<Program | null>(null);
   const [batch, setBatch] = useState<Batch | null>(null);

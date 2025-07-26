@@ -14,7 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 export default function EditProjectEventPage() {
   const router = useRouter();
   const params = useParams();
-  const eventId = params.eventId as string;
+  const eventId = params?.eventId as string;
   const [event, setEvent] = useState<ProjectEvent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
