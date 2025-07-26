@@ -60,7 +60,7 @@ export const courseService = {
     }
   },
 
-  async importCourses(file: File, departments: Department[], programs: Program[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number }> {
+  async importCourses(file: File, departments: Department[], programs: Program[]): Promise<{ newCount: number; updatedCount: number; skippedCount: number; isGTUFormat?: boolean; syllabusUrlsGenerated?: number }> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('departments', JSON.stringify(departments));

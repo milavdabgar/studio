@@ -700,7 +700,6 @@ export interface Course {
   subcode: string; 
   subjectName: string;
   subjectCode?: string; // Subject code for display
-  branchCode?: string; 
   effFrom?: string; 
   syllabusUrl?: string; // GTU syllabus PDF URL
   

@@ -354,8 +354,11 @@ const courseSchema = new Schema<ICourse>({
   isPractical: { type: Boolean, required: true, default: false },
   practicalExamDuration: { type: String },
   isFunctional: { type: Boolean, required: true, default: true },
+  isSemiPractical: { type: Boolean, default: false },
   category: { type: String, required: true },
+  effFrom: { type: String }, // Effective from (e.g., "2024-25")
   syllabusUrl: { type: String }, // GTU syllabus PDF URL
+  remarks: { type: String },
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() }
 }, {
