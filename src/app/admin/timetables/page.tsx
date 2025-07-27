@@ -126,6 +126,29 @@ export default function TimetableManagementPage() {
       return batches.filter(b => b.programId === formProgramId);
   }, [formProgramId, batches]);
 
+  const filteredCourseOfferingsForEntry = useMemo(() => {
+      if(!formBatchId || !formSemester || !formAcademicYear) return [];
+      return courseOfferings.filter(co => 
+        co.batchId === formBatchId && 
+        co.semester === formSemester && 
+        co.academicYear === formAcademicYear
+      );
+  }, [formBatchId, formSemester, formAcademicYear, courseOfferings]);
+
+  const availableFacultiesForEntry = useMemo(() => {
+    if (!entryCourseOfferingId) return faculties;
+    const selectedCourseOffering = courseOfferings.find(co => co.id === entryCourseOfferingId);
+    if (!selectedCourseOffering?.facultyIds?.length) return faculties;
+    return faculties.filter(f => selectedCourseOffering.facultyIds.includes(f.id));
+  }, [entryCourseOfferingId, courseOfferings, faculties]);
+
+  const availableRoomsForEntry = useMemo(() => {
+    if (!entryCourseOfferingId) return rooms;
+    const selectedCourseOffering = courseOfferings.find(co => co.id === entryCourseOfferingId);
+    if (!selectedCourseOffering?.roomIds?.length) return rooms;
+    return rooms.filter(r => selectedCourseOffering.roomIds!.includes(r.id));
+  }, [entryCourseOfferingId, courseOfferings, rooms]);
+
   useEffect(() => {
       if(filteredBatchesForForm.length > 0 && !filteredBatchesForForm.find(b => b.id === formBatchId)){
           setFormBatchId(filteredBatchesForForm[0].id);
@@ -133,6 +156,19 @@ export default function TimetableManagementPage() {
           setFormBatchId('');
       }
   }, [formProgramId, filteredBatchesForForm, formBatchId]);
+
+  // Reset entry fields when course offering changes to ensure valid selections
+  useEffect(() => {
+    if (!availableFacultiesForEntry.find(f => f.id === entryFacultyId)) {
+      setEntryFacultyId('');
+    }
+  }, [entryCourseOfferingId, availableFacultiesForEntry, entryFacultyId]);
+
+  useEffect(() => {
+    if (!availableRoomsForEntry.find(r => r.id === entryRoomId)) {
+      setEntryRoomId('');
+    }
+  }, [entryCourseOfferingId, availableRoomsForEntry, entryRoomId]);
 
 
   const resetForm = () => {
@@ -438,9 +474,95 @@ export default function TimetableManagementPage() {
                 <div><Label>Start Time</Label><Input type="time" value={entryStartTime} onChange={e=>setEntryStartTime(e.target.value)} /></div>
                 <div><Label>End Time</Label><Input type="time" value={entryEndTime} onChange={e=>setEntryEndTime(e.target.value)} /></div>
                 <div><Label>Type</Label><Select value={entryType} onValueChange={val => setEntryType(val as 'lecture' | 'lab' | 'tutorial' | 'break' | 'other')}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{['lecture','lab','tutorial','break','other'].map(t=><SelectItem key={t} value={t}>{t.charAt(0).toUpperCase()+t.slice(1)}</SelectItem>)}</SelectContent></Select></div>
-                <div className="md:col-span-2"><Label>Course Offering</Label><Select value={entryCourseOfferingId} onValueChange={setEntryCourseOfferingId} disabled={!formBatchId || !formSemester}><SelectTrigger><SelectValue placeholder="Select Course Offering"/></SelectTrigger><SelectContent>{courseOfferings.filter(co => co.batchId === formBatchId && co.semester === formSemester).map(co=><SelectItem key={co.id} value={co.id}>{courses.find(c=>c.id===co.courseId)?.subjectName} ({batches.find(b=>b.id===co.batchId)?.name})</SelectItem>)}</SelectContent></Select></div>
-                <div><Label>Faculty</Label><Select value={entryFacultyId} onValueChange={setEntryFacultyId}><SelectTrigger><SelectValue placeholder="Select Faculty"/></SelectTrigger><SelectContent>{faculties.map(f=><SelectItem key={f.id} value={f.id}>{f.gtuName || `${f.firstName} ${f.lastName}`}</SelectItem>)}</SelectContent></Select></div>
-                <div><Label>Room</Label><Select value={entryRoomId} onValueChange={setEntryRoomId}><SelectTrigger><SelectValue placeholder="Select Room"/></SelectTrigger><SelectContent>{rooms.map(r=><SelectItem key={r.id} value={r.id}>{r.roomNumber} ({r.name || r.type})</SelectItem>)}</SelectContent></Select></div>
+                <div className="md:col-span-2">
+                  <Label>Course Offering</Label>
+                  <Select value={entryCourseOfferingId} onValueChange={setEntryCourseOfferingId} disabled={!formBatchId || !formSemester || !formAcademicYear}>
+                    <SelectTrigger>
+                      <SelectValue placeholder={
+                        !formBatchId || !formSemester || !formAcademicYear 
+                          ? "Complete form fields above" 
+                          : filteredCourseOfferingsForEntry.length === 0
+                            ? "No course offerings found"
+                            : "Select Course Offering"
+                      }/>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {filteredCourseOfferingsForEntry.length > 0 ? (
+                        filteredCourseOfferingsForEntry.map(co => (
+                          <SelectItem key={co.id} value={co.id}>
+                            {courses.find(c=>c.id===co.courseId)?.subjectName} ({courses.find(c=>c.id===co.courseId)?.subjectCode})
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem value="no-options" disabled>
+                          No course offerings available for {formAcademicYear} Semester {formSemester}
+                        </SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
+                  {formBatchId && formSemester && formAcademicYear && filteredCourseOfferingsForEntry.length === 0 && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      No course offerings found for the selected batch, semester, and academic year. 
+                      <br />Create course offerings first in Course Management.
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <Label>Faculty</Label>
+                  <Select value={entryFacultyId} onValueChange={setEntryFacultyId}>
+                    <SelectTrigger>
+                      <SelectValue placeholder={
+                        entryCourseOfferingId && availableFacultiesForEntry.length === 0
+                          ? "No faculty assigned to course"
+                          : "Select Faculty"
+                      }/>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableFacultiesForEntry.length > 0 ? (
+                        availableFacultiesForEntry.map(f => (
+                          <SelectItem key={f.id} value={f.id}>
+                            {f.gtuName || `${f.firstName} ${f.lastName}`}
+                            {entryCourseOfferingId && availableFacultiesForEntry.length < faculties.length && (
+                              <span className="text-xs text-muted-foreground"> (Assigned)</span>
+                            )}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem value="no-faculty" disabled>
+                          No faculty available
+                        </SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Room</Label>
+                  <Select value={entryRoomId} onValueChange={setEntryRoomId}>
+                    <SelectTrigger>
+                      <SelectValue placeholder={
+                        entryCourseOfferingId && availableRoomsForEntry.length === 0
+                          ? "No rooms assigned to course"
+                          : "Select Room"
+                      }/>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableRoomsForEntry.length > 0 ? (
+                        availableRoomsForEntry.map(r => (
+                          <SelectItem key={r.id} value={r.id}>
+                            {r.roomNumber} ({r.name || r.type})
+                            {entryCourseOfferingId && availableRoomsForEntry.length < rooms.length && (
+                              <span className="text-xs text-muted-foreground"> (Assigned)</span>
+                            )}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem value="no-room" disabled>
+                          No rooms available
+                        </SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div className="md:col-span-4 text-right">
                     <Button type="button" onClick={addEntry} size="sm">{entryEditingIndex !== null ? 'Update Entry' : 'Add Entry'}</Button>
                     {entryEditingIndex !== null && <Button type="button" variant="ghost" size="sm" onClick={() => {setEntryEditingIndex(null); setEntryDayOfWeek('Monday'); setEntryStartTime('09:00'); setEntryEndTime('10:00'); setEntryCourseOfferingId(''); setEntryFacultyId(''); setEntryRoomId(''); setEntryType('lecture'); }}>Cancel Edit</Button>}
