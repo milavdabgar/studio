@@ -595,6 +595,7 @@ export interface Institute {
   domain?: string; 
   status: 'active' | 'inactive';
   establishmentYear?: number;
+  principalId?: string; // ID of the faculty member who is the Principal
   administrators?: string[]; 
   createdAt?: Timestamp;
   updatedAt?: Timestamp;

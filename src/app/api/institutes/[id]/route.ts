@@ -71,6 +71,15 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ message: 'Please enter a valid contact email address.' }, { status: 400 });
     }
 
+    // Validate principalId if provided
+    if (instituteData.principalId !== undefined) {
+      if (instituteData.principalId && typeof instituteData.principalId !== 'string') {
+        return NextResponse.json({ message: 'Principal ID must be a string.' }, { status: 400 });
+      }
+      // TODO: Add validation to check if the principalId exists and is a faculty member
+      // This would require importing UserModel and checking user role
+    }
+
     // Check for duplicate code if code is being updated
     if (instituteData.code && instituteData.code.trim().toUpperCase() !== institute.code?.toUpperCase()) {
       const existingInstitute = await InstituteModel.findOne({ 
@@ -90,6 +99,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (instituteData.contactEmail !== undefined) updateData.contactEmail = instituteData.contactEmail.trim() || undefined;
     if (instituteData.contactPhone !== undefined) updateData.contactPhone = instituteData.contactPhone.trim() || undefined;
     if (instituteData.website !== undefined) updateData.website = instituteData.website.trim() || undefined;
+    if (instituteData.principalId !== undefined) updateData.principalId = instituteData.principalId || undefined;
 
     const updatedInstitute = await InstituteModel.findByIdAndUpdate(
       institute._id,

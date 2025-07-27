@@ -20,6 +20,7 @@ const instituteSchema = new Schema<IInstitute>({
   domain: { type: String },
   status: { type: String, enum: ['active', 'inactive'], required: true, default: 'active' },
   establishmentYear: { type: Number },
+  principalId: { type: String }, // ID of the faculty member who is the Principal
   administrators: [{ type: String }],
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() }

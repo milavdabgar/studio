@@ -13,17 +13,20 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { PlusCircle, Edit, Trash2, Landmark, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
-import type { Institute } from '@/types/entities';
+import type { Institute, User } from '@/types/entities';
 import { instituteService } from '@/lib/api/institutes';
+import { userService } from '@/lib/api/users';
 
 
 type SortField = keyof Institute | 'none';
 type SortDirection = 'asc' | 'desc';
 
 const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
+const NO_PRINCIPAL_VALUE = "__NO_PRINCIPAL__";
 
 export default function InstituteManagementPage() {
   const [institutes, setInstitutes] = useState<Institute[]>([]);
+  const [facultyUsers, setFacultyUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -40,6 +43,7 @@ export default function InstituteManagementPage() {
   const [formWebsite, setFormWebsite] = useState('');
   const [formStatus, setFormStatus] = useState<'active' | 'inactive'>('active');
   const [formEstablishmentYear, setFormEstablishmentYear] = useState<number | undefined>(undefined);
+  const [formPrincipalId, setFormPrincipalId] = useState<string | undefined>(undefined);
   
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -53,27 +57,36 @@ export default function InstituteManagementPage() {
 
   const { toast } = useToast();
 
-  const fetchInstitutes = useCallback(async () => {
+  const fetchInstitutesAndFaculty = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await instituteService.getAllInstitutes();
-      setInstitutes(data);
+      const [institutesData, usersData] = await Promise.all([
+        instituteService.getAllInstitutes(),
+        userService.getAllUsers()
+      ]);
+      setInstitutes(institutesData);
+      // Filter for faculty users only
+      const facultyUsers = usersData.filter(user => 
+        user.roles?.includes('faculty')
+      );
+      setFacultyUsers(facultyUsers);
     } catch (error) {
-      console.error("Failed to load institutes", error);
-      toast({ variant: "destructive", title: "Error", description: (error as Error).message || "Could not load institutes." });
+      console.error("Failed to load institutes and faculty", error);
+      toast({ variant: "destructive", title: "Error", description: (error as Error).message || "Could not load institutes and faculty." });
     }
     setIsLoading(false);
   }, [toast]);
 
   useEffect(() => {
-    fetchInstitutes();
-  }, [fetchInstitutes]);
+    fetchInstitutesAndFaculty();
+  }, [fetchInstitutesAndFaculty]);
 
 
   const resetForm = () => {
     setFormName(''); setFormCode(''); setFormAddress('');
     setFormContactEmail(''); setFormContactPhone(''); setFormWebsite('');
     setFormStatus('active'); setFormEstablishmentYear(undefined);
+    setFormPrincipalId(undefined);
     setCurrentInstitute(null);
   };
 
@@ -92,6 +105,7 @@ export default function InstituteManagementPage() {
     setFormWebsite(institute.website || '');
     setFormStatus(institute.status);
     setFormEstablishmentYear(institute.establishmentYear || undefined);
+    setFormPrincipalId(institute.principalId || undefined);
     setIsDialogOpen(true);
   };
 
@@ -104,7 +118,7 @@ export default function InstituteManagementPage() {
     setIsSubmitting(true);
     try {
       await instituteService.deleteInstitute(instituteId);
-      await fetchInstitutes(); 
+      await fetchInstitutesAndFaculty(); 
       setSelectedInstituteIds(prev => prev.filter(id => id !== instituteId));
       toast({ title: "Institute Deleted", description: "The institute has been successfully deleted." });
     } catch (error) {
@@ -138,6 +152,7 @@ export default function InstituteManagementPage() {
       website: formWebsite.trim() || undefined,
       status: formStatus,
       establishmentYear: formEstablishmentYear ? Number(formEstablishmentYear) : undefined,
+      principalId: formPrincipalId === NO_PRINCIPAL_VALUE ? undefined : formPrincipalId,
     };
 
     try {
@@ -148,7 +163,7 @@ export default function InstituteManagementPage() {
         await instituteService.createInstitute(instituteData);
         toast({ title: "Institute Created", description: "The new institute has been successfully created." });
       }
-      await fetchInstitutes(); 
+      await fetchInstitutesAndFaculty(); 
       setIsDialogOpen(false);
       resetForm();
     } catch (error) {
@@ -171,7 +186,7 @@ export default function InstituteManagementPage() {
     setIsSubmitting(true);
     try {
       const result = await instituteService.importInstitutes(selectedFile);
-      await fetchInstitutes(); 
+      await fetchInstitutesAndFaculty(); 
       toast({ title: "Import Successful", description: `${result.newCount} institutes added, ${result.updatedCount} institutes updated.` });
     } catch (error: unknown) {
       console.error("Error processing CSV file:", error);
@@ -301,7 +316,7 @@ inst_sample_1,Another Polytechnic,AP,123 Sample Street,contact@ap.edu,123-456-78
       for (const id of selectedInstituteIds) {
         await instituteService.deleteInstitute(id);
       }
-      await fetchInstitutes(); 
+      await fetchInstitutesAndFaculty(); 
       toast({ title: "Institutes Deleted", description: `${selectedInstituteIds.length} institute(s) have been successfully deleted.` });
       setSelectedInstituteIds([]);
     } catch (error) {
@@ -366,6 +381,19 @@ inst_sample_1,Another Polytechnic,AP,123 Sample Street,contact@ap.edu,123-456-78
                   <div className="md:col-span-1"><Label htmlFor="website">Website URL</Label><Input id="website" type="url" value={formWebsite} onChange={e => setFormWebsite(e.target.value)} placeholder="e.g., http://www.example.ac.in" disabled={isSubmitting} /></div>
                   
                   <div className="md:col-span-1"><Label htmlFor="establishmentYear">Establishment Year</Label><Input id="establishmentYear" type="number" value={formEstablishmentYear || ''} onChange={e => setFormEstablishmentYear(e.target.value ? parseInt(e.target.value) : undefined)} placeholder="e.g., 1964" disabled={isSubmitting} /></div>
+
+                  <div className="md:col-span-1">
+                    <Label htmlFor="principal">Principal</Label>
+                    <Select value={formPrincipalId || NO_PRINCIPAL_VALUE} onValueChange={(value) => setFormPrincipalId(value === NO_PRINCIPAL_VALUE ? undefined : value)} disabled={isSubmitting}>
+                      <SelectTrigger id="principal"><SelectValue placeholder="Select Principal (Optional)" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={NO_PRINCIPAL_VALUE}>None</SelectItem>
+                        {facultyUsers.map(user => (
+                          <SelectItem key={user.id} value={user.id}>{user.displayName || `${user.firstName} ${user.lastName}`.trim() || user.email}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
                   <div className="md:col-span-1">
                     <Label htmlFor="status">Status *</Label>
@@ -450,6 +478,7 @@ inst_sample_1,Another Polytechnic,AP,123 Sample Street,contact@ap.edu,123-456-78
                 <SortableTableHeader field="contactEmail" label="Contact Email" />
                 <SortableTableHeader field="website" label="Website" />
                 <SortableTableHeader field="establishmentYear" label="Estd. Year" />
+                <TableHead>Principal</TableHead>
                 <SortableTableHeader field="status" label="Status" />
                 <TableHead className="text-right w-32">Actions</TableHead>
               </TableRow>
@@ -463,6 +492,7 @@ inst_sample_1,Another Polytechnic,AP,123 Sample Street,contact@ap.edu,123-456-78
                   <TableCell>{institute.contactEmail || '-'}</TableCell>
                   <TableCell>{institute.website ? <a href={institute.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{institute.website}</a> : '-'}</TableCell>
                   <TableCell>{institute.establishmentYear || '-'}</TableCell>
+                  <TableCell>{institute.principalId ? (facultyUsers.find(u => u.id === institute.principalId)?.displayName || `${facultyUsers.find(u => u.id === institute.principalId)?.firstName || ''} ${facultyUsers.find(u => u.id === institute.principalId)?.lastName || ''}`.trim() || 'Principal not found') : '-'}</TableCell>
                   <TableCell>
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${institute.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'}`}>
                       {institute.status === 'active' ? 'Active' : 'Inactive'}
@@ -537,6 +567,16 @@ inst_sample_1,Another Polytechnic,AP,123 Sample Street,contact@ap.edu,123-456-78
                   <div>
                     <Label className="text-sm font-medium text-muted-foreground">Establishment Year</Label>
                     <p className="text-sm">{viewInstitute.establishmentYear || 'Not specified'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Principal</Label>
+                    <p className="text-sm">
+                      {viewInstitute.principalId 
+                        ? facultyUsers.find(u => u.id === viewInstitute.principalId)?.displayName || 
+                          `${facultyUsers.find(u => u.id === viewInstitute.principalId)?.firstName || ''} ${facultyUsers.find(u => u.id === viewInstitute.principalId)?.lastName || ''}`.trim() || 
+                          'Principal not found'
+                        : 'No principal assigned'}
+                    </p>
                   </div>
                   <div>
                     <Label className="text-sm font-medium text-muted-foreground">Status</Label>
