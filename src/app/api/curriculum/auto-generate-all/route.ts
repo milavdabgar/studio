@@ -71,6 +71,28 @@ export async function POST() {
         }
       },
       {
+        studentCategory: 'Regular',
+        versionName: 'COGC-2021-Regular',
+        effectiveDateRanges: ['2021-22', '2022-23', '2023-24'], // COGC progressive rollout
+        subjectCodePattern: '^(13\\d{5}|4\\d{6})$', // 1313201 or 4300001 patterns (non-C, non-DI)
+        description: 'COGC-2021 syllabus for regular students (progressive rollout 2021-2024)',
+        semesterMapping: {
+          1: '2021-22', 2: '2021-22', // Sem 1-2 rolled out in 2021-22
+          3: '2022-23', 4: '2022-23', // Sem 3-4 rolled out in 2022-23
+          5: '2023-24', 6: '2023-24'  // Sem 5-6 rolled out in 2023-24
+        }
+      },
+      {
+        studentCategory: 'C2D',
+        versionName: 'COGC-2021-C2D',
+        effectiveDateRanges: ['2022-23'], // C2D COGC started later
+        subjectCodePattern: '^C(13\\d{5}|4\\d{6})$', // C1313201 or C4300001 patterns
+        description: 'COGC-2021 syllabus for C2D students - ITI to Diploma (started 2022-23)',
+        semesterMapping: {
+          1: '2022-23', 2: '2022-23' // C2D Sem 1-2 in 2022-23
+        }
+      },
+      {
         studentCategory: 'Legacy',
         versionName: '2011-12-Legacy',
         effectiveDateRanges: ['2011-12'],

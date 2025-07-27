@@ -474,11 +474,11 @@ curr_2,prog_dme_gpp,DME,2.1,2025-01-01,draft,course_me101_dme_gpp,ME101,1,false
             <div className="text-sm text-muted-foreground space-y-2">
               <p>🧠 <strong>Intelligent Auto-Generation:</strong> Creates curricula with progressive semester rollout logic</p>
               <ul className="list-disc list-inside ml-4 space-y-1">
-                <li><strong>Regular Progressive:</strong> Sem 1-2 (2024-25) + Sem 3-4 (2025-26) + Sem 5-6 (2026-27)</li>
-                <li><strong>C2D Progressive:</strong> ITI to Diploma pathway with staggered rollout starting 2025-26</li>
-                <li><strong>Legacy Students:</strong> Complete curricula for existing non-DI courses by year</li>
+                <li><strong>Latest (DI*):</strong> Regular Sem 1-2 (2024-25) + Sem 3-4 (2025-26) | C2D starting 2025-26</li>
+                <li><strong>COGC-2021:</strong> Regular Sem 1-2 (2021-22) + Sem 3-4 (2022-23) + Sem 5-6 (2023-24) | C2D starting 2022-23</li>
+                <li><strong>Legacy:</strong> Complete curricula for historical non-DI courses by year</li>
               </ul>
-              <p className="text-xs">💡 Progressive rollout: courses from multiple effective dates combined into unified curricula</p>
+              <p className="text-xs">💡 Three curriculum generations: Legacy → COGC-2021 → Latest (DI*) with progressive rollouts</p>
             </div>
           </div>
 
