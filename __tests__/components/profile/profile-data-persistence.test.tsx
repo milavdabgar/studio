@@ -104,12 +104,11 @@ describe('Profile Data Persistence', () => {
         lastUpdated: fixedTimestamp
       };
 
-      // Clear any existing mock implementations and set the specific return value
-      localStorageMock.getItem.mockReset();
+      // Mock localStorage.getItem to return the cached profile
       localStorageMock.getItem.mockReturnValue(JSON.stringify(cachedProfile));
 
       // Simulate retrieving cached data
-      const cached = localStorage.getItem('profile_1');
+      const cached = localStorageMock.getItem('profile_1');
       const parsedProfile = cached ? JSON.parse(cached) : null;
 
       expect(parsedProfile).toEqual(cachedProfile);
@@ -141,14 +140,14 @@ describe('Profile Data Persistence', () => {
       // Function to save profile with error handling
       const saveProfileToCache = (profile: any) => {
         try {
-          localStorage.setItem(`profile_${profile.id}`, JSON.stringify(profile));
+          localStorageMock.setItem(`profile_${profile.id}`, JSON.stringify(profile));
           return true;
         } catch (error) {
           if (error instanceof DOMException && error.name === 'QuotaExceededError') {
             // Handle quota exceeded - could clear old data or use sessionStorage
             console.warn('LocalStorage quota exceeded, falling back to sessionStorage');
             try {
-              sessionStorage.setItem(`profile_${profile.id}`, JSON.stringify(profile));
+              sessionStorageMock.setItem(`profile_${profile.id}`, JSON.stringify(profile));
               return false; // Return false to indicate localStorage failed
             } catch (sessionError) {
               // Session storage also full
@@ -189,14 +188,14 @@ describe('Profile Data Persistence', () => {
 
       // Function to check if cached data is valid
       const getCachedProfile = (profileId: string, maxAge = 24 * 60 * 60 * 1000) => {
-        const cached = localStorage.getItem(`profile_${profileId}`);
+        const cached = localStorageMock.getItem(`profile_${profileId}`);
         if (!cached) return null;
 
         const profile = JSON.parse(cached);
         const isStale = Date.now() - profile.lastUpdated > maxAge;
         
         if (isStale) {
-          localStorage.removeItem(`profile_${profileId}`);
+          localStorageMock.removeItem(`profile_${profileId}`);
           return null;
         }
         
@@ -447,11 +446,11 @@ describe('Profile Data Persistence', () => {
 
       const safeGetFromStorage = (key: string) => {
         try {
-          const data = localStorage.getItem(key);
+          const data = localStorageMock.getItem(key);
           return data ? JSON.parse(data) : null;
         } catch (error) {
           console.warn('Corrupted data in localStorage, removing:', key);
-          localStorage.removeItem(key);
+          localStorageMock.removeItem(key);
           return null;
         }
       };
@@ -480,10 +479,10 @@ describe('Profile Data Persistence', () => {
         } catch (error) {
           // Store update for later retry
           const pendingUpdates = JSON.parse(
-            localStorage.getItem('pendingUpdates') || '[]'
+            localStorageMock.getItem('pendingUpdates') || '[]'
           );
           pendingUpdates.push({ id, data, timestamp: Date.now() });
-          localStorage.setItem('pendingUpdates', JSON.stringify(pendingUpdates));
+          localStorageMock.setItem('pendingUpdates', JSON.stringify(pendingUpdates));
           
           throw error;
         }
@@ -506,7 +505,7 @@ describe('Profile Data Persistence', () => {
       mockApiUpdate.mockResolvedValue({ success: true });
 
       const retryPendingUpdates = async () => {
-        const pending = JSON.parse(localStorage.getItem('pendingUpdates') || '[]');
+        const pending = JSON.parse(localStorageMock.getItem('pendingUpdates') || '[]');
         
         for (const update of pending) {
           try {
@@ -517,7 +516,7 @@ describe('Profile Data Persistence', () => {
           }
         }
         
-        localStorage.removeItem('pendingUpdates');
+        localStorageMock.removeItem('pendingUpdates');
         return true;
       };
 
@@ -542,7 +541,7 @@ describe('Profile Data Persistence', () => {
       // Function to calculate and cache completeness
       const calculateCompleteness = (profile: any) => {
         const cacheKey = `completeness_${profile.id}`;
-        const cached = sessionStorage.getItem(cacheKey);
+        const cached = sessionStorageMock.getItem(cacheKey);
         
         if (cached) {
           const { completeness, timestamp } = JSON.parse(cached);
@@ -559,7 +558,7 @@ describe('Profile Data Persistence', () => {
         if (profile.skills?.length > 0) completeness += 30;
         
         // Cache result
-        sessionStorage.setItem(cacheKey, JSON.stringify({
+        sessionStorageMock.setItem(cacheKey, JSON.stringify({
           completeness,
           timestamp: Date.now()
         }));
@@ -586,7 +585,7 @@ describe('Profile Data Persistence', () => {
       }));
 
       const invalidateCompletenessCache = (id: string) => {
-        sessionStorage.removeItem(`completeness_${id}`);
+        sessionStorageMock.removeItem(`completeness_${id}`);
       };
 
       invalidateCompletenessCache(profileId);
