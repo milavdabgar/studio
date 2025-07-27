@@ -25,15 +25,31 @@ const standardizeEffFrom = (effFrom: string | null | undefined): string => {
     return value;
   }
   
-  // Month-Year format (Aug-11, Sep-12, Jul-23, etc.)
-  const monthYearMatch = value.match(/^[A-Za-z]{3}-(\d{2})$/);
+  // Month-Year format (Aug-11, Sep-12, Jul-23, Jan-24, etc.)
+  const monthYearMatch = value.match(/^([A-Za-z]{3})-(\d{2})$/);
   if (monthYearMatch) {
-    const yearSuffix = monthYearMatch[1];
+    const month = monthYearMatch[1];
+    const yearSuffix = monthYearMatch[2];
     const year = parseInt(yearSuffix);
     // Convert 2-digit year to 4-digit year
     const fullYear = year <= 30 ? 2000 + year : 1900 + year; // Assume 00-30 = 2000s, 31+ = 1900s
-    const nextYear = ((fullYear + 1) % 100).toString().padStart(2, '0');
-    return `${fullYear}-${nextYear}`;
+    
+    // For academic year calculation: 
+    // Jan-24 should map to 2023-24 (January 2024 falls in academic year 2023-24)
+    // Academic year runs July to June, so Jan-24 is in 2023-24 academic year
+    const monthsBeforeJuly = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+    let academicStartYear;
+    
+    if (monthsBeforeJuly.includes(month)) {
+      // January to June belongs to academic year that started previous July
+      academicStartYear = fullYear - 1;
+    } else {
+      // July to December belongs to academic year that starts this July
+      academicStartYear = fullYear;
+    }
+    
+    const academicEndYear = ((academicStartYear + 1) % 100).toString().padStart(2, '0');
+    return `${academicStartYear}-${academicEndYear}`;
   }
   
   // Date formats (07/01/13, 07/01/24, etc.)
@@ -161,18 +177,36 @@ export async function POST(request: NextRequest) {
         const branchCode = row.branchcode?.toString().trim();
         
         // GTU branch code mapping - find program by code, then get its department
-        // Try both string and number comparison since DB might store codes differently
-        const foundProg = branchCode ? clientPrograms.find(p => 
-          p.code === branchCode || 
-          (typeof p.code === 'number' && p.code === parseInt(branchCode)) || 
-          p.code?.toString() === branchCode
-        ) : undefined;
+        // Handle both zero-padded (06, 09) and non-padded (6, 9) codes
+        const foundProg = branchCode ? clientPrograms.find(p => {
+          const programCode = p.code?.toString() || '';
+          const csvCode = branchCode.toString();
+          
+          // Direct match
+          if (programCode === csvCode) return true;
+          
+          // Zero-padded match: compare 06 with 6, 09 with 9
+          const normalizedProgramCode = programCode.padStart(2, '0');
+          const normalizedCsvCode = csvCode.padStart(2, '0');
+          if (normalizedProgramCode === normalizedCsvCode) return true;
+          
+          // Numeric comparison for edge cases
+          const programCodeNum = parseInt(programCode);
+          const csvCodeNum = parseInt(csvCode);
+          if (!isNaN(programCodeNum) && !isNaN(csvCodeNum) && programCodeNum === csvCodeNum) return true;
+          
+          return false;
+        }) : undefined;
+        
         if (foundProg) {
           const foundDept = clientDepartments.find(d => d.id === foundProg.departmentId);
           if (foundDept) {
             departmentId = foundDept.id;
             programId = foundProg.id;
+            console.log(`✓ Mapped branchCode ${branchCode} to program: ${foundProg.name} (${foundProg.code})`);
           }
+        } else {
+          console.warn(`✗ Could not find program for branchCode: ${branchCode}. Available codes: ${clientPrograms.map(p => p.code).join(', ')}`);
         }
       }
       
