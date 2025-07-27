@@ -61,12 +61,23 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ message: 'Current intake capacity must be a positive number.' }, { status: 400 });
     }
     
-    // Check for duplicate program code within the same institute
-    if (programData.code && programData.instituteId) {
+    // Find the program first to get the correct MongoDB _id
+    let program = await ProgramModel.findOne({ id });
+    if (!program && Types.ObjectId.isValid(id)) {
+      program = await ProgramModel.findById(id);
+    }
+    
+    if (!program) {
+      return NextResponse.json({ message: 'Program not found' }, { status: 404 });
+    }
+    
+    // Check for duplicate program code within the same institute (exclude current program)
+    if (programData.code) {
+      const instituteIdToCheck = programData.instituteId || program.instituteId;
       const existingProgram = await ProgramModel.findOne({
         code: programData.code.trim().toUpperCase(),
-        instituteId: programData.instituteId,
-        _id: { $ne: id }
+        instituteId: instituteIdToCheck,
+        _id: { $ne: program._id }  // Use MongoDB _id for exclusion
       });
       
       if (existingProgram) {
@@ -103,16 +114,6 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     
     // Update timestamp
     updateData.updatedAt = new Date().toISOString();
-    
-    // Find the program first to get the correct MongoDB _id
-    let program = await ProgramModel.findOne({ id });
-    if (!program && Types.ObjectId.isValid(id)) {
-      program = await ProgramModel.findById(id);
-    }
-    
-    if (!program) {
-      return NextResponse.json({ message: 'Program not found' }, { status: 404 });
-    }
     
     const updatedProgram = await ProgramModel.findByIdAndUpdate(
       program._id,
