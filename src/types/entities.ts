@@ -803,6 +803,16 @@ export interface Building {
 export type RoomType = 'Lecture Hall' | 'Laboratory' | 'Office' | 'Staff Room' | 'Workshop' | 'Library' | 'Store Room' | 'Seminar Hall' | 'Auditorium' | 'Other';
 export type RoomStatus = 'available' | 'occupied' | 'under_maintenance' | 'unavailable' | 'reserved';
 
+export interface CCTVInfo {
+  installed: boolean;
+  company?: string; // e.g., "Digilink", "Hickvision"
+  deviceNo?: string; // e.g., "D31", "D09"
+  ipAddress?: string; // e.g., "10.169.24.27"
+  username?: string; // e.g., "admin"
+  password?: string; // e.g., "admin", "admin@123"
+  status?: 'working' | 'down' | 'maintenance' | 'not_installed';
+}
+
 export interface Room {
   id: string;
   roomNumber: string; 
@@ -815,14 +825,7 @@ export interface Room {
   facilities?: string[]; 
   status: RoomStatus;
   notes?: string;
-  // CCTV Information
-  cctvInstalled?: boolean;
-  cctvCompany?: string; // e.g., "Digilink", "Hickvision"
-  cctvDeviceNo?: string; // e.g., "D31", "D09"
-  cctvIpAddress?: string; // e.g., "10.169.24.27"
-  cctvUsername?: string; // e.g., "admin"
-  cctvPassword?: string; // e.g., "admin", "admin@123"
-  cctvStatus?: 'working' | 'down' | 'maintenance' | 'not_installed'; // e.g., "All Ok", "Down"
+  cctv?: CCTVInfo;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }

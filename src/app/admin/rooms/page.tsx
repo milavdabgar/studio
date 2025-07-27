@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { PlusCircle, Edit, Trash2, DoorOpen, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { PlusCircle, Edit, Trash2, DoorOpen, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye, Video, VideoOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import type { Room, Building, RoomType, RoomStatus } from '@/types/entities';
@@ -38,7 +38,9 @@ export default function RoomManagementPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
   const [currentRoom, setCurrentRoom] = useState<Partial<Room> | null>(null);
+  const [viewingRoom, setViewingRoom] = useState<Room | null>(null);
 
   // Form state
   const [formRoomNumber, setFormRoomNumber] = useState('');
@@ -50,6 +52,15 @@ export default function RoomManagementPage() {
   const [formAreaSqFt, setFormAreaSqFt] = useState<number | undefined>(undefined);
   const [formStatus, setFormStatus] = useState<RoomStatus>('available');
   const [formNotes, setFormNotes] = useState('');
+  
+  // CCTV form fields
+  const [formCctvInstalled, setFormCctvInstalled] = useState(false);
+  const [formCctvCompany, setFormCctvCompany] = useState('');
+  const [formCctvDeviceNo, setFormCctvDeviceNo] = useState('');
+  const [formCctvIpAddress, setFormCctvIpAddress] = useState('');
+  const [formCctvUsername, setFormCctvUsername] = useState('');
+  const [formCctvPassword, setFormCctvPassword] = useState('');
+  const [formCctvStatus, setFormCctvStatus] = useState<'working' | 'down' | 'maintenance' | 'not_installed'>('not_installed');
   
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -93,6 +104,10 @@ export default function RoomManagementPage() {
     setFormBuildingId(buildings.length > 0 ? buildings[0].id : ''); 
     setFormFloor(undefined); setFormType('Lecture Hall'); setFormCapacity(undefined);
     setFormAreaSqFt(undefined); setFormStatus('available'); setFormNotes('');
+    // Reset CCTV fields
+    setFormCctvInstalled(false); setFormCctvCompany(''); setFormCctvDeviceNo('');
+    setFormCctvIpAddress(''); setFormCctvUsername(''); setFormCctvPassword('');
+    setFormCctvStatus('not_installed');
     setCurrentRoom(null);
   };
 
@@ -107,7 +122,20 @@ export default function RoomManagementPage() {
     setFormAreaSqFt(room.areaSqFt === null ? undefined : room.areaSqFt);
     setFormStatus(room.status);
     setFormNotes(room.notes || '');
+    // Populate CCTV fields
+    setFormCctvInstalled(room.cctv?.installed || false);
+    setFormCctvCompany(room.cctv?.company || '');
+    setFormCctvDeviceNo(room.cctv?.deviceNo || '');
+    setFormCctvIpAddress(room.cctv?.ipAddress || '');
+    setFormCctvUsername(room.cctv?.username || '');
+    setFormCctvPassword(room.cctv?.password || '');
+    setFormCctvStatus(room.cctv?.status || 'not_installed');
     setIsDialogOpen(true);
+  };
+
+  const handleViewDetails = (room: Room) => {
+    setViewingRoom(room);
+    setIsDetailsDialogOpen(true);
   };
 
   const handleAddNew = () => {
@@ -161,6 +189,15 @@ export default function RoomManagementPage() {
       areaSqFt: formAreaSqFt !== undefined ? Number(formAreaSqFt) : undefined,
       status: formStatus,
       notes: formNotes.trim() || undefined,
+      cctv: {
+        installed: formCctvInstalled,
+        company: formCctvCompany.trim() || undefined,
+        deviceNo: formCctvDeviceNo.trim() || undefined,
+        ipAddress: formCctvIpAddress.trim() || undefined,
+        username: formCctvUsername.trim() || undefined,
+        password: formCctvPassword.trim() || undefined,
+        status: formCctvStatus,
+      },
     };
 
     try {
@@ -225,10 +262,10 @@ export default function RoomManagementPage() {
           `"${(bldg?.name || "").replace(/"/g, '""')}"`, `"${(bldg?.code || "").replace(/"/g, '""')}"`,
           r.floor === undefined ? "" : r.floor, r.type, r.capacity === undefined ? "" : r.capacity,
           r.areaSqFt === undefined ? "" : r.areaSqFt, r.status, `"${(r.notes || "").replace(/"/g, '""')}"`,
-          r.cctvInstalled === undefined ? "" : r.cctvInstalled, `"${(r.cctvCompany || "").replace(/"/g, '""')}"`,
-          `"${(r.cctvDeviceNo || "").replace(/"/g, '""')}"`, `"${(r.cctvIpAddress || "").replace(/"/g, '""')}"`,
-          `"${(r.cctvUsername || "").replace(/"/g, '""')}"`, `"${(r.cctvPassword || "").replace(/"/g, '""')}"`,
-          `"${(r.cctvStatus || "").replace(/"/g, '""')}"`
+          r.cctv?.installed === undefined ? "" : r.cctv.installed, `"${(r.cctv?.company || "").replace(/"/g, '""')}"`,
+          `"${(r.cctv?.deviceNo || "").replace(/"/g, '""')}"`, `"${(r.cctv?.ipAddress || "").replace(/"/g, '""')}"`,
+          `"${(r.cctv?.username || "").replace(/"/g, '""')}"`, `"${(r.cctv?.password || "").replace(/"/g, '""')}"`,
+          `"${(r.cctv?.status || "").replace(/"/g, '""')}"`
         ].join(',');
       })
     ];
@@ -425,6 +462,59 @@ room_sample_1,C-101,Smart Classroom 1,bldg2,"New Academic Complex","NAC",1,Lectu
 
                   <div className="md:col-span-2"><Label htmlFor="notes">Notes</Label><Textarea id="notes" value={formNotes} onChange={e => setFormNotes(e.target.value)} placeholder="Any specific details about the room" disabled={isSubmitting} rows={2}/></div>
                   
+                  {/* CCTV Section */}
+                  <div className="md:col-span-2 border-t pt-4 mt-4">
+                    <h3 className="text-lg font-medium mb-4 flex items-center gap-2">
+                      <Video className="h-5 w-5" />
+                      CCTV Information
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="md:col-span-2">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox id="cctvInstalled" checked={formCctvInstalled} onCheckedChange={(checked) => setFormCctvInstalled(!!checked)} disabled={isSubmitting} />
+                          <Label htmlFor="cctvInstalled">CCTV Installed</Label>
+                        </div>
+                      </div>
+                      
+                      {formCctvInstalled && (
+                        <>
+                          <div>
+                            <Label htmlFor="cctvCompany">Company</Label>
+                            <Input id="cctvCompany" value={formCctvCompany} onChange={e => setFormCctvCompany(e.target.value)} placeholder="e.g., Hickvision, Digilink" disabled={isSubmitting} />
+                          </div>
+                          <div>
+                            <Label htmlFor="cctvDeviceNo">Device No.</Label>
+                            <Input id="cctvDeviceNo" value={formCctvDeviceNo} onChange={e => setFormCctvDeviceNo(e.target.value)} placeholder="e.g., D31, D09" disabled={isSubmitting} />
+                          </div>
+                          <div>
+                            <Label htmlFor="cctvIpAddress">IP Address</Label>
+                            <Input id="cctvIpAddress" value={formCctvIpAddress} onChange={e => setFormCctvIpAddress(e.target.value)} placeholder="e.g., 10.169.24.27" disabled={isSubmitting} />
+                          </div>
+                          <div>
+                            <Label htmlFor="cctvUsername">Username</Label>
+                            <Input id="cctvUsername" value={formCctvUsername} onChange={e => setFormCctvUsername(e.target.value)} placeholder="e.g., admin" disabled={isSubmitting} />
+                          </div>
+                          <div>
+                            <Label htmlFor="cctvPassword">Password</Label>
+                            <Input id="cctvPassword" type="password" value={formCctvPassword} onChange={e => setFormCctvPassword(e.target.value)} placeholder="Enter password" disabled={isSubmitting} />
+                          </div>
+                          <div>
+                            <Label htmlFor="cctvStatus">CCTV Status</Label>
+                            <Select value={formCctvStatus} onValueChange={(value) => setFormCctvStatus(value as 'working' | 'down' | 'maintenance' | 'not_installed')} disabled={isSubmitting}>
+                              <SelectTrigger id="cctvStatus"><SelectValue placeholder="Select Status"/></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="working">Working</SelectItem>
+                                <SelectItem value="down">Down</SelectItem>
+                                <SelectItem value="maintenance">Maintenance</SelectItem>
+                                <SelectItem value="not_installed">Not Installed</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  
                   <DialogFooter className="md:col-span-2 mt-4">
                     <DialogClose asChild><Button type="button" variant="outline" disabled={isSubmitting}>Cancel</Button></DialogClose>
                     <Button type="submit" disabled={isSubmitting}>{isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}{currentRoom?.id ? "Save Changes" : "Create Room"}</Button>
@@ -510,6 +600,7 @@ room_sample_1,C-101,Smart Classroom 1,bldg2,"New Academic Complex","NAC",1,Lectu
                 <TableHead>Building</TableHead>
                 <SortableTableHeader field="type" label="Type" />
                 <SortableTableHeader field="capacity" label="Capacity" />
+                <TableHead>CCTV</TableHead>
                 <SortableTableHeader field="status" label="Status" />
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -524,6 +615,28 @@ room_sample_1,C-101,Smart Classroom 1,bldg2,"New Academic Complex","NAC",1,Lectu
                   <TableCell>{room.type}</TableCell>
                   <TableCell>{room.capacity || '-'}</TableCell>
                   <TableCell>
+                    <div className="flex items-center gap-2">
+                      {room.cctv?.installed ? (
+                        <>
+                          <Video className="h-4 w-4 text-green-600" />
+                          <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                            room.cctv.status === 'working' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                            : room.cctv.status === 'down' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                            : room.cctv.status === 'maintenance' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                            : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
+                          }`}>
+                            {room.cctv.status?.toUpperCase() || 'N/A'}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <VideoOff className="h-4 w-4 text-gray-400" />
+                          <span className="text-xs text-muted-foreground">Not Installed</span>
+                        </>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
                         room.status === 'available' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
                         : room.status === 'occupied' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
@@ -534,13 +647,14 @@ room_sample_1,C-101,Smart Classroom 1,bldg2,"New Academic Complex","NAC",1,Lectu
                     </span>
                   </TableCell>
                   <TableCell className="text-right space-x-2">
+                    <Button variant="outline" size="icon" onClick={() => handleViewDetails(room)} disabled={isSubmitting}><Eye className="h-4 w-4" /><span className="sr-only">View Details</span></Button>
                     <Button variant="outline" size="icon" onClick={() => handleEdit(room)} disabled={isSubmitting}><Edit className="h-4 w-4" /><span className="sr-only">Edit Room</span></Button>
                     <Button variant="destructive" size="icon" onClick={() => handleDelete(room.id)} disabled={isSubmitting}><Trash2 className="h-4 w-4" /><span className="sr-only">Delete Room</span></Button>
                   </TableCell>
                 </TableRow>
               ))}
               {paginatedRooms.length === 0 && (
-                 <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">No rooms found. Adjust filters or add a new room.</TableCell></TableRow>
+                 <TableRow><TableCell colSpan={9} className="text-center text-muted-foreground py-8">No rooms found. Adjust filters or add a new room.</TableCell></TableRow>
               )}
             </TableBody>
           </Table>
@@ -564,6 +678,143 @@ room_sample_1,C-101,Smart Classroom 1,bldg2,"New Academic Complex","NAC",1,Lectu
             </div>
         </CardFooter>
       </Card>
+
+      {/* Room Details Dialog */}
+      <Dialog open={isDetailsDialogOpen} onOpenChange={setIsDetailsDialogOpen}>
+        <DialogContent className="sm:max-w-3xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <DoorOpen className="h-5 w-5" />
+              Room Details - {viewingRoom?.roomNumber}
+            </DialogTitle>
+            <DialogDescription>
+              Comprehensive information about {viewingRoom?.name || viewingRoom?.roomNumber}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {viewingRoom && (
+            <div className="space-y-6">
+              {/* Basic Information */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Basic Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Room Number</Label>
+                    <p className="font-medium">{viewingRoom.roomNumber}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Name</Label>
+                    <p>{viewingRoom.name || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Building</Label>
+                    <p>{buildings.find(b => b.id === viewingRoom.buildingId)?.name || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Floor</Label>
+                    <p>{viewingRoom.floor !== undefined ? viewingRoom.floor : 'N/A'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Type</Label>
+                    <p>{viewingRoom.type}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Capacity</Label>
+                    <p>{viewingRoom.capacity || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Area (sq. ft.)</Label>
+                    <p>{viewingRoom.areaSqFt || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Status</Label>
+                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                      viewingRoom.status === 'available' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
+                      : viewingRoom.status === 'occupied' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+                      : viewingRoom.status === 'under_maintenance' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                      : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                    }`}>
+                      {ROOM_STATUS_OPTIONS.find(s => s.value === viewingRoom.status)?.label || viewingRoom.status}
+                    </span>
+                  </div>
+                </div>
+                {viewingRoom.notes && (
+                  <div className="mt-4">
+                    <Label className="text-sm font-medium text-muted-foreground">Notes</Label>
+                    <p className="mt-1 text-sm bg-muted p-3 rounded-md">{viewingRoom.notes}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* CCTV Information */}
+              <div className="border-t pt-4">
+                <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                  <Video className="h-5 w-5" />
+                  CCTV Information
+                </h3>
+                {viewingRoom.cctv?.installed ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium text-muted-foreground">Status</Label>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Video className="h-4 w-4 text-green-600" />
+                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                          viewingRoom.cctv.status === 'working' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                          : viewingRoom.cctv.status === 'down' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                          : viewingRoom.cctv.status === 'maintenance' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                          : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
+                        }`}>
+                          {viewingRoom.cctv.status?.toUpperCase() || 'N/A'}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-muted-foreground">Company</Label>
+                      <p>{viewingRoom.cctv.company || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-muted-foreground">Device No.</Label>
+                      <p className="font-mono text-sm">{viewingRoom.cctv.deviceNo || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-muted-foreground">IP Address</Label>
+                      <p className="font-mono text-sm">{viewingRoom.cctv.ipAddress || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-muted-foreground">Username</Label>
+                      <p className="font-mono text-sm">{viewingRoom.cctv.username || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-muted-foreground">Password</Label>
+                      <p className="font-mono text-sm">{viewingRoom.cctv.password ? '••••••••' : 'N/A'}</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <VideoOff className="h-4 w-4" />
+                    <span>CCTV not installed in this room</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Close</Button>
+            </DialogClose>
+            <Button onClick={() => {
+              if (viewingRoom) {
+                setIsDetailsDialogOpen(false);
+                handleEdit(viewingRoom);
+              }
+            }}>
+              <Edit className="mr-2 h-4 w-4" />
+              Edit Room
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
