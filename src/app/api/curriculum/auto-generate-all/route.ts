@@ -6,12 +6,12 @@ import { CurriculumModel, CourseModel, ProgramModel } from '@/lib/models';
 const generateId = (): string => `curr_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 
 interface CurriculumGenerationRule {
-  academicYear: string;
+  studentCategory: 'Regular' | 'C2D' | 'Legacy'; // Student category 
   versionName: string;
-  semesterRules: Record<number, {
-    useNewSyllabus: boolean; // True for DI*, false for old codes
-    effectiveFromPattern: string; // Pattern to match effective dates
-  }>;
+  effectiveDateRanges: string[]; // Multiple effective dates for progressive rollout
+  subjectCodePattern: string; // Regex pattern for subject codes
+  description: string;
+  semesterMapping?: Record<number, string>; // Optional: which effective date for which semester
 }
 
 export async function POST() {
@@ -44,46 +44,52 @@ export async function POST() {
       }, { status: 400 });
     }
 
-    const currentYear = new Date().getFullYear();
-    const currentAcademicYear = `${currentYear}-${(currentYear + 1).toString().slice(-2)}`;
-    
-    // Define curriculum generation rules for different batches
+    // Define curriculum generation rules with progressive rollout logic
     const curriculumRules: CurriculumGenerationRule[] = [
       {
-        academicYear: currentAcademicYear,
-        versionName: `${currentAcademicYear}-New`,
-        semesterRules: {
-          1: { useNewSyllabus: true, effectiveFromPattern: '2024-25|2025-26' },
-          2: { useNewSyllabus: true, effectiveFromPattern: '2024-25|2025-26' },
-          3: { useNewSyllabus: true, effectiveFromPattern: '2024-25|2025-26' },
-          4: { useNewSyllabus: false, effectiveFromPattern: '2011-12|2012-13|2013-14|2021-22|2022-23|2023-24' },
-          5: { useNewSyllabus: false, effectiveFromPattern: '2011-12|2012-13|2013-14|2021-22|2022-23|2023-24' },
-          6: { useNewSyllabus: false, effectiveFromPattern: '2011-12|2012-13|2013-14|2021-22|2022-23|2023-24' }
+        studentCategory: 'Regular',
+        versionName: 'Regular-Progressive',
+        effectiveDateRanges: ['2024-25', '2025-26', '2026-27'], // Progressive rollout
+        subjectCodePattern: '^DI\\d{2}0\\d{5}$', // DI01000021 pattern (no C)
+        description: 'Progressive syllabus for regular students (DI01000xxx, DI02000xxx, DI03000xxx patterns)',
+        semesterMapping: {
+          1: '2024-25', 2: '2024-25', // Sem 1-2 rolled out in 2024-25
+          3: '2025-26', 4: '2025-26', // Sem 3-4 rolled out in 2025-26  
+          5: '2026-27', 6: '2026-27'  // Sem 5-6 will roll out in 2026-27
         }
       },
       {
-        academicYear: `${currentYear + 1}-${(currentYear + 2).toString().slice(-2)}`,
-        versionName: `${currentYear + 1}-${(currentYear + 2).toString().slice(-2)}-Transition`,
-        semesterRules: {
-          1: { useNewSyllabus: true, effectiveFromPattern: '2024-25|2025-26' },
-          2: { useNewSyllabus: true, effectiveFromPattern: '2024-25|2025-26' },
-          3: { useNewSyllabus: true, effectiveFromPattern: '2024-25|2025-26' },
-          4: { useNewSyllabus: true, effectiveFromPattern: '2024-25|2025-26' }, // Transition starts
-          5: { useNewSyllabus: false, effectiveFromPattern: '2011-12|2012-13|2013-14|2021-22|2022-23|2023-24' },
-          6: { useNewSyllabus: false, effectiveFromPattern: '2011-12|2012-13|2013-14|2021-22|2022-23|2023-24' }
+        studentCategory: 'C2D',
+        versionName: 'C2D-Progressive',
+        effectiveDateRanges: ['2025-26', '2026-27'], // C2D starts later
+        subjectCodePattern: '^DI\\d{2}C\\d{5}$', // DI01C00021 pattern (with C)
+        description: 'Progressive syllabus for C2D students - ITI to Diploma (DI01C00xxx, DI02C00xxx patterns)',
+        semesterMapping: {
+          1: '2025-26', 2: '2025-26', // C2D Sem 1-2 in 2025-26
+          3: '2026-27', 4: '2026-27', // C2D Sem 3-4 in 2026-27
+          5: '2027-28', 6: '2027-28'  // C2D Sem 5-6 in 2027-28
         }
       },
       {
-        academicYear: `${currentYear + 2}-${(currentYear + 3).toString().slice(-2)}`,
-        versionName: `${currentYear + 2}-${(currentYear + 3).toString().slice(-2)}-Full-New`,
-        semesterRules: {
-          1: { useNewSyllabus: true, effectiveFromPattern: '2024-25|2025-26' },
-          2: { useNewSyllabus: true, effectiveFromPattern: '2024-25|2025-26' },
-          3: { useNewSyllabus: true, effectiveFromPattern: '2024-25|2025-26' },
-          4: { useNewSyllabus: true, effectiveFromPattern: '2024-25|2025-26' },
-          5: { useNewSyllabus: true, effectiveFromPattern: '2024-25|2025-26' },
-          6: { useNewSyllabus: true, effectiveFromPattern: '2024-25|2025-26' }
-        }
+        studentCategory: 'Legacy',
+        versionName: '2011-12-Legacy',
+        effectiveDateRanges: ['2011-12'],
+        subjectCodePattern: '^((?!DI).)*$', // Non-DI pattern (old courses)
+        description: 'Legacy syllabus 2011-12 (non-DI courses)'
+      },
+      {
+        studentCategory: 'Legacy',
+        versionName: '2012-13-Legacy',
+        effectiveDateRanges: ['2012-13'],
+        subjectCodePattern: '^((?!DI).)*$', // Non-DI pattern (old courses)
+        description: 'Legacy syllabus 2012-13 (non-DI courses)'
+      },
+      {
+        studentCategory: 'Legacy',
+        versionName: '2013-14-Legacy',
+        effectiveDateRanges: ['2013-14'],
+        subjectCodePattern: '^((?!DI).)*$', // Non-DI pattern (old courses)
+        description: 'Legacy syllabus 2013-14 (non-DI courses)'
       }
     ];
 
@@ -107,41 +113,46 @@ export async function POST() {
       }
 
       for (const rule of curriculumRules) {
-        const curriculumCourses: Curriculum['courses'] = [];
+        // Filter courses by effective date ranges (progressive rollout)
+        const ruleCoursesEffectiveDate = programCourses.filter(course => 
+          rule.effectiveDateRanges.includes(course.effFrom || '')
+        );
         
-        // Process each semester according to the rule
-        for (let semester = 1; semester <= 6; semester++) {
-          const semesterRule = rule.semesterRules[semester];
-          if (!semesterRule) continue;
+        // Then filter by subject code pattern (student category)
+        const ruleCourses = ruleCoursesEffectiveDate.filter(course => 
+          new RegExp(rule.subjectCodePattern).test(course.subcode)
+        );
+        
+        console.log(`\nRule: ${rule.versionName} (${rule.studentCategory})`);
+        console.log(`- Effective Date Ranges: ${rule.effectiveDateRanges.join(', ')}`);
+        console.log(`- Pattern: ${rule.subjectCodePattern}`);
+        console.log(`- Courses with matching effective dates: ${ruleCoursesEffectiveDate.length}`);
+        console.log(`- Courses matching pattern: ${ruleCourses.length}`);
+        console.log(`- Sample matched courses:`, ruleCourses.slice(0, 5).map(c => ({ subcode: c.subcode, semester: c.semester, effFrom: c.effFrom })));
+        
+        // Group courses by semester for progressive curriculum
+        if (rule.semesterMapping) {
+          console.log(`- Semester mapping:`, rule.semesterMapping);
+          const semesterBreakdown = ruleCourses.reduce((acc, course) => {
+            const sem = course.semester;
+            if (!acc[sem]) acc[sem] = [];
+            acc[sem].push(course);
+            return acc;
+          }, {} as Record<number, typeof ruleCourses>);
           
-          let semesterCourses: Course[];
-          
-          if (semesterRule.useNewSyllabus) {
-            // Use DI* courses with matching effective dates
-            semesterCourses = programCourses.filter(course => 
-              course.semester === semester &&
-              course.subcode.startsWith('DI') &&
-              new RegExp(semesterRule.effectiveFromPattern).test(course.effFrom || '')
-            );
-          } else {
-            // Use old curriculum courses (non-DI)
-            semesterCourses = programCourses.filter(course => 
-              course.semester === semester &&
-              !course.subcode.startsWith('DI') &&
-              new RegExp(semesterRule.effectiveFromPattern).test(course.effFrom || '')
-            );
-          }
-          
-          // Add courses to curriculum
-          semesterCourses.forEach(course => {
-            curriculumCourses.push({
-              courseId: course.id,
-              semester: course.semester,
-              isElective: course.isElective,
-              isActive: true
-            });
+          Object.entries(semesterBreakdown).forEach(([sem, courses]) => {
+            const expectedEffFrom = rule.semesterMapping![parseInt(sem)];
+            console.log(`  - Semester ${sem}: ${courses.length} courses (expected effFrom: ${expectedEffFrom})`);
           });
         }
+        
+        // Create curriculum courses from all matching courses
+        const curriculumCourses: Curriculum['courses'] = ruleCourses.map(course => ({
+          courseId: course.id,
+          semester: course.semester,
+          isElective: course.isElective,
+          isActive: true
+        }));
         
         console.log(`\nCurriculum: ${program.name} - ${rule.versionName}`);
         console.log(`Total courses found: ${curriculumCourses.length}`);
@@ -169,11 +180,12 @@ export async function POST() {
         }
         
         // Create new curriculum
+        const firstEffectiveYear = rule.effectiveDateRanges[0].split('-')[0];
         const curriculumData = {
           id: generateId(),
           programId: program.id || program._id?.toString(),
           version: rule.versionName,
-          effectiveDate: `${rule.academicYear.split('-')[0]}-07-01`, // July 1st of academic year
+          effectiveDate: `${firstEffectiveYear}-07-01`, // July 1st of first effective year
           courses: curriculumCourses,
           status: 'draft' as const,
           isAutoGenerated: true,
@@ -201,7 +213,8 @@ export async function POST() {
       },
       details: {
         curriculumRules: curriculumRules.map(rule => ({
-          academicYear: rule.academicYear,
+          effectiveDateRanges: rule.effectiveDateRanges,
+          studentCategory: rule.studentCategory,
           versionName: rule.versionName,
           description: generateRuleDescription(rule)
         })),
@@ -224,18 +237,5 @@ export async function POST() {
 }
 
 function generateRuleDescription(rule: CurriculumGenerationRule): string {
-  const newSems = Object.entries(rule.semesterRules)
-    .filter(([_, semRule]) => semRule.useNewSyllabus)
-    .map(([sem]) => sem);
-  const oldSems = Object.entries(rule.semesterRules)
-    .filter(([_, semRule]) => !semRule.useNewSyllabus)
-    .map(([sem]) => sem);
-  
-  if (oldSems.length === 0) {
-    return `Full new curriculum (DI* courses for all semesters)`;
-  } else if (newSems.length === 0) {
-    return `Full old curriculum (legacy courses for all semesters)`;
-  } else {
-    return `Hybrid: New curriculum for semesters ${newSems.join(', ')}, old curriculum for semesters ${oldSems.join(', ')}`;
-  }
+  return rule.description;
 }

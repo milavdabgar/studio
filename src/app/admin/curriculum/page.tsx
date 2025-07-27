@@ -472,13 +472,13 @@ curr_2,prog_dme_gpp,DME,2.1,2025-01-01,draft,course_me101_dme_gpp,ME101,1,false
               Smart Curriculum Generation
             </h3>
             <div className="text-sm text-muted-foreground space-y-2">
-              <p>🧠 <strong>Intelligent Auto-Generation:</strong> Creates curricula for all diploma programs with syllabus transition logic</p>
+              <p>🧠 <strong>Intelligent Auto-Generation:</strong> Creates curricula with progressive semester rollout logic</p>
               <ul className="list-disc list-inside ml-4 space-y-1">
-                <li><strong>Current Batches:</strong> DI* courses for Sem 1-3, legacy courses for Sem 4-6</li>
-                <li><strong>Transition Batches:</strong> Gradual migration to new syllabus</li>
-                <li><strong>Future Batches:</strong> Complete new curriculum with DI* courses</li>
+                <li><strong>Regular Progressive:</strong> Sem 1-2 (2024-25) + Sem 3-4 (2025-26) + Sem 5-6 (2026-27)</li>
+                <li><strong>C2D Progressive:</strong> ITI to Diploma pathway with staggered rollout starting 2025-26</li>
+                <li><strong>Legacy Students:</strong> Complete curricula for existing non-DI courses by year</li>
               </ul>
-              <p className="text-xs">💡 One click generates multiple curriculum versions based on subject code patterns and effective dates</p>
+              <p className="text-xs">💡 Progressive rollout: courses from multiple effective dates combined into unified curricula</p>
             </div>
           </div>
 
