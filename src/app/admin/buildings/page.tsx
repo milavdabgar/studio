@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { PlusCircle, Edit, Trash2, Building, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Building, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import type { Building as BuildingType, Institute } from '@/types/entities'; // Renamed Building to BuildingType
@@ -37,7 +37,9 @@ export default function BuildingManagementPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentBuilding, setCurrentBuilding] = useState<Partial<BuildingType> | null>(null);
+  const [viewBuilding, setViewBuilding] = useState<BuildingType | null>(null);
 
   // Form state
   const [formName, setFormName] = useState('');
@@ -92,6 +94,11 @@ export default function BuildingManagementPage() {
     setFormStatus('active'); setFormConstructionYear(undefined);
     setFormNumberOfFloors(undefined); setFormTotalAreaSqFt(undefined);
     setCurrentBuilding(null);
+  };
+
+  const handleView = (building: BuildingType) => {
+    setViewBuilding(building);
+    setIsViewDialogOpen(true);
   };
 
   const handleEdit = (building: BuildingType) => {
@@ -484,7 +491,7 @@ bldg_sample_1,Science Block,SCI,"Labs for Physics and Chemistry",inst1,"Governme
                 <TableHead>Institute</TableHead>
                 <SortableTableHeader field="constructionYear" label="Built Year" />
                 <SortableTableHeader field="status" label="Status" />
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right w-32">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -504,9 +511,21 @@ bldg_sample_1,Science Block,SCI,"Labs for Physics and Chemistry",inst1,"Governme
                       {BUILDING_STATUS_OPTIONS.find(s => s.value === building.status)?.label || building.status}
                     </span>
                   </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="icon" onClick={() => handleEdit(building)} disabled={isSubmitting}><Edit className="h-4 w-4" /><span className="sr-only">Edit Building</span></Button>
-                    <Button variant="destructive" size="icon" onClick={() => handleDelete(building.id)} disabled={isSubmitting}><Trash2 className="h-4 w-4" /><span className="sr-only">Delete Building</span></Button>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Button variant="outline" size="icon" onClick={() => handleView(building)} disabled={isSubmitting}>
+                        <Eye className="h-4 w-4" />
+                        <span className="sr-only">View Building</span>
+                      </Button>
+                      <Button variant="outline" size="icon" onClick={() => handleEdit(building)} disabled={isSubmitting}>
+                        <Edit className="h-4 w-4" />
+                        <span className="sr-only">Edit Building</span>
+                      </Button>
+                      <Button variant="destructive" size="icon" onClick={() => handleDelete(building.id)} disabled={isSubmitting}>
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Delete Building</span>
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -535,6 +554,110 @@ bldg_sample_1,Science Block,SCI,"Labs for Physics and Chemistry",inst1,"Governme
             </div>
         </CardFooter>
       </Card>
+
+      {/* View Building Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Building Details</DialogTitle>
+            <DialogDescription>
+              View detailed information about the building.
+            </DialogDescription>
+          </DialogHeader>
+          {viewBuilding && (
+            <div className="grid gap-6 py-4">
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Basic Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Building Name</Label>
+                    <p className="text-sm">{viewBuilding.name}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Building Code</Label>
+                    <p className="text-sm font-mono">{viewBuilding.code || 'Not specified'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Construction Year</Label>
+                    <p className="text-sm">{viewBuilding.constructionYear || 'Not specified'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Status</Label>
+                    <p className="text-sm">
+                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                        viewBuilding.status === 'active' 
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                          : viewBuilding.status === 'inactive' 
+                          ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                          : viewBuilding.status === 'under_maintenance'
+                          ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+                          : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                      }`}>
+                        {BUILDING_STATUS_OPTIONS.find(s => s.value === viewBuilding.status)?.label || viewBuilding.status}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                {viewBuilding.description && (
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Description</Label>
+                    <p className="text-sm">{viewBuilding.description}</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Physical Specifications</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Number of Floors</Label>
+                    <p className="text-sm">{viewBuilding.numberOfFloors || 'Not specified'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Total Area (Sq Ft)</Label>
+                    <p className="text-sm">{viewBuilding.totalAreaSqFt ? `${viewBuilding.totalAreaSqFt.toLocaleString()} sq ft` : 'Not specified'}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Institute Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Institute</Label>
+                    <p className="text-sm">{institutes.find(i => i.id === viewBuilding.instituteId)?.name || 'Not found'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Institute ID</Label>
+                    <p className="text-sm font-mono">{viewBuilding.instituteId}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">System Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Building ID</Label>
+                    <p className="text-sm font-mono">{viewBuilding.id}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Created At</Label>
+                    <p className="text-sm">{viewBuilding.createdAt ? new Date(viewBuilding.createdAt).toLocaleString() : 'Not available'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Last Updated</Label>
+                    <p className="text-sm">{viewBuilding.updatedAt ? new Date(viewBuilding.updatedAt).toLocaleString() : 'Not available'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={() => setIsViewDialogOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { PlusCircle, Edit, Trash2, BookCopy, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { PlusCircle, Edit, Trash2, BookCopy, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import type { Program, Department } from '@/types/entities';
@@ -28,7 +28,9 @@ export default function ProgramManagementPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentProgram, setCurrentProgram] = useState<Partial<Program> | null>(null);
+  const [viewProgram, setViewProgram] = useState<Program | null>(null);
 
   // Form state
   const [formProgramName, setFormProgramName] = useState('');
@@ -96,6 +98,11 @@ export default function ProgramManagementPage() {
     setFormTotalSemesters(program.totalSemesters || undefined);
     setFormStatus(program.status);
     setIsDialogOpen(true);
+  };
+
+  const handleView = (program: Program) => {
+    setViewProgram(program);
+    setIsViewDialogOpen(true);
   };
 
   const handleAddNew = () => {
@@ -544,7 +551,7 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
                 <SortableTableHeader field="durationYears" label="Duration (Yrs)" />
                 <SortableTableHeader field="totalSemesters" label="Semesters" />
                 <SortableTableHeader field="status" label="Status" />
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right w-32">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -567,20 +574,21 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
                       {prog.status === 'active' ? 'Active' : 'Inactive'}
                     </span>
                   </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="icon" onClick={() => handleEdit(prog)} disabled={isSubmitting}>
-                      <Edit className="h-4 w-4" />
-                      <span className="sr-only">Edit Program</span>
-                    </Button>
-                    <Button 
-                        variant="destructive" 
-                        size="icon" 
-                        onClick={() => handleDelete(prog.id)} 
-                        disabled={isSubmitting}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      <span className="sr-only">Delete Program</span>
-                    </Button>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Button variant="outline" size="icon" onClick={() => handleView(prog)} disabled={isSubmitting}>
+                        <Eye className="h-4 w-4" />
+                        <span className="sr-only">View Program</span>
+                      </Button>
+                      <Button variant="outline" size="icon" onClick={() => handleEdit(prog)} disabled={isSubmitting}>
+                        <Edit className="h-4 w-4" />
+                        <span className="sr-only">Edit Program</span>
+                      </Button>
+                      <Button variant="destructive" size="icon" onClick={() => handleDelete(prog.id)} disabled={isSubmitting}>
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Delete Program</span>
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -665,6 +673,109 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
             </div>
         </CardFooter>
       </Card>
+
+      {/* View Program Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Program Details</DialogTitle>
+            <DialogDescription>
+              Complete information for {viewProgram?.name}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {viewProgram && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Basic Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Basic Information</h3>
+                <div className="grid grid-cols-1 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Program Name:</span>
+                    <p className="text-muted-foreground">{viewProgram.name}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Program Code:</span>
+                    <p className="text-muted-foreground">{viewProgram.code}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Department:</span>
+                    <p className="text-muted-foreground">
+                      {departments.find(d => d.id === viewProgram.departmentId)?.name || 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Status:</span>
+                    <span className={`ml-2 px-2 py-1 rounded text-xs ${
+                      viewProgram.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    }`}>
+                      {viewProgram.status === 'active' ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Academic Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Academic Information</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Duration (Years):</span>
+                    <p className="text-muted-foreground">{viewProgram.durationYears || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Total Semesters:</span>
+                    <p className="text-muted-foreground">{viewProgram.totalSemesters || 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="space-y-4 md:col-span-2">
+                <h3 className="text-lg font-semibold">Program Description</h3>
+                <div className="text-sm">
+                  <p className="text-muted-foreground">
+                    {viewProgram.description || 'No description available'}
+                  </p>
+                </div>
+              </div>
+
+              {/* System Information */}
+              <div className="space-y-4 md:col-span-2">
+                <h3 className="text-lg font-semibold">System Information</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Program ID:</span>
+                    <p className="text-muted-foreground font-mono text-xs">{viewProgram.id}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Created At:</span>
+                    <p className="text-muted-foreground">
+                      {viewProgram.createdAt ? new Date(viewProgram.createdAt).toLocaleDateString() : 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Updated At:</span>
+                    <p className="text-muted-foreground">
+                      {viewProgram.updatedAt ? new Date(viewProgram.updatedAt).toLocaleDateString() : 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Department ID:</span>
+                    <p className="text-muted-foreground font-mono text-xs">{viewProgram.departmentId}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Close</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

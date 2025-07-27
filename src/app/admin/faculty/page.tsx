@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { PlusCircle, Edit, Trash2, UsersRound, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, CalendarDays as CalendarIcon, Info, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { PlusCircle, Edit, Trash2, UsersRound, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, CalendarDays as CalendarIcon, Info, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 // Removed unused Textarea import
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -97,7 +97,9 @@ export default function FacultyManagementPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentFaculty, setCurrentFaculty] = useState<Partial<Faculty> | null>(null);
+  const [viewFaculty, setViewFaculty] = useState<Faculty | null>(null);
 
   // Form state
   const [formStaffCode, setFormStaffCode] = useState('');
@@ -212,6 +214,11 @@ export default function FacultyManagementPage() {
 
 
     setIsDialogOpen(true);
+  };
+
+  const handleView = (faculty: Faculty) => {
+    setViewFaculty(faculty);
+    setIsViewDialogOpen(true);
   };
 
   const handleAddNew = () => {
@@ -953,7 +960,7 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                 <SortableTableHeader field="designation" label="Designation" />
                 <SortableTableHeader field="status" label="Status" />
                 <TableHead>Details</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right w-32">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -1010,20 +1017,21 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                         </Tooltip>
                     </TooltipProvider>
                   </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="icon" onClick={() => handleEdit(faculty)} disabled={isSubmitting}>
-                      <Edit className="h-4 w-4" />
-                      <span className="sr-only">Edit Staff</span>
-                    </Button>
-                    <Button
-                        variant="destructive"
-                        size="icon"
-                        onClick={() => handleDelete(faculty.id)}
-                        disabled={isSubmitting}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      <span className="sr-only">Delete Staff</span>
-                    </Button>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Button variant="outline" size="icon" onClick={() => handleView(faculty)} disabled={isSubmitting}>
+                        <Eye className="h-4 w-4" />
+                        <span className="sr-only">View Staff</span>
+                      </Button>
+                      <Button variant="outline" size="icon" onClick={() => handleEdit(faculty)} disabled={isSubmitting}>
+                        <Edit className="h-4 w-4" />
+                        <span className="sr-only">Edit Staff</span>
+                      </Button>
+                      <Button variant="destructive" size="icon" onClick={() => handleDelete(faculty.id)} disabled={isSubmitting}>
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Delete Staff</span>
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -1108,6 +1116,162 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
             </div>
         </CardFooter>
       </Card>
+
+      {/* View Faculty Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Faculty Details</DialogTitle>
+            <DialogDescription>
+              Complete information for {viewFaculty?.gtuName || `${viewFaculty?.firstName} ${viewFaculty?.lastName}`}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {viewFaculty && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Personal Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Personal Information</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Staff Code:</span>
+                    <p className="text-muted-foreground">{viewFaculty.staffCode}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">GTU Name:</span>
+                    <p className="text-muted-foreground">{viewFaculty.gtuName || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Title:</span>
+                    <p className="text-muted-foreground">{viewFaculty.title || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Full Name:</span>
+                    <p className="text-muted-foreground">{viewFaculty.firstName} {viewFaculty.middleName} {viewFaculty.lastName}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Gender:</span>
+                    <p className="text-muted-foreground">{viewFaculty.gender || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Date of Birth:</span>
+                    <p className="text-muted-foreground">
+                      {viewFaculty.dateOfBirth ? format(parseISO(viewFaculty.dateOfBirth), 'dd/MM/yyyy') : 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Marital Status:</span>
+                    <p className="text-muted-foreground">{viewFaculty.maritalStatus || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Aadhar Number:</span>
+                    <p className="text-muted-foreground">{viewFaculty.aadharNumber || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">PAN Card:</span>
+                    <p className="text-muted-foreground">{viewFaculty.panCardNumber || 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Contact Information</h3>
+                <div className="grid grid-cols-1 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Personal Email:</span>
+                    <p className="text-muted-foreground">{viewFaculty.personalEmail || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Institute Email:</span>
+                    <p className="text-muted-foreground">{viewFaculty.instituteEmail || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Contact Number:</span>
+                    <p className="text-muted-foreground">{viewFaculty.contactNumber || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Address:</span>
+                    <p className="text-muted-foreground">{viewFaculty.address || 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Professional Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Professional Information</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Department:</span>
+                    <p className="text-muted-foreground">{viewFaculty.department}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Designation:</span>
+                    <p className="text-muted-foreground">{viewFaculty.designation}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Staff Category:</span>
+                    <p className="text-muted-foreground">{viewFaculty.staffCategory}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Job Type:</span>
+                    <p className="text-muted-foreground">{viewFaculty.jobType}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Joining Date:</span>
+                    <p className="text-muted-foreground">
+                      {viewFaculty.joiningDate ? format(parseISO(viewFaculty.joiningDate), 'dd/MM/yyyy') : 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Institute:</span>
+                    <p className="text-muted-foreground">
+                      {institutes.find(i => i.id === viewFaculty.instituteId)?.name || 'N/A'}
+                    </p>
+                  </div>
+                  <div className="col-span-2">
+                    <span className="font-medium">Status:</span>
+                    <span className={`ml-2 px-2 py-1 rounded text-xs ${
+                      viewFaculty.status === 'active' ? 'bg-green-100 text-green-800' :
+                      viewFaculty.status === 'on_leave' ? 'bg-yellow-100 text-yellow-800' :
+                      viewFaculty.status === 'retired' ? 'bg-blue-100 text-blue-800' :
+                      viewFaculty.status === 'resigned' ? 'bg-red-100 text-red-800' :
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {viewFaculty.status}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Academic Qualifications */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Academic Qualifications</h3>
+                <div className="grid grid-cols-1 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Qualifications:</span>
+                    <p className="text-muted-foreground">{viewFaculty.qualifications || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Experience (Years):</span>
+                    <p className="text-muted-foreground">{viewFaculty.experienceYears || 0}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Specialization:</span>
+                    <p className="text-muted-foreground">{viewFaculty.specialization || 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Close</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

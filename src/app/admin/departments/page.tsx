@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { PlusCircle, Edit, Trash2, Building2, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Building2, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import type { Department, User } from '@/types/entities'; 
@@ -29,7 +29,9 @@ export default function DepartmentManagementPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentDepartment, setCurrentDepartment] = useState<Partial<Department> | null>(null);
+  const [viewDepartment, setViewDepartment] = useState<Department | null>(null);
 
   // Form state
   const [formDeptName, setFormDeptName] = useState('');
@@ -80,6 +82,11 @@ export default function DepartmentManagementPage() {
     setFormEstablishmentYear(undefined);
     setFormStatus('active');
     setCurrentDepartment(null);
+  };
+
+  const handleView = (department: Department) => {
+    setViewDepartment(department);
+    setIsViewDialogOpen(true);
   };
 
   const handleEdit = (department: Department) => {
@@ -513,7 +520,7 @@ dept_sample_1,Information Technology,IT,"Handles all IT related courses and infr
                 <TableHead>HOD</TableHead>
                 <SortableTableHeader field="establishmentYear" label="Estd. Year" />
                 <SortableTableHeader field="status" label="Status" />
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right w-32">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -535,20 +542,21 @@ dept_sample_1,Information Technology,IT,"Handles all IT related courses and infr
                       {dept.status === 'active' ? 'Active' : 'Inactive'}
                     </span>
                   </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="icon" onClick={() => handleEdit(dept)} disabled={isSubmitting}>
-                      <Edit className="h-4 w-4" />
-                      <span className="sr-only">Edit Department</span>
-                    </Button>
-                    <Button 
-                        variant="destructive" 
-                        size="icon" 
-                        onClick={() => handleDelete(dept.id)} 
-                        disabled={isSubmitting}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      <span className="sr-only">Delete Department</span>
-                    </Button>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Button variant="outline" size="icon" onClick={() => handleView(dept)} disabled={isSubmitting}>
+                        <Eye className="h-4 w-4" />
+                        <span className="sr-only">View Department</span>
+                      </Button>
+                      <Button variant="outline" size="icon" onClick={() => handleEdit(dept)} disabled={isSubmitting}>
+                        <Edit className="h-4 w-4" />
+                        <span className="sr-only">Edit Department</span>
+                      </Button>
+                      <Button variant="destructive" size="icon" onClick={() => handleDelete(dept.id)} disabled={isSubmitting}>
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Delete Department</span>
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -633,6 +641,107 @@ dept_sample_1,Information Technology,IT,"Handles all IT related courses and infr
             </div>
         </CardFooter>
       </Card>
+
+      {/* View Department Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Department Details</DialogTitle>
+            <DialogDescription>
+              View detailed information about the department.
+            </DialogDescription>
+          </DialogHeader>
+          {viewDepartment && (
+            <div className="grid gap-6 py-4">
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Basic Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Department Name</Label>
+                    <p className="text-sm">{viewDepartment.name}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Department Code</Label>
+                    <p className="text-sm font-mono">{viewDepartment.code}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Establishment Year</Label>
+                    <p className="text-sm">{viewDepartment.establishmentYear || 'Not specified'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Status</Label>
+                    <p className="text-sm">
+                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                        viewDepartment.status === 'active' 
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
+                          : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                      }`}>
+                        {viewDepartment.status === 'active' ? 'Active' : 'Inactive'}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                {viewDepartment.description && (
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Description</Label>
+                    <p className="text-sm">{viewDepartment.description}</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Leadership Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Head of Department (HOD)</Label>
+                    <p className="text-sm">
+                      {viewDepartment.hodId 
+                        ? facultyUsers.find(u => u.id === viewDepartment.hodId)?.displayName || 'HOD not found'
+                        : 'No HOD assigned'
+                      }
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">HOD ID</Label>
+                    <p className="text-sm font-mono">{viewDepartment.hodId || 'Not assigned'}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Institute Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Institute ID</Label>
+                    <p className="text-sm font-mono">{viewDepartment.instituteId || 'Not specified'}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">System Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Department ID</Label>
+                    <p className="text-sm font-mono">{viewDepartment.id}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Created At</Label>
+                    <p className="text-sm">{viewDepartment.createdAt ? new Date(viewDepartment.createdAt).toLocaleString() : 'Not available'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Last Updated</Label>
+                    <p className="text-sm">{viewDepartment.updatedAt ? new Date(viewDepartment.updatedAt).toLocaleString() : 'Not available'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={() => setIsViewDialogOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

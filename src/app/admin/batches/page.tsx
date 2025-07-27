@@ -9,11 +9,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { PlusCircle, Edit, Trash2, CalendarRange, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { PlusCircle, Edit, Trash2, CalendarRange, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import type { Batch, Program, BatchStatus } from '@/types/entities';
+import type { Batch, Program, BatchStatus, Student } from '@/types/entities';
 import { batchService } from '@/lib/api/batches';
 import { programService } from '@/lib/api/programs';
+import { studentService } from '@/lib/api/students';
 
 type SortField = keyof Batch | 'none';
 type SortDirection = 'asc' | 'desc';
@@ -29,10 +30,13 @@ const BATCH_STATUS_OPTIONS: { value: BatchStatus, label: string }[] = [
 export default function BatchManagementPage() {
   const [batches, setBatches] = useState<Batch[]>([]);
   const [programs, setPrograms] = useState<Program[]>([]);
+  const [students, setStudents] = useState<Student[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentBatch, setCurrentBatch] = useState<Partial<Batch> | null>(null);
+  const [viewBatch, setViewBatch] = useState<Batch | null>(null);
 
   // Form state
   const [formName, setFormName] = useState('');
@@ -58,12 +62,14 @@ export default function BatchManagementPage() {
   const fetchInitialData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [batchData, programData] = await Promise.all([
+      const [batchData, programData, studentData] = await Promise.all([
         batchService.getAllBatches(),
-        programService.getAllPrograms()
+        programService.getAllPrograms(),
+        studentService.getAllStudents()
       ]);
       setBatches(batchData);
       setPrograms(programData);
+      setStudents(studentData);
       if (programData.length > 0 && !formProgramId) {
         setFormProgramId(programData[0].id);
       }
@@ -86,6 +92,11 @@ export default function BatchManagementPage() {
     setFormMaxIntake(undefined);
     setFormStatus('upcoming');
     setCurrentBatch(null);
+  };
+
+  const handleView = (batch: Batch) => {
+    setViewBatch(batch);
+    setIsViewDialogOpen(true);
   };
 
   const handleEdit = (batch: Batch) => {
@@ -138,6 +149,19 @@ export default function BatchManagementPage() {
     if (formMaxIntake !== undefined && (isNaN(formMaxIntake) || formMaxIntake < 0)) {
         toast({ variant: "destructive", title: "Validation Error", description: "Max Intake must be a non-negative number." });
         return;
+    }
+
+    // Check if reducing max intake below current enrollment (when editing)
+    if (currentBatch && currentBatch.id && formMaxIntake !== undefined) {
+        const currentEnrollment = students.filter(s => s.batchId === currentBatch.id).length;
+        if (formMaxIntake < currentEnrollment) {
+            toast({ 
+                variant: "destructive", 
+                title: "Validation Error", 
+                description: `Cannot set max intake to ${formMaxIntake}. This batch currently has ${currentEnrollment} enrolled students.` 
+            });
+            return;
+        }
     }
 
     setIsSubmitting(true);
@@ -481,9 +505,9 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
                 <SortableTableHeader field="programId" label="Program" />
                 <SortableTableHeader field="startAcademicYear" label="Start Year" />
                 <SortableTableHeader field="endAcademicYear" label="End Year" />
-                <SortableTableHeader field="maxIntake" label="Max Intake" />
+                <SortableTableHeader field="maxIntake" label="Enrollment" />
                 <SortableTableHeader field="status" label="Status" />
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right w-32">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -494,7 +518,35 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
                   <TableCell>{programs.find(p => p.id === batch.programId)?.name || 'N/A'}</TableCell>
                   <TableCell>{batch.startAcademicYear}</TableCell>
                   <TableCell>{batch.endAcademicYear || '-'}</TableCell>
-                  <TableCell>{batch.maxIntake || '-'}</TableCell>
+                  <TableCell>
+                    {(() => {
+                      const enrolledCount = students.filter(s => s.batchId === batch.id).length;
+                      const maxIntake = batch.maxIntake;
+                      if (maxIntake) {
+                        const percentage = Math.round((enrolledCount / maxIntake) * 100);
+                        const isOverCapacity = enrolledCount > maxIntake;
+                        return (
+                          <div className="flex flex-col">
+                            <span className={`text-sm font-medium ${
+                              isOverCapacity ? 'text-red-600' : enrolledCount === maxIntake ? 'text-orange-600' : 'text-green-600'
+                            }`}>
+                              {enrolledCount} / {maxIntake}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {percentage}% filled
+                            </span>
+                          </div>
+                        );
+                      } else {
+                        return (
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium">{enrolledCount}</span>
+                            <span className="text-xs text-muted-foreground">No limit</span>
+                          </div>
+                        );
+                      }
+                    })()} 
+                  </TableCell>
                   <TableCell>
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
                         batch.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
@@ -505,9 +557,21 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
                       {BATCH_STATUS_OPTIONS.find(s => s.value === batch.status)?.label || batch.status}
                     </span>
                   </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="icon" onClick={() => handleEdit(batch)} disabled={isSubmitting}><Edit className="h-4 w-4" /><span className="sr-only">Edit Batch</span></Button>
-                    <Button variant="destructive" size="icon" onClick={() => handleDelete(batch.id)} disabled={isSubmitting}><Trash2 className="h-4 w-4" /><span className="sr-only">Delete Batch</span></Button>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Button variant="outline" size="icon" onClick={() => handleView(batch)} disabled={isSubmitting}>
+                        <Eye className="h-4 w-4" />
+                        <span className="sr-only">View Batch</span>
+                      </Button>
+                      <Button variant="outline" size="icon" onClick={() => handleEdit(batch)} disabled={isSubmitting}>
+                        <Edit className="h-4 w-4" />
+                        <span className="sr-only">Edit Batch</span>
+                      </Button>
+                      <Button variant="destructive" size="icon" onClick={() => handleDelete(batch.id)} disabled={isSubmitting}>
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Delete Batch</span>
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -536,6 +600,144 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
             </div>
         </CardFooter>
       </Card>
+
+      {/* View Batch Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Batch Details</DialogTitle>
+            <DialogDescription>
+              View detailed information about the batch.
+            </DialogDescription>
+          </DialogHeader>
+          {viewBatch && (
+            <div className="grid gap-6 py-4">
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Basic Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Batch Name</Label>
+                    <p className="text-sm">{viewBatch.name}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Status</Label>
+                    <p className="text-sm">
+                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                        viewBatch.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
+                        : viewBatch.status === 'upcoming' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+                        : viewBatch.status === 'completed' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300'
+                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                      }`}>
+                        {BATCH_STATUS_OPTIONS.find(s => s.value === viewBatch.status)?.label || viewBatch.status}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Academic Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Start Academic Year</Label>
+                    <p className="text-sm">{viewBatch.startAcademicYear}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">End Academic Year</Label>
+                    <p className="text-sm">{viewBatch.endAcademicYear || 'Not specified'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Max Intake</Label>
+                    <p className="text-sm">{viewBatch.maxIntake || 'Not specified'}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Program Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Program ID</Label>
+                    <p className="text-sm font-mono">{viewBatch.programId}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Program Name</Label>
+                    <p className="text-sm">{programs.find(p => p.id === viewBatch.programId)?.name || 'Not found'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Program Code</Label>
+                    <p className="text-sm">{programs.find(p => p.id === viewBatch.programId)?.code || 'Not found'}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">System Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Batch ID</Label>
+                    <p className="text-sm font-mono">{viewBatch.id}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Created At</Label>
+                    <p className="text-sm">{viewBatch.createdAt ? new Date(viewBatch.createdAt).toLocaleString() : 'Not available'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Last Updated</Label>
+                    <p className="text-sm">{viewBatch.updatedAt ? new Date(viewBatch.updatedAt).toLocaleString() : 'Not available'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Assigned Students */}
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Assigned Students</h4>
+                {(() => {
+                  const assignedStudents = students.filter(s => s.batchId === viewBatch.id);
+                  if (assignedStudents.length === 0) {
+                    return (
+                      <p className="text-sm text-muted-foreground">No students assigned to this batch.</p>
+                    );
+                  }
+                  return (
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <p className="text-sm font-medium">
+                          Total Students: {assignedStudents.length}
+                          {viewBatch.maxIntake && ` / ${viewBatch.maxIntake} (${Math.round((assignedStudents.length / viewBatch.maxIntake) * 100)}% filled)`}
+                        </p>
+                        {viewBatch.maxIntake && assignedStudents.length > viewBatch.maxIntake && (
+                          <span className="text-xs px-2 py-1 bg-red-100 text-red-800 rounded-full">
+                            Over Capacity
+                          </span>
+                        )}
+                      </div>
+                      <div className="max-h-40 overflow-y-auto space-y-1">
+                        {assignedStudents.map(student => (
+                          <div key={student.id} className="flex justify-between items-center p-2 bg-muted/50 rounded text-xs">
+                            <div>
+                              <span className="font-medium">{student.enrollmentNumber}</span>
+                              <span className="ml-2">
+                                {[student.firstName, student.middleName, student.lastName].filter(Boolean).join(' ') || student.fullNameGtuFormat}
+                              </span>
+                            </div>
+                            <div className="text-muted-foreground">
+                              Sem {student.currentSemester}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={() => setIsViewDialogOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

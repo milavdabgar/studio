@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { PlusCircle, Edit, Trash2, Landmark, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Landmark, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import type { Institute } from '@/types/entities';
@@ -27,7 +27,9 @@ export default function InstituteManagementPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentInstitute, setCurrentInstitute] = useState<Partial<Institute> | null>(null);
+  const [viewInstitute, setViewInstitute] = useState<Institute | null>(null);
 
   // Form state
   const [formName, setFormName] = useState('');
@@ -73,6 +75,11 @@ export default function InstituteManagementPage() {
     setFormContactEmail(''); setFormContactPhone(''); setFormWebsite('');
     setFormStatus('active'); setFormEstablishmentYear(undefined);
     setCurrentInstitute(null);
+  };
+
+  const handleView = (institute: Institute) => {
+    setViewInstitute(institute);
+    setIsViewDialogOpen(true);
   };
 
   const handleEdit = (institute: Institute) => {
@@ -444,7 +451,7 @@ inst_sample_1,Another Polytechnic,AP,123 Sample Street,contact@ap.edu,123-456-78
                 <SortableTableHeader field="website" label="Website" />
                 <SortableTableHeader field="establishmentYear" label="Estd. Year" />
                 <SortableTableHeader field="status" label="Status" />
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right w-32">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -461,14 +468,26 @@ inst_sample_1,Another Polytechnic,AP,123 Sample Street,contact@ap.edu,123-456-78
                       {institute.status === 'active' ? 'Active' : 'Inactive'}
                     </span>
                   </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="icon" onClick={() => handleEdit(institute)} disabled={isSubmitting}><Edit className="h-4 w-4" /><span className="sr-only">Edit Institute</span></Button>
-                    <Button variant="destructive" size="icon" onClick={() => handleDelete(institute.id)} disabled={isSubmitting}><Trash2 className="h-4 w-4" /><span className="sr-only">Delete Institute</span></Button>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Button variant="outline" size="icon" onClick={() => handleView(institute)} disabled={isSubmitting}>
+                        <Eye className="h-4 w-4" />
+                        <span className="sr-only">View Institute</span>
+                      </Button>
+                      <Button variant="outline" size="icon" onClick={() => handleEdit(institute)} disabled={isSubmitting}>
+                        <Edit className="h-4 w-4" />
+                        <span className="sr-only">Edit Institute</span>
+                      </Button>
+                      <Button variant="destructive" size="icon" onClick={() => handleDelete(institute.id)} disabled={isSubmitting}>
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Delete Institute</span>
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
               {paginatedInstitutes.length === 0 && (
-                 <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">No institutes found. Adjust filters or add a new institute.</TableCell></TableRow>
+                 <TableRow><TableCell colSpan={9} className="text-center text-muted-foreground py-8">No institutes found. Adjust filters or add a new institute.</TableCell></TableRow>
               )}
             </TableBody>
           </Table>
@@ -492,6 +511,104 @@ inst_sample_1,Another Polytechnic,AP,123 Sample Street,contact@ap.edu,123-456-78
             </div>
         </CardFooter>
       </Card>
+
+      {/* View Institute Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Institute Details</DialogTitle>
+            <DialogDescription>
+              View detailed information about the institute.
+            </DialogDescription>
+          </DialogHeader>
+          {viewInstitute && (
+            <div className="grid gap-6 py-4">
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Basic Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Institute Name</Label>
+                    <p className="text-sm">{viewInstitute.name}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Institute Code</Label>
+                    <p className="text-sm font-mono">{viewInstitute.code}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Establishment Year</Label>
+                    <p className="text-sm">{viewInstitute.establishmentYear || 'Not specified'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Status</Label>
+                    <p className="text-sm">
+                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                        viewInstitute.status === 'active' 
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
+                          : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                      }`}>
+                        {viewInstitute.status === 'active' ? 'Active' : 'Inactive'}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                {viewInstitute.address && (
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Address</Label>
+                    <p className="text-sm">{viewInstitute.address}</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Contact Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Contact Email</Label>
+                    <p className="text-sm">{viewInstitute.contactEmail || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Contact Phone</Label>
+                    <p className="text-sm">{viewInstitute.contactPhone || 'Not provided'}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <Label className="text-sm font-medium text-muted-foreground">Website</Label>
+                    <p className="text-sm">
+                      {viewInstitute.website ? (
+                        <a href={viewInstitute.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                          {viewInstitute.website}
+                        </a>
+                      ) : (
+                        'Not provided'
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">System Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Institute ID</Label>
+                    <p className="text-sm font-mono">{viewInstitute.id}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Created At</Label>
+                    <p className="text-sm">{viewInstitute.createdAt ? new Date(viewInstitute.createdAt).toLocaleString() : 'Not available'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Last Updated</Label>
+                    <p className="text-sm">{viewInstitute.updatedAt ? new Date(viewInstitute.updatedAt).toLocaleString() : 'Not available'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={() => setIsViewDialogOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, PlusCircle, Edit, Trash2, Users2 as CommitteeIcon, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { CalendarIcon, PlusCircle, Edit, Trash2, Users2 as CommitteeIcon, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import { format, parseISO, isValid } from 'date-fns';
@@ -41,7 +41,9 @@ export default function CommitteeManagementPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentCommittee, setCurrentCommittee] = useState<Partial<Committee> | null>(null);
+  const [viewCommittee, setViewCommittee] = useState<Committee | null>(null);
 
   // Form state
   const [formName, setFormName] = useState('');
@@ -103,6 +105,11 @@ export default function CommitteeManagementPage() {
     setFormStatus('active');
     setFormConvenerId(NO_CONVENER_VALUE);
     setCurrentCommittee(null);
+  };
+
+  const handleView = (committee: Committee) => {
+    setViewCommittee(committee);
+    setIsViewDialogOpen(true);
   };
 
   const handleEdit = (committee: Committee) => {
@@ -553,7 +560,7 @@ cmt_sample_1,Academic Committee,ACCOM,"Oversees academic policies","To ensure ac
                 <TableHead>Convener</TableHead>
                 <SortableTableHeader field="formationDate" label="Formed On" />
                 <SortableTableHeader field="status" label="Status" />
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right w-32">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -574,9 +581,21 @@ cmt_sample_1,Academic Committee,ACCOM,"Oversees academic policies","To ensure ac
                       {COMMITTEE_STATUS_OPTIONS.find(s => s.value === committee.status)?.label || committee.status}
                     </span>
                   </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="icon" onClick={() => handleEdit(committee)} disabled={isSubmitting}><Edit className="h-4 w-4" /><span className="sr-only">Edit Committee</span></Button>
-                    <Button variant="destructive" size="icon" onClick={() => handleDelete(committee.id)} disabled={isSubmitting}><Trash2 className="h-4 w-4" /><span className="sr-only">Delete Committee</span></Button>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Button variant="outline" size="icon" onClick={() => handleView(committee)} disabled={isSubmitting}>
+                        <Eye className="h-4 w-4" />
+                        <span className="sr-only">View Committee</span>
+                      </Button>
+                      <Button variant="outline" size="icon" onClick={() => handleEdit(committee)} disabled={isSubmitting}>
+                        <Edit className="h-4 w-4" />
+                        <span className="sr-only">Edit Committee</span>
+                      </Button>
+                      <Button variant="destructive" size="icon" onClick={() => handleDelete(committee.id)} disabled={isSubmitting}>
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Delete Committee</span>
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -605,6 +624,119 @@ cmt_sample_1,Academic Committee,ACCOM,"Oversees academic policies","To ensure ac
             </div>
         </CardFooter>
       </Card>
+
+      {/* View Committee Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Committee Details</DialogTitle>
+            <DialogDescription>
+              View detailed information about the committee.
+            </DialogDescription>
+          </DialogHeader>
+          {viewCommittee && (
+            <div className="grid gap-6 py-4">
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Basic Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Committee Name</Label>
+                    <p className="text-sm">{viewCommittee.name}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Committee Code</Label>
+                    <p className="text-sm font-mono">{viewCommittee.code}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Status</Label>
+                    <p className="text-sm">
+                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                        viewCommittee.status === 'active' 
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                          : viewCommittee.status === 'inactive' 
+                          ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                          : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                      }`}>
+                        {COMMITTEE_STATUS_OPTIONS.find(s => s.value === viewCommittee.status)?.label || viewCommittee.status}
+                      </span>
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Institute</Label>
+                    <p className="text-sm">{institutes.find(i => i.id === viewCommittee.instituteId)?.name || 'Not specified'}</p>
+                  </div>
+                </div>
+                {viewCommittee.description && (
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Description</Label>
+                    <p className="text-sm">{viewCommittee.description}</p>
+                  </div>
+                )}
+                {viewCommittee.purpose && (
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Purpose</Label>
+                    <p className="text-sm">{viewCommittee.purpose}</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Leadership & Timeline</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Convener</Label>
+                    <p className="text-sm">
+                      {viewCommittee.convenerId 
+                        ? facultyUsers.find(u => u.id === viewCommittee.convenerId)?.displayName || 'Convener not found'
+                        : 'No convener assigned'
+                      }
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Formation Date</Label>
+                    <p className="text-sm">
+                      {viewCommittee.formationDate && isValid(parseISO(viewCommittee.formationDate))
+                        ? format(parseISO(viewCommittee.formationDate), 'PPP')
+                        : 'Not specified'
+                      }
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Dissolution Date</Label>
+                    <p className="text-sm">
+                      {viewCommittee.dissolutionDate && isValid(parseISO(viewCommittee.dissolutionDate))
+                        ? format(parseISO(viewCommittee.dissolutionDate), 'PPP')
+                        : 'Not set'
+                      }
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">System Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Committee ID</Label>
+                    <p className="text-sm font-mono">{viewCommittee.id}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Created At</Label>
+                    <p className="text-sm">{viewCommittee.createdAt ? new Date(viewCommittee.createdAt).toLocaleString() : 'Not available'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Last Updated</Label>
+                    <p className="text-sm">{viewCommittee.updatedAt ? new Date(viewCommittee.updatedAt).toLocaleString() : 'Not available'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={() => setIsViewDialogOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { PlusCircle, Edit, Trash2, ClipboardList, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye } from "lucide-react";
+import { PlusCircle, Edit, Trash2, ClipboardList, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
@@ -805,7 +805,6 @@ DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70
                 <SortableTableHeader field="subcode" label="Subcode" />
                 <SortableTableHeader field="subjectName" label="Subject Name" />
                 <SortableTableHeader field="credits" label="Credits" />
-                <TableHead>Syllabus</TableHead>
                 <TableHead className="text-right w-32">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -819,17 +818,14 @@ DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70
                   <TableCell>{course.subcode}</TableCell>
                   <TableCell id={`course-name-${course.id}`} className="font-medium">{course.subjectName}</TableCell>
                   <TableCell>{course.credits}</TableCell>
-                  <TableCell>
-                    {course.syllabusUrl ? (
-                      <a href={course.syllabusUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">
-                        View
-                      </a>
-                    ) : (
-                      'N/A'
-                    )}
-                  </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
+                      {course.syllabusUrl && (
+                        <Button variant="outline" size="icon" onClick={() => window.open(course.syllabusUrl, '_blank')} disabled={isSubmitting}>
+                          <FileText className="h-4 w-4" />
+                          <span className="sr-only">View Syllabus PDF</span>
+                        </Button>
+                      )}
                       <Button variant="outline" size="icon" onClick={() => handleView(course)} disabled={isSubmitting}>
                         <Eye className="h-4 w-4" />
                         <span className="sr-only">View Course</span>
@@ -847,7 +843,7 @@ DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70
                 </TableRow>
               ))}
               {paginatedCourses.length === 0 && (
-                 <TableRow><TableCell colSpan={9} className="text-center text-muted-foreground py-8">No courses found. Adjust filters or add a new course.</TableCell></TableRow>
+                 <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">No courses found. Adjust filters or add a new course.</TableCell></TableRow>
               )}
             </TableBody>
           </Table>

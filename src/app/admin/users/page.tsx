@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from "@/components/ui/switch";
-import { PlusCircle, Edit, Trash2, Users as UsersIcon, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Users as UsersIcon, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { SystemUser, UserRole as UserRoleCode, Institute, Role } from '@/types/entities'; 
 import { userService } from '@/lib/api/users';
@@ -37,7 +37,9 @@ export default function UserManagementPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<Partial<SystemUser> & { password?: string; confirmPassword?: string } | null>(null);
+  const [viewUser, setViewUser] = useState<SystemUser | null>(null);
 
   const [formFullName, setFormFullName] = useState('');
   const [formFirstName, setFormFirstName] = useState('');
@@ -166,6 +168,11 @@ export default function UserManagementPage() {
     }
 
     setIsDialogOpen(true);
+  };
+
+  const handleView = (user: SystemUser) => {
+    setViewUser(user);
+    setIsViewDialogOpen(true);
   };
 
   const handleAddNew = () => {
@@ -725,7 +732,7 @@ export default function UserManagementPage() {
                 <SortableTableHeader field="roles" label="Roles" />
                  <TableHead>Institute</TableHead>
                 <SortableTableHeader field="isActive" label="Status" />
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right w-32">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -751,20 +758,26 @@ export default function UserManagementPage() {
                       {user.isActive ? 'Active' : 'Inactive'}
                     </span>
                   </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="icon" onClick={() => handleEdit(user)} disabled={isSubmitting}>
-                      <Edit className="h-4 w-4" />
-                      <span className="sr-only">Edit User</span>
-                    </Button>
-                    <Button 
-                        variant="destructive" 
-                        size="icon" 
-                        onClick={() => handleDelete(user.id)} 
-                        disabled={isSubmitting || user.email === "admin@gppalanpur.in" || user.instituteEmail === "admin@gppalanpur.in"}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      <span className="sr-only">Delete User</span>
-                    </Button>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Button variant="outline" size="icon" onClick={() => handleView(user)} disabled={isSubmitting}>
+                        <Eye className="h-4 w-4" />
+                        <span className="sr-only">View User</span>
+                      </Button>
+                      <Button variant="outline" size="icon" onClick={() => handleEdit(user)} disabled={isSubmitting}>
+                        <Edit className="h-4 w-4" />
+                        <span className="sr-only">Edit User</span>
+                      </Button>
+                      <Button 
+                          variant="destructive" 
+                          size="icon" 
+                          onClick={() => handleDelete(user.id)} 
+                          disabled={isSubmitting || user.email === "admin@gppalanpur.in" || user.instituteEmail === "admin@gppalanpur.in"}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Delete User</span>
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -849,6 +862,154 @@ export default function UserManagementPage() {
             </div>
         </CardFooter>
       </Card>
+
+      {/* View User Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>User Details</DialogTitle>
+            <DialogDescription>
+              Complete information for {viewUser?.fullName || viewUser?.firstName + ' ' + viewUser?.lastName}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {viewUser && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Personal Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Personal Information</h3>
+                <div className="grid grid-cols-1 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Full Name:</span>
+                    <p className="text-muted-foreground">{viewUser.fullName || `${viewUser.firstName} ${viewUser.middleName} ${viewUser.lastName}`.trim()}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">First Name:</span>
+                    <p className="text-muted-foreground">{viewUser.firstName || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Middle Name:</span>
+                    <p className="text-muted-foreground">{viewUser.middleName || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Last Name:</span>
+                    <p className="text-muted-foreground">{viewUser.lastName || 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Contact Information</h3>
+                <div className="grid grid-cols-1 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Personal Email:</span>
+                    <p className="text-muted-foreground">{viewUser.email}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Institute Email:</span>
+                    <p className="text-muted-foreground">{viewUser.instituteEmail || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Phone Number:</span>
+                    <p className="text-muted-foreground">{viewUser.phoneNumber || 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* System Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">System Information</h3>
+                <div className="grid grid-cols-1 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">User ID:</span>
+                    <p className="text-muted-foreground font-mono text-xs">{viewUser.id}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Institute:</span>
+                    <p className="text-muted-foreground">
+                      {institutes.find(i => i.id === viewUser.instituteId)?.name || 'No Institute Assigned'}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Status:</span>
+                    <span className={`ml-2 px-2 py-1 rounded text-xs ${
+                      viewUser.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    }`}>
+                      {viewUser.isActive ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="font-medium">Email Verified:</span>
+                    <span className={`ml-2 px-2 py-1 rounded text-xs ${
+                      viewUser.isEmailVerified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {viewUser.isEmailVerified ? 'Verified' : 'Not Verified'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Roles and Permissions */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Roles and Permissions</h3>
+                <div className="space-y-2">
+                  <span className="font-medium text-sm">Assigned Roles:</span>
+                  <div className="flex flex-wrap gap-2">
+                    {viewUser.roles && viewUser.roles.length > 0 ? (
+                      viewUser.roles.map((roleCode) => {
+                        const role = allSystemRoles.find(r => r.code === roleCode);
+                        return (
+                          <span key={roleCode} className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-medium">
+                            {role?.name || roleCode}
+                          </span>
+                        );
+                      })
+                    ) : (
+                      <span className="text-muted-foreground text-sm">No roles assigned</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Timestamps */}
+              <div className="space-y-4 md:col-span-2">
+                <h3 className="text-lg font-semibold">Account Information</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Created At:</span>
+                    <p className="text-muted-foreground">
+                      {viewUser.createdAt ? new Date(viewUser.createdAt).toLocaleDateString() : 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Updated At:</span>
+                    <p className="text-muted-foreground">
+                      {viewUser.updatedAt ? new Date(viewUser.updatedAt).toLocaleDateString() : 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Last Login:</span>
+                    <p className="text-muted-foreground">
+                      {viewUser.lastLoginAt ? new Date(viewUser.lastLoginAt).toLocaleDateString() : 'Never'}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Login Count:</span>
+                    <p className="text-muted-foreground">{viewUser.loginCount || 0}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Close</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

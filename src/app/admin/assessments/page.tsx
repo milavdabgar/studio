@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, PlusCircle, Edit, Trash2, FileText, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { CalendarIcon, PlusCircle, Edit, Trash2, FileText, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import { format, parseISO, isValid } from 'date-fns';
@@ -48,6 +48,8 @@ export default function AssessmentManagementPage() {
   
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [viewAssessment, setViewAssessment] = useState<Assessment | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentAssessment, setCurrentAssessment] = useState<Partial<Assessment> | null>(null);
 
@@ -130,6 +132,11 @@ export default function AssessmentManagementPage() {
     setFormInstructions('');
     setFormFacultyId('');
     setCurrentAssessment(null);
+  };
+
+  const handleView = (assessment: Assessment) => {
+    setViewAssessment(assessment);
+    setIsViewDialogOpen(true);
   };
 
   const handleEdit = (assessment: Assessment) => {
@@ -671,7 +678,7 @@ asm_s1,Midterm 1,crs1,CS101,prog1,DCE,batch1,2024-2027,Midterm,"Covers first 3 u
                 <SortableTableHeader field="type" label="Type" />
                 <SortableTableHeader field="maxMarks" label="Max Marks" />
                 <SortableTableHeader field="status" label="Status" />
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right w-32">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -694,9 +701,21 @@ asm_s1,Midterm 1,crs1,CS101,prog1,DCE,batch1,2024-2027,Midterm,"Covers first 3 u
                       {ASSESSMENT_STATUS_OPTIONS.find(s => s.value === assessment.status)?.label || assessment.status}
                     </span>
                   </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="icon" onClick={() => handleEdit(assessment)} disabled={isSubmitting}><Edit className="h-4 w-4" /><span className="sr-only">Edit Assessment</span></Button>
-                    <Button variant="destructive" size="icon" onClick={() => handleDelete(assessment.id)} disabled={isSubmitting}><Trash2 className="h-4 w-4" /><span className="sr-only">Delete Assessment</span></Button>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Button variant="outline" size="icon" onClick={() => handleView(assessment)} disabled={isSubmitting}>
+                        <Eye className="h-4 w-4" />
+                        <span className="sr-only">View Assessment</span>
+                      </Button>
+                      <Button variant="outline" size="icon" onClick={() => handleEdit(assessment)} disabled={isSubmitting}>
+                        <Edit className="h-4 w-4" />
+                        <span className="sr-only">Edit Assessment</span>
+                      </Button>
+                      <Button variant="destructive" size="icon" onClick={() => handleDelete(assessment.id)} disabled={isSubmitting}>
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Delete Assessment</span>
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -725,6 +744,171 @@ asm_s1,Midterm 1,crs1,CS101,prog1,DCE,batch1,2024-2027,Midterm,"Covers first 3 u
             </div>
         </CardFooter>
       </Card>
+
+      {/* View Assessment Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Assessment Details</DialogTitle>
+            <DialogDescription>
+              View detailed information about the assessment.
+            </DialogDescription>
+          </DialogHeader>
+          {viewAssessment && (
+            <div className="grid gap-6 py-4">
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Basic Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Assessment Name</Label>
+                    <p className="text-sm">{viewAssessment.name}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Type</Label>
+                    <p className="text-sm">{viewAssessment.type}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Status</Label>
+                    <p className="text-sm">
+                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                        viewAssessment.status === 'Published' 
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                          : viewAssessment.status === 'Ongoing' 
+                          ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+                          : viewAssessment.status === 'Completed'
+                          ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300'
+                          : viewAssessment.status === 'Cancelled'
+                          ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                          : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                      }`}>
+                        {viewAssessment.status}
+                      </span>
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Max Marks</Label>
+                    <p className="text-sm">{viewAssessment.maxMarks}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Passing Marks</Label>
+                    <p className="text-sm">{viewAssessment.passingMarks || 'Not specified'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Weightage</Label>
+                    <p className="text-sm">{viewAssessment.weightage ? `${viewAssessment.weightage}%` : 'Not specified'}</p>
+                  </div>
+                </div>
+                {viewAssessment.description && (
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Description</Label>
+                    <p className="text-sm">{viewAssessment.description}</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Course & Program Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Course</Label>
+                    <p className="text-sm">{courses.find(c => c.id === viewAssessment.courseId)?.subjectName || 'Not found'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Course Code</Label>
+                    <p className="text-sm font-mono">{courses.find(c => c.id === viewAssessment.courseId)?.subcode || 'Not found'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Program</Label>
+                    <p className="text-sm">{programs.find(p => p.id === viewAssessment.programId)?.name || 'Not found'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Batch</Label>
+                    <p className="text-sm">
+                      {viewAssessment.batchId 
+                        ? batches.find(b => b.id === viewAssessment.batchId)?.name || 'Not found'
+                        : 'All batches in program'
+                      }
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Timeline</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Assessment Date</Label>
+                    <p className="text-sm">
+                      {viewAssessment.assessmentDate && isValid(parseISO(viewAssessment.assessmentDate))
+                        ? format(parseISO(viewAssessment.assessmentDate), 'PPP')
+                        : 'Not scheduled'
+                      }
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Due Date</Label>
+                    <p className="text-sm">
+                      {viewAssessment.dueDate && isValid(parseISO(viewAssessment.dueDate))
+                        ? format(parseISO(viewAssessment.dueDate), 'PPP')
+                        : 'Not set'
+                      }
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Faculty Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Assigned Faculty</Label>
+                    <p className="text-sm">
+                      {viewAssessment.facultyId 
+                        ? facultyList.find(f => f.id === viewAssessment.facultyId)?.displayName || 'Faculty not found'
+                        : 'Not assigned'
+                      }
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Faculty ID</Label>
+                    <p className="text-sm font-mono">{viewAssessment.facultyId || 'Not assigned'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {viewAssessment.instructions && (
+                <div className="grid gap-4">
+                  <h4 className="font-semibold text-primary border-b pb-2">Instructions</h4>
+                  <div>
+                    <p className="text-sm">{viewAssessment.instructions}</p>
+                  </div>
+                </div>
+              )}
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">System Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Assessment ID</Label>
+                    <p className="text-sm font-mono">{viewAssessment.id}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Created At</Label>
+                    <p className="text-sm">{viewAssessment.createdAt ? new Date(viewAssessment.createdAt).toLocaleString() : 'Not available'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Last Updated</Label>
+                    <p className="text-sm">{viewAssessment.updatedAt ? new Date(viewAssessment.updatedAt).toLocaleString() : 'Not available'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={() => setIsViewDialogOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

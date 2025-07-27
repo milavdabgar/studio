@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { PlusCircle, Edit, Trash2, Users, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, CalendarDays as CalendarIcon, Info, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Users, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, CalendarDays as CalendarIcon, Info, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -17,10 +17,11 @@ import { format, parseISO, isValid } from 'date-fns';
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Checkbox } from '@/components/ui/checkbox';
-import type { Student, StudentStatus, Program, Institute } from '@/types/entities'; 
+import type { Student, StudentStatus, Program, Institute, Batch } from '@/types/entities'; 
 import { studentService } from '@/lib/api/students';
 import { programService } from '@/lib/api/programs';
 import { instituteService } from '@/lib/api/institutes';
+import { batchService } from '@/lib/api/batches';
 
 const STUDENT_STATUS_OPTIONS: { value: StudentStatus; label: string }[] = [
   { value: "active", label: "Active" },
@@ -53,10 +54,15 @@ export default function AdminStudentsPage() {
   const [studentList, setStudentList] = useState<Student[]>([]);
   const [programs, setPrograms] = useState<Program[]>([]);
   const [institutes, setInstitutes] = useState<Institute[]>([]);
+  const [batches, setBatches] = useState<Batch[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [isBulkBatchDialogOpen, setIsBulkBatchDialogOpen] = useState(false);
   const [currentStudent, setCurrentStudent] = useState<Partial<Student> | null>(null);
+  const [viewStudent, setViewStudent] = useState<Student | null>(null);
+  const [bulkBatchId, setBulkBatchId] = useState<string>('');
 
   // Form state
   const [formEnrollmentNumber, setFormEnrollmentNumber] = useState('');
@@ -68,6 +74,7 @@ export default function AdminStudentsPage() {
   const [formContactNumber, setFormContactNumber] = useState('');
   const [formAddress, setFormAddress] = useState('');
   const [formProgramId, setFormProgramId] = useState<string>('');
+  const [formBatchId, setFormBatchId] = useState<string>('');
   const [formCurrentSemester, setFormCurrentSemester] = useState<number>(1);
   const [formAdmissionDate, setFormAdmissionDate] = useState<Date | undefined>(undefined);
   const [formCategory, setFormCategory] = useState<string>('');
@@ -90,6 +97,7 @@ export default function AdminStudentsPage() {
   const [selectedGtuFile, setSelectedGtuFile] = useState<File | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterProgramVal, setFilterProgramVal] = useState<string>('all');
+  const [filterBatchVal, setFilterBatchVal] = useState<string>('all');
   const [filterStatusVal, setFilterStatusVal] = useState<StudentStatus | 'all'>('all');
   const [filterSemesterVal, setFilterSemesterVal] = useState<string>('all');
   const [sortField, setSortField] = useState<SortField>('enrollmentNumber');
@@ -104,14 +112,16 @@ export default function AdminStudentsPage() {
   const fetchInitialData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [studentData, programData, instituteData] = await Promise.all([
+      const [studentData, programData, instituteData, batchData] = await Promise.all([
         studentService.getAllStudents(),
         programService.getAllPrograms(),
-        instituteService.getAllInstitutes()
+        instituteService.getAllInstitutes(),
+        batchService.getAllBatches()
       ]);
       setStudentList(studentData);
       setPrograms(programData);
       setInstitutes(instituteData);
+      setBatches(batchData);
       if (programData.length > 0 && !formProgramId) {
         setFormProgramId(programData[0].id);
       }
@@ -136,6 +146,7 @@ export default function AdminStudentsPage() {
     setFormContactNumber('');
     setFormAddress('');
     setFormProgramId(programs.length > 0 ? programs[0].id : '');
+    setFormBatchId('');
     setFormCurrentSemester(1);
     setFormAdmissionDate(undefined);
     setFormCategory('');
@@ -165,6 +176,7 @@ export default function AdminStudentsPage() {
     setFormContactNumber(student.contactNumber || '');
     setFormAddress(student.address || '');
     setFormProgramId(student.programId || (programs.length > 0 ? programs[0].id : ''));
+    setFormBatchId(student.batchId || '');
     setFormCurrentSemester(student.currentSemester || 1);
     setFormAdmissionDate(student.admissionDate && isValid(parseISO(student.admissionDate)) ? parseISO(student.admissionDate) : undefined);
     setFormCategory(student.category || '');
@@ -184,6 +196,11 @@ export default function AdminStudentsPage() {
     setFormGuardianAnnualIncome(student.guardianDetails?.annualIncome || undefined);
 
     setIsDialogOpen(true);
+  };
+
+  const handleView = (student: Student) => {
+    setViewStudent(student);
+    setIsViewDialogOpen(true);
   };
 
   const handleAddNew = () => {
@@ -266,6 +283,7 @@ export default function AdminStudentsPage() {
       contactNumber: formContactNumber.trim() || undefined,
       address: formAddress.trim() || undefined,
       programId: formProgramId,
+      batchId: formBatchId || undefined,
       currentSemester: formCurrentSemester,
       admissionDate: formAdmissionDate ? format(formAdmissionDate, "yyyy-MM-dd") : undefined,
       category: formCategory || undefined,
@@ -461,6 +479,13 @@ export default function AdminStudentsPage() {
     if (filterStatusVal !== 'all') {
       result = result.filter(s => s.status === filterStatusVal);
     }
+    if (filterBatchVal !== 'all') {
+      if (filterBatchVal === 'unassigned') {
+        result = result.filter(s => !s.batchId);
+      } else {
+        result = result.filter(s => s.batchId === filterBatchVal);
+      }
+    }
     if (filterSemesterVal !== 'all') {
       result = result.filter(s => s.currentSemester === parseInt(filterSemesterVal));
     }
@@ -483,7 +508,7 @@ export default function AdminStudentsPage() {
       });
     }
     return result;
-  }, [studentList, searchTerm, filterProgramVal, filterStatusVal, filterSemesterVal, sortField, sortDirection]);
+  }, [studentList, searchTerm, filterProgramVal, filterBatchVal, filterStatusVal, filterSemesterVal, sortField, sortDirection]);
 
   const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
   const paginatedStudents = useMemo(() => {
@@ -493,7 +518,7 @@ export default function AdminStudentsPage() {
 
   useEffect(() => {
     setCurrentPage(1); 
-  }, [searchTerm, filterProgramVal, filterStatusVal, filterSemesterVal, itemsPerPage]);
+  }, [searchTerm, filterProgramVal, filterBatchVal, filterStatusVal, filterSemesterVal, itemsPerPage]);
 
   const handleSelectAll = (checked: boolean | 'indeterminate') => {
     if (checked === true) {
@@ -570,6 +595,63 @@ export default function AdminStudentsPage() {
     }
     setIsSubmitting(false);
   };
+
+  const handleBulkBatchAssignment = async () => {
+    if (selectedStudentIds.length === 0) {
+      toast({ variant: "destructive", title: "No Students Selected", description: "Please select students to assign to batch." });
+      return;
+    }
+    if (!bulkBatchId) {
+      toast({ variant: "destructive", title: "No Batch Selected", description: "Please select a batch to assign students to." });
+      return;
+    }
+
+    setIsSubmitting(true);
+    let successCount = 0;
+    let errorCount = 0;
+    
+    try {
+      for (const studentId of selectedStudentIds) {
+        try {
+          const student = studentList.find(s => s.id === studentId);
+          if (student) {
+            await studentService.updateStudent(studentId, { ...student, batchId: bulkBatchId });
+            successCount++;
+          }
+        } catch (error) {
+          errorCount++;
+          console.error(`Failed to assign batch to student ${studentId}:`, error);
+        }
+      }
+      
+      await fetchInitialData();
+      setSelectedStudentIds([]);
+      setIsBulkBatchDialogOpen(false);
+      setBulkBatchId('');
+      
+      if (successCount > 0 && errorCount === 0) {
+        toast({ 
+          title: "Batch Assignment Complete", 
+          description: `${successCount} student(s) successfully assigned to batch.` 
+        });
+      } else if (errorCount > 0) {
+        toast({ 
+          variant: "destructive",
+          title: "Partial Assignment", 
+          description: `${successCount} assigned, ${errorCount} failed.` 
+        });
+      }
+    } catch (error) {
+      await fetchInitialData();
+      setSelectedStudentIds([]);
+      toast({ 
+        variant: "destructive", 
+        title: "Assignment Failed", 
+        description: (error as Error).message || "Could not assign students to batch." 
+      });
+    }
+    setIsSubmitting(false);
+  };
   
   const isAllSelectedOnPage = paginatedStudents.length > 0 && paginatedStudents.every(s => selectedStudentIds.includes(s.id));
   const isSomeSelectedOnPage = paginatedStudents.some(s => selectedStudentIds.includes(s.id)) && !isAllSelectedOnPage;
@@ -624,11 +706,29 @@ export default function AdminStudentsPage() {
                     <Label htmlFor="studentProgram">Program *</Label>
                     <Select value={formProgramId} onValueChange={(value) => {
                       setFormProgramId(value);
+                      setFormBatchId(''); // Reset batch when program changes
                       const selectedProgram = programs.find(p => p.id === value);
                     }} disabled={isSubmitting || programs.length === 0} required>
                       <SelectTrigger id="studentProgram"><SelectValue placeholder="Select Program"/></SelectTrigger>
                       <SelectContent>
                         {programs.map(prog => <SelectItem key={prog.id} value={prog.id}>{prog.name} ({prog.code})</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="md:col-span-1">
+                    <Label htmlFor="studentBatch">Batch</Label>
+                    <Select value={formBatchId} onValueChange={setFormBatchId} disabled={isSubmitting || !formProgramId}>
+                      <SelectTrigger id="studentBatch"><SelectValue placeholder="Select Batch"/></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">No Batch</SelectItem>
+                        {batches
+                          .filter(batch => batch.programId === formProgramId)
+                          .map(batch => (
+                            <SelectItem key={batch.id} value={batch.id}>
+                              {batch.name} ({batch.status})
+                              {batch.maxIntake && ` - Max: ${batch.maxIntake}`}
+                            </SelectItem>
+                          ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -851,7 +951,7 @@ export default function AdminStudentsPage() {
             </div>
           </div>
 
-          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border rounded-lg dark:border-gray-700">
+          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 p-4 border rounded-lg dark:border-gray-700">
             <div>
               <Label htmlFor="searchStudents">Search Students</Label>
               <div className="relative">
@@ -872,6 +972,21 @@ export default function AdminStudentsPage() {
                 <SelectContent>
                   <SelectItem value="all">All Programs</SelectItem>
                   {programs.map(prog => <SelectItem key={prog.id} value={prog.id}>{prog.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="filterStudentBatch">Filter by Batch</Label>
+              <Select value={filterBatchVal} onValueChange={setFilterBatchVal}>
+                <SelectTrigger id="filterStudentBatch"><SelectValue placeholder="All Batches"/></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Batches</SelectItem>
+                  <SelectItem value="unassigned">Unassigned</SelectItem>
+                  {batches.map(batch => (
+                    <SelectItem key={batch.id} value={batch.id}>
+                      {batch.name} ({programs.find(p => p.id === batch.programId)?.code || 'Unknown Program'})
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -898,7 +1013,14 @@ export default function AdminStudentsPage() {
           </div>
           
           {selectedStudentIds.length > 0 && (
-            <div className="mb-4 flex items-center gap-2">
+            <div className="mb-4 flex items-center gap-2 flex-wrap">
+              <Button 
+                variant="outline" 
+                onClick={() => setIsBulkBatchDialogOpen(true)} 
+                disabled={isSubmitting}
+              >
+                <Users className="mr-2 h-4 w-4" /> Assign to Batch ({selectedStudentIds.length})
+              </Button>
               <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
                 <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedStudentIds.length})
               </Button>
@@ -921,10 +1043,11 @@ export default function AdminStudentsPage() {
                 <SortableTableHeader field="enrollmentNumber" label="Enrollment" />
                 <SortableTableHeader field="firstName" label="Name" />
                 <SortableTableHeader field="programId" label="Program" />
+                <SortableTableHeader field="batchId" label="Batch" />
                 <SortableTableHeader field="currentSemester" label="Semester" />
                 <SortableTableHeader field="status" label="Status" />
                 <TableHead>Details</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right w-32">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -953,6 +1076,12 @@ export default function AdminStudentsPage() {
                   </TableCell>
                   <TableCell>
                     {programs.find(p => p.id === student.programId)?.name || student.programId}
+                  </TableCell>
+                  <TableCell>
+                    {student.batchId ? 
+                      batches.find(b => b.id === student.batchId)?.name || student.batchId
+                      : <span className="text-muted-foreground">Not Assigned</span>
+                    }
                   </TableCell>
                   <TableCell>Sem {student.currentSemester}</TableCell>
                   <TableCell>
@@ -985,26 +1114,27 @@ export default function AdminStudentsPage() {
                       </Tooltip>
                     </TooltipProvider>
                   </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="icon" onClick={() => handleEdit(student)} disabled={isSubmitting}>
-                      <Edit className="h-4 w-4" />
-                      <span className="sr-only">Edit Student</span>
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="icon"
-                      onClick={() => handleDelete(student.id)}
-                      disabled={isSubmitting}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      <span className="sr-only">Delete Student</span>
-                    </Button>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Button variant="outline" size="icon" onClick={() => handleView(student)} disabled={isSubmitting}>
+                        <Eye className="h-4 w-4" />
+                        <span className="sr-only">View Student</span>
+                      </Button>
+                      <Button variant="outline" size="icon" onClick={() => handleEdit(student)} disabled={isSubmitting}>
+                        <Edit className="h-4 w-4" />
+                        <span className="sr-only">Edit Student</span>
+                      </Button>
+                      <Button variant="destructive" size="icon" onClick={() => handleDelete(student.id)} disabled={isSubmitting}>
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Delete Student</span>
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
               {paginatedStudents.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                  <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
                     No students found. Try adjusting your search or filters, or add a new student.
                   </TableCell>
                 </TableRow>
@@ -1083,6 +1213,210 @@ export default function AdminStudentsPage() {
           </div>
         </CardFooter>
       </Card>
+
+      {/* View Student Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Student Details</DialogTitle>
+            <DialogDescription>
+              Complete information for {viewStudent?.firstName} {viewStudent?.lastName}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {viewStudent && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Personal Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Personal Information</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Enrollment Number:</span>
+                    <p className="text-muted-foreground">{viewStudent.enrollmentNumber}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Full Name:</span>
+                    <p className="text-muted-foreground">{viewStudent.firstName} {viewStudent.middleName} {viewStudent.lastName}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">GTU Format Name:</span>
+                    <p className="text-muted-foreground">{viewStudent.fullNameGtuFormat || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Gender:</span>
+                    <p className="text-muted-foreground">{viewStudent.gender || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Date of Birth:</span>
+                    <p className="text-muted-foreground">
+                      {viewStudent.dateOfBirth ? format(parseISO(viewStudent.dateOfBirth), 'dd/MM/yyyy') : 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Blood Group:</span>
+                    <p className="text-muted-foreground">{viewStudent.bloodGroup || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Aadhar Number:</span>
+                    <p className="text-muted-foreground">{viewStudent.aadharNumber || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Category:</span>
+                    <p className="text-muted-foreground">{viewStudent.category || 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Contact Information</h3>
+                <div className="grid grid-cols-1 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Personal Email:</span>
+                    <p className="text-muted-foreground">{viewStudent.personalEmail || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Contact Number:</span>
+                    <p className="text-muted-foreground">{viewStudent.contactNumber || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Address:</span>
+                    <p className="text-muted-foreground">{viewStudent.address || 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Academic Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Academic Information</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Program:</span>
+                    <p className="text-muted-foreground">
+                      {programs.find(p => p.id === viewStudent.programId)?.name || 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Current Semester:</span>
+                    <p className="text-muted-foreground">{viewStudent.currentSemester}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Admission Date:</span>
+                    <p className="text-muted-foreground">
+                      {viewStudent.admissionDate ? format(parseISO(viewStudent.admissionDate), 'dd/MM/yyyy') : 'N/A'}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Shift:</span>
+                    <p className="text-muted-foreground">{viewStudent.shift || 'N/A'}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <span className="font-medium">Status:</span>
+                    <span className={`ml-2 px-2 py-1 rounded text-xs ${
+                      viewStudent.status === 'active' ? 'bg-green-100 text-green-800' :
+                      viewStudent.status === 'graduated' ? 'bg-blue-100 text-blue-800' :
+                      viewStudent.status === 'dropped' ? 'bg-red-100 text-red-800' :
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {viewStudent.status}
+                    </span>
+                  </div>
+                </div>
+                {viewStudent.academicRemarks && (
+                  <div className="mt-4">
+                    <span className="font-medium">Academic Remarks:</span>
+                    <p className="text-muted-foreground mt-1">{viewStudent.academicRemarks}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Guardian Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Guardian Information</h3>
+                <div className="grid grid-cols-1 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Guardian Name:</span>
+                    <p className="text-muted-foreground">{viewStudent.guardianDetails?.name || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Relation:</span>
+                    <p className="text-muted-foreground">{viewStudent.guardianDetails?.relation || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Contact Number:</span>
+                    <p className="text-muted-foreground">{viewStudent.guardianDetails?.contactNumber || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Occupation:</span>
+                    <p className="text-muted-foreground">{viewStudent.guardianDetails?.occupation || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Annual Income:</span>
+                    <p className="text-muted-foreground">
+                      {viewStudent.guardianDetails?.annualIncome ? `₹${viewStudent.guardianDetails.annualIncome.toLocaleString()}` : 'N/A'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Close</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Bulk Batch Assignment Dialog */}
+      <Dialog open={isBulkBatchDialogOpen} onOpenChange={setIsBulkBatchDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Assign Students to Batch</DialogTitle>
+            <DialogDescription>
+              Assign {selectedStudentIds.length} selected student(s) to a batch.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="bulkBatchSelect">Select Batch</Label>
+              <Select value={bulkBatchId} onValueChange={setBulkBatchId}>
+                <SelectTrigger id="bulkBatchSelect">
+                  <SelectValue placeholder="Select a batch" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Remove from Batch</SelectItem>
+                  {batches.map(batch => {
+                    const program = programs.find(p => p.id === batch.programId);
+                    return (
+                      <SelectItem key={batch.id} value={batch.id}>
+                        {batch.name} - {program?.name || 'Unknown Program'}
+                        {batch.maxIntake && ` (Max: ${batch.maxIntake})`}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
+            {bulkBatchId && (
+              <div className="text-sm text-muted-foreground">
+                <p>Selected batch: {batches.find(b => b.id === bulkBatchId)?.name}</p>
+                <p>Students to assign: {selectedStudentIds.length}</p>
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline" disabled={isSubmitting}>Cancel</Button>
+            </DialogClose>
+            <Button onClick={handleBulkBatchAssignment} disabled={isSubmitting}>
+              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Assign to Batch
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

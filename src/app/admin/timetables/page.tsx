@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, PlusCircle, Edit, Trash2, Clock, Loader2, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight} from "lucide-react";
+import { CalendarIcon, PlusCircle, Edit, Trash2, Clock, Loader2, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 // import { Textarea } from '@/components/ui/textarea'; // Not used in current implementation
 import { format, parseISO } from 'date-fns';
@@ -50,7 +50,9 @@ export default function TimetableManagementPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentTimetable, setCurrentTimetable] = useState<Partial<Timetable> | null>(null);
+  const [viewTimetable, setViewTimetable] = useState<Timetable | null>(null);
   const [currentEntries, setCurrentEntries] = useState<TimetableEntry[]>([]);
 
   // Form state for Timetable
@@ -141,6 +143,11 @@ export default function TimetableManagementPage() {
     setCurrentEntries([]); setCurrentTimetable(null); setEntryEditingIndex(null);
   };
   
+  const handleView = (timetable: Timetable) => {
+    setViewTimetable(timetable);
+    setIsViewDialogOpen(true);
+  };
+
   const handleEdit = (timetable: Timetable) => {
     setCurrentTimetable(timetable);
     setFormName(timetable.name);
@@ -364,7 +371,7 @@ export default function TimetableManagementPage() {
           )}
 
           <Table>
-            <TableHeader><TableRow><TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedTimetables.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(val) => handleSelectAll(val as boolean | 'indeterminate')}/></TableHead><SortableTableHeader field="name" label="Name" /><SortableTableHeader field="programName" label="Program" /><SortableTableHeader field="batchName" label="Batch" /><SortableTableHeader field="academicYear" label="Academic Year" /><SortableTableHeader field="status" label="Status" /><TableHead className="text-right">Actions</TableHead></TableRow></TableHeader>
+            <TableHeader><TableRow><TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedTimetables.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(val) => handleSelectAll(val as boolean | 'indeterminate')}/></TableHead><SortableTableHeader field="name" label="Name" /><SortableTableHeader field="programName" label="Program" /><SortableTableHeader field="batchName" label="Batch" /><SortableTableHeader field="academicYear" label="Academic Year" /><SortableTableHeader field="status" label="Status" /><TableHead className="text-right w-32">Actions</TableHead></TableRow></TableHeader>
             <TableBody>
               {paginatedTimetables.map((tt) => (
                 <TableRow key={tt.id} data-state={selectedTimetableIds.includes(tt.id) ? "selected" : undefined}>
@@ -374,7 +381,22 @@ export default function TimetableManagementPage() {
                   <TableCell>{batches.find(b=>b.id===tt.batchId)?.name || 'N/A'}</TableCell>
                   <TableCell>{tt.academicYear} Sem-{tt.semester}</TableCell>
                   <TableCell><span className={`px-2 py-1 text-xs font-semibold rounded-full ${tt.status === 'published' ? 'bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-200' : tt.status === 'draft' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-700 dark:text-yellow-200' : 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200'}`}>{STATUS_OPTIONS.find(s=>s.value === tt.status)?.label || tt.status}</span></TableCell>
-                  <TableCell className="text-right space-x-2"><Button variant="outline" size="icon" onClick={() => handleEdit(tt)}><Edit className="h-4 w-4" /></Button><Button variant="destructive" size="icon" onClick={() => handleDelete(tt.id)}><Trash2 className="h-4 w-4" /></Button></TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Button variant="outline" size="icon" onClick={() => handleView(tt)} disabled={isSubmitting}>
+                        <Eye className="h-4 w-4" />
+                        <span className="sr-only">View Timetable</span>
+                      </Button>
+                      <Button variant="outline" size="icon" onClick={() => handleEdit(tt)} disabled={isSubmitting}>
+                        <Edit className="h-4 w-4" />
+                        <span className="sr-only">Edit Timetable</span>
+                      </Button>
+                      <Button variant="destructive" size="icon" onClick={() => handleDelete(tt.id)} disabled={isSubmitting}>
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Delete Timetable</span>
+                      </Button>
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))}
               {paginatedTimetables.length === 0 && <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No timetables found.</TableCell></TableRow>}
@@ -446,6 +468,132 @@ export default function TimetableManagementPage() {
               {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {currentTimetable?.id ? "Save Changes" : "Create Timetable"}
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* View Timetable Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Timetable Details</DialogTitle>
+            <DialogDescription>
+              View detailed information about the timetable.
+            </DialogDescription>
+          </DialogHeader>
+          {viewTimetable && (
+            <div className="grid gap-6 py-4">
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Basic Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Name</Label>
+                    <p className="text-sm">{viewTimetable.name}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Version</Label>
+                    <p className="text-sm">{viewTimetable.version}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Academic Year</Label>
+                    <p className="text-sm">{viewTimetable.academicYear}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Semester</Label>
+                    <p className="text-sm">{viewTimetable.semester}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Status</Label>
+                    <p className="text-sm">
+                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                        viewTimetable.status === 'published' ? 'bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-200' 
+                        : viewTimetable.status === 'draft' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-700 dark:text-yellow-200' 
+                        : 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200'
+                      }`}>
+                        {STATUS_OPTIONS.find(s => s.value === viewTimetable.status)?.label || viewTimetable.status}
+                      </span>
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Effective Date</Label>
+                    <p className="text-sm">{viewTimetable.effectiveDate ? format(parseISO(viewTimetable.effectiveDate), 'PPP') : 'Not set'}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Program & Batch Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Program</Label>
+                    <p className="text-sm">{programs.find(p => p.id === viewTimetable.programId)?.name || 'Not found'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Program Code</Label>
+                    <p className="text-sm">{programs.find(p => p.id === viewTimetable.programId)?.code || 'Not found'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Batch</Label>
+                    <p className="text-sm">{batches.find(b => b.id === viewTimetable.batchId)?.name || 'Not found'}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Timetable Entries ({viewTimetable.entries.length})</h4>
+                {viewTimetable.entries.length > 0 ? (
+                  <div className="max-h-60 overflow-y-auto border rounded-md">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Day</TableHead>
+                          <TableHead>Time</TableHead>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Course</TableHead>
+                          <TableHead>Faculty</TableHead>
+                          <TableHead>Room</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {viewTimetable.entries.map((entry, index) => (
+                          <TableRow key={index}>
+                            <TableCell className="font-medium">{entry.dayOfWeek}</TableCell>
+                            <TableCell>{entry.startTime} - {entry.endTime}</TableCell>
+                            <TableCell className="capitalize">{entry.entryType}</TableCell>
+                            <TableCell>{courses.find(c => c.id === entry.courseId)?.subjectName || 'N/A'}</TableCell>
+                            <TableCell>{faculties.find(f => f.id === entry.facultyId)?.gtuName || faculties.find(f => f.id === entry.facultyId)?.firstName + ' ' + faculties.find(f => f.id === entry.facultyId)?.lastName || 'N/A'}</TableCell>
+                            <TableCell>{rooms.find(r => r.id === entry.roomId)?.roomNumber || 'N/A'}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground text-center py-4">No entries added to this timetable yet.</p>
+                )}
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">System Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Timetable ID</Label>
+                    <p className="text-sm font-mono">{viewTimetable.id}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Created At</Label>
+                    <p className="text-sm">{viewTimetable.createdAt ? new Date(viewTimetable.createdAt).toLocaleString() : 'Not available'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Last Updated</Label>
+                    <p className="text-sm">{viewTimetable.updatedAt ? new Date(viewTimetable.updatedAt).toLocaleString() : 'Not available'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={() => setIsViewDialogOpen(false)}>Close</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

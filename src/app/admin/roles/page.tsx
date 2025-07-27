@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
-import { PlusCircle, Edit, Trash2, UserCog, Loader2, UploadCloud, Download, FileSpreadsheet, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { PlusCircle, Edit, Trash2, UserCog, Loader2, UploadCloud, Download, FileSpreadsheet, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -21,7 +21,9 @@ export default function RoleManagementPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentRole, setCurrentRole] = useState<Partial<Role> | null>(null);
+  const [viewRole, setViewRole] = useState<Role | null>(null);
   const [formRoleName, setFormRoleName] = useState('');
   const [formRoleCode, setFormRoleCode] = useState(''); // Added for code
   const [formRoleDescription, setFormRoleDescription] = useState('');
@@ -61,6 +63,11 @@ export default function RoleManagementPage() {
     setCurrentPage(1);
   }, [itemsPerPage]);
 
+
+  const handleView = (role: Role) => {
+    setViewRole(role);
+    setIsViewDialogOpen(true);
+  };
 
   const handleEdit = (role: Role) => {
     setCurrentRole(role);
@@ -421,7 +428,7 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
                 <TableHead>Code</TableHead>
                 <TableHead>Description</TableHead>
                 <TableHead>Permissions</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right w-32">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -441,15 +448,21 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
                   <TableCell className="max-w-xs truncate">
                     {role.permissions.length > 3 ? `${role.permissions.slice(0,3).map(p => p.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ')}, ...` : role.permissions.map(p => p.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ') || '-'}
                   </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="icon" onClick={() => handleEdit(role)} disabled={isSubmitting || (role.isSystemRole && !role.isCommitteeRole && role.code !== 'admin' && role.code !== 'super_admin')}>
-                      <Edit className="h-4 w-4" />
-                      <span className="sr-only">Edit Role</span>
-                    </Button>
-                    <Button variant="destructive" size="icon" onClick={() => handleDelete(role.id)} disabled={isSubmitting || role.code === 'admin' || role.code === 'super_admin' || (role.isSystemRole && !role.isCommitteeRole)}>
-                      <Trash2 className="h-4 w-4" />
-                      <span className="sr-only">Delete Role</span>
-                    </Button>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Button variant="outline" size="icon" onClick={() => handleView(role)} disabled={isSubmitting}>
+                        <Eye className="h-4 w-4" />
+                        <span className="sr-only">View Role</span>
+                      </Button>
+                      <Button variant="outline" size="icon" onClick={() => handleEdit(role)} disabled={isSubmitting || (role.isSystemRole && !role.isCommitteeRole && role.code !== 'admin' && role.code !== 'super_admin')}>
+                        <Edit className="h-4 w-4" />
+                        <span className="sr-only">Edit Role</span>
+                      </Button>
+                      <Button variant="destructive" size="icon" onClick={() => handleDelete(role.id)} disabled={isSubmitting || role.code === 'admin' || role.code === 'super_admin' || (role.isSystemRole && !role.isCommitteeRole)}>
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Delete Role</span>
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -534,6 +547,114 @@ role_002,Viewer,viewer,"Can only view published content","view_content",false,fa
             </div>
         </CardFooter>
       </Card>
+
+      {/* View Role Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Role Details</DialogTitle>
+            <DialogDescription>
+              View detailed information about the role.
+            </DialogDescription>
+          </DialogHeader>
+          {viewRole && (
+            <div className="grid gap-6 py-4">
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Basic Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Role Name</Label>
+                    <p className="text-sm">{viewRole.name}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Role Code</Label>
+                    <p className="text-sm font-mono">{viewRole.code}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Description</Label>
+                    <p className="text-sm">{viewRole.description || 'No description provided'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Role Type</Label>
+                    <p className="text-sm">
+                      {viewRole.isSystemRole && !viewRole.isCommitteeRole && (
+                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                          System Role
+                        </span>
+                      )}
+                      {viewRole.isCommitteeRole && (
+                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                          Committee Role ({viewRole.committeeCode})
+                        </span>
+                      )}
+                      {!viewRole.isSystemRole && !viewRole.isCommitteeRole && (
+                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300">
+                          Custom Role
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">Permissions ({viewRole.permissions.length})</h4>
+                {viewRole.permissions.length > 0 ? (
+                  <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto p-2 border rounded-md">
+                    {viewRole.permissions.map(permission => (
+                      <div key={permission} className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span className="text-sm">
+                          {permission.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">No permissions assigned to this role.</p>
+                )}
+              </div>
+
+              {viewRole.isCommitteeRole && (
+                <div className="grid gap-4">
+                  <h4 className="font-semibold text-primary border-b pb-2">Committee Information</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium text-muted-foreground">Committee ID</Label>
+                      <p className="text-sm font-mono">{viewRole.committeeId || 'Not specified'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-muted-foreground">Committee Code</Label>
+                      <p className="text-sm font-mono">{viewRole.committeeCode || 'Not specified'}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="grid gap-4">
+                <h4 className="font-semibold text-primary border-b pb-2">System Information</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Role ID</Label>
+                    <p className="text-sm font-mono">{viewRole.id}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Created At</Label>
+                    <p className="text-sm">{viewRole.createdAt ? new Date(viewRole.createdAt).toLocaleString() : 'Not available'}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-muted-foreground">Last Updated</Label>
+                    <p className="text-sm">{viewRole.updatedAt ? new Date(viewRole.updatedAt).toLocaleString() : 'Not available'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={() => setIsViewDialogOpen(false)}>Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
