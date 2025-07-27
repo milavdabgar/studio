@@ -667,8 +667,6 @@ const studentSchema = new Schema<IStudent>({
   sem4Status: { type: String, enum: ['N/A', 'Passed', 'Pending', 'Not Appeared'], default: 'N/A' },
   sem5Status: { type: String, enum: ['N/A', 'Passed', 'Pending', 'Not Appeared'], default: 'N/A' },
   sem6Status: { type: String, enum: ['N/A', 'Passed', 'Pending', 'Not Appeared'], default: 'N/A' },
-  sem7Status: { type: String, enum: ['N/A', 'Passed', 'Pending', 'Not Appeared'], default: 'N/A' },
-  sem8Status: { type: String, enum: ['N/A', 'Passed', 'Pending', 'Not Appeared'], default: 'N/A' },
   
   // Personal Information
   fullNameGtuFormat: { type: String },
@@ -887,7 +885,7 @@ const studentSchema = new Schema<IStudent>({
 });
 
 studentSchema.pre('save', function(next) {
-  (this as IStudent).updatedAt = new Date().toISOString();
+  this.updatedAt = new Date().toISOString();
   next();
 });
 

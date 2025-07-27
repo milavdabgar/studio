@@ -1250,7 +1250,17 @@ S002,Dr. TANK MAHESHKUMAR FULCHANDBHAI,DI,GENERAL DEPARTMENT,Lecturer,Regular,93
                 <div className="grid grid-cols-1 gap-4 text-sm">
                   <div>
                     <span className="font-medium">Qualifications:</span>
-                    <p className="text-muted-foreground">{viewFaculty.qualifications || 'N/A'}</p>
+                    <p className="text-muted-foreground">
+                      {Array.isArray(viewFaculty.qualifications) 
+                        ? viewFaculty.qualifications.map((qual, index) => (
+                            <span key={index}>
+                              {qual.degree} in {qual.field} from {qual.institution} ({qual.year})
+                              {index < (viewFaculty.qualifications?.length || 0) - 1 && <br />}
+                            </span>
+                          ))
+                        : viewFaculty.qualifications || 'N/A'
+                      }
+                    </p>
                   </div>
                   <div>
                     <span className="font-medium">Experience (Years):</span>

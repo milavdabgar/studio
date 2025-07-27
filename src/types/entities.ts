@@ -40,6 +40,7 @@ export interface User {
     createdAt?: Timestamp; 
     updatedAt?: Timestamp; 
     lastLoginAt?: Timestamp;
+    loginCount?: number;
     isActive: boolean;
     isEmailVerified?: boolean;
     

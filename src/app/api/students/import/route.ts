@@ -145,8 +145,6 @@ export async function POST(request: NextRequest) {
         sem4Status: SEMESTER_STATUS_OPTIONS.includes(row.sem4status as SemesterStatus) ? row.sem4status as SemesterStatus : 'N/A',
         sem5Status: SEMESTER_STATUS_OPTIONS.includes(row.sem5status as SemesterStatus) ? row.sem5status as SemesterStatus : 'N/A',
         sem6Status: SEMESTER_STATUS_OPTIONS.includes(row.sem6status as SemesterStatus) ? row.sem6status as SemesterStatus : 'N/A',
-        sem7Status: SEMESTER_STATUS_OPTIONS.includes(row.sem7status as SemesterStatus) ? row.sem7status as SemesterStatus : 'N/A',
-        sem8Status: SEMESTER_STATUS_OPTIONS.includes(row.sem8status as SemesterStatus) ? row.sem8status as SemesterStatus : 'N/A',
         category: row.category?.toString().trim() || undefined,
         isComplete: String(row.iscomplete).toLowerCase() === 'true',
         termClose: String(row.termclose).toLowerCase() === 'true',
