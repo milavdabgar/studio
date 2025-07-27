@@ -89,15 +89,27 @@ export default function DepartmentManagementPage() {
     setIsViewDialogOpen(true);
   };
 
-  const handleEdit = (department: Department) => {
-    setCurrentDepartment(department);
-    setFormDeptName(department.name);
-    setFormDeptCode(department.code);
-    setFormDeptDescription(department.description || '');
-    setFormHodId(department.hodId || undefined);
-    setFormEstablishmentYear(department.establishmentYear || undefined);
-    setFormStatus(department.status);
-    setIsDialogOpen(true);
+  const handleEdit = async (department: Department) => {
+    try {
+      // Verify the department still exists
+      await departmentService.getDepartmentById(department.id);
+      
+      setCurrentDepartment(department);
+      setFormDeptName(department.name);
+      setFormDeptCode(department.code);
+      setFormDeptDescription(department.description || '');
+      setFormHodId(department.hodId || undefined);
+      setFormEstablishmentYear(department.establishmentYear || undefined);
+      setFormStatus(department.status);
+      setIsDialogOpen(true);
+    } catch (error) {
+      toast({ 
+        variant: "destructive", 
+        title: "Department Not Found", 
+        description: "This department may have been deleted. Refreshing the list..." 
+      });
+      await fetchDepartmentsAndFaculty();
+    }
   };
 
   const handleAddNew = () => {
@@ -159,7 +171,21 @@ export default function DepartmentManagementPage() {
       setIsDialogOpen(false);
       resetForm();
     } catch (error) {
-      toast({ variant: "destructive", title: "Save Failed", description: (error as Error).message || "Could not save department." });
+      const errorMessage = (error as Error).message || "Could not save department.";
+      
+      // If department not found, refresh the data and show specific message
+      if (errorMessage.includes("Department not found") || errorMessage.includes("not found")) {
+        toast({ 
+          variant: "destructive", 
+          title: "Department Not Found", 
+          description: "This department may have been deleted. Refreshing the list..." 
+        });
+        await fetchDepartmentsAndFaculty();
+        setIsDialogOpen(false);
+        resetForm();
+      } else {
+        toast({ variant: "destructive", title: "Save Failed", description: errorMessage });
+      }
     } finally {
       setIsSubmitting(false);
     }
