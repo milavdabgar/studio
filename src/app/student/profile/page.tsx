@@ -1130,6 +1130,10 @@ export default function StudentProfilePage() {
   const [profileSummary, setProfileSummary] = useState('');
   const [profileVisibility, setProfileVisibility] = useState<'public' | 'private' | 'institute_only'>('public');
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  
+  // Current Semester Edit State
+  const [isEditingSemester, setIsEditingSemester] = useState(false);
+  const [editingSemester, setEditingSemester] = useState<number>(1);
 
   useEffect(() => {
     const authUserCookie = getCookie('auth_user');
@@ -1173,6 +1177,7 @@ export default function StudentProfilePage() {
         setStudent(studentProfile);
         setProfileSummary(studentProfile.profileSummary || '');
         setProfileVisibility(studentProfile.profileVisibility || 'public');
+        setEditingSemester(studentProfile.currentSemester || 1);
 
         const [progData, batchData] = await Promise.all([
           studentProfile.programId ? programService.getProgramById(studentProfile.programId) : Promise.resolve(null),
@@ -1248,6 +1253,25 @@ export default function StudentProfilePage() {
 
   const handleUpdateProfileSummary = () => {
     handleUpdateProfile({ profileSummary, profileVisibility });
+  };
+
+  const handleSemesterEdit = () => {
+    setIsEditingSemester(true);
+  };
+
+  const handleSemesterSave = async () => {
+    if (editingSemester < 1 || editingSemester > 6) {
+      toast({ variant: "destructive", title: "Invalid Semester", description: "Please select a semester between 1 and 6." });
+      return;
+    }
+    
+    await handleUpdateProfile({ currentSemester: editingSemester });
+    setIsEditingSemester(false);
+  };
+
+  const handleSemesterCancel = () => {
+    setEditingSemester(student?.currentSemester || 1);
+    setIsEditingSemester(false);
   };
 
   const handlePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -1466,9 +1490,38 @@ export default function StudentProfilePage() {
               </div>
               <div className="flex items-start space-x-3 py-2 border-b border-muted last:border-b-0">
                 <Landmark className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                <div>
+                <div className="flex-1">
                   <p className="text-sm font-medium text-muted-foreground">Current Semester</p>
-                  <p className="text-md text-foreground">{student.currentSemester}</p>
+                  {isEditingSemester ? (
+                    <div className="flex items-center gap-2 mt-1">
+                      <Select 
+                        value={String(editingSemester)} 
+                        onValueChange={(value) => setEditingSemester(parseInt(value))}
+                      >
+                        <SelectTrigger className="w-32 h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {[1,2,3,4,5,6].map(sem => (
+                            <SelectItem key={sem} value={String(sem)}>Semester {sem}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Button size="sm" onClick={handleSemesterSave}>
+                        <Save className="h-3 w-3" />
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={handleSemesterCancel}>
+                        Cancel
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <p className="text-md text-foreground">Semester {student.currentSemester}</p>
+                      <Button size="sm" variant="ghost" onClick={handleSemesterEdit}>
+                        <Edit className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </CardContent>

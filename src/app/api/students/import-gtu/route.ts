@@ -110,10 +110,11 @@ export async function POST(request: NextRequest) {
 
 
       let currentSemester = 1;
-      for (let sem = 8; sem >= 1; sem--) {
+      // Check semesters 6 to 1 for diploma programs (diploma only has 6 semesters)
+      for (let sem = 6; sem >= 1; sem--) {
         const semStatusVal = mapSemesterCodeToStatusFromString(row[`sem${sem}`]?.toString());
         if (semStatusVal === 'Passed') {
-            currentSemester = Math.min(sem + 1, 8); break;
+            currentSemester = Math.min(sem + 1, 6); break;
         } else if (semStatusVal === 'Pending') {
             currentSemester = sem; break;
         }
@@ -123,7 +124,7 @@ export async function POST(request: NextRequest) {
       const isCompleteStr = String(row.iscomplete).toLowerCase();
 
       if (isPassAllStr === 'true' || isCompleteStr === 'true'){
-        currentSemester = 8; 
+        currentSemester = 6; // Diploma programs only have 6 semesters
       }
       
       const convocationYearStr = String(row.convoyear).trim();
@@ -157,8 +158,7 @@ export async function POST(request: NextRequest) {
         sem4Status: mapSemesterCodeToStatusFromString(row.sem4?.toString()),
         sem5Status: mapSemesterCodeToStatusFromString(row.sem5?.toString()),
         sem6Status: mapSemesterCodeToStatusFromString(row.sem6?.toString()),
-        sem7Status: mapSemesterCodeToStatusFromString(row.sem7?.toString()),
-        sem8Status: mapSemesterCodeToStatusFromString(row.sem8?.toString()),
+        // Diploma programs only have semesters 1-6, ignoring sem7 and sem8
         category: row.category?.toString().trim() || undefined,
         isComplete: isCompleteStr === 'true',
         termClose: String(row.termclose).toLowerCase() === 'true',

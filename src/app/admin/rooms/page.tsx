@@ -18,7 +18,7 @@ import { roomService } from '@/lib/services/roomService';
 import { buildingService } from '@/lib/services/buildingService';
 
 
-const ROOM_TYPE_OPTIONS: RoomType[] = ['Lecture Hall', 'Laboratory', 'Office', 'Staff Room', 'Workshop', 'Library', 'Store Room', 'Other'];
+const ROOM_TYPE_OPTIONS: RoomType[] = ['Lecture Hall', 'Laboratory', 'Office', 'Staff Room', 'Workshop', 'Library', 'Store Room', 'Seminar Hall', 'Auditorium', 'Other'];
 const ROOM_STATUS_OPTIONS: { value: RoomStatus, label: string }[] = [
     { value: "available", label: "Available" },
     { value: "occupied", label: "Occupied" },

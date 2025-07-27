@@ -283,7 +283,7 @@ export default function AdminStudentsPage() {
       contactNumber: formContactNumber.trim() || undefined,
       address: formAddress.trim() || undefined,
       programId: formProgramId,
-      batchId: formBatchId || undefined,
+      batchId: formBatchId && formBatchId !== 'none' ? formBatchId : undefined,
       currentSemester: formCurrentSemester,
       admissionDate: formAdmissionDate ? format(formAdmissionDate, "yyyy-MM-dd") : undefined,
       category: formCategory || undefined,
@@ -615,7 +615,7 @@ export default function AdminStudentsPage() {
         try {
           const student = studentList.find(s => s.id === studentId);
           if (student) {
-            await studentService.updateStudent(studentId, { ...student, batchId: bulkBatchId });
+            await studentService.updateStudent(studentId, { ...student, batchId: bulkBatchId === 'none' ? undefined : bulkBatchId });
             successCount++;
           }
         } catch (error) {
@@ -720,7 +720,7 @@ export default function AdminStudentsPage() {
                     <Select value={formBatchId} onValueChange={setFormBatchId} disabled={isSubmitting || !formProgramId}>
                       <SelectTrigger id="studentBatch"><SelectValue placeholder="Select Batch"/></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">No Batch</SelectItem>
+                        <SelectItem value="none">No Batch</SelectItem>
                         {batches
                           .filter(batch => batch.programId === formProgramId)
                           .map(batch => (
@@ -767,7 +767,7 @@ export default function AdminStudentsPage() {
                     <Select value={String(formCurrentSemester)} onValueChange={(value) => setFormCurrentSemester(parseInt(value))} disabled={isSubmitting}>
                       <SelectTrigger id="studentSemester"><SelectValue placeholder="Select Semester"/></SelectTrigger>
                       <SelectContent>
-                        {[1,2,3,4,5,6,7,8].map(sem => <SelectItem key={sem} value={String(sem)}>Semester {sem}</SelectItem>)}
+                        {[1,2,3,4,5,6].map(sem => <SelectItem key={sem} value={String(sem)}>Semester {sem}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
@@ -1006,7 +1006,7 @@ export default function AdminStudentsPage() {
                 <SelectTrigger id="filterStudentSemester"><SelectValue placeholder="All Semesters"/></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Semesters</SelectItem>
-                  {[1,2,3,4,5,6,7,8].map(sem => <SelectItem key={sem} value={String(sem)}>Semester {sem}</SelectItem>)}
+                  {[1,2,3,4,5,6].map(sem => <SelectItem key={sem} value={String(sem)}>Semester {sem}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -1370,7 +1370,7 @@ export default function AdminStudentsPage() {
       </Dialog>
 
       {/* Bulk Batch Assignment Dialog */}
-      <Dialog open={isBulkBatchDialogOpen} onOpenChange={setIsBulkBatchDialogOpen}>
+      <Dialog open={isBulkBatchDialogOpen} onOpenChange={(isOpen) => { setIsBulkBatchDialogOpen(isOpen); if (!isOpen) setBulkBatchId(''); }}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Assign Students to Batch</DialogTitle>
@@ -1386,7 +1386,7 @@ export default function AdminStudentsPage() {
                   <SelectValue placeholder="Select a batch" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Remove from Batch</SelectItem>
+                  <SelectItem value="none">Remove from Batch</SelectItem>
                   {batches.map(batch => {
                     const program = programs.find(p => p.id === batch.programId);
                     return (
