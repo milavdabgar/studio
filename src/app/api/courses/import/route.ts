@@ -280,7 +280,7 @@ export async function POST(request: NextRequest) {
 
       const courseData: Omit<Course, 'id'> = {
         subcode, subjectName, semester, departmentId, programId, lectureHours, tutorialHours, practicalHours,
-        credits: lectureHours + tutorialHours + practicalHours,
+        credits: lectureHours + tutorialHours + (practicalHours * 0.5),
         theoryEseMarks, theoryPaMarks, practicalEseMarks, practicalPaMarks,
         totalMarks: theoryEseMarks + theoryPaMarks + practicalEseMarks + practicalPaMarks,
         effFrom: standardizedEffFrom,

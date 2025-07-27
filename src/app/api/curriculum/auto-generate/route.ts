@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
 
     // Auto-populate curriculum with all available courses
     // For now, we need to include semester and isElective for backward compatibility
-    const curriculumCourses = courses.map((course: Course) => ({
+    const curriculumCourses = courses.map((course: any) => ({
       courseId: course.id,
       semester: course.semester, // Include from course model
       isElective: course.isElective, // Include from course model

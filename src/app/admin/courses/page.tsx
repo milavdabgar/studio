@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { PlusCircle, Edit, Trash2, ClipboardList, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight } from "lucide-react";
+import { PlusCircle, Edit, Trash2, ClipboardList, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
@@ -60,7 +60,9 @@ export default function CourseManagementPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentCourse, setCurrentCourse] = useState<Partial<Course> | null>(null);
+  const [viewCourse, setViewCourse] = useState<Course | null>(null);
 
   // Form state
   const [formSubcode, setFormSubcode] = useState('');
@@ -169,6 +171,11 @@ export default function CourseManagementPage() {
     setFormDepartmentId(course.departmentId);
     setFormProgramId(course.programId);
     setIsDialogOpen(true);
+  };
+
+  const handleView = (course: Course) => {
+    setViewCourse(course);
+    setIsViewDialogOpen(true);
   };
 
   const handleAddNew = () => {
@@ -799,7 +806,7 @@ DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70
                 <SortableTableHeader field="subjectName" label="Subject Name" />
                 <SortableTableHeader field="credits" label="Credits" />
                 <TableHead>Syllabus</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right w-32">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -821,9 +828,21 @@ DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70
                       'N/A'
                     )}
                   </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button variant="outline" size="icon" onClick={() => handleEdit(course)} disabled={isSubmitting}><Edit className="h-4 w-4" /><span className="sr-only">Edit Course</span></Button>
-                    <Button variant="destructive" size="icon" onClick={() => handleDelete(course.id)} disabled={isSubmitting}><Trash2 className="h-4 w-4" /><span className="sr-only">Delete Course</span></Button>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Button variant="outline" size="icon" onClick={() => handleView(course)} disabled={isSubmitting}>
+                        <Eye className="h-4 w-4" />
+                        <span className="sr-only">View Course</span>
+                      </Button>
+                      <Button variant="outline" size="icon" onClick={() => handleEdit(course)} disabled={isSubmitting}>
+                        <Edit className="h-4 w-4" />
+                        <span className="sr-only">Edit Course</span>
+                      </Button>
+                      <Button variant="destructive" size="icon" onClick={() => handleDelete(course.id)} disabled={isSubmitting}>
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Delete Course</span>
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -852,6 +871,174 @@ DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70
             </div>
         </CardFooter>
       </Card>
+
+      {/* View Course Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Course Details</DialogTitle>
+            <DialogDescription>
+              Complete information for {viewCourse?.subjectName}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {viewCourse && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Basic Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Basic Information</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Subject Code:</span>
+                    <p className="text-muted-foreground">{viewCourse.subcode}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Subject Name:</span>
+                    <p className="text-muted-foreground">{viewCourse.subjectName}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Semester:</span>
+                    <p className="text-muted-foreground">{viewCourse.semester}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Category:</span>
+                    <p className="text-muted-foreground">{viewCourse.category || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Effective From:</span>
+                    <p className="text-muted-foreground">{viewCourse.effFrom || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Credits:</span>
+                    <p className="text-muted-foreground">{viewCourse.credits}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Hours Distribution */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Hours Distribution</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Lecture Hours:</span>
+                    <p className="text-muted-foreground">{viewCourse.lectureHours}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Tutorial Hours:</span>
+                    <p className="text-muted-foreground">{viewCourse.tutorialHours}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Practical Hours:</span>
+                    <p className="text-muted-foreground">{viewCourse.practicalHours}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Total Marks:</span>
+                    <p className="text-muted-foreground">{viewCourse.totalMarks}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Marks Distribution */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Marks Distribution</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Theory ESE:</span>
+                    <p className="text-muted-foreground">{viewCourse.theoryEseMarks}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Theory PA:</span>
+                    <p className="text-muted-foreground">{viewCourse.theoryPaMarks}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Practical ESE:</span>
+                    <p className="text-muted-foreground">{viewCourse.practicalEseMarks}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Practical PA:</span>
+                    <p className="text-muted-foreground">{viewCourse.practicalPaMarks}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Course Properties */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Course Properties</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">Elective:</span>
+                    <span className={`px-2 py-1 rounded text-xs ${viewCourse.isElective ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                      {viewCourse.isElective ? 'Yes' : 'No'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">Theory:</span>
+                    <span className={`px-2 py-1 rounded text-xs ${viewCourse.isTheory ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                      {viewCourse.isTheory ? 'Yes' : 'No'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">Practical:</span>
+                    <span className={`px-2 py-1 rounded text-xs ${viewCourse.isPractical ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                      {viewCourse.isPractical ? 'Yes' : 'No'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">Functional:</span>
+                    <span className={`px-2 py-1 rounded text-xs ${viewCourse.isFunctional ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                      {viewCourse.isFunctional ? 'Yes' : 'No'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Exam Details */}
+              <div className="space-y-4 md:col-span-2">
+                <h3 className="text-lg font-semibold">Exam Details</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Theory Exam Duration:</span>
+                    <p className="text-muted-foreground">{viewCourse.theoryExamDuration || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Practical Exam Duration:</span>
+                    <p className="text-muted-foreground">{viewCourse.practicalExamDuration || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium">Semi-Practical:</span>
+                    <span className={`px-2 py-1 rounded text-xs ${viewCourse.isSemiPractical ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                      {viewCourse.isSemiPractical ? 'Yes' : 'No'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="font-medium">Syllabus:</span>
+                    {viewCourse.syllabusUrl ? (
+                      <a href={viewCourse.syllabusUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                        View PDF
+                      </a>
+                    ) : (
+                      <p className="text-muted-foreground">N/A</p>
+                    )}
+                  </div>
+                </div>
+                
+                {viewCourse.remarks && (
+                  <div className="mt-4">
+                    <span className="font-medium">Remarks:</span>
+                    <p className="text-muted-foreground mt-1">{viewCourse.remarks}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Close</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

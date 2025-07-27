@@ -474,11 +474,11 @@ curr_2,prog_dme_gpp,DME,2.1,2025-01-01,draft,course_me101_dme_gpp,ME101,1,false
             <div className="text-sm text-muted-foreground space-y-2">
               <p>🧠 <strong>Intelligent Auto-Generation:</strong> Creates curricula with progressive semester rollout logic</p>
               <ul className="list-disc list-inside ml-4 space-y-1">
-                <li><strong>Latest (DI*):</strong> Regular Sem 1-2 (2024-25) + Sem 3-4 (2025-26) | C2D starting 2025-26</li>
-                <li><strong>COGC-2021:</strong> Regular Sem 1-2 (2021-22) + Sem 3-4 (2022-23) + Sem 5-6 (2023-24) | C2D starting 2022-23</li>
-                <li><strong>Legacy:</strong> Complete curricula for historical non-DI courses by year</li>
+                <li><strong>5G (DI*):</strong> Regular Sem 1-2 (2024-25) + Sem 3-4 (2025-26) | 5G-C2D starting 2025-26</li>
+                <li><strong>4G (COGC-2021):</strong> Regular Sem 1-2 (2021-22) + Sem 3-4 (2022-23) + Sem 5-6 (2023-24) | 4G-ICT delayed + 4G-C2D starting 2022-23</li>
+                <li><strong>1G, 2G, 3G (Archived):</strong> Legacy curricula with distinct subject code patterns (6-digit, 2-prefix, 3-prefix)</li>
               </ul>
-              <p className="text-xs">💡 Three curriculum generations: Legacy → COGC-2021 → Latest (DI*) with progressive rollouts</p>
+              <p className="text-xs">💡 Five curriculum generations: 1G → 2G → 3G → 4G (COGC-2021) → 5G (Latest) with progressive rollouts</p>
             </div>
           </div>
 
