@@ -86,5 +86,64 @@ export const curriculumService = {
       throw error;
     }
     return responseData;
+  },
+
+  async autoGenerateCurriculum(programId: string, version: string, effectiveDate: string): Promise<Curriculum> {
+    const response = await fetch(`${API_BASE_URL}/curriculum/auto-generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ programId, version, effectiveDate }),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to auto-generate curriculum' }));
+      throw new Error(errorData.message || 'Failed to auto-generate curriculum');
+    }
+    return response.json();
+  },
+
+  async getCoursesByProgram(programId: string): Promise<Course[]> {
+    const response = await fetch(`${API_BASE_URL}/courses?programId=${programId}`);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to fetch courses for program' }));
+      throw new Error(errorData.message || 'Failed to fetch courses for program');
+    }
+    return response.json();
+  },
+
+  async autoGenerateAllCurricula(): Promise<{
+    message: string;
+    summary: {
+      totalCurriculaGenerated: number;
+      totalCurriculaReplaced: number;
+      programsProcessed: number;
+      curriculumRulesApplied: number;
+    };
+    details: {
+      curriculumRules: Array<{
+        academicYear: string;
+        versionName: string;
+        description: string;
+      }>;
+      generatedCurricula: Array<{
+        programId: string;
+        version: string;
+        courseCount: number;
+        effectiveDate: string;
+      }>;
+    };
+  }> {
+    const response = await fetch(`${API_BASE_URL}/curriculum/auto-generate-all`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ message: 'Failed to auto-generate all curricula' }));
+      throw new Error(errorData.message || 'Failed to auto-generate all curricula');
+    }
+    return response.json();
   }
 };
