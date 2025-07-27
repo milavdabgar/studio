@@ -325,7 +325,7 @@ export interface Student {
     
     programId: string; 
     batchId?: string; 
-    currentSemester: number;
+    currentSemester: number; // 1-6 for diploma programs
     admissionDate?: Timestamp;
     
     category?: string; 
@@ -341,9 +341,8 @@ export interface Student {
     sem4Status?: SemesterStatus;
     sem5Status?: SemesterStatus;
     sem6Status?: SemesterStatus;
-    sem7Status?: SemesterStatus;
-    sem8Status?: SemesterStatus;
-    semesterStatuses?: Record<number, SemesterStatus>; // For dynamic semester access
+    // Diploma programs only have semesters 1-6, no sem7Status/sem8Status
+    semesterStatuses?: Record<number, SemesterStatus>; // For dynamic semester access (1-6 for diploma)
     
     fullNameGtuFormat?: string; 
     firstName?: string;
@@ -663,6 +662,13 @@ export interface CommitteeMember {
 }
 
 // Academic Models
+export interface IntakeCapacityRange {
+  fromYear: number;
+  toYear?: number; // undefined means "current" or ongoing
+  capacity: number;
+  label?: string; // Optional label like "Current", "Expansion Phase", etc.
+}
+
 export interface Program {
   id: string;
   name: string; 
@@ -677,7 +683,10 @@ export interface Program {
   totalCredits?: number;
   curriculumVersion?: string;
   status: 'active' | 'inactive' | 'phasing_out';
-  admissionCapacity?: number; 
+  admissionCapacity?: number; // Legacy field - for backward compatibility
+  intakeCapacityRanges?: IntakeCapacityRange[]; // [{ fromYear: 2021, toYear: undefined, capacity: 118 }, { fromYear: 2015, toYear: 2020, capacity: 90 }]
+  yearlyIntakeCapacities?: Record<number, number>; // Legacy field - will be derived from ranges
+  currentIntakeCapacity?: number; // Legacy field - will be derived from current range
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }

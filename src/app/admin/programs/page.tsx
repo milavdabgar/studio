@@ -13,9 +13,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { PlusCircle, Edit, Trash2, BookCopy, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from '@/components/ui/textarea';
-import type { Program, Department } from '@/types/entities';
+import type { Program, Department, IntakeCapacityRange } from '@/types/entities';
 import { programService } from '@/lib/api/programs';
 import { departmentService } from '@/lib/api/departments';
+import { getCurrentIntakeCapacity, rangesToYearlyCapacities, formatRangeDisplay, validateIntakeRanges } from '@/lib/utils/intake-capacity';
 
 type SortField = keyof Program | 'none';
 type SortDirection = 'asc' | 'desc';
@@ -39,6 +40,8 @@ export default function ProgramManagementPage() {
   const [formDepartmentId, setFormDepartmentId] = useState<string>('');
   const [formDurationYears, setFormDurationYears] = useState<number | undefined>(undefined);
   const [formTotalSemesters, setFormTotalSemesters] = useState<number | undefined>(undefined);
+  const [formIntakeCapacityRanges, setFormIntakeCapacityRanges] = useState<IntakeCapacityRange[]>([]);
+  const [rangeValidationErrors, setRangeValidationErrors] = useState<string[]>([]);
   const [formStatus, setFormStatus] = useState<'active' | 'inactive' | 'phasing_out'>('active');
   
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -84,8 +87,17 @@ export default function ProgramManagementPage() {
     setFormDepartmentId(departments.length > 0 ? departments[0].id : '');
     setFormDurationYears(undefined);
     setFormTotalSemesters(undefined);
+    setFormIntakeCapacityRanges([]);
+    setRangeValidationErrors([]);
     setFormStatus('active');
     setCurrentProgram(null);
+  };
+
+  // Validate ranges whenever they change
+  const validateRanges = (ranges: IntakeCapacityRange[]) => {
+    const validation = validateIntakeRanges(ranges);
+    setRangeValidationErrors(validation.errors);
+    return validation.isValid;
   };
 
   const handleEdit = (program: Program) => {
@@ -96,6 +108,7 @@ export default function ProgramManagementPage() {
     setFormDepartmentId(program.departmentId);
     setFormDurationYears(program.durationYears || undefined);
     setFormTotalSemesters(program.totalSemesters || undefined);
+    setFormIntakeCapacityRanges(program.intakeCapacityRanges || []);
     setFormStatus(program.status);
     setIsDialogOpen(true);
   };
@@ -139,6 +152,20 @@ export default function ProgramManagementPage() {
       return;
     }
 
+    // Validate intake capacity ranges
+    if (formIntakeCapacityRanges.length > 0) {
+      const rangeValidation = validateIntakeRanges(formIntakeCapacityRanges);
+      if (!rangeValidation.isValid) {
+        toast({ 
+          variant: "destructive", 
+          title: "Range Validation Error", 
+          description: `Please fix the following issues: ${rangeValidation.errors.join(', ')}`
+        });
+        setRangeValidationErrors(rangeValidation.errors);
+        return;
+      }
+    }
+
     setIsSubmitting(true);
     
     const selectedDepartment = departments.find(d => d.id === formDepartmentId);
@@ -156,6 +183,10 @@ export default function ProgramManagementPage() {
       instituteId: selectedDepartment.instituteId,
       durationYears: formDurationYears ? Number(formDurationYears) : undefined,
       totalSemesters: formTotalSemesters ? Number(formTotalSemesters) : undefined,
+      intakeCapacityRanges: formIntakeCapacityRanges.length > 0 ? formIntakeCapacityRanges : undefined,
+      // Derive legacy fields from ranges for backward compatibility
+      currentIntakeCapacity: getCurrentIntakeCapacity(formIntakeCapacityRanges),
+      yearlyIntakeCapacities: rangesToYearlyCapacities(formIntakeCapacityRanges),
       status: formStatus,
     };
 
@@ -397,56 +428,234 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
                   <PlusCircle className="mr-2 h-5 w-5" /> Add New Program
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[625px]">
+              <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>{currentProgram?.id ? "Edit Program" : "Add New Program"}</DialogTitle>
                   <DialogDescription>
                     {currentProgram?.id ? "Modify the details of this program." : "Create a new program record."}
                   </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-4 py-4">
-                  <div>
-                    <Label htmlFor="progName">Program Name *</Label>
-                    <Input id="progName" value={formProgramName} onChange={(e) => setFormProgramName(e.target.value)} placeholder="e.g., Diploma in Electrical Engineering" disabled={isSubmitting} required />
-                  </div>
-                  <div>
-                    <Label htmlFor="progCode">Program Code *</Label>
-                    <Input id="progCode" value={formProgramCode} onChange={(e) => setFormProgramCode(e.target.value.toUpperCase())} placeholder="e.g., DEE" disabled={isSubmitting} required />
-                  </div>
-                  <div>
-                    <Label htmlFor="progDescription">Description</Label>
-                    <Textarea id="progDescription" value={formProgramDescription} onChange={(e) => setFormProgramDescription(e.target.value)} placeholder="Brief description of the program" disabled={isSubmitting} rows={3} />
-                  </div>
-                  <div>
-                    <Label htmlFor="progDepartment">Department *</Label>
-                    <Select value={formDepartmentId} onValueChange={setFormDepartmentId} disabled={isSubmitting || departments.length === 0} required>
-                      <SelectTrigger id="progDepartment"><SelectValue placeholder="Select Department" /></SelectTrigger>
-                      <SelectContent>
-                        {departments.map(dept => (
-                          <SelectItem key={dept.id} value={dept.id}>{dept.name} ({dept.code})</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="progDurationYears">Duration (Years)</Label>
-                      <Input id="progDurationYears" type="number" value={formDurationYears || ''} onChange={(e) => setFormDurationYears(e.target.value ? parseInt(e.target.value) : undefined)} placeholder="e.g., 3" disabled={isSubmitting} />
+                <form onSubmit={handleSubmit} className="space-y-6 py-4">
+                  {/* Basic Information Section */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Basic Information</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="progName">Program Name *</Label>
+                        <Input id="progName" value={formProgramName} onChange={(e) => setFormProgramName(e.target.value)} placeholder="e.g., Diploma in Electrical Engineering" disabled={isSubmitting} required />
+                      </div>
+                      <div>
+                        <Label htmlFor="progCode">Program Code *</Label>
+                        <Input id="progCode" value={formProgramCode} onChange={(e) => setFormProgramCode(e.target.value.toUpperCase())} placeholder="e.g., DEE" disabled={isSubmitting} required />
+                      </div>
                     </div>
                     <div>
-                      <Label htmlFor="progTotalSemesters">Total Semesters</Label>
-                      <Input id="progTotalSemesters" type="number" value={formTotalSemesters || ''} onChange={(e) => setFormTotalSemesters(e.target.value ? parseInt(e.target.value) : undefined)} placeholder="e.g., 6" disabled={isSubmitting} />
+                      <Label htmlFor="progDescription">Description</Label>
+                      <Textarea id="progDescription" value={formProgramDescription} onChange={(e) => setFormProgramDescription(e.target.value)} placeholder="Brief description of the program" disabled={isSubmitting} rows={2} />
+                    </div>
+                    <div>
+                      <Label htmlFor="progDepartment">Department *</Label>
+                      <Select value={formDepartmentId} onValueChange={setFormDepartmentId} disabled={isSubmitting || departments.length === 0} required>
+                        <SelectTrigger id="progDepartment"><SelectValue placeholder="Select Department" /></SelectTrigger>
+                        <SelectContent>
+                          {departments.map(dept => (
+                            <SelectItem key={dept.id} value={dept.id}>{dept.name} ({dept.code})</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
-                  <div>
-                    <Label htmlFor="progStatus">Status *</Label>
-                    <Select value={formStatus} onValueChange={(value) => setFormStatus(value as 'active' | 'inactive')} disabled={isSubmitting} required>
-                      <SelectTrigger id="progStatus"><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="inactive">Inactive</SelectItem>
-                      </SelectContent>
-                    </Select>
+
+                  {/* Academic Information Section */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Academic Information</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="progDurationYears">Duration (Years)</Label>
+                        <Input id="progDurationYears" type="number" value={formDurationYears || ''} onChange={(e) => setFormDurationYears(e.target.value ? parseInt(e.target.value) : undefined)} placeholder="e.g., 3" disabled={isSubmitting} />
+                      </div>
+                      <div>
+                        <Label htmlFor="progTotalSemesters">Total Semesters</Label>
+                        <Input id="progTotalSemesters" type="number" value={formTotalSemesters || ''} onChange={(e) => setFormTotalSemesters(e.target.value ? parseInt(e.target.value) : undefined)} placeholder="e.g., 6" disabled={isSubmitting} />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Intake Capacity Ranges Section */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Intake Capacity History</h3>
+                        <p className="text-xs text-muted-foreground mt-1">Define capacity changes over time periods (e.g., 2021-Current: 118, 2015-2020: 90)</p>
+                      </div>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => {
+                          const currentYear = new Date().getFullYear();
+                          const newRange: IntakeCapacityRange = {
+                            fromYear: currentYear,
+                            toYear: undefined, // Current ongoing
+                            capacity: 60
+                          };
+                          const newRanges = [...formIntakeCapacityRanges, newRange];
+                          setFormIntakeCapacityRanges(newRanges);
+                          validateRanges(newRanges);
+                        }}
+                        disabled={isSubmitting}
+                      >
+                        <PlusCircle className="mr-1 h-3 w-3" />
+                        Add Range
+                      </Button>
+                    </div>
+                    
+                    {formIntakeCapacityRanges.length > 0 && (
+                      <div className="space-y-3">
+                        <div className="space-y-2 max-h-48 overflow-y-auto border rounded-lg p-3 bg-gray-50 dark:bg-gray-900">
+                          {formIntakeCapacityRanges
+                            .sort((a, b) => b.fromYear - a.fromYear) // Sort by fromYear descending
+                            .map((range, index) => (
+                            <div key={index} className="p-3 bg-white dark:bg-gray-800 rounded border space-y-2">
+                              <div className="flex items-center gap-2">
+                                <div className="text-xs font-medium text-gray-600 dark:text-gray-300 min-w-[60px]">
+                                  Range #{index + 1}
+                                </div>
+                                <div className="flex-1 text-sm text-gray-600 dark:text-gray-300">
+                                  {range.fromYear}-{range.toYear || 'Current'}: {range.capacity} students
+                                </div>
+                                <Button
+                                  type="button"
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => {
+                                    const newRanges = formIntakeCapacityRanges.filter((_, i) => i !== index);
+                                    setFormIntakeCapacityRanges(newRanges);
+                                    validateRanges(newRanges);
+                                  }}
+                                  disabled={isSubmitting}
+                                  className="px-2 h-8"
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </div>
+                              
+                              <div className="grid grid-cols-3 gap-2">
+                                <div>
+                                  <Label className="text-xs text-gray-500">From Year</Label>
+                                  <Input
+                                    type="number"
+                                    value={range.fromYear}
+                                    onChange={(e) => {
+                                      const newYear = parseInt(e.target.value);
+                                      if (!isNaN(newYear) && newYear >= 2000 && newYear <= 2100) {
+                                        const newRanges = [...formIntakeCapacityRanges];
+                                        newRanges[formIntakeCapacityRanges.indexOf(range)].fromYear = newYear;
+                                        setFormIntakeCapacityRanges(newRanges);
+                                        validateRanges(newRanges);
+                                      }
+                                    }}
+                                    placeholder="2021"
+                                    min="2000"
+                                    max="2100"
+                                    disabled={isSubmitting}
+                                    className="text-center h-8"
+                                  />
+                                </div>
+                                <div>
+                                  <Label className="text-xs text-gray-500">To Year (empty = current)</Label>
+                                  <Input
+                                    type="number"
+                                    value={range.toYear || ''}
+                                    onChange={(e) => {
+                                      const newYear = e.target.value ? parseInt(e.target.value) : undefined;
+                                      if (!e.target.value || (!isNaN(newYear!) && newYear! >= 2000 && newYear! <= 2100)) {
+                                        const newRanges = [...formIntakeCapacityRanges];
+                                        newRanges[formIntakeCapacityRanges.indexOf(range)].toYear = newYear;
+                                        setFormIntakeCapacityRanges(newRanges);
+                                        validateRanges(newRanges);
+                                      }
+                                    }}
+                                    placeholder="Leave empty for current"
+                                    min="2000"
+                                    max="2100"
+                                    disabled={isSubmitting}
+                                    className="text-center h-8"
+                                  />
+                                </div>
+                                <div>
+                                  <Label className="text-xs text-gray-500">Capacity</Label>
+                                  <Input
+                                    type="number"
+                                    value={range.capacity}
+                                    onChange={(e) => {
+                                      const newCapacity = parseInt(e.target.value);
+                                      if (!isNaN(newCapacity) && newCapacity > 0) {
+                                        const newRanges = [...formIntakeCapacityRanges];
+                                        newRanges[formIntakeCapacityRanges.indexOf(range)].capacity = newCapacity;
+                                        setFormIntakeCapacityRanges(newRanges);
+                                        validateRanges(newRanges);
+                                      }
+                                    }}
+                                    placeholder="118"
+                                    min="1"
+                                    max="9999"
+                                    disabled={isSubmitting}
+                                    className="text-center h-8"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-xs text-muted-foreground bg-blue-50 dark:bg-blue-950 p-2 rounded">
+                            <span>{formIntakeCapacityRanges.length} range(s) configured</span>
+                            <span><strong>Current capacity:</strong> {getCurrentIntakeCapacity(formIntakeCapacityRanges) || 'Not set'}</span>
+                          </div>
+                          
+                          {rangeValidationErrors.length > 0 && (
+                            <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded p-2">
+                              <div className="text-xs font-semibold text-red-800 dark:text-red-200 mb-1">Validation Errors:</div>
+                              <ul className="text-xs text-red-700 dark:text-red-300 space-y-1">
+                                {rangeValidationErrors.map((error, idx) => (
+                                  <li key={idx}>• {error}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                          
+                          {rangeValidationErrors.length === 0 && formIntakeCapacityRanges.length > 0 && (
+                            <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded p-2">
+                              <div className="text-xs text-green-800 dark:text-green-200">✓ All ranges are valid</div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {formIntakeCapacityRanges.length === 0 && (
+                      <div className="text-center p-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg">
+                        <p className="text-sm text-muted-foreground mb-1">No intake capacity ranges configured</p>
+                        <p className="text-xs text-muted-foreground">Click "Add Range" to define capacity periods</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Status Section */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Program Status</h3>
+                    <div>
+                      <Label htmlFor="progStatus">Status *</Label>
+                      <Select value={formStatus} onValueChange={(value) => setFormStatus(value as 'active' | 'inactive' | 'phasing_out')} disabled={isSubmitting} required>
+                        <SelectTrigger id="progStatus"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="active">Active</SelectItem>
+                          <SelectItem value="inactive">Inactive</SelectItem>
+                          <SelectItem value="phasing_out">Phasing Out</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                   <DialogFooter>
                     <DialogClose asChild>
@@ -550,6 +759,7 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
                 <TableHead>Department</TableHead>
                 <SortableTableHeader field="durationYears" label="Duration (Yrs)" />
                 <SortableTableHeader field="totalSemesters" label="Semesters" />
+                <TableHead>Intake Capacity</TableHead>
                 <SortableTableHeader field="status" label="Status" />
                 <TableHead className="text-right w-32">Actions</TableHead>
               </TableRow>
@@ -569,6 +779,7 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
                   <TableCell>{departments.find(d => d.id === prog.departmentId)?.name || 'N/A'}</TableCell>
                   <TableCell>{prog.durationYears || '-'}</TableCell>
                   <TableCell>{prog.totalSemesters || '-'}</TableCell>
+                  <TableCell>{prog.currentIntakeCapacity || prog.admissionCapacity || '-'}</TableCell>
                   <TableCell>
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${prog.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'}`}>
                       {prog.status === 'active' ? 'Active' : 'Inactive'}
@@ -727,7 +938,58 @@ prog_sample_1,Diploma in Information Technology,DIT,"Focuses on IT skills",dept1
                     <span className="font-medium">Total Semesters:</span>
                     <p className="text-muted-foreground">{viewProgram.totalSemesters || 'N/A'}</p>
                   </div>
+                  <div>
+                    <span className="font-medium">Current Intake Capacity:</span>
+                    <p className="text-muted-foreground">
+                      {getCurrentIntakeCapacity(viewProgram.intakeCapacityRanges) || 
+                       viewProgram.currentIntakeCapacity || 
+                       viewProgram.admissionCapacity || 'N/A'}
+                    </p>
+                  </div>
                 </div>
+                
+                {/* Intake Capacity History */}
+                {viewProgram.intakeCapacityRanges && viewProgram.intakeCapacityRanges.length > 0 ? (
+                  <div className="space-y-4 md:col-span-2">
+                    <h3 className="text-lg font-semibold">Intake Capacity History</h3>
+                    <div className="space-y-3">
+                      {viewProgram.intakeCapacityRanges
+                        .sort((a, b) => b.fromYear - a.fromYear)
+                        .map((range, index) => (
+                        <div key={index} className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <div className="font-semibold text-sm">
+                                {range.fromYear} - {range.toYear || 'Current'}
+                              </div>
+                              <div className="text-muted-foreground text-xs mt-1">
+                                Period: {range.toYear ? `${range.toYear - range.fromYear + 1} years` : 'Ongoing'}
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="font-bold text-lg">{range.capacity}</div>
+                              <div className="text-muted-foreground text-xs">students</div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : viewProgram.yearlyIntakeCapacities && Object.keys(viewProgram.yearlyIntakeCapacities).length > 0 ? (
+                  <div className="space-y-4 md:col-span-2">
+                    <h3 className="text-lg font-semibold">Year-wise Intake Capacities (Legacy)</h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                      {Object.entries(viewProgram.yearlyIntakeCapacities)
+                        .sort(([a], [b]) => parseInt(b) - parseInt(a))
+                        .map(([year, capacity]) => (
+                        <div key={year} className="bg-gray-50 dark:bg-gray-800 p-2 rounded text-center">
+                          <div className="font-semibold text-sm">{year}</div>
+                          <div className="text-muted-foreground text-xs">{capacity} seats</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
               </div>
 
               {/* Description */}

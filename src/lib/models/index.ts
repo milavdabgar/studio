@@ -407,6 +407,13 @@ interface IProgram extends Omit<Program, 'id'>, Document {
   _id: string;
 }
 
+const intakeCapacityRangeSchema = new Schema({
+  fromYear: { type: Number, required: true },
+  toYear: { type: Number }, // undefined means current/ongoing
+  capacity: { type: Number, required: true },
+  label: { type: String }
+}, { _id: false });
+
 const programSchema = new Schema<IProgram>({
   id: { type: String, unique: true, sparse: true }, // Custom ID field
   name: { type: String, required: true },
@@ -420,7 +427,10 @@ const programSchema = new Schema<IProgram>({
   totalCredits: { type: Number },
   curriculumVersion: { type: String },
   status: { type: String, enum: ['active', 'inactive', 'phasing_out'], required: true, default: 'active' },
-  admissionCapacity: { type: Number },
+  admissionCapacity: { type: Number }, // Legacy field
+  intakeCapacityRanges: [intakeCapacityRangeSchema], // New range-based system
+  currentIntakeCapacity: { type: Number }, // Legacy field - derived from ranges
+  yearlyIntakeCapacities: { type: Schema.Types.Mixed }, // Legacy field - derived from ranges
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() }
 }, {

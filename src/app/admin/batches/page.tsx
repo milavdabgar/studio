@@ -9,12 +9,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { PlusCircle, Edit, Trash2, CalendarRange, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye } from "lucide-react";
+import { PlusCircle, Edit, Trash2, CalendarRange, Loader2, UploadCloud, Download, FileSpreadsheet, Search, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { Batch, Program, BatchStatus, Student } from '@/types/entities';
 import { batchService } from '@/lib/api/batches';
 import { programService } from '@/lib/api/programs';
 import { studentService } from '@/lib/api/students';
+import { getIntakeCapacityForYear } from '@/lib/utils/intake-capacity';
 
 type SortField = keyof Batch | 'none';
 type SortDirection = 'asc' | 'desc';
@@ -35,6 +36,8 @@ export default function BatchManagementPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [isAutoCreating, setIsAutoCreating] = useState(false);
+  const [batchCreationMethod, setBatchCreationMethod] = useState<'semester' | 'enrollment'>('semester');
   const [currentBatch, setCurrentBatch] = useState<Partial<Batch> | null>(null);
   const [viewBatch, setViewBatch] = useState<Batch | null>(null);
 
@@ -270,6 +273,375 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
     toast({ title: "Sample CSV Downloaded", description: "sample_batches_import.csv downloaded." });
   };
 
+  const handleAutoCreateBatches = async () => {
+    if (programs.length === 0) {
+      toast({ variant: "destructive", title: "No Programs", description: "No programs found. Please create programs first." });
+      return;
+    }
+    if (students.length === 0) {
+      toast({ variant: "destructive", title: "No Students", description: "No students found. Cannot create semester-based batches." });
+      return;
+    }
+
+    setIsAutoCreating(true);
+    
+    try {
+      let createdCount = 0;
+      let skippedCount = 0;
+      let assignedStudentCount = 0;
+      const createdBatches: string[] = [];
+
+      // Group students by program and current semester
+      const studentsByProgramAndSemester = new Map<string, Map<number, Student[]>>();
+      
+      students.forEach(student => {
+        if (!student.programId || !student.currentSemester) return;
+        
+        if (!studentsByProgramAndSemester.has(student.programId)) {
+          studentsByProgramAndSemester.set(student.programId, new Map());
+        }
+        
+        const programMap = studentsByProgramAndSemester.get(student.programId)!;
+        if (!programMap.has(student.currentSemester)) {
+          programMap.set(student.currentSemester, []);
+        }
+        
+        programMap.get(student.currentSemester)!.push(student);
+      });
+
+      // Create batches for each program-semester combination
+      for (const [programId, semesterMap] of studentsByProgramAndSemester) {
+        const program = programs.find(p => p.id === programId);
+        if (!program) continue;
+
+        for (const [semester, studentsInSemester] of semesterMap) {
+          // For active students, create semester-based batches like EC1, EC3, EC5
+          if (studentsInSemester.some(s => s.status === 'active')) {
+            const batchName = `${program.code}${semester}`;
+            
+            // Check if batch already exists
+            const existingBatch = batches.find(b => 
+              b.name === batchName && b.programId === programId
+            );
+            
+            if (existingBatch) {
+              skippedCount++;
+              continue;
+            }
+
+            // Determine academic year based on enrollment numbers or current year
+            let startAcademicYear = new Date().getFullYear();
+            
+            // Try to extract admission year from enrollment numbers (like 246260311002 -> 24)
+            const firstStudent = studentsInSemester[0];
+            if (firstStudent.enrollmentNumber && firstStudent.enrollmentNumber.length >= 2) {
+              const yearPrefix = firstStudent.enrollmentNumber.substring(0, 2);
+              const admissionYear = parseInt(yearPrefix);
+              if (!isNaN(admissionYear)) {
+                // Convert 2-digit year to 4-digit (24 -> 2024)
+                startAcademicYear = admissionYear < 50 ? 2000 + admissionYear : 1900 + admissionYear;
+              }
+            }
+
+            // Get intake capacity for semester-based batches (use current year or program capacity)
+            let maxIntakeCapacity = 60; // Default fallback
+            
+            // Try range-based capacity first
+            const currentYear = new Date().getFullYear();
+            const rangeCapacity = getIntakeCapacityForYear(program.intakeCapacityRanges, currentYear);
+            if (rangeCapacity) {
+              maxIntakeCapacity = rangeCapacity;
+            } else if (program.currentIntakeCapacity) {
+              maxIntakeCapacity = program.currentIntakeCapacity;
+            } else if (program.yearlyIntakeCapacities?.[currentYear]) {
+              maxIntakeCapacity = program.yearlyIntakeCapacities[currentYear];
+            } else if (program.admissionCapacity) {
+              maxIntakeCapacity = program.admissionCapacity;
+            }
+
+            const batchData: Omit<Batch, 'id'> = {
+              name: batchName,
+              programId: programId,
+              startAcademicYear: startAcademicYear,
+              endAcademicYear: startAcademicYear + 3, // Diploma is 3 years
+              maxIntake: Math.max(maxIntakeCapacity, studentsInSemester.length), // At least current enrollment or official capacity
+              status: 'active' as BatchStatus
+            };
+
+            const newBatch = await batchService.createBatch(batchData);
+            createdCount++;
+            createdBatches.push(batchName);
+            
+            // Auto-assign students to the created batch
+            const studentsToAssign = studentsInSemester.filter(s => s.status === 'active');
+            for (const student of studentsToAssign) {
+              try {
+                await studentService.updateStudent(student.id, { batchId: newBatch.id });
+                assignedStudentCount++;
+              } catch (error) {
+                console.error(`Failed to assign student ${student.enrollmentNumber} to batch ${batchName}:`, error);
+              }
+            }
+          }
+        }
+      }
+
+      // Also create batches for graduated students based on convocation year or admission year
+      const graduatedStudents = students.filter(s => s.status === 'graduated');
+      const graduatedByProgramAndYear = new Map<string, Map<number, Student[]>>();
+      
+      graduatedStudents.forEach(student => {
+        if (!student.programId) return;
+        
+        // Use convocation year if available, otherwise calculate from admission year
+        let batchYear = student.convocationYear;
+        if (!batchYear && student.enrollmentNumber && student.enrollmentNumber.length >= 2) {
+          const yearPrefix = student.enrollmentNumber.substring(0, 2);
+          const admissionYear = parseInt(yearPrefix);
+          if (!isNaN(admissionYear)) {
+            const fullAdmissionYear = admissionYear < 50 ? 2000 + admissionYear : 1900 + admissionYear;
+            batchYear = fullAdmissionYear + 3; // Diploma completion year
+          }
+        }
+        
+        if (!batchYear) return;
+        
+        if (!graduatedByProgramAndYear.has(student.programId)) {
+          graduatedByProgramAndYear.set(student.programId, new Map());
+        }
+        
+        const programMap = graduatedByProgramAndYear.get(student.programId)!;
+        if (!programMap.has(batchYear)) {
+          programMap.set(batchYear, []);
+        }
+        
+        programMap.get(batchYear)!.push(student);
+      });
+
+      // Create batches for graduated students
+      for (const [programId, yearMap] of graduatedByProgramAndYear) {
+        const program = programs.find(p => p.id === programId);
+        if (!program) continue;
+
+        for (const [graduationYear, graduatedStudents] of yearMap) {
+          const batchName = `${program.code}-${graduationYear}`;
+          
+          // Check if batch already exists
+          const existingBatch = batches.find(b => 
+            b.name === batchName && b.programId === programId
+          );
+          
+          if (existingBatch) {
+            skippedCount++;
+            continue;
+          }
+
+          // Get intake capacity for graduated batch (use admission year capacity)
+          const admissionYear = graduationYear - 3; // Diploma is 3 years
+          let maxIntakeCapacity = graduatedStudents.length; // Default to actual graduated count
+          
+          // Try range-based capacity first for the admission year
+          const rangeCapacity = getIntakeCapacityForYear(program.intakeCapacityRanges, admissionYear);
+          if (rangeCapacity) {
+            maxIntakeCapacity = Math.max(rangeCapacity, graduatedStudents.length);
+          } else if (program.yearlyIntakeCapacities?.[admissionYear]) {
+            maxIntakeCapacity = Math.max(program.yearlyIntakeCapacities[admissionYear], graduatedStudents.length);
+          } else if (program.currentIntakeCapacity) {
+            maxIntakeCapacity = Math.max(program.currentIntakeCapacity, graduatedStudents.length);
+          } else if (program.admissionCapacity) {
+            maxIntakeCapacity = Math.max(program.admissionCapacity, graduatedStudents.length);
+          }
+
+          const batchData: Omit<Batch, 'id'> = {
+            name: batchName,
+            programId: programId,
+            startAcademicYear: admissionYear,
+            endAcademicYear: graduationYear,
+            maxIntake: maxIntakeCapacity,
+            status: 'completed' as BatchStatus
+          };
+
+          const newBatch = await batchService.createBatch(batchData);
+          createdCount++;
+          createdBatches.push(batchName);
+          
+          // Auto-assign graduated students to the created batch
+          for (const student of graduatedStudents) {
+            try {
+              await studentService.updateStudent(student.id, { batchId: newBatch.id });
+              assignedStudentCount++;
+            } catch (error) {
+              console.error(`Failed to assign graduated student ${student.enrollmentNumber} to batch ${batchName}:`, error);
+            }
+          }
+        }
+      }
+
+      await fetchInitialData();
+      
+      if (createdCount > 0) {
+        toast({ 
+          title: "Auto-Create Successful", 
+          description: `Created ${createdCount} batches and assigned ${assignedStudentCount} students. Skipped ${skippedCount} existing batches.` 
+        });
+      } else {
+        toast({ 
+          title: "No Batches Created", 
+          description: `All ${skippedCount} batches already exist or no eligible students found.` 
+        });
+      }
+      
+    } catch (error) {
+      console.error("Error auto-creating batches:", error);
+      toast({ 
+        variant: "destructive", 
+        title: "Auto-Create Failed", 
+        description: (error as Error).message || "Could not auto-create batches." 
+      });
+    } finally {
+      setIsAutoCreating(false);
+    }
+  };
+
+  const handleAutoCreateBatchesByEnrollment = async () => {
+    if (programs.length === 0) {
+      toast({ variant: "destructive", title: "No Programs", description: "No programs found. Please create programs first." });
+      return;
+    }
+    if (students.length === 0) {
+      toast({ variant: "destructive", title: "No Students", description: "No students found. Cannot create enrollment-based batches." });
+      return;
+    }
+    setIsAutoCreating(true);
+    
+    try {
+      let createdCount = 0;
+      let skippedCount = 0;
+      let assignedStudentCount = 0;
+      const createdBatches: string[] = [];
+
+      // Extract admission year and program from enrollment numbers
+      const parseEnrollmentNumber = (enrollmentNumber: string) => {
+        if (enrollmentNumber.length < 10) return null;
+        
+        const yearPrefix = enrollmentNumber.substring(0, 2);
+        const admissionYear = parseInt(yearPrefix);
+        const fullAdmissionYear = admissionYear < 50 ? 2000 + admissionYear : 1900 + admissionYear;
+        
+        return { admissionYear: fullAdmissionYear };
+      };
+
+      // Group students by program and admission year
+      const studentsByProgramAndYear = new Map<string, Map<number, Student[]>>();
+      
+      students.forEach(student => {
+        if (!student.programId || !student.enrollmentNumber) return;
+        
+        const parsedData = parseEnrollmentNumber(student.enrollmentNumber);
+        if (!parsedData) return;
+        
+        if (!studentsByProgramAndYear.has(student.programId)) {
+          studentsByProgramAndYear.set(student.programId, new Map());
+        }
+        
+        const programMap = studentsByProgramAndYear.get(student.programId)!;
+        if (!programMap.has(parsedData.admissionYear)) {
+          programMap.set(parsedData.admissionYear, []);
+        }
+        
+        programMap.get(parsedData.admissionYear)!.push(student);
+      });
+
+      // Create batches for each program-year combination
+      for (const [programId, yearMap] of studentsByProgramAndYear) {
+        const program = programs.find(p => p.id === programId);
+        if (!program) continue;
+
+        for (const [admissionYear, studentsInYear] of yearMap) {
+          // Create batch name like "EC-2024", "ICT-2023"
+          const batchName = `${program.code}-${admissionYear}`;
+          
+          // Check if batch already exists
+          const existingBatch = batches.find(b => 
+            b.name === batchName && b.programId === programId
+          );
+          
+          if (existingBatch) {
+            skippedCount++;
+            continue;
+          }
+
+          // Determine batch status based on current year and expected completion
+          const currentYear = new Date().getFullYear();
+          const expectedCompletionYear = admissionYear + 3; // Diploma is 3 years
+          const batchStatus: BatchStatus = currentYear >= expectedCompletionYear ? 'completed' : 'active';
+
+          // Get intake capacity for the admission year, fallback to current or legacy capacity
+          let maxIntakeCapacity = 60; // Default fallback
+          
+          // Try range-based capacity first for the admission year
+          const rangeCapacity = getIntakeCapacityForYear(program.intakeCapacityRanges, admissionYear);
+          if (rangeCapacity) {
+            maxIntakeCapacity = rangeCapacity;
+          } else if (program.yearlyIntakeCapacities?.[admissionYear]) {
+            maxIntakeCapacity = program.yearlyIntakeCapacities[admissionYear];
+          } else if (program.currentIntakeCapacity) {
+            maxIntakeCapacity = program.currentIntakeCapacity;
+          } else if (program.admissionCapacity) {
+            maxIntakeCapacity = program.admissionCapacity;
+          }
+          
+          const batchData: Omit<Batch, 'id'> = {
+            name: batchName,
+            programId: programId,
+            startAcademicYear: admissionYear,
+            endAcademicYear: expectedCompletionYear,
+            maxIntake: Math.max(maxIntakeCapacity, studentsInYear.length), // At least current enrollment or official capacity
+            status: batchStatus
+          };
+
+          const newBatch = await batchService.createBatch(batchData);
+          createdCount++;
+          createdBatches.push(batchName);
+          
+          // Auto-assign students to the created batch
+          for (const student of studentsInYear) {
+            try {
+              await studentService.updateStudent(student.id, { batchId: newBatch.id });
+              assignedStudentCount++;
+            } catch (error) {
+              console.error(`Failed to assign student ${student.enrollmentNumber} to batch ${batchName}:`, error);
+            }
+          }
+        }
+      }
+
+      await fetchInitialData();
+      
+      if (createdCount > 0) {
+        toast({ 
+          title: "Auto-Create Successful", 
+          description: `Created ${createdCount} enrollment-based batches and assigned ${assignedStudentCount} students. Skipped ${skippedCount} existing batches.` 
+        });
+      } else {
+        toast({ 
+          title: "No Batches Created", 
+          description: `All ${skippedCount} batches already exist or no eligible students found.` 
+        });
+      }
+      
+    } catch (error) {
+      console.error("Error auto-creating enrollment-based batches:", error);
+      toast({ 
+        variant: "destructive", 
+        title: "Auto-Create Failed", 
+        description: (error as Error).message || "Could not auto-create enrollment-based batches." 
+      });
+    } finally {
+      setIsAutoCreating(false);
+    }
+  };
+
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
@@ -435,6 +807,37 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
                 </form>
               </DialogContent>
             </Dialog>
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+                <Select value={batchCreationMethod} onValueChange={(value: 'semester' | 'enrollment') => setBatchCreationMethod(value)}>
+                  <SelectTrigger className="w-full sm:w-48">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="semester">By Current Semester</SelectItem>
+                    <SelectItem value="enrollment">By Enrollment Year</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button 
+                  onClick={batchCreationMethod === 'semester' ? handleAutoCreateBatches : handleAutoCreateBatchesByEnrollment} 
+                  variant="secondary" 
+                  className="w-full sm:w-auto"
+                  disabled={programs.length === 0 || students.length === 0 || isAutoCreating}
+                >
+                  {isAutoCreating ? (
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  ) : (
+                    <Zap className="mr-2 h-5 w-5" />
+                  )}
+                  Auto-Create Batches
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {batchCreationMethod === 'semester' 
+                  ? "Creates batches like 'EC1', 'EC3' based on current semester (e.g., active students in semester 1, 3, etc.)"
+                  : "Creates batches like 'EC-2024', 'ICT-2023' based on admission year from enrollment numbers (more reliable data)"}
+              </p>
+            </div>
             <Button onClick={handleExportBatches} variant="outline" className="w-full sm:w-auto">
               <Download className="mr-2 h-5 w-5" /> Export CSV
             </Button>

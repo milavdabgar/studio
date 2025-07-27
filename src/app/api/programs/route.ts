@@ -57,6 +57,9 @@ export async function POST(request: NextRequest) {
     if (programData.admissionCapacity && programData.admissionCapacity <= 0) {
       return NextResponse.json({ message: 'Admission capacity must be greater than 0.' }, { status: 400 });
     }
+    if (programData.currentIntakeCapacity && programData.currentIntakeCapacity <= 0) {
+      return NextResponse.json({ message: 'Current intake capacity must be greater than 0.' }, { status: 400 });
+    }
     
     const newProgram = new ProgramModel({
       name: programData.name.trim(),
@@ -71,6 +74,9 @@ export async function POST(request: NextRequest) {
       curriculumVersion: programData.curriculumVersion?.trim() || undefined,
       status: programData.status || 'active',
       admissionCapacity: programData.admissionCapacity ? Number(programData.admissionCapacity) : undefined,
+      intakeCapacityRanges: programData.intakeCapacityRanges || undefined,
+      currentIntakeCapacity: programData.currentIntakeCapacity ? Number(programData.currentIntakeCapacity) : undefined,
+      yearlyIntakeCapacities: programData.yearlyIntakeCapacities || undefined,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     });

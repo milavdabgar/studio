@@ -57,6 +57,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     if (programData.totalSemesters !== undefined && (isNaN(programData.totalSemesters) || programData.totalSemesters <= 0)) {
       return NextResponse.json({ message: 'Total Semesters must be a positive number.' }, { status: 400 });
     }
+    if (programData.currentIntakeCapacity !== undefined && (isNaN(programData.currentIntakeCapacity) || programData.currentIntakeCapacity <= 0)) {
+      return NextResponse.json({ message: 'Current intake capacity must be a positive number.' }, { status: 400 });
+    }
     
     // Check for duplicate program code within the same institute
     if (programData.code && programData.instituteId) {
@@ -83,6 +86,19 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
     if (programData.description) {
       updateData.description = programData.description.trim();
+    }
+    
+    // Handle numeric fields conversion
+    if (programData.currentIntakeCapacity !== undefined) {
+      updateData.currentIntakeCapacity = programData.currentIntakeCapacity ? Number(programData.currentIntakeCapacity) : undefined;
+    }
+    
+    // Handle intake capacity ranges and legacy fields
+    if (programData.intakeCapacityRanges !== undefined) {
+      updateData.intakeCapacityRanges = programData.intakeCapacityRanges;
+    }
+    if (programData.yearlyIntakeCapacities !== undefined) {
+      updateData.yearlyIntakeCapacities = programData.yearlyIntakeCapacities;
     }
     
     // Update timestamp
