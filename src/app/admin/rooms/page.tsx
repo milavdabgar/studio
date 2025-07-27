@@ -215,7 +215,7 @@ export default function RoomManagementPage() {
       toast({ title: "Export Canceled", description: "No rooms to export (check filters)." });
       return;
     }
-    const header = ['id', 'roomNumber', 'name', 'buildingId', 'buildingName', 'buildingCode', 'floor', 'type', 'capacity', 'areaSqFt', 'status', 'notes'];
+    const header = ['id', 'roomNumber', 'name', 'buildingId', 'buildingName', 'buildingCode', 'floor', 'type', 'capacity', 'areaSqFt', 'status', 'notes', 'cctvInstalled', 'cctvCompany', 'cctvDeviceNo', 'cctvIpAddress', 'cctvUsername', 'cctvPassword', 'cctvStatus'];
     const csvRows = [
       header.join(','),
       ...filteredAndSortedRooms.map(r => {
@@ -224,7 +224,11 @@ export default function RoomManagementPage() {
           r.id, r.roomNumber, `"${(r.name || "").replace(/"/g, '""')}"`, r.buildingId, 
           `"${(bldg?.name || "").replace(/"/g, '""')}"`, `"${(bldg?.code || "").replace(/"/g, '""')}"`,
           r.floor === undefined ? "" : r.floor, r.type, r.capacity === undefined ? "" : r.capacity,
-          r.areaSqFt === undefined ? "" : r.areaSqFt, r.status, `"${(r.notes || "").replace(/"/g, '""')}"`
+          r.areaSqFt === undefined ? "" : r.areaSqFt, r.status, `"${(r.notes || "").replace(/"/g, '""')}"`,
+          r.cctvInstalled === undefined ? "" : r.cctvInstalled, `"${(r.cctvCompany || "").replace(/"/g, '""')}"`,
+          `"${(r.cctvDeviceNo || "").replace(/"/g, '""')}"`, `"${(r.cctvIpAddress || "").replace(/"/g, '""')}"`,
+          `"${(r.cctvUsername || "").replace(/"/g, '""')}"`, `"${(r.cctvPassword || "").replace(/"/g, '""')}"`,
+          `"${(r.cctvStatus || "").replace(/"/g, '""')}"`
         ].join(',');
       })
     ];
@@ -238,9 +242,9 @@ export default function RoomManagementPage() {
   };
 
   const handleDownloadSampleCsv = () => {
-    const sampleCsvContent = `id,roomNumber,name,buildingId,buildingName,buildingCode,floor,type,capacity,areaSqFt,status,notes
-room_sample_1,C-101,Smart Classroom 1,bldg2,"New Academic Complex","NAC",1,Lecture Hall,50,800,available,"Projector and AC available"
-,LAB-003,Network Lab,bldg2,"New Academic Complex","NAC",0,Laboratory,25,600,occupied,
+    const sampleCsvContent = `id,roomNumber,name,buildingId,buildingName,buildingCode,floor,type,capacity,areaSqFt,status,notes,cctvInstalled,cctvCompany,cctvDeviceNo,cctvIpAddress,cctvUsername,cctvPassword,cctvStatus
+room_sample_1,C-101,Smart Classroom 1,bldg2,"New Academic Complex","NAC",1,Lecture Hall,50,800,available,"Projector and AC available",true,Hickvision,D01,10.169.24.10,admin,admin@123,working
+,LAB-003,Network Lab,bldg2,"New Academic Complex","NAC",0,Laboratory,25,600,occupied,,false,,,,,not_installed
 `; 
     const blob = new Blob([sampleCsvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
@@ -447,7 +451,7 @@ room_sample_1,C-101,Smart Classroom 1,bldg2,"New Academic Complex","NAC",1,Lectu
                     <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample CSV
                 </Button>
                 <p className="text-xs text-muted-foreground">
-                  CSV fields: id (optional), roomNumber, name, buildingId OR (buildingName and buildingCode), floor, type, capacity, areaSqFt, status, notes.
+                  CSV fields: id (optional), roomNumber, name, buildingId OR (buildingName and buildingCode), floor, type, capacity, areaSqFt, status, notes, cctvInstalled, cctvCompany, cctvDeviceNo, cctvIpAddress, cctvUsername, cctvPassword, cctvStatus.
                 </p>
             </div>
           </div>

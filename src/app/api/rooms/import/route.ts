@@ -103,11 +103,29 @@ export async function POST(request: NextRequest) {
       const capacity = csvRow.capacity !== undefined && csvRow.capacity !== null && !isNaN(Number(csvRow.capacity)) && Number(csvRow.capacity) >=0 ? Number(csvRow.capacity) : undefined;
       const areaSqFt = csvRow.areasqft !== undefined && csvRow.areasqft !== null && !isNaN(Number(csvRow.areasqft)) && Number(csvRow.areasqft) >=0 ? Number(csvRow.areasqft) : undefined;
 
+      // CCTV Information
+      const cctvInstalled = csvRow.cctvinstalled !== undefined ? csvRow.cctvinstalled === true || csvRow.cctvinstalled === 'true' || csvRow.cctvinstalled === '1' : undefined;
+      const cctvCompany = csvRow.cctvcompany?.toString().trim() || undefined;
+      const cctvDeviceNo = csvRow.cctvdeviceno?.toString().trim() || undefined;
+      const cctvIpAddress = csvRow.cctvipaddress?.toString().trim() || undefined;
+      const cctvUsername = csvRow.cctvusername?.toString().trim() || undefined;
+      const cctvPassword = csvRow.cctvpassword?.toString().trim() || undefined;
+      const cctvStatusRaw = csvRow.cctvstatus?.toString().trim().toLowerCase();
+      const cctvStatus = cctvStatusRaw && ['working', 'down', 'maintenance', 'not_installed'].includes(cctvStatusRaw) ? cctvStatusRaw as 'working' | 'down' | 'maintenance' | 'not_installed' : undefined;
+
       const roomData: Partial<Room> = {
         roomNumber, type, status, buildingId,
         name: csvRow.name?.toString().trim() || undefined,
         floor, capacity, areaSqFt,
         notes: csvRow.notes?.toString().trim() || undefined,
+        // CCTV fields
+        cctvInstalled,
+        cctvCompany,
+        cctvDeviceNo,
+        cctvIpAddress,
+        cctvUsername,
+        cctvPassword,
+        cctvStatus,
       };
 
       const idFromCsv = csvRow.id?.toString().trim();
