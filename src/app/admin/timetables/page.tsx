@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, PlusCircle, Edit, Trash2, Clock, Loader2, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye} from "lucide-react";
+import { CalendarIcon, PlusCircle, Edit, Trash2, Clock, Loader2, ArrowUpDown, ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, Eye, Search} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 // import { Textarea } from '@/components/ui/textarea'; // Not used in current implementation
 import { format, parseISO } from 'date-fns';
@@ -74,6 +74,7 @@ export default function TimetableManagementPage() {
   const [entryRoomId, setEntryRoomId] = useState<string>('');
   const [entryType, setEntryType] = useState<'lecture' | 'lab' | 'tutorial' | 'break' | 'other'>('lecture');
   const [entryEditingIndex, setEntryEditingIndex] = useState<number | null>(null);
+  const [facultySearchTerm, setFacultySearchTerm] = useState('');
 
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -136,11 +137,33 @@ export default function TimetableManagementPage() {
   }, [formBatchId, formSemester, formAcademicYear, courseOfferings]);
 
   const availableFacultiesForEntry = useMemo(() => {
-    if (!entryCourseOfferingId) return faculties;
-    const selectedCourseOffering = courseOfferings.find(co => co.id === entryCourseOfferingId);
-    if (!selectedCourseOffering?.facultyIds?.length) return faculties;
-    return faculties.filter(f => selectedCourseOffering.facultyIds.includes(f.id));
-  }, [entryCourseOfferingId, courseOfferings, faculties]);
+    let facultyList = faculties;
+    
+    // Filter by course offering if selected
+    if (entryCourseOfferingId) {
+      const selectedCourseOffering = courseOfferings.find(co => co.id === entryCourseOfferingId);
+      if (selectedCourseOffering?.facultyIds?.length) {
+        facultyList = faculties.filter(f => selectedCourseOffering.facultyIds.includes(f.id));
+      }
+    }
+    
+    // Filter by search term
+    if (facultySearchTerm.trim()) {
+      const searchLower = facultySearchTerm.toLowerCase();
+      facultyList = facultyList.filter(f => {
+        const gtuName = f.gtuName?.toLowerCase() || '';
+        const firstName = f.firstName?.toLowerCase() || '';
+        const lastName = f.lastName?.toLowerCase() || '';
+        const fullName = `${firstName} ${lastName}`.trim();
+        return gtuName.includes(searchLower) || 
+               firstName.includes(searchLower) || 
+               lastName.includes(searchLower) ||
+               fullName.includes(searchLower);
+      });
+    }
+    
+    return facultyList;
+  }, [entryCourseOfferingId, courseOfferings, faculties, facultySearchTerm]);
 
   const availableRoomsForEntry = useMemo(() => {
     if (!entryCourseOfferingId) return rooms;
@@ -177,6 +200,7 @@ export default function TimetableManagementPage() {
     setFormBatchId(filteredBatchesForForm.length > 0 ? filteredBatchesForForm[0].id : '');
     setFormVersion('1.0'); setFormStatus('draft'); setFormEffectiveDate(new Date());
     setCurrentEntries([]); setCurrentTimetable(null); setEntryEditingIndex(null);
+    setFacultySearchTerm('');
   };
   
   const handleView = (timetable: Timetable) => {
@@ -254,6 +278,7 @@ export default function TimetableManagementPage() {
     }
     setEntryDayOfWeek('Monday'); setEntryStartTime('09:00'); setEntryEndTime('10:00');
     setEntryCourseOfferingId(''); setEntryFacultyId(''); setEntryRoomId(''); setEntryType('lecture');
+    setFacultySearchTerm('');
   };
   
   const editExistingEntry = (entry: TimetableEntry, index: number) => {
@@ -460,7 +485,21 @@ export default function TimetableManagementPage() {
           <form id="timetableForm" onSubmit={handleTimetableSubmit} className="space-y-4 py-2 overflow-y-auto flex-grow">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div><Label htmlFor="ttName">Name *</Label><Input id="ttName" value={formName} onChange={e => setFormName(e.target.value)} required/></div>
-              <div><Label htmlFor="ttAcadYear">Academic Year *</Label><Input id="ttAcadYear" value={formAcademicYear} onChange={e => setFormAcademicYear(e.target.value)} placeholder="e.g. 2024-25" required/></div>
+              <div>
+                <Label htmlFor="ttAcadYear">Academic Year *</Label>
+                <Select value={formAcademicYear} onValueChange={setFormAcademicYear} required>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Academic Year" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="2024-25">2024-25</SelectItem>
+                    <SelectItem value="2025-26">2025-26</SelectItem>
+                    <SelectItem value="2026-27">2026-27</SelectItem>
+                    <SelectItem value="2023-24">2023-24</SelectItem>
+                    <SelectItem value="2022-23">2022-23</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <div><Label htmlFor="ttSemester">Semester *</Label><Input id="ttSemester" type="number" value={formSemester} onChange={e => setFormSemester(Number(e.target.value))} required min={1} max={8}/></div>
               <div><Label htmlFor="ttProgram">Program *</Label><Select value={formProgramId} onValueChange={setFormProgramId} required><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{programs.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent></Select></div>
               <div><Label htmlFor="ttBatch">Batch *</Label><Select value={formBatchId} onValueChange={setFormBatchId} required disabled={!formProgramId || filteredBatchesForForm.length === 0}><SelectTrigger><SelectValue placeholder={!formProgramId ? "Select Program First" : (filteredBatchesForForm.length === 0 ? "No batches for program" : "Select Batch")} /></SelectTrigger><SelectContent>{filteredBatchesForForm.map(b => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}</SelectContent></Select></div>
@@ -509,31 +548,46 @@ export default function TimetableManagementPage() {
                 </div>
                 <div>
                   <Label>Faculty</Label>
-                  <Select value={entryFacultyId} onValueChange={setEntryFacultyId}>
-                    <SelectTrigger>
-                      <SelectValue placeholder={
-                        entryCourseOfferingId && availableFacultiesForEntry.length === 0
-                          ? "No faculty assigned to course"
-                          : "Select Faculty"
-                      }/>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableFacultiesForEntry.length > 0 ? (
-                        availableFacultiesForEntry.map(f => (
-                          <SelectItem key={f.id} value={f.id}>
-                            {f.gtuName || `${f.firstName} ${f.lastName}`}
-                            {entryCourseOfferingId && availableFacultiesForEntry.length < faculties.length && (
-                              <span className="text-xs text-muted-foreground"> (Assigned)</span>
-                            )}
+                  <div className="space-y-2">
+                    <div className="relative">
+                      <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Search faculty..."
+                        value={facultySearchTerm}
+                        onChange={(e) => setFacultySearchTerm(e.target.value)}
+                        className="pl-8"
+                      />
+                    </div>
+                    <Select 
+                      value={entryFacultyId} 
+                      onValueChange={setEntryFacultyId}
+                      disabled={availableFacultiesForEntry.length === 0}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={
+                          entryCourseOfferingId && availableFacultiesForEntry.length === 0
+                            ? "No faculty assigned to course"
+                            : "Select Faculty"
+                        }/>
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableFacultiesForEntry.length > 0 ? (
+                          availableFacultiesForEntry.map(f => (
+                            <SelectItem key={f.id} value={f.id}>
+                              {f.gtuName || `${f.firstName} ${f.lastName}`}
+                              {entryCourseOfferingId && availableFacultiesForEntry.length < faculties.length && (
+                                <span className="text-xs text-muted-foreground"> (Assigned)</span>
+                              )}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <SelectItem value="no-faculty" disabled>
+                            No faculty available
                           </SelectItem>
-                        ))
-                      ) : (
-                        <SelectItem value="no-faculty" disabled>
-                          No faculty available
-                        </SelectItem>
-                      )}
-                    </SelectContent>
-                  </Select>
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 <div>
                   <Label>Room</Label>
@@ -565,7 +619,7 @@ export default function TimetableManagementPage() {
                 </div>
                 <div className="md:col-span-4 text-right">
                     <Button type="button" onClick={addEntry} size="sm">{entryEditingIndex !== null ? 'Update Entry' : 'Add Entry'}</Button>
-                    {entryEditingIndex !== null && <Button type="button" variant="ghost" size="sm" onClick={() => {setEntryEditingIndex(null); setEntryDayOfWeek('Monday'); setEntryStartTime('09:00'); setEntryEndTime('10:00'); setEntryCourseOfferingId(''); setEntryFacultyId(''); setEntryRoomId(''); setEntryType('lecture'); }}>Cancel Edit</Button>}
+                    {entryEditingIndex !== null && <Button type="button" variant="ghost" size="sm" onClick={() => {setEntryEditingIndex(null); setEntryDayOfWeek('Monday'); setEntryStartTime('09:00'); setEntryEndTime('10:00'); setEntryCourseOfferingId(''); setEntryFacultyId(''); setEntryRoomId(''); setEntryType('lecture'); setFacultySearchTerm(''); }}>Cancel Edit</Button>}
                 </div>
             </div>
             <div className="max-h-60 overflow-y-auto border rounded-md dark:border-gray-700">
