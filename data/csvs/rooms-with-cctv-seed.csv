@@ -1,0 +1,45 @@
+roomNumber,name,buildingId,floor,type,capacity,areaSqFt,facilities,status,notes,cctvInstalled,cctvCompany,cctvDeviceNo,cctvIpAddress,cctvUsername,cctvPassword,cctvStatus
+A-019,A-019,6886706c3c83452c2ada8a85,0,Laboratory,30,,Computer Lab,available,Lab with CCTV monitoring,true,Digilink,D31,10.169.24.27,admin,admin,working
+A-101,A-101,6886706c3c83452c2ada8a85,1,Laboratory,30,,Computer Lab,available,Lab with CCTV monitoring,true,Hickvision,D09,10.169.24.36,admin,admin@123,working
+A-102,A-102,6886706c3c83452c2ada8a85,1,Laboratory,30,,Computer Lab,available,Lab with CCTV monitoring,true,Digilink,D30,10.169.24.11,admin,admin,working
+A-103,A-103,6886706c3c83452c2ada8a85,1,Laboratory,30,,Computer Lab,available,Lab with CCTV monitoring,true,Hickvision,D01,10.169.24.37,admin,admin@123,working
+A-106,A-106,6886706c3c83452c2ada8a85,1,Office,15,,Administrative Office,available,Office with CCTV monitoring,true,Hickvision,D13,10.169.24.38,admin,admin@123,working
+A-108,A-108,6886706c3c83452c2ada8a85,1,Laboratory,30,,Computer Lab,available,Lab with CCTV monitoring,true,Hickvision,D15,10.169.24.33,admin,admin@123,working
+A-111,A-111,6886706c3c83452c2ada8a85,1,Laboratory,30,,Computer Lab,available,Lab with CCTV monitoring,true,Hickvision,D24,10.169.24.35,admin,admin@123,working
+A-114,A-114,6886706c3c83452c2ada8a85,1,Laboratory,30,,Computer Lab,available,Lab with CCTV monitoring,true,Hickvision,D26,10.169.24.34,admin,admin@123,working
+A-201,A-201,6886706c3c83452c2ada8a85,2,Lecture Hall,60,,Classroom,available,Classroom with CCTV monitoring,true,Digilink,D40,10.169.24.12,admin,admin,working
+A-202,A-202,6886706c3c83452c2ada8a85,2,Lecture Hall,60,,Classroom,available,Classroom with CCTV monitoring,true,Digilink,D35,10.169.24.23,admin,admin,working
+A-204,A-204,6886706c3c83452c2ada8a85,2,Lecture Hall,60,,Classroom,available,Classroom with CCTV monitoring,true,Digilink,D28,10.169.24.15,admin,admin,working
+A-205,A-205,6886706c3c83452c2ada8a85,2,Laboratory,30,,Computer Lab,available,Lab with CCTV monitoring,true,Digilink,D29,10.169.24.22,admin,admin,working
+A-206,A-206,6886706c3c83452c2ada8a85,2,Lecture Hall,60,,Classroom,available,Classroom with CCTV monitoring,true,Digilink,D36,10.169.24.18,admin,admin,working
+A-207,A-207,6886706c3c83452c2ada8a85,2,Lecture Hall,60,,Classroom,available,Classroom with CCTV monitoring,true,Digilink,D32,10.169.24.17,admin,admin,working
+A-210,A-210,6886706c3c83452c2ada8a85,2,Lecture Hall,60,,Classroom,available,Classroom with CCTV monitoring,true,Digilink,D38,10.169.24.13,admin,admin,working
+A-211,A-211,6886706c3c83452c2ada8a85,2,Lecture Hall,60,,Classroom,available,Classroom with CCTV monitoring,true,Digilink,D34,10.169.24.14,admin,admin,working
+A-212,A-212,6886706c3c83452c2ada8a85,2,Other,40,,Drawing Room,available,Drawing room with CCTV monitoring,true,Hickvision,D12,10.169.24.41,admin,admin@123,working
+A-214,A-214,6886706c3c83452c2ada8a85,2,Lecture Hall,60,,Classroom,available,Classroom with CCTV monitoring,true,Digilink,D33,10.169.24.20,admin,admin,working
+A-215,A-215,6886706c3c83452c2ada8a85,2,Lecture Hall,60,,Classroom,available,Classroom with CCTV monitoring,true,Digilink,D39,10.169.24.21,admin,admin,working
+B-002,B-002,6886709a3c83452c2ada8a8b,0,Laboratory,30,,Computer Lab,available,Lab with CCTV monitoring,true,Hickvision,D21,10.169.24.50,admin,admin@123,working
+B-007,B-007,6886709a3c83452c2ada8a8b,0,Lecture Hall,60,,Classroom,available,Classroom with CCTV monitoring,true,Hickvision,D03,10.169.24.48,admin,admin@123,working
+B-008,B-008,6886709a3c83452c2ada8a8b,0,Laboratory,30,,Computer Lab,available,Lab with CCTV monitoring,true,Hickvision,D44,10.169.24.53,admin,admin@123,working
+B-009,B-009,6886709a3c83452c2ada8a8b,0,Laboratory,30,,Computer Lab,available,Lab with CCTV monitoring,true,Hickvision,D02,10.169.24.52,admin,admin@123,working
+B-011,B-011,6886709a3c83452c2ada8a8b,0,Lecture Hall,60,,Classroom,available,Classroom with CCTV monitoring,true,Hickvision,D18,10.169.24.47,admin,admin@123,working
+B-013,B-013,6886709a3c83452c2ada8a8b,0,Laboratory,30,,Computer Lab,available,Lab with CCTV monitoring,true,Hickvision,D25,10.169.24.56,admin,admin@123,working
+B-014,B-014,6886709a3c83452c2ada8a8b,0,Laboratory,30,,Computer Lab,available,Lab with CCTV monitoring,true,Hickvision,D16,10.169.24.46,admin,admin@123,working
+B-106,B-106,6886709a3c83452c2ada8a8b,1,Laboratory,30,,Computer Lab,available,Lab with CCTV monitoring,true,Hickvision,D10,10.169.24.49,admin,admin@123,working
+B-108,B-108,6886709a3c83452c2ada8a8b,1,Lecture Hall,60,,Classroom,available,Classroom with CCTV monitoring,true,Hickvision,D11,10.169.24.55,admin,admin@123,working
+B-109,B-109,6886709a3c83452c2ada8a8b,1,Lecture Hall,60,,Classroom,available,Classroom with CCTV monitoring,true,Hickvision,D22,10.169.24.32,admin,admin@123,working
+B-111,B-111,6886709a3c83452c2ada8a8b,1,Lecture Hall,60,,Classroom,available,Classroom with CCTV monitoring,true,Hickvision,D05,10.169.24.51,admin,admin@123,working
+BADP-Entry,BADP Entry Gate,6886709a3c83452c2ada8a8b,0,Other,0,,Entry Gate,available,BADP building entrance with CCTV monitoring,true,Digilink,D43,10.169.24.24,admin,admin,working
+LRUC-Election,LRUC Election Booth,6886712a3c83452c2ada8a98,0,Other,20,,Election Booth,available,Election booth with CCTV monitoring,true,Hickvision,D20,10.169.24.40,admin,admin@123,working
+LRUC-Entry,LRUC Entry Gate,6886712a3c83452c2ada8a98,0,Other,0,,Entry Gate,available,LRUC entrance with CCTV monitoring,true,Hickvision,D08,10.169.24.44,admin,admin@123,working
+LRUC-LanguageLab,LRUC Language Lab,6886712a3c83452c2ada8a98,0,Laboratory,25,,Language Lab,available,Language lab with CCTV monitoring,true,Digilink,D14,10.169.24.43,admin,admin@123,working
+LRUC-Library,LRUC Library,6886712a3c83452c2ada8a98,0,Library,100,,Library,available,Library with CCTV monitoring,true,Hickvision,D07,10.169.24.42,admin,admin@123,working
+Main-Entry-Back,Main Building Back Entry,6886706c3c83452c2ada8a85,0,Other,0,,Entry Gate,available,Main building back entrance with CCTV monitoring,true,Digilink,D42,10.169.24.26,admin,admin,down
+Main-Entry-Front,Main Building Front Entry,6886706c3c83452c2ada8a85,0,Other,0,,Entry Gate,available,Main building front entrance with CCTV monitoring,true,Digilink,D41,10.169.24.25,admin,admin,working
+Main-Lobby-FF,Main Building First Floor Lobby,6886706c3c83452c2ada8a85,1,Other,50,,Lobby,available,First floor lobby with CCTV monitoring,true,Hickvision,D27,10.169.24.39,admin,admin@123,working
+Main-Lobby-GF-GTU,Main Building Ground Floor GTU Side,6886706c3c83452c2ada8a85,0,Other,30,,Lobby,available,Ground floor GTU side with CCTV monitoring,true,Hickvision,D04,10.169.24.30,admin,admin@123,working
+Main-Lobby-GF-RTO,Main Building Ground Floor RTO Side,6886706c3c83452c2ada8a85,0,Other,30,,Lobby,available,Ground floor RTO side with CCTV monitoring,true,Hickvision,D23,10.169.24.28,admin,admin@123,working
+Main-Lobby-SF-Left,Main Building Second Floor Left,6886706c3c83452c2ada8a85,2,Other,40,,Lobby,available,Second floor left side with CCTV monitoring,true,Digilink,D37,10.169.24.16,admin,admin,working
+Main-Lobby-SF-Right,Main Building Second Floor Right,6886706c3c83452c2ada8a85,2,Other,40,,Lobby,available,Second floor right side with CCTV monitoring,true,Hickvision,D19,10.169.24.31,admin,admin@123,working
+Mech-Back,Mechanical Workshop Back Area,6886710f3c83452c2ada8a92,0,Workshop,20,,Workshop,available,Mechanical workshop back area with CCTV monitoring,true,Hickvision,D17,10.169.24.54,admin,admin@123,working
+Mech-Side,Mechanical Workshop Side Area,6886710f3c83452c2ada8a92,0,Workshop,15,,Workshop,available,Mechanical workshop side area with CCTV monitoring,true,Hickvision,D06,10.169.24.29,admin,admin@123,working

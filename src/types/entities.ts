@@ -815,6 +815,14 @@ export interface Room {
   facilities?: string[]; 
   status: RoomStatus;
   notes?: string;
+  // CCTV Information
+  cctvInstalled?: boolean;
+  cctvCompany?: string; // e.g., "Digilink", "Hickvision"
+  cctvDeviceNo?: string; // e.g., "D31", "D09"
+  cctvIpAddress?: string; // e.g., "10.169.24.27"
+  cctvUsername?: string; // e.g., "admin"
+  cctvPassword?: string; // e.g., "admin", "admin@123"
+  cctvStatus?: 'working' | 'down' | 'maintenance' | 'not_installed'; // e.g., "All Ok", "Down"
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }

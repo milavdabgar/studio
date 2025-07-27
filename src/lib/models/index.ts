@@ -97,6 +97,18 @@ const roomSchema = new Schema<IRoom>({
     default: 'available' 
   },
   notes: { type: String },
+  // CCTV Information
+  cctvInstalled: { type: Boolean, default: false },
+  cctvCompany: { type: String }, // e.g., "Digilink", "Hickvision"
+  cctvDeviceNo: { type: String }, // e.g., "D31", "D09"
+  cctvIpAddress: { type: String }, // e.g., "10.169.24.27"
+  cctvUsername: { type: String }, // e.g., "admin"
+  cctvPassword: { type: String }, // e.g., "admin", "admin@123"
+  cctvStatus: { 
+    type: String, 
+    enum: ['working', 'down', 'maintenance', 'not_installed'],
+    default: 'not_installed'
+  },
   createdAt: { type: String, default: () => new Date().toISOString() },
   updatedAt: { type: String, default: () => new Date().toISOString() }
 }, {
