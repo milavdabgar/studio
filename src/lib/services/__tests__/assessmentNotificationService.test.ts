@@ -7,6 +7,7 @@ import type { AssessmentNotificationData } from '../assessmentNotificationServic
 jest.mock('@/lib/api/notifications', () => ({
   notificationService: {
     createNotification: jest.fn(),
+    createLegacyNotification: jest.fn(),
   },
 }));
 
@@ -16,7 +17,7 @@ global.fetch = mockFetch;
 
 // Import the mocked module
 import { notificationService } from '@/lib/api/notifications';
-const mockCreateNotification = notificationService.createNotification as jest.MockedFunction<typeof notificationService.createNotification>;
+const mockCreateLegacyNotification = notificationService.createLegacyNotification as jest.MockedFunction<typeof notificationService.createLegacyNotification>;
 
 describe('AssessmentNotificationService', () => {
   const mockStudentId = 'student123';
@@ -31,21 +32,26 @@ describe('AssessmentNotificationService', () => {
   };
 
   beforeEach(() => {
-    mockCreateNotification.mockClear();
+    mockCreateLegacyNotification.mockClear();
+    mockCreateLegacyNotification.mockClear();
     mockFetch.mockClear();
   });
 
   describe('notifyNewAssessment', () => {
     it('creates notification for new assessment', async () => {
-      mockCreateNotification.mockResolvedValueOnce({
+      mockCreateLegacyNotification.mockResolvedValueOnce({
         id: 'notification-1',
-        userId: mockStudentId,
+        recipientId: mockStudentId,
+        recipientType: 'student',
         message: 'Test notification',
         type: 'assignment_new',
+        channels: ['push'],
+        priority: 'medium',
+        status: 'sent',
         isRead: false,
         createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z'
-      });
+      } as any);
 
       await assessmentNotificationService.notifyNewAssessment(
         mockStudentId,
@@ -53,7 +59,7 @@ describe('AssessmentNotificationService', () => {
         mockAssessmentData
       );
 
-      expect(mockCreateNotification).toHaveBeenCalledWith({
+      expect(mockCreateLegacyNotification).toHaveBeenCalledWith({
         userId: mockStudentId,
         type: 'assignment_new',
         message: 'A new assessment "Midterm Exam" has been assigned in Computer Science 101. Due: 2024-07-20T09:00:00Z',
@@ -65,7 +71,7 @@ describe('AssessmentNotificationService', () => {
     });
 
     it('handles notification creation errors gracefully', async () => {
-      mockCreateNotification.mockRejectedValueOnce(new Error('API Error'));
+      mockCreateLegacyNotification.mockRejectedValueOnce(new Error('API Error'));
 
       await expect(
         assessmentNotificationService.notifyNewAssessment(
@@ -79,15 +85,19 @@ describe('AssessmentNotificationService', () => {
 
   describe('notifyDeadlineReminder', () => {
     it('creates deadline reminder notification', async () => {
-      mockCreateNotification.mockResolvedValueOnce({
+      mockCreateLegacyNotification.mockResolvedValueOnce({
         id: 'notification-1',
-        userId: mockStudentId,
+        recipientId: mockStudentId,
+        recipientType: 'student',
         message: 'Test notification',
         type: 'assignment_new',
+        channels: ['push'],
+        priority: 'medium',
+        status: 'sent',
         isRead: false,
         createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z'
-      });
+      } as any);
 
       await assessmentNotificationService.notifyDeadlineReminder(
         mockStudentId,
@@ -96,7 +106,7 @@ describe('AssessmentNotificationService', () => {
         '2 days'
       );
 
-      expect(mockCreateNotification).toHaveBeenCalledWith({
+      expect(mockCreateLegacyNotification).toHaveBeenCalledWith({
         userId: mockStudentId,
         type: 'reminder',
         message: 'Assessment "Midterm Exam" in Computer Science 101 is due in 2 days',
@@ -110,15 +120,19 @@ describe('AssessmentNotificationService', () => {
 
   describe('notifyGradePublished', () => {
     it('creates grade published notification with score', async () => {
-      mockCreateNotification.mockResolvedValueOnce({
+      mockCreateLegacyNotification.mockResolvedValueOnce({
         id: 'notification-1',
-        userId: mockStudentId,
+        recipientId: mockStudentId,
+        recipientType: 'student',
         message: 'Test notification',
         type: 'assignment_new',
+        channels: ['push'],
+        priority: 'medium',
+        status: 'sent',
         isRead: false,
         createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z'
-      });
+      } as any);
 
       await assessmentNotificationService.notifyGradePublished(
         mockStudentId,
@@ -126,7 +140,7 @@ describe('AssessmentNotificationService', () => {
         mockAssessmentData
       );
 
-      expect(mockCreateNotification).toHaveBeenCalledWith({
+      expect(mockCreateLegacyNotification).toHaveBeenCalledWith({
         userId: mockStudentId,
         type: 'assignment_graded',
         message: 'Your assessment "Midterm Exam" has been graded. Score: 85/100',
@@ -138,15 +152,19 @@ describe('AssessmentNotificationService', () => {
     });
 
     it('handles missing score data', async () => {
-      mockCreateNotification.mockResolvedValueOnce({
+      mockCreateLegacyNotification.mockResolvedValueOnce({
         id: 'notification-1',
-        userId: mockStudentId,
+        recipientId: mockStudentId,
+        recipientType: 'student',
         message: 'Test notification',
         type: 'assignment_new',
+        channels: ['push'],
+        priority: 'medium',
+        status: 'sent',
         isRead: false,
         createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z'
-      });
+      } as any);
 
       const dataWithoutScore = { ...mockAssessmentData, score: undefined, maxScore: undefined };
 
@@ -156,7 +174,7 @@ describe('AssessmentNotificationService', () => {
         dataWithoutScore
       );
 
-      expect(mockCreateNotification).toHaveBeenCalledWith({
+      expect(mockCreateLegacyNotification).toHaveBeenCalledWith({
         userId: mockStudentId,
         type: 'assignment_graded',
         message: 'Your assessment "Midterm Exam" has been graded. Score: {score}/{maxScore}',
@@ -170,15 +188,19 @@ describe('AssessmentNotificationService', () => {
 
   describe('notifySubmissionConfirmed', () => {
     it('creates submission confirmation notification', async () => {
-      mockCreateNotification.mockResolvedValueOnce({
+      mockCreateLegacyNotification.mockResolvedValueOnce({
         id: 'notification-1',
-        userId: mockStudentId,
+        recipientId: mockStudentId,
+        recipientType: 'student',
         message: 'Test notification',
         type: 'assignment_new',
+        channels: ['push'],
+        priority: 'medium',
+        status: 'sent',
         isRead: false,
         createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z'
-      });
+      } as any);
 
       const dataWithSubmission = {
         ...mockAssessmentData,
@@ -191,7 +213,7 @@ describe('AssessmentNotificationService', () => {
         dataWithSubmission
       );
 
-      expect(mockCreateNotification).toHaveBeenCalledWith({
+      expect(mockCreateLegacyNotification).toHaveBeenCalledWith({
         userId: mockStudentId,
         type: 'success',
         message: 'Your submission for "Midterm Exam" has been received successfully',
@@ -205,15 +227,19 @@ describe('AssessmentNotificationService', () => {
 
   describe('notifyLateSubmission', () => {
     it('creates late submission warning notification', async () => {
-      mockCreateNotification.mockResolvedValueOnce({
+      mockCreateLegacyNotification.mockResolvedValueOnce({
         id: 'notification-1',
-        userId: mockStudentId,
+        recipientId: mockStudentId,
+        recipientType: 'student',
         message: 'Test notification',
         type: 'assignment_new',
+        channels: ['push'],
+        priority: 'medium',
+        status: 'sent',
         isRead: false,
         createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z'
-      });
+      } as any);
 
       await assessmentNotificationService.notifyLateSubmission(
         mockStudentId,
@@ -222,7 +248,7 @@ describe('AssessmentNotificationService', () => {
         3
       );
 
-      expect(mockCreateNotification).toHaveBeenCalledWith({
+      expect(mockCreateLegacyNotification).toHaveBeenCalledWith({
         userId: mockStudentId,
         type: 'warning',
         message: 'Assessment "Midterm Exam" in Computer Science 101 is overdue',
@@ -236,15 +262,7 @@ describe('AssessmentNotificationService', () => {
 
   describe('batchNotifyNewAssessment', () => {
     it('sends notifications to multiple students', async () => {
-      mockCreateNotification.mockResolvedValue({
-        id: 'notification-1',
-        userId: 'student1',
-        message: 'Test notification',
-        type: 'reminder',
-        isRead: false,
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z'
-      });
+      mockCreateLegacyNotification.mockResolvedValue({} as any);
 
       const students = [
         { id: 'student1', name: 'John Doe' },
@@ -257,11 +275,11 @@ describe('AssessmentNotificationService', () => {
         mockAssessmentData
       );
 
-      expect(mockCreateNotification).toHaveBeenCalledTimes(3);
+      expect(mockCreateLegacyNotification).toHaveBeenCalledTimes(3);
       
       // Check that each student got a notification
       students.forEach((student, index) => {
-        expect(mockCreateNotification).toHaveBeenNthCalledWith(index + 1, {
+        expect(mockCreateLegacyNotification).toHaveBeenNthCalledWith(index + 1, {
           userId: student.id,
           type: 'assignment_new',
           message: 'A new assessment "Midterm Exam" has been assigned in Computer Science 101. Due: 2024-07-20T09:00:00Z',
@@ -274,26 +292,10 @@ describe('AssessmentNotificationService', () => {
     });
 
     it('handles partial failures in batch notification', async () => {
-      mockCreateNotification
-        .mockResolvedValueOnce({
-          id: 'notification-1',
-          userId: 'student1',
-          message: 'Test notification',
-          type: 'assignment_new',
-          isRead: false,
-          createdAt: '2024-07-13T10:00:00Z',
-          updatedAt: '2024-07-13T10:00:00Z'
-        })
+      mockCreateLegacyNotification
+        .mockResolvedValueOnce({} as any)
         .mockRejectedValueOnce(new Error('API Error'))
-        .mockResolvedValueOnce({
-          id: 'notification-3',
-          userId: 'student3',
-          message: 'Test notification',
-          type: 'assignment_new',
-          isRead: false,
-          createdAt: '2024-07-13T10:00:00Z',
-          updatedAt: '2024-07-13T10:00:00Z'
-        });
+        .mockResolvedValueOnce({} as any);
 
       const students = [
         { id: 'student1', name: 'John Doe' },
@@ -306,7 +308,7 @@ describe('AssessmentNotificationService', () => {
         assessmentNotificationService.batchNotifyNewAssessment(students, mockAssessmentData)
       ).resolves.not.toThrow();
 
-      expect(mockCreateNotification).toHaveBeenCalledTimes(3);
+      expect(mockCreateLegacyNotification).toHaveBeenCalledTimes(3);
     });
   });
 
@@ -351,15 +353,7 @@ describe('AssessmentNotificationService', () => {
           headers: { 'Content-Type': 'application/json' }
         }));
 
-      mockCreateNotification.mockResolvedValue({
-        id: 'notification-1',
-        userId: 'student1',
-        message: 'Test notification',
-        type: 'reminder',
-        isRead: false,
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z'
-      });
+      mockCreateLegacyNotification.mockResolvedValue({} as any);
 
       await assessmentNotificationService.checkAndSendDeadlineReminders();
 
@@ -398,21 +392,25 @@ describe('AssessmentNotificationService', () => {
 
       // Should not fetch students since no reminders needed
       expect(mockFetch).toHaveBeenCalledTimes(1);
-      expect(mockCreateNotification).not.toHaveBeenCalled();
+      expect(mockCreateLegacyNotification).not.toHaveBeenCalled();
     });
   });
 
   describe('template formatting', () => {
     it('formats template strings correctly', async () => {
-      mockCreateNotification.mockResolvedValueOnce({
+      mockCreateLegacyNotification.mockResolvedValueOnce({
         id: 'notification-1',
-        userId: mockStudentId,
+        recipientId: mockStudentId,
+        recipientType: 'student',
         message: 'Test notification',
         type: 'assignment_new',
+        channels: ['push'],
+        priority: 'medium',
+        status: 'sent',
         isRead: false,
         createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z'
-      });
+      } as any);
 
       const customData = {
         ...mockAssessmentData,
@@ -426,7 +424,7 @@ describe('AssessmentNotificationService', () => {
         customData
       );
 
-      expect(mockCreateNotification).toHaveBeenCalledWith(
+      expect(mockCreateLegacyNotification).toHaveBeenCalledWith(
         expect.objectContaining({
           message: 'A new assessment "Special "Quoted" Assessment" has been assigned in Advanced Programming & Algorithms. Due: 2024-07-20T09:00:00Z',
         })

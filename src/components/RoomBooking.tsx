@@ -168,7 +168,7 @@ export function RoomBooking({
     try {
       // Check room capacity
       const room = rooms.find(r => r.id === booking.roomId);
-      if (room && booking.expectedAttendees > room.capacity) {
+      if (room && room.capacity && booking.expectedAttendees > room.capacity) {
         newConflicts.push(`Expected attendees (${booking.expectedAttendees}) exceed room capacity (${room.capacity})`);
       }
 
@@ -307,7 +307,7 @@ export function RoomBooking({
                   <MapPin className="h-4 w-4" />
                   <span>{room.name} ({room.roomNumber})</span>
                   <Badge variant="outline">{room.type}</Badge>
-                  <span className="text-xs text-gray-500">Capacity: {room.capacity}</span>
+                  <span className="text-xs text-gray-500">Capacity: {room.capacity || 'N/A'}</span>
                 </div>
               </SelectItem>
             ))}
@@ -488,7 +488,12 @@ export function RoomBooking({
                 value={booking.recurrencePattern?.frequency || 'weekly'}
                 onValueChange={(value: any) => setBooking(prev => ({
                   ...prev,
-                  recurrencePattern: { ...prev.recurrencePattern, frequency: value }
+                  recurrencePattern: { 
+                    frequency: value,
+                    interval: prev.recurrencePattern?.interval || 1,
+                    endDate: prev.recurrencePattern?.endDate,
+                    daysOfWeek: prev.recurrencePattern?.daysOfWeek 
+                  }
                 }))}
               >
                 <SelectTrigger>
@@ -509,7 +514,12 @@ export function RoomBooking({
                 value={booking.recurrencePattern?.endDate || ''}
                 onChange={(e) => setBooking(prev => ({
                   ...prev,
-                  recurrencePattern: { ...prev.recurrencePattern, endDate: e.target.value }
+                  recurrencePattern: { 
+                    frequency: prev.recurrencePattern?.frequency || 'weekly',
+                    interval: prev.recurrencePattern?.interval || 1,
+                    endDate: e.target.value,
+                    daysOfWeek: prev.recurrencePattern?.daysOfWeek 
+                  }
                 }))}
                 min={booking.startDate}
               />

@@ -1,5 +1,5 @@
 import { facultyPreferenceService } from '../facultyPreferences';
-import type { FacultyPreference } from '@/types/entities';
+import type { FacultyPreference, DayOfWeek } from '@/types/entities';
 
 // Mock fetch globally
 global.fetch = jest.fn();
@@ -62,7 +62,7 @@ describe('facultyPreferenceService', () => {
       });
 
       await expect(facultyPreferenceService.getAllPreferences())
-        .rejects.toThrow('Server error');
+        .rejects.toThrow('Failed to fetch faculty preferences');
     });
 
     it('should throw default error when response is not ok and no error message', async () => {
@@ -140,7 +140,7 @@ describe('facultyPreferenceService', () => {
         maxHoursPerWeek: 18,
         maxConsecutiveHours: 4,
         unavailableSlots: [],
-        workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        workingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as DayOfWeek[],
         priority: 5
       };
 

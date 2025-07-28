@@ -162,7 +162,7 @@ const NotificationBell: React.FC = () => {
                         {notification.message}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {formatDistanceToNow(parseISO(notification.createdAt), { addSuffix: true })}
+                        {notification.createdAt ? formatDistanceToNow(parseISO(notification.createdAt), { addSuffix: true }) : 'Unknown time'}
                       </p>
                     </div>
                     {!notification.isRead && (

@@ -58,7 +58,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     for (const userId of userIdsToNotify) {
         try {
-            await notificationService.createNotification({
+            await notificationService.createLegacyNotification({
                 userId: userId,
                 message: `The schedule for event '${eventToUpdate.name}' has been updated. Please check the portal.`,
                 type: 'event_schedule_update',

@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
             if (team && team.members) {
                 for (const member of team.members) {
                     try {
-                        await notificationService.createNotification({
+                        await notificationService.createLegacyNotification({
                             userId: member.userId,
                             message: `Your project '${project.title}' has been auto-assigned to location/stall '${location.locationId}'.`,
                             type: 'project_location_update',
@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
             if (team && team.members) {
                 for (const member of team.members) {
                     try {
-                        await notificationService.createNotification({
+                        await notificationService.createLegacyNotification({
                             userId: member.userId,
                             message: `Your project '${project.title}' has been auto-assigned to location/stall '${location.locationId}'.`,
                             type: 'project_location_update',

@@ -189,7 +189,7 @@ export class ApprovalWorkflowService {
         priority,
         deadline,
         metadata: {
-          batchId: timetable.batchId,
+          batchId: timetable.batchId || '',
           academicYear: timetable.academicYear,
           semester: timetable.semester,
           changes

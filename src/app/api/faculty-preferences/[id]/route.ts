@@ -6,9 +6,10 @@ let facultyPreferences: FacultyPreference[] = [];
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const preference = facultyPreferences.find(fp => fp.id === params.id);
     
     if (!preference) {
@@ -29,9 +30,10 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const body: Partial<FacultyPreference> = await request.json();
     
     const index = facultyPreferences.findIndex(fp => fp.id === params.id);
@@ -60,9 +62,10 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
     const index = facultyPreferences.findIndex(fp => fp.id === params.id);
     if (index === -1) {
       return NextResponse.json(

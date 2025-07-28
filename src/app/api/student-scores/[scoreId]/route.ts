@@ -87,7 +87,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // --- Notification Trigger for Student ---
     if (assessment) {
       try {
-        await notificationService.createNotification({
+        await notificationService.createLegacyNotification({
           userId: existingRecord.studentId, // Notify the student whose submission was graded
           message: `Your submission for '${assessment.name}' has been graded. Score: ${scoreWithId.score !== undefined ? scoreWithId.score : 'N/A'}.`,
           type: 'assignment_graded',

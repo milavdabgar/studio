@@ -65,7 +65,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     if (team && team.members) {
         for (const member of team.members) {
             try {
-                await notificationService.createNotification({
+                await notificationService.createLegacyNotification({
                     userId: member.userId,
                     message: `Your project '${projectToAssign.title}' has been assigned to location/stall '${locationIdString}'.`,
                     type: 'project_location_update',

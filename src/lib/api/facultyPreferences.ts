@@ -34,7 +34,8 @@ export const facultyPreferenceService = {
       body: JSON.stringify(preference),
     });
     if (!response.ok) {
-      throw new Error('Failed to create faculty preference');
+      const errorData = await response.json().catch(() => ({ message: 'Failed to create faculty preference' }));
+      throw new Error(errorData.message || 'Failed to create faculty preference');
     }
     return response.json();
   },
@@ -46,7 +47,8 @@ export const facultyPreferenceService = {
       body: JSON.stringify(preference),
     });
     if (!response.ok) {
-      throw new Error('Failed to update faculty preference');
+      const errorData = await response.json().catch(() => ({ message: 'Failed to update faculty preference' }));
+      throw new Error(errorData.message || 'Failed to update faculty preference');
     }
     return response.json();
   },
@@ -56,7 +58,8 @@ export const facultyPreferenceService = {
       method: 'DELETE',
     });
     if (!response.ok) {
-      throw new Error('Failed to delete faculty preference');
+      const errorData = await response.json().catch(() => ({ message: 'Failed to delete faculty preference' }));
+      throw new Error(errorData.message || 'Failed to delete faculty preference');
     }
   },
 };

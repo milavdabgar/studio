@@ -698,10 +698,13 @@ export interface Batch {
     id: string;
     name: string; 
     programId: string; 
+    academicYear?: string;
+    semester?: number;
     startAcademicYear: number; 
     endAcademicYear?: number; 
     status: BatchStatus;
     maxIntake?: number;
+    strength?: number;
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
 }
@@ -800,8 +803,8 @@ export interface Building {
   updatedAt?: Timestamp;
 }
 
-export type RoomType = 'Lecture Hall' | 'Laboratory' | 'Office' | 'Staff Room' | 'Workshop' | 'Library' | 'Store Room' | 'Seminar Hall' | 'Auditorium' | 'Other';
-export type RoomStatus = 'available' | 'occupied' | 'under_maintenance' | 'unavailable' | 'reserved';
+export type RoomType = 'Lecture Hall' | 'Laboratory' | 'Office' | 'Staff Room' | 'Workshop' | 'Library' | 'Store Room' | 'Seminar Hall' | 'Auditorium' | 'Computer Lab' | 'Lab' | 'Other';
+export type RoomStatus = 'available' | 'occupied' | 'under_maintenance' | 'unavailable' | 'reserved' | 'active';
 
 export interface CCTVInfo {
   installed: boolean;
@@ -1073,7 +1076,7 @@ export interface StaffTransfer {
 }
 
 // Timetable
-export type TimetableStatus = 'draft' | 'published' | 'archived';
+export type TimetableStatus = 'draft' | 'published' | 'archived' | 'pending_approval';
 export type TimetableEntryType = 'lecture' | 'lab' | 'tutorial' | 'break' | 'other';
 
 export interface TimetableEntry {
@@ -1100,6 +1103,7 @@ export interface Timetable {
     status: TimetableStatus;
     effectiveDate: Timestamp; 
     entries: TimetableEntry[];
+    createdBy?: string;
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
     // Auto-generation metadata
@@ -1172,11 +1176,16 @@ export interface TimetableConstraints {
 }
 
 export interface TimetableConflict {
-    type: 'faculty' | 'room' | 'student' | 'time' | 'capacity';
-    severity: 'critical' | 'major' | 'minor';
+    type: 'faculty' | 'room' | 'student' | 'time' | 'capacity' | 'room_conflict';
+    severity: 'critical' | 'major' | 'minor' | 'high';
     description: string;
     affectedEntries: number[]; // indices in entries array
     suggestions?: string[];
+    batchId?: string;
+    roomId?: string;
+    facultyId?: string;
+    dayOfWeek?: string;
+    timeSlot?: string;
 }
 
 export interface AutoGenerationRequest {
@@ -1214,7 +1223,12 @@ export type NotificationType =
   | 'maintenance_scheduled'
   | 'approval_pending'
   | 'approval_approved'
-  | 'approval_rejected';
+  | 'approval_rejected'
+  | 'info' | 'success' | 'warning' | 'error' | 'update' | 'reminder' 
+  | 'assignment_new' | 'assignment_graded' 
+  | 'enrollment_request' | 'enrollment_approved' | 'enrollment_rejected' | 'enrollment_withdrawn'
+  | 'project_status_change' | 'project_location_update' | 'event_schedule_update' | 'event_results_published'
+  | 'meeting_scheduled' | 'new_material';
 
 export type NotificationChannel = 'email' | 'sms' | 'push' | 'in_app' | 'whatsapp';
 
@@ -1255,8 +1269,9 @@ export interface NotificationPreference {
 export interface Notification {
   id: string;
   type: NotificationType;
-  title: string;
+  title?: string;
   message: string;
+  userId?: string;
   recipientId: string;
   recipientType: StakeholderType;
   channels: NotificationChannel[];
@@ -1274,8 +1289,12 @@ export interface Notification {
   scheduledAt?: Timestamp;
   sentAt?: Timestamp;
   readAt?: Timestamp;
-  createdAt?: Timestamp;
-  updatedAt?: Timestamp;
+  isRead?: boolean;
+  link?: string;
+  relatedEntityId?: string;
+  relatedEntityType?: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
 }
 
 export interface TimetableChange {
@@ -1349,6 +1368,37 @@ export interface ClassScheduleEntry {
 
 export interface FacultyTimetableView {
   facultyId: string;
+  facultyName?: string;
+  department?: string;
+  totalCourses?: number;
+  weeklyHours?: number;
+  totalStudents?: number;
+  assignedTimetables?: Timetable[];
+  courseDistribution?: Array<{name: string; hours: number; color: string; courseName: string; percentage: number}>;
+  performanceMetrics?: {
+    attendance: number; 
+    engagement: number;
+    satisfaction: number;
+    completion: number;
+    completedClasses: number;
+    remainingClasses: number;
+    attendanceRate: number;
+    satisfactionScore: number;
+  };
+  workloadAnalysis?: {
+    weeklyHours: number;
+    maxWeeklyHours: number;
+    currentHours: number;
+    maxHours: number;
+    utilizationPercentage: number;
+    courseCount: number;
+    studentCount: number;
+    overloadHours?: number;
+    lectureHours: number;
+    labHours: number;
+    tutorialHours: number;
+  };
+  workloadAlerts?: WorkloadAlert[];
   currentClass?: {
     subject: string;
     batch: string;
@@ -1444,7 +1494,7 @@ export interface RoomManagerView {
   alerts: RoomAlert[];
 }
 
-export interface RoomStatus {
+export interface RoomStatusInfo {
   id: string;
   roomNumber: string;
   name: string;
@@ -1520,6 +1570,16 @@ export interface FacultyAlert {
   severity: 'info' | 'warning' | 'error';
   actionRequired: boolean;
   actionUrl?: string;
+}
+
+export interface WorkloadAlert {
+  id: string;
+  type: 'overload' | 'underload' | 'imbalance';
+  message: string;
+  description?: string;
+  severity: 'low' | 'medium' | 'high';
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  recommendation?: string;
 }
 
 export interface DepartmentHighlight {
@@ -1842,15 +1902,8 @@ export interface CourseMaterial {
   externalUrl?: string; // External link URL
 }
 
-// Notification System
-export type NotificationType = 
-  | 'info' | 'success' | 'warning' | 'error' | 'update' | 'reminder' 
-  | 'assignment_new' | 'assignment_graded' 
-  | 'enrollment_request' | 'enrollment_approved' | 'enrollment_rejected' | 'enrollment_withdrawn'
-  | 'project_status_change' | 'project_location_update' | 'event_schedule_update' | 'event_results_published'
-  | 'meeting_scheduled' | 'new_material';
-
-export interface Notification {
+// Extended Notification System for backward compatibility
+export interface ExtendedNotification {
   id: string;
   userId: string; 
   message: string;

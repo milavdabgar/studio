@@ -52,7 +52,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
         if (team && team.members) {
             for (const member of team.members) {
                 try {
-                    await notificationService.createNotification({
+                    await notificationService.createLegacyNotification({
                         userId: member.userId,
                         message: `Your project '${project.title}' has been unassigned from location/stall '${locationIdString}'.`,
                         type: 'project_location_update',

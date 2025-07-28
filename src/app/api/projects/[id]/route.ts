@@ -76,7 +76,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         if (team && team.members) {
             for (const member of team.members) {
                 try {
-                    await notificationService.createNotification({
+                    await notificationService.createLegacyNotification({
                         userId: member.userId,
                         message: `The status of your project '${updatedProject.title}' has been updated to '${updatedProject.status}'.`,
                         type: 'project_status_change',

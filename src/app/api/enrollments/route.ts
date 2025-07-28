@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
         
         try {
             // Notify a default admin (simplified for migration)
-            await notificationService.createNotification({
+            await notificationService.createLegacyNotification({
                 userId: 'user_admin_gpp', // Default admin user
                 message: `New enrollment request from ${studentName} for course ${enrollmentData.courseOfferingId}.`,
                 type: 'enrollment_request',

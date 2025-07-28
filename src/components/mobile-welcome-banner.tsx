@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { X, Smartphone, Wifi, Download, Touch, Zap } from "lucide-react";
+import { X, Smartphone, Wifi, Download, Hand, Zap } from "lucide-react";
 
 interface MobileWelcomeBannerProps {
   className?: string;
@@ -46,7 +46,7 @@ export default function MobileWelcomeBanner({ className }: MobileWelcomeBannerPr
 
   const features = [
     {
-      icon: <Touch className="h-4 w-4" />,
+      icon: <Hand className="h-4 w-4" />,
       title: "Touch Optimized",
       description: "Designed for finger navigation"
     },

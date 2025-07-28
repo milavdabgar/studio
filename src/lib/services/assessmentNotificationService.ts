@@ -156,7 +156,7 @@ export class AssessmentNotificationService {
       relatedEntityType: 'assessment'
     };
 
-    await notificationApi.createNotification(notification);
+    await notificationApi.createLegacyNotification(notification);
   }
 
   /**
@@ -184,7 +184,7 @@ export class AssessmentNotificationService {
       relatedEntityType: 'assessment'
     };
 
-    await notificationApi.createNotification(notification);
+    await notificationApi.createLegacyNotification(notification);
   }
 
   /**
@@ -214,7 +214,7 @@ export class AssessmentNotificationService {
       relatedEntityType: 'assessment'
     };
 
-    await notificationApi.createNotification(notification);
+    await notificationApi.createLegacyNotification(notification);
   }
 
   /**
@@ -240,7 +240,7 @@ export class AssessmentNotificationService {
       relatedEntityType: 'assessment'
     };
 
-    await notificationApi.createNotification(notification);
+    await notificationApi.createLegacyNotification(notification);
   }
 
   /**
@@ -268,7 +268,7 @@ export class AssessmentNotificationService {
       relatedEntityType: 'assessment'
     };
 
-    await notificationApi.createNotification(notification);
+    await notificationApi.createLegacyNotification(notification);
   }
 
   /**

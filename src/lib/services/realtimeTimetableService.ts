@@ -1,3 +1,4 @@
+import React from 'react';
 import type { 
   Timetable, 
   TimetableEntry, 
@@ -221,25 +222,45 @@ export class RealtimeTimetableService {
         student: 'student-timetable-published',
         faculty: 'faculty-schedule-assigned',
         hod: 'hod-timetable-ready',
-        room_manager: 'room-booking-confirmed'
+        room_manager: 'room-booking-confirmed',
+        lab_assistant: 'lab-schedule-assigned',
+        admin: 'admin-timetable-created',
+        dean: 'dean-timetable-review',
+        registrar: 'registrar-timetable-approved',
+        parent: 'parent-timetable-notification'
       },
       timetable_updated: {
         student: 'student-timetable-changed',
         faculty: 'faculty-schedule-changed',
         hod: 'hod-timetable-ready',
-        room_manager: 'room-booking-confirmed'
+        room_manager: 'room-booking-confirmed',
+        lab_assistant: 'lab-schedule-changed',
+        admin: 'admin-timetable-updated',
+        dean: 'dean-timetable-review',
+        registrar: 'registrar-timetable-approved',
+        parent: 'parent-timetable-notification'
       },
       entry_changed: {
         student: 'student-schedule-changed',
         faculty: 'faculty-schedule-changed',
         hod: 'hod-conflict-detected',
-        room_manager: 'room-conflict-detected'
+        room_manager: 'room-conflict-detected',
+        lab_assistant: 'lab-conflict-detected',
+        admin: 'admin-conflict-detected',
+        dean: 'dean-conflict-detected',
+        registrar: 'registrar-conflict-detected',
+        parent: 'parent-schedule-changed'
       },
       conflict_detected: {
         student: 'student-schedule-changed',
         faculty: 'faculty-schedule-changed',
         hod: 'hod-conflict-detected',
-        room_manager: 'room-conflict-detected'
+        room_manager: 'room-conflict-detected',
+        lab_assistant: 'lab-conflict-detected',
+        admin: 'admin-conflict-detected',
+        dean: 'dean-conflict-detected',
+        registrar: 'registrar-conflict-detected',
+        parent: 'parent-schedule-changed'
       }
     };
     

@@ -281,7 +281,7 @@ export class TimetableNotificationService {
     }
 
     // Notify room managers for room conflicts
-    const roomConflicts = conflicts.filter(c => c.type === 'room_conflict');
+    const roomConflicts = conflicts.filter(c => c.type === 'room' || c.type === 'room_conflict');
     for (const conflict of roomConflicts) {
       for (const manager of stakeholders.roomManagers) {
         const result = await this.notificationService.sendNotification({

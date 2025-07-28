@@ -3,6 +3,32 @@ import type { Notification } from '@/types/entities';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
 
+// Helper function for backward compatibility
+function createLegacyNotification(legacyData: {
+  userId: string;
+  message: string;
+  type: string;
+  link?: string;
+  relatedEntityId?: string;
+  relatedEntityType?: string;
+  title?: string;
+}): Omit<Notification, 'id' | 'createdAt' | 'updatedAt' | 'isRead'> {
+  return {
+    type: legacyData.type as any,
+    title: legacyData.title || 'Notification',
+    message: legacyData.message,
+    userId: legacyData.userId,
+    recipientId: legacyData.userId,
+    recipientType: 'student' as any,
+    channels: ['in_app' as any],
+    priority: 'medium',
+    status: 'pending',
+    link: legacyData.link,
+    relatedEntityId: legacyData.relatedEntityId,
+    relatedEntityType: legacyData.relatedEntityType
+  };
+}
+
 export const notificationService = {
   async getNotificationsForUser(userId: string): Promise<Notification[]> {
     const response = await fetch(`${API_BASE_URL}/notifications?userId=${userId}`);
@@ -24,6 +50,20 @@ export const notificationService = {
       throw new Error(errorData.message || 'Failed to create notification');
     }
     return response.json();
+  },
+
+  // Legacy create function for backward compatibility
+  async createLegacyNotification(legacyData: {
+    userId: string;
+    message: string;
+    type: string;
+    link?: string;
+    relatedEntityId?: string;
+    relatedEntityType?: string;
+    title?: string;
+  }): Promise<Notification> {
+    const notificationData = createLegacyNotification(legacyData);
+    return this.createNotification(notificationData);
   },
 
   async markNotificationAsRead(notificationId: string): Promise<Notification> {

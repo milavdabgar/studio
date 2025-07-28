@@ -107,7 +107,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
         for (const userId of userIdsToNotify) {
             try {
-                await notificationService.createNotification({
+                await notificationService.createLegacyNotification({
                     userId: userId,
                     message: `Results for the event '${updatedEvent.name}' have been published! Check the event page for details.`,
                     type: 'event_results_published',

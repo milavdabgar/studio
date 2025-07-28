@@ -30,8 +30,13 @@ describe('NotificationService API Tests', () => {
   const mockNotification: Notification = {
     id: "notif1",
     userId: "user1",
+    recipientId: "user1",
+    recipientType: "student",
     message: "This is a test notification",
     type: "info",
+    channels: ["push"],
+    priority: "medium",
+    status: "sent",
     isRead: false,
     createdAt: now,
     updatedAt: now,
@@ -68,9 +73,14 @@ describe('NotificationService API Tests', () => {
   describe('createNotification', () => {
     const newNotificationData = {
       userId: "user1",
+      recipientId: "user1",
+      recipientType: "student" as const,
       title: "New Notification",
       message: "This is a new notification",
       type: "warning" as const,
+      channels: ["push" as const],
+      priority: "medium" as const,
+      status: "pending" as const,
     };
 
     it('should create a notification successfully', async () => {
