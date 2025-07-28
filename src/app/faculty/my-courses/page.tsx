@@ -123,74 +123,86 @@ export default function MyCoursesPage() {
   }, [currentUser, toast]);
 
   if (isLoading) {
-    return <div className="flex justify-center items-center h-screen"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
+    return <div className="flex justify-center items-center h-screen"><Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin text-primary" /></div>;
   }
 
   if (!currentUser) {
-    return <div className="text-center py-10">Please login to view your courses.</div>;
+    return <div className="text-center py-8 px-4 text-sm sm:text-base">Please login to view your courses.</div>;
   }
   
   if (!currentFaculty && !isLoading) {
-     return <div className="text-center py-10">Faculty profile not found for your user account. Please contact admin.</div>;
+     return <div className="text-center py-8 px-4 text-sm sm:text-base">Faculty profile not found for your user account. Please contact admin.</div>;
   }
 
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4 sm:space-y-6 lg:space-y-8 p-3 sm:p-4 lg:p-6">
       <Card className="shadow-xl">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
-            <BookOpen className="h-6 w-6" /> My Courses
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-lg sm:text-xl lg:text-2xl font-bold text-primary flex items-center gap-2">
+            <BookOpen className="h-5 w-5 sm:h-6 sm:w-6" /> My Courses
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-sm sm:text-base">
             Overview of courses and offerings assigned to you, {currentFaculty?.firstName || currentUser.name}.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-4 sm:p-6">
           {myCourseOfferings.length === 0 ? (
-            <div className="text-center py-10 text-muted-foreground">
-              <AlertTriangle className="mx-auto h-12 w-12 mb-4" />
-              You are not currently assigned to any course offerings.
+            <div className="text-center py-8 sm:py-10 text-muted-foreground px-4">
+              <AlertTriangle className="mx-auto h-8 w-8 sm:h-12 sm:w-12 mb-4" />
+              <p className="text-sm sm:text-base">You are not currently assigned to any course offerings.</p>
             </div>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
               {myCourseOfferings.map(offering => (
                 <Card key={offering.id} className="flex flex-col justify-between hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <CardTitle className="text-lg">{offering.courseName} <span className="text-sm text-muted-foreground">({offering.courseSubcode})</span></CardTitle>
-                    <CardDescription>
-                      {offering.programName} - {offering.batchName} <br />
-                      Semester: {offering.semester} | Academic Year: {offering.academicYear}
+                  <CardHeader className="p-3 sm:p-4 lg:p-6">
+                    <CardTitle className="text-base sm:text-lg leading-tight">
+                      {offering.courseName} 
+                      <span className="block sm:inline text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-0 sm:ml-1">
+                        ({offering.courseSubcode})
+                      </span>
+                    </CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">
+                      <div className="space-y-1">
+                        <div>{offering.programName} - {offering.batchName}</div>
+                        <div>Semester: {offering.semester} | AY: {offering.academicYear}</div>
+                      </div>
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="flex-grow">
-                    <p className="text-sm text-muted-foreground">Status: <span className="font-medium capitalize">{offering.status}</span></p>
+                  <CardContent className="flex-grow p-3 sm:p-4 lg:p-6 pt-0">
+                    <p className="text-xs sm:text-sm text-muted-foreground">Status: <span className="font-medium capitalize">{offering.status}</span></p>
                   </CardContent>
-                  <CardFooter className="flex flex-col items-stretch gap-2 pt-4 border-t dark:border-gray-700">
-                    <Link
-                      href={`/faculty/course-offerings/${offering.id}/students`}
-                      >
-                        <Button variant="outline" className="w-full justify-start"><Users className="mr-2 h-4 w-4"/>Enrolled Students</Button>
+                  <CardFooter className="flex flex-col items-stretch gap-2 p-3 sm:p-4 lg:p-6 pt-3 sm:pt-4 border-t dark:border-gray-700">
+                    <Link href={`/faculty/course-offerings/${offering.id}/students`}>
+                      <Button variant="outline" className="w-full justify-start min-h-[44px] text-xs sm:text-sm">
+                        <Users className="mr-2 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0"/>
+                        <span className="truncate">Enrolled Students</span>
+                      </Button>
                     </Link>
-                    <Link
-                      href={`/faculty/attendance/mark?offeringId=${offering.id}`}
-                      >
-                       <Button variant="outline" className="w-full justify-start"><CalendarCheck className="mr-2 h-4 w-4"/>Mark Attendance</Button>
+                    <Link href={`/faculty/attendance/mark?offeringId=${offering.id}`}>
+                      <Button variant="outline" className="w-full justify-start min-h-[44px] text-xs sm:text-sm">
+                        <CalendarCheck className="mr-2 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0"/>
+                        <span className="truncate">Mark Attendance</span>
+                      </Button>
                     </Link>
-                    <Link
-                      href={`/faculty/course-offerings/${offering.id}/assessments`}
-                      >
-                       <Button variant="outline" className="w-full justify-start"><AssessmentIcon className="mr-2 h-4 w-4"/>Manage Assessments</Button>
+                    <Link href={`/faculty/course-offerings/${offering.id}/assessments`}>
+                      <Button variant="outline" className="w-full justify-start min-h-[44px] text-xs sm:text-sm">
+                        <AssessmentIcon className="mr-2 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0"/>
+                        <span className="truncate">Manage Assessments</span>
+                      </Button>
                     </Link>
-                    <Link
-                      href={`/faculty/assessments/grade?offeringId=${offering.id}`}
-                      >
-                       <Button variant="outline" className="w-full justify-start"><Edit3 className="mr-2 h-4 w-4"/>Grade Assessments</Button>
+                    <Link href={`/faculty/assessments/grade?offeringId=${offering.id}`}>
+                      <Button variant="outline" className="w-full justify-start min-h-[44px] text-xs sm:text-sm">
+                        <Edit3 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0"/>
+                        <span className="truncate">Grade Assessments</span>
+                      </Button>
                     </Link>
-                    <Link
-                      href={`/faculty/course-offerings/${offering.id}/materials`}
-                      >
-                       <Button variant="outline" className="w-full justify-start"><Paperclip className="mr-2 h-4 w-4"/>Manage Materials</Button>
+                    <Link href={`/faculty/course-offerings/${offering.id}/materials`}>
+                      <Button variant="outline" className="w-full justify-start min-h-[44px] text-xs sm:text-sm">
+                        <Paperclip className="mr-2 h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0"/>
+                        <span className="truncate">Manage Materials</span>
+                      </Button>
                     </Link>
                   </CardFooter>
                 </Card>

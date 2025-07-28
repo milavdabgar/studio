@@ -1,24 +1,52 @@
 
-const CACHE_NAME = 'gpp-next-cache-v1';
+const CACHE_NAME = 'gpp-next-cache-v2';
 const OFFLINE_URL = '/offline.html';
-// Add more assets to cache as your app grows
+
+// Define different cache types for better organization
+const STATIC_CACHE = 'gpp-static-v2';
+const STUDENT_DATA_CACHE = 'gpp-student-data-v2';
+const IMAGES_CACHE = 'gpp-images-v2';
+
+// Core assets to cache immediately
 const CORE_ASSETS = [
   '/',
   '/offline.html',
-  // Add paths to your main CSS and JS bundles if you know them
-  // e.g., '/_next/static/css/main.css', '/_next/static/chunks/main-app.js'
-  // For Next.js, these paths are dynamic. A more robust solution uses next-pwa.
+  '/manifest.json',
+];
+
+// Student-specific pages that should work offline
+const STUDENT_PAGES = [
+  '/student/dashboard',
+  '/student/profile',
+  '/student/timetable',
+  '/student/courses',
+  '/student/assessments',
+  '/student/results',
+  '/login',
+];
+
+// API endpoints that should be cached for offline access
+const CACHEABLE_API_ROUTES = [
+  '/api/students',
+  '/api/courses',
+  '/api/timetables',
+  '/api/assessments',
+  '/api/results'
 ];
 
 self.addEventListener('install', (event) => {
   console.log('[Service Worker] Install event');
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
+    Promise.all([
+      caches.open(STATIC_CACHE).then((cache) => {
         console.log('[Service Worker] Caching core assets');
         return cache.addAll(CORE_ASSETS);
+      }),
+      caches.open(STUDENT_DATA_CACHE).then((cache) => {
+        console.log('[Service Worker] Pre-caching student pages');
+        return cache.addAll(STUDENT_PAGES.map(page => page + '?offline=true'));
       })
-      .then(() => self.skipWaiting()) // Force activation
+    ]).then(() => self.skipWaiting()) // Force activation
   );
 });
 
@@ -29,7 +57,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
+          if (![STATIC_CACHE, STUDENT_DATA_CACHE, IMAGES_CACHE].includes(cacheName)) {
             console.log('[Service Worker] Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
@@ -41,67 +69,165 @@ self.addEventListener('activate', (event) => {
 
 // Helper function to check if a request can be cached
 function canCache(request) {
-  // Only cache http/https requests
   return request.url.startsWith('http://') || request.url.startsWith('https://');
 }
 
+// Helper function to determine cache strategy based on request
+function getCacheStrategy(request) {
+  const url = new URL(request.url);
+  
+  // Images - cache first with long expiry
+  if (request.destination === 'image') {
+    return 'cache-first-images';
+  }
+  
+  // Student pages - network first, fallback to cache
+  if (STUDENT_PAGES.some(page => url.pathname.startsWith(page))) {
+    return 'network-first-student';
+  }
+  
+  // API routes for student data - network first with cache fallback
+  if (CACHEABLE_API_ROUTES.some(route => url.pathname.startsWith(route))) {
+    return 'network-first-api';
+  }
+  
+  // Static assets - cache first
+  if (request.destination === 'style' || request.destination === 'script' || request.destination === 'font') {
+    return 'cache-first-static';
+  }
+  
+  // Navigation requests
+  if (request.mode === 'navigate') {
+    return 'network-first-navigation';
+  }
+  
+  return 'network-only';
+}
+
 self.addEventListener('fetch', (event) => {
-  // Skip caching for unsupported request schemes
   if (!canCache(event.request)) {
     return;
   }
-  
-  if (event.request.mode === 'navigate') {
-    event.respondWith(
-      (async () => {
-        try {
-          const preloadResponse = await event.preloadResponse;
-          if (preloadResponse) {
-            return preloadResponse;
-          }
 
-          const networkResponse = await fetch(event.request);
-          // Optionally cache successful navigation responses
-          // if (networkResponse.ok) {
-          //   const cache = await caches.open(CACHE_NAME);
-          //   cache.put(event.request, networkResponse.clone());
-          // }
-          return networkResponse;
-        } catch (error) {
-          console.log('[Service Worker] Fetch failed; returning offline page instead.', error);
-          const cache = await caches.open(CACHE_NAME);
-          const cachedResponse = await cache.match(OFFLINE_URL);
-          return cachedResponse;
-        }
-      })()
-    );
-  } else if (CORE_ASSETS.includes(event.request.url) || event.request.destination === 'style' || event.request.destination === 'script' || event.request.destination === 'image') {
-    // Cache-first strategy for core assets and static resources
-    event.respondWith(
-      caches.match(event.request).then((cachedResponse) => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        return fetch(event.request).then((networkResponse) => {
-          if (networkResponse && networkResponse.ok) {
-            const responseClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then(cache => {
-              cache.put(event.request, responseClone);
-            });
-          }
-          return networkResponse;
-        }).catch(async (error) => {
-          console.log('[Service Worker] Fetch failed for non-navigation request; returning offline page if appropriate.', error);
-          // For non-navigation assets, we might not want to return offline.html
-          // but this depends on the asset type. For simplicity, we don't for now.
-          // Consider returning a placeholder image/style if it's an image/style request
-          const cache = await caches.open(CACHE_NAME);
-          if (event.request.url.endsWith('.png') || event.request.url.endsWith('.jpg') || event.request.url.endsWith('.jpeg')) {
-             // Could return a placeholder image from cache
-          }
-          return new Response(null, { status: 404, statusText: 'Not Found In Cache' });
-        });
-      })
-    );
+  const strategy = getCacheStrategy(event.request);
+  
+  switch (strategy) {
+    case 'cache-first-images':
+      event.respondWith(cacheFirstStrategy(event.request, IMAGES_CACHE));
+      break;
+      
+    case 'network-first-student':
+      event.respondWith(networkFirstStrategy(event.request, STUDENT_DATA_CACHE));
+      break;
+      
+    case 'network-first-api':
+      event.respondWith(networkFirstStrategy(event.request, STUDENT_DATA_CACHE, { maxAge: 300000 })); // 5 minutes
+      break;
+      
+    case 'cache-first-static':
+      event.respondWith(cacheFirstStrategy(event.request, STATIC_CACHE));
+      break;
+      
+    case 'network-first-navigation':
+      event.respondWith(navigationStrategy(event.request));
+      break;
+      
+    default:
+      // Network only - don't cache
+      break;
   }
 });
+
+// Cache-first strategy
+async function cacheFirstStrategy(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  const cachedResponse = await cache.match(request);
+  
+  if (cachedResponse) {
+    return cachedResponse;
+  }
+  
+  try {
+    const networkResponse = await fetch(request);
+    if (networkResponse && networkResponse.ok) {
+      cache.put(request, networkResponse.clone());
+    }
+    return networkResponse;
+  } catch (error) {
+    console.log('[Service Worker] Cache-first fetch failed:', error);
+    return new Response(null, { status: 404, statusText: 'Not Found' });
+  }
+}
+
+// Network-first strategy
+async function networkFirstStrategy(request, cacheName, options = {}) {
+  const cache = await caches.open(cacheName);
+  
+  try {
+    const networkResponse = await fetch(request);
+    if (networkResponse && networkResponse.ok) {
+      // Add timestamp for cache invalidation
+      const responseToCache = networkResponse.clone();
+      if (options.maxAge) {
+        const headers = new Headers(responseToCache.headers);
+        headers.set('sw-cache-timestamp', Date.now().toString());
+        const body = await responseToCache.blob();
+        const cachedResponse = new Response(body, { headers });
+        cache.put(request, cachedResponse);
+      } else {
+        cache.put(request, responseToCache);
+      }
+    }
+    return networkResponse;
+  } catch (error) {
+    console.log('[Service Worker] Network-first fetch failed, trying cache:', error);
+    const cachedResponse = await cache.match(request);
+    
+    if (cachedResponse && options.maxAge) {
+      const timestamp = cachedResponse.headers.get('sw-cache-timestamp');
+      if (timestamp && (Date.now() - parseInt(timestamp)) > options.maxAge) {
+        console.log('[Service Worker] Cached response expired');
+        return new Response(null, { status: 504, statusText: 'Gateway Timeout' });
+      }
+    }
+    
+    return cachedResponse || new Response(null, { status: 504, statusText: 'Gateway Timeout' });
+  }
+}
+
+// Navigation strategy with offline fallback
+async function navigationStrategy(request) {
+  try {
+    const preloadResponse = await event.preloadResponse;
+    if (preloadResponse) {
+      return preloadResponse;
+    }
+
+    const networkResponse = await fetch(request);
+    
+    // Cache successful student pages
+    if (networkResponse.ok) {
+      const url = new URL(request.url);
+      if (STUDENT_PAGES.some(page => url.pathname.startsWith(page))) {
+        const cache = await caches.open(STUDENT_DATA_CACHE);
+        cache.put(request, networkResponse.clone());
+      }
+    }
+    
+    return networkResponse;
+  } catch (error) {
+    console.log('[Service Worker] Navigation fetch failed, checking for cached version:', error);
+    
+    // Try to find cached version of the specific page
+    const cache = await caches.open(STUDENT_DATA_CACHE);
+    const cachedResponse = await cache.match(request);
+    
+    if (cachedResponse) {
+      return cachedResponse;
+    }
+    
+    // Fallback to offline page
+    const staticCache = await caches.open(STATIC_CACHE);
+    return staticCache.match(OFFLINE_URL);
+  }
+}

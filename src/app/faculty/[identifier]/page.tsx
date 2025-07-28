@@ -133,95 +133,95 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
       {/* Hero Banner */}
-      <div className="relative bg-gradient-to-r from-purple-600 to-blue-600 h-48 md:h-64">
+      <div className="relative bg-gradient-to-r from-purple-600 to-blue-600 h-32 sm:h-48 md:h-64">
         <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-        <div className="absolute top-4 right-4 flex gap-2">
+        <div className="absolute top-2 right-2 sm:top-4 sm:right-4 flex gap-1 sm:gap-2">
           <Button 
             variant="outline" 
             size="sm" 
             onClick={copyProfileUrl}
-            className="bg-white/90 hover:bg-white text-gray-700"
+            className="bg-white/90 hover:bg-white text-gray-700 min-h-[44px] px-2 sm:px-3"
           >
-            <Copy className="h-4 w-4 mr-2" />
-            Copy Link
+            <Copy className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline">Copy Link</span>
           </Button>
           <Button 
             variant="outline" 
             size="sm" 
             onClick={shareProfile}
-            className="bg-white/90 hover:bg-white text-gray-700"
+            className="bg-white/90 hover:bg-white text-gray-700 min-h-[44px] px-2 sm:px-3"
           >
-            <Share2 className="h-4 w-4 mr-2" />
-            Share
+            <Share2 className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline">Share</span>
           </Button>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 -mt-20 relative z-10">
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 -mt-16 sm:-mt-20 relative z-10">
         {/* Profile Header */}
-        <Card className="mb-8 shadow-xl border-0">
-          <CardContent className="p-8">
-            <div className="flex flex-col md:flex-row gap-8 items-start">
+        <Card className="mb-6 sm:mb-8 shadow-xl border-0">
+          <CardContent className="p-4 sm:p-6 md:p-8">
+            <div className="flex flex-col md:flex-row gap-4 sm:gap-6 md:gap-8 items-start">
               {/* Profile Picture */}
-              <div className="relative">
-                <Avatar className="w-40 h-40 ring-6 ring-white shadow-2xl">
+              <div className="relative mx-auto md:mx-0">
+                <Avatar className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 ring-4 sm:ring-6 ring-white shadow-2xl">
                   <AvatarImage 
                     src={profile.photoURL || `https://picsum.photos/seed/${profile.id}/300/300`} 
                     alt={`${profile.firstName} ${profile.lastName}`} 
                   />
-                  <AvatarFallback className="text-4xl bg-gradient-to-br from-purple-500 to-blue-600 text-white">
+                  <AvatarFallback className="text-2xl sm:text-3xl md:text-4xl bg-gradient-to-br from-purple-500 to-blue-600 text-white">
                     {(profile.firstName?.[0] || 'F').toUpperCase()}
                     {(profile.lastName?.[0] || 'P').toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <div className="absolute -bottom-2 -right-2 bg-green-500 w-8 h-8 rounded-full flex items-center justify-center">
-                  <CheckCircle className="h-5 w-5 text-white" />
+                <div className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 bg-green-500 w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center">
+                  <CheckCircle className="h-3 w-3 sm:h-5 sm:w-5 text-white" />
                 </div>
               </div>
 
               {/* Profile Info */}
-              <div className="flex-1">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+              <div className="flex-1 text-center md:text-left">
+                <div className="flex flex-col items-center md:items-start">
+                  <div className="w-full">
+                    <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3 leading-tight">
                       {profile.title} {profile.firstName} {profile.middleName} {profile.lastName}
                     </h1>
-                    <div className="flex flex-wrap gap-3 mb-4">
-                      <Badge variant="secondary" className="px-3 py-1">
-                        <UserCircle className="h-4 w-4 mr-1" />
+                    <div className="flex flex-wrap gap-2 sm:gap-3 mb-3 sm:mb-4 justify-center md:justify-start">
+                      <Badge variant="secondary" className="px-2 py-1 sm:px-3 text-xs sm:text-sm">
+                        <UserCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                         {profile.designation}
                       </Badge>
                       {profile.department && (
-                        <Badge variant="outline" className="px-3 py-1">
-                          <Building className="h-4 w-4 mr-1" />
+                        <Badge variant="outline" className="px-2 py-1 sm:px-3 text-xs sm:text-sm">
+                          <Building className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                           {profile.department}
                         </Badge>
                       )}
                       {profile.staffCode && (
-                        <Badge variant="outline" className="px-3 py-1">
-                          <FileText className="h-4 w-4 mr-1" />
+                        <Badge variant="outline" className="px-2 py-1 sm:px-3 text-xs sm:text-sm">
+                          <FileText className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                           {profile.staffCode}
                         </Badge>
                       )}
                     </div>
-                    <p className="text-gray-600 text-lg mb-4 max-w-2xl">
+                    <p className="text-gray-600 text-sm sm:text-base md:text-lg mb-3 sm:mb-4 max-w-2xl leading-relaxed">
                       {profile.profileSummary || `${profile.designation} in ${profile.department}. Dedicated educator and researcher with expertise in academic excellence and student development.`}
                     </p>
                   </div>
                 </div>
 
                 {/* Professional Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-4 w-4" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4 text-xs sm:text-sm text-gray-600">
+                  <div className="flex items-center gap-1 sm:gap-2 justify-center md:justify-start">
+                    <Clock className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                     <span>Experience: {getExperienceYears()}+ years</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4" />
+                  <div className="flex items-center gap-1 sm:gap-2 justify-center md:justify-start">
+                    <Star className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                     <span>Category: {profile.staffCategory}</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <TrendingUp className="h-4 w-4" />
+                  <div className="flex items-center gap-1 sm:gap-2 justify-center md:justify-start sm:col-span-2 md:col-span-1">
+                    <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                     <span>Status: {profile.status}</span>
                   </div>
                 </div>
@@ -231,9 +231,9 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
         </Card>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {/* Left Column - Contact & Quick Info */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Contact Information */}
             <Card className="shadow-lg">
               <CardHeader>
@@ -242,40 +242,40 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
                   Contact Information
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 sm:space-y-4">
                 {profile.instituteEmail && (
-                  <div className="flex items-center gap-3">
-                    <Building className="h-4 w-4 text-gray-500" />
-                    <div>
-                      <p className="text-sm text-gray-500">Institute Email</p>
-                      <p className="font-medium">{profile.instituteEmail}</p>
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <Building className="h-4 w-4 text-gray-500 flex-shrink-0 mt-0.5" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs sm:text-sm text-gray-500">Institute Email</p>
+                      <p className="font-medium text-sm sm:text-base break-all">{profile.instituteEmail}</p>
                     </div>
                   </div>
                 )}
                 {profile.personalEmail && (
-                  <div className="flex items-center gap-3">
-                    <Mail className="h-4 w-4 text-gray-500" />
-                    <div>
-                      <p className="text-sm text-gray-500">Personal Email</p>
-                      <p className="font-medium">{profile.personalEmail}</p>
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <Mail className="h-4 w-4 text-gray-500 flex-shrink-0 mt-0.5" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs sm:text-sm text-gray-500">Personal Email</p>
+                      <p className="font-medium text-sm sm:text-base break-all">{profile.personalEmail}</p>
                     </div>
                   </div>
                 )}
                 {profile.contactNumber && (
-                  <div className="flex items-center gap-3">
-                    <Phone className="h-4 w-4 text-gray-500" />
-                    <div>
-                      <p className="text-sm text-gray-500">Phone</p>
-                      <p className="font-medium">{profile.contactNumber}</p>
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <Phone className="h-4 w-4 text-gray-500 flex-shrink-0 mt-0.5" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs sm:text-sm text-gray-500">Phone</p>
+                      <p className="font-medium text-sm sm:text-base">{profile.contactNumber}</p>
                     </div>
                   </div>
                 )}
                 {profile.address && (
-                  <div className="flex items-center gap-3">
-                    <MapPin className="h-4 w-4 text-gray-500" />
-                    <div>
-                      <p className="text-sm text-gray-500">Address</p>
-                      <p className="font-medium">{profile.address}</p>
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <MapPin className="h-4 w-4 text-gray-500 flex-shrink-0 mt-0.5" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs sm:text-sm text-gray-500">Address</p>
+                      <p className="font-medium text-sm sm:text-base">{profile.address}</p>
                     </div>
                   </div>
                 )}
@@ -290,27 +290,27 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
                   Professional Details
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Designation</span>
-                  <span className="font-medium">{profile.designation}</span>
+              <CardContent className="space-y-3 sm:space-y-4">
+                <div className="flex justify-between items-center gap-2">
+                  <span className="text-xs sm:text-sm text-gray-600 flex-shrink-0">Designation</span>
+                  <span className="font-medium text-xs sm:text-sm text-right">{profile.designation}</span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Department</span>
-                  <span className="font-medium">{profile.department}</span>
+                <div className="flex justify-between items-center gap-2">
+                  <span className="text-xs sm:text-sm text-gray-600 flex-shrink-0">Department</span>
+                  <span className="font-medium text-xs sm:text-sm text-right">{profile.department}</span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Staff Category</span>
+                <div className="flex justify-between items-center gap-2">
+                  <span className="text-xs sm:text-sm text-gray-600 flex-shrink-0">Staff Category</span>
                   <Badge variant="outline" className="text-xs">
                     {profile.staffCategory}
                   </Badge>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Job Type</span>
-                  <span className="font-medium">{profile.jobType}</span>
+                <div className="flex justify-between items-center gap-2">
+                  <span className="text-xs sm:text-sm text-gray-600 flex-shrink-0">Job Type</span>
+                  <span className="font-medium text-xs sm:text-sm text-right">{profile.jobType}</span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">HOD</span>
+                <div className="flex justify-between items-center gap-2">
+                  <span className="text-xs sm:text-sm text-gray-600 flex-shrink-0">HOD</span>
                   <Badge variant={profile.isHOD ? 'default' : 'secondary'} className="text-xs">
                     {profile.isHOD ? 'Yes' : 'No'}
                   </Badge>
@@ -361,7 +361,7 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
           </div>
 
           {/* Right Column - Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6 lg:space-y-8">
             {/* Specializations */}
             {profile.specializations && profile.specializations.length > 0 && (
               <Card className="shadow-lg">
@@ -372,9 +372,9 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1 sm:gap-2">
                     {profile.specializations.map((spec, index) => (
-                      <Badge key={index} variant="default" className="px-3 py-1">
+                      <Badge key={index} variant="default" className="px-2 py-1 sm:px-3 text-xs sm:text-sm">
                         {spec}
                       </Badge>
                     ))}
@@ -393,17 +393,17 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {profile.qualifications.map((qual, index) => (
-                      <div key={index} className="border-l-4 border-purple-500 pl-4">
-                        <h4 className="font-semibold text-gray-900">{qual.degree}</h4>
-                        <p className="text-purple-600 font-medium">{qual.institution}</p>
-                        <p className="text-sm text-gray-500">
+                      <div key={index} className="border-l-4 border-purple-500 pl-3 sm:pl-4">
+                        <h4 className="font-semibold text-gray-900 text-sm sm:text-base">{qual.degree}</h4>
+                        <p className="text-purple-600 font-medium text-sm sm:text-base">{qual.institution}</p>
+                        <p className="text-xs sm:text-sm text-gray-500">
                           {qual.year}
                           {qual.field && <span className="ml-2">• {qual.field}</span>}
                         </p>
                         {qual.description && (
-                          <p className="text-gray-600 text-sm mt-2 leading-relaxed">
+                          <p className="text-gray-600 text-xs sm:text-sm mt-2 leading-relaxed">
                             {qual.description}
                           </p>
                         )}
@@ -424,9 +424,9 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1 sm:gap-2">
                     {profile.researchInterests.map((interest, index) => (
-                      <Badge key={index} variant="outline" className="px-3 py-1">
+                      <Badge key={index} variant="outline" className="px-2 py-1 sm:px-3 text-xs sm:text-sm">
                         {interest}
                       </Badge>
                     ))}
@@ -445,9 +445,9 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1 sm:gap-2">
                     {profile.skills.map((skill, index) => (
-                      <Badge key={index} variant={skill.category === 'technical' ? 'default' : 'secondary'} className="px-3 py-1">
+                      <Badge key={index} variant={skill.category === 'technical' ? 'default' : 'secondary'} className="px-2 py-1 sm:px-3 text-xs sm:text-sm">
                         {skill.name} ({skill.proficiency})
                       </Badge>
                     ))}
@@ -600,9 +600,9 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-center py-8">
-                    <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-500">Publications information will be available soon.</p>
+                  <div className="text-center py-6 sm:py-8">
+                    <FileText className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
+                    <p className="text-gray-500 text-sm sm:text-base px-4">Publications information will be available soon.</p>
                   </div>
                 </CardContent>
               </Card>
@@ -655,11 +655,11 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 md:gap-4">
                     {profile.languages.map((lang, index) => (
-                      <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                        <span className="font-medium">{lang.name}</span>
-                        <Badge variant="outline" className="text-xs">
+                      <div key={index} className="flex justify-between items-center p-2 sm:p-3 bg-gray-50 rounded-lg gap-2">
+                        <span className="font-medium text-sm sm:text-base truncate">{lang.name}</span>
+                        <Badge variant="outline" className="text-xs flex-shrink-0">
                           {lang.proficiency}
                         </Badge>
                       </div>
@@ -718,9 +718,9 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-center py-8">
-                    <Award className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-500">Awards and recognition information will be available soon.</p>
+                  <div className="text-center py-6 sm:py-8">
+                    <Award className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
+                    <p className="text-gray-500 text-sm sm:text-base px-4">Awards and recognition information will be available soon.</p>
                   </div>
                 </CardContent>
               </Card>
@@ -906,22 +906,22 @@ export default function FacultyProfilePage({}: FacultyProfilePageProps) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     {profile.references.map((reference: ReferenceEntry, index: number) => (
-                      <div key={index} className="border rounded-lg p-4 bg-gray-50">
-                        <h4 className="font-semibold text-gray-900">{reference.name}</h4>
-                        <p className="text-blue-600 font-medium">{reference.position}</p>
-                        <p className="text-gray-600 text-sm">{reference.company}</p>
+                      <div key={index} className="border rounded-lg p-3 sm:p-4 bg-gray-50">
+                        <h4 className="font-semibold text-gray-900 text-sm sm:text-base">{reference.name}</h4>
+                        <p className="text-blue-600 font-medium text-sm">{reference.position}</p>
+                        <p className="text-gray-600 text-xs sm:text-sm">{reference.company}</p>
                         <div className="mt-2 space-y-1">
                           {reference.email && (
-                            <div className="flex items-center gap-2 text-sm text-gray-600">
-                              <Mail className="h-3 w-3" />
-                              <span>{reference.email}</span>
+                            <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
+                              <Mail className="h-3 w-3 flex-shrink-0" />
+                              <span className="break-all">{reference.email}</span>
                             </div>
                           )}
                           {reference.phone && (
-                            <div className="flex items-center gap-2 text-sm text-gray-600">
-                              <Phone className="h-3 w-3" />
+                            <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
+                              <Phone className="h-3 w-3 flex-shrink-0" />
                               <span>{reference.phone}</span>
                             </div>
                           )}

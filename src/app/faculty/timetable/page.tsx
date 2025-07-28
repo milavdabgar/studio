@@ -157,48 +157,66 @@ export default function FacultyTimetablePage() {
   }, [facultyTimetableEntries]);
 
   if (isLoading) {
-    return <div className="flex justify-center items-center h-screen"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
+    return <div className="flex justify-center items-center h-screen"><Loader2 className="h-8 w-8 sm:h-10 sm:w-10 animate-spin text-primary" /></div>;
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 p-3 sm:p-4 lg:p-6">
       <Card className="shadow-xl">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
-            <Clock className="h-6 w-6" /> My Teaching Schedule
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-lg sm:text-xl lg:text-2xl font-bold text-primary flex items-center gap-2">
+            <Clock className="h-5 w-5 sm:h-6 sm:w-6" /> My Teaching Schedule
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-sm sm:text-base">
             Your weekly teaching and other scheduled activities.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-4 sm:p-6">
           {facultyTimetableEntries.length > 0 ? (
             <div className="overflow-x-auto">
-              <Table className="min-w-full border dark:border-gray-700">
+              <Table className="min-w-[600px] sm:min-w-full border dark:border-gray-700">
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="border w-28 dark:border-gray-700">Time</TableHead>
+                    <TableHead className="border w-16 sm:w-28 text-xs sm:text-sm dark:border-gray-700">Time</TableHead>
                     {DAYS_OF_WEEK.map(day => (
-                      <TableHead key={day} className="border text-center dark:border-gray-700">{day}</TableHead>
+                      <TableHead key={day} className="border text-center text-xs sm:text-sm dark:border-gray-700">
+                        <span className="hidden sm:inline">{day}</span>
+                        <span className="sm:hidden">{day.slice(0, 3)}</span>
+                      </TableHead>
                     ))}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {TIME_SLOTS.map((slot, slotIndex) => (
                     <TableRow key={slot}>
-                      <TableCell className="border font-medium dark:border-gray-700">{slot}</TableCell>
+                      <TableCell className="border font-medium text-xs sm:text-sm dark:border-gray-700 p-1 sm:p-2">
+                        <div className="transform -rotate-90 sm:rotate-0 origin-center whitespace-nowrap">
+                          <span className="hidden sm:inline">{slot}</span>
+                          <span className="sm:hidden">{slot.split('-')[0]}</span>
+                        </div>
+                      </TableCell>
                       {DAYS_OF_WEEK.map((day, dayIndex) => {
                         const entry = timetableGrid[slotIndex]?.[dayIndex];
                         return (
-                          <TableCell key={`${day}-${slot}`} className="border p-1 h-24 align-top dark:border-gray-700">
+                          <TableCell key={`${day}-${slot}`} className="border p-0.5 sm:p-1 h-16 sm:h-24 align-top dark:border-gray-700">
                             {entry ? (
-                              <div className="bg-secondary/20 p-1.5 rounded-md text-xs h-full flex flex-col justify-between">
+                              <div className="bg-secondary/20 p-1 sm:p-1.5 rounded-md text-[10px] sm:text-xs h-full flex flex-col justify-between">
                                 <div>
-                                  <p className="font-semibold text-secondary-foreground">{entry.courseName}</p>
-                                  <p className="text-muted-foreground text-[0.7rem]">{entry.programCode} - {entry.batchName}</p>
-                                  {entry.timetableName && <p className="text-muted-foreground text-[0.65rem] italic truncate" title={entry.timetableName}>TT: {entry.timetableName} (v{entry.timetableVersion})</p>}
+                                  <p className="font-semibold text-secondary-foreground leading-tight truncate" title={entry.courseName}>
+                                    {entry.courseName}
+                                  </p>
+                                  <p className="text-muted-foreground text-[8px] sm:text-[0.7rem] leading-tight truncate" title={`${entry.programCode} - ${entry.batchName}`}>
+                                    {entry.programCode} - {entry.batchName}
+                                  </p>
+                                  {entry.timetableName && (
+                                    <p className="text-muted-foreground text-[8px] sm:text-[0.65rem] italic truncate hidden sm:block" title={entry.timetableName}>
+                                      TT: {entry.timetableName} (v{entry.timetableVersion})
+                                    </p>
+                                  )}
                                 </div>
-                                <p className="text-muted-foreground text-[0.7rem] mt-1">Room: {entry.roomNumber}</p>
+                                <p className="text-muted-foreground text-[8px] sm:text-[0.7rem] mt-0.5 sm:mt-1 truncate" title={`Room: ${entry.roomNumber}`}>
+                                  Room: {entry.roomNumber}
+                                </p>
                               </div>
                             ) : null}
                           </TableCell>
@@ -210,7 +228,7 @@ export default function FacultyTimetablePage() {
               </Table>
             </div>
           ) : (
-            <p className="text-center text-muted-foreground py-8">
+            <p className="text-center text-muted-foreground py-6 sm:py-8 text-sm sm:text-base px-4">
               Your schedule is not available or no classes are assigned.
             </p>
           )}

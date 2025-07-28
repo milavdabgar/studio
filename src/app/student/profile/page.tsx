@@ -1394,21 +1394,21 @@ export default function StudentProfilePage() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="space-y-4 sm:space-y-6 px-2 sm:px-0">
+      {/* Header - Mobile Optimized */}
       <Card>
-        <CardHeader>
-          <div className="flex justify-between items-center">
+        <CardHeader className="pb-4 sm:pb-6">
+          <div className="flex flex-col gap-3 sm:gap-0 sm:flex-row sm:justify-between sm:items-center">
             <div>
-              <CardTitle className="text-2xl">Student Profile</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-xl sm:text-2xl">Student Profile</CardTitle>
+              <CardDescription className="text-sm sm:text-base mt-1">
                 Manage your comprehensive profile with academic information, skills, projects, and more
               </CardDescription>
             </div>
-            <div className="flex gap-2">
-              <Button asChild variant="outline">
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Button asChild variant="outline" size="sm" className="text-xs sm:text-sm">
                 <Link href={getPublicProfileUrl()} target="_blank">
-                  <Globe className="h-4 w-4 mr-2" />
+                  <Globe className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                   Public View
                 </Link>
               </Button>
@@ -1416,32 +1416,41 @@ export default function StudentProfilePage() {
                 onDownload={handleGenerateResume}
                 isLoading={isGeneratingResume}
                 variant="default"
-                size="default"
+                size="sm"
               />
             </div>
           </div>
         </CardHeader>
       </Card>
 
-      {/* Profile Management Tabs */}
+      {/* Profile Management Tabs - Mobile Optimized */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="basic">Basic Info</TabsTrigger>
-          <TabsTrigger value="academics">Academics</TabsTrigger>
-          <TabsTrigger value="professional">Professional</TabsTrigger>
-          <TabsTrigger value="security">Security</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto">
+          <TabsTrigger value="basic" className="text-xs sm:text-sm py-2 sm:py-3">
+            <span className="hidden sm:inline">Basic Info</span>
+            <span className="sm:hidden">Basic</span>
+          </TabsTrigger>
+          <TabsTrigger value="academics" className="text-xs sm:text-sm py-2 sm:py-3">
+            <span className="hidden sm:inline">Academics</span>
+            <span className="sm:hidden">Academic</span>
+          </TabsTrigger>
+          <TabsTrigger value="professional" className="text-xs sm:text-sm py-2 sm:py-3">
+            <span className="hidden sm:inline">Professional</span>
+            <span className="sm:hidden">Pro</span>
+          </TabsTrigger>
+          <TabsTrigger value="security" className="text-xs sm:text-sm py-2 sm:py-3">Security</TabsTrigger>
         </TabsList>
         
-        <TabsContent value="basic" className="space-y-6">
-          {/* Profile Header */}
+        <TabsContent value="basic" className="space-y-4 sm:space-y-6 mt-4 sm:mt-6">
+          {/* Profile Header - Mobile Optimized */}
           <Card className="shadow-xl">
-            <CardHeader className="items-center text-center">
+            <CardHeader className="items-center text-center pb-4 sm:pb-6">
               <div className="relative">
-                <Avatar className="w-24 h-24 mb-4 ring-2 ring-primary ring-offset-2">
+                <Avatar className="w-20 h-20 sm:w-24 sm:h-24 mb-3 sm:mb-4 ring-2 ring-primary ring-offset-2">
                   <AvatarImage src={student.photoURL || `https://picsum.photos/seed/${student.id}/100/100`} alt={student.firstName || student.enrollmentNumber} />
                   <AvatarFallback>{(student.firstName?.[0] || 'S').toUpperCase()}{(student.lastName?.[0] || 'P').toUpperCase()}</AvatarFallback>
                 </Avatar>
-                <div className="absolute -bottom-2 -right-2">
+                <div className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2">
                   <input
                     type="file"
                     accept="image/*"
@@ -1451,54 +1460,54 @@ export default function StudentProfilePage() {
                   />
                   <label
                     htmlFor="photo-upload"
-                    className="cursor-pointer inline-flex items-center justify-center w-8 h-8 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors"
+                    className="cursor-pointer inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-colors"
                   >
                     {isUploadingPhoto ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
                     ) : (
-                      <Camera className="h-4 w-4" />
+                      <Camera className="h-3 w-3 sm:h-4 sm:w-4" />
                     )}
                   </label>
                 </div>
               </div>
-              <CardTitle className="text-3xl font-bold text-primary">
+              <CardTitle className="text-xl sm:text-3xl font-bold text-primary text-center">
                 {student.firstName} {student.middleName} {student.lastName}
               </CardTitle>
-              <CardDescription className="text-lg">{student.enrollmentNumber}</CardDescription>
+              <CardDescription className="text-sm sm:text-lg">{student.enrollmentNumber}</CardDescription>
             </CardHeader>
-            <CardContent className="grid md:grid-cols-2 gap-x-8 gap-y-4 px-6 md:px-10">
-              <div className="flex items-start space-x-3 py-2 border-b border-muted last:border-b-0">
-                <Mail className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Institute Email</p>
-                  <p className="text-md text-foreground">{student.instituteEmail}</p>
+            <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-x-8 sm:gap-y-4 px-4 sm:px-6 md:px-10">
+              <div className="flex items-start space-x-2 sm:space-x-3 py-2 sm:py-3 border-b border-muted last:border-b-0">
+                <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-primary mt-1 flex-shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Institute Email</p>
+                  <p className="text-sm sm:text-base text-foreground truncate">{student.instituteEmail}</p>
                 </div>
               </div>
-              <div className="flex items-start space-x-3 py-2 border-b border-muted last:border-b-0">
-                <UserCircle className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Enrollment No.</p>
-                  <p className="text-md text-foreground">{student.enrollmentNumber}</p>
+              <div className="flex items-start space-x-2 sm:space-x-3 py-2 sm:py-3 border-b border-muted last:border-b-0">
+                <UserCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary mt-1 flex-shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Enrollment No.</p>
+                  <p className="text-sm sm:text-base text-foreground">{student.enrollmentNumber}</p>
                 </div>
               </div>
-              <div className="flex items-start space-x-3 py-2 border-b border-muted last:border-b-0">
-                <GraduationCap className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Program</p>
-                  <p className="text-md text-foreground">{program?.name || "N/A"}</p>
+              <div className="flex items-start space-x-2 sm:space-x-3 py-2 sm:py-3 border-b border-muted last:border-b-0">
+                <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5 text-primary mt-1 flex-shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Program</p>
+                  <p className="text-sm sm:text-base text-foreground truncate">{program?.name || "N/A"}</p>
                 </div>
               </div>
-              <div className="flex items-start space-x-3 py-2 border-b border-muted last:border-b-0">
-                <Landmark className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-muted-foreground">Current Semester</p>
+              <div className="flex items-start space-x-2 sm:space-x-3 py-2 sm:py-3 border-b border-muted last:border-b-0">
+                <Landmark className="h-4 w-4 sm:h-5 sm:w-5 text-primary mt-1 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Current Semester</p>
                   {isEditingSemester ? (
-                    <div className="flex items-center gap-2 mt-1">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 mt-1">
                       <Select 
                         value={String(editingSemester)} 
                         onValueChange={(value) => setEditingSemester(parseInt(value))}
                       >
-                        <SelectTrigger className="w-32 h-8">
+                        <SelectTrigger className="w-full sm:w-32 h-8 text-xs sm:text-sm">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -1507,16 +1516,18 @@ export default function StudentProfilePage() {
                           ))}
                         </SelectContent>
                       </Select>
-                      <Button size="sm" onClick={handleSemesterSave}>
-                        <Save className="h-3 w-3" />
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={handleSemesterCancel}>
-                        Cancel
-                      </Button>
+                      <div className="flex gap-2 w-full sm:w-auto">
+                        <Button size="sm" onClick={handleSemesterSave} className="flex-1 sm:flex-none text-xs sm:text-sm">
+                          <Save className="h-3 w-3" />
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={handleSemesterCancel} className="flex-1 sm:flex-none text-xs sm:text-sm">
+                          Cancel
+                        </Button>
+                      </div>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-2">
-                      <p className="text-md text-foreground">Semester {student.currentSemester}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <p className="text-sm sm:text-base text-foreground">Semester {student.currentSemester}</p>
                       <Button size="sm" variant="ghost" onClick={handleSemesterEdit}>
                         <Edit className="h-3 w-3" />
                       </Button>

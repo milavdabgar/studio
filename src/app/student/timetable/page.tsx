@@ -344,49 +344,63 @@ export default function StudentTimetablePage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div className="container mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
+      {/* Header - Mobile Optimized */}
+      <div className="flex flex-col gap-3 sm:gap-4">
         <div>
-          <h1 className="text-3xl font-bold">My Timetable</h1>
-          <p className="text-gray-600">
+          <h1 className="text-2xl sm:text-3xl font-bold">My Timetable</h1>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
             {studentTimetable ? `${studentTimetable.academicYear} Semester ${studentTimetable.semester}` : 'Loading...'}
-            {studentTimetable && ` • Version: ${studentTimetable.version}`}
+            {studentTimetable && (
+              <span className="hidden sm:inline"> • Version: {studentTimetable.version}</span>
+            )}
           </p>
+          {studentTimetable && (
+            <p className="text-xs text-gray-500 dark:text-gray-500 sm:hidden mt-1">
+              Version: {studentTimetable.version}
+            </p>
+          )}
         </div>
         
-        <div className="flex flex-wrap gap-2">
-          <RealtimeStatus showLabel onReconnect={reconnect} />
+        {/* Mobile-friendly controls */}
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 flex-wrap">
+            <RealtimeStatus showLabel onReconnect={reconnect} />
+            
+            <Select value={selectedWeek} onValueChange={setSelectedWeek}>
+              <SelectTrigger className="w-32 sm:w-40 text-xs sm:text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="current">Current Week</SelectItem>
+                <SelectItem value="next">Next Week</SelectItem>
+                <SelectItem value="semester">Full Semester</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           
-          <Select value={selectedWeek} onValueChange={setSelectedWeek}>
-            <SelectTrigger className="w-40">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="current">Current Week</SelectItem>
-              <SelectItem value="next">Next Week</SelectItem>
-              <SelectItem value="semester">Full Semester</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Button variant="outline" onClick={() => exportTimetable('pdf')}>
-            <Download className="h-4 w-4 mr-2" />
-            Export PDF
-          </Button>
-          
-          <Button variant="outline" onClick={shareTimeTable}>
-            <Share2 className="h-4 w-4 mr-2" />
-            Share
-          </Button>
+          <div className="flex gap-2 flex-wrap">
+            <Button variant="outline" size="sm" onClick={() => exportTimetable('pdf')} className="flex-1 sm:flex-none text-xs sm:text-sm">
+              <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Export </span>PDF
+            </Button>
+            
+            <Button variant="outline" size="sm" onClick={shareTimeTable} className="flex-1 sm:flex-none text-xs sm:text-sm">
+              <Share2 className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              Share
+            </Button>
 
-          <Button 
-            variant="outline" 
-            onClick={fetchStudentData}
-            disabled={isLoading}
-          >
-            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={fetchStudentData}
+              disabled={isLoading}
+              className="flex-1 sm:flex-none text-xs sm:text-sm"
+            >
+              <RefreshCw className={`h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -407,171 +421,180 @@ export default function StudentTimetablePage() {
 
       {studentTimetable && enrichedEntries.length > 0 ? (
         <>
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {/* Stats Cards - Mobile Optimized */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
             <Card>
-              <CardContent className="p-4">
+              <CardContent className="p-3 sm:p-4">
                 <div className="flex items-center gap-2">
-                  <BookOpen className="h-5 w-5 text-blue-500" />
-                  <div>
-                    <p className="text-sm text-gray-600">Total Subjects</p>
-                    <p className="text-2xl font-bold">{stats.totalSubjects}</p>
+                  <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">Subjects</p>
+                    <p className="text-lg sm:text-2xl font-bold">{stats.totalSubjects}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
             
             <Card>
-              <CardContent className="p-4">
+              <CardContent className="p-3 sm:p-4">
                 <div className="flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-green-500" />
-                  <div>
-                    <p className="text-sm text-gray-600">Weekly Hours</p>
-                    <p className="text-2xl font-bold">{stats.weeklyHours}</p>
+                  <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-green-500 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">Hours/Week</p>
+                    <p className="text-lg sm:text-2xl font-bold">{stats.weeklyHours}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
             
             <Card>
-              <CardContent className="p-4">
+              <CardContent className="p-3 sm:p-4">
                 <div className="flex items-center gap-2">
-                  <User className="h-5 w-5 text-purple-500" />
-                  <div>
-                    <p className="text-sm text-gray-600">Faculty</p>
-                    <p className="text-2xl font-bold">{stats.totalFaculty}</p>
+                  <User className="h-4 w-4 sm:h-5 sm:w-5 text-purple-500 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">Faculty</p>
+                    <p className="text-lg sm:text-2xl font-bold">{stats.totalFaculty}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
             
             <Card>
-              <CardContent className="p-4">
+              <CardContent className="p-3 sm:p-4">
                 <div className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-orange-500" />
-                  <div>
-                    <p className="text-sm text-gray-600">Days/Week</p>
-                    <p className="text-2xl font-bold">{stats.activeDays}</p>
+                  <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-orange-500 flex-shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">Days/Week</p>
+                    <p className="text-lg sm:text-2xl font-bold">{stats.activeDays}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Upcoming Classes */}
+          {/* Upcoming Classes - Mobile Optimized */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Bell className="h-5 w-5" />
+            <CardHeader className="pb-3 sm:pb-6">
+              <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
                 Upcoming Classes
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {getUpcomingClasses().map((entry, index) => (
-                  <div key={index} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-semibold">{entry.courseName}</h4>
-                      <Badge variant="outline">{entry.entryType}</Badge>
+                  <div key={index} className="border rounded-lg p-3 sm:p-4 hover:shadow-md transition-shadow">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-2 gap-2 sm:gap-0">
+                      <h4 className="font-semibold text-sm sm:text-base truncate flex-1">{entry.courseName}</h4>
+                      <Badge variant="outline" className="text-xs self-start sm:self-auto">{entry.entryType}</Badge>
                     </div>
-                    <div className="space-y-1 text-sm text-gray-600">
+                    <div className="space-y-1 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                       <div className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        {entry.dayOfWeek}
+                        <Calendar className="h-3 w-3 flex-shrink-0" />
+                        <span className="truncate">{entry.dayOfWeek}</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        {entry.startTime} - {entry.endTime}
+                        <Clock className="h-3 w-3 flex-shrink-0" />
+                        <span className="truncate">{entry.startTime} - {entry.endTime}</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        {entry.roomNumber}
+                        <MapPin className="h-3 w-3 flex-shrink-0" />
+                        <span className="truncate">{entry.roomNumber}</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <User className="h-3 w-3" />
-                        {entry.facultyName}
+                        <User className="h-3 w-3 flex-shrink-0" />
+                        <span className="truncate">{entry.facultyName}</span>
                       </div>
                     </div>
                   </div>
                 ))}
                 {getUpcomingClasses().length === 0 && (
-                  <div className="col-span-3 text-center py-8 text-gray-500">
-                    No upcoming classes for today
+                  <div className="col-span-full text-center py-6 sm:py-8 text-gray-500 dark:text-gray-400">
+                    <Clock className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm sm:text-base">No upcoming classes for today</p>
                   </div>
                 )}
               </div>
             </CardContent>
           </Card>
 
-          {/* Main Timetable */}
+          {/* Main Timetable - Mobile Optimized */}
           <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as any)}>
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <TabsList>
-                <TabsTrigger value="weekly">Weekly View</TabsTrigger>
-                <TabsTrigger value="daily">Daily View</TabsTrigger>
-                <TabsTrigger value="list">List View</TabsTrigger>
-              </TabsList>
-              
-              <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4" />
-                <Select value={filterSubject} onValueChange={setFilterSubject}>
-                  <SelectTrigger className="w-48">
-                    <SelectValue placeholder="Filter by subject" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Subjects</SelectItem>
-                    {getUniqueSubjects().map((subject) => (
-                      <SelectItem key={subject.id} value={subject.id}>
-                        {subject.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+            <div className="flex flex-col gap-3 sm:gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                <TabsList className="grid w-full grid-cols-3 sm:w-auto sm:flex">
+                  <TabsTrigger value="weekly" className="text-xs sm:text-sm">Weekly</TabsTrigger>
+                  <TabsTrigger value="daily" className="text-xs sm:text-sm">Daily</TabsTrigger>
+                  <TabsTrigger value="list" className="text-xs sm:text-sm">List</TabsTrigger>
+                </TabsList>
+                
+                <div className="flex items-center gap-2">
+                  <Filter className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                  <Select value={filterSubject} onValueChange={setFilterSubject}>
+                    <SelectTrigger className="w-full sm:w-48 text-xs sm:text-sm">
+                      <SelectValue placeholder="Filter by subject" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Subjects</SelectItem>
+                      {getUniqueSubjects().map((subject) => (
+                        <SelectItem key={subject.id} value={subject.id}>
+                          {subject.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
 
-            <TabsContent value="weekly" className="mt-6">
+            <TabsContent value="weekly" className="mt-4 sm:mt-6">
               <Card>
                 <CardContent className="p-0">
                   <div className="overflow-x-auto">
-                    <Table className="min-w-full border dark:border-gray-700">
+                    <Table className="min-w-[700px] border dark:border-gray-700">
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="border w-28 dark:border-gray-700">Time</TableHead>
+                          <TableHead className="border w-16 sm:w-28 dark:border-gray-700 text-xs sm:text-sm">Time</TableHead>
                           {DAYS_OF_WEEK.map(day => (
-                            <TableHead key={day} className="border text-center dark:border-gray-700">{day}</TableHead>
+                            <TableHead key={day} className="border text-center dark:border-gray-700 text-xs sm:text-sm min-w-[80px] sm:min-w-[120px]">
+                              <span className="hidden sm:inline">{day}</span>
+                              <span className="sm:hidden">{day.substring(0, 3)}</span>
+                            </TableHead>
                           ))}
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {TIME_SLOTS.map((slot, slotIndex) => (
                           <TableRow key={slot}>
-                            <TableCell className="border font-medium dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-                              {slot}
+                            <TableCell className="border font-medium dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-xs sm:text-sm">
+                              <div className="writing-vertical-rl sm:writing-horizontal-tb text-center sm:text-left">
+                                <span className="hidden sm:inline">{slot}</span>
+                                <span className="sm:hidden text-[10px] leading-tight">{slot.split('-')[0]}</span>
+                              </div>
                             </TableCell>
                             {DAYS_OF_WEEK.map((day, dayIndex) => {
                               const entry = timetableGrid[slotIndex]?.[dayIndex];
                               const isFiltered = filterSubject !== 'all' && entry && entry.courseId !== filterSubject;
                               
                               return (
-                                <TableCell key={`${day}-${slot}`} className="border p-2 h-20 align-top dark:border-gray-700">
+                                <TableCell key={`${day}-${slot}`} className="border p-1 sm:p-2 h-16 sm:h-20 align-top dark:border-gray-700">
                                   {entry && !isFiltered && (
-                                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 h-full flex flex-col justify-between dark:bg-blue-900/20 dark:border-blue-700">
-                                      <div>
-                                        <p className="font-semibold text-sm text-blue-900 dark:text-blue-100 truncate">
+                                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-1 sm:p-2 h-full flex flex-col justify-between dark:bg-blue-900/20 dark:border-blue-700">
+                                      <div className="flex-1 min-h-0">
+                                        <p className="font-semibold text-[10px] sm:text-sm text-blue-900 dark:text-blue-100 truncate leading-tight">
                                           {entry.courseName}
                                         </p>
-                                        <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
+                                        <p className="text-[8px] sm:text-xs text-blue-700 dark:text-blue-300 mt-0.5 sm:mt-1 truncate">
                                           {entry.entryType}
                                         </p>
                                       </div>
-                                      <div className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
-                                        <div className="flex items-center gap-1">
-                                          <MapPin className="h-3 w-3" />
+                                      <div className="text-[8px] sm:text-xs text-gray-600 dark:text-gray-400 space-y-0.5 sm:space-y-1 mt-1">
+                                        <div className="flex items-center gap-0.5 sm:gap-1">
+                                          <MapPin className="h-2 w-2 sm:h-3 sm:w-3 flex-shrink-0" />
                                           <span className="truncate">{entry.roomNumber}</span>
                                         </div>
-                                        <div className="flex items-center gap-1">
-                                          <User className="h-3 w-3" />
+                                        <div className="flex items-center gap-0.5 sm:gap-1 hidden sm:flex">
+                                          <User className="h-2 w-2 sm:h-3 sm:w-3 flex-shrink-0" />
                                           <span className="truncate">{entry.facultyName}</span>
                                         </div>
                                       </div>
@@ -585,39 +608,46 @@ export default function StudentTimetablePage() {
                       </TableBody>
                     </Table>
                   </div>
+                  {/* Mobile scroll hint */}
+                  <div className="sm:hidden text-center py-2 text-xs text-gray-500 border-t">
+                    ← Swipe to scroll horizontally →
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
 
-            <TabsContent value="daily" className="mt-6">
-              <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
+            <TabsContent value="daily" className="mt-4 sm:mt-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-3 sm:gap-4">
                 {DAYS_OF_WEEK.map((day) => (
                   <Card key={day}>
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-lg text-center">{day}</CardTitle>
+                    <CardHeader className="pb-2 sm:pb-3">
+                      <CardTitle className="text-sm sm:text-lg text-center">
+                        <span className="hidden sm:inline">{day}</span>
+                        <span className="sm:hidden">{day.substring(0, 3)}</span>
+                      </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2">
                       {filteredEntries
                         .filter(entry => entry.dayOfWeek === day)
                         .sort((a, b) => a.startTime.localeCompare(b.startTime))
                         .map((entry, index) => (
-                          <div key={index} className="bg-blue-50 border border-blue-200 rounded-lg p-3 dark:bg-blue-900/20 dark:border-blue-700">
-                            <div className="font-semibold text-sm text-blue-900 dark:text-blue-100">
+                          <div key={index} className="bg-blue-50 border border-blue-200 rounded-lg p-2 sm:p-3 dark:bg-blue-900/20 dark:border-blue-700">
+                            <div className="font-semibold text-xs sm:text-sm text-blue-900 dark:text-blue-100 truncate">
                               {entry.courseName}
                             </div>
-                            <div className="text-xs text-blue-700 dark:text-blue-300 mt-1">
+                            <div className="text-[10px] sm:text-xs text-blue-700 dark:text-blue-300 mt-1">
                               {entry.startTime} - {entry.endTime}
                             </div>
-                            <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                            <div className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-400 mt-1 truncate">
                               {entry.roomNumber} • {entry.facultyName}
                             </div>
-                            <Badge variant="outline" className="mt-2 text-xs">
+                            <Badge variant="outline" className="mt-1 sm:mt-2 text-[8px] sm:text-xs px-1 sm:px-2 py-0.5">
                               {entry.entryType}
                             </Badge>
                           </div>
                         ))}
                       {filteredEntries.filter(entry => entry.dayOfWeek === day).length === 0 && (
-                        <div className="text-center py-4 text-gray-500 text-sm">
+                        <div className="text-center py-3 sm:py-4 text-gray-500 text-xs sm:text-sm">
                           No classes
                         </div>
                       )}
@@ -627,7 +657,7 @@ export default function StudentTimetablePage() {
               </div>
             </TabsContent>
 
-            <TabsContent value="list" className="mt-6">
+            <TabsContent value="list" className="mt-4 sm:mt-6">
               <Card>
                 <CardContent className="p-0">
                   <div className="divide-y">
@@ -638,38 +668,42 @@ export default function StudentTimetablePage() {
                         return a.startTime.localeCompare(b.startTime);
                       })
                       .map((entry, index) => (
-                        <div key={index} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-3">
-                                <h4 className="font-semibold">{entry.courseName}</h4>
-                                <Badge variant="outline">{entry.entryType}</Badge>
+                        <div key={index} className="p-3 sm:p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                          <div className="flex flex-col gap-2 sm:gap-3">
+                            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                                  <h4 className="font-semibold text-sm sm:text-base truncate">{entry.courseName}</h4>
+                                  <Badge variant="outline" className="text-xs self-start sm:self-auto">{entry.entryType}</Badge>
+                                </div>
                               </div>
-                              <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-600 dark:text-gray-400">
-                                <div className="flex items-center gap-1">
-                                  <Calendar className="h-4 w-4" />
-                                  {entry.dayOfWeek}
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <Clock className="h-4 w-4" />
-                                  {entry.startTime} - {entry.endTime}
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <MapPin className="h-4 w-4" />
-                                  {entry.roomNumber}
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <User className="h-4 w-4" />
-                                  {entry.facultyName}
-                                </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                              <div className="flex items-center gap-1">
+                                <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                                <span className="truncate">{entry.dayOfWeek}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Clock className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                                <span className="truncate">{entry.startTime} - {entry.endTime}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <MapPin className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                                <span className="truncate">{entry.roomNumber}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <User className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                                <span className="truncate">{entry.facultyName}</span>
                               </div>
                             </div>
                           </div>
                         </div>
                       ))}
                     {filteredEntries.length === 0 && (
-                      <div className="text-center py-8 text-gray-500">
-                        No classes match the current filter
+                      <div className="text-center py-6 sm:py-8 text-gray-500">
+                        <AlertCircle className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                        <p className="text-sm sm:text-base">No classes match the current filter</p>
                       </div>
                     )}
                   </div>

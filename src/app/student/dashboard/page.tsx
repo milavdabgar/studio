@@ -294,89 +294,107 @@ export default function StudentDashboard() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6 rounded-lg">
-        <h1 className="text-2xl font-bold mb-2">
+    <div className="space-y-4 sm:space-y-6 px-2 sm:px-0">
+      {/* Welcome Header - Mobile Optimized */}
+      <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 sm:p-6 rounded-lg">
+        <h1 className="text-xl sm:text-2xl font-bold mb-2 leading-tight">
           Welcome back, {studentProfile?.firstName || user?.name}! 👋
         </h1>
-        <p className="text-blue-100">
-          {studentProfile?.studentId && `Student ID: ${studentProfile.studentId} • `}
-          {studentProfile?.programName && `${studentProfile.programName} • `}
-          {studentProfile?.batchName && `Batch: ${studentProfile.batchName}`}
-        </p>
+        <div className="text-blue-100 text-sm sm:text-base">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-0">
+            {studentProfile?.studentId && (
+              <span className="block sm:inline">Student ID: {studentProfile.studentId}</span>
+            )}
+            {studentProfile?.programName && (
+              <span className="block sm:inline">
+                {studentProfile?.studentId && <span className="hidden sm:inline"> • </span>}
+                {studentProfile.programName}
+              </span>
+            )}
+            {studentProfile?.batchName && (
+              <span className="block sm:inline">
+                {(studentProfile?.studentId || studentProfile?.programName) && <span className="hidden sm:inline"> • </span>}
+                Batch: {studentProfile.batchName}
+              </span>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Stats Overview - Mobile Optimized */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 sm:p-4">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Current CPI</p>
-                <p className="text-2xl font-bold">{stats.currentCPI.toFixed(2)}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm text-muted-foreground truncate">Current CPI</p>
+                <p className="text-lg sm:text-2xl font-bold">{stats.currentCPI.toFixed(2)}</p>
               </div>
-              <GraduationCap className="h-8 w-8 text-blue-500" />
+              <GraduationCap className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500 flex-shrink-0" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 sm:p-4">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Course Progress</p>
-                <p className="text-2xl font-bold">{stats.totalCourses}</p>
-                <p className="text-xs text-muted-foreground">Enrolled Courses</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm text-muted-foreground truncate">Courses</p>
+                <p className="text-lg sm:text-2xl font-bold">{stats.totalCourses}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground truncate">Enrolled</p>
               </div>
-              <BookOpen className="h-8 w-8 text-green-500" />
+              <BookOpen className="h-6 w-6 sm:h-8 sm:w-8 text-green-500 flex-shrink-0" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 sm:p-4">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Assessments</p>
-                <p className="text-2xl font-bold">{stats.completedAssessments}</p>
-                <p className="text-xs text-muted-foreground">{stats.pendingAssessments} pending</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm text-muted-foreground truncate">Assessments</p>
+                <p className="text-lg sm:text-2xl font-bold">{stats.completedAssessments}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{stats.pendingAssessments} pending</p>
               </div>
-              <FileText className="h-8 w-8 text-orange-500" />
+              <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-orange-500 flex-shrink-0" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 sm:p-4">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Average Score</p>
-                <p className="text-2xl font-bold">{stats.averageGrade.toFixed(1)}%</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm text-muted-foreground truncate">Avg Score</p>
+                <p className="text-lg sm:text-2xl font-bold">{stats.averageGrade.toFixed(1)}%</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-purple-500" />
+              <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-purple-500 flex-shrink-0" />
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Quick Actions */}
+      {/* Quick Actions - Mobile Optimized */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Target className="h-5 w-5" />
+        <CardHeader className="pb-3 sm:pb-6">
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <Target className="h-4 w-4 sm:h-5 sm:w-5" />
             Quick Actions
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {quickActions.map((action, index) => (
-              <Button key={index} variant={action.variant} className="h-auto p-4" asChild>
-                <Link href={action.href} className="flex flex-col items-center text-center space-y-2">
-                  {action.icon}
-                  <div>
-                    <div className="font-medium">{action.title}</div>
-                    <div className="text-xs opacity-70">{action.description}</div>
+              <Button key={index} variant={action.variant} className="h-auto p-3 sm:p-4 min-h-[80px] sm:min-h-[100px]" asChild>
+                <Link href={action.href} className="flex flex-col items-center text-center space-y-1 sm:space-y-2">
+                  <div className="flex-shrink-0">
+                    {React.cloneElement(action.icon as React.ReactElement, { 
+                      className: "h-5 w-5 sm:h-6 sm:w-6" 
+                    })}
+                  </div>
+                  <div className="flex-1 flex flex-col justify-center">
+                    <div className="font-medium text-xs sm:text-sm leading-tight">{action.title}</div>
+                    <div className="text-[10px] sm:text-xs opacity-70 mt-1 leading-tight">{action.description}</div>
                   </div>
                 </Link>
               </Button>
@@ -385,7 +403,7 @@ export default function StudentDashboard() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Real-Time Assessment Notifications */}
         {user?.id && (
           <RealTimeAssessmentNotifications 
@@ -409,30 +427,30 @@ export default function StudentDashboard() {
             {upcomingDeadlines.length === 0 ? (
               <div className="text-center py-6 text-muted-foreground">
                 <CheckCircle className="h-8 w-8 mx-auto mb-2" />
-                <p>No upcoming deadlines!</p>
+                <p className="text-sm sm:text-base">No upcoming deadlines!</p>
               </div>
             ) : (
               <div className="space-y-3">
                 {upcomingDeadlines.map(deadline => (
-                  <div key={deadline.id} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex-1">
-                      <p className="font-medium text-sm">{deadline.title}</p>
-                      <p className="text-xs text-muted-foreground">{deadline.courseName}</p>
+                  <div key={deadline.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 border rounded-lg space-y-2 sm:space-y-0">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{deadline.title}</p>
+                      <p className="text-xs text-muted-foreground truncate">{deadline.courseName}</p>
                       <p className="text-xs text-muted-foreground">
                         {format(parseISO(deadline.dueDate), "MMM dd, yyyy 'at' h:mm a")}
                       </p>
                     </div>
-                    <div className="text-right">
-                      <Badge variant={deadline.daysLeft <= 1 ? "destructive" : deadline.daysLeft <= 3 ? "outline" : "secondary"}>
+                    <div className="flex flex-row sm:flex-col items-start sm:items-end sm:text-right gap-2 sm:gap-1">
+                      <Badge variant={deadline.daysLeft <= 1 ? "destructive" : deadline.daysLeft <= 3 ? "outline" : "secondary"} className="text-xs">
                         {deadline.daysLeft === 0 ? "Due Today" : 
                          deadline.daysLeft === 1 ? "1 day left" : 
                          `${deadline.daysLeft} days left`}
                       </Badge>
-                      <p className="text-xs text-muted-foreground mt-1">{deadline.type}</p>
+                      <p className="text-xs text-muted-foreground">{deadline.type}</p>
                     </div>
                   </div>
                 ))}
-                <Button variant="outline" size="sm" className="w-full" asChild>
+                <Button variant="outline" size="sm" className="w-full text-xs sm:text-sm" asChild>
                   <Link href="/student/assessments">
                     View All Assessments <ChevronRight className="h-3 w-3 ml-1" />
                   </Link>
@@ -457,25 +475,27 @@ export default function StudentDashboard() {
             {recentMaterials.length === 0 ? (
               <div className="text-center py-6 text-muted-foreground">
                 <FileText className="h-8 w-8 mx-auto mb-2" />
-                <p>No recent materials</p>
+                <p className="text-sm sm:text-base">No recent materials</p>
               </div>
             ) : (
               <div className="space-y-3">
                 {recentMaterials.map(material => (
-                  <div key={material.id} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex-1">
-                      <p className="font-medium text-sm">{material.title}</p>
-                      <p className="text-xs text-muted-foreground">{material.courseName}</p>
+                  <div key={material.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 border rounded-lg space-y-2 sm:space-y-0">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{material.title}</p>
+                      <p className="text-xs text-muted-foreground truncate">{material.courseName}</p>
                       <p className="text-xs text-muted-foreground">
                         Added {format(parseISO(material.uploadDate), "MMM dd, yyyy")}
                       </p>
                     </div>
-                    <Badge variant="outline" className="text-xs">
-                      {material.type}
-                    </Badge>
+                    <div className="flex-shrink-0">
+                      <Badge variant="outline" className="text-xs">
+                        {material.type}
+                      </Badge>
+                    </div>
                   </div>
                 ))}
-                <Button variant="outline" size="sm" className="w-full" asChild>
+                <Button variant="outline" size="sm" className="w-full text-xs sm:text-sm" asChild>
                   <Link href="/student/resources">
                     View All Resources <ChevronRight className="h-3 w-3 ml-1" />
                   </Link>
@@ -486,45 +506,45 @@ export default function StudentDashboard() {
         </Card>
       </div>
 
-      {/* Academic Progress */}
+      {/* Academic Progress - Mobile Optimized */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Award className="h-5 w-5" />
+        <CardHeader className="pb-3 sm:pb-6">
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <Award className="h-4 w-4 sm:h-5 sm:w-5" />
             Academic Progress
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-3">
             <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Credits Completed</span>
-                <span>{stats.creditsCompleted}/{stats.totalCredits}</span>
+              <div className="flex justify-between text-xs sm:text-sm">
+                <span className="truncate">Credits Completed</span>
+                <span className="flex-shrink-0 ml-2">{stats.creditsCompleted}/{stats.totalCredits}</span>
               </div>
-              <Progress value={(stats.creditsCompleted / stats.totalCredits) * 100} />
-              <p className="text-xs text-muted-foreground">
+              <Progress value={(stats.creditsCompleted / stats.totalCredits) * 100} className="h-2" />
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
                 {((stats.creditsCompleted / stats.totalCredits) * 100).toFixed(1)}% towards graduation
               </p>
             </div>
             
             <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Assessment Completion</span>
-                <span>{stats.completedAssessments}/{stats.completedAssessments + stats.pendingAssessments}</span>
+              <div className="flex justify-between text-xs sm:text-sm">
+                <span className="truncate">Assessment Completion</span>
+                <span className="flex-shrink-0 ml-2">{stats.completedAssessments}/{stats.completedAssessments + stats.pendingAssessments}</span>
               </div>
-              <Progress value={(stats.completedAssessments / Math.max(stats.completedAssessments + stats.pendingAssessments, 1)) * 100} />
-              <p className="text-xs text-muted-foreground">
+              <Progress value={(stats.completedAssessments / Math.max(stats.completedAssessments + stats.pendingAssessments, 1)) * 100} className="h-2" />
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
                 {((stats.completedAssessments / Math.max(stats.completedAssessments + stats.pendingAssessments, 1)) * 100).toFixed(1)}% assessments completed
               </p>
             </div>
             
             <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Attendance</span>
-                <span>{stats.attendancePercentage}%</span>
+              <div className="flex justify-between text-xs sm:text-sm">
+                <span className="truncate">Attendance</span>
+                <span className="flex-shrink-0 ml-2">{stats.attendancePercentage}%</span>
               </div>
-              <Progress value={stats.attendancePercentage} />
-              <p className="text-xs text-muted-foreground">
+              <Progress value={stats.attendancePercentage} className="h-2" />
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
                 {stats.attendancePercentage >= 75 ? "Meeting requirements" : "Below minimum requirement"}
               </p>
             </div>

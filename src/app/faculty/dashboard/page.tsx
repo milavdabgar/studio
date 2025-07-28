@@ -124,12 +124,12 @@ export default function FacultyDashboardPage({}: FacultyDashboardPageProps) {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-          <div className="grid grid-cols-4 gap-4">
+      <div className="container mx-auto p-3 sm:p-4 md:p-6">
+        <div className="animate-pulse space-y-4 sm:space-y-6">
+          <div className="h-6 sm:h-8 bg-gray-200 rounded w-2/3 sm:w-1/3"></div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-24 bg-gray-200 rounded"></div>
+              <div key={i} className="h-16 sm:h-24 bg-gray-200 rounded"></div>
             ))}
           </div>
         </div>
@@ -139,12 +139,12 @@ export default function FacultyDashboardPage({}: FacultyDashboardPageProps) {
 
   if (!facultyData) {
     return (
-      <div className="container mx-auto p-6">
+      <div className="container mx-auto p-3 sm:p-4 md:p-6">
         <Card>
-          <CardContent className="text-center py-12">
-            <AlertTriangle className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No Data Available</h3>
-            <p className="text-gray-600">Could not load your dashboard data. Please try again later.</p>
+          <CardContent className="text-center py-8 sm:py-12">
+            <AlertTriangle className="mx-auto h-8 w-8 sm:h-12 sm:w-12 text-gray-400 mb-4" />
+            <h3 className="text-base sm:text-lg font-semibold mb-2">No Data Available</h3>
+            <p className="text-gray-600 text-sm sm:text-base px-4">Could not load your dashboard data. Please try again later.</p>
           </CardContent>
         </Card>
       </div>
@@ -223,7 +223,8 @@ export default function FacultyDashboardPage({}: FacultyDashboardPageProps) {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-orange-500" />
-              <div className="p">Workload</p>
+              <div>
+                <p>Workload</p>
                 <div className="flex items-center gap-2">
                   <Progress value={utilizationPercentage} className="flex-1 h-2" />
                   <span className="text-sm font-medium">{Math.round(utilizationPercentage)}%</span>
@@ -312,12 +313,12 @@ export default function FacultyDashboardPage({}: FacultyDashboardPageProps) {
         </CardContent>
       </Card>
 
-      <Tabs defaultValue="schedule" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="schedule">Weekly Schedule</TabsTrigger>
-          <TabsTrigger value="workload">Workload Analysis</TabsTrigger>
-          <TabsTrigger value="upcoming">Upcoming Classes</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+      <Tabs defaultValue="schedule" className="space-y-3 sm:space-y-4">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
+          <TabsTrigger value="schedule" className="text-xs sm:text-sm">Schedule</TabsTrigger>
+          <TabsTrigger value="workload" className="text-xs sm:text-sm">Workload</TabsTrigger>
+          <TabsTrigger value="upcoming" className="text-xs sm:text-sm">Upcoming</TabsTrigger>
+          <TabsTrigger value="analytics" className="text-xs sm:text-sm">Analytics</TabsTrigger>
         </TabsList>
 
         <TabsContent value="schedule">
@@ -328,10 +329,13 @@ export default function FacultyDashboardPage({}: FacultyDashboardPageProps) {
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
-                <div className="grid grid-cols-8 gap-1 min-w-[800px]">
-                  <div className="p-2 font-semibold">Time</div>
+                <div className="grid grid-cols-8 gap-1 min-w-[600px] sm:min-w-[800px]">
+                  <div className="p-1 sm:p-2 font-semibold text-xs sm:text-sm">Time</div>
                   {daysOfWeek.map((day) => (
-                    <div key={day} className="p-2 font-semibold text-center">{day}</div>
+                    <div key={day} className="p-1 sm:p-2 font-semibold text-center text-xs sm:text-sm">
+                      <span className="hidden sm:inline">{day}</span>
+                      <span className="sm:hidden">{day.slice(0, 3)}</span>
+                    </div>
                   ))}
                   
                   {[...Array(10)].map((_, timeIndex) => {
@@ -340,7 +344,7 @@ export default function FacultyDashboardPage({}: FacultyDashboardPageProps) {
                     
                     return (
                       <React.Fragment key={timeSlot}>
-                        <div className="p-2 text-sm font-medium bg-gray-50 border-r">
+                        <div className="p-1 sm:p-2 text-xs sm:text-sm font-medium bg-gray-50 border-r">
                           {timeSlot}
                         </div>
                         {daysOfWeek.map((day) => {
@@ -349,12 +353,12 @@ export default function FacultyDashboardPage({}: FacultyDashboardPageProps) {
                             .find(e => e.dayOfWeek === day && e.startTime === timeSlot);
                           
                           return (
-                            <div key={`${day}-${timeSlot}`} className="p-1 border min-h-[60px]">
+                            <div key={`${day}-${timeSlot}`} className="p-0.5 sm:p-1 border min-h-[50px] sm:min-h-[60px]">
                               {entry && (
-                                <div className="bg-blue-50 border border-blue-200 rounded p-2 text-xs">
-                                  <div className="font-semibold text-blue-900">{entry.courseId}</div>
-                                  <div className="text-blue-700">{entry.roomId}</div>
-                                  <div className="text-gray-600">{entry.entryType}</div>
+                                <div className="bg-blue-50 border border-blue-200 rounded p-1 sm:p-2 text-xs">
+                                  <div className="font-semibold text-blue-900 truncate">{entry.courseId}</div>
+                                  <div className="text-blue-700 truncate">{entry.roomId}</div>
+                                  <div className="text-gray-600 text-[10px] sm:text-xs truncate">{entry.entryType}</div>
                                 </div>
                               )}
                             </div>
@@ -370,47 +374,47 @@ export default function FacultyDashboardPage({}: FacultyDashboardPageProps) {
         </TabsContent>
 
         <TabsContent value="workload">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5" />
+                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                  <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5" />
                   Workload Distribution
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {facultyData.workloadAnalysis && (
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     <div>
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium">Current Hours</span>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-xs sm:text-sm font-medium">Current Hours</span>
+                        <span className="text-xs sm:text-sm text-gray-600">
                           {facultyData.workloadAnalysis.currentHours} / {facultyData.workloadAnalysis.maxHours}
                         </span>
                       </div>
-                      <Progress value={utilizationPercentage} className="h-3" />
+                      <Progress value={utilizationPercentage} className="h-2 sm:h-3" />
                       <div className="text-xs text-gray-500 mt-1">
                         {utilizationPercentage > 90 ? 'Overloaded' : 
                          utilizationPercentage > 70 ? 'Well Utilized' : 'Under Utilized'}
                       </div>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+                    <div className="grid grid-cols-2 gap-2 sm:gap-4 pt-3 sm:pt-4 border-t">
                       <div>
-                        <p className="text-sm text-gray-600">Lecture Hours</p>
-                        <p className="text-lg font-semibold">{facultyData.workloadAnalysis.lectureHours}</p>
+                        <p className="text-xs sm:text-sm text-gray-600">Lecture Hours</p>
+                        <p className="text-base sm:text-lg font-semibold">{facultyData.workloadAnalysis.lectureHours}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">Lab Hours</p>
-                        <p className="text-lg font-semibold">{facultyData.workloadAnalysis.labHours}</p>
+                        <p className="text-xs sm:text-sm text-gray-600">Lab Hours</p>
+                        <p className="text-base sm:text-lg font-semibold">{facultyData.workloadAnalysis.labHours}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">Tutorial Hours</p>
-                        <p className="text-lg font-semibold">{facultyData.workloadAnalysis.tutorialHours}</p>
+                        <p className="text-xs sm:text-sm text-gray-600">Tutorial Hours</p>
+                        <p className="text-base sm:text-lg font-semibold">{facultyData.workloadAnalysis.tutorialHours}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">Avg Daily Hours</p>
-                        <p className="text-lg font-semibold">
+                        <p className="text-xs sm:text-sm text-gray-600">Avg Daily Hours</p>
+                        <p className="text-base sm:text-lg font-semibold">
                           {(facultyData.workloadAnalysis.currentHours / 6).toFixed(1)}
                         </p>
                       </div>

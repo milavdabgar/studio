@@ -22,6 +22,8 @@ import type { UserRole as UserRoleCode, Role } from '@/types/entities';
 import { roleService } from '@/lib/api/roles'; 
 import { useToast } from '@/hooks/use-toast';
 import NotificationBell from '@/components/notifications/NotificationBell';
+import PWAInstallPrompt from '@/components/pwa-install-prompt';
+import MobileWelcomeBanner from '@/components/mobile-welcome-banner';
 
 
 interface User {
@@ -558,6 +560,8 @@ export default function RootLayout({
               {children}
             </main>            </SidebarInset>
           </SidebarProvider>
+          <MobileWelcomeBanner />
+          <PWAInstallPrompt />
         </ThemeProvider>
         <Toaster />
       </body>

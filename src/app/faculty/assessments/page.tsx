@@ -103,54 +103,55 @@ export default function FacultyAssessmentsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+        <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 md:h-32 md:w-32 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 assessments-section">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Assessments</h1>
-          <p className="text-muted-foreground">
+    <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 lg:py-8 assessments-section">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
+        <div className="w-full sm:w-auto">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight">Assessments</h1>
+          <p className="text-muted-foreground text-sm sm:text-base">
             Manage your course assessments and track student progress
           </p>
         </div>
-        <Link href="/faculty/assessments/create">
-          <Button>
+        <Link href="/faculty/assessments/create" className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto min-h-[44px]">
             <Plus className="mr-2 h-4 w-4" />
-            Create Assessment
+            <span className="hidden sm:inline">Create Assessment</span>
+            <span className="sm:hidden">Create</span>
           </Button>
         </Link>
       </div>
 
       {/* Filters */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Filter className="h-5 w-5" />
+      <Card className="mb-4 sm:mb-6">
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+            <Filter className="h-4 w-4 sm:h-5 sm:w-5" />
             Filters
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <CardContent className="p-4 sm:p-6 pt-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Search</label>
+              <label className="text-xs sm:text-sm font-medium">Search</label>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
                 <Input
                   placeholder="Search assessments..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-8 sm:pl-10 text-sm min-h-[44px]"
                 />
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Status</label>
+              <label className="text-xs sm:text-sm font-medium">Status</label>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger>
+                <SelectTrigger className="min-h-[44px] text-sm">
                   <SelectValue placeholder="All Statuses" />
                 </SelectTrigger>
                 <SelectContent>
@@ -161,10 +162,10 @@ export default function FacultyAssessmentsPage() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Course</label>
+            <div className="space-y-2 sm:col-span-2 md:col-span-1">
+              <label className="text-xs sm:text-sm font-medium">Course</label>
               <Select value={courseFilter} onValueChange={setCourseFilter}>
-                <SelectTrigger>
+                <SelectTrigger className="min-h-[44px] text-sm">
                   <SelectValue placeholder="All Courses" />
                 </SelectTrigger>
                 <SelectContent>
@@ -184,16 +185,16 @@ export default function FacultyAssessmentsPage() {
       {/* Assessments Grid */}
       {filteredAssessments.length === 0 ? (
         <Card className="empty-state">
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <BookOpen className="h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No assessments found</h3>
-            <p className="text-muted-foreground text-center mb-4">
+          <CardContent className="flex flex-col items-center justify-center py-8 sm:py-12 px-4">
+            <BookOpen className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400 mb-4" />
+            <h3 className="text-base sm:text-lg font-semibold mb-2 text-center">No assessments found</h3>
+            <p className="text-muted-foreground text-center mb-4 text-sm sm:text-base">
               {searchTerm || statusFilter !== 'all' || courseFilter !== 'all'
                 ? "No assessments match your current filters."
                 : "You haven't created any assessments yet."}
             </p>
-            <Link href="/faculty/assessments/create">
-              <Button>
+            <Link href="/faculty/assessments/create" className="w-full sm:w-auto">
+              <Button className="w-full sm:w-auto min-h-[44px]">
                 <Plus className="mr-2 h-4 w-4" />
                 Create Your First Assessment
               </Button>
@@ -201,49 +202,50 @@ export default function FacultyAssessmentsPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 assessment-list">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 assessment-list">
           {filteredAssessments.map((assessment) => (
             <Card key={assessment.id} className="hover:shadow-lg transition-shadow assessment-card">
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <div className="space-y-1">
-                    <CardTitle className="text-lg">{assessment.name}</CardTitle>
-                    <CardDescription>{assessment.description}</CardDescription>
+              <CardHeader className="p-4 sm:p-6">
+                <div className="flex justify-between items-start gap-3">
+                  <div className="space-y-1 min-w-0 flex-1">
+                    <CardTitle className="text-base sm:text-lg leading-tight">{assessment.name}</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">{assessment.description}</CardDescription>
                   </div>
-                  <Badge className={`${getStatusColor(assessment.status)} text-white`}>
+                  <Badge className={`${getStatusColor(assessment.status)} text-white text-xs flex-shrink-0`}>
                     {assessment.status}
                   </Badge>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <BookOpen className="h-4 w-4" />
-                    <span>{assessment.courseName || `Course ${assessment.courseId}`}</span>
+              <CardContent className="p-4 sm:p-6 pt-0">
+                <div className="space-y-2 sm:space-y-3">
+                  <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                    <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                    <span className="truncate">{assessment.courseName || `Course ${assessment.courseId}`}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="h-4 w-4" />
+                  <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                    <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                     <span>Due: {formatDate(assessment.dueDate)}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Clock className="h-4 w-4" />
+                  <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                    <Clock className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                     <span>Max Marks: {assessment.maxMarks}</span>
                   </div>
                   {assessment.submissions !== undefined && assessment.totalStudents && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Users className="h-4 w-4" />
+                    <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                      <Users className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                       <span>Submissions: {assessment.submissions}/{assessment.totalStudents}</span>
                     </div>
                   )}
-                  <div className="pt-3 border-t">
+                  <div className="pt-2 sm:pt-3 border-t">
                     <div className="flex gap-2">
                       <Link href={`/faculty/assessments/${assessment.id}`} className="flex-1">
-                        <Button variant="outline" size="sm" className="w-full">
-                          View Details
+                        <Button variant="outline" size="sm" className="w-full min-h-[44px] text-xs sm:text-sm">
+                          <span className="hidden sm:inline">View Details</span>
+                          <span className="sm:hidden">View</span>
                         </Button>
                       </Link>
                       <Link href={`/faculty/assessments/grade?assessmentId=${assessment.id}`} className="flex-1">
-                        <Button size="sm" className="w-full">
+                        <Button size="sm" className="w-full min-h-[44px] text-xs sm:text-sm">
                           Grade
                         </Button>
                       </Link>
