@@ -1102,6 +1102,524 @@ export interface Timetable {
     entries: TimetableEntry[];
     createdAt?: Timestamp;
     updatedAt?: Timestamp;
+    // Auto-generation metadata
+    generationType?: 'manual' | 'auto_genetic' | 'auto_constraint';
+    optimizationScore?: number;
+    constraints?: TimetableConstraints;
+    conflicts?: TimetableConflict[];
+}
+
+// Faculty Preferences for Timetable Generation
+export interface FacultyPreference {
+    id: string;
+    facultyId: string;
+    academicYear: string;
+    semester: number;
+    preferredCourses: CoursePreference[];
+    timePreferences: TimePreference[];
+    roomPreferences: string[]; // Room IDs
+    maxHoursPerWeek: number;
+    maxConsecutiveHours: number;
+    unavailableSlots: TimeSlot[];
+    workingDays: DayOfWeek[];
+    priority: number; // Based on seniority, 1-10
+    createdAt?: Timestamp;
+    updatedAt?: Timestamp;
+}
+
+export interface CoursePreference {
+    courseId: string;
+    preference: 'high' | 'medium' | 'low';
+    expertise: number; // 1-10 scale
+    previouslyTaught: boolean;
+    maxSections?: number;
+}
+
+export interface TimePreference {
+    dayOfWeek: DayOfWeek;
+    startTime: string;
+    endTime: string;
+    preference: 'preferred' | 'available' | 'avoid';
+}
+
+export interface TimeSlot {
+    dayOfWeek: DayOfWeek;
+    startTime: string;
+    endTime: string;
+}
+
+export interface TimetableConstraints {
+    // Hard constraints (must be satisfied)
+    noFacultyConflicts: boolean;
+    noRoomConflicts: boolean;
+    noStudentConflicts: boolean;
+    respectFacultyUnavailability: boolean;
+    respectRoomCapacity: boolean;
+    
+    // Soft constraints (preferred but not mandatory)
+    respectFacultyPreferences: boolean;
+    balanceWorkload: boolean;
+    minimizeGaps: boolean;
+    preferMorningSlots: boolean;
+    groupSimilarCourses: boolean;
+    
+    // Custom constraints
+    maxConsecutiveHours: number;
+    maxDailyHours: number;
+    lunchBreakRequired: boolean;
+    lunchBreakStart: string;
+    lunchBreakEnd: string;
+}
+
+export interface TimetableConflict {
+    type: 'faculty' | 'room' | 'student' | 'time' | 'capacity';
+    severity: 'critical' | 'major' | 'minor';
+    description: string;
+    affectedEntries: number[]; // indices in entries array
+    suggestions?: string[];
+}
+
+export interface AutoGenerationRequest {
+    academicYear: string;
+    semester: number;
+    batchIds: string[];
+    algorithm: 'genetic' | 'constraint_satisfaction' | 'hybrid';
+    constraints: TimetableConstraints;
+    maxIterations?: number;
+    populationSize?: number;
+    mutationRate?: number;
+    crossoverRate?: number;
+    considerPreferences: boolean;
+}
+
+export interface AutoGenerationResult {
+    success: boolean;
+    timetables: Timetable[];
+    optimizationScore: number;
+    executionTime: number;
+    iterations: number;
+    conflicts: TimetableConflict[];
+    recommendations: string[];
+}
+
+// Notification System Types
+export type NotificationType = 
+  | 'timetable_published' 
+  | 'timetable_updated' 
+  | 'class_cancelled' 
+  | 'room_changed' 
+  | 'faculty_changed'
+  | 'schedule_conflict'
+  | 'workload_alert'
+  | 'maintenance_scheduled'
+  | 'approval_pending'
+  | 'approval_approved'
+  | 'approval_rejected';
+
+export type NotificationChannel = 'email' | 'sms' | 'push' | 'in_app' | 'whatsapp';
+
+export type StakeholderType = 
+  | 'student' 
+  | 'faculty' 
+  | 'hod' 
+  | 'room_manager' 
+  | 'lab_assistant' 
+  | 'admin' 
+  | 'parent'
+  | 'dean'
+  | 'registrar';
+
+export interface NotificationPreference {
+  id: string;
+  userId: string;
+  stakeholderType: StakeholderType;
+  channels: {
+    email: boolean;
+    sms: boolean;
+    push: boolean;
+    in_app: boolean;
+    whatsapp: boolean;
+  };
+  notificationTypes: {
+    [key in NotificationType]: boolean;
+  };
+  quietHours: {
+    enabled: boolean;
+    startTime: string;
+    endTime: string;
+  };
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
+}
+
+export interface Notification {
+  id: string;
+  type: NotificationType;
+  title: string;
+  message: string;
+  recipientId: string;
+  recipientType: StakeholderType;
+  channels: NotificationChannel[];
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  metadata?: {
+    timetableId?: string;
+    entryId?: string;
+    roomId?: string;
+    batchId?: string;
+    facultyId?: string;
+    programId?: string;
+    changes?: TimetableChange[];
+  };
+  status: 'pending' | 'sent' | 'delivered' | 'read' | 'failed';
+  scheduledAt?: Timestamp;
+  sentAt?: Timestamp;
+  readAt?: Timestamp;
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
+}
+
+export interface TimetableChange {
+  field: string;
+  oldValue: string;
+  newValue: string;
+  timestamp: Timestamp;
+  changedBy: string;
+}
+
+export interface NotificationTemplate {
+  id: string;
+  type: NotificationType;
+  stakeholderType: StakeholderType;
+  channel: NotificationChannel;
+  subject: string;
+  template: string;
+  variables: string[];
+  isActive: boolean;
+  createdAt?: Timestamp;
+  updatedAt?: Timestamp;
+}
+
+// Stakeholder View Types
+export interface StudentTimetableView {
+  studentId: string;
+  currentClass?: {
+    subject: string;
+    faculty: string;
+    room: string;
+    startTime: string;
+    endTime: string;
+    timeRemaining?: number;
+  };
+  nextClass?: {
+    subject: string;
+    faculty: string;
+    room: string;
+    startTime: string;
+    timeUntil?: number;
+  };
+  todaySchedule: ClassScheduleEntry[];
+  weekSchedule: { [day: string]: ClassScheduleEntry[] };
+  announcements: AnnouncementEntry[];
+  conflicts: StudentConflict[];
+  attendanceRequests?: AttendanceRequest[];
+}
+
+export interface ClassScheduleEntry {
+  id: string;
+  subject: string;
+  subjectCode: string;
+  faculty: string;
+  room: string;
+  building: string;
+  startTime: string;
+  endTime: string;
+  type: 'lecture' | 'lab' | 'tutorial' | 'exam';
+  status: 'scheduled' | 'ongoing' | 'completed' | 'cancelled' | 'postponed';
+  changes?: {
+    isChanged: boolean;
+    originalRoom?: string;
+    originalTime?: string;
+    reason?: string;
+  };
+  materials?: {
+    required: string[];
+    recommended: string[];
+  };
+}
+
+export interface FacultyTimetableView {
+  facultyId: string;
+  currentClass?: {
+    subject: string;
+    batch: string;
+    room: string;
+    studentsCount: number;
+    startTime: string;
+    endTime: string;
+    timeRemaining?: number;
+  };
+  nextClass?: {
+    subject: string;
+    batch: string;
+    room: string;
+    startTime: string;
+    timeUntil?: number;
+    studentsCount: number;
+  };
+  todaySchedule: FacultyScheduleEntry[];
+  weekSchedule: { [day: string]: FacultyScheduleEntry[] };
+  workloadSummary: {
+    hoursToday: number;
+    hoursThisWeek: number;
+    maxWeeklyHours: number;
+    consecutiveHours: number;
+    maxConsecutiveHours: number;
+    utilizationScore: number;
+    status: 'underloaded' | 'optimal' | 'overloaded';
+  };
+  pendingTasks: FacultyTask[];
+  alerts: FacultyAlert[];
+}
+
+export interface FacultyScheduleEntry {
+  id: string;
+  subject: string;
+  subjectCode: string;
+  batch: string;
+  program: string;
+  room: string;
+  building: string;
+  startTime: string;
+  endTime: string;
+  studentsCount: number;
+  type: 'lecture' | 'lab' | 'tutorial' | 'exam';
+  status: 'scheduled' | 'ongoing' | 'completed' | 'cancelled';
+  materials?: {
+    uploaded: string[];
+    pending: string[];
+  };
+  attendance?: {
+    taken: boolean;
+    present: number;
+    total: number;
+  };
+}
+
+export interface HODDashboardView {
+  departmentId: string;
+  departmentName: string;
+  summary: {
+    totalFaculty: number;
+    activeFaculty: number;
+    totalClasses: number;
+    scheduledToday: number;
+    roomsUtilized: number;
+    averageUtilization: number;
+  };
+  facultyWorkload: {
+    optimal: number;
+    overloaded: number;
+    underloaded: number;
+  };
+  todayHighlights: DepartmentHighlight[];
+  alerts: DepartmentAlert[];
+  pendingApprovals: ApprovalRequest[];
+  roomUtilization: RoomUtilizationSummary[];
+  upcomingEvents: DepartmentEvent[];
+}
+
+export interface RoomManagerView {
+  buildingId: string;
+  buildingName: string;
+  floorId?: string;
+  rooms: RoomStatus[];
+  utilization: {
+    current: number;
+    target: number;
+    peak: string;
+    lowest: string;
+  };
+  maintenanceSchedule: MaintenanceEntry[];
+  bookingRequests: BookingRequest[];
+  alerts: RoomAlert[];
+}
+
+export interface RoomStatus {
+  id: string;
+  roomNumber: string;
+  name: string;
+  type: string;
+  capacity: number;
+  status: 'available' | 'occupied' | 'maintenance' | 'reserved';
+  currentOccupancy?: {
+    subject: string;
+    faculty: string;
+    studentsCount: number;
+    startTime: string;
+    endTime: string;
+    timeRemaining: number;
+  };
+  nextBooking?: {
+    subject: string;
+    faculty: string;
+    startTime: string;
+    timeUntil: number;
+  };
+  equipment: {
+    projector: boolean;
+    computer: boolean;
+    ac: boolean;
+    wifi: boolean;
+    whiteboard: boolean;
+  };
+  issues: RoomIssue[];
+}
+
+// Supporting Types
+export interface AnnouncementEntry {
+  id: string;
+  title: string;
+  message: string;
+  type: 'general' | 'urgent' | 'exam' | 'event';
+  targetAudience: string[];
+  publishedBy: string;
+  publishedAt: Timestamp;
+  expiresAt?: Timestamp;
+}
+
+export interface StudentConflict {
+  type: 'schedule_overlap' | 'room_unavailable' | 'faculty_absent';
+  description: string;
+  affectedClasses: string[];
+  severity: 'low' | 'medium' | 'high';
+  resolution?: string;
+}
+
+export interface AttendanceRequest {
+  classId: string;
+  subject: string;
+  date: string;
+  status: 'pending' | 'marked_present' | 'marked_absent';
+  deadline: Timestamp;
+}
+
+export interface FacultyTask {
+  id: string;
+  type: 'attendance' | 'material_upload' | 'grading' | 'evaluation';
+  title: string;
+  description: string;
+  dueDate: Timestamp;
+  priority: 'low' | 'medium' | 'high';
+  relatedClass?: string;
+}
+
+export interface FacultyAlert {
+  id: string;
+  type: 'workload' | 'schedule_change' | 'room_change' | 'student_issue';
+  message: string;
+  severity: 'info' | 'warning' | 'error';
+  actionRequired: boolean;
+  actionUrl?: string;
+}
+
+export interface DepartmentHighlight {
+  type: 'achievement' | 'alert' | 'milestone' | 'resource_update';
+  title: string;
+  description: string;
+  timestamp: Timestamp;
+  priority: 'low' | 'medium' | 'high';
+}
+
+export interface DepartmentAlert {
+  id: string;
+  type: 'faculty_workload' | 'room_conflict' | 'schedule_issue' | 'resource_shortage';
+  faculty?: string;
+  room?: string;
+  message: string;
+  severity: 'info' | 'warning' | 'critical';
+  actionRequired: boolean;
+  assignedTo?: string;
+}
+
+export interface ApprovalRequest {
+  id: string;
+  type: 'timetable_change' | 'leave_request' | 'resource_booking' | 'schedule_override';
+  requestedBy: string;
+  requestedAt: Timestamp;
+  description: string;
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  status: 'pending' | 'approved' | 'rejected';
+  approvalDeadline?: Timestamp;
+}
+
+export interface RoomUtilizationSummary {
+  roomId: string;
+  roomNumber: string;
+  utilizationPercentage: number;
+  hoursScheduled: number;
+  totalHours: number;
+  peakTime: string;
+  status: 'underutilized' | 'optimal' | 'overutilized';
+}
+
+export interface DepartmentEvent {
+  id: string;
+  title: string;
+  type: 'exam' | 'meeting' | 'workshop' | 'seminar' | 'holiday';
+  startTime: Timestamp;
+  endTime: Timestamp;
+  location?: string;
+  attendees?: string[];
+  priority: 'low' | 'medium' | 'high';
+}
+
+export interface MaintenanceEntry {
+  id: string;
+  roomId: string;
+  type: 'cleaning' | 'repair' | 'upgrade' | 'inspection';
+  description: string;
+  scheduledAt: Timestamp;
+  duration: number; // minutes
+  assignedTo: string;
+  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+}
+
+export interface BookingRequest {
+  id: string;
+  roomId: string;
+  requestedBy: string;
+  requestType: 'class' | 'meeting' | 'event' | 'maintenance';
+  startTime: Timestamp;
+  endTime: Timestamp;
+  purpose: string;
+  attendeeCount?: number;
+  equipmentNeeded?: string[];
+  status: 'pending' | 'approved' | 'rejected' | 'cancelled';
+  approvedBy?: string;
+  priority: 'low' | 'medium' | 'high';
+}
+
+export interface RoomAlert {
+  id: string;
+  roomId: string;
+  type: 'maintenance_due' | 'equipment_failure' | 'overcapacity' | 'booking_conflict';
+  message: string;
+  severity: 'info' | 'warning' | 'critical';
+  reportedAt: Timestamp;
+  resolvedAt?: Timestamp;
+  assignedTo?: string;
+}
+
+export interface RoomIssue {
+  id: string;
+  type: 'equipment' | 'cleanliness' | 'hvac' | 'network' | 'furniture';
+  description: string;
+  severity: 'minor' | 'moderate' | 'major' | 'critical';
+  reportedBy: string;
+  reportedAt: Timestamp;
+  status: 'open' | 'in_progress' | 'resolved' | 'closed';
+  assignedTo?: string;
 }
 
 // Curriculum
