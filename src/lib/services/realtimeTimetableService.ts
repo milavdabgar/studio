@@ -517,57 +517,16 @@ export class RealtimeTimetableService {
   }
 
   // React hook integration
-  public useRealtimeTimetable(
+  public getRealtimeTimetableData(
     userId: string,
     stakeholderType: StakeholderType,
     filters: RealtimeSubscription['filters'] = {},
     channels: RealtimeSubscription['channels'] = ['websocket']
   ) {
-    if (typeof window === 'undefined') {
-      return {
-        isConnected: false,
-        lastUpdate: null,
-        subscribe: () => '',
-        unsubscribe: () => false
-      };
-    }
-
-    const [isConnected, setIsConnected] = React.useState(this.connectionState === 'connected');
-    const [lastUpdate, setLastUpdate] = React.useState<TimetableChangeEvent | null>(null);
-    const subscriptionRef = React.useRef<string | null>(null);
-
-    React.useEffect(() => {
-      // Subscribe to connection changes
-      const unsubscribeConnection = this.on('connection', (data: { connected: boolean }) => {
-        setIsConnected(data.connected);
-      });
-
-      // Subscribe to timetable changes
-      const unsubscribeTimetable = this.on('timetable_change', (event: TimetableChangeEvent) => {
-        setLastUpdate(event);
-      });
-
-      // Create subscription
-      subscriptionRef.current = this.subscribe(
-        userId,
-        stakeholderType,
-        filters,
-        channels,
-        (event) => setLastUpdate(event)
-      );
-
-      return () => {
-        unsubscribeConnection();
-        unsubscribeTimetable();
-        if (subscriptionRef.current) {
-          this.unsubscribe(subscriptionRef.current);
-        }
-      };
-    }, [userId, stakeholderType, JSON.stringify(filters), JSON.stringify(channels)]);
-
+    // Simple getter method without React Hooks
     return {
-      isConnected,
-      lastUpdate,
+      isConnected: this.connectionState === 'connected',
+      lastUpdate: null,
       subscribe: (callback: (event: TimetableChangeEvent) => void) => 
         this.subscribe(userId, stakeholderType, filters, channels, callback),
       unsubscribe: (id: string) => this.unsubscribe(id)

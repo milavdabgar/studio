@@ -671,54 +671,57 @@ export default function AdminStudentsPage() {
   );
 
   return ( 
-    <div className="space-y-8">
-      <Card className="shadow-xl">
-        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
-              <Users className="h-6 w-6" />
-              Student Management
+    <div className="space-y-4 sm:space-y-6 lg:space-y-8 px-3 sm:px-4 py-4 sm:py-6">
+      <Card className="shadow-lg sm:shadow-xl">
+        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-6">
+          <div className="w-full sm:w-auto">
+            <CardTitle className="text-lg sm:text-xl lg:text-2xl font-bold text-primary flex items-center gap-2">
+              <Users className="h-5 w-5 sm:h-6 sm:w-6" />
+              <span className="sm:hidden">Students</span>
+              <span className="hidden sm:inline">Student Management</span>
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-sm sm:text-base">
               Manage student records, academic details, and enrollment information.
             </CardDescription>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             <Dialog open={isDialogOpen} onOpenChange={(isOpen) => { setIsDialogOpen(isOpen); if (!isOpen) resetForm(); }}>
               <DialogTrigger asChild>
-                <Button onClick={handleAddNew} className="w-full sm:w-auto" disabled={programs.length === 0}>
-                  <PlusCircle className="mr-2 h-5 w-5" /> Add New Student
+                <Button onClick={handleAddNew} className="w-full sm:w-auto min-h-[44px]" disabled={programs.length === 0}>
+                  <PlusCircle className="mr-2 h-4 w-4 sm:h-5 sm:w-5" /> 
+                  <span className="sm:hidden">Add Student</span>
+                  <span className="hidden sm:inline">Add New Student</span>
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-4xl">
+              <DialogContent className="w-full max-w-[95vw] sm:max-w-3xl lg:max-w-4xl max-h-[90vh] overflow-hidden">
                 <DialogHeader>
                   <DialogTitle>{currentStudent?.id ? "Edit Student" : "Add New Student"}</DialogTitle>
                   <DialogDescription>
                     {currentStudent?.id ? "Modify the details of this student." : "Create a new student record."}
                   </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-4 py-4 max-h-[75vh] overflow-y-auto pr-2 grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4">
-                  <div className="md:col-span-1">
-                    <Label htmlFor="studentEnrollmentNumber">Enrollment Number *</Label>
-                    <Input id="studentEnrollmentNumber" value={formEnrollmentNumber} onChange={(e) => setFormEnrollmentNumber(e.target.value)} placeholder="e.g., 2024CE001" disabled={isSubmitting} required />
+                <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 py-4 max-h-[75vh] overflow-y-auto pr-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 sm:gap-x-4 lg:gap-x-6 gap-y-3 sm:gap-y-4">
+                  <div className="sm:col-span-2 lg:col-span-1">
+                    <Label htmlFor="studentEnrollmentNumber" className="text-sm font-medium">Enrollment Number *</Label>
+                    <Input id="studentEnrollmentNumber" value={formEnrollmentNumber} onChange={(e) => setFormEnrollmentNumber(e.target.value)} placeholder="e.g., 2024CE001" disabled={isSubmitting} required className="mt-1 min-h-[44px]" />
                   </div>
-                  <div className="md:col-span-1">
-                    <Label htmlFor="studentProgram">Program *</Label>
+                  <div className="sm:col-span-2 lg:col-span-1">
+                    <Label htmlFor="studentProgram" className="text-sm font-medium">Program *</Label>
                     <Select value={formProgramId} onValueChange={(value) => {
                       setFormProgramId(value);
                       setFormBatchId(''); // Reset batch when program changes
                       const selectedProgram = programs.find(p => p.id === value);
                     }} disabled={isSubmitting || programs.length === 0} required>
-                      <SelectTrigger id="studentProgram"><SelectValue placeholder="Select Program"/></SelectTrigger>
+                      <SelectTrigger id="studentProgram" className="mt-1 min-h-[44px]"><SelectValue placeholder="Select Program"/></SelectTrigger>
                       <SelectContent>
                         {programs.map(prog => <SelectItem key={prog.id} value={prog.id}>{prog.name} ({prog.code})</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="md:col-span-1">
-                    <Label htmlFor="studentBatch">Batch</Label>
+                  <div className="sm:col-span-2 lg:col-span-1">
+                    <Label htmlFor="studentBatch" className="text-sm font-medium">Batch</Label>
                     <Select value={formBatchId} onValueChange={setFormBatchId} disabled={isSubmitting || !formProgramId}>
-                      <SelectTrigger id="studentBatch"><SelectValue placeholder="Select Batch"/></SelectTrigger>
+                      <SelectTrigger id="studentBatch" className="mt-1 min-h-[44px]"><SelectValue placeholder="Select Batch"/></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none">No Batch</SelectItem>
                         {batches
@@ -733,51 +736,51 @@ export default function AdminStudentsPage() {
                     </Select>
                   </div>
 
-                  <div className="md:col-span-3">
-                    <Label htmlFor="studentFullNameGtu">Full Name (GTU Format)</Label>
-                    <Input id="studentFullNameGtu" value={formFullNameGtuFormat} onChange={(e) => setFormFullNameGtuFormat(e.target.value)} placeholder="e.g., SHARMA AMIT KUMAR" disabled={isSubmitting} />
+                  <div className="sm:col-span-2 lg:col-span-3">
+                    <Label htmlFor="studentFullNameGtu" className="text-sm font-medium">Full Name (GTU Format)</Label>
+                    <Input id="studentFullNameGtu" value={formFullNameGtuFormat} onChange={(e) => setFormFullNameGtuFormat(e.target.value)} placeholder="e.g., SHARMA AMIT KUMAR" disabled={isSubmitting} className="mt-1 min-h-[44px]" />
                   </div>
-                  <div className="md:col-span-1">
-                    <Label htmlFor="studentFirstName">First Name *</Label>
-                    <Input id="studentFirstName" value={formFirstName} onChange={(e) => setFormFirstName(e.target.value)} placeholder="e.g., Amit" disabled={isSubmitting} required/>
+                  <div className="sm:col-span-1 lg:col-span-1">
+                    <Label htmlFor="studentFirstName" className="text-sm font-medium">First Name *</Label>
+                    <Input id="studentFirstName" value={formFirstName} onChange={(e) => setFormFirstName(e.target.value)} placeholder="e.g., Amit" disabled={isSubmitting} required className="mt-1 min-h-[44px]"/>
                   </div>
-                  <div className="md:col-span-1">
-                    <Label htmlFor="studentMiddleName">Middle Name</Label>
-                    <Input id="studentMiddleName" value={formMiddleName} onChange={(e) => setFormMiddleName(e.target.value)} placeholder="e.g., Kumar" disabled={isSubmitting} />
+                  <div className="sm:col-span-1 lg:col-span-1">
+                    <Label htmlFor="studentMiddleName" className="text-sm font-medium">Middle Name</Label>
+                    <Input id="studentMiddleName" value={formMiddleName} onChange={(e) => setFormMiddleName(e.target.value)} placeholder="e.g., Kumar" disabled={isSubmitting} className="mt-1 min-h-[44px]" />
                   </div>
-                  <div className="md:col-span-1">
-                    <Label htmlFor="studentLastName">Last Name *</Label>
-                    <Input id="studentLastName" value={formLastName} onChange={(e) => setFormLastName(e.target.value)} placeholder="e.g., Sharma" disabled={isSubmitting} required/>
+                  <div className="sm:col-span-2 lg:col-span-1">
+                    <Label htmlFor="studentLastName" className="text-sm font-medium">Last Name *</Label>
+                    <Input id="studentLastName" value={formLastName} onChange={(e) => setFormLastName(e.target.value)} placeholder="e.g., Sharma" disabled={isSubmitting} required className="mt-1 min-h-[44px]"/>
                   </div>
-                  <div className="md:col-span-2">
-                    <Label htmlFor="studentPersonalEmail">Personal Email</Label>
-                    <Input id="studentPersonalEmail" type="email" value={formPersonalEmail} onChange={(e) => setFormPersonalEmail(e.target.value)} placeholder="e.g., amit.sharma@example.com" disabled={isSubmitting} />
+                  <div className="sm:col-span-2 lg:col-span-2">
+                    <Label htmlFor="studentPersonalEmail" className="text-sm font-medium">Personal Email</Label>
+                    <Input id="studentPersonalEmail" type="email" value={formPersonalEmail} onChange={(e) => setFormPersonalEmail(e.target.value)} placeholder="e.g., amit.sharma@example.com" disabled={isSubmitting} className="mt-1 min-h-[44px]" />
                   </div>
-                  <div className="md:col-span-1">
-                    <Label htmlFor="studentContact">Contact Number</Label>
-                    <Input id="studentContact" type="tel" value={formContactNumber} onChange={(e) => setFormContactNumber(e.target.value)} placeholder="e.g., 9876543210" disabled={isSubmitting} />
+                  <div className="sm:col-span-2 lg:col-span-1">
+                    <Label htmlFor="studentContact" className="text-sm font-medium">Contact Number</Label>
+                    <Input id="studentContact" type="tel" value={formContactNumber} onChange={(e) => setFormContactNumber(e.target.value)} placeholder="e.g., 9876543210" disabled={isSubmitting} className="mt-1 min-h-[44px]" />
                   </div>
-                  <div className="md:col-span-3">
-                    <Label htmlFor="studentAddress">Address</Label>
-                    <Textarea id="studentAddress" value={formAddress} onChange={(e) => setFormAddress(e.target.value)} placeholder="Full address" disabled={isSubmitting} />
+                  <div className="sm:col-span-2 lg:col-span-3">
+                    <Label htmlFor="studentAddress" className="text-sm font-medium">Address</Label>
+                    <Textarea id="studentAddress" value={formAddress} onChange={(e) => setFormAddress(e.target.value)} placeholder="Full address" disabled={isSubmitting} className="mt-1 min-h-[44px]" />
                   </div>
                   
-                  <div className="md:col-span-1">
-                    <Label htmlFor="studentSemester">Current Semester</Label>
+                  <div className="sm:col-span-1 lg:col-span-1">
+                    <Label htmlFor="studentSemester" className="text-sm font-medium">Current Semester</Label>
                     <Select value={String(formCurrentSemester)} onValueChange={(value) => setFormCurrentSemester(parseInt(value))} disabled={isSubmitting}>
-                      <SelectTrigger id="studentSemester"><SelectValue placeholder="Select Semester"/></SelectTrigger>
+                      <SelectTrigger id="studentSemester" className="mt-1 min-h-[44px]"><SelectValue placeholder="Select Semester"/></SelectTrigger>
                       <SelectContent>
                         {[1,2,3,4,5,6].map(sem => <SelectItem key={sem} value={String(sem)}>Semester {sem}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="md:col-span-1">
-                    <Label htmlFor="studentAdmissionDate">Admission Date</Label>
+                  <div className="sm:col-span-1 lg:col-span-1">
+                    <Label htmlFor="studentAdmissionDate" className="text-sm font-medium">Admission Date</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
                           variant={"outline"}
-                          className={cn("w-full justify-start text-left font-normal", !formAdmissionDate && "text-muted-foreground")}
+                          className={cn("w-full justify-start text-left font-normal mt-1 min-h-[44px]", !formAdmissionDate && "text-muted-foreground")}
                           disabled={isSubmitting}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
@@ -790,41 +793,41 @@ export default function AdminStudentsPage() {
                     </Popover>
                   </div>
                   
-                  <div className="md:col-span-1">
-                    <Label htmlFor="studentCategory">Category</Label>
+                  <div className="sm:col-span-2 lg:col-span-1">
+                    <Label htmlFor="studentCategory" className="text-sm font-medium">Category</Label>
                     <Select value={formCategory || ""} onValueChange={setFormCategory} disabled={isSubmitting}>
-                      <SelectTrigger id="studentCategory"><SelectValue placeholder="Select Category"/></SelectTrigger>
+                      <SelectTrigger id="studentCategory" className="mt-1 min-h-[44px]"><SelectValue placeholder="Select Category"/></SelectTrigger>
                       <SelectContent>
                         {CATEGORY_OPTIONS.map(cat => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="md:col-span-1">
-                    <Label htmlFor="studentShift">Shift</Label>
+                  <div className="sm:col-span-1 lg:col-span-1">
+                    <Label htmlFor="studentShift" className="text-sm font-medium">Shift</Label>
                     <Select value={formShift} onValueChange={setFormShift} disabled={isSubmitting}>
-                      <SelectTrigger id="studentShift"><SelectValue placeholder="Select Shift"/></SelectTrigger>
+                      <SelectTrigger id="studentShift" className="mt-1 min-h-[44px]"><SelectValue placeholder="Select Shift"/></SelectTrigger>
                       <SelectContent>
                         {SHIFT_OPTIONS.map(shift => <SelectItem key={shift} value={shift}>{shift}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="md:col-span-1">
-                    <Label htmlFor="studentGender">Gender</Label>
+                  <div className="sm:col-span-1 lg:col-span-1">
+                    <Label htmlFor="studentGender" className="text-sm font-medium">Gender</Label>
                     <Select value={formGender} onValueChange={setFormGender} disabled={isSubmitting}>
-                      <SelectTrigger id="studentGender"><SelectValue placeholder="Select Gender"/></SelectTrigger>
+                      <SelectTrigger id="studentGender" className="mt-1 min-h-[44px]"><SelectValue placeholder="Select Gender"/></SelectTrigger>
                       <SelectContent>
                         {GENDER_OPTIONS.map(gender => <SelectItem key={gender} value={gender}>{gender}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
                   
-                  <div className="md:col-span-1">
-                    <Label htmlFor="studentDob">Date of Birth</Label>
+                  <div className="sm:col-span-1 lg:col-span-1">
+                    <Label htmlFor="studentDob" className="text-sm font-medium">Date of Birth</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
                           variant={"outline"}
-                          className={cn("w-full justify-start text-left font-normal", !formDateOfBirth && "text-muted-foreground")}
+                          className={cn("w-full justify-start text-left font-normal mt-1 min-h-[44px]", !formDateOfBirth && "text-muted-foreground")}
                           disabled={isSubmitting}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
@@ -836,69 +839,69 @@ export default function AdminStudentsPage() {
                       </PopoverContent>
                     </Popover>
                   </div>
-                  <div className="md:col-span-1">
-                    <Label htmlFor="studentBloodGroup">Blood Group</Label>
+                  <div className="sm:col-span-1 lg:col-span-1">
+                    <Label htmlFor="studentBloodGroup" className="text-sm font-medium">Blood Group</Label>
                     <Select value={formBloodGroup} onValueChange={setFormBloodGroup} disabled={isSubmitting}>
-                      <SelectTrigger id="studentBloodGroup"><SelectValue placeholder="Select Blood Group"/></SelectTrigger>
+                      <SelectTrigger id="studentBloodGroup" className="mt-1 min-h-[44px]"><SelectValue placeholder="Select Blood Group"/></SelectTrigger>
                       <SelectContent>
                         {BLOOD_GROUP_OPTIONS.map(bg => <SelectItem key={bg} value={bg}>{bg}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="md:col-span-1">
-                    <Label htmlFor="studentAadhar">Aadhar Number</Label>
-                    <Input id="studentAadhar" value={formAadharNumber} onChange={(e) => setFormAadharNumber(e.target.value)} placeholder="e.g., 123456789012" disabled={isSubmitting} />
+                  <div className="sm:col-span-2 lg:col-span-1">
+                    <Label htmlFor="studentAadhar" className="text-sm font-medium">Aadhar Number</Label>
+                    <Input id="studentAadhar" value={formAadharNumber} onChange={(e) => setFormAadharNumber(e.target.value)} placeholder="e.g., 123456789012" disabled={isSubmitting} className="mt-1 min-h-[44px]" />
                   </div>
                   
-                  <div className="md:col-span-1">
-                    <Label htmlFor="studentStatus">Status *</Label>
+                  <div className="sm:col-span-1 lg:col-span-1">
+                    <Label htmlFor="studentStatus" className="text-sm font-medium">Status *</Label>
                     <Select value={formStatus} onValueChange={(value) => setFormStatus(value as StudentStatus)} disabled={isSubmitting} required>
-                      <SelectTrigger id="studentStatus"><SelectValue placeholder="Select Status"/></SelectTrigger>
+                      <SelectTrigger id="studentStatus" className="mt-1 min-h-[44px]"><SelectValue placeholder="Select Status"/></SelectTrigger>
                       <SelectContent>
                         {STUDENT_STATUS_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="md:col-span-2">
-                    <Label htmlFor="studentAcademicRemarks">Academic Remarks</Label>
-                    <Textarea id="studentAcademicRemarks" value={formAcademicRemarks} onChange={(e) => setFormAcademicRemarks(e.target.value)} placeholder="Academic notes and remarks" disabled={isSubmitting} />
+                  <div className="sm:col-span-2 lg:col-span-2">
+                    <Label htmlFor="studentAcademicRemarks" className="text-sm font-medium">Academic Remarks</Label>
+                    <Textarea id="studentAcademicRemarks" value={formAcademicRemarks} onChange={(e) => setFormAcademicRemarks(e.target.value)} placeholder="Academic notes and remarks" disabled={isSubmitting} className="mt-1 min-h-[44px]" />
                   </div>
                   
                   {/* Guardian Details */}
-                  <div className="md:col-span-3 border-t pt-4">
+                  <div className="sm:col-span-2 lg:col-span-3 border-t pt-4">
                     <h4 className="text-sm font-medium mb-2">Guardian Details</h4>
                   </div>
-                  <div className="md:col-span-1">
-                    <Label htmlFor="guardianName">Guardian Name</Label>
-                    <Input id="guardianName" value={formGuardianName} onChange={(e) => setFormGuardianName(e.target.value)} placeholder="Guardian's full name" disabled={isSubmitting} />
+                  <div className="sm:col-span-1 lg:col-span-1">
+                    <Label htmlFor="guardianName" className="text-sm font-medium">Guardian Name</Label>
+                    <Input id="guardianName" value={formGuardianName} onChange={(e) => setFormGuardianName(e.target.value)} placeholder="Guardian's full name" disabled={isSubmitting} className="mt-1 min-h-[44px]" />
                   </div>
-                  <div className="md:col-span-1">
-                    <Label htmlFor="guardianRelation">Relation</Label>
+                  <div className="sm:col-span-1 lg:col-span-1">
+                    <Label htmlFor="guardianRelation" className="text-sm font-medium">Relation</Label>
                     <Select value={formGuardianRelation} onValueChange={setFormGuardianRelation} disabled={isSubmitting}>
-                      <SelectTrigger id="guardianRelation"><SelectValue placeholder="Select Relation"/></SelectTrigger>
+                      <SelectTrigger id="guardianRelation" className="mt-1 min-h-[44px]"><SelectValue placeholder="Select Relation"/></SelectTrigger>
                       <SelectContent>
                         {GUARDIAN_RELATION_OPTIONS.map(rel => <SelectItem key={rel} value={rel}>{rel}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="md:col-span-1">
-                    <Label htmlFor="guardianContact">Guardian Contact</Label>
-                    <Input id="guardianContact" value={formGuardianContact} onChange={(e) => setFormGuardianContact(e.target.value)} placeholder="Guardian's phone number" disabled={isSubmitting} />
+                  <div className="sm:col-span-2 lg:col-span-1">
+                    <Label htmlFor="guardianContact" className="text-sm font-medium">Guardian Contact</Label>
+                    <Input id="guardianContact" value={formGuardianContact} onChange={(e) => setFormGuardianContact(e.target.value)} placeholder="Guardian's phone number" disabled={isSubmitting} className="mt-1 min-h-[44px]" />
                   </div>
-                  <div className="md:col-span-1">
-                    <Label htmlFor="guardianOccupation">Guardian Occupation</Label>
-                    <Input id="guardianOccupation" value={formGuardianOccupation} onChange={(e) => setFormGuardianOccupation(e.target.value)} placeholder="Guardian's occupation" disabled={isSubmitting} />
+                  <div className="sm:col-span-1 lg:col-span-1">
+                    <Label htmlFor="guardianOccupation" className="text-sm font-medium">Guardian Occupation</Label>
+                    <Input id="guardianOccupation" value={formGuardianOccupation} onChange={(e) => setFormGuardianOccupation(e.target.value)} placeholder="Guardian's occupation" disabled={isSubmitting} className="mt-1 min-h-[44px]" />
                   </div>
-                  <div className="md:col-span-1">
-                    <Label htmlFor="guardianIncome">Annual Income</Label>
-                    <Input id="guardianIncome" type="number" value={formGuardianAnnualIncome || ''} onChange={(e) => setFormGuardianAnnualIncome(e.target.value ? parseInt(e.target.value) : undefined)} placeholder="Annual income" disabled={isSubmitting} />
+                  <div className="sm:col-span-1 lg:col-span-1">
+                    <Label htmlFor="guardianIncome" className="text-sm font-medium">Annual Income</Label>
+                    <Input id="guardianIncome" type="number" value={formGuardianAnnualIncome || ''} onChange={(e) => setFormGuardianAnnualIncome(e.target.value ? parseInt(e.target.value) : undefined)} placeholder="Annual income" disabled={isSubmitting} className="mt-1 min-h-[44px]" />
                   </div>
                   
-                  <DialogFooter className="md:col-span-3 mt-4">
+                  <DialogFooter className="sm:col-span-2 lg:col-span-3 mt-4 flex flex-col sm:flex-row gap-2">
                     <DialogClose asChild>
-                      <Button type="button" variant="outline" disabled={isSubmitting}>Cancel</Button>
+                      <Button type="button" variant="outline" disabled={isSubmitting} className="w-full sm:w-auto min-h-[44px]">Cancel</Button>
                     </DialogClose>
-                    <Button type="submit" disabled={isSubmitting}>
+                    <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto min-h-[44px]">
                       {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       {currentStudent?.id ? "Save Changes" : "Create Student"}
                     </Button>
@@ -906,24 +909,28 @@ export default function AdminStudentsPage() {
                 </form>
               </DialogContent>
             </Dialog>
-            <Button onClick={handleExportStudents} variant="outline" className="w-full sm:w-auto">
-              <Download className="mr-2 h-5 w-5" /> Export CSV
+            <Button onClick={handleExportStudents} variant="outline" className="w-full sm:w-auto min-h-[44px]">
+              <Download className="mr-2 h-4 w-4 sm:h-5 sm:w-5" /> 
+              <span className="sm:hidden">Export</span>
+              <span className="hidden sm:inline">Export CSV</span>
             </Button>
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
-            <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-primary"/>Import Students (Standard Format)</h3>
+        <CardContent className="p-4 sm:p-6">
+          <div className="mb-4 sm:mb-6 p-3 sm:p-4 border rounded-lg space-y-3 sm:space-y-4 dark:border-gray-700">
+            <h3 className="text-base sm:text-lg font-medium flex items-center gap-2"><UploadCloud className="h-4 w-4 sm:h-5 sm:w-5 text-primary"/>Import Students (Standard Format)</h3>
             <div className="flex flex-col sm:flex-row gap-2 items-center">
-              <Input type="file" id="csvImportStudents" accept=".csv" onChange={handleFileChange} className="flex-grow" disabled={isSubmitting} />
-              <Button onClick={handleImportStudents} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto">
+              <Input type="file" id="csvImportStudents" accept=".csv" onChange={handleFileChange} className="flex-grow min-h-[44px] text-sm" disabled={isSubmitting} />
+              <Button onClick={handleImportStudents} disabled={isSubmitting || !selectedFile} className="w-full sm:w-auto min-h-[44px] text-sm">
                 {isSubmitting && selectedFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>}
-                Import Standard
+                <span className="sm:hidden">Import</span>
+                <span className="hidden sm:inline">Import Standard</span>
               </Button>
             </div>
-            <div className="flex items-center gap-2">
-              <Button onClick={handleDownloadSampleCsv} variant="link" size="sm" className="px-0 text-primary">
-                <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample (Standard)
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <Button onClick={handleDownloadSampleCsv} variant="link" size="sm" className="px-0 text-primary w-fit">
+                <FileSpreadsheet className="mr-1 h-4 w-4" /> 
+                <span className="text-xs sm:text-sm">Download Sample (Standard)</span>
               </Button>
               <p className="text-xs text-muted-foreground">
                 Use for general student data import/update. Requires enrollmentNumber, firstName, lastName, programId, status.
@@ -931,19 +938,21 @@ export default function AdminStudentsPage() {
             </div>
           </div>
 
-          <div className="mb-6 p-4 border rounded-lg space-y-4 dark:border-gray-700">
-            <h3 className="text-lg font-medium flex items-center gap-2"><UploadCloud className="h-5 w-5 text-accent"/>Import GTU Student Data</h3>
+          <div className="mb-4 sm:mb-6 p-3 sm:p-4 border rounded-lg space-y-3 sm:space-y-4 dark:border-gray-700">
+            <h3 className="text-base sm:text-lg font-medium flex items-center gap-2"><UploadCloud className="h-4 w-4 sm:h-5 sm:w-5 text-accent"/>Import GTU Student Data</h3>
             <div className="flex flex-col sm:flex-row gap-2 items-center">
-              <Input type="file" id="gtuCsvImportStudents" accept=".csv" onChange={handleGtuFileChange} className="flex-grow" disabled={isSubmitting} />
-              <Button onClick={handleImportGtuStudents} disabled={isSubmitting || !selectedGtuFile || programs.length === 0} className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-accent-foreground">
+              <Input type="file" id="gtuCsvImportStudents" accept=".csv" onChange={handleGtuFileChange} className="flex-grow min-h-[44px] text-sm" disabled={isSubmitting} />
+              <Button onClick={handleImportGtuStudents} disabled={isSubmitting || !selectedGtuFile || programs.length === 0} className="w-full sm:w-auto min-h-[44px] text-sm bg-accent hover:bg-accent/90 text-accent-foreground">
                 {isSubmitting && selectedGtuFile ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : <UploadCloud className="mr-2 h-4 w-4"/>}
-                Import GTU Data
+                <span className="sm:hidden">Import GTU</span>
+                <span className="hidden sm:inline">Import GTU Data</span>
               </Button>
             </div>
             {programs.length === 0 && <p className="text-xs text-destructive">GTU Import disabled: No programs found. Please add programs first.</p>}
-            <div className="flex items-center gap-2">
-              <Button onClick={handleDownloadGtuSampleCsv} variant="link" size="sm" className="px-0 text-accent">
-                <FileSpreadsheet className="mr-1 h-4 w-4" /> Download Sample (GTU)
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <Button onClick={handleDownloadGtuSampleCsv} variant="link" size="sm" className="px-0 text-accent w-fit">
+                <FileSpreadsheet className="mr-1 h-4 w-4" /> 
+                <span className="text-xs sm:text-sm">Download Sample (GTU)</span>
               </Button>
               <p className="text-xs text-muted-foreground">
                 Import student data using the official GTU CSV format.
@@ -951,24 +960,24 @@ export default function AdminStudentsPage() {
             </div>
           </div>
 
-          <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 p-4 border rounded-lg dark:border-gray-700">
+          <div className="mb-4 sm:mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 p-3 sm:p-4 border rounded-lg dark:border-gray-700">
             <div>
-              <Label htmlFor="searchStudents">Search Students</Label>
-              <div className="relative">
+              <Label htmlFor="searchStudents" className="text-sm font-medium">Search Students</Label>
+              <div className="relative mt-1">
                 <Input
                   id="searchStudents"
                   placeholder="Name, enrollment, email..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pr-8"
+                  className="pr-8 min-h-[44px] text-sm"
                 />
                 <Search className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               </div>
             </div>
             <div>
-              <Label htmlFor="filterStudentProgram">Filter by Program</Label>
+              <Label htmlFor="filterStudentProgram" className="text-sm font-medium">Filter by Program</Label>
               <Select value={filterProgramVal} onValueChange={setFilterProgramVal}>
-                <SelectTrigger id="filterStudentProgram"><SelectValue placeholder="All Programs"/></SelectTrigger>
+                <SelectTrigger id="filterStudentProgram" className="mt-1 min-h-[44px] text-sm"><SelectValue placeholder="All Programs"/></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Programs</SelectItem>
                   {programs.map(prog => <SelectItem key={prog.id} value={prog.id}>{prog.name}</SelectItem>)}
@@ -976,9 +985,9 @@ export default function AdminStudentsPage() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="filterStudentBatch">Filter by Batch</Label>
+              <Label htmlFor="filterStudentBatch" className="text-sm font-medium">Filter by Batch</Label>
               <Select value={filterBatchVal} onValueChange={setFilterBatchVal}>
-                <SelectTrigger id="filterStudentBatch"><SelectValue placeholder="All Batches"/></SelectTrigger>
+                <SelectTrigger id="filterStudentBatch" className="mt-1 min-h-[44px] text-sm"><SelectValue placeholder="All Batches"/></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Batches</SelectItem>
                   <SelectItem value="unassigned">Unassigned</SelectItem>
@@ -991,9 +1000,9 @@ export default function AdminStudentsPage() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="filterStudentStatus">Filter by Status</Label>
+              <Label htmlFor="filterStudentStatus" className="text-sm font-medium">Filter by Status</Label>
               <Select value={filterStatusVal} onValueChange={(value) => setFilterStatusVal(value as StudentStatus | 'all')}>
-                <SelectTrigger id="filterStudentStatus"><SelectValue placeholder="All Statuses"/></SelectTrigger>
+                <SelectTrigger id="filterStudentStatus" className="mt-1 min-h-[44px] text-sm"><SelectValue placeholder="All Statuses"/></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Statuses</SelectItem>
                   {STUDENT_STATUS_OPTIONS.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
@@ -1001,9 +1010,9 @@ export default function AdminStudentsPage() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="filterStudentSemester">Filter by Semester</Label>
+              <Label htmlFor="filterStudentSemester" className="text-sm font-medium">Filter by Semester</Label>
               <Select value={filterSemesterVal} onValueChange={setFilterSemesterVal}>
-                <SelectTrigger id="filterStudentSemester"><SelectValue placeholder="All Semesters"/></SelectTrigger>
+                <SelectTrigger id="filterStudentSemester" className="mt-1 min-h-[44px] text-sm"><SelectValue placeholder="All Semesters"/></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Semesters</SelectItem>
                   {[1,2,3,4,5,6].map(sem => <SelectItem key={sem} value={String(sem)}>Semester {sem}</SelectItem>)}
@@ -1013,16 +1022,21 @@ export default function AdminStudentsPage() {
           </div>
           
           {selectedStudentIds.length > 0 && (
-            <div className="mb-4 flex items-center gap-2 flex-wrap">
+            <div className="mb-4 flex flex-col sm:flex-row sm:items-center gap-2 flex-wrap">
               <Button 
                 variant="outline" 
                 onClick={() => setIsBulkBatchDialogOpen(true)} 
                 disabled={isSubmitting}
+                className="w-full sm:w-auto min-h-[44px]"
               >
-                <Users className="mr-2 h-4 w-4" /> Assign to Batch ({selectedStudentIds.length})
+                <Users className="mr-2 h-4 w-4" /> 
+                <span className="sm:hidden">Assign Batch ({selectedStudentIds.length})</span>
+                <span className="hidden sm:inline">Assign to Batch ({selectedStudentIds.length})</span>
               </Button>
-              <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
-                <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedStudentIds.length})
+              <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting} className="w-full sm:w-auto min-h-[44px]">
+                <Trash2 className="mr-2 h-4 w-4" /> 
+                <span className="sm:hidden">Delete ({selectedStudentIds.length})</span>
+                <span className="hidden sm:inline">Delete Selected ({selectedStudentIds.length})</span>
               </Button>
               <span className="text-sm text-muted-foreground">
                 {selectedStudentIds.length} student(s) selected.
@@ -1030,7 +1044,87 @@ export default function AdminStudentsPage() {
             </div>
           )}
 
-          <Table>
+          {/* Mobile View */}
+          <div className="block lg:hidden space-y-3">
+            {paginatedStudents.map((student) => (
+              <Card key={student.id} className="shadow-sm">
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <Checkbox
+                        checked={selectedStudentIds.includes(student.id)}
+                        onCheckedChange={(checked) => handleSelectStudent(student.id, !!checked)}
+                        aria-labelledby={`student-name-mobile-${student.id}`}
+                      />
+                      <div className="min-w-0 flex-1">
+                        <h4 id={`student-name-mobile-${student.id}`} className="font-semibold text-sm leading-tight">
+                          {[student.firstName, student.middleName, student.lastName].filter(Boolean).join(' ') || student.fullNameGtuFormat || student.enrollmentNumber}
+                        </h4>
+                        <p className="text-xs text-muted-foreground">{student.enrollmentNumber}</p>
+                        <p className="text-xs text-muted-foreground truncate">{student.instituteEmail}</p>
+                      </div>
+                    </div>
+                    <span className={`px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${
+                      student.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                      : student.status === 'graduated' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
+                      : student.status === 'dropped' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                      : 'bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-300' 
+                    }`}>
+                      {STUDENT_STATUS_OPTIONS.find(s => s.value === student.status)?.label || student.status}
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-y-2 text-xs mb-3">
+                    <div>
+                      <span className="text-muted-foreground">Program:</span>
+                      <p className="font-medium truncate">{programs.find(p => p.id === student.programId)?.name || student.programId}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Semester:</span>
+                      <p className="font-medium">Sem {student.currentSemester}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Batch:</span>
+                      <p className="font-medium truncate">
+                        {student.batchId ? 
+                          batches.find(b => b.id === student.batchId)?.name || student.batchId
+                          : 'Not Assigned'
+                        }
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Contact:</span>
+                      <p className="font-medium">{student.contactNumber || 'N/A'}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => handleView(student)} disabled={isSubmitting} className="flex-1 min-h-[40px]">
+                      <Eye className="h-4 w-4 mr-1" /> View
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleEdit(student)} disabled={isSubmitting} className="flex-1 min-h-[40px]">
+                      <Edit className="h-4 w-4 mr-1" /> Edit
+                    </Button>
+                    <Button variant="destructive" size="sm" onClick={() => handleDelete(student.id)} disabled={isSubmitting} className="min-h-[40px]">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+            {paginatedStudents.length === 0 && (
+              <Card className="shadow-sm">
+                <CardContent className="p-8 text-center text-muted-foreground">
+                  No students found. Try adjusting your search or filters, or add a new student.
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden lg:block">
+            <div className="overflow-x-auto border rounded-lg">
+              <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[50px]">
@@ -1140,10 +1234,12 @@ export default function AdminStudentsPage() {
                 </TableRow>
               )}
             </TableBody>
-          </Table>
+              </Table>
+            </div>
+          </div>
         </CardContent>
-        <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
-          <div className="text-sm text-muted-foreground">
+        <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-4 sm:px-6">
+          <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
             Showing {filteredStudents.length > 0 ? Math.min((currentPage -1) * itemsPerPage + 1, filteredStudents.length) : 0} to {Math.min(currentPage * itemsPerPage, filteredStudents.length)} of {filteredStudents.length} students.
           </div>
           <div className="flex items-center gap-2">
@@ -1154,7 +1250,7 @@ export default function AdminStudentsPage() {
                 setCurrentPage(1);
               }}
             >
-              <SelectTrigger className="w-[70px] h-8 text-xs">
+              <SelectTrigger className="w-[70px] h-8 sm:h-10 text-xs">
                 <SelectValue placeholder={String(itemsPerPage)} />
               </SelectTrigger>
               <SelectContent side="top">
@@ -1165,48 +1261,48 @@ export default function AdminStudentsPage() {
                 ))}
               </SelectContent>
             </Select>
-            <span className="text-sm text-muted-foreground">
+            <span className="text-xs sm:text-sm text-muted-foreground">
               Page {currentPage} of {totalPages > 0 ? totalPages : 1}
             </span>
             <div className="flex items-center gap-1">
               <Button
                 variant="outline"
                 size="icon"
-                className="h-8 w-8"
+                className="h-8 w-8 sm:h-10 sm:w-10"
                 onClick={() => setCurrentPage(1)}
                 disabled={currentPage === 1 || totalPages === 0}
               >
-                <ChevronsLeft className="h-4 w-4" />
+                <ChevronsLeft className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="sr-only">First page</span>
               </Button>
               <Button
                 variant="outline"
                 size="icon"
-                className="h-8 w-8"
+                className="h-8 w-8 sm:h-10 sm:w-10"
                 onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                 disabled={currentPage === 1 || totalPages === 0}
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="sr-only">Previous page</span>
               </Button>
               <Button
                 variant="outline"
                 size="icon"
-                className="h-8 w-8"
+                className="h-8 w-8 sm:h-10 sm:w-10"
                 onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                 disabled={currentPage === totalPages || totalPages === 0}
               >
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="sr-only">Next page</span>
               </Button>
               <Button
                 variant="outline"
                 size="icon"
-                className="h-8 w-8"
+                className="h-8 w-8 sm:h-10 sm:w-10"
                 onClick={() => setCurrentPage(totalPages)}
                 disabled={currentPage === totalPages || totalPages === 0}
               >
-                <ChevronsRight className="h-4 w-4" />
+                <ChevronsRight className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="sr-only">Last page</span>
               </Button>
             </div>
@@ -1216,7 +1312,7 @@ export default function AdminStudentsPage() {
 
       {/* View Student Dialog */}
       <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-full max-w-[95vw] sm:max-w-2xl lg:max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Student Details</DialogTitle>
             <DialogDescription>
@@ -1225,11 +1321,11 @@ export default function AdminStudentsPage() {
           </DialogHeader>
           
           {viewStudent && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               {/* Personal Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Personal Information</h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <h3 className="text-base sm:text-lg font-semibold">Personal Information</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm">
                   <div>
                     <span className="font-medium">Enrollment Number:</span>
                     <p className="text-muted-foreground">{viewStudent.enrollmentNumber}</p>
@@ -1269,8 +1365,8 @@ export default function AdminStudentsPage() {
 
               {/* Contact Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Contact Information</h3>
-                <div className="grid grid-cols-1 gap-4 text-sm">
+                <h3 className="text-base sm:text-lg font-semibold">Contact Information</h3>
+                <div className="grid grid-cols-1 gap-3 sm:gap-4 text-sm">
                   <div>
                     <span className="font-medium">Personal Email:</span>
                     <p className="text-muted-foreground">{viewStudent.personalEmail || 'N/A'}</p>
@@ -1288,8 +1384,8 @@ export default function AdminStudentsPage() {
 
               {/* Academic Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Academic Information</h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <h3 className="text-base sm:text-lg font-semibold">Academic Information</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm">
                   <div>
                     <span className="font-medium">Program:</span>
                     <p className="text-muted-foreground">
@@ -1332,8 +1428,8 @@ export default function AdminStudentsPage() {
 
               {/* Guardian Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Guardian Information</h3>
-                <div className="grid grid-cols-1 gap-4 text-sm">
+                <h3 className="text-base sm:text-lg font-semibold">Guardian Information</h3>
+                <div className="grid grid-cols-1 gap-3 sm:gap-4 text-sm">
                   <div>
                     <span className="font-medium">Guardian Name:</span>
                     <p className="text-muted-foreground">{viewStudent.guardianDetails?.name || 'N/A'}</p>
@@ -1363,7 +1459,7 @@ export default function AdminStudentsPage() {
           
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Close</Button>
+              <Button variant="outline" className="w-full sm:w-auto min-h-[44px]">Close</Button>
             </DialogClose>
           </DialogFooter>
         </DialogContent>
@@ -1371,7 +1467,7 @@ export default function AdminStudentsPage() {
 
       {/* Bulk Batch Assignment Dialog */}
       <Dialog open={isBulkBatchDialogOpen} onOpenChange={(isOpen) => { setIsBulkBatchDialogOpen(isOpen); if (!isOpen) setBulkBatchId(''); }}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="w-full max-w-[95vw] sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Assign Students to Batch</DialogTitle>
             <DialogDescription>
@@ -1380,9 +1476,9 @@ export default function AdminStudentsPage() {
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div>
-              <Label htmlFor="bulkBatchSelect">Select Batch</Label>
+              <Label htmlFor="bulkBatchSelect" className="text-sm font-medium">Select Batch</Label>
               <Select value={bulkBatchId} onValueChange={setBulkBatchId}>
-                <SelectTrigger id="bulkBatchSelect">
+                <SelectTrigger id="bulkBatchSelect" className="mt-1 min-h-[44px]">
                   <SelectValue placeholder="Select a batch" />
                 </SelectTrigger>
                 <SelectContent>
@@ -1406,11 +1502,11 @@ export default function AdminStudentsPage() {
               </div>
             )}
           </div>
-          <DialogFooter>
+          <DialogFooter className="flex flex-col sm:flex-row gap-2">
             <DialogClose asChild>
-              <Button variant="outline" disabled={isSubmitting}>Cancel</Button>
+              <Button variant="outline" disabled={isSubmitting} className="w-full sm:w-auto min-h-[44px]">Cancel</Button>
             </DialogClose>
-            <Button onClick={handleBulkBatchAssignment} disabled={isSubmitting}>
+            <Button onClick={handleBulkBatchAssignment} disabled={isSubmitting} className="w-full sm:w-auto min-h-[44px]">
               {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Assign to Batch
             </Button>

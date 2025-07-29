@@ -795,58 +795,127 @@ DI01006011,6,2024-25,Engineering Drawing,Professional Core Courses,1,2,0,4,,4,70
             </div>
           )}
 
-          <Table>
-            <TableHeader>
-              <TableRow>
-                 <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedCourses.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all courses on this page"/></TableHead>
-                <SortableTableHeader field="effFrom" label="Eff From" />
-                <SortableTableHeader field="programId" label="Program" />
-                <SortableTableHeader field="semester" label="Sem" />
-                <SortableTableHeader field="subcode" label="Subcode" />
-                <SortableTableHeader field="subjectName" label="Subject Name" />
-                <SortableTableHeader field="credits" label="Credits" />
-                <TableHead className="text-right w-32">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedCourses.map((course) => (
-                <TableRow key={course.id} data-state={selectedCourseIds.includes(course.id) ? "selected" : undefined}>
-                  <TableCell><Checkbox checked={selectedCourseIds.includes(course.id)} onCheckedChange={(checked) => handleSelectCourse(course.id, !!checked)} aria-labelledby={`course-name-${course.id}`}/></TableCell>
-                  <TableCell>{course.effFrom || 'N/A'}</TableCell>
-                  <TableCell>{programs.find(p => p.id === course.programId)?.code || 'N/A'}</TableCell>
-                  <TableCell>{course.semester}</TableCell>
-                  <TableCell>{course.subcode}</TableCell>
-                  <TableCell id={`course-name-${course.id}`} className="font-medium">{course.subjectName}</TableCell>
-                  <TableCell>{course.credits}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
-                      {course.syllabusUrl && (
-                        <Button variant="outline" size="icon" onClick={() => window.open(course.syllabusUrl, '_blank')} disabled={isSubmitting}>
-                          <FileText className="h-4 w-4" />
-                          <span className="sr-only">View Syllabus PDF</span>
-                        </Button>
-                      )}
-                      <Button variant="outline" size="icon" onClick={() => handleView(course)} disabled={isSubmitting}>
-                        <Eye className="h-4 w-4" />
-                        <span className="sr-only">View Course</span>
-                      </Button>
-                      <Button variant="outline" size="icon" onClick={() => handleEdit(course)} disabled={isSubmitting}>
-                        <Edit className="h-4 w-4" />
-                        <span className="sr-only">Edit Course</span>
-                      </Button>
-                      <Button variant="destructive" size="icon" onClick={() => handleDelete(course.id)} disabled={isSubmitting}>
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">Delete Course</span>
-                      </Button>
+          {/* Mobile Card View */}
+          <div className="block lg:hidden space-y-3">
+            {paginatedCourses.map((course) => {
+              const program = programs.find(p => p.id === course.programId);
+              return (
+                <Card key={course.id} className="p-4">
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <Checkbox 
+                        checked={selectedCourseIds.includes(course.id)} 
+                        onCheckedChange={(checked) => handleSelectCourse(course.id, !!checked)}
+                        className="flex-shrink-0"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-medium text-sm leading-tight">{course.subjectName}</h3>
+                        <p className="text-xs text-muted-foreground">{course.subcode}</p>
+                      </div>
                     </div>
-                  </TableCell>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3 text-xs mb-3">
+                    <div>
+                      <span className="text-muted-foreground">Program:</span>
+                      <p className="font-medium">{program?.code || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Semester:</span>
+                      <p className="font-medium">{course.semester}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Credits:</span>
+                      <p className="font-medium">{course.credits}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Eff From:</span>
+                      <p className="font-medium">{course.effFrom || 'N/A'}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-1">
+                    {course.syllabusUrl && (
+                      <Button variant="outline" size="sm" onClick={() => window.open(course.syllabusUrl, '_blank')} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
+                        <FileText className="h-3 w-3" />
+                      </Button>
+                    )}
+                    <Button variant="outline" size="sm" onClick={() => handleView(course)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
+                      <Eye className="h-3 w-3" />
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleEdit(course)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
+                      <Edit className="h-3 w-3" />
+                    </Button>
+                    <Button variant="destructive" size="sm" onClick={() => handleDelete(course.id)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </Card>
+              );
+            })}
+            
+            {paginatedCourses.length === 0 && (
+              <Card className="p-8 text-center">
+                <p className="text-sm text-muted-foreground">No courses found. Adjust filters or add a new course.</p>
+              </Card>
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden lg:block">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                   <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedCourses.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all courses on this page"/></TableHead>
+                  <SortableTableHeader field="effFrom" label="Eff From" />
+                  <SortableTableHeader field="programId" label="Program" />
+                  <SortableTableHeader field="semester" label="Sem" />
+                  <SortableTableHeader field="subcode" label="Subcode" />
+                  <SortableTableHeader field="subjectName" label="Subject Name" />
+                  <SortableTableHeader field="credits" label="Credits" />
+                  <TableHead className="text-right w-32">Actions</TableHead>
                 </TableRow>
-              ))}
-              {paginatedCourses.length === 0 && (
-                 <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">No courses found. Adjust filters or add a new course.</TableCell></TableRow>
-              )}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {paginatedCourses.map((course) => (
+                  <TableRow key={course.id} data-state={selectedCourseIds.includes(course.id) ? "selected" : undefined}>
+                    <TableCell><Checkbox checked={selectedCourseIds.includes(course.id)} onCheckedChange={(checked) => handleSelectCourse(course.id, !!checked)} aria-labelledby={`course-name-${course.id}`}/></TableCell>
+                    <TableCell>{course.effFrom || 'N/A'}</TableCell>
+                    <TableCell>{programs.find(p => p.id === course.programId)?.code || 'N/A'}</TableCell>
+                    <TableCell>{course.semester}</TableCell>
+                    <TableCell>{course.subcode}</TableCell>
+                    <TableCell id={`course-name-${course.id}`} className="font-medium">{course.subjectName}</TableCell>
+                    <TableCell>{course.credits}</TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-1">
+                        {course.syllabusUrl && (
+                          <Button variant="outline" size="icon" onClick={() => window.open(course.syllabusUrl, '_blank')} disabled={isSubmitting}>
+                            <FileText className="h-4 w-4" />
+                            <span className="sr-only">View Syllabus PDF</span>
+                          </Button>
+                        )}
+                        <Button variant="outline" size="icon" onClick={() => handleView(course)} disabled={isSubmitting}>
+                          <Eye className="h-4 w-4" />
+                          <span className="sr-only">View Course</span>
+                        </Button>
+                        <Button variant="outline" size="icon" onClick={() => handleEdit(course)} disabled={isSubmitting}>
+                          <Edit className="h-4 w-4" />
+                          <span className="sr-only">Edit Course</span>
+                        </Button>
+                        <Button variant="destructive" size="icon" onClick={() => handleDelete(course.id)} disabled={isSubmitting}>
+                          <Trash2 className="h-4 w-4" />
+                          <span className="sr-only">Delete Course</span>
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {paginatedCourses.length === 0 && (
+                   <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">No courses found. Adjust filters or add a new course.</TableCell></TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
          <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
             <div className="text-sm text-muted-foreground">

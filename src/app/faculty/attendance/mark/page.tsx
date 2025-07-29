@@ -156,102 +156,118 @@ export default function MarkAttendancePage() {
 
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 p-3 sm:p-4 lg:p-6">
       <Card className="shadow-xl">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
-            <UserCheck className="h-6 w-6" /> Mark Attendance
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-lg sm:text-xl lg:text-2xl font-bold text-primary flex items-center gap-2">
+            <UserCheck className="h-5 w-5 sm:h-6 sm:w-6" /> Mark Attendance
           </CardTitle>
-          <CardDescription>Select a course offering and date to mark student attendance.</CardDescription>
+          <CardDescription className="text-sm sm:text-base">Select a course offering and date to mark student attendance.</CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Label htmlFor="courseOffering">Course Offering</Label>
+        <CardContent className="p-4 sm:p-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="courseOffering" className="text-sm sm:text-base">Course Offering</Label>
                 <Select value={selectedCourseOffering} onValueChange={setSelectedCourseOffering} disabled={isLoading || courseOfferings.length === 0}>
-                  <SelectTrigger id="courseOffering">
+                  <SelectTrigger id="courseOffering" className="min-h-[44px] text-sm">
                     <SelectValue placeholder="Select Course Offering" />
                   </SelectTrigger>
                   <SelectContent>
                     {courseOfferings.map(co => (
-                      <SelectItem key={co.id} value={co.id}>
+                      <SelectItem key={co.id} value={co.id} className="text-sm">
                         {co.courseName} ({co.batchName} - {co.programName})
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
-              <div>
-                <Label htmlFor="attendanceDate">Date</Label>
+              <div className="space-y-2">
+                <Label htmlFor="attendanceDate" className="text-sm sm:text-base">Date</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
-                      className={cn("w-full justify-start text-left font-normal", !selectedDate && "text-muted-foreground")}
+                      className={cn("w-full justify-start text-left font-normal min-h-[44px] text-sm", !selectedDate && "text-muted-foreground")}
                       disabled={isLoading}
                     >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      <CalendarIcon className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                       {selectedDate ? format(selectedDate, "PPP") : <span>Pick a date</span>}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
+                  <PopoverContent className="w-auto p-0" align="start">
                     <Calendar mode="single" selected={selectedDate} onSelect={setSelectedDate} initialFocus disabled={(date) => date > new Date() || date < new Date("2000-01-01")} />
                   </PopoverContent>
                 </Popover>
               </div>
             </div>
 
-            {isLoading && !isSubmitting && <div className="flex justify-center py-4"><Loader2 className="h-8 w-8 animate-spin text-primary" /> <span className="ml-2">Loading students...</span></div>}
+            {isLoading && !isSubmitting && (
+              <div className="flex justify-center items-center py-4 text-sm sm:text-base">
+                <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-primary" /> 
+                <span className="ml-2">Loading students...</span>
+              </div>
+            )}
 
             {students.length > 0 && !isLoading && (
               <>
-                <div className="flex justify-end gap-2 mb-4">
-                    <Button type="button" variant="outline" size="sm" onClick={() => markAll('present')}>Mark All Present</Button>
-                    <Button type="button" variant="outline" size="sm" onClick={() => markAll('absent')}>Mark All Absent</Button>
+                <div className="flex flex-col sm:flex-row justify-end gap-2 mb-4">
+                  <Button type="button" variant="outline" size="sm" onClick={() => markAll('present')} className="min-h-[44px] text-xs sm:text-sm">
+                    <span className="hidden sm:inline">Mark All Present</span>
+                    <span className="sm:hidden">All Present</span>
+                  </Button>
+                  <Button type="button" variant="outline" size="sm" onClick={() => markAll('absent')} className="min-h-[44px] text-xs sm:text-sm">
+                    <span className="hidden sm:inline">Mark All Absent</span>
+                    <span className="sm:hidden">All Absent</span>
+                  </Button>
                 </div>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[100px]">Enrollment</TableHead>
-                      <TableHead>Student Name</TableHead>
-                      <TableHead className="w-[300px] text-center">Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {students.map(student => (
-                      <TableRow key={student.id}>
-                        <TableCell>{student.enrollmentNumber}</TableCell>
-                        <TableCell>{student.firstName} {student.lastName}</TableCell>
-                        <TableCell className="text-center">
-                          <RadioGroup
-                            value={attendanceData[student.id] || 'present'}
-                            onValueChange={(value) => handleStatusChange(student.id, value as AttendanceStatus)}
-                            className="flex justify-around"
-                          >
-                            {(['present', 'absent', 'late', 'excused'] as AttendanceStatus[]).map(statusOption => (
-                              <div key={statusOption} className="flex items-center space-x-1">
-                                <RadioGroupItem value={statusOption} id={`${student.id}-${statusOption}`} />
-                                <Label htmlFor={`${student.id}-${statusOption}`} className="text-xs capitalize cursor-pointer">{statusOption}</Label>
-                              </div>
-                            ))}
-                          </RadioGroup>
-                        </TableCell>
+                <div className="overflow-x-auto">
+                  <Table className="min-w-[600px]">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-[80px] sm:w-[100px] text-xs sm:text-sm">Enrollment</TableHead>
+                        <TableHead className="text-xs sm:text-sm">Student Name</TableHead>
+                        <TableHead className="w-[280px] sm:w-[300px] text-center text-xs sm:text-sm">Status</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {students.map(student => (
+                        <TableRow key={student.id}>
+                          <TableCell className="text-xs sm:text-sm font-mono">{student.enrollmentNumber}</TableCell>
+                          <TableCell className="text-xs sm:text-sm">{student.firstName} {student.lastName}</TableCell>
+                          <TableCell className="text-center">
+                            <RadioGroup
+                              value={attendanceData[student.id] || 'present'}
+                              onValueChange={(value) => handleStatusChange(student.id, value as AttendanceStatus)}
+                              className="flex justify-around gap-1"
+                            >
+                              {(['present', 'absent', 'late', 'excused'] as AttendanceStatus[]).map(statusOption => (
+                                <div key={statusOption} className="flex items-center space-x-0.5 sm:space-x-1">
+                                  <RadioGroupItem value={statusOption} id={`${student.id}-${statusOption}`} className="w-3 h-3 sm:w-4 sm:h-4" />
+                                  <Label htmlFor={`${student.id}-${statusOption}`} className="text-[10px] sm:text-xs capitalize cursor-pointer whitespace-nowrap">
+                                    <span className="hidden sm:inline">{statusOption}</span>
+                                    <span className="sm:hidden">{statusOption.slice(0, 1).toUpperCase()}</span>
+                                  </Label>
+                                </div>
+                              ))}
+                            </RadioGroup>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               </>
             )}
             {students.length === 0 && selectedCourseOffering && selectedDate && !isLoading && (
-                 <p className="text-center text-muted-foreground py-4">No active students found for the selected batch or an error occurred.</p>
+                 <p className="text-center text-muted-foreground py-4 text-sm sm:text-base px-4">No active students found for the selected batch or an error occurred.</p>
             )}
 
 
-            <CardFooter className="mt-6 px-0">
-              <Button type="submit" disabled={isSubmitting || isLoading || students.length === 0}>
-                {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckSquare className="mr-2 h-4 w-4" />}
-                Save Attendance
+            <CardFooter className="mt-4 sm:mt-6 px-0">
+              <Button type="submit" disabled={isSubmitting || isLoading || students.length === 0} className="w-full sm:w-auto min-h-[44px]">
+                {isSubmitting ? <Loader2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" /> : <CheckSquare className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />}
+                <span className="text-sm sm:text-base">Save Attendance</span>
               </Button>
             </CardFooter>
           </form>
