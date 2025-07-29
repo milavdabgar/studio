@@ -360,7 +360,11 @@ export default function ManageCourseOfferingAssessmentsPage() {
       </Card>
 
       <Dialog open={isDialogOpen} onOpenChange={isOpen => { setIsDialogOpen(isOpen); if(!isOpen) resetForm();}}>
-        <DialogContent className="sm:max-w-lg"><DialogHeader><DialogTitle>{editingAssessment?.id ? "Edit Assessment" : "Add New Assessment"}</DialogTitle></DialogHeader>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{editingAssessment?.id ? "Edit Assessment" : "Add New Assessment"}</DialogTitle>
+            <DialogDescription>Fill in the assessment details below.</DialogDescription>
+          </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 py-2 max-h-[70vh] overflow-y-auto pr-1">
             <div><Label htmlFor="formNameFaculty">Assessment Name *</Label><Input id="formNameFaculty" value={formName} onChange={e=>setFormName(e.target.value)} required/></div>
             <div><Label htmlFor="formTypeFaculty">Type *</Label><Select value={formType} onValueChange={v => setFormType(v as AssessmentType)} required><SelectTrigger><SelectValue/></SelectTrigger><SelectContent>{ASSESSMENT_TYPE_OPTIONS.map(t=><SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent></Select></div>

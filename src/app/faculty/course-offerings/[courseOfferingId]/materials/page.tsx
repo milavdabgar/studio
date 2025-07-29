@@ -197,7 +197,10 @@ export default function ManageCourseMaterialsPage() {
 
       <Dialog open={isFormOpen} onOpenChange={(open) => { setIsFormOpen(open); if(!open) resetForm();}}>
         <DialogContent className="sm:max-w-lg">
-          <DialogHeader><DialogTitle>{editingMaterial ? "Edit Material" : "Add New Material"}</DialogTitle></DialogHeader>
+          <DialogHeader>
+            <DialogTitle>{editingMaterial ? "Edit Material" : "Add New Material"}</DialogTitle>
+            <DialogDescription>Add or edit course material details.</DialogDescription>
+          </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 py-2">
             <div><Label htmlFor="formTitle">Title *</Label><Input id="formTitle" value={formTitle} onChange={e=>setFormTitle(e.target.value)} required/></div>
             <div><Label htmlFor="formDescription">Description</Label><Textarea id="formDescription" value={formDescription} onChange={e=>setFormDescription(e.target.value)} rows={3}/></div>

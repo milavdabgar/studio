@@ -314,7 +314,10 @@ export default function EventLocationsPage() {
       
       <Dialog open={isFormOpen} onOpenChange={(open) => { setIsFormOpen(open); if (!open) resetForm(); }}>
         <DialogContent className="sm:max-w-lg">
-          <DialogHeader><DialogTitle>{editingLocation ? "Edit Location" : "Add New Location"}</DialogTitle></DialogHeader>
+          <DialogHeader>
+            <DialogTitle>{editingLocation ? "Edit Location" : "Add New Location"}</DialogTitle>
+            <DialogDescription>Configure location details for the project fair.</DialogDescription>
+          </DialogHeader>
           <form onSubmit={handleFormSubmit} className="space-y-4 py-2">
             <div><Label htmlFor="formLocId">Location ID *</Label><Input id="formLocId" value={formLocationId} onChange={e => setFormLocationId(e.target.value.toUpperCase())} placeholder="e.g., A-01" required /></div>
             <div className="grid grid-cols-2 gap-4">

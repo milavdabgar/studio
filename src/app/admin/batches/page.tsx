@@ -900,7 +900,89 @@ batch_s1,2024-2027,prog1,"Diploma in Computer Engg","DCE",2024,2027,60,upcoming
             </div>
           )}
 
-          <Table>
+          {/* Mobile Card View */}
+          <div className="block lg:hidden space-y-3">
+            {paginatedBatches.map((batch) => {
+              const program = programs.find(p => p.id === batch.programId);
+              const enrolledCount = students.filter(s => s.batchId === batch.id).length;
+              const maxIntake = batch.maxIntake;
+              const enrollmentStatus = maxIntake ? `${enrolledCount}/${maxIntake}` : enrolledCount.toString();
+              const isOverCapacity = maxIntake ? enrolledCount > maxIntake : false;
+              
+              return (
+                <Card key={batch.id} className="p-4">
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <Checkbox 
+                        checked={selectedBatchIds.includes(batch.id)} 
+                        onCheckedChange={(checked) => handleSelectBatch(batch.id, !!checked)}
+                        className="flex-shrink-0"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-medium text-sm leading-tight">{batch.name}</h3>
+                        <p className="text-xs text-muted-foreground">{program?.name || 'Unknown Program'}</p>
+                      </div>
+                    </div>
+                    <span className={`px-2 py-1 text-xs font-semibold rounded-full flex-shrink-0 ${
+                      batch.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
+                      batch.status === 'upcoming' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' :
+                      batch.status === 'completed' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300' :
+                      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                    }`}>
+                      {BATCH_STATUS_OPTIONS.find(s => s.value === batch.status)?.label || batch.status}
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3 text-xs mb-3">
+                    <div>
+                      <span className="text-muted-foreground">Academic Year:</span>
+                      <p className="font-medium">{batch.startAcademicYear} - {batch.endAcademicYear || 'Ongoing'}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Enrollment:</span>
+                      <p className={`font-medium ${isOverCapacity ? 'text-red-600 dark:text-red-400' : ''}`}>
+                        {enrollmentStatus}
+                        {maxIntake && (
+                          <span className="ml-1 text-xs">
+                            ({Math.round((enrolledCount / maxIntake) * 100)}%)
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-1">
+                    <Button variant="outline" size="sm" onClick={() => handleView(batch)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
+                      <Eye className="h-3 w-3" />
+                      <span className="ml-1">View</span>
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleEdit(batch)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
+                      <Edit className="h-3 w-3" />
+                      <span className="ml-1">Edit</span>
+                    </Button>
+                    <Button 
+                      variant="destructive" 
+                      size="sm" 
+                      onClick={() => handleDelete(batch.id)} 
+                      disabled={isSubmitting}
+                      className="min-h-[44px] flex-1 text-xs"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                      <span className="ml-1">Delete</span>
+                    </Button>
+                  </div>
+                </Card>
+              );
+            })}
+            {paginatedBatches.length === 0 && (
+              <Card className="p-8 text-center text-muted-foreground">
+                No batches found. Adjust filters or add a new batch.
+              </Card>
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <Table className="hidden lg:table">
             <TableHeader>
               <TableRow>
                  <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedBatches.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all batches on this page"/></TableHead>

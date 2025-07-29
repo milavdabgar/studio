@@ -318,7 +318,11 @@ export default function RoomAllocationManagementPage() {
       </Card>
 
       <Dialog open={isDialogOpen} onOpenChange={isOpen => { setIsDialogOpen(isOpen); if (!isOpen) resetForm(); }}>
-        <DialogContent className="sm:max-w-lg"><DialogHeader><DialogTitle>{currentAllocation?.id ? "Edit Allocation" : "New Allocation"}</DialogTitle><DialogDescription>Fill in the details for the room allocation.</DialogDescription></DialogHeader>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{currentAllocation?.id ? "Edit Allocation" : "New Allocation"}</DialogTitle>
+            <DialogDescription>Fill in the details for the room allocation.</DialogDescription>
+          </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 py-4">
             <div><Label htmlFor="formRoomId">Room *</Label><Select value={formRoomId} onValueChange={setFormRoomId} disabled={isSubmitting || rooms.length === 0} required><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{rooms.map(r => <SelectItem key={r.id} value={r.id}>{r.roomNumber} ({r.name || r.type})</SelectItem>)}</SelectContent></Select></div>
             <div><Label htmlFor="formTitle">Title (Optional)</Label><Input id="formTitle" value={formTitle} onChange={e => setFormTitle(e.target.value)} placeholder="e.g., CS101 Lecture" disabled={isSubmitting} /></div>

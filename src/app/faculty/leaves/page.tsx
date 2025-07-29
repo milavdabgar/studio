@@ -296,7 +296,10 @@ export default function FacultyLeavesPage() {
 
       <Dialog open={isFormOpen} onOpenChange={(open) => { setIsFormOpen(open); if (!open) resetForm(); }}>
         <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
-          <DialogHeader><DialogTitle className="text-base sm:text-lg">Apply for Leave</DialogTitle></DialogHeader>
+          <DialogHeader>
+            <DialogTitle className="text-base sm:text-lg">Apply for Leave</DialogTitle>
+            <DialogDescription>Fill in the details for your leave request.</DialogDescription>
+          </DialogHeader>
           <form onSubmit={handleSubmitLeaveRequest} className="space-y-3 sm:space-y-4 py-2">
             <div className="space-y-2">
               <Label htmlFor="formLeaveType" className="text-sm sm:text-base">Leave Type *</Label>

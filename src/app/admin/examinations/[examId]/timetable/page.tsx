@@ -277,6 +277,7 @@ export default function ExamTimetablePage() {
         <DialogContent className="sm:max-w-lg">
             <DialogHeader>
                 <DialogTitle>{editingEntry ? "Edit Timetable Entry" : "Add New Timetable Entry"}</DialogTitle>
+                <DialogDescription>Fill in the timetable entry details.</DialogDescription>
             </DialogHeader>
             <form onSubmit={handleEntryFormSubmit} className="space-y-4 py-2">
                 <div>

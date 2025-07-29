@@ -226,6 +226,7 @@ export default function EventSchedulePage() {
         <DialogContent className="sm:max-w-lg">
             <DialogHeader>
                 <DialogTitle>{editingItem ? "Edit Schedule Item" : "Add New Schedule Item"}</DialogTitle>
+                <DialogDescription>Fill in the schedule item details.</DialogDescription>
             </DialogHeader>
             <form onSubmit={handleScheduleItemSubmit} className="space-y-4 py-2">
                 <div><Label htmlFor="formTime">Time Slot *</Label><Input id="formTime" value={formTime} onChange={e => setFormTime(e.target.value)} placeholder="e.g., 09:00 AM - 10:00 AM" required /></div>

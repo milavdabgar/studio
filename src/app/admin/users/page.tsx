@@ -715,8 +715,106 @@ export default function UserManagementPage() {
                 </span>
             </div>
           )}
+        </CardContent>
+      </Card>
+      
+      <Card className="shadow-xl">
+        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <CardTitle className="text-2xl font-bold text-primary flex items-center gap-2">
+              <UsersIcon className="h-6 w-6" />
+              User Listing
+            </CardTitle>
+            <CardDescription>
+              View and manage all system users.
+            </CardDescription>
+          </div>
+          {selectedUserIds.length > 0 && (
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                <Button variant="destructive" onClick={handleDeleteSelected} disabled={isSubmitting}>
+                    <Trash2 className="mr-2 h-4 w-4" /> Delete Selected ({selectedUserIds.length})
+                </Button>
+                <span className="text-sm text-muted-foreground">
+                    {selectedUserIds.length} user(s) selected.
+                </span>
+            </div>
+          )}
+        </CardHeader>
+        <CardContent>
+          {/* Mobile Card View */}
+          <div className="block lg:hidden space-y-3">
+            {paginatedUsers.map((user) => {
+              const instituteInfo = institutes.find(i => i.id === user.instituteId);
+              const userRoles = user.roles.map(roleCode => 
+                allSystemRoles.find(r => r.code === roleCode)?.name || roleCode
+              );
+              
+              return (
+                <Card key={user.id} className="p-4">
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <Checkbox 
+                        checked={selectedUserIds.includes(user.id)} 
+                        onCheckedChange={(checked) => handleSelectUser(user.id, !!checked)}
+                        disabled={user.email === "admin@gppalanpur.in" || user.instituteEmail === "admin@gppalanpur.in"}
+                        className="flex-shrink-0"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-medium text-sm leading-tight">{user.displayName}</h3>
+                        <p className="text-xs text-muted-foreground">{user.email}</p>
+                        {user.instituteEmail && user.instituteEmail !== user.email && (
+                          <p className="text-xs text-muted-foreground">{user.instituteEmail}</p>
+                        )}
+                      </div>
+                    </div>
+                    <span className={`px-2 py-1 text-xs font-semibold rounded-full flex-shrink-0 ${user.isActive ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'}`}>
+                      {user.isActive ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3 text-xs mb-3">
+                    <div>
+                      <span className="text-muted-foreground">Roles:</span>
+                      <p className="font-medium truncate">{userRoles.join(', ') || 'No roles'}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Institute:</span>
+                      <p className="font-medium">{instituteInfo?.code || '-'}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-1">
+                    <Button variant="outline" size="sm" onClick={() => handleView(user)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
+                      <Eye className="h-3 w-3" />
+                      <span className="ml-1">View</span>
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleEdit(user)} disabled={isSubmitting} className="min-h-[44px] flex-1 text-xs">
+                      <Edit className="h-3 w-3" />
+                      <span className="ml-1">Edit</span>
+                    </Button>
+                    <Button 
+                      variant="destructive" 
+                      size="sm" 
+                      onClick={() => handleDelete(user.id)} 
+                      disabled={isSubmitting || user.email === "admin@gppalanpur.in" || user.instituteEmail === "admin@gppalanpur.in"}
+                      className="min-h-[44px] flex-1 text-xs"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                      <span className="ml-1">Delete</span>
+                    </Button>
+                  </div>
+                </Card>
+              );
+            })}
+            {paginatedUsers.length === 0 && (
+              <Card className="p-8 text-center text-muted-foreground">
+                No users found. Try adjusting your search or filters, or add a new user.
+              </Card>
+            )}
+          </div>
 
-          <Table>
+          {/* Desktop Table View */}
+          <Table className="hidden lg:table">
             <TableHeader>
               <TableRow>
                  <TableHead className="w-[50px]">
