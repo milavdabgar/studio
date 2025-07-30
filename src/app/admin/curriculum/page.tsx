@@ -507,31 +507,98 @@ curr_2,prog_dme_gpp,DME,2.1,2025-01-01,draft,course_me101_dme_gpp,ME101,1,false
             </div>
           )}
 
-          <Table>
-            <TableHeader><TableRow>
-              <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedCurricula.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(val) => handleSelectAll(val as boolean | 'indeterminate')}/></TableHead>
-              <SortableTableHeader field="programName" label="Program" />
-              <SortableTableHeader field="version" label="Version" />
-              <SortableTableHeader field="effectiveDate" label="Effective Date" />
-              <TableHead>Courses</TableHead>
-              <SortableTableHeader field="status" label="Status" />
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow></TableHeader>
-            <TableBody>
-              {paginatedCurricula.map((curr) => (
-                <TableRow key={curr.id} data-state={selectedCurriculumIds.includes(curr.id) ? "selected" : undefined}>
-                  <TableCell><Checkbox checked={selectedCurriculumIds.includes(curr.id)} onCheckedChange={(checked) => handleSelectCurriculum(curr.id, !!checked)}/></TableCell>
-                  <TableCell>{programs.find(p=>p.id === curr.programId)?.name || 'N/A'}</TableCell>
-                  <TableCell>{curr.version}</TableCell>
-                  <TableCell>{format(parseISO(curr.effectiveDate), "dd MMM yyyy")}</TableCell>
-                  <TableCell>{curr.courses.length}</TableCell>
-                  <TableCell><span className={`px-2 py-1 text-xs font-semibold rounded-full ${curr.status === 'active' ? 'bg-green-100 text-green-800' : curr.status === 'draft' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>{CURRICULUM_STATUS_OPTIONS.find(s=>s.value === curr.status)?.label || curr.status}</span></TableCell>
-                  <TableCell className="text-right space-x-2"><Button variant="outline" size="icon" onClick={() => handleView(curr)} disabled={isSubmitting}><Eye className="h-4 w-4" /></Button><Button variant="outline" size="icon" onClick={() => handleEdit(curr)} disabled={isSubmitting}><Edit className="h-4 w-4" /></Button><Button variant="destructive" size="icon" onClick={() => handleDelete(curr.id)} disabled={isSubmitting}><Trash2 className="h-4 w-4" /></Button></TableCell>
-                </TableRow>
-              ))}
-              {paginatedCurricula.length === 0 && <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No curricula found.</TableCell></TableRow>}
-            </TableBody>
-          </Table>
+          {/* Mobile View */}
+          <div className="block lg:hidden space-y-3">
+            {paginatedCurricula.map((curr) => (
+              <Card key={curr.id} className="shadow-sm">
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <Checkbox
+                        checked={selectedCurriculumIds.includes(curr.id)}
+                        onCheckedChange={(checked) => handleSelectCurriculum(curr.id, !!checked)}
+                        aria-labelledby={`curriculum-name-mobile-${curr.id}`}
+                      />
+                      <div className="min-w-0 flex-1">
+                        <h4 id={`curriculum-name-mobile-${curr.id}`} className="font-semibold text-sm leading-tight">
+                          {programs.find(p => p.id === curr.programId)?.name || 'N/A'}
+                        </h4>
+                        <p className="text-xs text-muted-foreground">Version {curr.version}</p>
+                      </div>
+                    </div>
+                    <span className={`px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${
+                      curr.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                      : curr.status === 'draft' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                      : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                    }`}>
+                      {CURRICULUM_STATUS_OPTIONS.find(s => s.value === curr.status)?.label || curr.status}
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-y-2 text-xs mb-3">
+                    <div>
+                      <span className="text-muted-foreground">Effective Date:</span>
+                      <p className="font-medium">{format(parseISO(curr.effectiveDate), "dd MMM yyyy")}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Courses:</span>
+                      <p className="font-medium">{curr.courses.length} subjects</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => handleView(curr)} disabled={isSubmitting} className="flex-1 min-h-[40px]">
+                      <Eye className="h-4 w-4 mr-1" /> View
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleEdit(curr)} disabled={isSubmitting} className="flex-1 min-h-[40px]">
+                      <Edit className="h-4 w-4 mr-1" /> Edit
+                    </Button>
+                    <Button variant="destructive" size="sm" onClick={() => handleDelete(curr.id)} disabled={isSubmitting} className="min-h-[40px]">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+            {paginatedCurricula.length === 0 && (
+              <Card className="shadow-sm">
+                <CardContent className="p-8 text-center text-muted-foreground">
+                  No curricula found. Try adjusting your search or filters, or add a new curriculum.
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden lg:block">
+            <div className="overflow-x-auto border rounded-lg">
+              <Table>
+                <TableHeader><TableRow>
+                  <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedCurricula.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(val) => handleSelectAll(val as boolean | 'indeterminate')}/></TableHead>
+                  <SortableTableHeader field="programName" label="Program" />
+                  <SortableTableHeader field="version" label="Version" />
+                  <SortableTableHeader field="effectiveDate" label="Effective Date" />
+                  <TableHead>Courses</TableHead>
+                  <SortableTableHeader field="status" label="Status" />
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow></TableHeader>
+                <TableBody>
+                  {paginatedCurricula.map((curr) => (
+                    <TableRow key={curr.id} data-state={selectedCurriculumIds.includes(curr.id) ? "selected" : undefined}>
+                      <TableCell><Checkbox checked={selectedCurriculumIds.includes(curr.id)} onCheckedChange={(checked) => handleSelectCurriculum(curr.id, !!checked)}/></TableCell>
+                      <TableCell>{programs.find(p=>p.id === curr.programId)?.name || 'N/A'}</TableCell>
+                      <TableCell>{curr.version}</TableCell>
+                      <TableCell>{format(parseISO(curr.effectiveDate), "dd MMM yyyy")}</TableCell>
+                      <TableCell>{curr.courses.length}</TableCell>
+                      <TableCell><span className={`px-2 py-1 text-xs font-semibold rounded-full ${curr.status === 'active' ? 'bg-green-100 text-green-800' : curr.status === 'draft' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>{CURRICULUM_STATUS_OPTIONS.find(s=>s.value === curr.status)?.label || curr.status}</span></TableCell>
+                      <TableCell className="text-right space-x-2"><Button variant="outline" size="icon" onClick={() => handleView(curr)} disabled={isSubmitting}><Eye className="h-4 w-4" /></Button><Button variant="outline" size="icon" onClick={() => handleEdit(curr)} disabled={isSubmitting}><Edit className="h-4 w-4" /></Button><Button variant="destructive" size="icon" onClick={() => handleDelete(curr.id)} disabled={isSubmitting}><Trash2 className="h-4 w-4" /></Button></TableCell>
+                    </TableRow>
+                  ))}
+                  {paginatedCurricula.length === 0 && <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No curricula found.</TableCell></TableRow>}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
         </CardContent>
         <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
             <div className="text-sm text-muted-foreground">Showing {paginatedCurricula.length > 0 ? Math.min((currentPage -1) * itemsPerPage + 1, filteredAndSortedCurricula.length): 0} to {Math.min(currentPage * itemsPerPage, filteredAndSortedCurricula.length)} of {filteredAndSortedCurricula.length} curricula.</div>

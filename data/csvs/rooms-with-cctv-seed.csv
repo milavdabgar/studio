@@ -7,7 +7,7 @@ A-106,A-106,6886706c3c83452c2ada8a85,1,Office,15,,Administrative Office,availabl
 A-108,A-108,6886706c3c83452c2ada8a85,1,Laboratory,30,,Computer Lab,available,Lab with CCTV monitoring,true,Hickvision,D15,10.169.24.33,admin,admin@123,working
 A-111,A-111,6886706c3c83452c2ada8a85,1,Laboratory,30,,Computer Lab,available,Lab with CCTV monitoring,true,Hickvision,D24,10.169.24.35,admin,admin@123,working
 A-114,A-114,6886706c3c83452c2ada8a85,1,Laboratory,30,,Computer Lab,available,Lab with CCTV monitoring,true,Hickvision,D26,10.169.24.34,admin,admin@123,working
-A-201,A-201,6886706c3c83452c2ada8a85,2,Lecture Hall,60,,Classroom,available,Classroom with CCTV monitoring,true,Digilink,D40,10.169.24.12,admin,admin,working
+A-201,A-201,6886706c3c83452c2ada8a85,2,Lecture Hall,60,,Classroom,available,Classroom with CCTV monitoring,true,Digilink,D40,10.169.24.12,admin,admin,working   
 A-202,A-202,6886706c3c83452c2ada8a85,2,Lecture Hall,60,,Classroom,available,Classroom with CCTV monitoring,true,Digilink,D35,10.169.24.23,admin,admin,working
 A-204,A-204,6886706c3c83452c2ada8a85,2,Lecture Hall,60,,Classroom,available,Classroom with CCTV monitoring,true,Digilink,D28,10.169.24.15,admin,admin,working
 A-205,A-205,6886706c3c83452c2ada8a85,2,Laboratory,30,,Computer Lab,available,Lab with CCTV monitoring,true,Digilink,D29,10.169.24.22,admin,admin,working

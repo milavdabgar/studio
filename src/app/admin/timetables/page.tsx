@@ -431,38 +431,109 @@ export default function TimetableManagementPage() {
             </div>
           )}
 
-          <Table>
-            <TableHeader><TableRow><TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedTimetables.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(val) => handleSelectAll(val as boolean | 'indeterminate')}/></TableHead><SortableTableHeader field="name" label="Name" /><SortableTableHeader field="programName" label="Program" /><SortableTableHeader field="batchName" label="Batch" /><SortableTableHeader field="academicYear" label="Academic Year" /><SortableTableHeader field="status" label="Status" /><TableHead className="text-right w-32">Actions</TableHead></TableRow></TableHeader>
-            <TableBody>
-              {paginatedTimetables.map((tt) => (
-                <TableRow key={tt.id} data-state={selectedTimetableIds.includes(tt.id) ? "selected" : undefined}>
-                  <TableCell><Checkbox checked={selectedTimetableIds.includes(tt.id)} onCheckedChange={(checked) => handleSelectTimetable(tt.id, !!checked)}/></TableCell>
-                  <TableCell className="font-medium">{tt.name} (v{tt.version})</TableCell>
-                  <TableCell>{programs.find(p=>p.id===tt.programId)?.name || 'N/A'}</TableCell>
-                  <TableCell>{batches.find(b=>b.id===tt.batchId)?.name || 'N/A'}</TableCell>
-                  <TableCell>{tt.academicYear} Sem-{tt.semester}</TableCell>
-                  <TableCell><span className={`px-2 py-1 text-xs font-semibold rounded-full ${tt.status === 'published' ? 'bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-200' : tt.status === 'draft' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-700 dark:text-yellow-200' : 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200'}`}>{STATUS_OPTIONS.find(s=>s.value === tt.status)?.label || tt.status}</span></TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
-                      <Button variant="outline" size="icon" onClick={() => handleView(tt)} disabled={isSubmitting}>
-                        <Eye className="h-4 w-4" />
-                        <span className="sr-only">View Timetable</span>
-                      </Button>
-                      <Button variant="outline" size="icon" onClick={() => handleEdit(tt)} disabled={isSubmitting}>
-                        <Edit className="h-4 w-4" />
-                        <span className="sr-only">Edit Timetable</span>
-                      </Button>
-                      <Button variant="destructive" size="icon" onClick={() => handleDelete(tt.id)} disabled={isSubmitting}>
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">Delete Timetable</span>
-                      </Button>
+          {/* Mobile View */}
+          <div className="block lg:hidden space-y-3">
+            {paginatedTimetables.map((tt) => (
+              <Card key={tt.id} className="shadow-sm">
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <Checkbox
+                        checked={selectedTimetableIds.includes(tt.id)}
+                        onCheckedChange={(checked) => handleSelectTimetable(tt.id, !!checked)}
+                        aria-labelledby={`timetable-name-mobile-${tt.id}`}
+                      />
+                      <div className="min-w-0 flex-1">
+                        <h4 id={`timetable-name-mobile-${tt.id}`} className="font-semibold text-sm leading-tight">
+                          {tt.name} (v{tt.version})
+                        </h4>
+                        <p className="text-xs text-muted-foreground">{tt.academicYear} Sem-{tt.semester}</p>
+                      </div>
                     </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {paginatedTimetables.length === 0 && <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No timetables found.</TableCell></TableRow>}
-            </TableBody>
-          </Table>
+                    <span className={`px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${
+                      tt.status === 'published' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                      : tt.status === 'draft' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                      : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                    }`}>
+                      {STATUS_OPTIONS.find(s => s.value === tt.status)?.label || tt.status}
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-y-2 text-xs mb-3">
+                    <div>
+                      <span className="text-muted-foreground">Program:</span>
+                      <p className="font-medium truncate">{programs.find(p => p.id === tt.programId)?.name || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Batch:</span>
+                      <p className="font-medium truncate">{batches.find(b => b.id === tt.batchId)?.name || 'N/A'}</p>
+                    </div>
+                    <div className="col-span-2">
+                      <span className="text-muted-foreground">Entries:</span>
+                      <p className="font-medium">{tt.entries?.length || 0} time slots</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => handleView(tt)} disabled={isSubmitting} className="flex-1 min-h-[40px]">
+                      <Eye className="h-4 w-4 mr-1" /> View
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleEdit(tt)} disabled={isSubmitting} className="flex-1 min-h-[40px]">
+                      <Edit className="h-4 w-4 mr-1" /> Edit
+                    </Button>
+                    <Button variant="destructive" size="sm" onClick={() => handleDelete(tt.id)} disabled={isSubmitting} className="min-h-[40px]">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+            {paginatedTimetables.length === 0 && (
+              <Card className="shadow-sm">
+                <CardContent className="p-8 text-center text-muted-foreground">
+                  No timetables found. Try adjusting your search or filters, or add a new timetable.
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden lg:block">
+            <div className="overflow-x-auto border rounded-lg">
+              <Table>
+                <TableHeader><TableRow><TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedTimetables.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(val) => handleSelectAll(val as boolean | 'indeterminate')}/></TableHead><SortableTableHeader field="name" label="Name" /><SortableTableHeader field="programName" label="Program" /><SortableTableHeader field="batchName" label="Batch" /><SortableTableHeader field="academicYear" label="Academic Year" /><SortableTableHeader field="status" label="Status" /><TableHead className="text-right w-32">Actions</TableHead></TableRow></TableHeader>
+                <TableBody>
+                  {paginatedTimetables.map((tt) => (
+                    <TableRow key={tt.id} data-state={selectedTimetableIds.includes(tt.id) ? "selected" : undefined}>
+                      <TableCell><Checkbox checked={selectedTimetableIds.includes(tt.id)} onCheckedChange={(checked) => handleSelectTimetable(tt.id, !!checked)}/></TableCell>
+                      <TableCell className="font-medium">{tt.name} (v{tt.version})</TableCell>
+                      <TableCell>{programs.find(p=>p.id===tt.programId)?.name || 'N/A'}</TableCell>
+                      <TableCell>{batches.find(b=>b.id===tt.batchId)?.name || 'N/A'}</TableCell>
+                      <TableCell>{tt.academicYear} Sem-{tt.semester}</TableCell>
+                      <TableCell><span className={`px-2 py-1 text-xs font-semibold rounded-full ${tt.status === 'published' ? 'bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-200' : tt.status === 'draft' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-700 dark:text-yellow-200' : 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200'}`}>{STATUS_OPTIONS.find(s=>s.value === tt.status)?.label || tt.status}</span></TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-1">
+                          <Button variant="outline" size="icon" onClick={() => handleView(tt)} disabled={isSubmitting}>
+                            <Eye className="h-4 w-4" />
+                            <span className="sr-only">View Timetable</span>
+                          </Button>
+                          <Button variant="outline" size="icon" onClick={() => handleEdit(tt)} disabled={isSubmitting}>
+                            <Edit className="h-4 w-4" />
+                            <span className="sr-only">Edit Timetable</span>
+                          </Button>
+                          <Button variant="destructive" size="icon" onClick={() => handleDelete(tt.id)} disabled={isSubmitting}>
+                            <Trash2 className="h-4 w-4" />
+                            <span className="sr-only">Delete Timetable</span>
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {paginatedTimetables.length === 0 && <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No timetables found.</TableCell></TableRow>}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
         </CardContent>
         <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
              <div className="text-sm text-muted-foreground">Showing {paginatedTimetables.length > 0 ? Math.min((currentPage -1) * itemsPerPage + 1, sortedTimetables.length): 0} to {Math.min(currentPage * itemsPerPage, sortedTimetables.length)} of {sortedTimetables.length} timetables.</div>

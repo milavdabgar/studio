@@ -243,38 +243,93 @@ export default function AdminLeavesManagementPage() {
           {paginatedLeaveRequests.length === 0 ? (
             <p className="text-center text-muted-foreground py-8">No leave requests match your current filters.</p>
           ) : (
-            <Table>
-              <TableHeader><TableRow>
-                <SortableTableHeader field="facultyName" label="Faculty" />
-                <SortableTableHeader field="departmentName" label="Department" />
-                <SortableTableHeader field="leaveType" label="Type" />
-                <SortableTableHeader field="fromDate" label="From" />
-                <SortableTableHeader field="toDate" label="To" />
-                <SortableTableHeader field="reason" label="Reason" />
-                <SortableTableHeader field="status" label="Status" />
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow></TableHeader>
-              <TableBody>
+            <>
+              {/* Mobile View */}
+              <div className="block lg:hidden space-y-3">
                 {paginatedLeaveRequests.map(req => {
                   const faculty = faculties.find(f => f.id === req.facultyId);
                   const department = departments.find(d => d.id === req.departmentId);
                   return (
-                  <TableRow key={req.id}>
-                    <TableCell className="font-medium">{faculty?.firstName} {faculty?.lastName}</TableCell>
-                    <TableCell>{department?.name || 'N/A'}</TableCell>
-                    <TableCell className="capitalize">{req.leaveType || req.type}</TableCell>
-                    <TableCell>{req.fromDate ? format(parseISO(req.fromDate), "PPP") : req.startDate ? format(parseISO(req.startDate), "PPP") : 'N/A'}</TableCell>
-                    <TableCell>{req.toDate ? format(parseISO(req.toDate), "PPP") : req.endDate ? format(parseISO(req.endDate), "PPP") : 'N/A'}</TableCell>
-                    <TableCell className="max-w-xs truncate" title={req.reason}>{req.reason}</TableCell>
-                    <TableCell><span className={cn("px-2 py-0.5 text-xs font-semibold rounded-full", req.status === 'pending' && 'bg-yellow-100 text-yellow-800', req.status === 'approved' && 'bg-green-100 text-green-800', req.status === 'rejected' && 'bg-red-100 text-red-800', req.status === 'cancelled' && 'bg-slate-100 text-slate-800', req.status === 'taken' && 'bg-blue-100 text-blue-800')}>{LEAVE_STATUS_OPTIONS.find(s => s.value === req.status)?.label || req.status}</span></TableCell>
-                    <TableCell className="text-right space-x-1">
-                        {req.status === 'pending' && (<><Button variant="outline" size="xs" className="text-success border-success hover:bg-success/10 dark:border-gray-700" onClick={()=>openActionDialog(req, 'approve')}><CheckCircle className="mr-1 h-3 w-3"/>Approve</Button><Button variant="outline" size="xs" className="text-destructive border-destructive hover:bg-destructive/10 dark:border-gray-700" onClick={()=>openActionDialog(req, 'reject')}><XCircle className="mr-1 h-3 w-3"/>Reject</Button></>)}
-                        {(req.status === 'approved' || req.status === 'rejected') && <Button variant="ghost" size="xs" onClick={()=>openActionDialog(req, req.status as 'approve' | 'reject')}><Edit className="mr-1 h-3 w-3"/>Review</Button>}
-                    </TableCell>
-                  </TableRow>
-                );})}
-              </TableBody>
-            </Table>
+                    <Card key={req.id} className="shadow-sm">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="min-w-0 flex-1">
+                            <h4 className="font-semibold text-sm leading-tight">
+                              {faculty?.firstName} {faculty?.lastName}
+                            </h4>
+                            <p className="text-xs text-muted-foreground">{department?.name || 'N/A'}</p>
+                          </div>
+                          <span className={cn("px-2 py-0.5 text-xs font-semibold rounded-full", req.status === 'pending' && 'bg-yellow-100 text-yellow-800', req.status === 'approved' && 'bg-green-100 text-green-800', req.status === 'rejected' && 'bg-red-100 text-red-800', req.status === 'cancelled' && 'bg-slate-100 text-slate-800', req.status === 'taken' && 'bg-blue-100 text-blue-800')}>
+                            {LEAVE_STATUS_OPTIONS.find(s => s.value === req.status)?.label || req.status}
+                          </span>
+                        </div>
+                        
+                        <div className="space-y-2 text-xs text-muted-foreground mb-3">
+                          <div><span className="font-medium">Type:</span> <span className="capitalize">{req.leaveType || req.type}</span></div>
+                          <div><span className="font-medium">From:</span> {req.fromDate ? format(parseISO(req.fromDate), "PPP") : req.startDate ? format(parseISO(req.startDate), "PPP") : 'N/A'}</div>
+                          <div><span className="font-medium">To:</span> {req.toDate ? format(parseISO(req.toDate), "PPP") : req.endDate ? format(parseISO(req.endDate), "PPP") : 'N/A'}</div>
+                          <div><span className="font-medium">Reason:</span> {req.reason}</div>
+                        </div>
+
+                        <div className="flex gap-2">
+                          {req.status === 'pending' && (
+                            <>
+                              <Button variant="outline" size="sm" className="text-success border-success hover:bg-success/10 min-h-[44px] flex-1" onClick={()=>openActionDialog(req, 'approve')}>
+                                <CheckCircle className="mr-1 h-3 w-3"/>Approve
+                              </Button>
+                              <Button variant="outline" size="sm" className="text-destructive border-destructive hover:bg-destructive/10 min-h-[44px] flex-1" onClick={()=>openActionDialog(req, 'reject')}>
+                                <XCircle className="mr-1 h-3 w-3"/>Reject
+                              </Button>
+                            </>
+                          )}
+                          {(req.status === 'approved' || req.status === 'rejected') && (
+                            <Button variant="ghost" size="sm" className="min-h-[44px] flex-1" onClick={()=>openActionDialog(req, req.status as 'approve' | 'reject')}>
+                              <Edit className="mr-1 h-3 w-3"/>Review
+                            </Button>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+
+              {/* Desktop View */}
+              <div className="hidden lg:block">
+                <Table>
+                  <TableHeader><TableRow>
+                    <SortableTableHeader field="facultyName" label="Faculty" />
+                    <SortableTableHeader field="departmentName" label="Department" />
+                    <SortableTableHeader field="leaveType" label="Type" />
+                    <SortableTableHeader field="fromDate" label="From" />
+                    <SortableTableHeader field="toDate" label="To" />
+                    <SortableTableHeader field="reason" label="Reason" />
+                    <SortableTableHeader field="status" label="Status" />
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow></TableHeader>
+                  <TableBody>
+                    {paginatedLeaveRequests.map(req => {
+                      const faculty = faculties.find(f => f.id === req.facultyId);
+                      const department = departments.find(d => d.id === req.departmentId);
+                      return (
+                      <TableRow key={req.id}>
+                        <TableCell className="font-medium">{faculty?.firstName} {faculty?.lastName}</TableCell>
+                        <TableCell>{department?.name || 'N/A'}</TableCell>
+                        <TableCell className="capitalize">{req.leaveType || req.type}</TableCell>
+                        <TableCell>{req.fromDate ? format(parseISO(req.fromDate), "PPP") : req.startDate ? format(parseISO(req.startDate), "PPP") : 'N/A'}</TableCell>
+                        <TableCell>{req.toDate ? format(parseISO(req.toDate), "PPP") : req.endDate ? format(parseISO(req.endDate), "PPP") : 'N/A'}</TableCell>
+                        <TableCell className="max-w-xs truncate" title={req.reason}>{req.reason}</TableCell>
+                        <TableCell><span className={cn("px-2 py-0.5 text-xs font-semibold rounded-full", req.status === 'pending' && 'bg-yellow-100 text-yellow-800', req.status === 'approved' && 'bg-green-100 text-green-800', req.status === 'rejected' && 'bg-red-100 text-red-800', req.status === 'cancelled' && 'bg-slate-100 text-slate-800', req.status === 'taken' && 'bg-blue-100 text-blue-800')}>{LEAVE_STATUS_OPTIONS.find(s => s.value === req.status)?.label || req.status}</span></TableCell>
+                        <TableCell className="text-right space-x-1">
+                            {req.status === 'pending' && (<><Button variant="outline" size="xs" className="text-success border-success hover:bg-success/10 dark:border-gray-700" onClick={()=>openActionDialog(req, 'approve')}><CheckCircle className="mr-1 h-3 w-3"/>Approve</Button><Button variant="outline" size="xs" className="text-destructive border-destructive hover:bg-destructive/10 dark:border-gray-700" onClick={()=>openActionDialog(req, 'reject')}><XCircle className="mr-1 h-3 w-3"/>Reject</Button></>)}
+                            {(req.status === 'approved' || req.status === 'rejected') && <Button variant="ghost" size="xs" onClick={()=>openActionDialog(req, req.status as 'approve' | 'reject')}><Edit className="mr-1 h-3 w-3"/>Review</Button>}
+                        </TableCell>
+                      </TableRow>
+                    );})}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
           )}
         </CardContent>
         {filteredAndSortedLeaveRequests.length > 0 && (

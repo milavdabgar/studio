@@ -550,60 +550,131 @@ cmt_sample_1,Academic Committee,ACCOM,"Oversees academic policies","To ensure ac
             </div>
           )}
 
-          <Table>
-            <TableHeader>
-              <TableRow>
-                 <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedCommittees.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all committees on this page"/></TableHead>
-                <SortableTableHeader field="name" label="Committee Name" />
-                <SortableTableHeader field="code" label="Code" />
-                <TableHead>Institute</TableHead>
-                <TableHead>Convener</TableHead>
-                <SortableTableHeader field="formationDate" label="Formed On" />
-                <SortableTableHeader field="status" label="Status" />
-                <TableHead className="text-right w-32">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedCommittees.map((committee) => (
-                <TableRow key={committee.id} data-state={selectedCommitteeIds.includes(committee.id) ? "selected" : undefined}>
-                  <TableCell><Checkbox checked={selectedCommitteeIds.includes(committee.id)} onCheckedChange={(checked) => handleSelectCommittee(committee.id, !!checked)} aria-labelledby={`committee-name-${committee.id}`}/></TableCell>
-                  <TableCell id={`committee-name-${committee.id}`} className="font-medium">{committee.name}</TableCell>
-                  <TableCell>{committee.code}</TableCell>
-                  <TableCell>{institutes.find(i => i.id === committee.instituteId)?.name || 'N/A'}</TableCell>
-                  <TableCell>{facultyUsers.find(u => u.id === committee.convenerId)?.displayName || '-'}</TableCell>
-                  <TableCell>{committee.formationDate && isValid(parseISO(committee.formationDate)) ? format(parseISO(committee.formationDate), 'dd MMM yyyy') : '-'}</TableCell>
-                  <TableCell>
-                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                        committee.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
-                        : committee.status === 'inactive' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
-                        : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' /* dissolved */
+          {/* Mobile View */}
+          <div className="block lg:hidden space-y-3">
+            {paginatedCommittees.map((committee) => (
+              <Card key={committee.id} className="shadow-sm">
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <Checkbox
+                        checked={selectedCommitteeIds.includes(committee.id)}
+                        onCheckedChange={(checked) => handleSelectCommittee(committee.id, !!checked)}
+                        aria-labelledby={`committee-name-mobile-${committee.id}`}
+                      />
+                      <div className="min-w-0 flex-1">
+                        <h4 id={`committee-name-mobile-${committee.id}`} className="font-semibold text-sm leading-tight">
+                          {committee.name}
+                        </h4>
+                        <p className="text-xs text-muted-foreground">{committee.code}</p>
+                      </div>
+                    </div>
+                    <span className={`px-2 py-1 text-xs font-semibold rounded-full whitespace-nowrap ${
+                      committee.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                      : committee.status === 'inactive' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                      : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
                     }`}>
                       {COMMITTEE_STATUS_OPTIONS.find(s => s.value === committee.status)?.label || committee.status}
                     </span>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-1">
-                      <Button variant="outline" size="icon" onClick={() => handleView(committee)} disabled={isSubmitting}>
-                        <Eye className="h-4 w-4" />
-                        <span className="sr-only">View Committee</span>
-                      </Button>
-                      <Button variant="outline" size="icon" onClick={() => handleEdit(committee)} disabled={isSubmitting}>
-                        <Edit className="h-4 w-4" />
-                        <span className="sr-only">Edit Committee</span>
-                      </Button>
-                      <Button variant="destructive" size="icon" onClick={() => handleDelete(committee.id)} disabled={isSubmitting}>
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">Delete Committee</span>
-                      </Button>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-y-2 text-xs mb-3">
+                    <div>
+                      <span className="text-muted-foreground">Institute:</span>
+                      <p className="font-medium truncate">{institutes.find(i => i.id === committee.instituteId)?.name || 'N/A'}</p>
                     </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {paginatedCommittees.length === 0 && (
-                 <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">No committees found. Adjust filters or add a new committee.</TableCell></TableRow>
-              )}
-            </TableBody>
-          </Table>
+                    <div>
+                      <span className="text-muted-foreground">Convener:</span>
+                      <p className="font-medium truncate">{facultyUsers.find(u => u.id === committee.convenerId)?.displayName || 'Not assigned'}</p>
+                    </div>
+                    <div className="col-span-2">
+                      <span className="text-muted-foreground">Formed:</span>
+                      <p className="font-medium">{committee.formationDate && isValid(parseISO(committee.formationDate)) ? format(parseISO(committee.formationDate), 'dd MMM yyyy') : 'N/A'}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => handleView(committee)} disabled={isSubmitting} className="flex-1 min-h-[40px]">
+                      <Eye className="h-4 w-4 mr-1" /> View
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleEdit(committee)} disabled={isSubmitting} className="flex-1 min-h-[40px]">
+                      <Edit className="h-4 w-4 mr-1" /> Edit
+                    </Button>
+                    <Button variant="destructive" size="sm" onClick={() => handleDelete(committee.id)} disabled={isSubmitting} className="min-h-[40px]">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+            {paginatedCommittees.length === 0 && (
+              <Card className="shadow-sm">
+                <CardContent className="p-8 text-center text-muted-foreground">
+                  No committees found. Try adjusting your search or filters, or add a new committee.
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden lg:block">
+            <div className="overflow-x-auto border rounded-lg">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                     <TableHead className="w-[50px]"><Checkbox checked={isAllSelectedOnPage || (paginatedCommittees.length > 0 && isSomeSelectedOnPage ? 'indeterminate' : false)} onCheckedChange={(checkedState) => handleSelectAll(!!checkedState)} aria-label="Select all committees on this page"/></TableHead>
+                    <SortableTableHeader field="name" label="Committee Name" />
+                    <SortableTableHeader field="code" label="Code" />
+                    <TableHead>Institute</TableHead>
+                    <TableHead>Convener</TableHead>
+                    <SortableTableHeader field="formationDate" label="Formed On" />
+                    <SortableTableHeader field="status" label="Status" />
+                    <TableHead className="text-right w-32">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {paginatedCommittees.map((committee) => (
+                    <TableRow key={committee.id} data-state={selectedCommitteeIds.includes(committee.id) ? "selected" : undefined}>
+                      <TableCell><Checkbox checked={selectedCommitteeIds.includes(committee.id)} onCheckedChange={(checked) => handleSelectCommittee(committee.id, !!checked)} aria-labelledby={`committee-name-${committee.id}`}/></TableCell>
+                      <TableCell id={`committee-name-${committee.id}`} className="font-medium">{committee.name}</TableCell>
+                      <TableCell>{committee.code}</TableCell>
+                      <TableCell>{institutes.find(i => i.id === committee.instituteId)?.name || 'N/A'}</TableCell>
+                      <TableCell>{facultyUsers.find(u => u.id === committee.convenerId)?.displayName || '-'}</TableCell>
+                      <TableCell>{committee.formationDate && isValid(parseISO(committee.formationDate)) ? format(parseISO(committee.formationDate), 'dd MMM yyyy') : '-'}</TableCell>
+                      <TableCell>
+                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                            committee.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
+                            : committee.status === 'inactive' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                            : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' /* dissolved */
+                        }`}>
+                          {COMMITTEE_STATUS_OPTIONS.find(s => s.value === committee.status)?.label || committee.status}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-1">
+                          <Button variant="outline" size="icon" onClick={() => handleView(committee)} disabled={isSubmitting}>
+                            <Eye className="h-4 w-4" />
+                            <span className="sr-only">View Committee</span>
+                          </Button>
+                          <Button variant="outline" size="icon" onClick={() => handleEdit(committee)} disabled={isSubmitting}>
+                            <Edit className="h-4 w-4" />
+                            <span className="sr-only">Edit Committee</span>
+                          </Button>
+                          <Button variant="destructive" size="icon" onClick={() => handleDelete(committee.id)} disabled={isSubmitting}>
+                            <Trash2 className="h-4 w-4" />
+                            <span className="sr-only">Delete Committee</span>
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {paginatedCommittees.length === 0 && (
+                     <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">No committees found. Adjust filters or add a new committee.</TableCell></TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
         </CardContent>
          <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
             <div className="text-sm text-muted-foreground">

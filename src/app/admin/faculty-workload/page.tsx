@@ -194,45 +194,99 @@ export default function FacultyWorkloadPage() {
             </div>
           </div>
 
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <SortableTableHeader field="lastName" label="Faculty Name" />
-                <SortableTableHeader field="staffCode" label="Staff Code" />
-                <SortableTableHeader field="departmentName" label="Department" />
-                <SortableTableHeader field="designation" label="Designation" />
-                <SortableTableHeader field="totalTeachingHours" label="Total Hours" />
-                <TableHead>Assigned Courses</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedWorkloads.map((faculty) => (
-                <TableRow key={faculty.id}>
-                  <TableCell className="font-medium">{faculty.lastName}, {faculty.firstName} {faculty.middleName || ''}</TableCell>
-                  <TableCell>{faculty.staffCode}</TableCell>
-                  <TableCell>{faculty.department}</TableCell>
-                  <TableCell>{faculty.designation || 'N/A'}</TableCell>
-                  <TableCell className="text-center font-semibold">{faculty.totalTeachingHours}</TableCell>
-                  <TableCell>
+          {/* Mobile View */}
+          <div className="block lg:hidden space-y-3">
+            {paginatedWorkloads.map((faculty) => (
+              <Card key={faculty.id} className="shadow-sm">
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="min-w-0 flex-1">
+                      <h4 className="font-semibold text-sm leading-tight">
+                        {faculty.lastName}, {faculty.firstName} {faculty.middleName || ''}
+                      </h4>
+                      <p className="text-xs text-muted-foreground">{faculty.staffCode}</p>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-semibold text-sm">{faculty.totalTeachingHours}h</div>
+                      <div className="text-xs text-muted-foreground">Total Hours</div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2 text-xs text-muted-foreground mb-3">
+                    <div><span className="font-medium">Department:</span> {faculty.department}</div>
+                    <div><span className="font-medium">Designation:</span> {faculty.designation || 'N/A'}</div>
+                  </div>
+
+                  <div>
+                    <div className="font-medium text-xs mb-2">Assigned Courses:</div>
                     {faculty.assignedOfferingsDetails.length > 0 ? (
-                      <ul className="list-disc list-inside text-xs">
+                      <div className="space-y-1">
                         {faculty.assignedOfferingsDetails.map((offering, idx) => (
-                          <li key={idx} title={`${offering.courseName} (${offering.courseCode}) - ${offering.programCode} ${offering.batchName} Sem ${offering.semester} (${offering.hours} hrs)`}>
-                            {offering.courseCode} ({offering.hours}h)
-                          </li>
+                          <div key={idx} className="text-xs p-2 bg-muted rounded">
+                            <div className="font-medium">{offering.courseCode} ({offering.hours}h)</div>
+                            <div className="text-muted-foreground">{offering.courseName}</div>
+                            <div className="text-muted-foreground">{offering.programCode} {offering.batchName} - Sem {offering.semester}</div>
+                          </div>
                         ))}
-                      </ul>
+                      </div>
                     ) : (
-                      <span className="text-xs text-muted-foreground">No courses assigned</span>
+                      <div className="text-xs text-muted-foreground">No courses assigned</div>
                     )}
-                  </TableCell>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+            {paginatedWorkloads.length === 0 && (
+              <Card>
+                <CardContent className="text-center py-12">
+                  <p className="text-muted-foreground">No faculty workload data found.</p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Desktop View */}
+          <div className="hidden lg:block">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <SortableTableHeader field="lastName" label="Faculty Name" />
+                  <SortableTableHeader field="staffCode" label="Staff Code" />
+                  <SortableTableHeader field="departmentName" label="Department" />
+                  <SortableTableHeader field="designation" label="Designation" />
+                  <SortableTableHeader field="totalTeachingHours" label="Total Hours" />
+                  <TableHead>Assigned Courses</TableHead>
                 </TableRow>
-              ))}
-              {paginatedWorkloads.length === 0 && (
-                 <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">No faculty workload data found.</TableCell></TableRow>
-              )}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {paginatedWorkloads.map((faculty) => (
+                  <TableRow key={faculty.id}>
+                    <TableCell className="font-medium">{faculty.lastName}, {faculty.firstName} {faculty.middleName || ''}</TableCell>
+                    <TableCell>{faculty.staffCode}</TableCell>
+                    <TableCell>{faculty.department}</TableCell>
+                    <TableCell>{faculty.designation || 'N/A'}</TableCell>
+                    <TableCell className="text-center font-semibold">{faculty.totalTeachingHours}</TableCell>
+                    <TableCell>
+                      {faculty.assignedOfferingsDetails.length > 0 ? (
+                        <ul className="list-disc list-inside text-xs">
+                          {faculty.assignedOfferingsDetails.map((offering, idx) => (
+                            <li key={idx} title={`${offering.courseName} (${offering.courseCode}) - ${offering.programCode} ${offering.batchName} Sem ${offering.semester} (${offering.hours} hrs)`}>
+                              {offering.courseCode} ({offering.hours}h)
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">No courses assigned</span>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {paginatedWorkloads.length === 0 && (
+                   <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">No faculty workload data found.</TableCell></TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
         <CardFooter className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
             <div className="text-sm text-muted-foreground">

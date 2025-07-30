@@ -220,23 +220,56 @@ export default function ReportingAnalyticsPage() {
             {isLoadingEnrollment ? (
                 <div className="flex justify-center py-8"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
             ) : courseEnrollmentData.length > 0 ? (
-                <Table>
-                    <TableHeader><TableRow>
-                        <TableHead>Course</TableHead><TableHead>Program</TableHead><TableHead>Batch</TableHead><TableHead>AY</TableHead><TableHead>Sem</TableHead><TableHead className="text-center">Enrolled</TableHead>
-                    </TableRow></TableHeader>
-                    <TableBody>
+                <>
+                    {/* Mobile View */}
+                    <div className="block lg:hidden space-y-3">
                         {courseEnrollmentData.map(item => (
-                            <TableRow key={item.courseOfferingId}>
-                                <TableCell className="font-medium">{item.courseName} ({item.courseCode})</TableCell>
-                                <TableCell>{item.programName}</TableCell>
-                                <TableCell>{item.batchName}</TableCell>
-                                <TableCell>{item.academicYear}</TableCell>
-                                <TableCell className="text-center">{item.semester}</TableCell>
-                                <TableCell className="text-center font-semibold">{item.enrolledStudents}</TableCell>
-                            </TableRow>
+                            <Card key={item.courseOfferingId} className="shadow-sm">
+                                <CardContent className="p-4">
+                                    <div className="flex items-start justify-between mb-3">
+                                        <div className="min-w-0 flex-1">
+                                            <h4 className="font-semibold text-sm leading-tight">
+                                                {item.courseName} ({item.courseCode})
+                                            </h4>
+                                            <p className="text-xs text-muted-foreground">{item.programName}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <div className="font-semibold text-sm">{item.enrolledStudents}</div>
+                                            <div className="text-xs text-muted-foreground">Enrolled</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="space-y-2 text-xs text-muted-foreground">
+                                        <div><span className="font-medium">Batch:</span> {item.batchName}</div>
+                                        <div><span className="font-medium">Academic Year:</span> {item.academicYear}</div>
+                                        <div><span className="font-medium">Semester:</span> {item.semester}</div>
+                                    </div>
+                                </CardContent>
+                            </Card>
                         ))}
-                    </TableBody>
-                </Table>
+                    </div>
+
+                    {/* Desktop View */}
+                    <div className="hidden lg:block">
+                        <Table>
+                            <TableHeader><TableRow>
+                                <TableHead>Course</TableHead><TableHead>Program</TableHead><TableHead>Batch</TableHead><TableHead>AY</TableHead><TableHead>Sem</TableHead><TableHead className="text-center">Enrolled</TableHead>
+                            </TableRow></TableHeader>
+                            <TableBody>
+                                {courseEnrollmentData.map(item => (
+                                    <TableRow key={item.courseOfferingId}>
+                                        <TableCell className="font-medium">{item.courseName} ({item.courseCode})</TableCell>
+                                        <TableCell>{item.programName}</TableCell>
+                                        <TableCell>{item.batchName}</TableCell>
+                                        <TableCell>{item.academicYear}</TableCell>
+                                        <TableCell className="text-center">{item.semester}</TableCell>
+                                        <TableCell className="text-center font-semibold">{item.enrolledStudents}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </>
             ) : (
                  <p className="text-center text-muted-foreground py-8">No course enrollment data for the current filters.</p>
             )}
