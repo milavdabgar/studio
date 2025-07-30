@@ -1157,8 +1157,9 @@ export default function StudentProfilePage() {
   const fetchProfileData = useCallback(async () => {
     console.log('🔍 fetchProfileData called with user:', user);
     console.log('📋 user.id:', user?.id);
-    if (!user?.id) {
-      console.warn('❌ Early return: user or user.id is missing');
+    console.log('📧 user.email:', user?.email);
+    if (!user?.id && !user?.email) {
+      console.warn('❌ Early return: user or user.id/email is missing');
       return;
     }
     setIsLoading(true);
@@ -1166,9 +1167,29 @@ export default function StudentProfilePage() {
       console.log('📡 Fetching all students...');
       const allStudents = await studentService.getAllStudents(); 
       console.log('👥 All students count:', allStudents.length);
+      
+      // First try to find by userId (database User ID)
       console.log('🔍 Looking for student with userId:', user.id);
-      const studentProfile = allStudents.find(s => s.userId === user.id);
-      console.log('👤 Found student profile:', studentProfile);
+      let studentProfile = allStudents.find(s => s.userId === user.id);
+      console.log('👤 Found student profile by userId:', studentProfile);
+      
+      // If not found by userId, try to find by email as fallback
+      if (!studentProfile && user.email) {
+        console.log('🔄 Fallback: Looking for student with email:', user.email);
+        studentProfile = allStudents.find(s => 
+          s.instituteEmail === user.email || 
+          s.personalEmail === user.email
+        );
+        console.log('👤 Found student profile by email:', studentProfile);
+        
+        // If found by email, log the ID mismatch for debugging
+        if (studentProfile) {
+          console.warn('⚠️ ID MISMATCH DETECTED:');
+          console.warn('   Cookie user.id:', user.id);
+          console.warn('   Student userId:', studentProfile.userId);
+          console.warn('   Match found by email:', user.email);
+        }
+      }
 
       if (studentProfile) {
         console.log('📊 Retrieved student profile:', studentProfile);
@@ -1582,13 +1603,14 @@ export default function StudentProfilePage() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex justify-between items-center">
-                <div className="text-sm text-gray-600">
-                  Public URL: <code className="bg-gray-100 px-2 py-1 rounded">{getPublicProfileUrl()}</code>
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4">
+                <div className="text-xs sm:text-sm text-gray-600 order-2 sm:order-1">
+                  <span className="block sm:inline">Public URL: </span>
+                  <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-xs break-all">{getPublicProfileUrl()}</code>
                 </div>
-                <Button onClick={handleUpdateProfileSummary}>
-                  <Save className="h-4 w-4 mr-2" />
-                  Save Changes
+                <Button onClick={handleUpdateProfileSummary} size="sm" className="order-1 sm:order-2 w-full sm:w-auto">
+                  <Save className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+                  <span className="text-xs sm:text-sm">Save Changes</span>
                 </Button>
               </div>
             </CardContent>

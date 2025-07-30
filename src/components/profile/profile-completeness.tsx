@@ -264,22 +264,22 @@ export const ProfileCompleteness: React.FC<ProfileCompletenessProps> = ({ profil
   return (
     <Card>
       <CardHeader>
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
           <div>
-            <CardTitle className="flex items-center gap-2">
-              Profile Completeness
+            <CardTitle className="flex flex-col gap-2 sm:flex-row sm:items-center text-lg sm:text-xl">
+              <span>Profile Completeness</span>
               <Badge className={getCompletionBadge(overallProgress)}>
                 {Math.round(overallProgress)}%
               </Badge>
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-sm sm:text-base">
               Complete your profile to improve visibility and opportunities
             </CardDescription>
           </div>
         </div>
         <div className="mt-4">
           <Progress value={overallProgress} className="h-3" />
-          <p className="text-sm text-muted-foreground mt-2">
+          <p className="text-xs sm:text-sm text-muted-foreground mt-2">
             {sectionsWithCompletion.filter(s => s.completed).length} of {sections.length} sections completed
           </p>
         </div>
@@ -287,18 +287,18 @@ export const ProfileCompleteness: React.FC<ProfileCompletenessProps> = ({ profil
       <CardContent>
         <div className="space-y-4">
           {sectionsWithCompletion.map((section) => (
-            <div key={section.id} className="border rounded-lg p-4">
-              <div className="flex items-center justify-between mb-2">
+            <div key={section.id} className="border rounded-lg p-3 sm:p-4">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-2">
                 <div className="flex items-center gap-2">
                   {section.completed ? (
-                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
                   ) : (
-                    <Circle className="h-4 w-4 text-gray-400" />
+                    <Circle className="h-4 w-4 text-gray-400 flex-shrink-0" />
                   )}
-                  <h4 className="font-medium">{section.name}</h4>
+                  <h4 className="font-medium text-sm sm:text-base">{section.name}</h4>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className={`text-sm font-medium ${getCompletionColor(section.completionPercentage)}`}>
+                <div className="flex items-center gap-2 ml-6 sm:ml-0">
+                  <span className={`text-xs sm:text-sm font-medium ${getCompletionColor(section.completionPercentage)}`}>
                     {section.completionPercentage}%
                   </span>
                   <Badge variant="outline" className="text-xs">
@@ -309,7 +309,7 @@ export const ProfileCompleteness: React.FC<ProfileCompletenessProps> = ({ profil
               
               <Progress value={section.completionPercentage} className="h-2 mb-3" />
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm">
                 {section.items.map((item, index) => (
                   <div key={index} className="flex items-center gap-2">
                     {item.completed ? (
@@ -329,20 +329,21 @@ export const ProfileCompleteness: React.FC<ProfileCompletenessProps> = ({ profil
               
               {section.requiredTotal > 0 && (
                 <div className="mt-2 text-xs text-muted-foreground">
-                  Required: {section.requiredCompleted}/{section.requiredTotal} • 
-                  Optional: {section.optionalCompleted}/{section.optionalTotal}
+                  <span className="block sm:inline">Required: {section.requiredCompleted}/{section.requiredTotal}</span>
+                  <span className="hidden sm:inline"> • </span>
+                  <span className="block sm:inline">Optional: {section.optionalCompleted}/{section.optionalTotal}</span>
                 </div>
               )}
             </div>
           ))}
         </div>
         
-        <div className="mt-4 p-4 bg-muted/50 rounded-lg">
-          <div className="flex items-center gap-2 text-sm">
-            <AlertCircle className="h-4 w-4 text-amber-600" />
+        <div className="mt-4 p-3 sm:p-4 bg-muted/50 rounded-lg">
+          <div className="flex items-center gap-2 text-xs sm:text-sm">
+            <AlertCircle className="h-4 w-4 text-amber-600 flex-shrink-0" />
             <span className="font-medium">Tips for completion:</span>
           </div>
-          <ul className="text-sm text-muted-foreground mt-2 space-y-1">
+          <ul className="text-xs sm:text-sm text-muted-foreground mt-2 space-y-1">
             <li>• Required fields marked with * are essential for profile completeness</li>
             <li>• Focus on completing sections with higher weight percentages first</li>
             <li>• A complete profile improves your visibility to recruiters and opportunities</li>

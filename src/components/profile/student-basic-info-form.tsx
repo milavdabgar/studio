@@ -111,18 +111,18 @@ export const StudentBasicInfoForm: React.FC<StudentBasicInfoFormProps> = ({ stud
   return (
     <Card>
       <CardHeader>
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
           <div>
-            <CardTitle>Extended Personal Information</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-lg sm:text-xl">Extended Personal Information</CardTitle>
+            <CardDescription className="text-sm sm:text-base">
               Complete your personal details, career interests, and online presence
             </CardDescription>
           </div>
           <Dialog open={isEditing} onOpenChange={setIsEditing}>
             <DialogTrigger asChild>
-              <Button variant="outline">
-                <Edit className="h-4 w-4 mr-2" />
-                Edit Info
+              <Button variant="outline" size="sm" className="w-full sm:w-auto">
+                <Edit className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+                <span className="text-xs sm:text-sm">Edit Info</span>
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-4xl max-h-[80vh] overflow-y-auto">
@@ -137,7 +137,7 @@ export const StudentBasicInfoForm: React.FC<StudentBasicInfoFormProps> = ({ stud
                 {/* Personal Details */}
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold">Personal Details</h3>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="firstName">First Name</Label>
                       <Input
@@ -202,7 +202,7 @@ export const StudentBasicInfoForm: React.FC<StudentBasicInfoFormProps> = ({ stud
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="col-span-2">
+                    <div className="col-span-1 sm:col-span-2">
                       <Label htmlFor="address">Address</Label>
                       <Textarea
                         id="address"
@@ -217,7 +217,7 @@ export const StudentBasicInfoForm: React.FC<StudentBasicInfoFormProps> = ({ stud
                 {/* Contact Information */}
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold">Contact Information</h3>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="personalEmail">Personal Email</Label>
                       <Input
@@ -258,7 +258,7 @@ export const StudentBasicInfoForm: React.FC<StudentBasicInfoFormProps> = ({ stud
                 {/* Guardian Details */}
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold">Guardian Information</h3>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="guardianName">Guardian Name</Label>
                       <Input
@@ -346,7 +346,7 @@ export const StudentBasicInfoForm: React.FC<StudentBasicInfoFormProps> = ({ stud
                       rows={3}
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="careerInterests">Career Interests (comma-separated)</Label>
                       <Input
@@ -371,7 +371,7 @@ export const StudentBasicInfoForm: React.FC<StudentBasicInfoFormProps> = ({ stud
                 {/* Online Presence */}
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold">Online Presence</h3>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="portfolioWebsite">Portfolio Website</Label>
                       <Input
@@ -452,8 +452,8 @@ export const StudentBasicInfoForm: React.FC<StudentBasicInfoFormProps> = ({ stud
         <div className="space-y-4">
           {/* Personal Information Display */}
           <div>
-            <h4 className="font-semibold mb-2">Personal Details</h4>
-            <div className="grid md:grid-cols-2 gap-4 text-sm">
+            <h4 className="font-semibold mb-2 text-sm sm:text-base">Personal Details</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
               <div>
                 <span className="font-medium text-muted-foreground">Blood Group:</span>
                 <p className="mt-1">{student.bloodGroup || 'Not specified'}</p>
@@ -476,8 +476,8 @@ export const StudentBasicInfoForm: React.FC<StudentBasicInfoFormProps> = ({ stud
           {/* Career Information Display */}
           {(student.careerObjective || (student.careerInterests && student.careerInterests.length > 0)) && (
             <div>
-              <h4 className="font-semibold mb-2">Career Goals</h4>
-              <div className="text-sm space-y-2">
+              <h4 className="font-semibold mb-2 text-sm sm:text-base">Career Goals</h4>
+              <div className="text-xs sm:text-sm space-y-2">
                 {student.careerObjective && (
                   <div>
                     <span className="font-medium text-muted-foreground">Career Objective:</span>
@@ -503,14 +503,14 @@ export const StudentBasicInfoForm: React.FC<StudentBasicInfoFormProps> = ({ stud
           {/* Online Presence Display */}
           {(student.portfolioWebsite || student.linkedinUrl || student.githubUrl || student.twitterUrl || student.personalWebsite) && (
             <div>
-              <h4 className="font-semibold mb-2">Online Presence</h4>
-              <div className="grid md:grid-cols-2 gap-4 text-sm">
+              <h4 className="font-semibold mb-2 text-sm sm:text-base">Online Presence</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
                 {student.portfolioWebsite && (
                   <div>
                     <span className="font-medium text-muted-foreground">Portfolio:</span>
                     <p className="mt-1">
                       <a href={student.portfolioWebsite} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                        {student.portfolioWebsite}
+                        {student.portfolioWebsite.length > 30 ? `${student.portfolioWebsite.substring(0, 30)}...` : student.portfolioWebsite}
                       </a>
                     </p>
                   </div>
@@ -552,8 +552,8 @@ export const StudentBasicInfoForm: React.FC<StudentBasicInfoFormProps> = ({ stud
           {/* Guardian Information Display */}
           {student.guardianDetails && student.guardianDetails.name && (
             <div>
-              <h4 className="font-semibold mb-2">Guardian Information</h4>
-              <div className="grid md:grid-cols-2 gap-4 text-sm">
+              <h4 className="font-semibold mb-2 text-sm sm:text-base">Guardian Information</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
                 <div>
                   <span className="font-medium text-muted-foreground">Name:</span>
                   <p className="mt-1">{student.guardianDetails.name}</p>
